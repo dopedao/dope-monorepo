@@ -1,13 +1,13 @@
 {
-  "name": "loot",
+  "name": "gear",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ shahruz/loot",
-    "create-local": "graph create --node http://localhost:8020/ shahruz/loot",
-    "remove-local": "graph remove --node http://localhost:8020/ shahruz/loot",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 shahruz/loot"
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ gear",
+    "create-local": "graph create --node http://localhost:8020/ gear",
+    "remove-local": "graph remove --node http://localhost:8020/ gear",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 gear"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.21.1",
@@ -15,6 +15,6 @@
   },
   "version": "1.0.0",
   "main": "index.js",
-  "author": "shahruz",
+  "author": "tarrenceva",
   "description": ""
 }

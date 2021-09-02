@@ -3,12 +3,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Loot
+    name: DopeWarsLoot
     network: mainnet
     source:
-      address: '0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7'
-      abi: Loot
-      startBlock: 13108876
+      address: '0x8707276df042e89669d69a177d3da7dc78bd8723'
+      abi: DopeWarsLoot
+      startBlock: 13136082
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -16,8 +16,8 @@ dataSources:
       entities:
         - Transfer
       abis:
-        - name: Loot
-          file: ./abis/Loot.json
+        - name: DopeWarsLoot
+          file: ./abis/DopeWarsLoot.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
