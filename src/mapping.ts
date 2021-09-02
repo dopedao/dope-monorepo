@@ -1,6 +1,6 @@
-import { Transfer as TransferEvent } from '../generated/Loot/Loot';
+import { Transfer as TransferEvent } from '../generated/DopeWarsLoot/DopeWarsLoot';
 import { Bag, Transfer, Wallet } from '../generated/schema';
-import { Loot } from '../generated/Loot/Loot';
+import { DopeWarsLoot } from '../generated/DopeWarsLoot/DopeWarsLoot';
 import { BigInt } from '@graphprotocol/graph-ts';
 
 export function handleTransfer(event: TransferEvent): void {
@@ -42,15 +42,16 @@ export function handleTransfer(event: TransferEvent): void {
     bag.save();
   } else {
     bag = new Bag(tokenId.toString());
-    let contract = Loot.bind(event.address);
-    bag.chest = contract.getChest(tokenId);
+    let contract = DopeWarsLoot.bind(event.address);
+    bag.clothes = contract.getClothes(tokenId);
     bag.foot = contract.getFoot(tokenId);
     bag.hand = contract.getHand(tokenId);
-    bag.head = contract.getHead(tokenId);
     bag.neck = contract.getNeck(tokenId);
     bag.ring = contract.getRing(tokenId);
     bag.waist = contract.getWaist(tokenId);
     bag.weapon = contract.getWeapon(tokenId);
+    bag.drugs = contract.getDrugs(tokenId);
+    bag.vehicle = contract.getVehicle(tokenId);
     bag.currentOwner = toWallet.id;
     bag.minted = event.block.timestamp;
     bag.save();
