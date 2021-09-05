@@ -15,7 +15,6 @@ export default function Home({ tokens }: { tokens: any }) {
   return (
     <IndexWrapper>
       <Head />
-      <h1>{process.env.NEXT_PUBLIC_APP_TITLE}</h1>
       <AuctionsList tokens={tokens} />
     </IndexWrapper>
   );
