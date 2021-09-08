@@ -16,7 +16,7 @@ export default function GlobalStyles() {
           /* COLORS */
           --black: #000;
           --white: #fff;
-          --bg-color: #f6f8fa;
+          --bg-color: #A8A9AE;
           --overlay: rgba(0, 0, 0, 0.85);
           --overlay-light: rgba(0, 0, 0, 0.35);
           --border-black: 1px solid var(--black);
@@ -62,6 +62,9 @@ export default function GlobalStyles() {
         `}
 
         /* DEFAULTS */
+        body {
+          background: var(--bg-color);
+        }
         /* LAYOUT */
         body * {
           font-family: var(--font-a) !important;

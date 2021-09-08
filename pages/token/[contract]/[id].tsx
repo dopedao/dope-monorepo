@@ -1,4 +1,8 @@
-import { NFTFullPage, MediaConfiguration } from "@zoralabs/nft-components";
+import {
+  NFTFullPage,
+  MediaConfiguration,
+  FullComponents,
+} from "@zoralabs/nft-components";
 import { useRouter } from "next/router";
 import {
   MediaFetchAgent,
@@ -9,6 +13,7 @@ import { GetServerSideProps } from "next";
 
 import { PageWrapper } from "../../../styles/components";
 import Head from "../../../components/head";
+import { getContentData } from "../../../components/CustomThumbnail";
 
 const styles = {
   theme: {
@@ -51,7 +56,14 @@ export default function Piece({
             contract={query.contract as string}
             id={query.id as string}
             initialData={initialData}
-          />
+          >
+            <FullComponents.MediaFull getContentData={getContentData} />
+            <FullComponents.MediaInfo />
+            <FullComponents.AuctionInfo />
+            <FullComponents.PlaceOfferButton />
+            <FullComponents.ProofAuthenticity />
+            <FullComponents.BidHistory />
+          </NFTFullPage>
         </PageWrapper>
       </MediaConfiguration>
     </>
