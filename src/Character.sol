@@ -11,11 +11,19 @@ import {ERC721, ERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/ext
 
 import {ICharacter} from "./interfaces/ICharacter.sol";
 import {IProvider} from "./interfaces/IProvider.sol";
-import {NFTDescriptor} from "./libraries/NFTDescriptor.sol";
-import {MultiPartRLEToSVG} from "./libraries/MultiPartRLEToSVG.sol";
+// import {Descriptor} from "./Descriptor.sol";
+import {Base64} from "./MetadataUtils.sol";
+import {MultiPartRLEToSVG} from "./MultiPartRLEToSVG.sol";
 
 contract Character is ICharacter, ERC721Enumerable, Ownable {
     using Strings for uint256;
+
+    struct TokenURIParams {
+        string name;
+        string description;
+        bytes[] parts;
+        string background;
+    }
 
     // prettier-ignore
     // https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt
@@ -185,14 +193,36 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
         string memory description,
         Equipment memory equipment
     ) public view override returns (string memory) {
-        NFTDescriptor.TokenURIParams memory params = NFTDescriptor
-            .TokenURIParams({
-                name: name,
-                description: description,
-                parts: _getPartsForEquipment(equipment),
-                background: backgrounds[equipment.background]
-            });
-        return NFTDescriptor.constructTokenURI(params, palettes);
+        TokenURIParams memory params = TokenURIParams({
+            name: name,
+            description: description,
+            parts: _getPartsForEquipment(equipment),
+            background: backgrounds[equipment.background]
+        });
+
+        string memory image = Base64.encode(
+            bytes(
+                MultiPartRLEToSVG.generateSVG(
+                    MultiPartRLEToSVG.SVGParams({
+                        parts: params.parts,
+                        background: params.background
+                    }),
+                    palettes
+                )
+            )
+        );
+
+        // prettier-ignore
+        return string(
+            abi.encodePacked(
+                'data:application/json;base64,',
+                Base64.encode(
+                    bytes(
+                        abi.encodePacked('{"name":"', params.name, '", "description":"', params.description, '", "image": "', 'data:image/svg+xml;base64,', image, '"}')
+                    )
+                )
+            )
+        );
     }
 
     /**
@@ -204,12 +234,18 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
         override
         returns (string memory)
     {
-        MultiPartRLEToSVG.SVGParams memory params = MultiPartRLEToSVG
-            .SVGParams({
-                parts: _getPartsForEquipment(equipment),
-                background: backgrounds[equipment.background]
-            });
-        return NFTDescriptor.generateSVGImage(params, palettes);
+        return
+            Base64.encode(
+                bytes(
+                    MultiPartRLEToSVG.generateSVG(
+                        MultiPartRLEToSVG.SVGParams({
+                            parts: _getPartsForEquipment(equipment),
+                            background: backgrounds[equipment.background]
+                        }),
+                        palettes
+                    )
+                )
+            );
     }
 
     /**
