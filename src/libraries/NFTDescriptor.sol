@@ -5,7 +5,7 @@
 
 pragma solidity ^0.8.6;
 
-import { Base64 } from "base64-sol/base64.sol";
+import { Base64} from "../MetadataUtils.sol";
 import { MultiPartRLEToSVG } from "./MultiPartRLEToSVG.sol";
 
 library NFTDescriptor {
