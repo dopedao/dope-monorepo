@@ -1,23 +1,24 @@
-name: Tests
+# name: Tests
 
-on: [push, pull_request]
+# on: [push, pull_request]
+# on: []
 
-jobs:
-  tests:
-    runs-on: ubuntu-latest
+# jobs:
+#   tests:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-      - uses: cachix/install-nix-action@v13
-      - uses: cachix/cachix-action@v10
-        with:
-          name: dapp
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: actions/setup-node@v2
+#       - uses: cachix/install-nix-action@v13
+#       - uses: cachix/cachix-action@v10
+#         with:
+#           name: dapp
 
-      - name: Install dependencies
-        run: nix-shell --run 'make'
+#       - name: Install dependencies
+#         run: cd packages/contracts && nix-shell --run 'make'
 
-      - name: Run tests
-        run: nix-shell --run 'make test'
-        env:
-         ETH_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_API_KEY }}
+#       - name: Run tests
+#         run: cd packages/contracts && nix-shell --run 'make test'
+#         env:
+#          ETH_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_API_KEY }}
