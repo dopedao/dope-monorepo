@@ -5,12 +5,12 @@
 
 pragma solidity ^0.8.6;
 
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
-import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
-import { ICharacterDescriptor } from "./interfaces/ICharacterDescriptor.sol";
-import { ICharacterSeeder } from "./interfaces/ICharacterSeeder.sol";
-import { NFTDescriptor } from "./libraries/NFTDescriptor.sol";
-import { MultiPartRLEToSVG } from "./libraries/MultiPartRLEToSVG.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {ICharacterDescriptor} from "./interfaces/ICharacterDescriptor.sol";
+import {ICharacterSeeder} from "./interfaces/ICharacterSeeder.sol";
+import {NFTDescriptor} from "./libraries/NFTDescriptor.sol";
+import {MultiPartRLEToSVG} from "./libraries/MultiPartRLEToSVG.sol";
 
 contract CharacterDescriptor is ICharacterDescriptor, Ownable {
     using Strings for uint256;
@@ -21,9 +21,6 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
 
     // Whether or not new parts can be added
     bool public override arePartsLocked;
-
-    // Whether or not `tokenURI` should be returned as a data URI (Default: true)
-    bool public override isDataURIEnabled = true;
 
     // Base URI
     string public override baseURI;
@@ -146,8 +143,14 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add colors to a color palette.
      * @dev This function can only be called by the owner.
      */
-    function addManyColorsToPalette(uint8 paletteIndex, string[] calldata newColors) external override onlyOwner {
-        require(palettes[paletteIndex].length + newColors.length <= 256, "Palettes can only hold 256 colors");
+    function addManyColorsToPalette(
+        uint8 paletteIndex,
+        string[] calldata newColors
+    ) external override onlyOwner {
+        require(
+            palettes[paletteIndex].length + newColors.length <= 256,
+            "Palettes can only hold 256 colors"
+        );
         for (uint256 i = 0; i < newColors.length; i++) {
             _addColorToPalette(paletteIndex, newColors[i]);
         }
@@ -157,7 +160,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add backgrounds.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyBackgrounds(string[] calldata _backgrounds) external override onlyOwner whenPartsNotLocked {
+    function addManyBackgrounds(string[] calldata _backgrounds)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _backgrounds.length; i++) {
             _addBackground(_backgrounds[i]);
         }
@@ -167,7 +175,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add bodies.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyBodies(bytes[] calldata _bodies) external override onlyOwner whenPartsNotLocked {
+    function addManyBodies(bytes[] calldata _bodies)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _bodies.length; i++) {
             _addBody(_bodies[i]);
         }
@@ -177,7 +190,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add clothes.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyClothes(bytes[] calldata _clothes) external override onlyOwner whenPartsNotLocked {
+    function addManyClothes(bytes[] calldata _clothes)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _clothes.length; i++) {
             _addClothes(_clothes[i]);
         }
@@ -187,7 +205,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add feet.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyFeet(bytes[] calldata _feet) external override onlyOwner whenPartsNotLocked {
+    function addManyFeet(bytes[] calldata _feet)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _feet.length; i++) {
             _addFeet(_feet[i]);
         }
@@ -197,7 +220,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add hands.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyHands(bytes[] calldata _hands) external override onlyOwner whenPartsNotLocked {
+    function addManyHands(bytes[] calldata _hands)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _hands.length; i++) {
             _addHands(_hands[i]);
         }
@@ -207,7 +235,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add necks.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyNecks(bytes[] calldata _necks) external override onlyOwner whenPartsNotLocked {
+    function addManyNecks(bytes[] calldata _necks)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _necks.length; i++) {
             _addNecks(_necks[i]);
         }
@@ -217,7 +250,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add rings.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyRings(bytes[] calldata _rings) external override onlyOwner whenPartsNotLocked {
+    function addManyRings(bytes[] calldata _rings)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _rings.length; i++) {
             _addRings(_rings[i]);
         }
@@ -227,7 +265,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add waists.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyWaists(bytes[] calldata _waists) external override onlyOwner whenPartsNotLocked {
+    function addManyWaists(bytes[] calldata _waists)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _waists.length; i++) {
             _addWaists(_waists[i]);
         }
@@ -237,7 +280,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add weapons.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyWeapons(bytes[] calldata _weapons) external override onlyOwner whenPartsNotLocked {
+    function addManyWeapons(bytes[] calldata _weapons)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _weapons.length; i++) {
             _addWeapons(_weapons[i]);
         }
@@ -247,7 +295,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add drugs.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyDrugs(bytes[] calldata _drugs) external override onlyOwner whenPartsNotLocked {
+    function addManyDrugs(bytes[] calldata _drugs)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _drugs.length; i++) {
             _addDrugs(_drugs[i]);
         }
@@ -257,7 +310,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Batch add vehicles.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyVehicles(bytes[] calldata _vehicles) external override onlyOwner whenPartsNotLocked {
+    function addManyVehicles(bytes[] calldata _vehicles)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         for (uint256 i = 0; i < _vehicles.length; i++) {
             _addVehicles(_vehicles[i]);
         }
@@ -267,8 +325,15 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add a single color to a color palette.
      * @dev This function can only be called by the owner.
      */
-    function addColorToPalette(uint8 _paletteIndex, string calldata _color) external override onlyOwner {
-        require(palettes[_paletteIndex].length <= 255, "Palettes can only hold 256 colors");
+    function addColorToPalette(uint8 _paletteIndex, string calldata _color)
+        external
+        override
+        onlyOwner
+    {
+        require(
+            palettes[_paletteIndex].length <= 255,
+            "Palettes can only hold 256 colors"
+        );
         _addColorToPalette(_paletteIndex, _color);
     }
 
@@ -276,7 +341,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add a background.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addBackground(string calldata _background) external override onlyOwner whenPartsNotLocked {
+    function addBackground(string calldata _background)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addBackground(_background);
     }
 
@@ -284,7 +354,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add a body.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addBody(bytes calldata _body) external override onlyOwner whenPartsNotLocked {
+    function addBody(bytes calldata _body)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addBody(_body);
     }
 
@@ -292,7 +367,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add a clothes.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addClothes(bytes calldata _clothes) external override onlyOwner whenPartsNotLocked {
+    function addClothes(bytes calldata _clothes)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addClothes(_clothes);
     }
 
@@ -300,7 +380,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add a feet.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addFeet(bytes calldata _feet) external override onlyOwner whenPartsNotLocked {
+    function addFeet(bytes calldata _feet)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addFeet(_feet);
     }
 
@@ -308,7 +393,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add hands.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addHands(bytes calldata _hands) external override onlyOwner whenPartsNotLocked {
+    function addHands(bytes calldata _hands)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addHands(_hands);
     }
 
@@ -316,7 +406,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add necks.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addNecks(bytes calldata _necks) external override onlyOwner whenPartsNotLocked {
+    function addNecks(bytes calldata _necks)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addNecks(_necks);
     }
 
@@ -324,7 +419,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add rings.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addRings(bytes calldata _rings) external override onlyOwner whenPartsNotLocked {
+    function addRings(bytes calldata _rings)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addRings(_rings);
     }
 
@@ -332,7 +432,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add waists.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addWaists(bytes calldata _waists) external override onlyOwner whenPartsNotLocked {
+    function addWaists(bytes calldata _waists)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addWaists(_waists);
     }
 
@@ -340,7 +445,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add weapons.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addWeapons(bytes calldata _weapons) external override onlyOwner whenPartsNotLocked {
+    function addWeapons(bytes calldata _weapons)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addWeapons(_weapons);
     }
 
@@ -348,7 +458,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add drugs.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addDrugs(bytes calldata _drugs) external override onlyOwner whenPartsNotLocked {
+    function addDrugs(bytes calldata _drugs)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addDrugs(_drugs);
     }
 
@@ -356,7 +471,12 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
      * @notice Add vehicles.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addVehicles(bytes calldata _vehicles) external override onlyOwner whenPartsNotLocked {
+    function addVehicles(bytes calldata _vehicles)
+        external
+        override
+        onlyOwner
+        whenPartsNotLocked
+    {
         _addVehicles(_vehicles);
     }
 
@@ -371,30 +491,6 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
     }
 
     /**
-     * @notice Toggle a boolean value which determines if `tokenURI` returns a data URI
-     * or an HTTP URL.
-     * @dev This can only be called by the owner.
-     */
-    function toggleDataURIEnabled() external override onlyOwner {
-        bool enabled = !isDataURIEnabled;
-
-        isDataURIEnabled = enabled;
-        emit DataURIToggled(enabled);
-    }
-
-    /**
-     * @notice Set the base URI for all token IDs. It is automatically
-     * added as a prefix to the value returned in {tokenURI}, or to the
-     * token ID if {tokenURI} is empty.
-     * @dev This can only be called by the owner.
-     */
-    function setBaseURI(string calldata _baseURI) external override onlyOwner {
-        baseURI = _baseURI;
-
-        emit BaseURIUpdated(_baseURI);
-    }
-
-    /**
      * @notice Given a token ID and seed, construct a token URI for an official DopeDAO character.
      * @dev The returned value may be a base64 encoded data URI or an API URL.
      */
@@ -404,19 +500,15 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
         override
         returns (string memory)
     {
-        if (isDataURIEnabled) {
-            return dataURI(tokenId, seed);
-        }
-        return string(abi.encodePacked(baseURI, tokenId.toString()));
-    }
-
-    /**
-     * @notice Given a token ID and seed, construct a base64 encoded data URI for an official Dope DAO character.
-     */
-    function dataURI(uint256 tokenId, ICharacterSeeder.Seed memory seed) public view override returns (string memory) {
         string memory characterId = tokenId.toString();
         string memory name = string(abi.encodePacked("Recruit ", characterId));
-        string memory description = string(abi.encodePacked("Recruit ", characterId, " is a member of the Dope DAO"));
+        string memory description = string(
+            abi.encodePacked(
+                "Recruit ",
+                characterId,
+                " is a member of the Dope DAO"
+            )
+        );
 
         return genericDataURI(name, description, seed);
     }
@@ -429,30 +521,39 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
         string memory description,
         ICharacterSeeder.Seed memory seed
     ) public view override returns (string memory) {
-        NFTDescriptor.TokenURIParams memory params = NFTDescriptor.TokenURIParams({
-            name: name,
-            description: description,
-            parts: _getPartsForGear(seed),
-            background: backgrounds[seed.background]
-        });
+        NFTDescriptor.TokenURIParams memory params = NFTDescriptor
+            .TokenURIParams({
+                name: name,
+                description: description,
+                parts: _getPartsForGear(seed),
+                background: backgrounds[seed.background]
+            });
         return NFTDescriptor.constructTokenURI(params, palettes);
     }
 
     /**
      * @notice Given a seed, construct a base64 encoded SVG image.
      */
-    function generateSVGImage(ICharacterSeeder.Seed memory seed) external view override returns (string memory) {
-        MultiPartRLEToSVG.SVGParams memory params = MultiPartRLEToSVG.SVGParams({
-            parts: _getPartsForGear(seed),
-            background: backgrounds[seed.background]
-        });
+    function generateSVGImage(ICharacterSeeder.Seed memory seed)
+        external
+        view
+        override
+        returns (string memory)
+    {
+        MultiPartRLEToSVG.SVGParams memory params = MultiPartRLEToSVG
+            .SVGParams({
+                parts: _getPartsForGear(seed),
+                background: backgrounds[seed.background]
+            });
         return NFTDescriptor.generateSVGImage(params, palettes);
     }
 
     /**
      * @notice Add a single color to a color palette.
      */
-    function _addColorToPalette(uint8 _paletteIndex, string calldata _color) internal {
+    function _addColorToPalette(uint8 _paletteIndex, string calldata _color)
+        internal
+    {
         palettes[_paletteIndex].push(_color);
     }
 
@@ -536,7 +637,11 @@ contract CharacterDescriptor is ICharacterDescriptor, Ownable {
     /**
      * @notice Get all parts for the passed `seed`.
      */
-    function _getPartsForGear(ICharacterSeeder.Seed memory seed) internal view returns (bytes[] memory) {
+    function _getPartsForGear(ICharacterSeeder.Seed memory seed)
+        internal
+        view
+        returns (bytes[] memory)
+    {
         bytes[] memory _parts = new bytes[](10);
         _parts[0] = bodies[seed.body];
         _parts[1] = clothes[seed.clothes];
