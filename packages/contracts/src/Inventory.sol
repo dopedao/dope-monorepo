@@ -17,7 +17,7 @@ library Errors {
 /// @author Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 Loot bags and extracting the items inside it
 /// The created tokens are ERC1155 compatible, and their on-chain SVG is their name
-contract LootLoose is ERC1155, LootTokensMetadata {
+contract Inventory is ERC1155, LootTokensMetadata {
     // The OG Loot bags contract
     IERC721 immutable loot;
     mapping(uint256 => bool) private opened;

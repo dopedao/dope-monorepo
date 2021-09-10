@@ -5,20 +5,20 @@ import "ds-test/test.sol";
 
 import "./Hevm.sol";
 import "../../Loot.sol";
-import { LootLoose } from "../../LootLoose.sol";
+import { Inventory } from "../../Inventory.sol";
 
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 
 // NB: Using callbacks is hard, since we're a smart contract account we need
 // to be implementing the callbacks
-contract LootLooseUser is ERC721Holder, ERC1155Holder {
+contract InventoryUser is ERC721Holder, ERC1155Holder {
     DopeWarsLoot loot;
-    LootLoose lootLoose;
+    Inventory inventory;
 
-    constructor(DopeWarsLoot _loot, LootLoose _lootLoose) {
+    constructor(DopeWarsLoot _loot, Inventory _inventory) {
         loot = _loot;
-        lootLoose = _lootLoose;
+        inventory = _inventory;
     }
 
     function claim(uint256 tokenId) public {
@@ -26,15 +26,15 @@ contract LootLooseUser is ERC721Holder, ERC1155Holder {
     }
 
     function open(uint256 tokenId) public {
-        lootLoose.open(tokenId);
+        inventory.open(tokenId);
     }
 
     function transferERC1155(address to, uint256 tokenId, uint256 amount) public {
-        lootLoose.safeTransferFrom(address(this), to, tokenId, amount, "0x");
+        inventory.safeTransferFrom(address(this), to, tokenId, amount, "0x");
     }
 }
 
-contract LootLooseTest is DSTest {
+contract InventoryTest is DSTest {
     uint256 internal constant BAG = 10;
     uint256 internal constant OTHER_BAG = 100;
     Hevm internal constant hevm =
@@ -42,18 +42,18 @@ contract LootLooseTest is DSTest {
 
     // contracts
     DopeWarsLoot internal loot;
-    LootLoose internal lootLoose;
+    Inventory internal inventory;
 
     // users
-    LootLooseUser internal alice;
+    InventoryUser internal alice;
 
     function setUp() public virtual {
         // deploy contracts
         loot = new DopeWarsLoot();
-        lootLoose = new LootLoose(address(loot));
+        inventory = new Inventory(address(loot));
 
         // create alice's account & claim a bag
-        alice = new LootLooseUser(loot, lootLoose);
+        alice = new InventoryUser(loot, inventory);
         alice.claim(BAG);
         assertEq(loot.ownerOf(BAG), address(alice));
     }

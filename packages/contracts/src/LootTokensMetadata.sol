@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import "./LootComponents.sol";
+import "./Components.sol";
 import "./TokenId.sol";
 import {Base64, toString} from "./MetadataUtils.sol";
 
@@ -33,7 +33,7 @@ struct ItemNames {
 /// the individual items inside a Loot bag.
 /// @author Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
-contract LootTokensMetadata is LootComponents {
+contract LootTokensMetadata is Components {
     uint256 internal constant WEAPON = 0x0;
     uint256 internal constant CLOTHES = 0x1;
     uint256 internal constant VEHICLE = 0x2;
