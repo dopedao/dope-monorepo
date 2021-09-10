@@ -11,4 +11,6 @@ interface IStockpile is IERC1155 {
     function valueOf(uint256 id) external view returns (bytes memory value);
 
     function valueOfBatch(uint256[] memory ids) external view returns (bytes[] memory values);
+
+    function ownedValueOfBatch(uint256[] memory ids) external view returns (bytes[] memory values);
 }

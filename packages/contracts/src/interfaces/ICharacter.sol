@@ -6,21 +6,7 @@
 pragma solidity ^0.8.6;
 
 interface ICharacter {
-    struct Equipment {
-        uint48 background;
-        uint48 body;
-        uint48 clothes;
-        uint48 feet;
-        uint48 hand;
-        uint48 neck;
-        uint48 ring;
-        uint48 waist;
-        uint48 weapon;
-        uint48 drugs;
-        uint48 vehicle;
-    }
-
-    function equipmentOf(address) external view returns (Equipment memory);
+    function equipmentOf(address) external view returns (uint48[] memory);
 
     function palettes(uint8 paletteIndex, uint256 colorIndex) external view returns (string memory);
 
@@ -47,8 +33,8 @@ interface ICharacter {
     function genericDataURI(
         string calldata name,
         string calldata description,
-        Equipment memory equipment
+        uint48[] memory equipment
     ) external view returns (string memory);
 
-    function generateSVGImage(Equipment memory equipment) external view returns (string memory);
+    function generateSVGImage(uint48[] memory equipment) external view returns (string memory);
 }
