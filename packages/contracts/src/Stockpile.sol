@@ -3,34 +3,36 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
+import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 
-import "./LootTokensMetadata.sol";
+import './LootTokensMetadata.sol';
+import './interfaces/IStockpile.sol';
 
 library Errors {
-    string constant DoesNotOwnGear = "you do not own this gear";
-    string constant AlreadyOpened = "gear already opened";
+    string constant DoesNotOwnBag = 'you do not own this bag';
+    string constant AlreadyOpened = 'bag already opened';
 }
 
-/// @title Loot Tokens
+/// @title Dope Gear Stockpile
 /// @author Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 Loot bags and extracting the items inside it
 /// The created tokens are ERC1155 compatible, and their on-chain SVG is their name
-contract Inventory is ERC1155, LootTokensMetadata {
-    // The OG Loot bags contract
-    IERC721 immutable loot;
+contract Stockpile is ERC1155, LootTokensMetadata {
+    // The DOPE bags contract
+    IERC721 immutable bags;
+
     mapping(uint256 => bool) private opened;
 
     // No need for a URI since we're doing everything onchain
-    constructor(address _loot) ERC1155("") {
-        loot = IERC721(_loot);
+    constructor(address _bags) ERC1155('') {
+        bags = IERC721(_bags);
     }
 
     /// @notice Opens the provided tokenId if the sender is owner. This
     /// can only be done once per DOPE token.
     function open(uint256 tokenId) external {
-        require(msg.sender == loot.ownerOf(tokenId), Errors.DoesNotOwnGear);
+        require(msg.sender == bags.ownerOf(tokenId), Errors.DoesNotOwnBag);
         require(!opened[tokenId], Errors.AlreadyOpened);
         opened[tokenId] = true;
         open(msg.sender, tokenId);
@@ -69,6 +71,14 @@ contract Inventory is ERC1155, LootTokensMetadata {
     ) private view returns (uint256) {
         uint256[5] memory components = componentsFn(tokenId);
         return TokenId.toId(components, itemType);
+    }
+
+    function valueOf(uint256 tokenId) external view returns (bytes memory value) {
+        return '';
+    }
+
+    function valueOfBatch(uint256[] tokenId) external view returns (bytes[] memory values) {
+        return [''];
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {

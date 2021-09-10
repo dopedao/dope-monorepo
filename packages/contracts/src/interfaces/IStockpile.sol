@@ -5,8 +5,10 @@
 
 pragma solidity ^0.8.6;
 
-interface IProvider {
+interface IStockpile {
     function valueOf(uint256 tokenId) external view returns (bytes memory value);
 
-    function ownerOf(uint256 tokenId) external view returns (address owner);
+    function valueOfBatch(uint256[] tokenId) external view returns (bytes[] memory values);
+
+    function balanceOfBatch(address[] memory accounts, uint256[] memory ids) external view returns (uint256[] memory);
 }

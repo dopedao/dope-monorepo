@@ -5,15 +5,15 @@
 
 pragma solidity ^0.8.6;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {ERC721, ERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
+import { Strings } from '@openzeppelin/contracts/utils/Strings.sol';
+import { ERC721, ERC721Enumerable } from '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 
-import {ICharacter} from "./interfaces/ICharacter.sol";
-import {IProvider} from "./interfaces/IProvider.sol";
+import { ICharacter } from './interfaces/ICharacter.sol';
+import { IStockpile } from './interfaces/IStockpile.sol';
 // import {Descriptor} from "./Descriptor.sol";
-import {Base64} from "./MetadataUtils.sol";
-import {MultiPartRLEToSVG} from "./MultiPartRLEToSVG.sol";
+import { Base64 } from './MetadataUtils.sol';
+import { MultiPartRLEToSVG } from './MultiPartRLEToSVG.sol';
 
 contract Character is ICharacter, ERC721Enumerable, Ownable {
     using Strings for uint256;
@@ -39,21 +39,16 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     bytes[] public override bodies;
 
     // Gear Providers (Contract addresses)
-    IProvider[] public providers;
+    IStockpile[] public providers;
 
     mapping(address => Equipment) public equipments;
 
-    constructor() ERC721("Characters", "Characters") {}
+    constructor(address stockpile) ERC721('Characters', 'Characters') {}
 
     /**
      * @notice Get the current equipment for a character.
      */
-    function equipmentOf(address owner)
-        public
-        view
-        override
-        returns (Equipment memory)
-    {
+    function equipmentOf(address owner) public view override returns (Equipment memory) {
         return equipments[owner];
     }
 
@@ -75,14 +70,8 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
      * @notice Add colors to a color palette.
      * @dev This function can only be called by the owner.
      */
-    function addManyColorsToPalette(
-        uint8 paletteIndex,
-        string[] calldata newColors
-    ) external override onlyOwner {
-        require(
-            palettes[paletteIndex].length + newColors.length <= 256,
-            "Palettes can only hold 256 colors"
-        );
+    function addManyColorsToPalette(uint8 paletteIndex, string[] calldata newColors) external override onlyOwner {
+        require(palettes[paletteIndex].length + newColors.length <= 256, 'Palettes can only hold 256 colors');
         for (uint256 i = 0; i < newColors.length; i++) {
             _addColorToPalette(paletteIndex, newColors[i]);
         }
@@ -92,11 +81,7 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
      * @notice Batch add backgrounds.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyBackgrounds(string[] calldata _backgrounds)
-        external
-        override
-        onlyOwner
-    {
+    function addManyBackgrounds(string[] calldata _backgrounds) external override onlyOwner {
         for (uint256 i = 0; i < _backgrounds.length; i++) {
             _addBackground(_backgrounds[i]);
         }
@@ -106,11 +91,7 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
      * @notice Batch add bodies.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addManyBodies(bytes[] calldata _bodies)
-        external
-        override
-        onlyOwner
-    {
+    function addManyBodies(bytes[] calldata _bodies) external override onlyOwner {
         for (uint256 i = 0; i < _bodies.length; i++) {
             _addBody(_bodies[i]);
         }
@@ -120,15 +101,8 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
      * @notice Add a single color to a color palette.
      * @dev This function can only be called by the owner.
      */
-    function addColorToPalette(uint8 _paletteIndex, string calldata _color)
-        external
-        override
-        onlyOwner
-    {
-        require(
-            palettes[_paletteIndex].length <= 255,
-            "Palettes can only hold 256 colors"
-        );
+    function addColorToPalette(uint8 _paletteIndex, string calldata _color) external override onlyOwner {
+        require(palettes[_paletteIndex].length <= 255, 'Palettes can only hold 256 colors');
         _addColorToPalette(_paletteIndex, _color);
     }
 
@@ -136,11 +110,7 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
      * @notice Add a background.
      * @dev This function can only be called by the owner when not locked.
      */
-    function addBackground(string calldata _background)
-        external
-        override
-        onlyOwner
-    {
+    function addBackground(string calldata _background) external override onlyOwner {
         _addBackground(_background);
     }
 
@@ -152,34 +122,23 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
         _addBody(_body);
     }
 
-    function addProvider(IProvider _provider) external override onlyOwner {
-        providers.push(_provider);
+    function addProvider(address _provider) external override onlyOwner {
+        providers.push(IStockpile(_provider));
     }
 
-    function provider(uint24 index) external view override returns (IProvider) {
-        return providers[index];
+    function provider(uint24 index) external view override returns (address) {
+        return address(providers[index]);
     }
 
     /**
      * @notice Given a token ID constructs a token URI for the character.
      * @dev The returned value is a base64 encoded data URI.
      */
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override
-        returns (string memory)
-    {
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
         string memory characterId = tokenId.toString();
-        string memory name = string(
-            abi.encodePacked("Character ", characterId)
-        );
+        string memory name = string(abi.encodePacked('Character ', characterId));
         string memory description = string(
-            abi.encodePacked(
-                "Character ",
-                characterId,
-                " on the streets of Dope Wars."
-            )
+            abi.encodePacked('Character ', characterId, ' on the streets of Dope Wars.')
         );
 
         return genericDataURI(name, description, equipmentOf(ownerOf(tokenId)));
@@ -203,10 +162,7 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
         string memory image = Base64.encode(
             bytes(
                 MultiPartRLEToSVG.generateSVG(
-                    MultiPartRLEToSVG.SVGParams({
-                        parts: params.parts,
-                        background: params.background
-                    }),
+                    MultiPartRLEToSVG.SVGParams({ parts: params.parts, background: params.background }),
                     palettes
                 )
             )
@@ -228,12 +184,7 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     /**
      * @notice Given a equipment, construct a base64 encoded SVG image.
      */
-    function generateSVGImage(Equipment memory equipment)
-        external
-        view
-        override
-        returns (string memory)
-    {
+    function generateSVGImage(Equipment memory equipment) external view override returns (string memory) {
         return
             Base64.encode(
                 bytes(
@@ -251,9 +202,7 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     /**
      * @notice Add a single color to a color palette.
      */
-    function _addColorToPalette(uint8 _paletteIndex, string calldata _color)
-        internal
-    {
+    function _addColorToPalette(uint8 _paletteIndex, string calldata _color) internal {
         palettes[_paletteIndex].push(_color);
     }
 
@@ -274,34 +223,16 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     /**
      * @notice Get all parts for the passed `equipment`.
      */
-    function _getPartsForEquipment(Equipment memory equipment)
-        internal
-        view
-        returns (bytes[] memory)
-    {
+    function _getPartsForEquipment(Equipment memory equipment) internal view returns (bytes[] memory) {
         bytes[] memory _parts = new bytes[](8);
         _parts[0] = bodies[equipment.body];
-        _parts[1] = providers[equipment.clothes.provider].valueOf(
-            equipment.clothes.id
-        );
-        _parts[2] = providers[equipment.feet.provider].valueOf(
-            equipment.feet.id
-        );
-        _parts[3] = providers[equipment.hand.provider].valueOf(
-            equipment.hand.id
-        );
-        _parts[4] = providers[equipment.neck.provider].valueOf(
-            equipment.neck.id
-        );
-        _parts[5] = providers[equipment.ring.provider].valueOf(
-            equipment.ring.id
-        );
-        _parts[6] = providers[equipment.waist.provider].valueOf(
-            equipment.waist.id
-        );
-        _parts[7] = providers[equipment.weapon.provider].valueOf(
-            equipment.weapon.id
-        );
+        _parts[1] = providers[equipment.clothes.provider].valueOf(equipment.clothes.id);
+        _parts[2] = providers[equipment.feet.provider].valueOf(equipment.feet.id);
+        _parts[3] = providers[equipment.hand.provider].valueOf(equipment.hand.id);
+        _parts[4] = providers[equipment.neck.provider].valueOf(equipment.neck.id);
+        _parts[5] = providers[equipment.ring.provider].valueOf(equipment.ring.id);
+        _parts[6] = providers[equipment.waist.provider].valueOf(equipment.waist.id);
+        _parts[7] = providers[equipment.weapon.provider].valueOf(equipment.weapon.id);
         return _parts;
     }
 }
