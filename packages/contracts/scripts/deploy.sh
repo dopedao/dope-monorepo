@@ -1,13 +1,7 @@
-# import helpers
-# TODO: Can we make this import work from any directory?
-. ./scripts/common.sh
+#!/usr/bin/env bash
 
-# Setup addresses file
-cat > "$ADDRESSES_FILE" <<EOF
-{
-    "DEPLOYER": "$(seth --to-checksum-address "$FROM")"
-}
-EOF
+# import the deployment helpers
+. $(dirname $0)/common.sh
 
 # Mainnet loot address
 MAINNET_LOOT=0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7
