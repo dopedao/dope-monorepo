@@ -28,6 +28,18 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     // https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt
     bytes32 constant COPYRIGHT_CC0_1_0_UNIVERSAL_LICENSE = 0xa2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499;
 
+    uint48 constant BACKGROUND = 0;
+    uint48 constant BODY = 1;
+    uint48 constant CLOTHES = 2;
+    uint48 constant FEET = 3;
+    uint48 constant HAND = 4;
+    uint48 constant NECK = 5;
+    uint48 constant RING = 6;
+    uint48 constant WAIST = 7;
+    uint48 constant WEAPON = 8;
+    uint48 constant DRUGS = 9;
+    uint48 constant VEHICLE = 10;
+
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => string[]) public override palettes;
 
@@ -40,20 +52,23 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     // Gear stockpile (Contract address)
     IStockpile public stockpile;
 
-    mapping(address => Equipment) public equipments;
+    mapping(address => uint48[]) public equipments;
 
     constructor(address _stockpile) ERC721('Characters', 'Characters') {
         stockpile = IStockpile(_stockpile);
     }
 
+    /**
+     * @notice Set equipment for a character.
+     */
     function equip(uint48[] memory tokenIds) public {
-        
+        equipments[msg.sender] = tokenIds;
     }
 
     /**
      * @notice Get the current equipment for a character.
      */
-    function equipmentOf(address owner) public view override returns (Equipment memory) {
+    function equipmentOf(address owner) public view override returns (uint48[] memory) {
         return equipments[owner];
     }
 
@@ -147,13 +162,13 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     function genericDataURI(
         string memory name,
         string memory description,
-        Equipment memory equipment
+        uint48[] memory equipment
     ) public view override returns (string memory) {
         TokenURIParams memory params = TokenURIParams({
             name: name,
             description: description,
             parts: _getPartsForEquipment(equipment),
-            background: backgrounds[equipment.background]
+            background: backgrounds[equipment[BACKGROUND]]
         });
 
         string memory image = Base64.encode(
@@ -181,14 +196,14 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     /**
      * @notice Given a equipment, construct a base64 encoded SVG image.
      */
-    function generateSVGImage(Equipment memory equipment) external view override returns (string memory) {
+    function generateSVGImage(uint48[] memory equipment) external view override returns (string memory) {
         return
             Base64.encode(
                 bytes(
                     MultiPartRLEToSVG.generateSVG(
                         MultiPartRLEToSVG.SVGParams({
                             parts: _getPartsForEquipment(equipment),
-                            background: backgrounds[equipment.background]
+                            background: backgrounds[equipment[BACKGROUND]]
                         }),
                         palettes
                     )
@@ -220,16 +235,26 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     /**
      * @notice Get all parts for the passed `equipment`.
      */
-    function _getPartsForEquipment(Equipment memory equipment) internal view returns (bytes[] memory) {
+    function _getPartsForEquipment(uint48[] memory equipment) internal view returns (bytes[] memory) {
+        uint256[] memory _ids = new uint256[](7);
+        _ids[0] = uint256(equipment[CLOTHES]);
+        _ids[1] = uint256(equipment[FEET]);
+        _ids[2] = uint256(equipment[HAND]);
+        _ids[3] = uint256(equipment[NECK]);
+        _ids[4] = uint256(equipment[RING]);
+        _ids[5] = uint256(equipment[WAIST]);
+        _ids[6] = uint256(equipment[WEAPON]);
+
+        bytes[] memory _values = stockpile.ownedValueOfBatch(_ids);
         bytes[] memory _parts = new bytes[](8);
-        _parts[0] = bodies[equipment.body];
-        _parts[1] = stockpile.valueOf(equipment.clothes);
-        _parts[2] = stockpile.valueOf(equipment.feet);
-        _parts[3] = stockpile.valueOf(equipment.hand);
-        _parts[4] = stockpile.valueOf(equipment.neck);
-        _parts[5] = stockpile.valueOf(equipment.ring);
-        _parts[6] = stockpile.valueOf(equipment.waist);
-        _parts[7] = stockpile.valueOf(equipment.weapon);
+        _parts[0] = bodies[equipment[BODY]];
+        _parts[1] = _values[0];
+        _parts[2] = _values[1];
+        _parts[3] = _values[2];
+        _parts[4] = _values[3];
+        _parts[5] = _values[4];
+        _parts[6] = _values[5];
+        _parts[7] = _values[6];
         return _parts;
     }
 }

@@ -34,6 +34,10 @@ contract CharacterUser is ERC721Holder, ERC1155Holder {
         stockpile.open(tokenId);
     }
 
+    function equip(uint48[] memory tokenIds) public {
+        character.equip(tokenIds);
+    }
+
     function transferERC1155(
         address to,
         uint256 tokenId,
