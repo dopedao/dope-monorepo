@@ -5,34 +5,24 @@
 
 pragma solidity ^0.8.6;
 
-import {IProvider} from "./IProvider.sol";
-
 interface ICharacter {
-    struct Slot {
-        uint24 provider;
-        uint24 id;
-    }
-
     struct Equipment {
         uint48 background;
         uint48 body;
-        Slot clothes;
-        Slot feet;
-        Slot hand;
-        Slot neck;
-        Slot ring;
-        Slot waist;
-        Slot weapon;
-        Slot drugs;
-        Slot vehicle;
+        uint48 clothes;
+        uint48 feet;
+        uint48 hand;
+        uint48 neck;
+        uint48 ring;
+        uint48 waist;
+        uint48 weapon;
+        uint48 drugs;
+        uint48 vehicle;
     }
 
     function equipmentOf(address) external view returns (Equipment memory);
 
-    function palettes(uint8 paletteIndex, uint256 colorIndex)
-        external
-        view
-        returns (string memory);
+    function palettes(uint8 paletteIndex, uint256 colorIndex) external view returns (string memory);
 
     function backgrounds(uint256 index) external view returns (string memory);
 
@@ -42,25 +32,19 @@ interface ICharacter {
 
     function bodyCount() external view returns (uint256);
 
-    function addManyColorsToPalette(
-        uint8 paletteIndex,
-        string[] calldata newColors
-    ) external;
+    function addManyColorsToPalette(uint8 paletteIndex, string[] calldata newColors) external;
 
     function addManyBackgrounds(string[] calldata backgrounds) external;
 
     function addManyBodies(bytes[] calldata bodies) external;
 
-    function addColorToPalette(uint8 paletteIndex, string calldata color)
-        external;
+    function addColorToPalette(uint8 paletteIndex, string calldata color) external;
 
     function addBackground(string calldata background) external;
 
     function addBody(bytes calldata body) external;
 
-    function addProvider(IProvider provider) external;
-
-    function provider(uint24 index) external view returns (IProvider);
+    function stockpile(uint24 index) external view returns (address);
 
     function genericDataURI(
         string calldata name,
@@ -68,8 +52,5 @@ interface ICharacter {
         Equipment memory equipment
     ) external view returns (string memory);
 
-    function generateSVGImage(Equipment memory equipment)
-        external
-        view
-        returns (string memory);
+    function generateSVGImage(Equipment memory equipment) external view returns (string memory);
 }
