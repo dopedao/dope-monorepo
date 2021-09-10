@@ -1,13 +1,21 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import "./utils/CharacterSetup.sol";
-import {ItemIds} from "../LootTokensMetadata.sol";
+import './utils/StockpileSetup.sol';
+import { ItemIds } from '../LootTokensMetadata.sol';
 
-contract Open is CharacterTest {
-    function testCanEquip() public {
-        ItemIds memory ids = stockpile.ids(tokenId);
+contract Open is StockpileTest {
+    function testCanOpenBag() public {
         alice.open(BAG);
+    }
+
+    function testFailCannotOpenBagTwice() public {
+        alice.open(BAG);
+        alice.open(BAG);
+    }
+
+    function testFailCannotOpenBagYouDoNotOwn() public {
+        alice.open(OTHER_BAG);
     }
 
     // helper for checking ownership of erc1155 tokens after unbundling a bag

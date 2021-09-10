@@ -44,8 +44,6 @@ interface ICharacter {
 
     function addBody(bytes calldata body) external;
 
-    function stockpile(uint24 index) external view returns (address);
-
     function genericDataURI(
         string calldata name,
         string calldata description,

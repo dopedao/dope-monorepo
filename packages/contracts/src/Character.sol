@@ -11,7 +11,6 @@ import { ERC721, ERC721Enumerable } from '@openzeppelin/contracts/token/ERC721/e
 
 import { ICharacter } from './interfaces/ICharacter.sol';
 import { IStockpile } from './interfaces/IStockpile.sol';
-// import {Descriptor} from "./Descriptor.sol";
 import { Base64 } from './MetadataUtils.sol';
 import { MultiPartRLEToSVG } from './MultiPartRLEToSVG.sol';
 
@@ -38,12 +37,18 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     // Bodies (Custom RLE)
     bytes[] public override bodies;
 
-    // Gear Providers (Contract addresses)
-    IStockpile[] public providers;
+    // Gear stockpile (Contract address)
+    IStockpile public stockpile;
 
     mapping(address => Equipment) public equipments;
 
-    constructor(address stockpile) ERC721('Characters', 'Characters') {}
+    constructor(address _stockpile) ERC721('Characters', 'Characters') {
+        stockpile = IStockpile(_stockpile);
+    }
+
+    function equip(uint48[] memory tokenIds) public {
+        
+    }
 
     /**
      * @notice Get the current equipment for a character.
@@ -120,14 +125,6 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
      */
     function addBody(bytes calldata _body) external override onlyOwner {
         _addBody(_body);
-    }
-
-    function addProvider(address _provider) external override onlyOwner {
-        providers.push(IStockpile(_provider));
-    }
-
-    function provider(uint24 index) external view override returns (address) {
-        return address(providers[index]);
     }
 
     /**
@@ -226,13 +223,13 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
     function _getPartsForEquipment(Equipment memory equipment) internal view returns (bytes[] memory) {
         bytes[] memory _parts = new bytes[](8);
         _parts[0] = bodies[equipment.body];
-        _parts[1] = providers[equipment.clothes.provider].valueOf(equipment.clothes.id);
-        _parts[2] = providers[equipment.feet.provider].valueOf(equipment.feet.id);
-        _parts[3] = providers[equipment.hand.provider].valueOf(equipment.hand.id);
-        _parts[4] = providers[equipment.neck.provider].valueOf(equipment.neck.id);
-        _parts[5] = providers[equipment.ring.provider].valueOf(equipment.ring.id);
-        _parts[6] = providers[equipment.waist.provider].valueOf(equipment.waist.id);
-        _parts[7] = providers[equipment.weapon.provider].valueOf(equipment.weapon.id);
+        _parts[1] = stockpile.valueOf(equipment.clothes);
+        _parts[2] = stockpile.valueOf(equipment.feet);
+        _parts[3] = stockpile.valueOf(equipment.hand);
+        _parts[4] = stockpile.valueOf(equipment.neck);
+        _parts[5] = stockpile.valueOf(equipment.ring);
+        _parts[6] = stockpile.valueOf(equipment.waist);
+        _parts[7] = stockpile.valueOf(equipment.weapon);
         return _parts;
     }
 }
