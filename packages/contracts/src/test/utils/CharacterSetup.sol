@@ -5,25 +5,24 @@ import 'ds-test/test.sol';
 
 import './Hevm.sol';
 import '../../Loot.sol';
-import { Inventory } from '../../Inventory.sol';
 import { Character } from '../../Character.sol';
-import { IStockpile } from '../../interfaces/IStockpile.sol';
+import { Stockpile } from '../../Stockpile.sol';
 
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
 contract CharacterUser is ERC721Holder, ERC1155Holder {
     DopeWarsLoot loot;
-    Inventory inventory;
+    Stockpile stockpile;
     Character character;
 
     constructor(
         DopeWarsLoot _loot,
-        Inventory _inventory,
+        Stockpile _stockpile,
         Character _character
     ) {
         loot = _loot;
-        inventory = _inventory;
+        stockpile = _stockpile;
         character = _character;
     }
 
@@ -32,7 +31,7 @@ contract CharacterUser is ERC721Holder, ERC1155Holder {
     }
 
     function open(uint256 tokenId) public {
-        inventory.open(tokenId);
+        stockpile.open(tokenId);
     }
 
     function transferERC1155(
@@ -40,7 +39,7 @@ contract CharacterUser is ERC721Holder, ERC1155Holder {
         uint256 tokenId,
         uint256 amount
     ) public {
-        inventory.safeTransferFrom(address(this), to, tokenId, amount, '0x');
+        stockpile.safeTransferFrom(address(this), to, tokenId, amount, '0x');
     }
 }
 
@@ -51,7 +50,7 @@ contract CharacterTest is DSTest {
 
     // contracts
     DopeWarsLoot internal loot;
-    Inventory internal inventory;
+    Stockpile internal stockpile;
     Character internal character;
 
     // users
@@ -60,13 +59,11 @@ contract CharacterTest is DSTest {
     function setUp() public virtual {
         // deploy contracts
         loot = new DopeWarsLoot();
-        inventory = new Inventory(address(loot));
-        character = new Character();
-
-        character.addProvider(address(inventory));
+        stockpile = new Stockpile(address(loot));
+        character = new Character(address(stockpile));
 
         // create alice's account & claim a bag
-        alice = new CharacterUser(loot, inventory, character);
+        alice = new CharacterUser(loot, stockpile, character);
         alice.claim(BAG);
         alice.open(BAG);
         assertEq(loot.ownerOf(BAG), address(alice));

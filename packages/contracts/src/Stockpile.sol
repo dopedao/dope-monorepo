@@ -77,8 +77,9 @@ contract Stockpile is ERC1155, LootTokensMetadata {
         return '';
     }
 
-    function valueOfBatch(uint256[] tokenId) external view returns (bytes[] memory values) {
-        return [''];
+    function valueOfBatch(uint256[] memory tokenIds) external view returns (bytes[] memory values) {
+        bytes[] memory _values = new bytes[](8);
+        return _values;
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {

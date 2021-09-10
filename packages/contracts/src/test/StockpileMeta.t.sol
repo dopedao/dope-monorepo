@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import "./utils/InventorySetup.sol";
+import "./utils/StockpileSetup.sol";
 import {ItemNames} from "../LootTokensMetadata.sol";
 
 struct Attribute {
@@ -16,7 +16,7 @@ struct Data {
     Attribute[] attributes;
 }
 
-contract Metadata is InventoryTest {
+contract Metadata is StockpileTest {
     function testAK47BagNames() public {
         ItemNames memory expected = ItemNames({
             weapon: "AK47",
@@ -32,7 +32,7 @@ contract Metadata is InventoryTest {
 
         // https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/5726
         uint256 id = 5726;
-        ItemNames memory names = inventory.names(id);
+        ItemNames memory names = stockpile.names(id);
         assertEq(names, expected);
     }
 
@@ -51,12 +51,12 @@ contract Metadata is InventoryTest {
 
         // https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/3686
         uint256 id = 3686;
-        ItemNames memory names = inventory.names(id);
+        ItemNames memory names = stockpile.names(id);
         assertEq(names, expected);
     }
 
     function testPlatinumRingFromAtlantaMetadata() public {
-        uint256 id = inventory.ringId(2169);
+        uint256 id = stockpile.ringId(2169);
         Attribute[] memory attributes = new Attribute[](3);
         attributes[0] = Attribute("Slot", "Ring");
         attributes[1] = Attribute("Item", "Platinum Ring");
@@ -65,7 +65,7 @@ contract Metadata is InventoryTest {
     }
 
     function testHighSupplyBloodStainedShirtFromMobTownMetadata() public {
-        uint256 id = inventory.clothesId(3686);
+        uint256 id = stockpile.clothesId(3686);
         Attribute[] memory attributes = new Attribute[](5);
         attributes[0] = Attribute("Slot", "Clothes");
         attributes[1] = Attribute("Item", "Bulletproof Vest");
@@ -80,7 +80,7 @@ contract Metadata is InventoryTest {
     }
 
     function testTriggermanFingerlessGlovesFromBuffaloPlusOneMetadata() public {
-        uint256 id = inventory.handId(3686);
+        uint256 id = stockpile.handId(3686);
         Attribute[] memory attributes = new Attribute[](6);
         attributes[0] = Attribute("Slot", "Hand");
         attributes[1] = Attribute("Item", "Fingerless Gloves");
@@ -100,7 +100,7 @@ contract Metadata is InventoryTest {
         Attribute[] memory attributes,
         string memory name
     ) private {
-        string memory meta = inventory.uri(tokenId);
+        string memory meta = stockpile.uri(tokenId);
         string[] memory inputs = new string[](3);
         inputs[0] = "node";
         inputs[1] = "scripts/metadata.js";
