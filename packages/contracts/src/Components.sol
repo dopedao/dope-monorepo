@@ -2,7 +2,7 @@
 
 /*
 
-    LootComponents.sol
+    Components.sol
     
     This is a utility contract to make it easier for other
     contracts to work with Loot properties.
@@ -25,7 +25,7 @@
 
 pragma solidity ^0.8.4;
 
-contract LootComponents {
+contract Components {
     string[] internal weapons = [
         "Pocket Knife", // 0
         "Chain", // 1
