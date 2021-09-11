@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import {
   AuctionManager,
   useManageAuction,
@@ -9,15 +10,16 @@ import {
   PreviewComponents,
 } from "@zoralabs/nft-components";
 import { FetchStaticData } from "@zoralabs/nft-hooks";
-import {
-  useWalletButton,
-  useWeb3Wallet,
-} from "@zoralabs/simple-wallet-provider";
-import { Fragment, useContext } from "react";
+import { Fragment, useCallback, useContext } from "react";
 import useSWR from "swr";
+import Dialog from "../components/Dialog";
 
 import Head from "../components/head";
 import { PageWrapper } from "./../styles/components";
+import ConnectWalletSVG from "../svg/ConnectWallet";
+
+import useWeb3Provider from "../hooks/web3";
+import { useWeb3React } from "@web3-react/core";
 
 const ListItemComponent = () => {
   const {
@@ -62,19 +64,50 @@ const ListItemComponent = () => {
 };
 
 const ConnectWallet = () => {
-  const { buttonAction, actionText, connectedInfo } = useWalletButton();
+  const { connect } = useWeb3Provider();
+
+  const buttonProps = {
+    css: css`cursor: pointer;`,
+  };
+
+  const onClick = useCallback(async (w: "MetaMask" | "WalletConnect") => {
+    try {
+      await connect(w);
+    } catch (error) {
+      console.log("ERROR", error)
+    }
+  }, [connect]);
 
   return (
-    <div>
-      <h1>{`${
-        connectedInfo === undefined
-          ? "To List your NFT Connect your wallet!"
-          : connectedInfo
-      }`}</h1>
-      <button className="button" onClick={() => buttonAction()}>
-        {actionText}
-      </button>
-    </div>
+    <Dialog className={css`background: none;`}>
+      <div css={css`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+        width: 390px;
+
+        @media (max-width:500px) {
+          width: 275px;
+        }
+      `}>
+        <ConnectWalletSVG />
+        <div>Please connect your Ethereum Wallet</div>
+        <div css={css`
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        `}>
+          <button {...buttonProps} onClick={() => onClick("MetaMask")}>
+            MetaMask
+          </button>
+          <button {...buttonProps} onClick={() => onClick("WalletConnect")}>
+            WalletConnect
+          </button>
+        </div>
+      </div>
+    </Dialog>
   );
 };
 
@@ -148,7 +181,7 @@ const MediaThumbnailPreview = ({
 };
 
 export default function List() {
-  const { active, account } = useWeb3Wallet();
+  const { account } = useWeb3React();
   return (
     <>
       <Head title="List" />
@@ -160,11 +193,12 @@ export default function List() {
         }}
       >
         <ListWrapper>
-          <ConnectWallet />
-          {account &&
+          {account ?
             <div className="owned-list">
               <RenderOwnedList account={account} />
             </div>
+            :
+            <ConnectWallet />
           }
         </ListWrapper>
       </AuctionManager>
