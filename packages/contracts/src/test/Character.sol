@@ -19,6 +19,16 @@ contract Open is CharacterTest {
         _ids[7] = uint48(ids.weapon);
 
         alice.equip(_ids);
+
+        uint48[] memory equipped = character.equipmentOf(address(alice));
+        assertEq(equipped[0], 1);
+        assertEq(equipped[1], uint48(ids.clothes));
+        assertEq(equipped[2], uint48(ids.foot));
+        assertEq(equipped[3], uint48(ids.hand));
+        assertEq(equipped[4], uint48(ids.neck));
+        assertEq(equipped[5], uint48(ids.ring));
+        assertEq(equipped[6], uint48(ids.waist));
+        assertEq(equipped[7], uint48(ids.weapon));
     }
 
     // helper for checking ownership of erc1155 tokens after unbundling a bag
