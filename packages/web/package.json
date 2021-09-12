@@ -10,6 +10,9 @@
   "dependencies": {
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
+    "@web3-react/core": "^6.1.9",
+    "@web3-react/injected-connector": "^6.0.7",
+    "@web3-react/walletconnect-connector": "^6.2.4",
     "@zoralabs/manage-auction-hooks": "^0.0.10",
     "@zoralabs/nft-components": "^0.1.9",
     "@zoralabs/nft-hooks": "^0.5.1",
@@ -24,7 +27,8 @@
     "remark-parse": "^9.0.0",
     "remark-react": "^8.0.0",
     "swr": "^0.5.6",
-    "unified": "^9.2.1"
+    "unified": "^9.2.1",
+    "web3": "^1.5.2"
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.3.0",
