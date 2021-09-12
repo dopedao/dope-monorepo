@@ -9,5 +9,5 @@ MAINNET_LOOT=0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7
 LOOT="${LOOT:-$MAINNET_LOOT}"
 
 # Deploy.
-InventoryAddr=$(deploy Inventory $LOOT)
-log "Inventory deployed at:" $InventoryAddr
+StockpileAddr=$(deploy Stockpile $LOOT)
+log "Stockpile deployed at:" $StockpileAddr
