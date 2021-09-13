@@ -1,17 +1,39 @@
-import { ReactNode } from "react";
+import { ReactNode, useCallback, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
 
 type DialogProps = {
   title?: string;
   className?: string;
+  onClose?: () => void;
   children: ReactNode;
 };
 
 const Dialog = ({
   title,
   className,
+  onClose,
   children,
 }: DialogProps) => {
+  const content = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!onClose) return;
+
+    const closeOnEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    }
+
+    addEventListener("keydown", closeOnEscape);
+
+    return () => removeEventListener("keydown", closeOnEscape);
+  }, [onClose]);
+
+  const onClick = useCallback((e) => {
+    if (!onClose || !content.current || content.current.contains(e.target)) return;
+
+    onClose();
+  }, [content, onClose]);
+
   return (
     <div css={css`
       position: fixed;
@@ -22,8 +44,8 @@ const Dialog = ({
       background: rgba(0, 0, 0, 0.8);
 
       ${className}
-    `}>
-      <div css={css`
+    `} onClick={onClick}>
+      <div ref={content} css={css`
         background: #DEDEDD;
         box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25);
         padding: 30px 25px;

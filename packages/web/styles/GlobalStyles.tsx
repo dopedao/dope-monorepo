@@ -16,6 +16,7 @@ export default function GlobalStyles() {
           /* COLORS */
           --black: #000;
           --white: #fff;
+          --gray: #DEDEDD;
           --bg-color: #A8A9AE;
           --overlay: rgba(0, 0, 0, 0.85);
           --overlay-light: rgba(0, 0, 0, 0.35);

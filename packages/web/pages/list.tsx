@@ -67,7 +67,8 @@ const ConnectWallet = () => {
   const { connect } = useWeb3Provider();
 
   const buttonProps = {
-    css: css`cursor: pointer;`,
+    className: "button",
+    css: css`font-size: var(--text-02);`
   };
 
   const onClick = useCallback(async (w: "MetaMask" | "WalletConnect") => {
