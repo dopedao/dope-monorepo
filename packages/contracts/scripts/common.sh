@@ -2,6 +2,10 @@
 
 set -eo pipefail
 
+if [[ ${DEBUG} ]]; then
+    set -x
+fi
+
 # All contracts are output to `out/addresses.json` by default
 OUT_DIR=${OUT_DIR:-$PWD/out}
 ADDRESSES_FILE=${ADDRESSES_FILE:-$OUT_DIR/"addresses.json"}
