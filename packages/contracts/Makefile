@@ -28,10 +28,14 @@ deploy :; @./scripts/deploy.sh
 
 # mainnet
 deploy-mainnet: export ETH_RPC_URL = $(call network,mainnet)
+deploy-mainnet: export LOOT=0x8707276df042e89669d69a177d3da7dc78bd8723
+deploy-mainnet: export PAPER=0x8707276df042e89669d69a177d3da7dc78bd8723
 deploy-mainnet: check-api-key deploy
 
 # rinkeby
 deploy-rinkeby: export ETH_RPC_URL = $(call network,rinkeby)
+deploy-rinkeby: export LOOT=0xEf879818335a10Db667810a9B668A8F537389194
+deploy-rinkeby: export PAPER=0x7988fCA891B30cF8E23459B09b851F9d79B17215
 deploy-rinkeby: check-api-key deploy
 
 # testnet

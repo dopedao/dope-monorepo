@@ -1,5 +1,6 @@
-  
-#!/usr/bin/env bash
+  #!/usr/bin/env bash
+
+set -eo pipefail
 
 # Utility for running a temporary dapp testnet w/ an ephemeral account
 # to be used for deployment tests
