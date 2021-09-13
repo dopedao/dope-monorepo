@@ -72,7 +72,7 @@ deploy() {
     GAS=$(seth estimate --create $BYTECODE $SIG $ARGS --rpc-url $ETH_RPC_URL)
 
     # deploy
-    ADDRESS=$(dapp create $NAME $ARGS -- --gas $GAS --rpc-url $ETH_RPC_URL)
+    ADDRESS=$(dapp create src/$NAME.sol:$NAME $ARGS -- --gas $GAS --rpc-url $ETH_RPC_URL)
 
     # save the addrs to the json
     # TODO: It'd be nice if we could evolve this into a minimal versioning system
@@ -80,6 +80,14 @@ deploy() {
     saveContract $NAME $ADDRESS
 
     echo $ADDRESS
+}
+
+verify() {
+    NAME=$1
+    ADDRESS=$2
+    ARGS=${@:3}
+
+    ETH_RPC_URL=$ETH_RPC_URL dapp verify-contract src/$NAME.sol:$NAME $ADDRESS $ARGS
 }
 
 # Call as `saveContract ContractName 0xYourAddress` to store the contract name
@@ -140,7 +148,7 @@ estimate_gas() {
     fi
 }
 
-contract_size(){
+contract_size() {
     NAME=$1
     ARGS=${@:2}
     # select the filename and the contract in it
@@ -148,6 +156,6 @@ contract_size(){
 
     # get the bytecode from the compiled file
     BYTECODE=0x$(jq -r "$PATTERN.evm.bytecode.object" out/dapp.sol.json)
-    length=$(echo $BYTECODE | wc -m )
-    echo $(( $length / 2 ))
+    length=$(echo $BYTECODE | wc -m)
+    echo $(($length / 2))
 }
