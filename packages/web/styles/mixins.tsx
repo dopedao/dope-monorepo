@@ -72,20 +72,15 @@ export const buttonInit = css`
 
 export const buttonStyle = css`
   ${buttonInit};
-  border: var(--border-black);
-  color: var(--white);
-  background-color: var(--black);
-  margin: 0 auto;
+  border: 2px solid var(--black);
+  background-color: var(--gray);
   position: relative;
   display: block;
   padding: var(--base-unit) var(--space-md);
   font-size: var(--text-01);
-  border-radius: 50rem;
+  border-radius: 0.25rem;
   text-align: center;
-  ${media.hover`
-    background-color: var(--black);
-    color: var(--white);
-  `}
+  ${media.hover``}
 `
 
 export const pixelScaleImage = css`
