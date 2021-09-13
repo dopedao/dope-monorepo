@@ -1,7 +1,13 @@
+import { useState } from "react";
 import { css } from "@emotion/react";
+import { useWeb3React } from "@web3-react/core";
+
 import { NavLink } from "./NavLink";
+import DisconnectWallet from "./DisconnectWallet";
 
 export const Header = () => {
+  const { account } = useWeb3React();
+  const [displayDisconnect, setDisplayDisconnect] = useState(false);
   return (
     <>
       <header
@@ -17,24 +23,44 @@ export const Header = () => {
       >
         <div
           css={css`
-            background: #d0d0d0;
             color: #fff;
             height: 32px;
-            border: 2px solid #1c1c1c;
-            display: flex;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 170px 1fr;
           `}
         >
+          <div />
+          <div css={css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            font-size: 14px;
+          `}>
+            Dope Wars
+          </div>
           <div
             css={css`
-              background: #000;
               display: flex;
-              height: 100%;
-              width: 171px;
               align-items: center;
-              justify-content: center;
+              justify-content: flex-end;
+              font-size: 12px;
+              padding: 0 15px;
             `}
+            
           >
-            Dope Wars
+            {account &&
+              <button
+                className="button"
+                css={css`
+                  background: none;
+                  border: none;
+                `}
+                onClick={() => setDisplayDisconnect(true)}
+              >
+                {account.slice(0, 4)}...{account.slice(-4)}
+              </button>}
           </div>
         </div>
         <div
@@ -71,6 +97,7 @@ export const Header = () => {
             <a>Your Loot</a>
           </NavLink>
         </div>
+        {displayDisconnect && <DisconnectWallet onClose={() => setDisplayDisconnect(false)} />}
       </header>
     </>
   );
