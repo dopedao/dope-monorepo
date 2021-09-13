@@ -7,7 +7,9 @@ set -eo pipefail
 
 # Deploy.
 StockpileAddr=$(deploy Stockpile $LOOT)
+verify Stockpile $StockpileAddr $LOOT
 log "Stockpile deployed at:" $StockpileAddr
 
-# CharacterAddr=$(deploy Character $StockpileAddr)
-# log "Character deployed at:" $CharacterAddr
+CharacterAddr=$(deploy Character $StockpileAddr)
+verify Character $CharacterAddr $StockpileAddr
+log "Character deployed at:" $CharacterAddr
