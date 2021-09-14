@@ -1,5 +1,6 @@
 {
   "name": "@dopewars/contracts",
+  "private": true,
   "author": "Tarrence van As",
   "license": "GPL-3.0-or-later",
   "version": "1.0.0",
@@ -11,6 +12,7 @@
     "@typechain/ethers-v5": "^7.1.0",
     "copyfiles": "^2.4.1",
     "ethers": "^5.4.6",
+    "next": "^11.1.2",
     "prettier": "^2.3.1",
     "prettier-plugin-solidity": "^1.0.0-beta.13",
     "rimraf": "^3.0.2",

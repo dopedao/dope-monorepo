@@ -1,11 +1,8 @@
 {
-  "name": "root",
+  "name": "dopewars",
   "private": true,
   "scripts": {
-    "lerna": "lerna",
-    "build": "lerna run --parallel build",
-    "test": "lerna run --parallel test",
-    "postinstall": "lerna run --parallel postinstall",
+    "web:dev": "yarn workspace @dopewars/web dev",
     "lint": "eslint 'packages/**/*.ts' --fix",
     "format": "prettier --write 'packages/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
   },
