@@ -7,9 +7,11 @@ set -eo pipefail
 
 # Deploy.
 StockpileAddr=$(deploy Stockpile $LOOT)
-verify Stockpile $StockpileAddr $LOOT
+# verify Stockpile $StockpileAddr $LOOT
+extractABI Stockpile
 log "Stockpile deployed at:" $StockpileAddr
 
 CharacterAddr=$(deploy Character $StockpileAddr)
-verify Character $CharacterAddr $StockpileAddr
+# verify Character $CharacterAddr $StockpileAddr
+extractABI Character
 log "Character deployed at:" $CharacterAddr
