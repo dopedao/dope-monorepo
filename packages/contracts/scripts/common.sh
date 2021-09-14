@@ -90,6 +90,15 @@ verify() {
     ETH_RPC_URL=$ETH_RPC_URL dapp verify-contract src/$NAME.sol:$NAME $ADDRESS $ARGS
 }
 
+extractABI() {
+    NAME=$1
+    PATTERN=".contracts[\"src/$NAME.sol\"].$NAME"
+
+    # get the constructor's signature
+    ABI=$(jq -r "$PATTERN.abi" out/dapp.sol.json)
+    echo $ABI >abis/$NAME.abi
+}
+
 # Call as `saveContract ContractName 0xYourAddress` to store the contract name
 # & address to the addresses json file
 saveContract() {

@@ -16,7 +16,7 @@ SOLC_VERSION := 0_8_6
 solc:; nix-env -f https://github.com/dapphub/dapptools/archive/master.tar.gz -iA solc-static-versions.solc_${SOLC_VERSION}
 
 # Build & test
-build  :; dapp build
+build  :; ./scripts/build.sh
 test   :; dapp test --ffi # enable if you need the `ffi` cheat code on HEVM
 clean  :; dapp clean
 lint   :; yarn run lint
