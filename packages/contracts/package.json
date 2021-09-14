@@ -1,6 +1,6 @@
 {
-  "name": "lootloose",
-  "author": "Georgios Konstantopoulos",
+  "name": "@dopewars/contracts",
+  "author": "Tarrence van As",
   "license": "GPL-3.0-or-later",
   "version": "1.0.0",
   "description": "Split your lootbags in their individual pieces",
@@ -8,17 +8,20 @@
     "*.sol"
   ],
   "devDependencies": {
+    "@typechain/ethers-v5": "^7.1.0",
     "copyfiles": "^2.4.1",
     "ethers": "^5.4.6",
     "prettier": "^2.3.1",
     "prettier-plugin-solidity": "^1.0.0-beta.13",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typechain": "^5.1.2"
   },
   "scripts": {
     "prepublishOnly": "copyfiles -u 1 \"./src/**/*.sol\" --exclude \"./src/test/**/*.sol\" ./",
     "postpublish": "rimraf ./*.sol",
     "prepack": "yarn prepublishOnly",
     "postpack": "yarn postpublish",
-    "lint": "prettier --write src/**/*.sol"
+    "lint": "prettier --write src/**/*.sol",
+    "typechain": "typechain --target ethers-v5 --out-dir types 'abis/*.abi'"
   }
 }
