@@ -19,11 +19,12 @@ export default extendTheme({
           },
           thead: {
             border: "2px solid #000",
-            background: "#DEDEDD",
             height: "28px",
             fontSize: "14px",
           },
           th: {
+            background: "#DEDEDD",
+            textAlign: "center",
             boxShadow: "inset -3px -3px 0px rgba(0, 0, 0, 0.25), inset 3px 3px 0px rgba(255, 255, 255, 0.25)",
             borderRight: "2px solid #000",
           },
