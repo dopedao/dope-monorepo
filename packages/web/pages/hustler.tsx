@@ -1,39 +1,11 @@
-import { css } from '@emotion/css';
 import styled from '@emotion/styled';
 import { GetStaticProps } from 'next';
 import { useWeb3React } from '@web3-react/core';
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from '@chakra-ui/react';
 import { FetchStaticData, MediaFetchAgent, NetworkIDs } from '@zoralabs/nft-hooks';
 
 import Head from '../components/head';
 import ConnectWallet from '../components/ConnectWallet';
 import { PageWrapper } from '../styles/components';
-
-const DopeTable = ({ data }: { data: { id: string; unbundled: boolean; claimed: boolean }[] }) => (
-  <Table
-    css={css`
-      width: 400px;
-    `}
-    variant="simple"
-  >
-    <Thead>
-      <Tr>
-        <Th>Dope ID</Th>
-        <Th>Has Items</Th>
-        <Th>Has Paper</Th>
-      </Tr>
-    </Thead>
-    <Tbody>
-      {data.map(({ id, unbundled, claimed }) => (
-        <Tr key={id}>
-          <Td>{id}</Td>
-          <Td>{unbundled}</Td>
-          <Td>{claimed}</Td>
-        </Tr>
-      ))}
-    </Tbody>
-  </Table>
-);
 
 export default function Home() {
   const { account } = useWeb3React();
@@ -41,19 +13,7 @@ export default function Home() {
   return (
     <IndexWrapper>
       <Head />
-      {account ? (
-        <DopeTable
-          data={[
-            {
-              id: '4936',
-              unbundled: true,
-              claimed: false,
-            },
-          ]}
-        />
-      ) : (
-        <ConnectWallet />
-      )}
+      {account ? 'hustler' : <ConnectWallet />}
     </IndexWrapper>
   );
 }
