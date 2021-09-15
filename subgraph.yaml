@@ -34,7 +34,7 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Transfer
+        - Wallet
       abis:
         - name: Paper
           file: ./abis/Paper.json

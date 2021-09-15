@@ -32,6 +32,7 @@ export function handleDopeTransfer(event: DopeTransferEvent): void {
     toWallet.address = toAddress;
     toWallet.joined = event.block.timestamp;
     toWallet.bagsHeld = BigInt.fromI32(1);
+    toWallet.paper = BigInt.fromI32(0);
     toWallet.save();
   } else {
     toWallet.bagsHeld = toWallet.bagsHeld.plus(BigInt.fromI32(1));
@@ -87,7 +88,7 @@ export function handlePaperTransfer(event: PaperTransferEvent): void {
     fromWallet.save();
   } else {
     if (!isZeroAddress(fromId)) {
-      fromWallet.paper = fromWallet.bagsHeld.minus(value);
+      fromWallet.paper = fromWallet.paper.minus(value);
       fromWallet.save();
     }
   }
@@ -102,7 +103,7 @@ export function handlePaperTransfer(event: PaperTransferEvent): void {
     toWallet.paper = value
     toWallet.save();
   } else {
-    toWallet.paper = toWallet.bagsHeld.plus(value);
+    toWallet.paper = toWallet.paper.plus(value);
     toWallet.save();
   }
 }
