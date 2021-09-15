@@ -1,25 +1,14 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-import {
-  AuctionManager,
-  useManageAuction,
-} from "@zoralabs/manage-auction-hooks";
-import {
-  NFTDataContext,
-  NFTPreview,
-  PreviewComponents,
-} from "@zoralabs/nft-components";
-import { FetchStaticData } from "@zoralabs/nft-hooks";
-import { Fragment, useCallback, useContext } from "react";
-import useSWR from "swr";
-import Dialog from "../components/Dialog";
+import styled from '@emotion/styled';
+import { AuctionManager, useManageAuction } from '@zoralabs/manage-auction-hooks';
+import { NFTDataContext, NFTPreview, PreviewComponents } from '@zoralabs/nft-components';
+import { FetchStaticData } from '@zoralabs/nft-hooks';
+import { Fragment, useContext } from 'react';
+import useSWR from 'swr';
+import { useWeb3React } from '@web3-react/core';
 
-import Head from "../components/head";
-import { PageWrapper } from "./../styles/components";
-import ConnectWalletSVG from "../svg/ConnectWallet";
-
-import useWeb3Provider from "../hooks/web3";
-import { useWeb3React } from "@web3-react/core";
+import Head from '../components/head';
+import ConnectWallet from '../components/ConnectWallet';
+import { PageWrapper } from './../styles/components';
 
 const ListItemComponent = () => {
   const {
@@ -32,10 +21,7 @@ const ListItemComponent = () => {
     return <Fragment />;
   }
 
-  if (
-    data.pricing.reserve?.status === "Active" ||
-    data.pricing.reserve?.status === "Pending"
-  ) {
+  if (data.pricing.reserve?.status === 'Active' || data.pricing.reserve?.status === 'Pending') {
     return (
       <button
         className="button"
@@ -63,59 +49,9 @@ const ListItemComponent = () => {
   );
 };
 
-const ConnectWallet = () => {
-  const { connect } = useWeb3Provider();
-
-  const buttonProps = {
-    className: "button",
-    css: css`font-size: var(--text-02);`
-  };
-
-  const onClick = useCallback(async (w: "MetaMask" | "WalletConnect") => {
-    try {
-      await connect(w);
-    } catch (error) {
-      console.error(error)
-    }
-  }, [connect]);
-
-  return (
-    <Dialog css={css`background: none;`}>
-      <div css={css`
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 25px;
-        width: 390px;
-
-        @media (max-width:500px) {
-          width: 275px;
-        }
-      `}>
-        <ConnectWalletSVG />
-        <div>Please connect your Ethereum Wallet</div>
-        <div css={css`
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        `}>
-          <button {...buttonProps} onClick={() => onClick("MetaMask")}>
-            MetaMask
-          </button>
-          <button {...buttonProps} onClick={() => onClick("WalletConnect")}>
-            WalletConnect
-          </button>
-        </div>
-      </div>
-    </Dialog>
-  );
-};
-
 const RenderOwnedList = ({ account }: { account: string }) => {
-  const { data, error } = useSWR(
-    `/api/ownedItems?owner=${account}`,
-    (url: string) => fetch(url).then((res) => res.json())
+  const { data, error } = useSWR(`/api/ownedItems?owner=${account}`, (url: string) =>
+    fetch(url).then(res => res.json()),
   );
 
   if (!data) {
@@ -166,11 +102,7 @@ const MediaThumbnailPreview = ({
 }) => {
   return (
     // TODO(iain): Fix indexer in this use case
-    <NFTPreview
-      id={tokenId}
-      contract={tokenContract}
-      useBetaIndexer={true}
-    >
+    <NFTPreview id={tokenId} contract={tokenContract} useBetaIndexer={true}>
       <div className="owned-list-item">
         <PreviewComponents.MediaThumbnail />
         <div className="list-component-wrapper">
@@ -189,18 +121,18 @@ export default function List() {
       <AuctionManager
         renderMedia={MediaThumbnailPreview}
         strings={{
-          LIST_MEDIA_HEADER: "List your NFT",
+          LIST_MEDIA_HEADER: 'List your NFT',
           LIST_MEDIA_DESCRIPTION: `Set the reserve price to list your NFT on ${process.env.NEXT_PUBLIC_APP_TITLE}`,
         }}
       >
         <ListWrapper>
-          {account ?
+          {account ? (
             <div className="owned-list">
               <RenderOwnedList account={account} />
             </div>
-            :
+          ) : (
             <ConnectWallet />
-          }
+          )}
         </ListWrapper>
       </AuctionManager>
     </>
@@ -224,6 +156,6 @@ const ListWrapper = styled(PageWrapper)`
     border-top: var(--border-light);
   }
   .thumbnail-manage-button {
-    margin: 0 auto var(--space-sm)!important;
+    margin: 0 auto var(--space-sm) !important;
   }
 `;

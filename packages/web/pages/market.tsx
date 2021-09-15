@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import styled from '@emotion/styled';
 
 import Head from '../components/head';
 import { PageWrapper } from '../styles/components';
@@ -18,10 +19,10 @@ export type ZoraToken = {
 
 export default function Market({ tokens }: { tokens: ZoraToken[] }) {
   return (
-    <PageWrapper>
+    <MarketWrapper>
       <Head />
       <AuctionsList tokens={tokens} />
-    </PageWrapper>
+    </MarketWrapper>
   );
 }
 
@@ -41,3 +42,7 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60,
   };
 };
+
+const MarketWrapper = styled(PageWrapper)`
+  max-width: var(--content-width-xl);
+`;

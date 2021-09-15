@@ -1,15 +1,20 @@
 import styled from '@emotion/styled';
 import { GetStaticProps } from 'next';
+import { useWeb3React } from '@web3-react/core';
 
 import Head from '../components/head';
+import ConnectWallet from '../components/ConnectWallet';
 import { PageWrapper } from '../styles/components';
 
 import { FetchStaticData, MediaFetchAgent, NetworkIDs } from '@zoralabs/nft-hooks';
 
 export default function Home() {
+  const { account } = useWeb3React();
+
   return (
     <IndexWrapper>
       <Head />
+      {account ? 'hi' : <ConnectWallet />}
     </IndexWrapper>
   );
 }

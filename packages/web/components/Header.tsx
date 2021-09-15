@@ -90,13 +90,13 @@ export const Header = () => {
             }
           `}
         >
-          <NavLink passHref href="/">
+          <NavLink href="/">
             <a>Hustler</a>
           </NavLink>
-          <NavLink passHref href="/market">
+          <NavLink href="/market">
             <a>Marketplace</a>
           </NavLink>
-          <NavLink passHref href="/list">
+          <NavLink href="/list">
             <a>Your Loot</a>
           </NavLink>
         </div>
