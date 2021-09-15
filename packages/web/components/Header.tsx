@@ -90,8 +90,11 @@ export const Header = () => {
             }
           `}
         >
-          <NavLink href="/">
+          <NavLink href="/hustler">
             <a>Hustler</a>
+          </NavLink>
+          <NavLink href="/dope">
+            <a>Dope</a>
           </NavLink>
           <NavLink href="/market">
             <a>Marketplace</a>
