@@ -42,6 +42,7 @@ type Wallet @entity {
   bags: [Bag!]! @derivedFrom(field: "currentOwner")
   bagsHeld: BigInt!
   joined: BigInt!
+  paper: BigInt!
 }
 
 type Transfer @entity {

@@ -1,9 +1,10 @@
-import { Transfer as TransferEvent } from '../generated/DopeWarsLoot/DopeWarsLoot';
+import { Transfer as DopeTransferEvent } from '../generated/DopeWarsLoot/DopeWarsLoot';
+import { Transfer as PaperTransferEvent } from '../generated/Paper/Paper';
 import { Bag, Transfer, Wallet } from '../generated/schema';
 import { DopeWarsLoot } from '../generated/DopeWarsLoot/DopeWarsLoot';
 import { BigInt } from '@graphprotocol/graph-ts';
 
-export function handleTransfer(event: TransferEvent): void {
+export function handleDopeTransfer(event: DopeTransferEvent): void {
   let fromAddress = event.params.from;
   let toAddress = event.params.to;
   let tokenId = event.params.tokenId;
@@ -15,6 +16,7 @@ export function handleTransfer(event: TransferEvent): void {
     fromWallet.address = fromAddress;
     fromWallet.joined = event.block.timestamp;
     fromWallet.bagsHeld = BigInt.fromI32(0);
+    fromWallet.paper = BigInt.fromI32(0);
     fromWallet.save();
   } else {
     if (!isZeroAddress(fromId)) {
@@ -67,6 +69,42 @@ export function handleTransfer(event: TransferEvent): void {
   transfer.txHash = event.transaction.hash;
   transfer.timestamp = event.block.timestamp;
   transfer.save();
+}
+
+export function handlePaperTransfer(event: PaperTransferEvent): void {
+  let fromAddress = event.params.from;
+  let toAddress = event.params.to;
+  let value = event.params.value;
+  let fromId = fromAddress.toHex();
+  let fromWallet = Wallet.load(fromId);
+
+  if (!fromWallet) {
+    fromWallet = new Wallet(fromId);
+    fromWallet.address = fromAddress;
+    fromWallet.joined = event.block.timestamp;
+    fromWallet.bagsHeld = BigInt.fromI32(0);
+    fromWallet.paper = BigInt.fromI32(0);
+    fromWallet.save();
+  } else {
+    if (!isZeroAddress(fromId)) {
+      fromWallet.paper = fromWallet.bagsHeld.minus(value);
+      fromWallet.save();
+    }
+  }
+
+  let toId = toAddress.toHex();
+  let toWallet = Wallet.load(toId);
+  if (!toWallet) {
+    toWallet = new Wallet(toId);
+    toWallet.address = toAddress;
+    toWallet.joined = event.block.timestamp;
+    toWallet.bagsHeld = BigInt.fromI32(0);
+    toWallet.paper = value
+    toWallet.save();
+  } else {
+    toWallet.paper = toWallet.bagsHeld.plus(value);
+    toWallet.save();
+  }
 }
 
 function isZeroAddress(string: string): boolean {
