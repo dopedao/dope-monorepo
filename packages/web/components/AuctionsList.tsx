@@ -1,15 +1,14 @@
-import { useRouter } from "next/router";
-import { TokenThumbnail } from "./CustomThumbnail";
+import { useRouter } from 'next/router';
+import { TokenThumbnail } from './CustomThumbnail';
 
-export const AuctionsList = ({ tokens }: { tokens: any[] }) => {
-  const router = useRouter();
+import { ZoraToken } from '../pages';
 
+export const AuctionsList = ({ tokens }: { tokens: ZoraToken[] }) => {
   return (
-    <div css={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
+    <div css={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
       {tokens &&
-        tokens.map((token) => {
-          // const tokenInfo = FetchStaticData.getIndexerServerTokenInfo(token);
-          return <TokenThumbnail token={token} />;
+        tokens.map(token => {
+          return <TokenThumbnail key={token.nft.tokenData.id} token={token.nft.tokenData} />;
         })}
     </div>
   );

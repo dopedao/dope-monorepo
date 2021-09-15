@@ -75,12 +75,12 @@ const ConnectWallet = () => {
     try {
       await connect(w);
     } catch (error) {
-      console.log("ERROR", error)
+      console.error(error)
     }
   }, [connect]);
 
   return (
-    <Dialog className={css`background: none;`}>
+    <Dialog css={css`background: none;`}>
       <div css={css`
         display: flex;
         flex-direction: column;
