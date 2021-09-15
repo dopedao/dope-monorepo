@@ -1,16 +1,27 @@
-import styled from '@emotion/styled';
 import { GetStaticProps } from 'next';
 
 import Head from '../components/head';
 import { PageWrapper } from '../styles/components';
 
-import { FetchStaticData, MediaFetchAgent, NetworkIDs } from '@zoralabs/nft-hooks';
+import { AuctionsList } from '../components/AuctionsList';
 
-export default function Home() {
+import { FetchStaticData, MediaFetchAgent, NetworkIDs } from '@zoralabs/nft-hooks';
+import { ReserveAuctionPartialFragment } from '@zoralabs/nft-hooks/dist/graph-queries/zora-graph-types';
+import { TokenWithAuctionFragment } from '@zoralabs/nft-hooks/dist/graph-queries/zora-indexer-types';
+
+export type ZoraToken = {
+  nft: {
+    tokenData: TokenWithAuctionFragment;
+    auctionData: ReserveAuctionPartialFragment | undefined;
+  };
+};
+
+export default function Market({ tokens }: { tokens: ZoraToken[] }) {
   return (
-    <IndexWrapper>
+    <PageWrapper>
       <Head />
-    </IndexWrapper>
+      <AuctionsList tokens={tokens} />
+    </PageWrapper>
   );
 }
 
@@ -30,7 +41,3 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60,
   };
 };
-
-const IndexWrapper = styled(PageWrapper)`
-  max-width: var(--content-width-xl);
-`;
