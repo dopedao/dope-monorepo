@@ -22,7 +22,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const fetchAgent = new MediaFetchAgent(process.env.NEXT_PUBLIC_NETWORK_ID as NetworkIDs);
   const tokens = await FetchStaticData.fetchZoraIndexerList(fetchAgent, {
     curatorAddress: process.env.NEXT_PUBLIC_CURATORS_ID as string,
-    collectionAddress: process.env.NEXT_PUBLIC_TARGET_CONTRACT_ADDRESS as string,
+    collectionAddress: process.env.NEXT_PUBLIC_DOPE_CONTRACT_ADDRESS as string,
     limit: 100,
     offset: 0,
   });

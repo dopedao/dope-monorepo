@@ -53,7 +53,6 @@ export const Header = () => {
           >
             {account && (
               <button
-                className="button"
                 css={css`
                   background: none;
                   border: none;

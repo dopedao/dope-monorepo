@@ -13,7 +13,7 @@ module.exports = async (req: any, res: any) => {
   const tokens = await FetchStaticData.fetchUserOwnedNFTs(
     fetchAgent,
     {
-      collectionAddress: process.env.NEXT_PUBLIC_TARGET_CONTRACT_ADDRESS || "",
+      collectionAddress: process.env.NEXT_PUBLIC_DOPE_CONTRACT_ADDRESS || "",
       userAddress: owner,
       limit: 200,
       offset: 0,

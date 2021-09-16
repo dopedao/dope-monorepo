@@ -27,11 +27,8 @@ export default extendTheme({
     Table: {
       variants: {
         dope: {
-          table: {
-            border: "2px solid #000",
-          },
           thead: {
-            border: "2px solid #000",
+            borderBottom: "2px solid #000",
             height: "28px",
             fontSize: "14px",
           },
@@ -40,7 +37,9 @@ export default extendTheme({
             padding: "5px 0",
             textAlign: "center",
             boxShadow: "inset -3px -3px 0px rgba(0, 0, 0, 0.25), inset 3px 3px 0px rgba(255, 255, 255, 0.25)",
-            borderRight: "2px solid #000",
+            ':not(:last-child)': {
+              borderRight: "2px solid #000",
+            }
           },
           td: {
             textAlign: "center",

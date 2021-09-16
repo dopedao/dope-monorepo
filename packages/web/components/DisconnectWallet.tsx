@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { useWeb3React } from "@web3-react/core";
 import { useCallback } from "react";
-
+import { Button } from '@chakra-ui/react';
 import Dialog from "./Dialog"
 
 import Ethereum from "../svg/Ethereum";
