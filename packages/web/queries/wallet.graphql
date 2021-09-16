@@ -1,0 +1,13 @@
+query Wallet($id: ID!) {
+  wallet(id: $id) {
+    id
+    address
+    paper
+    bags(first: 5) {
+      id
+      clothes
+      foot
+      hand
+    }
+  }
+}
