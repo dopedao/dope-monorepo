@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "generate": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+    "@apollo/client": "^3.4.11",
     "@chakra-ui/react": "^1.6.7",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
@@ -22,6 +24,7 @@
     "dope-metrics": "^1.0.2",
     "framer-motion": "^4",
     "gear-rarity": "^1.0.5",
+    "graphql": "^15.5.3",
     "next": "^11.1.2",
     "parse-data-url": "^4.0.1",
     "react": "17.0.2",
@@ -31,6 +34,12 @@
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.3.0",
+    "@graphql-codegen/cli": "^2.2.0",
+    "@graphql-codegen/fragment-matcher": "^3.1.0",
+    "@graphql-codegen/introspection": "^2.1.0",
+    "@graphql-codegen/typescript": "^2.2.2",
+    "@graphql-codegen/typescript-operations": "^2.1.4",
+    "@graphql-codegen/typescript-react-apollo": "^3.1.4",
     "@types/react": "17.0.9",
     "raw-loader": "^4.0.2",
     "typechain": "^5.1.2",
