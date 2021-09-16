@@ -30,7 +30,7 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
             <main>
               <Component {...pageProps} />
             </main>
-            {/* <Footer /> */}
+            <Footer />
           </MediaConfiguration>
         </Web3ReactProvider>
       </ChakraProvider>

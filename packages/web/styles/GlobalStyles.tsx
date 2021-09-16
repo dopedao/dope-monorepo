@@ -76,7 +76,7 @@ export default function GlobalStyles() {
           overflow-x: hidden;
           position: relative;
           min-height: calc(
-            100vh - (var(--header-height) + var(--footer-height))
+            100vh - 74px - 1px
           );
         }
 
