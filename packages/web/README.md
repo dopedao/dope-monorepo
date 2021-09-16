@@ -35,7 +35,7 @@ NEXT_PUBLIC_NETWORK_ID=1
 
 NEXT_PUBLIC_CURATORS_ID=[The address of a curator or creator]
 
-NEXT_PUBLIC_TARGET_CONTRACT_ADDRESS=[the address of the token contract]
+NEXT_PUBLIC_DOPE_CONTRACT_ADDRESS=[the address of the token contract]
 
 NEXT_PUBLIC_RPC_URL=[address to web3 rpc url provider]
 ```
