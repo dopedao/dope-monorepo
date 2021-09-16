@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { css } from "@emotion/react";
-import { useWeb3React } from "@web3-react/core";
+import { useState } from 'react';
+import { css } from '@emotion/react';
+import { useWeb3React } from '@web3-react/core';
 
-import { NavLink } from "./NavLink";
-import DisconnectWallet from "./DisconnectWallet";
+import { NavLink } from './NavLink';
+import DisconnectWallet from './DisconnectWallet';
 
 export const Header = () => {
   const { account } = useWeb3React();
@@ -13,7 +13,7 @@ export const Header = () => {
       <header
         css={css`
           background: #585858;
-          height: 68px;
+          height: var(--header-height);
           position: sticky;
           top: 0;
           z-index: var(--header-z);
@@ -31,13 +31,15 @@ export const Header = () => {
           `}
         >
           <div />
-          <div css={css`
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-            font-size: 14px;
-          `}>
+          <div
+            css={css`
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: #000;
+              font-size: 14px;
+            `}
+          >
             Dope Wars
           </div>
           <div
@@ -48,9 +50,8 @@ export const Header = () => {
               font-size: 12px;
               padding: 0 15px;
             `}
-            
           >
-            {account &&
+            {account && (
               <button
                 className="button"
                 css={css`
@@ -60,7 +61,8 @@ export const Header = () => {
                 onClick={() => setDisplayDisconnect(true)}
               >
                 {account.slice(0, 4)}...{account.slice(-4)}
-              </button>}
+              </button>
+            )}
           </div>
         </div>
         <div
@@ -93,8 +95,8 @@ export const Header = () => {
           <NavLink href="/hustler">
             <a>Hustler</a>
           </NavLink>
-          <NavLink href="/dope">
-            <a>Dope</a>
+          <NavLink href="/loot">
+            <a>Loot</a>
           </NavLink>
           <NavLink href="/market">
             <a>Marketplace</a>

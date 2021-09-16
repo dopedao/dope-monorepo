@@ -11,19 +11,20 @@ import { PageWrapper } from '../styles/components';
 import { FetchStaticData, MediaFetchAgent, NetworkIDs } from '@zoralabs/nft-hooks';
 
 import CheckIcon from '../components/icons/Check';
+import Loot from '../components/Loot';
 
 const Centered = styled.div`
   display: flex;
   justify-content: center;
 `;
 
+const StyledTable = styled(Table)`
+  width: 380px;
+  margin-right: 32px;
+`;
+
 const DopeTable = ({ data }: { data: { id: string; unbundled: boolean; claimed: boolean }[] }) => (
-  <Table
-    css={css`
-      width: 400px;
-    `}
-    variant="dope"
-  >
+  <StyledTable variant="dope">
     <Thead>
       <Tr>
         <Th>Dope ID</Th>
@@ -52,8 +53,14 @@ const DopeTable = ({ data }: { data: { id: string; unbundled: boolean; claimed: 
         </Tr>
       ))}
     </Tbody>
-  </Table>
+  </StyledTable>
 );
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+`;
 
 export default function Home() {
   const { account } = useWeb3React();
@@ -62,15 +69,18 @@ export default function Home() {
     <IndexWrapper>
       <Head />
       {account ? (
-        <DopeTable
-          data={[
-            {
-              id: '4936',
-              unbundled: true,
-              claimed: false,
-            },
-          ]}
-        />
+        <Container>
+          <DopeTable
+            data={[
+              {
+                id: '4936',
+                unbundled: true,
+                claimed: false,
+              },
+            ]}
+          />
+          <Loot />
+        </Container>
       ) : (
         <ConnectWallet />
       )}
