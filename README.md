@@ -10,15 +10,11 @@ If you're interested in contributing to Nouns DAO repos we're excited to have yo
 
 ### contracts
 
-The [nouns contracts](packages/contracts) is the suite of Solidity contracts powering Nouns DAO.
+The [contracts](packages/contracts) is the suite of Solidity contracts.
 
-### subgraph
+### web
 
-In order to make retrieving more complex data from the auction history, [subgraph](packages/subgraph) contains subgraph manifests that are deployed onto [The Graph](https://thegraph.com).
-
-### webapp
-
-The [webapp](packages/webapp) is the frontend for interacting with Noun auctions as hosted at [nouns.wtf](https://nouns.wtf).
+The [web](packages/webapp) is the frontend for interacting with the web app.
 
 ## Quickstart
 
@@ -26,6 +22,12 @@ The [webapp](packages/webapp) is the frontend for interacting with Noun auctions
 
 ```sh
 yarn
+```
+
+### Run webserver for development
+
+```sh
+yarn web:dev
 ```
 
 ### Build all packages
