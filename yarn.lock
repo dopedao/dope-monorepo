@@ -1558,6 +1558,7 @@ __metadata:
     prettier-plugin-solidity: ^1.0.0-beta.13
     rimraf: ^3.0.2
     typechain: ^5.1.2
+    typescript: ^4.0.0
   languageName: unknown
   linkType: soft
 
@@ -1594,6 +1595,7 @@ __metadata:
     raw-loader: ^4.0.2
     react: 17.0.2
     react-dom: 17.0.2
+    react-table: ^7.7.0
     swr: ^0.5.6
     typechain: ^5.1.2
     typescript: 4.3.2
@@ -8034,6 +8036,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dopewars@workspace:."
   dependencies:
+    "@dopewars/contracts": "workspace:packages/contracts"
+    "@dopewars/web": "workspace:packages/web"
     "@types/mocha": ^8.2.2
     "@types/node": ^14.14.34
     "@typescript-eslint/eslint-plugin": ^4.26.0
@@ -15445,6 +15449,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-table@npm:^7.7.0":
+  version: 7.7.0
+  resolution: "react-table@npm:7.7.0"
+  peerDependencies:
+    react: ^16.8.3 || ^17.0.0-0
+  checksum: a679edecc76d3e51311b095528395b38ac85a1ffa371716bea01559a5fdc75af9a6abb9bb907c63190c8e77da22b11f7b05065b3a45d190d8f43cb83e4366206
+  languageName: node
+  linkType: hard
+
 "react-test-renderer@npm:^17.0.2":
   version: 17.0.2
   resolution: "react-test-renderer@npm:17.0.2"
@@ -18041,7 +18054,7 @@ typescript@4.3.2:
   languageName: node
   linkType: hard
 
-"typescript@^4.1.3, typescript@^4.3.2":
+"typescript@^4.0.0, typescript@^4.1.3, typescript@^4.3.2":
   version: 4.4.3
   resolution: "typescript@npm:4.4.3"
   bin:
@@ -18061,7 +18074,7 @@ typescript@4.3.2:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.1.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.3.2#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.0.0#~builtin<compat/typescript>, typescript@patch:typescript@^4.1.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.3.2#~builtin<compat/typescript>":
   version: 4.4.3
   resolution: "typescript@patch:typescript@npm%3A4.4.3#~builtin<compat/typescript>::version=4.4.3&hash=32657b"
   bin:

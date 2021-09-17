@@ -39,8 +39,10 @@ interface StockpileInterface extends ethers.utils.Interface {
     "namesMany(uint256[])": FunctionFragment;
     "neckId(uint256)": FunctionFragment;
     "open(uint256)": FunctionFragment;
-    "ownedValueOfBatch(uint256[])": FunctionFragment;
+    "ownedBatchRLE(uint256[])": FunctionFragment;
     "ringId(uint256)": FunctionFragment;
+    "rleOf(uint256)": FunctionFragment;
+    "rleOfBatch(uint256[])": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
@@ -49,8 +51,6 @@ interface StockpileInterface extends ethers.utils.Interface {
     "tokenName(uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "uri(uint256)": FunctionFragment;
-    "valueOf(uint256)": FunctionFragment;
-    "valueOfBatch(uint256[])": FunctionFragment;
     "vehicleId(uint256)": FunctionFragment;
     "waistId(uint256)": FunctionFragment;
     "weaponId(uint256)": FunctionFragment;
@@ -120,12 +120,17 @@ interface StockpileInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "open", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "ownedValueOfBatch",
+    functionFragment: "ownedBatchRLE",
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "ringId",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "rleOf", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "rleOfBatch",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "safeBatchTransferFrom",
@@ -153,14 +158,6 @@ interface StockpileInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
-  encodeFunctionData(
-    functionFragment: "valueOf",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "valueOfBatch",
-    values: [BigNumberish[]]
-  ): string;
   encodeFunctionData(
     functionFragment: "vehicleId",
     values: [BigNumberish]
@@ -205,10 +202,12 @@ interface StockpileInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "neckId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "open", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "ownedValueOfBatch",
+    functionFragment: "ownedBatchRLE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "ringId", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "rleOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "rleOfBatch", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeBatchTransferFrom",
     data: BytesLike
@@ -229,11 +228,6 @@ interface StockpileInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "tokenName", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "valueOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "valueOfBatch",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "vehicleId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "waistId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "weaponId", data: BytesLike): Result;
@@ -515,15 +509,25 @@ export class Stockpile extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    ownedValueOfBatch(
+    ownedBatchRLE(
       tokenIds: BigNumberish[],
       overrides?: CallOverrides
-    ): Promise<[string[]] & { values: string[] }>;
+    ): Promise<[string[]] & { rles: string[] }>;
 
     ringId(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    rleOf(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string] & { rle: string }>;
+
+    rleOfBatch(
+      tokenIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<[string[]] & { rles: string[] }>;
 
     safeBatchTransferFrom(
       from: string,
@@ -564,16 +568,6 @@ export class Stockpile extends BaseContract {
     ): Promise<[string]>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-
-    valueOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string] & { value: string }>;
-
-    valueOfBatch(
-      tokenIds: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<[string[]] & { values: string[] }>;
 
     vehicleId(
       tokenId: BigNumberish,
@@ -749,12 +743,19 @@ export class Stockpile extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  ownedValueOfBatch(
+  ownedBatchRLE(
     tokenIds: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<string[]>;
 
   ringId(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+  rleOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  rleOfBatch(
+    tokenIds: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<string[]>;
 
   safeBatchTransferFrom(
     from: string,
@@ -792,13 +793,6 @@ export class Stockpile extends BaseContract {
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  valueOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  valueOfBatch(
-    tokenIds: BigNumberish[],
-    overrides?: CallOverrides
-  ): Promise<string[]>;
 
   vehicleId(
     tokenId: BigNumberish,
@@ -990,7 +984,7 @@ export class Stockpile extends BaseContract {
 
     open(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    ownedValueOfBatch(
+    ownedBatchRLE(
       tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<string[]>;
@@ -999,6 +993,13 @@ export class Stockpile extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    rleOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    rleOfBatch(
+      tokenIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
     safeBatchTransferFrom(
       from: string,
@@ -1036,13 +1037,6 @@ export class Stockpile extends BaseContract {
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    valueOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    valueOfBatch(
-      tokenIds: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
 
     vehicleId(
       tokenId: BigNumberish,
@@ -1245,13 +1239,20 @@ export class Stockpile extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    ownedValueOfBatch(
+    ownedBatchRLE(
       tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     ringId(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    rleOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    rleOfBatch(
+      tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1294,16 +1295,6 @@ export class Stockpile extends BaseContract {
     ): Promise<BigNumber>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    valueOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    valueOfBatch(
-      tokenIds: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     vehicleId(
       tokenId: BigNumberish,
@@ -1417,13 +1408,23 @@ export class Stockpile extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    ownedValueOfBatch(
+    ownedBatchRLE(
       tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     ringId(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    rleOf(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    rleOfBatch(
+      tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1470,16 +1471,6 @@ export class Stockpile extends BaseContract {
 
     uri(
       tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    valueOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    valueOfBatch(
-      tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -6,8 +6,11 @@
   "version": "1.0.0",
   "description": "Split your lootbags in their individual pieces",
   "files": [
-    "*.sol"
+    "*.sol",
+    "dist/**/*"
   ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "devDependencies": {
     "@typechain/ethers-v5": "^7.1.0",
     "copyfiles": "^2.4.1",
@@ -16,7 +19,8 @@
     "prettier": "^2.3.1",
     "prettier-plugin-solidity": "^1.0.0-beta.13",
     "rimraf": "^3.0.2",
-    "typechain": "^5.1.2"
+    "typechain": "^5.1.2",
+    "typescript": "^4.0.0"
   },
   "scripts": {
     "prepublishOnly": "copyfiles -u 1 \"./src/**/*.sol\" --exclude \"./src/test/**/*.sol\" ./",
@@ -24,6 +28,7 @@
     "prepack": "yarn prepublishOnly",
     "postpack": "yarn postpublish",
     "lint": "prettier --write src/**/*.sol",
-    "typechain": "typechain --target ethers-v5 --out-dir types 'abis/*.abi'"
+    "typechain": "typechain --target ethers-v5 --out-dir types 'abis/*.abi'",
+    "build": "yarn typechain && tsc && copyfiles -u 1 \"types/**/*.d.ts\" dist/typechain"
   }
 }

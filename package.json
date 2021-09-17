@@ -34,5 +34,9 @@
       "yarn lint",
       "yarn format"
     ]
+  },
+  "dependencies": {
+    "@dopewars/contracts": "workspace:packages/contracts",
+    "@dopewars/web": "workspace:packages/web"
   }
 }
