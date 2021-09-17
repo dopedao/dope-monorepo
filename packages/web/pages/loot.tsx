@@ -76,7 +76,7 @@ const Authenticated = ({ id }: { id: string }) => {
   const [selected, setSelected] = useState(0);
 
   if (!data?.wallet?.bags) {
-    return 'You got no bags homie';
+    return <div>You got no bags homie</div>;
   }
 
   return (
