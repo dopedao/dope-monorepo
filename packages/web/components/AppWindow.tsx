@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from '@emotion/styled';
 import { PageWrapper } from '../styles/components';
 import { Header } from './Header';
@@ -13,11 +14,15 @@ const AppWindowWrapper = styled(PageWrapper)`
   filter: drop-shadow(8px 8px rgba(0,0,0, 0.15));
 `;
 
-export default function AppWindow({ children }) {
+interface AppWindowProps {
+  children: React.ReactNode;
+}
+
+export default function AppWindow(props: AppWindowProps) {
   return (
     <AppWindowWrapper>
       <Header />
-      { children }
+      { props.children }
       <Footer />
     </AppWindowWrapper>
   );
