@@ -1,10 +1,15 @@
 # dope-monorepo
 
-Nouns DAO is a generative avatar art collective run by a group of crypto misfits.
+DOPE DAO contains the web app for https://dopewars.gg and Solidity contracts for generating Hustlers based on `DOPE` NFT tokens and items.
 
-## Contributing
+## Testing
 
-If you're interested in contributing to Nouns DAO repos we're excited to have you. Please discuss any changes in `#developers` in [discord.gg/nouns](https://discord.gg/nouns) prior to contributing to reduce duplication of effort and in case there is any prior art that may be useful to you.
+This is using the Rinkeby test network by default
+You can [claim Loot tokens for that network using this contract](https://rinkeby.etherscan.io/address/0xEf879818335a10Db667810a9B668A8F537389194#code)
+
+* Switch MetaMask to the `Rinkeby Test Network`
+* Ensure you have tokens in your wallet by visiting the [following the instructions here](https://teller.gitbook.io/teller-1/testing-guide/getting-testnet-tokens-rinkeby)
+* Claim tokens using the contract address above.
 
 ## Packages
 
