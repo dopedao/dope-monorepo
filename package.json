@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@dopewars/contracts": "workspace:packages/contracts",
-    "@dopewars/web": "workspace:packages/web"
+    "@dopewars/web": "workspace:packages/web",
+    "react-markdown": "^7.0.1"
   }
 }
