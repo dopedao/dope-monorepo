@@ -1,22 +1,10 @@
-import styled from '@emotion/styled';
 import { GetStaticProps } from 'next';
 import { useWeb3React } from '@web3-react/core';
 import { FetchStaticData, MediaFetchAgent, NetworkIDs } from '@zoralabs/nft-hooks';
 
 import Head from '../components/head';
 import ConnectWallet from '../components/ConnectWallet';
-import { PageWrapper } from '../styles/components';
-
-export default function Home() {
-  const { account } = useWeb3React();
-
-  return (
-    <IndexWrapper>
-      <Head />
-      {account ? 'hustler' : <ConnectWallet />}
-    </IndexWrapper>
-  );
-}
+import AppWindow from '../components/AppWindow';
 
 export const getStaticProps: GetStaticProps = async () => {
   const fetchAgent = new MediaFetchAgent(process.env.NEXT_PUBLIC_NETWORK_ID as NetworkIDs);
@@ -35,6 +23,13 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-const IndexWrapper = styled(PageWrapper)`
-  max-width: var(--content-width-xl);
-`;
+export default function Hustler() {
+  const { account } = useWeb3React();
+
+  return (
+    <AppWindow>
+      <Head title="Hustler" />
+      {account ? 'hustler' : <ConnectWallet />}
+    </AppWindow>
+  );
+}

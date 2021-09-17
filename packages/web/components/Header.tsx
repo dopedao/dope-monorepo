@@ -91,17 +91,14 @@ export const Header = () => {
             }
           `}
         >
+          <NavLink href="/your-loot">
+            <a>Your Loot</a>
+          </NavLink>
           <NavLink href="/hustler">
             <a>Hustler</a>
           </NavLink>
-          <NavLink href="/loot">
-            <a>Loot</a>
-          </NavLink>
           <NavLink href="/market">
-            <a>Marketplace</a>
-          </NavLink>
-          <NavLink href="/list">
-            <a>Your Loot</a>
+            <a>Market</a>
           </NavLink>
         </div>
         {displayDisconnect && <DisconnectWallet onClose={() => setDisplayDisconnect(false)} />}
