@@ -29,24 +29,28 @@ export default extendTheme({
         dope: {
           thead: {
             borderBottom: "2px solid #000",
-            height: "28px",
-            fontSize: "14px",
           },
           th: {
+            height: "34px",
             background: "#DEDEDD",
-            padding: "5px 0",
             textAlign: "center",
+            verticalAlign: "middle",
+            padding: 0,
             boxShadow: "inset -3px -3px 0px rgba(0, 0, 0, 0.25), inset 3px 3px 0px rgba(255, 255, 255, 0.25)",
             ':not(:last-child)': {
               borderRight: "2px solid #000",
             }
           },
           td: {
+            padding: 0,
+            verticalAlign: "middle",
+            fontSize: "13px",
             textAlign: "center",
+            height: "40px",
           },
           tr: {
-            height: "32px",
             background: "#EDEFEE",
+            textAlign: "center",
             _odd: {
               background: "#fff"
             }
