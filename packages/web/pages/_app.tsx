@@ -26,17 +26,17 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
     <>
       <GlobalStyles />
       <ApolloProvider client={client}>
-        <ChakraProvider theme={theme}>
+        {/* <ChakraProvider theme={theme}> */}
           <Web3ReactProvider getLibrary={getLibrary}>
             <MediaConfiguration networkId={process.env.NEXT_PUBLIC_NETWORK as NetworkIDs}>
-              <Header />
+              {/* <Header /> */}
               <main>
                 <Component {...pageProps} />
               </main>
-              <Footer />
+              {/* <Footer /> */}
             </MediaConfiguration>
           </Web3ReactProvider>
-        </ChakraProvider>
+        {/* </ChakraProvider> */}
       </ApolloProvider>
     </>
   );
