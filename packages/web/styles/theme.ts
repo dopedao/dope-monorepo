@@ -49,10 +49,15 @@ export default extendTheme({
             height: "40px",
           },
           tr: {
+            cursor: "pointer",
             background: "#EDEFEE",
             textAlign: "center",
             _odd: {
               background: "#fff"
+            },
+            '&.selected': {
+              background: "#3523FE",
+              color: "#fff",
             }
           }
         }

@@ -10,7 +10,7 @@ import ClientOnly from '../components/ClientOnly';
 import ConnectWallet from '../components/ConnectWallet';
 import { PageWrapper } from '../styles/components';
 import CheckIcon from '../components/icons/Check';
-import Loot from '../components/Loot';
+import LootCard from '../components/LootCard';
 
 const Centered = styled.div`
   display: flex;
@@ -20,9 +20,13 @@ const Centered = styled.div`
 const DopeTable = ({
   className = '',
   data,
+  selected,
+  onSelect,
 }: {
   className?: string;
   data: { id: string; unbundled: boolean; claimed: boolean }[];
+  selected: number;
+  onSelect: (i: number) => void;
 }) => (
   <div className={className}>
     <Table variant="dope">
@@ -34,8 +38,8 @@ const DopeTable = ({
         </Tr>
       </Thead>
       <Tbody>
-        {data.map(({ id, unbundled, claimed }) => (
-          <Tr key={id}>
+        {data.map(({ id, unbundled, claimed }, i) => (
+          <Tr className={selected === i ? 'selected' : ''} key={id} onClick={() => onSelect(i)}>
             <Td>{id}</Td>
             <Td>
               {unbundled ? (
@@ -87,8 +91,10 @@ const Authenticated = ({ id }: { id: string }) => {
           unbundled: false,
           claimed: false,
         }))}
+        selected={selected}
+        onSelect={setSelected}
       />
-      <Loot bag={data.wallet.bags[0]} />
+      <LootCard bag={data.wallet.bags[selected]} />
     </Container>
   );
 };

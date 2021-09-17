@@ -681,11 +681,11 @@ const _abi = [
         type: "uint256[]",
       },
     ],
-    name: "ownedValueOfBatch",
+    name: "ownedBatchRLE",
     outputs: [
       {
         internalType: "bytes[]",
-        name: "values",
+        name: "rles",
         type: "bytes[]",
       },
     ],
@@ -709,6 +709,44 @@ const _abi = [
       },
     ],
     stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "rleOf",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "rle",
+        type: "bytes",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "tokenIds",
+        type: "uint256[]",
+      },
+    ],
+    name: "rleOfBatch",
+    outputs: [
+      {
+        internalType: "bytes[]",
+        name: "rles",
+        type: "bytes[]",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -879,44 +917,6 @@ const _abi = [
         internalType: "string",
         name: "",
         type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "valueOf",
-    outputs: [
-      {
-        internalType: "bytes",
-        name: "value",
-        type: "bytes",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256[]",
-        name: "tokenIds",
-        type: "uint256[]",
-      },
-    ],
-    name: "valueOfBatch",
-    outputs: [
-      {
-        internalType: "bytes[]",
-        name: "values",
-        type: "bytes[]",
       },
     ],
     stateMutability: "view",

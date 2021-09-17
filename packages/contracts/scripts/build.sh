@@ -8,3 +8,5 @@ set -eo pipefail
 dapp build
 extractABI Stockpile
 extractABI Character
+
+yarn build

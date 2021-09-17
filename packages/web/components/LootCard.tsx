@@ -1,5 +1,8 @@
 import { css } from '@emotion/react';
 import { Button } from '@chakra-ui/react';
+import { useWeb3React } from '@web3-react/core';
+import { Stockpile__factory } from '@dopewars/contracts';
+
 import { Bag } from '../src/generated/graphql';
 
 const Row = ({ slot, item }: { slot: string; item: string }) => (
@@ -41,6 +44,8 @@ export const Loot = ({
     'id' | 'clothes' | 'drugs' | 'foot' | 'hand' | 'neck' | 'ring' | 'vehicle' | 'waist' | 'weapon'
   >;
 }) => {
+  const { library } = useWeb3React();
+  const stockpile = Stockpile__factory.connect(process.env.NEXT_PUBLIC_STOCKPILE_CONTRACT_ADDRESS!, library.getSigner());
   return (
     <div
       css={css`
@@ -85,7 +90,7 @@ export const Loot = ({
           ['Feet', bag.foot],
           ['Ring', bag.ring],
         ].map(slot => (
-          <Row slot={slot[0]} item={slot[1]} />
+          <Row key={slot[0]} slot={slot[0]} item={slot[1]} />
         ))}
       </div>
       <div
@@ -102,7 +107,13 @@ export const Loot = ({
           }
         `}
       >
-        <Button>Unbundle</Button>
+        <Button
+          onClick={async () => {
+            await stockpile.open(bag.id);
+          }}
+        >
+          Unbundle
+        </Button>
         <Button>Claim Paper</Button>
       </div>
     </div>
