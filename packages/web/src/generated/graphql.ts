@@ -548,7 +548,7 @@ export type WalletQueryVariables = Exact<{
 }>;
 
 
-export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string }> }> };
+export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string }> }> };
 
 
 export const WalletDocument = gql`
@@ -562,6 +562,12 @@ export const WalletDocument = gql`
       clothes
       foot
       hand
+      drugs
+      neck
+      ring
+      vehicle
+      waist
+      weapon
     }
   }
 }

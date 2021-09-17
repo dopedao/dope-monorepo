@@ -1,7 +1,46 @@
 import { css } from '@emotion/react';
 import { Button } from '@chakra-ui/react';
+import { Bag } from '../src/generated/graphql';
 
-export const Loot = () => {
+const Row = ({ slot, item }: { slot: string; item: string }) => (
+  <div
+    css={css`
+      height: 34px;
+      border-bottom: 1px solid #dededd;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+    `}
+  >
+    <span
+      css={css`
+        color: #4b4b4b;
+        width: 65px;
+        text-align: right;
+      `}
+    >
+      {slot}
+    </span>
+    <span
+      css={css`
+        color: #e5e5e4;
+        margin-right: 8px;
+      `}
+    >
+      :
+    </span>
+    <span>{item}</span>
+  </div>
+);
+
+export const Loot = ({
+  bag,
+}: {
+  bag: Pick<
+    Bag,
+    'id' | 'clothes' | 'drugs' | 'foot' | 'hand' | 'neck' | 'ring' | 'vehicle' | 'waist' | 'weapon'
+  >;
+}) => {
   return (
     <div
       css={css`
@@ -22,14 +61,29 @@ export const Loot = () => {
           border-bottom: 2px solid #000;
         `}
       >
-        Dope Wars Loot #0754
+        Dope Wars Loot #{bag.id}
       </div>
       <div
         css={css`
           flex: 1;
           background: #fff;
+          margin: 12px 16px;
         `}
-      ></div>
+      >
+        {[
+          ['Weapon', bag.weapon],
+          ['Vehicle', bag.vehicle],
+          ['Drug', bag.drugs],
+          ['Neck', bag.neck],
+          ['Clothes', bag.clothes],
+          ['Hands', bag.hand],
+          ['Waist', bag.waist],
+          ['Feet', bag.foot],
+          ['Ring', bag.ring],
+        ].map(slot => (
+          <Row slot={slot[0]} item={slot[1]} />
+        ))}
+      </div>
       <div
         css={css`
           display: flex;

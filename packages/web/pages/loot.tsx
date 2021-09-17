@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
@@ -20,7 +21,7 @@ const DopeTable = ({
   className = '',
   data,
 }: {
-  className: string;
+  className?: string;
   data: { id: string; unbundled: boolean; claimed: boolean }[];
 }) => (
   <div className={className}>
@@ -72,21 +73,22 @@ const Container = styled.div`
 
 const Authenticated = ({ id }: { id: string }) => {
   const { data, error, loading } = useWalletQuery({ variables: { id: id.toLowerCase() } });
+  const [selected, setSelected] = useState(0);
+
+  if (!data?.wallet?.bags) {
+    return 'You got no bags homie';
+  }
 
   return (
     <Container>
       <StyledDopeTable
-        data={
-          data?.wallet
-            ? data?.wallet?.bags.map(({ id }) => ({
-                id,
-                unbundled: false,
-                claimed: false,
-              }))
-            : []
-        }
+        data={data.wallet.bags.map(({ id }) => ({
+          id,
+          unbundled: false,
+          claimed: false,
+        }))}
       />
-      <Loot />
+      <Loot bag={data.wallet.bags[0]} />
     </Container>
   );
 };
