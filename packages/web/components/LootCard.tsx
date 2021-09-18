@@ -61,6 +61,7 @@ export const Loot = ({
         flex-direction: column;
         height: 640px;
         width: 500px;
+        background-color: #fff;
       `}
     >
       <div

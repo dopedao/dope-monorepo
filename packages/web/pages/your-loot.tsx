@@ -67,12 +67,12 @@ const StyledDopeTable = styled(DopeTable)`
   width: 380px;
   margin-right: 32px;
   border: 2px solid #000;
+  background-color: #fff;
 `;
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 16px;
 `;
 
 const Authenticated = ({ id }: { id: string }) => {

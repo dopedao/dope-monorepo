@@ -3,9 +3,12 @@ import Head from '../components/head'
 import AppWindow from '../components/AppWindow'
 
 const AboutContent = `
-# Welcome to a DOPE DAO Joint
+# A DOPE DAO Production
 
-Apes together strong.
+**Producers**
+- 0xtart
+- facesof.eth
+- sonnydaddy
 `
 
 export default function About() {
