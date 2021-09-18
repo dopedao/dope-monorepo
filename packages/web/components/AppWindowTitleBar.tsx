@@ -2,18 +2,18 @@ import { useState } from 'react';
 import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
 import { NavLink } from './NavLink';
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 import DisconnectWallet from './DisconnectWallet';
 import AppWindowTitleButton from './AppWindowTitleButton';
 
-export default () => {
+const AppWindowTitleBar = () => {
   const { account } = useWeb3React();
   const [displayDisconnect, setDisplayDisconnect] = useState(false);
   const router = useRouter();
 
   const closeWindow = (): void => {
     router.replace('/');
-  }
+  };
 
   return (
     <>
@@ -28,19 +28,20 @@ export default () => {
           flex-direction: column;
         `}
       >
-        <div id="app-title-bar"
+        <div
+          id="app-title-bar"
           css={css`
             color: #fff;
             height: 32px;
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 170px 1fr;
-            box-shadow: -1px -1px 0px rgba(0,0,0,.25) inset, 
-              1px 1px 0px rgba(255,255,255,.25) inset;
+            box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,
+              1px 1px 0px rgba(255, 255, 255, 0.25) inset;
           `}
         >
           <div>
-            <AppWindowTitleButton icon='close' clickAction={ closeWindow } />
+            <AppWindowTitleButton icon="close" clickAction={closeWindow} />
           </div>
           <div
             id="app-title-bar_description"
@@ -54,7 +55,8 @@ export default () => {
           >
             DOPEWARS
           </div>
-          <div id="app-title-bar_eth-address"
+          <div
+            id="app-title-bar_eth-address"
             css={css`
               display: flex;
               align-items: center;
@@ -77,7 +79,8 @@ export default () => {
             )}
           </div>
         </div>
-        <div id="app-title-bar_nav-items"
+        <div
+          id="app-title-bar_nav-items"
           css={css`
             background: #d0d0d0;
             border: 2px solid #000;
@@ -121,3 +124,5 @@ export default () => {
     </>
   );
 };
+
+export default AppWindowTitleBar;

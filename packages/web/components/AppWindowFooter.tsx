@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-export default () => {
+const AppWindowFooter = () => {
   return (
     <footer
       css={css`
@@ -12,4 +12,6 @@ export default () => {
       `}
     ></footer>
   );
-}
+};
+
+export default AppWindowFooter;

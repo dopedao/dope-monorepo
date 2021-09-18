@@ -1,15 +1,15 @@
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
 
 interface IconProps {
-  icon: string,
-  label: string,
-  clickAction: () => void
-};
+  icon: string;
+  label: string;
+  clickAction: () => void;
+}
 
-export default ({ icon, label, clickAction }: IconProps) => {
-
+const DesktopIcon = ({ icon, label, clickAction }: IconProps) => {
   return (
-    <div className="desktop-icon"
+    <div
+      className="desktop-icon"
       css={css`
         display: flex;
         align-item: center;
@@ -21,7 +21,8 @@ export default ({ icon, label, clickAction }: IconProps) => {
         width: 128px;
       `}
     >
-      <div className="desktop-icon-image"
+      <div
+        className="desktop-icon-image"
         css={css`
           align-self: center;
           display: flex;
@@ -35,15 +36,12 @@ export default ({ icon, label, clickAction }: IconProps) => {
             width: 100%;
             height: 100%;
           }
-      `}
+        `}
       >
-        <img 
-          src={ `/images/icon/${icon}.svg` } 
-          alt={ icon } 
-          onClick={ () => clickAction() } 
-        />
+        <img src={`/images/icon/${icon}.svg`} alt={icon} onClick={() => clickAction()} />
       </div>
-      <div className="desktop-icon-label"
+      <div
+        className="desktop-icon-label"
         css={css`
           align-self: center;
           font-size: 12px;
@@ -53,9 +51,10 @@ export default ({ icon, label, clickAction }: IconProps) => {
           text-align: center;
         `}
       >
-        { label }
+        {label}
       </div>
     </div>
   );
-
 };
+
+export default DesktopIcon;
