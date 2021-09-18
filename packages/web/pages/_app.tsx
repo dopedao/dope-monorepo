@@ -1,15 +1,15 @@
 import '../styles/reset.css';
 
+import { css } from '@emotion/react';
 import type { AppProps } from 'next/app';
-
 import { NetworkIDs } from '@zoralabs/nft-hooks';
 import { MediaConfiguration } from '@zoralabs/nft-components';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { ApolloProvider } from '@apollo/client';
 import { ChakraProvider } from '@chakra-ui/react';
-import DesktopIconList from '../components/DesktopIconList';
 
+import DesktopIconList from '../components/DesktopIconList';
 import theme from '../styles/theme';
 import GlobalStyles from '../styles/GlobalStyles';
 import client from '../utils/apollo';
@@ -30,7 +30,17 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
             <MediaConfiguration networkId={process.env.NEXT_PUBLIC_NETWORK as NetworkIDs}>
               <main>
                 <DesktopIconList />
-                <Component {...pageProps} />
+                <div
+                  css={css`
+                    position: fixed;
+                    top: 64px;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                  `}
+                >
+                  <Component {...pageProps} />
+                </div>
               </main>
             </MediaConfiguration>
           </Web3ReactProvider>
