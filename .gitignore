@@ -3,6 +3,7 @@ node_modules
 data/
 build/
 dist
+!packages/contracts/dist
 /**/sha.ts
 /**/sha.h
 *.tgz
