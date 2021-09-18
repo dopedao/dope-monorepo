@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
 
-type DialogProps = {
+interface DialogProps {
   title?: string;
   className?: string;
   onClose?: () => void;
@@ -36,25 +36,26 @@ const Dialog = ({
 
   return (
     <div css={css`
-      position: fixed;
+      position: relative;
       top: 0;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(0, 0, 0, 0.8);
-
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5em;
       ${className}
     `} onClick={onClick}>
       <div ref={content} css={css`
         background: #DEDEDD;
         box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25);
-        padding: 30px 25px;
-        position: fixed;
+        padding: 32px;
+        position: relative;
         top: 20%;
         left: 50%;
         transform: translate(-50%, 0);
         border: 2px solid;
         z-index: 10;
+        width: 400px;
       `}>
         {!!title && <div>{title}</div>}
         {children}

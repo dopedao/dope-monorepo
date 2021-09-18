@@ -8,9 +8,9 @@ import { useWalletQuery } from '../src/generated/graphql';
 import Head from '../components/head';
 import ClientOnly from '../components/ClientOnly';
 import ConnectWallet from '../components/ConnectWallet';
-import { PageWrapper } from '../styles/components';
 import CheckIcon from '../components/icons/Check';
 import LootCard from '../components/LootCard';
+import AppWindow from '../components/AppWindow';
 
 const Centered = styled.div`
   display: flex;
@@ -67,12 +67,12 @@ const StyledDopeTable = styled(DopeTable)`
   width: 380px;
   margin-right: 32px;
   border: 2px solid #000;
+  background-color: #fff;
 `;
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 16px;
 `;
 
 const Authenticated = ({ id }: { id: string }) => {
@@ -99,16 +99,14 @@ const Authenticated = ({ id }: { id: string }) => {
   );
 };
 
-export default function Home() {
+export default function LootWindow() {
   const { account } = useWeb3React();
   return (
-    <IndexWrapper>
+    <>
       <Head />
-      <ClientOnly>{account ? <Authenticated id={account} /> : <ConnectWallet />}</ClientOnly>
-    </IndexWrapper>
+      <AppWindow>
+        <ClientOnly>{account ? <Authenticated id={account} /> : <ConnectWallet />}</ClientOnly>
+      </AppWindow>
+    </>
   );
 }
-
-const IndexWrapper = styled(PageWrapper)`
-  max-width: var(--content-width-xl);
-`;

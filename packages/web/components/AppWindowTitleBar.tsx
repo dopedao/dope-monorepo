@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
-
 import { NavLink } from './NavLink';
+import { useRouter } from 'next/router';
 import DisconnectWallet from './DisconnectWallet';
+import AppWindowTitleButton from './AppWindowTitleButton';
 
-export const Header = () => {
+const AppWindowTitleBar = () => {
   const { account } = useWeb3React();
   const [displayDisconnect, setDisplayDisconnect] = useState(false);
+  const router = useRouter();
+
+  const closeWindow = (): void => {
+    router.replace('/');
+  };
+
   return (
     <>
       <header
@@ -22,16 +29,22 @@ export const Header = () => {
         `}
       >
         <div
+          id="app-title-bar"
           css={css`
             color: #fff;
             height: 32px;
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 170px 1fr;
+            box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,
+              1px 1px 0px rgba(255, 255, 255, 0.25) inset;
           `}
         >
-          <div />
+          <div>
+            <AppWindowTitleButton icon="close" clickAction={closeWindow} />
+          </div>
           <div
+            id="app-title-bar_description"
             css={css`
               display: flex;
               align-items: center;
@@ -40,15 +53,16 @@ export const Header = () => {
               font-size: 14px;
             `}
           >
-            Dope Wars
+            DOPEWARS
           </div>
           <div
+            id="app-title-bar_eth-address"
             css={css`
               display: flex;
               align-items: center;
               justify-content: flex-end;
               font-size: 12px;
-              padding: 0 15px;
+              padding: 0 16px;
             `}
           >
             {account && (
@@ -56,6 +70,7 @@ export const Header = () => {
                 css={css`
                   background: none;
                   border: none;
+                  color: #fff;
                 `}
                 onClick={() => setDisplayDisconnect(true)}
               >
@@ -65,9 +80,12 @@ export const Header = () => {
           </div>
         </div>
         <div
+          id="app-title-bar_nav-items"
           css={css`
             background: #d0d0d0;
             border: 2px solid #000;
+            border-left: 0px;
+            border-right: 0px;
             height: 42px;
             width: 100%;
             display: flex;
@@ -75,7 +93,7 @@ export const Header = () => {
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            padding: 5px 32px;
+            padding: 5px 8px;
 
             a {
               height: 30px;
@@ -91,17 +109,14 @@ export const Header = () => {
             }
           `}
         >
+          <NavLink href="/your-loot">
+            <a>Your Loot</a>
+          </NavLink>
           <NavLink href="/hustler">
             <a>Hustler</a>
           </NavLink>
-          <NavLink href="/loot">
-            <a>Loot</a>
-          </NavLink>
           <NavLink href="/market">
-            <a>Marketplace</a>
-          </NavLink>
-          <NavLink href="/list">
-            <a>Your Loot</a>
+            <a>Market</a>
           </NavLink>
         </div>
         {displayDisconnect && <DisconnectWallet onClose={() => setDisplayDisconnect(false)} />}
@@ -109,3 +124,5 @@ export const Header = () => {
     </>
   );
 };
+
+export default AppWindowTitleBar;

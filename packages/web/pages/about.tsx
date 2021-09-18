@@ -1,16 +1,25 @@
+import ReactMarkdown from "react-markdown"
 import Head from '../components/head'
-import readMe from '../README.md'
+import AppWindow from '../components/AppWindow'
 
-import Markdown from '../components/Markdown'
-import { PageWrapper } from '../styles/components'
+const AboutContent = `
+# A DOPE DAO Production
+
+**Producers**
+- 0xtart
+- facesof.eth
+- sonnydaddy
+`
 
 export default function About() {
   return (
     <>
       <Head title={'About'} />
-      <PageWrapper>
-        <Markdown markdown={readMe}/>
-      </PageWrapper> 
+      <AppWindow>
+        <ReactMarkdown>
+          {AboutContent}
+        </ReactMarkdown>
+      </AppWindow> 
     </>
   )
 }

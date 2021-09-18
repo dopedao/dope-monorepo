@@ -9,7 +9,7 @@ export default function GlobalStyles() {
         :root {
           @font-face {
             font-family: "ChicagoFLF";
-            src: url("/static/fonts/ChicagoFLF.ttf");
+            src: url("/fonts/ChicagoFLF.ttf");
             font-style: normal;
           }
 
@@ -17,7 +17,7 @@ export default function GlobalStyles() {
           --black: #000;
           --white: #fff;
           --gray: #DEDEDD;
-          --bg-color: #A8A9AE;
+          --bg-color: #000;
           --overlay: rgba(0, 0, 0, 0.85);
           --overlay-light: rgba(0, 0, 0, 0.35);
           --border-black: 1px solid var(--black);
@@ -63,8 +63,11 @@ export default function GlobalStyles() {
         `}
 
         /* DEFAULTS */
-        body {
-          background: var(--bg-color);
+        html {
+          background-color: var(--bg-color);
+          background-image: url("/images/TONY.gif");
+          background-position: center center fixed;
+          height: 100%;
         }
         /* LAYOUT */
         body * {
