@@ -67,8 +67,6 @@ export default function GlobalStyles() {
           background-color: var(--bg-color);
           background-image: url("/images/TONY.gif");
           background-position: center center fixed;
-          // background-repeat: no-repeat;
-          // background-size: cover;
           height: 100%;
         }
         /* LAYOUT */
