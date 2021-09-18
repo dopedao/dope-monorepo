@@ -1,5 +1,5 @@
 import { Transfer as DopeTransferEvent } from '../generated/DopeWarsLoot/DopeWarsLoot';
-import { Transfer as PaperTransferEvent } from '../generated/Paper/Paper';
+import { Transfer as PaperTransferEvent, ClaimByIdCall, ClaimAllForOwnerCall, ClaimRangeForOwnerCall } from '../generated/Paper/Paper';
 import { Bag, Transfer, Wallet } from '../generated/schema';
 import { DopeWarsLoot } from '../generated/DopeWarsLoot/DopeWarsLoot';
 import { BigInt } from '@graphprotocol/graph-ts';
@@ -57,6 +57,7 @@ export function handleDopeTransfer(event: DopeTransferEvent): void {
     bag.vehicle = contract.getVehicle(tokenId);
     bag.currentOwner = toWallet.id;
     bag.minted = event.block.timestamp;
+    bag.claimed = false
     bag.save();
   }
 
@@ -107,6 +108,38 @@ export function handlePaperTransfer(event: PaperTransferEvent): void {
     toWallet.save();
   }
 }
+
+export function handleClaimById(call: ClaimByIdCall): void {
+  let bag = Bag.load(call.inputs.tokenId.toString());
+  bag.claimed = true;
+  bag.save()
+}
+
+export function handleClaimAllForOwner(call: ClaimAllForOwnerCall): void {
+  let contract = DopeWarsLoot.bind(call.to);
+  let balance = contract.balanceOf(call.from);
+
+  for (let i = 0; i < balance.toI32(); i++) {
+    let id = contract.tokenOfOwnerByIndex(call.to, BigInt.fromI32(i))
+
+    let bag = Bag.load(id.toString());
+    bag.claimed = true;
+    bag.save()
+  }
+}
+
+export function handleClaimRangeForOwner(call: ClaimRangeForOwnerCall): void {
+  let contract = DopeWarsLoot.bind(call.to);
+  let balance = contract.balanceOf(call.from);
+
+  for (let i = call.inputs.ownerIndexStart.toI32(); i < call.inputs.ownerIndexEnd.toI32(); i++) {
+    let id = contract.tokenOfOwnerByIndex(call.to, BigInt.fromI32(i))
+    let bag = Bag.load(id.toString());
+    bag.claimed = true;
+    bag.save()
+  }
+}
+
 
 function isZeroAddress(string: string): boolean {
   return string == '0x0000000000000000000000000000000000000000';
