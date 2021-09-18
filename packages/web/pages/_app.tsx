@@ -6,7 +6,6 @@ import { NetworkIDs } from '@zoralabs/nft-hooks';
 import { MediaConfiguration } from '@zoralabs/nft-components';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
-// import { ChakraProvider } from '@chakra-ui/react';
 import { ApolloProvider } from '@apollo/client';
 
 // import theme from '../styles/theme';
@@ -25,15 +24,13 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
     <>
       <GlobalStyles />
       <ApolloProvider client={client}>
-        {/* <ChakraProvider theme={theme}> */}
-          <Web3ReactProvider getLibrary={getLibrary}>
-            <MediaConfiguration networkId={process.env.NEXT_PUBLIC_NETWORK as NetworkIDs}>
-              <main>
-                <Component {...pageProps} />
-              </main>
-            </MediaConfiguration>
-          </Web3ReactProvider>
-        {/* </ChakraProvider> */}
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <MediaConfiguration networkId={process.env.NEXT_PUBLIC_NETWORK as NetworkIDs}>
+            <main>
+              <Component {...pageProps} />
+            </main>
+          </MediaConfiguration>
+        </Web3ReactProvider>
       </ApolloProvider>
     </>
   );

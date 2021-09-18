@@ -9,7 +9,7 @@ export default function GlobalStyles() {
         :root {
           @font-face {
             font-family: "ChicagoFLF";
-            src: url("/static/fonts/ChicagoFLF.ttf");
+            src: url("/fonts/ChicagoFLF.ttf");
             font-style: normal;
           }
 
@@ -65,7 +65,7 @@ export default function GlobalStyles() {
         /* DEFAULTS */
         html {
           background-color: var(--bg-color);
-          background-image: url("/static/images/TONY.gif");
+          background-image: url("/images/TONY.gif");
           background-position: center center fixed;
           // background-repeat: no-repeat;
           // background-size: cover;
