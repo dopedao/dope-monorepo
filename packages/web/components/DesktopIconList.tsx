@@ -1,7 +1,6 @@
-import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 import DesktopIcon from '../components/DesktopIcon';
 import { useRouter } from 'next/router';
-import { PageWrapper } from '../styles/components';
 
 export default () => {
   const router = useRouter();
@@ -27,11 +26,15 @@ export default () => {
   };
 
   return (
-    <>
+    <div
+      css={css`
+        position: fixed;
+      `}
+    >
       <DesktopIcon icon="dopewars-exe" label="DOPEWARS.EXE" clickAction={openDopewars} />
       <DesktopIcon icon="open-sea" label="OpenSea" clickAction={openSea} />
       <DesktopIcon icon="twitter" label="Twitter" clickAction={openTwitter} />
       <DesktopIcon icon="discord" label="Discord" clickAction={openDiscord} />
-    </>
+    </div>
   );
 };
