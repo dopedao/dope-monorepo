@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "web:dev": "yarn workspace @dopewars/web dev",
+    "contracts": "yarn workspace @dopewars/contracts",
     "lint": "eslint 'packages/**/*.ts' --fix",
     "format": "prettier --write 'packages/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
   },

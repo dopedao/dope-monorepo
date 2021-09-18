@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { Button } from '@chakra-ui/react';
 import { useWeb3React } from '@web3-react/core';
-import { Stockpile__factory } from '@dopewars/contracts';
+import { Paper__factory, Stockpile__factory } from '@dopewars/contracts';
 
 import { Bag } from '../src/generated/graphql';
 
@@ -45,7 +45,14 @@ export const Loot = ({
   >;
 }) => {
   const { library } = useWeb3React();
-  const stockpile = Stockpile__factory.connect(process.env.NEXT_PUBLIC_STOCKPILE_CONTRACT_ADDRESS!, library.getSigner());
+  const paper = Paper__factory.connect(
+    process.env.NEXT_PUBLIC_PAPER_CONTRACT_ADDRESS!,
+    library.getSigner(),
+  );
+  const stockpile = Stockpile__factory.connect(
+    process.env.NEXT_PUBLIC_STOCKPILE_CONTRACT_ADDRESS!,
+    library.getSigner(),
+  );
   return (
     <div
       css={css`
@@ -114,7 +121,13 @@ export const Loot = ({
         >
           Unbundle
         </Button>
-        <Button>Claim Paper</Button>
+        <Button
+          onClick={async () => {
+            await paper.claimById(bag.id);
+          }}
+        >
+          Claim Paper
+        </Button>
       </div>
     </div>
   );
