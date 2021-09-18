@@ -39,8 +39,6 @@ const ConnectWallet = () => {
           flex-direction: column;
           align-items: center;
           gap: 25px;
-          width: 390px;
-
           @media (max-width: 500px) {
             width: 275px;
           }

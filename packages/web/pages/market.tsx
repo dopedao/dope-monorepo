@@ -1,14 +1,13 @@
 import { GetStaticProps } from 'next';
-import styled from '@emotion/styled';
-
-import Head from '../components/head';
-import { PageWrapper } from '../styles/components';
-
-import { AuctionsList } from '../components/AuctionsList';
 
 import { FetchStaticData, MediaFetchAgent, NetworkIDs } from '@zoralabs/nft-hooks';
 import { ReserveAuctionPartialFragment } from '@zoralabs/nft-hooks/dist/graph-queries/zora-graph-types';
 import { TokenWithAuctionFragment } from '@zoralabs/nft-hooks/dist/graph-queries/zora-indexer-types';
+
+import AppWindow from '../components/AppWindow';
+import Head from '../components/head';
+import { AuctionsList } from '../components/AuctionsList';
+
 
 export type ZoraToken = {
   nft: {
@@ -16,15 +15,6 @@ export type ZoraToken = {
     auctionData: ReserveAuctionPartialFragment | undefined;
   };
 };
-
-export default function Market({ tokens }: { tokens: ZoraToken[] }) {
-  return (
-    <MarketWrapper>
-      <Head />
-      <AuctionsList tokens={tokens} />
-    </MarketWrapper>
-  );
-}
 
 export const getStaticProps: GetStaticProps = async () => {
   const fetchAgent = new MediaFetchAgent(process.env.NEXT_PUBLIC_NETWORK_ID as NetworkIDs);
@@ -43,6 +33,12 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-const MarketWrapper = styled(PageWrapper)`
-  max-width: var(--content-width-xl);
-`;
+
+export default function Market({ tokens }: { tokens: ZoraToken[] }) {
+  return (
+    <AppWindow>
+      <Head />
+      <AuctionsList tokens={tokens} />
+    </AppWindow>
+  );
+}

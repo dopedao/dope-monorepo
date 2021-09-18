@@ -9,6 +9,7 @@ import { useWeb3React } from '@web3-react/core';
 import Head from '../components/head';
 import ConnectWallet from '../components/ConnectWallet';
 import { PageWrapper } from './../styles/components';
+import AppWindow from '../components/AppWindow';
 
 const ListItemComponent = () => {
   const {
@@ -113,32 +114,6 @@ const MediaThumbnailPreview = ({
   );
 };
 
-export default function List() {
-  const { account } = useWeb3React();
-  return (
-    <>
-      <Head title="List" />
-      <AuctionManager
-        renderMedia={MediaThumbnailPreview}
-        strings={{
-          LIST_MEDIA_HEADER: 'List your NFT',
-          LIST_MEDIA_DESCRIPTION: `Set the reserve price to list your NFT on ${process.env.NEXT_PUBLIC_APP_TITLE}`,
-        }}
-      >
-        <ListWrapper>
-          {account ? (
-            <div className="owned-list">
-              <RenderOwnedList account={account} />
-            </div>
-          ) : (
-            <ConnectWallet />
-          )}
-        </ListWrapper>
-      </AuctionManager>
-    </>
-  );
-}
-
 const ListWrapper = styled(PageWrapper)`
   max-width: var(--content-width-lg);
   .owned-list {
@@ -159,3 +134,29 @@ const ListWrapper = styled(PageWrapper)`
     margin: 0 auto var(--space-sm) !important;
   }
 `;
+
+export default function YourLoot() {
+  const { account } = useWeb3React();
+  return (
+    <AppWindow>
+      <Head title="List" />
+      <AuctionManager
+        renderMedia={MediaThumbnailPreview}
+        strings={{
+          LIST_MEDIA_HEADER: 'List your NFT',
+          LIST_MEDIA_DESCRIPTION: `Set the reserve price to list your NFT on ${process.env.NEXT_PUBLIC_APP_TITLE}`,
+        }}
+      >
+        <ListWrapper>
+          {account ? (
+            <div className="owned-list">
+              <RenderOwnedList account={account} />
+            </div>
+          ) : (
+            <ConnectWallet />
+          )}
+        </ListWrapper>
+      </AuctionManager>
+    </AppWindow>
+  );
+}
