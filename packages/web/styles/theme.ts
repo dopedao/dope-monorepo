@@ -1,6 +1,15 @@
 import { extendTheme } from "@chakra-ui/react"
 
 export default extendTheme({
+  styles: {
+    global: {
+      body: {
+        backgroundColor: "#000",
+        background: "url('/images/TONY.gif') no-repeat center center fixed",
+        backgroundSize: "cover",
+      },
+    },
+  },
   colors: {
     transparent: "transparent",
     black: "#000",
