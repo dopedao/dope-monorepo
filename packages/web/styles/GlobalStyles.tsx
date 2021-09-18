@@ -63,12 +63,11 @@ export default function GlobalStyles() {
         `}
 
         /* DEFAULTS */
-        html {
+        body {
           background-color: var(--bg-color);
-          background-image: url("/images/TONY.gif");
-          background-position: center center fixed;
           height: 100%;
         }
+
         /* LAYOUT */
         body * {
           font-family: var(--font-a) !important;
