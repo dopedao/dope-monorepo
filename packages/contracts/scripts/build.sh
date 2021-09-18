@@ -6,7 +6,7 @@ set -eo pipefail
 . $(dirname $0)/common.sh
 
 dapp build
+
 extractABI Stockpile
 extractABI Character
-
-yarn build
+extractABI Paper
