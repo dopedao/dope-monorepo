@@ -34,6 +34,7 @@ type Bag @entity {
   vehicle: String!
   currentOwner: Wallet!
   minted: BigInt!
+  claimed: Boolean!
 }
 
 type Wallet @entity {

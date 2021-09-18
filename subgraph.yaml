@@ -41,4 +41,11 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handlePaperTransfer
+      callHandlers:
+        - function: claimById(uint256)
+          handler: handleClaimById
+        - function: claimAllForOwner()
+          handler: handleClaimAllForOwner
+        - function: claimRangeForOwner(uint256,uint256)
+          handler: handleClaimRangeForOwner
       file: ./src/mapping.ts
