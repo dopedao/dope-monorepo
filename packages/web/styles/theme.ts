@@ -67,6 +67,9 @@ export default extendTheme({
             '&.selected': {
               background: "#3523FE",
               color: "#fff",
+              path: {
+                fill: "#fff"
+              }
             }
           }
         }

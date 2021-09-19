@@ -1,5 +1,5 @@
 overwrite: true
-schema: "https://api.studio.thegraph.com/query/7708/dope-wars/v0.0.7"
+schema: "https://api.studio.thegraph.com/query/7708/dope-wars/v0.0.17-rinkeby"
 documents: "queries/**/*.graphql"
 generates:
   src/generated/graphql.ts:
