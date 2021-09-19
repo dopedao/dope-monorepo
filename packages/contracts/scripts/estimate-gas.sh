@@ -1,7 +1,3 @@
-#!/usr/bin/env bash
-
-set -eo pipefail
-
 . $(dirname $0)/common.sh
 
 if [[ -z $contract ]]; then
