@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
-import rare from "dope-metrics/output/rare.json";
+import rare from 'dope-metrics/output/rare.json';
 
 import { useWalletQuery } from '../src/generated/graphql';
 
@@ -18,12 +18,15 @@ const Centered = styled.div`
   justify-content: center;
 `;
 
-const rareById = Object.values(rare).reduce((rareById, rare) => {
-  return {
-    ...rareById,
-    [rare.lootId]: rare,
-}
-}, {})
+const rareById: { [name: string]: { rarest: number } } = Object.values(rare).reduce(
+  (rareById, rare) => {
+    return {
+      ...rareById,
+      [rare.lootId]: rare,
+    };
+  },
+  {},
+);
 
 const DopeTable = ({
   className = '',
@@ -42,23 +45,15 @@ const DopeTable = ({
         <Tr>
           <Th>Dope ID</Th>
           <Th>Rank</Th>
-          <Th>Has Paper</Th>
+          <Th>Percentile</Th>
         </Tr>
       </Thead>
       <Tbody>
-        {data.map(({ id, unbundled, claimed }, i) => (
+        {data.map(({ id }, i) => (
           <Tr className={selected === i ? 'selected' : ''} key={id} onClick={() => onSelect(i)}>
             <Td>{id}</Td>
-            <Td>
-              {rareById[id].rarest}
-            </Td>
-            <Td>
-              {claimed ? (
-                <Centered>
-                  <CheckIcon />
-                </Centered>
-              ) : null}
-            </Td>
+            <Td>{rareById[id].rarest}</Td>
+            <Td>{((1 - rareById[id].rarest / 8000) * 100).toFixed(1)}</Td>
           </Tr>
         ))}
       </Tbody>

@@ -2,12 +2,16 @@ import { css } from '@emotion/react';
 import { Button } from '@chakra-ui/react';
 import { useWeb3React } from '@web3-react/core';
 import { Paper__factory, Stockpile__factory } from '@dopewars/contracts';
+import ItemRarities from "dope-metrics/output/item-rarities.json"
 
 import { Bag } from '../src/generated/graphql';
 
-const Row = ({ slot, item }: { slot: string; item: string }) => (
+var colors = ['#838383', '#00DC82', '#2e82ff', '#c13cff', '#f8b73e', '#ff44b7'];
+
+const Row = ({ color, slot, item }: { color: string; slot: string; item: string }) => (
   <div
     css={css`
+      color: ${color};
       height: 34px;
       border-bottom: 1px solid #dededd;
       font-size: 13px;
@@ -41,7 +45,17 @@ export const Loot = ({
 }: {
   bag: Pick<
     Bag,
-    'id' | 'clothes' | 'drugs' | 'foot' | 'hand' | 'neck' | 'ring' | 'vehicle' | 'waist' | 'weapon'
+    | 'id'
+    | 'clothes'
+    | 'drugs'
+    | 'foot'
+    | 'hand'
+    | 'neck'
+    | 'ring'
+    | 'vehicle'
+    | 'waist'
+    | 'weapon'
+    | 'claimed'
   >;
 }) => {
   const { library } = useWeb3React();
@@ -98,7 +112,7 @@ export const Loot = ({
           ['Feet', bag.foot],
           ['Ring', bag.ring],
         ].map(slot => (
-          <Row key={slot[0]} slot={slot[0]} item={slot[1]} />
+          <Row key={slot[0]} color={colors[ItemRarities[slot[1]]]} slot={slot[0]} item={slot[1]} />
         ))}
       </div>
       <div
@@ -123,6 +137,7 @@ export const Loot = ({
           Unbundle
         </Button>
         <Button
+          disabled={bag.claimed}
           onClick={async () => {
             await paper.claimById(bag.id);
           }}
