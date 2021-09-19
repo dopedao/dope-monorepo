@@ -30,17 +30,7 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
             <MediaConfiguration networkId={process.env.NEXT_PUBLIC_NETWORK as NetworkIDs}>
               <main>
                 <DesktopIconList />
-                <div
-                  css={css`
-                    position: fixed;
-                    top: 64px;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                  `}
-                >
-                  <Component {...pageProps} />
-                </div>
+                <Component {...pageProps} />
               </main>
             </MediaConfiguration>
           </Web3ReactProvider>
