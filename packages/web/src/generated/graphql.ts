@@ -19,6 +19,7 @@ export type Scalars = {
 
 export type Bag = {
   __typename?: 'Bag';
+  claimed: Scalars['Boolean'];
   clothes: Scalars['String'];
   currentOwner: Wallet;
   drugs: Scalars['String'];
@@ -34,6 +35,10 @@ export type Bag = {
 };
 
 export type Bag_Filter = {
+  claimed?: Maybe<Scalars['Boolean']>;
+  claimed_in?: Maybe<Array<Scalars['Boolean']>>;
+  claimed_not?: Maybe<Scalars['Boolean']>;
+  claimed_not_in?: Maybe<Array<Scalars['Boolean']>>;
   clothes?: Maybe<Scalars['String']>;
   clothes_contains?: Maybe<Scalars['String']>;
   clothes_ends_with?: Maybe<Scalars['String']>;
@@ -193,6 +198,7 @@ export type Bag_Filter = {
 };
 
 export enum Bag_OrderBy {
+  Claimed = 'claimed',
   Clothes = 'clothes',
   CurrentOwner = 'currentOwner',
   Drugs = 'drugs',
@@ -548,7 +554,7 @@ export type WalletQueryVariables = Exact<{
 }>;
 
 
-export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string }> }> };
+export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean }> }> };
 
 
 export const WalletDocument = gql`
@@ -568,6 +574,7 @@ export const WalletDocument = gql`
       vehicle
       waist
       weapon
+      claimed
     }
   }
 }

@@ -86,10 +86,10 @@ const Authenticated = ({ id }: { id: string }) => {
   return (
     <Container>
       <StyledDopeTable
-        data={data.wallet.bags.map(({ id }) => ({
+        data={data.wallet.bags.map(({ id, claimed }) => ({
           id,
           unbundled: false,
-          claimed: false,
+          claimed,
         }))}
         selected={selected}
         onSelect={setSelected}
