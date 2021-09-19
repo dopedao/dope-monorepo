@@ -1586,7 +1586,7 @@ __metadata:
     "@zoralabs/nft-hooks": ^0.5.1
     "@zoralabs/simple-wallet-provider": ^0.0.7
     classnames: ^2.3.1
-    dope-metrics: ^1.0.2
+    dope-metrics: ^1.0.4
     framer-motion: ^4
     gear-rarity: ^1.0.5
     graphql: ^15.5.3
@@ -8106,12 +8106,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dope-metrics@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "dope-metrics@npm:1.0.2"
+"dope-metrics@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "dope-metrics@npm:1.0.4"
   dependencies:
     ethers: ^5.4.5
-  checksum: 2d99e499ed06769926e4735f3d9b36316b9f3dd2a07d40015e7ad023425a0e775ab57e473fe6b16f8fdc4967126fb66a5febf0bc1ed37bc3fd26a1ae5f5e2134
+  checksum: 57a3304f356aba91b4c8446a17d153c3033d6957c5d0f5bc0e9f7965a4a73a93587772345586d6d7717732c7f216d89e59841632744f180a3ba71f63e37df031
   languageName: node
   linkType: hard
 
