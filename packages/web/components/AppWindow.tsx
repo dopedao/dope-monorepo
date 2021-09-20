@@ -1,6 +1,8 @@
 import React from 'react';
+import { useWeb3React } from '@web3-react/core';
 import styled from '@emotion/styled';
 import { media } from "../styles/mixins";
+import ConnectWallet from './ConnectWallet';
 import AppWindowTitleBar from './AppWindowTitleBar';
 import AppWindowFooter from './AppWindowFooter';
 
@@ -36,17 +38,38 @@ const AppWindowBody = styled.div`
   height: 100%;
   overflow: scroll;
   background-color: #a8a9ae;
+  padding: 32px;
 `;
 
 interface AppWindowProps {
+  requiresWalletConnection?: boolean;
   children: React.ReactNode;
 }
 
-export default function AppWindow(props: AppWindowProps) {
+export default function AppWindow(
+  { 
+    requiresWalletConnection = false, 
+    children 
+  }: AppWindowProps
+) {
+  const { account } = useWeb3React();
+
+  const getWindowBodyContent = () => {
+    if (requiresWalletConnection === true && !account) {
+      return(<ConnectWallet />);     
+    } else {
+      return (
+        <AppWindowBody>
+          { children }
+        </AppWindowBody>
+      );
+    }
+  }
+
   return (
     <AppWindowWrapper>
       <AppWindowTitleBar />
-      <AppWindowBody>{props.children}</AppWindowBody>
+        { getWindowBodyContent() }
       <AppWindowFooter />
     </AppWindowWrapper>
   );
