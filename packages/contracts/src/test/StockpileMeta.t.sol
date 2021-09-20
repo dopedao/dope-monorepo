@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import "./utils/StockpileSetup.sol";
-import {ItemNames} from "../LootTokensMetadata.sol";
+import './utils/StockpileSetup.sol';
+import { ItemNames } from '../LootTokensMetadata.sol';
 
 struct Attribute {
     string traitType;
@@ -19,15 +19,15 @@ struct Data {
 contract Metadata is StockpileTest {
     function testAK47BagNames() public {
         ItemNames memory expected = ItemNames({
-            weapon: "AK47",
-            clothes: "White T Shirt",
-            vehicle: "Tricycle",
-            waist: "Taser Holster",
-            foot: "White Forces",
-            hand: "Fingerless Gloves",
-            drugs: "Adderall",
-            neck: "Silver Chain",
-            ring: "Platinum Ring"
+            weapon: 'AK47',
+            clothes: 'White T Shirt',
+            vehicle: 'Tricycle',
+            waist: 'Taser Holster',
+            foot: 'White Forces',
+            hand: 'Fingerless Gloves',
+            drugs: 'Adderall',
+            neck: 'Silver Chain',
+            ring: 'Platinum Ring'
         });
 
         // https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/5726
@@ -38,15 +38,15 @@ contract Metadata is StockpileTest {
 
     function testShovelFromSOMABagNames() public {
         ItemNames memory expected = ItemNames({
-            weapon: "Shovel from SOMA",
+            weapon: 'Shovel from SOMA',
             clothes: "'High on the Supply Contraband' Bulletproof Vest from Mob Town",
             vehicle: "'The Freelance Pharmacist Triggerman' Dodge from Compton +1",
             waist: "'Kid of the Game Smuggled' D Ring Belt from Queens +1",
-            foot: "Barefoot from Chicago",
+            foot: 'Barefoot from Chicago',
             hand: "'Street Queen Triggerman' Fingerless Gloves from Buffalo +1",
-            drugs: "Shrooms",
-            neck: "Bronze Chain from the Backwoods",
-            ring: "Diamond Ring"
+            drugs: 'Shrooms',
+            neck: 'Bronze Chain from the Backwoods',
+            ring: 'Diamond Ring'
         });
 
         // https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/3686
@@ -58,41 +58,33 @@ contract Metadata is StockpileTest {
     function testPlatinumRingFromAtlantaMetadata() public {
         uint256 id = stockpile.ringId(2169);
         Attribute[] memory attributes = new Attribute[](3);
-        attributes[0] = Attribute("Slot", "Ring");
-        attributes[1] = Attribute("Item", "Platinum Ring");
-        attributes[2] = Attribute("Suffix", "from Atlanta");
-        assertMetadata(id, attributes, "Platinum Ring from Atlanta");
+        attributes[0] = Attribute('Slot', 'Ring');
+        attributes[1] = Attribute('Item', 'Platinum Ring');
+        attributes[2] = Attribute('Suffix', 'from Atlanta');
+        assertMetadata(id, attributes, 'Platinum Ring from Atlanta');
     }
 
     function testHighSupplyBloodStainedShirtFromMobTownMetadata() public {
         uint256 id = stockpile.clothesId(3686);
         Attribute[] memory attributes = new Attribute[](5);
-        attributes[0] = Attribute("Slot", "Clothes");
-        attributes[1] = Attribute("Item", "Bulletproof Vest");
-        attributes[2] = Attribute("Suffix", "from Mob Town");
-        attributes[3] = Attribute("Name Prefix", "High on the Supply");
-        attributes[4] = Attribute("Name Suffix", "Contraband");
-        assertMetadata(
-            id,
-            attributes,
-            "'High on the Supply Contraband' Bulletproof Vest from Mob Town"
-        );
+        attributes[0] = Attribute('Slot', 'Clothes');
+        attributes[1] = Attribute('Item', 'Bulletproof Vest');
+        attributes[2] = Attribute('Suffix', 'from Mob Town');
+        attributes[3] = Attribute('Name Prefix', 'High on the Supply');
+        attributes[4] = Attribute('Name Suffix', 'Contraband');
+        assertMetadata(id, attributes, "'High on the Supply Contraband' Bulletproof Vest from Mob Town");
     }
 
     function testTriggermanFingerlessGlovesFromBuffaloPlusOneMetadata() public {
         uint256 id = stockpile.handId(3686);
         Attribute[] memory attributes = new Attribute[](6);
-        attributes[0] = Attribute("Slot", "Hand");
-        attributes[1] = Attribute("Item", "Fingerless Gloves");
-        attributes[2] = Attribute("Suffix", "from Buffalo");
-        attributes[3] = Attribute("Name Prefix", "Street Queen");
-        attributes[4] = Attribute("Name Suffix", "Triggerman");
-        attributes[5] = Attribute("Augmentation", "Yes");
-        assertMetadata(
-            id,
-            attributes,
-            "'Street Queen Triggerman' Fingerless Gloves from Buffalo +1"
-        );
+        attributes[0] = Attribute('Slot', 'Hand');
+        attributes[1] = Attribute('Item', 'Fingerless Gloves');
+        attributes[2] = Attribute('Suffix', 'from Buffalo');
+        attributes[3] = Attribute('Name Prefix', 'Street Queen');
+        attributes[4] = Attribute('Name Suffix', 'Triggerman');
+        attributes[5] = Attribute('Augmentation', 'Yes');
+        assertMetadata(id, attributes, "'Street Queen Triggerman' Fingerless Gloves from Buffalo +1");
     }
 
     function assertMetadata(
@@ -102,8 +94,8 @@ contract Metadata is StockpileTest {
     ) private {
         string memory meta = stockpile.uri(tokenId);
         string[] memory inputs = new string[](3);
-        inputs[0] = "node";
-        inputs[1] = "scripts/metadata.js";
+        inputs[0] = 'node';
+        inputs[1] = 'scripts/metadata.js';
         inputs[2] = meta;
         bytes memory res = hevm.ffi(inputs);
         Data memory data = abi.decode(res, (Data));
@@ -126,9 +118,7 @@ contract Metadata is StockpileTest {
         assertEq(got.ring, expected.ring);
     }
 
-    function assertEq(Attribute memory attribute, Attribute memory expected)
-        private
-    {
+    function assertEq(Attribute memory attribute, Attribute memory expected) private {
         assertEq(attribute.traitType, expected.traitType);
         assertEq(attribute.value, expected.value);
     }
