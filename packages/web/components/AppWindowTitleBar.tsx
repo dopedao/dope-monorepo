@@ -91,7 +91,6 @@ const AppWindowTitleBar = () => {
             display: flex;
             font-size: 14px;
             flex-direction: row;
-            // justify-content: space-between;
             align-items: center;
             padding: 5px 8px;
 
