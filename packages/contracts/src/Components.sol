@@ -26,7 +26,23 @@
 pragma solidity ^0.8.4;
 
 contract Components {
-    mapping(uint256 => uint8[5]) private addedWaists;
+    uint8 internal constant WEAPON = 0x0;
+    uint8 internal constant CLOTHES = 0x1;
+    uint8 internal constant VEHICLE = 0x2;
+    uint8 internal constant WAIST = 0x3;
+    uint8 internal constant FOOT = 0x4;
+    uint8 internal constant HAND = 0x5;
+    uint8 internal constant DRUGS = 0x6;
+    uint8 internal constant NECK = 0x7;
+    uint8 internal constant RING = 0x8;
+    uint8 internal constant SET = 0x6;
+
+    struct Components {
+        bool set;
+        uint8[5] components;
+    }
+
+    mapping(uint256 => mapping(uint8 => Components)) private addedComponents;
 
     string[] internal weapons = [
         'Pocket Knife', // 0
@@ -315,7 +331,11 @@ contract Components {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
-    function weaponComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function weaponComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
+        if (addedComponents[tokenId][WEAPON].set) {
+            return addedComponents[tokenId][WEAPON].components;
+        }
+
         return pluck(tokenId, 'WEAPON', weaponsLength);
     }
 
@@ -324,7 +344,11 @@ contract Components {
         weapons.push(component);
     }
 
-    function clothesComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function clothesComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
+        if (addedComponents[tokenId][CLOTHES].set) {
+            return addedComponents[tokenId][CLOTHES].components;
+        }
+
         return pluck(tokenId, 'CLOTHES', clothesLength);
     }
 
@@ -333,7 +357,11 @@ contract Components {
         clothes.push(component);
     }
 
-    function vehicleComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function vehicleComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
+        if (addedComponents[tokenId][VEHICLE].set) {
+            return addedComponents[tokenId][VEHICLE].components;
+        }
+
         return pluck(tokenId, 'VEHICLE', vehicleLength);
     }
 
@@ -342,7 +370,11 @@ contract Components {
         vehicle.push(component);
     }
 
-    function waistComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function waistComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
+        if (addedComponents[tokenId][WAIST].set) {
+            return addedComponents[tokenId][WAIST].components;
+        }
+
         return pluck(tokenId, 'WAIST', waistLength);
     }
 
@@ -351,7 +383,11 @@ contract Components {
         waistArmor.push(component);
     }
 
-    function footComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function footComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
+        if (addedComponents[tokenId][FOOT].set) {
+            return addedComponents[tokenId][FOOT].components;
+        }
+
         return pluck(tokenId, 'FOOT', footLength);
     }
 
@@ -360,7 +396,11 @@ contract Components {
         footArmor.push(component);
     }
 
-    function handComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function handComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
+        if (addedComponents[tokenId][HAND].set) {
+            return addedComponents[tokenId][HAND].components;
+        }
+
         return pluck(tokenId, 'HAND', handLength);
     }
 
@@ -369,7 +409,11 @@ contract Components {
         handArmor.push(component);
     }
 
-    function drugsComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function drugsComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
+        if (addedComponents[tokenId][DRUGS].set) {
+            return addedComponents[tokenId][DRUGS].components;
+        }
+
         return pluck(tokenId, 'DRUGS', drugsLength);
     }
 
@@ -378,7 +422,11 @@ contract Components {
         drugs.push(component);
     }
 
-    function neckComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function neckComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
+        if (addedComponents[tokenId][NECK].set) {
+            return addedComponents[tokenId][NECK].components;
+        }
+
         return pluck(tokenId, 'NECK', necklacesLength);
     }
 
@@ -387,7 +435,11 @@ contract Components {
         necklaces.push(component);
     }
 
-    function ringComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function ringComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
+        if (addedComponents[tokenId][RING].set) {
+            return addedComponents[tokenId][RING].components;
+        }
+
         return pluck(tokenId, 'RING', ringsLength);
     }
 
