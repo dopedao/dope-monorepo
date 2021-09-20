@@ -7,6 +7,7 @@ import { ItemIds } from '../LootTokensMetadata.sol';
 contract Open is StockpileTest {
     function testCanOpenBag() public {
         alice.open(BAG);
+        checkOwns1155s(BAG, address(alice));
     }
 
     function testFailCannotOpenBagTwice() public {
@@ -16,6 +17,14 @@ contract Open is StockpileTest {
 
     function testFailCannotOpenBagYouDoNotOwn() public {
         alice.open(OTHER_BAG);
+    }
+
+    function testSameItemsHaveCorrectBalance() public {
+        alice.open(FIRST_SILVER_RING_BAG);
+        alice.open(SECOND_SILVER_RING_BAG);
+
+        ItemIds memory ids = stockpile.ids(FIRST_SILVER_RING_BAG);
+        assertEq(stockpile.balanceOf(address(alice), ids.ring), 2);
     }
 
     // helper for checking ownership of erc1155 tokens after unbundling a bag
