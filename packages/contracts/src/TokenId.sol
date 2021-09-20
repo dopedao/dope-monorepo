@@ -31,7 +31,7 @@ library TokenId {
     function fromId(uint256 id)
         internal
         pure
-        returns (uint8[5] memory components, uint256 itemType)
+        returns (uint8[5] memory components, uint8 itemType)
     {
         itemType = decode(id, 0);
         components[0] = decode(id, 1);

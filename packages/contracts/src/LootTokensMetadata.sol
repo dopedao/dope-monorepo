@@ -34,16 +34,6 @@ struct ItemNames {
 /// @author Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
 contract LootTokensMetadata is Components {
-    uint256 internal constant WEAPON = 0x0;
-    uint256 internal constant CLOTHES = 0x1;
-    uint256 internal constant VEHICLE = 0x2;
-    uint256 internal constant WAIST = 0x3;
-    uint256 internal constant FOOT = 0x4;
-    uint256 internal constant HAND = 0x5;
-    uint256 internal constant DRUGS = 0x6;
-    uint256 internal constant NECK = 0x7;
-    uint256 internal constant RING = 0x8;
-
     string[] internal itemTypes = [
         "Weapon",
         "Clothes",
@@ -122,7 +112,7 @@ contract LootTokensMetadata is Components {
     /// @notice Returns the attributes associated with this item.
     /// @dev Opensea Standards: https://docs.opensea.io/docs/metadata-standards
     function attributes(uint256 id) public view returns (string memory) {
-        (uint8[5] memory components, uint256 itemType) = TokenId.fromId(id);
+        (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
         // should we also use components[0] which contains the item name?
         string memory slot = itemTypes[itemType];
         string memory res = string(abi.encodePacked("[", trait("Slot", slot)));
@@ -184,12 +174,12 @@ contract LootTokensMetadata is Components {
     // @notice Given an ERC1155 token id, it returns its name by decoding and parsing
     // the id
     function tokenName(uint256 id) public view returns (string memory) {
-        (uint8[5] memory components, uint256 itemType) = TokenId.fromId(id);
+        (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
         return componentsToString(components, itemType);
     }
 
     // Returns the "vanilla" item name w/o any prefix/suffixes or augmentations
-    function itemName(uint256 itemType, uint256 idx)
+    function itemName(uint8 itemType, uint256 idx)
         public
         view
         returns (string memory)
@@ -221,7 +211,7 @@ contract LootTokensMetadata is Components {
     }
 
     // Creates the token description given its components and what type it is
-    function componentsToString(uint8[5] memory components, uint256 itemType)
+    function componentsToString(uint8[5] memory components, uint8 itemType)
         public
         view
         returns (string memory)
@@ -269,44 +259,44 @@ contract LootTokensMetadata is Components {
     }
 
     // View helpers for getting the item ID that corresponds to a bag's items
-    function weaponId(uint256 tokenId) public pure returns (uint256) {
+    function weaponId(uint256 tokenId) public view returns (uint256) {
         return TokenId.toId(weaponComponents(tokenId), WEAPON);
     }
 
-    function clothesId(uint256 tokenId) public pure returns (uint256) {
+    function clothesId(uint256 tokenId) public view returns (uint256) {
         return TokenId.toId(clothesComponents(tokenId), CLOTHES);
     }
 
-    function vehicleId(uint256 tokenId) public pure returns (uint256) {
+    function vehicleId(uint256 tokenId) public view returns (uint256) {
         return TokenId.toId(vehicleComponents(tokenId), VEHICLE);
     }
 
-    function waistId(uint256 tokenId) public pure returns (uint256) {
+    function waistId(uint256 tokenId) public view returns (uint256) {
         return TokenId.toId(waistComponents(tokenId), WAIST);
     }
 
-    function footId(uint256 tokenId) public pure returns (uint256) {
+    function footId(uint256 tokenId) public view returns (uint256) {
         return TokenId.toId(footComponents(tokenId), FOOT);
     }
 
-    function handId(uint256 tokenId) public pure returns (uint256) {
+    function handId(uint256 tokenId) public view returns (uint256) {
         return TokenId.toId(handComponents(tokenId), HAND);
     }
 
-    function drugsId(uint256 tokenId) public pure returns (uint256) {
+    function drugsId(uint256 tokenId) public view returns (uint256) {
         return TokenId.toId(drugsComponents(tokenId), DRUGS);
     }
 
-    function neckId(uint256 tokenId) public pure returns (uint256) {
+    function neckId(uint256 tokenId) public view returns (uint256) {
         return TokenId.toId(neckComponents(tokenId), NECK);
     }
 
-    function ringId(uint256 tokenId) public pure returns (uint256) {
+    function ringId(uint256 tokenId) public view returns (uint256) {
         return TokenId.toId(ringComponents(tokenId), RING);
     }
 
     // Given an erc721 bag, returns the erc1155 token ids of the items in the bag
-    function ids(uint256 tokenId) public pure returns (ItemIds memory) {
+    function ids(uint256 tokenId) public view returns (ItemIds memory) {
         return
             ItemIds({
                 weapon: weaponId(tokenId),
@@ -323,7 +313,7 @@ contract LootTokensMetadata is Components {
 
     function idsMany(uint256[] memory tokenIds)
         public
-        pure
+        view
         returns (ItemIds[] memory)
     {
         ItemIds[] memory itemids = new ItemIds[](tokenIds.length);
