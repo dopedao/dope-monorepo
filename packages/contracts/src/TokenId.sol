@@ -12,7 +12,7 @@ library TokenId {
 
     /// Encodes an array of Loot components and an item type (weapon, chest etc.)
     /// to a token id
-    function toId(uint256[5] memory components, uint256 itemType)
+    function toId(uint8[5] memory components, uint256 itemType)
         internal
         pure
         returns (uint256)
@@ -31,7 +31,7 @@ library TokenId {
     function fromId(uint256 id)
         internal
         pure
-        returns (uint256[5] memory components, uint256 itemType)
+        returns (uint8[5] memory components, uint256 itemType)
     {
         itemType = decode(id, 0);
         components[0] = decode(id, 1);
@@ -52,7 +52,7 @@ library TokenId {
 
     /// Right shifts the provided token id by `idx * 2 bytes` and then masks the
     /// returned value with 0xff.
-    function decode(uint256 id, uint256 idx) private pure returns (uint256) {
-        return (id >> (SHIFT * idx)) & 0xff;
+    function decode(uint256 id, uint256 idx) private pure returns (uint8) {
+        return uint8((id >> (SHIFT * idx)) & 0xff);
     }
 }

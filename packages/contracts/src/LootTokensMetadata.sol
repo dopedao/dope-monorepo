@@ -122,7 +122,7 @@ contract LootTokensMetadata is Components {
     /// @notice Returns the attributes associated with this item.
     /// @dev Opensea Standards: https://docs.opensea.io/docs/metadata-standards
     function attributes(uint256 id) public view returns (string memory) {
-        (uint256[5] memory components, uint256 itemType) = TokenId.fromId(id);
+        (uint8[5] memory components, uint256 itemType) = TokenId.fromId(id);
         // should we also use components[0] which contains the item name?
         string memory slot = itemTypes[itemType];
         string memory res = string(abi.encodePacked("[", trait("Slot", slot)));
@@ -184,7 +184,7 @@ contract LootTokensMetadata is Components {
     // @notice Given an ERC1155 token id, it returns its name by decoding and parsing
     // the id
     function tokenName(uint256 id) public view returns (string memory) {
-        (uint256[5] memory components, uint256 itemType) = TokenId.fromId(id);
+        (uint8[5] memory components, uint256 itemType) = TokenId.fromId(id);
         return componentsToString(components, itemType);
     }
 
@@ -221,7 +221,7 @@ contract LootTokensMetadata is Components {
     }
 
     // Creates the token description given its components and what type it is
-    function componentsToString(uint256[5] memory components, uint256 itemType)
+    function componentsToString(uint8[5] memory components, uint256 itemType)
         public
         view
         returns (string memory)

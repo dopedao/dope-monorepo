@@ -12,7 +12,7 @@
     
     The return format is:
     
-    uint256[5] =>
+    uint8[5] =>
         [0] = Item ID
         [1] = Suffix ID (0 for none)
         [2] = Name Prefix ID (0 for none)
@@ -26,6 +26,8 @@
 pragma solidity ^0.8.4;
 
 contract Components {
+    mapping(uint256 => uint8[5]) private addedWaists;
+
     string[] internal weapons = [
         'Pocket Knife', // 0
         'Chain', // 1
@@ -46,7 +48,7 @@ contract Components {
         'Glock', // 16
         'Uzi' // 17
     ];
-    uint256 constant weaponsLength = 18;
+    uint256 private constant weaponsLength = 18;
 
     string[] internal clothes = [
         'White T Shirt', // 0
@@ -70,7 +72,7 @@ contract Components {
         'Shirtless', // 18
         'Naked' // 19
     ];
-    uint256 constant clothesLength = 20;
+    uint256 private constant clothesLength = 20;
 
     string[] internal vehicle = [
         'Dodge', // 0
@@ -91,7 +93,7 @@ contract Components {
         'C63 AMG', // 15
         'G Wagon' // 16
     ];
-    uint256 constant vehicleLength = 17;
+    uint256 private constant vehicleLength = 17;
 
     string[] internal waistArmor = [
         'Gucci Belt', // 0
@@ -111,7 +113,7 @@ contract Components {
         'Sash', // 14
         'Fanny Pack' // 15
     ];
-    uint256 constant waistLength = 16;
+    uint256 private constant waistLength = 16;
 
     string[] internal footArmor = [
         'Black Air Force 1s', // 0
@@ -132,7 +134,7 @@ contract Components {
         'Open Toe Sandals', // 15
         'Barefoot' // 16
     ];
-    uint256 constant footLength = 17;
+    uint256 private constant footLength = 17;
 
     string[] internal handArmor = [
         'Rubber Gloves', // 0
@@ -150,14 +152,14 @@ contract Components {
         'Surgical Gloves', // 12
         'Fingerless Gloves' // 13
     ];
-    uint256 constant handLength = 14;
+    uint256 private constant handLength = 14;
 
     string[] internal necklaces = [
         'Bronze Chain', // 0
         'Silver Chain', // 1
         'Gold Chain' // 2
     ];
-    uint256 constant necklacesLength = 3;
+    uint256 private constant necklacesLength = 3;
 
     string[] internal rings = [
         'Gold Ring', // 0
@@ -168,7 +170,7 @@ contract Components {
         'Pinky Ring', // 5
         'Thumb Ring' // 6
     ];
-    uint256 constant ringsLength = 7;
+    uint256 private constant ringsLength = 7;
 
     string[] internal drugs = [
         'Weed', // 0
@@ -191,7 +193,7 @@ contract Components {
         'Molly', // 17
         'Adderall' // 18
     ];
-    uint256 constant drugsLength = 19;
+    uint256 private constant drugsLength = 19;
 
     string[] internal suffixes = [
         // <no suffix>          // 0
@@ -215,7 +217,7 @@ contract Components {
         'from BedStuy', // 18
         'from Buffalo' // 19
     ];
-    uint256 constant suffixesLength = 19;
+    uint256 private constant suffixesLength = 19;
 
     string[] internal namePrefixes = [
         // <no name>            // 0
@@ -284,7 +286,7 @@ contract Components {
         'Soccer Mom', // 63
         'Soccer Dad' // 64
     ];
-    uint256 constant namePrefixesLength = 64;
+    uint256 private constant namePrefixesLength = 64;
 
     string[] internal nameSuffixes = [
         // <no name>            // 0
@@ -307,13 +309,13 @@ contract Components {
         'Contraband', // 17
         'Illicit' // 18
     ];
-    uint256 constant nameSuffixesLength = 18;
+    uint256 private constant nameSuffixesLength = 18;
 
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
-    function weaponComponents(uint256 tokenId) internal pure returns (uint256[5] memory) {
+    function weaponComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'WEAPON', weaponsLength);
     }
 
@@ -322,7 +324,7 @@ contract Components {
         weapons.push(component);
     }
 
-    function clothesComponents(uint256 tokenId) internal pure returns (uint256[5] memory) {
+    function clothesComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'CLOTHES', clothesLength);
     }
 
@@ -331,7 +333,7 @@ contract Components {
         clothes.push(component);
     }
 
-    function vehicleComponents(uint256 tokenId) internal pure returns (uint256[5] memory) {
+    function vehicleComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'VEHICLE', vehicleLength);
     }
 
@@ -340,7 +342,7 @@ contract Components {
         vehicle.push(component);
     }
 
-    function waistComponents(uint256 tokenId) internal pure returns (uint256[5] memory) {
+    function waistComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'WAIST', waistLength);
     }
 
@@ -349,7 +351,7 @@ contract Components {
         waistArmor.push(component);
     }
 
-    function footComponents(uint256 tokenId) internal pure returns (uint256[5] memory) {
+    function footComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'FOOT', footLength);
     }
 
@@ -358,7 +360,7 @@ contract Components {
         footArmor.push(component);
     }
 
-    function handComponents(uint256 tokenId) internal pure returns (uint256[5] memory) {
+    function handComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'HAND', handLength);
     }
 
@@ -367,7 +369,7 @@ contract Components {
         handArmor.push(component);
     }
 
-    function drugsComponents(uint256 tokenId) internal pure returns (uint256[5] memory) {
+    function drugsComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'DRUGS', drugsLength);
     }
 
@@ -376,7 +378,7 @@ contract Components {
         drugs.push(component);
     }
 
-    function neckComponents(uint256 tokenId) internal pure returns (uint256[5] memory) {
+    function neckComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'NECK', necklacesLength);
     }
 
@@ -385,7 +387,7 @@ contract Components {
         necklaces.push(component);
     }
 
-    function ringComponents(uint256 tokenId) internal pure returns (uint256[5] memory) {
+    function ringComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'RING', ringsLength);
     }
 
@@ -413,22 +415,22 @@ contract Components {
         uint256 tokenId,
         string memory keyPrefix,
         uint256 sourceArrayLength
-    ) internal pure returns (uint256[5] memory) {
-        uint256[5] memory components;
+    ) internal pure returns (uint8[5] memory) {
+        uint8[5] memory components;
 
         uint256 rand = random(string(abi.encodePacked(keyPrefix, toString(tokenId))));
 
-        components[0] = rand % sourceArrayLength;
+        components[0] = uint8(rand % sourceArrayLength);
         components[1] = 0;
         components[2] = 0;
 
         uint256 greatness = rand % 21;
         if (greatness > 14) {
-            components[1] = (rand % suffixesLength) + 1;
+            components[1] = uint8((rand % suffixesLength) + 1);
         }
         if (greatness >= 19) {
-            components[2] = (rand % namePrefixesLength) + 1;
-            components[3] = (rand % nameSuffixesLength) + 1;
+            components[2] = uint8((rand % namePrefixesLength) + 1);
+            components[3] = uint8((rand % nameSuffixesLength) + 1);
             if (greatness == 19) {
                 // ...
             } else {
