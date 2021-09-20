@@ -6,7 +6,7 @@ export default () => {
   const router = useRouter();
 
   const openDopewars = (): void => {
-    router.replace('/your-loot');
+    router.replace('/loot');
   };
 
   const openBrowserTab = (url: string) => {
