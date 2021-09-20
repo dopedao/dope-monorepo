@@ -66,10 +66,10 @@ contract Stockpile is ERC1155, LootTokensMetadata {
 
     function itemId(
         uint256 tokenId,
-        function(uint256) view returns (uint256[5] memory) componentsFn,
+        function(uint256) view returns (uint8[5] memory) componentsFn,
         uint256 itemType
     ) private view returns (uint256) {
-        uint256[5] memory components = componentsFn(tokenId);
+        uint8[5] memory components = componentsFn(tokenId);
         return TokenId.toId(components, itemType);
     }
 
