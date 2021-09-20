@@ -140,40 +140,6 @@ export default function GlobalStyles() {
         .button {
           ${buttonStyle};
         }
-
-        /* ZORA SPECIFIC -- CLEAN UP
-           - WALLET MODAL
-        */
-        .zora-wallet-modalContent {
-          h3 {
-            font-size: var(--text-03) !important;
-            padding: 0 0 15px;
-          }
-          .zora--auction-house-modalSuccessMessage {
-            font-size: var(--text-02) !important;
-          }
-          img {
-            object-fit: contain;
-          }
-          p {
-            font-size: var(--text-02) !important;
-            padding: 0 0 10px;
-            &:last-of-type {
-              padding-bottom: 30px !important;
-            }
-          }
-          .zora--auction-house-ethAmountLabel {
-            padding-bottom: 15px;
-            font-size: var(--text-02);
-          }
-          input {
-            margin-bottom: 15px;
-          }
-          button.zora--auction-house-actionButton {
-            ${buttonStyle};
-            margin-bottom: 15px;
-          }
-        }
       `}
     />
   );
