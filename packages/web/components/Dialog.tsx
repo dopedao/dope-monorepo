@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
+import styled from '@emotion/styled';
 
 interface DialogProps {
   title?: string;
@@ -16,15 +17,25 @@ const Dialog = ({
 }: DialogProps) => {
   const content = useRef<HTMLDivElement>(null);
 
+  const DialogContainer = styled.div`
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    background-image: url('/images/tile-brick-black.png');
+    background-size: 200px 200px;
+    ${className}
+  `;
+
   useEffect(() => {
     if (!onClose) return;
 
     const closeOnEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     }
-
     addEventListener("keydown", closeOnEscape);
-
     return () => removeEventListener("keydown", closeOnEscape);
   }, [onClose]);
 
@@ -35,16 +46,7 @@ const Dialog = ({
   }, [content, onClose]);
 
   return (
-    <div css={css`
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.5);
-      background-image: url('/images/tile-brick-black.png');
-      background-size: 200px 200px;
-      ${className}
-    `} onClick={onClick}>
+    <DialogContainer onClick={onClick}>
       <div ref={content} css={css`
         background: #DEDEDD;
         box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px;
@@ -56,7 +58,7 @@ const Dialog = ({
         {!!title && <div>{title}</div>}
         {children}
       </div>
-    </div>
+    </DialogContainer>
   );
 };
 
