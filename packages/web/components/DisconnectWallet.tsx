@@ -13,6 +13,7 @@ type DisconnectWalletProps = {
 const DisconnectWallet = ({
   onClose,
 }: DisconnectWalletProps) => {
+  const { account } = useWeb3React();
   const { deactivate } = useWeb3React();
 
   const onClickDisconnect = useCallback(() => {
@@ -30,11 +31,17 @@ const DisconnectWallet = ({
         <div css={css`
           display: flex;
           flex-direction: column;
-          gap: 25px;
-          font-size: 14px;
+          gap: 16px;
         `}>
-          <div>You Are Connected to DOPEWARS.EXE</div>
-          <button css={css`cursor: pointer;`} onClick={onClickDisconnect}>Disconnect ETH Wallet</button>
+          <div css={css`font-size: 14px;`}>
+            You Are Connected to DOPEWARS.EXE
+          </div>
+          <div css={css`font-size: 12px;`}>
+            { account.slice(0, 8) }...{ account.slice(-8) }
+          </div>
+          <Button css={css`cursor: pointer;`} onClick={ onClickDisconnect }>
+            Disconnect ETH Wallet
+          </Button>
         </div>
       </div>
     </Dialog>

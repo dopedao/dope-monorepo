@@ -34,20 +34,25 @@ const AppWindowWrapper = styled.div`
   flex-direction: column;
 `;
 
-const AppWindowBody = styled.div`
-  height: 100%;
-  overflow: scroll;
-  background-color: #a8a9ae;
-  padding: 32px;
-`;
-
 interface AppWindowProps {
   requiresWalletConnection?: boolean;
+  padBody?: boolean;
   children: React.ReactNode;
 }
 
-export default function AppWindow({ requiresWalletConnection = false, children }: AppWindowProps) {
+export default function AppWindow({ 
+  requiresWalletConnection = false, 
+  padBody = true,
+  children 
+}: AppWindowProps) {
   const { account } = useWeb3React();
+
+    const AppWindowBody = styled.div`
+      height: 100%;
+      overflow: scroll;
+      background-color: #a8a9ae;
+      padding: ${ padBody ? '32px' : '0px' };
+    `;
 
   return (
     <AppWindowWrapper>

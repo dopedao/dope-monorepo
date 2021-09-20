@@ -1,14 +1,11 @@
-import { useState } from 'react';
 import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
 import { NavLink } from './NavLink';
 import { useRouter } from 'next/router';
-import DisconnectWallet from './DisconnectWallet';
 import AppWindowTitleButton from './AppWindowTitleButton';
 
 const AppWindowTitleBar = () => {
   const { account } = useWeb3React();
-  const [displayDisconnect, setDisplayDisconnect] = useState(false);
   const router = useRouter();
 
   const closeWindow = (): void => {
@@ -55,28 +52,7 @@ const AppWindowTitleBar = () => {
           >
             DOPEWARS
           </div>
-          <div
-            id="app-title-bar_eth-address"
-            css={css`
-              display: flex;
-              align-items: center;
-              justify-content: flex-end;
-              font-size: 12px;
-              padding: 0 16px;
-            `}
-          >
-            {account && (
-              <button
-                css={css`
-                  background: none;
-                  border: none;
-                  color: #fff;
-                `}
-                onClick={() => setDisplayDisconnect(true)}
-              >
-                {account.slice(0, 4)}...{account.slice(-4)}
-              </button>
-            )}
+          <div>
           </div>
         </div>
         <div
@@ -93,15 +69,14 @@ const AppWindowTitleBar = () => {
             flex-direction: row;
             align-items: center;
             padding: 5px 8px;
-
             a {
               height: 30px;
               padding: 0 12px;
               margin-right: 12px;
+              gap: 4px;
               display: flex;
               align-items: center;
             }
-
             a.active {
               text-decoration: none;
               background: #000;
@@ -109,17 +84,27 @@ const AppWindowTitleBar = () => {
             }
           `}
         >
-          <NavLink href="/your-loot">
+          <NavLink href="/loot">
             <a>Your Loot</a>
           </NavLink>
           <NavLink href="/hustler">
-            <a>Your Hustler</a>
+            <a>Hustlers</a>
           </NavLink>
           <NavLink href="/market">
             <a>Market</a>
           </NavLink>
+          {account && (
+            <NavLink href="/wallet">
+              <a>
+                <img 
+                  src="/images/icon/connected.svg" 
+                  width="16" height="16" alt="Connected" 
+                />
+                Connected
+              </a>
+            </NavLink>
+          )}
         </div>
-        {displayDisconnect && <DisconnectWallet onClose={() => setDisplayDisconnect(false)} />}
       </header>
     </>
   );
