@@ -1,6 +1,6 @@
 export const breakpoints = [
   {
-    viewport: 'mobile',
+    viewport: 'phone',
     width: 420
   },{
     viewport: 'tablet',

@@ -28,20 +28,13 @@ const ConnectWallet = () => {
   );
 
   return (
-    <Dialog
-      css={css`
-        background: none;
-      `}
-    >
+    <Dialog>
       <div
         css={css`
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 25px;
-          @media (max-width: 500px) {
-            width: 275px;
-          }
         `}
       >
         <ConnectWalletSVG />

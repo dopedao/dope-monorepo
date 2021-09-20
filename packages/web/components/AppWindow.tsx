@@ -5,6 +5,11 @@ import AppWindowTitleBar from './AppWindowTitleBar';
 import AppWindowFooter from './AppWindowFooter';
 
 const AppWindowWrapper = styled.div`
+  ${media.phone`
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+  `}
   ${media.tablet`
     width: 100%;
     height: 100vh;
@@ -18,19 +23,18 @@ const AppWindowWrapper = styled.div`
     margin: auto;
     margin-top: 32px;
   `}
-
-
   // 
   background-color: #ffffff;
   padding: 0;
   border: 2px solid #000;
   filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
+  display: flex;
+  flex-direction: column;
 `;
 
 const AppWindowBody = styled.div`
   height: 100%;
   overflow: scroll;
-  padding: 32px;
   background-color: #a8a9ae;
 `;
 

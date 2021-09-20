@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
@@ -101,11 +102,15 @@ const Authenticated = ({ id }: { id: string }) => {
 export default function LootWindow() {
   const { account } = useWeb3React();
   return (
-    <>
+    <AppWindow>
       <Head />
-      <AppWindow>
-        <ClientOnly>{account ? <Authenticated id={account} /> : <ConnectWallet />}</ClientOnly>
-      </AppWindow>
-    </>
+      <ClientOnly
+        css={css`
+          height: 100%;
+      `}
+      >
+        {account ? <Authenticated id={account} /> : <ConnectWallet />}
+      </ClientOnly>
+    </AppWindow>
   );
 }
