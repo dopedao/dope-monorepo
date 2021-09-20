@@ -91,13 +91,13 @@ const AppWindowTitleBar = () => {
             display: flex;
             font-size: 14px;
             flex-direction: row;
-            justify-content: space-between;
             align-items: center;
             padding: 5px 8px;
 
             a {
               height: 30px;
               padding: 0 12px;
+              margin-right: 12px;
               display: flex;
               align-items: center;
             }
@@ -113,7 +113,7 @@ const AppWindowTitleBar = () => {
             <a>Your Loot</a>
           </NavLink>
           <NavLink href="/hustler">
-            <a>Hustler</a>
+            <a>Your Hustler</a>
           </NavLink>
           <NavLink href="/market">
             <a>Market</a>

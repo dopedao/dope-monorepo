@@ -2,8 +2,8 @@ import { css } from '@emotion/react'
 import { returnBreakpoint } from './breakpoints'
 
 export const media = {
-  mobile: (...args: [TemplateStringsArray]) => css`
-    @media (min-width: ${returnBreakpoint('mobile')}) {
+  phone: (...args: [TemplateStringsArray]) => css`
+    @media (min-width: ${returnBreakpoint('phone')}) {
       ${css(...args)}
     }
   `,

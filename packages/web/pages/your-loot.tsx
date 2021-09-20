@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
@@ -7,9 +8,6 @@ import rare from 'dope-metrics/output/rare.json';
 import { useWalletQuery } from '../src/generated/graphql';
 
 import Head from '../components/head';
-import ClientOnly from '../components/ClientOnly';
-import ConnectWallet from '../components/ConnectWallet';
-import CheckIcon from '../components/icons/Check';
 import LootCard from '../components/LootCard';
 import AppWindow from '../components/AppWindow';
 
@@ -75,7 +73,11 @@ const Container = styled.div`
 `;
 
 const Authenticated = ({ id }: { id: string }) => {
-  const { data, error, loading } = useWalletQuery({ variables: { id: id.toLowerCase() } });
+  const { data, error, loading } = useWalletQuery(
+    { 
+      variables: { id: id.toLowerCase() } 
+    }
+  );
   const [selected, setSelected] = useState(0);
 
   if (!data?.wallet?.bags) {
@@ -101,11 +103,9 @@ const Authenticated = ({ id }: { id: string }) => {
 export default function LootWindow() {
   const { account } = useWeb3React();
   return (
-    <>
+    <AppWindow requiresWalletConnection={ true }>
       <Head />
-      <AppWindow>
-        <ClientOnly>{account ? <Authenticated id={account} /> : <ConnectWallet />}</ClientOnly>
-      </AppWindow>
-    </>
+      <Authenticated id={ account } />
+    </AppWindow>
   );
 }
