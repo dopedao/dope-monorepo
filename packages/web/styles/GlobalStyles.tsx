@@ -75,7 +75,7 @@ export default function GlobalStyles() {
 
         main {
           width: 100%;
-          overflow-x: hidden;
+          overflow: hidden;
           position: relative;
           min-height: calc(
             100vh - 74px - 1px
