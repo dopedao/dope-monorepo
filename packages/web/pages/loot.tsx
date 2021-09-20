@@ -65,6 +65,7 @@ const StyledDopeTable = styled(DopeTable)`
   margin-right: 32px;
   border: 2px solid #000;
   background-color: #fff;
+  overflow: scroll;
 `;
 
 const Container = styled.div`
@@ -73,11 +74,9 @@ const Container = styled.div`
 `;
 
 const Authenticated = ({ id }: { id: string }) => {
-  const { data, error, loading } = useWalletQuery(
-    { 
-      variables: { id: id.toLowerCase() } 
-    }
-  );
+  const { data, error, loading } = useWalletQuery({
+    variables: { id: id.toLowerCase() },
+  });
   const [selected, setSelected] = useState(0);
 
   if (!data?.wallet?.bags) {
@@ -103,9 +102,9 @@ const Authenticated = ({ id }: { id: string }) => {
 export default function LootWindow() {
   const { account } = useWeb3React();
   return (
-    <AppWindow requiresWalletConnection={ true }>
+    <AppWindow requiresWalletConnection={true}>
       <Head />
-      <Authenticated id={ account } />
+      <Authenticated id={account} />
     </AppWindow>
   );
 }

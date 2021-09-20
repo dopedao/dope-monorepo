@@ -563,7 +563,7 @@ export const WalletDocument = gql`
     id
     address
     paper
-    bags(first: 5) {
+    bags {
       id
       clothes
       foot
