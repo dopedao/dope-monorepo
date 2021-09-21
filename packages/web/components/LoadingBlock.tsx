@@ -12,7 +12,7 @@ const Container = styled.div`
   & > div {
     background-color: white;
     opacity: 0.1;
-    height: 24px;
+    height: 32px;
     margin-bottom: 8px;
     float: left;
     clear: both;
