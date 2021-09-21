@@ -85,7 +85,7 @@ const AppWindowTitleBar = () => {
           `}
         >
           <NavLink href="/loot">
-            <a>Your Loot</a>
+            <a>Loot</a>
           </NavLink>
           <NavLink href="/hustler">
             <a>Hustlers</a>
