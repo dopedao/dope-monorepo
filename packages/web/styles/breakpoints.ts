@@ -21,7 +21,7 @@ export const breakpoints = [
   },
 ];
 
-export const returnBreakpoint = (breakpointName: string) => {
+export const returnBreakpoint = (breakpointName: string): string | 0 => {
   const bp = breakpoints.find(array => array.viewport === breakpointName);
   return bp === undefined ? 0 : `${bp.width}px`;
 };
