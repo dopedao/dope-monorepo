@@ -5,8 +5,8 @@ import { useWeb3React } from '@web3-react/core';
 import { Paper__factory, Stockpile__factory } from '@dopewars/contracts';
 import ItemRarities from 'dope-metrics/output/item-rarities.json';
 
-import { Bag } from '../src/generated/graphql';
-import { NETWORK } from '../common/constants';
+import { Bag } from '../../src/generated/graphql';
+import { NETWORK } from '../../common/constants';
 
 const colors = ['#000', '#838383', '#00DC82', '#2e82ff', '#c13cff', '#f8b73e', '#ff4444'];
 
