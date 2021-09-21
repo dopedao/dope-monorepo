@@ -1,4 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
+import { Z_FIXED } from 'zlib';
 
 const desktopImageCss = [
   "#000000 url('/images/desktop/TONY.gif') center center / contain repeat-y fixed",
@@ -45,10 +46,15 @@ export default extendTheme({
     Table: {
       variants: {
         dope: {
+          table: {
+            borderCollapse: 'separate',
+          },
           thead: {
-            borderBottom: '2px solid #000',
           },
           th: {
+            position: 'sticky',
+            top: 0,
+            borderBottom: '2px solid #000',
             height: '34px',
             background: '#DEDEDD',
             textAlign: 'center',
