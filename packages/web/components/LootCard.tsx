@@ -1,10 +1,12 @@
+import { useMemo } from 'react';
 import { css } from '@emotion/react';
 import { Button } from '@chakra-ui/react';
 import { useWeb3React } from '@web3-react/core';
 import { Paper__factory, Stockpile__factory } from '@dopewars/contracts';
-import ItemRarities from "dope-metrics/output/item-rarities.json"
+import ItemRarities from 'dope-metrics/output/item-rarities.json';
 
 import { Bag } from '../src/generated/graphql';
+import { NETWORK } from '../common/constants';
 
 var colors = ['#000', '#838383', '#00DC82', '#2e82ff', '#c13cff', '#f8b73e', '#ff4444'];
 
@@ -58,15 +60,25 @@ export const Loot = ({
     | 'claimed'
   >;
 }) => {
-  const { library } = useWeb3React();
-  const paper = Paper__factory.connect(
-    process.env.NEXT_PUBLIC_PAPER_CONTRACT_ADDRESS!,
-    library.getSigner(),
+  const { chainId, library } = useWeb3React();
+  const paper = useMemo(
+    () =>
+      chainId
+        ? Paper__factory.connect(NETWORK[chainId as 1 | 4].contracts.paper, library.getSigner())
+        : null,
+    [chainId],
   );
-  const stockpile = Stockpile__factory.connect(
-    process.env.NEXT_PUBLIC_STOCKPILE_CONTRACT_ADDRESS!,
-    library.getSigner(),
+  const stockpile = useMemo(
+    () =>
+      chainId
+        ? Stockpile__factory.connect(
+            NETWORK[chainId as 1 | 4].contracts.stockpile,
+            library.getSigner(),
+          )
+        : null,
+    [chainId],
   );
+
   return (
     <div
       css={css`
@@ -112,7 +124,12 @@ export const Loot = ({
           ['Feet', bag.foot],
           ['Ring', bag.ring],
         ].map(slot => (
-          <Row key={slot[0]} color={colors[ItemRarities[slot[1]]]} slot={slot[0]} item={slot[1]} />
+          <Row
+            key={slot[0]}
+            color={colors[(ItemRarities as { [name: string]: any })[slot[1]]]}
+            slot={slot[0]}
+            item={slot[1]}
+          />
         ))}
       </div>
       <div

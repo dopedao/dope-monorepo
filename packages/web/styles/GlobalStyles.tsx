@@ -1,6 +1,6 @@
-import { Global, css } from "@emotion/react";
-import { media, buttonStyle } from "./mixins";
-import { returnBreakpoint } from "./breakpoints";
+import { Global, css } from '@emotion/react';
+import { media, buttonStyle } from './mixins';
+import { returnBreakpoint } from './breakpoints';
 
 export default function GlobalStyles() {
   return (
@@ -8,15 +8,15 @@ export default function GlobalStyles() {
       styles={css`
         :root {
           @font-face {
-            font-family: "ChicagoFLF";
-            src: url("/fonts/ChicagoFLF.ttf");
+            font-family: 'ChicagoFLF';
+            src: url('/fonts/ChicagoFLF.ttf');
             font-style: normal;
           }
 
           /* COLORS */
           --black: #000;
           --white: #fff;
-          --gray: #DEDEDD;
+          --gray: #dededd;
           --bg-color: #000;
           --overlay: rgba(0, 0, 0, 0.85);
           --overlay-light: rgba(0, 0, 0, 0.35);
@@ -43,8 +43,8 @@ export default function GlobalStyles() {
           /* LAYOUT */
           --header-z: 100;
           --content-width-md: 960px;
-          --content-width-lg: ${returnBreakpoint("desktop")};
-          --content-width-xl: ${returnBreakpoint("xl")};
+          --content-width-lg: ${returnBreakpoint('desktop')};
+          --content-width-xl: ${returnBreakpoint('xl')};
         }
 
         /* MEDIA QUERY MIXIN */
@@ -90,9 +90,7 @@ export default function GlobalStyles() {
           width: 100%;
           overflow: hidden;
           position: relative;
-          min-height: calc(
-            100vh - 74px - 1px
-          );
+          min-height: calc(100vh - 74px - 1px);
         }
 
         header,
@@ -152,40 +150,6 @@ export default function GlobalStyles() {
         /* CUSTOM */
         .button {
           ${buttonStyle};
-        }
-
-        /* ZORA SPECIFIC -- CLEAN UP
-           - WALLET MODAL
-        */
-        .zora-wallet-modalContent {
-          h3 {
-            font-size: var(--text-03) !important;
-            padding: 0 0 15px;
-          }
-          .zora--auction-house-modalSuccessMessage {
-            font-size: var(--text-02) !important;
-          }
-          img {
-            object-fit: contain;
-          }
-          p {
-            font-size: var(--text-02) !important;
-            padding: 0 0 10px;
-            &:last-of-type {
-              padding-bottom: 30px !important;
-            }
-          }
-          .zora--auction-house-ethAmountLabel {
-            padding-bottom: 15px;
-            font-size: var(--text-02);
-          }
-          input {
-            margin-bottom: 15px;
-          }
-          button.zora--auction-house-actionButton {
-            ${buttonStyle};
-            margin-bottom: 15px;
-          }
         }
       `}
     />

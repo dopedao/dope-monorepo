@@ -9,9 +9,12 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
   ],
+  rules: {
+    "@typescript-eslint/no-explicit-any": "off",
+  },
   root: true,
   env: {
     node: true,
   },
-  ignorePatterns: ['**/*.js', 'dist', '**/*.d.ts'],
+  ignorePatterns: ['**/*.js', 'dist', '**/*.d.ts', '**/generated/**'],
 };

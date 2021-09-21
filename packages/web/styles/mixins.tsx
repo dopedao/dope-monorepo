@@ -1,5 +1,5 @@
-import { css } from '@emotion/react'
-import { returnBreakpoint } from './breakpoints'
+import { css } from '@emotion/react';
+import { returnBreakpoint } from './breakpoints';
 
 export const media = {
   phone: (...args: [TemplateStringsArray]) => css`
@@ -43,8 +43,8 @@ export const media = {
     @media (hover: none) {
       ${css(...args)}
     }
-  `
-}
+  `,
+};
 
 export const absoluteCentered = css`
   position: absolute;
@@ -52,23 +52,23 @@ export const absoluteCentered = css`
   left: 0;
   right: 0;
   bottom: 0;
-  margin: auto!important;
-`
+  margin: auto !important;
+`;
 
 export const absoluteFullCentered = css`
   width: 100%;
   height: 100%;
   ${absoluteCentered};
-`
+`;
 
 export const buttonInit = css`
-  -webkit-tap-highlight-color: rgba(255,255,255,0);
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   -webkit-appearance: none;
   border: 0;
-  background-color: rgba(255,255,255,0);
+  background-color: rgba(255, 255, 255, 0);
   text-decoration: none;
   cursor: pointer;
-`
+`;
 
 export const buttonStyle = css`
   ${buttonInit};
@@ -81,10 +81,10 @@ export const buttonStyle = css`
   border-radius: 0.25rem;
   text-align: center;
   ${media.hover``}
-`
+`;
 
 export const pixelScaleImage = css`
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
-`
+`;

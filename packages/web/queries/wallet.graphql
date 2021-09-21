@@ -3,7 +3,7 @@ query Wallet($id: ID!) {
     id
     address
     paper
-    bags(first: 5) {
+    bags {
       id
       clothes
       foot

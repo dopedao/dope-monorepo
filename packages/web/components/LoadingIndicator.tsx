@@ -68,13 +68,17 @@ const LoadingIndicator = () => {
     }
   }, [isLoading]);
 
-  return isLoading && (
-    <LoadingWrapper>
-      <LoadingMessage>
-        L O A D I N G
-      </LoadingMessage>
-    </LoadingWrapper>
-  );
+  return (
+    <>
+      isLoading && (
+        <LoadingWrapper>
+          <LoadingMessage>
+            L O A D I N G
+          </LoadingMessage>
+        </LoadingWrapper>
+      )
+    </>
+  )
 }
 
 export default LoadingIndicator;
