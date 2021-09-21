@@ -13,7 +13,7 @@ export const walletconnect = new WalletConnectConnector({
   qrcode: true,
 });
 
-const useWeb3Provider = () => {
+const useWeb3Provider = (): { connect: (wallet: 'MetaMask' | 'WalletConnect') => Promise<void> } => {
   const { activate } = useWeb3React();
 
   const connect = useCallback(
