@@ -41,6 +41,13 @@ export default extendTheme({
           fontSize: '12px',
           fontWeight: '400',
         },
+        primary: {
+          backgroundColor: '#3523FE',
+          color: '#ffffff',
+          border: '4px solid #000000',
+          fontSize: '14px',
+          textShadow: '1px 1px 0px rgba(0, 0, 0, 0.66)'
+        }
       },
     },
     Table: {

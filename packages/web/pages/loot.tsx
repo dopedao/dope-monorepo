@@ -6,6 +6,7 @@ import Head from '../components/Head';
 import LoadingBlock from '../components/LoadingBlock';
 import LootCard from '../components/loot/LootCard';
 import LootTable from '../components/loot/LootTable';
+import NoLootCard from '../components/loot/NoLootCard';
 import styled from '@emotion/styled';
 
 const Container = styled.div`
@@ -34,7 +35,7 @@ const AuthenticatedContent = ({ id }: { id: string }) => {
       </Container>
     );
   } else if (!data?.wallet?.bags) {
-    return <div>You got no bags homie</div>;
+    return <NoLootCard />;
   } else {
     return (
       <Container>

@@ -3,7 +3,6 @@
 // Produces random looking data table of various lengths
 // that pulses to indicate a loading state.
 import { css } from '@emotion/react';
-import React from 'react';
 import styled from '@emotion/styled';
 
 const Container = styled.div`
