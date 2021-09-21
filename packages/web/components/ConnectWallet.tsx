@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
-import Head from './head';
+import Head from './Head';
 import ConnectWalletSVG from '../svg/ConnectWallet';
 import Dialog from '../components/Dialog';
 

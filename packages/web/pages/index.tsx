@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import Head from '../components/head';
+import Head from '../components/Head';
 import { PageWrapper } from '../styles/components';
 
 const IndexWrapper = styled(PageWrapper)`
