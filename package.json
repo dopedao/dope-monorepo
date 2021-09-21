@@ -5,8 +5,8 @@
     "web:dev": "yarn workspace @dopewars/web dev",
     "contracts": "yarn workspace @dopewars/contracts",
     "web": "yarn workspace @dopewars/web",
-    "lint": "eslint 'packages/**/*.ts' --fix",
-    "format": "prettier --write 'packages/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
+    "lint": "eslint 'packages/web/**/*.ts' --fix",
+    "format": "prettier --write 'packages/web/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
   },
   "devDependencies": {
     "@types/mocha": "^8.2.2",

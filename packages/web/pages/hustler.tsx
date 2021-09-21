@@ -7,9 +7,9 @@ export default function Hustler() {
   const { account } = useWeb3React();
 
   return (
-    <AppWindow requiresWalletConnection={ true }>
+    <AppWindow requiresWalletConnection={true}>
       <Head title="Hustler" />
-      { account ? 'hustler' : null }
+      {account ? 'hustler' : null}
     </AppWindow>
   );
 }

@@ -71,7 +71,10 @@ export const Loot = ({
   const stockpile = useMemo(
     () =>
       chainId
-        ? Stockpile__factory.connect(NETWORK[chainId as 1 | 4].contracts.stockpile, library.getSigner())
+        ? Stockpile__factory.connect(
+            NETWORK[chainId as 1 | 4].contracts.stockpile,
+            library.getSigner(),
+          )
         : null,
     [chainId],
   );
@@ -121,7 +124,12 @@ export const Loot = ({
           ['Feet', bag.foot],
           ['Ring', bag.ring],
         ].map(slot => (
-          <Row key={slot[0]} color={colors[ItemRarities[slot[1]]]} slot={slot[0]} item={slot[1]} />
+          <Row
+            key={slot[0]}
+            color={colors[(ItemRarities as { [name: string]: any })[slot[1]]]}
+            slot={slot[0]}
+            item={slot[1]}
+          />
         ))}
       </div>
       <div

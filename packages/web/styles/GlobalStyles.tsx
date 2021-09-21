@@ -1,6 +1,6 @@
-import { Global, css } from "@emotion/react";
-import { media, buttonStyle } from "./mixins";
-import { returnBreakpoint } from "./breakpoints";
+import { Global, css } from '@emotion/react';
+import { media, buttonStyle } from './mixins';
+import { returnBreakpoint } from './breakpoints';
 
 export default function GlobalStyles() {
   return (
@@ -8,15 +8,15 @@ export default function GlobalStyles() {
       styles={css`
         :root {
           @font-face {
-            font-family: "ChicagoFLF";
-            src: url("/fonts/ChicagoFLF.ttf");
+            font-family: 'ChicagoFLF';
+            src: url('/fonts/ChicagoFLF.ttf');
             font-style: normal;
           }
 
           /* COLORS */
           --black: #000;
           --white: #fff;
-          --gray: #DEDEDD;
+          --gray: #dededd;
           --bg-color: #000;
           --overlay: rgba(0, 0, 0, 0.85);
           --overlay-light: rgba(0, 0, 0, 0.35);
@@ -43,8 +43,8 @@ export default function GlobalStyles() {
           /* LAYOUT */
           --header-z: 100;
           --content-width-md: 960px;
-          --content-width-lg: ${returnBreakpoint("desktop")};
-          --content-width-xl: ${returnBreakpoint("xl")};
+          --content-width-lg: ${returnBreakpoint('desktop')};
+          --content-width-xl: ${returnBreakpoint('xl')};
         }
 
         /* MEDIA QUERY MIXIN */
@@ -77,9 +77,7 @@ export default function GlobalStyles() {
           width: 100%;
           overflow: hidden;
           position: relative;
-          min-height: calc(
-            100vh - 74px - 1px
-          );
+          min-height: calc(100vh - 74px - 1px);
         }
 
         header,

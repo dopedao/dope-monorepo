@@ -40,19 +40,19 @@ interface AppWindowProps {
   children: React.ReactNode;
 }
 
-export default function AppWindow({ 
-  requiresWalletConnection = false, 
+export default function AppWindow({
+  requiresWalletConnection = false,
   padBody = true,
-  children 
+  children,
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
-    const AppWindowBody = styled.div`
-      height: 100%;
-      overflow: scroll;
-      background-color: #a8a9ae;
-      padding: ${ padBody ? '32px' : '0px' };
-    `;
+  const AppWindowBody = styled.div`
+    height: 100%;
+    overflow: scroll;
+    background-color: #a8a9ae;
+    padding: ${padBody ? '32px' : '0px'};
+  `;
 
   return (
     <AppWindowWrapper>

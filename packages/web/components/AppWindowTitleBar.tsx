@@ -52,8 +52,7 @@ const AppWindowTitleBar = () => {
           >
             DOPEWARS
           </div>
-          <div>
-          </div>
+          <div></div>
         </div>
         <div
           id="app-title-bar_nav-items"
@@ -96,10 +95,7 @@ const AppWindowTitleBar = () => {
           {account && (
             <NavLink href="/wallet">
               <a>
-                <img 
-                  src="/images/icon/connected.svg" 
-                  width="16" height="16" alt="Connected" 
-                />
+                <img src="/images/icon/connected.svg" width="16" height="16" alt="Connected" />
                 Connected
               </a>
             </NavLink>
