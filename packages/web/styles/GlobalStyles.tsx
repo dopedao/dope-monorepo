@@ -63,9 +63,22 @@ export default function GlobalStyles() {
         `}
 
         /* DEFAULTS */
+        // Make sure Next.js page and everything inside is 100% height
+        html,
+        body,
+        main,
+        body > div:first-child,
+        div#__next,
+        div#__next > div {
+          height: 100%;
+        }
+
         body {
           background-color: var(--bg-color);
-          height: 100%;
+        }
+
+        body.wait, body.wait * {
+          cursor: wait;
         }
 
         /* LAYOUT */
