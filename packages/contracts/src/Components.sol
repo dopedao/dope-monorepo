@@ -35,14 +35,10 @@ contract Components {
     uint8 internal constant DRUGS = 0x6;
     uint8 internal constant NECK = 0x7;
     uint8 internal constant RING = 0x8;
-    uint8 internal constant SET = 0x6;
-
-    struct Components {
-        bool set;
-        uint8[5] components;
-    }
-
-    mapping(uint256 => mapping(uint8 => Components)) private addedComponents;
+    uint8 internal constant NAME_PREFIX = 0x9;
+    uint8 internal constant NAME_SUFFIX = 0xa;
+    uint8 internal constant SUFFIX = 0xb;
+    uint8 internal constant SET = 0xc;
 
     string[] internal weapons = [
         'Pocket Knife', // 0
@@ -331,136 +327,82 @@ contract Components {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
-    function weaponComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
-        if (addedComponents[tokenId][WEAPON].set) {
-            return addedComponents[tokenId][WEAPON].components;
-        }
-
+    function weaponComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'WEAPON', weaponsLength);
     }
 
-    function addWeaponComponent(string calldata component) internal {
-        require(weapons.length < 255, 'component full');
-        weapons.push(component);
-    }
-
-    function clothesComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
-        if (addedComponents[tokenId][CLOTHES].set) {
-            return addedComponents[tokenId][CLOTHES].components;
-        }
-
+    function clothesComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'CLOTHES', clothesLength);
     }
 
-    function addClothesComponent(string calldata component) internal {
-        require(clothes.length < 255, 'component full');
-        clothes.push(component);
-    }
-
-    function vehicleComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
-        if (addedComponents[tokenId][VEHICLE].set) {
-            return addedComponents[tokenId][VEHICLE].components;
-        }
-
+    function vehicleComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'VEHICLE', vehicleLength);
     }
 
-    function addVehicleComponent(string calldata component) internal {
-        require(vehicle.length < 255, 'component full');
-        vehicle.push(component);
-    }
-
-    function waistComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
-        if (addedComponents[tokenId][WAIST].set) {
-            return addedComponents[tokenId][WAIST].components;
-        }
-
+    function waistComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'WAIST', waistLength);
     }
 
-    function addWaistComponent(string calldata component) internal {
-        require(waistArmor.length < 255, 'component full');
-        waistArmor.push(component);
-    }
-
-    function footComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
-        if (addedComponents[tokenId][FOOT].set) {
-            return addedComponents[tokenId][FOOT].components;
-        }
-
+    function footComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'FOOT', footLength);
     }
 
-    function addFootComponent(string calldata component) internal {
-        require(footArmor.length < 255, 'component full');
-        footArmor.push(component);
-    }
-
-    function handComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
-        if (addedComponents[tokenId][HAND].set) {
-            return addedComponents[tokenId][HAND].components;
-        }
-
+    function handComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'HAND', handLength);
     }
 
-    function addHandComponent(string calldata component) internal {
-        require(handArmor.length < 255, 'component full');
-        handArmor.push(component);
-    }
-
-    function drugsComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
-        if (addedComponents[tokenId][DRUGS].set) {
-            return addedComponents[tokenId][DRUGS].components;
-        }
-
+    function drugsComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'DRUGS', drugsLength);
     }
 
-    function addDrugComponent(string calldata component) internal {
-        require(drugs.length < 255, 'component full');
-        drugs.push(component);
-    }
-
-    function neckComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
-        if (addedComponents[tokenId][NECK].set) {
-            return addedComponents[tokenId][NECK].components;
-        }
-
+    function neckComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'NECK', necklacesLength);
     }
 
-    function addNecklaceComponent(string calldata component) internal {
-        require(necklaces.length < 255, 'component full');
-        necklaces.push(component);
-    }
-
-    function ringComponents(uint256 tokenId) internal view returns (uint8[5] memory) {
-        if (addedComponents[tokenId][RING].set) {
-            return addedComponents[tokenId][RING].components;
-        }
-
+    function ringComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'RING', ringsLength);
     }
 
-    function addRingComponent(string calldata component) internal {
-        require(rings.length < 255, 'component full');
-        rings.push(component);
-    }
+    function addComponent(uint8 itemType, string calldata component) internal returns (uint8) {
+        string[] storage arr;
+        if (itemType == WEAPON) {
+            arr = weapons;
+        } else if (itemType == CLOTHES) {
+            arr = clothes;
+        } else if (itemType == VEHICLE) {
+            arr = vehicle;
+        } else if (itemType == WAIST) {
+            arr = waistArmor;
+        } else if (itemType == FOOT) {
+            arr = footArmor;
+        } else if (itemType == HAND) {
+            arr = handArmor;
+        } else if (itemType == DRUGS) {
+            arr = drugs;
+        } else if (itemType == NECK) {
+            arr = necklaces;
+        } else if (itemType == RING) {
+            arr = rings;
+        } else if (itemType == NAME_PREFIX) {
+            arr = namePrefixes;
+        } else if (itemType == NAME_SUFFIX) {
+            arr = nameSuffixes;
+        } else if (itemType == SUFFIX) {
+            arr = suffixes;
+        } else {
+            revert('Unexpected gear piece');
+        }
 
-    function addNamePrefixComponent(string calldata component) internal {
-        require(namePrefixes.length < 255, 'component full');
-        namePrefixes.push(component);
-    }
+        require(arr.length < 255, 'component full');
+        arr.push(component);
+        uint8 id = uint8(arr.length) - 1;
 
-    function addNameSuffixComponent(string calldata component) internal {
-        require(nameSuffixes.length < 255, 'component full');
-        nameSuffixes.push(component);
-    }
+        // prefix/suffix components are handled differently since they aren't always set.
+        if (itemType == NAME_PREFIX || itemType == NAME_SUFFIX || itemType == SUFFIX) {
+            id = id + 1;
+        }
 
-    function addSuffixComponent(string calldata component) internal {
-        require(suffixes.length < 255, 'component full');
-        suffixes.push(component);
+        return id;
     }
 
     function pluck(
