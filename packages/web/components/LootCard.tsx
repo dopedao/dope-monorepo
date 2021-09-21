@@ -8,7 +8,7 @@ import ItemRarities from 'dope-metrics/output/item-rarities.json';
 import { Bag } from '../src/generated/graphql';
 import { NETWORK } from '../common/constants';
 
-var colors = ['#000', '#838383', '#00DC82', '#2e82ff', '#c13cff', '#f8b73e', '#ff4444'];
+const colors = ['#000', '#838383', '#00DC82', '#2e82ff', '#c13cff', '#f8b73e', '#ff4444'];
 
 const Row = ({ color, slot, item }: { color: string; slot: string; item: string }) => (
   <div

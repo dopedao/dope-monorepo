@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
@@ -101,7 +100,7 @@ const Container = styled.div`
 `;
 
 const Authenticated = ({ id }: { id: string }) => {
-  const { data, error, loading } = useWalletQuery({
+  const { data } = useWalletQuery({
     variables: { id: id.toLowerCase() },
   });
   const [selected, setSelected] = useState(0);
@@ -131,6 +130,7 @@ export default function LootWindow() {
   return (
     <AppWindow requiresWalletConnection={true}>
       <Head />
+      {/* eslint-disable-next-line */}
       <Authenticated id={account!} />
     </AppWindow>
   );
