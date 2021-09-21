@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import Image from 'next/image';
 
 interface IconProps {
   icon: string;
@@ -23,12 +24,16 @@ const AppWindowTitleButton = ({ icon, clickAction }: IconProps) => {
         cursor: hand;
         img {
           display: block;
-          width: 16px;
-          height: 16px;
         }
       `}
     >
-      <img src={`/images/icon/${icon}.svg`} alt={icon} onClick={() => clickAction()} />
+      <Image
+        src={`/images/icon/${icon}.svg`} 
+        alt={icon} 
+        width={16}
+        height={16}
+        onClick={() => clickAction()} 
+      />
     </div>
   );
 };
