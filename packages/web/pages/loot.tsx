@@ -131,7 +131,7 @@ export default function LootWindow() {
   return (
     <AppWindow requiresWalletConnection={true}>
       <Head />
-      <Authenticated id={account} />
+      <Authenticated id={account!} />
     </AppWindow>
   );
 }

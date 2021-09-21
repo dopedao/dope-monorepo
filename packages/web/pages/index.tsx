@@ -5,9 +5,6 @@ const IndexWrapper = styled(PageWrapper)`
   max-width: var(--content-width-xl);
 `;
 
-export default() => {
-  return (
-    <IndexWrapper>
-    </IndexWrapper>
-  )
+export default () => {
+  return <IndexWrapper></IndexWrapper>;
 };
