@@ -70,13 +70,13 @@ const LoadingIndicator = () => {
 
   return (
     <>
-      isLoading && (
+      {isLoading && (
         <LoadingWrapper>
           <LoadingMessage>
             L O A D I N G
           </LoadingMessage>
         </LoadingWrapper>
-      )
+      )}
     </>
   )
 }
