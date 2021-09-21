@@ -1,3 +1,4 @@
+// Displays Loading indicator when routing between Next.js pages
 import styled from '@emotion/styled';
 import { Router, useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -20,7 +21,7 @@ const LoadingMessage = styled.div`
   font-size: 16px;
   line-height: 14px;
   padding: 8px 0px;
-  @keyframes type-zoom{
+  @keyframes zoom{
     0% {
       font-size: 8px;
     }
@@ -37,7 +38,7 @@ const LoadingMessage = styled.div`
       font-size: 72px;
     }
   }
-  animation: type-zoom infinite .25s alternate;
+  animation: zoom infinite .25s alternate;
 `;
 
 const PageLoadingIndicator = () => {

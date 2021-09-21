@@ -3,6 +3,7 @@ import { useWalletQuery } from '../src/generated/graphql';
 import { useWeb3React } from '@web3-react/core';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
+import LoadingBlock from '../components/LoadingBlock';
 import LootCard from '../components/loot/LootCard';
 import LootTable from '../components/loot/LootTable';
 import styled from '@emotion/styled';
@@ -25,10 +26,13 @@ const AuthenticatedContent = ({ id }: { id: string }) => {
   });
   const [selected, setSelected] = useState(0);
 
-  console.log(loading);
-
   if (loading) {
-    return <div>Loading</div>;
+    return (
+      <Container>
+        <LoadingBlock/>
+        <LoadingBlock/>
+      </Container>
+    );
   } else if (!data?.wallet?.bags) {
     return <div>You got no bags homie</div>;
   } else {
