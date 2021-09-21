@@ -40,7 +40,7 @@ const LoadingMessage = styled.div`
   animation: type-zoom infinite .25s alternate;
 `;
 
-const LoadingIndicator = () => {
+const PageLoadingIndicator = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -81,4 +81,4 @@ const LoadingIndicator = () => {
   )
 }
 
-export default LoadingIndicator;
+export default PageLoadingIndicator;
