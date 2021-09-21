@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
@@ -10,11 +10,6 @@ import { useWalletQuery } from '../src/generated/graphql';
 import Head from '../components/head';
 import LootCard from '../components/LootCard';
 import AppWindow from '../components/AppWindow';
-
-const Centered = styled.div`
-  display: flex;
-  justify-content: center;
-`;
 
 const rareById: { [name: string]: { rarest: number } } = Object.values(rare).reduce(
   (rareById, rare) => {
@@ -33,31 +28,63 @@ const DopeTable = ({
   onSelect,
 }: {
   className?: string;
-  data: { id: string; unbundled: boolean; claimed: boolean }[];
+  data: { id: string }[];
   selected: number;
   onSelect: (i: number) => void;
-}) => (
-  <div className={className}>
-    <Table variant="dope">
-      <Thead>
-        <Tr>
-          <Th>Dope ID</Th>
-          <Th>Rank</Th>
-          <Th>Percentile</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {data.map(({ id }, i) => (
-          <Tr className={selected === i ? 'selected' : ''} key={id} onClick={() => onSelect(i)}>
-            <Td>{id}</Td>
-            <Td>{rareById[id].rarest}</Td>
-            <Td>{((1 - rareById[id].rarest / 8000) * 100).toFixed(1)}</Td>
+}) => {
+  const [sort, setSort] = useState('id');
+
+  const items = useMemo(
+    () =>
+      data
+        .map(({ id }, idx) => ({
+          id,
+          rank: rareById[id].rarest,
+          percentile: ((1 - rareById[id].rarest / 8000) * 100).toFixed(1),
+          idx,
+        }))
+        .sort((a, b) => {
+          switch (sort) {
+            case 'id':
+              return a.id < b.id ? -1 : 1;
+            case 'rank':
+              return a.rank < b.rank ? -1 : 1;
+            case 'percentile':
+              return a.percentile > b.percentile ? -1 : 1;
+            default:
+              return a.id > b.id ? -1 : 1;
+          }
+        }),
+    [data, sort],
+  );
+
+  return (
+    <div className={className}>
+      <Table variant="dope">
+        <Thead>
+          <Tr>
+            <Th onClick={() => setSort('id')}>Dope ID</Th>
+            <Th onClick={() => setSort('rank')}>Rank</Th>
+            <Th onClick={() => setSort('percentile')}>Percentile</Th>
           </Tr>
-        ))}
-      </Tbody>
-    </Table>
-  </div>
-);
+        </Thead>
+        <Tbody>
+          {items.map(({ id, rank, percentile, idx }) => (
+            <Tr
+              className={selected === idx ? 'selected' : ''}
+              key={id}
+              onClick={() => onSelect(idx)}
+            >
+              <Td>{id}</Td>
+              <Td>{rank}</Td>
+              <Td>{percentile}</Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </div>
+  );
+};
 
 const StyledDopeTable = styled(DopeTable)`
   height: 640px;
