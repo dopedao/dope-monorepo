@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import Image from 'next/image';
 
 interface IconProps {
   icon: string;
@@ -33,12 +34,16 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => {
           margin-bottom: 8px;
           img {
             display: block;
-            width: 100%;
-            height: 100%;
           }
         `}
       >
-        <img src={`/images/icon/${icon}.svg`} alt={icon} onClick={() => clickAction()} />
+        <Image 
+          src={`/images/icon/${icon}.svg`} 
+          alt={icon} 
+          width="100%"
+          height="100%"
+          onClick={() => clickAction()} 
+        />
       </div>
       <div
         className="desktop-icon-label"

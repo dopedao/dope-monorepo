@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
 import { NavLink } from './NavLink';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import AppWindowTitleButton from './AppWindowTitleButton';
 
 const AppWindowTitleBar = () => {
@@ -95,7 +96,12 @@ const AppWindowTitleBar = () => {
           {account && (
             <NavLink href="/wallet">
               <a>
-                <img src="/images/icon/connected.svg" width="16" height="16" alt="Connected" />
+                <Image 
+                  src="/images/icon/connected.svg" 
+                  width={16} 
+                  height={16}
+                  alt="Connected" 
+                />
                 Connected
               </a>
             </NavLink>
