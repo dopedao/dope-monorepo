@@ -86,20 +86,20 @@ const DopeTable = ({
 };
 
 const StyledDopeTable = styled(DopeTable)`
-  height: 640px;
-  width: 380px;
   margin-right: 32px;
   border: 2px solid #000;
   background-color: #fff;
   overflow: scroll;
+  flex-grow: 1;
 `;
 
 const Container = styled.div`
   display: flex;
+  height: 100%;
   justify-content: center;
 `;
 
-const Authenticated = ({ id }: { id: string }) => {
+const AuthenticatedContent = ({ id }: { id: string }) => {
   const { data } = useWalletQuery({
     variables: { id: id.toLowerCase() },
   });
@@ -131,7 +131,7 @@ export default function LootWindow() {
     <AppWindow requiresWalletConnection={true}>
       <Head />
       {/* eslint-disable-next-line */}
-      <Authenticated id={account!} />
+      <AuthenticatedContent id={account!} />
     </AppWindow>
   );
 }

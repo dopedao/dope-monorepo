@@ -85,9 +85,8 @@ export const Loot = ({
         border: 2px solid #000;
         display: flex;
         flex-direction: column;
-        height: 640px;
-        width: 500px;
         background-color: #fff;
+        flex-grow: 1;
       `}
     >
       <div
@@ -98,8 +97,8 @@ export const Loot = ({
           height: 34px;
           background: #dededd;
           border-bottom: 2px solid #000;
-          box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.25),
-            inset 3px 3px 0px rgba(255, 255, 255, 0.25);
+          box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
+            inset 1px 1px 0px rgba(255, 255, 255, 0.25);
           font-size: 13px;
           font-weight: 600;
         `}
