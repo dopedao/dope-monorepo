@@ -71,9 +71,7 @@ const LoadingIndicator = () => {
   return isLoading && (
     <LoadingWrapper>
       <LoadingMessage>
-        {/* <marquee width="100%" direction="right" scrollamount="50"> */}
-          L O A D I N G
-        {/* </marquee> */}
+        L O A D I N G
       </LoadingMessage>
     </LoadingWrapper>
   );
