@@ -86,7 +86,6 @@ export const Loot = ({
         display: flex;
         flex-direction: column;
         background-color: #fff;
-        flex-grow: 1;
       `}
     >
       <div

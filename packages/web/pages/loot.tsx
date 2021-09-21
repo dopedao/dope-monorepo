@@ -90,13 +90,17 @@ const StyledDopeTable = styled(DopeTable)`
   border: 2px solid #000;
   background-color: #fff;
   overflow: scroll;
-  flex-grow: 1;
 `;
 
 const Container = styled.div`
   display: flex;
   height: 100%;
   justify-content: center;
+  & > div {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+  }
 `;
 
 const AuthenticatedContent = ({ id }: { id: string }) => {
