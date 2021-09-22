@@ -12,6 +12,7 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => {
   return (
     <Draggable grid={[160, 160]}>
       <div
+        onClick={() => clickAction()}
         className="desktop-icon"
         css={css`
           display: flex;
@@ -45,7 +46,6 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => {
             alt={icon}
             width="100%"
             height="100%"
-            onClick={() => clickAction()}
           />
         </div>
         <div
