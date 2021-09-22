@@ -15,7 +15,7 @@ const Container = styled.div`
     margin-bottom: 8px;
     float: left;
     clear: both;
-    @keyframes pulse{
+    @keyframes pulse {
       0% {
         opacity: 0.25;
         width: 10%;
@@ -37,13 +37,13 @@ const Container = styled.div`
         width: 90%;
       }
     }
-    animation: pulse .75s steps(4, end) 0s infinite;
+    animation: pulse 0.75s steps(4, end) 0s infinite;
   }
 `;
 
 const getRandomNumber = (min: number, max: number) => {
-  return(Math.floor(Math.random() * max) + min);
-}
+  return Math.floor(Math.random() * max) + min;
+};
 
 const LoadingBlock = () => {
   const randomRowLength = getRandomNumber(2, 20);
@@ -52,15 +52,12 @@ const LoadingBlock = () => {
     rows.push(
       <div
         css={css`
-          animation-duration: ${getRandomNumber(5, 10)/10}s !important;
+          animation-duration: ${getRandomNumber(5, 10) / 10}s !important;
         `}
-      >
-      </div>
+      ></div>,
     );
   }
-  
-  return(
-    <Container>{ rows }</Container>
-  );
-}
+
+  return <Container>{rows}</Container>;
+};
 export default LoadingBlock;

@@ -77,7 +77,8 @@ export default function GlobalStyles() {
           background-color: var(--bg-color);
         }
 
-        body.wait, body.wait * {
+        body.wait,
+        body.wait * {
           cursor: wait;
         }
 

@@ -28,11 +28,11 @@ const AppWindowTitleButton = ({ icon, clickAction }: IconProps) => {
       `}
     >
       <Image
-        src={`/images/icon/${icon}.svg`} 
-        alt={icon} 
+        src={`/images/icon/${icon}.svg`}
+        alt={icon}
         width={16}
         height={16}
-        onClick={() => clickAction()} 
+        onClick={() => clickAction()}
       />
     </div>
   );

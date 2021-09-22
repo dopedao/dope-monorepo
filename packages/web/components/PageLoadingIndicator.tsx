@@ -14,14 +14,14 @@ const LoadingWrapper = styled.div`
 
 const LoadingMessage = styled.div`
   background-color: #000000;
-  color: #FFFC3F;
+  color: #fffc3f;
   text-align: center;
   width: 100%;
   text-transform: uppercase;
   font-size: 16px;
   line-height: 14px;
   padding: 8px 0px;
-  @keyframes zoom{
+  @keyframes zoom {
     0% {
       font-size: 8px;
     }
@@ -38,7 +38,7 @@ const LoadingMessage = styled.div`
       font-size: 72px;
     }
   }
-  animation: zoom infinite .25s alternate;
+  animation: zoom infinite 0.25s alternate;
 `;
 
 const PageLoadingIndicator = () => {
@@ -50,36 +50,34 @@ const PageLoadingIndicator = () => {
       console.log(`Starting URL transition ${url}`);
       document.body.classList.add('wait');
       setIsLoading(true);
-    }
+    };
     const handleComplete = (url: string) => {
       console.log(`Completed ${url}`);
       document.body.classList.remove('wait');
       setIsLoading(false);
-    }
+    };
 
-    router.events.on('routeChangeStart', handleStart)
-    router.events.on('routeChangeComplete', handleComplete)
-    router.events.on('routeChangeError', handleComplete)
+    router.events.on('routeChangeStart', handleStart);
+    router.events.on('routeChangeComplete', handleComplete);
+    router.events.on('routeChangeError', handleComplete);
 
     // cleanup
     return () => {
-      router.events.off('routeChangeStart', handleStart)
-      router.events.off('routeChangeComplete', handleComplete)
-      router.events.off('routeChangeError', handleComplete)
-    }
+      router.events.off('routeChangeStart', handleStart);
+      router.events.off('routeChangeComplete', handleComplete);
+      router.events.off('routeChangeError', handleComplete);
+    };
   }, [isLoading]);
 
   return (
     <>
       {isLoading && (
         <LoadingWrapper>
-          <LoadingMessage>
-            L O A D I N G
-          </LoadingMessage>
+          <LoadingMessage>L O A D I N G</LoadingMessage>
         </LoadingWrapper>
       )}
     </>
-  )
-}
+  );
+};
 
 export default PageLoadingIndicator;

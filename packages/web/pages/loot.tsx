@@ -30,8 +30,8 @@ const AuthenticatedContent = ({ id }: { id: string }) => {
   if (loading) {
     return (
       <Container>
-        <LoadingBlock/>
-        <LoadingBlock/>
+        <LoadingBlock />
+        <LoadingBlock />
       </Container>
     );
   } else if (!data?.wallet?.bags) {

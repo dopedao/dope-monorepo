@@ -3,9 +3,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import rare from 'dope-metrics/output/rare.json';
 
-const rareById: { [name: string]: { rarest: number } } = Object.values(rare).
-
-reduce(
+const rareById: { [name: string]: { rarest: number } } = Object.values(rare).reduce(
   (rareById, rare) => {
     return {
       ...rareById,
@@ -53,7 +51,7 @@ const LootTable = ({
   );
 
   return (
-    <div 
+    <div
       className={className}
       css={css`
         border: 2px solid #000;

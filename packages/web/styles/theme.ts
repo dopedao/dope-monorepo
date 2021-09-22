@@ -46,8 +46,8 @@ export default extendTheme({
           color: '#ffffff',
           border: '4px solid #000000',
           fontSize: '14px',
-          textShadow: '1px 1px 0px rgba(0, 0, 0, 0.66)'
-        }
+          textShadow: '1px 1px 0px rgba(0, 0, 0, 0.66)',
+        },
       },
     },
     Table: {
@@ -56,8 +56,7 @@ export default extendTheme({
           table: {
             borderCollapse: 'separate',
           },
-          thead: {
-          },
+          thead: {},
           th: {
             position: 'sticky',
             top: 0,

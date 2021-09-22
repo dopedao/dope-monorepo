@@ -10,7 +10,7 @@ const NoLootContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color: #202222;
-  background: linear-gradient(#202222 66%, #1C1C1C);
+  background: linear-gradient(#202222 66%, #1c1c1c);
   border: 2px solid #000000;
   display: flex;
   flex-direction: column;
@@ -37,25 +37,18 @@ const NoLootHustler = styled.div`
   align-items: center;
   gap: 32px;
   img {
-    opacity: .5;
+    opacity: 0.5;
   }
 `;
 
 const NoLootCard = () => {
   const router = useRouter();
-  return(
+  return (
     <NoLootContainer>
       <NoLootTitle>No Loot In Connected Wallet</NoLootTitle>
       <NoLootHustler>
-        <Image
-          src="/images/hustler/no-loot.svg" 
-          width={112}
-          height={350}
-        />
-        <Button 
-          variant="primary"
-          onClick={() => router.push('/market')}
-        >
+        <Image src="/images/hustler/no-loot.svg" width={112} height={350} />
+        <Button variant="primary" onClick={() => router.push('/market')}>
           Shop The Market
         </Button>
       </NoLootHustler>
