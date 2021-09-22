@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
-
+import Head from './Head';
 import ConnectWalletSVG from '../svg/ConnectWallet';
 import Dialog from '../components/Dialog';
 
@@ -28,34 +28,37 @@ const ConnectWallet = () => {
   );
 
   return (
-    <Dialog>
-      <div
-        css={css`
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 25px;
-        `}
-      >
-        <ConnectWalletSVG />
-        <div>Please connect your Ethereum Wallet</div>
+    <>
+      <Head title="Connect your ETH wallet" />
+      <Dialog>
         <div
           css={css`
-            width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            gap: 25px;
           `}
         >
-          <button {...buttonProps} onClick={() => onClick('MetaMask')}>
-            MetaMask
-          </button>
-          <button {...buttonProps} onClick={() => onClick('WalletConnect')}>
-            WalletConnect
-          </button>
+          <ConnectWalletSVG />
+          <div>Please connect your Ethereum Wallet</div>
+          <div
+            css={css`
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              gap: 10px;
+            `}
+          >
+            <button {...buttonProps} onClick={() => onClick('MetaMask')}>
+              MetaMask
+            </button>
+            <button {...buttonProps} onClick={() => onClick('WalletConnect')}>
+              WalletConnect
+            </button>
+          </div>
         </div>
-      </div>
-    </Dialog>
+      </Dialog>
+    </>
   );
 };
 

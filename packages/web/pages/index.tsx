@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Head from '../components/Head';
 import { PageWrapper } from '../styles/components';
 
 const IndexWrapper = styled(PageWrapper)`
@@ -6,5 +7,9 @@ const IndexWrapper = styled(PageWrapper)`
 `;
 
 export default () => {
-  return <IndexWrapper></IndexWrapper>;
+  return (
+    <IndexWrapper>
+      <Head />
+    </IndexWrapper>
+  );
 };

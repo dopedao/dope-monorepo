@@ -1,4 +1,3 @@
-
 import '../styles/reset.css';
 
 import { ReactNode, useMemo } from 'react';
@@ -13,7 +12,7 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 import theme from '../styles/theme';
 import GlobalStyles from '../styles/GlobalStyles';
 import { NETWORK } from '../common/constants';
-import LoadingIndicator from '../components/LoadingIndicator';
+import PageLoadingIndicator from '../components/PageLoadingIndicator';
 import DesktopIconList from '../components/DesktopIconList';
 
 function getLibrary(provider: any): Web3Provider {
@@ -48,7 +47,7 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
         <Web3ReactProvider getLibrary={getLibrary}>
           <WrappedApolloProvider>
             <main>
-              <LoadingIndicator />
+              <PageLoadingIndicator />
               <DesktopIconList />
               <Component {...pageProps} />
             </main>
