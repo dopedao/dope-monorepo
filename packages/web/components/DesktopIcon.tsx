@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
+import { media } from '../styles/mixins';
 import Image from 'next/image';
-import Draggable from 'react-draggable';
 
 interface IconProps {
   icon: string;
@@ -10,59 +10,70 @@ interface IconProps {
 
 const DesktopIcon = ({ icon, label, clickAction }: IconProps) => {
   return (
-    <Draggable grid={[160, 160]}>
-      <div
-        className="desktop-icon"
-        css={css`
-          display: flex;
-          align-item: center;
-          justify-content: center;
-          flex-direction: column;
-          cursor: pointer;
-          cursor: hand;
+    <div
+      onClick={() => clickAction()}
+      className="desktop-icon"
+      css={css`
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        cursor: pointer;
+        cursor: hand;
+        ${media.phone`
+          width: 96px;
+          height: 96px;
+        `}
+        ${media.tablet`
           width: 128px;
           height: 128px;
-          margin: 32px;
         `}
-      >
-        <div
-          className="desktop-icon-image"
-          css={css`
-            align-self: center;
-            display: flex;
+        ${media.laptop`
+          width: 128px;
+          height: 128px;
+        `}
+      `}
+    >
+      <div
+        className="desktop-icon-image"
+        css={css`
+          align-self: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 8px;
+          ${media.phone`
+            width: 32px;
+            height: 32px;
+          `}
+          ${media.tablet`
+            width: 48px;
+            height: 48px;
+          `}
+          ${media.laptop`
             width: 64px;
             height: 64px;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 8px;
-            img {
-              display: block;
-            }
           `}
-        >
-          <Image
-            src={`/images/icon/${icon}.svg`}
-            alt={icon}
-            width="100%"
-            height="100%"
-            onClick={() => clickAction()}
-          />
-        </div>
-        <div
-          className="desktop-icon-label"
-          css={css`
-            align-self: center;
-            font-size: 12px;
-            padding: 8px;
-            background-color: #000;
-            color: #fff;
-            text-align: center;
-          `}
-        >
-          {label}
-        </div>
+          img {
+            display: block;
+          }
+        `}
+      >
+        <Image src={`/images/icon/${icon}.svg`} alt={icon} width="100%" height="100%" />
       </div>
-    </Draggable>
+      <div
+        className="desktop-icon-label"
+        css={css`
+          align-self: center;
+          font-size: 12px;
+          background-color: #000;
+          color: #fff;
+          text-align: center;
+          padding: 4px 8px;
+        `}
+      >
+        {label}
+      </div>
+    </div>
   );
 };
 
