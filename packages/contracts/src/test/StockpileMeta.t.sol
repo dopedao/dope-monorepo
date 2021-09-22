@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import './utils/StockpileSetup.sol';
-import { ItemNames } from '../LootTokensMetadata.sol';
 
 struct Attribute {
     string traitType;
@@ -17,6 +16,38 @@ struct Data {
 }
 
 contract Metadata is StockpileTest {
+    function testCreateAndMintFiveBlastersWeapons() public {
+        uint8[5] memory components;
+        components[0] = owner.addItemComponent(0x0, 'blaster');
+        components[1] = owner.addItemComponent(0xb, 'ahh');
+        components[2] = owner.addItemComponent(0x9, 'a');
+        components[3] = owner.addItemComponent(0xa, 'big');
+        uint256 id = owner.mint(address(owner), components, 0x0, 5, '');
+
+        Attribute[] memory attributes = new Attribute[](5);
+        attributes[0] = Attribute('Slot', 'Weapon');
+        attributes[1] = Attribute('Item', 'blaster');
+        attributes[2] = Attribute('Suffix', 'ahh');
+        attributes[3] = Attribute('Name Prefix', 'a');
+        attributes[4] = Attribute('Name Suffix', 'big');
+        assertMetadata(id, attributes, "'a big' blaster ahh");
+
+        assertEq(stockpile.balanceOf(address(owner), id), 5);
+    }
+
+    function testCreateAndMintATicklerNewWeapons() public {
+        uint8[5] memory components;
+        components[0] = owner.addItemComponent(0x0, 'tickler');
+        uint256 id = owner.mint(address(owner), components, 0x0, 1, '');
+
+        Attribute[] memory attributes = new Attribute[](2);
+        attributes[0] = Attribute('Slot', 'Weapon');
+        attributes[1] = Attribute('Item', 'tickler');
+        assertMetadata(id, attributes, 'tickler');
+
+        assertEq(stockpile.balanceOf(address(owner), id), 1);
+    }
+
     function testAK47BagNames() public {
         ItemNames memory expected = ItemNames({
             weapon: 'AK47',

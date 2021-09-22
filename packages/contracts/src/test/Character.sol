@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import './utils/CharacterSetup.sol';
-import { ItemIds } from '../LootTokensMetadata.sol';
+import './utils/StockpileSetup.sol';
 
 contract Open is CharacterTest {
     function testCanEquip() public {
