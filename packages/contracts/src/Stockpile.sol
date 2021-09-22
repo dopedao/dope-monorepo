@@ -5,8 +5,9 @@ pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
 import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
-import './LootTokensMetadata.sol';
+import './StockpileMetadata.sol';
 import './interfaces/IStockpile.sol';
 
 library Errors {
@@ -18,15 +19,16 @@ library Errors {
 /// @author Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 Loot bags and extracting the items inside it
 /// The created tokens are ERC1155 compatible, and their on-chain SVG is their name
-contract Stockpile is ERC1155, LootTokensMetadata {
+contract Stockpile is ERC1155, StockpileMetadata, Ownable {
     // The DOPE bags contract
     IERC721 immutable bags;
 
     mapping(uint256 => bool) private opened;
 
     // No need for a URI since we're doing everything onchain
-    constructor(address _bags) ERC1155('') {
+    constructor(address _bags, address _owner) ERC1155('') {
         bags = IERC721(_bags);
+        transferOwnership(_owner);
     }
 
     /// @notice Opens the provided tokenId if the sender is owner. This
@@ -72,6 +74,51 @@ contract Stockpile is ERC1155, LootTokensMetadata {
         uint8[5] memory components = componentsFn(tokenId);
         return TokenId.toId(components, itemType);
     }
+
+    function addItemComponent(uint8 itemType, string calldata component) external onlyOwner returns (uint8) {
+        return addComponent(itemType, component);
+    }
+
+    function mint(
+        address to,
+        uint8[5] memory components,
+        uint8 itemType,
+        uint256 amount,
+        bytes memory data
+    ) external onlyOwner returns (uint256) {
+        uint256 id = TokenId.toId(components, itemType);
+        _mint(to, id, amount, data);
+        return id;
+    }
+
+    function mintBatch(
+        address to,
+        uint8[] memory components,
+        uint8[] memory itemTypes,
+        uint256[] memory amounts,
+        bytes memory data
+    ) external onlyOwner returns (uint256[] memory) {
+        require(components.length % 5 == 0, 'invalid components shape');
+        require(components.length / 5 == itemTypes.length, 'component itemType mismatch');
+        uint256[] memory ids = new uint256[](itemTypes.length);
+
+        for (uint256 i = 0; i < components.length; i += 5) {
+            uint8[5] memory _components;
+            _components[0] = components[i];
+            _components[1] = components[i + 1];
+            _components[2] = components[i + 2];
+            _components[3] = components[i + 3];
+            _components[4] = components[i + 4];
+            ids[i / 5] = TokenId.toId(_components, itemTypes[i / 5]);
+        }
+
+        _mintBatch(to, ids, amounts, data);
+        return ids;
+    }
+
+    // function burn(uint256 id, uint256 amount) external {
+    //     _burn(msg.sender, id, amount);
+    // }
 
     function rleOf(uint256 tokenId) external view returns (bytes memory rle) {
         return '';

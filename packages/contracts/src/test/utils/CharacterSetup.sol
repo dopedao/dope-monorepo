@@ -7,6 +7,7 @@ import './Hevm.sol';
 import '../../Loot.sol';
 import { Character } from '../../Character.sol';
 import { Stockpile } from '../../Stockpile.sol';
+import { StockpileTester } from './StockpileSetup.sol';
 
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
@@ -47,6 +48,8 @@ contract CharacterUser is ERC721Holder, ERC1155Holder {
     }
 }
 
+contract Owner {}
+
 contract CharacterTest is DSTest {
     uint256 internal constant BAG = 10;
     uint256 internal constant OTHER_BAG = 100;
@@ -54,16 +57,19 @@ contract CharacterTest is DSTest {
 
     // contracts
     DopeWarsLoot internal loot;
-    Stockpile internal stockpile;
+    StockpileTester internal stockpile;
     Character internal character;
 
     // users
+    Owner internal owner;
     CharacterUser internal alice;
 
     function setUp() public virtual {
+        owner = new Owner();
+
         // deploy contracts
         loot = new DopeWarsLoot();
-        stockpile = new Stockpile(address(loot));
+        stockpile = new StockpileTester(address(loot), address(owner));
         character = new Character(address(stockpile));
 
         // create alice's account & claim a bag
