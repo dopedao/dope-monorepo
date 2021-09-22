@@ -5,6 +5,7 @@ import { media } from '../styles/mixins';
 import ConnectWallet from './ConnectWallet';
 import AppWindowTitleBar from './AppWindowTitleBar';
 import AppWindowFooter from './AppWindowFooter';
+import Draggable from 'react-draggable';
 
 const AppWindowWrapper = styled.div`
   ${media.phone`
@@ -55,14 +56,16 @@ export default function AppWindow({
   `;
 
   return (
-    <AppWindowWrapper>
-      <AppWindowTitleBar />
-      {requiresWalletConnection === true && !account ? (
-        <ConnectWallet />
-      ) : (
-        <AppWindowBody>{children}</AppWindowBody>
-      )}
-      <AppWindowFooter />
-    </AppWindowWrapper>
+    <Draggable handle=".appWindowTitleBar">
+      <AppWindowWrapper>
+        <AppWindowTitleBar />
+        {requiresWalletConnection === true && !account ? (
+          <ConnectWallet />
+        ) : (
+          <AppWindowBody>{children}</AppWindowBody>
+        )}
+        <AppWindowFooter />
+      </AppWindowWrapper>
+    </Draggable>
   );
 }

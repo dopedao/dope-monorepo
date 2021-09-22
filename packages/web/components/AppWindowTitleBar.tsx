@@ -14,7 +14,7 @@ const AppWindowTitleBar = () => {
   };
 
   return (
-    <>
+    <div className="appWindowTitleBar">
       <header
         css={css`
           background: #585858;
@@ -24,6 +24,7 @@ const AppWindowTitleBar = () => {
           z-index: var(--header-z);
           display: flex;
           flex-direction: column;
+          cursor: move;
         `}
       >
         <div
@@ -103,7 +104,7 @@ const AppWindowTitleBar = () => {
           )}
         </div>
       </header>
-    </>
+    </div>
   );
 };
 
