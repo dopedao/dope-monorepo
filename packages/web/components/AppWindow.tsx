@@ -1,11 +1,11 @@
-import React from 'react';
-import { useWeb3React } from '@web3-react/core';
-import styled from '@emotion/styled';
 import { media } from '../styles/mixins';
-import ConnectWallet from './ConnectWallet';
-import AppWindowTitleBar from './AppWindowTitleBar';
+import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from './AppWindowFooter';
+import AppWindowTitleBar from './AppWindowTitleBar';
+import ConnectWallet from './ConnectWallet';
 import Draggable from 'react-draggable';
+import React from 'react';
+import styled from '@emotion/styled';
 
 const AppWindowWrapper = styled.div`
   ${media.phone`
@@ -47,7 +47,7 @@ export default function AppWindow({
   children,
 }: AppWindowProps) {
   const { account } = useWeb3React();
-
+  
   const AppWindowBody = styled.div`
     height: 100%;
     overflow: scroll;
