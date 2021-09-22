@@ -4,9 +4,10 @@ pragma solidity ^0.8.0;
 // ============ Imports ============
 
 import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
-import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+// import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
+import './ERC1155Snapshot.sol';
 import './StockpileMetadata.sol';
 import './interfaces/IStockpile.sol';
 
@@ -19,7 +20,7 @@ library Errors {
 /// @author Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 Loot bags and extracting the items inside it
 /// The created tokens are ERC1155 compatible, and their on-chain SVG is their name
-contract Stockpile is ERC1155, StockpileMetadata, Ownable {
+contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
     // The DOPE bags contract
     IERC721 immutable bags;
 
