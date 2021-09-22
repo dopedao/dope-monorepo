@@ -10,6 +10,7 @@ const AppWindowTitleBar = () => {
   const router = useRouter();
 
   const closeWindow = (): void => {
+    console.log('Closing window');
     router.replace('/');
   };
 

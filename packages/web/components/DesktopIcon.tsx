@@ -19,10 +19,9 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => {
         flex-direction: column;
         cursor: pointer;
         cursor: hand;
-        ${media.phone`
-          width: 96px;
-          height: 96px;
-        `}
+        // Default
+        width: 96px;
+        height: 96px;
         ${media.tablet`
           width: 128px;
           height: 128px;
@@ -41,13 +40,12 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => {
           justify-content: center;
           align-items: center;
           margin-bottom: 8px;
-          ${media.phone`
-            width: 32px;
-            height: 32px;
-          `}
+          // Default
+          width: 48px;
+          height: 48px;
           ${media.tablet`
-            width: 48px;
-            height: 48px;
+            width: 54px;
+            height: 54px;
           `}
           ${media.laptop`
             width: 64px;
