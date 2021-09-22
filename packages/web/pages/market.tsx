@@ -1,5 +1,5 @@
 import AppWindow from '../components/AppWindow';
-import Head from '../components/head';
+import Head from '../components/Head';
 
 export default function Market() {
   return (

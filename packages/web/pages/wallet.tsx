@@ -1,5 +1,5 @@
 import AppWindow from '../components/AppWindow';
-import Head from '../components/head';
+import Head from '../components/Head';
 import DisconnectWallet from '../components/DisconnectWallet';
 import { useRouter } from 'next/router';
 

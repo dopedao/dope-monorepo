@@ -1,4 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
+import { Z_FIXED } from 'zlib';
 
 const desktopImageCss = [
   "#000000 url('/images/desktop/TONY.gif') center center / contain repeat-y fixed",
@@ -40,22 +41,34 @@ export default extendTheme({
           fontSize: '12px',
           fontWeight: '400',
         },
+        primary: {
+          backgroundColor: '#3523FE',
+          color: '#ffffff',
+          border: '4px solid #000000',
+          fontSize: '14px',
+          textShadow: '1px 1px 0px rgba(0, 0, 0, 0.66)',
+        },
       },
     },
     Table: {
       variants: {
         dope: {
-          thead: {
-            borderBottom: '2px solid #000',
+          table: {
+            borderCollapse: 'separate',
           },
+          thead: {},
           th: {
+            position: 'sticky',
+            top: 0,
+            borderBottom: '2px solid #000',
             height: '34px',
             background: '#DEDEDD',
             textAlign: 'center',
             verticalAlign: 'middle',
+            textShadow: 'none',
             padding: 0,
             boxShadow:
-              'inset -3px -3px 0px rgba(0, 0, 0, 0.25), inset 3px 3px 0px rgba(255, 255, 255, 0.25)',
+              'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)',
             ':not(:last-child)': {
               borderRight: '2px solid #000',
             },

@@ -85,7 +85,7 @@ const AppWindowTitleBar = () => {
           `}
         >
           <NavLink href="/loot">
-            <a>Your Loot</a>
+            <a>Loot</a>
           </NavLink>
           <NavLink href="/hustler">
             <a>Hustlers</a>
@@ -96,12 +96,7 @@ const AppWindowTitleBar = () => {
           {account && (
             <NavLink href="/wallet">
               <a>
-                <Image 
-                  src="/images/icon/connected.svg" 
-                  width={16} 
-                  height={16}
-                  alt="Connected" 
-                />
+                <Image src="/images/icon/connected.svg" width={16} height={16} alt="Connected" />
                 Connected
               </a>
             </NavLink>

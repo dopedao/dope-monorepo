@@ -1,5 +1,5 @@
 import ReactMarkdown from 'react-markdown';
-import Head from '../components/head';
+import Head from '../components/Head';
 import AppWindow from '../components/AppWindow';
 
 const AboutContent = `

@@ -5,8 +5,8 @@ import { useWeb3React } from '@web3-react/core';
 import { Paper__factory, Stockpile__factory } from '@dopewars/contracts';
 import ItemRarities from 'dope-metrics/output/item-rarities.json';
 
-import { Bag } from '../src/generated/graphql';
-import { NETWORK } from '../common/constants';
+import { Bag } from '../../src/generated/graphql';
+import { NETWORK } from '../../common/constants';
 
 const colors = ['#000', '#838383', '#00DC82', '#2e82ff', '#c13cff', '#f8b73e', '#ff4444'];
 
@@ -85,8 +85,6 @@ export const Loot = ({
         border: 2px solid #000;
         display: flex;
         flex-direction: column;
-        height: 640px;
-        width: 500px;
         background-color: #fff;
       `}
     >
@@ -98,8 +96,8 @@ export const Loot = ({
           height: 34px;
           background: #dededd;
           border-bottom: 2px solid #000;
-          box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.25),
-            inset 3px 3px 0px rgba(255, 255, 255, 0.25);
+          box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
+            inset 1px 1px 0px rgba(255, 255, 255, 0.25);
           font-size: 13px;
           font-weight: 600;
         `}

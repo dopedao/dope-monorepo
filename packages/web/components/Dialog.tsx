@@ -19,7 +19,7 @@ const Dialog = ({ title, className, onClose, children }: DialogProps) => {
     justify-content: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
-    background-image: url('/images/tile-brick-black.png');
+    background-image: url('/images/tile/brick-black.png');
     background-size: 200px 200px;
     ${className}
   `;
