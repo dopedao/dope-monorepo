@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import './Components.sol';
+import './StockpileComponents.sol';
 import './TokenId.sol';
 import { Base64, toString } from './MetadataUtils.sol';
 
@@ -9,7 +9,7 @@ import { Base64, toString } from './MetadataUtils.sol';
 /// the individual items inside a Loot bag.
 /// @author Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
-contract StockpileMetadata is Components {
+contract StockpileMetadata is StockpileComponents {
     string[] internal itemTypes = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
 
     function name() external pure returns (string memory) {
