@@ -56,9 +56,7 @@ export default function AppWindow({
   `;
 
   return (
-    <Draggable
-      handle=".appWindowTitleBar"
-    >
+    <Draggable handle=".appWindowTitleBar">
       <AppWindowWrapper>
         <AppWindowTitleBar />
         {requiresWalletConnection === true && !account ? (
