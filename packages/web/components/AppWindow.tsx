@@ -6,13 +6,12 @@ import ConnectWallet from './ConnectWallet';
 import Draggable from 'react-draggable';
 import React from 'react';
 import styled from '@emotion/styled';
+import ConditionalWrapper from './ConditionalWrapper';
 
 const AppWindowWrapper = styled.div`
-  ${media.phone`
-    width: 100%;
-    height: 100vh;
-    margin: 0;
-  `}
+  width: 100%;
+  height: 100vh;
+  margin: 0;
   ${media.tablet`
     width: 100%;
     height: 100vh;
@@ -55,8 +54,14 @@ export default function AppWindow({
     padding: ${padBody ? '32px' : '0px'};
   `;
 
+  const isTouchDevice =
+    'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+
   return (
-    <Draggable handle=".appWindowTitleBar">
+    <ConditionalWrapper
+      condition={!isTouchDevice}
+      wrap={children => <Draggable handle=".appWindowTitleBar">{children}</Draggable>}
+    >
       <AppWindowWrapper>
         <AppWindowTitleBar />
         {requiresWalletConnection === true && !account ? (
@@ -66,6 +71,6 @@ export default function AppWindow({
         )}
         <AppWindowFooter />
       </AppWindowWrapper>
-    </Draggable>
+    </ConditionalWrapper>
   );
 }

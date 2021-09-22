@@ -6,71 +6,68 @@ import styled from '@emotion/styled';
 const IconGrid = styled.div`
   position: fixed;
   z-index: 0;
+  bottom: 0px;
   display: flex;
-  ${media.phone`
-    width: 100%;
-    height: auto;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-    align-items: flex-end;
-    gap: 12px;
-    padding: 12px;
-  `}
+  // Default
+  width: 100%;
+  height: auto;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 12px;
   ${media.tablet`
-    width: auto;
-    height: 100%;
-    flex-flow: column wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
     gap: 16px;
     padding: 16px;
   `}
   ${media.laptop`
-    width: auto;
-    height: 100%;
+    gap: 24px;
+    padding: 24px;
     flex-flow: column wrap;
     justify-content: flex-start;
     align-items: flex-start;
-    gap: 24px;
-    padding: 24px;
+    height: 100%;
+    width: auto;
   `}
 `;
 
 export default () => {
   const router = useRouter();
-
-  const openDopewars = (): void => {
-    router.replace('/loot');
+  const openLocalRoute = (url: string): void => {
+    router.replace(url);
   };
-
-  const openBrowserTab = (url: string) => {
+  const openBrowserTab = (url: string): void => {
     window.open(url, '_blank')?.focus();
-  };
-
-  const openSea = (): void => {
-    openBrowserTab('https://opensea.io/collection/dope-v4');
-  };
-
-  const openTwitter = (): void => {
-    openBrowserTab('https://twitter.com/theDopeWars');
-  };
-
-  const openDiscord = (): void => {
-    openBrowserTab('https://discord.gg/6fqqBS7mhY');
-  };
-
-  const openTally = (): void => {
-    openBrowserTab('https://www.withtally.com/governance/dopeWars');
   };
 
   return (
     <IconGrid>
-      <DesktopIcon icon="dopewars-exe" label="DOPEWARS.EXE" clickAction={openDopewars} />
-      <DesktopIcon icon="file" label="ABOUT" clickAction={openTally} />
-      <DesktopIcon icon="tally" label="Dope DAO" clickAction={openTally} />
-      <DesktopIcon icon="open-sea" label="OpenSea" clickAction={openSea} />
-      <DesktopIcon icon="twitter" label="Twitter" clickAction={openTwitter} />
-      <DesktopIcon icon="discord" label="Discord" clickAction={openDiscord} />
+      <DesktopIcon
+        icon="dopewars-exe"
+        label="DOPEWARS.EXE"
+        clickAction={() => openLocalRoute('/loot')}
+      />
+      <DesktopIcon icon="file" label="ABOUT.FAQ" clickAction={() => openLocalRoute('/about')} />
+      <DesktopIcon
+        icon="tally"
+        label="Dope DAO"
+        clickAction={() => openBrowserTab('https://www.withtally.com/governance/dopeWars')}
+      />
+      <DesktopIcon
+        icon="open-sea"
+        label="OpenSea"
+        clickAction={() => openBrowserTab('https://opensea.io/collection/dope-v4')}
+      />
+      <DesktopIcon
+        icon="twitter"
+        label="Twitter"
+        clickAction={() => openBrowserTab('https://twitter.com/theDopeWars')}
+      />
+      <DesktopIcon
+        icon="discord"
+        label="Discord"
+        clickAction={() => openBrowserTab('https://discord.gg/6fqqBS7mhY')}
+      />
     </IconGrid>
   );
 };
