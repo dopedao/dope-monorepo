@@ -42,12 +42,12 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => {
           align-items: center;
           margin-bottom: 8px;
           ${media.phone`
-            width: 48px;
-            height: 48px;
+            width: 32px;
+            height: 32px;
           `}
           ${media.tablet`
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
           `}
           ${media.laptop`
             width: 64px;

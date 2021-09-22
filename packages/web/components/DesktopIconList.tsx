@@ -1,17 +1,39 @@
-import styled from '@emotion/styled';
+import { media } from '../styles/mixins';
 import { useRouter } from 'next/router';
 import DesktopIcon from '../components/DesktopIcon';
+import styled from '@emotion/styled';
 
 const IconGrid = styled.div`
   position: fixed;
-  height: 100%;
   z-index: 0;
-  padding: 32px;
   display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 32px;
+  ${media.phone`
+    width: 100%;
+    height: auto;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 12px;
+  `}
+  ${media.tablet`
+    width: auto;
+    height: 100%;
+    flex-flow: column wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+  `}
+  ${media.laptop`
+    width: auto;
+    height: 100%;
+    flex-flow: column wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 24px;
+  `}
 `;
 
 export default () => {
