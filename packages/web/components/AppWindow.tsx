@@ -47,7 +47,7 @@ export default function AppWindow({
   children,
 }: AppWindowProps) {
   const { account } = useWeb3React();
-  
+
   const AppWindowBody = styled.div`
     height: 100%;
     overflow: scroll;

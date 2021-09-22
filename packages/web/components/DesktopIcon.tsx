@@ -58,12 +58,7 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => {
           }
         `}
       >
-        <Image
-          src={`/images/icon/${icon}.svg`}
-          alt={icon}
-          width="100%"
-          height="100%"
-        />
+        <Image src={`/images/icon/${icon}.svg`} alt={icon} width="100%" height="100%" />
       </div>
       <div
         className="desktop-icon-label"

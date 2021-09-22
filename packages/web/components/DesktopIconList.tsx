@@ -38,8 +38,8 @@ export default () => {
   };
 
   const openTally = (): void => {
-    openBrowserTab('https://www.withtally.com/governance/dopeWars')
-  }
+    openBrowserTab('https://www.withtally.com/governance/dopeWars');
+  };
 
   return (
     <IconGrid>
