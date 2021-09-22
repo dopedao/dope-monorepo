@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
-import DesktopIcon from '../components/DesktopIcon';
 import { useRouter } from 'next/router';
+import DesktopIcon from '../components/DesktopIcon';
 
 export default () => {
   const router = useRouter();
