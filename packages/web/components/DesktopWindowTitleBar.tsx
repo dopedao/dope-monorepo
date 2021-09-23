@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import AppWindowTitleButton from './AppWindowTitleButton';
 
 interface WindowTitleBarProps {
-  title: string;
+  title: string | undefined;
   children: React.ReactNode;
 }
 
@@ -55,7 +55,7 @@ const DesktopWindowTitleBar = ({ title, children }: WindowTitleBarProps) => {
               justify-content: center;
             `}
           >
-            {title}
+            {title || 'UNTITLED'}
           </div>
           <div></div>
         </div>
