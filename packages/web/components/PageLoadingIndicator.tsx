@@ -24,10 +24,10 @@ const LoadingMessage = styled.div`
   white-space: no-wrap;
   @keyframes zoom {
     0% {
-      font-size: .25em;
+      font-size: 0.25em;
     }
     25% {
-      font-size: .5em;
+      font-size: 0.5em;
     }
     50% {
       font-size: 1em;

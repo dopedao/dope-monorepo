@@ -70,10 +70,11 @@ export default function GlobalStyles() {
         body > div:first-of-type,
         div#__next,
         div#__next > div {
-          height: 100%; 
+          height: 100%;
         }
 
-        html, body {
+        html,
+        body {
           overscroll-behavior-y: none;
         }
 

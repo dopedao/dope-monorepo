@@ -75,9 +75,15 @@ const AppWindowTitleBar = () => {
             align-items: center;
             // Flex nav items center for mobile phone
             justify-content: center;
+            a:first-child {
+              margin-left: 44px;
+            }
             // Flex nav items left larger
             ${media.tablet`
               justify-content: flex-start;
+              a:first-child {
+                margin-left: 0px;
+              }
             `}
             a {
               height: 30px;
@@ -86,9 +92,6 @@ const AppWindowTitleBar = () => {
               gap: 4px;
               display: flex;
               align-items: center;
-              :first-child {
-                margin-left: 12px;
-              }
             }
             a.active {
               text-decoration: none;
