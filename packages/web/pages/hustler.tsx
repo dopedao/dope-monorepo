@@ -12,7 +12,7 @@ const Hustler = () => {
           Go read the proposal for
           <br />
           <a
-            class="textLink"
+            className="textLink"
             href="https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283"
           >
             Dope Wars: Ignition
