@@ -9,36 +9,91 @@ const TextBody = styled.div`
   overflow: auto;
   padding: 32px;
   font-size: 1.2em;
-  h1,
   h2,
   h3 {
-    margin-top: 16px;
+    margin-top: 32px;
+    margin-bottom: 16px;
   }
   em {
     background-color: rgba(255, 252, 63, 0.5);
+  }
+  img[src*="#float-left"] {
+    width:50%;
+    float:left;
+    margin: 16px;
+    margin-left: 0;
+  }
+  img[src*="#full-bleed"] {
+    width: 100%;
+    margin-bottom: 16px;
+    margin-top: 16px;
+  }
+  hr {
+    border-top: 2px dashed #BFB9BD;
+    margin-top: 32px;
+    margin-bottom: 32px;
   }
 `;
 
 const AboutContent = `
 # What is this?
 
-Dope Wars is a NFT project, an experiment in DAO governance, and soon to be one of the first pay-to-earn crypto games on the Ethereum blockchain.
+_Dope Wars is an NFT project and an experiment in DAO Governance._
 
-For now, you can connect an Ethereum wallet to see all of the [DOPE NFTs](https://opensea.io/collection/dope-v4) you've purchased.
+The Dope DAO is producing one of the first play-to-earn crypto games on the Ethereum blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
 
-Soon you'll be able to [unbundle, create a profile picture, and trade individual items](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283) with other players to equip your Hustler.
+## DOPE NFT
 
-_DOPEWARS.EXE is currently in preview mode._
+![DOPE LOOT NFT #0001](/images/dope-nft-1.svg#float-left)
 
-### Links of interest
-- [DOPE DAO Wiki](http://wiki.dopedao.org)
-- [Discord](https://discord.gg/6fqqBS7mhY)
-- [Twitter](https://twitter.com/theDopeWars)
-- [DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
+DOPE NFTs are bundles of Items, with randomized rarity scores.
 
-### DOPEWARS.EXE Producers
-- [facesof.eth](https://twitter.com/facesOfEth)
-- [tarrence](https://twitter.com/tarrenceva)
+Each DOPE NFT allows you to build a character around a collection of Items to be used in game. Each DOPE NFT also provides an equal Governance Vote on Proposals from the DAO.
+
+
+## $PAPER
+
+![PAPER Airdrop](/images/paper-chopper.png#full-bleed)
+You are automatically entitled to claim 125,000 $PAPER for each Dope Wars Loot NFT using [contract address on EtherScan](https://etherscan.io/address/0x7ae1d57b58fa6411f32948314badd83583ee0e8c). 
+
+_Each DOPE NFT is able to claim only once._
+
+To see if your Dope Wars Loot NFT is eligible please [use the claim check tool available here](https://dwlclaimcheck.surge.sh/).
+
+**What is the point of $PAPER?**
+
+$PAPER is the in-game asset of Dope Wars, our p2e homage of the game we all played on our TI-85 calculators instead of paying attention in math class. Because we don't know how much $PAPER will be needed in the game economy, there is no fixed supply of $PAPER.  
+
+After all, Dope Wars takes place in a world post-1971, so a fixed monetary supply wouldn't really be accurate nor work for the fast-paced, high-action world of DOPE.  Dope DAO will be our Federal Reserve.
+----
+
+### Currently… 
+You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have purchased.
+
+----
+
+### Soon…
+You’ll be able to [unbundle your items, create a PFP of your Dope Dealer](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual items with other players to equip your Dope Dealer.
+
+----
+
+### The DOPE DAO is supported by gamers like you
+5% of each purchase of a DOPE NFT is deposited into our treasury. This allows us to continue improving the DOPE WARS ecosystem.
+[Purchase DOPE NFT on OpenSea](https://opensea.io/collection/dope-v4) 
+
+----
+
+### More Info
+
+- [Dope DAO Wiki](http://wiki.dopedao.org)
+- [DAO Governance Proposals via Tally](https://www.withtally.com/governance/dopeWars)
+
+----
+
+### DOPEWARS.EXE
+Produced by [facesof.eth](https://twitter.com/facesOfEth) and [tarrence](https://twitter.com/tarrenceva)
+
+
 `;
 
 export default function About() {
