@@ -31,7 +31,7 @@ Soon you'll be able to [unbundle, create a profile picture, and trade individual
 _DOPEWARS.EXE is currently in preview mode._
 
 ### Links of interest
-- [DOPE DAO Wiki](wiki.dopedao.org)
+- [DOPE DAO Wiki](http://wiki.dopedao.org)
 - [Discord](https://discord.gg/6fqqBS7mhY)
 - [Twitter](https://twitter.com/theDopeWars)
 - [DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
