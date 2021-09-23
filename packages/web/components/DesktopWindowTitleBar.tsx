@@ -8,7 +8,7 @@ interface WindowTitleBarProps {
   children: React.ReactNode;
 }
 
-const DesktopWindowTitleBar = ({title, children}: WindowTitleBarProps) => {
+const DesktopWindowTitleBar = ({ title, children }: WindowTitleBarProps) => {
   const { account } = useWeb3React();
   const router = useRouter();
 

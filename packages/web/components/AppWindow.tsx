@@ -48,16 +48,8 @@ export default function AppWindow({
   const { account } = useWeb3React();
 
   return (
-    <DesktopWindow 
-      title={title} 
-      titleChildren={<AppWindowTitleBar />} 
-      padBody={padBody}
-    >
-      {requiresWalletConnection === true && !account ? (
-        <ConnectWallet />
-      ) : (
-        <>{children}</>
-      )}
+    <DesktopWindow title={title} titleChildren={<AppWindowTitleBar />} padBody={padBody}>
+      {requiresWalletConnection === true && !account ? <ConnectWallet /> : <>{children}</>}
       <AppWindowFooter />
     </DesktopWindow>
   );

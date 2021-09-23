@@ -23,18 +23,18 @@ const DesktopWindow = ({
   titleChildren,
   children,
 }: WindowProps) => {
-    const WindowWrapper = styled.div`
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      max-width: ${width}px;
-      max-height: ${height}px;
-      ${media.tablet`
+  const WindowWrapper = styled.div`
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    max-width: ${width}px;
+    max-height: ${height}px;
+    ${media.tablet`
         width: 100%;
         height: 100%;
         margin: 0;
       `}
-      ${media.laptop`
+    ${media.laptop`
         width: 80%;
         height: 90%;
         margin: auto;
@@ -42,12 +42,12 @@ const DesktopWindow = ({
       `}
 
       background-color: #ffffff;
-      padding: 0;
-      border: 2px solid #000;
-      filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
-      display: flex;
-      flex-direction: column;
-    `;
+    padding: 0;
+    border: 2px solid #000;
+    filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
+    display: flex;
+    flex-direction: column;
+  `;
 
   const getBodyPadding = () => {
     const defaultBodyPadding = '16px';
@@ -79,12 +79,10 @@ const DesktopWindow = ({
       wrap={children => <Draggable handle=".windowTitleBar">{children}</Draggable>}
     >
       <WindowWrapper>
-        <DesktopWindowTitleBar title={title}>
-          {titleChildren}
-        </DesktopWindowTitleBar>
+        <DesktopWindowTitleBar title={title}>{titleChildren}</DesktopWindowTitleBar>
         <WindowBody>{children}</WindowBody>
       </WindowWrapper>
     </ConditionalWrapper>
   );
-}
+};
 export default DesktopWindow;
