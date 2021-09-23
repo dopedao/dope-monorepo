@@ -129,7 +129,7 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 export default function About() {
   return (
     <>
-      <Head title={'About'} />
+      <Head title={'About DOPE WARS NFT'} />
       <DesktopWindow title="ABOUT.FAQ" width={640} height={960}>
         <TextBody className="markdownContainer">
           <ReactMarkdown>{AboutContent}</ReactMarkdown>
