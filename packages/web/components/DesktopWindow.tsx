@@ -5,10 +5,10 @@ import Draggable from 'react-draggable';
 import React from 'react';
 import styled from '@emotion/styled';
 
-interface WindowProps {
+interface DesktopWindowProps {
+  title: string | undefined;
   width?: number;
   height?: number;
-  title: string | undefined;
   titleChildren?: React.ReactNode;
   children: React.ReactNode;
 }
@@ -19,26 +19,29 @@ const DesktopWindow = ({
   height = 768,
   titleChildren,
   children,
-}: WindowProps) => {
+}: DesktopWindowProps) => {
   const WindowWrapper = styled.div`
     width: 100%;
     height: 100%;
     margin: 0;
+    max-width: ${width}px;
+    max-height: ${height}px;
+    ${media.phone`
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    `}
     ${media.tablet`
-        width: 100%;
-        height: 100%;
-        max-width: ${width}px;
-        max-height: ${height}px;
-        margin: 0;
-      `}
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    `}
     ${media.laptop`
-        width: 80%;
-        height: 90%;
-        max-width: ${width}px;
-        max-height: ${height}px;
-        margin: auto;
-        margin-top: 32px;
-      `}
+      width: 80%;
+      height: 90%;
+      margin: auto;
+      margin-top: 32px;
+    `}
     padding: 0;
     background-color: #a8a9ae;
     border: 2px solid #000;
