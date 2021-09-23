@@ -8,28 +8,50 @@ import ItemRarities from 'dope-metrics/output/item-rarities.json';
 import { Bag } from '../../src/generated/graphql';
 import { NETWORK } from '../../common/constants';
 
-const colors = ['#000', '#838383', '#00DC82', '#2e82ff', '#c13cff', '#f8b73e', '#ff4444'];
+const backgroundColors = [
+  '#fff',
+  '#fff',
+  'rgba(18,171,23,0.15)',
+  'rgba(46,130,255,0.15)',
+  'rgba(254,101,33,0.15)',
+  'rgba(249,40,255,0.25)',
+  'rgba(255,252,63,0.5)',
+];
 
 const betterItemName = (name: string) => {
   const quotedIndex = name.lastIndexOf('"');
   if (quotedIndex !== -1) {
-    const modifier = name.substr(0, quotedIndex+1);
-    const itemName = name.substr(quotedIndex+1);
-    return(
+    const modifier = name.substr(0, quotedIndex + 1);
+    const itemName = name.substr(quotedIndex + 1);
+    return (
       <>
-        <span css={css`margin-left:-0.6em;`}>{modifier}</span>
-        <br/>
-        <span>{itemName}</span>
+        <span
+          css={css`
+            margin-left: -0.9em;
+            display: inline;
+            font-size: 1.1em;
+          `}
+        >
+          {modifier}
+        </span>
+        <br />
+        <span
+          css={css`
+            display: inline;
+            margin-top: 0.6em;
+          `}
+        >
+          {itemName}
+        </span>
       </>
-    )
+    );
   }
   return name;
-}
+};
 
 const Row = ({ color, slot, item }: { color: string; slot: string; item: string }) => (
   <div
     css={css`
-      color: ${color};
       font-size: 14px;
       line-height: 16px;
       width: 100%;
@@ -55,7 +77,15 @@ const Row = ({ color, slot, item }: { color: string; slot: string; item: string 
         width: 66%;
       `}
     >
-      {betterItemName(item)}
+      <span
+        css={css`
+          background-color: ${color};
+          padding: 2px 4px;
+          color: #000;
+        `}
+      >
+        {betterItemName(item)}
+      </span>
     </div>
   </div>
 );
@@ -144,7 +174,7 @@ export const Loot = ({
         ].map(slot => (
           <Row
             key={slot[0]}
-            color={colors[(ItemRarities as { [name: string]: any })[slot[1]]]}
+            color={backgroundColors[(ItemRarities as { [name: string]: any })[slot[1]]]}
             slot={slot[0]}
             item={slot[1]}
           />
@@ -158,7 +188,6 @@ export const Loot = ({
           background: #dededd;
           border-top: 2px solid #000;
           padding: 0 16px;
-
           > button {
             margin-right: 10px;
           }
