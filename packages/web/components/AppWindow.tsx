@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from './AppWindowFooter';
 import AppWindowTitleBar from './AppWindowTitleBar';
 import ConnectWallet from './ConnectWallet';
+import { getBreakpointWidth } from '../styles/breakpoints';
 import Draggable from 'react-draggable';
 import React from 'react';
 import styled from '@emotion/styled';
@@ -47,20 +48,30 @@ export default function AppWindow({
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
+  const getBodyPadding = () => {
+    const defaultBodyPadding = '16px';
+    if (typeof window === 'undefined') {
+      return defaultBodyPadding;
+    }
+    return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
+  };
+
   const AppWindowBody = styled.div`
     height: 100%;
     overflow: scroll;
     background-color: #a8a9ae;
-    padding: ${padBody ? '32px' : '0px'};
+    padding: ${padBody ? getBodyPadding() : '0px'};
   `;
 
   const isTouchDevice = () => {
-    if(typeof window === 'undefined') {
+    if (typeof window === 'undefined') {
       return false;
     }
-    return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+    return (
+      'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0
+    );
   };
-    
+
   return (
     <ConditionalWrapper
       condition={!isTouchDevice()}

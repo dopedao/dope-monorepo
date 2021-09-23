@@ -93,22 +93,24 @@ export const Loot = ({
           display: flex;
           align-items: center;
           justify-content: center;
-          height: 34px;
+          line-height: 32px;
           background: #dededd;
           border-bottom: 2px solid #000;
           box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
             inset 1px 1px 0px rgba(255, 255, 255, 0.25);
           font-size: 13px;
           font-weight: 600;
+          position: 'sticky';
         `}
       >
-        Dope Wars Loot #{bag.id}
+        <div>Dope Wars Loot #{bag.id}</div>
       </div>
       <div
         css={css`
           flex: 1;
           background: #fff;
-          margin: 12px 16px;
+          padding: 12px 16px;
+          overflow: auto;
         `}
       >
         {[

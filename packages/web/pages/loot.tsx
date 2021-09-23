@@ -1,3 +1,4 @@
+import { media } from '../styles/mixins';
 import { useState } from 'react';
 import { useWalletQuery } from '../src/generated/graphql';
 import { useWeb3React } from '@web3-react/core';
@@ -11,14 +12,20 @@ import styled from '@emotion/styled';
 
 const Container = styled.div`
   display: flex;
-  gap: 32px;
-  height: 100%;
   justify-content: center;
+  flex-flow: column wrap;
+  height: 100%;
+  gap: 16px;
   & > div {
     flex-grow: 1;
     flex-basis: 0;
     min-width: 0;
+    min-height: 0;
   }
+  ${media.tablet`
+    flex-flow: row nowrap;
+    gap: 32px;
+  `}
 `;
 
 const AuthenticatedContent = ({ id }: { id: string }) => {
