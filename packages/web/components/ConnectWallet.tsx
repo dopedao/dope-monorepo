@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
+import { media } from '../styles/mixins';
 import { useCallback } from 'react';
-import Head from './Head';
 import ConnectWalletSVG from '../svg/ConnectWallet';
 import Dialog from '../components/Dialog';
-
+import Head from './Head';
 import useWeb3Provider from '../hooks/web3';
 
 const ConnectWallet = () => {
@@ -37,6 +37,14 @@ const ConnectWallet = () => {
             flex-direction: column;
             align-items: center;
             gap: 25px;
+            svg {
+              width: 140px;
+              height: 140px;
+              ${media.tablet`
+                width: 280px;
+                height: 280px;
+              `}
+            }
           `}
         >
           <ConnectWalletSVG />

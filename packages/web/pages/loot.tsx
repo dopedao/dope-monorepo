@@ -13,14 +13,12 @@ import styled from '@emotion/styled';
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   height: 100%;
   gap: 16px;
   & > div {
     flex-grow: 1;
-    flex-basis: 0;
-    min-width: 0;
-    min-height: 0;
+    flex-basis: 50px;
   }
   ${media.tablet`
     flex-flow: row nowrap;

@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import { Button } from '@chakra-ui/react';
 import Dialog from './Dialog';
-
+import Image from 'next/image';
 import Ethereum from '../svg/Ethereum';
 
 type DisconnectWalletProps = {
@@ -24,10 +24,12 @@ const DisconnectWallet = ({ onClose }: DisconnectWalletProps) => {
       <div
         css={css`
           display: flex;
-          gap: 30px;
+          gap: 8px;
+          align-items: flex-start;
+          justify-content: flex-start;
         `}
       >
-        <Ethereum />
+        <Image src="/images/icon/ethereum.svg" width={48} height={48} alt="Eth" />
         <div
           css={css`
             display: flex;

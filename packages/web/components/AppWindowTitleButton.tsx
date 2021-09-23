@@ -9,6 +9,7 @@ interface IconProps {
 const AppWindowTitleButton = ({ icon, clickAction }: IconProps) => {
   return (
     <div
+      onClick={() => clickAction()}
       css={css`
         background-color: #d0d0d0;
         box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,
@@ -32,7 +33,6 @@ const AppWindowTitleButton = ({ icon, clickAction }: IconProps) => {
         alt={icon}
         width={16}
         height={16}
-        onClick={() => clickAction()}
       />
     </div>
   );

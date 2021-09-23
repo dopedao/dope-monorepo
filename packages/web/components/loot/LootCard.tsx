@@ -14,16 +14,16 @@ const Row = ({ color, slot, item }: { color: string; slot: string; item: string 
   <div
     css={css`
       color: ${color};
-      height: 34px;
+      height: 32px;
       border-bottom: 1px solid #dededd;
-      font-size: 13px;
+      font-size: 14px;
       display: flex;
       align-items: center;
     `}
   >
     <span
       css={css`
-        color: #4b4b4b;
+        color: rgb(26, 32, 44);
         width: 65px;
         text-align: right;
       `}
@@ -86,6 +86,7 @@ export const Loot = ({
         display: flex;
         flex-direction: column;
         background-color: #fff;
+        min-height: 304px;
       `}
     >
       <div
