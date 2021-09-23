@@ -7,9 +7,13 @@ const LoadingWrapper = styled.div`
   position: absolute;
   left: 0px;
   right: 0px;
-  top: 50%;
-  margin: 0px;
+  top: 0px;
+  bottom: 0px;
   z-index: 999;
+  background-image: url('/images/static.gif');
+  opacity: 0.66;
+  display: flex;
+  align-items: center;
 `;
 
 const LoadingMessage = styled.div`
@@ -18,31 +22,10 @@ const LoadingMessage = styled.div`
   text-align: center;
   width: 100%;
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 3.5em;
   line-height: 14px;
   padding: 8px 0px;
   white-space: no-wrap;
-  @keyframes zoom {
-    0% {
-      font-size: 0.25em;
-    }
-    25% {
-      font-size: 0.5em;
-    }
-    50% {
-      font-size: 1em;
-    }
-    75% {
-      font-size: 2em;
-    }
-    90% {
-      font-size: 4em;
-    }
-    100% {
-      font-size: 5em;
-    }
-  }
-  animation: zoom infinite 0.33s alternate;
 `;
 
 const PageLoadingIndicator = () => {
