@@ -82,7 +82,7 @@ To see if your Dope Wars Loot NFT is eligible please connect your wallet in DOPE
 
 #### What's the point of $PAPER?
 
-$PAPER is the in-game asset of Dope Wars, our p2e homage of the game we all played on our TI-85 calculators instead of paying attention in math class. Because we don't know how much $PAPER will be needed in the game economy, there is no fixed supply of $PAPER.  
+$PAPER is the in-game asset of Dope Wars, our p2e homage of the game we all played on our calculators instead of paying attention in math class. Because we don't know how much $PAPER will be needed in the game economy, there is no fixed supply of $PAPER.  
 
 After all, Dope Wars takes place in a world post-1971, so a fixed monetary supply wouldn't really be accurate nor work for the fast-paced, high-action world of DOPE.  Dope DAO will be our Federal Reserve.
 
