@@ -13,6 +13,7 @@ import theme from '../styles/theme';
 import GlobalStyles from '../styles/GlobalStyles';
 import { NETWORK } from '../common/constants';
 import DesktopIconList from '../components/DesktopIconList';
+import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -46,6 +47,7 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
         <Web3ReactProvider getLibrary={getLibrary}>
           <WrappedApolloProvider>
             <main>
+              <PageLoadingIndicator />
               <DesktopIconList />
               <Component {...pageProps} />
             </main>
