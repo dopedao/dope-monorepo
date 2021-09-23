@@ -46,7 +46,7 @@ const AuthenticatedContent = ({ id }: { id: string }) => {
         <LoadingBlock />
       </Container>
     );
-  } else if (!data?.wallet?.bags) {
+  } else if (!data?.wallet?.bags || data.wallet.bags.length === 0) {
     return <NoLootCard />;
   } else {
     return (
