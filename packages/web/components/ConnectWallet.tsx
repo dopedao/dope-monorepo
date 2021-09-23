@@ -11,8 +11,7 @@ const ConnectWallet = () => {
 
   const buttonProps = {
     className: 'button',
-    css: css`
-    `,
+    css: css``,
   };
 
   const onClick = useCallback(

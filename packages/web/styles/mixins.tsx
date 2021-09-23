@@ -80,8 +80,7 @@ export const buttonStyle = css`
   font-size: var(--text-01);
   border-radius: 4px;
   text-align: center;
-  box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,
-    1px 1px 0px rgba(255, 255, 255, 0.25) inset,
+  box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset, 1px 1px 0px rgba(255, 255, 255, 0.25) inset,
     0px 0px 2px rgba(0, 0, 0, 0.25);
   ${media.hover``}
 `;
