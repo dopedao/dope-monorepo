@@ -7,6 +7,7 @@ const desktopImageCss = [
   "#5f3084 url('/images/desktop/PAPER.png') center / 512px repeat",
   "#202221 url('/images/dope-wars-stacked-logo.png') center / 400px no-repeat fixed",
   "#202221 url('/images/dope-wars-smiley.png') center / 400px no-repeat fixed",
+  "#1d261c url('/images/desktop/limo-chopper.png') center / cover repeat-y",
 ];
 const randomImageIndex = Math.floor(Math.random() * desktopImageCss.length);
 const randomDesktopImageCss = desktopImageCss[randomImageIndex];
