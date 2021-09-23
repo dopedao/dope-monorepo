@@ -1,4 +1,3 @@
-import { getBreakpointWidth } from '../styles/breakpoints';
 import { media } from '../styles/mixins';
 import ConditionalWrapper from './ConditionalWrapper';
 import DesktopWindowTitleBar from './DesktopWindowTitleBar';
@@ -7,7 +6,6 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 interface WindowProps {
-  padBody?: boolean;
   width?: number;
   height?: number;
   title: string | undefined;
@@ -16,8 +14,7 @@ interface WindowProps {
 }
 
 const DesktopWindow = ({
-  padBody = true,
-  title = 'UNTITLED',
+  title,
   width = 1024,
   height = 768,
   titleChildren,
@@ -40,28 +37,12 @@ const DesktopWindow = ({
         margin: auto;
         margin-top: 32px;
       `}
-
-      background-color: #ffffff;
     padding: 0;
+    background-color: #a8a9ae;
     border: 2px solid #000;
     filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
     display: flex;
     flex-direction: column;
-  `;
-
-  const getBodyPadding = () => {
-    const defaultBodyPadding = '16px';
-    if (typeof window === 'undefined') {
-      return defaultBodyPadding;
-    }
-    return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
-  };
-
-  const WindowBody = styled.div`
-    height: 100%;
-    overflow: scroll;
-    background-color: #a8a9ae;
-    padding: ${padBody ? getBodyPadding() : '0px'};
   `;
 
   const isTouchDevice = () => {
@@ -80,7 +61,7 @@ const DesktopWindow = ({
     >
       <WindowWrapper>
         <DesktopWindowTitleBar title={title}>{titleChildren}</DesktopWindowTitleBar>
-        <WindowBody>{children}</WindowBody>
+        {children}
       </WindowWrapper>
     </ConditionalWrapper>
   );

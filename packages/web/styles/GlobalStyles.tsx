@@ -24,7 +24,7 @@ export default function GlobalStyles() {
           --border-light: 1px solid #dbdbdb;
 
           /* FONTS */
-          --font-a: ChicagoFLF, Helvetica, Arial, sans-serif;
+          --font-a: ChicagoFLF, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
           --font-b: Courier, monospace;
 
           /* SPACING */
@@ -126,26 +126,22 @@ export default function GlobalStyles() {
         h4,
         h5,
         h6 {
-          font-weight: 500;
         }
         h1 {
-          font-size: var(--text-05);
+          font-size: var(--text-05) !important;
           line-height: 1;
-          text-align: center;
-          padding: var(--space-md) 0 var(--space-lg);
+          margin-bottom: .5em !important;
         }
         h2 {
-          font-size: var(--text-03);
-          padding: var(--space-sm) 0;
+          font-size: var(--text-03) !important;
         }
         h3 {
-          font-size: var(--text-03);
-          padding: var(--space-sm) 0;
+          font-size: var(--text-02) !important;
         }
         a {
           font-weight: 400;
         }
-        a.textLink {
+        a.textLink, .markdownContainer a {
           text-decoration: underline !important;
           color: #3523fe !important;
         }

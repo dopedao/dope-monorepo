@@ -1,3 +1,4 @@
+import { getBreakpointWidth } from '../styles/breakpoints';
 import { media } from '../styles/mixins';
 import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from './AppWindowFooter';
@@ -23,8 +24,6 @@ const AppWindowWrapper = styled.div`
     margin: auto;
     margin-top: 32px;
   `}
-
-  background-color: #ffffff;
   padding: 0;
   border: 2px solid #000;
   filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
@@ -39,6 +38,14 @@ interface AppWindowProps {
   children: React.ReactNode;
 }
 
+const getBodyPadding = () => {
+  const defaultBodyPadding = '16px';
+  if (typeof window === 'undefined') {
+    return defaultBodyPadding;
+  }
+  return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
+};
+
 export default function AppWindow({
   title,
   requiresWalletConnection = false,
@@ -47,9 +54,16 @@ export default function AppWindow({
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
+  const AppWindowBody = styled.div`
+    height: 100%;
+    overflow: scroll;
+    background-color: #a8a9ae;
+    padding: ${padBody ? getBodyPadding() : '0px'};
+  `;
+
   return (
-    <DesktopWindow title={title} titleChildren={<AppWindowTitleBar />} padBody={padBody}>
-      {requiresWalletConnection === true && !account ? <ConnectWallet /> : <>{children}</>}
+    <DesktopWindow title={title || 'DOPEWARS.EXE'} titleChildren={<AppWindowTitleBar />}>
+      {requiresWalletConnection === true && !account ? <ConnectWallet /> : <AppWindowBody>{children}</AppWindowBody>}
       <AppWindowFooter />
     </DesktopWindow>
   );

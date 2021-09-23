@@ -1,5 +1,4 @@
 import { extendTheme } from '@chakra-ui/react';
-import { Z_FIXED } from 'zlib';
 
 const desktopImageCss = [
   "#000000 url('/images/desktop/TONY.gif') center center / contain repeat-y fixed",
