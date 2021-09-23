@@ -50,14 +50,14 @@ const AppWindowTitleBar = () => {
         }
       `}
     >
+      <NavLink href="/market">
+        <a>Market</a>
+      </NavLink>
       <NavLink href="/loot">
         <a>Loot</a>
       </NavLink>
       <NavLink href="/hustler">
         <a>Hustlers</a>
-      </NavLink>
-      <NavLink href="/market">
-        <a>Market</a>
       </NavLink>
       {account && (
         <NavLink href="/wallet">
