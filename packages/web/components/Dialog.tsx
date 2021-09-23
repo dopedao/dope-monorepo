@@ -3,7 +3,7 @@ import { media } from '../styles/mixins';
 import { ReactNode, useCallback, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
-interface DialogProps {
+export interface DialogProps {
   title?: string;
   className?: string;
   onClose?: () => void;
@@ -62,6 +62,13 @@ const Dialog = ({
         padding: 16px;
         border: 2px solid;
         width: 90vw;
+        h3 {
+          font-size: var(--text-02);
+          line-height: 1.25em;
+          padding: 0;
+          margin-bottom: 16px;
+        }
+        font-size: 1em;
         ${media.tablet`
           padding: 32px;
           text-align: left;
@@ -69,7 +76,7 @@ const Dialog = ({
         `}
       `}
       >
-        {!!title && <div>{title}</div>}
+        {!!title && <h3>{title}</h3>}
         {children}
       </div>
     </DialogContainer>
