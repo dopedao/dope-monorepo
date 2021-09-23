@@ -55,11 +55,15 @@ The Dope DAO is [producing one of the first play-to-earn crypto games](https://d
 
 ![DOPE LOOT NFT #0001](/images/dope-nft-1.svg#float-left)
 
-DOPE NFTs are bundles of items, with randomized rarity scores. Each DOPE NFT allows you to build a character around a collection of items to be used in game and provides an equal Governance Vote on Proposals from the DAO.
+[A limited edition of 8,000 DOPE NFTs were created in September 2021.](https://opensea.io/collection/dope-v4) 
+
+These bundles contain items with randomized attributes and rarity scores. Each one allows you to build a character to be used in game and provides an equal Governance Vote on Proposals from the DAO.
 
 
-### DAO Governance 
-5% of each purchase of a DOPE NFT is deposited into the DOPE DAO treasury. Community members draft [proposals](https://dope-wars.notion.site/626df3ff9e4d47da98ea23abc4b6e7a7?v=6350c7a1a9ba4a1c953c8cc4f9a0f062) to use these funds on projects that are then voted on by DOPE NFT holders. This governance structure is how we're able to continue building the DOPE WARS ecosystem with a loose collection of shifting contributors.
+### DAO Governance + Compensation
+To fund the DOPE DAO treasury we've established a 5% royalty payment that is held by the DAO until released by community vote.
+
+Community members draft [proposals](https://dope-wars.notion.site/626df3ff9e4d47da98ea23abc4b6e7a7?v=6350c7a1a9ba4a1c953c8cc4f9a0f062) to use these funds on projects that are then voted on by DOPE NFT holders. This governance structure is how we're able to continue building the DOPE WARS ecosystem with a loose collection of shifting contributors.
 
 ----
 
