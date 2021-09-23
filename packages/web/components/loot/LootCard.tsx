@@ -10,6 +10,22 @@ import { NETWORK } from '../../common/constants';
 
 const colors = ['#000', '#838383', '#00DC82', '#2e82ff', '#c13cff', '#f8b73e', '#ff4444'];
 
+const betterItemName = (name: string) => {
+  const quotedIndex = name.lastIndexOf('"');
+  if (quotedIndex !== -1) {
+    const modifier = name.substr(0, quotedIndex+1);
+    const itemName = name.substr(quotedIndex+1);
+    return(
+      <>
+        <span css={css`margin-left:-0.6em;`}>{modifier}</span>
+        <br/>
+        <span>{itemName}</span>
+      </>
+    )
+  }
+  return name;
+}
+
 const Row = ({ color, slot, item }: { color: string; slot: string; item: string }) => (
   <div
     css={css`
@@ -18,13 +34,13 @@ const Row = ({ color, slot, item }: { color: string; slot: string; item: string 
       line-height: 16px;
       width: 100%;
       display: flex;
-      span {
+      border-bottom: 1px solid #dededd;
+      div {
         padding: 12px 12px;
-        border-bottom: 1px solid #dededd;
       }
     `}
   >
-    <span
+    <div
       css={css`
         color: rgb(26, 32, 44);
         width: 33%;
@@ -33,14 +49,14 @@ const Row = ({ color, slot, item }: { color: string; slot: string; item: string 
       `}
     >
       {slot}
-    </span>
-    <span
+    </div>
+    <div
       css={css`
         width: 66%;
       `}
     >
-      {item}
-    </span>
+      {betterItemName(item)}
+    </div>
   </div>
 );
 
