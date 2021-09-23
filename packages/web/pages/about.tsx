@@ -55,11 +55,11 @@ The Dope DAO is [producing one of the first play-to-earn crypto games](https://d
 
 ![DOPE LOOT NFT #0001](/images/dope-nft-1.svg#float-left)
 
-DOPE NFTs are bundles of items, with randomized rarity scores. The original drop might be like another NFT project you've heard of, but using more relatable subject matter. Each one allows you to build a character around a collection of items to be used in game. 
+DOPE NFTs are bundles of items, with randomized rarity scores. Each DOPE NFT allows you to build a character around a collection of items to be used in game and provides an equal Governance Vote on Proposals from the DAO.
 
 
 ### DAO Governance 
-Each DOPE NFT provides holders with one vote on proposals that direct how we continue to build the DOPE WARS ecosystem.
+5% of each purchase of a DOPE NFT is deposited into the DOPE DAO treasury. Community members draft [proposals](https://dope-wars.notion.site/626df3ff9e4d47da98ea23abc4b6e7a7?v=6350c7a1a9ba4a1c953c8cc4f9a0f062) to use these funds on projects that are then voted on by DOPE NFT holders. This governance structure is how we're able to continue building the DOPE WARS ecosystem with a loose collection of shifting contributors.
 
 ----
 
@@ -73,18 +73,16 @@ Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them wit
 
 ## $PAPER
 
+[$PAPER is an Ethereum token](https://www.coingecko.com/en/coins/dope-wars-paper), and the in-game asset of Dope Wars – our p2e homage of the game we all played on our calculators instead of paying attention in math class.
+
+You can obtain $PAPER by claiming it from an original DOPE NFT, or by swapping for it on a distributed exchange like [Dextools](https://www.dextools.io/app/ether/pair-explorer/0x811f8c60ee1805db7ece0fa3c7b064feba887053).
+
 ![PAPER Airdrop](/images/paper-chopper.png#full-bleed)
 You are automatically entitled to claim 125,000 $PAPER for each Dope Wars Loot NFT using this [contract address on EtherScan](https://etherscan.io/address/0x7ae1d57b58fa6411f32948314badd83583ee0e8c).
 
 _Each DOPE NFT is able to claim $PAPER only once._
 
 To see if your Dope Wars Loot NFT is eligible please connect your wallet in DOPEWARS.EXE and view your Loot.
-
-#### What's the point of $PAPER?
-
-$PAPER is the in-game asset of Dope Wars, our p2e homage of the game we all played on our calculators instead of paying attention in math class. Because we don't know how much $PAPER will be needed in the game economy, there is no fixed supply of $PAPER.  
-
-After all, Dope Wars takes place in a world post-1971, so a fixed monetary supply wouldn't really be accurate nor work for the fast-paced, high-action world of DOPE.  Dope DAO will be our Federal Reserve.
 
 ----
 
@@ -101,8 +99,7 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 ----
 
 ### The DOPE DAO is supported by gamers like you
-5% of each purchase of a DOPE NFT is deposited into our treasury. This allows us to continue improving the DOPE WARS ecosystem.
-[Purchase DOPE NFT on OpenSea](https://opensea.io/collection/dope-v4) 
+[Purchase DOPE NFT items on OpenSea](https://opensea.io/collection/dope-v4) to claim your votes on DOPE DAO proposals and play the upcoming game.
 
 ----
 
