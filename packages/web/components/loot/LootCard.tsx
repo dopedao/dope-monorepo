@@ -149,6 +149,7 @@ export const Loot = ({
         `}
       >
         <Button
+          disabled={true}
           onClick={async () => {
             await stockpile.open(bag.id);
           }}
