@@ -1,5 +1,6 @@
-import { ReactNode, useCallback, useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
+import { media } from '../styles/mixins';
+import { ReactNode, useCallback, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
 interface DialogProps {
@@ -51,9 +52,14 @@ const Dialog = ({ title, className, onClose, children }: DialogProps) => {
         background: #DEDEDD;
         box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px;
         rgba(255, 255, 255, 0.25);
-        padding: 32px;
+        padding: 16px;
         border: 2px solid;
-        width: 400px;
+        width: 90vw;
+        ${media.tablet`
+          padding: 32px;
+          text-align: left;
+          width: 400px;
+        `}
       `}
       >
         {!!title && <div>{title}</div>}
