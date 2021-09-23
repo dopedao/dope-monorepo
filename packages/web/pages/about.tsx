@@ -1,6 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 import Head from '../components/Head';
-import AppWindow from '../components/AppWindow';
+import DesktopWindow from '../components/DesktopWindow';
 
 const AboutContent = `
 # A DOPE DAO Production
@@ -15,9 +15,9 @@ export default function About() {
   return (
     <>
       <Head title={'About'} />
-      <AppWindow>
+      <DesktopWindow title="ABOUT.FAQ" width={640} height={960}>
         <ReactMarkdown>{AboutContent}</ReactMarkdown>
-      </AppWindow>
+      </DesktopWindow>
     </>
   );
 }

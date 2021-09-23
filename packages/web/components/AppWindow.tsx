@@ -3,11 +3,9 @@ import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from './AppWindowFooter';
 import AppWindowTitleBar from './AppWindowTitleBar';
 import ConnectWallet from './ConnectWallet';
-import { getBreakpointWidth } from '../styles/breakpoints';
-import Draggable from 'react-draggable';
+import DesktopWindow from './DesktopWindow';
 import React from 'react';
 import styled from '@emotion/styled';
-import ConditionalWrapper from './ConditionalWrapper';
 
 const AppWindowWrapper = styled.div`
   width: 100%;
@@ -35,56 +33,32 @@ const AppWindowWrapper = styled.div`
 `;
 
 interface AppWindowProps {
+  title?: string | undefined;
   requiresWalletConnection?: boolean;
   padBody?: boolean;
   children: React.ReactNode;
 }
 
 export default function AppWindow({
+  title,
   requiresWalletConnection = false,
   padBody = true,
   children,
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
-  const getBodyPadding = () => {
-    const defaultBodyPadding = '16px';
-    if (typeof window === 'undefined') {
-      return defaultBodyPadding;
-    }
-    return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
-  };
-
-  const AppWindowBody = styled.div`
-    height: 100%;
-    overflow: scroll;
-    background-color: #a8a9ae;
-    padding: ${padBody ? getBodyPadding() : '0px'};
-  `;
-
-  const isTouchDevice = () => {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-    return (
-      'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0
-    );
-  };
-
   return (
-    <ConditionalWrapper
-      condition={!isTouchDevice()}
-      wrap={children => <Draggable handle=".appWindowTitleBar">{children}</Draggable>}
+    <DesktopWindow 
+      title={title} 
+      titleChildren={<AppWindowTitleBar />} 
+      padBody={padBody}
     >
-      <AppWindowWrapper>
-        <AppWindowTitleBar />
-        {requiresWalletConnection === true && !account ? (
-          <ConnectWallet />
-        ) : (
-          <AppWindowBody>{children}</AppWindowBody>
-        )}
-        <AppWindowFooter />
-      </AppWindowWrapper>
-    </ConditionalWrapper>
+      {requiresWalletConnection === true && !account ? (
+        <ConnectWallet />
+      ) : (
+        <>{children}</>
+      )}
+      <AppWindowFooter />
+    </DesktopWindow>
   );
 }
