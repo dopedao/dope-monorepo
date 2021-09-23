@@ -46,13 +46,13 @@ const ConnectWallet = () => {
           `}
         >
           <ConnectWalletSVG />
-          <div>Please connect your Ethereum Wallet</div>
+          <h3>Connect Your Ethereum Wallet</h3>
           <div
             css={css`
               width: 100%;
               display: flex;
               flex-direction: column;
-              gap: 10px;
+              gap: 16px;
             `}
           >
             <button {...buttonProps} onClick={() => onClick('MetaMask')}>

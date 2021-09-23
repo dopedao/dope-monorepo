@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 import { Button } from '@chakra-ui/react';
 import Dialog from './Dialog';
 import Image from 'next/image';
-import Ethereum from '../svg/Ethereum';
 
 type DisconnectWalletProps = {
   onClose: () => void;

@@ -24,7 +24,8 @@ export default function GlobalStyles() {
           --border-light: 1px solid #dbdbdb;
 
           /* FONTS */
-          --font-a: ChicagoFLF, Helvetica, Arial, sans-serif;
+          --font-a: ChicagoFLF, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+            Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
           --font-b: Courier, monospace;
 
           /* SPACING */
@@ -34,11 +35,11 @@ export default function GlobalStyles() {
           --space-lg: calc(var(--base-unit) * 5);
 
           /* TYPOGRAPHY */
-          --text-01: calc(var(--base-unit) * 1.5);
-          --text-02: calc(var(--base-unit) * 2);
-          --text-03: calc(var(--base-unit) * 3);
-          --text-04: calc(var(--base-unit) * 4);
-          --text-05: calc(var(--base-unit) * 5);
+          --text-01: 1.125em;
+          --text-02: 1.25em;
+          --text-03: 1.5em;
+          --text-04: 2em;
+          --text-05: 2.25em;
 
           /* LAYOUT */
           --header-z: 100;
@@ -80,6 +81,7 @@ export default function GlobalStyles() {
 
         body {
           background-color: var(--bg-color);
+          font-size: 14px;
         }
 
         body.wait,
@@ -125,32 +127,31 @@ export default function GlobalStyles() {
         h4,
         h5,
         h6 {
-          font-weight: 500;
         }
         h1 {
-          font-size: var(--text-05);
+          font-size: var(--text-05) !important;
           line-height: 1;
-          text-align: center;
-          padding: var(--space-md) 0 var(--space-lg);
+          margin-bottom: 0.5em !important;
         }
         h2 {
-          font-size: var(--text-03);
-          padding: var(--space-sm) 0;
+          font-size: var(--text-03) !important;
         }
         h3 {
-          font-size: var(--text-03);
-          padding: var(--space-sm) 0;
+          font-size: var(--text-02) !important;
         }
         a {
           font-weight: 400;
         }
+        a.textLink,
+        .markdownContainer a {
+          text-decoration: underline !important;
+          color: #3523fe !important;
+        }
         p,
         ol,
         ul {
-          font-size: var(--text-02);
           padding-bottom: var(--space-sm);
-          line-height: 1.35;
-          font-weight: 400;
+          line-height: 1.5;
         }
 
         /* CUSTOM */
