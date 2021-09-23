@@ -63,7 +63,11 @@ export default function AppWindow({
 
   return (
     <DesktopWindow title={title || 'DOPEWARS.EXE'} titleChildren={<AppWindowTitleBar />}>
-      {requiresWalletConnection === true && !account ? <ConnectWallet /> : <AppWindowBody>{children}</AppWindowBody>}
+      {requiresWalletConnection === true && !account ? (
+        <ConnectWallet />
+      ) : (
+        <AppWindowBody>{children}</AppWindowBody>
+      )}
       <AppWindowFooter />
     </DesktopWindow>
   );

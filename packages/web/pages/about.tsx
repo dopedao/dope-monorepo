@@ -9,14 +9,15 @@ const TextBody = styled.div`
   overflow: auto;
   padding: 32px;
   font-size: 1.2em;
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     margin-top: 16px;
   }
   em {
-    background-color: rgba(255,252,63,0.5);
+    background-color: rgba(255, 252, 63, 0.5);
   }
 `;
-
 
 const AboutContent = `
 # What is this?
@@ -40,16 +41,13 @@ _DOPEWARS.EXE is currently in preview mode._
 - [tarrence](https://twitter.com/tarrenceva)
 `;
 
-
 export default function About() {
   return (
     <>
       <Head title={'About'} />
       <DesktopWindow title="ABOUT.FAQ" width={640} height={960}>
         <TextBody className="markdownContainer">
-          <ReactMarkdown>
-            {AboutContent}
-          </ReactMarkdown>
+          <ReactMarkdown>{AboutContent}</ReactMarkdown>
         </TextBody>
       </DesktopWindow>
     </>
