@@ -1,5 +1,6 @@
-import { ReactNode, useCallback, useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
+import { media } from '../styles/mixins';
+import { ReactNode, useCallback, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
 interface DialogProps {
@@ -53,7 +54,12 @@ const Dialog = ({ title, className, onClose, children }: DialogProps) => {
         rgba(255, 255, 255, 0.25);
         padding: 32px;
         border: 2px solid;
-        width: 400px;
+        width: 90vw;
+        text-align: center;
+        ${media.tablet`
+          text-align: left;
+          width: 400px;
+        `}
       `}
       >
         {!!title && <div>{title}</div>}
