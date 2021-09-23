@@ -127,6 +127,7 @@ export default function GlobalStyles() {
         h4,
         h5,
         h6 {
+          clear: both;
         }
         h1 {
           font-size: var(--text-05) !important;
