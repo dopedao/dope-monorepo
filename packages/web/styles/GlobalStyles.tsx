@@ -70,7 +70,11 @@ export default function GlobalStyles() {
         body > div:first-of-type,
         div#__next,
         div#__next > div {
-          height: 100%;
+          height: 100%; 
+        }
+
+        html, body {
+          overscroll-behavior-y: none;
         }
 
         body {
@@ -89,9 +93,9 @@ export default function GlobalStyles() {
 
         main {
           width: 100%;
+          height: 100%;
           overflow: hidden;
           position: relative;
-          min-height: calc(100vh - 74px - 1px);
         }
 
         header,

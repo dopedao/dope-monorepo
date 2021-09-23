@@ -21,7 +21,6 @@ const AppWindowWrapper = styled.div`
   ${media.laptop`
     width: 80%;
     max-width: 1024px;
-    height: calc(100vh - 64px);
     max-height: 768px;
     margin: auto;
     margin-top: 32px;

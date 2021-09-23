@@ -13,22 +13,21 @@ import styled from '@emotion/styled';
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  height: 100%;
   // Mobile screens stack, 16px gap
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   gap: 16px;
+  height: 100%;
   & > div {
-    flex-grow: 1;
-    flex-basis: 50px;
+    flex: 1 0 25%;
   }
   // When stacked vertically, ensure LootCard is taller
   & > div:last-child {
-    flex-grow: 2;
+    flex: 2 0 75%;
   }
   ${media.phone`
     // When stacked vertically, ensure LootCard is taller
     & > div:last-child {
-      flex-grow: 2;
+      flex: 2 0 75%;
     }
   `}
   // Screen > Tablet display items side by side
@@ -36,7 +35,7 @@ const Container = styled.div`
     flex-flow: row nowrap;
     gap: 32px;
     & > div:last-child {
-      flex-grow: 1;
+      flex: 1 0 25%;
     }
   `}
 `;

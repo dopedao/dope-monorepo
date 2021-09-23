@@ -1,9 +1,10 @@
 import { css } from '@emotion/react';
-import { useWeb3React } from '@web3-react/core';
+import { media } from '../styles/mixins';
 import { NavLink } from './NavLink';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
+import { useWeb3React } from '@web3-react/core';
 import AppWindowTitleButton from './AppWindowTitleButton';
+import Image from 'next/image';
 
 const AppWindowTitleBar = () => {
   const { account } = useWeb3React();
@@ -18,7 +19,7 @@ const AppWindowTitleBar = () => {
     <div className="appWindowTitleBar">
       <header
         css={css`
-          background: #585858;
+          background: #141011;
           height: var(--header-height);
           position: sticky;
           top: 0;
@@ -46,11 +47,10 @@ const AppWindowTitleBar = () => {
           <div
             id="app-title-bar_description"
             css={css`
+              font-size: 14px;
               display: flex;
               align-items: center;
               justify-content: center;
-              background: #000;
-              font-size: 14px;
             `}
           >
             DOPEWARS
@@ -66,13 +66,19 @@ const AppWindowTitleBar = () => {
             border-right: 0px;
             height: 42px;
             width: 100%;
-            display: flex;
             font-size: 14px;
-            flex-direction: row;
-            align-items: center;
             padding: 5px 8px;
             overflow-x: auto;
             overflow-y: hidden;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            // Flex nav items center for mobile phone
+            justify-content: center;
+            // Flex nav items left larger
+            ${media.tablet`
+              justify-content: flex-start;
+            `}
             a {
               height: 30px;
               padding: 0 12px;
@@ -80,6 +86,9 @@ const AppWindowTitleBar = () => {
               gap: 4px;
               display: flex;
               align-items: center;
+              :first-child {
+                margin-left: 12px;
+              }
             }
             a.active {
               text-decoration: none;
