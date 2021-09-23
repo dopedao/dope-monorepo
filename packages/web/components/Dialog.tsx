@@ -7,10 +7,19 @@ interface DialogProps {
   title?: string;
   className?: string;
   onClose?: () => void;
+  backgroundCss?: string;
   children: ReactNode;
 }
 
-const Dialog = ({ title, className, onClose, children }: DialogProps) => {
+const defaultBackgroundCss = "rgba(0,0,0,0.5) url('/images/tile/brick-black.png') center/25% fixed";
+
+const Dialog = ({
+  title,
+  className,
+  onClose,
+  backgroundCss = defaultBackgroundCss,
+  children,
+}: DialogProps) => {
   const content = useRef<HTMLDivElement>(null);
 
   const DialogContainer = styled.div`
@@ -19,9 +28,7 @@ const Dialog = ({ title, className, onClose, children }: DialogProps) => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.5);
-    background-image: url('/images/tile/brick-black.png');
-    background-size: 200px 200px;
+    background: ${backgroundCss};
     ${className}
   `;
 
