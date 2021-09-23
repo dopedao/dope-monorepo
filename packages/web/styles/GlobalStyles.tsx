@@ -140,6 +140,9 @@ export default function GlobalStyles() {
         h3 {
           font-size: var(--text-02) !important;
         }
+        h4 {
+          font-weight: 900 !important;
+        }
         a {
           font-weight: 400;
         }

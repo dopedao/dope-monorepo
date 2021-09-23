@@ -14,6 +14,9 @@ const TextBody = styled.div`
     margin-top: 32px;
     margin-bottom: 16px;
   }
+  h4 {
+    margin-bottom: 8px;
+  }
   em {
     background-color: rgba(255, 252, 63, 0.5);
   }
@@ -33,14 +36,18 @@ const TextBody = styled.div`
     margin-top: 32px;
     margin-bottom: 32px;
   }
+  ul {
+    list-style-type: square;
+    margin-left: 1.5em;
+  }
 `;
 
 const AboutContent = `
 # What is this?
 
-_Dope Wars is an NFT project and an experiment in DAO Governance._
+_Dope Wars is an ongoing NFT art project and experiment in DAO Governance._
 
-The Dope DAO is producing one of the first play-to-earn crypto games on the Ethereum blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
+The Dope DAO is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
 
 ----
 
@@ -48,9 +55,11 @@ The Dope DAO is producing one of the first play-to-earn crypto games on the Ethe
 
 ![DOPE LOOT NFT #0001](/images/dope-nft-1.svg#float-left)
 
-DOPE NFTs are bundles of items, with randomized rarity scores.
+DOPE NFTs are bundles of items, with randomized rarity scores. The original drop might be like another NFT project you've heard of, but using more relatable subject matter. Each one allows you to build a character around a collection of items to be used in game. 
 
-Each DOPE NFT allows you to build a character around a collection of items to be used in game. Each DOPE NFT also provides an equal Governance Vote on Proposals from the DAO.
+
+### DAO Governance 
+Each DOPE NFT provides holders with one vote on proposals that direct how we continue to build the DOPE WARS ecosystem.
 
 ----
 
@@ -58,20 +67,20 @@ Each DOPE NFT allows you to build a character around a collection of items to be
 
 ![Hustlers and Dealers](/images/hustlers.png#full-bleed)
 
-Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them with items, then minting a Hustler NFT with artwork all stored on the Ethereum blockchain. [This proposal passed our DAO vote](https://dope-wars.notion.site/Pixel-Avatar-Project-0f64bb450aba46cebdced07c63f69bce), and we hope to launch sometime in October 2021.
+Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them with items, then minting a Hustler NFT with artwork all stored on the Ethereum blockchain. [This proposal passed our second DAO vote](https://dope-wars.notion.site/Pixel-Avatar-Project-0f64bb450aba46cebdced07c63f69bce), and we hope to launch sometime in October 2021.
 
 ----
 
 ## $PAPER
 
 ![PAPER Airdrop](/images/paper-chopper.png#full-bleed)
-You are automatically entitled to claim 125,000 $PAPER for each Dope Wars Loot NFT using [contract address on EtherScan](https://etherscan.io/address/0x7ae1d57b58fa6411f32948314badd83583ee0e8c). 
+You are automatically entitled to claim 125,000 $PAPER for each Dope Wars Loot NFT using this [contract address on EtherScan](https://etherscan.io/address/0x7ae1d57b58fa6411f32948314badd83583ee0e8c).
 
-_Each DOPE NFT is able to claim only once._
+_Each DOPE NFT is able to claim $PAPER only once._
 
-To see if your Dope Wars Loot NFT is eligible please [use the claim check tool available here](https://dwlclaimcheck.surge.sh/).
+To see if your Dope Wars Loot NFT is eligible please connect your wallet in DOPEWARS.EXE and view your Loot.
 
-**What is the point of $PAPER?**
+#### What's the point of $PAPER?
 
 $PAPER is the in-game asset of Dope Wars, our p2e homage of the game we all played on our TI-85 calculators instead of paying attention in math class. Because we don't know how much $PAPER will be needed in the game economy, there is no fixed supply of $PAPER.  
 
@@ -79,13 +88,15 @@ After all, Dope Wars takes place in a world post-1971, so a fixed monetary suppl
 
 ----
 
-### Currently… 
+## DOPEWARS.EXE
+
+Our first project is to provide a portal for the DOPE WARS ecosystem. Additional experiences like the game will be hosted here.
+
+#### Now
 You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have purchased.
 
-----
-
-### Soon…
-You’ll be able to [unbundle your items, create a PFP of your Dope Dealer](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual items with other players to equip your Dope Dealer.
+#### Soon
+Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dope Dealer](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual items with other players to equip your Dope Dealer in our MARKET.
 
 ----
 
@@ -98,14 +109,16 @@ You’ll be able to [unbundle your items, create a PFP of your Dope Dealer](http
 ### More Info
 
 - [Dope DAO Wiki](http://wiki.dopedao.org)
-- [DAO Governance Proposals via Tally](https://www.withtally.com/governance/dopeWars)
+- [DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
 
 ----
 
 ### Credits
-- DOPEWARS.EXE produced by [facesof.eth](https://twitter.com/facesOfEth) and [tarrence](https://twitter.com/tarrenceva)
-- Character pixel artwork by [Mr Fax](https://twitter.com/Mr_faxu)
-- DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
+* Original concept by [Dennison Bertram](https://twitter.com/dennisonbertram) and [tarrence](https://twitter.com/tarrenceva)
+* DOPEWARS.EXE produced by [facesof.eth](https://twitter.com/facesOfEth) and [tarrence](https://twitter.com/tarrenceva)
+* Character pixel artwork by [Mr Fax](https://twitter.com/Mr_faxu)
+* Design and branding by [facesof.eth](https://twitter.com/facesOfEth)
+* DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
 
 ----
 
