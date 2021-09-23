@@ -14,31 +14,33 @@ const Row = ({ color, slot, item }: { color: string; slot: string; item: string 
   <div
     css={css`
       color: ${color};
-      height: 32px;
-      border-bottom: 1px solid #dededd;
       font-size: 14px;
+      line-height: 16px;
+      width: 100%;
       display: flex;
-      align-items: center;
+      span {
+        padding: 12px 12px;
+        border-bottom: 1px solid #dededd;
+      }
     `}
   >
     <span
       css={css`
         color: rgb(26, 32, 44);
-        width: 65px;
+        width: 33%;
         text-align: right;
+        border-right: 1px solid #dededd;
       `}
     >
       {slot}
     </span>
     <span
       css={css`
-        color: #e5e5e4;
-        margin-right: 8px;
+        width: 66%;
       `}
     >
-      :
+      {item}
     </span>
-    <span>{item}</span>
   </div>
 );
 
@@ -86,7 +88,6 @@ export const Loot = ({
         display: flex;
         flex-direction: column;
         background-color: #fff;
-        min-height: 304px;
       `}
     >
       <div
@@ -99,7 +100,7 @@ export const Loot = ({
           border-bottom: 2px solid #000;
           box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
             inset 1px 1px 0px rgba(255, 255, 255, 0.25);
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 600;
           position: 'sticky';
         `}
@@ -110,8 +111,8 @@ export const Loot = ({
         css={css`
           flex: 1;
           background: #fff;
-          padding: 12px 16px;
-          overflow: auto;
+          padding-top: 0px;
+          overflow-y: auto;
         `}
       >
         {[
