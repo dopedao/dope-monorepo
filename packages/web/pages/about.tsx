@@ -42,6 +42,8 @@ _Dope Wars is an NFT project and an experiment in DAO Governance._
 
 The Dope DAO is producing one of the first play-to-earn crypto games on the Ethereum blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
 
+----
+
 ## DOPE NFT
 
 ![DOPE LOOT NFT #0001](/images/dope-nft-1.svg#float-left)
@@ -105,6 +107,12 @@ You’ll be able to [unbundle your items, create a PFP of your Dope Dealer](http
 - Character pixel artwork by [Mr Fax](https://twitter.com/Mr_faxu)
 - DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
 
+----
+
+### Press
+
+- [Motherboard / VICE, September 2021](https://www.vice.com/en/article/akgp8e/people-are-spending-millions-of-dollars-on-loot-for-games-that-dont-exist)
+- [Collectively Intelligent Podcast, September 2021](https://open.spotify.com/episode/5xOaIJhit7pX25rrvHcQ0z)
 
 `;
 
