@@ -46,10 +46,19 @@ The Dope DAO is producing one of the first play-to-earn crypto games on the Ethe
 
 ![DOPE LOOT NFT #0001](/images/dope-nft-1.svg#float-left)
 
-DOPE NFTs are bundles of Items, with randomized rarity scores.
+DOPE NFTs are bundles of items, with randomized rarity scores.
 
-Each DOPE NFT allows you to build a character around a collection of Items to be used in game. Each DOPE NFT also provides an equal Governance Vote on Proposals from the DAO.
+Each DOPE NFT allows you to build a character around a collection of items to be used in game. Each DOPE NFT also provides an equal Governance Vote on Proposals from the DAO.
 
+----
+
+## Characters
+
+![Hustlers and Dealers](/images/hustlers.png#full-bleed)
+
+Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them with items, then minting a Hustler NFT with artwork all stored on the Ethereum blockchain. [This proposal passed our DAO vote](https://dope-wars.notion.site/Pixel-Avatar-Project-0f64bb450aba46cebdced07c63f69bce), and we hope to launch sometime in October 2021.
+
+----
 
 ## $PAPER
 
@@ -91,8 +100,10 @@ You’ll be able to [unbundle your items, create a PFP of your Dope Dealer](http
 
 ----
 
-### DOPEWARS.EXE
-Produced by [facesof.eth](https://twitter.com/facesOfEth) and [tarrence](https://twitter.com/tarrenceva)
+### Credits
+- DOPEWARS.EXE produced by [facesof.eth](https://twitter.com/facesOfEth) and [tarrence](https://twitter.com/tarrenceva)
+- Character pixel artwork by [Mr Fax](https://twitter.com/Mr_faxu)
+- DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
 
 
 `;
