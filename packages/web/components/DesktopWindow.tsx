@@ -1,4 +1,5 @@
 import { media } from '../styles/mixins';
+import { returnBreakpoint } from '../styles/breakpoints';
 import ConditionalWrapper from './ConditionalWrapper';
 import DesktopWindowTitleBar from './DesktopWindowTitleBar';
 import Draggable from 'react-draggable';
@@ -24,8 +25,6 @@ const DesktopWindow = ({
     width: 100%;
     height: 100%;
     margin: 0;
-    max-width: ${width}px;
-    max-height: ${height}px;
     ${media.phone`
       width: 100%;
       height: 100%;
@@ -36,12 +35,14 @@ const DesktopWindow = ({
       height: 100%;
       margin: 0;
     `}
-    ${media.laptop`
+    @media (min-width: ${returnBreakpoint('laptop')}) {
       width: 80%;
       height: 90%;
       margin: auto;
       margin-top: 32px;
-    `}
+      max-width: ${width}px;
+      max-height: ${height}px;
+    }
     padding: 0;
     background-color: #a8a9ae;
     border: 2px solid #000;
