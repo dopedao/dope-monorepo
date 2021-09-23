@@ -71,6 +71,8 @@ const AppWindowTitleBar = () => {
             flex-direction: row;
             align-items: center;
             padding: 5px 8px;
+            overflow-x: auto;
+            overflow-y: hidden;
             a {
               height: 30px;
               padding: 0 12px;
