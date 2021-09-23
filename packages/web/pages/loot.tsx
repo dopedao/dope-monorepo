@@ -11,33 +11,25 @@ import NoLootCard from '../components/loot/NoLootCard';
 import styled from '@emotion/styled';
 
 const Container = styled.div`
+  height: 100%;
   display: flex;
   justify-content: center;
-  height: 100%;
   // Mobile screens stack, 16px gap
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   gap: 16px;
   & > div {
-    flex-grow: 1;
-    flex-basis: 50px;
+    flex: 1;
+    overflow-y: auto;
   }
-  // When stacked vertically, ensure LootCard is taller
   & > div:last-child {
-    flex-grow: 2;
+    flex: 2;
   }
-  ${media.phone`
-    // When stacked vertically, ensure LootCard is taller
-    & > div:last-child {
-      flex-grow: 2;
-    }
-  `}
   // Screen > Tablet display items side by side
   ${media.tablet`
     flex-flow: row nowrap;
-    gap: 32px;
     & > div:last-child {
-      flex-grow: 1;
-    }
+      flex: 1;
+    } 
   `}
 `;
 

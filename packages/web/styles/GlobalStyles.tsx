@@ -73,6 +73,11 @@ export default function GlobalStyles() {
           height: 100%;
         }
 
+        html,
+        body {
+          overscroll-behavior-y: none;
+        }
+
         body {
           background-color: var(--bg-color);
         }
@@ -89,9 +94,9 @@ export default function GlobalStyles() {
 
         main {
           width: 100%;
+          height: 100%;
           overflow: hidden;
           position: relative;
-          min-height: calc(100vh - 74px - 1px);
         }
 
         header,

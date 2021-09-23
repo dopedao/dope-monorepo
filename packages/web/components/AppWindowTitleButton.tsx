@@ -11,7 +11,7 @@ const AppWindowTitleButton = ({ icon, clickAction }: IconProps) => {
     <div
       onClick={() => clickAction()}
       css={css`
-        background-color: #d0d0d0;
+        background: #141011;
         box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,
           1px 1px 0px rgba(255, 255, 255, 0.25) inset;
         display: inline-block;

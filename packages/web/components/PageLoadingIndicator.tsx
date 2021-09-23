@@ -21,24 +21,28 @@ const LoadingMessage = styled.div`
   font-size: 16px;
   line-height: 14px;
   padding: 8px 0px;
+  white-space: no-wrap;
   @keyframes zoom {
     0% {
-      font-size: 8px;
+      font-size: 0.25em;
     }
     25% {
-      font-size: 16px;
+      font-size: 0.5em;
     }
     50% {
-      font-size: 32px;
+      font-size: 1em;
     }
     75% {
-      font-size: 64px;
+      font-size: 2em;
+    }
+    90% {
+      font-size: 4em;
     }
     100% {
-      font-size: 72px;
+      font-size: 5em;
     }
   }
-  animation: zoom infinite 0.25s alternate;
+  animation: zoom infinite 0.33s alternate;
 `;
 
 const PageLoadingIndicator = () => {
