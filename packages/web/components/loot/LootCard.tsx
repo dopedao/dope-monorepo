@@ -8,37 +8,85 @@ import ItemRarities from 'dope-metrics/output/item-rarities.json';
 import { Bag } from '../../src/generated/graphql';
 import { NETWORK } from '../../common/constants';
 
-const colors = ['#000', '#838383', '#00DC82', '#2e82ff', '#c13cff', '#f8b73e', '#ff4444'];
+const backgroundColors = [
+  '#fff',
+  '#fff',
+  'rgba(18,171,23,0.15)',
+  'rgba(46,130,255,0.15)',
+  'rgba(254,101,33,0.15)',
+  'rgba(249,40,255,0.25)',
+  'rgba(255,252,63,0.5)',
+];
+
+const betterItemName = (name: string) => {
+  const quotedIndex = name.lastIndexOf('"');
+  if (quotedIndex !== -1) {
+    const modifier = name.substr(0, quotedIndex + 1);
+    const itemName = name.substr(quotedIndex + 1);
+    return (
+      <>
+        <span
+          css={css`
+            margin-left: -0.9em;
+            display: inline;
+            font-size: 1.1em;
+          `}
+        >
+          {modifier}
+        </span>
+        <br />
+        <span
+          css={css`
+            display: inline;
+            margin-top: 0.6em;
+          `}
+        >
+          {itemName}
+        </span>
+      </>
+    );
+  }
+  return name;
+};
 
 const Row = ({ color, slot, item }: { color: string; slot: string; item: string }) => (
   <div
     css={css`
-      color: ${color};
-      height: 32px;
-      border-bottom: 1px solid #dededd;
       font-size: 14px;
+      line-height: 16px;
+      width: 100%;
       display: flex;
-      align-items: center;
+      border-bottom: 1px solid #dededd;
+      div {
+        padding: 12px 12px;
+      }
     `}
   >
-    <span
+    <div
       css={css`
         color: rgb(26, 32, 44);
-        width: 65px;
+        width: 33%;
         text-align: right;
+        border-right: 1px solid #dededd;
       `}
     >
       {slot}
-    </span>
-    <span
+    </div>
+    <div
       css={css`
-        color: #e5e5e4;
-        margin-right: 8px;
+        width: 66%;
       `}
     >
-      :
-    </span>
-    <span>{item}</span>
+      <span
+        css={css`
+          background-color: ${color};
+          padding: 2px 4px;
+          color: #000;
+        `}
+      >
+        {betterItemName(item)}
+      </span>
+    </div>
   </div>
 );
 
@@ -86,7 +134,6 @@ export const Loot = ({
         display: flex;
         flex-direction: column;
         background-color: #fff;
-        min-height: 304px;
       `}
     >
       <div
@@ -99,7 +146,7 @@ export const Loot = ({
           border-bottom: 2px solid #000;
           box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
             inset 1px 1px 0px rgba(255, 255, 255, 0.25);
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 600;
           position: 'sticky';
         `}
@@ -110,8 +157,8 @@ export const Loot = ({
         css={css`
           flex: 1;
           background: #fff;
-          padding: 12px 16px;
-          overflow: auto;
+          padding-top: 0px;
+          overflow-y: auto;
         `}
       >
         {[
@@ -127,7 +174,7 @@ export const Loot = ({
         ].map(slot => (
           <Row
             key={slot[0]}
-            color={colors[(ItemRarities as { [name: string]: any })[slot[1]]]}
+            color={backgroundColors[(ItemRarities as { [name: string]: any })[slot[1]]]}
             slot={slot[0]}
             item={slot[1]}
           />
@@ -141,13 +188,13 @@ export const Loot = ({
           background: #dededd;
           border-top: 2px solid #000;
           padding: 0 16px;
-
           > button {
             margin-right: 10px;
           }
         `}
       >
         <Button
+          disabled={true}
           onClick={async () => {
             await stockpile.open(bag.id);
           }}

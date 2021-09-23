@@ -31,7 +31,7 @@ const IconGrid = styled.div`
   `}
 `;
 
-export default () => {
+const DesktopIconList = () => {
   const router = useRouter();
   const openLocalRoute = (url: string): void => {
     router.replace(url);
@@ -71,3 +71,4 @@ export default () => {
     </IconGrid>
   );
 };
+export default DesktopIconList;
