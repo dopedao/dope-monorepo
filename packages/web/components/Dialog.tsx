@@ -52,11 +52,11 @@ const Dialog = ({ title, className, onClose, children }: DialogProps) => {
         background: #DEDEDD;
         box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px;
         rgba(255, 255, 255, 0.25);
-        padding: 32px;
+        padding: 16px;
         border: 2px solid;
         width: 90vw;
-        text-align: center;
         ${media.tablet`
+          padding: 32px;
           text-align: left;
           width: 400px;
         `}
