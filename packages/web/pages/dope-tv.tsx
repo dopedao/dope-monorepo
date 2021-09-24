@@ -20,7 +20,8 @@ export default function DopeTv() {
       height: '100%',
       channel: "dopetvmusic",
       // Only needed if this page is going to be embedded on other websites
-      parent: ["localhost", "dopewars.gg"]
+      parent: ["localhost", "dopewars.gg"],
+      layout: 'video',
     });
   }, [])
   return (
