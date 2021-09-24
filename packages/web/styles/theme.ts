@@ -56,17 +56,31 @@ export default extendTheme({
           table: {
             borderCollapse: 'separate',
           },
-          thead: {},
+          thead: {
+            th: {
+              position: 'sticky',
+              top: 0,
+              borderBottom: '2px solid #000',
+            },
+          },
+          tfoot: {
+            th: {
+              position: 'sticky',
+              bottom: '-1px',
+              borderTop: '2px solid #000',
+              textAlign: 'center',
+              height: '44px',
+              boxShadow: 'none',
+              padding: '2px 16px',
+            },
+          },
           th: {
-            position: 'sticky',
-            top: 0,
-            borderBottom: '2px solid #000',
-            height: '32px',
+            height: '34px',
             background: '#DEDEDD',
             textAlign: 'center',
             verticalAlign: 'middle',
             textShadow: 'none',
-            padding: 0,
+            padding: '4px 8px',
             boxShadow:
               'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)',
             ':not(:last-child)': {

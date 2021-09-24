@@ -1,6 +1,4 @@
 import Dialog, { DialogProps } from './Dialog';
-import styled from '@emotion/styled';
-import { ReactNode } from 'react';
 
 const constructionBackground = `
   #000000 url('/images/desktop/construction-truck.png') center center / contain repeat-y fixed
