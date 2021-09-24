@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
-import { useWeb3React } from '@web3-react/core';
 import AppWindowTitleButton from './AppWindowTitleButton';
 
 interface WindowTitleBarProps {
@@ -9,7 +8,6 @@ interface WindowTitleBarProps {
 }
 
 const DesktopWindowTitleBar = ({ title, children }: WindowTitleBarProps) => {
-  const { account } = useWeb3React();
   const router = useRouter();
 
   const closeWindow = (): void => {

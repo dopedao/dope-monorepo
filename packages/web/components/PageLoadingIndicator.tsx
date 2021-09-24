@@ -1,6 +1,6 @@
 // Displays Loading indicator when routing between Next.js pages
 import styled from '@emotion/styled';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
 const LoadingWrapper = styled.div`
