@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Tfoot } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import rare from 'dope-metrics/output/rare.json';
 
@@ -20,11 +20,22 @@ const LootTable = ({
   onSelect,
 }: {
   className?: string;
-  data: { id: string }[];
+  data: { id: string, claimed: boolean }[];
   selected: number;
   onSelect: (i: number) => void;
 }) => {
   const [sort, setSort] = useState('id');
+
+  const amountOfUnclaimedPaper = () => {
+    let numberUnclaimed = 0;
+    let paperPerToken = 125000;
+    for (const item of data) {
+      numberUnclaimed = item.claimed ? numberUnclaimed : numberUnclaimed + 1;
+    }
+    let fullAmount = numberUnclaimed * paperPerToken;
+    let formatter = Intl.NumberFormat('en', { notation: 'compact' });
+    return formatter.format(fullAmount);
+  };
 
   const items = useMemo(
     () =>
@@ -80,6 +91,15 @@ const LootTable = ({
             </Tr>
           ))}
         </Tbody>
+        <Tfoot>
+          <Tr>
+            <Th colSpan="3">
+              { items.length } DOPE { items.length > 1 ? 'Tokens' : 'Token' }
+              <span css={css`padding:8px;color:#A8A9AE;`}>/</span>
+              { amountOfUnclaimedPaper() } Unclaimed $PAPER
+            </Th>
+          </Tr>
+        </Tfoot>
       </Table>
     </div>
   );
