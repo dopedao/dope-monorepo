@@ -120,6 +120,7 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 * Character pixel artwork by [Mr Fax](https://twitter.com/Mr_faxu)
 * Design and branding by [facesof.eth](https://twitter.com/facesOfEth)
 * DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
+* DOPE TV produced by [Shecky Green](https://twitter.com/SheckyGreen)
 
 ----
 
