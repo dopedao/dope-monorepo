@@ -47,7 +47,16 @@ const DesktopIconList = () => {
         label="DOPEWARS.EXE"
         clickAction={() => openLocalRoute('/loot')}
       />
-      <DesktopIcon icon="file" label="ABOUT.FAQ" clickAction={() => openLocalRoute('/about')} />
+      <DesktopIcon 
+        icon="file" 
+        label="ABOUT.FAQ" 
+        clickAction={() => openLocalRoute('/about')} 
+      />
+      <DesktopIcon 
+        icon="tv" 
+        label="DOPE TV" 
+        clickAction={() => openLocalRoute('/dope-tv')} 
+      />
       <DesktopIcon
         icon="tally"
         label="Dope DAO"
