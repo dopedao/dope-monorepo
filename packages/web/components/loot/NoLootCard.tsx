@@ -1,7 +1,6 @@
 // Blank-slate state for the Loot screen,
 // encouraging visitors to go pick up some DOPE.
 import { Button } from '@chakra-ui/react';
-import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from '@emotion/styled';

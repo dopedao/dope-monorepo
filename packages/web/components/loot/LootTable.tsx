@@ -20,24 +20,24 @@ const LootTable = ({
   onSelect,
 }: {
   className?: string;
-  data: { id: string, claimed: boolean }[];
+  data: { id: string; claimed: boolean }[];
   selected: number;
   onSelect: (i: number) => void;
 }) => {
   const [sort, setSort] = useState('id');
 
   const amountOfUnclaimedPaper = (): number => {
+    const paperPerToken = 125000;
     let numberUnclaimed = 0;
-    let paperPerToken = 125000;
     for (const item of data) {
       numberUnclaimed = item.claimed ? numberUnclaimed : numberUnclaimed + 1;
     }
     return numberUnclaimed * paperPerToken;
   };
   const formattedUnclaimedPaper = (): string => {
-    let formatter = Intl.NumberFormat('en', { notation: 'compact' });
+    const formatter = Intl.NumberFormat('en', { notation: 'compact' });
     return formatter.format(amountOfUnclaimedPaper());
-  }
+  };
 
   const items = useMemo(
     () =>
@@ -96,9 +96,16 @@ const LootTable = ({
         <Tfoot>
           <Tr>
             <Th colSpan={3}>
-              { items.length } DOPE { items.length > 1 ? 'Tokens' : 'Token' }
-              <span css={css`padding:8px;color:#A8A9AE;`}>/</span>
-              { formattedUnclaimedPaper() } Unclaimed $PAPER
+              {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
+              <span
+                css={css`
+                  padding: 8px;
+                  color: #a8a9ae;
+                `}
+              >
+                /
+              </span>
+              {formattedUnclaimedPaper()} Unclaimed $PAPER
             </Th>
           </Tr>
         </Tfoot>

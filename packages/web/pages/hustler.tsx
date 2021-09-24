@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core';
 import AppWindow from '../components/AppWindow';
 import ComingSoonDialog from '../components/ComingSoonDialog';
 import Head from '../components/Head';

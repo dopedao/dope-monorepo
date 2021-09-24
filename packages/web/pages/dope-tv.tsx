@@ -15,15 +15,15 @@ const TwitchEmbedContainer = styled.div`
 
 export default function DopeTv() {
   useEffect(() => {
-    new Twitch.Embed("twitch-embed-container", {
+    new Twitch.Embed('twitch-embed-container', {
       width: '100%',
       height: '100%',
-      channel: "dopetvmusic",
+      channel: 'dopetvmusic',
       // Only needed if this page is going to be embedded on other websites
-      parent: ["localhost", "dopewars.gg"],
+      parent: ['localhost', 'dopewars.gg'],
       layout: 'video',
     });
-  }, [])
+  }, []);
   return (
     <>
       <Head title={title} />

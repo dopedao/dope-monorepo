@@ -9,11 +9,23 @@ const TextBody = styled.div`
   overflow: auto;
   padding: 32px;
   font-size: 1.125em;
-  p, div, h2, h3, h4, em, strong, bold, ul, li, a {
+  p,
+  div,
+  h2,
+  h3,
+  h4,
+  em,
+  strong,
+  bold,
+  ul,
+  li,
+  a {
     font-family: Courier, monospace !important;
   }
 
-  h2, h3, h4 {
+  h2,
+  h3,
+  h4 {
     font-weight: 600;
   }
   h2,
@@ -27,19 +39,19 @@ const TextBody = styled.div`
   em {
     background-color: rgba(255, 252, 63, 0.5);
   }
-  img[src*="#float-left"] {
-    width:50%;
-    float:left;
+  img[src*='#float-left'] {
+    width: 50%;
+    float: left;
     margin: 16px;
     margin-left: 0;
   }
-  img[src*="#full-bleed"] {
+  img[src*='#full-bleed'] {
     width: 100%;
     margin-bottom: 16px;
     margin-top: 16px;
   }
   hr {
-    border-top: 2px dashed #BFB9BD;
+    border-top: 2px dashed #bfb9bd;
     margin-top: 32px;
     margin-bottom: 32px;
   }
