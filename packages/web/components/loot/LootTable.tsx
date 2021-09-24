@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import { Table, Thead, Tbody, Tr, Th, Td, Tfoot } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import rare from 'dope-metrics/output/rare.json';
+import CheckIcon from '../icons/Check';
 
 const rareById: { [name: string]: { rarest: number } } = Object.values(rare).reduce(
   (rareById, rare) => {
@@ -42,10 +43,11 @@ const LootTable = ({
   const items = useMemo(
     () =>
       data
-        .map(({ id }, idx) => ({
+        .map(({ id, claimed }, idx) => ({
           id,
           rank: rareById[id].rarest,
           percentile: ((1 - rareById[id].rarest / 8000) * 100).toFixed(1),
+          claimed: claimed ? '' : <CheckIcon css={css`display:inline;`} />,
           idx,
         }))
         .sort((a, b) => {
@@ -78,10 +80,11 @@ const LootTable = ({
             <Th onClick={() => setSort('id')}>Dope ID</Th>
             <Th onClick={() => setSort('rank')}>Rank</Th>
             <Th onClick={() => setSort('percentile')}>Percentile</Th>
+            <Th>Paper?</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {items.map(({ id, rank, percentile, idx }) => (
+          {items.map(({ id, rank, percentile, claimed, idx }) => (
             <Tr
               className={selected === idx ? 'selected' : ''}
               key={id}
@@ -90,12 +93,13 @@ const LootTable = ({
               <Td>{id}</Td>
               <Td>{rank}</Td>
               <Td>{percentile}</Td>
+              <Td>{claimed}</Td>
             </Tr>
           ))}
         </Tbody>
         <Tfoot>
           <Tr>
-            <Th colSpan={3}>
+            <Th colSpan={4}>
               {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
               <span
                 css={css`

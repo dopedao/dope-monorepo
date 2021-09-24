@@ -194,20 +194,20 @@ export const Loot = ({
         `}
       >
         <Button
-          disabled={true}
-          onClick={async () => {
-            await stockpile.open(bag.id);
-          }}
-        >
-          Unbundle
-        </Button>
-        <Button
           disabled={bag.claimed}
           onClick={async () => {
             await paper.claimById(bag.id);
           }}
         >
           Claim Paper
+        </Button>
+        <Button
+          disabled={true}
+          onClick={async () => {
+            await stockpile.open(bag.id);
+          }}
+        >
+          Unbundle
         </Button>
       </div>
     </div>
