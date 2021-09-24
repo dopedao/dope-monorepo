@@ -11,9 +11,9 @@ const IconGrid = styled.div`
   // Default
   width: 100%;
   height: auto;
-  flex-flow: row wrap;
+  flex-flow: row wrap-reverse;
   justify-content: center;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 12px;
   padding: 12px;
   ${media.tablet`
