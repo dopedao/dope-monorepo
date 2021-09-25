@@ -34,32 +34,44 @@ const LootLegendItem = styled.div`
 `;
 
 interface LootLegendProps {
-  toggleVisibility(): void
+  toggleVisibility(): void;
 }
 
-const LootLegend = ({toggleVisibility}: LootLegendProps) => {
-  return(
+const LootLegend = ({ toggleVisibility }: LootLegendProps) => {
+  return (
     <LootLegendContainer>
-      <h4>
-        Item Rarity Legend
-      </h4>
-      <div css={css`flex-grow: 1;padding:8px 16px;`}>
-        {
-          Object.entries(LootLegendBackgroundColors).map(([key, value]) => {
+      <h4>Item Rarity Legend</h4>
+      <div
+        css={css`
+          flex-grow: 1;
+          padding: 8px 16px;
+        `}
+      >
+        {Object.entries(LootLegendBackgroundColors)
+          .map(([key, value]) => {
             return (
-              <LootLegendItem css={css`background-color:${value}`} key={key}>
+              <LootLegendItem
+                css={css`
+                  background-color: ${value};
+                `}
+                key={key}
+              >
                 {key}
               </LootLegendItem>
-            )
-          }).reverse().slice(0,-1)
-        }
+            );
+          })
+          .reverse()
+          .slice(0, -1)}
       </div>
-      <div css={css`text-align:right;padding:8px;`}>
-        <Button onClick={() => toggleVisibility()}>
-          Close
-        </Button>
+      <div
+        css={css`
+          text-align: right;
+          padding: 8px;
+        `}
+      >
+        <Button onClick={() => toggleVisibility()}>Close</Button>
       </div>
     </LootLegendContainer>
   );
-}
+};
 export default LootLegend;

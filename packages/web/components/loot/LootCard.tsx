@@ -1,4 +1,3 @@
-
 import { Bag } from '../../src/generated/graphql';
 import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
@@ -95,8 +94,7 @@ const LootTitleBar = styled.div`
   line-height: 32px;
   background: #dededd;
   border-bottom: 2px solid #000;
-  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
-    inset 1px 1px 0px rgba(255, 255, 255, 0.25);
+  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25);
   font-size: var(--text-00);
   position: 'sticky';
 `;
@@ -138,7 +136,7 @@ const LootCard = ({
 
   const toggleItemLegendVisibility = (): void => {
     setIsItemLegendVisible(!isItemLegendVisible);
-  }
+  };
 
   const paper = useMemo(
     () =>
@@ -192,10 +190,8 @@ const LootCard = ({
 
   return (
     <>
-      {isItemLegendVisible && 
-        <LootLegend toggleVisibility={toggleItemLegendVisibility} /> 
-      }
-      { !isItemLegendVisible &&
+      {isItemLegendVisible && <LootLegend toggleVisibility={toggleItemLegendVisibility} />}
+      {!isItemLegendVisible && (
         <LootCardContainer>
           <LootTitleBar>
             <div>Dope Wars Loot #{bag.id}</div>
@@ -225,17 +221,21 @@ const LootCard = ({
                 text-align: right;
                 cursor: pointer;
               `}
-              onClick={() => toggleItemLegendVisibility() }
+              onClick={() => toggleItemLegendVisibility()}
             >
-              <img 
-                src="/images/icon/info.svg" 
-                width="24" height="24" 
-                css={css`display:inline-block;margin-left:8px;`}
+              <img
+                src="/images/icon/info.svg"
+                width="24"
+                height="24"
+                css={css`
+                  display: inline-block;
+                  margin-left: 8px;
+                `}
               />
             </div>
           </LootFooter>
         </LootCardContainer>
-      }
+      )}
     </>
   );
 };
