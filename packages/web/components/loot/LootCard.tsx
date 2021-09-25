@@ -1,22 +1,15 @@
-import { useMemo } from 'react';
-import { css } from '@emotion/react';
-import { Button } from '@chakra-ui/react';
-import { useWeb3React } from '@web3-react/core';
-import { Paper__factory, Stockpile__factory } from '@dopewars/contracts';
-import ItemRarities from 'dope-metrics/output/item-rarities.json';
-
 import { Bag } from '../../src/generated/graphql';
+import { Button } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 import { NETWORK } from '../../common/constants';
+import { Paper__factory, Stockpile__factory } from '@dopewars/contracts';
+import { useMemo, useState } from 'react';
+import { useWeb3React } from '@web3-react/core';
+import ItemRarities from 'dope-metrics/output/item-rarities.json';
+import LootLegend, { LootLegendBackgroundColors } from './LootLegend';
+import styled from '@emotion/styled';
 
-const backgroundColors = [
-  '#fff',
-  '#fff',
-  'rgba(18,171,23,0.15)',
-  'rgba(46,130,255,0.15)',
-  'rgba(254,101,33,0.15)',
-  'rgba(249,40,255,0.25)',
-  'rgba(255,252,63,0.5)',
-];
+const itemBackgroundColors = Object.values(LootLegendBackgroundColors);
 
 const betterItemName = (name: string) => {
   const quotedIndex = name.lastIndexOf('"');
@@ -88,7 +81,39 @@ const Row = ({ color, slot, item }: { color: string; slot: string; item: string 
   </div>
 );
 
-export const Loot = ({
+const LootCardContainer = styled.div`
+  border: 2px solid #000;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+`;
+const LootTitleBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 32px;
+  background: #dededd;
+  border-bottom: 2px solid #000;
+  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25);
+  font-size: var(--text-00);
+  position: 'sticky';
+`;
+const LootFooter = styled.div`
+  display: flex;
+  align-items: center;
+  height: 44px;
+  background: #dededd;
+  border-top: 2px solid #000;
+  padding: 0 8px;
+  div {
+    flex-grow: 1;
+  }
+  * > button {
+    margin-right: 10px;
+  }
+`;
+
+const LootCard = ({
   bag,
 }: {
   bag: Pick<
@@ -107,6 +132,12 @@ export const Loot = ({
   >;
 }) => {
   const { chainId, library } = useWeb3React();
+  const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
+
+  const toggleItemLegendVisibility = (): void => {
+    setIsItemLegendVisible(!isItemLegendVisible);
+  };
+
   const paper = useMemo(
     () =>
       chainId
@@ -125,32 +156,8 @@ export const Loot = ({
     [chainId],
   );
 
-  return (
-    <div
-      css={css`
-        border: 2px solid #000;
-        display: flex;
-        flex-direction: column;
-        background-color: #fff;
-      `}
-    >
-      <div
-        css={css`
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          line-height: 32px;
-          background: #dededd;
-          border-bottom: 2px solid #000;
-          box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
-            inset 1px 1px 0px rgba(255, 255, 255, 0.25);
-          font-size: 12px;
-          font-weight: 600;
-          position: 'sticky';
-        `}
-      >
-        <div>Dope Wars Loot #{bag.id}</div>
-      </div>
+  const LootRows = () => {
+    return (
       <div
         css={css`
           flex: 1;
@@ -172,44 +179,65 @@ export const Loot = ({
         ].map(slot => (
           <Row
             key={slot[0]}
-            color={backgroundColors[(ItemRarities as { [name: string]: any })[slot[1]]]}
+            color={itemBackgroundColors[(ItemRarities as { [name: string]: any })[slot[1]]]}
             slot={slot[0]}
             item={slot[1]}
           />
         ))}
       </div>
-      <div
-        css={css`
-          display: flex;
-          align-items: center;
-          height: 44px;
-          background: #dededd;
-          border-top: 2px solid #000;
-          padding: 0 16px;
-          > button {
-            margin-right: 10px;
-          }
-        `}
-      >
-        <Button
-          disabled={bag.claimed}
-          onClick={async () => {
-            await paper.claimById(bag.id);
-          }}
-        >
-          Claim Paper
-        </Button>
-        <Button
-          disabled={true}
-          onClick={async () => {
-            await stockpile.open(bag.id);
-          }}
-        >
-          Unbundle
-        </Button>
-      </div>
-    </div>
+    );
+  };
+
+  return (
+    <>
+      {isItemLegendVisible && <LootLegend toggleVisibility={toggleItemLegendVisibility} />}
+      {!isItemLegendVisible && (
+        <LootCardContainer>
+          <LootTitleBar>
+            <div>Dope Wars Loot #{bag.id}</div>
+          </LootTitleBar>
+          <LootRows />
+          <LootFooter>
+            <div>
+              <Button
+                disabled={bag.claimed}
+                onClick={async () => {
+                  await paper.claimById(bag.id);
+                }}
+              >
+                Claim Paper
+              </Button>
+              <Button
+                disabled={true}
+                onClick={async () => {
+                  await stockpile.open(bag.id);
+                }}
+              >
+                Unbundle
+              </Button>
+            </div>
+            <div
+              css={css`
+                text-align: right;
+                cursor: pointer;
+              `}
+              onClick={() => toggleItemLegendVisibility()}
+            >
+              <img
+                src="/images/icon/info.svg"
+                width="24"
+                height="24"
+                css={css`
+                  display: inline-block;
+                  margin-left: 8px;
+                `}
+              />
+            </div>
+          </LootFooter>
+        </LootCardContainer>
+      )}
+    </>
   );
 };
 
-export default Loot;
+export default LootCard;

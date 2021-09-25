@@ -48,7 +48,15 @@ const LootTable = ({
           id,
           rank: rareById[id].rarest,
           percentile: ((1 - rareById[id].rarest / 8000) * 100).toFixed(1),
-          claimed: claimed ? '' : <CheckIcon css={css`display:inline;`} />,
+          claimed: claimed ? (
+            ''
+          ) : (
+            <CheckIcon
+              css={css`
+                display: inline;
+              `}
+            />
+          ),
           idx,
         }))
         .sort((a, b) => {
@@ -77,17 +85,17 @@ const LootTable = ({
           // Screen > Tablet display items side by side
           span.separator {
             display: block;
-            height:0;
-            margin:0;
-            padding:0;
-            overflow:hidden;
+            height: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
             ${media.tablet`
               display: inline;
-              font-size: 1em;
+              font-size: var(--text-00);
               height: auto;
               padding: 8px;
               color: #a8a9ae;
-            `} 
+            `}
           }
         }
       `}

@@ -36,7 +36,7 @@ const PageLoadingIndicator = () => {
   useEffect(() => {
     // Prevent flash of un-styled content by showing static until font loaded.
     // Use (document as any) to prevent server build errors.
-    (document as any).fonts.load("12px ChicagoFLF").then(() => {
+    (document as any).fonts.load('12px ChicagoFLF').then(() => {
       setIsFontLoaded(true);
     });
 

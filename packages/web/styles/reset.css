@@ -128,10 +128,13 @@ table {
   border-spacing: 0;
 }
 
-/* ADDITIONAL DEFAULTS */
-* {
+html {
   box-sizing: border-box;
-  outline: 0;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 button,

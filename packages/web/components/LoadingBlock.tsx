@@ -51,6 +51,7 @@ const LoadingBlock = () => {
   for (let i = 0; i < randomRowLength; i++) {
     rows.push(
       <div
+        key={`loading-row-${i}`}
         css={css`
           animation-duration: ${getRandomNumber(5, 10) / 10}s !important;
         `}
