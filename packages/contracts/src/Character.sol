@@ -174,6 +174,7 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
         string memory image = Base64.encode(
             bytes(
                 MultiPartRLEToSVG.generateSVG(
+                    "title",
                     MultiPartRLEToSVG.SVGParams({ parts: params.parts, background: params.background }),
                     palettes
                 )
@@ -201,6 +202,7 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
             Base64.encode(
                 bytes(
                     MultiPartRLEToSVG.generateSVG(
+                        "title",
                         MultiPartRLEToSVG.SVGParams({
                             parts: _getPartsForEquipment(equipment),
                             background: backgrounds[equipment[BACKGROUND]]

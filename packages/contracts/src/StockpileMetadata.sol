@@ -5,15 +5,28 @@ import './StockpileComponents.sol';
 import './TokenId.sol';
 import { Base64, toString } from './MetadataUtils.sol';
 
+import { MultiPartRLEToSVG } from './MultiPartRLEToSVG.sol';
+
 /// @title Helper contract for generating ERC-1155 token ids and descriptions for
 /// the individual items inside a Loot bag.
-/// @author Georgios Konstantopoulos
+/// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
 contract StockpileMetadata is StockpileComponents {
     string[] internal itemTypes = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
 
+    string internal constant man = '0x0022272326011e0';
+
+    // Color Palettes (Index => Hex Colors)
+    mapping(uint8 => string[]) public palettes;
+
+    // Backgrounds (Hex Colors)
+    string[] public backgrounds;
+
+    // Item RLE (TokenID => RLE)
+    mapping(uint256 => string) internal _rle;
+
     function name() external pure returns (string memory) {
-        return 'Dope Gear Stockpile';
+        return 'Dope Wars Stockpile';
     }
 
     function symbol() external pure returns (string memory) {
@@ -22,8 +35,7 @@ contract StockpileMetadata is StockpileComponents {
 
     /// @dev Opensea contract metadata: https://docs.opensea.io/docs/contract-level-metadata
     function contractURI() external pure returns (string memory) {
-        string
-            memory json = '{"name": "Dope Gear Stockpile", "description": "Dope Gear lets you unbundle your DOPE Bags into individual ERC1155 NFTs."}';
+        string memory json = '{"name": "Dope Wars Stockpile", "description": "Stockpile for Dope Wars"}';
         string memory encodedJson = Base64.encode(bytes(json));
         string memory output = string(abi.encodePacked('data:application/json;base64,', encodedJson));
 
@@ -32,18 +44,8 @@ contract StockpileMetadata is StockpileComponents {
 
     /// @notice Returns an SVG for the provided token id
     function tokenURI(uint256 tokenId) public view returns (string memory) {
-        string[4] memory parts;
-        parts[
-            0
-        ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
-
-        parts[1] = tokenName(tokenId);
-
-        parts[2] = '</text><text x="10" y="40" class="base">';
-
-        parts[3] = '</text></svg>';
-
-        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3]));
+        uint48[] memory parts = new uint48[](1);
+        string memory output = generateSVGImage(tokenName(tokenId), parts);
 
         string memory json = Base64.encode(
             bytes(
@@ -55,7 +57,7 @@ contract StockpileMetadata is StockpileComponents {
                         '"description" : ',
                         '"Dope Gear lets you unbundle your DOPE Bags into individual ERC1155 NFTs.", ',
                         '"image": "data:image/svg+xml;base64,',
-                        Base64.encode(bytes(output)),
+                        output,
                         '", '
                         '"attributes": ',
                         attributes(tokenId),
@@ -67,6 +69,24 @@ contract StockpileMetadata is StockpileComponents {
         output = string(abi.encodePacked('data:application/json;base64,', json));
 
         return output;
+    }
+
+    /**
+     * @notice Given a equipment, construct a base64 encoded SVG image.
+     */
+    function generateSVGImage(string memory title, uint48[] memory equipment) internal view returns (string memory) {
+        bytes[] memory parts = new bytes[](1);
+        parts[0] = bytes(man);
+        return
+            Base64.encode(
+                bytes(
+                    MultiPartRLEToSVG.generateSVG(
+                        title,
+                        MultiPartRLEToSVG.SVGParams({ parts: parts, background: '#000000' }),
+                        palettes
+                    )
+                )
+            );
     }
 
     /// @notice Returns the attributes associated with this item.
@@ -114,6 +134,15 @@ contract StockpileMetadata is StockpileComponents {
     function tokenName(uint256 id) public view returns (string memory) {
         (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
         return componentsToString(components, itemType);
+    }
+
+    function rle(uint256 id) public view returns (string memory) {
+        if (bytes(_rle[id]).length > 0) {
+            return _rle[id];
+        }
+        return '';
+        // (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
+        // return
     }
 
     // Returns the "vanilla" item name w/o any prefix/suffixes or augmentations
