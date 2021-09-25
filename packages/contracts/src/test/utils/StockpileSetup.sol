@@ -6,6 +6,7 @@ import 'ds-test/test.sol';
 import './Hevm.sol';
 import '../../Loot.sol';
 import { Stockpile } from '../../Stockpile.sol';
+import { StockpileComponents } from '../../StockpileComponents.sol';
 import { TokenId } from '../../TokenId.sol';
 
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
@@ -64,14 +65,16 @@ struct ItemNames {
 }
 
 contract StockpileOwner is ERC1155Holder {
+    StockpileComponents sc;
     Stockpile stockpile;
 
-    function setStockpile(Stockpile _stockpile) public {
+    function init(StockpileComponents _components, Stockpile _stockpile) public {
+        sc = _components;
         stockpile = _stockpile;
     }
 
     function addItemComponent(uint8 itemType, string calldata component) public returns (uint8) {
-        return stockpile.addItemComponent(itemType, component);
+        return sc.addComponent(itemType, component);
     }
 
     function mint(
@@ -96,7 +99,11 @@ contract StockpileOwner is ERC1155Holder {
 }
 
 contract StockpileTester is Stockpile {
-    constructor(address _bags, address _owner) Stockpile(_bags, _owner) {
+    constructor(
+        address _components,
+        address _bags,
+        address _owner
+    ) Stockpile(_components, _bags, _owner) {
         palettes[0] = [
             '',
             'ffffff',
@@ -147,39 +154,39 @@ contract StockpileTester is Stockpile {
 
     // View helpers for getting the item ID that corresponds to a bag's items
     function weaponId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(weaponComponents(tokenId), WEAPON);
+        return TokenId.toId(sc.weaponComponents(tokenId), sc.WEAPON());
     }
 
     function clothesId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(clothesComponents(tokenId), CLOTHES);
+        return TokenId.toId(sc.clothesComponents(tokenId), sc.CLOTHES());
     }
 
     function vehicleId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(vehicleComponents(tokenId), VEHICLE);
+        return TokenId.toId(sc.vehicleComponents(tokenId), sc.VEHICLE());
     }
 
     function waistId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(waistComponents(tokenId), WAIST);
+        return TokenId.toId(sc.waistComponents(tokenId), sc.WAIST());
     }
 
     function footId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(footComponents(tokenId), FOOT);
+        return TokenId.toId(sc.footComponents(tokenId), sc.FOOT());
     }
 
     function handId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(handComponents(tokenId), HAND);
+        return TokenId.toId(sc.handComponents(tokenId), sc.HAND());
     }
 
     function drugsId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(drugsComponents(tokenId), DRUGS);
+        return TokenId.toId(sc.drugsComponents(tokenId), sc.DRUGS());
     }
 
     function neckId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(neckComponents(tokenId), NECK);
+        return TokenId.toId(sc.neckComponents(tokenId), sc.NECK());
     }
 
     function ringId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(ringComponents(tokenId), RING);
+        return TokenId.toId(sc.ringComponents(tokenId), sc.RING());
     }
 
     // Given an erc721 bag, returns the erc1155 token ids of the items in the bag
@@ -244,6 +251,7 @@ contract StockpileTest is DSTest {
 
     // contracts
     DopeWarsLoot internal loot;
+    StockpileComponents internal components;
     StockpileTester internal stockpile;
 
     // users
@@ -255,9 +263,10 @@ contract StockpileTest is DSTest {
 
         // deploy contracts
         loot = new DopeWarsLoot();
-        stockpile = new StockpileTester(address(loot), address(owner));
+        components = new StockpileComponents(address(owner));
+        stockpile = new StockpileTester(address(components), address(loot), address(owner));
 
-        owner.setStockpile(stockpile);
+        owner.init(components, stockpile);
 
         // create alice's account & claim a bag
         alice = new StockpileUser(loot, stockpile);
