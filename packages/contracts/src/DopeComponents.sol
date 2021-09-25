@@ -2,7 +2,7 @@
 
 /*
 
-    StockpileComponents.sol
+    DopeComponents.sol
     
     This is a utility contract to make it easier for other
     contracts to work with Loot properties.
@@ -29,7 +29,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 
 import { toString } from './MetadataUtils.sol';
 
-contract StockpileComponents is Ownable {
+contract DopeComponents is Ownable {
     uint8 public constant WEAPON = 0x0;
     uint8 public constant CLOTHES = 0x1;
     uint8 public constant VEHICLE = 0x2;
