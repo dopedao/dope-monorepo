@@ -75,20 +75,20 @@ const LootTable = ({
         overflow: scroll;
         tfoot th {
           // Screen > Tablet display items side by side
-          span {
+          span.separator {
             display: block;
             height:0;
             margin:0;
             padding:0;
             overflow:hidden;
+            ${media.tablet`
+              display: inline;
+              font-size: 1em;
+              height: auto;
+              padding: 8px;
+              color: #a8a9ae;
+            `} 
           }
-          ${media.tablet`
-            display: inline;
-            font-size: 1em;
-            height: auto;
-            padding: 8px;
-            color: #a8a9ae;
-          `} 
         }
       `}
     >
@@ -125,7 +125,7 @@ const LootTable = ({
           <Tr>
             <Th colSpan={4}>
               {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
-              <span>/</span>
+              <span className="separator">/</span>
               {formattedUnclaimedPaper()} Unclaimed $PAPER
             </Th>
           </Tr>
