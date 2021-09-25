@@ -11,7 +11,7 @@ import { MultiPartRLEToSVG } from './MultiPartRLEToSVG.sol';
 /// the individual items inside a Loot bag.
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
-contract StockpileMetadata is StockpileComponents {
+contract StockpileMetadata {
     string[] internal itemTypes = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
 
     string internal constant man = '0x0022272326011e0';
@@ -24,6 +24,12 @@ contract StockpileMetadata is StockpileComponents {
 
     // Item RLE (TokenID => RLE)
     mapping(uint256 => string) internal _rle;
+
+    StockpileComponents internal sc;
+
+    constructor(address _components) {
+        sc = StockpileComponents(_components);
+    }
 
     function name() external pure returns (string memory) {
         return 'Dope Wars Stockpile';
@@ -101,17 +107,17 @@ contract StockpileMetadata is StockpileComponents {
         res = string(abi.encodePacked(res, ', ', trait('Item', item)));
 
         if (components[1] > 0) {
-            string memory data = suffixes[components[1] - 1];
+            string memory data = sc.suffixes(components[1] - 1);
             res = string(abi.encodePacked(res, ', ', trait('Suffix', data)));
         }
 
         if (components[2] > 0) {
-            string memory data = namePrefixes[components[2] - 1];
+            string memory data = sc.namePrefixes(components[2] - 1);
             res = string(abi.encodePacked(res, ', ', trait('Name Prefix', data)));
         }
 
         if (components[3] > 0) {
-            string memory data = nameSuffixes[components[3] - 1];
+            string memory data = sc.nameSuffixes(components[3] - 1);
             res = string(abi.encodePacked(res, ', ', trait('Name Suffix', data)));
         }
 
@@ -147,30 +153,27 @@ contract StockpileMetadata is StockpileComponents {
 
     // Returns the "vanilla" item name w/o any prefix/suffixes or augmentations
     function itemName(uint8 itemType, uint256 idx) public view returns (string memory) {
-        string[] storage arr;
-        if (itemType == WEAPON) {
-            arr = weapons;
-        } else if (itemType == CLOTHES) {
-            arr = clothes;
-        } else if (itemType == VEHICLE) {
-            arr = vehicle;
-        } else if (itemType == WAIST) {
-            arr = waistArmor;
-        } else if (itemType == FOOT) {
-            arr = footArmor;
-        } else if (itemType == HAND) {
-            arr = handArmor;
-        } else if (itemType == DRUGS) {
-            arr = drugs;
-        } else if (itemType == NECK) {
-            arr = necklaces;
-        } else if (itemType == RING) {
-            arr = rings;
+        if (itemType == sc.WEAPON()) {
+            return sc.weapons(idx);
+        } else if (itemType == sc.CLOTHES()) {
+            return sc.clothes(idx);
+        } else if (itemType == sc.VEHICLE()) {
+            return sc.vehicle(idx);
+        } else if (itemType == sc.WAIST()) {
+            return sc.waistArmor(idx);
+        } else if (itemType == sc.FOOT()) {
+            return sc.footArmor(idx);
+        } else if (itemType == sc.HAND()) {
+            return sc.handArmor(idx);
+        } else if (itemType == sc.DRUGS()) {
+            return sc.drugs(idx);
+        } else if (itemType == sc.NECK()) {
+            return sc.necklaces(idx);
+        } else if (itemType == sc.RING()) {
+            return sc.rings(idx);
         } else {
             revert('Unexpected gear piece');
         }
-
-        return arr[idx];
     }
 
     // Creates the token description given its components and what type it is
@@ -183,15 +186,15 @@ contract StockpileMetadata is StockpileComponents {
 
         // add the suffix
         if (components[1] > 0) {
-            item = string(abi.encodePacked(item, ' ', suffixes[components[1] - 1]));
+            item = string(abi.encodePacked(item, ' ', sc.suffixes(components[1] - 1)));
         }
 
         // add the name prefix / suffix
         if (components[2] > 0) {
             // prefix
-            string memory namePrefixSuffix = string(abi.encodePacked("'", namePrefixes[components[2] - 1]));
+            string memory namePrefixSuffix = string(abi.encodePacked("'", sc.namePrefixes(components[2] - 1)));
             if (components[3] > 0) {
-                namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, ' ', nameSuffixes[components[3] - 1]));
+                namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, ' ', sc.nameSuffixes(components[3] - 1)));
             }
 
             namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, "' "));

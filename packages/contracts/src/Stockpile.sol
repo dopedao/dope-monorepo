@@ -26,7 +26,7 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
     mapping(uint256 => bool) private opened;
 
     // No need for a URI since we're doing everything onchain
-    constructor(address _bags, address _owner) ERC1155('') {
+    constructor(address _components, address _bags, address _owner) StockpileMetadata(_components) ERC1155('') {
         bags = IERC721(_bags);
         transferOwnership(_owner);
     }
@@ -48,15 +48,15 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         // event. If that's unsafe, we can fallback to using _mint
         uint256[] memory ids = new uint256[](9);
         uint256[] memory amounts = new uint256[](9);
-        ids[0] = itemId(tokenId, weaponComponents, WEAPON);
-        ids[1] = itemId(tokenId, clothesComponents, CLOTHES);
-        ids[2] = itemId(tokenId, vehicleComponents, VEHICLE);
-        ids[3] = itemId(tokenId, waistComponents, WAIST);
-        ids[4] = itemId(tokenId, footComponents, FOOT);
-        ids[5] = itemId(tokenId, handComponents, HAND);
-        ids[6] = itemId(tokenId, drugsComponents, DRUGS);
-        ids[7] = itemId(tokenId, neckComponents, NECK);
-        ids[8] = itemId(tokenId, ringComponents, RING);
+        ids[0] = itemId(tokenId, sc.weaponComponents, sc.WEAPON());
+        ids[1] = itemId(tokenId, sc.clothesComponents, sc.CLOTHES());
+        ids[2] = itemId(tokenId, sc.vehicleComponents, sc.VEHICLE());
+        ids[3] = itemId(tokenId, sc.waistComponents, sc.WAIST());
+        ids[4] = itemId(tokenId, sc.footComponents, sc.FOOT());
+        ids[5] = itemId(tokenId, sc.handComponents, sc.HAND());
+        ids[6] = itemId(tokenId, sc.drugsComponents, sc.DRUGS());
+        ids[7] = itemId(tokenId, sc.neckComponents, sc.NECK());
+        ids[8] = itemId(tokenId, sc.ringComponents, sc.RING());
         for (uint256 i = 0; i < ids.length; i++) {
             amounts[i] = 1;
             // +21k per call / unavoidable - requires patching OZ
@@ -68,15 +68,11 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
 
     function itemId(
         uint256 tokenId,
-        function(uint256) view returns (uint8[5] memory) componentsFn,
+        function(uint256) pure external returns (uint8[5] memory) componentsFn,
         uint256 itemType
     ) private view returns (uint256) {
         uint8[5] memory components = componentsFn(tokenId);
         return TokenId.toId(components, itemType);
-    }
-
-    function addItemComponent(uint8 itemType, string calldata component) external onlyOwner returns (uint8) {
-        return addComponent(itemType, component);
     }
 
     function mint(

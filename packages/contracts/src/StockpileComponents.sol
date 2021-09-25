@@ -25,24 +25,26 @@
 
 pragma solidity ^0.8.4;
 
+import '@openzeppelin/contracts/access/Ownable.sol';
+
 import { toString } from './MetadataUtils.sol';
 
-contract StockpileComponents {
-    uint8 internal constant WEAPON = 0x0;
-    uint8 internal constant CLOTHES = 0x1;
-    uint8 internal constant VEHICLE = 0x2;
-    uint8 internal constant WAIST = 0x3;
-    uint8 internal constant FOOT = 0x4;
-    uint8 internal constant HAND = 0x5;
-    uint8 internal constant DRUGS = 0x6;
-    uint8 internal constant NECK = 0x7;
-    uint8 internal constant RING = 0x8;
-    uint8 internal constant NAME_PREFIX = 0x9;
-    uint8 internal constant NAME_SUFFIX = 0xa;
-    uint8 internal constant SUFFIX = 0xb;
-    uint8 internal constant SET = 0xc;
+contract StockpileComponents is Ownable {
+    uint8 public constant WEAPON = 0x0;
+    uint8 public constant CLOTHES = 0x1;
+    uint8 public constant VEHICLE = 0x2;
+    uint8 public constant WAIST = 0x3;
+    uint8 public constant FOOT = 0x4;
+    uint8 public constant HAND = 0x5;
+    uint8 public constant DRUGS = 0x6;
+    uint8 public constant NECK = 0x7;
+    uint8 public constant RING = 0x8;
+    uint8 public constant NAME_PREFIX = 0x9;
+    uint8 public constant NAME_SUFFIX = 0xa;
+    uint8 public constant SUFFIX = 0xb;
+    uint8 public constant SET = 0xc;
 
-    string[] internal weapons = [
+    string[] public weapons = [
         'Pocket Knife', // 0
         'Chain', // 1
         'Knife', // 2
@@ -64,7 +66,7 @@ contract StockpileComponents {
     ];
     uint256 private constant weaponsLength = 18;
 
-    string[] internal clothes = [
+    string[] public clothes = [
         'White T Shirt', // 0
         'Black T Shirt', // 1
         'White Hoodie', // 2
@@ -88,7 +90,7 @@ contract StockpileComponents {
     ];
     uint256 private constant clothesLength = 20;
 
-    string[] internal vehicle = [
+    string[] public vehicle = [
         'Dodge', // 0
         'Porsche', // 1
         'Tricycle', // 2
@@ -109,7 +111,7 @@ contract StockpileComponents {
     ];
     uint256 private constant vehicleLength = 17;
 
-    string[] internal waistArmor = [
+    string[] public waistArmor = [
         'Gucci Belt', // 0
         'Versace Belt', // 1
         'Studded Belt', // 2
@@ -129,7 +131,7 @@ contract StockpileComponents {
     ];
     uint256 private constant waistLength = 16;
 
-    string[] internal footArmor = [
+    string[] public footArmor = [
         'Black Air Force 1s', // 0
         'White Forces', // 1
         'Air Jordan 1 Chicagos', // 2
@@ -150,7 +152,7 @@ contract StockpileComponents {
     ];
     uint256 private constant footLength = 17;
 
-    string[] internal handArmor = [
+    string[] public handArmor = [
         'Rubber Gloves', // 0
         'Baseball Gloves', // 1
         'Boxing Gloves', // 2
@@ -168,14 +170,14 @@ contract StockpileComponents {
     ];
     uint256 private constant handLength = 14;
 
-    string[] internal necklaces = [
+    string[] public necklaces = [
         'Bronze Chain', // 0
         'Silver Chain', // 1
         'Gold Chain' // 2
     ];
     uint256 private constant necklacesLength = 3;
 
-    string[] internal rings = [
+    string[] public rings = [
         'Gold Ring', // 0
         'Silver Ring', // 1
         'Diamond Ring', // 2
@@ -186,7 +188,7 @@ contract StockpileComponents {
     ];
     uint256 private constant ringsLength = 7;
 
-    string[] internal drugs = [
+    string[] public drugs = [
         'Weed', // 0
         'Cocaine', // 1
         'Ludes', // 2
@@ -209,7 +211,7 @@ contract StockpileComponents {
     ];
     uint256 private constant drugsLength = 19;
 
-    string[] internal suffixes = [
+    string[] public suffixes = [
         // <no suffix>          // 0
         'from the Bayou', // 1
         'from Atlanta', // 2
@@ -233,7 +235,7 @@ contract StockpileComponents {
     ];
     uint256 private constant suffixesLength = 19;
 
-    string[] internal namePrefixes = [
+    string[] public namePrefixes = [
         // <no name>            // 0
         'OG', // 1
         'King of the Street', // 2
@@ -302,7 +304,7 @@ contract StockpileComponents {
     ];
     uint256 private constant namePrefixesLength = 64;
 
-    string[] internal nameSuffixes = [
+    string[] public nameSuffixes = [
         // <no name>            // 0
         'Feared', // 1
         'Baron', // 2
@@ -325,47 +327,51 @@ contract StockpileComponents {
     ];
     uint256 private constant nameSuffixesLength = 18;
 
+    constructor(address _owner) {
+        transferOwnership(_owner);
+    }
+
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
-    function weaponComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function weaponComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
         return pluck(tokenId, 'WEAPON', weaponsLength);
     }
 
-    function clothesComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function clothesComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
         return pluck(tokenId, 'CLOTHES', clothesLength);
     }
 
-    function vehicleComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function vehicleComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
         return pluck(tokenId, 'VEHICLE', vehicleLength);
     }
 
-    function waistComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function waistComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
         return pluck(tokenId, 'WAIST', waistLength);
     }
 
-    function footComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function footComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
         return pluck(tokenId, 'FOOT', footLength);
     }
 
-    function handComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function handComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
         return pluck(tokenId, 'HAND', handLength);
     }
 
-    function drugsComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function drugsComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
         return pluck(tokenId, 'DRUGS', drugsLength);
     }
 
-    function neckComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function neckComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
         return pluck(tokenId, 'NECK', necklacesLength);
     }
 
-    function ringComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
+    function ringComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
         return pluck(tokenId, 'RING', ringsLength);
     }
 
-    function addComponent(uint8 itemType, string calldata component) internal returns (uint8) {
+    function addComponent(uint8 itemType, string calldata component) public onlyOwner returns (uint8) {
         string[] storage arr;
         if (itemType == WEAPON) {
             arr = weapons;

@@ -7,6 +7,7 @@ import './Hevm.sol';
 import '../../Loot.sol';
 import { Character } from '../../Character.sol';
 import { Stockpile } from '../../Stockpile.sol';
+import { StockpileComponents } from '../../StockpileComponents.sol';
 import { StockpileTester } from './StockpileSetup.sol';
 
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
@@ -57,6 +58,7 @@ contract CharacterTest is DSTest {
 
     // contracts
     DopeWarsLoot internal loot;
+    StockpileComponents internal components;
     StockpileTester internal stockpile;
     Character internal character;
 
@@ -69,7 +71,8 @@ contract CharacterTest is DSTest {
 
         // deploy contracts
         loot = new DopeWarsLoot();
-        stockpile = new StockpileTester(address(loot), address(owner));
+        components = new StockpileComponents(address(owner));
+        stockpile = new StockpileTester(address(components), address(loot), address(owner));
         character = new Character(address(stockpile));
 
         // create alice's account & claim a bag
