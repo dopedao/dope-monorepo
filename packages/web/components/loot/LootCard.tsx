@@ -98,7 +98,6 @@ const LootTitleBar = styled.div`
   box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
     inset 1px 1px 0px rgba(255, 255, 255, 0.25);
   font-size: var(--text-00);
-  font-weight: 600;
   position: 'sticky';
 `;
 const LootFooter = styled.div`
