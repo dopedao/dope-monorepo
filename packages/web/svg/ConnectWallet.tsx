@@ -13,24 +13,24 @@ const ConnectWallet = ({ loading = false }: ConnectWalletProps) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <g opacity="0.25">
-      <circle cx="140.5" cy="140" r="124" fill="#202221" />
-      <circle cx="140.5" cy="140" r="136" stroke="#202221" strokeWidth="8" />
+      <circle cx="140" cy="140" r="124" fill="#202221" />
+      <circle cx="140" cy="140" r="136" stroke="#202221" strokeWidth="8" />
       <path
-        d="M140.984 50L139.816 53.9591V168.844L140.984 170.007L194.468 138.485L140.984 50Z"
+        d="M140.484 50L139.316 53.9591V168.844L140.484 170.007L193.968 138.485L140.484 50Z"
         fill="white"
         fillOpacity="0.5"
       />
-      <path d="M140.984 50L87.5 138.485L140.984 170.008V114.246V50Z" fill="white" />
+      <path d="M140.484 50L87 138.485L140.484 170.008V114.246V50Z" fill="white" />
       <path
-        d="M140.984 187.358L140.325 188.158V229.083L140.984 231L194.5 155.851L140.984 187.358Z"
+        d="M140.484 187.358L139.825 188.158V229.083L140.484 231L194 155.851L140.484 187.358Z"
         fill="white"
         fillOpacity="0.5"
       />
-      <path d="M140.984 231V187.358L87.5 155.851L140.984 231Z" fill="white" />
+      <path d="M140.484 231V187.358L87 155.851L140.484 231Z" fill="white" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M140.983 170.007L87.5 138.485L140.983 114.246V170.007ZM194.467 138.485L140.983 170.007V114.246L194.467 138.485Z"
+        d="M140.483 170.007L87 138.485L140.483 114.246V170.007ZM193.967 138.485L140.483 170.007V114.246L193.967 138.485Z"
         fill="white"
         fillOpacity="0.5"
       />
