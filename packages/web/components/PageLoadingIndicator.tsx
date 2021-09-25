@@ -35,9 +35,10 @@ const PageLoadingIndicator = () => {
 
   useEffect(() => {
     // Prevent flash of un-styled content by showing static until font loaded.
-    if (typeof window !== 'undefined') {
-      document.fonts.load("12px ChicagoFLF").then(() => setIsFontLoaded(true));
-    }
+    // Use (document as any) to prevent server build errors.
+    (document as any).fonts.load("12px ChicagoFLF").then(() => {
+      setIsFontLoaded(true);
+    });
 
     const handleStart = (url: string) => {
       console.log(`Starting URL transition ${url}`);
