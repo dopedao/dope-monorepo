@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { media } from '../../styles/mixins';
 import { Table, Thead, Tbody, Tr, Th, Td, Tfoot } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import rare from 'dope-metrics/output/rare.json';
@@ -72,14 +73,37 @@ const LootTable = ({
         border: 2px solid #000;
         background-color: #fff;
         overflow: scroll;
+        tfoot th {
+          // Screen > Tablet display items side by side
+          span.separator {
+            display: block;
+            height:0;
+            margin:0;
+            padding:0;
+            overflow:hidden;
+            ${media.tablet`
+              display: inline;
+              font-size: 1em;
+              height: auto;
+              padding: 8px;
+              color: #a8a9ae;
+            `} 
+          }
+        }
       `}
     >
       <Table variant="dope">
+        <colgroup>
+          <col width="25%" />
+          <col width="25%" />
+          <col width="25%" />
+          <col width="25%" />
+        </colgroup>
         <Thead>
           <Tr>
             <Th onClick={() => setSort('id')}>Dope ID</Th>
             <Th onClick={() => setSort('rank')}>Rank</Th>
-            <Th onClick={() => setSort('percentile')}>Percentile</Th>
+            <Th onClick={() => setSort('percentile')}>Percent</Th>
             <Th>Paper?</Th>
           </Tr>
         </Thead>
@@ -101,14 +125,7 @@ const LootTable = ({
           <Tr>
             <Th colSpan={4}>
               {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
-              <span
-                css={css`
-                  padding: 8px;
-                  color: #a8a9ae;
-                `}
-              >
-                /
-              </span>
+              <span className="separator">/</span>
               {formattedUnclaimedPaper()} Unclaimed $PAPER
             </Th>
           </Tr>

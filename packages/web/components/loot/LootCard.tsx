@@ -52,8 +52,6 @@ const betterItemName = (name: string) => {
 const Row = ({ color, slot, item }: { color: string; slot: string; item: string }) => (
   <div
     css={css`
-      font-size: 14px;
-      line-height: 16px;
       width: 100%;
       display: flex;
       border-bottom: 1px solid #dededd;

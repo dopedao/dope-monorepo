@@ -36,13 +36,9 @@ const DisconnectWallet = ({ onClose }: DisconnectWalletProps) => {
             gap: 16px;
           `}
         >
-          <div
-            css={css`
-              font-size: 14px;
-            `}
-          >
+          <h4>
             You Are Connected to DOPEWARS.EXE
-          </div>
+          </h4>
           <div
             css={css`
               font-size: 12px;
