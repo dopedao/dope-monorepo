@@ -83,7 +83,7 @@ const LootTable = ({
             overflow:hidden;
             ${media.tablet`
               display: inline;
-              font-size: 1em;
+              font-size: var(--text-00);
               height: auto;
               padding: 8px;
               color: #a8a9ae;

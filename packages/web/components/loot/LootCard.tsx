@@ -97,7 +97,7 @@ const LootTitleBar = styled.div`
   border-bottom: 2px solid #000;
   box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
     inset 1px 1px 0px rgba(255, 255, 255, 0.25);
-  font-size: 12px;
+  font-size: var(--text-00);
   font-weight: 600;
   position: 'sticky';
 `;
@@ -226,12 +226,12 @@ const LootCard = ({
                 text-align: right;
                 cursor: pointer;
               `}
+              onClick={() => toggleItemLegendVisibility() }
             >
               <img 
                 src="/images/icon/info.svg" 
                 width="24" height="24" 
                 css={css`display:inline-block;margin-left:8px;`}
-                onClick={() => toggleItemLegendVisibility() }
               />
             </div>
           </LootFooter>

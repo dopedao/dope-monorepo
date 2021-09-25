@@ -13,19 +13,16 @@ export const LootLegendBackgroundColors = {
 };
 
 const LootLegendContainer = styled.div`
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background: #fff;
   display: flex;
   flex-flow: column wrap;
-  padding: 32px;
-  padding-top: 8px;
-  border: 2px solid black;
+  padding: 8px 16px;
+  border: 2px solid #000;
   h4 {
     border-bottom: 1px solid #eee;
     padding-bottom: 4px;
+    text-align: center;
+    font-size: var(--text-00);
   }
 `;
 

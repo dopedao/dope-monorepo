@@ -19,6 +19,7 @@ const Container = styled.div`
   gap: 16px;
   & > div {
     flex: 1;
+    flex-shrink: 2;
     overflow-y: auto;
   }
   & > div:last-child {
