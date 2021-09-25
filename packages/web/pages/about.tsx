@@ -80,7 +80,7 @@ These bundles contain items with randomized attributes and rarity scores. Each o
 
 
 ### DAO Governance + Compensation
-To fund the DOPE DAO treasury we've established a 5% royalty payment that is held by the DAO until released by community vote.
+To fund the DOPE DAO treasury we've established a 5% royalty payment on each sale, held by the DAO until released by community vote.
 
 Community members draft [proposals](https://dope-wars.notion.site/626df3ff9e4d47da98ea23abc4b6e7a7?v=6350c7a1a9ba4a1c953c8cc4f9a0f062) to use these funds on projects that are then voted on by DOPE NFT holders. This governance structure is how we're able to continue building the DOPE WARS ecosystem with a loose collection of shifting contributors.
 
