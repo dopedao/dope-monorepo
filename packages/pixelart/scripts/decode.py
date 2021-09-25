@@ -14,6 +14,9 @@ lookup = range(0, resolution, int(resolution/granularity))
 
 img = np.zeros((350, 350, 4))
 for parts in meta["parts"]:
+    # if parts[0]["name"] != "../imgs/shoes/2-air-jordan-chicago":
+    #     continue
+
     part = parts[0]
     subimg = to_bytes(hexstr=part["data"])
     top = subimg[1]

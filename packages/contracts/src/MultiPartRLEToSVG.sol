@@ -32,17 +32,18 @@ library MultiPartRLEToSVG {
     /**
      * @notice Given RLE image parts and color palettes, merge to generate a single SVG image.
      */
-    function generateSVG(SVGParams memory params, mapping(uint8 => string[]) storage palettes)
-        internal
-        view
-        returns (string memory svg)
-    {
+    function generateSVG(
+        string memory name,
+        SVGParams memory params,
+        mapping(uint8 => string[]) storage palettes
+    ) internal view returns (string memory svg) {
         // prettier-ignore
         return string(
             abi.encodePacked(
                 '<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">',
                 '<rect width="100%" height="100%" fill="#', params.background, '" />',
                 _generateSVGRects(params, palettes),
+                '<text x="10" y="20" class="base">', name, '</text>',
                 '</svg>'
             )
         );
@@ -140,6 +141,7 @@ library MultiPartRLEToSVG {
             rects[cursor] = Rect({ length: uint8(image[i]), colorIndex: uint8(image[i + 1]) });
             cursor++;
         }
+        
         return DecodedImage({ paletteIndex: paletteIndex, bounds: bounds, rects: rects });
     }
 }

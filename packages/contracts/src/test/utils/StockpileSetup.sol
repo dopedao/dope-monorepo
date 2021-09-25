@@ -96,7 +96,54 @@ contract StockpileOwner is ERC1155Holder {
 }
 
 contract StockpileTester is Stockpile {
-    constructor(address _bags, address _owner) Stockpile(_bags, _owner) {}
+    constructor(address _bags, address _owner) Stockpile(_bags, _owner) {
+        palettes[0] = [
+            '',
+            'ffffff',
+            'C58860',
+            'F3AA77',
+            '03090C',
+            '313131',
+            '6E6E6E',
+            'C6BDBF',
+            'F6ECEF',
+            'DDD3D6',
+            '131313',
+            '303030',
+            '122D33',
+            '2D5D67',
+            'D2D2D2',
+            'B1B1B1',
+            '120904',
+            '3D5359',
+            '526C74',
+            '020B0C',
+            '60412B',
+            '936546',
+            '797979',
+            '673446',
+            '888D78',
+            '0D0D0D',
+            'D59882',
+            '7C7C7C',
+            'E1E1E1',
+            'FFD90A',
+            'E09E00',
+            'E672A8',
+            'E1ECFB',
+            'CAD4E1',
+            'C28900',
+            'FFC104',
+            '212121',
+            '333733',
+            'FFFFFF',
+            'ED2424',
+            'DADADA',
+            '663900',
+            'F0E0CC',
+            'FF2626'
+        ];
+    }
 
     // View helpers for getting the item ID that corresponds to a bag's items
     function weaponId(uint256 tokenId) public view returns (uint256) {
