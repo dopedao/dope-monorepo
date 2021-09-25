@@ -31,8 +31,12 @@ const LoadingMessage = styled.div`
 const PageLoadingIndicator = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
 
   useEffect(() => {
+    // Prevent flash of un-styled content by showing static until font loaded.
+    document.fonts.load("12px ChicagoFLF").then(() => setIsFontLoaded(true));
+
     const handleStart = (url: string) => {
       console.log(`Starting URL transition ${url}`);
       document.body.classList.add('wait');
@@ -58,7 +62,7 @@ const PageLoadingIndicator = () => {
 
   return (
     <>
-      {isLoading && (
+      {(!isFontLoaded || isLoading) && (
         <LoadingWrapper>
           <LoadingMessage>L O A D I N G</LoadingMessage>
         </LoadingWrapper>
