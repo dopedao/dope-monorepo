@@ -129,8 +129,4 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         bytes[] memory _rles = new bytes[](8);
         return _rles;
     }
-
-    function uri(uint256 tokenId) public view override returns (string memory) {
-        return tokenURI(tokenId);
-    }
 }
