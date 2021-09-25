@@ -7,7 +7,7 @@ import './Hevm.sol';
 import '../../Loot.sol';
 import { Character } from '../../Character.sol';
 import { Stockpile } from '../../Stockpile.sol';
-import { StockpileComponents } from '../../StockpileComponents.sol';
+import { DopeComponents } from '../../DopeComponents.sol';
 import { StockpileTester } from './StockpileSetup.sol';
 
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
@@ -58,7 +58,7 @@ contract CharacterTest is DSTest {
 
     // contracts
     DopeWarsLoot internal loot;
-    StockpileComponents internal components;
+    DopeComponents internal components;
     StockpileTester internal stockpile;
     Character internal character;
 
@@ -71,7 +71,7 @@ contract CharacterTest is DSTest {
 
         // deploy contracts
         loot = new DopeWarsLoot();
-        components = new StockpileComponents(address(owner));
+        components = new DopeComponents(address(owner));
         stockpile = new StockpileTester(address(components), address(loot), address(owner));
         character = new Character(address(stockpile));
 

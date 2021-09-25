@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import './StockpileComponents.sol';
+import './DopeComponents.sol';
 import './TokenId.sol';
 import { Base64, toString } from './MetadataUtils.sol';
 
@@ -14,7 +14,7 @@ import { MultiPartRLEToSVG } from './MultiPartRLEToSVG.sol';
 contract StockpileMetadata {
     string[] internal itemTypes = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
 
-    string internal constant man = '0x0022272326011e0';
+    bytes internal man = hex"000927361907000324040006000524030006000524030006000524030006000524030007000424030007000324040007000224050004000724030002000b24010001000d2401000d2401000d240e240e24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b240c240100012402240100032402000524010003000324020004240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000324020003000324030004240100";
 
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => string[]) public palettes;
@@ -25,10 +25,10 @@ contract StockpileMetadata {
     // Item RLE (TokenID => RLE)
     mapping(uint256 => string) internal _rle;
 
-    StockpileComponents internal sc;
+    DopeComponents internal sc;
 
     constructor(address _components) {
-        sc = StockpileComponents(_components);
+        sc = DopeComponents(_components);
     }
 
     function name() external pure returns (string memory) {
@@ -51,14 +51,15 @@ contract StockpileMetadata {
     /// @notice Returns an SVG for the provided token id
     function tokenURI(uint256 tokenId) public view returns (string memory) {
         uint48[] memory parts = new uint48[](1);
-        string memory output = generateSVGImage(tokenName(tokenId), parts);
+        string memory name = tokenName(tokenId);
+        string memory output = generateSVGImage(name, parts);
 
         string memory json = Base64.encode(
             bytes(
                 string(
                     abi.encodePacked(
                         '{ "name": "',
-                        tokenName(tokenId),
+                        name,
                         '", ',
                         '"description" : ',
                         '"Dope Gear lets you unbundle your DOPE Bags into individual ERC1155 NFTs.", ',

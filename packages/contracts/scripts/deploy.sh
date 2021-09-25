@@ -6,7 +6,12 @@ set -eo pipefail
 . $(dirname $0)/common.sh
 
 # Deploy.
-StockpileAddr=$(deploy Stockpile $LOOT $ETH_FROM)
+ComponentsAddr=$(deploy DopeComponents $LOOT $ETH_FROM)
+# verify DopeComponents $ComponentsAddr $LOOT
+extractABI DopeComponents
+log "DopeComponents deployed at:" $ComponentsAddr
+
+StockpileAddr=$(deploy Stockpile $ComponentsAddr $LOOT $ETH_FROM)
 # verify Stockpile $StockpileAddr $LOOT
 extractABI Stockpile
 log "Stockpile deployed at:" $StockpileAddr
