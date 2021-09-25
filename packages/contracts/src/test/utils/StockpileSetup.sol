@@ -6,7 +6,7 @@ import 'ds-test/test.sol';
 import './Hevm.sol';
 import '../../Loot.sol';
 import { Stockpile } from '../../Stockpile.sol';
-import { StockpileComponents } from '../../StockpileComponents.sol';
+import { DopeComponents } from '../../DopeComponents.sol';
 import { TokenId } from '../../TokenId.sol';
 
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
@@ -65,10 +65,10 @@ struct ItemNames {
 }
 
 contract StockpileOwner is ERC1155Holder {
-    StockpileComponents sc;
+    DopeComponents sc;
     Stockpile stockpile;
 
-    function init(StockpileComponents _components, Stockpile _stockpile) public {
+    function init(DopeComponents _components, Stockpile _stockpile) public {
         sc = _components;
         stockpile = _stockpile;
     }
@@ -251,7 +251,7 @@ contract StockpileTest is DSTest {
 
     // contracts
     DopeWarsLoot internal loot;
-    StockpileComponents internal components;
+    DopeComponents internal components;
     StockpileTester internal stockpile;
 
     // users
@@ -263,7 +263,7 @@ contract StockpileTest is DSTest {
 
         // deploy contracts
         loot = new DopeWarsLoot();
-        components = new StockpileComponents(address(owner));
+        components = new DopeComponents(address(owner));
         stockpile = new StockpileTester(address(components), address(loot), address(owner));
 
         owner.init(components, stockpile);

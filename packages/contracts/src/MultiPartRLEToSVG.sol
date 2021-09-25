@@ -58,12 +58,12 @@ library MultiPartRLEToSVG {
         view
         returns (string memory svg)
     {
-        string[33] memory lookup = [
-            '0', '10', '20', '30', '40', '50', '60', '70', 
-            '80', '90', '100', '110', '120', '130', '140', '150', 
-            '160', '170', '180', '190', '200', '210', '220', '230', 
-            '240', '250', '260', '270', '280', '290', '300', '310',
-            '320' 
+        string[65] memory lookup = [
+            '0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', 
+            '80', '85', '90', '95', '100', '105', '110', '115', '120', '125', '130', '135', '140', '145', '150', '155', 
+            '160', '165', '170', '175', '180', '185', '190', '195', '200', '205', '210', '215', '220', '225', '230', '235', 
+            '240', '245', '250', '255', '260', '265', '270', '275', '280', '285', '290', '295', '300', '305', '310', '315',
+            '320'
         ];
         string memory rects;
         for (uint8 p = 0; p < params.parts.length; p++) {
@@ -116,7 +116,7 @@ library MultiPartRLEToSVG {
             chunk = string(
                 abi.encodePacked(
                     chunk,
-                    '<rect width="', buffer[i], '" height="10" x="', buffer[i + 1], '" y="', buffer[i + 2], '" fill="#', buffer[i + 3], '" />'
+                    '<rect width="', buffer[i], '" height="5" x="', buffer[i + 1], '" y="', buffer[i + 2], '" fill="#', buffer[i + 3], '" />'
                 )
             );
         }
@@ -141,7 +141,7 @@ library MultiPartRLEToSVG {
             rects[cursor] = Rect({ length: uint8(image[i]), colorIndex: uint8(image[i + 1]) });
             cursor++;
         }
-        
+
         return DecodedImage({ paletteIndex: paletteIndex, bounds: bounds, rects: rects });
     }
 }
