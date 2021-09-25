@@ -35,6 +35,7 @@ export default function GlobalStyles() {
           --space-lg: calc(var(--base-unit) * 5);
 
           /* TYPOGRAPHY */
+          --text-00: 1em;
           --text-01: 1.125em;
           --text-02: 1.25em;
           --text-03: 1.5em;
@@ -81,7 +82,10 @@ export default function GlobalStyles() {
 
         body {
           background-color: var(--bg-color);
-          font-size: 14px;
+          font-size: 12px;
+          ${media.tablet`
+            font-size: 14px;
+          `}
         }
 
         body.wait,
@@ -103,7 +107,7 @@ export default function GlobalStyles() {
 
         header,
         footer {
-          font-size: var(--text-02);
+          font-size: var(--text-00);
           width: 100%;
           display: flex;
           justify-content: space-between;
@@ -141,7 +145,7 @@ export default function GlobalStyles() {
           font-size: var(--text-02) !important;
         }
         h4 {
-          font-weight: 900 !important;
+          font-weight: 400 !important;
         }
         a {
           font-weight: 400;

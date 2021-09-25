@@ -47,7 +47,6 @@ const DesktopWindowTitleBar = ({ title, children }: WindowTitleBarProps) => {
           <div
             id="app-title-bar_description"
             css={css`
-              font-size: 14px;
               display: flex;
               align-items: center;
               justify-content: center;

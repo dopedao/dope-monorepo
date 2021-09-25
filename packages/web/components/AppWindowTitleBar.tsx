@@ -16,7 +16,6 @@ const AppWindowTitleBar = () => {
         border-right: 0px;
         height: 42px;
         width: 100%;
-        font-size: 14px;
         padding: 5px 8px;
         overflow-x: auto;
         overflow-y: hidden;
