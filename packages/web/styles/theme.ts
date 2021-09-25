@@ -38,14 +38,14 @@ export default extendTheme({
           boxShadow:
             'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)',
           height: '28px',
-          fontSize: '12px',
+          fontSize: '1em',
           fontWeight: '400',
         },
         primary: {
           backgroundColor: '#3523FE',
           color: '#ffffff',
           border: '4px solid #000000',
-          fontSize: '14px',
+          fontSize: '1.125em',
           textShadow: '1px 1px 0px rgba(0, 0, 0, 0.66)',
         },
       },
@@ -55,6 +55,7 @@ export default extendTheme({
         dope: {
           table: {
             borderCollapse: 'separate',
+            tableLayout: 'fixed',
           },
           thead: {
             th: {
@@ -65,13 +66,14 @@ export default extendTheme({
           },
           tfoot: {
             th: {
-              position: 'sticky',
+              position: ['auto', 'sticky'],
               bottom: '-1px',
               borderTop: '2px solid #000',
               textAlign: 'center',
               height: '44px',
               boxShadow: 'none',
               padding: '2px 16px',
+              fontSize: '0.8em',
             },
           },
           th: {
@@ -80,7 +82,8 @@ export default extendTheme({
             textAlign: 'center',
             verticalAlign: 'middle',
             textShadow: 'none',
-            padding: '4px 8px',
+            padding: ['0px', '4px 8px'],
+            whiteSpace: 'nowrap',
             boxShadow:
               'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)',
             ':not(:last-child)': {
@@ -90,7 +93,6 @@ export default extendTheme({
           td: {
             padding: 0,
             verticalAlign: 'middle',
-            fontSize: '13px',
             textAlign: 'center',
             height: '40px',
           },

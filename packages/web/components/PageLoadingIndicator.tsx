@@ -22,7 +22,7 @@ const LoadingMessage = styled.div`
   text-align: center;
   width: 100%;
   text-transform: uppercase;
-  font-size: 3.5em;
+  font-size: var(--text-04);
   line-height: 14px;
   padding: 8px 0px;
   white-space: no-wrap;
