@@ -25,7 +25,7 @@ export default function Market() {
     router.replace('/');
   };
   return (
-    <DesktopWindow title={title} padBody={false}>
+    <DesktopWindow title={title}>
       <Head title="TOS" />
       <Dialog css={dialogCss} title={title} icon="stop-hand">
         <>
