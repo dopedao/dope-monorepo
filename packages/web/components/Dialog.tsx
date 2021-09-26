@@ -81,12 +81,14 @@ const Dialog = ({
         `}
       `}
       >
-        {icon && 
-          <img 
-            src={`/images/icon/${icon}.svg`} 
-            css={css`width:100%;`}
+        {icon && (
+          <img
+            src={`/images/icon/${icon}.svg`}
+            css={css`
+              width: 100%;
+            `}
           />
-        }
+        )}
         <div>
           {!!title && <h3>{title}</h3>}
           {children}
