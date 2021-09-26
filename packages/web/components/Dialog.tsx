@@ -32,6 +32,9 @@ const Dialog = ({
     align-items: center;
     background: ${backgroundCss};
     ${className}
+    img {
+      width: 75%;
+    }
   `;
 
   useEffect(() => {
@@ -81,14 +84,7 @@ const Dialog = ({
         `}
       `}
       >
-        {icon && (
-          <img
-            src={`/images/icon/${icon}.svg`}
-            css={css`
-              width: 100%;
-            `}
-          />
-        )}
+        {icon && ( <img src={`/images/icon/${icon}.svg`}/> )}
         <div>
           {!!title && <h3>{title}</h3>}
           {children}
