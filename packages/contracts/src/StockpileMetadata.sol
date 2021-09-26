@@ -104,7 +104,7 @@ contract StockpileMetadata {
         string memory slot = itemTypes[itemType];
         string memory res = string(abi.encodePacked('[', trait('Slot', slot)));
 
-        string memory item = itemName(itemType, components[0]);
+        string memory item = sc.itemName(itemType, components[0]);
         res = string(abi.encodePacked(res, ', ', trait('Item', item)));
 
         if (components[1] > 0) {
@@ -140,7 +140,7 @@ contract StockpileMetadata {
     // the id
     function tokenName(uint256 id) public view returns (string memory) {
         (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
-        return componentsToString(components, itemType);
+        return sc.componentsToString(components, itemType);
     }
 
     function rle(uint256 id) public view returns (string memory) {
@@ -150,64 +150,5 @@ contract StockpileMetadata {
         return '';
         // (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
         // return
-    }
-
-    // Returns the "vanilla" item name w/o any prefix/suffixes or augmentations
-    function itemName(uint8 itemType, uint256 idx) public view returns (string memory) {
-        if (itemType == sc.WEAPON()) {
-            return sc.weapons(idx);
-        } else if (itemType == sc.CLOTHES()) {
-            return sc.clothes(idx);
-        } else if (itemType == sc.VEHICLE()) {
-            return sc.vehicle(idx);
-        } else if (itemType == sc.WAIST()) {
-            return sc.waistArmor(idx);
-        } else if (itemType == sc.FOOT()) {
-            return sc.footArmor(idx);
-        } else if (itemType == sc.HAND()) {
-            return sc.handArmor(idx);
-        } else if (itemType == sc.DRUGS()) {
-            return sc.drugs(idx);
-        } else if (itemType == sc.NECK()) {
-            return sc.necklaces(idx);
-        } else if (itemType == sc.RING()) {
-            return sc.rings(idx);
-        } else {
-            revert('Unexpected gear piece');
-        }
-    }
-
-    // Creates the token description given its components and what type it is
-    function componentsToString(uint8[5] memory components, uint8 itemType) public view returns (string memory) {
-        // item type: what slot to get
-        // components[0] the index in the array
-        string memory item = itemName(itemType, components[0]);
-
-        // We need to do -1 because the 'no description' is not part of loot copmonents
-
-        // add the suffix
-        if (components[1] > 0) {
-            item = string(abi.encodePacked(item, ' ', sc.suffixes(components[1] - 1)));
-        }
-
-        // add the name prefix / suffix
-        if (components[2] > 0) {
-            // prefix
-            string memory namePrefixSuffix = string(abi.encodePacked("'", sc.namePrefixes(components[2] - 1)));
-            if (components[3] > 0) {
-                namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, ' ', sc.nameSuffixes(components[3] - 1)));
-            }
-
-            namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, "' "));
-
-            item = string(abi.encodePacked(namePrefixSuffix, item));
-        }
-
-        // add the augmentation
-        if (components[4] > 0) {
-            item = string(abi.encodePacked(item, ' +1'));
-        }
-
-        return item;
     }
 }
