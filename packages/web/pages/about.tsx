@@ -64,7 +64,7 @@ const TextBody = styled.div`
 const AboutContent = `
 # What is this?
 
-DOPE WARS is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
+The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
 
 DOPE WARS is also an ongoing NFT art project and experiment in decentralized project governance using a [DAO](https://ethereum.org/en/dao/).
 
@@ -126,10 +126,10 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 
 ----
 
-### More Info
+### Press
 
-- [Dope DAO Wiki](http://wiki.dopedao.org)
-- [DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
+- [Motherboard / VICE, September 2021](https://www.vice.com/en/article/akgp8e/people-are-spending-millions-of-dollars-on-loot-for-games-that-dont-exist)
+- [Collectively Intelligent Podcast, September 2021](https://open.spotify.com/episode/5xOaIJhit7pX25rrvHcQ0z)
 
 ----
 
@@ -143,10 +143,10 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 
 ----
 
-### Press
+### More Info
 
-- [Motherboard / VICE, September 2021](https://www.vice.com/en/article/akgp8e/people-are-spending-millions-of-dollars-on-loot-for-games-that-dont-exist)
-- [Collectively Intelligent Podcast, September 2021](https://open.spotify.com/episode/5xOaIJhit7pX25rrvHcQ0z)
+- [Dope DAO Wiki](http://wiki.dopedao.org)
+- [DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
 
 `;
 

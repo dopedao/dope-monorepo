@@ -8,6 +8,7 @@ export interface DialogProps {
   className?: string;
   onClose?: () => void;
   backgroundCss?: string;
+  icon?: string;
   children: ReactNode;
 }
 
@@ -18,6 +19,7 @@ const Dialog = ({
   className,
   onClose,
   backgroundCss = defaultBackgroundCss,
+  icon,
   children,
 }: DialogProps) => {
   const content = useRef<HTMLDivElement>(null);
@@ -61,7 +63,10 @@ const Dialog = ({
         rgba(255, 255, 255, 0.25);
         padding: 16px;
         border: 2px solid;
-        width: 90vw;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin: 16px;
         h3 {
           font-size: var(--text-02);
           line-height: 1.25em;
@@ -72,12 +77,22 @@ const Dialog = ({
         ${media.tablet`
           padding: 32px;
           text-align: left;
-          width: 400px;
+          max-width: 400px;
         `}
       `}
       >
-        {!!title && <h3>{title}</h3>}
-        {children}
+        {icon && (
+          <img
+            src={`/images/icon/${icon}.svg`}
+            css={css`
+              width: 100%;
+            `}
+          />
+        )}
+        <div>
+          {!!title && <h3>{title}</h3>}
+          {children}
+        </div>
       </div>
     </DialogContainer>
   );

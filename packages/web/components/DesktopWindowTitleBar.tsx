@@ -11,7 +11,6 @@ const DesktopWindowTitleBar = ({ title, children }: WindowTitleBarProps) => {
   const router = useRouter();
 
   const closeWindow = (): void => {
-    console.log('Closing window');
     router.replace('/');
   };
 
@@ -36,7 +35,7 @@ const DesktopWindowTitleBar = ({ title, children }: WindowTitleBarProps) => {
             height: 32px;
             width: 100%;
             display: grid;
-            grid-template-columns: 1fr 170px 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,
               1px 1px 0px rgba(255, 255, 255, 0.25) inset;
           `}
