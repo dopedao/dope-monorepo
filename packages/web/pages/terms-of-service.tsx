@@ -19,7 +19,7 @@ export default function Market() {
   const router = useRouter();
 
   const handleAgree = () => {
-    router.replace('/loot');
+    router.replace('/market');
   };
   const handleDisagree = () => {
     router.replace('/');
