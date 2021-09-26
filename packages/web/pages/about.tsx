@@ -126,10 +126,10 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 
 ----
 
-### More Info
+### Press
 
-- [Dope DAO Wiki](http://wiki.dopedao.org)
-- [DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
+- [Motherboard / VICE, September 2021](https://www.vice.com/en/article/akgp8e/people-are-spending-millions-of-dollars-on-loot-for-games-that-dont-exist)
+- [Collectively Intelligent Podcast, September 2021](https://open.spotify.com/episode/5xOaIJhit7pX25rrvHcQ0z)
 
 ----
 
@@ -143,10 +143,10 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 
 ----
 
-### Press
+### More Info
 
-- [Motherboard / VICE, September 2021](https://www.vice.com/en/article/akgp8e/people-are-spending-millions-of-dollars-on-loot-for-games-that-dont-exist)
-- [Collectively Intelligent Podcast, September 2021](https://open.spotify.com/episode/5xOaIJhit7pX25rrvHcQ0z)
+- [Dope DAO Wiki](http://wiki.dopedao.org)
+- [DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
 
 `;
 
