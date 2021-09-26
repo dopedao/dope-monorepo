@@ -119,7 +119,8 @@ export default function GlobalStyles() {
               text-decoration: underline;
             }
             ${media.hover`
-              text-decoration: underline;
+              background-color: #3523FE;
+              color: #fff;
             `}
           }
         }
