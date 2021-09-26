@@ -6,7 +6,7 @@ set -eo pipefail
 . $(dirname $0)/common.sh
 
 # Deploy.
-ComponentsAddr=$(deploy DopeComponents $LOOT $ETH_FROM)
+ComponentsAddr=$(deploy DopeComponents $ETH_FROM)
 # verify DopeComponents $ComponentsAddr $LOOT
 extractABI DopeComponents
 log "DopeComponents deployed at:" $ComponentsAddr

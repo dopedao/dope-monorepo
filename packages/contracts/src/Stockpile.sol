@@ -116,21 +116,17 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
     //     _burn(msg.sender, id, amount);
     // }
 
-    function rleOf(uint256 tokenId) external view returns (bytes memory rle) {
-        return '';
-    }
+    // function rleOf(uint256 tokenId) external view returns (bytes memory rle) {
+    //     return '';
+    // }
 
-    function rleOfBatch(uint256[] memory tokenIds) external view returns (bytes[] memory rles) {
-        bytes[] memory _rles = new bytes[](8);
-        return _rles;
-    }
+    // function rleOfBatch(uint256[] memory tokenIds) external view returns (bytes[] memory rles) {
+    //     bytes[] memory _rles = new bytes[](8);
+    //     return _rles;
+    // }
 
-    function ownedBatchRLE(uint256[] memory tokenIds) external view returns (bytes[] memory rles) {
-        bytes[] memory _rles = new bytes[](8);
-        return _rles;
-    }
-
-    function uri(uint256 tokenId) public view override returns (string memory) {
-        return tokenURI(tokenId);
-    }
+    // function ownedBatchRLE(uint256[] memory tokenIds) external view returns (bytes[] memory rles) {
+    //     bytes[] memory _rles = new bytes[](8);
+    //     return _rles;
+    // }
 }
