@@ -27,7 +27,7 @@ const AppWindowTitleBar = () => {
         // Flex nav items left larger
         ${media.tablet`
           justify-content: flex-start;
-          a:first-child {
+          a:first-of-type {
             margin-left: 0px;
           }
         `}
