@@ -45,7 +45,7 @@ const DesktopIconList = () => {
       <DesktopIcon
         icon="dopewars-exe"
         label="DOPEWARS.EXE"
-        clickAction={() => openLocalRoute('/loot')}
+        clickAction={() => openLocalRoute('/terms-of-service')}
       />
       <DesktopIcon icon="file" label="ABOUT.FAQ" clickAction={() => openLocalRoute('/about')} />
       <DesktopIcon icon="tv" label="DOPE TV" clickAction={() => openLocalRoute('/dope-tv')} />
