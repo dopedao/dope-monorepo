@@ -47,12 +47,8 @@ const ConnectWallet = () => {
               gap: 16px;
             `}
           >
-            <Button onClick={() => onClick('MetaMask')}>
-              MetaMask
-            </Button>
-            <Button onClick={() => onClick('WalletConnect')}>
-              WalletConnect
-            </Button>
+            <Button onClick={() => onClick('MetaMask')}>MetaMask</Button>
+            <Button onClick={() => onClick('WalletConnect')}>WalletConnect</Button>
           </div>
         </div>
       </Dialog>

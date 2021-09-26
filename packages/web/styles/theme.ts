@@ -43,17 +43,17 @@ export default extendTheme({
           lineHeight: '1em',
           fontWeight: '400',
           _hover: {
-            backgroundColor: '#434345',
+            backgroundColor: 'var(--hover-bg)',
             color: '#fff',
           },
           _disabled: {
             _hover: {
               color: '#000',
-            }
-          }
+            },
+          },
         },
         primary: {
-          backgroundColor: '#3523FE',
+          backgroundColor: 'var(--primary)',
           color: '#ffffff',
           border: '4px solid #000000',
           fontSize: '1.125em',
@@ -115,7 +115,7 @@ export default extendTheme({
               background: '#fff',
             },
             '&.selected': {
-              background: '#3523FE',
+              background: 'var(--primary)',
               color: '#fff',
               path: {
                 fill: '#fff',

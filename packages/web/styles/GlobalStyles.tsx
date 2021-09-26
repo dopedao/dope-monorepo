@@ -18,6 +18,8 @@ export default function GlobalStyles() {
           --white: #fff;
           --gray: #dededd;
           --bg-color: #000;
+          --hover-bg: #434345;
+          --primary: #3523fe;
           --overlay: rgba(0, 0, 0, 0.85);
           --overlay-light: rgba(0, 0, 0, 0.35);
           --border-black: 1px solid var(--black);
@@ -119,7 +121,7 @@ export default function GlobalStyles() {
               text-decoration: underline;
             }
             ${media.hover`
-              background-color: #3523FE;
+              background-color: var(--hover-bg);
               color: #fff;
             `}
           }

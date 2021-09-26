@@ -34,13 +34,13 @@ export default function Market() {
             herein, this software is provided on "as is" basis.
           </p>
           <p>
-            The DOPE DAO does not make and specifically disclaims, all express and implied warranties
-            of every kind relating to the software and/or use of the software.
+            The DOPE DAO does not make and specifically disclaims, all express and implied
+            warranties of every kind relating to the software and/or use of the software.
           </p>
           <p>
             This includes, without limitation, actual and implied warranties of merchantability and
-            fitness for a particular purpose, and non-infringement, as well as any warranties that the
-            software or any elements thereof will achieve a particular result, or will be
+            fitness for a particular purpose, and non-infringement, as well as any warranties that
+            the software or any elements thereof will achieve a particular result, or will be
             uninterrupted or error-free.
           </p>
           <Button onClick={() => handleAgree()}>Agree</Button>
