@@ -19,40 +19,30 @@ const DisconnectWallet = ({ onClose }: DisconnectWalletProps) => {
   }, [deactivate, onClose]);
 
   return (
-    <Dialog onClose={onClose}>
+    <Dialog onClose={onClose} icon="ethereum">
       <div
         css={css`
           display: flex;
-          gap: 8px;
-          align-items: flex-start;
-          justify-content: flex-start;
+          flex-direction: column;
+          gap: 16px;
         `}
       >
-        <Image src="/images/icon/ethereum.svg" width={48} height={48} alt="Eth" />
+        <h4>You Are Connected to DOPEWARS.EXE</h4>
         <div
           css={css`
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            font-size: 12px;
           `}
         >
-          <h4>You Are Connected to DOPEWARS.EXE</h4>
-          <div
-            css={css`
-              font-size: 12px;
-            `}
-          >
-            {account && account.slice(0, 8)}...{account && account.slice(-8)}
-          </div>
-          <Button
-            css={css`
-              cursor: pointer;
-            `}
-            onClick={onClickDisconnect}
-          >
-            Disconnect ETH Wallet
-          </Button>
+          {account && account.slice(0, 8)}...{account && account.slice(-8)}
         </div>
+        <Button
+          css={css`
+            cursor: pointer;
+          `}
+          onClick={onClickDisconnect}
+        >
+          Disconnect ETH Wallet
+        </Button>
       </div>
     </Dialog>
   );
