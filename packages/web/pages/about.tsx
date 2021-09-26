@@ -98,7 +98,7 @@ Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them wit
 
 [$PAPER is an Ethereum token](https://www.coingecko.com/en/coins/dope-wars-paper), and the in-game asset of Dope Wars – our p2e homage of the game we all played on our calculators instead of paying attention in math class.
 
-You can obtain $PAPER by claiming it from an original DOPE NFT, or by swapping for it on a distributed exchange like [Dextools](https://www.dextools.io/app/ether/pair-explorer/0x811f8c60ee1805db7ece0fa3c7b064feba887053).
+You can obtain $PAPER by claiming it from an original DOPE NFT, or by swapping for it on a distributed exchange like [Dextools](https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483).
 
 ![PAPER Airdrop](/images/paper-chopper.png#full-bleed)
 You are automatically entitled to claim 125,000 $PAPER for each Dope Wars Loot NFT using this [contract address on EtherScan](https://etherscan.io/address/0x7ae1d57b58fa6411f32948314badd83583ee0e8c).
