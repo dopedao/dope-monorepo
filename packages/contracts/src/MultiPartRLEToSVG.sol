@@ -36,7 +36,7 @@ library MultiPartRLEToSVG {
         string memory name,
         SVGParams memory params,
         mapping(uint8 => string[]) storage palettes
-    ) internal view returns (string memory svg) {
+    ) external view returns (string memory svg) {
         // prettier-ignore
         return string(
             abi.encodePacked(
