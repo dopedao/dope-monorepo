@@ -24,9 +24,6 @@ const AppWindowTitleBar = () => {
         align-items: center;
         // Flex nav items center for mobile phone
         justify-content: center;
-        a:first-child {
-          margin-left: 44px;
-        }
         // Flex nav items left larger
         ${media.tablet`
           justify-content: flex-start;
