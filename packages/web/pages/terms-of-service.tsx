@@ -2,8 +2,9 @@ import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import DesktopWindow from '../components/DesktopWindow';
-import Dialog, { DialogProps } from '../components/Dialog';
+import Dialog from '../components/Dialog';
 import Head from '../components/Head';
+import styled from '@emotion/styled';
 
 const title = 'TERMS OF SERVICE';
 const dialogCss = css`
@@ -13,6 +14,11 @@ const dialogCss = css`
     width: 100%;
     margin-bottom: 8px;
   }
+`;
+
+const TosWrapper = styled.div`
+  max-height: 50vh;
+  overflow-y: auto;
 `;
 
 export default function Market() {
@@ -28,7 +34,7 @@ export default function Market() {
     <DesktopWindow title={title}>
       <Head title="TOS" />
       <Dialog css={dialogCss} title={title} icon="stop-hand">
-        <>
+        <TosWrapper>
           <p>
             To the maximum extent permitted by applicable law, and except as expressly set forth
             herein, this software is provided on "as is" basis.
@@ -43,9 +49,9 @@ export default function Market() {
             the software or any elements thereof will achieve a particular result, or will be
             uninterrupted or error-free.
           </p>
-          <Button onClick={() => handleAgree()}>Agree</Button>
-          <Button onClick={() => handleDisagree()}>Disagree</Button>
-        </>
+        </TosWrapper>
+        <Button onClick={() => handleAgree()}>Agree</Button>
+        <Button onClick={() => handleDisagree()}>Disagree</Button>
       </Dialog>
     </DesktopWindow>
   );
