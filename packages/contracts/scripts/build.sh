@@ -7,6 +7,7 @@ set -eo pipefail
 
 dapp build
 
+extractABI DopeComponents
 extractABI Stockpile
 extractABI Character
 extractABI Paper
