@@ -1,9 +1,11 @@
+import { Input } from "@chakra-ui/react"
 import { useBagsQuery } from '../src/generated/graphql';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
-import LootCard from '../components/loot/LootCard';
 import LoadingBlock from '../components/LoadingBlock';
+import LootCard from '../components/loot/LootCard';
 import styled from '@emotion/styled';
+import React from "react";
 
 const title = 'Dope Wars Market';
 
@@ -18,6 +20,14 @@ const Container = styled.div`
   }
 `;
 
+const MarketFilterBar = styled.div`
+  height: 52px;
+  padding: 8px;
+  background-color: rgba(0,0,0,0.8);
+  position: fixed;
+  width: 100%;
+`;
+
 // list all items
 //    - with opengraph?
 //    -
@@ -26,7 +36,12 @@ const Container = styled.div`
 
 export default function Market() {
   const MarketList = () => {
-    const { data, loading } = useBagsQuery({});
+    const { data, loading, error } = useBagsQuery();
+
+    const handleSearchKey = ({ target }: { target: HTMLInputElement }) => {
+      const searchPhrase = target.value;
+      console.log(searchPhrase);
+    }
 
     if (loading) {
       return (
@@ -41,12 +56,28 @@ export default function Market() {
         </Container>
       );
     } else {
+      console.log(data.bags.length);
       return (
-        <Container>
-          {data.bags.map(bag => (
-            <LootCard bag={bag} footer="for-marketplace" />
-          ))}
-        </Container>
+        <>
+          <MarketFilterBar>
+            <Input 
+              placeholder="Search for items" 
+              size="sm" 
+              variant="filterBar" 
+              maxWidth="256px"
+              onChange={handleSearchKey}
+            />
+          </MarketFilterBar>
+          <Container>
+            {data.bags.map(bag => (
+              <LootCard 
+                key={`loot-card_${bag.id}`} 
+                bag={bag} 
+                footer="for-marketplace" 
+              />
+            ))}
+          </Container>
+        </>
       );
     }
   };

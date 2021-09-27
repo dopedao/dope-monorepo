@@ -4,7 +4,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {};
+const defaultOptions =  {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -210,7 +210,7 @@ export enum Bag_OrderBy {
   Ring = 'ring',
   Vehicle = 'vehicle',
   Waist = 'waist',
-  Weapon = 'weapon',
+  Weapon = 'weapon'
 }
 
 export type Block_Height = {
@@ -220,7 +220,7 @@ export type Block_Height = {
 
 export enum OrderDirection {
   Asc = 'asc',
-  Desc = 'desc',
+  Desc = 'desc'
 }
 
 export type Query = {
@@ -236,14 +236,17 @@ export type Query = {
   wallets: Array<Wallet>;
 };
 
+
 export type Query_MetaArgs = {
   block?: Maybe<Block_Height>;
 };
+
 
 export type QueryBagArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
 };
+
 
 export type QueryBagsArgs = {
   block?: Maybe<Block_Height>;
@@ -254,6 +257,7 @@ export type QueryBagsArgs = {
   where?: Maybe<Bag_Filter>;
 };
 
+
 export type QuerySearchArgs = {
   block?: Maybe<Block_Height>;
   first?: Maybe<Scalars['Int']>;
@@ -261,10 +265,12 @@ export type QuerySearchArgs = {
   text: Scalars['String'];
 };
 
+
 export type QueryTransferArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
 };
+
 
 export type QueryTransfersArgs = {
   block?: Maybe<Block_Height>;
@@ -275,10 +281,12 @@ export type QueryTransfersArgs = {
   where?: Maybe<Transfer_Filter>;
 };
 
+
 export type QueryWalletArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
 };
+
 
 export type QueryWalletsArgs = {
   block?: Maybe<Block_Height>;
@@ -301,14 +309,17 @@ export type Subscription = {
   wallets: Array<Wallet>;
 };
 
+
 export type Subscription_MetaArgs = {
   block?: Maybe<Block_Height>;
 };
+
 
 export type SubscriptionBagArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
 };
+
 
 export type SubscriptionBagsArgs = {
   block?: Maybe<Block_Height>;
@@ -319,10 +330,12 @@ export type SubscriptionBagsArgs = {
   where?: Maybe<Bag_Filter>;
 };
 
+
 export type SubscriptionTransferArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
 };
+
 
 export type SubscriptionTransfersArgs = {
   block?: Maybe<Block_Height>;
@@ -333,10 +346,12 @@ export type SubscriptionTransfersArgs = {
   where?: Maybe<Transfer_Filter>;
 };
 
+
 export type SubscriptionWalletArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
 };
+
 
 export type SubscriptionWalletsArgs = {
   block?: Maybe<Block_Height>;
@@ -430,7 +445,7 @@ export enum Transfer_OrderBy {
   Id = 'id',
   Timestamp = 'timestamp',
   To = 'to',
-  TxHash = 'txHash',
+  TxHash = 'txHash'
 }
 
 export type Wallet = {
@@ -442,6 +457,7 @@ export type Wallet = {
   joined: Scalars['BigInt'];
   paper: Scalars['BigInt'];
 };
+
 
 export type WalletBagsArgs = {
   first?: Maybe<Scalars['Int']>;
@@ -498,7 +514,7 @@ export enum Wallet_OrderBy {
   BagsHeld = 'bagsHeld',
   Id = 'id',
   Joined = 'joined',
-  Paper = 'paper',
+  Paper = 'paper'
 }
 
 export type _Block_ = {
@@ -530,74 +546,39 @@ export enum _SubgraphErrorPolicy_ {
   /** Data will be returned even if the subgraph has indexing errors */
   Allow = 'allow',
   /** If the subgraph has indexing errors, data will be omitted. The default. */
-  Deny = 'deny',
+  Deny = 'deny'
 }
 
-export type BagsQueryVariables = Exact<{ [key: string]: never }>;
+export type BagsQueryVariables = Exact<{ [key: string]: never; }>;
 
-export type BagsQuery = {
-  __typename?: 'Query';
-  bags: Array<{
-    __typename?: 'Bag';
-    id: string;
-    clothes: string;
-    foot: string;
-    hand: string;
-    drugs: string;
-    neck: string;
-    ring: string;
-    vehicle: string;
-    waist: string;
-    weapon: string;
-    claimed: boolean;
-  }>;
-};
+
+export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean }> };
 
 export type WalletQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-export type WalletQuery = {
-  __typename?: 'Query';
-  wallet?: Maybe<{
-    __typename?: 'Wallet';
-    id: string;
-    address: any;
-    paper: any;
-    bags: Array<{
-      __typename?: 'Bag';
-      id: string;
-      clothes: string;
-      foot: string;
-      hand: string;
-      drugs: string;
-      neck: string;
-      ring: string;
-      vehicle: string;
-      waist: string;
-      weapon: string;
-      claimed: boolean;
-    }>;
-  }>;
-};
+
+export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean }> }> };
+
 
 export const BagsDocument = gql`
-  query Bags {
-    bags {
-      id
-      clothes
-      foot
-      hand
-      drugs
-      neck
-      ring
-      vehicle
-      waist
-      weapon
-      claimed
-    }
+    query Bags {
+  bags {
+    id
+    clothes
+    foot
+    hand
+    drugs
+    neck
+    ring
+    vehicle
+    waist
+    weapon
+    claimed
   }
-`;
+}
+    `;
 
 /**
  * __useBagsQuery__
@@ -615,40 +596,38 @@ export const BagsDocument = gql`
  * });
  */
 export function useBagsQuery(baseOptions?: Apollo.QueryHookOptions<BagsQuery, BagsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
-}
-export function useBagsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<BagsQuery, BagsQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
+      }
+export function useBagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BagsQuery, BagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
+        }
 export type BagsQueryHookResult = ReturnType<typeof useBagsQuery>;
 export type BagsLazyQueryHookResult = ReturnType<typeof useBagsLazyQuery>;
 export type BagsQueryResult = Apollo.QueryResult<BagsQuery, BagsQueryVariables>;
 export const WalletDocument = gql`
-  query Wallet($id: ID!) {
-    wallet(id: $id) {
+    query Wallet($id: ID!) {
+  wallet(id: $id) {
+    id
+    address
+    paper
+    bags {
       id
-      address
-      paper
-      bags {
-        id
-        clothes
-        foot
-        hand
-        drugs
-        neck
-        ring
-        vehicle
-        waist
-        weapon
-        claimed
-      }
+      clothes
+      foot
+      hand
+      drugs
+      neck
+      ring
+      vehicle
+      waist
+      weapon
+      claimed
     }
   }
-`;
+}
+    `;
 
 /**
  * __useWalletQuery__
@@ -666,18 +645,14 @@ export const WalletDocument = gql`
  *   },
  * });
  */
-export function useWalletQuery(
-  baseOptions: Apollo.QueryHookOptions<WalletQuery, WalletQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
-}
-export function useWalletLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<WalletQuery, WalletQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
-}
+export function useWalletQuery(baseOptions: Apollo.QueryHookOptions<WalletQuery, WalletQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
+      }
+export function useWalletLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WalletQuery, WalletQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
+        }
 export type WalletQueryHookResult = ReturnType<typeof useWalletQuery>;
 export type WalletLazyQueryHookResult = ReturnType<typeof useWalletLazyQuery>;
 export type WalletQueryResult = Apollo.QueryResult<WalletQuery, WalletQueryVariables>;

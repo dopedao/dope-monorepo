@@ -1,5 +1,4 @@
 import { getBreakpointWidth } from '../styles/breakpoints';
-import { media } from '../styles/mixins';
 import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from './AppWindowFooter';
 import AppWindowTitleBar from './AppWindowTitleBar';
@@ -32,6 +31,7 @@ export default function AppWindow({
   const { account } = useWeb3React();
 
   const AppWindowBody = styled.div`
+    position: relative;
     height: 100%;
     overflow: scroll;
     background-color: #a8a9ae;

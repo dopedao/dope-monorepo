@@ -29,6 +29,22 @@ export default extendTheme({
     },
   },
   components: {
+    Input: {
+      // There seems to be a bug with Chakra theme overriding
+      // https://github.com/chakra-ui/chakra-ui/issues/2347
+      // Found success setting variant="something-that-doesnt-exist"
+      baseStyle: {
+        field: {
+          borderColor: '#000',
+          borderWidth: '1px',
+          background: '#fff',
+          color: '#000',
+          _placeholder: {
+            color: '#878783',
+          }
+        },
+      },
+    },
     Button: {
       variants: {
         solid: {
