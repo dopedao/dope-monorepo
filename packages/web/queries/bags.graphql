@@ -1,5 +1,5 @@
-query Bags {
-  bags {
+query Bags($first: Int, $skip: Int) {
+  bags(first: $first, skip: $skip) {
     id
     clothes
     foot

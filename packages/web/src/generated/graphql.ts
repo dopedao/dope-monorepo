@@ -549,7 +549,10 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
-export type BagsQueryVariables = Exact<{ [key: string]: never; }>;
+export type BagsQueryVariables = Exact<{
+  first?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+}>;
 
 
 export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean }> };
@@ -563,8 +566,8 @@ export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 
 
 
 export const BagsDocument = gql`
-    query Bags {
-  bags {
+    query Bags($first: Int, $skip: Int) {
+  bags(first: $first, skip: $skip) {
     id
     clothes
     foot
@@ -592,6 +595,8 @@ export const BagsDocument = gql`
  * @example
  * const { data, loading, error } = useBagsQuery({
  *   variables: {
+ *      first: // value for 'first'
+ *      skip: // value for 'skip'
  *   },
  * });
  */

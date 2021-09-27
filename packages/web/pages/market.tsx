@@ -47,7 +47,9 @@ const MarketFilterBar = styled.div`
 
 export default function Market() {
   const MarketList = () => {
-    const { data, loading, error } = useBagsQuery();
+    const { data, loading, error } = useBagsQuery({
+      variables: { first: 10, skip: 0 },
+    });
 
     const handleSearchKey = ({ target }: { target: HTMLInputElement }) => {
       const searchPhrase = target.value;
