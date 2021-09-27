@@ -21,7 +21,7 @@ const Container = styled.div`
 `;
 
 interface Props {
-  handleSearchKey(): void;
+  handleSearchKey({ target: HTMLInputElement }: {target: any}): void;
 }
 
 const MarketFilterBar = ({handleSearchKey}: Props) => {

@@ -1,6 +1,6 @@
 import { media } from '../styles/mixins';
-
 import { useBagsQuery } from '../src/generated/graphql';
+import { useState } from 'react';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
 import LoadingBlock from '../components/LoadingBlock';
@@ -31,54 +31,50 @@ const Container = styled.div`
   }
 `;
 
+const handleSearchKey = ({ target }: { target: HTMLInputElement }) => {
+  const searchPhrase = target.value;
+  console.log(searchPhrase);
+}
 
-// list all items
-//    - with opengraph?
-//    -
-// show scrollable lootcards in react-window
-// pull opensea information
+const ContentLoading = (
+  <Container><LoadingBlock /></Container>
+)
+;
+const ContentEmpty = (
+  <Container>
+    <h2>No loot available in the market.</h2>
+  </Container>
+);
+
+const MarketList = () => {
+  const { data, loading, error } = useBagsQuery({
+    variables: { first: 10, skip: 0 },
+  });
+  
+  if (loading) {
+    return ContentLoading;
+  } else if (!data?.bags || data.bags.length === 0) {
+    return ContentEmpty;
+  } else {
+    console.log(data.bags.length);
+    return (
+      <>
+        <MarketFilterBar handleSearchKey={handleSearchKey} />
+        <Container>
+          {data.bags.map(bag => (
+            <LootCard 
+              key={`loot-card_${bag.id}`} 
+              bag={bag} 
+              footer="for-marketplace" 
+            />
+          ))}
+        </Container>
+      </>
+    );
+  }
+};
 
 export default function Market() {
-  const MarketList = () => {
-    const { data, loading, error } = useBagsQuery({
-      variables: { first: 10, skip: 0 },
-    });
-
-    const handleSearchKey = ({ target }: { target: HTMLInputElement }) => {
-      const searchPhrase = target.value;
-      console.log(searchPhrase);
-    }
-
-    if (loading) {
-      return (
-        <Container>
-          <LoadingBlock />
-        </Container>
-      );
-    } else if (!data?.bags || data.bags.length === 0) {
-      return (
-        <Container>
-          <h2>No loot available in the market.</h2>
-        </Container>
-      );
-    } else {
-      console.log(data.bags.length);
-      return (
-        <>
-          <MarketFilterBar handleSearchKey={handleSearchKey} />
-          <Container>
-            {data.bags.map(bag => (
-              <LootCard 
-                key={`loot-card_${bag.id}`} 
-                bag={bag} 
-                footer="for-marketplace" 
-              />
-            ))}
-          </Container>
-        </>
-      );
-    }
-  };
 
   return (
     <AppWindow padBody={false}>
