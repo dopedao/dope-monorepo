@@ -2,18 +2,8 @@ import { css } from '@emotion/react';
 import { media } from '../../styles/mixins';
 import { Table, Thead, Tbody, Tr, Th, Td, Tfoot } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
-import rare from 'dope-metrics/output/rare.json';
+import { getRarityForDopeId } from '../../common/dope-rarity-check';
 import CheckIcon from '../icons/Check';
-
-const rareById: { [name: string]: { rarest: number } } = Object.values(rare).reduce(
-  (rareById, rare) => {
-    return {
-      ...rareById,
-      [rare.lootId]: rare,
-    };
-  },
-  {},
-);
 
 const LootTable = ({
   className = '',
@@ -46,8 +36,8 @@ const LootTable = ({
       data
         .map(({ id, claimed }, idx) => ({
           id,
-          rank: rareById[id].rarest,
-          percentile: ((1 - rareById[id].rarest / 8000) * 100).toFixed(1),
+          rank: getRarityForDopeId(id),
+          percentile: ((1 - getRarityForDopeId(id) / 8000) * 100).toFixed(1),
           claimed: claimed ? (
             ''
           ) : (

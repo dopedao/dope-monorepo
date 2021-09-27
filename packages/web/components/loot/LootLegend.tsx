@@ -33,11 +33,11 @@ const LootLegendItem = styled.div`
   margin: 16px 0px;
 `;
 
-interface LootLegendProps {
+interface Props {
   toggleVisibility(): void;
 }
 
-const LootLegend = ({ toggleVisibility }: LootLegendProps) => {
+const LootLegend = ({ toggleVisibility }: Props) => {
   return (
     <LootLegendContainer>
       <h4>Item Rarity Legend</h4>

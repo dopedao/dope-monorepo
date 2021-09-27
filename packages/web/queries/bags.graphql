@@ -1,0 +1,15 @@
+query Bags {
+  bags {
+    id
+    clothes
+    foot
+    hand
+    drugs
+    neck
+    ring
+    vehicle
+    waist
+    weapon
+    claimed
+  }
+}
