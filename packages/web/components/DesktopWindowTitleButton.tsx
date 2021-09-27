@@ -6,7 +6,7 @@ interface IconProps {
   clickAction: () => void;
 }
 
-const AppWindowTitleButton = ({ icon, clickAction }: IconProps) => {
+const DesktopWindowTitleButton = ({ icon, clickAction }: IconProps) => {
   return (
     <div
       onClick={() => clickAction()}
@@ -32,4 +32,4 @@ const AppWindowTitleButton = ({ icon, clickAction }: IconProps) => {
   );
 };
 
-export default AppWindowTitleButton;
+export default DesktopWindowTitleButton;
