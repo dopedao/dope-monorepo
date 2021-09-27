@@ -12,4 +12,4 @@ export const rareById: { [name: string]: { rarest: number } } = Object.values(ra
 
 export const getRarityForDopeId = (id: string | number): number => {
   return rareById[id].rarest;
-}
+};

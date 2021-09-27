@@ -20,28 +20,32 @@ const Container = styled.div`
 
 // list all items
 //    - with opengraph?
-//    - 
+//    -
 // show scrollable lootcards in react-window
 // pull opensea information
 
 export default function Market() {
-
   const MarketList = () => {
-    const { data, loading } = useBagsQuery({
-    });
+    const { data, loading } = useBagsQuery({});
 
     if (loading) {
-      return <Container><LoadingBlock /></Container>
+      return (
+        <Container>
+          <LoadingBlock />
+        </Container>
+      );
     } else if (!data?.bags || data.bags.length === 0) {
-      return <Container><h2>No loot available in the market.</h2></Container>
+      return (
+        <Container>
+          <h2>No loot available in the market.</h2>
+        </Container>
+      );
     } else {
       return (
         <Container>
-          { 
-            data.bags.map((bag) => ( 
-              <LootCard bag={bag} footer='for-marketplace' />
-            ))
-          }
+          {data.bags.map(bag => (
+            <LootCard bag={bag} footer="for-marketplace" />
+          ))}
         </Container>
       );
     }

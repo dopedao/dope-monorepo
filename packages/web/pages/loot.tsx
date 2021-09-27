@@ -60,7 +60,7 @@ const AuthenticatedContent = ({ id }: { id: string }) => {
           selected={selected}
           onSelect={setSelected}
         />
-        <LootCard bag={data.wallet.bags[selected]} footer='for-owner' />
+        <LootCard bag={data.wallet.bags[selected]} footer="for-owner" />
       </Container>
     );
   }

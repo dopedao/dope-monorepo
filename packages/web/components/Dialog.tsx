@@ -84,7 +84,7 @@ const Dialog = ({
         `}
       `}
       >
-        {icon && ( <img src={`/images/icon/${icon}.svg`}/> )}
+        {icon && <img src={`/images/icon/${icon}.svg`} />}
         <div>
           {!!title && <h3>{title}</h3>}
           {children}

@@ -89,7 +89,7 @@ interface Props {
     | 'waist'
     | 'weapon'
     | 'claimed'
-  >;  
+  >;
 }
 
 const LootCardRows = ({ bag }: Props) => {
@@ -115,11 +115,7 @@ const LootCardRows = ({ bag }: Props) => {
       ].map(slot => (
         <Row
           key={slot[0]}
-          color={
-            itemBackgroundColors[
-              (ItemRarities as { [name: string]: any })[slot[1]]
-            ] as string 
-          }
+          color={itemBackgroundColors[(ItemRarities as { [name: string]: any })[slot[1]]] as string}
           slot={slot[0]}
           item={slot[1]}
         />

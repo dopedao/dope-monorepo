@@ -26,7 +26,7 @@ const LootTitleBar = styled.div`
 const LootFooterContainer = styled.footer`
   display: flex;
   align-items: center;
-  justify-content:  space-between;
+  justify-content: space-between;
   height: 44px;
   background: #dededd;
   border-top: 2px solid #000;
@@ -43,7 +43,7 @@ const LootFooterContainer = styled.footer`
 `;
 
 interface Props {
-  footer: 'for-marketplace' | 'for-owner',
+  footer: 'for-marketplace' | 'for-owner';
   bag: Pick<
     Bag,
     | 'id'
@@ -57,7 +57,7 @@ interface Props {
     | 'waist'
     | 'weapon'
     | 'claimed'
-  >;  
+  >;
 }
 
 const LootCard = ({ footer, bag }: Props) => {
@@ -69,31 +69,25 @@ const LootCard = ({ footer, bag }: Props) => {
 
   return (
     <>
-      {isItemLegendVisible && 
-        <LootLegend 
-          key={`loot-legend_${bag.id}`} 
-          toggleVisibility={toggleItemLegendVisibility}
-        />
-      }
+      {isItemLegendVisible && (
+        <LootLegend key={`loot-legend_${bag.id}`} toggleVisibility={toggleItemLegendVisibility} />
+      )}
       {!isItemLegendVisible && (
         <LootCardContainer className="lootCard" key={`loot-card_${bag.id}`}>
           <LootTitleBar>
             <div>Dope Wars Loot #{bag.id}</div>
           </LootTitleBar>
           <LootCardRows bag={bag} />
-          {footer && footer === 'for-owner' && 
+          {footer && footer === 'for-owner' && (
             <LootFooterContainer>
-              <LootCardFooterForOwner 
-                bag={bag} 
-                toggleVisibility={toggleItemLegendVisibility} 
-              />
+              <LootCardFooterForOwner bag={bag} toggleVisibility={toggleItemLegendVisibility} />
             </LootFooterContainer>
-          }
-          {footer && footer === 'for-marketplace' && 
+          )}
+          {footer && footer === 'for-marketplace' && (
             <LootFooterContainer>
               <LootCardFooterForMarket bag={bag} />
             </LootFooterContainer>
-          }
+          )}
         </LootCardContainer>
       )}
     </>
