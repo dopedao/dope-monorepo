@@ -4,11 +4,17 @@ import AppWindowTitleButton from './AppWindowTitleButton';
 
 interface WindowTitleBarProps {
   title: string | undefined;
+  isTouchDevice: boolean;
+  isFullScreen: boolean;
   toggleFullScreen(): void;
   children: React.ReactNode;
 }
 
-const DesktopWindowTitleBar = ({ title, toggleFullScreen, children }: WindowTitleBarProps) => {
+const DesktopWindowTitleBar = (
+  { 
+    title, isTouchDevice, isFullScreen, toggleFullScreen, children 
+  }: WindowTitleBarProps
+) => {
   const router = useRouter();
 
   const closeWindow = (): void => {
@@ -48,6 +54,7 @@ const DesktopWindowTitleBar = ({ title, toggleFullScreen, children }: WindowTitl
           <div
             id="app-title-bar_description"
             css={css`
+              justify-self: center;
               display: flex;
               align-items: center;
               justify-content: center;
@@ -55,7 +62,14 @@ const DesktopWindowTitleBar = ({ title, toggleFullScreen, children }: WindowTitl
           >
             {title || 'UNTITLED'}
           </div>
-          <div></div>
+          <div css={css`justify-self:end;`}>
+            {!isTouchDevice && 
+              <AppWindowTitleButton 
+                icon={isFullScreen ? 'window-restore' : 'window-maximize'} 
+                clickAction={toggleFullScreen}
+              />
+            }
+          </div>
         </div>
         {children}
       </header>

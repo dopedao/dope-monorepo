@@ -62,25 +62,29 @@ const DesktopWindow = ({
     }
   `;
 
-  const isTouchDevice = () => {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-    return (
+  const isTouchDevice = (
+    typeof window !== 'undefined' &&
+    (
       'ontouchstart' in window ||
       navigator.maxTouchPoints > 0 ||
       (navigator as any).msMaxTouchPoints > 0
-    );
-  };
+    )
+  );
+
+  const shouldBeDraggable = !isTouchDevice && !isFullScreen;
 
   return (
     <ConditionalWrapper
-      condition={!isTouchDevice()}
-      wrap={children => <Draggable handle=".windowTitleBar">{children}</Draggable>}
+      condition={shouldBeDraggable}
+      wrap={ 
+        children => <Draggable handle=".windowTitleBar">{children}</Draggable>
+      }
     >
       <WindowWrapper className={isFullScreen ? '' : 'floating'}>
         <DesktopWindowTitleBar 
           title={title} 
+          isTouchDevice={isTouchDevice}
+          isFullScreen={isFullScreen}
           toggleFullScreen={toggleFullScreen}
         >
           {titleChildren}
