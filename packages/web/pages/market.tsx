@@ -1,17 +1,17 @@
-import { Input } from "@chakra-ui/react"
+import { FormControl, FormLabel, Input, Select, Switch } from "@chakra-ui/react"
 import { useBagsQuery } from '../src/generated/graphql';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
 import LoadingBlock from '../components/LoadingBlock';
 import LootCard from '../components/loot/LootCard';
 import styled from '@emotion/styled';
-import React from "react";
 
 const title = 'Dope Wars Market';
 
 const Container = styled.div`
   height: 100%;
   padding: 32px;
+  padding-top: 76px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-column-gap: 16px;
@@ -25,7 +25,18 @@ const MarketFilterBar = styled.div`
   padding: 8px;
   background-color: rgba(0,0,0,0.8);
   position: fixed;
+  z-index: 100;
   width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  gap: 16px;
+  input, select {
+    border-collapse: collapse;
+    height: 32px;
+    border-radius: 0;
+    border: 1px solid #000;
+  }
 `;
 
 // list all items
@@ -59,6 +70,7 @@ export default function Market() {
       console.log(data.bags.length);
       return (
         <>
+
           <MarketFilterBar>
             <Input 
               placeholder="Search for items" 
@@ -67,7 +79,34 @@ export default function Market() {
               maxWidth="256px"
               onChange={handleSearchKey}
             />
+            <Select 
+              placeholder="Sale Status"
+              size="sm"
+              variant="filterBar"
+              maxWidth="176px"
+            >
+              <option>Buy Now</option>
+              <option>Auction</option>
+              <option>Never Sold</option>
+            </Select>
+            <Select 
+              placeholder="Sort By"
+              size="sm"
+              variant="filterBar"
+              maxWidth="176px"
+            >
+              <option>Cheapest</option>
+              <option>Highest Last Sale</option>
+              <option>Most Rare</option>
+            </Select>
+            <FormControl display="flex" alignItems="center">
+              <FormLabel htmlFor="has-paper" mb="0" color="#fff">
+                $PAPER
+              </FormLabel>
+              <Switch id="has-paper" />
+            </FormControl>
           </MarketFilterBar>
+
           <Container>
             {data.bags.map(bag => (
               <LootCard 
