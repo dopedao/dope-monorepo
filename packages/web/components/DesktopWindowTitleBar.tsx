@@ -4,10 +4,11 @@ import AppWindowTitleButton from './AppWindowTitleButton';
 
 interface WindowTitleBarProps {
   title: string | undefined;
+  toggleFullScreen(): void;
   children: React.ReactNode;
 }
 
-const DesktopWindowTitleBar = ({ title, children }: WindowTitleBarProps) => {
+const DesktopWindowTitleBar = ({ title, toggleFullScreen, children }: WindowTitleBarProps) => {
   const router = useRouter();
 
   const closeWindow = (): void => {
@@ -39,6 +40,7 @@ const DesktopWindowTitleBar = ({ title, children }: WindowTitleBarProps) => {
             box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,
               1px 1px 0px rgba(255, 255, 255, 0.25) inset;
           `}
+          onDoubleClick={() => toggleFullScreen()}
         >
           <div>
             <AppWindowTitleButton icon="close" clickAction={closeWindow} />
