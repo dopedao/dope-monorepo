@@ -3,13 +3,15 @@ import Image from 'next/image';
 
 interface IconProps {
   icon: string;
+  title?: string;
   clickAction: () => void;
 }
 
-const DesktopWindowTitleButton = ({ icon, clickAction }: IconProps) => {
+const DesktopWindowTitleButton = ({ icon, title, clickAction }: IconProps) => {
   return (
     <div
       onClick={() => clickAction()}
+      title={title}
       css={css`
         background: #141011;
         box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,

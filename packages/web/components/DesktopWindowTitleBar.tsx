@@ -49,7 +49,11 @@ const DesktopWindowTitleBar = (
           onDoubleClick={() => toggleFullScreen()}
         >
           <div>
-            <DesktopWindowTitleButton icon="close" clickAction={closeWindow} />
+            <DesktopWindowTitleButton 
+              icon="close" 
+              title="Close Window"
+              clickAction={closeWindow} 
+            />
           </div>
           <div
             id="app-title-bar_description"
@@ -66,6 +70,7 @@ const DesktopWindowTitleBar = (
             {!isTouchDevice && 
               <DesktopWindowTitleButton 
                 icon={isFullScreen ? 'window-restore' : 'window-maximize'} 
+                title={isFullScreen ? 'Minimize' : 'Maximize'} 
                 clickAction={toggleFullScreen}
               />
             }

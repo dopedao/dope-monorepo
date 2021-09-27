@@ -53,6 +53,7 @@ const Row = ({ color, slot, item }: { color: string; slot: string; item: string 
         width: 33%;
         text-align: right;
         border-right: 1px solid #dededd;
+        white-space: nowrap;
       `}
     >
       {slot}
