@@ -5,6 +5,8 @@
 
 pragma solidity ^0.8.6;
 
+import { Base64 } from './MetadataUtils.sol';
+
 library MultiPartRLEToSVG {
     struct SVGParams {
         bytes[] parts;
@@ -36,7 +38,7 @@ library MultiPartRLEToSVG {
         string memory name,
         SVGParams memory params,
         mapping(uint8 => string[]) storage palettes
-    ) external view returns (string memory svg) {
+    ) public view returns (string memory svg) {
         // prettier-ignore
         return string(
             abi.encodePacked(
@@ -47,6 +49,47 @@ library MultiPartRLEToSVG {
                 '</svg>'
             )
         );
+    }
+
+    /// @dev Opensea contract metadata: https://docs.opensea.io/docs/contract-level-metadata
+    function contractURI(string calldata name, string calldata description) external pure returns (string memory) {
+        string memory json = string(abi.encodePacked('{ "name": "', name, '", ', '"description" : ', description, '}'));
+        string memory encodedJson = Base64.encode(bytes(json));
+        string memory output = string(abi.encodePacked('data:application/json;base64,', encodedJson));
+        return output;
+    }
+
+    function tokenURI(
+        string calldata name,
+        string calldata description,
+        string calldata attributes,
+        SVGParams memory params,
+        mapping(uint8 => string[]) storage palettes
+    ) external view returns (string memory) {
+        string memory output = Base64.encode(bytes(generateSVG(name, params, palettes)));
+        string memory json = Base64.encode(
+            bytes(
+                string(
+                    abi.encodePacked(
+                        '{ "name": "',
+                        name,
+                        '", ',
+                        '"description" : "',
+                        description,
+                        '", ',
+                        '"image": "data:image/svg+xml;base64,',
+                        output,
+                        '", '
+                        '"attributes": ',
+                        attributes,
+                        '}'
+                    )
+                )
+            )
+        );
+        output = string(abi.encodePacked('data:application/json;base64,', json));
+
+        return output;
     }
 
     /**

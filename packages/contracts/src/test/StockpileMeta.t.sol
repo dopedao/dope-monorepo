@@ -123,7 +123,7 @@ contract Metadata is StockpileTest {
         Attribute[] memory attributes,
         string memory name
     ) private {
-        string memory meta = stockpile.tokenURI(tokenId);
+        string memory meta = stockpile.uri(tokenId);
         string[] memory inputs = new string[](3);
         inputs[0] = 'node';
         inputs[1] = 'scripts/metadata.js';

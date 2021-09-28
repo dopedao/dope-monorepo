@@ -71,40 +71,9 @@ contract StockpileOwner is ERC1155Holder {
     function init(DopeComponents _components, Stockpile _stockpile) public {
         sc = _components;
         stockpile = _stockpile;
-    }
 
-    function addItemComponent(uint8 itemType, string calldata component) public returns (uint8) {
-        return sc.addComponent(itemType, component);
-    }
-
-    function mint(
-        address account,
-        uint8[5] memory components,
-        uint8 itemType,
-        uint256 amount,
-        bytes memory data
-    ) public returns (uint256) {
-        return stockpile.mint(account, components, itemType, amount, data);
-    }
-
-    function mintBatch(
-        address to,
-        uint8[] memory components,
-        uint8[] memory itemTypes,
-        uint256[] memory amounts,
-        bytes memory data
-    ) public returns (uint256[] memory) {
-        return stockpile.mintBatch(to, components, itemTypes, amounts, data);
-    }
-}
-
-contract StockpileTester is Stockpile {
-    constructor(
-        address _components,
-        address _bags,
-        address _owner
-    ) Stockpile(_components, _bags, _owner) {
-        palettes[0] = [
+        string[] memory palette = new string[](44);
+        string[44] memory _palette = [
             '',
             'ffffff',
             'C58860',
@@ -150,7 +119,45 @@ contract StockpileTester is Stockpile {
             'F0E0CC',
             'FF2626'
         ];
+
+        for (uint256 i = 0; i < palette.length; i++) {
+            palette[i] = _palette[i];
+        }
+
+        stockpile.setPalette(0, palette);
     }
+
+    function addItemComponent(uint8 itemType, string calldata component) public returns (uint8) {
+        return sc.addComponent(itemType, component);
+    }
+
+    function mint(
+        address account,
+        uint8[5] memory components,
+        uint8 itemType,
+        uint256 amount,
+        bytes memory data
+    ) public returns (uint256) {
+        return stockpile.mint(account, components, itemType, amount, data);
+    }
+
+    function mintBatch(
+        address to,
+        uint8[] memory components,
+        uint8[] memory itemTypes,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public returns (uint256[] memory) {
+        return stockpile.mintBatch(to, components, itemTypes, amounts, data);
+    }
+}
+
+contract StockpileTester is Stockpile {
+    constructor(
+        address _components,
+        address _bags,
+        address _owner
+    ) Stockpile(_components, _bags, _owner) {}
 
     // View helpers for getting the item ID that corresponds to a bag's items
     function weaponId(uint256 tokenId) public view returns (uint256) {
