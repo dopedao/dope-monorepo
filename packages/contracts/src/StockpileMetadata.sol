@@ -1,11 +1,10 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import './DopeComponents.sol';
+import './Components.sol';
 import './TokenId.sol';
-import { Base64, toString } from './MetadataUtils.sol';
 
-import { MultiPartRLEToSVG } from './MultiPartRLEToSVG.sol';
+import { MetadataBuilder } from './MetadataBuilder.sol';
 
 /// @title Helper contract for generating ERC-1155 token ids and descriptions for
 /// the individual items inside a Loot bag.
@@ -14,6 +13,8 @@ import { MultiPartRLEToSVG } from './MultiPartRLEToSVG.sol';
 contract StockpileMetadata {
     string[] internal itemTypes = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
 
+    bytes internal lady =
+        hex'000a26361a050004240300040006240200040007240100020009240100020008240200020002240100052402000300012401000524020006000324030006000224040006000224040004000624020003000824010002000a2402000a2401000224010008240100012402000624010001240100012403000524010001240100012403000424020001240100012403000424020001240100012403000424020001240100012403000424020001240100012402000624010001240224020008240224020006240100012401240300022402000324010004000224020002240200040002240200022402000400022402000224020004000224020002240200040002240200022402000400022402000224020004000224020002240200040002240200022402000400012403000124030004000124030001240300040001240300012403000400012403000124030004000124030001240300040001240300012403000400012403000124030004000124030001240300040001240300012403000400012403000124030003000324020003240100';
     bytes internal man =
         hex'000927361907000324040006000524030006000524030006000524030006000524030007000424030007000324040007000224050004000724030002000b24010001000d2401000d2401000d240e240e24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b240c240100012402240100032402000524010003000324020004240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000324020003000324030004240100';
 
@@ -26,10 +27,10 @@ contract StockpileMetadata {
     // Item RLE (TokenID => RLE)
     mapping(uint256 => string) internal _rle;
 
-    DopeComponents internal sc;
+    Components internal sc;
 
     constructor(address _components) {
-        sc = DopeComponents(_components);
+        sc = Components(_components);
     }
 
     function name() external pure returns (string memory) {
@@ -42,7 +43,7 @@ contract StockpileMetadata {
 
     /// @dev Opensea contract metadata: https://docs.opensea.io/docs/contract-level-metadata
     function contractURI() external pure returns (string memory) {
-        return MultiPartRLEToSVG.contractURI('Dope Wars Stockpile', 'Stockpile for Dope Wars');
+        return MetadataBuilder.contractURI('Dope Wars Stockpile', 'Stockpile for Dope Wars');
     }
 
     /// @notice Returns an SVG for the provided token id
@@ -51,11 +52,11 @@ contract StockpileMetadata {
         parts[0] = bytes(man);
 
         return
-            MultiPartRLEToSVG.tokenURI(
+            MetadataBuilder.tokenURI(
                 tokenName(tokenId),
                 'Dope Gear lets you unbundle your DOPE Bags into individual ERC1155 NFTs.',
                 attributes(tokenId),
-                MultiPartRLEToSVG.SVGParams({ parts: parts, background: '#000000' }),
+                MetadataBuilder.SVGParams({ parts: parts, background: '#000000' }),
                 palettes
             );
     }

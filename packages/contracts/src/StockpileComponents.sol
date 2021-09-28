@@ -2,7 +2,7 @@
 
 /*
 
-    DopeComponents.sol
+    StockpileComponents.sol
     
     This is a utility contract to make it easier for other
     contracts to work with Loot properties.
@@ -25,26 +25,24 @@
 
 pragma solidity ^0.8.4;
 
-import '@openzeppelin/contracts/access/Ownable.sol';
-
 import { toString } from './MetadataUtils.sol';
 
-contract DopeComponents is Ownable {
-    uint8 public constant WEAPON = 0x0;
-    uint8 public constant CLOTHES = 0x1;
-    uint8 public constant VEHICLE = 0x2;
-    uint8 public constant WAIST = 0x3;
-    uint8 public constant FOOT = 0x4;
-    uint8 public constant HAND = 0x5;
-    uint8 public constant DRUGS = 0x6;
-    uint8 public constant NECK = 0x7;
-    uint8 public constant RING = 0x8;
-    uint8 public constant NAME_PREFIX = 0x9;
-    uint8 public constant NAME_SUFFIX = 0xa;
-    uint8 public constant SUFFIX = 0xb;
-    uint8 public constant SET = 0xc;
+contract StockpileComponents {
+    uint8 internal constant WEAPON = 0x0;
+    uint8 internal constant CLOTHES = 0x1;
+    uint8 internal constant VEHICLE = 0x2;
+    uint8 internal constant WAIST = 0x3;
+    uint8 internal constant FOOT = 0x4;
+    uint8 internal constant HAND = 0x5;
+    uint8 internal constant DRUGS = 0x6;
+    uint8 internal constant NECK = 0x7;
+    uint8 internal constant RING = 0x8;
+    uint8 internal constant NAME_PREFIX = 0x9;
+    uint8 internal constant NAME_SUFFIX = 0xa;
+    uint8 internal constant SUFFIX = 0xb;
+    uint8 internal constant SET = 0xc;
 
-    string[] public weapons = [
+    string[] internal weapons = [
         'Pocket Knife', // 0
         'Chain', // 1
         'Knife', // 2
@@ -66,7 +64,7 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant weaponsLength = 18;
 
-    string[] public clothes = [
+    string[] internal clothes = [
         'White T Shirt', // 0
         'Black T Shirt', // 1
         'White Hoodie', // 2
@@ -90,7 +88,7 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant clothesLength = 20;
 
-    string[] public vehicle = [
+    string[] internal vehicle = [
         'Dodge', // 0
         'Porsche', // 1
         'Tricycle', // 2
@@ -111,7 +109,7 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant vehicleLength = 17;
 
-    string[] public waistArmor = [
+    string[] internal waistArmor = [
         'Gucci Belt', // 0
         'Versace Belt', // 1
         'Studded Belt', // 2
@@ -131,7 +129,7 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant waistLength = 16;
 
-    string[] public footArmor = [
+    string[] internal footArmor = [
         'Black Air Force 1s', // 0
         'White Forces', // 1
         'Air Jordan 1 Chicagos', // 2
@@ -152,7 +150,7 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant footLength = 17;
 
-    string[] public handArmor = [
+    string[] internal handArmor = [
         'Rubber Gloves', // 0
         'Baseball Gloves', // 1
         'Boxing Gloves', // 2
@@ -170,14 +168,14 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant handLength = 14;
 
-    string[] public necklaces = [
+    string[] internal necklaces = [
         'Bronze Chain', // 0
         'Silver Chain', // 1
         'Gold Chain' // 2
     ];
     uint256 private constant necklacesLength = 3;
 
-    string[] public rings = [
+    string[] internal rings = [
         'Gold Ring', // 0
         'Silver Ring', // 1
         'Diamond Ring', // 2
@@ -188,7 +186,7 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant ringsLength = 7;
 
-    string[] public drugs = [
+    string[] internal drugs = [
         'Weed', // 0
         'Cocaine', // 1
         'Ludes', // 2
@@ -211,7 +209,7 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant drugsLength = 19;
 
-    string[] public suffixes = [
+    string[] internal suffixes = [
         // <no suffix>          // 0
         'from the Bayou', // 1
         'from Atlanta', // 2
@@ -235,7 +233,7 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant suffixesLength = 19;
 
-    string[] public namePrefixes = [
+    string[] internal namePrefixes = [
         // <no name>            // 0
         'OG', // 1
         'King of the Street', // 2
@@ -304,7 +302,7 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant namePrefixesLength = 64;
 
-    string[] public nameSuffixes = [
+    string[] internal nameSuffixes = [
         // <no name>            // 0
         'Feared', // 1
         'Baron', // 2
@@ -327,51 +325,47 @@ contract DopeComponents is Ownable {
     ];
     uint256 private constant nameSuffixesLength = 18;
 
-    constructor(address _owner) {
-        transferOwnership(_owner);
-    }
-
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
-    function weaponComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
+    function weaponComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'WEAPON', weaponsLength);
     }
 
-    function clothesComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
+    function clothesComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'CLOTHES', clothesLength);
     }
 
-    function vehicleComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
+    function vehicleComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'VEHICLE', vehicleLength);
     }
 
-    function waistComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
+    function waistComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'WAIST', waistLength);
     }
 
-    function footComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
+    function footComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'FOOT', footLength);
     }
 
-    function handComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
+    function handComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'HAND', handLength);
     }
 
-    function drugsComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
+    function drugsComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'DRUGS', drugsLength);
     }
 
-    function neckComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
+    function neckComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'NECK', necklacesLength);
     }
 
-    function ringComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
+    function ringComponents(uint256 tokenId) internal pure returns (uint8[5] memory) {
         return pluck(tokenId, 'RING', ringsLength);
     }
 
-    function addComponent(uint8 itemType, string calldata component) public onlyOwner returns (uint8) {
+    function addComponent(uint8 itemType, string calldata component) internal returns (uint8) {
         string[] storage arr;
         if (itemType == WEAPON) {
             arr = weapons;
@@ -441,64 +435,5 @@ contract DopeComponents is Ownable {
         }
 
         return components;
-    }
-
-    // Returns the "vanilla" item name w/o any prefix/suffixes or augmentations
-    function itemName(uint8 itemType, uint256 idx) public view returns (string memory) {
-        if (itemType == WEAPON) {
-            return weapons[idx];
-        } else if (itemType == CLOTHES) {
-            return clothes[idx];
-        } else if (itemType == VEHICLE) {
-            return vehicle[idx];
-        } else if (itemType == WAIST) {
-            return waistArmor[idx];
-        } else if (itemType == FOOT) {
-            return footArmor[idx];
-        } else if (itemType == HAND) {
-            return handArmor[idx];
-        } else if (itemType == DRUGS) {
-            return drugs[idx];
-        } else if (itemType == NECK) {
-            return necklaces[idx];
-        } else if (itemType == RING) {
-            return rings[idx];
-        } else {
-            revert('Unexpected gear piece');
-        }
-    }
-
-    // Creates the token description given its components and what type it is
-    function componentsToString(uint8[5] memory components, uint8 itemType) public view returns (string memory) {
-        // item type: what slot to get
-        // components[0] the index in the array
-        string memory item = itemName(itemType, components[0]);
-
-        // We need to do -1 because the 'no description' is not part of loot copmonents
-
-        // add the suffix
-        if (components[1] > 0) {
-            item = string(abi.encodePacked(item, ' ', suffixes[components[1] - 1]));
-        }
-
-        // add the name prefix / suffix
-        if (components[2] > 0) {
-            // prefix
-            string memory namePrefixSuffix = string(abi.encodePacked("'", namePrefixes[components[2] - 1]));
-            if (components[3] > 0) {
-                namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, ' ', nameSuffixes[components[3] - 1]));
-            }
-
-            namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, "' "));
-
-            item = string(abi.encodePacked(namePrefixSuffix, item));
-        }
-
-        // add the augmentation
-        if (components[4] > 0) {
-            item = string(abi.encodePacked(item, ' +1'));
-        }
-
-        return item;
     }
 }

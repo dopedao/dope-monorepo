@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 
 /// @title A library used to convert multi-part RLE compressed images to SVG
-/// From: https://raw.githubusercontent.com/nounsDAO/nouns-monorepo/master/packages/nouns-contracts/contracts/libs/MultiPartRLEToSVG.sol
+/// From: https://raw.githubusercontent.com/nounsDAO/nouns-monorepo/master/packages/nouns-contracts/contracts/libs/MetadataBuilder.sol
 
 pragma solidity ^0.8.6;
 
 import { Base64 } from './MetadataUtils.sol';
 
-library MultiPartRLEToSVG {
+library MetadataBuilder {
     struct SVGParams {
         bytes[] parts;
         string background;

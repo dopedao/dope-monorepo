@@ -12,7 +12,7 @@ import { ERC721, ERC721Enumerable } from '@openzeppelin/contracts/token/ERC721/e
 import { ICharacter } from './interfaces/ICharacter.sol';
 import { IStockpile } from './interfaces/IStockpile.sol';
 import { Base64 } from './MetadataUtils.sol';
-import { MultiPartRLEToSVG } from './MultiPartRLEToSVG.sol';
+import { MetadataBuilder } from './MetadataBuilder.sol';
 
 contract Character is ICharacter, ERC721Enumerable, Ownable {
     using Strings for uint256;
@@ -173,9 +173,9 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
 
         string memory image = Base64.encode(
             bytes(
-                MultiPartRLEToSVG.generateSVG(
+                MetadataBuilder.generateSVG(
                     "title",
-                    MultiPartRLEToSVG.SVGParams({ parts: params.parts, background: params.background }),
+                    MetadataBuilder.SVGParams({ parts: params.parts, background: params.background }),
                     palettes
                 )
             )
@@ -201,9 +201,9 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
         return
             Base64.encode(
                 bytes(
-                    MultiPartRLEToSVG.generateSVG(
+                    MetadataBuilder.generateSVG(
                         "title",
-                        MultiPartRLEToSVG.SVGParams({
+                        MetadataBuilder.SVGParams({
                             parts: _getPartsForEquipment(equipment),
                             background: backgrounds[equipment[BACKGROUND]]
                         }),
