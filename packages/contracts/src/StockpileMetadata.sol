@@ -11,7 +11,7 @@ import { MetadataBuilder } from './MetadataBuilder.sol';
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
 contract StockpileMetadata {
-    string[] internal itemTypes = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
+    string[] internal componentTypes = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
 
     bytes internal lady =
         hex'000a26361a050004240300040006240200040007240100020009240100020008240200020002240100052402000300012401000524020006000324030006000224040006000224040004000624020003000824010002000a2402000a2401000224010008240100012402000624010001240100012403000524010001240100012403000424020001240100012403000424020001240100012403000424020001240100012403000424020001240100012402000624010001240224020008240224020006240100012401240300022402000324010004000224020002240200040002240200022402000400022402000224020004000224020002240200040002240200022402000400022402000224020004000224020002240200040002240200022402000400012403000124030004000124030001240300040001240300012403000400012403000124030004000124030001240300040001240300012403000400012403000124030004000124030001240300040001240300012403000400012403000124030003000324020003240100';
@@ -54,7 +54,7 @@ contract StockpileMetadata {
         return
             MetadataBuilder.tokenURI(
                 tokenName(tokenId),
-                'Dope Gear lets you unbundle your DOPE Bags into individual ERC1155 NFTs.',
+                'Dope Stockpile',
                 attributes(tokenId),
                 MetadataBuilder.SVGParams({ parts: parts, background: '#000000' }),
                 palettes
@@ -64,12 +64,12 @@ contract StockpileMetadata {
     /// @notice Returns the attributes associated with this item.
     /// @dev Opensea Standards: https://docs.opensea.io/docs/metadata-standards
     function attributes(uint256 id) public view returns (string memory) {
-        (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
+        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(id);
         // should we also use components[0] which contains the item name?
-        string memory slot = itemTypes[itemType];
+        string memory slot = componentTypes[componentType];
         string memory res = string(abi.encodePacked('[', trait('Slot', slot)));
 
-        string memory item = sc.itemName(itemType, components[0]);
+        string memory item = sc.itemName(componentType, components[0]);
         res = string(abi.encodePacked(res, ', ', trait('Item', item)));
 
         if (components[1] > 0) {
@@ -104,8 +104,8 @@ contract StockpileMetadata {
     // @notice Given an ERC1155 token id, it returns its name by decoding and parsing
     // the id
     function tokenName(uint256 id) public view returns (string memory) {
-        (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
-        return sc.componentsToString(components, itemType);
+        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(id);
+        return sc.componentsToString(components, componentType);
     }
 
     // function rle(uint256 id) public view returns (string memory) {
@@ -113,7 +113,7 @@ contract StockpileMetadata {
     //         return _rle[id];
     //     }
     //     return '';
-    //     // (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
+    //     // (uint8[5] memory components, uint8 componentType) = TokenId.fromId(id);
     //     // return
     // }
 }

@@ -7,6 +7,7 @@ import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
 import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
+import { ComponentTypes } from './Components.sol';
 import './StockpileMetadata.sol';
 import './interfaces/IStockpile.sol';
 
@@ -52,15 +53,15 @@ contract Stockpile is ERC1155, StockpileMetadata, Ownable {
         // event. If that's unsafe, we can fallback to using _mint
         uint256[] memory ids = new uint256[](9);
         uint256[] memory amounts = new uint256[](9);
-        ids[0] = itemId(tokenId, sc.weaponComponents, sc.WEAPON());
-        ids[1] = itemId(tokenId, sc.clothesComponents, sc.CLOTHES());
-        ids[2] = itemId(tokenId, sc.vehicleComponents, sc.VEHICLE());
-        ids[3] = itemId(tokenId, sc.waistComponents, sc.WAIST());
-        ids[4] = itemId(tokenId, sc.footComponents, sc.FOOT());
-        ids[5] = itemId(tokenId, sc.handComponents, sc.HAND());
-        ids[6] = itemId(tokenId, sc.drugsComponents, sc.DRUGS());
-        ids[7] = itemId(tokenId, sc.neckComponents, sc.NECK());
-        ids[8] = itemId(tokenId, sc.ringComponents, sc.RING());
+        ids[0] = itemId(tokenId, sc.weaponComponents, ComponentTypes.WEAPON);
+        ids[1] = itemId(tokenId, sc.clothesComponents, ComponentTypes.CLOTHES);
+        ids[2] = itemId(tokenId, sc.vehicleComponents, ComponentTypes.VEHICLE);
+        ids[3] = itemId(tokenId, sc.waistComponents, ComponentTypes.WAIST);
+        ids[4] = itemId(tokenId, sc.footComponents, ComponentTypes.FOOT);
+        ids[5] = itemId(tokenId, sc.handComponents, ComponentTypes.HAND);
+        ids[6] = itemId(tokenId, sc.drugsComponents, ComponentTypes.DRUGS);
+        ids[7] = itemId(tokenId, sc.neckComponents, ComponentTypes.NECK);
+        ids[8] = itemId(tokenId, sc.ringComponents, ComponentTypes.RING);
         for (uint256 i = 0; i < ids.length; i++) {
             amounts[i] = 1;
             _balances[ids[i]][who] += 1;
@@ -72,10 +73,10 @@ contract Stockpile is ERC1155, StockpileMetadata, Ownable {
     function itemId(
         uint256 tokenId,
         function(uint256) external pure returns (uint8[5] memory) componentsFn,
-        uint256 itemType
+        uint256 componentType
     ) private pure returns (uint256) {
         uint8[5] memory components = componentsFn(tokenId);
-        return TokenId.toId(components, itemType);
+        return TokenId.toId(components, componentType);
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {
@@ -85,11 +86,11 @@ contract Stockpile is ERC1155, StockpileMetadata, Ownable {
     function mint(
         address to,
         uint8[5] memory components,
-        uint8 itemType,
+        uint8 componentType,
         uint256 amount,
         bytes memory data
     ) external onlyOwner returns (uint256) {
-        uint256 id = TokenId.toId(components, itemType);
+        uint256 id = TokenId.toId(components, componentType);
         _mint(to, id, amount, data);
         return id;
     }
@@ -97,13 +98,13 @@ contract Stockpile is ERC1155, StockpileMetadata, Ownable {
     function mintBatch(
         address to,
         uint8[] memory components,
-        uint8[] memory itemTypes,
+        uint8[] memory componentTypes,
         uint256[] memory amounts,
         bytes memory data
     ) external onlyOwner returns (uint256[] memory) {
         require(components.length % 5 == 0, 'invalid components shape');
-        require(components.length / 5 == itemTypes.length, 'component itemType mismatch');
-        uint256[] memory ids = new uint256[](itemTypes.length);
+        require(components.length / 5 == componentTypes.length, 'component componentType mismatch');
+        uint256[] memory ids = new uint256[](componentTypes.length);
 
         for (uint256 i = 0; i < components.length; i += 5) {
             uint8[5] memory _components;
@@ -112,7 +113,7 @@ contract Stockpile is ERC1155, StockpileMetadata, Ownable {
             _components[2] = components[i + 2];
             _components[3] = components[i + 3];
             _components[4] = components[i + 4];
-            ids[i / 5] = TokenId.toId(_components, itemTypes[i / 5]);
+            ids[i / 5] = TokenId.toId(_components, componentTypes[i / 5]);
         }
 
         _mintBatch(to, ids, amounts, data);

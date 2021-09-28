@@ -6,7 +6,7 @@ import 'ds-test/test.sol';
 import './Hevm.sol';
 import '../../Loot.sol';
 import { Stockpile } from '../../Stockpile.sol';
-import { Components } from '../../Components.sol';
+import { Components, ComponentTypes } from '../../Components.sol';
 import { TokenId } from '../../TokenId.sol';
 
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
@@ -161,39 +161,39 @@ contract StockpileTester is Stockpile {
 
     // View helpers for getting the item ID that corresponds to a bag's items
     function weaponId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.weaponComponents(tokenId), sc.WEAPON());
+        return TokenId.toId(sc.weaponComponents(tokenId), ComponentTypes.WEAPON);
     }
 
     function clothesId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.clothesComponents(tokenId), sc.CLOTHES());
+        return TokenId.toId(sc.clothesComponents(tokenId), ComponentTypes.CLOTHES);
     }
 
     function vehicleId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.vehicleComponents(tokenId), sc.VEHICLE());
+        return TokenId.toId(sc.vehicleComponents(tokenId), ComponentTypes.VEHICLE);
     }
 
     function waistId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.waistComponents(tokenId), sc.WAIST());
+        return TokenId.toId(sc.waistComponents(tokenId), ComponentTypes.WAIST);
     }
 
     function footId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.footComponents(tokenId), sc.FOOT());
+        return TokenId.toId(sc.footComponents(tokenId), ComponentTypes.FOOT);
     }
 
     function handId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.handComponents(tokenId), sc.HAND());
+        return TokenId.toId(sc.handComponents(tokenId), ComponentTypes.HAND);
     }
 
     function drugsId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.drugsComponents(tokenId), sc.DRUGS());
+        return TokenId.toId(sc.drugsComponents(tokenId), ComponentTypes.DRUGS);
     }
 
     function neckId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.neckComponents(tokenId), sc.NECK());
+        return TokenId.toId(sc.neckComponents(tokenId), ComponentTypes.NECK);
     }
 
     function ringId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.ringComponents(tokenId), sc.RING());
+        return TokenId.toId(sc.ringComponents(tokenId), ComponentTypes.RING);
     }
 
     // Given an erc721 bag, returns the erc1155 token ids of the items in the bag
