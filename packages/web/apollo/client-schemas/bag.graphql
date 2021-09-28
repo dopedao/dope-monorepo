@@ -1,0 +1,7 @@
+type Bag {
+  rank: Int!
+  is_on_sale: Boolean
+  current_sale_price: Int
+  last_sale_price: Int
+  sale_type: String
+}

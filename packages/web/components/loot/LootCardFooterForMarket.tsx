@@ -1,14 +1,14 @@
 import { Bag } from '../../src/generated/graphql';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
-import { getRarityForDopeId } from '../../common/dope-rarity-check';
-import styled from '@emotion/styled';
 
 interface Props {
-  bag: Pick<Bag, 'id' | 'claimed'>;
+  bag: Pick<
+    Bag,
+    | 'id'
+    | 'rank'
+  >;
 }
-
-const StatsContainer = styled.div``;
 
 const viewOnOpenSea = (tokenId: string): void => {
   const baseOpenSeaUrl = 'https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723';
@@ -25,7 +25,7 @@ const LootCardFooterForMarket = ({ bag }: Props) => {
           text-align: center;
         `}
       >
-        {getRarityForDopeId(bag.id)}/8000
+        {bag.rank}/8000
       </div>
       <div>
         <Button

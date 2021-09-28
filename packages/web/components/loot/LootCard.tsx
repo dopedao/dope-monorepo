@@ -57,6 +57,7 @@ interface Props {
     | 'waist'
     | 'weapon'
     | 'claimed'
+    | 'rank'
   >;
 }
 

@@ -1,6 +1,5 @@
 import { media } from '../styles/mixins';
 import { useBagsQuery } from '../src/generated/graphql';
-import { useState } from 'react';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
 import LoadingBlock from '../components/LoadingBlock';
@@ -31,15 +30,21 @@ const Container = styled.div`
   }
 `;
 
-const handleSearchKey = ({ target }: { target: HTMLInputElement }) => {
+const handleSearchChange = ({ target }: { target: HTMLInputElement }) => {
   const searchPhrase = target.value;
   console.log(searchPhrase);
+  // TODO: Actually search items…
 }
 
 const ContentLoading = (
-  <Container><LoadingBlock /></Container>
-)
-;
+  <Container>
+    <LoadingBlock />
+    <LoadingBlock />
+    <LoadingBlock />
+    <LoadingBlock />
+  </Container>
+);
+
 const ContentEmpty = (
   <Container>
     <h2>No loot available in the market.</h2>
@@ -48,18 +53,17 @@ const ContentEmpty = (
 
 const MarketList = () => {
   const { data, loading, error } = useBagsQuery({
-    variables: { first: 10, skip: 0 },
+    variables: { first: 10, last_id: '0' },
   });
-  
+
   if (loading) {
     return ContentLoading;
   } else if (!data?.bags || data.bags.length === 0) {
     return ContentEmpty;
   } else {
-    console.log(data.bags.length);
     return (
       <>
-        <MarketFilterBar handleSearchKey={handleSearchKey} />
+        <MarketFilterBar handleSearchChange={handleSearchChange} />    
         <Container>
           {data.bags.map(bag => (
             <LootCard 

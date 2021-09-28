@@ -2,20 +2,21 @@ import { css } from '@emotion/react';
 import { media } from '../../styles/mixins';
 import { Table, Thead, Tbody, Tr, Th, Td, Tfoot } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
-import { getRarityForDopeId } from '../../common/dope-rarity-check';
 import CheckIcon from '../icons/Check';
+
+interface Props {
+  className?: string;
+  data: { id: string; claimed: boolean, rank: number }[];
+  selected: number;
+  onSelect: (i: number) => void;
+}
 
 const LootTable = ({
   className = '',
   data,
   selected,
   onSelect,
-}: {
-  className?: string;
-  data: { id: string; claimed: boolean }[];
-  selected: number;
-  onSelect: (i: number) => void;
-}) => {
+}: Props) => {
   const [sort, setSort] = useState('id');
 
   const amountOfUnclaimedPaper = (): number => {
@@ -34,10 +35,10 @@ const LootTable = ({
   const items = useMemo(
     () =>
       data
-        .map(({ id, claimed }, idx) => ({
+        .map(({ id, claimed, rank }, idx) => ({
           id,
-          rank: getRarityForDopeId(id),
-          percentile: ((1 - getRarityForDopeId(id) / 8000) * 100).toFixed(1),
+          rank,
+          percentile: ((1 - rank / 8000) * 100).toFixed(1),
           claimed: claimed ? (
             ''
           ) : (

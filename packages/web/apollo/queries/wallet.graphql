@@ -15,6 +15,7 @@ query Wallet($id: ID!) {
       waist
       weapon
       claimed
+      rank @client
     }
   }
 }

@@ -21,38 +21,41 @@ const Container = styled.div`
 `;
 
 interface Props {
-  handleSearchKey({ target: HTMLInputElement }: {target: any}): void;
+  handleSearchChange({ target: HTMLInputElement }: {target: any}): void;
 }
 
-const MarketFilterBar = ({handleSearchKey}: Props) => {
+const MarketFilterBar = ({handleSearchChange}: Props) => {
   return (
     <Container>
-        <Input 
-        placeholder="Search for items" 
+      <Input 
+        placeholder="Search…" 
         size="sm" 
         variant="filterBar" 
         maxWidth="256px"
-        onChange={handleSearchKey}
+        onChange={handleSearchChange}
       />
       <Select 
         size="sm"
         variant="filterBar"
         maxWidth="256px"
+        defaultValue="All"
       >
-        <option selected disabled>Sale Status…</option>
+        <option disabled>Sale Status…</option>
         <option>All</option>
         <option>Buy Now</option>
         <option>Auction</option>
-        <option>Never Sold</option>
+        {/* <option>Never Sold</option> */}
       </Select>
       <Select 
         size="sm"
         variant="filterBar"
         maxWidth="256px"
+        defaultValue="Most Affordable"
       >
-        <option selected disabled>Sort By…</option>
+        <option disabled>Sort By…</option>
+        {/* <option>Most Rare</option> */}
         <option>Most Affordable</option>
-        <option>Most Rare</option>
+        <option>Most Expensive</option>
         <option>Highest Last Sale</option>
       </Select>
       <FormControl display="flex" alignItems="center" width="auto">
