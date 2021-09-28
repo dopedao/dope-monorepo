@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 // ============ Imports ============
 
 import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
+import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
-import './ERC1155Snapshot.sol';
 import './StockpileMetadata.sol';
 import './interfaces/IStockpile.sol';
 
@@ -16,17 +16,21 @@ library Errors {
 }
 
 /// @title Dope Gear Stockpile
-/// @author Georgios Konstantopoulos
+/// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 Loot bags and extracting the items inside it
 /// The created tokens are ERC1155 compatible, and their on-chain SVG is their name
-contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
+contract Stockpile is ERC1155, StockpileMetadata, Ownable {
     // The DOPE bags contract
     IERC721 immutable bags;
 
     mapping(uint256 => bool) private opened;
 
     // No need for a URI since we're doing everything onchain
-    constructor(address _components, address _bags, address _owner) StockpileMetadata(_components) ERC1155('') {
+    constructor(
+        address _components,
+        address _bags,
+        address _owner
+    ) StockpileMetadata(_components) ERC1155('') {
         bags = IERC721(_bags);
         transferOwnership(_owner);
     }
@@ -59,7 +63,6 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         ids[8] = itemId(tokenId, sc.ringComponents, sc.RING());
         for (uint256 i = 0; i < ids.length; i++) {
             amounts[i] = 1;
-            // +21k per call / unavoidable - requires patching OZ
             _balances[ids[i]][who] += 1;
         }
 
@@ -68,11 +71,15 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
 
     function itemId(
         uint256 tokenId,
-        function(uint256) pure external returns (uint8[5] memory) componentsFn,
+        function(uint256) external pure returns (uint8[5] memory) componentsFn,
         uint256 itemType
-    ) private view returns (uint256) {
+    ) private pure returns (uint256) {
         uint8[5] memory components = componentsFn(tokenId);
         return TokenId.toId(components, itemType);
+    }
+
+    function uri(uint256 tokenId) public view override returns (string memory) {
+        return tokenURI(tokenId);
     }
 
     function mint(
@@ -110,6 +117,10 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
 
         _mintBatch(to, ids, amounts, data);
         return ids;
+    }
+
+    function setPalette(uint8 id, string[] memory palette) public onlyOwner {
+        palettes[id] = palette;
     }
 
     // function burn(uint256 id, uint256 amount) external {
