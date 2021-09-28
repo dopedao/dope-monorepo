@@ -29,21 +29,23 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 
 import { toString } from './MetadataUtils.sol';
 
-contract Components is Ownable {
-    uint8 public constant WEAPON = 0x0;
-    uint8 public constant CLOTHES = 0x1;
-    uint8 public constant VEHICLE = 0x2;
-    uint8 public constant WAIST = 0x3;
-    uint8 public constant FOOT = 0x4;
-    uint8 public constant HAND = 0x5;
-    uint8 public constant DRUGS = 0x6;
-    uint8 public constant NECK = 0x7;
-    uint8 public constant RING = 0x8;
-    uint8 public constant NAME_PREFIX = 0x9;
-    uint8 public constant NAME_SUFFIX = 0xa;
-    uint8 public constant SUFFIX = 0xb;
-    uint8 public constant SET = 0xc;
+library ComponentTypes {
+    uint8 internal constant WEAPON = 0x0;
+    uint8 internal constant CLOTHES = 0x1;
+    uint8 internal constant VEHICLE = 0x2;
+    uint8 internal constant WAIST = 0x3;
+    uint8 internal constant FOOT = 0x4;
+    uint8 internal constant HAND = 0x5;
+    uint8 internal constant DRUGS = 0x6;
+    uint8 internal constant NECK = 0x7;
+    uint8 internal constant RING = 0x8;
+    uint8 internal constant NAME_PREFIX = 0x9;
+    uint8 internal constant NAME_SUFFIX = 0xa;
+    uint8 internal constant SUFFIX = 0xb;
+    uint8 internal constant SET = 0xc;
+}
 
+contract Components is Ownable {
     string[] public weapons = [
         'Pocket Knife', // 0
         'Chain', // 1
@@ -371,31 +373,31 @@ contract Components is Ownable {
         return pluck(tokenId, 'RING', ringsLength);
     }
 
-    function addComponent(uint8 itemType, string calldata component) public onlyOwner returns (uint8) {
+    function addComponent(uint8 componentType, string calldata component) public onlyOwner returns (uint8) {
         string[] storage arr;
-        if (itemType == WEAPON) {
+        if (componentType == ComponentTypes.WEAPON) {
             arr = weapons;
-        } else if (itemType == CLOTHES) {
+        } else if (componentType == ComponentTypes.CLOTHES) {
             arr = clothes;
-        } else if (itemType == VEHICLE) {
+        } else if (componentType == ComponentTypes.VEHICLE) {
             arr = vehicle;
-        } else if (itemType == WAIST) {
+        } else if (componentType == ComponentTypes.WAIST) {
             arr = waistArmor;
-        } else if (itemType == FOOT) {
+        } else if (componentType == ComponentTypes.FOOT) {
             arr = footArmor;
-        } else if (itemType == HAND) {
+        } else if (componentType == ComponentTypes.HAND) {
             arr = handArmor;
-        } else if (itemType == DRUGS) {
+        } else if (componentType == ComponentTypes.DRUGS) {
             arr = drugs;
-        } else if (itemType == NECK) {
+        } else if (componentType == ComponentTypes.NECK) {
             arr = necklaces;
-        } else if (itemType == RING) {
+        } else if (componentType == ComponentTypes.RING) {
             arr = rings;
-        } else if (itemType == NAME_PREFIX) {
+        } else if (componentType == ComponentTypes.NAME_PREFIX) {
             arr = namePrefixes;
-        } else if (itemType == NAME_SUFFIX) {
+        } else if (componentType == ComponentTypes.NAME_SUFFIX) {
             arr = nameSuffixes;
-        } else if (itemType == SUFFIX) {
+        } else if (componentType == ComponentTypes.SUFFIX) {
             arr = suffixes;
         } else {
             revert('Unexpected gear piece');
@@ -406,7 +408,11 @@ contract Components is Ownable {
         uint8 id = uint8(arr.length) - 1;
 
         // prefix/suffix components are handled differently since they aren't always set.
-        if (itemType == NAME_PREFIX || itemType == NAME_SUFFIX || itemType == SUFFIX) {
+        if (
+            componentType == ComponentTypes.NAME_PREFIX ||
+            componentType == ComponentTypes.NAME_SUFFIX ||
+            componentType == ComponentTypes.SUFFIX
+        ) {
             id = id + 1;
         }
 
@@ -444,24 +450,24 @@ contract Components is Ownable {
     }
 
     // Returns the "vanilla" item name w/o any prefix/suffixes or augmentations
-    function itemName(uint8 itemType, uint256 idx) public view returns (string memory) {
-        if (itemType == WEAPON) {
+    function itemName(uint8 componentType, uint256 idx) public view returns (string memory) {
+        if (componentType == ComponentTypes.WEAPON) {
             return weapons[idx];
-        } else if (itemType == CLOTHES) {
+        } else if (componentType == ComponentTypes.CLOTHES) {
             return clothes[idx];
-        } else if (itemType == VEHICLE) {
+        } else if (componentType == ComponentTypes.VEHICLE) {
             return vehicle[idx];
-        } else if (itemType == WAIST) {
+        } else if (componentType == ComponentTypes.WAIST) {
             return waistArmor[idx];
-        } else if (itemType == FOOT) {
+        } else if (componentType == ComponentTypes.FOOT) {
             return footArmor[idx];
-        } else if (itemType == HAND) {
+        } else if (componentType == ComponentTypes.HAND) {
             return handArmor[idx];
-        } else if (itemType == DRUGS) {
+        } else if (componentType == ComponentTypes.DRUGS) {
             return drugs[idx];
-        } else if (itemType == NECK) {
+        } else if (componentType == ComponentTypes.NECK) {
             return necklaces[idx];
-        } else if (itemType == RING) {
+        } else if (componentType == ComponentTypes.RING) {
             return rings[idx];
         } else {
             revert('Unexpected gear piece');
@@ -469,10 +475,10 @@ contract Components is Ownable {
     }
 
     // Creates the token description given its components and what type it is
-    function componentsToString(uint8[5] memory components, uint8 itemType) public view returns (string memory) {
-        // item type: what slot to get
+    function componentsToString(uint8[5] memory components, uint8 componentType) public view returns (string memory) {
+        // component type: what slot to get
         // components[0] the index in the array
-        string memory item = itemName(itemType, components[0]);
+        string memory item = itemName(componentType, components[0]);
 
         // We need to do -1 because the 'no description' is not part of loot copmonents
 
