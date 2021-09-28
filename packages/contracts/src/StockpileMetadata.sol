@@ -14,7 +14,8 @@ import { MultiPartRLEToSVG } from './MultiPartRLEToSVG.sol';
 contract StockpileMetadata {
     string[] internal itemTypes = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
 
-    bytes internal man = hex"000927361907000324040006000524030006000524030006000524030006000524030007000424030007000324040007000224050004000724030002000b24010001000d2401000d2401000d240e240e24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b240c240100012402240100032402000524010003000324020004240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000324020003000324030004240100";
+    bytes internal man =
+        hex'000927361907000324040006000524030006000524030006000524030006000524030007000424030007000324040007000224050004000724030002000b24010001000d2401000d2401000d240e240e24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b240c240100012402240100032402000524010003000324020004240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000324020003000324030004240100';
 
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => string[]) public palettes;
@@ -41,58 +42,21 @@ contract StockpileMetadata {
 
     /// @dev Opensea contract metadata: https://docs.opensea.io/docs/contract-level-metadata
     function contractURI() external pure returns (string memory) {
-        string memory json = '{"name": "Dope Wars Stockpile", "description": "Stockpile for Dope Wars"}';
-        string memory encodedJson = Base64.encode(bytes(json));
-        string memory output = string(abi.encodePacked('data:application/json;base64,', encodedJson));
-
-        return output;
+        return MultiPartRLEToSVG.contractURI('Dope Wars Stockpile', 'Stockpile for Dope Wars');
     }
 
     /// @notice Returns an SVG for the provided token id
     function tokenURI(uint256 tokenId) public view returns (string memory) {
-        uint48[] memory parts = new uint48[](1);
-        string memory name = tokenName(tokenId);
-        string memory output = generateSVGImage(name, parts);
-
-        string memory json = Base64.encode(
-            bytes(
-                string(
-                    abi.encodePacked(
-                        '{ "name": "',
-                        name,
-                        '", ',
-                        '"description" : ',
-                        '"Dope Gear lets you unbundle your DOPE Bags into individual ERC1155 NFTs.", ',
-                        '"image": "data:image/svg+xml;base64,',
-                        output,
-                        '", '
-                        '"attributes": ',
-                        attributes(tokenId),
-                        '}'
-                    )
-                )
-            )
-        );
-        output = string(abi.encodePacked('data:application/json;base64,', json));
-
-        return output;
-    }
-
-    /**
-     * @notice Given a equipment, construct a base64 encoded SVG image.
-     */
-    function generateSVGImage(string memory title, uint48[] memory equipment) internal view returns (string memory) {
         bytes[] memory parts = new bytes[](1);
         parts[0] = bytes(man);
+
         return
-            Base64.encode(
-                bytes(
-                    MultiPartRLEToSVG.generateSVG(
-                        title,
-                        MultiPartRLEToSVG.SVGParams({ parts: parts, background: '#000000' }),
-                        palettes
-                    )
-                )
+            MultiPartRLEToSVG.tokenURI(
+                tokenName(tokenId),
+                'Dope Gear lets you unbundle your DOPE Bags into individual ERC1155 NFTs.',
+                attributes(tokenId),
+                MultiPartRLEToSVG.SVGParams({ parts: parts, background: '#000000' }),
+                palettes
             );
     }
 
@@ -143,12 +107,12 @@ contract StockpileMetadata {
         return sc.componentsToString(components, itemType);
     }
 
-    function rle(uint256 id) public view returns (string memory) {
-        if (bytes(_rle[id]).length > 0) {
-            return _rle[id];
-        }
-        return '';
-        // (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
-        // return
-    }
+    // function rle(uint256 id) public view returns (string memory) {
+    //     if (bytes(_rle[id]).length > 0) {
+    //         return _rle[id];
+    //     }
+    //     return '';
+    //     // (uint8[5] memory components, uint8 itemType) = TokenId.fromId(id);
+    //     // return
+    // }
 }
