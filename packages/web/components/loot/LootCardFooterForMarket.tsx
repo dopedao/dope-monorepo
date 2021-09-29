@@ -3,7 +3,7 @@ import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 
 interface FooterForMarketProps {
-  bag: Pick<Bag, 'id' | 'rank'>;
+  bag: Pick<Bag, 'id' | 'rank' | 'open_sea_asset'>;
 }
 
 const viewOnOpenSea = (tokenId: string): void => {
@@ -12,26 +12,49 @@ const viewOnOpenSea = (tokenId: string): void => {
   window.open(url, 'dopeWarsList')?.focus();
 };
 
+const ContextSensitiveButton = ({ bag }: FooterForMarketProps) => {
+  const isOnSale = bag.open_sea_asset?.is_on_sale;
+  const price = bag.open_sea_asset?.current_sale_price;
+  return (
+    <Button
+      onClick={() => viewOnOpenSea(bag.id)}
+      css={css`
+        float: right;
+      `}
+      variant={isOnSale ? 'primary' : 'solid'}
+    >
+      {isOnSale ? `Buy for ${price} Ξ` : 'View'}
+    </Button>
+  );
+};
+
+const LastSaleOrNever = ({ bag }: FooterForMarketProps) => {
+  const lastSalePrice = bag.open_sea_asset?.last_sale_price;
+  if (lastSalePrice)
+    return (
+      <span
+        css={css`
+          white-space: nowrap;
+        `}
+      >
+        Last {lastSalePrice} Ξ
+      </span>
+    );
+  return <></>;
+};
+
 const LootCardFooterForMarket = ({ bag }: FooterForMarketProps) => {
   return (
     <>
-      {/* <div css={css`text-align:center;`}>Last X.X ETH</div> */}
       <div
         css={css`
           text-align: center;
         `}
       >
-        {bag.rank}/8000
+        <LastSaleOrNever bag={bag} />
       </div>
       <div>
-        <Button
-          onClick={() => viewOnOpenSea(bag.id)}
-          css={css`
-            float: right;
-          `}
-        >
-          View on OpenSea
-        </Button>
+        <ContextSensitiveButton bag={bag} />
       </div>
     </>
   );

@@ -4,7 +4,7 @@ import { getRarityForDopeId } from '../common/dope-rarity-check';
 import { NETWORK } from '../common/constants';
 import { ReactNode, useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { getOpenSeaAsset, openSeaAssetFromJson } from '../common/open-sea-utils';
+import { OpenSeaAsset, getOpenSeaAsset, openSeaAssetFromJson } from '../common/open-sea-utils';
 
 /**
  * We use the below declaration to specify client-only field getters,
@@ -42,14 +42,18 @@ function getClient(uri: string) {
               keyArgs: false,
               read(_, { readField, storage }) {
                 if (!storage.var) {
-                  storage.var = makeVar({});
+                  storage.var = makeVar(new OpenSeaAsset());
                   const tokenId = readField('id') as string;
                   if (tokenId === undefined) {
                     return storage.var();
                   }
                   getOpenSeaAsset(tokenId)
                     .then(response => response.json())
-                    .then(data => storage.var(openSeaAssetFromJson(data)));
+                    .then(data => storage.var(openSeaAssetFromJson(data)))
+                    .catch(error => {
+                      console.log("OPENSEA FETCH ERROR");
+                      console.log(error);
+                    });
                 }
                 return storage.var();
               },

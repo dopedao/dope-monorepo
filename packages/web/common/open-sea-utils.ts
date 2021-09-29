@@ -1,14 +1,24 @@
 import { NETWORK } from '../common/constants';
 import { OpenSeaAsset as OpenSeaAssetInterface } from '../src/generated/graphql';
 
-class OpenSeaAsset implements OpenSeaAssetInterface {
+function ethFromGwei(gwei) {
+  return gwei / Math.pow(10, 18);
+}
+
+export class OpenSeaAsset implements OpenSeaAssetInterface {
   is_on_sale: boolean = false;
   current_sale_price: number | null = null;
   last_sale_price: number | null = null;
-  sale_type: 'Auction' | 'Buy Now' | null = null;
   constructor(json?: Object) {
-    console.log('Making OpenSeaAsset');
-    if (json) console.log(json);
+    if (!json) return;
+    this.is_on_sale = json.orders && json.orders.length > 0;
+    if (this.is_on_sale) {
+      this.current_sale_price = ethFromGwei(json.orders[0].current_price);
+    }
+    if (json.last_sale) {
+      this.last_sale_price = ethFromGwei(json.last_sale.total_price);
+    }
+    // sale_kind == 0 (auction)
   }
 }
 

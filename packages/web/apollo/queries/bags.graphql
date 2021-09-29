@@ -16,7 +16,6 @@ query Bags($first: Int, $last_id: ID) {
       is_on_sale
       current_sale_price
       last_sale_price
-      sale_type
     }
   }
 }

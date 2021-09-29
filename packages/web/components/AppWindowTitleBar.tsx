@@ -46,8 +46,8 @@ const AppWindowTitleBar = () => {
         }
       `}
     >
-      <NavLink href="/market">
-        <a>Market</a>
+      <NavLink href="/swap-meet">
+        <a>Swap Meet</a>
       </NavLink>
       <NavLink href="/loot">
         <a>Loot</a>

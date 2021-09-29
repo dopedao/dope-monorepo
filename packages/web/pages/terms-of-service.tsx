@@ -25,7 +25,7 @@ export default function Market() {
   const router = useRouter();
 
   const handleAgree = () => {
-    router.replace('/market');
+    router.replace('/swap-meet');
   };
   const handleDisagree = () => {
     router.replace('/');

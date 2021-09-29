@@ -225,7 +225,6 @@ export type OpenSeaAsset = {
   current_sale_price?: Maybe<Scalars['Int']>;
   is_on_sale?: Maybe<Scalars['Boolean']>;
   last_sale_price?: Maybe<Scalars['Int']>;
-  sale_type?: Maybe<Scalars['String']>;
 };
 
 export enum OrderDirection {
@@ -569,7 +568,6 @@ export type BagsQuery = {
       is_on_sale?: Maybe<boolean>;
       current_sale_price?: Maybe<number>;
       last_sale_price?: Maybe<number>;
-      sale_type?: Maybe<string>;
     }>;
   }>;
 };
@@ -646,7 +644,6 @@ export const BagsDocument = gql`
         is_on_sale
         current_sale_price
         last_sale_price
-        sale_type
       }
     }
   }
