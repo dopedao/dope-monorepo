@@ -8,6 +8,7 @@ import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 import { ComponentTypes } from './Components.sol';
+import { ERC1155Snapshot } from './ERC1155Snapshot.sol';
 import './StockpileMetadata.sol';
 import './interfaces/IStockpile.sol';
 
@@ -20,7 +21,7 @@ library Errors {
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 Loot bags and extracting the items inside it
 /// The created tokens are ERC1155 compatible, and their on-chain SVG is their name
-contract Stockpile is ERC1155, StockpileMetadata, Ownable {
+contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
     // The DOPE bags contract
     IERC721 immutable bags;
 
@@ -122,6 +123,10 @@ contract Stockpile is ERC1155, StockpileMetadata, Ownable {
 
     function setPalette(uint8 id, string[] memory palette) public onlyOwner {
         palettes[id] = palette;
+    }
+
+    function setRle(uint256 id, bytes memory rle) public onlyOwner {
+        rles[id] = rle;
     }
 
     // function burn(uint256 id, uint256 amount) external {

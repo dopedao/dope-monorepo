@@ -150,6 +150,10 @@ contract StockpileOwner is ERC1155Holder {
     ) public returns (uint256[] memory) {
         return stockpile.mintBatch(to, components, itemTypes, amounts, data);
     }
+
+    function setRle(uint256 id, bytes memory rle) public {
+        stockpile.setRle(id, rle);
+    }
 }
 
 contract StockpileTester is Stockpile {
