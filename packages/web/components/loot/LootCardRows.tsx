@@ -105,6 +105,14 @@ const LootCardRows = ({ bag }: Props) => {
         overflow-y: auto;
       `}
     >
+      { !bag.claimed && 
+        <Row 
+          key="paper"
+          color={itemBackgroundColors[itemBackgroundColors.length-1]}
+          slot="$PAPER"
+          item="125,000"
+        />
+      }
       {[
         ['Weapon', bag.weapon],
         ['Vehicle', bag.vehicle],
