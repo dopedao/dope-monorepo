@@ -14,18 +14,9 @@ const Container = styled.div`
   padding: 32px;
   padding-top: 76px;
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   grid-column-gap: 16px;
   grid-row-gap: 16px;
-  ${media.tablet`
-    grid-template-columns: repeat(2, 1fr);
-  `}
-  ${media.laptop`
-    grid-template-columns: repeat(3, 1fr);
-  `}
-  ${media.desktop`
-    grid-template-columns: repeat(3, 1fr);
-  `}
   > .lootCard {
   }
 `;
