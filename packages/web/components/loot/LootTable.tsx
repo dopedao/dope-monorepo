@@ -6,17 +6,12 @@ import CheckIcon from '../icons/Check';
 
 interface Props {
   className?: string;
-  data: { id: string; claimed: boolean, rank: number }[];
+  data: { id: string; claimed: boolean; rank: number }[];
   selected: number;
   onSelect: (i: number) => void;
 }
 
-const LootTable = ({
-  className = '',
-  data,
-  selected,
-  onSelect,
-}: Props) => {
+const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
   const [sort, setSort] = useState('id');
 
   const amountOfUnclaimedPaper = (): number => {

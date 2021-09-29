@@ -10,11 +10,13 @@ interface WindowTitleBarProps {
   children: React.ReactNode;
 }
 
-const DesktopWindowTitleBar = (
-  { 
-    title, isTouchDevice, isFullScreen, toggleFullScreen, children 
-  }: WindowTitleBarProps
-) => {
+const DesktopWindowTitleBar = ({
+  title,
+  isTouchDevice,
+  isFullScreen,
+  toggleFullScreen,
+  children,
+}: WindowTitleBarProps) => {
   const router = useRouter();
 
   const closeWindow = (): void => {
@@ -49,11 +51,7 @@ const DesktopWindowTitleBar = (
           onDoubleClick={() => toggleFullScreen()}
         >
           <div>
-            <DesktopWindowTitleButton 
-              icon="close" 
-              title="Close Window"
-              clickAction={closeWindow} 
-            />
+            <DesktopWindowTitleButton icon="close" title="Close Window" clickAction={closeWindow} />
           </div>
           <div
             id="app-title-bar_description"
@@ -66,14 +64,18 @@ const DesktopWindowTitleBar = (
           >
             {title || 'UNTITLED'}
           </div>
-          <div css={css`justify-self:end;`}>
-            {!isTouchDevice && 
-              <DesktopWindowTitleButton 
-                icon={isFullScreen ? 'window-restore' : 'window-maximize'} 
-                title={isFullScreen ? 'Minimize' : 'Maximize'} 
+          <div
+            css={css`
+              justify-self: end;
+            `}
+          >
+            {!isTouchDevice && (
+              <DesktopWindowTitleButton
+                icon={isFullScreen ? 'window-restore' : 'window-maximize'}
+                title={isFullScreen ? 'Minimize' : 'Maximize'}
                 clickAction={toggleFullScreen}
               />
-            }
+            )}
           </div>
         </div>
         {children}

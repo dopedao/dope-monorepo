@@ -34,7 +34,7 @@ const handleSearchChange = ({ target }: { target: HTMLInputElement }) => {
   const searchPhrase = target.value;
   console.log(searchPhrase);
   // TODO: Actually search items…
-}
+};
 
 const ContentLoading = (
   <Container>
@@ -56,30 +56,22 @@ const MarketList = () => {
     variables: { first: 10, last_id: '0' },
   });
 
-  if (loading) {
-    return ContentLoading;
-  } else if (!data?.bags || data.bags.length === 0) {
-    return ContentEmpty;
-  } else {
-    return (
-      <>
-        <MarketFilterBar handleSearchChange={handleSearchChange} />    
-        <Container>
-          {data.bags.map(bag => (
-            <LootCard 
-              key={`loot-card_${bag.id}`} 
-              bag={bag} 
-              footer="for-marketplace" 
-            />
-          ))}
-        </Container>
-      </>
-    );
-  }
+  if (loading) return ContentLoading;
+  if (!data?.bags || data.bags.length === 0) return ContentEmpty;
+
+  return (
+    <>
+      <MarketFilterBar handleSearchChange={handleSearchChange} />
+      <Container>
+        {data.bags.map(bag => (
+          <LootCard key={`loot-card_${bag.id}`} bag={bag} footer="for-marketplace" />
+        ))}
+      </Container>
+    </>
+  );
 };
 
 export default function Market() {
-
   return (
     <AppWindow padBody={false}>
       <Head title={title} />

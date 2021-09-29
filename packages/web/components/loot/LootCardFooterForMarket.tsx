@@ -2,12 +2,8 @@ import { Bag } from '../../src/generated/graphql';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 
-interface Props {
-  bag: Pick<
-    Bag,
-    | 'id'
-    | 'rank'
-  >;
+interface FooterForMarketProps {
+  bag: Pick<Bag, 'id' | 'rank'>;
 }
 
 const viewOnOpenSea = (tokenId: string): void => {
@@ -16,7 +12,7 @@ const viewOnOpenSea = (tokenId: string): void => {
   window.open(url, 'dopeWarsList')?.focus();
 };
 
-const LootCardFooterForMarket = ({ bag }: Props) => {
+const LootCardFooterForMarket = ({ bag }: FooterForMarketProps) => {
   return (
     <>
       {/* <div css={css`text-align:center;`}>Last X.X ETH</div> */}

@@ -90,6 +90,8 @@ interface Props {
     | 'waist'
     | 'weapon'
     | 'claimed'
+    | 'rank'
+    | 'open_sea_asset'
   >;
 }
 

@@ -41,7 +41,7 @@ export default extendTheme({
           color: '#000',
           _placeholder: {
             color: '#878783',
-          }
+          },
         },
       },
     },

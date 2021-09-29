@@ -44,7 +44,22 @@ const LootFooterContainer = styled.footer`
 
 interface Props {
   footer: 'for-marketplace' | 'for-owner';
-  bag: Partial<Bag>;
+  bag: Pick<
+    Bag,
+    | 'id'
+    | 'clothes'
+    | 'drugs'
+    | 'foot'
+    | 'hand'
+    | 'neck'
+    | 'ring'
+    | 'vehicle'
+    | 'waist'
+    | 'weapon'
+    | 'claimed'
+    | 'rank'
+    | 'open_sea_asset'
+  >;
 }
 
 const LootCard = ({ footer, bag }: Props) => {
@@ -53,8 +68,6 @@ const LootCard = ({ footer, bag }: Props) => {
   const toggleItemLegendVisibility = (): void => {
     setIsItemLegendVisible(!isItemLegendVisible);
   };
-
-  console.log(`Rank IN card ${bag.id} ${bag.rank}`);
 
   return (
     <>

@@ -12,6 +12,11 @@ query Bags($first: Int, $last_id: ID) {
     weapon
     claimed
     rank @client
-    open_sea_asset @client
+    open_sea_asset @client {
+      is_on_sale
+      current_sale_price
+      last_sale_price
+      sale_type
+    }
   }
 }

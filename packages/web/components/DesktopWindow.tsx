@@ -24,7 +24,6 @@ const DesktopWindow = ({
   titleChildren,
   children,
 }: DesktopWindowProps) => {
-
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -62,27 +61,22 @@ const DesktopWindow = ({
     }
   `;
 
-  const isTouchDevice = (
+  const isTouchDevice =
     typeof window !== 'undefined' &&
-    (
-      'ontouchstart' in window ||
+    ('ontouchstart' in window ||
       navigator.maxTouchPoints > 0 ||
-      (navigator as any).msMaxTouchPoints > 0
-    )
-  );
+      (navigator as any).msMaxTouchPoints > 0);
 
   const shouldBeDraggable = !isTouchDevice && !isFullScreen;
 
   return (
     <ConditionalWrapper
       condition={shouldBeDraggable}
-      wrap={ 
-        children => <Draggable handle=".windowTitleBar">{children}</Draggable>
-      }
+      wrap={children => <Draggable handle=".windowTitleBar">{children}</Draggable>}
     >
       <WindowWrapper className={isFullScreen ? '' : 'floating'}>
-        <DesktopWindowTitleBar 
-          title={title} 
+        <DesktopWindowTitleBar
+          title={title}
           isTouchDevice={isTouchDevice}
           isFullScreen={isFullScreen}
           toggleFullScreen={toggleFullScreen}
