@@ -22,18 +22,15 @@ export type Bag = {
   claimed: Scalars['Boolean'];
   clothes: Scalars['String'];
   currentOwner: Wallet;
-  current_sale_price?: Maybe<Scalars['Int']>;
   drugs: Scalars['String'];
   foot: Scalars['String'];
   hand: Scalars['String'];
   id: Scalars['ID'];
-  is_on_sale?: Maybe<Scalars['Boolean']>;
-  last_sale_price?: Maybe<Scalars['Int']>;
   minted: Scalars['BigInt'];
   neck: Scalars['String'];
+  open_sea_asset?: Maybe<OpenSeaAsset>;
   rank: Scalars['Int'];
   ring: Scalars['String'];
-  sale_type?: Maybe<Scalars['String']>;
   vehicle: Scalars['String'];
   waist: Scalars['String'];
   weapon: Scalars['String'];
@@ -221,6 +218,14 @@ export enum Bag_OrderBy {
 export type Block_Height = {
   hash?: Maybe<Scalars['Bytes']>;
   number?: Maybe<Scalars['Int']>;
+};
+
+export type OpenSeaAsset = {
+  __typename?: 'OpenSeaAsset';
+  current_sale_price?: Maybe<Scalars['Int']>;
+  is_on_sale?: Maybe<Scalars['Boolean']>;
+  last_sale_price?: Maybe<Scalars['Int']>;
+  sale_type?: Maybe<Scalars['String']>;
 };
 
 export enum OrderDirection {
@@ -560,7 +565,7 @@ export type BagsQueryVariables = Exact<{
 }>;
 
 
-export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean, rank: number }> };
+export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean, rank: number, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number>, sale_type?: Maybe<string> }> }> };
 
 export type SearchQueryVariables = Exact<{
   text: Scalars['String'];
@@ -594,6 +599,12 @@ export const BagsDocument = gql`
     weapon
     claimed
     rank @client
+    open_sea_asset @client {
+      is_on_sale
+      current_sale_price
+      last_sale_price
+      sale_type
+    }
   }
 }
     `;
