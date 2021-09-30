@@ -83,7 +83,7 @@ const MarketList = () => {
         <InfiniteScroll
           pageStart={0}
           loadMore={loadNextPage}
-          hasMore={true}
+          hasMore={sortedItems.length > visibleItems.length}
           loader={<LoadingBlock key={`loader_${currentPageSize}`} />}
           useWindow={false}
           className="lootGrid"
