@@ -5,7 +5,7 @@ import ItemRarities from 'dope-metrics/output/item-rarities.json';
 
 const itemBackgroundColors = Object.values(LootLegendBackgroundColors);
 
-const betterItemName = (name: string='') => {
+const betterItemName = (name: string = '') => {
   const quotedIndex = name.lastIndexOf('"');
   if (quotedIndex !== -1) {
     const modifier = name.substr(0, quotedIndex + 1);

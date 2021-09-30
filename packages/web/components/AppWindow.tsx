@@ -11,6 +11,7 @@ interface AppWindowProps {
   title?: string | undefined;
   requiresWalletConnection?: boolean;
   padBody?: boolean;
+  scrollable?: boolean;
   children: React.ReactNode;
 }
 
@@ -26,6 +27,7 @@ export default function AppWindow({
   title,
   requiresWalletConnection = false,
   padBody = true,
+  scrollable = true,
   children,
 }: AppWindowProps) {
   const { account } = useWeb3React();
@@ -33,7 +35,7 @@ export default function AppWindow({
   const AppWindowBody = styled.div`
     position: relative;
     height: 100%;
-    overflow: scroll;
+    overflow: ${scrollable ? 'scroll' : 'hidden'};
     background-color: #a8a9ae;
     padding: ${padBody ? getBodyPadding() : '0px'};
   `;
@@ -43,7 +45,7 @@ export default function AppWindow({
       {requiresWalletConnection === true && !account ? (
         <ConnectWallet />
       ) : (
-        <AppWindowBody>{children}</AppWindowBody>
+        <AppWindowBody className="appWindowBody">{children}</AppWindowBody>
       )}
       <AppWindowFooter />
     </DesktopWindow>

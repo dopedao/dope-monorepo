@@ -32,7 +32,7 @@ export class OpenSeaAsset implements OpenSeaAssetInterface {
 export const getOpenSeaAsset = (tokenId: string) => {
   const contractAddress = NETWORK[1].contracts.dope;
   const url = `https://api.opensea.io/api/v1/asset/${contractAddress}/${tokenId}/`;
-  return fetch(url, { mode: "no-cors" });
+  return fetch(url, { mode: 'no-cors' });
 };
 
 /**

@@ -12,7 +12,7 @@ import { useWeb3React } from '@web3-react/core';
 import DopeJson from 'dope-metrics/output/loot.json';
 
 const valueFromCachedLoot = (tokenId: number, key: string) => {
-  const value = DopeJson[tokenId-1][tokenId][key];
+  const value = DopeJson[tokenId - 1][tokenId][key];
   return value;
 };
 
@@ -41,39 +41,39 @@ function getClient(uri: string) {
       typePolicies: {
         Bag: {
           fields: {
-            clothes(_, {readField}): string {
+            clothes(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'clothes');
             },
-            foot(_, {readField}): string {
+            foot(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'foot');
             },
-            hand(_, {readField}): string {
+            hand(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'hand');
             },
-            drugs(_, {readField}): string {
+            drugs(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'drugs');
             },
-            neck(_, {readField}): string {
+            neck(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'neck');
             },
-            ring(_, {readField}): string {
+            ring(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'ring');
             },
-            vehicle(_, {readField}): string {
+            vehicle(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'vehicle');
             },
-            waist(_, {readField}): string {
+            waist(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'waist');
             },
-            weapon(_, {readField}): string {
+            weapon(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'weapon');
             },
@@ -123,10 +123,10 @@ const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
   const client = getClient(uri);
 
   useEffect(() => {
-    console.log("Populating LootDB");
-    const lootJsonEntries = Object.entries(DopeJson).slice(0,8000);
+    console.log('Populating LootDB');
+    const lootJsonEntries = Object.entries(DopeJson).slice(0, 8000);
     const tempDB = [];
-    for(let i=0; i<lootJsonEntries.length; i++) {
+    for (let i = 0; i < lootJsonEntries.length; i++) {
       const values = lootJsonEntries[i][1];
       const tokenId = Object.keys(values)[0];
       const dope = values[tokenId];
@@ -143,9 +143,9 @@ const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
       //     // console.log("OPENSEA FETCH ERROR");
       //     // console.log(error);
       //   });
-    };
+    }
     DopeDB(tempDB as any);
-    console.log("…Populated");
+    console.log('…Populated');
   }, []);
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
