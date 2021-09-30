@@ -1,3 +1,4 @@
+import { Bag } from '../src/generated/graphql';
 import { ApolloClient, InMemoryCache, makeVar } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import { getRarityForDopeId } from '../common/dope-rarity-check';
@@ -6,14 +7,16 @@ import { OpenSeaAsset, getOpenSeaAsset, openSeaAssetFromJson } from '../common/o
 import { ReactNode, useMemo } from 'react';
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import gql from 'graphql-tag';
 
 // Cached output of all our existing loot items
 import CachedDopeLoot from 'dope-metrics/output/loot.json';
+
 const valueFromCachedLoot = (tokenId: number, key: string) => {
   const value = CachedDopeLoot[tokenId-1][tokenId][key];
   return value;
 };
+
+export const LootDB: Bag[] = [];
 
 /**
  * We use the below declaration to specify client-only field getters,
@@ -96,8 +99,8 @@ function getClient(uri: string) {
                     .then(response => response.json())
                     .then(data => storage.var(openSeaAssetFromJson(data)))
                     .catch(error => {
-                      console.log("OPENSEA FETCH ERROR");
-                      console.log(error);
+                      // console.log("OPENSEA FETCH ERROR");
+                      // console.log(error);
                       return storage.var();
                     });
                 }
@@ -111,33 +114,6 @@ function getClient(uri: string) {
   });
 }
 
-const writeBag = gql`
-  query WriteBag($id: Int!) {
-    bag(id: $id) {
-      id
-      clothes
-      drugs
-      foot
-      hand
-      neck
-      ring
-      vehicle
-      waist
-      weapon
-      rank
-    }
-  }
-`;
-const writeBagOpenSeaAsset = gql`
-  query WriteBagOpenSeaAsset($id: Int!) {
-    Bags {
-      bag(id: $id) {
-        open_sea_asset
-      }
-    }
-  }
-`;
-
 const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
   const { chainId } = useWeb3React();
   const uri = useMemo(
@@ -147,52 +123,27 @@ const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
   const client = getClient(uri);
 
   useEffect(() => {
-    return;
-    console.log("Warming DOPE Cache");
-    Object.entries(CachedDopeLoot).slice(0,5).forEach(([_, values]) => {
+    console.log("Populating LootDB");
+    const lootJsonEntries = Object.entries(CachedDopeLoot).slice(0,8000);
+    for(let i=0; i<lootJsonEntries.length; i++) {
+      const values = lootJsonEntries[i][1];
       const tokenId = Object.keys(values)[0];
       const dope = values[tokenId];
-      client.writeQuery({
-        query: writeBag,
-        data: {
-          bag: {
-            __typename: 'Bag',
-            id: tokenId,
-            clothes: dope.clothes,
-            drugs: dope.drugs,
-            foot: dope.foot,
-            hand: dope.hand,
-            neck: dope.neck,
-            ring: dope.ring,
-            vehicle: dope.vehicle,
-            waist: dope.waist,
-            weapon: dope.weapon,
-            rank: getRarityForDopeId(tokenId),
-          }
-        },
-        variables: { id: tokenId }
-      });
-      // Fetch + write OpenSea Info
-      getOpenSeaAsset(tokenId)
-        .then(response => response.json())
-        .then(data => {
-          client.writeQuery({
-            query: writeBagOpenSeaAsset,
-            data: {
-              bag: {
-                __typename: 'Bag',
-                open_sea_asset: openSeaAssetFromJson(data)
-              }
-            }
-          })
-        })
-        .catch(error => {
-          console.log("OPENSEA FETCH ERROR");
-          console.log(error);
-        });
-    });
-    console.log("DOPE Cache warmed");
-
+      dope.id = tokenId;
+      dope.rank = getRarityForDopeId(tokenId);
+      LootDB[parseInt(tokenId)] = dope;
+      // // Fetch + write OpenSea Info
+      // getOpenSeaAsset(tokenId)
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     LootDB[parseInt(tokenId)]['open_sea_asset'] = openSeaAssetFromJson(data);
+      //   })
+      //   .catch(error => {
+      //     // console.log("OPENSEA FETCH ERROR");
+      //     // console.log(error);
+      //   });
+    };
+    console.log("…Populated");
   }, []);
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

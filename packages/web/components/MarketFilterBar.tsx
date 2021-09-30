@@ -42,9 +42,9 @@ const MarketFilterBar = ({ handleSearchChange }: Props) => {
         <option>Auction</option>
         {/* <option>Never Sold</option> */}
       </Select>
-      <Select size="sm" variant="filterBar" maxWidth="256px" defaultValue="Most Affordable">
+      <Select size="sm" variant="filterBar" maxWidth="256px" defaultValue="Top Rank">
         <option disabled>Sort By…</option>
-        <option>Most Rare</option>
+        <option>Top Rank</option>
         <option>Most Affordable</option>
         <option>Most Expensive</option>
         <option>Highest Last Sale</option>

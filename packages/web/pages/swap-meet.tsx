@@ -1,11 +1,11 @@
-import { media } from '../styles/mixins';
-import { useBagsQuery } from '../src/generated/graphql';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
 import LoadingBlock from '../components/LoadingBlock';
 import LootCard from '../components/loot/LootCard';
 import MarketFilterBar from '../components/MarketFilterBar';
 import styled from '@emotion/styled';
+import { Bag } from '../src/generated/graphql';
+import { LootDB } from '../components/WrappedApolloProvider';
 
 const title = 'Dope Wars Market';
 
@@ -42,19 +42,25 @@ const ContentEmpty = (
   </Container>
 );
 
-const MarketList = () => {
-  const { data, loading, error } = useBagsQuery({
-    variables: { first: 50, skip: 0 },
-  });
+function sortByRank(a: Bag, b: Bag) {
+  return a.rank - b.rank;
+}
 
-  if (loading) return ContentLoading;
-  if (!data?.bags || data.bags.length === 0) return ContentEmpty;
+const MarketList = () => {
+  // const { data, loading, error } = useBagsQuery({
+  //   variables: { first: 25, skip: 0 },
+  // });
+
+  // if (loading) return ContentLoading;
+  // if (!data?.bags || data.bags.length === 0) return ContentEmpty;
+  const cardsToShow = LootDB.sort(sortByRank).slice(0,50);
+  console.log('Rendering MarketList');
 
   return (
     <>
       <MarketFilterBar handleSearchChange={handleSearchChange} />
       <Container>
-        {data.bags.map(bag => (
+        {cardsToShow.map(bag => (
           <LootCard key={`loot-card_${bag.id}`} bag={bag} footer="for-marketplace" />
         ))}
       </Container>
