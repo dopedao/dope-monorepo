@@ -33,7 +33,7 @@ interface StockpileInterface extends ethers.utils.Interface {
     "ids(uint256)": FunctionFragment;
     "idsMany(uint256[])": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "itemName(uint256,uint256)": FunctionFragment;
+    "name(uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "names(uint256)": FunctionFragment;
     "namesMany(uint256[])": FunctionFragment;
@@ -433,7 +433,7 @@ export class Stockpile extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    itemName(
+    name(
       itemType: BigNumberish,
       idx: BigNumberish,
       overrides?: CallOverrides
@@ -684,7 +684,7 @@ export class Stockpile extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  itemName(
+  name(
     itemType: BigNumberish,
     idx: BigNumberish,
     overrides?: CallOverrides
@@ -915,7 +915,7 @@ export class Stockpile extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    itemName(
+    name(
       itemType: BigNumberish,
       idx: BigNumberish,
       overrides?: CallOverrides
@@ -1214,7 +1214,7 @@ export class Stockpile extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    itemName(
+    name(
       itemType: BigNumberish,
       idx: BigNumberish,
       overrides?: CallOverrides
@@ -1380,7 +1380,7 @@ export class Stockpile extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    itemName(
+    name(
       itemType: BigNumberish,
       idx: BigNumberish,
       overrides?: CallOverrides
