@@ -78,9 +78,12 @@ contract StockpileMetadata {
         lady_[4] = bytes1(uint8(lady_[4]) + uint8(12));
         parts[2] = lady_;
 
+        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
+
         return
             MetadataBuilder.tokenURI(
-                tokenName(tokenId),
+                sc.prefix(components[2], components[3]),
+                string(abi.encodePacked(sc.name(componentType, components[0]), sc.suffix(components[1]))),
                 description,
                 attributes(tokenId),
                 MetadataBuilder.SVGParams({ parts: parts, background: '#000000' }),
@@ -104,7 +107,7 @@ contract StockpileMetadata {
         string memory slot = componentTypes[componentType];
         string memory res = string(abi.encodePacked('[', trait('Slot', slot)));
 
-        string memory item = sc.itemName(componentType, components[0]);
+        string memory item = sc.name(componentType, components[0]);
         res = string(abi.encodePacked(res, ', ', trait('Item', item)));
 
         if (components[1] > 0) {

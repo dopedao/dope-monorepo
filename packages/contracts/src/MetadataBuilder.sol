@@ -35,6 +35,7 @@ library MetadataBuilder {
      * @notice Given RLE image parts and color palettes, merge to generate a single SVG image.
      */
     function generateSVG(
+        string memory title,
         string memory name,
         SVGParams memory params,
         mapping(uint8 => string[]) storage palettes
@@ -47,7 +48,7 @@ library MetadataBuilder {
                 '<style>.base { fill: #fff; font-family: d; font-size: 14px; }</style>',
                 '<rect width="100%" height="100%" fill="#', params.background, '" />',
                 _generateSVGRects(params, palettes),
-                '<text x="160" y="300" with="320" text-anchor="middle" class="base">', name, '</text>',
+                '<text x="160" y="25" with="320" text-anchor="middle" class="base">', title, '</text><text x="160" y="303" with="320" text-anchor="middle" class="base">', name, '</text>',
                 '</svg>'
             )
         );
@@ -62,13 +63,14 @@ library MetadataBuilder {
     }
 
     function tokenURI(
+        string calldata title,
         string calldata name,
         string calldata description,
         string calldata attributes,
         SVGParams memory params,
         mapping(uint8 => string[]) storage palettes
     ) external view returns (string memory) {
-        string memory output = Base64.encode(bytes(generateSVG(name, params, palettes)));
+        string memory output = Base64.encode(bytes(generateSVG(title, name, params, palettes)));
         string memory json = Base64.encode(
             bytes(
                 string(

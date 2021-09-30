@@ -89,15 +89,15 @@ contract Metadata is StockpileTest {
         assertEq(names, expected);
     }
 
-    function testPlatinumRingFromAtlantaMetadata() public {
-        uint256 id = stockpile.ringId(2169);
-        Attribute[] memory attributes = new Attribute[](3);
-        attributes[0] = Attribute('Slot', 'Ring');
-        attributes[1] = Attribute('Item', 'Platinum Ring');
-        attributes[2] = Attribute('Suffix', 'from Atlanta');
-        owner.setRle(id, jordans);
-        assertMetadata(id, attributes, 'Platinum Ring from Atlanta');
-    }
+    // function testPlatinumRingFromAtlantaMetadata() public {
+    //     uint256 id = stockpile.ringId(2169);
+    //     Attribute[] memory attributes = new Attribute[](3);
+    //     attributes[0] = Attribute('Slot', 'Ring');
+    //     attributes[1] = Attribute('Item', 'Platinum Ring');
+    //     attributes[2] = Attribute('Suffix', 'from Atlanta');
+    //     owner.setRle(id, jordans);
+    //     assertMetadata(id, attributes, 'Platinum Ring from Atlanta');
+    // }
 
     function testHighSupplyBloodStainedShirtFromMobTownMetadata() public {
         uint256 id = stockpile.clothesId(3686);

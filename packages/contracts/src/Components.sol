@@ -450,7 +450,7 @@ contract Components is Ownable {
     }
 
     // Returns the "vanilla" item name w/o any prefix/suffixes or augmentations
-    function itemName(uint8 componentType, uint256 idx) public view returns (string memory) {
+    function name(uint8 componentType, uint256 idx) public view returns (string memory) {
         if (componentType == ComponentTypes.WEAPON) {
             return weapons[idx];
         } else if (componentType == ComponentTypes.CLOTHES) {
@@ -474,31 +474,42 @@ contract Components is Ownable {
         }
     }
 
+    function prefix(uint8 prefixComponent, uint8 suffixComponent) public view returns (string memory) {
+        if (prefixComponent == 0) {
+            return '';
+        }
+
+        string memory namePrefixSuffix = string(abi.encodePacked("'", namePrefixes[prefixComponent - 1]));
+
+        if (suffixComponent > 0) {
+            string(abi.encodePacked(namePrefixSuffix, ' ', nameSuffixes[suffixComponent]));
+        }
+
+        return string(abi.encodePacked(namePrefixSuffix, "'"));
+    }
+
+    function suffix(uint8 suffixComponent) public view returns (string memory) {
+        if (suffixComponent == 0) {
+            return '';
+        }
+
+        return suffixes[suffixComponent - 1];
+    }
+
     // Creates the token description given its components and what type it is
     function componentsToString(uint8[5] memory components, uint8 componentType) public view returns (string memory) {
         // component type: what slot to get
         // components[0] the index in the array
-        string memory item = itemName(componentType, components[0]);
+        string memory item = name(componentType, components[0]);
 
-        // We need to do -1 because the 'no description' is not part of loot copmonents
+        // We need to do -1 because the 'no description' is not part of loot components
 
         // add the suffix
         if (components[1] > 0) {
             item = string(abi.encodePacked(item, ' ', suffixes[components[1] - 1]));
         }
 
-        // add the name prefix / suffix
-        if (components[2] > 0) {
-            // prefix
-            string memory namePrefixSuffix = string(abi.encodePacked("'", namePrefixes[components[2] - 1]));
-            if (components[3] > 0) {
-                namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, ' ', nameSuffixes[components[3] - 1]));
-            }
-
-            namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, "' "));
-
-            item = string(abi.encodePacked(namePrefixSuffix, item));
-        }
+        item = string(abi.encodePacked(prefix(components[2], components[3]), item));
 
         // add the augmentation
         if (components[4] > 0) {
