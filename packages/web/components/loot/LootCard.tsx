@@ -1,4 +1,4 @@
-import { Bag } from '../../src/generated/graphql';
+import { Bag, useBagQuery } from '../../src/generated/graphql';
 import { useState } from 'react';
 import LootCardFooterForOwner from './LootCardFooterForOwner';
 import LootCardFooterForMarket from './LootCardFooterForMarket';
@@ -68,6 +68,15 @@ const LootCard = ({ footer, bag }: Props) => {
   const toggleItemLegendVisibility = (): void => {
     setIsItemLegendVisible(!isItemLegendVisible);
   };
+
+  const { data, loading, error } = useBagQuery({
+    variables: { tokenId: bag.id }
+  });
+  if (!loading && !error && data) {
+    console.log('ASYNC load for '+bag.id);
+    console.log(data);
+  }
+
 
   return (
     <>

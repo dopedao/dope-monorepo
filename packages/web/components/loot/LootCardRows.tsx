@@ -1,4 +1,4 @@
-import { Bag } from '../../src/generated/graphql';
+import { Bag, useBagQuery } from '../../src/generated/graphql';
 import { css } from '@emotion/react';
 import { LootLegendBackgroundColors } from './LootLegend';
 import ItemRarities from 'dope-metrics/output/item-rarities.json';

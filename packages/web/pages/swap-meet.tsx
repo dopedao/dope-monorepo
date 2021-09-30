@@ -1,8 +1,8 @@
 import { Bag } from '../src/generated/graphql';
-import { DopeDB } from '../components/WrappedApolloProvider';
 import { useReactiveVar } from '@apollo/client';
 import { useState } from 'react';
 import AppWindow from '../components/AppWindow';
+import { DopeItemsReactive } from '../common/DopeDatabase';
 import Head from '../components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
 import LoadingBlock from '../components/LoadingBlock';
@@ -62,7 +62,7 @@ const PAGE_SIZE = 24;
 let currentPageSize = PAGE_SIZE;
 
 const MarketList = () => {
-  const dopeItems = useReactiveVar(DopeDB);
+  const dopeItems = useReactiveVar(DopeItemsReactive);
   const sortedItems = dopeItems.sort(sortByRank);
   const [visibleItems, setVisibleItems] = useState(sortedItems.slice(0, currentPageSize));
   console.log('Rendering MarketList');

@@ -1,22 +1,13 @@
-import { Bag } from '../src/generated/graphql';
 import { ApolloClient, InMemoryCache, makeVar } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import { getRarityForDopeId } from '../common/dope-rarity-check';
 import { NETWORK } from '../common/constants';
-import { OpenSeaAsset, getOpenSeaAsset, openSeaAssetFromJson } from '../common/open-sea-utils';
+import { OpenSeaAsset, getOpenSeaAssetJson } from '../common/OpenSeaAsset';
 import { ReactNode, useMemo } from 'react';
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
-
-// Cached output of all our existing loot items
-import DopeJson from 'dope-metrics/output/loot.json';
-
-const valueFromCachedLoot = (tokenId: number, key: string) => {
-  const value = DopeJson[tokenId - 1][tokenId][key];
-  return value;
-};
-
-export const DopeDB = makeVar([] as any);
+import DopeDatabase, { DopeItemsReactive } from '../common/DopeDatabase';
+import { valueFromCachedLoot } from '../common/DopeJsonParser';
 
 /**
  * We use the below declaration to specify client-only field getters,
@@ -91,18 +82,18 @@ function getClient(uri: string) {
               read(_, { readField, storage }) {
                 if (!storage.var) {
                   storage.var = makeVar(new OpenSeaAsset());
-                  const tokenId = readField('id') as string;
-                  if (tokenId === undefined) {
-                    return storage.var();
-                  }
-                  getOpenSeaAsset(tokenId)
-                    .then(response => response.json())
-                    .then(data => storage.var(openSeaAssetFromJson(data)))
-                    .catch(error => {
-                      // console.log("OPENSEA FETCH ERROR");
-                      // console.log(error);
-                      return storage.var();
-                    });
+                  // const tokenId = readField('id') as string;
+                  // if (tokenId === undefined) {
+                  //   return storage.var();
+                  // }
+                  // getOpenSeaAssetJson(tokenId)
+                  //   .then(response => response.json())
+                  //   .then(data => storage.var(new OpenSeaAsset(data)))
+                  //   .catch(error => {
+                  //     // console.log("OPENSEA FETCH ERROR");
+                  //     // console.log(error);
+                  //     return storage.var();
+                  //   });
                 }
                 return storage.var();
               },
@@ -121,31 +112,10 @@ const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
     [chainId],
   );
   const client = getClient(uri);
-
   useEffect(() => {
-    console.log('Populating LootDB');
-    const lootJsonEntries = Object.entries(DopeJson).slice(0, 8000);
-    const tempDB = [];
-    for (let i = 0; i < lootJsonEntries.length; i++) {
-      const values = lootJsonEntries[i][1];
-      const tokenId = Object.keys(values)[0];
-      const dope = values[tokenId];
-      dope.id = tokenId;
-      dope.rank = getRarityForDopeId(tokenId);
-      tempDB[parseInt(tokenId)] = dope;
-      // // Fetch + write OpenSea Info
-      // getOpenSeaAsset(tokenId)
-      //   .then(response => response.json())
-      //   .then(data => {
-      //     LootDB[parseInt(tokenId)]['open_sea_asset'] = openSeaAssetFromJson(data);
-      //   })
-      //   .catch(error => {
-      //     // console.log("OPENSEA FETCH ERROR");
-      //     // console.log(error);
-      //   });
-    }
-    DopeDB(tempDB as any);
-    console.log('…Populated');
+    const db = new DopeDatabase();
+    db.populateFromJson();
+    DopeItemsReactive(db.items as any);
   }, []);
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
