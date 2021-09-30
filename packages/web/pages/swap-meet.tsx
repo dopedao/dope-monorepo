@@ -29,10 +29,10 @@ const handleSearchChange = ({ target }: { target: HTMLInputElement }) => {
 
 const ContentLoading = (
   <Container>
-    <LoadingBlock />
-    <LoadingBlock />
-    <LoadingBlock />
-    <LoadingBlock />
+    <LoadingBlock key={1} />
+    <LoadingBlock key={2} />
+    <LoadingBlock key={3} />
+    <LoadingBlock key={4} />
   </Container>
 );
 
@@ -44,7 +44,7 @@ const ContentEmpty = (
 
 const MarketList = () => {
   const { data, loading, error } = useBagsQuery({
-    variables: { first: 10, last_id: '0' },
+    variables: { first: 50, skip: 0 },
   });
 
   if (loading) return ContentLoading;

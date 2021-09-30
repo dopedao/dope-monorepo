@@ -44,7 +44,7 @@ const MarketFilterBar = ({ handleSearchChange }: Props) => {
       </Select>
       <Select size="sm" variant="filterBar" maxWidth="256px" defaultValue="Most Affordable">
         <option disabled>Sort By…</option>
-        {/* <option>Most Rare</option> */}
+        <option>Most Rare</option>
         <option>Most Affordable</option>
         <option>Most Expensive</option>
         <option>Highest Last Sale</option>
