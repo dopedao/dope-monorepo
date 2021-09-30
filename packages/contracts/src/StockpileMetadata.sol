@@ -61,9 +61,22 @@ contract StockpileMetadata {
 
     /// @notice Returns an SVG for the provided token id
     function tokenURI(uint256 tokenId) public view returns (string memory) {
-        bytes[] memory parts = new bytes[](2);
-        parts[0] = man;
-        parts[1] = tokenRLE(tokenId);
+        bytes[] memory parts = new bytes[](3);
+
+        bytes memory man_ = man;
+        man_[2] = bytes1(uint8(man_[2]) - uint8(12));
+        man_[4] = bytes1(uint8(man_[4]) - uint8(12));
+        parts[0] = man_;
+
+        bytes memory rle = tokenRLE(tokenId);
+        rle[2] = bytes1(uint8(rle[2]) - uint8(12));
+        rle[4] = bytes1(uint8(rle[4]) - uint8(12));
+        parts[1] = rle;
+
+        bytes memory lady_ = lady;
+        lady_[2] = bytes1(uint8(lady_[2]) + uint8(12));
+        lady_[4] = bytes1(uint8(lady_[4]) + uint8(12));
+        parts[2] = lady_;
 
         return
             MetadataBuilder.tokenURI(
