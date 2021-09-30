@@ -1,11 +1,12 @@
+import { Bag } from '../src/generated/graphql';
+import { DopeDB } from '../components/WrappedApolloProvider';
+import { useReactiveVar } from '@apollo/client';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
 import LoadingBlock from '../components/LoadingBlock';
 import LootCard from '../components/loot/LootCard';
 import MarketFilterBar from '../components/MarketFilterBar';
 import styled from '@emotion/styled';
-import { Bag } from '../src/generated/graphql';
-import { LootDB } from '../components/WrappedApolloProvider';
 
 const title = 'Dope Wars Market';
 
@@ -18,6 +19,7 @@ const Container = styled.div`
   grid-column-gap: 16px;
   grid-row-gap: 16px;
   > .lootCard {
+    max-height: 550px;
   }
 `;
 
@@ -47,13 +49,9 @@ function sortByRank(a: Bag, b: Bag) {
 }
 
 const MarketList = () => {
-  // const { data, loading, error } = useBagsQuery({
-  //   variables: { first: 25, skip: 0 },
-  // });
+  const dopeItems = useReactiveVar(DopeDB);
 
-  // if (loading) return ContentLoading;
-  // if (!data?.bags || data.bags.length === 0) return ContentEmpty;
-  const cardsToShow = LootDB.sort(sortByRank).slice(0,50);
+  const cardsToShow = dopeItems.sort(sortByRank).slice(0,50);
   console.log('Rendering MarketList');
 
   return (
