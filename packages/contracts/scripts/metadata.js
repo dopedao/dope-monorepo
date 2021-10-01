@@ -24,7 +24,7 @@ meta = [
     meta.attributes,
   ]
 ]
-console.log(image);
+
 // TODO: Is there a better way to do this, instead of fake-encoding
 // as a function and stripping the function selector?
 encoded = iface.encodeFunctionData("foo", meta)

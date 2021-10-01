@@ -16,7 +16,9 @@ struct Data {
 }
 
 contract Metadata is StockpileTest {
-    bytes internal constant jordans = hex'00322737190200012a012b0600012b012a02000200032b0400032b02000100012b0119012a012b0400012b012a0119012b0100022b031904000319022b052a0400052a';
+    bytes internal constant jordans =
+        hex'00322737190200012a012b0600012b012a02000200032b0400032b02000100012b0119012a012b0400012b012a0119012b0100022b031904000319022b052a0400052a';
+
     function testCreateAndMintFiveBlastersWeapons() public {
         uint8[5] memory components;
         components[0] = owner.addItemComponent(0x0, 'blaster');
@@ -89,15 +91,15 @@ contract Metadata is StockpileTest {
         assertEq(names, expected);
     }
 
-    // function testPlatinumRingFromAtlantaMetadata() public {
-    //     uint256 id = stockpile.ringId(2169);
-    //     Attribute[] memory attributes = new Attribute[](3);
-    //     attributes[0] = Attribute('Slot', 'Ring');
-    //     attributes[1] = Attribute('Item', 'Platinum Ring');
-    //     attributes[2] = Attribute('Suffix', 'from Atlanta');
-    //     owner.setRle(id, jordans);
-    //     assertMetadata(id, attributes, 'Platinum Ring from Atlanta');
-    // }
+    function testPlatinumRingFromAtlantaMetadata() public {
+        uint256 id = stockpile.ringId(2169);
+        Attribute[] memory attributes = new Attribute[](3);
+        attributes[0] = Attribute('Slot', 'Ring');
+        attributes[1] = Attribute('Item', 'Platinum Ring');
+        attributes[2] = Attribute('Suffix', 'from Atlanta');
+        owner.setRle(id, jordans);
+        assertMetadata(id, attributes, 'Platinum Ring from Atlanta');
+    }
 
     function testHighSupplyBloodStainedShirtFromMobTownMetadata() public {
         uint256 id = stockpile.clothesId(3686);

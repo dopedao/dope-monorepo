@@ -84,6 +84,7 @@ contract StockpileMetadata {
             MetadataBuilder.tokenURI(
                 sc.prefix(components[2], components[3]),
                 string(abi.encodePacked(sc.name(componentType, components[0]), sc.suffix(components[1]))),
+                sc.componentsToString(components, componentType),
                 description,
                 attributes(tokenId),
                 MetadataBuilder.SVGParams({ parts: parts, background: '#000000' }),
