@@ -116,9 +116,34 @@ class DopeDatabase {
       return aLastSalePrice - bLastSalePrice;
     });
   }
-
-  // FILTERING ----------------------------------------------------------------
 }
+
+// FILTERING ----------------------------------------------------------------
+
+/**
+ * Home-rolled full text search for items.
+ * Supports: "words in quotes" and individual terms outside of quotes.
+ *
+ * TODO: Clean up API…don't like that it's not inside the class
+ */
+export const filterItemsBySearchString = (items: Partial<Bag>[], searchString: string) => {
+  if (searchString === '') return items;
+
+  // Splits on spaces except when in quotes
+  const searchWords = searchString.toLowerCase().match(/([^\s"]+|"[^"]*")+/g);
+  if (!searchWords || searchWords.length == 0) return items;
+
+  const searchWordsNoQuotes = searchWords.map(word => word.replaceAll('"', ''));
+
+  console.log(`filtering: ${searchWordsNoQuotes}`);
+
+  return items.filter(obj =>
+    Object.keys(obj).some(key => {
+      const testVal = obj[key as keyof Bag].toString().toLowerCase();
+      return searchWordsNoQuotes.every(word => testVal.indexOf(word) > -1);
+    }),
+  );
+};
 
 export default DopeDatabase;
 

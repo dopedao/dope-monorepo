@@ -2,7 +2,10 @@ import { Bag } from '../src/generated/graphql';
 import { useReactiveVar } from '@apollo/client';
 import { useEffect, useMemo, useState } from 'react';
 import AppWindow from '../components/AppWindow';
-import DopeDatabase, { DopeDbCacheReactive } from '../common/DopeDatabase';
+import DopeDatabase, {
+  filterItemsBySearchString,
+  DopeDbCacheReactive,
+} from '../common/DopeDatabase';
 import Head from '../components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
 import LoadingBlock from '../components/LoadingBlock';
@@ -50,18 +53,6 @@ const ContentEmpty = (
 // returning DOPE + Stockpile items via API at some point in the future.
 const PAGE_SIZE = 24;
 let currentPageSize = PAGE_SIZE;
-
-const filterItemsBySearchString = (items: Partial<Bag>[], searchString: string) => {
-  if (searchString === '') return items;
-  console.log(`filtering: ${searchString}`);
-  const lowerSearchString = searchString.toLowerCase();
-  const filteredItems = items.filter(obj =>
-    Object.keys(obj).some(key =>
-      obj[key as keyof Bag].toString().toLowerCase().includes(lowerSearchString),
-    ),
-  );
-  return filteredItems;
-};
 
 const MarketList = () => {
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
