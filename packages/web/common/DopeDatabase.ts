@@ -7,7 +7,25 @@ import { getOpenSeaAssetPagesJson } from './OpenSeaAsset';
 
 const highImpossibleRank = 9999;
 
-export const EmptyBagStruct: Partial<Bag> = {
+export type PickedBag = Pick<Bag, 
+  'id' | 
+  'claimed' |
+  'clothes' |
+  'drugs' |
+  'foot' |
+  'hand' |
+  'neck' |
+  'minted' |
+  'rank' |
+  'ring' |
+  'vehicle' |
+  'waist' |
+  'weapon' |
+  'open_sea_asset'
+  >;
+
+
+export const EmptyBagStruct: PickedBag = {
   id: '',
   // Let people be happily surprised by learning result of query later
   claimed: true,
@@ -29,7 +47,7 @@ export const EmptyBagStruct: Partial<Bag> = {
 // Use newEmptyBag() to use as template
 Object.freeze(EmptyBagStruct);
 
-export function newEmptyBag(): Partial<Bag> {
+export function newEmptyBag(): PickedBag {
   return Object.assign({}, EmptyBagStruct);
 }
 
@@ -41,9 +59,9 @@ export function newEmptyBag(): Partial<Bag> {
  *
  */
 class DopeDatabase {
-  items: Partial<Bag>[] = [];
+  items: PickedBag[] = [];
 
-  constructor(items?: Partial<Bag>[]) {
+  constructor(items?: PickedBag[]) {
     console.log('Creating DopeDatabase');
     if (items) this.items = items;
   }
@@ -74,43 +92,43 @@ class DopeDatabase {
 
   async refreshOpenSeaAssets() {
     console.log('TODO: Implement API proxy for refreshOpenSeaAssets');
-    const openSeaAssets = getOpenSeaAssetPagesJson();
+    getOpenSeaAssetPagesJson();
   }
 
   // UPDATING -----------------------------------------------------------------
 
-  updateDopeRecord(id: number, key: string, value: any): void {
-    if (!this.items[id]) {
-      this.items[id] = newEmptyBag();
-    }
-    console.log(`Updating: ${id}:${key} = ${value}`);
-    this.items[id][key as keyof Bag] = value;
-  }
+  // updateDopeRecord(id: number, key: string, value: any): void {
+  //   if (!this.items[id]) {
+  //     this.items[id] = newEmptyBag();
+  //   }
+  //   console.log(`Updating: ${id}:${key} = ${value}`);
+  //   this.items[id][key as keyof PickedBag] = value;
+  // }
 
   // SORTING ------------------------------------------------------------------
 
-  itemsSortedByRank(): Partial<Bag>[] {
-    return this.items.sort((a: Partial<Bag>, b: Partial<Bag>) => {
+  itemsSortedByRank(): PickedBag[] {
+    return this.items.sort((a: PickedBag, b: PickedBag) => {
       const aRank = a.rank ?? highImpossibleRank;
       const bRank = b.rank ?? highImpossibleRank;
       return aRank - bRank;
     });
   }
 
-  itemsSortedByMostAffordable(): Partial<Bag>[] {
-    return this.items.sort((a: Partial<Bag>, b: Partial<Bag>) => {
+  itemsSortedByMostAffordable(): PickedBag[] {
+    return this.items.sort((a: PickedBag, b: PickedBag) => {
       const aPrice = a.open_sea_asset?.current_sale_price ?? 0;
       const bPrice = b.open_sea_asset?.current_sale_price ?? 0;
       return bPrice - aPrice;
     });
   }
 
-  itemsSortedByMostExpensive(): Partial<Bag>[] {
+  itemsSortedByMostExpensive(): PickedBag[] {
     return this.itemsSortedByMostAffordable().reverse();
   }
 
-  itemsSortedByHighestLastSale(): Partial<Bag>[] {
-    return this.items.sort((a: Partial<Bag>, b: Partial<Bag>) => {
+  itemsSortedByHighestLastSale(): PickedBag[] {
+    return this.items.sort((a: PickedBag, b: PickedBag) => {
       const aLastSalePrice = a.open_sea_asset?.last_sale_price ?? 0;
       const bLastSalePrice = b.open_sea_asset?.last_sale_price ?? 0;
       return aLastSalePrice - bLastSalePrice;
@@ -126,7 +144,7 @@ class DopeDatabase {
  *
  * TODO: Clean up API…don't like that it's not inside the class
  */
-export const filterItemsBySearchString = (items: Partial<Bag>[], searchString: string) => {
+export const filterItemsBySearchString = (items: PickedBag[], searchString: string) => {
   if (searchString === '') return items;
 
   // Splits on spaces except when in quotes
@@ -139,7 +157,7 @@ export const filterItemsBySearchString = (items: Partial<Bag>[], searchString: s
 
   return items.filter(obj =>
     Object.keys(obj).some(key => {
-      const testVal = obj[key as keyof Bag].toString().toLowerCase();
+      const testVal = obj[key as keyof PickedBag].toString().toLowerCase();
       return searchWordsNoQuotes.every(word => testVal.indexOf(word) > -1);
     }),
   );

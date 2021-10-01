@@ -5,7 +5,7 @@ import ItemRarities from 'dope-metrics/output/item-rarities.json';
 
 const itemBackgroundColors = Object.values(LootLegendBackgroundColors);
 
-const betterItemName = (name: string = '') => {
+const betterItemName = (name = '') => {
   const quotedIndex = name.lastIndexOf('"');
   if (quotedIndex !== -1) {
     const modifier = name.substr(0, quotedIndex + 1);
@@ -77,7 +77,21 @@ const Row = ({ color = '#fff', slot, item }: { color?: string; slot: string; ite
 );
 
 interface Props {
-  bag: Partial<Bag>;
+  bag: Pick<Bag, 
+  'id' | 
+  'claimed' |
+  'clothes' |
+  'drugs' |
+  'foot' |
+  'hand' |
+  'neck' |
+  'rank' |
+  'ring' |
+  'vehicle' |
+  'waist' |
+  'weapon' |
+  'open_sea_asset'
+>;
 }
 
 const LootCardRows = ({ bag }: Props) => {

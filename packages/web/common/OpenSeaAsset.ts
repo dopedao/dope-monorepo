@@ -57,7 +57,7 @@ interface OpenSeaAssetJsonResponse {
 }
 
 export class OpenSeaAsset implements OpenSeaAssetInterface {
-  is_on_sale: boolean = false;
+  is_on_sale = false;
   current_sale_price: number | null = null;
   last_sale_price: number | null = null;
   constructor(json?: OpenSeaAssetJsonResponse) {

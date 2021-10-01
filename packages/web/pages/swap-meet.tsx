@@ -1,9 +1,9 @@
-import { Bag } from '../src/generated/graphql';
 import { useReactiveVar } from '@apollo/client';
 import { useEffect, useMemo, useState } from 'react';
 import AppWindow from '../components/AppWindow';
 import DopeDatabase, {
   filterItemsBySearchString,
+  PickedBag,
   DopeDbCacheReactive,
 } from '../common/DopeDatabase';
 import Head from '../components/Head';
@@ -101,7 +101,7 @@ const MarketList = () => {
             useWindow={false}
             className="lootGrid"
           >
-            {visibleItems.map((bag: Partial<Bag>) => (
+            {visibleItems.map((bag: PickedBag) => (
               <LootCard key={`loot-card_${bag.id}`} bag={bag} footer="for-marketplace" />
             ))}
           </InfiniteScroll>
