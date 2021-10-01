@@ -83,12 +83,7 @@ const MarketList = () => {
   };
 
   const MarketListContent = () => {
-    if (isTyping)
-      return (
-        <Container>
-          <LoadingBlock key="typing-load" />
-        </Container>
-      );
+    if (isTyping) return ContentLoading;
 
     if (visibleItems.length > 0)
       return (
@@ -96,13 +91,18 @@ const MarketList = () => {
           <InfiniteScroll
             pageStart={0}
             loadMore={loadNextPage}
-            hasMore={sortedItems.length > visibleItems.length}
+            hasMore={filteredSortedItems.length > visibleItems.length}
             loader={<LoadingBlock key={`loader_${currentPageSize}`} />}
             useWindow={false}
             className="lootGrid"
           >
             {visibleItems.map((bag: PickedBag) => (
-              <LootCard key={`loot-card_${bag.id}`} bag={bag} footer="for-marketplace" />
+              <LootCard 
+                key={`loot-card_${bag.id}`} 
+                bag={bag} 
+                footer="for-marketplace" 
+                searchText={searchInputValue}
+              />
             ))}
           </InfiniteScroll>
         </Container>
