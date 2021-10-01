@@ -44,6 +44,7 @@ class DopeDatabase {
   items: Partial<Bag>[] = [];
 
   constructor(items?: Partial<Bag>[]) {
+    console.log("Creating DopeDatabase");
     if (items) this.items = items;
   }
 
@@ -120,4 +121,7 @@ class DopeDatabase {
 }
 
 export default DopeDatabase;
-export const DopeDbCacheReactive = makeVar(new DopeDatabase());
+
+const db = new DopeDatabase();
+db.populateFromJson();
+export const DopeDbCacheReactive = makeVar(db);

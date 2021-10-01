@@ -38,23 +38,23 @@ const MarketFilterBar = ({ handleSearchChange }: Props) => {
       <Select size="sm" variant="filterBar" maxWidth="256px" defaultValue="All">
         <option disabled>Sale Status…</option>
         <option>All</option>
-        <option>Buy Now</option>
-        <option>Auction</option>
+        <option disabled>Buy Now</option>
+        <option disabled>Auction</option>
         {/* <option>Never Sold</option> */}
       </Select>
       <Select size="sm" variant="filterBar" maxWidth="256px" defaultValue="Top Rank">
         <option disabled>Sort By…</option>
         <option>Top Rank</option>
-        <option>Most Affordable</option>
-        <option>Most Expensive</option>
-        <option>Highest Last Sale</option>
+        <option disabled>Most Affordable</option>
+        <option disabled>Most Expensive</option>
+        <option disabled>Highest Last Sale</option>
       </Select>
-      <FormControl display="flex" alignItems="center" width="auto">
+      {/* <FormControl display="flex" alignItems="center" width="auto">
         <FormLabel htmlFor="has-paper" mb="0" color="#fff" fontSize="sm">
           $PAPER
         </FormLabel>
         <Switch id="has-paper" />
-      </FormControl>
+      </FormControl> */}
     </Container>
   );
 };

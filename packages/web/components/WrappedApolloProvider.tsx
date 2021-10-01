@@ -112,14 +112,6 @@ const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
     [chainId],
   );
   const client = getClient(uri);
-  useEffect(() => {
-    const db = new DopeDatabase();
-    db.populateFromJson();
-    db.refreshItemClaims();
-    db.refreshOpenSeaAssets();
-    DopeDbCacheReactive(db);
-  }, []);
-
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 export default WrappedApolloProvider;
