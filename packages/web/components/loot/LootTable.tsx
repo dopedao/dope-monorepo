@@ -33,7 +33,7 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
         .map(({ id, claimed, rank }, idx) => ({
           id,
           rank,
-          percentile: ((1 - rank / 8000) * 100).toFixed(1),
+          // percentile: ((1 - rank / 8000) * 100).toFixed(1),
           claimed: claimed ? (
             ''
           ) : (
@@ -51,8 +51,8 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
               return a.id < b.id ? -1 : 1;
             case 'rank':
               return a.rank < b.rank ? -1 : 1;
-            case 'percentile':
-              return a.percentile > b.percentile ? -1 : 1;
+            // case 'percentile':
+            //   return a.percentile > b.percentile ? -1 : 1;
             default:
               return a.id > b.id ? -1 : 1;
           }
@@ -90,14 +90,14 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
         <colgroup>
           <col width="25%" />
           <col width="25%" />
-          <col width="25%" />
+          {/* <col width="25%" /> */}
           <col width="25%" />
         </colgroup>
         <Thead>
           <Tr>
             <Th onClick={() => setSort('id')}>Dope ID</Th>
             <Th onClick={() => setSort('rank')}>Rank</Th>
-            <Th onClick={() => setSort('percentile')}>Percent</Th>
+            {/* <Th onClick={() => setSort('percentile')}>Percent</Th> */}
             <Th>Paper?</Th>
           </Tr>
         </Thead>
@@ -110,14 +110,14 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
             >
               <Td>{id}</Td>
               <Td>{rank}</Td>
-              <Td>{percentile}</Td>
+              {/* <Td>{percentile}</Td> */}
               <Td>{claimed}</Td>
             </Tr>
           ))}
         </Tbody>
         <Tfoot>
           <Tr>
-            <Th colSpan={4}>
+            <Th colSpan={3}>
               {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
               <span className="separator">/</span>
               {formattedUnclaimedPaper()} Unclaimed $PAPER
