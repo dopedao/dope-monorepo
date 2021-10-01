@@ -482,7 +482,7 @@ contract Components is Ownable {
         string memory namePrefixSuffix = string(abi.encodePacked("'", namePrefixes[prefixComponent - 1]));
 
         if (suffixComponent > 0) {
-            string(abi.encodePacked(namePrefixSuffix, ' ', nameSuffixes[suffixComponent]));
+            namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, ' ', nameSuffixes[suffixComponent - 1]));
         }
 
         return string(abi.encodePacked(namePrefixSuffix, "'"));
@@ -509,7 +509,9 @@ contract Components is Ownable {
             item = string(abi.encodePacked(item, ' ', suffixes[components[1] - 1]));
         }
 
-        item = string(abi.encodePacked(prefix(components[2], components[3]), item));
+        if (components[2] > 0) {
+            item = string(abi.encodePacked(prefix(components[2], components[3]), ' ', item));
+        }
 
         // add the augmentation
         if (components[4] > 0) {

@@ -63,14 +63,15 @@ library MetadataBuilder {
     }
 
     function tokenURI(
-        string calldata title,
+        string calldata text,
+        string calldata subtext,
         string calldata name,
         string calldata description,
         string calldata attributes,
         SVGParams memory params,
         mapping(uint8 => string[]) storage palettes
     ) external view returns (string memory) {
-        string memory output = Base64.encode(bytes(generateSVG(title, name, params, palettes)));
+        string memory output = Base64.encode(bytes(generateSVG(text, subtext, params, palettes)));
         string memory json = Base64.encode(
             bytes(
                 string(
