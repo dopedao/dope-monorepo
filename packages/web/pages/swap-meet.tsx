@@ -55,13 +55,13 @@ const filterItemsBySearchString = (items: Partial<Bag>[], searchString: string) 
   if (searchString === '') return items;
   console.log(`filtering: ${searchString}`);
   const lowerSearchString = searchString.toLowerCase();
-  const filteredItems = items.filter(
-    obj => Object.keys(obj).some(
-      key => obj[key as keyof Bag].toString().toLowerCase().includes(lowerSearchString)
-    )
+  const filteredItems = items.filter(obj =>
+    Object.keys(obj).some(key =>
+      obj[key as keyof Bag].toString().toLowerCase().includes(lowerSearchString),
+    ),
   );
   return filteredItems;
-}
+};
 
 const MarketList = () => {
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
@@ -71,7 +71,7 @@ const MarketList = () => {
 
   const filteredSortedItems = useMemo(
     () => filterItemsBySearchString(sortedItems, searchInputValue),
-    [searchInputValue]
+    [searchInputValue],
   );
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, currentPageSize));
@@ -80,7 +80,7 @@ const MarketList = () => {
     currentPageSize = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, currentPageSize));
     setIsTyping(false);
-  }, [searchInputValue])
+  }, [searchInputValue]);
 
   // Increasing currentPageSize simply increases the window size
   // into the cached data we render in window.
@@ -92,36 +92,38 @@ const MarketList = () => {
   };
 
   const MarketListContent = () => {
-    if (isTyping) return (
-      <Container>
-        <LoadingBlock key="typing-load" />
-      </Container>
-    );
+    if (isTyping)
+      return (
+        <Container>
+          <LoadingBlock key="typing-load" />
+        </Container>
+      );
 
-    if (visibleItems.length > 0) return (
-      <Container>
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={loadNextPage}
-          hasMore={sortedItems.length > visibleItems.length}
-          loader={<LoadingBlock key={`loader_${currentPageSize}`} />}
-          useWindow={false}
-          className="lootGrid"
-        >
-          {visibleItems.map((bag: Partial<Bag>) => (
-            <LootCard key={`loot-card_${bag.id}`} bag={bag} footer="for-marketplace" />
-          ))}
-        </InfiniteScroll>
-      </Container>
-    );
+    if (visibleItems.length > 0)
+      return (
+        <Container>
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={loadNextPage}
+            hasMore={sortedItems.length > visibleItems.length}
+            loader={<LoadingBlock key={`loader_${currentPageSize}`} />}
+            useWindow={false}
+            className="lootGrid"
+          >
+            {visibleItems.map((bag: Partial<Bag>) => (
+              <LootCard key={`loot-card_${bag.id}`} bag={bag} footer="for-marketplace" />
+            ))}
+          </InfiniteScroll>
+        </Container>
+      );
 
     return ContentEmpty;
-  }
+  };
 
   return (
     <>
-      <MarketFilterBar 
-        searchChangeCallback={(value: string) => setSearchInputValue(value)} 
+      <MarketFilterBar
+        searchChangeCallback={(value: string) => setSearchInputValue(value)}
         searchIsTypingCallback={() => setIsTyping(true)}
       />
       <MarketListContent />

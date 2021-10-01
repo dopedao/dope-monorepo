@@ -38,14 +38,14 @@ const MarketFilterBar = ({ searchChangeCallback, searchIsTypingCallback }: Props
 
   useEffect(() => {
     searchChangeCallback(debouncedSearchInputValue);
-  }, [debouncedSearchInputValue])
+  }, [debouncedSearchInputValue]);
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchInputValue(value);
     searchIsTypingCallback();
   };
-  
+
   return (
     <Container>
       <Input

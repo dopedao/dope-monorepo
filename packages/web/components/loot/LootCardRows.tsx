@@ -77,7 +77,7 @@ const Row = ({ color = '#fff', slot, item }: { color?: string; slot: string; ite
 );
 
 interface Props {
-  bag: Partial<Bag>
+  bag: Partial<Bag>;
 }
 
 const LootCardRows = ({ bag }: Props) => {

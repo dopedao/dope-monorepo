@@ -20,12 +20,12 @@ export const EmptyBagStruct: Partial<Bag> = {
   ring: '',
   vehicle: '',
   waist: '',
-  weapon: '',  
+  weapon: '',
   // All have been minted already
   minted: true,
   open_sea_asset: new OpenSeaAsset(),
   // currentOwner: Wallet;
-}
+};
 // Use newEmptyBag() to use as template
 Object.freeze(EmptyBagStruct);
 
@@ -36,15 +36,15 @@ export function newEmptyBag(): Partial<Bag> {
 /**
  * Responsible for populating, storing, and returning sorted/filtered
  * representations of our internal database for DOPE items.
- * 
+ *
  * Combines information from The Graph, OpenSea, and Rarity.json.
- * 
+ *
  */
 class DopeDatabase {
   items: Partial<Bag>[] = [];
 
   constructor(items?: Partial<Bag>[]) {
-    console.log("Creating DopeDatabase");
+    console.log('Creating DopeDatabase');
     if (items) this.items = items;
   }
 
@@ -69,11 +69,11 @@ class DopeDatabase {
   }
 
   refreshItemClaims() {
-    console.log("TODO: Implement refreshItemClaims");
+    console.log('TODO: Implement refreshItemClaims');
   }
 
   async refreshOpenSeaAssets() {
-    console.log("TODO: Implement API proxy for refreshOpenSeaAssets");
+    console.log('TODO: Implement API proxy for refreshOpenSeaAssets');
     const openSeaAssets = getOpenSeaAssetPagesJson();
   }
 
@@ -101,7 +101,7 @@ class DopeDatabase {
     return this.items.sort((a: Partial<Bag>, b: Partial<Bag>) => {
       const aPrice = a.open_sea_asset?.current_sale_price ?? 0;
       const bPrice = b.open_sea_asset?.current_sale_price ?? 0;
-      return bPrice - aPrice
+      return bPrice - aPrice;
     });
   }
 
