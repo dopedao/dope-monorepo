@@ -36,7 +36,7 @@ const betterItemName = (name: string = '') => {
   return name;
 };
 
-const Row = ({ color, slot, item }: { color: string; slot: string; item: string }) => (
+const Row = ({ color = '#fff', slot, item }: { color?: string; slot: string; item: string }) => (
   <div
     css={css`
       width: 100%;
@@ -77,22 +77,7 @@ const Row = ({ color, slot, item }: { color: string; slot: string; item: string 
 );
 
 interface Props {
-  bag: Pick<
-    Bag,
-    | 'id'
-    | 'clothes'
-    | 'drugs'
-    | 'foot'
-    | 'hand'
-    | 'neck'
-    | 'ring'
-    | 'vehicle'
-    | 'waist'
-    | 'weapon'
-    | 'claimed'
-    | 'rank'
-    | 'open_sea_asset'
-  >;
+  bag: Partial<Bag>
 }
 
 const LootCardRows = ({ bag }: Props) => {

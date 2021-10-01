@@ -6,7 +6,7 @@ import { OpenSeaAsset, getOpenSeaAssetJson } from '../common/OpenSeaAsset';
 import { ReactNode, useMemo } from 'react';
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import DopeDatabase, { DopeItemsReactive } from '../common/DopeDatabase';
+import DopeDatabase, { DopeDbCacheReactive } from '../common/DopeDatabase';
 import { valueFromCachedLoot } from '../common/DopeJsonParser';
 
 /**
@@ -115,7 +115,9 @@ const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const db = new DopeDatabase();
     db.populateFromJson();
-    DopeItemsReactive(db.items as any);
+    db.refreshItemClaims();
+    db.refreshOpenSeaAssets();
+    DopeDbCacheReactive(db);
   }, []);
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

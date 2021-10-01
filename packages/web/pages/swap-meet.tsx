@@ -2,7 +2,7 @@ import { Bag } from '../src/generated/graphql';
 import { useReactiveVar } from '@apollo/client';
 import { useState } from 'react';
 import AppWindow from '../components/AppWindow';
-import { DopeItemsReactive } from '../common/DopeDatabase';
+import DopeDatabase, { DopeDbCacheReactive } from '../common/DopeDatabase';
 import Head from '../components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
 import LoadingBlock from '../components/LoadingBlock';
@@ -46,10 +46,6 @@ const ContentEmpty = (
   </Container>
 );
 
-function sortByRank(a: Bag, b: Bag) {
-  return a.rank - b.rank;
-}
-
 // To prevent all 8k items from showing at once and overloading
 // the DOM we fake loading more using infinite scroll.
 //
@@ -62,8 +58,8 @@ const PAGE_SIZE = 24;
 let currentPageSize = PAGE_SIZE;
 
 const MarketList = () => {
-  const dopeItems = useReactiveVar(DopeItemsReactive);
-  const sortedItems = dopeItems.sort(sortByRank);
+  const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
+  const sortedItems = dopeDb.itemsSortedByRank();
   const [visibleItems, setVisibleItems] = useState(sortedItems.slice(0, currentPageSize));
   console.log('Rendering MarketList');
 
@@ -88,7 +84,7 @@ const MarketList = () => {
           useWindow={false}
           className="lootGrid"
         >
-          {visibleItems.map((bag: Bag) => (
+          {visibleItems.map((bag: Partial<Bag>) => (
             <LootCard key={`loot-card_${bag.id}`} bag={bag} footer="for-marketplace" />
           ))}
         </InfiniteScroll>

@@ -44,22 +44,7 @@ const LootFooterContainer = styled.footer`
 
 interface Props {
   footer: 'for-marketplace' | 'for-owner';
-  bag: Pick<
-    Bag,
-    | 'id'
-    | 'clothes'
-    | 'drugs'
-    | 'foot'
-    | 'hand'
-    | 'neck'
-    | 'ring'
-    | 'vehicle'
-    | 'waist'
-    | 'weapon'
-    | 'claimed'
-    | 'rank'
-    | 'open_sea_asset'
-  >;
+  bag: Partial<Bag>;
 }
 
 const LootCard = ({ footer, bag }: Props) => {
@@ -68,15 +53,6 @@ const LootCard = ({ footer, bag }: Props) => {
   const toggleItemLegendVisibility = (): void => {
     setIsItemLegendVisible(!isItemLegendVisible);
   };
-
-  const { data, loading, error } = useBagQuery({
-    variables: { tokenId: bag.id }
-  });
-  if (!loading && !error && data) {
-    console.log('ASYNC load for '+bag.id);
-    console.log(data);
-  }
-
 
   return (
     <>
