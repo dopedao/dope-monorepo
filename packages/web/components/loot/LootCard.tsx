@@ -44,7 +44,21 @@ const LootFooterContainer = styled.footer`
 
 interface Props {
   footer: 'for-marketplace' | 'for-owner';
-  bag: Partial<Bag>;
+  bag: Pick<Bag, 
+    'id' | 
+    'claimed' |
+    'clothes' |
+    'drugs' |
+    'foot' |
+    'hand' |
+    'neck' |
+    'rank' |
+    'ring' |
+    'vehicle' |
+    'waist' |
+    'weapon' |
+    'open_sea_asset'
+  >;
 }
 
 const LootCard = ({ footer, bag }: Props) => {
