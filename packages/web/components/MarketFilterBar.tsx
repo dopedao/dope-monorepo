@@ -26,22 +26,24 @@ const Container = styled.div`
 
 interface Props {
   searchChangeCallback(value: string): void;
+  searchIsTypingCallback(): void;
 }
 
-const MarketFilterBar = ({ searchChangeCallback }: Props) => {
-  const [itemSearchString, setItemSearchString] = useState<string>('');
+const MarketFilterBar = ({ searchChangeCallback, searchIsTypingCallback }: Props) => {
+  const [searchInputValue, setSearchInputValue] = useState<string>('');
 
   // Debounce hook lets us fill search string on type, but not do anything
   // until debounced value gets changed.
-  const debouncedItemSearchString = useDebounce<string>(itemSearchString, 150);
+  const debouncedSearchInputValue = useDebounce<string>(searchInputValue, 150);
 
   useEffect(() => {
-    searchChangeCallback(debouncedItemSearchString);
-  }, [debouncedItemSearchString])
+    searchChangeCallback(debouncedSearchInputValue);
+  }, [debouncedSearchInputValue])
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setItemSearchString(value);
+    setSearchInputValue(value);
+    searchIsTypingCallback();
   };
   
   return (

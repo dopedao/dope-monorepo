@@ -63,17 +63,15 @@ const filterItemsBySearchString = (items: Partial<Bag>[], searchString: string) 
   return filteredItems;
 }
 
-let renderCount = 0;
-
 const MarketList = () => {
-  console.log(`Rendering Swap Meet: ${renderCount++}`);
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
   const sortedItems = dopeDb.itemsSortedByRank();
-  const [itemSearchString, setItemSearchString] = useState<string>('');
+  const [searchInputValue, setSearchInputValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
 
   const filteredSortedItems = useMemo(
-    () => filterItemsBySearchString(sortedItems, itemSearchString),
-    [itemSearchString]
+    () => filterItemsBySearchString(sortedItems, searchInputValue),
+    [searchInputValue]
   );
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, currentPageSize));
@@ -81,7 +79,8 @@ const MarketList = () => {
   useEffect(() => {
     currentPageSize = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, currentPageSize));
-  }, [itemSearchString])
+    setIsTyping(false);
+  }, [searchInputValue])
 
   // Increasing currentPageSize simply increases the window size
   // into the cached data we render in window.
@@ -92,26 +91,40 @@ const MarketList = () => {
     console.log(currentPageSize);
   };
 
+  const MarketListContent = () => {
+    if (isTyping) return (
+      <Container>
+        <LoadingBlock key="typing-load" />
+      </Container>
+    );
+
+    if (visibleItems.length > 0) return (
+      <Container>
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={loadNextPage}
+          hasMore={sortedItems.length > visibleItems.length}
+          loader={<LoadingBlock key={`loader_${currentPageSize}`} />}
+          useWindow={false}
+          className="lootGrid"
+        >
+          {visibleItems.map((bag: Partial<Bag>) => (
+            <LootCard key={`loot-card_${bag.id}`} bag={bag} footer="for-marketplace" />
+          ))}
+        </InfiniteScroll>
+      </Container>
+    );
+
+    return ContentEmpty;
+  }
+
   return (
     <>
-      <MarketFilterBar searchChangeCallback={(value: string) => setItemSearchString(value)} />
-      { visibleItems.length === 0 && ContentEmpty }
-      { visibleItems.length > 0 &&
-        <Container>
-          <InfiniteScroll
-            pageStart={0}
-            loadMore={loadNextPage}
-            hasMore={sortedItems.length > visibleItems.length}
-            loader={<LoadingBlock key={`loader_${currentPageSize}`} />}
-            useWindow={false}
-            className="lootGrid"
-          >
-            {visibleItems.map((bag: Partial<Bag>) => (
-              <LootCard key={`loot-card_${bag.id}`} bag={bag} footer="for-marketplace" />
-            ))}
-          </InfiniteScroll>
-        </Container>
-      }
+      <MarketFilterBar 
+        searchChangeCallback={(value: string) => setSearchInputValue(value)} 
+        searchIsTypingCallback={() => setIsTyping(true)}
+      />
+      <MarketListContent />
     </>
   );
 };
