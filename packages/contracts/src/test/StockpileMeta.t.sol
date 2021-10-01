@@ -34,7 +34,7 @@ contract Metadata is StockpileTest {
         attributes[3] = Attribute('Name Prefix', 'a');
         attributes[4] = Attribute('Name Suffix', 'big');
         owner.setRle(id, jordans);
-        assertMetadata(id, attributes, "'a big' blaster ahh");
+        assertMetadata(id, attributes, '"a big" blaster ahh');
 
         assertEq(stockpile.balanceOf(address(owner), id), 5);
     }
@@ -75,11 +75,11 @@ contract Metadata is StockpileTest {
     function testShovelFromSOMABagNames() public {
         ItemNames memory expected = ItemNames({
             weapon: 'Shovel from SOMA',
-            clothes: "'High on the Supply Contraband' Bulletproof Vest from Mob Town",
-            vehicle: "'The Freelance Pharmacist Triggerman' Dodge from Compton +1",
-            waist: "'Kid of the Game Smuggled' D Ring Belt from Queens +1",
+            clothes: '\\"High on the Supply Contraband\\" Bulletproof Vest from Mob Town',
+            vehicle: '\\"The Freelance Pharmacist Triggerman\\" Dodge from Compton +1',
+            waist: '\\"Kid of the Game Smuggled\\" D Ring Belt from Queens +1',
             foot: 'Barefoot from Chicago',
-            hand: "'Street Queen Triggerman' Fingerless Gloves from Buffalo +1",
+            hand: '\\"Street Queen Triggerman\\" Fingerless Gloves from Buffalo +1',
             drugs: 'Shrooms',
             neck: 'Bronze Chain from the Backwoods',
             ring: 'Diamond Ring'
@@ -110,7 +110,7 @@ contract Metadata is StockpileTest {
         attributes[3] = Attribute('Name Prefix', 'High on the Supply');
         attributes[4] = Attribute('Name Suffix', 'Contraband');
         owner.setRle(id, jordans);
-        assertMetadata(id, attributes, "'High on the Supply Contraband' Bulletproof Vest from Mob Town");
+        assertMetadata(id, attributes, '"High on the Supply Contraband" Bulletproof Vest from Mob Town');
     }
 
     function testTriggermanFingerlessGlovesFromBuffaloPlusOneMetadata() public {
@@ -123,7 +123,7 @@ contract Metadata is StockpileTest {
         attributes[4] = Attribute('Name Suffix', 'Triggerman');
         attributes[5] = Attribute('Augmentation', 'Yes');
         owner.setRle(id, jordans);
-        assertMetadata(id, attributes, "'Street Queen Triggerman' Fingerless Gloves from Buffalo +1");
+        assertMetadata(id, attributes, '"Street Queen Triggerman" Fingerless Gloves from Buffalo +1');
     }
 
     function assertMetadata(

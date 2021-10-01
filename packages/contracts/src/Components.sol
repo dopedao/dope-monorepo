@@ -479,13 +479,13 @@ contract Components is Ownable {
             return '';
         }
 
-        string memory namePrefixSuffix = string(abi.encodePacked("'", namePrefixes[prefixComponent - 1]));
+        string memory namePrefixSuffix = string(abi.encodePacked('\\"', namePrefixes[prefixComponent - 1]));
 
         if (suffixComponent > 0) {
             namePrefixSuffix = string(abi.encodePacked(namePrefixSuffix, ' ', nameSuffixes[suffixComponent - 1]));
         }
 
-        return string(abi.encodePacked(namePrefixSuffix, "'"));
+        return string(abi.encodePacked(namePrefixSuffix, '\\"'));
     }
 
     function suffix(uint8 suffixComponent) public view returns (string memory) {
