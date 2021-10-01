@@ -1,4 +1,7 @@
 import { FormControl, FormLabel, Input, Select, Switch } from '@chakra-ui/react';
+import { useDebounce } from 'usehooks-ts';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+
 import styled from '@emotion/styled';
 
 const Container = styled.div`
@@ -22,10 +25,25 @@ const Container = styled.div`
 `;
 
 interface Props {
-  handleSearchChange({ target: HTMLInputElement }: { target: any }): void;
+  searchChangeCallback(value: string): void;
 }
 
-const MarketFilterBar = ({ handleSearchChange }: Props) => {
+const MarketFilterBar = ({ searchChangeCallback }: Props) => {
+  const [itemSearchString, setItemSearchString] = useState<string>('');
+
+  // Debounce hook lets us fill search string on type, but not do anything
+  // until debounced value gets changed.
+  const debouncedItemSearchString = useDebounce<string>(itemSearchString, 150);
+
+  useEffect(() => {
+    searchChangeCallback(debouncedItemSearchString);
+  }, [debouncedItemSearchString])
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setItemSearchString(value);
+  };
+  
   return (
     <Container>
       <Input

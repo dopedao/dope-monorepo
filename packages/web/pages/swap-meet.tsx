@@ -1,7 +1,6 @@
 import { Bag } from '../src/generated/graphql';
 import { useReactiveVar } from '@apollo/client';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
-import { useDebounce } from 'usehooks-ts';
+import { useEffect, useMemo, useState } from 'react';
 import AppWindow from '../components/AppWindow';
 import DopeDatabase, { DopeDbCacheReactive } from '../common/DopeDatabase';
 import Head from '../components/Head';
@@ -70,28 +69,19 @@ const MarketList = () => {
   console.log(`Rendering Swap Meet: ${renderCount++}`);
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
   const sortedItems = dopeDb.itemsSortedByRank();
-
   const [itemSearchString, setItemSearchString] = useState<string>('');
-  // Debounce hook lets us fill search string on type, but not do anything
-  // until debounced value gets changed.
-  const debouncedItemSearchString = useDebounce<string>(itemSearchString, 300);
+
   const filteredSortedItems = useMemo(
-    () => filterItemsBySearchString(sortedItems, debouncedItemSearchString),
-    [debouncedItemSearchString]
+    () => filterItemsBySearchString(sortedItems, itemSearchString),
+    [itemSearchString]
   );
 
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setItemSearchString(value);
-  };
-
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, currentPageSize));
-
 
   useEffect(() => {
     currentPageSize = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, currentPageSize));
-  }, [debouncedItemSearchString])
+  }, [itemSearchString])
 
   // Increasing currentPageSize simply increases the window size
   // into the cached data we render in window.
@@ -104,7 +94,7 @@ const MarketList = () => {
 
   return (
     <>
-      <MarketFilterBar handleSearchChange={handleSearchChange} />
+      <MarketFilterBar searchChangeCallback={(value: string) => setItemSearchString(value)} />
       { visibleItems.length === 0 && ContentEmpty }
       { visibleItems.length > 0 &&
         <Container>
