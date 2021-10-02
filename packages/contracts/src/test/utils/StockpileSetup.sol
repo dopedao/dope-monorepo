@@ -152,7 +152,7 @@ contract StockpileOwner is ERC1155Holder {
     }
 
     function setRle(uint256 id, bytes memory rle) public {
-        stockpile.setRle(id, rle);
+        stockpile.setRle(id, rle, rle);
     }
 }
 

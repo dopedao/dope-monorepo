@@ -92,6 +92,7 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         bytes memory data
     ) external onlyOwner returns (uint256) {
         uint256 id = TokenId.toId(components, componentType);
+        // _updateAccountSnapshot(to, ids[i])
         _mint(to, id, amount, data);
         return id;
     }
@@ -117,33 +118,33 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
             ids[i / 5] = TokenId.toId(_components, componentTypes[i / 5]);
         }
 
+        // _updateAccountSnapshot(to, ids[i])
         _mintBatch(to, ids, amounts, data);
         return ids;
-    }
-
-    function setPalette(uint8 id, string[] memory palette) public onlyOwner {
-        palettes[id] = palette;
-    }
-
-    function setRle(uint256 id, bytes memory rle) public onlyOwner {
-        rles[id] = rle;
     }
 
     // function burn(uint256 id, uint256 amount) external {
     //     _burn(msg.sender, id, amount);
     // }
 
-    // function rleOf(uint256 tokenId) external view returns (bytes memory rle) {
-    //     return '';
-    // }
+    function setPalette(uint8 id, string[] memory palette) public onlyOwner {
+        palettes[id] = palette;
+    }
 
-    // function rleOfBatch(uint256[] memory tokenIds) external view returns (bytes[] memory rles) {
-    //     bytes[] memory _rles = new bytes[](8);
-    //     return _rles;
-    // }
+    function setRle(
+        uint256 id,
+        bytes memory male,
+        bytes memory female
+    ) public onlyOwner {
+        rles[id][Gender.MALE] = male;
+        rles[id][Gender.FEMALE] = female;
+    }
 
-    // function ownedBatchRLE(uint256[] memory tokenIds) external view returns (bytes[] memory rles) {
-    //     bytes[] memory _rles = new bytes[](8);
-    //     return _rles;
-    // }
+    function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) public onlyOwner {
+        require(ids.length == rles.length / 2, 'ids rles mismatch');
+
+        for (uint256 i = 0; i < rles.length; i += 2) {
+            setRle(i / 2, rles[i], rles[i + 1]);
+        }
+    }
 }
