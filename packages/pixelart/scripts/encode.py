@@ -12,14 +12,14 @@ partcolors = json.load(f)
 f = open("../outputs/output.json", "r")
 meta = json.load(f)
 
-colors = {0:0}
+colors = {0: 0}
 for i, c in enumerate(partcolors["partcolors"]):
     colors[c] = i
 
 for file in glob.glob("../imgs/**/*.png"):
     img = image.imread(file)
 
-    a = np.where(img[:,:,3] != 0)
+    a = np.where(img[:, :, 3] != 0)
     bbox = np.min(a[0]), np.max(a[0]), np.min(a[1]), np.max(a[1])
     cropped = img[bbox[0]:bbox[1]+1, bbox[2]:bbox[3]+1]
     encoded = [0, bbox[0], bbox[3]+1, bbox[1]+1, bbox[2]]
@@ -51,8 +51,15 @@ for file in glob.glob("../imgs/**/*.png"):
         print(out)
         out = ""
     print("\n")
+
+    pth = os.path.splitext(file)[0]
+    dir = os.path.split(os.path.split(pth)[0])[1]
+    split = dir.split("_")
+    print(split)
     meta["parts"].append([{
-        "name": os.path.splitext(file)[0],
+        "name": os.path.basename(pth),
+        "gender": split[0].lower(),
+        "category": split[1].lower(),
         "data": to_hex(bytes(encoded))
     }])
 

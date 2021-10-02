@@ -5,19 +5,18 @@ set -eo pipefail
 # import the deployment helpers
 . $(dirname $0)/common.sh
 
-# MultiPartRLEToSVGAddr=$(deploy MultiPartRLEToSVG)
-# verify MultiPartRLEToSVG $MultiPartRLEToSVGAddr
-# extractABI MultiPartRLEToSVG
-# log "MultiPartRLEToSVG deployed at:" $MultiPartRLEToSVGAddr
+# MetadataBuilderAddr=$(deploy MetadataBuilder)
+# verify MetadataBuilder $MetadataBuilderAddr
+# extractABI MetadataBuilder
+# log "MetadataBuilder deployed at:" $MetadataBuilderAddr
 
-# export DAPP_LIBRARIES="src/MultiPartRLEToSVG.sol:MultiPartRLEToSVG:0xb073d5395d2ef1649c4f60dafd2301f54ad648ec"
+# export DAPP_LIBRARIES="src/MetadataBuilder.sol:MetadataBuilder:0x15abf3968Ca91f451f448756C568c53D985c0Ab6"
 
 # Deploy.
-ComponentsAddr="0xBf0fef342E3b43649fB5C8D61A9BC1e8061DF89A"
-# $(deploy DopeComponents $ETH_FROM)
-# # verify DopeComponents $ComponentsAddr $LOOT
-# extractABI DopeComponents
-# log "DopeComponents deployed at:" $ComponentsAddr
+ComponentsAddr=$(deploy Components $ETH_FROM)
+verify Components $ComponentsAddr $ETH_FROM
+extractABI Components
+log "Components deployed at:" $ComponentsAddr
 
 echo "deploy Stockpile $ComponentsAddr $LOOT $ETH_FROM"
 StockpileAddr=$(deploy Stockpile $ComponentsAddr $LOOT $ETH_FROM)

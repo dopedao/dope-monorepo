@@ -39,11 +39,19 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
 
     /// @notice Opens the provided tokenId if the sender is owner. This
     /// can only be done once per DOPE token.
-    function open(uint256 tokenId) external {
+    function open(uint256 tokenId) public {
         require(msg.sender == bags.ownerOf(tokenId), Errors.DoesNotOwnBag);
         require(!opened[tokenId], Errors.AlreadyOpened);
         opened[tokenId] = true;
         open(msg.sender, tokenId);
+    }
+
+    /// @notice Bulk opens the provided tokenIds. This
+    /// can only be done once per DOPE token.
+    function bulkOpen(uint256[] calldata ids) external {
+        for (uint256 i = 0; i < ids.length; i++) {
+            open(ids[i]);
+        }
     }
 
     /// @notice Opens your Loot bag and mints you 9 ERC-1155 tokens for each item
@@ -63,7 +71,11 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         ids[6] = itemId(tokenId, sc.drugsComponents, ComponentTypes.DRUGS);
         ids[7] = itemId(tokenId, sc.neckComponents, ComponentTypes.NECK);
         ids[8] = itemId(tokenId, sc.ringComponents, ComponentTypes.RING);
+
         for (uint256 i = 0; i < ids.length; i++) {
+            // Since we are directly minting, we need to handle the snapshot logic.
+            _updateAccountSnapshot(who, ids[i]);
+
             amounts[i] = 1;
             _balances[ids[i]][who] += 1;
         }
@@ -92,7 +104,6 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         bytes memory data
     ) external onlyOwner returns (uint256) {
         uint256 id = TokenId.toId(components, componentType);
-        // _updateAccountSnapshot(to, ids[i])
         _mint(to, id, amount, data);
         return id;
     }
@@ -118,7 +129,6 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
             ids[i / 5] = TokenId.toId(_components, componentTypes[i / 5]);
         }
 
-        // _updateAccountSnapshot(to, ids[i])
         _mintBatch(to, ids, amounts, data);
         return ids;
     }

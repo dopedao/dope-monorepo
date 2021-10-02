@@ -168,7 +168,7 @@ abstract contract ERC1155Snapshot is ERC1155 {
         }
     }
 
-    function _updateAccountSnapshot(address account, uint256 id) private {
+    function _updateAccountSnapshot(address account, uint256 id) internal {
         _updateSnapshot(_accountBalanceSnapshots[account][id], balanceOf(account, id));
     }
 
