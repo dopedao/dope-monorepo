@@ -84,8 +84,8 @@ contract StockpileMetadata {
         parts[2] = female_;
 
         bytes memory femaleRle = tokenRLE(tokenId, Gender.FEMALE);
-        femaleRle[2] = bytes1(uint8(femaleRle[2]) - uint8(12));
-        femaleRle[4] = bytes1(uint8(femaleRle[4]) - uint8(12));
+        femaleRle[2] = bytes1(uint8(femaleRle[2]) + uint8(12));
+        femaleRle[4] = bytes1(uint8(femaleRle[4]) + uint8(12));
         parts[3] = femaleRle;
 
         (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);

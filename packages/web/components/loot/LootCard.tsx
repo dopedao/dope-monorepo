@@ -208,7 +208,7 @@ const LootCard = ({
                 Claim Paper
               </Button>
               <Button
-                disabled={true}
+                disabled={chainId == 1}
                 onClick={async () => {
                   await stockpile.open(bag.id);
                 }}
