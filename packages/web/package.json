@@ -37,9 +37,16 @@
     "@graphql-codegen/typescript": "^2.2.2",
     "@graphql-codegen/typescript-operations": "^2.1.4",
     "@graphql-codegen/typescript-react-apollo": "^3.1.4",
+    "@sentry/react": "^6.13.2",
+    "@sentry/tracing": "^6.13.2",
     "@types/react": "17.0.9",
+    "@types/react-infinite-scroller": "^1.2.2",
     "raw-loader": "^4.0.2",
+    "react-draggable": "^4.4.4",
+    "react-infinite-scroller": "^1.2.4",
+    "react-markdown": "^7.0.1",
     "typechain": "^5.1.2",
-    "typescript": "4.3.2"
+    "typescript": "4.3.2",
+    "usehooks-ts": "^1.0.3"
   }
 }

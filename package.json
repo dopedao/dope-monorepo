@@ -39,13 +39,6 @@
   },
   "dependencies": {
     "@dopewars/contracts": "workspace:packages/contracts",
-    "@dopewars/web": "workspace:packages/web",
-    "@sentry/react": "^6.13.2",
-    "@sentry/tracing": "^6.13.2",
-    "@types/react-infinite-scroller": "^1.2.2",
-    "react-draggable": "^4.4.4",
-    "react-infinite-scroller": "^1.2.4",
-    "react-markdown": "^7.0.1",
-    "usehooks-ts": "^1.0.3"
+    "@dopewars/web": "workspace:packages/web"
   }
 }
