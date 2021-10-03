@@ -34,7 +34,7 @@ const handler = async(req: NextApiRequest, res: NextApiResponse) => {
   };
   try {
     await s3client.upload(params).promise();
-    return res.status(200).send('OK');
+    return res.status(200).send('DOPE');
   } catch (e) {
     return res.status(500).send(e);
   }
