@@ -1,5 +1,3 @@
-import { SerializedStyles } from '@emotion/utils';
-
 const CheckIcon = ({ ...props }) => (
   <svg
     width="17"

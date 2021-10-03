@@ -160,7 +160,6 @@ const MarketList = () => {
                 key={`loot-card_${bag.id}`}
                 bag={bag}
                 footer="for-marketplace"
-                searchText={searchInputValue}
                 className={viewCompactCards ? 'compact' : ''}
               />
             ))}

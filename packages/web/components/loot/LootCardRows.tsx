@@ -1,4 +1,3 @@
-import { Bag, useBagQuery } from '../../src/generated/graphql';
 import { css } from '@emotion/react';
 import { LootLegendBackgroundColors } from './LootLegend';
 import ItemRarities from 'dope-metrics/output/item-rarities.json';
@@ -79,10 +78,9 @@ const Row = ({ color = '#fff', slot, item }: { color?: string; slot: string; ite
 
 interface Props {
   bag: PickedBag;
-  searchText?: string;
 }
 
-const LootCardRows = ({ bag, searchText }: Props) => {
+const LootCardRows = ({ bag }: Props) => {
   return (
     <div
       css={css`

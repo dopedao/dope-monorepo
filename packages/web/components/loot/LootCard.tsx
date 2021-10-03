@@ -1,4 +1,3 @@
-import { Bag, useBagQuery } from '../../src/generated/graphql';
 import { useState } from 'react';
 import LootCardFooterForOwner from './LootCardFooterForOwner';
 import LootCardFooterForMarket from './LootCardFooterForMarket';
@@ -46,11 +45,10 @@ const LootFooterContainer = styled.footer`
 interface Props {
   footer: 'for-marketplace' | 'for-owner';
   bag: PickedBag;
-  searchText?: string;
   className?: string;
 }
 
-const LootCard = ({ footer, bag, searchText, className }: Props) => {
+const LootCard = ({ footer, bag, className }: Props) => {
   const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
 
   const toggleItemLegendVisibility = (): void => {
@@ -67,7 +65,7 @@ const LootCard = ({ footer, bag, searchText, className }: Props) => {
           <LootTitleBar>
             <div>Dope Wars Loot #{bag.id}</div>
           </LootTitleBar>
-          <LootCardRows bag={bag} searchText={searchText} />
+          <LootCardRows bag={bag} />
           {footer && footer === 'for-owner' && (
             <LootFooterContainer>
               <LootCardFooterForOwner bag={bag} toggleVisibility={toggleItemLegendVisibility} />
