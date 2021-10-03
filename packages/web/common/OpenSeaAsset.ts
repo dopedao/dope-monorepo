@@ -26,12 +26,9 @@ export const getOpenSeaAssetPagesJson = async (total_tokens = 8000) => {
   const TOTAL_NUM_TOKENS = total_tokens;
   const assets = [];
 
-  const baseUrl = '' +
-    'https://api.opensea.io/api/v1/assets' +
-    `?asset_contract_address=${dopeContractAddress}`
-    '&order_by=pk' +
-    '&order_direction=desc' +
-    `&limit=${ASSETS_PER_REQUEST}`;
+  const baseUrl =
+    'https://api.opensea.io/api/v1/assets' + `?asset_contract_address=${dopeContractAddress}`;
+  '&order_by=pk' + '&order_direction=desc' + `&limit=${ASSETS_PER_REQUEST}`;
 
   for (let offset = 0; offset < TOTAL_NUM_TOKENS; offset += ASSETS_PER_REQUEST) {
     console.log(`getOpenSeaAssetPagesJson: ${offset}`);
@@ -42,7 +39,7 @@ export const getOpenSeaAssetPagesJson = async (total_tokens = 8000) => {
   }
   const flatAssets = assets.flat(Infinity);
   const openSeaAssets = flatAssets.map(assetJson => {
-    return Object.assign({token_id: assetJson['token_id']}, new OpenSeaAsset(assetJson));
+    return Object.assign({ token_id: assetJson['token_id'] }, new OpenSeaAsset(assetJson));
   });
   console.log(openSeaAssets.length);
   return openSeaAssets;

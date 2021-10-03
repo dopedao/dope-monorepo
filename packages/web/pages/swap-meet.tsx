@@ -13,7 +13,7 @@ import DopeDatabase, {
   compareByHighestLastSale,
   compareByMostAffordable,
   compareByMostExpensive,
-  compareByRank, 
+  compareByRank,
   DopeDbCacheReactive,
   filterItemsBySearchString,
   testForUnclaimedPaper,
@@ -33,7 +33,6 @@ const title = 'Dope Wars Market';
 // returning DOPE + Stockpile items via API at some point in the future.
 const PAGE_SIZE = 24;
 let itemsVisible = PAGE_SIZE;
-
 
 const Container = styled.div`
   // Important the immediate parent container for InfiniteScroll
@@ -93,7 +92,7 @@ const getStatusTestFunction = (key: string) => {
     case 'For Sale':
       return testForSale;
     default:
-      return (() => true);
+      return () => true;
   }
 };
 
@@ -104,7 +103,7 @@ const MarketList = () => {
   const [statusKey, setStatusKey] = useState('');
   const [viewCompactCards, setViewCompactCards] = useState(false);
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
-  
+
   // Loads unclaimed $paper status from The Graph,
   // then updates items in reactive var cache.
   const { data: dataBags } = useAllUnclaimedBagsQuery();
@@ -113,14 +112,11 @@ const MarketList = () => {
     DopeDbCacheReactive(dopeDb);
   }
 
-  const filteredSortedItems = useMemo(
-    () => {
-      const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
-      const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
-      return filterItemsBySearchString(filteredItems, searchInputValue);
-    },
-    [searchInputValue, sortByKey, statusKey],
-  );
+  const filteredSortedItems = useMemo(() => {
+    const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
+    const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
+    return filterItemsBySearchString(filteredItems, searchInputValue);
+  }, [searchInputValue, sortByKey, statusKey]);
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
 
@@ -148,8 +144,8 @@ const MarketList = () => {
         compactViewCallback={(toggle: boolean) => setViewCompactCards(toggle)}
         searchIsTypingCallback={() => setIsTyping(true)}
       />
-      { isTyping && ContentLoading }
-      { (!isTyping && visibleItems.length > 0) &&
+      {isTyping && ContentLoading}
+      {!isTyping && visibleItems.length > 0 && (
         <Container>
           <InfiniteScroll
             pageStart={0}
@@ -160,18 +156,18 @@ const MarketList = () => {
             className="lootGrid"
           >
             {visibleItems.map((bag: PickedBag) => (
-              <LootCard 
-                key={`loot-card_${bag.id}`} 
-                bag={bag} 
-                footer="for-marketplace" 
+              <LootCard
+                key={`loot-card_${bag.id}`}
+                bag={bag}
+                footer="for-marketplace"
                 searchText={searchInputValue}
-                className={ viewCompactCards ? 'compact' : '' }
+                className={viewCompactCards ? 'compact' : ''}
               />
             ))}
           </InfiniteScroll>
         </Container>
-      }
-      { (!isTyping && visibleItems.length === 0) && ContentEmpty }
+      )}
+      {!isTyping && visibleItems.length === 0 && ContentEmpty}
     </>
   );
 };

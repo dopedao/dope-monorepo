@@ -6,28 +6,29 @@ import { OpenSeaAsset } from './OpenSeaAsset';
 
 const highImpossibleRank = 9999;
 
-export type PickedBag = Pick<Bag, 
-  'id' | 
-  'claimed' |
-  'clothes' |
-  'drugs' |
-  'foot' |
-  'hand' |
-  'neck' |
-  'rank' |
-  'ring' |
-  'vehicle' |
-  'waist' |
-  'weapon' |
-  'open_sea_asset'
-  >;
+export type PickedBag = Pick<
+  Bag,
+  | 'id'
+  | 'claimed'
+  | 'clothes'
+  | 'drugs'
+  | 'foot'
+  | 'hand'
+  | 'neck'
+  | 'rank'
+  | 'ring'
+  | 'vehicle'
+  | 'waist'
+  | 'weapon'
+  | 'open_sea_asset'
+>;
 type BagClaimCheck = Pick<Bag, 'id' | 'claimed'>;
 // At the time of coding, there were less than 3k unclaimed DOPE tokens.
 type UnclaimedPaperPages = {
-  page_1:  BagClaimCheck[];
+  page_1: BagClaimCheck[];
   page_2?: BagClaimCheck[];
   page_3?: BagClaimCheck[];
-}
+};
 
 export const EmptyBagStruct: PickedBag = {
   id: '',
@@ -92,9 +93,9 @@ class DopeDatabase {
   }
 
   updateHasPaperFromQuery(queryResultJson: UnclaimedPaperPages) {
-    console.log("updateHasPaperFromQuery");
+    console.log('updateHasPaperFromQuery');
     const unclaimedBags = Object.values(queryResultJson).flat(Infinity);
-    for(let i=0; i<unclaimedBags.length; i++) {
+    for (let i = 0; i < unclaimedBags.length; i++) {
       const bag = unclaimedBags[i] as BagClaimCheck;
       this.updateRecord(bag.id, 'claimed', bag.claimed);
     }
@@ -104,11 +105,11 @@ class DopeDatabase {
   async refreshOpenSeaAssets() {
     // OpenSea Asset price + sale information is pulled, transformed, and stored by our API.
     // We fetch the cached result.
-    console.log("refreshOpenSeaAssets");
-    const url      = 'https://dope-wars-gg.s3.us-west-1.amazonaws.com/open-sea-assets.json';
+    console.log('refreshOpenSeaAssets');
+    const url = 'https://dope-wars-gg.s3.us-west-1.amazonaws.com/open-sea-assets.json';
     const response = await fetch(url);
-    const assets   = await response.json();
-    for(let i=0; i<assets.length; i++) {
+    const assets = await response.json();
+    for (let i = 0; i < assets.length; i++) {
       this.updateRecord(assets[i].token_id, 'open_sea_asset', assets[i]);
     }
   }
@@ -119,7 +120,7 @@ class DopeDatabase {
     // console.log(`Updating: ${id}:${key} = ${value}`);
     const theBag = this.items.find(bag => {
       if (!bag) return false;
-      return bag.id === id.toString()
+      return bag.id === id.toString();
     }) as any;
     // console.log(theBag);
     theBag[key] = value;
@@ -132,26 +133,26 @@ export const compareByRank = (a: PickedBag, b: PickedBag) => {
   const aRank = a.rank ?? highImpossibleRank;
   const bRank = b.rank ?? highImpossibleRank;
   return aRank - bRank;
-} 
+};
 
 export const compareByMostAffordable = (a: PickedBag, b: PickedBag) => {
   const highImpossiblePrice = 9999999999999999;
   const aPrice = a.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
   const bPrice = b.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
   return aPrice - bPrice;
-}
+};
 
 export const compareByMostExpensive = (a: PickedBag, b: PickedBag) => {
   const aPrice = a.open_sea_asset?.current_sale_price ?? 0;
   const bPrice = b.open_sea_asset?.current_sale_price ?? 0;
   return bPrice - aPrice;
-}
+};
 
 export const compareByHighestLastSale = (a: PickedBag, b: PickedBag) => {
   const aLastSalePrice = a.open_sea_asset?.last_sale_price ?? 0;
   const bLastSalePrice = b.open_sea_asset?.last_sale_price ?? 0;
   return bLastSalePrice - aLastSalePrice;
-}
+};
 
 // FILTERING ----------------------------------------------------------------
 
@@ -174,8 +175,8 @@ export const filterItemsBySearchString = (items: PickedBag[], searchString: stri
 
   return items.filter(obj =>
     Object.keys(obj).some(key => {
-      const value =  obj[key as keyof PickedBag];
-      if(!value) return false; // no match
+      const value = obj[key as keyof PickedBag];
+      if (!value) return false; // no match
       const testVal = value.toString().toLowerCase();
       return searchWordsNoQuotes.every(word => testVal.indexOf(word) > -1);
     }),

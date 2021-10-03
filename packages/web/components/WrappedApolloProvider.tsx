@@ -1,9 +1,9 @@
-import { 
-  ApolloClient, 
+import {
+  ApolloClient,
   ApolloProvider,
-  InMemoryCache, 
+  InMemoryCache,
   makeVar,
-  useReactiveVar
+  useReactiveVar,
 } from '@apollo/client';
 import { getRarityForDopeId } from '../common/dope-rarity-check';
 import { NETWORK } from '../common/constants';
@@ -13,7 +13,6 @@ import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import DopeDatabase, { DopeDbCacheReactive } from '../common/DopeDatabase';
 import { valueFromCachedLoot } from '../common/DopeJsonParser';
-
 
 /**
  * We use the below declaration to specify client-only field getters,
@@ -118,10 +117,10 @@ const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
     [chainId],
   );
   const client = getClient(uri);
-  const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase; 
+  const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 
   useEffect(() => {
-    console.log("Wrapped provider");
+    console.log('Wrapped provider');
     dopeDb.refreshOpenSeaAssets().then(() => DopeDbCacheReactive(dopeDb));
   });
 

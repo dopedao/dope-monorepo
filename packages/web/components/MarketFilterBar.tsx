@@ -40,9 +40,9 @@ interface Props {
   searchIsTypingCallback(): void;
 }
 
-const MarketFilterBar = ({ 
-  searchCallback, 
-  searchIsTypingCallback, 
+const MarketFilterBar = ({
+  searchCallback,
+  searchIsTypingCallback,
   sortByCallback,
   statusCallback,
   compactViewCallback,
@@ -83,29 +83,14 @@ const MarketFilterBar = ({
 
   return (
     <Container>
-      <Input
-        placeholder="Search…"
-        size="sm"
-        variant="filterBar"
-        onChange={handleSearchChange}
-      />
-      <Select 
-        size="sm" 
-        variant="filterBar" 
-        defaultValue="All"
-        onChange={handleStatusChange}
-      >
+      <Input placeholder="Search…" size="sm" variant="filterBar" onChange={handleSearchChange} />
+      <Select size="sm" variant="filterBar" defaultValue="All" onChange={handleStatusChange}>
         <option disabled>Status…</option>
         <option>All</option>
         <option>Has Unclaimed $PAPER</option>
         <option>For Sale</option>
       </Select>
-      <Select 
-        size="sm" 
-        variant="filterBar" 
-        defaultValue="Top Rank"
-        onChange={handleSortChange}
-      >
+      <Select size="sm" variant="filterBar" defaultValue="Top Rank" onChange={handleSortChange}>
         <option disabled>Sort By…</option>
         <option>Top Rank</option>
         <option>Most Affordable</option>

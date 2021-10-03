@@ -63,10 +63,7 @@ const LootCard = ({ footer, bag, searchText, className }: Props) => {
         <LootLegend key={`loot-legend_${bag.id}`} toggleVisibility={toggleItemLegendVisibility} />
       )}
       {!isItemLegendVisible && (
-        <LootCardContainer 
-          className={`lootCard ${className}`} 
-          key={`loot-card_${bag.id}`}
-        >
+        <LootCardContainer className={`lootCard ${className}`} key={`loot-card_${bag.id}`}>
           <LootTitleBar>
             <div>Dope Wars Loot #{bag.id}</div>
           </LootTitleBar>
