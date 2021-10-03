@@ -3,7 +3,6 @@ import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import { Button } from '@chakra-ui/react';
 import Dialog from './Dialog';
-import Image from 'next/image';
 
 type DisconnectWalletProps = {
   onClose: () => void;

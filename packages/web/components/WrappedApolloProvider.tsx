@@ -84,7 +84,7 @@ function getClient(uri: string) {
             },
             open_sea_asset: {
               keyArgs: false,
-              read(_, { readField, storage }) {
+              read(_, { storage }) {
                 if (!storage.var) {
                   storage.var = makeVar(new OpenSeaAsset());
                   // const tokenId = readField('id') as string;
