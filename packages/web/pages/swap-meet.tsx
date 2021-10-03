@@ -27,8 +27,7 @@ const Container = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   //
-  padding: 8px;
-  padding-top: 76px;
+  padding: 64px 8px;
   .lootGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -39,7 +38,7 @@ const Container = styled.div`
     max-height: 550px;
   }
   ${media.tablet`
-    padding: 32px;
+    padding: 76px 32px;
   `}
 `;
 

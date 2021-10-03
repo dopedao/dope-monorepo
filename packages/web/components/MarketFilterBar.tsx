@@ -1,26 +1,34 @@
-import { FormControl, FormLabel, Input, Select, Switch } from '@chakra-ui/react';
-import { useDebounce } from 'usehooks-ts';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { FormControl, FormLabel, Input, Select, Switch } from '@chakra-ui/react';
+import { media } from '../styles/mixins';
+import { useDebounce } from 'usehooks-ts';
 
 import styled from '@emotion/styled';
 
 const Container = styled.div`
-  height: 52px;
   padding: 8px;
   background-color: rgba(0, 0, 0, 0.8);
   position: fixed;
   z-index: 100;
   width: 100%;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   justify-content: flex-start;
-  gap: 16px;
+  gap: 8px;
+
+  ${media.tablet`
+    height: 52px;
+    flex-flow: row nowrap;
+    gap: 16px;
+  `}
+
   input,
   select {
     border-collapse: collapse;
     height: 32px;
     border-radius: 0;
     border: 1px solid #000;
+    white-space: nowrap;
   }
 `;
 
@@ -64,13 +72,11 @@ const MarketFilterBar = ({ searchCallback, searchIsTypingCallback, sortByCallbac
         placeholder="Search…"
         size="sm"
         variant="filterBar"
-        maxWidth="256px"
         onChange={handleSearchChange}
       />
       <Select 
         size="sm" 
         variant="filterBar" 
-        maxWidth="256px" 
         defaultValue="All"
         onChange={handleSaleStatusChange}
       >
@@ -82,7 +88,6 @@ const MarketFilterBar = ({ searchCallback, searchIsTypingCallback, sortByCallbac
       <Select 
         size="sm" 
         variant="filterBar" 
-        maxWidth="256px" 
         defaultValue="Top Rank"
         onChange={handleSortChange}
       >
