@@ -17,7 +17,7 @@ const Head = ({ title, description, url, ogImage }: HeadProps) => (
   <NextHead>
     <meta charSet="UTF-8" />
     <title>{title ? `${defaultTitle} | ${title}` : defaultTitle}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content={description || defaultDescription} />
     <link rel="icon" type="image/png" sizes="24x24" href={favicon} />
     <meta property="og:url" content={url || defaultOGURL} />
