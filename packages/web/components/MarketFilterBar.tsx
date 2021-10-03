@@ -25,11 +25,12 @@ const Container = styled.div`
 `;
 
 interface Props {
-  searchChangeCallback(value: string): void;
+  searchCallback(value: string): void;
+  sortByCallback(value: string): void;
   searchIsTypingCallback(): void;
 }
 
-const MarketFilterBar = ({ searchChangeCallback, searchIsTypingCallback }: Props) => {
+const MarketFilterBar = ({ searchCallback, searchIsTypingCallback, sortByCallback }: Props) => {
   const [searchInputValue, setSearchInputValue] = useState<string>('');
 
   // Debounce hook lets us fill search string on type, but not do anything
@@ -37,13 +38,24 @@ const MarketFilterBar = ({ searchChangeCallback, searchIsTypingCallback }: Props
   const debouncedSearchInputValue = useDebounce<string>(searchInputValue, 150);
 
   useEffect(() => {
-    searchChangeCallback(debouncedSearchInputValue);
+    searchCallback(debouncedSearchInputValue);
   }, [debouncedSearchInputValue]);
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchInputValue(value);
     searchIsTypingCallback();
+  };
+
+  const handleSaleStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    console.log(`Status: ${value}`);
+  };
+
+  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    console.log(`Sort By: ${value}`);
+    sortByCallback(value);
   };
 
   return (
@@ -55,19 +67,30 @@ const MarketFilterBar = ({ searchChangeCallback, searchIsTypingCallback }: Props
         maxWidth="256px"
         onChange={handleSearchChange}
       />
-      <Select size="sm" variant="filterBar" maxWidth="256px" defaultValue="All">
+      <Select 
+        size="sm" 
+        variant="filterBar" 
+        maxWidth="256px" 
+        defaultValue="All"
+        onChange={handleSaleStatusChange}
+      >
         <option disabled>Sale Status…</option>
         <option>All</option>
-        <option disabled>Buy Now</option>
-        <option disabled>Auction</option>
+        <option>For Sale</option>
         {/* <option>Never Sold</option> */}
       </Select>
-      <Select size="sm" variant="filterBar" maxWidth="256px" defaultValue="Top Rank">
+      <Select 
+        size="sm" 
+        variant="filterBar" 
+        maxWidth="256px" 
+        defaultValue="Top Rank"
+        onChange={handleSortChange}
+      >
         <option disabled>Sort By…</option>
         <option>Top Rank</option>
-        <option disabled>Most Affordable</option>
-        <option disabled>Most Expensive</option>
-        <option disabled>Highest Last Sale</option>
+        <option>Most Affordable</option>
+        <option>Most Expensive</option>
+        <option>Highest Last Sale</option>
       </Select>
       {/* <FormControl display="flex" alignItems="center" width="auto">
         <FormLabel htmlFor="has-paper" mb="0" color="#fff" fontSize="sm">

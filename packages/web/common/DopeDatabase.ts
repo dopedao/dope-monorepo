@@ -113,36 +113,33 @@ class DopeDatabase {
     // console.log(theBag);
     theBag[key] = value;
   }
+}
 
-  // SORTING ------------------------------------------------------------------
+// SORTING ------------------------------------------------------------------
 
-  itemsSortedByRank(): PickedBag[] {
-    return this.items.sort((a: PickedBag, b: PickedBag) => {
-      const aRank = a.rank ?? highImpossibleRank;
-      const bRank = b.rank ?? highImpossibleRank;
-      return aRank - bRank;
-    });
-  }
+export const compareByRank = (a: PickedBag, b: PickedBag) => {
+  const aRank = a.rank ?? highImpossibleRank;
+  const bRank = b.rank ?? highImpossibleRank;
+  return aRank - bRank;
+} 
 
-  itemsSortedByMostAffordable(): PickedBag[] {
-    return this.items.sort((a: PickedBag, b: PickedBag) => {
-      const aPrice = a.open_sea_asset?.current_sale_price ?? 0;
-      const bPrice = b.open_sea_asset?.current_sale_price ?? 0;
-      return bPrice - aPrice;
-    });
-  }
+export const compareByMostAffordable = (a: PickedBag, b: PickedBag) => {
+  const highImpossiblePrice = 9999999999999999;
+  const aPrice = a.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
+  const bPrice = b.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
+  return aPrice - bPrice;
+}
 
-  itemsSortedByMostExpensive(): PickedBag[] {
-    return this.itemsSortedByMostAffordable().reverse();
-  }
+export const compareByMostExpensive = (a: PickedBag, b: PickedBag) => {
+  const aPrice = a.open_sea_asset?.current_sale_price ?? 0;
+  const bPrice = b.open_sea_asset?.current_sale_price ?? 0;
+  return bPrice - aPrice;
+}
 
-  itemsSortedByHighestLastSale(): PickedBag[] {
-    return this.items.sort((a: PickedBag, b: PickedBag) => {
-      const aLastSalePrice = a.open_sea_asset?.last_sale_price ?? 0;
-      const bLastSalePrice = b.open_sea_asset?.last_sale_price ?? 0;
-      return aLastSalePrice - bLastSalePrice;
-    });
-  }
+export const compareByHighestLastSale = (a: PickedBag, b: PickedBag) => {
+  const aLastSalePrice = a.open_sea_asset?.last_sale_price ?? 0;
+  const bLastSalePrice = b.open_sea_asset?.last_sale_price ?? 0;
+  return bLastSalePrice - aLastSalePrice;
 }
 
 // FILTERING ----------------------------------------------------------------
@@ -150,8 +147,6 @@ class DopeDatabase {
 /**
  * Home-rolled full text search for items.
  * Supports: "words in quotes" and individual terms outside of quotes.
- *
- * TODO: Clean up API…don't like that it's not inside the class
  */
 export const filterItemsBySearchString = (items: PickedBag[], searchString: string) => {
   if (searchString === '') return items;
