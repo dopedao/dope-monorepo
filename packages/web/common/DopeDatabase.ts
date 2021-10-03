@@ -85,8 +85,8 @@ class DopeDatabase {
     console.log('…Populated');
   }
 
-  refreshItemClaims() {
-    console.log('TODO: Implement refreshItemClaims');
+  refreshHasPaper() {
+    console.log('TODO: Implement refreshHasPaper');
   }
 
   // Fetch transformed output, loads it, refresh the Apollo Reactive var.
@@ -144,7 +144,7 @@ export const compareByHighestLastSale = (a: PickedBag, b: PickedBag) => {
 
 // FILTERING ----------------------------------------------------------------
 
-export const testForUnclaimedPaper = (bag: PickedBag) => bag.claimed;
+export const testForUnclaimedPaper = (bag: PickedBag) => !bag.claimed;
 export const testForSale = (bag: PickedBag) => bag.open_sea_asset?.is_on_sale;
 
 /**
