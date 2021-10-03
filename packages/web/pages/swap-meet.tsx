@@ -23,40 +23,6 @@ import DopeDatabase, {
 
 const title = 'Dope Wars Market';
 
-const Container = styled.div`
-  // Important the immediate parent container for InfiniteScroll
-  // is scrollable so it works properly.
-  height: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  //
-  padding: 64px 8px;
-  .lootGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    grid-column-gap: 16px;
-    grid-row-gap: 16px;
-  }
-  > .lootCard {
-    max-height: 550px;
-  }
-  ${media.tablet`
-    padding: 76px 32px;
-  `}
-`;
-
-const ContentLoading = (
-  <Container>
-    <LoadingBlock />
-  </Container>
-);
-
-const ContentEmpty = (
-  <Container>
-    <h2>Can't find what you're looking for…</h2>
-  </Container>
-);
-
 // To prevent all 8k items from showing at once and overloading
 // the DOM we fake loading more using infinite scroll.
 //
@@ -100,7 +66,41 @@ const MarketList = () => {
   const [sortByKey, setSortByKey] = useState('');
   const [statusKey, setStatusKey] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [viewCompactCards, setViewCompactCards] = useState(false);
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
+
+  const Container = styled.div`
+    // Important the immediate parent container for InfiniteScroll
+    // is scrollable so it works properly.
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    //
+    padding: 64px 8px;
+    .lootGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      grid-column-gap: 16px;
+      grid-row-gap: 16px;
+    }
+    .lootCard {
+      max-height: ${ viewCompactCards ? '225' : '550' }px;
+    }
+    ${media.tablet`
+      padding: 76px 32px;
+    `}
+  `;
+  const ContentLoading = (
+    <Container>
+      <LoadingBlock />
+    </Container>
+  );
+  const ContentEmpty = (
+    <Container>
+      <h2>Can't find what you're looking for…</h2>
+    </Container>
+  );
+  
 
   const filteredSortedItems = useMemo(
     () => {
@@ -131,11 +131,7 @@ const MarketList = () => {
 
   // Loads unclaimed $paper status from The Graph,
   // then updates items in reactive var cache.
-  const { 
-    loading: loadingBags, 
-    error: errorBags, 
-    data: dataBags 
-  } = useAllUnclaimedBagsQuery();
+  const { data: dataBags } = useAllUnclaimedBagsQuery();
   if (dataBags && dataBags.page_1) {
     dopeDb.updateHasPaperFromQuery(dataBags);
     DopeDbCacheReactive(dopeDb);
@@ -147,6 +143,7 @@ const MarketList = () => {
         searchCallback={(value: string) => setSearchInputValue(value)}
         sortByCallback={(key: string) => setSortByKey(key)}
         statusCallback={(key: string) => setStatusKey(key)}
+        compactViewCallback={(toggle: boolean) => setViewCompactCards(toggle)}
         searchIsTypingCallback={() => setIsTyping(true)}
       />
       { isTyping && ContentLoading }

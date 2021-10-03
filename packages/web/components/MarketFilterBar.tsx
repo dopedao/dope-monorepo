@@ -36,6 +36,7 @@ interface Props {
   searchCallback(value: string): void;
   sortByCallback(value: string): void;
   statusCallback(value: string): void;
+  compactViewCallback(toggle: boolean): void;
   searchIsTypingCallback(): void;
 }
 
@@ -44,6 +45,7 @@ const MarketFilterBar = ({
   searchIsTypingCallback, 
   sortByCallback,
   statusCallback,
+  compactViewCallback,
 }: Props) => {
   const [searchInputValue, setSearchInputValue] = useState<string>('');
 
@@ -71,6 +73,12 @@ const MarketFilterBar = ({
     const value = event.target.value;
     // console.log(`Sort By: ${value}`);
     sortByCallback(value);
+  };
+
+  const handleViewToggle = (event: ChangeEvent<HTMLInputElement>) => {
+    const toggle = event.target.checked;
+    // console.log(toggle);
+    compactViewCallback(toggle);
   };
 
   return (
@@ -104,12 +112,12 @@ const MarketFilterBar = ({
         <option>Most Expensive</option>
         <option>Highest Last Sale</option>
       </Select>
-      {/* <FormControl display="flex" alignItems="center" width="auto">
-        <FormLabel htmlFor="has-paper" mb="0" color="#fff" fontSize="sm">
-          $PAPER
+      <FormControl display="flex" alignItems="center" width="auto">
+        <FormLabel htmlFor="compact-view" mb="0" color="#fff" fontSize="sm">
+          Compact
         </FormLabel>
-        <Switch id="has-paper" />
-      </FormControl> */}
+        <Switch id="compact-view" onChange={handleViewToggle} />
+      </FormControl>
     </Container>
   );
 };
