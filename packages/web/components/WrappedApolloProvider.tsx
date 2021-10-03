@@ -7,12 +7,13 @@ import {
 } from '@apollo/client';
 import { getRarityForDopeId } from '../common/dope-rarity-check';
 import { NETWORK } from '../common/constants';
-import { OpenSeaAsset, getOpenSeaAssetJson } from '../common/OpenSeaAsset';
+import { OpenSeaAsset } from '../common/OpenSeaAsset';
 import { ReactNode, useMemo } from 'react';
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import DopeDatabase, { DopeDbCacheReactive } from '../common/DopeDatabase';
 import { valueFromCachedLoot } from '../common/DopeJsonParser';
+
 
 /**
  * We use the below declaration to specify client-only field getters,

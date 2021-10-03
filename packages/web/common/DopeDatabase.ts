@@ -21,7 +21,13 @@ export type PickedBag = Pick<Bag,
   'weapon' |
   'open_sea_asset'
   >;
-
+type BagClaimCheck = Pick<Bag, 'id' | 'claimed'>;
+// At the time of coding, there were less than 3k unclaimed DOPE tokens.
+type UnclaimedPaperPages = {
+  page_1:  BagClaimCheck[];
+  page_2?: BagClaimCheck[];
+  page_3?: BagClaimCheck[];
+}
 
 export const EmptyBagStruct: PickedBag = {
   id: '',
@@ -85,15 +91,20 @@ class DopeDatabase {
     console.log('…Populated');
   }
 
-  refreshHasPaper() {
-    console.log('TODO: Implement refreshHasPaper');
+  updateHasPaperFromQuery(queryResultJson: UnclaimedPaperPages) {
+    console.log("updateHasPaperFromQuery");
+    const unclaimedBags = Object.values(queryResultJson).flat(Infinity);
+    for(let i=0; i<unclaimedBags.length; i++) {
+      const bag = unclaimedBags[i] as BagClaimCheck;
+      this.updateRecord(bag.id, 'claimed', bag.claimed);
+    }
   }
 
   // Fetch transformed output, loads it, refresh the Apollo Reactive var.
   async refreshOpenSeaAssets() {
     // OpenSea Asset price + sale information is pulled, transformed, and stored by our API.
     // We fetch the cached result.
-    console.log("Refreshing OpenSea Asset Info");
+    console.log("refreshOpenSeaAssets");
     const url      = 'https://dope-wars-gg.s3.us-west-1.amazonaws.com/open-sea-assets.json';
     const response = await fetch(url);
     const assets   = await response.json();
@@ -104,7 +115,7 @@ class DopeDatabase {
 
   // UPDATING -----------------------------------------------------------------
 
-  updateRecord(id: number, key: keyof PickedBag, value: any): void {
+  updateRecord(id: number | string, key: keyof PickedBag, value: any): void {
     // console.log(`Updating: ${id}:${key} = ${value}`);
     const theBag = this.items.find(bag => {
       if (!bag) return false;

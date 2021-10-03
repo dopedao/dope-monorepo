@@ -1,7 +1,14 @@
-import { useReactiveVar } from '@apollo/client';
-import { useEffect, useMemo, useState } from 'react';
 import { media } from '../styles/mixins';
+import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
+import { useEffect, useMemo, useState } from 'react';
+import { useReactiveVar } from '@apollo/client';
 import AppWindow from '../components/AppWindow';
+import Head from '../components/Head';
+import InfiniteScroll from 'react-infinite-scroller';
+import LoadingBlock from '../components/LoadingBlock';
+import LootCard from '../components/loot/LootCard';
+import MarketFilterBar from '../components/MarketFilterBar';
+import styled from '@emotion/styled';
 import DopeDatabase, {
   compareByHighestLastSale,
   compareByMostAffordable,
@@ -13,12 +20,6 @@ import DopeDatabase, {
   testForSale,
   PickedBag,
 } from '../common/DopeDatabase';
-import Head from '../components/Head';
-import InfiniteScroll from 'react-infinite-scroller';
-import LoadingBlock from '../components/LoadingBlock';
-import LootCard from '../components/loot/LootCard';
-import MarketFilterBar from '../components/MarketFilterBar';
-import styled from '@emotion/styled';
 
 const title = 'Dope Wars Market';
 
@@ -127,6 +128,18 @@ const MarketList = () => {
     console.log(`page: ${page}\nitemsVisible: ${itemsVisible}`);
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
   };
+
+  // Loads unclaimed $paper status from The Graph,
+  // then updates items in reactive var cache.
+  const { 
+    loading: loadingBags, 
+    error: errorBags, 
+    data: dataBags 
+  } = useAllUnclaimedBagsQuery();
+  if (dataBags && dataBags.page_1) {
+    dopeDb.updateHasPaperFromQuery(dataBags);
+    DopeDbCacheReactive(dopeDb);
+  }
 
   return (
     <>
