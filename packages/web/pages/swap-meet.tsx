@@ -54,13 +54,10 @@ const ContentEmpty = (
 //
 // The infinite scroll approach will fit better with
 // returning DOPE + Stockpile items via API at some point in the future.
-const PAGE_SIZE = 4;
-let currentPageSize = PAGE_SIZE;
-console.log ("INIT currentPageSize");
+const PAGE_SIZE = 24;
+let itemsVisible = PAGE_SIZE;
 
 const MarketList = () => {
-  console.log("MARKET LIST RENDER")
-
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
   const sortedItems = dopeDb.itemsSortedByRank();
   const [searchInputValue, setSearchInputValue] = useState('');
@@ -71,36 +68,36 @@ const MarketList = () => {
     [searchInputValue],
   );
 
-  const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, currentPageSize));
+  const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
 
   useEffect(() => {
-    console.log("Using effect");
-    currentPageSize = PAGE_SIZE;
-    setVisibleItems(filteredSortedItems.slice(0, currentPageSize));
+    itemsVisible = PAGE_SIZE;
+    setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
     setIsTyping(false);
   }, [searchInputValue]);
 
+  // Increasing itemsVisible simply increases the window size
+  // into the cached data we render in window.
+  const loadNextPage = (page: number) => {
+    itemsVisible = (page + 1) * PAGE_SIZE;
+    console.log(`page: ${page}\nitemsVisible: ${itemsVisible}`);
+    setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
+  };
 
-  const MarketListContent = () => {
-    console.log("MARKET LIST CONTENT RENDER");
-    // Increasing currentPageSize simply increases the window size
-    // into the cached data we render in window.
-    const loadNextPage = (page: number) => {
-      console.log(`Loading more Items for page ${page}`);
-      currentPageSize = (page + 1) * PAGE_SIZE;
-      console.log(currentPageSize);
-      setVisibleItems(filteredSortedItems.slice(0, currentPageSize));
-    };
-    
-    if (isTyping) return ContentLoading;
-    if (visibleItems.length > 0)
-      return (
+  return (
+    <>
+      <MarketFilterBar
+        searchChangeCallback={(value: string) => setSearchInputValue(value)}
+        searchIsTypingCallback={() => setIsTyping(true)}
+      />
+      { isTyping && ContentLoading }
+      { (!isTyping && visibleItems.length > 0) &&
         <Container>
           <InfiniteScroll
             pageStart={0}
             loadMore={loadNextPage}
             hasMore={filteredSortedItems.length > visibleItems.length}
-            loader={<LoadingBlock key={`loader_${currentPageSize}`} />}
+            loader={<LoadingBlock key={`loader_${itemsVisible}`} />}
             useWindow={false}
             className="lootGrid"
           >
@@ -114,24 +111,13 @@ const MarketList = () => {
             ))}
           </InfiniteScroll>
         </Container>
-      );
-
-    return ContentEmpty;
-  };
-
-  return (
-    <>
-      <MarketFilterBar
-        searchChangeCallback={(value: string) => setSearchInputValue(value)}
-        searchIsTypingCallback={() => setIsTyping(true)}
-      />
-      <MarketListContent />
+      }
+      { (!isTyping && visibleItems.length === 0) && ContentEmpty }
     </>
   );
 };
 
 export default function Market() {
-  console.log("===== MARKET RENDER");
   return (
     <AppWindow padBody={false} scrollable={false}>
       <Head title={title} />
