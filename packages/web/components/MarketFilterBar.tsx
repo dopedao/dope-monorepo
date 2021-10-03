@@ -33,25 +33,29 @@ const Container = styled.div`
 `;
 
 interface Props {
+  compactViewCallback(toggle: boolean): void;
   searchCallback(value: string): void;
+  searchIsTypingCallback(): void;
   sortByCallback(value: string): void;
   statusCallback(value: string): void;
-  compactViewCallback(toggle: boolean): void;
-  searchIsTypingCallback(): void;
+  compactSwitchOn: boolean;
 }
 
 const MarketFilterBar = ({
+  compactViewCallback,
   searchCallback,
   searchIsTypingCallback,
+  compactSwitchOn,
   sortByCallback,
   statusCallback,
-  compactViewCallback,
 }: Props) => {
   const [searchInputValue, setSearchInputValue] = useState<string>('');
 
   // Debounce hook lets us fill search string on type, but not do anything
   // until debounced value gets changed.
   const debouncedSearchInputValue = useDebounce<string>(searchInputValue, 150);
+
+console.log("COMPACT SWITCH: "+compactSwitchOn);
 
   useEffect(() => {
     searchCallback(debouncedSearchInputValue);
@@ -101,7 +105,7 @@ const MarketFilterBar = ({
         <FormLabel htmlFor="compact-view" mb="0" color="#fff" fontSize="sm">
           Compact
         </FormLabel>
-        <Switch id="compact-view" onChange={handleViewToggle} />
+        <Switch id="compact-view" onChange={handleViewToggle} isChecked={compactSwitchOn} />
       </FormControl>
     </Container>
   );
