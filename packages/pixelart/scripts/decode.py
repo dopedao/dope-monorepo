@@ -15,13 +15,14 @@ resolution = 320
 lookup = range(0, resolution, int(resolution/granularity))
 
 order = {
-    "hands": 2,
-    "neck": 5,
-    "rings": 1,
-    "shoes": 4,
-    "waist": 3,
     "silhouette": 0,
-    "weapons": 6,
+    "rings": 1,
+    "hands": 2,
+    "clothes": 3,
+    "waist": 4,
+    "shoes": 5,
+    "neck": 6,
+    "weapons": 7,
 }
 
 bg = np.array([210/255, 173/255, 172/255, 1.0])
@@ -35,6 +36,7 @@ def gallery(array, ncols=25):
               .swapaxes(1, 2)
               .reshape(height*nrows, width*ncols, intensity))
     return result
+
 
 components = {}
 
@@ -52,7 +54,10 @@ for parts in meta["parts"]:
     components[gender][category].append(part)
 
 for gender, categories in components.items():
-    parts = [None] * 7
+    if gender == "girls":
+        continue
+
+    parts = [None] * 8
     for category, components in categories.items():
         parts[order[category]] = components
 
@@ -81,7 +86,7 @@ for gender, categories in components.items():
                     rgb = hex2rgb("#" + c)
                     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
                         lookup[length], :3] = np.array(rgb) / 255
-                    img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
+                    img[lookup[y]: lookup[y+1], lookup[x]                        : lookup[x] + lookup[length], 3] = 1.0
 
                 x += length
                 if x == right:
@@ -89,6 +94,8 @@ for gender, categories in components.items():
                     y += 1
 
         renders.append(img)
+        # image.imsave("../outputs/permutations/men/" +
+                    #  str(i) + ".png", img)
 
         # plt.imshow(img)
         # plt.show()
