@@ -20,10 +20,10 @@ export const getOpenSeaAssetJson = (tokenId: string) => {
 
 // NOTE: MUST BE CALLED ON SERVER-SIDE OR FAILS CORS
 // Called from api/open-sea-assets
-export const getOpenSeaAssetPagesJson = async () => {
+export const getOpenSeaAssetPagesJson = async (total_tokens = 8000) => {
   console.log('getOpenSeaAssetPagesJson');
   const ASSETS_PER_REQUEST = 50;
-  const TOTAL_NUM_TOKENS = 8000;
+  const TOTAL_NUM_TOKENS = total_tokens;
   const assets = [];
 
   const baseUrl = '' +
