@@ -1,5 +1,6 @@
 import { useReactiveVar } from '@apollo/client';
 import { useEffect, useMemo, useState } from 'react';
+import { media } from '../styles/mixins';
 import AppWindow from '../components/AppWindow';
 import DopeDatabase, {
   compareByHighestLastSale,
@@ -24,8 +25,9 @@ const Container = styled.div`
   // is scrollable so it works properly.
   height: 100%;
   overflow-y: scroll;
+  overflow-x: hidden;
   //
-  padding: 32px;
+  padding: 8px;
   padding-top: 76px;
   .lootGrid {
     display: grid;
@@ -36,6 +38,9 @@ const Container = styled.div`
   > .lootCard {
     max-height: 550px;
   }
+  ${media.tablet`
+    padding: 32px;
+  `}
 `;
 
 const ContentLoading = (
