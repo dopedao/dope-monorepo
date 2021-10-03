@@ -21,7 +21,7 @@ import DopeDatabase, {
   PickedBag,
 } from '../common/DopeDatabase';
 
-const title = 'Dope Wars Market';
+const title = 'Dope Wars SWAP MEET';
 
 // To prevent all 8k items from showing at once and overloading
 // the DOM we fake loading more using infinite scroll.
@@ -171,7 +171,7 @@ const MarketList = () => {
   );
 };
 
-export default function Market() {
+export default function SwapMeet() {
   return (
     <AppWindow padBody={false} scrollable={false}>
       <Head title={title} />
