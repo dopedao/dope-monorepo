@@ -2,6 +2,7 @@ import { media } from '../styles/mixins';
 import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
+import { isTouchDevice } from '../common/utils';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -97,7 +98,7 @@ const MarketList = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [sortByKey, setSortByKey] = useState('');
   const [statusKey, setStatusKey] = useState('');
-  const [viewCompactCards, setViewCompactCards] = useState(false);
+  const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 
   // Loads unclaimed $paper status from The Graph,
@@ -138,6 +139,7 @@ const MarketList = () => {
         sortByCallback={(key: string) => setSortByKey(key)}
         statusCallback={(key: string) => setStatusKey(key)}
         compactViewCallback={(toggle: boolean) => setViewCompactCards(toggle)}
+        compactSwitchOn={viewCompactCards}
         searchIsTypingCallback={() => setIsTyping(true)}
       />
       {isTyping && ContentLoading}
