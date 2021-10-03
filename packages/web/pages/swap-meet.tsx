@@ -9,6 +9,8 @@ import DopeDatabase, {
   compareByRank, 
   DopeDbCacheReactive,
   filterItemsBySearchString,
+  testForUnclaimedPaper,
+  testForSale,
   PickedBag,
 } from '../common/DopeDatabase';
 import Head from '../components/Head';
@@ -67,9 +69,9 @@ let itemsVisible = PAGE_SIZE;
 
 // Values here are set in MarketFilterBar.
 // TODO: DRY this up…
-const getItemComparisonFunction = (sortKey: string) => {
-  console.log(`Sorting: ${sortKey}`);
-  switch (sortKey) {
+const getItemComparisonFunction = (key: string) => {
+  console.log(`Sorting: ${key}`);
+  switch (key) {
     case 'Most Affordable':
       return compareByMostAffordable;
     case 'Most Expensive':
@@ -80,19 +82,32 @@ const getItemComparisonFunction = (sortKey: string) => {
       return compareByRank;
   }
 };
+const getStatusTestFunction = (key: string) => {
+  console.log(`Filter for: ${key}`);
+  switch (key) {
+    case 'Has Unclaimed $PAPER':
+      return testForUnclaimedPaper;
+    case 'For Sale':
+      return testForSale;
+    default:
+      return (() => true);
+  }
+};
 
 const MarketList = () => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [sortByKey, setSortByKey] = useState('');
+  const [statusKey, setStatusKey] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 
   const filteredSortedItems = useMemo(
     () => {
       const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
-      return filterItemsBySearchString(sortedItems, searchInputValue);
+      const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
+      return filterItemsBySearchString(filteredItems, searchInputValue);
     },
-    [searchInputValue, sortByKey],
+    [searchInputValue, sortByKey, statusKey],
   );
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
@@ -102,7 +117,7 @@ const MarketList = () => {
     itemsVisible = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
     setIsTyping(false);
-  }, [searchInputValue, sortByKey]);
+  }, [searchInputValue, sortByKey, statusKey]);
 
 
   // Increasing itemsVisible simply increases the window size
@@ -118,6 +133,7 @@ const MarketList = () => {
       <MarketFilterBar
         searchCallback={(value: string) => setSearchInputValue(value)}
         sortByCallback={(key: string) => setSortByKey(key)}
+        statusCallback={(key: string) => setStatusKey(key)}
         searchIsTypingCallback={() => setIsTyping(true)}
       />
       { isTyping && ContentLoading }

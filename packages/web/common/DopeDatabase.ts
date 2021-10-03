@@ -144,6 +144,9 @@ export const compareByHighestLastSale = (a: PickedBag, b: PickedBag) => {
 
 // FILTERING ----------------------------------------------------------------
 
+export const testForUnclaimedPaper = (bag: PickedBag) => bag.claimed;
+export const testForSale = (bag: PickedBag) => bag.open_sea_asset?.is_on_sale;
+
 /**
  * Home-rolled full text search for items.
  * Supports: "words in quotes" and individual terms outside of quotes.

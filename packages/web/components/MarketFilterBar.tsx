@@ -35,10 +35,16 @@ const Container = styled.div`
 interface Props {
   searchCallback(value: string): void;
   sortByCallback(value: string): void;
+  statusCallback(value: string): void;
   searchIsTypingCallback(): void;
 }
 
-const MarketFilterBar = ({ searchCallback, searchIsTypingCallback, sortByCallback }: Props) => {
+const MarketFilterBar = ({ 
+  searchCallback, 
+  searchIsTypingCallback, 
+  sortByCallback,
+  statusCallback,
+}: Props) => {
   const [searchInputValue, setSearchInputValue] = useState<string>('');
 
   // Debounce hook lets us fill search string on type, but not do anything
@@ -55,14 +61,15 @@ const MarketFilterBar = ({ searchCallback, searchIsTypingCallback, sortByCallbac
     searchIsTypingCallback();
   };
 
-  const handleSaleStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    console.log(`Status: ${value}`);
+    // console.log(`Status: ${value}`);
+    statusCallback(value);
   };
 
   const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    console.log(`Sort By: ${value}`);
+    // console.log(`Sort By: ${value}`);
     sortByCallback(value);
   };
 
@@ -78,12 +85,12 @@ const MarketFilterBar = ({ searchCallback, searchIsTypingCallback, sortByCallbac
         size="sm" 
         variant="filterBar" 
         defaultValue="All"
-        onChange={handleSaleStatusChange}
+        onChange={handleStatusChange}
       >
-        <option disabled>Sale Status…</option>
+        <option disabled>Status…</option>
         <option>All</option>
+        <option>Has Unclaimed $PAPER</option>
         <option>For Sale</option>
-        {/* <option>Never Sold</option> */}
       </Select>
       <Select 
         size="sm" 
