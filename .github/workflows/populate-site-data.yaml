@@ -1,0 +1,10 @@
+name: populate-site-data
+on:
+  schedule:
+    - cron: '10 * * * *'
+jobs:
+  cache-open-sea-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ping-api
+        run: curl https://dopewars.gg/api/open-sea-assets?secret_word=big-pimpin
