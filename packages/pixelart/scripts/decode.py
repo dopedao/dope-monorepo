@@ -25,12 +25,13 @@ order = {
     "shoes": 7,
     "neck": 8,
     "weapons": 9,
+    "accessories": 10
 }
 
 bg = np.array([210/255, 173/255, 172/255, 1.0])
 
 
-def gallery(array, ncols=25):
+def gallery(array, ncols=28):
     nindex, height, width, intensity = array.shape
     nrows = nindex//ncols
     assert nindex == nrows*ncols
@@ -59,21 +60,39 @@ for gender, categories in components.items():
     if gender == "girls":
         continue
 
-    parts = [None] * 10
+    parts = [None] * 11
     for category, components in categories.items():
         if category == "silhouette":
             continue
         parts[order[category]] = components
 
-    permutations = list(itertools.product(*parts))
+    # permutations = list(itertools.product(*parts))
 
     renders = []
     # for i, permutation in enumerate(permutations):
-    for i in range(625):
-        parts = permutations[randrange(0, len(permutations))]
+    for i in range(784):
+        permutation = [
+            parts[0][randrange(0, len(parts[0]))],
+            parts[1][randrange(0, len(parts[1]))],
+            parts[2][randrange(0, len(parts[2]))],
+            parts[3][randrange(0, len(parts[3]))],
+            parts[4][randrange(0, len(parts[4]))],
+            parts[5][randrange(0, len(parts[5]))],
+            parts[6][randrange(0, len(parts[6]))],
+            parts[7][randrange(0, len(parts[7]))],
+            parts[8][randrange(0, len(parts[8]))],
+            parts[9][randrange(0, len(parts[9]))],
+            parts[10][randrange(0, len(parts[10]))],
+        ]
+
+        # parts = permutations[]
         img = np.full((350, 350, 4), bg)
         print(gender, i)
-        for part in parts:
+        for part in permutation:
+            print(part)
+            if part["data"] == "0x000000000000":
+                continue
+
             subimg = to_bytes(hexstr=part["data"])
             top = subimg[1]
             right = subimg[2]
