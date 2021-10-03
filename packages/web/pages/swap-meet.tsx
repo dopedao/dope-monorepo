@@ -35,13 +35,12 @@ const PAGE_SIZE = 24;
 let itemsVisible = PAGE_SIZE;
 
 const Container = styled.div`
+  padding: 64px 8px;
   // Important the immediate parent container for InfiniteScroll
   // is scrollable so it works properly.
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  //
-  padding: 64px 8px;
   .lootGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -49,10 +48,7 @@ const Container = styled.div`
     grid-row-gap: 16px;
   }
   .lootCard {
-    max-height: 500px;
-  }
-  .lootCard.compact {
-    max-height: 225px;
+    max-height: auto;
   }
   ${media.tablet`
     padding: 76px 32px;
@@ -157,10 +153,11 @@ const MarketList = () => {
           >
             {visibleItems.map((bag: PickedBag) => (
               <LootCard
-                key={`loot-card_${bag.id}`}
+                key={`loot-card_${bag.id}_${viewCompactCards}`}
                 bag={bag}
                 footer="for-marketplace"
-                className={viewCompactCards ? 'compact' : ''}
+                isExpanded={viewCompactCards ? false : true}
+                showCollapse={true}
               />
             ))}
           </InfiniteScroll>

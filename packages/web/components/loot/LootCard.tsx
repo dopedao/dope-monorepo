@@ -1,7 +1,8 @@
+import { css } from '@emotion/react';
 import { useState } from 'react';
 import LootCardFooterForOwner from './LootCardFooterForOwner';
 import LootCardFooterForMarket from './LootCardFooterForMarket';
-import LootCardRows from './LootCardRows';
+import LootCardBody from './LootCardBody';
 import LootLegend from './LootLegend';
 import styled from '@emotion/styled';
 import { PickedBag } from '../../common/DopeDatabase';
@@ -11,11 +12,17 @@ const LootCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #fff;
+  &.collapsed {
+    max-height: 225px;
+    .lootCardBody {
+      overflow-y: hidden;
+    }
+  }
 `;
 const LootTitleBar = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   line-height: 32px;
   background: #dededd;
   border-bottom: 2px solid #000;
@@ -45,15 +52,43 @@ const LootFooterContainer = styled.footer`
 interface Props {
   footer: 'for-marketplace' | 'for-owner';
   bag: PickedBag;
-  className?: string;
+  isExpanded?: boolean;
+  showCollapse?: boolean;
 }
 
-const LootCard = ({ footer, bag, className }: Props) => {
+const LootCard = ({ 
+  footer, 
+  bag, 
+  isExpanded: isExpandedProp = true,
+  showCollapse = false,
+}: Props) => {
   const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(isExpandedProp);
 
   const toggleItemLegendVisibility = (): void => {
     setIsItemLegendVisible(!isItemLegendVisible);
   };
+
+  const ToggleButton = () => {
+    const iconPath = '/images/icon';
+    const icon = isExpanded ? 'collapse' : 'expand';
+    return (
+      <div css={css`
+        width:32px;
+        height:32px;
+        cursor:pointer;
+        cursor:hand;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      `}>
+        <img 
+          src={ `${iconPath}/${icon}.svg` }
+          onClick={ () => setIsExpanded(!isExpanded) }
+        />
+      </div>
+    )
+  }
 
   return (
     <>
@@ -61,11 +96,15 @@ const LootCard = ({ footer, bag, className }: Props) => {
         <LootLegend key={`loot-legend_${bag.id}`} toggleVisibility={toggleItemLegendVisibility} />
       )}
       {!isItemLegendVisible && (
-        <LootCardContainer className={`lootCard ${className}`} key={`loot-card_${bag.id}`}>
+        <LootCardContainer className={`lootCard ${isExpanded ? '' : 'collapsed'}`} key={`loot-card_${bag.id}`}>
           <LootTitleBar>
+            <div css={css`width:32px;`}></div>
             <div>Dope Wars Loot #{bag.id}</div>
+            <div css={css`width:32px;`}>
+              { showCollapse && <ToggleButton /> }
+            </div>
           </LootTitleBar>
-          <LootCardRows bag={bag} />
+          <LootCardBody bag={bag} />
           {footer && footer === 'for-owner' && (
             <LootFooterContainer>
               <LootCardFooterForOwner bag={bag} toggleVisibility={toggleItemLegendVisibility} />
