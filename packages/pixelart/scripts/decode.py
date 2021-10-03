@@ -15,14 +15,16 @@ resolution = 320
 lookup = range(0, resolution, int(resolution/granularity))
 
 order = {
-    "silhouette": 0,
-    "rings": 1,
-    "hands": 2,
-    "clothes": 3,
-    "waist": 4,
-    "shoes": 5,
-    "neck": 6,
-    "weapons": 7,
+    "bodies": 0,
+    "heads": 1,
+    "beards": 2,
+    "rings": 3,
+    "hands": 4,
+    "clothes": 5,
+    "waist": 6,
+    "shoes": 7,
+    "neck": 8,
+    "weapons": 9,
 }
 
 bg = np.array([210/255, 173/255, 172/255, 1.0])
@@ -57,8 +59,10 @@ for gender, categories in components.items():
     if gender == "girls":
         continue
 
-    parts = [None] * 8
+    parts = [None] * 10
     for category, components in categories.items():
+        if category == "silhouette":
+            continue
         parts[order[category]] = components
 
     permutations = list(itertools.product(*parts))

@@ -14,7 +14,11 @@ for c in meta["partcolors"]:
 
 for file in glob.glob("../imgs/**/*.png"):
     img = image.imread(file)
-    a = np.where(img[:,:,3] != 0)
+    a = np.where(img[:, :, 3] != 0)
+
+    if len(a[0]) == 0:
+        print("empty", file)
+        continue
 
     bbox = np.min(a[0]), np.max(a[0]), np.min(a[1]), np.max(a[1])
     cropped = img[bbox[0]:bbox[1]+1, bbox[2]:bbox[3]+1]
