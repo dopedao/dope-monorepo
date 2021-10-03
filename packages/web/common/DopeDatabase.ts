@@ -4,7 +4,6 @@ import DopeJson from 'dope-metrics/output/loot.json';
 import { getRarityForDopeId } from './dope-rarity-check';
 import { OpenSeaAsset } from './OpenSeaAsset';
 
-
 const highImpossibleRank = 9999;
 
 export type PickedBag = Pick<Bag, 
@@ -107,7 +106,10 @@ class DopeDatabase {
 
   updateRecord(id: number, key: keyof PickedBag, value: any): void {
     // console.log(`Updating: ${id}:${key} = ${value}`);
-    const theBag = this.items.find(bag => bag.id === id.toString()) as any;
+    const theBag = this.items.find(bag => {
+      if (!bag) return false;
+      return bag.id === id.toString()
+    }) as any;
     // console.log(theBag);
     theBag[key] = value;
   }
