@@ -34,6 +34,42 @@ const title = 'Dope Wars Market';
 const PAGE_SIZE = 24;
 let itemsVisible = PAGE_SIZE;
 
+
+const Container = styled.div`
+  // Important the immediate parent container for InfiniteScroll
+  // is scrollable so it works properly.
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  //
+  padding: 64px 8px;
+  .lootGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-column-gap: 16px;
+    grid-row-gap: 16px;
+  }
+  .lootCard {
+    max-height: 500px;
+  }
+  .lootCard.compact {
+    max-height: 225px;
+  }
+  ${media.tablet`
+    padding: 76px 32px;
+  `}
+`;
+const ContentLoading = (
+  <Container>
+    <LoadingBlock />
+  </Container>
+);
+const ContentEmpty = (
+  <Container>
+    <h2>Can't find what you're looking for…</h2>
+  </Container>
+);
+
 // Values here are set in MarketFilterBar.
 // TODO: DRY this up…
 const getItemComparisonFunction = (key: string) => {
@@ -63,44 +99,19 @@ const getStatusTestFunction = (key: string) => {
 
 const MarketList = () => {
   const [searchInputValue, setSearchInputValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const [sortByKey, setSortByKey] = useState('');
   const [statusKey, setStatusKey] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
   const [viewCompactCards, setViewCompactCards] = useState(false);
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
-
-  const Container = styled.div`
-    // Important the immediate parent container for InfiniteScroll
-    // is scrollable so it works properly.
-    height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    //
-    padding: 64px 8px;
-    .lootGrid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      grid-column-gap: 16px;
-      grid-row-gap: 16px;
-    }
-    .lootCard {
-      max-height: ${ viewCompactCards ? '225' : '550' }px;
-    }
-    ${media.tablet`
-      padding: 76px 32px;
-    `}
-  `;
-  const ContentLoading = (
-    <Container>
-      <LoadingBlock />
-    </Container>
-  );
-  const ContentEmpty = (
-    <Container>
-      <h2>Can't find what you're looking for…</h2>
-    </Container>
-  );
   
+  // Loads unclaimed $paper status from The Graph,
+  // then updates items in reactive var cache.
+  const { data: dataBags } = useAllUnclaimedBagsQuery();
+  if (dataBags && dataBags.page_1) {
+    dopeDb.updateHasPaperFromQuery(dataBags);
+    DopeDbCacheReactive(dopeDb);
+  }
 
   const filteredSortedItems = useMemo(
     () => {
@@ -120,7 +131,6 @@ const MarketList = () => {
     setIsTyping(false);
   }, [searchInputValue, sortByKey, statusKey]);
 
-
   // Increasing itemsVisible simply increases the window size
   // into the cached data we render in window.
   const loadNextPage = (page: number) => {
@@ -128,14 +138,6 @@ const MarketList = () => {
     console.log(`page: ${page}\nitemsVisible: ${itemsVisible}`);
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
   };
-
-  // Loads unclaimed $paper status from The Graph,
-  // then updates items in reactive var cache.
-  const { data: dataBags } = useAllUnclaimedBagsQuery();
-  if (dataBags && dataBags.page_1) {
-    dopeDb.updateHasPaperFromQuery(dataBags);
-    DopeDbCacheReactive(dopeDb);
-  }
 
   return (
     <>
@@ -163,6 +165,7 @@ const MarketList = () => {
                 bag={bag} 
                 footer="for-marketplace" 
                 searchText={searchInputValue}
+                className={ viewCompactCards ? 'compact' : '' }
               />
             ))}
           </InfiniteScroll>
