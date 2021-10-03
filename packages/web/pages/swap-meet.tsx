@@ -2,6 +2,7 @@ import { media } from '../styles/mixins';
 import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
+import { isTouchDevice } from '../common/utils';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -35,13 +36,12 @@ const PAGE_SIZE = 24;
 let itemsVisible = PAGE_SIZE;
 
 const Container = styled.div`
+  padding: 64px 8px;
   // Important the immediate parent container for InfiniteScroll
   // is scrollable so it works properly.
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  //
-  padding: 64px 8px;
   .lootGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -49,10 +49,7 @@ const Container = styled.div`
     grid-row-gap: 16px;
   }
   .lootCard {
-    max-height: 500px;
-  }
-  .lootCard.compact {
-    max-height: 225px;
+    max-height: auto;
   }
   ${media.tablet`
     padding: 76px 32px;
@@ -101,7 +98,7 @@ const MarketList = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [sortByKey, setSortByKey] = useState('');
   const [statusKey, setStatusKey] = useState('');
-  const [viewCompactCards, setViewCompactCards] = useState(false);
+  const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 
   // Loads unclaimed $paper status from The Graph,
@@ -142,6 +139,7 @@ const MarketList = () => {
         sortByCallback={(key: string) => setSortByKey(key)}
         statusCallback={(key: string) => setStatusKey(key)}
         compactViewCallback={(toggle: boolean) => setViewCompactCards(toggle)}
+        compactSwitchOn={viewCompactCards}
         searchIsTypingCallback={() => setIsTyping(true)}
       />
       {isTyping && ContentLoading}
@@ -157,10 +155,11 @@ const MarketList = () => {
           >
             {visibleItems.map((bag: PickedBag) => (
               <LootCard
-                key={`loot-card_${bag.id}`}
+                key={`loot-card_${bag.id}_${viewCompactCards}`}
                 bag={bag}
                 footer="for-marketplace"
-                className={viewCompactCards ? 'compact' : ''}
+                isExpanded={viewCompactCards ? false : true}
+                showCollapse={true}
               />
             ))}
           </InfiniteScroll>

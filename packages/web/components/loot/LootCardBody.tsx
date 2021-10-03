@@ -80,9 +80,10 @@ interface Props {
   bag: PickedBag;
 }
 
-const LootCardRows = ({ bag }: Props) => {
+const LootCardBody = ({ bag }: Props) => {
   return (
     <div
+      className="lootCardBody"
       css={css`
         flex: 1;
         background: #fff;
@@ -120,4 +121,4 @@ const LootCardRows = ({ bag }: Props) => {
     </div>
   );
 };
-export default LootCardRows;
+export default LootCardBody;

@@ -1,6 +1,7 @@
 import { media } from '../styles/mixins';
 import { returnBreakpoint } from '../styles/breakpoints';
 import { useState } from 'react';
+import { isTouchDevice } from '../common/utils';
 import ConditionalWrapper from './ConditionalWrapper';
 import DesktopWindowTitleBar from './DesktopWindowTitleBar';
 import Draggable from 'react-draggable';
@@ -61,13 +62,7 @@ const DesktopWindow = ({
     }
   `;
 
-  const isTouchDevice =
-    typeof window !== 'undefined' &&
-    ('ontouchstart' in window ||
-      navigator.maxTouchPoints > 0 ||
-      (navigator as any).msMaxTouchPoints > 0);
-
-  const shouldBeDraggable = !isTouchDevice && !isFullScreen;
+  const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
 
   return (
     <ConditionalWrapper
@@ -77,7 +72,7 @@ const DesktopWindow = ({
       <WindowWrapper className={isFullScreen ? '' : 'floating'}>
         <DesktopWindowTitleBar
           title={title}
-          isTouchDevice={isTouchDevice}
+          isTouchDevice={isTouchDevice()}
           isFullScreen={isFullScreen}
           toggleFullScreen={toggleFullScreen}
         >
