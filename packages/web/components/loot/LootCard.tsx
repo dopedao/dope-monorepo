@@ -5,6 +5,7 @@ import LootCardFooterForMarket from './LootCardFooterForMarket';
 import LootCardRows from './LootCardRows';
 import LootLegend from './LootLegend';
 import styled from '@emotion/styled';
+import { PickedBag } from '../../common/DopeDatabase';
 
 const LootCardContainer = styled.div`
   border: 2px solid #000;
@@ -44,24 +45,11 @@ const LootFooterContainer = styled.footer`
 
 interface Props {
   footer: 'for-marketplace' | 'for-owner';
-  bag: Pick<Bag, 
-    'id' | 
-    'claimed' |
-    'clothes' |
-    'drugs' |
-    'foot' |
-    'hand' |
-    'neck' |
-    'rank' |
-    'ring' |
-    'vehicle' |
-    'waist' |
-    'weapon' |
-    'open_sea_asset'
-  >;
+  bag: PickedBag;
+  searchText?: string;
 }
 
-const LootCard = ({ footer, bag }: Props) => {
+const LootCard = ({ footer, bag, searchText }: Props) => {
   const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
 
   const toggleItemLegendVisibility = (): void => {
@@ -78,7 +66,7 @@ const LootCard = ({ footer, bag }: Props) => {
           <LootTitleBar>
             <div>Dope Wars Loot #{bag.id}</div>
           </LootTitleBar>
-          <LootCardRows bag={bag} />
+          <LootCardRows bag={bag} searchText={searchText} />
           {footer && footer === 'for-owner' && (
             <LootFooterContainer>
               <LootCardFooterForOwner bag={bag} toggleVisibility={toggleItemLegendVisibility} />

@@ -1,5 +1,10 @@
-import { ApolloClient, InMemoryCache, makeVar } from '@apollo/client';
-import { ApolloProvider } from '@apollo/client';
+import { 
+  ApolloClient, 
+  ApolloProvider,
+  InMemoryCache, 
+  makeVar,
+  useReactiveVar
+} from '@apollo/client';
 import { getRarityForDopeId } from '../common/dope-rarity-check';
 import { NETWORK } from '../common/constants';
 import { OpenSeaAsset, getOpenSeaAssetJson } from '../common/OpenSeaAsset';
@@ -112,6 +117,13 @@ const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
     [chainId],
   );
   const client = getClient(uri);
+  const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase; 
+
+  useEffect(() => {
+    console.log("Wrapped provider");
+    dopeDb.refreshOpenSeaAssets().then(() => DopeDbCacheReactive(dopeDb));
+  });
+
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 export default WrappedApolloProvider;

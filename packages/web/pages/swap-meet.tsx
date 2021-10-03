@@ -16,10 +16,13 @@ import styled from '@emotion/styled';
 const title = 'Dope Wars Market';
 
 const Container = styled.div`
+  // Important the immediate parent container for InfiniteScroll
+  // is scrollable so it works properly.
   height: 100%;
+  overflow-y: scroll;
+  //
   padding: 32px;
   padding-top: 76px;
-  overflow-y: scroll;
   .lootGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -51,10 +54,13 @@ const ContentEmpty = (
 //
 // The infinite scroll approach will fit better with
 // returning DOPE + Stockpile items via API at some point in the future.
-const PAGE_SIZE = 24;
+const PAGE_SIZE = 4;
 let currentPageSize = PAGE_SIZE;
+console.log ("INIT currentPageSize");
 
 const MarketList = () => {
+  console.log("MARKET LIST RENDER")
+
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
   const sortedItems = dopeDb.itemsSortedByRank();
   const [searchInputValue, setSearchInputValue] = useState('');
@@ -68,23 +74,25 @@ const MarketList = () => {
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, currentPageSize));
 
   useEffect(() => {
+    console.log("Using effect");
     currentPageSize = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, currentPageSize));
     setIsTyping(false);
   }, [searchInputValue]);
 
-  // Increasing currentPageSize simply increases the window size
-  // into the cached data we render in window.
-  const loadNextPage = (page: number) => {
-    console.log('Loading more Items');
-    currentPageSize = (page + 1) * PAGE_SIZE;
-    setVisibleItems(filteredSortedItems.slice(0, currentPageSize));
-    console.log(currentPageSize);
-  };
 
   const MarketListContent = () => {
+    console.log("MARKET LIST CONTENT RENDER");
+    // Increasing currentPageSize simply increases the window size
+    // into the cached data we render in window.
+    const loadNextPage = (page: number) => {
+      console.log(`Loading more Items for page ${page}`);
+      currentPageSize = (page + 1) * PAGE_SIZE;
+      console.log(currentPageSize);
+      setVisibleItems(filteredSortedItems.slice(0, currentPageSize));
+    };
+    
     if (isTyping) return ContentLoading;
-
     if (visibleItems.length > 0)
       return (
         <Container>
@@ -123,6 +131,7 @@ const MarketList = () => {
 };
 
 export default function Market() {
+  console.log("===== MARKET RENDER");
   return (
     <AppWindow padBody={false} scrollable={false}>
       <Head title={title} />

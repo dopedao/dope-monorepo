@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import { media } from '../styles/mixins';
 import { useCallback } from 'react';
 import { Button } from '@chakra-ui/button';
 import ConnectWalletSVG from '../svg/ConnectWallet';

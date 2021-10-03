@@ -2,6 +2,7 @@ import { Bag, useBagQuery } from '../../src/generated/graphql';
 import { css } from '@emotion/react';
 import { LootLegendBackgroundColors } from './LootLegend';
 import ItemRarities from 'dope-metrics/output/item-rarities.json';
+import { PickedBag } from '../../common/DopeDatabase';
 
 const itemBackgroundColors = Object.values(LootLegendBackgroundColors);
 
@@ -77,24 +78,11 @@ const Row = ({ color = '#fff', slot, item }: { color?: string; slot: string; ite
 );
 
 interface Props {
-  bag: Pick<Bag, 
-  'id' | 
-  'claimed' |
-  'clothes' |
-  'drugs' |
-  'foot' |
-  'hand' |
-  'neck' |
-  'rank' |
-  'ring' |
-  'vehicle' |
-  'waist' |
-  'weapon' |
-  'open_sea_asset'
->;
+  bag: PickedBag;
+  searchText?: string;
 }
 
-const LootCardRows = ({ bag }: Props) => {
+const LootCardRows = ({ bag, searchText }: Props) => {
   return (
     <div
       css={css`

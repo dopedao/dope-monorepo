@@ -33,7 +33,6 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
         .map(({ id, claimed, rank }, idx) => ({
           id,
           rank,
-          // percentile: ((1 - rank / 8000) * 100).toFixed(1),
           claimed: claimed ? (
             ''
           ) : (
@@ -51,8 +50,6 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
               return a.id < b.id ? -1 : 1;
             case 'rank':
               return a.rank < b.rank ? -1 : 1;
-            // case 'percentile':
-            //   return a.percentile > b.percentile ? -1 : 1;
             default:
               return a.id > b.id ? -1 : 1;
           }
@@ -102,7 +99,7 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
           </Tr>
         </Thead>
         <Tbody>
-          {items.map(({ id, rank, percentile, claimed, idx }) => (
+          {items.map(({ id, rank, claimed, idx }) => (
             <Tr
               className={selected === idx ? 'selected' : ''}
               key={id}
@@ -110,7 +107,6 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
             >
               <Td>{id}</Td>
               <Td>{rank}</Td>
-              {/* <Td>{percentile}</Td> */}
               <Td>{claimed}</Td>
             </Tr>
           ))}

@@ -3,7 +3,7 @@ import { makeVar } from '@apollo/client';
 import DopeJson from 'dope-metrics/output/loot.json';
 import { getRarityForDopeId } from './dope-rarity-check';
 import { OpenSeaAsset } from './OpenSeaAsset';
-import { getOpenSeaAssetPagesJson } from './OpenSeaAsset';
+
 
 const highImpossibleRank = 9999;
 
@@ -15,7 +15,6 @@ export type PickedBag = Pick<Bag,
   'foot' |
   'hand' |
   'neck' |
-  'minted' |
   'rank' |
   'ring' |
   'vehicle' |
@@ -39,8 +38,8 @@ export const EmptyBagStruct: PickedBag = {
   vehicle: '',
   waist: '',
   weapon: '',
-  // All have been minted already
-  minted: true,
+  // // All have been minted already
+  // minted: true,
   open_sea_asset: new OpenSeaAsset(),
   // currentOwner: Wallet;
 };
@@ -48,7 +47,8 @@ export const EmptyBagStruct: PickedBag = {
 Object.freeze(EmptyBagStruct);
 
 export function newEmptyBag(): PickedBag {
-  return Object.assign({}, EmptyBagStruct);
+  const copy = {} as PickedBag;
+  return Object.assign(copy, EmptyBagStruct);
 }
 
 /**
@@ -90,20 +90,27 @@ class DopeDatabase {
     console.log('TODO: Implement refreshItemClaims');
   }
 
+  // Fetch transformed output, loads it, refresh the Apollo Reactive var.
   async refreshOpenSeaAssets() {
-    console.log('TODO: Implement API proxy for refreshOpenSeaAssets');
-    getOpenSeaAssetPagesJson();
+    // OpenSea Asset price + sale information is pulled, transformed, and stored by our API.
+    // We fetch the cached result.
+    console.log("Refreshing OpenSea Asset Info");
+    const url      = 'https://dope-wars-gg.s3.us-west-1.amazonaws.com/open-sea-assets.json';
+    const response = await fetch(url);
+    const assets   = await response.json();
+    for(let i=0; i<assets.length; i++) {
+      this.updateRecord(assets[i].token_id, 'open_sea_asset', assets[i]);
+    }
   }
 
   // UPDATING -----------------------------------------------------------------
 
-  // updateDopeRecord(id: number, key: string, value: any): void {
-  //   if (!this.items[id]) {
-  //     this.items[id] = newEmptyBag();
-  //   }
-  //   console.log(`Updating: ${id}:${key} = ${value}`);
-  //   this.items[id][key as keyof PickedBag] = value;
-  // }
+  updateRecord(id: number, key: keyof PickedBag, value: any): void {
+    // console.log(`Updating: ${id}:${key} = ${value}`);
+    const theBag = this.items.find(bag => bag.id === id.toString()) as any;
+    // console.log(theBag);
+    theBag[key] = value;
+  }
 
   // SORTING ------------------------------------------------------------------
 
@@ -150,14 +157,15 @@ export const filterItemsBySearchString = (items: PickedBag[], searchString: stri
   // Splits on spaces except when in quotes
   const searchWords = searchString.toLowerCase().match(/([^\s"]+|"[^"]*")+/g);
   if (!searchWords || searchWords.length == 0) return items;
-
   const searchWordsNoQuotes = searchWords.map(word => word.replaceAll('"', ''));
 
   console.log(`filtering: ${searchWordsNoQuotes}`);
 
   return items.filter(obj =>
     Object.keys(obj).some(key => {
-      const testVal = obj[key as keyof PickedBag].toString().toLowerCase();
+      const value =  obj[key as keyof PickedBag];
+      if(!value) return false; // no match
+      const testVal = value.toString().toLowerCase();
       return searchWordsNoQuotes.every(word => testVal.indexOf(word) > -1);
     }),
   );
