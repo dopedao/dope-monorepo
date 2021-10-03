@@ -6,7 +6,7 @@ import 'ds-test/test.sol';
 import './Hevm.sol';
 import '../../Loot.sol';
 import { Stockpile } from '../../Stockpile.sol';
-import { DopeComponents } from '../../DopeComponents.sol';
+import { Components, ComponentTypes } from '../../Components.sol';
 import { TokenId } from '../../TokenId.sol';
 
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
@@ -65,46 +65,15 @@ struct ItemNames {
 }
 
 contract StockpileOwner is ERC1155Holder {
-    DopeComponents sc;
+    Components sc;
     Stockpile stockpile;
 
-    function init(DopeComponents _components, Stockpile _stockpile) public {
+    function init(Components _components, Stockpile _stockpile) public {
         sc = _components;
         stockpile = _stockpile;
-    }
 
-    function addItemComponent(uint8 itemType, string calldata component) public returns (uint8) {
-        return sc.addComponent(itemType, component);
-    }
-
-    function mint(
-        address account,
-        uint8[5] memory components,
-        uint8 itemType,
-        uint256 amount,
-        bytes memory data
-    ) public returns (uint256) {
-        return stockpile.mint(account, components, itemType, amount, data);
-    }
-
-    function mintBatch(
-        address to,
-        uint8[] memory components,
-        uint8[] memory itemTypes,
-        uint256[] memory amounts,
-        bytes memory data
-    ) public returns (uint256[] memory) {
-        return stockpile.mintBatch(to, components, itemTypes, amounts, data);
-    }
-}
-
-contract StockpileTester is Stockpile {
-    constructor(
-        address _components,
-        address _bags,
-        address _owner
-    ) Stockpile(_components, _bags, _owner) {
-        palettes[0] = [
+        string[] memory palette = new string[](44);
+        string[44] memory _palette = [
             '',
             'ffffff',
             'C58860',
@@ -150,43 +119,85 @@ contract StockpileTester is Stockpile {
             'F0E0CC',
             'FF2626'
         ];
+
+        for (uint256 i = 0; i < palette.length; i++) {
+            palette[i] = _palette[i];
+        }
+
+        stockpile.setPalette(0, palette);
     }
+
+    function addItemComponent(uint8 itemType, string calldata component) public returns (uint8) {
+        return sc.addComponent(itemType, component);
+    }
+
+    function mint(
+        address account,
+        uint8[5] memory components,
+        uint8 itemType,
+        uint256 amount,
+        bytes memory data
+    ) public returns (uint256) {
+        return stockpile.mint(account, components, itemType, amount, data);
+    }
+
+    function mintBatch(
+        address to,
+        uint8[] memory components,
+        uint8[] memory itemTypes,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public returns (uint256[] memory) {
+        return stockpile.mintBatch(to, components, itemTypes, amounts, data);
+    }
+
+    function setRle(uint256 id, bytes memory rle) public {
+        stockpile.setRle(id, rle, rle);
+    }
+}
+
+contract StockpileTester is Stockpile {
+    constructor(
+        address _components,
+        address _bags,
+        address _owner
+    ) Stockpile(_components, _bags, _owner) {}
 
     // View helpers for getting the item ID that corresponds to a bag's items
     function weaponId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.weaponComponents(tokenId), sc.WEAPON());
+        return TokenId.toId(sc.weaponComponents(tokenId), ComponentTypes.WEAPON);
     }
 
     function clothesId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.clothesComponents(tokenId), sc.CLOTHES());
+        return TokenId.toId(sc.clothesComponents(tokenId), ComponentTypes.CLOTHES);
     }
 
     function vehicleId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.vehicleComponents(tokenId), sc.VEHICLE());
+        return TokenId.toId(sc.vehicleComponents(tokenId), ComponentTypes.VEHICLE);
     }
 
     function waistId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.waistComponents(tokenId), sc.WAIST());
+        return TokenId.toId(sc.waistComponents(tokenId), ComponentTypes.WAIST);
     }
 
     function footId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.footComponents(tokenId), sc.FOOT());
+        return TokenId.toId(sc.footComponents(tokenId), ComponentTypes.FOOT);
     }
 
     function handId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.handComponents(tokenId), sc.HAND());
+        return TokenId.toId(sc.handComponents(tokenId), ComponentTypes.HAND);
     }
 
     function drugsId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.drugsComponents(tokenId), sc.DRUGS());
+        return TokenId.toId(sc.drugsComponents(tokenId), ComponentTypes.DRUGS);
     }
 
     function neckId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.neckComponents(tokenId), sc.NECK());
+        return TokenId.toId(sc.neckComponents(tokenId), ComponentTypes.NECK);
     }
 
     function ringId(uint256 tokenId) public view returns (uint256) {
-        return TokenId.toId(sc.ringComponents(tokenId), sc.RING());
+        return TokenId.toId(sc.ringComponents(tokenId), ComponentTypes.RING);
     }
 
     // Given an erc721 bag, returns the erc1155 token ids of the items in the bag
@@ -251,7 +262,7 @@ contract StockpileTest is DSTest {
 
     // contracts
     DopeWarsLoot internal loot;
-    DopeComponents internal components;
+    Components internal components;
     StockpileTester internal stockpile;
 
     // users
@@ -263,7 +274,7 @@ contract StockpileTest is DSTest {
 
         // deploy contracts
         loot = new DopeWarsLoot();
-        components = new DopeComponents(address(owner));
+        components = new Components(address(owner));
         stockpile = new StockpileTester(address(components), address(loot), address(owner));
 
         owner.init(components, stockpile);

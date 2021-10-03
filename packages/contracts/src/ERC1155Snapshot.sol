@@ -1,3 +1,4 @@
+//SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
@@ -167,7 +168,7 @@ abstract contract ERC1155Snapshot is ERC1155 {
         }
     }
 
-    function _updateAccountSnapshot(address account, uint256 id) private {
+    function _updateAccountSnapshot(address account, uint256 id) internal {
         _updateSnapshot(_accountBalanceSnapshots[account][id], balanceOf(account, id));
     }
 
