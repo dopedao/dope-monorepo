@@ -29,24 +29,67 @@ export default extendTheme({
     },
   },
   components: {
+    Input: {
+      // There seems to be a bug with Chakra theme overriding
+      // https://github.com/chakra-ui/chakra-ui/issues/2347
+      // Found success setting variant="something-that-doesnt-exist"
+      baseStyle: {
+        field: {
+          borderColor: '#000',
+          borderWidth: '1px',
+          background: '#fff',
+          color: '#000',
+          _placeholder: {
+            color: '#878783',
+          },
+        },
+      },
+    },
     Button: {
       variants: {
         solid: {
           background: '#EDEFEE',
           border: '2px solid #000000',
           borderRadius: '4px',
+          padding: '8px 12px',
+          height: '32px',
           boxShadow:
             'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)',
-          height: '28px',
           fontSize: '1em',
+          lineHeight: '1em',
           fontWeight: '400',
+          _hover: {
+            backgroundColor: 'var(--hover-bg)',
+            color: '#fff',
+          },
+          _disabled: {
+            _hover: {
+              color: '#000',
+            },
+          },
         },
         primary: {
-          backgroundColor: '#3523FE',
+          backgroundColor: 'var(--primary)',
           color: '#ffffff',
-          border: '4px solid #000000',
-          fontSize: '1.125em',
           textShadow: '1px 1px 0px rgba(0, 0, 0, 0.66)',
+          border: '2px solid #000000',
+          borderRadius: '4px',
+          padding: '8px 12px',
+          height: '32px',
+          boxShadow:
+            'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)',
+          fontSize: '1em',
+          lineHeight: '1em',
+          fontWeight: '400',
+          _hover: {
+            backgroundColor: '#000',
+            color: '#fff',
+          },
+          _disabled: {
+            _hover: {
+              color: '#000',
+            },
+          },
         },
       },
     },
@@ -104,7 +147,7 @@ export default extendTheme({
               background: '#fff',
             },
             '&.selected': {
-              background: '#3523FE',
+              background: 'var(--primary)',
               color: '#fff',
               path: {
                 fill: '#fff',

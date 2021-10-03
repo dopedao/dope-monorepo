@@ -8,13 +8,11 @@ const Hustler = () => {
       <Head title="Create Your Hustler" />
       <ComingSoonDialog title="Under Construction">
         <p>
-          Go read the proposal for
-          <br />
           <a
             className="textLink"
             href="https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283"
           >
-            Dope Wars: Ignition
+            Read the proposal for Dope Wars: Ignition
           </a>
         </p>
       </ComingSoonDialog>

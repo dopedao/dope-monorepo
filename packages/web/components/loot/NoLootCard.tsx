@@ -46,7 +46,7 @@ const NoLootCard = () => {
       <NoLootTitle>No Loot In Connected Wallet</NoLootTitle>
       <NoLootHustler>
         <Image src="/images/hustler/no-loot.svg" width={112} height={350} />
-        <Button variant="primary" onClick={() => router.push('/market')}>
+        <Button variant="primary" onClick={() => router.push('/swap-meet')}>
           Shop The Market
         </Button>
       </NoLootHustler>

@@ -32,6 +32,9 @@ const Dialog = ({
     align-items: center;
     background: ${backgroundCss};
     ${className}
+    img {
+      width: 75%;
+    }
   `;
 
   useEffect(() => {
@@ -77,18 +80,11 @@ const Dialog = ({
         ${media.tablet`
           padding: 32px;
           text-align: left;
-          max-width: 400px;
+          max-width: 600px;
         `}
       `}
       >
-        {icon && (
-          <img
-            src={`/images/icon/${icon}.svg`}
-            css={css`
-              width: 100%;
-            `}
-          />
-        )}
+        {icon && <img src={`/images/icon/${icon}.svg`} />}
         <div>
           {!!title && <h3>{title}</h3>}
           {children}

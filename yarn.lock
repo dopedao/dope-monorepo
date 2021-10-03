@@ -1577,10 +1577,15 @@ __metadata:
     "@graphql-codegen/typescript": ^2.2.2
     "@graphql-codegen/typescript-operations": ^2.1.4
     "@graphql-codegen/typescript-react-apollo": ^3.1.4
+    "@sentry/react": ^6.13.2
+    "@sentry/tracing": ^6.13.2
+    "@types/node": ^16.10.2
     "@types/react": 17.0.9
+    "@types/react-infinite-scroller": ^1.2.2
     "@web3-react/core": ^6.1.9
     "@web3-react/injected-connector": ^6.0.7
     "@web3-react/walletconnect-connector": ^6.2.4
+    aws-sdk: ^2.999.0
     classnames: ^2.3.1
     dope-metrics: ^1.0.4
     framer-motion: ^4
@@ -1591,10 +1596,14 @@ __metadata:
     raw-loader: ^4.0.2
     react: 17.0.2
     react-dom: 17.0.2
+    react-draggable: ^4.4.4
+    react-infinite-scroller: ^1.2.4
+    react-markdown: ^7.0.1
     react-table: ^7.7.0
     swr: ^0.5.6
     typechain: ^5.1.2
     typescript: 4.3.2
+    usehooks-ts: ^1.0.3
     web3: ^1.5.2
   languageName: unknown
   linkType: soft
@@ -4385,6 +4394,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^16.10.2":
+  version: 16.10.2
+  resolution: "@types/node@npm:16.10.2"
+  checksum: 83c1c3c68e7500103908c3f16094e458879c840a719c15b6ea577f81fe1f24a1b3473bb6c8e8091fe79a82543ca7639c6b1088fcf80292ec091d1d1c9504a87e
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.1
   resolution: "@types/normalize-package-data@npm:2.4.1"
@@ -4419,6 +4435,26 @@ __metadata:
   version: 15.7.4
   resolution: "@types/prop-types@npm:15.7.4"
   checksum: ef6e1899e59b876c273811b1bd845022fc66d5a3d11cb38a25b6c566b30514ae38fe20a40f67622f362a4f4f7f9224e22d8da101cff3d6e97e11d7b4c307cfc1
+  languageName: node
+  linkType: hard
+
+"@types/react-infinite-scroller@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@types/react-infinite-scroller@npm:1.2.2"
+  dependencies:
+    "@types/react": "*"
+  checksum: 19ffc80fa3887b09fd6a889797c3d52c14cbec33142b5e17b25c8f258ad6f6bc8ecef7d4492b18b2bf84784cddfe2baa85fd805514c038dab234f73e29f8c36f
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:*":
+  version: 17.0.25
+  resolution: "@types/react@npm:17.0.25"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: a5838a943e73c7ab2c188a6e16918d3120ca04e52f03d98d68dd1fe019503c301b1b3fbac0b6330be2b7d4ffba6e227fe43a0a2e716fe9f79000d5e43308039a
   languageName: node
   linkType: hard
 
@@ -5538,6 +5574,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"aws-sdk@npm:^2.999.0":
+  version: 2.999.0
+  resolution: "aws-sdk@npm:2.999.0"
+  dependencies:
+    buffer: 4.9.2
+    events: 1.1.1
+    ieee754: 1.1.13
+    jmespath: 0.15.0
+    querystring: 0.2.0
+    sax: 1.2.1
+    url: 0.10.3
+    uuid: 3.3.2
+    xml2js: 0.4.19
+  checksum: e9fd1dc41f717b6fa4b1d9fc89a88822bc55384a8d2d231df1d12b4a8a5a543e9f5011d15154faa69b4e7e83ca31ca17b4fc392c676a314c93cb6506db96de6a
+  languageName: node
+  linkType: hard
+
 "aws-sign2@npm:~0.7.0":
   version: 0.7.0
   resolution: "aws-sign2@npm:0.7.0"
@@ -6068,17 +6121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer@npm:5.6.0":
-  version: 5.6.0
-  resolution: "buffer@npm:5.6.0"
-  dependencies:
-    base64-js: ^1.0.2
-    ieee754: ^1.1.4
-  checksum: d659494c5032dd39d03d2912e64179cc44c6340e7e9d1f68d3840e7ab4559989fbce92b4950174593c38d05268224235ba404f0878775cab2a616b6dcad9c23e
-  languageName: node
-  linkType: hard
-
-"buffer@npm:^4.3.0":
+"buffer@npm:4.9.2, buffer@npm:^4.3.0":
   version: 4.9.2
   resolution: "buffer@npm:4.9.2"
   dependencies:
@@ -6086,6 +6129,16 @@ __metadata:
     ieee754: ^1.1.4
     isarray: ^1.0.0
   checksum: 8801bc1ba08539f3be70eee307a8b9db3d40f6afbfd3cf623ab7ef41dffff1d0a31de0addbe1e66e0ca5f7193eeb667bfb1ecad3647f8f1b0750de07c13295c3
+  languageName: node
+  linkType: hard
+
+"buffer@npm:5.6.0":
+  version: 5.6.0
+  resolution: "buffer@npm:5.6.0"
+  dependencies:
+    base64-js: ^1.0.2
+    ieee754: ^1.1.4
+  checksum: d659494c5032dd39d03d2912e64179cc44c6340e7e9d1f68d3840e7ab4559989fbce92b4950174593c38d05268224235ba404f0878775cab2a616b6dcad9c23e
   languageName: node
   linkType: hard
 
@@ -7860,8 +7913,6 @@ __metadata:
   dependencies:
     "@dopewars/contracts": "workspace:packages/contracts"
     "@dopewars/web": "workspace:packages/web"
-    "@sentry/react": ^6.13.2
-    "@sentry/tracing": ^6.13.2
     "@types/mocha": ^8.2.2
     "@types/node": ^14.14.34
     "@typescript-eslint/eslint-plugin": ^4.26.0
@@ -7873,8 +7924,6 @@ __metadata:
     mocha: ^8.4.0
     pinst: ^2.1.6
     prettier: ^2.3.0
-    react-draggable: ^4.4.4
-    react-markdown: ^7.0.1
     ts-node: ^10.0.0
     typescript: ^4.3.2
   languageName: unknown
@@ -8805,6 +8854,13 @@ __metadata:
   version: 3.1.2
   resolution: "eventemitter3@npm:3.1.2"
   checksum: 81e4e82b8418f5cfd986d2b4a2fa5397ac4eb8134e09bcb47005545e22fdf8e9e61d5c053d34651112245aae411bdfe6d0ad5511da0400743fef5fc38bfcfbe3
+  languageName: node
+  linkType: hard
+
+"events@npm:1.1.1":
+  version: 1.1.1
+  resolution: "events@npm:1.1.1"
+  checksum: 40431eb005cc4c57861b93d44c2981a49e7feb99df84cf551baed299ceea4444edf7744733f6a6667e942af687359b1f4a87ec1ec4f21d5127dac48a782039b9
   languageName: node
   linkType: hard
 
@@ -10382,6 +10438,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ieee754@npm:1.1.13":
+  version: 1.1.13
+  resolution: "ieee754@npm:1.1.13"
+  checksum: 102df1ba662e316e6160f7ce29c7c7fa3e04f2014c288336c5a9ff40bbcc2a27d209fa2a81ebfb33f28b1941021343d30e9ad8ee85a2d61f79f5936c35edc33d
+  languageName: node
+  linkType: hard
+
 "ieee754@npm:^1.1.13, ieee754@npm:^1.1.4":
   version: 1.2.1
   resolution: "ieee754@npm:1.2.1"
@@ -11321,6 +11384,13 @@ __metadata:
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
   checksum: d56bfe67cdb32472d5ffe120bf4956a158155f8d7083c2ef258dc6b498a77d80cbee9aa029bbfb7e72f49e2de0c0dfbf5f76b48d39573f7d020578739ac5ea0d
+  languageName: node
+  linkType: hard
+
+"jmespath@npm:0.15.0":
+  version: 0.15.0
+  resolution: "jmespath@npm:0.15.0"
+  checksum: 353bb9e69cc4c1560be0a4df43cb4020abc246e1c60cb5b55dcc76d8c858383f1633faf22ccaf6a5e09568a2077d0f4f1e989e6fcfd496b5cef87964cc8cb9e7
   languageName: node
   linkType: hard
 
@@ -14736,7 +14806,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.0.0, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.0.0, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -15139,6 +15209,17 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0
   checksum: 4a86e44cb46dc54caef485f476f4462dedffad7cdb7f80c1ae5e5127311ea3b166366481b664bf732fe893f31c647cb6267ad833bd58f046062235383747ee2b
+  languageName: node
+  linkType: hard
+
+"react-infinite-scroller@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "react-infinite-scroller@npm:1.2.4"
+  dependencies:
+    prop-types: ^15.5.8
+  peerDependencies:
+    react: ^0.14.9 || ^15.3.0 || ^16.0.0
+  checksum: 6021df5b0318c6f54c3e9adc830f923232b0ed35082d3abf3761b1f298041b42cfecc9a874489dbcbbe6fe8b5256c120b86123bf602061e3f8a1784bccadcf70
   languageName: node
   linkType: hard
 
@@ -15913,6 +15994,20 @@ __metadata:
   version: 2.1.2
   resolution: "safer-buffer@npm:2.1.2"
   checksum: cab8f25ae6f1434abee8d80023d7e72b598cf1327164ddab31003c51215526801e40b66c5e65d658a0af1e9d6478cadcb4c745f4bd6751f97d8644786c0978b0
+  languageName: node
+  linkType: hard
+
+"sax@npm:1.2.1":
+  version: 1.2.1
+  resolution: "sax@npm:1.2.1"
+  checksum: 8dca7d5e1cd7d612f98ac50bdf0b9f63fbc964b85f0c4e2eb271f8b9b47fd3bf344c4d6a592e69ecf726d1485ca62cd8a52e603bbc332d18a66af25a9a1045ad
+  languageName: node
+  linkType: hard
+
+"sax@npm:>=0.6.0":
+  version: 1.2.4
+  resolution: "sax@npm:1.2.4"
+  checksum: d3df7d32b897a2c2f28e941f732c71ba90e27c24f62ee918bd4d9a8cfb3553f2f81e5493c7f0be94a11c1911b643a9108f231dd6f60df3fa9586b5d2e3e9e1fe
   languageName: node
   linkType: hard
 
@@ -18033,6 +18128,16 @@ typescript@4.3.2:
   languageName: node
   linkType: hard
 
+"url@npm:0.10.3":
+  version: 0.10.3
+  resolution: "url@npm:0.10.3"
+  dependencies:
+    punycode: 1.3.2
+    querystring: 0.2.0
+  checksum: 7b83ddb106c27bf9bde8629ccbe8d26e9db789c8cda5aa7db72ca2c6f9b8a88a5adf206f3e10db78e6e2d042b327c45db34c7010c1bf0d9908936a17a2b57d05
+  languageName: node
+  linkType: hard
+
 "url@npm:^0.11.0":
   version: 0.11.0
   resolution: "url@npm:0.11.0"
@@ -18083,6 +18188,15 @@ typescript@4.3.2:
   version: 3.1.1
   resolution: "use@npm:3.1.1"
   checksum: 08a130289f5238fcbf8f59a18951286a6e660d17acccc9d58d9b69dfa0ee19aa038e8f95721b00b432c36d1629a9e32a464bf2e7e0ae6a244c42ddb30bdd8b33
+  languageName: node
+  linkType: hard
+
+"usehooks-ts@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "usehooks-ts@npm:1.0.3"
+  peerDependencies:
+    react: ^17.0.2
+  checksum: 5cc11a722ed344795c83ecf15329b6f5713a128f4bfea50a04694f242790f1349fcb9ea80a3ca9efaeac5c28745e2e1d923522523c36081dc6233937bdfa5737
   languageName: node
   linkType: hard
 
@@ -18968,6 +19082,23 @@ typescript@4.3.2:
     parse-headers: ^2.0.0
     xtend: ^4.0.0
   checksum: a1db277e37737caf3ed363d2a33ce4b4ea5b5fc190b663a6f70bc252799185b840ccaa166eaeeea4841c9c60b87741f0a24e29cbcf6708dd425986d4df186d2f
+  languageName: node
+  linkType: hard
+
+"xml2js@npm:0.4.19":
+  version: 0.4.19
+  resolution: "xml2js@npm:0.4.19"
+  dependencies:
+    sax: ">=0.6.0"
+    xmlbuilder: ~9.0.1
+  checksum: ca8b2fee430d450a18947786bfd7cd1a353ee00fc6fd550acbc8a8e65f1b4df5e9786fcb2990c1a5514ecd554d445fb74e1d716b3a4fcfffc10554aeb5db482b
+  languageName: node
+  linkType: hard
+
+"xmlbuilder@npm:~9.0.1":
+  version: 9.0.7
+  resolution: "xmlbuilder@npm:9.0.7"
+  checksum: 8193bb323806a002764f013bea0c6e9ff2dc26fd29109408761b16b59a8ad2214c2abe8e691755fd8b525586e3a0e1efeb92335947d7b0899032b779f1705a53
   languageName: node
   linkType: hard
 

@@ -1,0 +1,5 @@
+type OpenSeaAsset {
+  is_on_sale: Boolean
+  current_sale_price: Int
+  last_sale_price: Int
+}

@@ -1,0 +1,15 @@
+query Search($text: String!, $first: Int, $skip: Int) {
+  search(text: $text, first: $first, skip: $skip) {
+    id
+    clothes
+    foot
+    hand
+    drugs
+    neck
+    ring
+    vehicle
+    waist
+    weapon
+    claimed
+  }
+}

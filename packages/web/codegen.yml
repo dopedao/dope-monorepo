@@ -1,6 +1,9 @@
 overwrite: true
-schema: "https://api.studio.thegraph.com/query/7708/dope-wars/v0.0.17-rinkeby"
-documents: "queries/**/*.graphql"
+schema: 
+  - "https://api.studio.thegraph.com/query/7708/dope-wars/v0.0.17-rinkeby"
+  - "apollo/client-schemas/bag.graphql"
+  - "apollo/client-schemas/open-sea-asset.graphql"
+documents: "apollo/queries/**/*.graphql"
 generates:
   src/generated/graphql.ts:
     plugins:
