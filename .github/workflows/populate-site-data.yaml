@@ -1,7 +1,7 @@
 name: populate-site-data
 on:
   schedule:
-    - cron: '10 * * * *'
+    - cron: '*/10 * * * *'
 jobs:
   cache-open-sea-assets:
     runs-on: ubuntu-latest
