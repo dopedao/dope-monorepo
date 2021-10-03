@@ -27,7 +27,7 @@ const AppWindowTitleBar = () => {
         // Flex nav items left larger
         ${media.tablet`
           justify-content: flex-start;
-          a:first-child {
+          a:first-of-type {
             margin-left: 0px;
           }
         `}
@@ -46,8 +46,8 @@ const AppWindowTitleBar = () => {
         }
       `}
     >
-      <NavLink href="/market">
-        <a>Market</a>
+      <NavLink href="/swap-meet">
+        <a>Swap Meet</a>
       </NavLink>
       <NavLink href="/loot">
         <a>Loot</a>

@@ -28,6 +28,8 @@ export type Bag = {
   id: Scalars['ID'];
   minted: Scalars['BigInt'];
   neck: Scalars['String'];
+  open_sea_asset?: Maybe<OpenSeaAsset>;
+  rank: Scalars['Int'];
   ring: Scalars['String'];
   vehicle: Scalars['String'];
   waist: Scalars['String'];
@@ -216,6 +218,13 @@ export enum Bag_OrderBy {
 export type Block_Height = {
   hash?: Maybe<Scalars['Bytes']>;
   number?: Maybe<Scalars['Int']>;
+};
+
+export type OpenSeaAsset = {
+  __typename?: 'OpenSeaAsset';
+  current_sale_price?: Maybe<Scalars['Int']>;
+  is_on_sale?: Maybe<Scalars['Boolean']>;
+  last_sale_price?: Maybe<Scalars['Int']>;
 };
 
 export enum OrderDirection {
@@ -533,6 +542,88 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
+export type AllUnclaimedBagsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AllUnclaimedBagsQuery = {
+  __typename?: 'Query';
+  page_1: Array<{ __typename?: 'Bag'; claimed: boolean; id: string }>;
+  page_2: Array<{ __typename?: 'Bag'; claimed: boolean; id: string }>;
+  page_3: Array<{ __typename?: 'Bag'; claimed: boolean; id: string }>;
+};
+
+export type BagQueryVariables = Exact<{
+  tokenId: Scalars['ID'];
+}>;
+
+export type BagQuery = {
+  __typename?: 'Query';
+  bag?: Maybe<{
+    __typename?: 'Bag';
+    id: string;
+    claimed: boolean;
+    open_sea_asset?: Maybe<{
+      __typename?: 'OpenSeaAsset';
+      is_on_sale?: Maybe<boolean>;
+      current_sale_price?: Maybe<number>;
+      last_sale_price?: Maybe<number>;
+    }>;
+  }>;
+};
+
+export type BagsQueryVariables = Exact<{
+  first?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+}>;
+
+export type BagsQuery = {
+  __typename?: 'Query';
+  bags: Array<{
+    __typename?: 'Bag';
+    claimed: boolean;
+    id: string;
+    clothes: string;
+    foot: string;
+    hand: string;
+    drugs: string;
+    neck: string;
+    ring: string;
+    vehicle: string;
+    waist: string;
+    weapon: string;
+    rank: number;
+    open_sea_asset?: Maybe<{
+      __typename?: 'OpenSeaAsset';
+      is_on_sale?: Maybe<boolean>;
+      current_sale_price?: Maybe<number>;
+      last_sale_price?: Maybe<number>;
+    }>;
+  }>;
+};
+
+export type SearchQueryVariables = Exact<{
+  text: Scalars['String'];
+  first?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+}>;
+
+export type SearchQuery = {
+  __typename?: 'Query';
+  search: Array<{
+    __typename?: 'Bag';
+    id: string;
+    clothes: string;
+    foot: string;
+    hand: string;
+    drugs: string;
+    neck: string;
+    ring: string;
+    vehicle: string;
+    waist: string;
+    weapon: string;
+    claimed: boolean;
+  }>;
+};
+
 export type WalletQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -546,6 +637,7 @@ export type WalletQuery = {
     paper: any;
     bags: Array<{
       __typename?: 'Bag';
+      claimed: boolean;
       id: string;
       clothes: string;
       foot: string;
@@ -556,11 +648,215 @@ export type WalletQuery = {
       vehicle: string;
       waist: string;
       weapon: string;
-      claimed: boolean;
+      rank: number;
     }>;
   }>;
 };
 
+export const AllUnclaimedBagsDocument = gql`
+  query AllUnclaimedBags {
+    page_1: bags(first: 1000, skip: 0, where: { claimed: false }) {
+      claimed
+      id
+    }
+    page_2: bags(first: 1000, skip: 1000, where: { claimed: false }) {
+      claimed
+      id
+    }
+    page_3: bags(first: 1000, skip: 2000, where: { claimed: false }) {
+      claimed
+      id
+    }
+  }
+`;
+
+/**
+ * __useAllUnclaimedBagsQuery__
+ *
+ * To run a query within a React component, call `useAllUnclaimedBagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllUnclaimedBagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllUnclaimedBagsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllUnclaimedBagsQuery(
+  baseOptions?: Apollo.QueryHookOptions<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(
+    AllUnclaimedBagsDocument,
+    options,
+  );
+}
+export function useAllUnclaimedBagsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(
+    AllUnclaimedBagsDocument,
+    options,
+  );
+}
+export type AllUnclaimedBagsQueryHookResult = ReturnType<typeof useAllUnclaimedBagsQuery>;
+export type AllUnclaimedBagsLazyQueryHookResult = ReturnType<typeof useAllUnclaimedBagsLazyQuery>;
+export type AllUnclaimedBagsQueryResult = Apollo.QueryResult<
+  AllUnclaimedBagsQuery,
+  AllUnclaimedBagsQueryVariables
+>;
+export const BagDocument = gql`
+  query Bag($tokenId: ID!) {
+    bag(id: $tokenId) {
+      id
+      claimed
+      open_sea_asset @client {
+        is_on_sale
+        current_sale_price
+        last_sale_price
+      }
+    }
+  }
+`;
+
+/**
+ * __useBagQuery__
+ *
+ * To run a query within a React component, call `useBagQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBagQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBagQuery({
+ *   variables: {
+ *      tokenId: // value for 'tokenId'
+ *   },
+ * });
+ */
+export function useBagQuery(baseOptions: Apollo.QueryHookOptions<BagQuery, BagQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<BagQuery, BagQueryVariables>(BagDocument, options);
+}
+export function useBagLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<BagQuery, BagQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<BagQuery, BagQueryVariables>(BagDocument, options);
+}
+export type BagQueryHookResult = ReturnType<typeof useBagQuery>;
+export type BagLazyQueryHookResult = ReturnType<typeof useBagLazyQuery>;
+export type BagQueryResult = Apollo.QueryResult<BagQuery, BagQueryVariables>;
+export const BagsDocument = gql`
+  query Bags($first: Int, $skip: Int) {
+    bags(first: $first, skip: $skip) {
+      claimed
+      id
+      clothes @client
+      foot @client
+      hand @client
+      drugs @client
+      neck @client
+      ring @client
+      vehicle @client
+      waist @client
+      weapon @client
+      rank @client
+      open_sea_asset @client {
+        is_on_sale
+        current_sale_price
+        last_sale_price
+      }
+    }
+  }
+`;
+
+/**
+ * __useBagsQuery__
+ *
+ * To run a query within a React component, call `useBagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBagsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      skip: // value for 'skip'
+ *   },
+ * });
+ */
+export function useBagsQuery(baseOptions?: Apollo.QueryHookOptions<BagsQuery, BagsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
+}
+export function useBagsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<BagsQuery, BagsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
+}
+export type BagsQueryHookResult = ReturnType<typeof useBagsQuery>;
+export type BagsLazyQueryHookResult = ReturnType<typeof useBagsLazyQuery>;
+export type BagsQueryResult = Apollo.QueryResult<BagsQuery, BagsQueryVariables>;
+export const SearchDocument = gql`
+  query Search($text: String!, $first: Int, $skip: Int) {
+    search(text: $text, first: $first, skip: $skip) {
+      id
+      clothes
+      foot
+      hand
+      drugs
+      neck
+      ring
+      vehicle
+      waist
+      weapon
+      claimed
+    }
+  }
+`;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      text: // value for 'text'
+ *      first: // value for 'first'
+ *      skip: // value for 'skip'
+ *   },
+ * });
+ */
+export function useSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+}
+export function useSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+}
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
 export const WalletDocument = gql`
   query Wallet($id: ID!) {
     wallet(id: $id) {
@@ -568,17 +864,18 @@ export const WalletDocument = gql`
       address
       paper
       bags {
-        id
-        clothes
-        foot
-        hand
-        drugs
-        neck
-        ring
-        vehicle
-        waist
-        weapon
         claimed
+        id
+        clothes @client
+        foot @client
+        hand @client
+        drugs @client
+        neck @client
+        ring @client
+        vehicle @client
+        waist @client
+        weapon @client
+        rank @client
       }
     }
   }

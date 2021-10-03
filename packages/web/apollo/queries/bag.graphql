@@ -1,0 +1,11 @@
+query Bag($tokenId: ID!) {
+  bag(id: $tokenId) {
+    id
+    claimed
+    open_sea_asset @client {
+      is_on_sale
+      current_sale_price
+      last_sale_price
+    }
+  }
+}

@@ -52,15 +52,16 @@ const AuthenticatedContent = ({ id }: { id: string }) => {
     return (
       <Container>
         <LootTable
-          data={data.wallet.bags.map(({ id, claimed }) => ({
+          data={data.wallet.bags.map(({ id, claimed, rank }) => ({
             id,
-            unbundled: false,
+            rank,
             claimed,
+            unbundled: false,
           }))}
           selected={selected}
           onSelect={setSelected}
         />
-        <LootCard bag={data.wallet.bags[selected]} />
+        <LootCard bag={data.wallet.bags[selected]} footer="for-owner" />
       </Container>
     );
   }

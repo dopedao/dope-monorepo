@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
-import { media } from '../styles/mixins';
 import { useCallback } from 'react';
+import { Button } from '@chakra-ui/button';
 import ConnectWalletSVG from '../svg/ConnectWallet';
 import Dialog from '../components/Dialog';
 import Head from './Head';
@@ -8,11 +8,6 @@ import useWeb3Provider from '../hooks/web3';
 
 const ConnectWallet = () => {
   const { connect } = useWeb3Provider();
-
-  const buttonProps = {
-    className: 'button',
-    css: css``,
-  };
 
   const onClick = useCallback(
     async (w: 'MetaMask' | 'WalletConnect') => {
@@ -38,15 +33,11 @@ const ConnectWallet = () => {
             svg {
               width: 140px;
               height: 140px;
-              ${media.tablet`
-                width: 280px;
-                height: 280px;
-              `}
             }
           `}
         >
           <ConnectWalletSVG />
-          <h3>Connect Your Ethereum Wallet</h3>
+          <h4>Connect Your Ethereum Wallet</h4>
           <div
             css={css`
               width: 100%;
@@ -55,12 +46,8 @@ const ConnectWallet = () => {
               gap: 16px;
             `}
           >
-            <button {...buttonProps} onClick={() => onClick('MetaMask')}>
-              MetaMask
-            </button>
-            <button {...buttonProps} onClick={() => onClick('WalletConnect')}>
-              WalletConnect
-            </button>
+            <Button onClick={() => onClick('MetaMask')}>MetaMask</Button>
+            <Button onClick={() => onClick('WalletConnect')}>WalletConnect</Button>
           </div>
         </div>
       </Dialog>

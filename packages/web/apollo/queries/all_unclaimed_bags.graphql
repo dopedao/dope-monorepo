@@ -1,0 +1,14 @@
+query AllUnclaimedBags {
+  page_1: bags(first: 1000, skip: 0, where: {claimed: false}) {
+    claimed
+    id
+  }
+  page_2: bags(first: 1000, skip: 1000, where: {claimed: false}) {
+    claimed
+    id
+  }
+  page_3: bags(first: 1000, skip: 2000, where: {claimed: false}) {
+    claimed
+    id
+  }
+}
