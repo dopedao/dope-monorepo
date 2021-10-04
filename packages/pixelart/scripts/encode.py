@@ -1,6 +1,5 @@
 from matplotlib import image
 import numpy as np
-from colormap import rgb2hex
 import json
 from eth_utils import to_hex
 import glob
@@ -36,8 +35,10 @@ for file in glob.glob("../imgs/**/*.png"):
                 if x[3] == 0:
                     cur = 0
                 else:
-                    # matplotlib reads in bgr
-                    cur = rgb2hex(int(x[0]*255), int(x[1]*255), int(x[2]*255))[1:]
+                    if x[3] == 1.0:
+                        cur = '%02x%02x%02x' % (int(x[0]*255), int(x[1]*255), int(x[2]*255))
+                    else:
+                        cur = '%02x%02x%02x%02x' % (int(x[0]*255), int(x[1]*255), int(x[2]*255), int(x[3]*255))
 
                 out += str(colors[cur])
 
