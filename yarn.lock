@@ -1782,6 +1782,7 @@ __metadata:
     "@graphql-codegen/typescript-react-apollo": ^3.1.4
     "@sentry/react": ^6.13.2
     "@sentry/tracing": ^6.13.2
+    "@supabase/supabase-js": ^1.24.0
     "@types/jest": ^27.0.2
     "@types/node": ^16.10.2
     "@types/react": 17.0.9
@@ -4613,6 +4614,55 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@supabase/gotrue-js@npm:^1.18.0":
+  version: 1.18.0
+  resolution: "@supabase/gotrue-js@npm:1.18.0"
+  dependencies:
+    cross-fetch: ^3.0.6
+  checksum: 31cf11062c1ea13f01217d081abcc7a3873830fc1a32a37189d5ecbf1e783273ad24e7291918e68f2d980c4b40c84fda4146f05ae1efa5fa30862bae70953d20
+  languageName: node
+  linkType: hard
+
+"@supabase/postgrest-js@npm:^0.34.0":
+  version: 0.34.0
+  resolution: "@supabase/postgrest-js@npm:0.34.0"
+  dependencies:
+    cross-fetch: ^3.0.6
+  checksum: 5bbe9d78e0e243d39fdeae1b41c6e978d5972e902249ea1aec8dc51b5f67b9f049f6b11053776a3f719fcbb7140dceef47329aae31d133790a4840ff82a2a9ea
+  languageName: node
+  linkType: hard
+
+"@supabase/realtime-js@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "@supabase/realtime-js@npm:1.1.3"
+  dependencies:
+    "@types/websocket": ^1.0.3
+    websocket: ^1.0.34
+  checksum: ddec493871141be24d5ac3811fbede220916f5d95ddd6762bcd461c1bd99014ee95d764be7269029b0d71bdcfc6f5e06b7f9cb33aaf14086eaf8bc1de4f57852
+  languageName: node
+  linkType: hard
+
+"@supabase/storage-js@npm:^1.4.0":
+  version: 1.4.1
+  resolution: "@supabase/storage-js@npm:1.4.1"
+  dependencies:
+    cross-fetch: ^3.1.0
+  checksum: be250db6080e763bcff82bbec545f21abeb03f8c8d1439aaf28b3bd8fb6e5f0cb590dd542879a64fb3cc0b42d9df80d1453a7224fc89761af4f7ddce1fef3994
+  languageName: node
+  linkType: hard
+
+"@supabase/supabase-js@npm:^1.24.0":
+  version: 1.24.0
+  resolution: "@supabase/supabase-js@npm:1.24.0"
+  dependencies:
+    "@supabase/gotrue-js": ^1.18.0
+    "@supabase/postgrest-js": ^0.34.0
+    "@supabase/realtime-js": ^1.1.3
+    "@supabase/storage-js": ^1.4.0
+  checksum: c72bc972f232a6f1b9c66382352874191b07a2dd5e8b84052a0d1dd9fc3c870164d81202fd20e47bd1ab7cde6f510e4d03a5fecaba1a24bb2d9fc20fe05c97ed
+  languageName: node
+  linkType: hard
+
 "@szmarczak/http-timer@npm:^1.1.2":
   version: 1.1.2
   resolution: "@szmarczak/http-timer@npm:1.1.2"
@@ -5067,7 +5117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/websocket@npm:1.0.4":
+"@types/websocket@npm:1.0.4, @types/websocket@npm:^1.0.3":
   version: 1.0.4
   resolution: "@types/websocket@npm:1.0.4"
   dependencies:
@@ -8085,7 +8135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:3.1.4, cross-fetch@npm:^3.0.4, cross-fetch@npm:^3.0.6, cross-fetch@npm:^3.1.4":
+"cross-fetch@npm:3.1.4, cross-fetch@npm:^3.0.4, cross-fetch@npm:^3.0.6, cross-fetch@npm:^3.1.0, cross-fetch@npm:^3.1.4":
   version: 3.1.4
   resolution: "cross-fetch@npm:3.1.4"
   dependencies:
@@ -20617,7 +20667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"websocket@npm:^1.0.32":
+"websocket@npm:^1.0.32, websocket@npm:^1.0.34":
   version: 1.0.34
   resolution: "websocket@npm:1.0.34"
   dependencies:

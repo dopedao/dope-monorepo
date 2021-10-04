@@ -16,6 +16,7 @@
     "@chakra-ui/react": "^1.6.7",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@supabase/supabase-js": "^1.24.0",
     "@types/node": "^16.10.2",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
