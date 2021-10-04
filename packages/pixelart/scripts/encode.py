@@ -20,36 +20,41 @@ for file in glob.glob("../imgs/**/*.png"):
     img = image.imread(file)
 
     a = np.where(img[:, :, 3] != 0)
-    bbox = np.min(a[0]), np.max(a[0]), np.min(a[1]), np.max(a[1])
-    cropped = img[bbox[0]:bbox[1]+1, bbox[2]:bbox[3]+1]
-    encoded = [0, bbox[0], bbox[3]+1, bbox[1]+1, bbox[2]]
 
-    for y in cropped:
-        n = 0
-        prev, cur = -1, -1
-        out = ""
-        for x in y:
-            prev = cur
+    if len(a[0]) > 0:
+        bbox = np.min(a[0]), np.max(a[0]), np.min(a[1]), np.max(a[1])
+        cropped = img[bbox[0]:bbox[1]+1, bbox[2]:bbox[3]+1]
+        encoded = [0, bbox[0], bbox[3]+1, bbox[1]+1, bbox[2]]
 
-            if x[3] == 0:
-                cur = 0
-            else:
-                # matplotlib reads in bgr
-                cur = rgb2hex(int(x[0]*255), int(x[1]*255), int(x[2]*255))[1:]
+        for y in cropped:
+            n = 0
+            prev, cur = -1, -1
+            out = ""
+            for x in y:
+                prev = cur
 
-            out += str(colors[cur])
+                if x[3] == 0:
+                    cur = 0
+                else:
+                    # matplotlib reads in bgr
+                    cur = rgb2hex(int(x[0]*255), int(x[1]*255), int(x[2]*255))[1:]
 
-            if cur != prev and prev != -1:
-                encoded.append(n)
-                encoded.append(colors[prev])
-                n = 0
+                out += str(colors[cur])
 
-            n += 1
+                if cur != prev and prev != -1:
+                    encoded.append(n)
+                    encoded.append(colors[prev])
+                    n = 0
 
-        encoded.append(n)
-        encoded.append(colors[cur])
-        print(out)
-        out = ""
+                n += 1
+
+            encoded.append(n)
+            encoded.append(colors[cur])
+            print(out)
+            out = ""
+    else:
+        encoded = [0, 0, 0, 0, 0, 0]
+
     print("\n")
 
     pth = os.path.splitext(file)[0]
