@@ -14,21 +14,36 @@ resolution = 320
 
 lookup = range(0, resolution, int(resolution/granularity))
 
-order = {
-    "silhouette": 0,
-    "rings": 1,
-    "hands": 2,
-    "clothes": 3,
-    "waist": 4,
-    "shoes": 5,
-    "neck": 6,
-    "weapons": 7,
+female_order = {
+    "bodies": 0,
+    "heads": 1,
+    "rings": 2,
+    "hands": 3,
+    "clothes": 4,
+    "waist": 5,
+    "shoes": 6,
+    "neck": 7,
+    "weapons": 8,
 }
 
-bg = np.array([210/255, 173/255, 172/255, 1.0])
+men_order = {
+    "bodies": 0,
+    "heads": 1,
+    "beards": 2,
+    "rings": 3,
+    "hands": 4,
+    "clothes": 5,
+    "waist": 6,
+    "shoes": 7,
+    "neck": 8,
+    "weapons": 9,
+    "accessories": 10
+}
+
+bg = np.array([210/255, 173/255, 172/255, 0.0])
 
 
-def gallery(array, ncols=25):
+def gallery(array, ncols=27):
     nindex, height, width, intensity = array.shape
     nrows = nindex//ncols
     assert nindex == nrows*ncols
@@ -54,22 +69,55 @@ for parts in meta["parts"]:
     components[gender][category].append(part)
 
 for gender, categories in components.items():
-    if gender == "girls":
-        continue
-
-    parts = [None] * 8
-    for category, components in categories.items():
-        parts[order[category]] = components
-
-    permutations = list(itertools.product(*parts))
+    if gender == "men":
+        parts = [None] * 11
+        for category, components in categories.items():
+            if category == "silhouette":
+                continue
+            parts[men_order[category]] = components
+    else:
+        parts = [None] * 9
+        for category, components in categories.items():
+            if category == "silhouette":
+                continue
+            parts[female_order[category]] = components
 
     renders = []
-    # for i, permutation in enumerate(permutations):
-    for i in range(625):
-        parts = permutations[randrange(0, len(permutations))]
+    for i in range(729):
+        if gender == "men":
+            permutation = [
+                parts[0][randrange(0, len(parts[0]))],
+                parts[1][randrange(0, len(parts[1]))],
+                parts[2][randrange(0, len(parts[2]))],
+                parts[3][randrange(0, len(parts[3]))],
+                parts[4][randrange(0, len(parts[4]))],
+                parts[5][randrange(0, len(parts[5]))],
+                parts[6][randrange(0, len(parts[6]))],
+                parts[7][randrange(0, len(parts[7]))],
+                parts[8][randrange(0, len(parts[8]))],
+                parts[9][randrange(0, len(parts[9]))],
+                parts[10][randrange(0, len(parts[10]))],
+            ]
+        else:
+            permutation = [
+                parts[0][randrange(0, len(parts[0]))],
+                parts[1][randrange(0, len(parts[1]))],
+                parts[2][randrange(0, len(parts[2]))],
+                parts[3][randrange(0, len(parts[3]))],
+                parts[4][randrange(0, len(parts[4]))],
+                parts[5][randrange(0, len(parts[5]))],
+                parts[6][randrange(0, len(parts[6]))],
+                parts[7][randrange(0, len(parts[7]))],
+                parts[8][randrange(0, len(parts[8]))],
+            ]
+
         img = np.full((350, 350, 4), bg)
         print(gender, i)
-        for part in parts:
+        for part in permutation:
+            print(part)
+            if part["data"] == "0x000000000000":
+                continue
+
             subimg = to_bytes(hexstr=part["data"])
             top = subimg[1]
             right = subimg[2]
