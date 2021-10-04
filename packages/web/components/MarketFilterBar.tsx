@@ -1,29 +1,43 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { FormControl, FormLabel, Input, Select, Switch } from '@chakra-ui/react';
+import { Input, Select } from '@chakra-ui/react';
 import { media } from '../styles/mixins';
 import { useDebounce } from 'usehooks-ts';
+import { css } from '@emotion/react';
 
 import styled from '@emotion/styled';
 
 const Container = styled.div`
   padding: 8px;
-  background-color: rgba(0, 0, 0, 0.8);
-  position: fixed;
-  z-index: 100;
+  background-color: #878783;
+  border-bottom: 1px solid #434345;
   width: 100%;
   display: flex;
-  flex-flow: column nowrap;
+  flex-wrap: wrap;
   justify-content: flex-start;
   gap: 8px;
+
+  > * {
+    flex: 1 1 25%;
+  }
+  div:first-of-type {
+    flex: 1 1 100%;
+  }
 
   ${media.tablet`
     height: 52px;
     flex-flow: row nowrap;
     gap: 16px;
+    > * {
+      flex: 1;
+    }
+    div:first-of-type {
+      flex: 1;
+    }
   `}
 
   input,
-  select {
+  select,
+  div.toggleButton {
     border-collapse: collapse;
     height: 32px;
     border-radius: 0;
@@ -79,34 +93,56 @@ console.log("COMPACT SWITCH: "+compactSwitchOn);
     sortByCallback(value);
   };
 
-  const handleViewToggle = (event: ChangeEvent<HTMLInputElement>) => {
-    const toggle = event.target.checked;
-    // console.log(toggle);
-    compactViewCallback(toggle);
-  };
+  const ToggleButton = () => {
+    const iconPath = '/images/icon';
+    const icon = compactSwitchOn ? 'expand' : 'collapse';
+    return (
+      <div 
+        className="toggleButton"
+        css={css`
+          min-width: 32px;
+          max-width: 32px;
+          height:32px;
+          cursor:pointer;
+          cursor:hand;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: var(--gray);
+          border-radius: 2px !important;
+          box-shadow:
+          'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)';
+        `}
+        onClick={ () => compactViewCallback(!compactSwitchOn) }
+      >
+        <img src={ `${iconPath}/${icon}.svg` } />
+      </div>
+    )
+  }
 
   return (
     <Container>
-      <Input placeholder="Search…" size="sm" variant="filterBar" onChange={handleSearchChange} />
-      <Select size="sm" variant="filterBar" defaultValue="All" onChange={handleStatusChange}>
-        <option disabled>Status…</option>
-        <option>All</option>
-        <option>Has Unclaimed $PAPER</option>
-        <option>For Sale</option>
-      </Select>
-      <Select size="sm" variant="filterBar" defaultValue="Top Rank" onChange={handleSortChange}>
-        <option disabled>Sort By…</option>
-        <option>Top Rank</option>
-        <option>Most Affordable</option>
-        <option>Most Expensive</option>
-        <option>Highest Last Sale</option>
-      </Select>
-      <FormControl display="flex" alignItems="center" width="auto">
-        <FormLabel htmlFor="compact-view" mb="0" color="#fff" fontSize="sm">
-          Compact
-        </FormLabel>
-        <Switch id="compact-view" onChange={handleViewToggle} isChecked={compactSwitchOn} />
-      </FormControl>
+      <div>
+        <Input placeholder="Search…" size="sm" variant="filterBar" onChange={handleSearchChange} />
+      </div>
+      <div>
+        <Select size="sm" variant="filterBar" defaultValue="All" onChange={handleStatusChange}>
+          <option disabled>Status…</option>
+          <option>All</option>
+          <option>Has Unclaimed $PAPER</option>
+          <option>For Sale</option>
+        </Select>
+      </div>
+      <div>
+        <Select size="sm" variant="filterBar" defaultValue="Top Rank" onChange={handleSortChange}>
+          <option disabled>Sort By…</option>
+          <option>Top Rank</option>
+          <option>Most Affordable</option>
+          <option>Most Expensive</option>
+          <option>Highest Last Sale</option>
+        </Select>
+      </div>
+      <ToggleButton />
     </Container>
   );
 };
