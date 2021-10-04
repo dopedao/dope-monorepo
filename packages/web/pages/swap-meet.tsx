@@ -36,7 +36,7 @@ const PAGE_SIZE = 24;
 let itemsVisible = PAGE_SIZE;
 
 const Container = styled.div`
-  padding: 64px 8px;
+  padding: 16px 8px;
   // Important the immediate parent container for InfiniteScroll
   // is scrollable so it works properly.
   height: 100%;
@@ -52,7 +52,7 @@ const Container = styled.div`
     max-height: auto;
   }
   ${media.tablet`
-    padding: 76px 32px;
+    padding: 16px 32px;
   `}
 `;
 const ContentLoading = (
