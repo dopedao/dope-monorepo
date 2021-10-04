@@ -15,35 +15,53 @@ resolution = 320
 lookup = range(0, resolution, int(resolution/granularity))
 
 female_order = {
-    "bodies": 0,
-    "heads": 1,
-    "rings": 2,
-    "hands": 3,
-    "clothes": 4,
-    "waist": 5,
-    "shoes": 6,
-    "neck": 7,
-    "weapons": 8,
+    "shadow": 0,
+    "drugsshadow": 1,
+    "bodies": 2,
+    "heads": 3,
+    "rings": 4,
+    "hands": 5,
+    "clothes": 6,
+    "waist": 7,
+    "shoes": 8,
+    "neck": 9,
+    "weapons": 10,
+    "drugs": 11,
 }
 
 men_order = {
-    "bodies": 0,
-    "heads": 1,
-    "beards": 2,
-    "rings": 3,
-    "hands": 4,
-    "clothes": 5,
-    "waist": 6,
-    "shoes": 7,
-    "neck": 8,
-    "weapons": 9,
-    "accessories": 10
+    "shadow": 0,
+    "drugsshadow": 1,
+    "bodies": 2,
+    "heads": 3,
+    "beards": 4,
+    "rings": 5,
+    "hands": 6,
+    "clothes": 7,
+    "waist": 8,
+    "shoes": 9,
+    "neck": 10,
+    "weapons": 11,
+    "accessories": 12,
+    "drugs": 13
 }
 
 bg = np.array([210/255, 173/255, 172/255, 0.0])
 
+bgs = [
+    hex2rgb("#dfafae"),
+    # hex2rgb("#FFFFFF"),
+    # hex2rgb("#434345"),
+    # hex2rgb("#7393AA"),
+    # hex2rgb("#8DC1B8"),
+    # hex2rgb("#C18DBC"),
+    # hex2rgb("#FFFFC8"),
+    # hex2rgb("#B60A06"),
+    # hex2rgb("#3523FE"),
+    # hex2rgb("#F79F65")
+]
 
-def gallery(array, ncols=27):
+def gallery(array, ncols=29):
     nindex, height, width, intensity = array.shape
     nrows = nindex//ncols
     assert nindex == nrows*ncols
@@ -70,26 +88,66 @@ for parts in meta["parts"]:
 
 for gender, categories in components.items():
     if gender == "men":
-        parts = [None] * 11
+        parts = [None] * 14
         for category, components in categories.items():
             if category == "silhouette":
                 continue
             parts[men_order[category]] = components
     else:
-        parts = [None] * 9
+        parts = [None] * 12
         for category, components in categories.items():
             if category == "silhouette":
                 continue
             parts[female_order[category]] = components
 
     renders = []
-    for i in range(729):
+    for i in range(841):
+
         if gender == "men":
+            body = randrange(0, 1)
+            beard = 0
+            
+            give_beard = randrange(0, 100)
+            if give_beard > 70:
+                if body == 0:
+                    beard = randrange(1, 5)
+                else:
+                    beard = randrange(5, 11)
+            
+            if body == 0:
+                head = randrange(0, 9)
+            else:
+                head = randrange(9, 17)
+
             permutation = [
                 parts[0][randrange(0, len(parts[0]))],
                 parts[1][randrange(0, len(parts[1]))],
-                parts[2][randrange(0, len(parts[2]))],
-                parts[3][randrange(0, len(parts[3]))],
+                parts[2][body],
+                parts[3][head],
+                parts[4][beard],
+                parts[5][randrange(0, len(parts[5]))],
+                parts[6][randrange(0, len(parts[6]))],
+                parts[7][randrange(0, len(parts[7]))],
+                parts[8][randrange(0, len(parts[8]))],
+                parts[9][randrange(0, len(parts[9]))],
+                parts[10][randrange(0, len(parts[10]))],
+                parts[11][randrange(0, len(parts[11]))],
+                parts[12][randrange(0, len(parts[12]))],
+                parts[13][randrange(0, len(parts[13]))],
+            ]
+        else:
+            body = randrange(0, 1)
+
+            if body == 0:
+                head = randrange(0, 7)
+            else:
+                head = randrange(7, 12)
+
+            permutation = [
+                parts[0][randrange(0, len(parts[0]))],
+                parts[1][randrange(0, len(parts[1]))],
+                parts[2][body],
+                parts[3][head],
                 parts[4][randrange(0, len(parts[4]))],
                 parts[5][randrange(0, len(parts[5]))],
                 parts[6][randrange(0, len(parts[6]))],
@@ -97,24 +155,14 @@ for gender, categories in components.items():
                 parts[8][randrange(0, len(parts[8]))],
                 parts[9][randrange(0, len(parts[9]))],
                 parts[10][randrange(0, len(parts[10]))],
-            ]
-        else:
-            permutation = [
-                parts[0][randrange(0, len(parts[0]))],
-                parts[1][randrange(0, len(parts[1]))],
-                parts[2][randrange(0, len(parts[2]))],
-                parts[3][randrange(0, len(parts[3]))],
-                parts[4][randrange(0, len(parts[4]))],
-                parts[5][randrange(0, len(parts[5]))],
-                parts[6][randrange(0, len(parts[6]))],
-                parts[7][randrange(0, len(parts[7]))],
-                parts[8][randrange(0, len(parts[8]))],
+                parts[11][randrange(0, len(parts[11]))],
             ]
 
-        img = np.full((350, 350, 4), bg)
-        print(gender, i)
+        bg = np.array([1.0, 1.0, 1.0, 1.0])
+        bg[:3] = np.array(bgs[randrange(0, len(bgs))]) / 255
+
+        img = np.full((resolution, resolution, 4), bg)
         for part in permutation:
-            print(part)
             if part["data"] == "0x000000000000":
                 continue
 
@@ -131,19 +179,29 @@ for gender, categories in components.items():
                 length = subimg[j]
                 c = meta["partcolors"][subimg[j+1]]
                 if c != "":
-                    rgb = hex2rgb("#" + c)
+                    # if len(c) > 6:
+                    #     print(int(c[7:8], 16))
+                    #     rgb = hex2rgb("#" + c[:6])
+                    #     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
+                    #         lookup[length], :3] += np.array(rgb) * (int(c[7:8], 16) / 255) / 255
+                    #     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
+                    # else:
+                    img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
+                    rgb = hex2rgb("#" + c[:6])
                     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
                         lookup[length], :3] = np.array(rgb) / 255
-                    img[lookup[y]: lookup[y+1], lookup[x]                        : lookup[x] + lookup[length], 3] = 1.0
 
                 x += length
                 if x == right:
                     x = left
                     y += 1
 
+        # img += drug_shadow
+        # img += shadow
+
         renders.append(img)
-        # image.imsave("../outputs/permutations/men/" +
-                    #  str(i) + ".png", img)
+        # image.imsave("../outputs/permutations/" + gender + "/" +
+        #              str(i) + ".png", img)
 
         # plt.imshow(img)
         # plt.show()
