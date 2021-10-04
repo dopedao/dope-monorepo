@@ -30,7 +30,7 @@ const LootTitleBar = styled.div`
   font-size: var(--text-00);
   position: 'sticky';
 `;
-const LootFooterContainer = styled.footer`
+const LootFooterContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -36,6 +36,7 @@ const AppWindowTitleBar = () => {
           gap: 4px;
           display: flex;
           align-items: center;
+          white-space: nowrap;
         }
         a.active {
           text-decoration: none;
