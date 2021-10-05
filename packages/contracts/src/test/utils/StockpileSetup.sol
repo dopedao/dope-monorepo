@@ -31,6 +31,10 @@ contract StockpileUser is ERC721Holder, ERC1155Holder {
         stockpile.open(tokenId);
     }
 
+    function batchOpen(uint256[] memory ids) public {
+        stockpile.batchOpen(ids);
+    }
+
     function transferERC1155(
         address to,
         uint256 tokenId,
@@ -151,8 +155,12 @@ contract StockpileOwner is ERC1155Holder {
         return stockpile.mintBatch(to, components, itemTypes, amounts, data);
     }
 
-    function setRle(uint256 id, bytes memory rle) public {
-        stockpile.setRle(id, rle, rle);
+    function setRle(uint256 id, bytes memory rle, bytes memory rle2) public {
+        stockpile.setRle(id, rle, rle2);
+    }
+
+    function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) public {
+        stockpile.batchSetRle(ids, rles);
     }
 }
 
@@ -255,6 +263,9 @@ contract StockpileTester is Stockpile {
 contract StockpileTest is DSTest {
     uint256 internal constant BAG = 10;
     uint256 internal constant OTHER_BAG = 100;
+    uint256 internal constant BULK1_BAG = 101;
+    uint256 internal constant BULK2_BAG = 102;
+
     uint256 internal constant FIRST_SILVER_RING_BAG = 4757;
     uint256 internal constant SECOND_SILVER_RING_BAG = 7253;
 
@@ -283,6 +294,9 @@ contract StockpileTest is DSTest {
         alice = new StockpileUser(loot, stockpile);
         alice.claim(BAG);
         assertEq(loot.ownerOf(BAG), address(alice));
+
+        alice.claim(BULK1_BAG);
+        alice.claim(BULK2_BAG);
 
         alice.claim(FIRST_SILVER_RING_BAG);
         alice.claim(SECOND_SILVER_RING_BAG);

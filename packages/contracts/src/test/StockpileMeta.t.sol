@@ -33,7 +33,7 @@ contract Metadata is StockpileTest {
         attributes[2] = Attribute('Suffix', 'ahh');
         attributes[3] = Attribute('Name Prefix', 'a');
         attributes[4] = Attribute('Name Suffix', 'big');
-        owner.setRle(id, jordans);
+        owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, '"a big" blaster ahh');
 
         assertEq(stockpile.balanceOf(address(owner), id), 5);
@@ -47,7 +47,7 @@ contract Metadata is StockpileTest {
         Attribute[] memory attributes = new Attribute[](2);
         attributes[0] = Attribute('Slot', 'Weapon');
         attributes[1] = Attribute('Item', 'tickler');
-        owner.setRle(id, jordans);
+        owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, 'tickler');
 
         assertEq(stockpile.balanceOf(address(owner), id), 1);
@@ -97,7 +97,7 @@ contract Metadata is StockpileTest {
         attributes[0] = Attribute('Slot', 'Ring');
         attributes[1] = Attribute('Item', 'Platinum Ring');
         attributes[2] = Attribute('Suffix', 'from Atlanta');
-        owner.setRle(id, jordans);
+        owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, 'Platinum Ring from Atlanta');
     }
 
@@ -109,7 +109,7 @@ contract Metadata is StockpileTest {
         attributes[2] = Attribute('Suffix', 'from Mob Town');
         attributes[3] = Attribute('Name Prefix', 'High on the Supply');
         attributes[4] = Attribute('Name Suffix', 'Contraband');
-        owner.setRle(id, jordans);
+        owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, '"High on the Supply Contraband" Bulletproof Vest from Mob Town');
     }
 
@@ -122,7 +122,7 @@ contract Metadata is StockpileTest {
         attributes[3] = Attribute('Name Prefix', 'Street Queen');
         attributes[4] = Attribute('Name Suffix', 'Triggerman');
         attributes[5] = Attribute('Augmentation', 'Yes');
-        owner.setRle(id, jordans);
+        owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, '"Street Queen Triggerman" Fingerless Gloves from Buffalo +1');
     }
 

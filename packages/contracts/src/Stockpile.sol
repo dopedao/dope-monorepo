@@ -48,7 +48,7 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
 
     /// @notice Bulk opens the provided tokenIds. This
     /// can only be done once per DOPE token.
-    function bulkOpen(uint256[] calldata ids) external {
+    function batchOpen(uint256[] calldata ids) external {
         for (uint256 i = 0; i < ids.length; i++) {
             open(ids[i]);
         }
