@@ -17,17 +17,6 @@ yarn
 yarn web dev
 ```
 
-The application accepts the below environment variables, you WILL need to specify the network ID along with either a Curator ID or a Contract Address:
-
-```bash
-NEXT_PUBLIC_APP_TITLE=[default app title]
-NEXT_PUBLIC_DEFAULT_DESCRIPTION=[default meta description]
-NEXT_PUBLIC_BASE_URL=[production-url]
-```
-
-If you include a rpcUrl on the manage auction hooks provider it enables walletconnect,
-without that rpcUrl walletconnect will not work work. We have set included and .env variable for this: `NEXT_PUBLIC_RPC_URL`. [Further reading on RPC providers](https://web3py.readthedocs.io/en/stable/providers.html) / [Alchemy Etherium API Docs](https://docs.alchemy.com/alchemy/documentation/apis/ethereum).
-
 ## Develop
 
 First, run the development server:

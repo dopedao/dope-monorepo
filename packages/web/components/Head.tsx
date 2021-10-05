@@ -1,9 +1,9 @@
 import NextHead from 'next/head';
 
-const defaultTitle = process.env.NEXT_PUBLIC_APP_TITLE || '';
-const defaultDescription = process.env.NEXT_PUBLIC_DEFAULT_DESCRIPTION || '';
-const defaultOGURL = process.env.NEXT_PUBLIC_BASE_URL || '';
-const defaultOGImage = `${process.env.NEXT_PUBLIC_BASE_URL}/fpo/social-card.png`;
+const defaultTitle = 'DOPEWARS.EXE';
+const defaultDescription = 'Welcome to the streets';
+const defaultOGURL = 'http://dopewars.gg';
+const defaultOGImage = `${defaultOGURL}/fpo/social-card.png`;
 const favicon = '/fpo/favicon.png';
 
 type HeadProps = {
