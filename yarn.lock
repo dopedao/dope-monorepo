@@ -1588,6 +1588,7 @@ __metadata:
     aws-sdk: ^2.999.0
     classnames: ^2.3.1
     dope-metrics: ^1.0.4
+    dotenv: ^10.0.0
     framer-motion: ^4
     gear-rarity: ^1.0.5
     graphql: ^15.5.3
