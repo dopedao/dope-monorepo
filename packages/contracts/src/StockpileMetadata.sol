@@ -73,7 +73,7 @@ contract StockpileMetadata {
         man_[4] = bytes1(uint8(man_[4]) - uint8(12));
         parts[0] = man_;
 
-        bytes memory maleRle = tokenRLE(tokenId, Gender.MALE);
+        bytes memory maleRle = tokenRle(tokenId, Gender.MALE);
         maleRle[2] = bytes1(uint8(maleRle[2]) - uint8(12));
         maleRle[4] = bytes1(uint8(maleRle[4]) - uint8(12));
         parts[1] = maleRle;
@@ -83,7 +83,7 @@ contract StockpileMetadata {
         female_[4] = bytes1(uint8(female_[4]) + uint8(12));
         parts[2] = female_;
 
-        bytes memory femaleRle = tokenRLE(tokenId, Gender.FEMALE);
+        bytes memory femaleRle = tokenRle(tokenId, Gender.FEMALE);
         femaleRle[2] = bytes1(uint8(femaleRle[2]) + uint8(12));
         femaleRle[4] = bytes1(uint8(femaleRle[4]) + uint8(12));
         parts[3] = femaleRle;
@@ -102,7 +102,7 @@ contract StockpileMetadata {
             );
     }
 
-    function tokenRLE(uint256 id, uint8 gender) public view returns (bytes memory) {
+    function tokenRle(uint256 id, uint8 gender) public view returns (bytes memory) {
         if (rles[id].length > 0) {
             return rles[id][gender];
         }

@@ -2,8 +2,13 @@
 pragma solidity ^0.8.0;
 
 import './utils/StockpileSetup.sol';
+import { Gender } from '../Stockpile.sol';
 
 contract Open is StockpileTest {
+    bytes internal constant jordans =
+        hex'00322737190200012a012b0600012b012a02000200032b0400032b02000100012b0119012a012b0400012b012a0119012b0100022b031904000319022b052a0400052a';
+    bytes internal constant fanny = hex'002024231d020601070112031303000112031303000412';
+
     function testCanMintBatch() public {
         uint8[] memory _components = new uint8[](15);
         _components[0] = owner.addItemComponent(0x0, 'blaster');
@@ -30,6 +35,59 @@ contract Open is StockpileTest {
     function testCanOpenBag() public {
         alice.open(BAG);
         checkOwns1155s(BAG, address(alice));
+    }
+
+    function testCanBatchOpenBags() public {
+        uint256[] memory ids = new uint256[](3);
+        ids[0] = BAG;
+        ids[1] = BULK1_BAG;
+        ids[2] = BULK2_BAG;
+        alice.batchOpen(ids);
+    }
+
+    function testCanSetRle() public {
+        owner.setRle(1, jordans, fanny);
+        assertEq(string(stockpile.tokenRle(1, Gender.MALE)), string(jordans));
+        assertEq(string(stockpile.tokenRle(1, Gender.FEMALE)), string(fanny));
+    }
+
+    function testFailSetRleNonOwner() public {
+        stockpile.setRle(1, jordans, fanny);
+        assertEq(string(stockpile.tokenRle(1, Gender.MALE)), string(jordans));
+        assertEq(string(stockpile.tokenRle(1, Gender.FEMALE)), string(fanny));
+    }
+
+    function testCanBatchSetRle() public {
+        uint256[] memory ids = new uint256[](3);
+        ids[0] = 1;
+        ids[1] = 2;
+        ids[2] = 3;
+
+        bytes[] memory rles = new bytes[](6);
+        rles[0] = jordans;
+        rles[1] = jordans;
+        rles[2] = jordans;
+        rles[3] = jordans;
+        rles[4] = jordans;
+        rles[5] = jordans;
+
+        owner.batchSetRle(ids, rles);
+    }
+
+    function testFailBatchSetRleWithLengthMismatch() public {
+        uint256[] memory ids = new uint256[](3);
+        ids[0] = 1;
+        ids[1] = 2;
+        ids[2] = 3;
+
+        bytes[] memory rles = new bytes[](5);
+        rles[0] = jordans;
+        rles[1] = jordans;
+        rles[2] = jordans;
+        rles[3] = jordans;
+        rles[4] = jordans;
+
+        owner.batchSetRle(ids, rles);
     }
 
     function testFailCannotOpenBagTwice() public {
