@@ -10,7 +10,7 @@ f = open("../outputs/output.json", "r")
 meta = json.load(f)
 
 granularity = 64
-resolution = 320
+resolution = 1280
 
 lookup = range(0, resolution, int(resolution/granularity))
 
@@ -87,24 +87,24 @@ for parts in meta["parts"]:
     components[gender][category].append(part)
 
 for gender, categories in components.items():
+    print(gender)
     if gender == "men":
         parts = [None] * 14
         for category, components in categories.items():
             if category == "silhouette":
                 continue
-            parts[men_order[category]] = components
+            parts[men_order[category]] = sorted(components, key = lambda i: int(i['name'].split("-")[0]))
     else:
         parts = [None] * 12
         for category, components in categories.items():
             if category == "silhouette":
                 continue
-            parts[female_order[category]] = components
+            parts[female_order[category]] = sorted(components, key = lambda i: int(i['name'].split("-")[0]))
 
     renders = []
     for i in range(841):
-
         if gender == "men":
-            body = randrange(0, 1)
+            body = randrange(0, 2)
             beard = 0
             
             give_beard = randrange(0, 100)
@@ -136,7 +136,7 @@ for gender, categories in components.items():
                 parts[13][randrange(0, len(parts[13]))],
             ]
         else:
-            body = randrange(0, 1)
+            body = randrange(0, 2)
 
             if body == 0:
                 head = randrange(0, 7)
@@ -179,17 +179,18 @@ for gender, categories in components.items():
                 length = subimg[j]
                 c = meta["partcolors"][subimg[j+1]]
                 if c != "":
-                    # if len(c) > 6:
+                    if len(c) > 6:
+                        continue
                     #     print(int(c[7:8], 16))
                     #     rgb = hex2rgb("#" + c[:6])
                     #     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
                     #         lookup[length], :3] += np.array(rgb) * (int(c[7:8], 16) / 255) / 255
                     #     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
-                    # else:
-                    img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
-                    rgb = hex2rgb("#" + c[:6])
-                    img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
-                        lookup[length], :3] = np.array(rgb) / 255
+                    else:
+                        img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
+                        rgb = hex2rgb("#" + c[:6])
+                        img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
+                            lookup[length], :3] = np.array(rgb) / 255
 
                 x += length
                 if x == right:
@@ -199,12 +200,12 @@ for gender, categories in components.items():
         # img += drug_shadow
         # img += shadow
 
-        renders.append(img)
-        # image.imsave("../outputs/permutations/" + gender + "/" +
-        #              str(i) + ".png", img)
+        # renders.append(img)
+        image.imsave("../outputs/permutations/" + gender + "/" +
+                     str(i) + ".png", img)
 
         # plt.imshow(img)
         # plt.show()
 
-    image.imsave("../outputs/permutations/" +
-                 gender + ".png", gallery(np.array(renders)))
+    # image.imsave("../outputs/permutations/" +
+    #              gender + ".png", gallery(np.array(renders)))
