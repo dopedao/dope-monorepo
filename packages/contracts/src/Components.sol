@@ -46,6 +46,8 @@ library ComponentTypes {
 }
 
 contract Components is Ownable {
+    string[] internal slots = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
+
     string[] public weapons = [
         'Pocket Knife', // 0
         'Chain', // 1
@@ -494,6 +496,44 @@ contract Components is Ownable {
         }
 
         return suffixes[suffixComponent - 1];
+    }
+
+    /// @notice Returns the attributes associated with this item.
+    /// @dev Opensea Standards: https://docs.opensea.io/docs/metadata-standards
+    function attributes(uint8[5] calldata components, uint8 componentType) external view returns (string memory) {
+        string memory slot = slots[componentType];
+        string memory res = string(abi.encodePacked('[', trait('Slot', slot)));
+
+        string memory item = name(componentType, components[0]);
+        res = string(abi.encodePacked(res, ', ', trait('Item', item)));
+
+        if (components[1] > 0) {
+            string memory data = suffixes[components[1] - 1];
+            res = string(abi.encodePacked(res, ', ', trait('Suffix', data)));
+        }
+
+        if (components[2] > 0) {
+            string memory data = namePrefixes[components[2] - 1];
+            res = string(abi.encodePacked(res, ', ', trait('Name Prefix', data)));
+        }
+
+        if (components[3] > 0) {
+            string memory data = nameSuffixes[components[3] - 1];
+            res = string(abi.encodePacked(res, ', ', trait('Name Suffix', data)));
+        }
+
+        if (components[4] > 0) {
+            res = string(abi.encodePacked(res, ', ', trait('Augmentation', 'Yes')));
+        }
+
+        res = string(abi.encodePacked(res, ']'));
+
+        return res;
+    }
+
+    // Helper for encoding as json w/ trait_type / value from opensea
+    function trait(string memory traitType, string memory value) internal pure returns (string memory) {
+        return string(abi.encodePacked('{', '"trait_type": "', traitType, '", ', '"value": "', value, '"', '}'));
     }
 
     // Creates the token description given its components and what type it is
