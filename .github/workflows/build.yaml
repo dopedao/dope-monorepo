@@ -15,9 +15,4 @@ jobs:
         run: yarn
       - name: build
         run: yarn web build
-      - name: Create .env with GH secrets
-        uses: SpicyPizza/create-envfile@v1
-        with:
-          envkey_S3_ID: ${{ secrets.S3_ID }}
-          envkey_S3_SECRET: ${{ secrets.S3_SECRET }}
 
