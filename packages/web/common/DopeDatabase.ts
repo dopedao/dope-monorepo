@@ -164,7 +164,7 @@ export const testForSale = (bag: PickedBag) => bag.open_sea_asset?.is_on_sale;
  * Supports: "words in quotes" and individual terms outside of quotes.
  */
 export const filterItemsBySearchString = (items: PickedBag[], searchString: string) => {
-  if (searchString === '') return items;
+  if (!searchString || searchString === '') return items;
 
   // Splits on spaces except when in quotes
   const searchWords = searchString.toLowerCase().match(/([^\s"]+|"[^"]*")+/g);
