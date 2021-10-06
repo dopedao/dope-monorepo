@@ -46,6 +46,8 @@ library ComponentTypes {
 }
 
 contract Components is Ownable {
+    string constant UnexpectedComponent = 'unexpected component type';
+
     string[] internal slots = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
 
     string[] public weapons = [
@@ -339,40 +341,56 @@ contract Components is Ownable {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
-    function weaponComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
-        return pluck(tokenId, 'WEAPON', weaponsLength);
+    function seed(uint256 tokenId, uint8 componentType) public pure returns (uint256, uint256) {
+        string memory keyPrefix;
+        if (componentType == ComponentTypes.WEAPON) {
+            keyPrefix = 'WEAPON';
+        } else if (componentType == ComponentTypes.CLOTHES) {
+            keyPrefix = 'CLOTHES';
+        } else if (componentType == ComponentTypes.VEHICLE) {
+            keyPrefix = 'VEHICLE';
+        } else if (componentType == ComponentTypes.WAIST) {
+            keyPrefix = 'WAIST';
+        } else if (componentType == ComponentTypes.FOOT) {
+            keyPrefix = 'FOOT';
+        } else if (componentType == ComponentTypes.HAND) {
+            keyPrefix = 'HAND';
+        } else if (componentType == ComponentTypes.DRUGS) {
+            keyPrefix = 'DRUGS';
+        } else if (componentType == ComponentTypes.NECK) {
+            keyPrefix = 'NECK';
+        } else if (componentType == ComponentTypes.RING) {
+            keyPrefix = 'RING';
+        } else {
+            revert(UnexpectedComponent);
+        }
+
+        uint256 rand = random(string(abi.encodePacked(keyPrefix, toString(tokenId))));
+        return (rand, rand % 21);
     }
 
-    function clothesComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
-        return pluck(tokenId, 'CLOTHES', clothesLength);
-    }
-
-    function vehicleComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
-        return pluck(tokenId, 'VEHICLE', vehicleLength);
-    }
-
-    function waistComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
-        return pluck(tokenId, 'WAIST', waistLength);
-    }
-
-    function footComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
-        return pluck(tokenId, 'FOOT', footLength);
-    }
-
-    function handComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
-        return pluck(tokenId, 'HAND', handLength);
-    }
-
-    function drugsComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
-        return pluck(tokenId, 'DRUGS', drugsLength);
-    }
-
-    function neckComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
-        return pluck(tokenId, 'NECK', necklacesLength);
-    }
-
-    function ringComponents(uint256 tokenId) public pure returns (uint8[5] memory) {
-        return pluck(tokenId, 'RING', ringsLength);
+    function getComponent(uint256 tokenId, uint8 componentType) public pure returns (uint8[5] memory) {
+        if (componentType == ComponentTypes.WEAPON) {
+            return pluck(tokenId, componentType, weaponsLength);
+        } else if (componentType == ComponentTypes.CLOTHES) {
+            return pluck(tokenId, componentType, clothesLength);
+        } else if (componentType == ComponentTypes.VEHICLE) {
+            return pluck(tokenId, componentType, vehicleLength);
+        } else if (componentType == ComponentTypes.WAIST) {
+            return pluck(tokenId, componentType, waistLength);
+        } else if (componentType == ComponentTypes.FOOT) {
+            return pluck(tokenId, componentType, footLength);
+        } else if (componentType == ComponentTypes.HAND) {
+            return pluck(tokenId, componentType, handLength);
+        } else if (componentType == ComponentTypes.DRUGS) {
+            return pluck(tokenId, componentType, drugsLength);
+        } else if (componentType == ComponentTypes.NECK) {
+            return pluck(tokenId, componentType, necklacesLength);
+        } else if (componentType == ComponentTypes.RING) {
+            return pluck(tokenId, componentType, ringsLength);
+        } else {
+            revert(UnexpectedComponent);
+        }
     }
 
     function addComponent(uint8 componentType, string calldata component) public onlyOwner returns (uint8) {
@@ -402,7 +420,7 @@ contract Components is Ownable {
         } else if (componentType == ComponentTypes.SUFFIX) {
             arr = suffixes;
         } else {
-            revert('Unexpected gear piece');
+            revert(UnexpectedComponent);
         }
 
         require(arr.length < 255, 'component full');
@@ -423,18 +441,18 @@ contract Components is Ownable {
 
     function pluck(
         uint256 tokenId,
-        string memory keyPrefix,
+        uint8 componentType,
         uint256 sourceArrayLength
     ) internal pure returns (uint8[5] memory) {
         uint8[5] memory components;
 
-        uint256 rand = random(string(abi.encodePacked(keyPrefix, toString(tokenId))));
+        (uint256 rand, uint256 greatness) = seed(tokenId, componentType);
 
         components[0] = uint8(rand % sourceArrayLength);
         components[1] = 0;
         components[2] = 0;
 
-        uint256 greatness = rand % 21;
+        // uint256 greatness = rand % 21;
         if (greatness > 14) {
             components[1] = uint8((rand % suffixesLength) + 1);
         }
