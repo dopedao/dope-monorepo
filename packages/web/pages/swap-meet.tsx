@@ -105,18 +105,21 @@ const MarketList = () => {
   // Loads unclaimed $paper status from The Graph,
   // then updates items in reactive var cache.
   const { data: dataBags } = useAllUnclaimedBagsQuery();
-  if (dataBags && dataBags.page_1) {
+  const [hasUpdateDopeDbWithPaper, setHasUpdateDopeDbWithPaper] = useState(false);
+  if (!hasUpdateDopeDbWithPaper && dataBags && dataBags.page_1) {
     dopeDb.updateHasPaperFromQuery(dataBags);
+    console.log("Updating reactive var");
     DopeDbCacheReactive(dopeDb);
+    setHasUpdateDopeDbWithPaper(true);
   }
 
   const filteredSortedItems = useMemo(() => {
-    // console.log("FILTERED ITEMS");
-    // console.log(`${statusKey} : ${sortByKey}`);
+    console.log("FILTERED ITEMS");
+    console.log(`${statusKey} : ${sortByKey}`);
     const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
     const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
     return filterItemsBySearchString(filteredItems, searchInputValue);
-  }, [searchInputValue, sortByKey, statusKey, dopeDb]);
+  }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper]);
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
 
@@ -125,7 +128,7 @@ const MarketList = () => {
     itemsVisible = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
     setIsTyping(false);
-  }, [searchInputValue, sortByKey, statusKey, dopeDb]);
+  }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper]);
 
   // Increasing itemsVisible simply increases the window size
   // into the cached data we render in window.
@@ -134,6 +137,8 @@ const MarketList = () => {
     console.log(`page: ${page}\nitemsVisible: ${itemsVisible}`);
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
   };
+
+  const isLoading = (isTyping || !hasUpdateDopeDbWithPaper);
 
   return (
     <>
@@ -145,8 +150,8 @@ const MarketList = () => {
         compactSwitchOn={viewCompactCards}
         searchIsTypingCallback={() => setIsTyping(true)}
       />
-      {isTyping && ContentLoading}
-      {!isTyping && visibleItems.length > 0 && (
+      {isLoading && ContentLoading}
+      {!isLoading && visibleItems.length > 0 && (
         <Container>
           <InfiniteScroll
             pageStart={0}
@@ -168,7 +173,7 @@ const MarketList = () => {
           </InfiniteScroll>
         </Container>
       )}
-      {!isTyping && visibleItems.length === 0 && ContentEmpty}
+      {!isLoading && visibleItems.length === 0 && ContentEmpty}
     </>
   );
 };
