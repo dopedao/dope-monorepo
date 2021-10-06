@@ -90,6 +90,12 @@ const MarketFilterBar = ({
     searchCallback(debouncedSearchValue);
   }, [debouncedSearchValue]);
 
+  useEffect(() => {
+    console.log('Setting initial states on Swap Meet from query params');
+    statusCallback(status);
+    sortByCallback(sortBy);
+  }, []);
+
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchValue(value);

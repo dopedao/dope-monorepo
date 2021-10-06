@@ -111,10 +111,12 @@ const MarketList = () => {
   }
 
   const filteredSortedItems = useMemo(() => {
+    // console.log("FILTERED ITEMS");
+    // console.log(`${statusKey} : ${sortByKey}`);
     const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
     const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
     return filterItemsBySearchString(filteredItems, searchInputValue);
-  }, [searchInputValue, sortByKey, statusKey]);
+  }, [searchInputValue, sortByKey, statusKey, dopeDb]);
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
 
@@ -123,7 +125,7 @@ const MarketList = () => {
     itemsVisible = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
     setIsTyping(false);
-  }, [searchInputValue, sortByKey, statusKey]);
+  }, [searchInputValue, sortByKey, statusKey, dopeDb]);
 
   // Increasing itemsVisible simply increases the window size
   // into the cached data we render in window.
