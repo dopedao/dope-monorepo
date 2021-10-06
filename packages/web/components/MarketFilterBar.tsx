@@ -4,7 +4,21 @@ import { media } from '../styles/mixins';
 import { useDebounce } from 'usehooks-ts';
 import { css } from '@emotion/react';
 
+import useQueryParam from '../src/use-query-param';
+
 import styled from '@emotion/styled';
+
+export const statusKeys = [
+  'All',
+  'Has Unclaimed $PAPER',
+  'For Sale',
+];
+
+export const sortKeys = [
+  'Top Rank',
+  'Most Affordable',
+  'Highest Last Sale'
+];
 
 const Container = styled.div`
   padding: 8px;
@@ -63,33 +77,40 @@ const MarketFilterBar = ({
   sortByCallback,
   statusCallback,
 }: Props) => {
-  const [searchInputValue, setSearchInputValue] = useState<string>('');
+  const [sortBy, setSortBy] = useQueryParam('sort_by', sortKeys[0]);
+  const [status, setStatus] = useQueryParam('status', statusKeys[0]);
+  const [searchValue, setSearchValue] = useQueryParam('q', '');
+  // const [searchValue, setSearchValue] = useState<string>('');
 
   // Debounce hook lets us fill search string on type, but not do anything
   // until debounced value gets changed.
-  const debouncedSearchInputValue = useDebounce<string>(searchInputValue, 150);
-
-console.log("COMPACT SWITCH: "+compactSwitchOn);
+  const debouncedSearchValue = useDebounce<string>(searchValue, 250);
 
   useEffect(() => {
-    searchCallback(debouncedSearchInputValue);
-  }, [debouncedSearchInputValue]);
+    searchCallback(debouncedSearchValue);
+  }, [debouncedSearchValue]);
+
+  useEffect(() => {
+    console.log('Setting initial states on Swap Meet from query params');
+    statusCallback(status);
+    sortByCallback(sortBy);
+  }, []);
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setSearchInputValue(value);
+    setSearchValue(value);
     searchIsTypingCallback();
   };
 
   const handleStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    // console.log(`Status: ${value}`);
+    setStatus(value);
     statusCallback(value);
   };
 
   const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    // console.log(`Sort By: ${value}`);
+    setSortBy(value);
     sortByCallback(value);
   };
 
@@ -123,23 +144,34 @@ console.log("COMPACT SWITCH: "+compactSwitchOn);
   return (
     <Container>
       <div>
-        <Input placeholder="Search…" size="sm" variant="filterBar" onChange={handleSearchChange} />
+        <Input 
+          placeholder="Search…" 
+          size="sm" 
+          variant="filterBar" 
+          onChange={handleSearchChange} 
+          value={searchValue}
+        />
       </div>
       <div>
-        <Select size="sm" variant="filterBar" defaultValue="All" onChange={handleStatusChange}>
+        <Select 
+          size="sm" 
+          variant="filterBar" 
+          onChange={handleStatusChange}
+          value={status} 
+        >
           <option disabled>Status…</option>
-          <option>All</option>
-          <option>Has Unclaimed $PAPER</option>
-          <option>For Sale</option>
+          { statusKeys.map( value => <option>{value}</option> ) }
         </Select>
       </div>
       <div>
-        <Select size="sm" variant="filterBar" defaultValue="Top Rank" onChange={handleSortChange}>
+        <Select 
+          size="sm" 
+          variant="filterBar" 
+          onChange={handleSortChange}
+          value={sortBy}
+        >
           <option disabled>Sort By…</option>
-          <option>Top Rank</option>
-          <option>Most Affordable</option>
-          <option>Most Expensive</option>
-          <option>Highest Last Sale</option>
+          { sortKeys.map( value => <option>{value}</option> ) }
         </Select>
       </div>
       <ToggleButton />
