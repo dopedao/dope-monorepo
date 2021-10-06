@@ -26,11 +26,11 @@ contract StockpileMetadata {
         hex'000927361907000324040006000524030006000524030006000524030006000524030007000424030007000324040007000224050004000724030002000b24010001000d2401000d2401000d240e240e24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b240c240100012402240100032402000524010003000324020004240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000324020003000324030004240100';
     bytes internal constant shadow = hex'0036283818024801000d48050009480200';
 
+    // green, blue, red, yellow
+    string[4] internal backgrounds = ['a3beb5', '8aa3c3', 'e0afae', 'f5d8a5'];
+
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => string[]) internal palettes;
-
-    // Backgrounds (Hex Colors)
-    string[] public backgrounds;
 
     // Item RLE (TokenID => RLE)
     mapping(uint256 => bytes[2]) internal rles;
@@ -68,18 +68,45 @@ contract StockpileMetadata {
         parts[4] = female[1];
         parts[5] = female[2];
 
+        MetadataBuilder.SVGParams memory p = params(tokenId);
+        p.parts = parts;
+
+        return MetadataBuilder.tokenURI(p, palettes);
+    }
+
+    function params(uint256 tokenId) internal view returns (MetadataBuilder.SVGParams memory) {
         (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
 
-        return
-            MetadataBuilder.tokenURI(
-                sc.prefix(components[2], components[3]),
-                string(abi.encodePacked(sc.name(componentType, components[0]), sc.suffix(components[1]))),
-                sc.componentsToString(components, componentType),
-                description,
-                sc.attributes(components, componentType),
-                MetadataBuilder.SVGParams({ parts: parts, background: '#000000' }),
-                palettes
-            );
+        uint8 bg = 0;
+        string memory name = sc.name(componentType, components[0]);
+        MetadataBuilder.SVGParams memory meta;
+        meta.name = name;
+        meta.description = description;
+        meta.attributes = sc.attributes(components, componentType);
+
+        if (components[1] > 0) {
+            meta.name = string(abi.encodePacked(meta.name, ' ', sc.suffix(components[1])));
+            meta.subtext = name;
+            bg = 1;
+        } else {
+            meta.subtext = name;
+        }
+
+        if (components[2] > 0) {
+            meta.text = sc.prefix(components[2], components[3]);
+            meta.name = string(abi.encodePacked(meta.text, ' ', meta.name));
+            bg = 2;
+        }
+
+        if (components[4] > 0) {
+            meta.subtext = string(abi.encodePacked(meta.subtext, ' +1'));
+            meta.name = string(abi.encodePacked(meta.name, ' +1'));
+            bg = 3;
+        }
+
+        meta.background = backgrounds[bg];
+
+        return meta;
     }
 
     function tokenRle(uint256 id, uint8 gender) public view returns (bytes memory) {
@@ -88,13 +115,6 @@ contract StockpileMetadata {
         }
 
         return rles[TokenId.decode(id, 1)][gender];
-    }
-
-    // @notice Given an ERC1155 token id, it returns its name by decoding and parsing
-    // the id
-    function tokenName(uint256 id) public view returns (string memory) {
-        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(id);
-        return sc.componentsToString(components, componentType);
     }
 
     function genderParts(

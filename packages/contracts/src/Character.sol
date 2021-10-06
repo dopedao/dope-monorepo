@@ -171,16 +171,17 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
             background: backgrounds[equipment[BACKGROUND]]
         });
 
-        string memory image = Base64.encode(
-            bytes(
-                MetadataBuilder.generateSVG(
-                    'title',
-                    'name',
-                    MetadataBuilder.SVGParams({ parts: params.parts, background: params.background }),
-                    palettes
-                )
-            )
-        );
+        string memory image = "";
+        // Base64.encode(
+        //     bytes(
+        //         MetadataBuilder.generateSVG(
+        //             'title',
+        //             'name',
+        //             MetadataBuilder.SVGParams({ parts: params.parts, background: params.background }),
+        //             palettes
+        //         )
+        //     )
+        // );
 
         // prettier-ignore
         return string(
@@ -199,20 +200,18 @@ contract Character is ICharacter, ERC721Enumerable, Ownable {
      * @notice Given a equipment, construct a base64 encoded SVG image.
      */
     function generateSVGImage(uint48[] memory equipment) external view override returns (string memory) {
-        return
-            Base64.encode(
-                bytes(
-                    MetadataBuilder.generateSVG(
-                        'title',
-                        'name',
-                        MetadataBuilder.SVGParams({
-                            parts: _getPartsForEquipment(equipment),
-                            background: backgrounds[equipment[BACKGROUND]]
-                        }),
-                        palettes
-                    )
-                )
-            );
+        return "";
+            // Base64.encode(
+            //     bytes(
+            //         MetadataBuilder.generateSVG(
+            //             MetadataBuilder.SVGParams({
+            //                 parts: _getPartsForEquipment(equipment),
+            //                 background: backgrounds[equipment[BACKGROUND]]
+            //             }),
+            //             palettes
+            //         )
+            //     )
+            // );
     }
 
     /**
