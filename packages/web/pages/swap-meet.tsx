@@ -1,8 +1,9 @@
+import { isTouchDevice } from '../common/utils';
 import { media } from '../styles/mixins';
 import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
-import { isTouchDevice } from '../common/utils';
+import { useRouter } from 'next/router';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -10,6 +11,7 @@ import LoadingBlock from '../components/LoadingBlock';
 import LootCard from '../components/loot/LootCard';
 import MarketFilterBar from '../components/MarketFilterBar';
 import styled from '@emotion/styled';
+
 import DopeDatabase, {
   compareByHighestLastSale,
   compareByMostAffordable,
@@ -66,33 +68,6 @@ const ContentEmpty = (
   </Container>
 );
 
-// Values here are set in MarketFilterBar.
-// TODO: DRY this up…
-const getItemComparisonFunction = (key: string) => {
-  console.log(`Sorting: ${key}`);
-  switch (key) {
-    case 'Most Affordable':
-      return compareByMostAffordable;
-    case 'Most Expensive':
-      return compareByMostExpensive;
-    case 'Highest Last Sale':
-      return compareByHighestLastSale;
-    default:
-      return compareByRank;
-  }
-};
-const getStatusTestFunction = (key: string) => {
-  console.log(`Filter for: ${key}`);
-  switch (key) {
-    case 'Has Unclaimed $PAPER':
-      return testForUnclaimedPaper;
-    case 'For Sale':
-      return testForSale;
-    default:
-      return () => true;
-  }
-};
-
 const MarketList = () => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -100,6 +75,55 @@ const MarketList = () => {
   const [statusKey, setStatusKey] = useState('');
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
+
+  const router = useRouter();
+  
+  console.log('Router props');
+  console.log(router.query);
+
+  const setQueryParams = () => {
+    const params = {
+      q: searchInputValue,
+      sort_by: sortByKey,
+      status: statusKey
+    };
+    console.log(params);
+    router.push(
+      {
+        pathname: '/swap-meet',
+        query: params,
+      },
+      undefined,
+      { 
+        shallow: true 
+      }
+    );
+  };
+
+  const getItemComparisonFunction = (key: string) => {
+    console.log(`Sorting: ${key}`);
+    switch (key) {
+      case 'Most Affordable':
+        return compareByMostAffordable;
+      case 'Most Expensive':
+        return compareByMostExpensive;
+      case 'Highest Last Sale':
+        return compareByHighestLastSale;
+      default:
+        return compareByRank;
+    }
+  };
+  const getStatusTestFunction = (key: string) => {
+    console.log(`Filter for: ${key}`);
+    switch (key) {
+      case 'Has Unclaimed $PAPER':
+        return testForUnclaimedPaper;
+      case 'For Sale':
+        return testForSale;
+      default:
+        return () => true;
+    }
+  };
 
   // Loads unclaimed $paper status from The Graph,
   // then updates items in reactive var cache.
@@ -110,6 +134,7 @@ const MarketList = () => {
   }
 
   const filteredSortedItems = useMemo(() => {
+    setQueryParams();
     const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
     const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
     return filterItemsBySearchString(filteredItems, searchInputValue);
@@ -117,12 +142,14 @@ const MarketList = () => {
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
 
-  // Search text change
+
+  // Search, sort, status change…
   useEffect(() => {
     itemsVisible = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
     setIsTyping(false);
   }, [searchInputValue, sortByKey, statusKey]);
+
 
   // Increasing itemsVisible simply increases the window size
   // into the cached data we render in window.

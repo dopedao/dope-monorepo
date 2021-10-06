@@ -7,4 +7,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ping-api
-        run: curl https://dopewars.gg/api/open-sea-assets?secret_word=big-pimpin
+        run: curl https://dopewars.gg/api/open-sea-assets?secret_word=${{ secrets.SECRET_WORD }}
