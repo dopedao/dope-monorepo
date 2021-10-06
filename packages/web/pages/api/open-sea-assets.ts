@@ -2,25 +2,16 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getOpenSeaAssetPagesJson } from '../../common/OpenSeaAsset';
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
-import ComingSoonDialog from '../../components/ComingSoonDialog';
 
-interface DotEnvInterface {
-  parsed: {
-    S3_ID: string;
-    S3_SECRET: string;
-    SECRET_WORD: string;
-    error?: Error;
-  }
-}
-
-const config = dotenv.config() as DotEnvInterface
+const config = dotenv.config();
 if (config.error) throw config.error;
+if (!config.parsed) throw 'Unable to parse .env file';
 
-console.log(config);
+const parsedConfig = config.parsed;
 
-const S3_ID = config.parsed['S3_ID'];
-const S3_SECRET = config.parsed['S3_SECRET'];
-const SECRET_WORD = config.parsed['SECRET_WORD'];
+const S3_ID = parsedConfig['S3_ID'];
+const S3_SECRET = parsedConfig['S3_SECRET'];
+const SECRET_WORD = parsedConfig['SECRET_WORD'];
 const S3_BUCKET = 'dope-wars-gg';
 const FILENAME = 'open-sea-assets.json';
 
