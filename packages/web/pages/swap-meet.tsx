@@ -68,10 +68,12 @@ const ContentEmpty = (
 );
 
 const MarketList = () => {
-  const [searchInputValue, setSearchInputValue] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+
   const [sortByKey, setSortByKey] = useState('');
   const [statusKey, setStatusKey] = useState('');
+  const [searchInputValue, setSearchValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 
@@ -116,14 +118,12 @@ const MarketList = () => {
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
 
-
   // Search, sort, status change…
   useEffect(() => {
     itemsVisible = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
     setIsTyping(false);
   }, [searchInputValue, sortByKey, statusKey]);
-
 
   // Increasing itemsVisible simply increases the window size
   // into the cached data we render in window.
@@ -136,7 +136,7 @@ const MarketList = () => {
   return (
     <>
       <MarketFilterBar
-        searchCallback={(value: string) => setSearchInputValue(value)}
+        searchCallback={(value: string) => setSearchValue(value)}
         sortByCallback={(key: string) => setSortByKey(key)}
         statusCallback={(key: string) => setStatusKey(key)}
         compactViewCallback={(toggle: boolean) => setViewCompactCards(toggle)}
