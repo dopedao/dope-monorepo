@@ -62,15 +62,15 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         // event. If that's unsafe, we can fallback to using _mint
         uint256[] memory ids = new uint256[](9);
         uint256[] memory amounts = new uint256[](9);
-        ids[0] = itemId(tokenId, sc.weaponComponents, ComponentTypes.WEAPON);
-        ids[1] = itemId(tokenId, sc.clothesComponents, ComponentTypes.CLOTHES);
-        ids[2] = itemId(tokenId, sc.vehicleComponents, ComponentTypes.VEHICLE);
-        ids[3] = itemId(tokenId, sc.waistComponents, ComponentTypes.WAIST);
-        ids[4] = itemId(tokenId, sc.footComponents, ComponentTypes.FOOT);
-        ids[5] = itemId(tokenId, sc.handComponents, ComponentTypes.HAND);
-        ids[6] = itemId(tokenId, sc.drugsComponents, ComponentTypes.DRUGS);
-        ids[7] = itemId(tokenId, sc.neckComponents, ComponentTypes.NECK);
-        ids[8] = itemId(tokenId, sc.ringComponents, ComponentTypes.RING);
+        ids[0] = itemId(tokenId, ComponentTypes.WEAPON);
+        ids[1] = itemId(tokenId, ComponentTypes.CLOTHES);
+        ids[2] = itemId(tokenId, ComponentTypes.VEHICLE);
+        ids[3] = itemId(tokenId, ComponentTypes.WAIST);
+        ids[4] = itemId(tokenId, ComponentTypes.FOOT);
+        ids[5] = itemId(tokenId, ComponentTypes.HAND);
+        ids[6] = itemId(tokenId, ComponentTypes.DRUGS);
+        ids[7] = itemId(tokenId, ComponentTypes.NECK);
+        ids[8] = itemId(tokenId, ComponentTypes.RING);
 
         for (uint256 i = 0; i < ids.length; i++) {
             // Since we are directly minting, we need to handle the snapshot logic.
@@ -83,12 +83,8 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         emit TransferBatch(_msgSender(), address(0), who, ids, amounts);
     }
 
-    function itemId(
-        uint256 tokenId,
-        function(uint256) external pure returns (uint8[5] memory) componentsFn,
-        uint256 componentType
-    ) private pure returns (uint256) {
-        uint8[5] memory components = componentsFn(tokenId);
+    function itemId(uint256 tokenId, uint8 componentType) private view returns (uint256) {
+        uint8[5] memory components = sc.getComponent(tokenId, componentType);
         return TokenId.toId(components, componentType);
     }
 
