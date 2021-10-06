@@ -3,7 +3,6 @@ import { media } from '../styles/mixins';
 import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
-import { useRouter } from 'next/router';
 import AppWindow from '../components/AppWindow';
 import Head from '../components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -76,30 +75,6 @@ const MarketList = () => {
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 
-  const router = useRouter();
-  
-  console.log('Router props');
-  console.log(router.query);
-
-  const setQueryParams = () => {
-    const params = {
-      q: searchInputValue,
-      sort_by: sortByKey,
-      status: statusKey
-    };
-    console.log(params);
-    router.push(
-      {
-        pathname: '/swap-meet',
-        query: params,
-      },
-      undefined,
-      { 
-        shallow: true 
-      }
-    );
-  };
-
   const getItemComparisonFunction = (key: string) => {
     console.log(`Sorting: ${key}`);
     switch (key) {
@@ -134,7 +109,6 @@ const MarketList = () => {
   }
 
   const filteredSortedItems = useMemo(() => {
-    setQueryParams();
     const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
     const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
     return filterItemsBySearchString(filteredItems, searchInputValue);
