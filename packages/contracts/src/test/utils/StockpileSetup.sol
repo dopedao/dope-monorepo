@@ -446,6 +446,34 @@ contract StockpileTester is Stockpile {
 
         return itemNames;
     }
+
+    // @notice Given an ERC1155 token id, it returns its name by decoding and parsing
+    // the id
+    function tokenName(uint256 id) public view returns (string memory) {
+        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(id);
+
+        // component type: what slot to get
+        // components[0] the index in the array
+        string memory item = sc.name(componentType, components[0]);
+
+        // We need to do -1 because the 'no description' is not part of loot components
+
+        // add the suffix
+        if (components[1] > 0) {
+            item = string(abi.encodePacked(item, ' ', sc.suffixes(components[1] - 1)));
+        }
+
+        if (components[2] > 0) {
+            item = string(abi.encodePacked(sc.prefix(components[2], components[3]), ' ', item));
+        }
+
+        // add the augmentation
+        if (components[4] > 0) {
+            item = string(abi.encodePacked(item, ' +1'));
+        }
+
+        return item;
+    }
 }
 
 contract StockpileTest is DSTest {

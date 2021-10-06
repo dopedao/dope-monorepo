@@ -369,6 +369,35 @@ contract Components is Ownable {
         return (rand, rand % 21);
     }
 
+    function pluck(
+        uint256 tokenId,
+        uint8 componentType,
+        uint256 sourceArrayLength
+    ) internal pure returns (uint8[5] memory) {
+        uint8[5] memory components;
+
+        (uint256 rand, uint256 greatness) = seed(tokenId, componentType);
+
+        components[0] = uint8(rand % sourceArrayLength);
+        components[1] = 0;
+        components[2] = 0;
+
+        if (greatness > 14) {
+            components[1] = uint8((rand % suffixesLength) + 1);
+        }
+        if (greatness >= 19) {
+            components[2] = uint8((rand % namePrefixesLength) + 1);
+            components[3] = uint8((rand % nameSuffixesLength) + 1);
+            if (greatness == 19) {
+                // ...
+            } else {
+                components[4] = 1;
+            }
+        }
+
+        return components;
+    }
+
     function getComponent(uint256 tokenId, uint8 componentType) public pure returns (uint8[5] memory) {
         if (componentType == ComponentTypes.WEAPON) {
             return pluck(tokenId, componentType, weaponsLength);
@@ -437,36 +466,6 @@ contract Components is Ownable {
         }
 
         return id;
-    }
-
-    function pluck(
-        uint256 tokenId,
-        uint8 componentType,
-        uint256 sourceArrayLength
-    ) internal pure returns (uint8[5] memory) {
-        uint8[5] memory components;
-
-        (uint256 rand, uint256 greatness) = seed(tokenId, componentType);
-
-        components[0] = uint8(rand % sourceArrayLength);
-        components[1] = 0;
-        components[2] = 0;
-
-        // uint256 greatness = rand % 21;
-        if (greatness > 14) {
-            components[1] = uint8((rand % suffixesLength) + 1);
-        }
-        if (greatness >= 19) {
-            components[2] = uint8((rand % namePrefixesLength) + 1);
-            components[3] = uint8((rand % nameSuffixesLength) + 1);
-            if (greatness == 19) {
-                // ...
-            } else {
-                components[4] = 1;
-            }
-        }
-
-        return components;
     }
 
     // Returns the "vanilla" item name w/o any prefix/suffixes or augmentations
@@ -552,30 +551,5 @@ contract Components is Ownable {
     // Helper for encoding as json w/ trait_type / value from opensea
     function trait(string memory traitType, string memory value) internal pure returns (string memory) {
         return string(abi.encodePacked('{', '"trait_type": "', traitType, '", ', '"value": "', value, '"', '}'));
-    }
-
-    // Creates the token description given its components and what type it is
-    function componentsToString(uint8[5] memory components, uint8 componentType) public view returns (string memory) {
-        // component type: what slot to get
-        // components[0] the index in the array
-        string memory item = name(componentType, components[0]);
-
-        // We need to do -1 because the 'no description' is not part of loot components
-
-        // add the suffix
-        if (components[1] > 0) {
-            item = string(abi.encodePacked(item, ' ', suffixes[components[1] - 1]));
-        }
-
-        if (components[2] > 0) {
-            item = string(abi.encodePacked(prefix(components[2], components[3]), ' ', item));
-        }
-
-        // add the augmentation
-        if (components[4] > 0) {
-            item = string(abi.encodePacked(item, ' +1'));
-        }
-
-        return item;
     }
 }

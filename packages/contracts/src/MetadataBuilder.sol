@@ -9,6 +9,11 @@ import { Base64 } from './MetadataUtils.sol';
 
 library MetadataBuilder {
     struct SVGParams {
+        string text;
+        string subtext;
+        string name;
+        string description;
+        string attributes;
         bytes[] parts;
         string background;
     }
@@ -34,12 +39,11 @@ library MetadataBuilder {
     /**
      * @notice Given RLE image parts and color palettes, merge to generate a single SVG image.
      */
-    function generateSVG(
-        string memory title,
-        string memory name,
-        SVGParams memory params,
-        mapping(uint8 => string[]) storage palettes
-    ) public view returns (string memory svg) {
+    function generateSVG(SVGParams memory params, mapping(uint8 => string[]) storage palettes)
+        public
+        view
+        returns (string memory svg)
+    {
         // prettier-ignore
         return string(
             abi.encodePacked(
@@ -48,7 +52,7 @@ library MetadataBuilder {
                 '<style>.base { fill: #fff; font-family: d; font-size: 14px; }</style>',
                 '<rect width="100%" height="100%" fill="#', params.background, '" />',
                 _generateSVGRects(params, palettes),
-                '<text x="160" y="25" with="320" text-anchor="middle" class="base">', title, '</text><text x="160" y="303" with="320" text-anchor="middle" class="base">', name, '</text>',
+                '<text x="160" y="25" with="320" text-anchor="middle" class="base">', params.text, '</text><text x="160" y="303" with="320" text-anchor="middle" class="base">', params.subtext, '</text>',
                 '</svg>'
             )
         );
@@ -62,38 +66,33 @@ library MetadataBuilder {
         return output;
     }
 
-    function tokenURI(
-        string calldata text,
-        string calldata subtext,
-        string calldata name,
-        string calldata description,
-        string calldata attributes,
-        SVGParams memory params,
-        mapping(uint8 => string[]) storage palettes
-    ) external view returns (string memory) {
-        string memory output = Base64.encode(bytes(generateSVG(text, subtext, params, palettes)));
+    function tokenURI(SVGParams memory params, mapping(uint8 => string[]) storage palettes)
+        external
+        view
+        returns (string memory)
+    {
+        string memory output = Base64.encode(bytes(generateSVG(params, palettes)));
         string memory json = Base64.encode(
             bytes(
                 string(
                     abi.encodePacked(
                         '{ "name": "',
-                        name,
+                        params.name,
                         '", ',
                         '"description" : "',
-                        description,
+                        params.description,
                         '", ',
                         '"image": "data:image/svg+xml;base64,',
                         output,
                         '", '
                         '"attributes": ',
-                        attributes,
+                        params.attributes,
                         '}'
                     )
                 )
             )
         );
         output = string(abi.encodePacked('data:application/json;base64,', json));
-
         return output;
     }
 
