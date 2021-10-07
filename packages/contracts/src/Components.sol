@@ -489,7 +489,7 @@ contract Components is Ownable {
         } else if (componentType == ComponentTypes.RING) {
             return rings[idx];
         } else {
-            revert('Unexpected gear piece');
+            revert(UnexpectedComponent);
         }
     }
 

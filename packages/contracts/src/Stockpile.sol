@@ -150,7 +150,7 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         require(ids.length == rles.length / 2, 'ids rles mismatch');
 
         for (uint256 i = 0; i < rles.length; i += 2) {
-            setRle(i / 2, rles[i], rles[i + 1]);
+            setRle(ids[i / 2], rles[i], rles[i + 1]);
         }
     }
 }

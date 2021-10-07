@@ -110,11 +110,20 @@ contract StockpileMetadata {
     }
 
     function tokenRle(uint256 id, uint8 gender) public view returns (bytes memory) {
-        if (rles[id].length > 0) {
+        if (rles[id][gender].length > 0) {
             return rles[id][gender];
         }
 
-        return rles[TokenId.decode(id, 1)][gender];
+        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(id);
+        components[1] = 0;
+        components[2] = 0;
+        components[3] = 0;
+        components[4] = 0;
+        return rles[TokenId.toId(components, componentType)][gender];
+    }
+
+    function toId(uint8[5] memory components, uint8 componentType) public pure returns (uint256) {
+        return TokenId.toId(components, componentType);
     }
 
     function genderParts(
@@ -124,18 +133,23 @@ contract StockpileMetadata {
     ) internal view returns (bytes[3] memory) {
         bytes[3] memory parts;
 
+        int16 offset = 1;
+        if (gender == Gender.MALE) {
+            offset = -1;
+        }
+
         bytes memory shadow_ = shadow;
-        shadow_[2] = bytes1(uint8(shadow_[2]) + (gender * uint8(12)));
-        shadow_[4] = bytes1(uint8(shadow_[4]) + (gender * uint8(12)));
+        shadow_[2] = bytes1(uint8(uint16(int16(uint16(uint8(shadow_[2]))) + (offset * int16(12)))));
+        shadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(shadow_[4]))) + (offset * int16(12)))));
         parts[0] = shadow_;
 
-        silouette[2] = bytes1(uint8(silouette[2]) + (gender * uint8(12)));
-        silouette[4] = bytes1(uint8(silouette[4]) + (gender * uint8(12)));
+        silouette[2] = bytes1(uint8(uint16(int16(uint16(uint8(silouette[2]))) + (offset * int16(12)))));
+        silouette[4] = bytes1(uint8(uint16(int16(uint16(uint8(silouette[4]))) + (offset * int16(12)))));
         parts[1] = silouette;
 
         bytes memory item = tokenRle(id, gender);
-        item[2] = bytes1(uint8(item[2]) + (gender * uint8(12)));
-        item[4] = bytes1(uint8(item[4]) + (gender * uint8(12)));
+        item[2] = bytes1(uint8(uint16(int16(uint16(uint8(item[2]))) + (offset * int16(12)))));
+        item[4] = bytes1(uint8(uint16(int16(uint16(uint8(item[4]))) + (offset * int16(12)))));
         parts[2] = item;
 
         return parts;
