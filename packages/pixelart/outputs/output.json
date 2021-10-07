@@ -820,10 +820,10 @@
         ],
         [
             {
-                "name": "0-shadow_pink_bkg",
+                "name": "0-shadow",
                 "gender": "men",
                 "category": "shadow",
-                "data": "0x0036283818026b01000d6b0500096b0200"
+                "data": "0x0036283818021c01000d1c0500091c0200"
             }
         ],
         [

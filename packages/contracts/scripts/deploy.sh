@@ -10,10 +10,8 @@ set -eo pipefail
 # extractABI MetadataBuilder
 # log "MetadataBuilder deployed at:" $MetadataBuilderAddr
 
-# export DAPP_LIBRARIES="src/MetadataBuilder.sol:MetadataBuilder:0x407c5d67f08eA7e72a8366e44148f1820CD66F56"
-
 # Deploy.
-ComponentsAddr="0xff04FE612D1990fc5756CeE41a3c8439fB7B292d"
+ComponentsAddr="0x01b93a0EaC1260DDd462D2D8C815CaCCEb50DeF9"
 # ComponentsAddr=$(deploy Components $ETH_FROM)
 # verify Components $ComponentsAddr $ETH_FROM
 # extractABI Components

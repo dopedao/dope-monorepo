@@ -464,7 +464,7 @@ contract StockpileTester is Stockpile {
         }
 
         if (components[2] > 0) {
-            item = string(abi.encodePacked(sc.prefix(components[2], components[3]), ' ', item));
+            item = string(abi.encodePacked('\\"', sc.prefix(components[2], components[3]), '\\" ', item));
         }
 
         // add the augmentation

@@ -21,10 +21,11 @@ contract StockpileMetadata {
         'Get fitted with the freshest drip, strapped with the latest gat, rolling in the hottest ride, and re-up your supply at the Dope St. Swap Meet.';
 
     bytes internal constant female =
-        hex'000a26361a050004240300040006240200040007240100020009240100020008240200020002240100052402000300012401000524020006000324030006000224040006000224040004000624020003000824010002000a2402000a2401000224010008240100012402000624010001240100012403000524010001240100012403000424020001240100012403000424020001240100012403000424020001240100012403000424020001240100012402000624010001240224020008240224020006240100012401240300022402000324010004000224020002240200040002240200022402000400022402000224020004000224020002240200040002240200022402000400022402000224020004000224020002240200040002240200022402000400012403000124030004000124030001240300040001240300012403000400012403000124030004000124030001240300040001240300012403000400012403000124030004000124030001240300040001240300012403000400012403000124030003000324020003240100';
+        hex'000a26361a050004600300040006600200040007600100020009600100020008600200020002600100056002000300016001000560020006000360030006000260040006000260040004000660020003000860010002000a6002000a60010002600100086001000160020006600100016001000160030005600100016001000160030004600200016001000160030004600200016001000160030004600200016001000160030004600200016001000160020006600100016002600100096002600100076001000160016002000860010004000260020002600200040002600200026002000400026002000260020004000260020002600200040002600200026002000400026002000260020004000260020002600200040002600200026002000400016003000160030004000160030001600300040001600300016003000400016003000160030004000160030001600300040001600300016003000400016003000160030004000160030001600300040001600300016003000400016003000160030004000260020003600100';
     bytes internal constant man =
-        hex'000927361907000324040006000524030006000524030006000524030006000524030007000424030007000324040007000224050004000724030002000b24010001000d2401000d2401000d240e240e24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b240c240100012402240100032402000524010003000324020004240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000324020003000324030004240100';
-    bytes internal constant shadow = hex'0036283818024801000d48050009480200';
+        hex'000927361907000360040006000560030006000560030006000560030006000560030007000460030007000360040007000260050004000760030002000b60010001000d6001000d6001000d600e600e60026001000b60026001000b60026001000b60026001000b60026001000b60026001000b60026001000b60026001000b60026001000b600c600100016002600100036003000460010003000360030003600200030003600300036002000300036003000360020003000360030003600200030003600300036002000300036003000360020003000360030003600200030003600300036002000300026004000260030003000260040002600300030002600400026003000300026004000260030003000260040002600300030002600400026003000300026004000260030003000260040002600300030002600400026003000300026004000360020003000360030004600100';
+    bytes internal constant shadow = hex'0036283818021c01000d1c0500091c0200';
+    bytes internal constant drugShadow = hex'00362f3729061c';
 
     // green, blue, red, yellow
     string[4] internal backgrounds = ['a3beb5', '8aa3c3', 'e0afae', 'f5d8a5'];
@@ -56,17 +57,19 @@ contract StockpileMetadata {
 
     /// @notice Returns an SVG for the provided token id
     function tokenURI(uint256 tokenId) public view returns (string memory) {
-        bytes[] memory parts = new bytes[](6);
+        bytes[] memory parts = new bytes[](8);
 
-        bytes[3] memory male = genderParts(man, tokenId, Gender.MALE);
-        bytes[3] memory female = genderParts(female, tokenId, Gender.FEMALE);
+        bytes[4] memory male = genderParts(man, tokenId, Gender.MALE);
+        bytes[4] memory female = genderParts(female, tokenId, Gender.FEMALE);
 
         parts[0] = male[0];
         parts[1] = male[1];
         parts[2] = male[2];
-        parts[3] = female[0];
-        parts[4] = female[1];
-        parts[5] = female[2];
+        parts[3] = male[3];
+        parts[4] = female[0];
+        parts[5] = female[1];
+        parts[6] = female[2];
+        parts[7] = female[3];
 
         MetadataBuilder.SVGParams memory p = params(tokenId);
         p.parts = parts;
@@ -86,15 +89,20 @@ contract StockpileMetadata {
 
         if (components[1] > 0) {
             meta.name = string(abi.encodePacked(meta.name, ' ', sc.suffix(components[1])));
-            meta.subtext = name;
+            meta.subtext = meta.name;
             bg = 1;
         } else {
             meta.subtext = name;
         }
 
         if (components[2] > 0) {
-            meta.text = sc.prefix(components[2], components[3]);
-            meta.name = string(abi.encodePacked(meta.text, ' ', meta.name));
+            string memory prefix = sc.prefix(components[2], components[3]);
+
+            // NOTE: abi encoding requires a double escape to render double quotes in json.
+            // the svg renderer can't handle this (renders \"), so we use a modified font
+            // which renders a double quote for back ticks.
+            meta.text = string(abi.encodePacked('`', prefix, '`'));
+            meta.name = string(abi.encodePacked('\\"', prefix, '\\" ', meta.name));
             bg = 2;
         }
 
@@ -127,11 +135,11 @@ contract StockpileMetadata {
     }
 
     function genderParts(
-        bytes memory silouette,
+        bytes memory silhouette,
         uint256 id,
         uint8 gender
-    ) internal view returns (bytes[3] memory) {
-        bytes[3] memory parts;
+    ) internal view returns (bytes[4] memory) {
+        bytes[4] memory parts;
 
         int16 offset = 1;
         if (gender == Gender.MALE) {
@@ -143,14 +151,19 @@ contract StockpileMetadata {
         shadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(shadow_[4]))) + (offset * int16(12)))));
         parts[0] = shadow_;
 
-        silouette[2] = bytes1(uint8(uint16(int16(uint16(uint8(silouette[2]))) + (offset * int16(12)))));
-        silouette[4] = bytes1(uint8(uint16(int16(uint16(uint8(silouette[4]))) + (offset * int16(12)))));
-        parts[1] = silouette;
+        bytes memory drugShadow_ = drugShadow;
+        drugShadow_[2] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[2]))) + (offset * int16(12)))));
+        drugShadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[4]))) + (offset * int16(12)))));
+        parts[1] = drugShadow_;
+
+        silhouette[2] = bytes1(uint8(uint16(int16(uint16(uint8(silhouette[2]))) + (offset * int16(12)))));
+        silhouette[4] = bytes1(uint8(uint16(int16(uint16(uint8(silhouette[4]))) + (offset * int16(12)))));
+        parts[2] = silhouette;
 
         bytes memory item = tokenRle(id, gender);
         item[2] = bytes1(uint8(uint16(int16(uint16(uint8(item[2]))) + (offset * int16(12)))));
         item[4] = bytes1(uint8(uint16(int16(uint16(uint8(item[4]))) + (offset * int16(12)))));
-        parts[2] = item;
+        parts[3] = item;
 
         return parts;
     }
