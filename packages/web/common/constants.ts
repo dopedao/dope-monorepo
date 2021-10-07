@@ -12,7 +12,7 @@ export const NETWORK = {
     contracts: {
       dope: '0xEf879818335a10Db667810a9B668A8F537389194',
       paper: '0x7988fCA891B30cF8E23459B09b851F9d79B17215',
-      stockpile: '0x4c1b4100d07afd0894290687120fb97ff819af31',
+      stockpile: '0xEcE43A31Ed2C6333B7C3C1A89A8da8F32e33B8DD',
     },
     rpc: 'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
     subgraph: 'https://api.studio.thegraph.com/query/7708/dope-wars/v0.0.17-rinkeby',

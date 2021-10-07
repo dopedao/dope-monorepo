@@ -99,24 +99,24 @@ with open('/Users/tarrence/Library/Ethereum/keystore/UTC--2021-09-11T21-49-48.51
 f = open("../outputs/output.json", "r")
 meta = json.load(f)
 
-# Components 0xff04FE612D1990fc5756CeE41a3c8439fB7B292d
+# Components 0x01b93a0EaC1260DDd462D2D8C815CaCCEb50DeF9
 Stockpile = w3.eth.contract(
-    "0x4c1b4100d07Afd0894290687120Fb97ff819AF31", abi=abi)
+    "0xEcE43A31Ed2C6333B7C3C1A89A8da8F32e33B8DD", abi=abi)
 
 print(Stockpile.functions.name().call())
 
-nonce = w3.eth.get_transaction_count(
-    '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = Stockpile.functions.setPalette(0, meta['partcolors']).buildTransaction({
-    'chainId': 4,
-    'gas': 7000000,
-    'maxFeePerGas': w3.toWei('2', 'gwei'),
-    'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
-    'nonce': nonce,
-})
-signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+# nonce = w3.eth.get_transaction_count(
+#     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
+# txn = Stockpile.functions.setPalette(0, meta['partcolors']).buildTransaction({
+#     'chainId': 4,
+#     'gas': 7000000,
+#     'maxFeePerGas': w3.toWei('2', 'gwei'),
+#     'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
+#     'nonce': nonce,
+# })
+# signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+# txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+# txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 components = {}
 for parts in meta["parts"]:
@@ -140,7 +140,6 @@ def batchSetRle(ids, rles):
     if len(ids) == 0:
         return
 
-    print("submit batch rle")
     nonce = w3.eth.get_transaction_count(
         '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
     txn = Stockpile.functions.batchSetRle(ids, rles).buildTransaction({
@@ -156,9 +155,11 @@ def batchSetRle(ids, rles):
 
 
 for category, idxs in components.items():
+    print(category)
     ids = []
     rles = []
     weight = 0
+
     for idx, genders in idxs.items():
         if category in types:
             id = Stockpile.functions.toId(

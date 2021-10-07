@@ -8,7 +8,7 @@ export DAPP_LINK_TEST_LIBRARIES=1
 export DAPP_TEST_VERBOSITY=1
 export DAPP_TEST_SMTTIMEOUT=500000
 
-export DAPP_LIBRARIES=" src/MetadataBuilder.sol:MetadataBuilder:0x407c5d67f08eA7e72a8366e44148f1820CD66F56"
+export DAPP_LIBRARIES=" src/MetadataBuilder.sol:MetadataBuilder:0xaFe1f4AD83DB8cBa7d9AFB026a371bfe0E282600"
 
 # set so that we can deploy to local node w/o hosted private keys
 export ETH_RPC_ACCOUNTS=false
