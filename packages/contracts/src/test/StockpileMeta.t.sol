@@ -126,6 +126,21 @@ contract Metadata is StockpileTest {
         assertMetadata(id, attributes, '"Street Queen Triggerman" Fingerless Gloves from Buffalo +1');
     }
 
+    function testShouldFallbackToBaseItemRLE() public {
+        uint8[5] memory components = components.getComponent(3686, ComponentTypes.HAND);
+        uint256 fullId = TokenId.toId(components, ComponentTypes.HAND);
+
+        components[1] = 0;
+        components[2] = 0;
+        components[3] = 0;
+        components[4] = 0;
+
+        uint256 baseId = TokenId.toId(components, ComponentTypes.HAND);
+
+        owner.setRle(baseId, jordans, jordans);
+        assertEq(string(stockpile.tokenRle(fullId, 0)), string(jordans));
+    }
+
     function assertMetadata(
         uint256 tokenId,
         Attribute[] memory attributes,
