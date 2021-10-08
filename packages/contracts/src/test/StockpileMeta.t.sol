@@ -16,6 +16,8 @@ struct Data {
 }
 
 contract Metadata is StockpileTest {
+    bytes internal constant car =
+        hex'00346d561413001fd327000d002dd31f000b0030d31e000a0032d31d00090034d31c00080036d31b00070038d31a0006003ad3190005003cd3180004003ed31700030040d3160002004fd30800020054d30300010056d3020058d3010058d3010058d3010059d359d359d359d3010058d359d359d358d3010058d30100010057d30100010056d30200010053d30500010051d3070002000cd30d000cd305000ed30c000cd3070002000bd30f000ad307000cd30e000ad30800030009d3110008d309000bd30f0008d30900040007d3130006d30b0009d3110006d30a00';
     bytes internal constant jordans =
         hex'00322737190200012a012b0600012b012a02000200032b0400032b02000100012b0119012a012b0400012b012a0119012b0100022b031904000319022b052a0400052a';
 
@@ -124,6 +126,19 @@ contract Metadata is StockpileTest {
         attributes[5] = Attribute('Augmentation', 'Yes');
         owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, '"Street Queen Triggerman" Fingerless Gloves from Buffalo +1');
+    }
+
+    function testFreelancePharmacistTriggermanDodgeFromComptonMetadata() public {
+        uint256 id = stockpile.vehicleId(3686);
+        Attribute[] memory attributes = new Attribute[](6);
+        attributes[0] = Attribute('Slot', 'Vehicle');
+        attributes[1] = Attribute('Item', 'Dodge');
+        attributes[2] = Attribute('Suffix', 'from Compton');
+        attributes[3] = Attribute('Name Prefix', 'The Freelance Pharmacist');
+        attributes[4] = Attribute('Name Suffix', 'Triggerman');
+        attributes[5] = Attribute('Augmentation', 'Yes');
+        owner.setRle(id, car, car);
+        assertMetadata(id, attributes, '"The Freelance Pharmacist Triggerman" Dodge from Compton +1');
     }
 
     function testShouldFallbackToBaseItemRLE() public {

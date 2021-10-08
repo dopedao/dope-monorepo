@@ -80,7 +80,7 @@ abi = [
 types = {
     "weapons": 0,
     "clothes": 1,
-    "vehicle": 2,
+    "vehicles": 2,
     "waist": 3,
     "shoes": 4,
     "hands": 5,
@@ -99,24 +99,23 @@ with open('/Users/tarrence/Library/Ethereum/keystore/UTC--2021-09-11T21-49-48.51
 f = open("../outputs/output.json", "r")
 meta = json.load(f)
 
-# Components 0x01b93a0EaC1260DDd462D2D8C815CaCCEb50DeF9
 Stockpile = w3.eth.contract(
-    "0xEcE43A31Ed2C6333B7C3C1A89A8da8F32e33B8DD", abi=abi)
+    "0x741644546E0D558667F6cf647d15C447f527E00c", abi=abi)
 
 print(Stockpile.functions.name().call())
 
-# nonce = w3.eth.get_transaction_count(
-#     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-# txn = Stockpile.functions.setPalette(0, meta['partcolors']).buildTransaction({
-#     'chainId': 4,
-#     'gas': 7000000,
-#     'maxFeePerGas': w3.toWei('2', 'gwei'),
-#     'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
-#     'nonce': nonce,
-# })
-# signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-# txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-# txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+nonce = w3.eth.get_transaction_count(
+    '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
+txn = Stockpile.functions.setPalette(0, meta['partcolors']).buildTransaction({
+    'chainId': 4,
+    'gas': 7000000,
+    'maxFeePerGas': w3.toWei('2', 'gwei'),
+    'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
+    'nonce': nonce,
+})
+signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 components = {}
 for parts in meta["parts"]:
@@ -165,10 +164,17 @@ for category, idxs in components.items():
             id = Stockpile.functions.toId(
                 [int(idx), 0, 0, 0, 0], types[category]).call()
             ids.append(id)
-            weight += len(genders["men"])
-            weight += len(genders["girls"])
-            rles.append(genders["men"])
-            rles.append(genders["girls"])
+
+            if category == "vehicles":
+                weight += len(genders["none"])
+                weight += len(genders["none"])
+                rles.append(genders["none"])
+                rles.append(genders["none"])
+            else:
+                weight += len(genders["men"])
+                weight += len(genders["girls"])
+                rles.append(genders["men"])
+                rles.append(genders["girls"])
 
         if weight > 10000:
             batchSetRle(ids, rles)
