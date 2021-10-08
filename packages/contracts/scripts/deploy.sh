@@ -11,7 +11,7 @@ set -eo pipefail
 # log "MetadataBuilder deployed at:" $MetadataBuilderAddr
 
 # Deploy.
-ComponentsAddr="0x01b93a0EaC1260DDd462D2D8C815CaCCEb50DeF9"
+# ComponentsAddr="0x6Ea0B51252c34d5fc8CB65F69a58CA5639Cd3835"
 # ComponentsAddr=$(deploy Components $ETH_FROM)
 # verify Components $ComponentsAddr $ETH_FROM
 # extractABI Components

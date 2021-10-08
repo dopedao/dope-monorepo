@@ -16,7 +16,7 @@ library Gender {
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
 contract StockpileMetadata {
-    string private constant _name = 'Dope St. Swap Meet';
+    string private constant _name = 'Dope Swap Meet';
     string private constant description =
         'Get fitted with the freshest drip, strapped with the latest gat, rolling in the hottest ride, and re-up your supply at the Dope St. Swap Meet.';
 
@@ -28,7 +28,7 @@ contract StockpileMetadata {
     bytes internal constant drugShadow = hex'00362f3729061c';
 
     // green, blue, red, yellow
-    string[4] internal backgrounds = ['a3beb5', '8aa3c3', 'e0afae', 'f5d8a5'];
+    string[4] internal backgrounds = ['E6F0DE', 'E6F0DE', 'FAE8DF', 'FFFEBF'];
 
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => string[]) internal palettes;
@@ -132,8 +132,8 @@ contract StockpileMetadata {
     ) internal view returns (MetadataBuilder.SVGParams memory) {
         bytes[] memory parts = new bytes[](8);
 
-        bytes[4] memory male = genderParts(man, tokenId, Gender.MALE);
-        bytes[4] memory female = genderParts(female, tokenId, Gender.FEMALE);
+        bytes[4] memory male = genderParts(man, tokenId, Gender.MALE, componentType);
+        bytes[4] memory female = genderParts(female, tokenId, Gender.FEMALE, componentType);
 
         parts[0] = male[0];
         parts[1] = male[1];
@@ -145,6 +145,8 @@ contract StockpileMetadata {
         parts[7] = female[3];
 
         MetadataBuilder.SVGParams memory p = params(components, componentType);
+        p.resolution = 64;
+        p.color = '000';
         p.parts = parts;
         return p;
     }
@@ -152,7 +154,8 @@ contract StockpileMetadata {
     function genderParts(
         bytes memory silhouette,
         uint256 id,
-        uint8 gender
+        uint8 gender,
+        uint8 componentType
     ) internal view returns (bytes[4] memory) {
         bytes[4] memory parts;
 
@@ -166,10 +169,12 @@ contract StockpileMetadata {
         shadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(shadow_[4]))) + (offset * int16(12)))));
         parts[0] = shadow_;
 
-        bytes memory drugShadow_ = drugShadow;
-        drugShadow_[2] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[2]))) + (offset * int16(12)))));
-        drugShadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[4]))) + (offset * int16(12)))));
-        parts[1] = drugShadow_;
+        if (componentType == ComponentTypes.DRUGS) {
+            bytes memory drugShadow_ = drugShadow;
+            drugShadow_[2] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[2]))) + (offset * int16(12)))));
+            drugShadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[4]))) + (offset * int16(12)))));
+            parts[1] = drugShadow_;
+        }
 
         silhouette[2] = bytes1(uint8(uint16(int16(uint16(uint8(silhouette[2]))) + (offset * int16(12)))));
         silhouette[4] = bytes1(uint8(uint16(int16(uint16(uint8(silhouette[4]))) + (offset * int16(12)))));
@@ -189,8 +194,10 @@ contract StockpileMetadata {
         uint8 componentType
     ) internal view returns (MetadataBuilder.SVGParams memory) {
         bytes[] memory parts = new bytes[](1);
-        parts[0] = shadow;
+        parts[0] = tokenRle(tokenId, 0);
         MetadataBuilder.SVGParams memory p = params(components, componentType);
+        p.resolution = 160;
+        p.color = '000';
         p.parts = parts;
         return p;
     }

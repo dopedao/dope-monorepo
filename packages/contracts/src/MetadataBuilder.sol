@@ -5,10 +5,12 @@
 
 pragma solidity ^0.8.6;
 
-import { Base64 } from './MetadataUtils.sol';
+import { Base64, toString } from './MetadataUtils.sol';
 
 library MetadataBuilder {
     struct SVGParams {
+        uint8 resolution;
+        string color;
         string text;
         string subtext;
         string name;
@@ -48,14 +50,37 @@ library MetadataBuilder {
         return string(
             abi.encodePacked(
                 '<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">',
-                '<style>@font-face { font-family: "d"; src: url(data:application/octet-stream;base64,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);}</style>'
-                '<style>.base { fill: #fff; font-family: d; font-size: 14px; }</style>',
+                generateStyles(params),
                 '<rect width="100%" height="100%" fill="#', params.background, '" />',
-                _generateSVGRects(params, palettes),
-                '<text x="160" y="25" with="320" text-anchor="middle" class="base">', params.text, '</text><text x="160" y="303" with="320" text-anchor="middle" class="base">', params.subtext, '</text>',
+                generateText(params), generateSVGRects(params, palettes),
                 '</svg>'
             )
         );
+    }
+
+    function generateStyles(SVGParams memory params) private pure returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    '<style>@font-face { font-family: "d"; src: url(data:application/octet-stream;base64,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);}</style>',
+                    '<style>.base { fill: #',
+                    params.color,
+                    '; font-family: d; font-size: 14px; }</style>'
+                )
+            );
+    }
+
+    function generateText(SVGParams memory params) private pure returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    '<text x="160" y="25" with="320" text-anchor="middle" class="base">',
+                    params.text,
+                    '</text><text x="160" y="303" with="320" text-anchor="middle" class="base">',
+                    params.subtext,
+                    '</text>'
+                )
+            );
     }
 
     /// @dev Opensea contract metadata: https://docs.opensea.io/docs/contract-level-metadata
@@ -100,20 +125,24 @@ library MetadataBuilder {
      * @notice Given RLE image parts and color palettes, generate SVG rects.
      */
     // prettier-ignore
-    function _generateSVGRects(SVGParams memory params, mapping(uint8 => string[]) storage palettes)
+    function generateSVGRects(SVGParams memory params, mapping(uint8 => string[]) storage palettes)
         private
         view
         returns (string memory svg)
     {
-        string[65] memory lookup = [
-            '0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', 
-            '80', '85', '90', '95', '100', '105', '110', '115', '120', '125', '130', '135', '140', '145', '150', '155', 
-            '160', '165', '170', '175', '180', '185', '190', '195', '200', '205', '210', '215', '220', '225', '230', '235', 
-            '240', '245', '250', '255', '260', '265', '270', '275', '280', '285', '290', '295', '300', '305', '310', '315',
-            '320'
-        ];
+        string[] memory lookup = new string[](params.resolution + 1);
+        uint16 step = 320 / params.resolution;
+        string memory stepstr = toString(step);
+        for (uint16 i = 0; i <= 320; i += step) {
+            lookup[i/step] = toString(i);
+        }
+
         string memory rects;
         for (uint8 p = 0; p < params.parts.length; p++) {
+            if (params.parts[p].length == 0) {
+                continue;
+            }
+        
             DecodedImage memory image = _decodeRLEImage(params.parts[p]);
             string[] storage palette = palettes[image.paletteIndex];
             uint256 currentX = image.bounds.left;
@@ -133,7 +162,7 @@ library MetadataBuilder {
                     cursor += 4;
 
                     if (cursor >= 16) {
-                        part = string(abi.encodePacked(part, _getChunk(cursor, buffer)));
+                        part = string(abi.encodePacked(part, _getChunk(cursor, buffer, stepstr)));
                         cursor = 0;
                     }
                 }
@@ -146,7 +175,7 @@ library MetadataBuilder {
             }
 
             if (cursor != 0) {
-                part = string(abi.encodePacked(part, _getChunk(cursor, buffer)));
+                part = string(abi.encodePacked(part, _getChunk(cursor, buffer, stepstr)));
             }
             rects = string(abi.encodePacked(rects, part));
         }
@@ -157,13 +186,13 @@ library MetadataBuilder {
      * @notice Return a string that consists of all rects in the provided `buffer`.
      */
     // prettier-ignore
-    function _getChunk(uint256 cursor, string[16] memory buffer) private pure returns (string memory) {
+    function _getChunk(uint256 cursor, string[16] memory buffer, string memory height) private pure returns (string memory) {
         string memory chunk;
         for (uint256 i = 0; i < cursor; i += 4) {
             chunk = string(
                 abi.encodePacked(
                     chunk,
-                    '<rect width="', buffer[i], '" height="5" x="', buffer[i + 1], '" y="', buffer[i + 2], '" fill="#', buffer[i + 3], '" />'
+                    '<rect width="', buffer[i], '" height="', height, '" x="', buffer[i + 1], '" y="', buffer[i + 2], '" fill="#', buffer[i + 3], '" />'
                 )
             );
         }
