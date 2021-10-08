@@ -57,29 +57,20 @@ contract StockpileMetadata {
 
     /// @notice Returns an SVG for the provided token id
     function tokenURI(uint256 tokenId) public view returns (string memory) {
-        bytes[] memory parts = new bytes[](8);
-
-        bytes[4] memory male = genderParts(man, tokenId, Gender.MALE);
-        bytes[4] memory female = genderParts(female, tokenId, Gender.FEMALE);
-
-        parts[0] = male[0];
-        parts[1] = male[1];
-        parts[2] = male[2];
-        parts[3] = male[3];
-        parts[4] = female[0];
-        parts[5] = female[1];
-        parts[6] = female[2];
-        parts[7] = female[3];
-
-        MetadataBuilder.SVGParams memory p = params(tokenId);
-        p.parts = parts;
-
-        return MetadataBuilder.tokenURI(p, palettes);
-    }
-
-    function params(uint256 tokenId) internal view returns (MetadataBuilder.SVGParams memory) {
         (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
 
+        if (componentType == ComponentTypes.VEHICLE) {
+            return MetadataBuilder.tokenURI(vehicleSVG(tokenId, components, componentType), palettes);
+        }
+
+        return MetadataBuilder.tokenURI(itemSVG(tokenId, components, componentType), palettes);
+    }
+
+    function params(uint8[5] memory components, uint8 componentType)
+        internal
+        view
+        returns (MetadataBuilder.SVGParams memory)
+    {
         uint8 bg = 0;
         string memory name = sc.name(componentType, components[0]);
         MetadataBuilder.SVGParams memory meta;
@@ -134,6 +125,30 @@ contract StockpileMetadata {
         return TokenId.toId(components, componentType);
     }
 
+    function itemSVG(
+        uint256 tokenId,
+        uint8[5] memory components,
+        uint8 componentType
+    ) internal view returns (MetadataBuilder.SVGParams memory) {
+        bytes[] memory parts = new bytes[](8);
+
+        bytes[4] memory male = genderParts(man, tokenId, Gender.MALE);
+        bytes[4] memory female = genderParts(female, tokenId, Gender.FEMALE);
+
+        parts[0] = male[0];
+        parts[1] = male[1];
+        parts[2] = male[2];
+        parts[3] = male[3];
+        parts[4] = female[0];
+        parts[5] = female[1];
+        parts[6] = female[2];
+        parts[7] = female[3];
+
+        MetadataBuilder.SVGParams memory p = params(components, componentType);
+        p.parts = parts;
+        return p;
+    }
+
     function genderParts(
         bytes memory silhouette,
         uint256 id,
@@ -166,5 +181,17 @@ contract StockpileMetadata {
         parts[3] = item;
 
         return parts;
+    }
+
+    function vehicleSVG(
+        uint256 tokenId,
+        uint8[5] memory components,
+        uint8 componentType
+    ) internal view returns (MetadataBuilder.SVGParams memory) {
+        bytes[] memory parts = new bytes[](1);
+        parts[0] = shadow;
+        MetadataBuilder.SVGParams memory p = params(components, componentType);
+        p.parts = parts;
+        return p;
     }
 }

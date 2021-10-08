@@ -498,8 +498,6 @@ contract Components is Ownable {
             return '';
         }
 
-        // NOTE: abi encoding prevents us from using double quotes in the json text (escaping doesn't seem possible)
-        // so we use a modified font which renders a double quote for back ticks.
         string memory namePrefixSuffix = namePrefixes[prefixComponent - 1];
 
         if (suffixComponent > 0) {
