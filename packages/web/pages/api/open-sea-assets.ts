@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getOpenSeaAssets } from '../../src/OpenSeaAsset';
 import S3 from 'aws-sdk/clients/s3';
+import { send } from 'process';
 
 const S3_ID = process.env.S3_ID;
 const S3_SECRET = process.env.S3_SECRET;
@@ -15,15 +16,7 @@ const s3client = new S3({
   secretAccessKey: S3_SECRET,
 });
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const wordGiven = req.query.secret_word;
-  // Bootleg protection so someone guessing the endpoint has to work a little harder to DOS.
-  if (!wordGiven || wordGiven !== SECRET_WORD) {
-    console.log('Secret API fail');
-    console.log(`Given: ${wordGiven} / ${SECRET_WORD}`);
-    return res.status(403).send(`Not a chance.`);
-  }
-  // Fetch
+const makeRequestAndWriteFile = async () => {
   const assetJson = await getOpenSeaAssets();
   const params = {
     Bucket: S3_BUCKET,
@@ -32,9 +25,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   };
   try {
     await s3client.upload(params).promise();
-    return res.status(200).send('DOPE');
+    console.log('SUCCESS')
+    return;
   } catch (e) {
-    return res.status(500).send(e);
+    console.log('FAIL');
+    console.log(e);
+    return;
   }
+};
+
+const handler = (req: NextApiRequest, res: NextApiResponse) => {
+  const wordGiven = req.query.secret_word;
+  // Bootleg protection so someone guessing the endpoint has to work a little harder to DOS.
+  if (!wordGiven || wordGiven !== SECRET_WORD) {
+    console.log('Secret API fail');
+    console.log(`Given: ${wordGiven} / ${SECRET_WORD}`);
+    return res.status(403).send(`Not a chance.`);
+  }
+  makeRequestAndWriteFile();
+  return res.status(200).send('DOPE');
 };
 export default handler;
