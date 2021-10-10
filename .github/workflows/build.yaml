@@ -17,8 +17,10 @@ jobs:
           envkey_S3_ID: ${{ secrets.S3_ID }}
           envkey_S3_SECRET: ${{ secrets.S3_SECRET }}
           envkey_SECRET_WORD: ${{ secrets.SECRET_WORD }}
-      - name: install
+      - name: Install
         run: yarn
-      - name: build
+      - name: Run tests
+        run: yarn test
+      - name: Build
         run: yarn web build
 
