@@ -19,8 +19,6 @@ jobs:
           envkey_SECRET_WORD: ${{ secrets.SECRET_WORD }}
       - name: Install
         run: yarn
-      - name: Run tests
-        run: yarn web test
       - name: Build
         run: yarn web build
 
