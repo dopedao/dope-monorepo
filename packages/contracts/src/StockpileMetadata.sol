@@ -16,18 +16,19 @@ library Gender {
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
 contract StockpileMetadata {
-    string private constant _name = 'Dope St. Swap Meet';
+    string private constant _name = 'Dope Swap Meet';
     string private constant description =
-        'Get fitted with the freshest drip, strapped with the latest gat, rolling in the hottest ride, and re-up your supply at the Dope St. Swap Meet.';
+        'Get fitted with the freshest drip, strapped with the latest gat, rolling in the hottest ride, and re-up your supply at the Dope Swap Meet.';
 
     bytes internal constant female =
-        hex'000a26361a050004240300040006240200040007240100020009240100020008240200020002240100052402000300012401000524020006000324030006000224040006000224040004000624020003000824010002000a2402000a2401000224010008240100012402000624010001240100012403000524010001240100012403000424020001240100012403000424020001240100012403000424020001240100012403000424020001240100012402000624010001240224020008240224020006240100012401240300022402000324010004000224020002240200040002240200022402000400022402000224020004000224020002240200040002240200022402000400022402000224020004000224020002240200040002240200022402000400012403000124030004000124030001240300040001240300012403000400012403000124030004000124030001240300040001240300012403000400012403000124030004000124030001240300040001240300012403000400012403000124030003000324020003240100';
+        hex'000a26361a050004d00300040006d00200040007d00100020009d00100020008d00200020002d0010005d00200030001d0010005d00200060003d00300060002d00400060002d00400040006d00200030008d0010002000ad002000ad0010002d0010008d0010001d0020006d0010001d0010001d0030005d0010001d0010001d0030004d0020001d0010001d0030004d0020001d0010001d0030004d0020001d0010001d0030004d0020001d0010001d0020006d0010001d002d0010009d002d0010007d0010001d001d0020008d00100040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040002d0020003d00100';
     bytes internal constant man =
-        hex'000927361907000324040006000524030006000524030006000524030006000524030007000424030007000324040007000224050004000724030002000b24010001000d2401000d2401000d240e240e24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b24022401000b240c240100012402240100032402000524010003000324020004240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300032403000324020003000324030003240200030003240300032402000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000224030003000224040002240300030002240400022403000300022404000324020003000324030004240100';
-    bytes internal constant shadow = hex'0036283818024801000d48050009480200';
+        hex'0009273619070003d00400060005d00300060005d00300060005d00300060005d00300070004d00300070003d00400070002d00500040007d0030002000bd0010001000dd001000dd001000dd00ed00ed002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd00cd0010001d002d0010003d0030004d00100030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040003d00200030003d0030004d00100';
+    bytes internal constant shadow = hex'0036283818021c01000d1c0500091c0200';
+    bytes internal constant drugShadow = hex'00362f3729061c';
 
     // green, blue, red, yellow
-    string[4] internal backgrounds = ['a3beb5', '8aa3c3', 'e0afae', 'f5d8a5'];
+    string[4] internal backgrounds = ['b6ccc3', '97adcc', 'f2c4c5', 'f1d8ab'];
 
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => string[]) internal palettes;
@@ -56,27 +57,20 @@ contract StockpileMetadata {
 
     /// @notice Returns an SVG for the provided token id
     function tokenURI(uint256 tokenId) public view returns (string memory) {
-        bytes[] memory parts = new bytes[](6);
-
-        bytes[3] memory male = genderParts(man, tokenId, Gender.MALE);
-        bytes[3] memory female = genderParts(female, tokenId, Gender.FEMALE);
-
-        parts[0] = male[0];
-        parts[1] = male[1];
-        parts[2] = male[2];
-        parts[3] = female[0];
-        parts[4] = female[1];
-        parts[5] = female[2];
-
-        MetadataBuilder.SVGParams memory p = params(tokenId);
-        p.parts = parts;
-
-        return MetadataBuilder.tokenURI(p, palettes);
-    }
-
-    function params(uint256 tokenId) internal view returns (MetadataBuilder.SVGParams memory) {
         (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
 
+        if (componentType == ComponentTypes.VEHICLE) {
+            return MetadataBuilder.tokenURI(vehicleSVG(tokenId, components, componentType), palettes);
+        }
+
+        return MetadataBuilder.tokenURI(itemSVG(tokenId, components, componentType), palettes);
+    }
+
+    function params(uint8[5] memory components, uint8 componentType)
+        internal
+        view
+        returns (MetadataBuilder.SVGParams memory)
+    {
         uint8 bg = 0;
         string memory name = sc.name(componentType, components[0]);
         MetadataBuilder.SVGParams memory meta;
@@ -86,15 +80,20 @@ contract StockpileMetadata {
 
         if (components[1] > 0) {
             meta.name = string(abi.encodePacked(meta.name, ' ', sc.suffix(components[1])));
-            meta.subtext = name;
+            meta.subtext = meta.name;
             bg = 1;
         } else {
             meta.subtext = name;
         }
 
         if (components[2] > 0) {
-            meta.text = sc.prefix(components[2], components[3]);
-            meta.name = string(abi.encodePacked(meta.text, ' ', meta.name));
+            string memory prefix = sc.prefix(components[2], components[3]);
+
+            // NOTE: abi encoding requires a double escape to render double quotes in json.
+            // the svg renderer can't handle this (renders \"), so we use a modified font
+            // which renders a double quote for back ticks.
+            meta.text = string(abi.encodePacked('`', prefix, '`'));
+            meta.name = string(abi.encodePacked('\\"', prefix, '\\" ', meta.name));
             bg = 2;
         }
 
@@ -110,34 +109,98 @@ contract StockpileMetadata {
     }
 
     function tokenRle(uint256 id, uint8 gender) public view returns (bytes memory) {
-        if (rles[id].length > 0) {
+        if (rles[id][gender].length > 0) {
             return rles[id][gender];
         }
 
-        return rles[TokenId.decode(id, 1)][gender];
+        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(id);
+        components[1] = 0;
+        components[2] = 0;
+        components[3] = 0;
+        components[4] = 0;
+        return rles[TokenId.toId(components, componentType)][gender];
+    }
+
+    function toId(uint8[5] memory components, uint8 componentType) public pure returns (uint256) {
+        return TokenId.toId(components, componentType);
+    }
+
+    function itemSVG(
+        uint256 tokenId,
+        uint8[5] memory components,
+        uint8 componentType
+    ) internal view returns (MetadataBuilder.SVGParams memory) {
+        bytes[] memory parts = new bytes[](8);
+
+        bytes[4] memory male = genderParts(man, tokenId, Gender.MALE, componentType);
+        bytes[4] memory female = genderParts(female, tokenId, Gender.FEMALE, componentType);
+
+        parts[0] = male[0];
+        parts[1] = male[1];
+        parts[2] = male[2];
+        parts[3] = male[3];
+        parts[4] = female[0];
+        parts[5] = female[1];
+        parts[6] = female[2];
+        parts[7] = female[3];
+
+        MetadataBuilder.SVGParams memory p = params(components, componentType);
+        p.resolution = 64;
+        p.color = '202221';
+        p.parts = parts;
+        return p;
     }
 
     function genderParts(
-        bytes memory silouette,
+        bytes memory silhouette,
         uint256 id,
-        uint8 gender
-    ) internal view returns (bytes[3] memory) {
-        bytes[3] memory parts;
+        uint8 gender,
+        uint8 componentType
+    ) internal view returns (bytes[4] memory) {
+        bytes[4] memory parts;
+
+        int16 offset = 1;
+        if (gender == Gender.MALE) {
+            offset = -1;
+        }
 
         bytes memory shadow_ = shadow;
-        shadow_[2] = bytes1(uint8(shadow_[2]) + (gender * uint8(12)));
-        shadow_[4] = bytes1(uint8(shadow_[4]) + (gender * uint8(12)));
+        shadow_[2] = bytes1(uint8(uint16(int16(uint16(uint8(shadow_[2]))) + (offset * int16(12)))));
+        shadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(shadow_[4]))) + (offset * int16(12)))));
         parts[0] = shadow_;
 
-        silouette[2] = bytes1(uint8(silouette[2]) + (gender * uint8(12)));
-        silouette[4] = bytes1(uint8(silouette[4]) + (gender * uint8(12)));
-        parts[1] = silouette;
+        if (componentType == ComponentTypes.DRUGS) {
+            bytes memory drugShadow_ = drugShadow;
+            drugShadow_[2] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[2]))) + (offset * int16(12)))));
+            drugShadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[4]))) + (offset * int16(12)))));
+            parts[1] = drugShadow_;
+        }
+
+        silhouette[2] = bytes1(uint8(uint16(int16(uint16(uint8(silhouette[2]))) + (offset * int16(12)))));
+        silhouette[4] = bytes1(uint8(uint16(int16(uint16(uint8(silhouette[4]))) + (offset * int16(12)))));
+        parts[2] = silhouette;
 
         bytes memory item = tokenRle(id, gender);
-        item[2] = bytes1(uint8(item[2]) + (gender * uint8(12)));
-        item[4] = bytes1(uint8(item[4]) + (gender * uint8(12)));
-        parts[2] = item;
+        if (item.length > 0) {
+            item[2] = bytes1(uint8(uint16(int16(uint16(uint8(item[2]))) + (offset * int16(12)))));
+            item[4] = bytes1(uint8(uint16(int16(uint16(uint8(item[4]))) + (offset * int16(12)))));
+            parts[3] = item;
+        }
 
         return parts;
+    }
+
+    function vehicleSVG(
+        uint256 tokenId,
+        uint8[5] memory components,
+        uint8 componentType
+    ) internal view returns (MetadataBuilder.SVGParams memory) {
+        bytes[] memory parts = new bytes[](1);
+        parts[0] = tokenRle(tokenId, 0);
+        MetadataBuilder.SVGParams memory p = params(components, componentType);
+        p.resolution = 160;
+        p.color = '202221';
+        p.parts = parts;
+        return p;
     }
 }

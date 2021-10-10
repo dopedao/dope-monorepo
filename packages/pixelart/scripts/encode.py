@@ -54,7 +54,7 @@ for file in glob.glob("../imgs/**/*.png"):
             print(out)
             out = ""
     else:
-        encoded = [0, 0, 0, 0, 0, 0]
+        encoded = []
 
     print("\n")
 

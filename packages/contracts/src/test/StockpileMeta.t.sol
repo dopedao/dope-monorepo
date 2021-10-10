@@ -16,16 +16,18 @@ struct Data {
 }
 
 contract Metadata is StockpileTest {
+    bytes internal constant car =
+        hex'00346d561413001fd327000d002dd31f000b0030d31e000a0032d31d00090034d31c00080036d31b00070038d31a0006003ad3190005003cd3180004003ed31700030040d3160002004fd30800020054d30300010056d3020058d3010058d3010058d3010059d359d359d359d3010058d359d359d358d3010058d30100010057d30100010056d30200010053d30500010051d3070002000cd30d000cd305000ed30c000cd3070002000bd30f000ad307000cd30e000ad30800030009d3110008d309000bd30f0008d30900040007d3130006d30b0009d3110006d30a00';
     bytes internal constant jordans =
         hex'00322737190200012a012b0600012b012a02000200032b0400032b02000100012b0119012a012b0400012b012a0119012b0100022b031904000319022b052a0400052a';
 
     function testCreateAndMintFiveBlastersWeapons() public {
         uint8[5] memory components;
-        components[0] = owner.addItemComponent(0x0, 'blaster');
-        components[1] = owner.addItemComponent(0xb, 'ahh');
-        components[2] = owner.addItemComponent(0x9, 'a');
-        components[3] = owner.addItemComponent(0xa, 'big');
-        uint256 id = owner.mint(address(owner), components, 0x0, 5, '');
+        components[0] = owner.addItemComponent(ComponentTypes.WEAPON, 'blaster');
+        components[1] = owner.addItemComponent(ComponentTypes.SUFFIX, 'ahh');
+        components[2] = owner.addItemComponent(ComponentTypes.NAME_PREFIX, 'a');
+        components[3] = owner.addItemComponent(ComponentTypes.NAME_SUFFIX, 'big');
+        uint256 id = owner.mint(address(owner), components, ComponentTypes.WEAPON, 5, '');
 
         Attribute[] memory attributes = new Attribute[](5);
         attributes[0] = Attribute('Slot', 'Weapon');
@@ -101,6 +103,17 @@ contract Metadata is StockpileTest {
         assertMetadata(id, attributes, 'Platinum Ring from Atlanta');
     }
 
+    function testBarefootFromChicago() public {
+        uint256 id = 34360786948;
+        Attribute[] memory attributes = new Attribute[](3);
+        attributes[0] = Attribute('Slot', 'Foot');
+        attributes[1] = Attribute('Item', 'Barefoot');
+        attributes[2] = Attribute('Suffix', 'from Chicago');
+        bytes memory zero = hex'';
+        owner.setRle(id, zero, zero);
+        assertMetadata(id, attributes, 'Barefoot from Chicago');
+    }
+
     function testHighSupplyBloodStainedShirtFromMobTownMetadata() public {
         uint256 id = stockpile.clothesId(3686);
         Attribute[] memory attributes = new Attribute[](5);
@@ -124,6 +137,34 @@ contract Metadata is StockpileTest {
         attributes[5] = Attribute('Augmentation', 'Yes');
         owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, '"Street Queen Triggerman" Fingerless Gloves from Buffalo +1');
+    }
+
+    function testFreelancePharmacistTriggermanDodgeFromComptonMetadata() public {
+        uint256 id = stockpile.vehicleId(3686);
+        Attribute[] memory attributes = new Attribute[](6);
+        attributes[0] = Attribute('Slot', 'Vehicle');
+        attributes[1] = Attribute('Item', 'Dodge');
+        attributes[2] = Attribute('Suffix', 'from Compton');
+        attributes[3] = Attribute('Name Prefix', 'The Freelance Pharmacist');
+        attributes[4] = Attribute('Name Suffix', 'Triggerman');
+        attributes[5] = Attribute('Augmentation', 'Yes');
+        owner.setRle(id, car, car);
+        assertMetadata(id, attributes, '"The Freelance Pharmacist Triggerman" Dodge from Compton +1');
+    }
+
+    function testShouldFallbackToBaseItemRLE() public {
+        uint8[5] memory components = components.getComponent(3686, ComponentTypes.HAND);
+        uint256 fullId = TokenId.toId(components, ComponentTypes.HAND);
+
+        components[1] = 0;
+        components[2] = 0;
+        components[3] = 0;
+        components[4] = 0;
+
+        uint256 baseId = TokenId.toId(components, ComponentTypes.HAND);
+
+        owner.setRle(baseId, jordans, jordans);
+        assertEq(string(stockpile.tokenRle(fullId, 0)), string(jordans));
     }
 
     function assertMetadata(

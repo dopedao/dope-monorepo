@@ -10,13 +10,12 @@ set -eo pipefail
 # extractABI MetadataBuilder
 # log "MetadataBuilder deployed at:" $MetadataBuilderAddr
 
-# export DAPP_LIBRARIES="src/MetadataBuilder.sol:MetadataBuilder:0x15abf3968Ca91f451f448756C568c53D985c0Ab6"
-
 # Deploy.
-ComponentsAddr=$(deploy Components $ETH_FROM)
-verify Components $ComponentsAddr $ETH_FROM
-extractABI Components
-log "Components deployed at:" $ComponentsAddr
+ComponentsAddr="0xA8d1BD7242e85Ea3A97E3B300307247DB92De21B"
+# ComponentsAddr=$(deploy Components $ETH_FROM)
+# verify Components $ComponentsAddr $ETH_FROM
+# extractABI Components
+# log "Components deployed at:" $ComponentsAddr
 
 echo "deploy Stockpile $ComponentsAddr $LOOT $ETH_FROM"
 StockpileAddr=$(deploy Stockpile $ComponentsAddr $LOOT $ETH_FROM)
