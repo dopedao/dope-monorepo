@@ -8,17 +8,9 @@ import useQueryParam from '../src/use-query-param';
 
 import styled from '@emotion/styled';
 
-export const statusKeys = [
-  'All',
-  'Has Unclaimed $PAPER',
-  'For Sale',
-];
+export const statusKeys = ['All', 'Has Unclaimed $PAPER', 'For Sale'];
 
-export const sortKeys = [
-  'Top Rank',
-  'Most Affordable',
-  'Highest Last Sale'
-];
+export const sortKeys = ['Top Rank', 'Most Affordable', 'Highest Last Sale'];
 
 const Container = styled.div`
   padding: 8px;
@@ -118,60 +110,53 @@ const MarketFilterBar = ({
     const iconPath = '/images/icon';
     const icon = compactSwitchOn ? 'expand' : 'collapse';
     return (
-      <div 
+      <div
         className="toggleButton"
         css={css`
           min-width: 32px;
           max-width: 32px;
-          height:32px;
-          cursor:pointer;
-          cursor:hand;
+          height: 32px;
+          cursor: pointer;
+          cursor: hand;
           display: flex;
           justify-content: center;
           align-items: center;
           background-color: var(--gray);
           border-radius: 2px !important;
-          box-shadow:
-          'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)';
+          box-shadow: 'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)';
         `}
-        onClick={ () => compactViewCallback(!compactSwitchOn) }
+        onClick={() => compactViewCallback(!compactSwitchOn)}
       >
-        <img src={ `${iconPath}/${icon}.svg` } />
+        <img src={`${iconPath}/${icon}.svg`} />
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <Container>
       <div>
-        <Input 
-          placeholder="Search…" 
-          size="sm" 
-          variant="filterBar" 
-          onChange={handleSearchChange} 
+        <Input
+          placeholder="Search…"
+          size="sm"
+          variant="filterBar"
+          onChange={handleSearchChange}
           value={searchValue}
         />
       </div>
       <div>
-        <Select 
-          size="sm" 
-          variant="filterBar" 
-          onChange={handleStatusChange}
-          value={status} 
-        >
+        <Select size="sm" variant="filterBar" onChange={handleStatusChange} value={status}>
           <option disabled>Status…</option>
-          { statusKeys.map( value => <option>{value}</option> ) }
+          {statusKeys.map(value => (
+            <option>{value}</option>
+          ))}
         </Select>
       </div>
       <div>
-        <Select 
-          size="sm" 
-          variant="filterBar" 
-          onChange={handleSortChange}
-          value={sortBy}
-        >
+        <Select size="sm" variant="filterBar" onChange={handleSortChange} value={sortBy}>
           <option disabled>Sort By…</option>
-          { sortKeys.map( value => <option>{value}</option> ) }
+          {sortKeys.map(value => (
+            <option>{value}</option>
+          ))}
         </Select>
       </div>
       <ToggleButton />
