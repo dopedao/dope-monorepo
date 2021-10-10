@@ -1,7 +1,7 @@
 import { media } from '../styles/mixins';
 import { returnBreakpoint } from '../styles/breakpoints';
 import { useState } from 'react';
-import { isTouchDevice } from '../common/utils';
+import { isTouchDevice } from '../src/utils';
 import ConditionalWrapper from './ConditionalWrapper';
 import DesktopWindowTitleBar from './DesktopWindowTitleBar';
 import Draggable from 'react-draggable';

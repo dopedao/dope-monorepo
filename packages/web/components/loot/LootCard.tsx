@@ -5,7 +5,7 @@ import LootCardFooterForMarket from './LootCardFooterForMarket';
 import LootCardBody from './LootCardBody';
 import LootLegend from './LootLegend';
 import styled from '@emotion/styled';
-import { PickedBag } from '../../common/DopeDatabase';
+import { PickedBag } from '../../src/DopeDatabase';
 
 const LootCardContainer = styled.div`
   border: 2px solid #000;

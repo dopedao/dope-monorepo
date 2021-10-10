@@ -2,9 +2,10 @@
   "name": "dopewars",
   "private": true,
   "scripts": {
-    "web:dev": "yarn workspace @dopewars/web dev",
-    "contracts": "yarn workspace @dopewars/contracts",
     "web": "yarn workspace @dopewars/web",
+    "web:dev": "yarn workspace @dopewars/web dev",
+    "web:test": "yarn workspace @dopewars/web test",
+    "contracts": "yarn workspace @dopewars/contracts",
     "lint": "eslint 'packages/web/**/*.ts' --fix",
     "format": "prettier --write 'packages/web/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
   },
@@ -39,6 +40,8 @@
   },
   "dependencies": {
     "@dopewars/contracts": "workspace:packages/contracts",
-    "@dopewars/web": "workspace:packages/web"
+    "@dopewars/web": "workspace:packages/web",
+    "@types/isomorphic-fetch": "^0.0.35",
+    "isomorphic-fetch": "^3.0.0"
   }
 }

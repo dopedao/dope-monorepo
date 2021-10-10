@@ -1,7 +1,7 @@
 import { Bag } from '../../src/generated/graphql';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
-import { NETWORK } from '../../common/constants';
+import { NETWORK } from '../../src/constants';
 import { Paper__factory, Stockpile__factory } from '@dopewars/contracts';
 import { useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';

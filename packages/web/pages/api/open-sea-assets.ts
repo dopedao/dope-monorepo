@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getOpenSeaAssetPagesJson } from '../../common/OpenSeaAsset';
+import { getOpenSeaAssets } from '../../src/OpenSeaAsset';
 import S3 from 'aws-sdk/clients/s3';
 
 const S3_ID = process.env.S3_ID;
@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(403).send(`Not a chance.`);
   }
   // Fetch
-  const assetJson = await getOpenSeaAssetPagesJson();
+  const assetJson = await getOpenSeaAssets();
   const params = {
     Bucket: S3_BUCKET,
     Key: FILENAME,

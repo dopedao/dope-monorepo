@@ -1,4 +1,4 @@
-import { isTouchDevice } from '../common/utils';
+import { isTouchDevice } from '../src/utils';
 import { media } from '../styles/mixins';
 import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
@@ -21,7 +21,7 @@ import DopeDatabase, {
   testForUnclaimedPaper,
   testForSale,
   PickedBag,
-} from '../common/DopeDatabase';
+} from '../src/DopeDatabase';
 
 const title = 'SWAP MEET';
 

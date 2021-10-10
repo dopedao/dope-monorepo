@@ -5,14 +5,14 @@ import {
   makeVar,
   useReactiveVar,
 } from '@apollo/client';
-import { getRarityForDopeId } from '../common/dope-rarity-check';
-import { NETWORK } from '../common/constants';
-import { OpenSeaAsset } from '../common/OpenSeaAsset';
+import { getRarityForDopeId } from '../src/dope-rarity-check';
+import { NETWORK } from '../src/constants';
+import { OpenSeaAsset } from '../src/OpenSeaAsset';
 import { ReactNode, useMemo } from 'react';
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import DopeDatabase, { DopeDbCacheReactive } from '../common/DopeDatabase';
-import { valueFromCachedLoot } from '../common/DopeJsonParser';
+import DopeDatabase, { DopeDbCacheReactive } from '../src/DopeDatabase';
+import { valueFromCachedLoot } from '../src/DopeJsonParser';
 
 /**
  * We use the below declaration to specify client-only field getters,
