@@ -29,7 +29,7 @@ on:
   pull_request:
     types: [opened]
 jobs:
-  build:
+  web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
