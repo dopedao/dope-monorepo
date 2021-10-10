@@ -22,3 +22,24 @@
 #         run: cd packages/contracts && nix-shell --run 'make test'
 #         env:
 #          ETH_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_API_KEY }}
+
+name: Tests
+on: 
+  push:
+  pull_request:
+    types: [opened]
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Write .env
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_S3_ID: ${{ secrets.S3_ID }}
+          envkey_S3_SECRET: ${{ secrets.S3_SECRET }}
+          envkey_SECRET_WORD: ${{ secrets.SECRET_WORD }}
+      - name: Install
+        run: yarn
+      - name: Run tests
+        run: yarn web test

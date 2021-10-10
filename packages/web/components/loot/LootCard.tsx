@@ -5,7 +5,7 @@ import LootCardFooterForMarket from './LootCardFooterForMarket';
 import LootCardBody from './LootCardBody';
 import LootLegend from './LootLegend';
 import styled from '@emotion/styled';
-import { PickedBag } from '../../common/DopeDatabase';
+import { PickedBag } from '../../src/DopeDatabase';
 
 const LootCardContainer = styled.div`
   border: 2px solid #000;
@@ -56,9 +56,9 @@ interface Props {
   showCollapse?: boolean;
 }
 
-const LootCard = ({ 
-  footer, 
-  bag, 
+const LootCard = ({
+  footer,
+  bag,
   isExpanded: isExpandedProp = true,
   showCollapse = false,
 }: Props) => {
@@ -73,22 +73,21 @@ const LootCard = ({
     const iconPath = '/images/icon';
     const icon = isExpanded ? 'collapse' : 'expand';
     return (
-      <div css={css`
-        width:32px;
-        height:32px;
-        cursor:pointer;
-        cursor:hand;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      `}>
-        <img 
-          src={ `${iconPath}/${icon}.svg` }
-          onClick={ () => setIsExpanded(!isExpanded) }
-        />
+      <div
+        css={css`
+          width: 32px;
+          height: 32px;
+          cursor: pointer;
+          cursor: hand;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        `}
+      >
+        <img src={`${iconPath}/${icon}.svg`} onClick={() => setIsExpanded(!isExpanded)} />
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -96,12 +95,23 @@ const LootCard = ({
         <LootLegend key={`loot-legend_${bag.id}`} toggleVisibility={toggleItemLegendVisibility} />
       )}
       {!isItemLegendVisible && (
-        <LootCardContainer className={`lootCard ${isExpanded ? '' : 'collapsed'}`} key={`loot-card_${bag.id}`}>
+        <LootCardContainer
+          className={`lootCard ${isExpanded ? '' : 'collapsed'}`}
+          key={`loot-card_${bag.id}`}
+        >
           <LootTitleBar>
-            <div css={css`width:32px;`}></div>
+            <div
+              css={css`
+                width: 32px;
+              `}
+            ></div>
             <div>Dope Wars Loot #{bag.id}</div>
-            <div css={css`width:32px;`}>
-              { showCollapse && <ToggleButton /> }
+            <div
+              css={css`
+                width: 32px;
+              `}
+            >
+              {showCollapse && <ToggleButton />}
             </div>
           </LootTitleBar>
           <LootCardBody bag={bag} />

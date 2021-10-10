@@ -1,4 +1,4 @@
-import { isTouchDevice } from '../common/utils';
+import { isTouchDevice } from '../src/utils';
 import { media } from '../styles/mixins';
 import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
@@ -21,7 +21,7 @@ import DopeDatabase, {
   testForUnclaimedPaper,
   testForSale,
   PickedBag,
-} from '../common/DopeDatabase';
+} from '../src/DopeDatabase';
 
 const title = 'SWAP MEET';
 
@@ -68,7 +68,6 @@ const ContentEmpty = (
 );
 
 const MarketList = () => {
-
   const [sortByKey, setSortByKey] = useState('');
   const [statusKey, setStatusKey] = useState('');
   const [searchInputValue, setSearchValue] = useState('');
@@ -108,13 +107,13 @@ const MarketList = () => {
   const [hasUpdateDopeDbWithPaper, setHasUpdateDopeDbWithPaper] = useState(false);
   if (!hasUpdateDopeDbWithPaper && dataBags && dataBags.page_1) {
     dopeDb.updateHasPaperFromQuery(dataBags);
-    console.log("Updating reactive var");
+    console.log('Updating reactive var');
     DopeDbCacheReactive(dopeDb);
     setHasUpdateDopeDbWithPaper(true);
   }
 
   const filteredSortedItems = useMemo(() => {
-    console.log("FILTERED ITEMS");
+    console.log('FILTERED ITEMS');
     console.log(`${statusKey} : ${sortByKey}`);
     const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
     const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
@@ -138,7 +137,7 @@ const MarketList = () => {
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
   };
 
-  const isLoading = (isTyping || !hasUpdateDopeDbWithPaper);
+  const isLoading = isTyping || !hasUpdateDopeDbWithPaper;
 
   return (
     <>
