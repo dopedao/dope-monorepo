@@ -8,9 +8,7 @@ import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 import { ComponentTypes } from './Components.sol';
-import { ERC1155Snapshot } from './ERC1155Snapshot.sol';
 import './StockpileMetadata.sol';
-import './interfaces/IStockpile.sol';
 
 library Errors {
     string constant DoesNotOwnBag = 'you do not own this bag';
@@ -21,7 +19,7 @@ library Errors {
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 Loot bags and extracting the items inside it
 /// The created tokens are ERC1155 compatible, and their on-chain SVG is their name
-contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
+contract Stockpile is ERC1155, StockpileMetadata, Ownable {
     // The DOPE bags contract
     IERC721 immutable bags;
 
@@ -73,9 +71,6 @@ contract Stockpile is ERC1155Snapshot, StockpileMetadata, Ownable {
         ids[8] = itemId(tokenId, ComponentTypes.RING);
 
         for (uint256 i = 0; i < ids.length; i++) {
-            // Since we are directly minting, we need to handle the snapshot logic.
-            _updateAccountSnapshot(who, ids[i]);
-
             amounts[i] = 1;
             _balances[ids[i]][who] += 1;
         }

@@ -100,7 +100,7 @@ f = open("../outputs/output.json", "r")
 meta = json.load(f)
 
 Stockpile = w3.eth.contract(
-    "0x741644546E0D558667F6cf647d15C447f527E00c", abi=abi)
+    "0xD417FebF055fd149BbD7E9A15194C91554E405Db", abi=abi)
 
 print(Stockpile.functions.name().call())
 
