@@ -10,7 +10,7 @@ export const MAX_TOKENS = 8000;
 
 // See open-sea-assets.sample.json …
 export interface OpenSeaAssetJsonResponse {
-  token_id: number,
+  token_id: number;
   current_sale_price: number;
   // NOTE FOR FUTURE MAINTAINERS
   // OpenSea asset endpoint for SINGLE asset returns "orders",
@@ -36,7 +36,7 @@ export const getOpenSeaAssetJson = (tokenId: string) => {
 export const getOpenSeaAssetPagesJson = async (totalTokens = MAX_TOKENS) => {
   console.log('getOpenSeaAssetPagesJson');
   const maxAssetsPerRequest = 50;
-  const ASSETS_PER_REQUEST = (maxAssetsPerRequest > totalTokens) ? totalTokens : maxAssetsPerRequest;
+  const ASSETS_PER_REQUEST = maxAssetsPerRequest > totalTokens ? totalTokens : maxAssetsPerRequest;
   const TOTAL_NUM_TOKENS = totalTokens;
   const assets = [];
 
@@ -51,7 +51,7 @@ export const getOpenSeaAssetPagesJson = async (totalTokens = MAX_TOKENS) => {
   }
   const flatAssets = assets.flat(Infinity);
   return flatAssets;
-}
+};
 
 export const getOpenSeaAssets = async (totalTokens = MAX_TOKENS) => {
   const assets = await getOpenSeaAssetPagesJson(totalTokens);
@@ -60,11 +60,11 @@ export const getOpenSeaAssets = async (totalTokens = MAX_TOKENS) => {
   });
   //console.log(openSeaAssets.length);
   return openSeaAssets;
-}
+};
 
 export const ethFromGwei = (gwei: number) => {
   return gwei / Math.pow(10, 18);
-}
+};
 
 export class OpenSeaAsset implements OpenSeaAssetInterface {
   is_on_sale = false;

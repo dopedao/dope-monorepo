@@ -7,12 +7,12 @@ const dump = JSON.parse(fs.readFileSync(file, 'utf8'));
 
 test('Dumped OpenSea response file contains expected tokens', () => {
   expect(dump.length).toBe(osa.MAX_TOKENS);
-  
+
   const firstItem = dump[0];
   const firstTokenId = parseInt(firstItem['token_id']);
   expect(firstTokenId).toBe(1);
 
-  const lastItem = dump[osa.MAX_TOKENS-1];
+  const lastItem = dump[osa.MAX_TOKENS - 1];
   const lastTokenId = parseInt(lastItem['token_id']);
   expect(lastTokenId).toBe(osa.MAX_TOKENS);
 });

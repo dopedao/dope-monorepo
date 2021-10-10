@@ -7,16 +7,16 @@ import fs from 'fs';
  * code which refreshes information for Swap Meet.
  */
 const main = async () => {
-  console.log("Fetching OpenSea Assets");
+  console.log('Fetching OpenSea Assets');
   const assets = await getOpenSeaAssetPagesJson();
   try {
     const filename = 'test_fixtures/open-sea-api-response.json';
     fs.writeFileSync(filename, JSON.stringify(assets));
     console.log(`File written to ${filename}`);
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
-}
+};
 export default main;
 
 main();
