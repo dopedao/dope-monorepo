@@ -20,7 +20,7 @@ jobs:
       - name: Install
         run: yarn
       - name: Run tests
-        run: yarn test
+        run: yarn web test
       - name: Build
         run: yarn web build
 
