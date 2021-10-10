@@ -39,16 +39,27 @@ library ComponentTypes {
     uint8 internal constant DRUGS = 0x6;
     uint8 internal constant NECK = 0x7;
     uint8 internal constant RING = 0x8;
-    uint8 internal constant NAME_PREFIX = 0x9;
-    uint8 internal constant NAME_SUFFIX = 0xa;
-    uint8 internal constant SUFFIX = 0xb;
-    uint8 internal constant SET = 0xc;
+    uint8 internal constant ACCESSORIES = 0x9;
+    uint8 internal constant NAME_PREFIX = 0xa;
+    uint8 internal constant NAME_SUFFIX = 0xb;
+    uint8 internal constant SUFFIX = 0xc;
 }
 
 contract Components is Ownable {
     string constant UnexpectedComponent = 'unexpected component type';
 
-    string[] internal slots = ['Weapon', 'Clothes', 'Vehicle', 'Waist', 'Foot', 'Hand', 'Drugs', 'Neck', 'Ring'];
+    string[] internal slots = [
+        'Weapon',
+        'Clothes',
+        'Vehicle',
+        'Waist',
+        'Foot',
+        'Hand',
+        'Drugs',
+        'Neck',
+        'Ring',
+        'Accessories'
+    ];
 
     string[] public weapons = [
         'Pocket Knife', // 0
@@ -216,6 +227,14 @@ contract Components is Ownable {
         'Adderall' // 18
     ];
     uint256 private constant drugsLength = 19;
+
+    string[] public accessories = [
+        'Bandana',
+        'Fitted Hat White',
+        'Fitted Hat Black',
+        'Glasses Dark'
+    ];
+    uint256 private constant accessoriesLength = 19;
 
     string[] public suffixes = [
         // <no suffix>          // 0

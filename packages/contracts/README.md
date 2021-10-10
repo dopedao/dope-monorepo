@@ -1,5 +1,9 @@
 # <h1 align="center"> LootLoose </h1>
 
+Optimizations:
+- Store color pallete as fixed size type (bytes4)
+- Open profiling
+
 **Open your Loot bags and see what's inside**
 
 ![Github Actions](https://github.com/gakonst/lootloose/workflows/Tests/badge.svg)

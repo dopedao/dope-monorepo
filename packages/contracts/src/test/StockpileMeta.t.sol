@@ -23,11 +23,11 @@ contract Metadata is StockpileTest {
 
     function testCreateAndMintFiveBlastersWeapons() public {
         uint8[5] memory components;
-        components[0] = owner.addItemComponent(0x0, 'blaster');
-        components[1] = owner.addItemComponent(0xb, 'ahh');
-        components[2] = owner.addItemComponent(0x9, 'a');
-        components[3] = owner.addItemComponent(0xa, 'big');
-        uint256 id = owner.mint(address(owner), components, 0x0, 5, '');
+        components[0] = owner.addItemComponent(ComponentTypes.WEAPON, 'blaster');
+        components[1] = owner.addItemComponent(ComponentTypes.SUFFIX, 'ahh');
+        components[2] = owner.addItemComponent(ComponentTypes.NAME_PREFIX, 'a');
+        components[3] = owner.addItemComponent(ComponentTypes.NAME_SUFFIX, 'big');
+        uint256 id = owner.mint(address(owner), components, ComponentTypes.WEAPON, 5, '');
 
         Attribute[] memory attributes = new Attribute[](5);
         attributes[0] = Attribute('Slot', 'Weapon');
@@ -101,6 +101,17 @@ contract Metadata is StockpileTest {
         attributes[2] = Attribute('Suffix', 'from Atlanta');
         owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, 'Platinum Ring from Atlanta');
+    }
+
+    function testBarefootFromChicago() public {
+        uint256 id = 34360786948;
+        Attribute[] memory attributes = new Attribute[](3);
+        attributes[0] = Attribute('Slot', 'Foot');
+        attributes[1] = Attribute('Item', 'Barefoot');
+        attributes[2] = Attribute('Suffix', 'from Chicago');
+        bytes memory zero = hex'';
+        owner.setRle(id, zero, zero);
+        assertMetadata(id, attributes, 'Barefoot from Chicago');
     }
 
     function testHighSupplyBloodStainedShirtFromMobTownMetadata() public {
