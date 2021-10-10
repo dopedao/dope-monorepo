@@ -10,8 +10,8 @@ import styled from '@emotion/styled';
 
 interface DesktopWindowProps {
   title: string | undefined;
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
   titleChildren?: React.ReactNode;
   children: React.ReactNode;
 }
@@ -21,7 +21,7 @@ const DesktopWindow = ({
   // Default size of the window is 1024 x 768.
   // Smaller devices default to "full screen".
   width = 1024,
-  height = 768,
+  height = '75vh',
   titleChildren,
   children,
 }: DesktopWindowProps) => {
@@ -56,8 +56,8 @@ const DesktopWindow = ({
         height: 90%;
         margin: auto;
         margin-top: 32px;
-        max-width: ${width}px;
-        max-height: ${height}px;
+        max-width: ${typeof width == 'number' ? width+'px' : width};
+        max-height: ${typeof height == 'number' ? height+'px' : height};
       }
     }
   `;

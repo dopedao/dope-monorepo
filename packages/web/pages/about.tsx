@@ -154,7 +154,7 @@ export default function About() {
   return (
     <>
       <Head title={'About DOPE WARS NFT'} />
-      <DesktopWindow title="ABOUT.FAQ" width={640} height={960}>
+      <DesktopWindow title="ABOUT.FAQ" width={640} height='90vh'>
         <TextBody className="markdownContainer">
           <ReactMarkdown>{AboutContent}</ReactMarkdown>
         </TextBody>
