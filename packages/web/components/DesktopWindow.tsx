@@ -21,7 +21,7 @@ const DesktopWindow = ({
   // Default size of the window is 1024 x 768.
   // Smaller devices default to "full screen".
   width = 1024,
-  height = '75vh',
+  height = 768,
   titleChildren,
   children,
 }: DesktopWindowProps) => {

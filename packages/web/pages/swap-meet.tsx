@@ -179,7 +179,7 @@ const MarketList = () => {
 
 export default function SwapMeet() {
   return (
-    <AppWindow padBody={false} scrollable={false}>
+    <AppWindow padBody={false} scrollable={false} height="90vh">
       <Head title={title} />
       <MarketList />
     </AppWindow>
