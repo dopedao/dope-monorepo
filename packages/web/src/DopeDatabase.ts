@@ -97,7 +97,11 @@ class DopeDatabase {
     const unclaimedBags = Object.values(queryResultJson).flat(Infinity);
     for (let i = 0; i < unclaimedBags.length; i++) {
       const bag = unclaimedBags[i] as BagClaimCheck;
-      this.updateRecord(bag.id, 'claimed', bag.claimed);
+      let isClaimed = bag.claimed;
+      // Special case for odd token as discussed here
+      // https://discord.com/channels/882333869007839252/882333869007839254/897215194743341107
+      if (bag.id === '1277') isClaimed = true;
+      this.updateRecord(bag.id, 'claimed', isClaimed);
     }
   }
 
