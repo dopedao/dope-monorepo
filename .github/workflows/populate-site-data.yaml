@@ -1,10 +1,21 @@
 name: populate-site-data
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/7 * * * *'
 jobs:
-  cache-open-sea-assets:
+  refresh:
     runs-on: ubuntu-latest
     steps:
-      - name: ping-api
-        run: curl https://dopewars.gg/api/open-sea-assets?secret_word=${{ secrets.SECRET_WORD }}
+      - uses: actions/checkout@v2
+      - name: Write .env
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_S3_ID: ${{ secrets.S3_ID }}
+          envkey_S3_SECRET: ${{ secrets.S3_SECRET }}
+          envkey_SECRET_WORD: ${{ secrets.SECRET_WORD }}
+      - name: Install
+        run: yarn
+      - name: Build
+        run: yarn web build
+      - name: Refresh
+        run: yarn web refresh-opensea-sales-cache
