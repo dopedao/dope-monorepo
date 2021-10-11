@@ -69,7 +69,7 @@ const DesktopWindow = ({
 
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
 
-  const handleStop = (e) => {
+  const handleStop = (e: DraggableEventHandler) => {
     const el = document.querySelector('.floating');
     if (el && el.getAttribute('style')) {
       windowPosition.updatePosition(el.getAttribute('style'));
