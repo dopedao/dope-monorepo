@@ -69,10 +69,11 @@ const DesktopWindow = ({
 
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
 
-  const handleStop = (e: DraggableEventHandler) => {
+  const handleStop = () => {
     const el = document.querySelector('.floating');
     if (el && el.getAttribute('style')) {
-      windowPosition.updatePosition(el.getAttribute('style'));
+      const transformValue = el.getAttribute('style') || '';
+      windowPosition.updatePosition(transformValue);
     }
   }
 

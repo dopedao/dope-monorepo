@@ -1,6 +1,7 @@
 import { makeVar } from '@apollo/client';
 
 class WindowPosition {
+  position?: any;
   constructor() {
     this.position = undefined;
   }
