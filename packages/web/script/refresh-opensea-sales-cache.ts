@@ -19,20 +19,18 @@ const s3client = new S3({
 });
 
 const main = async () => {
-  const assetJson = await getOpenSeaAssets();
-  const params = {
-    Bucket: S3_BUCKET,
-    Key: FILENAME,
-    Body: JSON.stringify(assetJson),
-  };
   try {
+    const assetJson = await getOpenSeaAssets();
+    const params = {
+      Bucket: S3_BUCKET,
+      Key: FILENAME,
+      Body: JSON.stringify(assetJson),
+    };
     await s3client.upload(params).promise();
-    console.log('SUCCESS');
-    return;
+    process.exit(0);
   } catch (e) {
-    console.log('FAIL');
     console.log(e);
-    return;
+    process.exit(1);
   }
 };
 
