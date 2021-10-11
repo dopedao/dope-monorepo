@@ -7,6 +7,7 @@ import DesktopWindowTitleBar from './DesktopWindowTitleBar';
 import Draggable from 'react-draggable';
 import React from 'react';
 import styled from '@emotion/styled';
+import mutables from '../src/mutables'
 
 interface DesktopWindowProps {
   title: string | undefined;
@@ -64,10 +65,24 @@ const DesktopWindow = ({
 
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
 
+  const handleStop = (e) => {
+    const el = document.querySelector('.floating')
+    if (el && el.getAttribute('style')) {
+      // pull the current DesktopWindow location from the CSS style on the DOM object
+      const transformArr = el.getAttribute('style').match(/translate\((-?\d+(?:\.\d*)?)px, (-?\d+(?:\.\d*)?)px\)/)
+      if (transformArr && transformArr.length === 3) {
+        mutables.position = {
+          x: parseFloat(transformArr[1]),
+          y: parseFloat(transformArr[2])
+        }
+      }
+    }
+  }
+
   return (
     <ConditionalWrapper
       condition={shouldBeDraggable}
-      wrap={children => <Draggable handle=".windowTitleBar">{children}</Draggable>}
+      wrap={children => <Draggable onStop={handleStop} defaultPosition={mutables.position} handle=".windowTitleBar">{children}</Draggable>}
     >
       <WindowWrapper className={isFullScreen ? '' : 'floating'}>
         <DesktopWindowTitleBar
