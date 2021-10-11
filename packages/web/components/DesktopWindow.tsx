@@ -56,8 +56,8 @@ const DesktopWindow = ({
         height: 90%;
         margin: auto;
         margin-top: 32px;
-        max-width: ${typeof width == 'number' ? width+'px' : width};
-        max-height: ${typeof height == 'number' ? height+'px' : height};
+        max-width: ${typeof width == 'number' ? width + 'px' : width};
+        max-height: ${typeof height == 'number' ? height + 'px' : height};
       }
     }
   `;

@@ -1,5 +1,5 @@
-import * as dotenv from "dotenv";
-dotenv.config({ path: __dirname+'/../.env' });
+import * as dotenv from 'dotenv';
+dotenv.config({ path: __dirname + '/../.env' });
 
 import { getOpenSeaAssets } from '../src/OpenSeaAsset';
 import S3 from 'aws-sdk/clients/s3';
@@ -25,7 +25,7 @@ const main = async () => {
   };
   try {
     await s3client.upload(params).promise();
-    console.log('SUCCESS')
+    console.log('SUCCESS');
     return;
   } catch (e) {
     console.log('FAIL');
