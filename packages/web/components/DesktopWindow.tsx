@@ -7,7 +7,10 @@ import DesktopWindowTitleBar from './DesktopWindowTitleBar';
 import Draggable from 'react-draggable';
 import React from 'react';
 import styled from '@emotion/styled';
-import mutables from '../src/mutables'
+import WindowPosition, {
+  WindowPositionReactive
+} from '../src/WindowPosition';
+import { useReactiveVar } from '@apollo/client';
 
 interface DesktopWindowProps {
   title: string | undefined;
@@ -30,6 +33,7 @@ const DesktopWindow = ({
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = () => setIsFullScreen(!isFullScreen);
+  const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
   const WindowWrapper = styled.div`
     width: 100%;
@@ -66,23 +70,16 @@ const DesktopWindow = ({
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
 
   const handleStop = (e) => {
-    const el = document.querySelector('.floating')
+    const el = document.querySelector('.floating');
     if (el && el.getAttribute('style')) {
-      // pull the current DesktopWindow location from the CSS style on the DOM object
-      const transformArr = el.getAttribute('style').match(/translate\((-?\d+(?:\.\d*)?)px, (-?\d+(?:\.\d*)?)px\)/)
-      if (transformArr && transformArr.length === 3) {
-        mutables.position = {
-          x: parseFloat(transformArr[1]),
-          y: parseFloat(transformArr[2])
-        }
-      }
+      windowPosition.updatePosition(el.getAttribute('style'));
     }
   }
 
   return (
     <ConditionalWrapper
       condition={shouldBeDraggable}
-      wrap={children => <Draggable onStop={handleStop} defaultPosition={mutables.position} handle=".windowTitleBar">{children}</Draggable>}
+      wrap={children => <Draggable onStop={handleStop} defaultPosition={windowPosition.position} handle=".windowTitleBar">{children}</Draggable>}
     >
       <WindowWrapper className={isFullScreen ? '' : 'floating'}>
         <DesktopWindowTitleBar
