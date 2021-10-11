@@ -13,6 +13,8 @@ interface AppWindowProps {
   padBody?: boolean;
   scrollable?: boolean;
   children: React.ReactNode;
+  width?: number | string;
+  height?: number | string;
 }
 
 const getBodyPadding = () => {
@@ -28,6 +30,8 @@ export default function AppWindow({
   requiresWalletConnection = false,
   padBody = true,
   scrollable = true,
+  width,
+  height,
   children,
 }: AppWindowProps) {
   const { account } = useWeb3React();
@@ -41,7 +45,12 @@ export default function AppWindow({
   `;
 
   return (
-    <DesktopWindow title={title || 'DOPEWARS.EXE'} titleChildren={<AppWindowTitleBar />}>
+    <DesktopWindow 
+      title={title || 'DOPEWARS.EXE'} 
+      titleChildren={<AppWindowTitleBar />}
+      width={width}
+      height={height}
+    >
       {requiresWalletConnection === true && !account ? (
         <ConnectWallet />
       ) : (
