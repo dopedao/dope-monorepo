@@ -83,44 +83,72 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
         }
       `}
     >
-      <Table variant="dope">
-        <colgroup>
-          <col width="25%" />
-          <col width="25%" />
-          {/* <col width="25%" /> */}
-          <col width="25%" />
-        </colgroup>
-        <Thead>
-          <Tr>
-            <Th onClick={() => setSort('id')}>Dope ID</Th>
-            <Th onClick={() => setSort('rank')}>Rank</Th>
-            {/* <Th onClick={() => setSort('percentile')}>Percent</Th> */}
-            <Th>Paper?</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {items.map(({ id, rank, claimed, idx }) => (
-            <Tr
-              className={selected === idx ? 'selected' : ''}
-              key={id}
-              onClick={() => onSelect(idx)}
-            >
-              <Td>{id}</Td>
-              <Td>{rank}</Td>
-              <Td>{claimed}</Td>
-            </Tr>
-          ))}
-        </Tbody>
-        <Tfoot>
-          <Tr>
-            <Th colSpan={3}>
-              {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
-              <span className="separator">/</span>
-              {formattedUnclaimedPaper()} Unclaimed $PAPER
-            </Th>
-          </Tr>
-        </Tfoot>
-      </Table>
+      <div
+        css={css`
+          display:flex;
+          min-height: 100%;
+          flex-direction: column;
+          align-items: stretch;
+          `}>
+          <div
+            css={css`
+              flex-grow: 1;
+              `}>
+              <Table variant="dope">
+                <colgroup>
+                  <col width="25%" />
+                  <col width="25%" />
+                  {/* <col width="25%" /> */}
+                  <col width="25%" />
+                </colgroup>
+                <Thead>
+                  <Tr>
+                    <Th onClick={() => setSort('id')}>Dope ID</Th>
+                    <Th onClick={() => setSort('rank')}>Rank</Th>
+                    {/* <Th onClick={() => setSort('percentile')}>Percent</Th> */}
+                    <Th>Paper?</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {items.map(({ id, rank, claimed, idx }) => (
+                    <Tr
+                      className={selected === idx ? 'selected' : ''}
+                      key={id}
+                      onClick={() => onSelect(idx)}
+                    >
+                      <Td>{id}</Td>
+                      <Td>{rank}</Td>
+                      <Td>{claimed}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+          </div>
+          <div
+            css={css`
+              position: sticky;
+              bottom: 0;
+              `}>
+              <Table variant="dope">
+                <colgroup>
+                  <col width="25%" />
+                  <col width="25%" />
+                  <col width="25%" />
+                </colgroup>
+                <Thead></Thead>
+                <Tbody></Tbody>
+                <Tfoot>
+                  <Tr>
+                    <Th colSpan={3}>
+                      {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
+                      <span className="separator">/</span>
+                      {formattedUnclaimedPaper()} Unclaimed $PAPER
+                    </Th>
+                  </Tr>
+                </Tfoot>
+              </Table>
+          </div>
+      </div>
     </div>
   );
 };
