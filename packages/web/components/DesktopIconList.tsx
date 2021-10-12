@@ -7,12 +7,13 @@ const IconGrid = styled.div`
   position: fixed;
   z-index: 0;
   bottom: 0px;
+  left: 0px;
   display: flex;
   // Default
-  width: 100%;
-  height: auto;
-  flex-flow: row wrap-reverse;
-  justify-content: center;
+  width: auto;
+  height: 100%;
+  flex-flow: column wrap;
+  justify-content: flex-end;
   align-items: flex-start;
   gap: 8px;
   padding: 8px;
@@ -21,13 +22,11 @@ const IconGrid = styled.div`
     padding: 16px;
   `}
   ${media.laptop`
-    gap: 24px;
-    padding: 24px;
-    flex-flow: column wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    height: 100%;
-    width: auto;
+    gap: 32px;
+    padding: 32px;
+    // flex-flow: column wrap;
+    // justify-content: flex-start;
+    // align-items: flex-start;
   `}
 `;
 
@@ -47,8 +46,22 @@ const DesktopIconList = () => {
         label="DOPEWARS.EXE"
         clickAction={() => openLocalRoute('/terms-of-service')}
       />
-      <DesktopIcon icon="file" label="ABOUT.FAQ" clickAction={() => openLocalRoute('/about')} />
       <DesktopIcon icon="tv" label="DOPE TV" clickAction={() => openLocalRoute('/dope-tv')} />
+      <DesktopIcon 
+        icon="file" 
+        label="ABOUT.FAQ" 
+        clickAction={() => openLocalRoute('/about')} 
+      />
+      {/* <DesktopIcon 
+        icon="file-chart" 
+        label="DOPE Stats" 
+        clickAction={() => openBrowserTab('https://dune.xyz/HorizonXP/Dope-Wars-Degen-Dashboard')} 
+      /> */}
+      <DesktopIcon 
+        icon="paper-bill-desktop" 
+        label="GET $PAPER" 
+        clickAction={() => openBrowserTab('https://www.dextools.io/app/ether/pair-explorer/0x811f8c60ee1805db7ece0fa3c7b064feba887053')} 
+      />
       <DesktopIcon
         icon="tally"
         label="Dope DAO"
