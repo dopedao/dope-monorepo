@@ -29,31 +29,63 @@ contract Setters is HustlerTest {
 
     function testCanSetSlotsPartial() public {
         uint256 id = alice.mint();
-        uint256[10] memory slots = [uint256(1), 0, 12, 0, 0, 0, 0, 0, 0, 0];
-        alice.setSlots(id, slots, 0x05); // 0000 0101
+        ItemIds memory ids = stockpile.ids(BAG);
 
-        assertEq(hustler.getMetadata(id).slots[0], 2);
-        assertEq(hustler.getMetadata(id).slots[1], 3);
-        assertEq(hustler.getMetadata(id).slots[2], 4);
-        assertEq(hustler.getMetadata(id).slots[3], 5);
-        assertEq(hustler.getMetadata(id).slots[4], 2);
-        assertEq(hustler.getMetadata(id).slots[5], 3);
-        assertEq(hustler.getMetadata(id).slots[6], 4);
-        assertEq(hustler.getMetadata(id).slots[7], 5);
+        uint256[10] memory slots = [
+            ids.weapon,
+            ids.clothes,
+            ids.vehicle,
+            ids.waist,
+            ids.foot,
+            ids.hand,
+            ids.drugs,
+            ids.neck,
+            ids.ring,
+            0
+        ];
+        alice.setApprovalForAll(address(hustler), true);
+        alice.setSlots(id, slots, 0x0005); // 0000 0000 0000 0101
+
+        assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
+        assertEq(hustler.getMetadata(id).slots[1], 0);
+        assertEq(hustler.getMetadata(id).slots[2], ids.vehicle);
+        assertEq(hustler.getMetadata(id).slots[3], 0);
+        assertEq(hustler.getMetadata(id).slots[4], 0);
+        assertEq(hustler.getMetadata(id).slots[5], 0);
+        assertEq(hustler.getMetadata(id).slots[6], 0);
+        assertEq(hustler.getMetadata(id).slots[7], 0);
+        assertEq(hustler.getMetadata(id).slots[8], 0);
+        assertEq(hustler.getMetadata(id).slots[9], 0);
     }
 
     function testCanSetSlotsFull() public {
         uint256 id = alice.mint();
-        uint256[10] memory slots = [uint256(1), 0, 12, 0, 0, 0, 0, 0, 0, 0];
-        alice.setSlots(id, slots, 0x7f); // 1111 1111
+        ItemIds memory ids = stockpile.ids(BAG);
 
-        assertEq(hustler.getMetadata(id).slots[0], 2);
-        assertEq(hustler.getMetadata(id).slots[1], 3);
-        assertEq(hustler.getMetadata(id).slots[2], 4);
-        assertEq(hustler.getMetadata(id).slots[3], 5);
-        assertEq(hustler.getMetadata(id).slots[4], 2);
-        assertEq(hustler.getMetadata(id).slots[5], 3);
-        assertEq(hustler.getMetadata(id).slots[6], 4);
-        assertEq(hustler.getMetadata(id).slots[7], 5);
+        uint256[10] memory slots = [
+            ids.weapon,
+            ids.clothes,
+            ids.vehicle,
+            ids.waist,
+            ids.foot,
+            ids.hand,
+            ids.drugs,
+            ids.neck,
+            ids.ring,
+            0
+        ];
+        alice.setApprovalForAll(address(hustler), true);
+        alice.setSlots(id, slots, 0x01ff); // 0000 0001 1111 1111
+
+        assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
+        assertEq(hustler.getMetadata(id).slots[1], ids.clothes);
+        assertEq(hustler.getMetadata(id).slots[2], ids.vehicle);
+        assertEq(hustler.getMetadata(id).slots[3], ids.waist);
+        assertEq(hustler.getMetadata(id).slots[4], ids.foot);
+        assertEq(hustler.getMetadata(id).slots[5], ids.hand);
+        assertEq(hustler.getMetadata(id).slots[6], ids.drugs);
+        assertEq(hustler.getMetadata(id).slots[7], ids.neck);
+        assertEq(hustler.getMetadata(id).slots[8], ids.ring);
+        assertEq(hustler.getMetadata(id).slots[9], 0);
     }
 }

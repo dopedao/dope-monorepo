@@ -40,6 +40,10 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         return hustler.mint(address(this), '');
     }
 
+    function setApprovalForAll(address operator, bool approved) public {
+        stockpile.setApprovalForAll(operator, approved);
+    }
+
     function setBody(
         uint256 id,
         uint8[4] memory body,
@@ -51,7 +55,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     function setSlots(
         uint256 id,
         uint256[10] memory slots,
-        uint8 mask
+        uint16 mask
     ) public {
         hustler.setSlots(id, slots, mask);
     }

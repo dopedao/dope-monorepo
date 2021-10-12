@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 // ============ Imports ============
 
 import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+import { IERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
@@ -13,6 +14,8 @@ import { HustlerMetadata } from './HustlerMetadata.sol';
 library Errors {
     string constant IsNotSwapMeet = 'msg.sender is not the swap meet contract';
     string constant IsHolder = 'msg.sender is not hustler holder';
+    string constant EquipSignatureInvalid = 'equip signature invalid';
+    string constant NumHustlerIdMismatch = 'num hustler ids does not match num token ids';
 }
 
 /// @title Hustlers
@@ -20,6 +23,10 @@ library Errors {
 /// @notice Hustlers are avatars in the dope wars metaverse.
 contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
     ERC1155 immutable swapmeet;
+
+    bytes4 constant equip = bytes4(keccak256('equip(uint256)'));
+
+    mapping(uint256 => mapping(uint256 => uint256)) internal inventories;
 
     // First 500 are reserved for OG Hustlers.
     uint256 internal curId = 500;
@@ -36,17 +43,45 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
 
     /// @notice ERC1155 callback which will add an item to the hustlers inventory.
     function onERC1155Received(
-        address operator,
-        address from,
+        address,
+        address,
         uint256 id,
         uint256 value,
-        bytes calldata hustlerId
+        bytes memory data
     ) public override returns (bytes4) {
-        // todo assert hustlerId is provided
-        // only supports callback from the Loot contract
+        // only supports callback from the SwapMeet contract
         require(msg.sender == address(swapmeet), Errors.IsNotSwapMeet);
-        // open(from, tokenId);
+
+        // Callers should encode the equip signature to explicity
+        // indicate an encoded hustler id.
+        (bytes4 sig, uint256 hustlerId) = abi.decode(data, (bytes4, uint256));
+        require(sig == equip, Errors.EquipSignatureInvalid);
+
+        inventories[hustlerId][id] += value;
         return ERC1155Holder.onERC1155Received.selector;
+    }
+
+    function onERC1155BatchReceived(
+        address,
+        address,
+        uint256[] calldata ids,
+        uint256[] calldata values,
+        bytes calldata data
+    ) public override returns (bytes4) {
+        // only supports callback from the SwapMeet contract
+        require(msg.sender == address(swapmeet), Errors.IsNotSwapMeet);
+
+        // Callers should encode the equip signature to explicity
+        // indicate an encoded hustler id.
+        (bytes4 sig, uint256[] memory hustlerIds) = abi.decode(data, (bytes4, uint256[]));
+        require(sig == equip, Errors.EquipSignatureInvalid);
+        require(ids.length == hustlerIds.length, Errors.NumHustlerIdMismatch);
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            inventories[hustlerIds[i]][ids[i]] += values[i];
+        }
+
+        return ERC1155Holder.onERC1155BatchReceived.selector;
     }
 
     /**
@@ -100,13 +135,18 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
     }
 
     function setSlots(
-        uint256 id,
+        uint256 hustlerId,
         uint256[10] memory slots,
         uint16 mask
-    ) public onlyHolder(id) {
+    ) public onlyHolder(hustlerId) {
         for (uint256 i = 0; i < 10; i++) {
-            if (uint8(mask & (1 << i)) != 0) {
-                metadata[id].slots[i] = slots[i];
+            if (uint16(mask & (1 << i)) != 0) {
+                uint256 itemId = slots[i];
+                if (inventories[hustlerId][itemId] == 0) {
+                    swapmeet.safeTransferFrom(msg.sender, address(this), itemId, 1, abi.encode(equip, hustlerId));
+                }
+
+                metadata[hustlerId].slots[i] = slots[i];
             }
         }
     }
