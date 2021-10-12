@@ -98,11 +98,15 @@ Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them wit
 
 [$PAPER is an Ethereum token](https://www.coingecko.com/en/coins/dope-wars-paper), and the in-game asset of Dope Wars – our p2e homage of the game we all played on our calculators instead of paying attention in math class.
 
-You can obtain $PAPER by claiming it from an original DOPE NFT, or by swapping for it on a distributed exchange like [Dextools](https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483). _Each DOPE NFT is able to claim $PAPER only once._
-
 ![PAPER Airdrop](/images/paper-chopper.png#full-bleed)
 
-You are automatically entitled to claim 125,000 $PAPER for each Dope Wars Loot NFT using this [contract address on EtherScan](https://etherscan.io/address/0x7ae1d57b58fa6411f32948314badd83583ee0e8c). To see if your Dope Wars Loot NFT is eligible please connect your wallet in DOPEWARS.EXE and view your Loot.
+$PAPER was originally distributed through a claimable amount of 125,000 per $DOPE NFT. Each NFT allows a claim of 125,000 $PAPER once and only once – and regardless of the current holder the NFT does not allow for more than one claim. These claims are the only source of $PAPER’s supply currently. 
+
+To see if your Dope Wars Loot NFT is eligible please connect your wallet in DOPEWARS.EXE and view your Loot. If you need to obtain $PAPER, please do so from a site like [Dextools](https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483).
+
+## What is the supply of $PAPER?
+
+The supply of paper is currently fixed at 1 billion, and while this can be increased with a DAO governance vote – the current consensus is that this won’t be necessary. When details of the economy in-game and in the broader ecosystem get closer to the end of the design stage the DAO may remove the ability to increase the supply of $PAPER from the contract entirely.
 
 👉 [What WOLF CRYPTO has to say about DOPE WARS + $PAPER](https://wolfcrypto.medium.com/dope-wars-paper-tldr-90d23fa6acb3) 👈
 
