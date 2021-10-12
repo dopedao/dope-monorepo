@@ -98,14 +98,13 @@ Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them wit
 
 [$PAPER is an Ethereum token](https://www.coingecko.com/en/coins/dope-wars-paper), and the in-game asset of Dope Wars – our p2e homage of the game we all played on our calculators instead of paying attention in math class.
 
-You can obtain $PAPER by claiming it from an original DOPE NFT, or by swapping for it on a distributed exchange like [Dextools](https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483).
+You can obtain $PAPER by claiming it from an original DOPE NFT, or by swapping for it on a distributed exchange like [Dextools](https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483). _Each DOPE NFT is able to claim $PAPER only once._
 
 ![PAPER Airdrop](/images/paper-chopper.png#full-bleed)
-You are automatically entitled to claim 125,000 $PAPER for each Dope Wars Loot NFT using this [contract address on EtherScan](https://etherscan.io/address/0x7ae1d57b58fa6411f32948314badd83583ee0e8c).
 
-_Each DOPE NFT is able to claim $PAPER only once._
+You are automatically entitled to claim 125,000 $PAPER for each Dope Wars Loot NFT using this [contract address on EtherScan](https://etherscan.io/address/0x7ae1d57b58fa6411f32948314badd83583ee0e8c). To see if your Dope Wars Loot NFT is eligible please connect your wallet in DOPEWARS.EXE and view your Loot.
 
-To see if your Dope Wars Loot NFT is eligible please connect your wallet in DOPEWARS.EXE and view your Loot.
+👉 [What WOLF CRYPTO has to say about DOPE WARS + $PAPER](https://wolfcrypto.medium.com/dope-wars-paper-tldr-90d23fa6acb3) 👈
 
 ----
 
@@ -128,8 +127,12 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 
 ### Press
 
-- [Motherboard / VICE, September 2021](https://www.vice.com/en/article/akgp8e/people-are-spending-millions-of-dollars-on-loot-for-games-that-dont-exist)
-- [Collectively Intelligent Podcast, September 2021](https://open.spotify.com/episode/5xOaIJhit7pX25rrvHcQ0z)
+- [WOLF CRYPTO on DOPE WARS + $PAPER](https://wolfcrypto.medium.com/dope-wars-paper-tldr-90d23fa6acb3)  
+  10.2021
+- [Motherboard / VICE](https://www.vice.com/en/article/akgp8e/people-are-spending-millions-of-dollars-on-loot-for-games-that-dont-exist)  
+09.2021
+- [Collectively Intelligent Podcast](https://open.spotify.com/episode/5xOaIJhit7pX25rrvHcQ0z)  
+09.2021
 
 ----
 
