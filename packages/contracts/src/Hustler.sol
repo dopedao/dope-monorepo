@@ -170,7 +170,7 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
     }
 
     function addBodies(bytes[] calldata _bodies) public onlyOwner {
-        for (uint256 i = 0; i < bodies.length; i++) {
+        for (uint256 i = 0; i < _bodies.length; i++) {
             bodies.push(_bodies[i]);
         }
     }
@@ -180,7 +180,7 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
     }
 
     function addHeads(bytes[] calldata _heads) public onlyOwner {
-        for (uint256 i = 0; i < heads.length; i++) {
+        for (uint256 i = 0; i < _heads.length; i++) {
             heads.push(_heads[i]);
         }
     }
@@ -190,7 +190,7 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
     }
 
     function addBeards(bytes[] calldata _beards) public onlyOwner {
-        for (uint256 i = 0; i < beards.length; i++) {
+        for (uint256 i = 0; i < _beards.length; i++) {
             beards.push(_beards[i]);
         }
     }

@@ -65,6 +65,40 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 }
 
+contract HustlerOwner is ERC1155Holder {
+    Stockpile stockpile;
+    Hustler hustler;
+
+    function init(Stockpile _stockpile, Hustler _hustler) public {
+        stockpile = _stockpile;
+        hustler = _hustler;
+    }
+
+    function addBody(bytes calldata body) public {
+        hustler.addBody(body);
+    }
+
+    function addBodies(bytes[] calldata _bodies) public {
+        hustler.addBodies(_bodies);
+    }
+
+    function addHead(bytes calldata head) public {
+        hustler.addHead(head);
+    }
+
+    function addHeads(bytes[] calldata _heads) public {
+        hustler.addHeads(_heads);
+    }
+
+    function addBeard(bytes calldata beard) public {
+        hustler.addBeard(beard);
+    }
+
+    function addBeards(bytes[] calldata _beards) public {
+        hustler.addBeards(_beards);
+    }
+}
+
 contract Owner {}
 
 contract HustlerTester is Hustler {
@@ -72,6 +106,18 @@ contract HustlerTester is Hustler {
 
     function getMetadata(uint256 id) public view returns (Metadata memory) {
         return metadata[id];
+    }
+
+    function getBody(uint256 id) public view returns (bytes memory) {
+        return bodies[id];
+    }
+
+    function getHead(uint256 id) public view returns (bytes memory) {
+        return heads[id];
+    }
+
+    function getBeard(uint256 id) public view returns (bytes memory) {
+        return beards[id];
     }
 }
 
@@ -87,17 +133,19 @@ contract HustlerTest is DSTest {
     HustlerTester internal hustler;
 
     // users
-    Owner internal owner;
+    HustlerOwner internal owner;
     HustlerUser internal alice;
 
     function setUp() public virtual {
-        owner = new Owner();
+        owner = new HustlerOwner();
 
         // deploy contracts
         loot = new DopeWarsLoot();
         components = new Components(address(owner));
         stockpile = new StockpileTester(address(components), address(loot), address(owner));
         hustler = new HustlerTester(address(owner), address(stockpile));
+
+        owner.init(stockpile, hustler);
 
         // create alice's account & claim a bag
         alice = new HustlerUser(loot, stockpile, hustler);
