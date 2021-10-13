@@ -42,11 +42,19 @@ contract HustlerMetadata {
 
     string[2] genders = ['Male', 'Female'];
 
+    mapping(uint256 => mapping(uint256 => uint256)) internal inventories;
+
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => string[]) internal palettes;
 
-    // Item RLE (TokenID => RLE)
-    mapping(uint256 => bytes[2]) internal rles;
+    // Bodies (Body number => RLE)
+    bytes[] internal bodies;
+
+    // Heads (Head number => RLE)
+    bytes[] internal heads;
+
+    // Beards (Beard number => RLE)
+    bytes[] internal beards;
 
     // Hustler metadata
     mapping(uint256 => Metadata) internal metadata;

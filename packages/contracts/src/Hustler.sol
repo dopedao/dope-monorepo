@@ -26,8 +26,6 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
 
     bytes4 constant equip = bytes4(keccak256('equip(uint256)'));
 
-    mapping(uint256 => mapping(uint256 => uint256)) internal inventories;
-
     // First 500 are reserved for OG Hustlers.
     uint256 internal curId = 500;
 
@@ -167,25 +165,38 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
         }
     }
 
+    function addBody(bytes calldata body) public onlyOwner {
+        bodies.push(body);
+    }
+
+    function addBodies(bytes[] calldata _bodies) public onlyOwner {
+        for (uint256 i = 0; i < bodies.length; i++) {
+            bodies.push(_bodies[i]);
+        }
+    }
+
+    function addHead(bytes calldata head) public onlyOwner {
+        heads.push(head);
+    }
+
+    function addHeads(bytes[] calldata _heads) public onlyOwner {
+        for (uint256 i = 0; i < heads.length; i++) {
+            heads.push(_heads[i]);
+        }
+    }
+
+    function addBeard(bytes calldata beard) public onlyOwner {
+        beards.push(beard);
+    }
+
+    function addBeards(bytes[] calldata _beards) public onlyOwner {
+        for (uint256 i = 0; i < beards.length; i++) {
+            beards.push(_beards[i]);
+        }
+    }
+
     modifier onlyHolder(uint256 id) {
         require(balanceOf(msg.sender, id) == 1, Errors.IsHolder);
         _;
     }
-
-    // function setRle(
-    //     uint256 id,
-    //     bytes memory male,
-    //     bytes memory female
-    // ) public onlyOwner {
-    //     rles[id][Gender.MALE] = male;
-    //     rles[id][Gender.FEMALE] = female;
-    // }
-
-    // function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) public onlyOwner {
-    //     require(ids.length == rles.length / 2, 'ids rles mismatch');
-
-    //     for (uint256 i = 0; i < rles.length; i += 2) {
-    //         setRle(ids[i / 2], rles[i], rles[i + 1]);
-    //     }
-    // }
 }
