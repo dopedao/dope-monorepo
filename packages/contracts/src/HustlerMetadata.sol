@@ -1,6 +1,8 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
+import { IERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+
 import { Gender } from './StockpileMetadata.sol';
 import { MetadataBuilder } from './MetadataBuilder.sol';
 
@@ -40,6 +42,8 @@ contract HustlerMetadata {
     string private constant _name = 'Hustlers';
     string private constant description = 'Hustle Hard';
 
+    IERC1155 immutable swapmeet;
+
     string[2] genders = ['Male', 'Female'];
 
     mapping(uint256 => mapping(uint256 => uint256)) internal inventories;
@@ -59,6 +63,10 @@ contract HustlerMetadata {
     // Hustler metadata
     mapping(uint256 => Metadata) internal metadata;
 
+    constructor(address _swapmeet) {
+        swapmeet = IERC1155(_swapmeet);
+    }
+
     function name() external pure returns (string memory) {
         return _name;
     }
@@ -73,11 +81,24 @@ contract HustlerMetadata {
     }
 
     /// @notice Returns an SVG for the provided token id
-    // function tokenURI(uint256 tokenId) public view returns (string memory) {
-    //     (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
+    function tokenURI(uint256 tokenId) public view returns (string memory) {
+        Metadata memory meta = metadata[tokenId];
+        bytes[] memory parts = new bytes[](14);
 
-    //     return MetadataBuilder.tokenURI(itemSVG(tokenId, components, componentType), palettes);
-    // }
+        parts[0] = bodies[meta.body[BodyParts.BODY]];
+        parts[1] = heads[meta.body[BodyParts.HEAD]];
+        parts[2] = beards[meta.body[BodyParts.BEARD]];
+        // parts[3] = heads[meta.body[BodyParts.BEARD]];
+        // parts[4] = heads[meta.body[BodyParts.BEARD]];
+        // parts[5] = heads[meta.body[BodyParts.BEARD]];
+
+        MetadataBuilder.SVGParams memory p;
+        p.name = meta.name;
+        p.resolution = 64;
+        p.color = '202221';
+        p.parts = parts;
+        return MetadataBuilder.tokenURI(p, palettes);
+    }
 
     function params(uint256 id) internal view returns (MetadataBuilder.SVGParams memory) {
         Metadata memory meta = metadata[id];

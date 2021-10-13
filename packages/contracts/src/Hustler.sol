@@ -22,22 +22,19 @@ library Errors {
 /// @author Tarrence van As
 /// @notice Hustlers are avatars in the dope wars metaverse.
 contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
-    ERC1155 immutable swapmeet;
-
-    bytes4 constant equip = bytes4(keccak256('equip(uint256)'));
+    bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
 
     // First 500 are reserved for OG Hustlers.
     uint256 internal curId = 500;
 
     // No need for a URI since we're doing everything onchain
-    constructor(address _owner, address _swapmeet) ERC1155('') {
-        swapmeet = ERC1155(_swapmeet);
+    constructor(address _owner, address _swapmeet) ERC1155('') HustlerMetadata(_swapmeet) {
         transferOwnership(_owner);
     }
 
-    // function uri(uint256 tokenId) public view override returns (string memory) {
-    //     return tokenURI(tokenId);
-    // }
+    function uri(uint256 tokenId) public view override returns (string memory) {
+        return tokenURI(tokenId);
+    }
 
     /// @notice ERC1155 callback which will add an item to the hustlers inventory.
     function onERC1155Received(

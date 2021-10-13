@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0
 // Taken from https://raw.githubusercontent.com/nounsDAO/nouns-monorepo/master/packages/nouns-contracts/contracts/interfaces/INounsDescriptor.sol
 
-/// @title Interface for Character
+/// @title Interface for Hustler
 
 pragma solidity ^0.8.6;
 
-interface ICharacter {
+interface IHustler {
     function equipmentOf(address) external view returns (uint48[] memory);
 
     function palettes(uint8 paletteIndex, uint256 colorIndex) external view returns (string memory);
