@@ -128,25 +128,29 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
             css={css`
               position: sticky;
               bottom: 0;
+              cursor: pointer;
+              background: rgb(222, 222, 221);
               `}>
-              <Table variant="dope">
-                <colgroup>
-                  <col width="25%" />
-                  <col width="25%" />
-                  <col width="25%" />
-                </colgroup>
-                <Thead></Thead>
-                <Tbody></Tbody>
-                <Tfoot>
-                  <Tr>
-                    <Th colSpan={3}>
-                      {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
-                      <span className="separator">/</span>
-                      {formattedUnclaimedPaper()} Unclaimed $PAPER
-                    </Th>
-                  </Tr>
-                </Tfoot>
-              </Table>
+                <div
+                css={css`
+                  border-top: 2px solid rgb(0, 0, 0);
+                  height: 44px;
+                  padding: 10px 16px;
+                  text-align: center;
+                  vertical-align: middle;
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  font-size: 0.9em;
+                  `}>
+                    {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
+                    <span
+                      className="separator"
+                      css={css`
+                        padding: 8px;
+                        color: rgb(168, 169, 174);
+                        `}>/</span>
+                    {formattedUnclaimedPaper()} Unclaimed $PAPER
+                </div>
           </div>
       </div>
     </div>
