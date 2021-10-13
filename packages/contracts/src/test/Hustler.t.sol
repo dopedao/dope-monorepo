@@ -166,4 +166,33 @@ contract Setters is HustlerTest {
         assertEq(string(hustler.getHead(0)), string(headRle));
         assertEq(string(hustler.getHead(1)), string(headRle));
     }
+
+    function testCanBuildTokenURIWithNoRLEs() public {
+        owner.addBody(bodyRle);
+        owner.addHead(headRle);
+        owner.addBeard(beardRle);
+
+        uint256 id = alice.mint();
+        ItemIds memory ids = swapMeet.ids(BAG);
+        uint8[4] memory body = [0, 0, 0, 0];
+        uint256[10] memory slots = [
+            ids.weapon,
+            ids.clothes,
+            ids.vehicle,
+            ids.waist,
+            ids.foot,
+            ids.hand,
+            ids.drugs,
+            ids.neck,
+            ids.ring,
+            0
+        ];
+        alice.setApprovalForAll(address(hustler), true);
+        uint8 bmask = 0x0f; // 0000 1111
+        uint16 smask = 0x01ff; // 0000 0001 1111 1111
+
+        alice.setMetadata(id, '', '', body, bmask, slots, smask);
+
+        hustler.tokenURI(id);
+    }
 }

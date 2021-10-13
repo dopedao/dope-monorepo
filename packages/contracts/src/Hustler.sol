@@ -3,10 +3,9 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
-import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
-import { IERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol';
-import '@openzeppelin/contracts/access/Ownable.sol';
-import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
+import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
+import { ERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
 import { ComponentTypes } from './Components.sol';
 import { HustlerMetadata } from './HustlerMetadata.sol';
@@ -21,7 +20,7 @@ library Errors {
 /// @title Hustlers
 /// @author Tarrence van As
 /// @notice Hustlers are avatars in the dope wars metaverse.
-contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
+contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
 
     // First 500 are reserved for OG Hustlers.
@@ -53,7 +52,7 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
         require(sig == equip, Errors.EquipSignatureInvalid);
 
         inventories[hustlerId][id] += value;
-        return ERC1155Holder.onERC1155Received.selector;
+        return this.onERC1155Received.selector;
     }
 
     function onERC1155BatchReceived(
@@ -76,7 +75,7 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
             inventories[hustlerIds[i]][ids[i]] += values[i];
         }
 
-        return ERC1155Holder.onERC1155BatchReceived.selector;
+        return this.onERC1155BatchReceived.selector;
     }
 
     /**

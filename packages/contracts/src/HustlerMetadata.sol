@@ -1,10 +1,9 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import { IERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
-
 import { Gender } from './SwapMeetMetadata.sol';
 import { MetadataBuilder } from './MetadataBuilder.sol';
+import { ISwapMeet } from './interfaces/ISwapMeet.sol';
 
 library BodyParts {
     uint8 internal constant GENDER = 0x0;
@@ -42,7 +41,7 @@ contract HustlerMetadata {
     string private constant _name = 'Hustlers';
     string private constant description = 'Hustle Hard';
 
-    IERC1155 immutable swapmeet;
+    ISwapMeet immutable swapmeet;
 
     string[2] genders = ['Male', 'Female'];
 
@@ -64,7 +63,7 @@ contract HustlerMetadata {
     mapping(uint256 => Metadata) internal metadata;
 
     constructor(address _swapmeet) {
-        swapmeet = IERC1155(_swapmeet);
+        swapmeet = ISwapMeet(_swapmeet);
     }
 
     function name() external pure returns (string memory) {
@@ -83,14 +82,20 @@ contract HustlerMetadata {
     /// @notice Returns an SVG for the provided token id
     function tokenURI(uint256 tokenId) public view returns (string memory) {
         Metadata memory meta = metadata[tokenId];
-        bytes[] memory parts = new bytes[](14);
+        uint8 gender = meta.body[BodyParts.GENDER];
+        bytes[] memory parts = new bytes[](11);
 
         parts[0] = bodies[meta.body[BodyParts.BODY]];
         parts[1] = heads[meta.body[BodyParts.HEAD]];
         parts[2] = beards[meta.body[BodyParts.BEARD]];
-        // parts[3] = heads[meta.body[BodyParts.BEARD]];
-        // parts[4] = heads[meta.body[BodyParts.BEARD]];
-        // parts[5] = heads[meta.body[BodyParts.BEARD]];
+        parts[3] = swapmeet.tokenRle(meta.slots[Slots.WEAPON], gender);
+        parts[4] = swapmeet.tokenRle(meta.slots[Slots.CLOTHES], gender);
+        parts[5] = swapmeet.tokenRle(meta.slots[Slots.WAIST], gender);
+        parts[6] = swapmeet.tokenRle(meta.slots[Slots.FOOT], gender);
+        parts[7] = swapmeet.tokenRle(meta.slots[Slots.HAND], gender);
+        parts[8] = swapmeet.tokenRle(meta.slots[Slots.DRUGS], gender);
+        parts[9] = swapmeet.tokenRle(meta.slots[Slots.NECK], gender);
+        parts[10] = swapmeet.tokenRle(meta.slots[Slots.RING], gender);
 
         MetadataBuilder.SVGParams memory p;
         p.name = meta.name;

@@ -3,12 +3,13 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
-import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
-import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
-import '@openzeppelin/contracts/access/Ownable.sol';
+import { IERC721 } from '@openzeppelin/contracts/token/ERC721/IERC721.sol';
+import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
 
 import { ComponentTypes } from './Components.sol';
-import './SwapMeetMetadata.sol';
+import { Gender, SwapMeetMetadata } from './SwapMeetMetadata.sol';
+import { TokenId } from './TokenId.sol';
 
 library Errors {
     string constant DoesNotOwnBag = 'you do not own this bag';
