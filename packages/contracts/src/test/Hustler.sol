@@ -5,10 +5,33 @@ import './utils/HustlerSetup.sol';
 import './utils/StockpileSetup.sol';
 
 contract Setters is HustlerTest {
+    function testCanSetName() public {
+        uint256 id = alice.mint();
+        uint8[4] memory body;
+        uint256[10] memory slots;
+
+        alice.setMetadata(id, 'hustler name', '', body, 0x0, slots, 0x0);
+
+        assertEq(hustler.getMetadata(id).name, 'hustler name');
+    }
+
+    function testCanSetBackground() public {
+        uint256 id = alice.mint();
+        uint8[4] memory body;
+        uint256[10] memory slots;
+
+        alice.setMetadata(id, '', '123456', body, 0x0, slots, 0x0);
+
+        assertEq(hustler.getMetadata(id).background, '123456');
+    }
+
     function testCanSetBodyPartial() public {
         uint256 id = alice.mint();
         uint8[4] memory body = [1, 0, 12, 0];
-        alice.setBody(id, body, 0x05); // 0000 0101
+        uint256[10] memory slots;
+        uint8 mask = 0x05; // 0000 0101
+
+        alice.setMetadata(id, '', '', body, mask, slots, 0x0);
 
         assertEq(hustler.getMetadata(id).body[0], 1);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -19,7 +42,10 @@ contract Setters is HustlerTest {
     function testCanSetBodyFull() public {
         uint256 id = alice.mint();
         uint8[4] memory body = [2, 3, 4, 5];
-        alice.setBody(id, body, 0x0f); // 0000 1111
+        uint256[10] memory slots;
+        uint8 mask = 0x0f; // 0000 1111
+
+        alice.setMetadata(id, '', '', body, mask, slots, 0x0);
 
         assertEq(hustler.getMetadata(id).body[0], 2);
         assertEq(hustler.getMetadata(id).body[1], 3);
@@ -30,7 +56,7 @@ contract Setters is HustlerTest {
     function testCanSetSlotsPartial() public {
         uint256 id = alice.mint();
         ItemIds memory ids = stockpile.ids(BAG);
-
+        uint8[4] memory body;
         uint256[10] memory slots = [
             ids.weapon,
             ids.clothes,
@@ -44,7 +70,9 @@ contract Setters is HustlerTest {
             0
         ];
         alice.setApprovalForAll(address(hustler), true);
-        alice.setSlots(id, slots, 0x0005); // 0000 0000 0000 0101
+        uint16 mask = 0x0005; // 0000 0000 0000 0101
+
+        alice.setMetadata(id, '', '', body, 0x0, slots, mask);
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], 0);
@@ -61,7 +89,7 @@ contract Setters is HustlerTest {
     function testCanSetSlotsFull() public {
         uint256 id = alice.mint();
         ItemIds memory ids = stockpile.ids(BAG);
-
+        uint8[4] memory body;
         uint256[10] memory slots = [
             ids.weapon,
             ids.clothes,
@@ -75,7 +103,9 @@ contract Setters is HustlerTest {
             0
         ];
         alice.setApprovalForAll(address(hustler), true);
-        alice.setSlots(id, slots, 0x01ff); // 0000 0001 1111 1111
+        uint16 mask = 0x01ff; // 0000 0001 1111 1111
+
+        alice.setMetadata(id, '', '', body, 0x0, slots, mask);
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], ids.clothes);

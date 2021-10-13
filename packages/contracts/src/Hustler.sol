@@ -114,19 +114,35 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
         return ids;
     }
 
-    function setMetadata(uint256 id, Metadata calldata meta) public {
-        metadata[id] = meta;
-    }
-
     function setPalette(uint8 id, string[] memory palette) public onlyOwner {
         palettes[id] = palette;
     }
 
+    function setMetadata(
+        uint256 id,
+        string calldata name,
+        string calldata background,
+        uint8[4] calldata body,
+        uint8 bmask,
+        uint256[10] calldata slots,
+        uint16 smask
+    ) public onlyHolder(id) {
+        if (bytes(name).length > 0) {
+            metadata[id].name = name;
+        }
+        if (bytes(background).length > 0) {
+            metadata[id].background = background;
+        }
+
+        setBody(id, body, bmask);
+        setSlots(id, slots, smask);
+    }
+
     function setBody(
         uint256 id,
-        uint8[4] memory body,
+        uint8[4] calldata body,
         uint8 mask
-    ) public onlyHolder(id) {
+    ) internal {
         for (uint256 i = 0; i < 4; i++) {
             if (uint8(mask & (1 << i)) != 0) {
                 metadata[id].body[i] = body[i];
@@ -136,9 +152,9 @@ contract Hustler is ERC1155, ERC1155Holder, HustlerMetadata, Ownable {
 
     function setSlots(
         uint256 hustlerId,
-        uint256[10] memory slots,
+        uint256[10] calldata slots,
         uint16 mask
-    ) public onlyHolder(hustlerId) {
+    ) internal {
         for (uint256 i = 0; i < 10; i++) {
             if (uint16(mask & (1 << i)) != 0) {
                 uint256 itemId = slots[i];

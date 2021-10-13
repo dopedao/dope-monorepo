@@ -44,20 +44,16 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         stockpile.setApprovalForAll(operator, approved);
     }
 
-    function setBody(
+    function setMetadata(
         uint256 id,
-        uint8[4] memory body,
-        uint8 mask
+        string calldata name,
+        string calldata background,
+        uint8[4] calldata body,
+        uint8 bmask,
+        uint256[10] calldata slots,
+        uint16 smask
     ) public {
-        hustler.setBody(id, body, mask);
-    }
-
-    function setSlots(
-        uint256 id,
-        uint256[10] memory slots,
-        uint16 mask
-    ) public {
-        hustler.setSlots(id, slots, mask);
+        hustler.setMetadata(id, name, background, body, bmask, slots, smask);
     }
 
     function transferERC1155(
