@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { media } from '../../styles/mixins';
-import { Table, Thead, Tbody, Tr, Th, Td, Tfoot } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import CheckIcon from '../icons/Check';
 
