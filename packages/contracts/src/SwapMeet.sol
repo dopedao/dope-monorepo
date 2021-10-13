@@ -8,18 +8,18 @@ import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 import { ComponentTypes } from './Components.sol';
-import './StockpileMetadata.sol';
+import './SwapMeetMetadata.sol';
 
 library Errors {
     string constant DoesNotOwnBag = 'you do not own this bag';
     string constant AlreadyOpened = 'bag already opened';
 }
 
-/// @title Dope Gear Stockpile
+/// @title Dope Gear SwapMeet
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 Loot bags and extracting the items inside it
 /// The created tokens are ERC1155 compatible, and their on-chain SVG is their name
-contract Stockpile is ERC1155, StockpileMetadata, Ownable {
+contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
     // The DOPE bags contract
     IERC721 immutable bags;
 
@@ -30,7 +30,7 @@ contract Stockpile is ERC1155, StockpileMetadata, Ownable {
         address _components,
         address _bags,
         address _owner
-    ) StockpileMetadata(_components) ERC1155('') {
+    ) SwapMeetMetadata(_components) ERC1155('') {
         bags = IERC721(_bags);
         transferOwnership(_owner);
     }

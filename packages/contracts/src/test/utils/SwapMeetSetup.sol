@@ -5,7 +5,7 @@ import 'ds-test/test.sol';
 
 import './Hevm.sol';
 import '../../Loot.sol';
-import { Stockpile } from '../../Stockpile.sol';
+import { SwapMeet } from '../../SwapMeet.sol';
 import { Components, ComponentTypes } from '../../Components.sol';
 import { TokenId } from '../../TokenId.sol';
 
@@ -14,13 +14,13 @@ import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
 // NB: Using callbacks is hard, since we're a smart contract account we need
 // to be implementing the callbacks
-contract StockpileUser is ERC721Holder, ERC1155Holder {
+contract SwapMeetUser is ERC721Holder, ERC1155Holder {
     DopeWarsLoot loot;
-    Stockpile stockpile;
+    SwapMeet swapMeet;
 
-    constructor(DopeWarsLoot _loot, Stockpile _stockpile) {
+    constructor(DopeWarsLoot _loot, SwapMeet _swapMeet) {
         loot = _loot;
-        stockpile = _stockpile;
+        swapMeet = _swapMeet;
     }
 
     function claim(uint256 tokenId) public {
@@ -28,11 +28,11 @@ contract StockpileUser is ERC721Holder, ERC1155Holder {
     }
 
     function open(uint256 tokenId) public {
-        stockpile.open(tokenId);
+        swapMeet.open(tokenId);
     }
 
     function batchOpen(uint256[] memory ids) public {
-        stockpile.batchOpen(ids);
+        swapMeet.batchOpen(ids);
     }
 
     function transferERC1155(
@@ -40,7 +40,7 @@ contract StockpileUser is ERC721Holder, ERC1155Holder {
         uint256 tokenId,
         uint256 amount
     ) public {
-        stockpile.safeTransferFrom(address(this), to, tokenId, amount, '0x');
+        swapMeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
     }
 }
 
@@ -68,13 +68,13 @@ struct ItemNames {
     string ring;
 }
 
-contract StockpileOwner is ERC1155Holder {
+contract SwapMeetOwner is ERC1155Holder {
     Components sc;
-    Stockpile stockpile;
+    SwapMeet swapMeet;
 
-    function init(Components _components, Stockpile _stockpile) public {
+    function init(Components _components, SwapMeet _swapMeet) public {
         sc = _components;
-        stockpile = _stockpile;
+        swapMeet = _swapMeet;
 
         string[] memory palette = new string[](228);
         string[228] memory _palette = [
@@ -312,7 +312,7 @@ contract StockpileOwner is ERC1155Holder {
             palette[i] = _palette[i];
         }
 
-        stockpile.setPalette(0, palette);
+        swapMeet.setPalette(0, palette);
     }
 
     function addItemComponent(uint8 itemType, string calldata component) public returns (uint8) {
@@ -326,7 +326,7 @@ contract StockpileOwner is ERC1155Holder {
         uint256 amount,
         bytes memory data
     ) public returns (uint256) {
-        return stockpile.mint(account, components, itemType, amount, data);
+        return swapMeet.mint(account, components, itemType, amount, data);
     }
 
     function mintBatch(
@@ -336,7 +336,7 @@ contract StockpileOwner is ERC1155Holder {
         uint256[] memory amounts,
         bytes memory data
     ) public returns (uint256[] memory) {
-        return stockpile.mintBatch(to, components, itemTypes, amounts, data);
+        return swapMeet.mintBatch(to, components, itemTypes, amounts, data);
     }
 
     function setRle(
@@ -344,20 +344,20 @@ contract StockpileOwner is ERC1155Holder {
         bytes memory rle,
         bytes memory rle2
     ) public {
-        stockpile.setRle(id, rle, rle2);
+        swapMeet.setRle(id, rle, rle2);
     }
 
     function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) public {
-        stockpile.batchSetRle(ids, rles);
+        swapMeet.batchSetRle(ids, rles);
     }
 }
 
-contract StockpileTester is Stockpile {
+contract SwapMeetTester is SwapMeet {
     constructor(
         address _components,
         address _bags,
         address _owner
-    ) Stockpile(_components, _bags, _owner) {}
+    ) SwapMeet(_components, _bags, _owner) {}
 
     // View helpers for getting the item ID that corresponds to a bag's items
     function weaponId(uint256 tokenId) public view returns (uint256) {
@@ -476,7 +476,7 @@ contract StockpileTester is Stockpile {
     }
 }
 
-contract StockpileTest is DSTest {
+contract SwapMeetTest is DSTest {
     uint256 internal constant BAG = 10;
     uint256 internal constant OTHER_BAG = 100;
     uint256 internal constant BULK1_BAG = 101;
@@ -490,24 +490,24 @@ contract StockpileTest is DSTest {
     // contracts
     DopeWarsLoot internal loot;
     Components internal components;
-    StockpileTester internal stockpile;
+    SwapMeetTester internal swapMeet;
 
     // users
-    StockpileOwner internal owner;
-    StockpileUser internal alice;
+    SwapMeetOwner internal owner;
+    SwapMeetUser internal alice;
 
     function setUp() public virtual {
-        owner = new StockpileOwner();
+        owner = new SwapMeetOwner();
 
         // deploy contracts
         loot = new DopeWarsLoot();
         components = new Components(address(owner));
-        stockpile = new StockpileTester(address(components), address(loot), address(owner));
+        swapMeet = new SwapMeetTester(address(components), address(loot), address(owner));
 
-        owner.init(components, stockpile);
+        owner.init(components, swapMeet);
 
         // create alice's account & claim a bag
-        alice = new StockpileUser(loot, stockpile);
+        alice = new SwapMeetUser(loot, swapMeet);
         alice.claim(BAG);
         assertEq(loot.ownerOf(BAG), address(alice));
 

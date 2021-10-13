@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import './utils/StockpileSetup.sol';
-import { Gender } from '../Stockpile.sol';
+import './utils/SwapMeetSetup.sol';
+import { Gender } from '../SwapMeet.sol';
 
-contract Open is StockpileTest {
+contract Open is SwapMeetTest {
     bytes internal constant jordans =
         hex'003226371d0100013b0400013b0200013c013b013c0200013c013d02000137013e01370200013b0137013f01000140023f02000237023f0141023b02000141033b';
     bytes internal constant fanny = hex'002024231d020601070112031303000112031303000412';
@@ -27,9 +27,9 @@ contract Open is StockpileTest {
         _amounts[2] = 3;
 
         uint256[] memory ids = owner.mintBatch(address(owner), _components, _itemTypes, _amounts, '');
-        assertEq(stockpile.balanceOf(address(owner), ids[0]), 1);
-        assertEq(stockpile.balanceOf(address(owner), ids[1]), 2);
-        assertEq(stockpile.balanceOf(address(owner), ids[2]), 3);
+        assertEq(swapMeet.balanceOf(address(owner), ids[0]), 1);
+        assertEq(swapMeet.balanceOf(address(owner), ids[1]), 2);
+        assertEq(swapMeet.balanceOf(address(owner), ids[2]), 3);
     }
 
     function testCanOpenBag() public {
@@ -47,14 +47,14 @@ contract Open is StockpileTest {
 
     function testCanSetRle() public {
         owner.setRle(1, jordans, fanny);
-        assertEq(string(stockpile.tokenRle(1, Gender.MALE)), string(jordans));
-        assertEq(string(stockpile.tokenRle(1, Gender.FEMALE)), string(fanny));
+        assertEq(string(swapMeet.tokenRle(1, Gender.MALE)), string(jordans));
+        assertEq(string(swapMeet.tokenRle(1, Gender.FEMALE)), string(fanny));
     }
 
     function testFailSetRleNonOwner() public {
-        stockpile.setRle(1, jordans, fanny);
-        assertEq(string(stockpile.tokenRle(1, Gender.MALE)), string(jordans));
-        assertEq(string(stockpile.tokenRle(1, Gender.FEMALE)), string(fanny));
+        swapMeet.setRle(1, jordans, fanny);
+        assertEq(string(swapMeet.tokenRle(1, Gender.MALE)), string(jordans));
+        assertEq(string(swapMeet.tokenRle(1, Gender.FEMALE)), string(fanny));
     }
 
     function testCanBatchSetRle() public {
@@ -103,21 +103,21 @@ contract Open is StockpileTest {
         alice.open(FIRST_SILVER_RING_BAG);
         alice.open(SECOND_SILVER_RING_BAG);
 
-        ItemIds memory ids = stockpile.ids(FIRST_SILVER_RING_BAG);
-        assertEq(stockpile.balanceOf(address(alice), ids.ring), 2);
+        ItemIds memory ids = swapMeet.ids(FIRST_SILVER_RING_BAG);
+        assertEq(swapMeet.balanceOf(address(alice), ids.ring), 2);
     }
 
     // helper for checking ownership of erc1155 tokens after unbundling a bag
     function checkOwns1155s(uint256 tokenId, address who) private {
-        ItemIds memory ids = stockpile.ids(tokenId);
-        assertEq(stockpile.balanceOf(who, ids.weapon), 1);
-        assertEq(stockpile.balanceOf(who, ids.clothes), 1);
-        assertEq(stockpile.balanceOf(who, ids.vehicle), 1);
-        assertEq(stockpile.balanceOf(who, ids.waist), 1);
-        assertEq(stockpile.balanceOf(who, ids.foot), 1);
-        assertEq(stockpile.balanceOf(who, ids.hand), 1);
-        assertEq(stockpile.balanceOf(who, ids.drugs), 1);
-        assertEq(stockpile.balanceOf(who, ids.neck), 1);
-        assertEq(stockpile.balanceOf(who, ids.ring), 1);
+        ItemIds memory ids = swapMeet.ids(tokenId);
+        assertEq(swapMeet.balanceOf(who, ids.weapon), 1);
+        assertEq(swapMeet.balanceOf(who, ids.clothes), 1);
+        assertEq(swapMeet.balanceOf(who, ids.vehicle), 1);
+        assertEq(swapMeet.balanceOf(who, ids.waist), 1);
+        assertEq(swapMeet.balanceOf(who, ids.foot), 1);
+        assertEq(swapMeet.balanceOf(who, ids.hand), 1);
+        assertEq(swapMeet.balanceOf(who, ids.drugs), 1);
+        assertEq(swapMeet.balanceOf(who, ids.neck), 1);
+        assertEq(swapMeet.balanceOf(who, ids.ring), 1);
     }
 }

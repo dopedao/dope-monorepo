@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import './utils/StockpileSetup.sol';
+import './utils/SwapMeetSetup.sol';
 
 struct Attribute {
     string traitType;
@@ -15,7 +15,7 @@ struct Data {
     Attribute[] attributes;
 }
 
-contract Metadata is StockpileTest {
+contract Metadata is SwapMeetTest {
     bytes internal constant car =
         hex'00346d561413001fd327000d002dd31f000b0030d31e000a0032d31d00090034d31c00080036d31b00070038d31a0006003ad3190005003cd3180004003ed31700030040d3160002004fd30800020054d30300010056d3020058d3010058d3010058d3010059d359d359d359d3010058d359d359d358d3010058d30100010057d30100010056d30200010053d30500010051d3070002000cd30d000cd305000ed30c000cd3070002000bd30f000ad307000cd30e000ad30800030009d3110008d309000bd30f0008d30900040007d3130006d30b0009d3110006d30a00';
     bytes internal constant jordans =
@@ -38,7 +38,7 @@ contract Metadata is StockpileTest {
         owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, '"a big" blaster ahh');
 
-        assertEq(stockpile.balanceOf(address(owner), id), 5);
+        assertEq(swapMeet.balanceOf(address(owner), id), 5);
     }
 
     function testCreateAndMintATicklerNewWeapons() public {
@@ -52,7 +52,7 @@ contract Metadata is StockpileTest {
         owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, 'tickler');
 
-        assertEq(stockpile.balanceOf(address(owner), id), 1);
+        assertEq(swapMeet.balanceOf(address(owner), id), 1);
     }
 
     function testAK47BagNames() public {
@@ -70,7 +70,7 @@ contract Metadata is StockpileTest {
 
         // https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/5726
         uint256 id = 5726;
-        ItemNames memory names = stockpile.names(id);
+        ItemNames memory names = swapMeet.names(id);
         assertEq(names, expected);
     }
 
@@ -89,12 +89,12 @@ contract Metadata is StockpileTest {
 
         // https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/3686
         uint256 id = 3686;
-        ItemNames memory names = stockpile.names(id);
+        ItemNames memory names = swapMeet.names(id);
         assertEq(names, expected);
     }
 
     function testPlatinumRingFromAtlantaMetadata() public {
-        uint256 id = stockpile.ringId(2169);
+        uint256 id = swapMeet.ringId(2169);
         Attribute[] memory attributes = new Attribute[](3);
         attributes[0] = Attribute('Slot', 'Ring');
         attributes[1] = Attribute('Item', 'Platinum Ring');
@@ -115,7 +115,7 @@ contract Metadata is StockpileTest {
     }
 
     function testHighSupplyBloodStainedShirtFromMobTownMetadata() public {
-        uint256 id = stockpile.clothesId(3686);
+        uint256 id = swapMeet.clothesId(3686);
         Attribute[] memory attributes = new Attribute[](5);
         attributes[0] = Attribute('Slot', 'Clothes');
         attributes[1] = Attribute('Item', 'Bulletproof Vest');
@@ -127,7 +127,7 @@ contract Metadata is StockpileTest {
     }
 
     function testTriggermanFingerlessGlovesFromBuffaloPlusOneMetadata() public {
-        uint256 id = stockpile.handId(3686);
+        uint256 id = swapMeet.handId(3686);
         Attribute[] memory attributes = new Attribute[](6);
         attributes[0] = Attribute('Slot', 'Hand');
         attributes[1] = Attribute('Item', 'Fingerless Gloves');
@@ -140,7 +140,7 @@ contract Metadata is StockpileTest {
     }
 
     function testFreelancePharmacistTriggermanDodgeFromComptonMetadata() public {
-        uint256 id = stockpile.vehicleId(3686);
+        uint256 id = swapMeet.vehicleId(3686);
         Attribute[] memory attributes = new Attribute[](6);
         attributes[0] = Attribute('Slot', 'Vehicle');
         attributes[1] = Attribute('Item', 'Dodge');
@@ -164,7 +164,7 @@ contract Metadata is StockpileTest {
         uint256 baseId = TokenId.toId(components, ComponentTypes.HAND);
 
         owner.setRle(baseId, jordans, jordans);
-        assertEq(string(stockpile.tokenRle(fullId, 0)), string(jordans));
+        assertEq(string(swapMeet.tokenRle(fullId, 0)), string(jordans));
     }
 
     function assertMetadata(
@@ -172,7 +172,7 @@ contract Metadata is StockpileTest {
         Attribute[] memory attributes,
         string memory name
     ) private {
-        string memory meta = stockpile.uri(tokenId);
+        string memory meta = swapMeet.uri(tokenId);
         string[] memory inputs = new string[](3);
         inputs[0] = 'node';
         inputs[1] = 'scripts/metadata.js';

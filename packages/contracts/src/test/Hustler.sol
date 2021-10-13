@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import './utils/HustlerSetup.sol';
-import './utils/StockpileSetup.sol';
+import './utils/SwapMeetSetup.sol';
 
 contract Setters is HustlerTest {
     bytes constant bodyRle =
@@ -61,7 +61,7 @@ contract Setters is HustlerTest {
 
     function testCanSetSlotsPartial() public {
         uint256 id = alice.mint();
-        ItemIds memory ids = stockpile.ids(BAG);
+        ItemIds memory ids = swapMeet.ids(BAG);
         uint8[4] memory body;
         uint256[10] memory slots = [
             ids.weapon,
@@ -94,7 +94,7 @@ contract Setters is HustlerTest {
 
     function testCanSetSlotsFull() public {
         uint256 id = alice.mint();
-        ItemIds memory ids = stockpile.ids(BAG);
+        ItemIds memory ids = swapMeet.ids(BAG);
         uint8[4] memory body;
         uint256[10] memory slots = [
             ids.weapon,
