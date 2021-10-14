@@ -12,7 +12,7 @@ import { Gender, SwapMeetMetadata } from './SwapMeetMetadata.sol';
 import { TokenId } from './TokenId.sol';
 
 library Errors {
-    string constant DoesNotOwnBag = 'you do not own this bag';
+    string constant DoesNotOwnBagOrNotApproved = 'msg.sender doesnt own bag or is not approved';
     string constant AlreadyOpened = 'bag already opened';
 }
 
@@ -36,34 +36,49 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         transferOwnership(_owner);
     }
 
-    function open(uint256 tokenId) public {
-        open(tokenId, msg.sender);
+    function open(uint256 tokenId, bytes memory data) public {
+        open(tokenId, msg.sender, data);
     }
 
     /// @notice Opens the provided tokenId if the sender is owner. This
     /// can only be done once per DOPE token.
-    function open(uint256 tokenId, address to) public {
-        require(msg.sender == bags.ownerOf(tokenId), Errors.DoesNotOwnBag);
+    function open(
+        uint256 tokenId,
+        address to,
+        bytes memory data
+    ) public {
+        require(
+            msg.sender == bags.ownerOf(tokenId) || bags.isApprovedForAll(bags.ownerOf(tokenId), msg.sender),
+            Errors.DoesNotOwnBagOrNotApproved
+        );
         require(!opened[tokenId], Errors.AlreadyOpened);
         opened[tokenId] = true;
-        open(to, tokenId);
+        open(to, tokenId, data);
     }
 
-    function batchOpen(uint256[] calldata ids) external {
-        batchOpen(ids, msg.sender);
+    function batchOpen(uint256[] calldata ids, bytes memory data) external {
+        batchOpen(ids, msg.sender, data);
     }
 
     /// @notice Bulk opens the provided tokenIds. This
     /// can only be done once per DOPE token.
-    function batchOpen(uint256[] calldata ids, address to) public {
+    function batchOpen(
+        uint256[] calldata ids,
+        address to,
+        bytes memory data
+    ) public {
         for (uint256 i = 0; i < ids.length; i++) {
-            open(ids[i], to);
+            open(ids[i], to, data);
         }
     }
 
     /// @notice Opens your Loot bag and mints you 9 ERC-1155 tokens for each item
     /// in that bag
-    function open(address who, uint256 tokenId) private {
+    function open(
+        address who,
+        uint256 tokenId,
+        bytes memory data
+    ) private {
         // NB: We patched ERC1155 to expose `_balances` so
         // that we can manually mint to a user, and manually emit a `TransferBatch`
         // event. If that's unsafe, we can fallback to using _mint
@@ -78,13 +93,17 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         ids[6] = itemId(tokenId, ComponentTypes.DRUGS);
         ids[7] = itemId(tokenId, ComponentTypes.NECK);
         ids[8] = itemId(tokenId, ComponentTypes.RING);
+        amounts[0] = 1;
+        amounts[1] = 1;
+        amounts[2] = 1;
+        amounts[3] = 1;
+        amounts[4] = 1;
+        amounts[5] = 1;
+        amounts[6] = 1;
+        amounts[7] = 1;
+        amounts[8] = 1;
 
-        for (uint256 i = 0; i < ids.length; i++) {
-            amounts[i] = 1;
-            _balances[ids[i]][who] += 1;
-        }
-
-        emit TransferBatch(_msgSender(), address(0), who, ids, amounts);
+        _mintBatch(who, ids, amounts, data);
     }
 
     function itemId(uint256 tokenId, uint8 componentType) private view returns (uint256) {

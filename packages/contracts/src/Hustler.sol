@@ -90,6 +90,10 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         return ERC1155.supportsInterface(interfaceId) || ERC1155Receiver.supportsInterface(interfaceId);
     }
 
+    // function mintFromDope(uint tokenId, address to, bytes memory data) external returns (uint256) {
+    //     swapmeet.open(tokenId, );
+    // }
+
     function mint(address to, bytes memory data) external returns (uint256) {
         uint256 id = curId;
         curId += 1;

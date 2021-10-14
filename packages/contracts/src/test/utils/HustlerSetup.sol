@@ -33,7 +33,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 
     function open(uint256 tokenId) public {
-        swapMeet.open(tokenId);
+        swapMeet.open(tokenId, '');
     }
 
     function mint() public returns (uint256) {
