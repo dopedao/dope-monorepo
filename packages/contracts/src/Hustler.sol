@@ -67,12 +67,11 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
         // Callers should encode the equip signature to explicity
         // indicate an encoded hustler id.
-        (bytes4 sig, uint256[] memory hustlerIds) = abi.decode(data, (bytes4, uint256[]));
+        (bytes4 sig, uint256 hustlerId) = abi.decode(data, (bytes4, uint256));
         require(sig == equip, Errors.EquipSignatureInvalid);
-        require(ids.length == hustlerIds.length, Errors.NumHustlerIdMismatch);
 
         for (uint256 i = 0; i < ids.length; i++) {
-            inventories[hustlerIds[i]][ids[i]] += values[i];
+            inventories[hustlerId][ids[i]] += values[i];
         }
 
         return this.onERC1155BatchReceived.selector;
@@ -118,8 +117,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         string calldata background,
         uint8[4] calldata body,
         uint8 bmask,
-        uint256[10] calldata slots,
-        uint16 smask
+        uint8[] calldata slots,
+        uint256[] calldata items
     ) public onlyHolder(id) {
         if (bytes(name).length > 0) {
             metadata[id].name = name;
@@ -129,7 +128,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         }
 
         setBody(id, body, bmask);
-        setSlots(id, slots, smask);
+        setSlots(id, slots, items);
     }
 
     function setBody(
@@ -146,19 +145,26 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     function setSlots(
         uint256 hustlerId,
-        uint256[10] calldata slots,
-        uint16 mask
+        uint8[] calldata slots,
+        uint256[] calldata items
     ) internal {
-        for (uint256 i = 0; i < 10; i++) {
-            if (uint16(mask & (1 << i)) != 0) {
-                uint256 itemId = slots[i];
-                if (inventories[hustlerId][itemId] == 0) {
-                    swapmeet.safeTransferFrom(msg.sender, address(this), itemId, 1, abi.encode(equip, hustlerId));
-                }
-
-                metadata[hustlerId].slots[i] = slots[i];
-            }
+        if (slots.length == 0) {
+            return;
         }
+
+        require(items.length == slots.length, 'slots items length mismatch');
+        uint256[] memory ids = new uint256[](slots.length);
+        uint256[] memory amounts = new uint256[](slots.length);
+        for (uint256 i = 0; i < slots.length; i++) {
+            if (inventories[hustlerId][items[i]] == 0) {
+                ids[i] = items[i];
+                amounts[i] = 1;
+            }
+
+            metadata[hustlerId].slots[slots[i]] = items[i];
+        }
+
+        swapmeet.safeBatchTransferFrom(msg.sender, address(this), ids, amounts, abi.encode(equip, hustlerId));
     }
 
     function addBody(bytes calldata body) public onlyOwner {

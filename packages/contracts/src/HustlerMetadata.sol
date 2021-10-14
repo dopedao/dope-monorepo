@@ -79,29 +79,63 @@ contract HustlerMetadata {
         return MetadataBuilder.contractURI(_name, description);
     }
 
-    /// @notice Returns an SVG for the provided token id
-    function tokenURI(uint256 tokenId) public view returns (string memory) {
-        Metadata memory meta = metadata[tokenId];
+    /// @notice Returns an SVG for the provided hustler id
+    function tokenURI(uint256 hustlerId) public view returns (string memory) {
+        Metadata memory meta = metadata[hustlerId];
         uint8 gender = meta.body[BodyParts.GENDER];
         bytes[] memory parts = new bytes[](11);
 
         parts[0] = bodies[meta.body[BodyParts.BODY]];
         parts[1] = heads[meta.body[BodyParts.HEAD]];
         parts[2] = beards[meta.body[BodyParts.BEARD]];
-        parts[3] = swapmeet.tokenRle(meta.slots[Slots.WEAPON], gender);
-        parts[4] = swapmeet.tokenRle(meta.slots[Slots.CLOTHES], gender);
-        parts[5] = swapmeet.tokenRle(meta.slots[Slots.WAIST], gender);
-        parts[6] = swapmeet.tokenRle(meta.slots[Slots.FOOT], gender);
-        parts[7] = swapmeet.tokenRle(meta.slots[Slots.HAND], gender);
-        parts[8] = swapmeet.tokenRle(meta.slots[Slots.DRUGS], gender);
-        parts[9] = swapmeet.tokenRle(meta.slots[Slots.NECK], gender);
-        parts[10] = swapmeet.tokenRle(meta.slots[Slots.RING], gender);
+
+        uint256 weapon = meta.slots[Slots.WEAPON];
+        uint256 clothes = meta.slots[Slots.CLOTHES];
+        uint256 waist = meta.slots[Slots.WAIST];
+        uint256 foot = meta.slots[Slots.FOOT];
+        uint256 hand = meta.slots[Slots.HAND];
+        uint256 drugs = meta.slots[Slots.DRUGS];
+        uint256 neck = meta.slots[Slots.NECK];
+        uint256 ring = meta.slots[Slots.RING];
+
+        if (inventories[hustlerId][weapon] > 0) {
+            parts[3] = swapmeet.tokenRle(weapon, gender);
+        }
+
+        if (inventories[hustlerId][clothes] > 0) {
+            parts[4] = swapmeet.tokenRle(clothes, gender);
+        }
+
+        if (inventories[hustlerId][waist] > 0) {
+            parts[5] = swapmeet.tokenRle(waist, gender);
+        }
+
+        if (inventories[hustlerId][foot] > 0) {
+            parts[6] = swapmeet.tokenRle(foot, gender);
+        }
+
+        if (inventories[hustlerId][hand] > 0) {
+            parts[7] = swapmeet.tokenRle(hand, gender);
+        }
+
+        if (inventories[hustlerId][drugs] > 0) {
+            parts[8] = swapmeet.tokenRle(drugs, gender);
+        }
+
+        if (inventories[hustlerId][neck] > 0) {
+            parts[9] = swapmeet.tokenRle(neck, gender);
+        }
+
+        if (inventories[hustlerId][ring] > 0) {
+            parts[10] = swapmeet.tokenRle(ring, gender);
+        }
 
         MetadataBuilder.SVGParams memory p;
         p.name = meta.name;
         p.resolution = 64;
-        p.color = '202221';
+        p.color = meta.background;
         p.parts = parts;
+        p.attributes = attributes(hustlerId);
         return MetadataBuilder.tokenURI(p, palettes);
     }
 

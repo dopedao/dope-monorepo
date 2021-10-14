@@ -36,20 +36,28 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         transferOwnership(_owner);
     }
 
+    function open(uint256 tokenId) public {
+        open(tokenId, msg.sender);
+    }
+
     /// @notice Opens the provided tokenId if the sender is owner. This
     /// can only be done once per DOPE token.
-    function open(uint256 tokenId) public {
+    function open(uint256 tokenId, address to) public {
         require(msg.sender == bags.ownerOf(tokenId), Errors.DoesNotOwnBag);
         require(!opened[tokenId], Errors.AlreadyOpened);
         opened[tokenId] = true;
-        open(msg.sender, tokenId);
+        open(to, tokenId);
+    }
+
+    function batchOpen(uint256[] calldata ids) external {
+        batchOpen(ids, msg.sender);
     }
 
     /// @notice Bulk opens the provided tokenIds. This
     /// can only be done once per DOPE token.
-    function batchOpen(uint256[] calldata ids) external {
+    function batchOpen(uint256[] calldata ids, address to) public {
         for (uint256 i = 0; i < ids.length; i++) {
-            open(ids[i]);
+            open(ids[i], to);
         }
     }
 

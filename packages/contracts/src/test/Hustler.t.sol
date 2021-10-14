@@ -14,9 +14,10 @@ contract Setters is HustlerTest {
     function testCanSetName() public {
         uint256 id = alice.mint();
         uint8[4] memory body;
-        uint256[10] memory slots;
+        uint8[] memory slots = new uint8[](0);
+        uint256[] memory items = new uint256[](0);
 
-        alice.setMetadata(id, 'hustler name', '', body, 0x0, slots, 0x0);
+        alice.setMetadata(id, 'hustler name', '', body, 0x0, slots, items);
 
         assertEq(hustler.getMetadata(id).name, 'hustler name');
     }
@@ -24,9 +25,10 @@ contract Setters is HustlerTest {
     function testCanSetBackground() public {
         uint256 id = alice.mint();
         uint8[4] memory body;
-        uint256[10] memory slots;
+        uint8[] memory slots = new uint8[](0);
+        uint256[] memory items = new uint256[](0);
 
-        alice.setMetadata(id, '', '123456', body, 0x0, slots, 0x0);
+        alice.setMetadata(id, '', '123456', body, 0x0, slots, items);
 
         assertEq(hustler.getMetadata(id).background, '123456');
     }
@@ -34,10 +36,11 @@ contract Setters is HustlerTest {
     function testCanSetBodyPartial() public {
         uint256 id = alice.mint();
         uint8[4] memory body = [1, 0, 12, 0];
-        uint256[10] memory slots;
         uint8 mask = 0x05; // 0000 0101
+        uint8[] memory slots = new uint8[](0);
+        uint256[] memory items = new uint256[](0);
 
-        alice.setMetadata(id, '', '', body, mask, slots, 0x0);
+        alice.setMetadata(id, '', '', body, mask, slots, items);
 
         assertEq(hustler.getMetadata(id).body[0], 1);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -48,10 +51,11 @@ contract Setters is HustlerTest {
     function testCanSetBodyFull() public {
         uint256 id = alice.mint();
         uint8[4] memory body = [2, 3, 4, 5];
-        uint256[10] memory slots;
+        uint8[] memory slots = new uint8[](0);
+        uint256[] memory items = new uint256[](0);
         uint8 mask = 0x0f; // 0000 1111
 
-        alice.setMetadata(id, '', '', body, mask, slots, 0x0);
+        alice.setMetadata(id, '', '', body, mask, slots, items);
 
         assertEq(hustler.getMetadata(id).body[0], 2);
         assertEq(hustler.getMetadata(id).body[1], 3);
@@ -63,22 +67,16 @@ contract Setters is HustlerTest {
         uint256 id = alice.mint();
         ItemIds memory ids = swapMeet.ids(BAG);
         uint8[4] memory body;
-        uint256[10] memory slots = [
-            ids.weapon,
-            ids.clothes,
-            ids.vehicle,
-            ids.waist,
-            ids.foot,
-            ids.hand,
-            ids.drugs,
-            ids.neck,
-            ids.ring,
-            0
-        ];
-        alice.setApprovalForAll(address(hustler), true);
-        uint16 mask = 0x0005; // 0000 0000 0000 0101
+        uint8[] memory slots = new uint8[](2);
+        slots[0] = 0;
+        slots[1] = 2;
+        uint256[] memory items = new uint256[](2);
+        items[0] = ids.weapon;
+        items[1] = ids.vehicle;
 
-        alice.setMetadata(id, '', '', body, 0x0, slots, mask);
+        alice.setApprovalForAll(address(hustler), true);
+
+        alice.setMetadata(id, '', '', body, 0x0, slots, items);
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], 0);
@@ -96,22 +94,31 @@ contract Setters is HustlerTest {
         uint256 id = alice.mint();
         ItemIds memory ids = swapMeet.ids(BAG);
         uint8[4] memory body;
-        uint256[10] memory slots = [
-            ids.weapon,
-            ids.clothes,
-            ids.vehicle,
-            ids.waist,
-            ids.foot,
-            ids.hand,
-            ids.drugs,
-            ids.neck,
-            ids.ring,
-            0
-        ];
-        alice.setApprovalForAll(address(hustler), true);
-        uint16 mask = 0x01ff; // 0000 0001 1111 1111
 
-        alice.setMetadata(id, '', '', body, 0x0, slots, mask);
+        uint8[] memory slots = new uint8[](9);
+        slots[0] = 0;
+        slots[1] = 1;
+        slots[2] = 2;
+        slots[3] = 3;
+        slots[4] = 4;
+        slots[5] = 5;
+        slots[6] = 6;
+        slots[7] = 7;
+        slots[8] = 8;
+
+        uint256[] memory items = new uint256[](9);
+        items[0] = ids.weapon;
+        items[1] = ids.clothes;
+        items[2] = ids.vehicle;
+        items[3] = ids.waist;
+        items[4] = ids.foot;
+        items[5] = ids.hand;
+        items[6] = ids.drugs;
+        items[7] = ids.neck;
+        items[8] = ids.ring;
+
+        alice.setApprovalForAll(address(hustler), true);
+        alice.setMetadata(id, '', '', body, 0x0, slots, items);
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], ids.clothes);
@@ -175,23 +182,32 @@ contract Setters is HustlerTest {
         uint256 id = alice.mint();
         ItemIds memory ids = swapMeet.ids(BAG);
         uint8[4] memory body = [0, 0, 0, 0];
-        uint256[10] memory slots = [
-            ids.weapon,
-            ids.clothes,
-            ids.vehicle,
-            ids.waist,
-            ids.foot,
-            ids.hand,
-            ids.drugs,
-            ids.neck,
-            ids.ring,
-            0
-        ];
+        uint8[] memory slots = new uint8[](9);
+        slots[0] = 0;
+        slots[1] = 1;
+        slots[2] = 2;
+        slots[3] = 3;
+        slots[4] = 4;
+        slots[5] = 5;
+        slots[6] = 6;
+        slots[7] = 7;
+        slots[8] = 8;
+
+        uint256[] memory items = new uint256[](9);
+        items[0] = ids.weapon;
+        items[1] = ids.clothes;
+        items[2] = ids.vehicle;
+        items[3] = ids.waist;
+        items[4] = ids.foot;
+        items[5] = ids.hand;
+        items[6] = ids.drugs;
+        items[7] = ids.neck;
+        items[8] = ids.ring;
+
         alice.setApprovalForAll(address(hustler), true);
         uint8 bmask = 0x0f; // 0000 1111
-        uint16 smask = 0x01ff; // 0000 0001 1111 1111
 
-        alice.setMetadata(id, '', '', body, bmask, slots, smask);
+        alice.setMetadata(id, '', '', body, bmask, slots, items);
 
         hustler.tokenURI(id);
     }
