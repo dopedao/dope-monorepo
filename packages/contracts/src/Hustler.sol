@@ -9,6 +9,7 @@ import { ERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/utils/ERC
 
 import { ComponentTypes } from './Components.sol';
 import { HustlerMetadata } from './HustlerMetadata.sol';
+import { TokenId } from './TokenId.sol';
 
 library Errors {
     string constant IsNotSwapMeet = 'msg.sender is not the swap meet contract';
@@ -25,6 +26,12 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     // First 500 are reserved for OG Hustlers.
     uint256 internal curId = 500;
+
+    struct Attributes {
+        string name;
+        string color;
+        string background;
+    }
 
     // No need for a URI since we're doing everything onchain
     constructor(address _owner, address _swapmeet) ERC1155('') HustlerMetadata(_swapmeet) {
@@ -52,12 +59,13 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         require(sig == equip, Errors.EquipSignatureInvalid);
 
         inventories[hustlerId][id] += value;
+
         return this.onERC1155Received.selector;
     }
 
     function onERC1155BatchReceived(
-        address,
-        address,
+        address operator,
+        address from,
         uint256[] calldata ids,
         uint256[] calldata values,
         bytes calldata data
@@ -70,8 +78,18 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         (bytes4 sig, uint256 hustlerId) = abi.decode(data, (bytes4, uint256));
         require(sig == equip, Errors.EquipSignatureInvalid);
 
-        for (uint256 i = 0; i < ids.length; i++) {
-            inventories[hustlerId][ids[i]] += values[i];
+        // If this transfer is initiated from the hustler contract
+        // and it a new mint, then it is a mint from dope call.
+        if (operator == address(this) && from == address(0)) {
+            for (uint256 i = 0; i < ids.length; i++) {
+                uint8 slot = TokenId.decode(ids[i], 0);
+                metadata[hustlerId].slots[slot] = ids[i];
+                inventories[hustlerId][ids[i]] += values[i];
+            }
+        } else {
+            for (uint256 i = 0; i < ids.length; i++) {
+                inventories[hustlerId][ids[i]] += values[i];
+            }
         }
 
         return this.onERC1155BatchReceived.selector;
@@ -90,14 +108,25 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         return ERC1155.supportsInterface(interfaceId) || ERC1155Receiver.supportsInterface(interfaceId);
     }
 
-    // function mintFromDope(uint tokenId, address to, bytes memory data) external returns (uint256) {
-    //     swapmeet.open(tokenId, );
-    // }
+    function mintFromDope(
+        uint256 tokenId,
+        string calldata name,
+        string calldata background,
+        string calldata color,
+        bytes memory data
+    ) external returns (uint256) {
+        uint256 hustlerId = mint(data);
+        metadata[hustlerId].name = name;
+        metadata[hustlerId].background = background;
+        metadata[hustlerId].color = color;
+        swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
+        return hustlerId;
+    }
 
-    function mint(address to, bytes memory data) external returns (uint256) {
+    function mint(bytes memory data) public returns (uint256) {
         uint256 id = curId;
         curId += 1;
-        _mint(to, id, 1, data);
+        _mint(msg.sender, id, 1, data);
         return id;
     }
 
@@ -117,22 +146,27 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     function setMetadata(
         uint256 id,
-        string calldata name,
-        string calldata background,
+        Attributes calldata attributes,
         uint8[4] calldata body,
         uint8 bmask,
         uint8[] calldata slots,
         uint256[] calldata items
     ) public onlyHolder(id) {
-        if (bytes(name).length > 0) {
-            metadata[id].name = name;
-        }
-        if (bytes(background).length > 0) {
-            metadata[id].background = background;
-        }
-
+        setAttributes(id, attributes);
         setBody(id, body, bmask);
         setSlots(id, slots, items);
+    }
+
+    function setAttributes(uint256 id, Attributes calldata attributes) internal {
+        if (bytes(attributes.name).length > 0) {
+            metadata[id].name = attributes.name;
+        }
+        if (bytes(attributes.color).length > 0) {
+            metadata[id].color = attributes.color;
+        }
+        if (bytes(attributes.background).length > 0) {
+            metadata[id].background = attributes.background;
+        }
     }
 
     function setBody(

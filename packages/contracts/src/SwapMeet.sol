@@ -53,7 +53,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         );
         require(!opened[tokenId], Errors.AlreadyOpened);
         opened[tokenId] = true;
-        open(to, tokenId, data);
+        _open(to, tokenId, data);
     }
 
     function batchOpen(uint256[] calldata ids, bytes memory data) external {
@@ -74,8 +74,8 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
 
     /// @notice Opens your Loot bag and mints you 9 ERC-1155 tokens for each item
     /// in that bag
-    function open(
-        address who,
+    function _open(
+        address to,
         uint256 tokenId,
         bytes memory data
     ) private {
@@ -103,7 +103,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         amounts[7] = 1;
         amounts[8] = 1;
 
-        _mintBatch(who, ids, amounts, data);
+        _mintBatch(to, ids, amounts, data);
     }
 
     function itemId(uint256 tokenId, uint8 componentType) private view returns (uint256) {

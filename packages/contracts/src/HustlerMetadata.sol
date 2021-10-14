@@ -33,6 +33,7 @@ library Slots {
 contract HustlerMetadata {
     struct Metadata {
         string name;
+        string color;
         string background;
         uint8[4] body;
         uint256[10] slots;
@@ -147,6 +148,7 @@ contract HustlerMetadata {
         p.description = description;
         p.attributes = attributes(id);
         p.background = meta.background;
+        p.color = meta.color;
 
         return p;
     }

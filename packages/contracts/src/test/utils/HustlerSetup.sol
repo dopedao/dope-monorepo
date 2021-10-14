@@ -37,23 +37,35 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 
     function mint() public returns (uint256) {
-        return hustler.mint(address(this), '');
+        return hustler.mint('');
+    }
+
+    function mintFromDope(
+        uint256 tokenId,
+        string calldata name,
+        string calldata background,
+        string calldata color
+    ) public returns (uint256) {
+        return hustler.mintFromDope(tokenId, name, background, color, '');
     }
 
     function setApprovalForAll(address operator, bool approved) public {
         swapMeet.setApprovalForAll(operator, approved);
     }
 
+    function setDopeApprovalForAll(address operator, bool approved) public {
+        loot.setApprovalForAll(operator, approved);
+    }
+
     function setMetadata(
         uint256 id,
-        string calldata name,
-        string calldata background,
+        Hustler.Attributes memory attributes,
         uint8[4] calldata body,
         uint8 bmask,
         uint8[] calldata slots,
         uint256[] calldata items
     ) public {
-        hustler.setMetadata(id, name, background, body, bmask, slots, items);
+        hustler.setMetadata(id, attributes, body, bmask, slots, items);
     }
 
     function transferERC1155(
@@ -390,5 +402,7 @@ contract HustlerTest is DSTest {
         alice.claim(BAG);
         alice.open(BAG);
         assertEq(loot.ownerOf(BAG), address(alice));
+
+        alice.claim(OTHER_BAG);
     }
 }
