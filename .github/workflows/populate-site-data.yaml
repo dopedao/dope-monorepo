@@ -1,7 +1,7 @@
 name: populate-site-data
 on:
   schedule:
-    - cron: '*/7 * * * *'
+    - cron: '*/15 * * * *'
 jobs:
   refresh:
     runs-on: ubuntu-latest
