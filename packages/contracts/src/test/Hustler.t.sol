@@ -16,8 +16,8 @@ contract Setters is HustlerTest {
         alice.setDopeApprovalForAll(address(hustler), true);
 
         string memory name = 'gangsta';
-        string memory background = '000000';
-        string memory color = 'fafafa';
+        bytes4 background = hex'000000';
+        bytes4 color = hex'fafafa';
 
         uint256 hustlerId = alice.mintFromDope(OTHER_BAG, name, background, color);
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
@@ -33,8 +33,8 @@ contract Setters is HustlerTest {
         alice.setDopeApprovalForAll(address(hustler), true);
 
         string memory name = 'gangsta';
-        string memory background = '000000';
-        string memory color = 'fafafa';
+        bytes4 background = hex'000000';
+        bytes4 color = hex'fafafa';
 
         uint256 hustlerId = alice.mintFromDope(OTHER_BAG, name, background, color);
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
@@ -63,21 +63,21 @@ contract Setters is HustlerTest {
     function testCanSetBackground() public {
         uint256 id = alice.mint();
         uint8[4] memory body;
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '123456', color: '' });
+        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: hex'123456', color: '' });
 
         alice.setMetadata(id, attributes, body, 0x0);
 
-        assertEq(hustler.getMetadata(id).background, '123456');
+        assertEq(hustler.getMetadata(id).background, hex'123456');
     }
 
     function testCanSetColor() public {
         uint256 id = alice.mint();
         uint8[4] memory body;
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '123456' });
+        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: hex'123456' });
 
         alice.setMetadata(id, attributes, body, 0x0);
 
-        assertEq(hustler.getMetadata(id).color, '123456');
+        assertEq(hustler.getMetadata(id).color, hex'123456');
     }
 
     function testCanSetBodyPartial() public {

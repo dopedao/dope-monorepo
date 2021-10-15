@@ -26,10 +26,10 @@ contract SwapMeetMetadata {
     bytes private constant drugShadow = hex'00362f3729061c';
 
     // green, blue, red, yellow
-    string[4] private backgrounds = ['b6ccc3', '97adcc', 'f2c4c5', 'f1d8ab'];
+    bytes4[4] private backgrounds = [bytes3(hex'b6ccc3'), hex'97adcc', hex'f2c4c5', hex'f1d8ab'];
 
     // Color Palettes (Index => Hex Colors)
-    mapping(uint8 => string[]) internal palettes;
+    mapping(uint8 => bytes4[]) internal palettes;
 
     // Item RLE (TokenID => RLE)
     mapping(uint256 => bytes[2]) internal rles;
@@ -163,7 +163,7 @@ contract SwapMeetMetadata {
 
         p = params(components, componentType);
         p.resolution = 64;
-        p.color = '202221';
+        p.color = hex'202221';
         p.parts = parts;
         return p;
     }
@@ -216,7 +216,7 @@ contract SwapMeetMetadata {
         parts[0] = tokenRle(tokenId, 0);
         p = params(components, componentType);
         p.resolution = 160;
-        p.color = '202221';
+        p.color = hex'202221';
         p.parts = parts;
         return p;
     }

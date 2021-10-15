@@ -17,12 +17,12 @@ library BodyParts {
 /// @author Tarrence van As
 contract HustlerMetadata {
     struct Metadata {
-        string name;
-        string color;
-        string background;
-        uint8[4] body;
+        bytes4 color;
+        bytes4 background;
         bytes2 mask;
+        uint8[4] body;
         uint256[10] slots;
+        string name;
     }
 
     string private constant _name = 'Hustlers';
@@ -34,7 +34,7 @@ contract HustlerMetadata {
     string[2] genders = ['Male', 'Female'];
 
     // Color Palettes (Index => Hex Colors)
-    mapping(uint8 => string[]) internal palettes;
+    mapping(uint8 => bytes4[]) internal palettes;
 
     // Bodies (Body number => RLE)
     bytes[] internal bodies;

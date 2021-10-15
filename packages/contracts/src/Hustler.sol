@@ -30,8 +30,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     struct Attributes {
         string name;
-        string color;
-        string background;
+        bytes4 color;
+        bytes4 background;
     }
 
     // No need for a URI since we're doing everything onchain
@@ -148,8 +148,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     function mintFromDope(
         uint256 tokenId,
         string calldata name,
-        string calldata background,
-        string calldata color,
+        bytes4 background,
+        bytes4 color,
         bytes memory data
     ) external returns (uint256) {
         uint256 hustlerId = mint(data);
@@ -177,7 +177,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         return ids;
     }
 
-    function setPalette(uint8 id, string[] memory palette) public onlyOwner {
+    function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {
         palettes[id] = palette;
     }
 
@@ -210,10 +210,10 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         if (bytes(attributes.name).length > 0) {
             metadata[id].name = attributes.name;
         }
-        if (bytes(attributes.color).length > 0) {
+        if (attributes.color.length > 0) {
             metadata[id].color = attributes.color;
         }
-        if (bytes(attributes.background).length > 0) {
+        if (attributes.background.length > 0) {
             metadata[id].background = attributes.background;
         }
     }
