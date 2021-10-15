@@ -16,19 +16,17 @@ library Gender {
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
 contract SwapMeetMetadata {
-    string private constant _name = 'Dope Swap Meet';
-    string private constant description =
-        'Get fitted with the freshest drip, strapped with the latest gat, rolling in the hottest ride, and re-up your supply at the Dope Swap Meet.';
-
-    bytes internal constant female =
+    string private constant _name = 'Swap Meet';
+    string private constant description = 'Get fitted.';
+    bytes private constant female =
         hex'000a26361a050004d00300040006d00200040007d00100020009d00100020008d00200020002d0010005d00200030001d0010005d00200060003d00300060002d00400060002d00400040006d00200030008d0010002000ad002000ad0010002d0010008d0010001d0020006d0010001d0010001d0030005d0010001d0010001d0030004d0020001d0010001d0030004d0020001d0010001d0030004d0020001d0010001d0030004d0020001d0010001d0020006d0010001d002d0010009d002d0010007d0010001d001d0020008d00100040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040002d0020002d00200040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040001d0030001d00300040002d0020003d00100';
-    bytes internal constant male =
+    bytes private constant male =
         hex'0009273619070003d00400060005d00300060005d00300060005d00300060005d00300070004d00300070003d00400070002d00500040007d0030002000bd0010001000dd001000dd001000dd00ed00ed002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd002d001000bd00cd0010001d002d0010003d0030004d00100030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030003d0030003d00200030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040002d00300030002d0040003d00200030003d0030004d00100';
-    bytes internal constant shadow = hex'0036283818021c01000d1c0500091c0200';
-    bytes internal constant drugShadow = hex'00362f3729061c';
+    bytes private constant shadow = hex'0036283818021c01000d1c0500091c0200';
+    bytes private constant drugShadow = hex'00362f3729061c';
 
     // green, blue, red, yellow
-    string[4] internal backgrounds = ['b6ccc3', '97adcc', 'f2c4c5', 'f1d8ab'];
+    string[4] private backgrounds = ['b6ccc3', '97adcc', 'f2c4c5', 'f1d8ab'];
 
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => string[]) internal palettes;
@@ -67,13 +65,13 @@ contract SwapMeetMetadata {
     }
 
     function params(uint8[5] memory components, uint8 componentType)
-        internal
+        private
         view
-        returns (MetadataBuilder.SVGParams memory)
+        returns (MetadataBuilder.SVGParams memory meta)
     {
         uint8 bg = 0;
         string memory name_ = sc.name(componentType, components[0]);
-        MetadataBuilder.SVGParams memory meta;
+
         meta.name = name_;
         meta.description = description;
         meta.attributes = sc.attributes(components, componentType);
@@ -148,7 +146,7 @@ contract SwapMeetMetadata {
         uint256 tokenId,
         uint8[5] memory components,
         uint8 componentType
-    ) internal view returns (MetadataBuilder.SVGParams memory) {
+    ) internal view returns (MetadataBuilder.SVGParams memory p) {
         bytes[] memory parts = new bytes[](8);
 
         bytes[4] memory male_ = genderParts(male, tokenId, Gender.MALE, componentType);
@@ -163,7 +161,7 @@ contract SwapMeetMetadata {
         parts[6] = female_[2];
         parts[7] = female_[3];
 
-        MetadataBuilder.SVGParams memory p = params(components, componentType);
+        p = params(components, componentType);
         p.resolution = 64;
         p.color = '202221';
         p.parts = parts;
@@ -213,10 +211,10 @@ contract SwapMeetMetadata {
         uint256 tokenId,
         uint8[5] memory components,
         uint8 componentType
-    ) internal view returns (MetadataBuilder.SVGParams memory) {
+    ) internal view returns (MetadataBuilder.SVGParams memory p) {
         bytes[] memory parts = new bytes[](1);
         parts[0] = tokenRle(tokenId, 0);
-        MetadataBuilder.SVGParams memory p = params(components, componentType);
+        p = params(components, componentType);
         p.resolution = 160;
         p.color = '202221';
         p.parts = parts;

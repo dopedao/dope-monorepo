@@ -12,11 +12,11 @@ import { ComponentTypes } from './Components.sol';
 import { HustlerMetadata } from './HustlerMetadata.sol';
 
 library Errors {
-    string constant IsNotSwapMeet = 'msg.sender is not the swap meet contract';
-    string constant IsHolder = 'msg.sender is not hustler holder';
-    string constant EquipSignatureInvalid = 'equip signature invalid';
-    string constant NumHustlerIdMismatch = 'num hustler ids does not match num token ids';
-    string constant HustlerDoesntOwnItem = 'hustlder doesnt own item';
+    string constant IsNotSwapMeet = 'sender not swap meet';
+    string constant IsHolder = 'sender not hustler holder';
+    string constant EquipSignatureInvalid = 'equip sig invalid';
+    string constant HustlerDoesntOwnItem = 'hustler doesnt own item';
+    string constant ValueNotOne = 'value not one';
 }
 
 /// @title Hustlers
@@ -58,9 +58,16 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         // indicate an encoded hustler id.
         (bytes4 sig, uint256 hustlerId) = abi.decode(data, (bytes4, uint256));
         require(sig == equip, Errors.EquipSignatureInvalid);
-        require(balanceOf(from, hustlerId) == 1, 'not hustler owner');
+        require(balanceOf(from, hustlerId) == 1, Errors.IsHolder);
+        require(value == 1, Errors.ValueNotOne);
 
         uint8 slot = slot(id);
+
+        // Return the existing item if one is set.
+        if (BitMask.get(metadata[hustlerId].mask, slot)) {
+            swapmeet.safeTransferFrom(address(this), from, metadata[hustlerId].slots[slot], 1, '');
+        }
+
         metadata[hustlerId].mask = BitMask.set(metadata[hustlerId].mask, slot);
         metadata[hustlerId].slots[slot] = id;
 
@@ -81,27 +88,37 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         // indicate an encoded hustler id.
         (bytes4 sig, uint256 hustlerId) = abi.decode(data, (bytes4, uint256));
         require(sig == equip, Errors.EquipSignatureInvalid);
+        require(operator == address(this) || balanceOf(from, hustlerId) == 1, Errors.IsHolder);
 
-        // If this transfer is initiated from the hustler contract
-        // and it a new mint, then it is a mint from dope call.
-        require(operator == address(this) || balanceOf(from, hustlerId) == 1, 'bla');
+        (uint256[] memory unequipIds, uint256[] memory unequipValues) = batchEquip(hustlerId, ids, values);
 
-        Metadata memory meta = metadata[hustlerId];
+        if (unequipIds.length > 0) {
+            swapmeet.safeBatchTransferFrom(address(this), from, unequipIds, unequipValues, '');
+        }
+
+        return this.onERC1155BatchReceived.selector;
+    }
+
+    function batchEquip(
+        uint256 hustlerId,
+        uint256[] calldata ids,
+        uint256[] calldata values
+    ) internal returns (uint256[] memory, uint256[] memory) {
         uint256[] memory unequipIds = new uint256[](ids.length);
         uint256[] memory unequipValues = new uint256[](ids.length);
 
         uint256 j = 0;
         for (uint8 i = 0; i < ids.length; i++) {
-            require(values[i] == 1, 'more than one');
+            require(values[i] == 1, Errors.ValueNotOne);
             uint8 slot = slot(ids[i]);
 
-            if (BitMask.get(meta.mask, slot)) {
-                unequipIds[j] = ids[j];
-                unequipValues[j] = values[i];
+            if (BitMask.get(metadata[hustlerId].mask, slot)) {
+                unequipIds[j] = metadata[hustlerId].slots[slot];
+                unequipValues[j] = 1;
                 j++;
             }
 
-            metadata[hustlerId].mask = BitMask.set(meta.mask, slot);
+            metadata[hustlerId].mask = BitMask.set(metadata[hustlerId].mask, slot);
             metadata[hustlerId].slots[slot] = ids[i];
         }
 
@@ -112,11 +129,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
             mstore(unequipValues, sub(mload(unequipValues), diff))
         }
 
-        if (unequipIds.length > 0) {
-            swapmeet.safeBatchTransferFrom(address(this), msg.sender, unequipIds, unequipValues, '');
-        }
-
-        return this.onERC1155BatchReceived.selector;
+        return (unequipIds, unequipValues);
     }
 
     /**

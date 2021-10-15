@@ -12,8 +12,8 @@ import { Gender, SwapMeetMetadata } from './SwapMeetMetadata.sol';
 import { TokenId } from './TokenId.sol';
 
 library Errors {
-    string constant DoesNotOwnBagOrNotApproved = 'msg.sender doesnt own bag or is not approved';
-    string constant AlreadyOpened = 'bag already opened';
+    string constant DoesNotOwnBagOrNotApproved = 'not sender bag or not approved';
+    string constant AlreadyOpened = 'already opened';
 }
 
 /// @title Dope Gear SwapMeet
@@ -36,10 +36,6 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         transferOwnership(_owner);
     }
 
-    function open(uint256 tokenId, bytes memory data) public {
-        open(tokenId, msg.sender, data);
-    }
-
     /// @notice Opens the provided tokenId if the sender is owner. This
     /// can only be done once per DOPE token.
     function open(
@@ -54,10 +50,6 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         require(!opened[tokenId], Errors.AlreadyOpened);
         opened[tokenId] = true;
         _open(to, tokenId, data);
-    }
-
-    function batchOpen(uint256[] calldata ids, bytes memory data) external {
-        batchOpen(ids, msg.sender, data);
     }
 
     /// @notice Bulk opens the provided tokenIds. This
@@ -79,9 +71,6 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         uint256 tokenId,
         bytes memory data
     ) private {
-        // NB: We patched ERC1155 to expose `_balances` so
-        // that we can manually mint to a user, and manually emit a `TransferBatch`
-        // event. If that's unsafe, we can fallback to using _mint
         uint256[] memory ids = new uint256[](9);
         uint256[] memory amounts = new uint256[](9);
         ids[0] = itemId(tokenId, ComponentTypes.WEAPON);
@@ -156,7 +145,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
     //     _burn(msg.sender, id, amount);
     // }
 
-    function setPalette(uint8 id, string[] memory palette) public onlyOwner {
+    function setPalette(uint8 id, string[] memory palette) external onlyOwner {
         palettes[id] = palette;
     }
 
@@ -169,7 +158,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         rles[id][Gender.FEMALE] = female;
     }
 
-    function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) public onlyOwner {
+    function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) external onlyOwner {
         require(ids.length == rles.length / 2, 'ids rles mismatch');
 
         for (uint256 i = 0; i < rles.length; i += 2) {

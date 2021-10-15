@@ -33,7 +33,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 
     function open(uint256 tokenId) public {
-        swapmeet.open(tokenId, '');
+        swapmeet.open(tokenId, address(this), '');
     }
 
     function mint() public returns (uint256) {
@@ -53,6 +53,16 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         swapmeet.setApprovalForAll(operator, approved);
     }
 
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public {
+        swapmeet.safeTransferFrom(from, to, id, amount, data);
+    }
+
     function safeBatchTransferFrom(
         address from,
         address to,
@@ -61,6 +71,16 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         bytes memory data
     ) public {
         swapmeet.safeBatchTransferFrom(from, to, ids, amounts, data);
+    }
+
+    function safeTransferHustlerFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public {
+        hustler.safeTransferFrom(from, to, id, amount, data);
     }
 
     function setDopeApprovalForAll(address operator, bool approved) public {
@@ -370,6 +390,8 @@ contract HustlerTester is Hustler {
 contract HustlerTest is DSTest {
     uint256 internal constant BAG = 10;
     uint256 internal constant OTHER_BAG = 100;
+    uint256 internal constant UZI_BAG_1 = 4333;
+    uint256 internal constant UZI_BAG_2 = 6396;
     Hevm internal constant hevm = Hevm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
     // contracts
@@ -381,6 +403,7 @@ contract HustlerTest is DSTest {
     // users
     HustlerOwner internal owner;
     HustlerUser internal alice;
+    HustlerUser internal bob;
 
     function setUp() public virtual {
         owner = new HustlerOwner();
@@ -400,5 +423,7 @@ contract HustlerTest is DSTest {
         assertEq(loot.ownerOf(BAG), address(alice));
 
         alice.claim(OTHER_BAG);
+
+        bob = new HustlerUser(loot, swapmeet, hustler);
     }
 }

@@ -28,11 +28,11 @@ contract SwapMeetUser is ERC721Holder, ERC1155Holder {
     }
 
     function open(uint256 tokenId) public {
-        swapMeet.open(tokenId, '');
+        swapMeet.open(tokenId, address(this), '');
     }
 
     function batchOpen(uint256[] memory ids) public {
-        swapMeet.batchOpen(ids, '');
+        swapMeet.batchOpen(ids, address(this), '');
     }
 
     function transferERC1155(

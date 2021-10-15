@@ -13,10 +13,8 @@ library BodyParts {
     uint8 internal constant BEARD = 0x3;
 }
 
-/// @title Helper contract for generating ERC-1155 token ids and descriptions for
-/// the individual items inside a Loot bag.
-/// @author Tarrence van As, forked from Georgios Konstantopoulos
-/// @dev Inherit from this contract and use it to generate metadata for your tokens
+/// @title Hustler Metadata logic
+/// @author Tarrence van As
 contract HustlerMetadata {
     struct Metadata {
         string name;
@@ -105,7 +103,6 @@ contract HustlerMetadata {
     }
 
     function attributes(uint256 hustlerId) public view returns (string[] memory, string[] memory) {
-        Metadata memory meta = metadata[hustlerId];
         string memory none = 'None';
         string[] memory keys = new string[](10);
         string[] memory values = new string[](10);
@@ -121,11 +118,11 @@ contract HustlerMetadata {
         keys[8] = 'Ring';
         keys[9] = 'Gender';
 
-        values[0] = genders[meta.body[BodyParts.GENDER]];
+        values[0] = genders[metadata[hustlerId].body[BodyParts.GENDER]];
 
         for (uint8 i = 0; i < 9; i++) {
-            if (BitMask.get(meta.mask, i)) {
-                values[i] = swapmeet.fullname(meta.slots[i]);
+            if (BitMask.get(metadata[hustlerId].mask, i)) {
+                values[i] = swapmeet.fullname(metadata[hustlerId].slots[i]);
             } else {
                 values[1] = none;
             }
