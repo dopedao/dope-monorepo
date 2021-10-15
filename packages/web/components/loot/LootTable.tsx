@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { media } from '../../styles/mixins';
-import { Table, Thead, Tbody, Tr, Th, Td, Tfoot } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import CheckIcon from '../icons/Check';
 
@@ -83,44 +83,76 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
         }
       `}
     >
-      <Table variant="dope">
-        <colgroup>
-          <col width="25%" />
-          <col width="25%" />
-          {/* <col width="25%" /> */}
-          <col width="25%" />
-        </colgroup>
-        <Thead>
-          <Tr>
-            <Th onClick={() => setSort('id')}>Dope ID</Th>
-            <Th onClick={() => setSort('rank')}>Rank</Th>
-            {/* <Th onClick={() => setSort('percentile')}>Percent</Th> */}
-            <Th>Paper?</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {items.map(({ id, rank, claimed, idx }) => (
-            <Tr
-              className={selected === idx ? 'selected' : ''}
-              key={id}
-              onClick={() => onSelect(idx)}
-            >
-              <Td>{id}</Td>
-              <Td>{rank}</Td>
-              <Td>{claimed}</Td>
-            </Tr>
-          ))}
-        </Tbody>
-        <Tfoot>
-          <Tr>
-            <Th colSpan={3}>
-              {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
-              <span className="separator">/</span>
-              {formattedUnclaimedPaper()} Unclaimed $PAPER
-            </Th>
-          </Tr>
-        </Tfoot>
-      </Table>
+      <div
+        css={css`
+          display:flex;
+          min-height: 100%;
+          flex-direction: column;
+          align-items: stretch;
+          `}>
+          <div
+            css={css`
+              flex-grow: 1;
+              `}>
+              <Table variant="dope">
+                <colgroup>
+                  <col width="25%" />
+                  <col width="25%" />
+                  {/* <col width="25%" /> */}
+                  <col width="25%" />
+                </colgroup>
+                <Thead>
+                  <Tr>
+                    <Th onClick={() => setSort('id')}>Dope ID</Th>
+                    <Th onClick={() => setSort('rank')}>Rank</Th>
+                    {/* <Th onClick={() => setSort('percentile')}>Percent</Th> */}
+                    <Th>Paper?</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {items.map(({ id, rank, claimed, idx }) => (
+                    <Tr
+                      className={selected === idx ? 'selected' : ''}
+                      key={id}
+                      onClick={() => onSelect(idx)}
+                    >
+                      <Td>{id}</Td>
+                      <Td>{rank}</Td>
+                      <Td>{claimed}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+          </div>
+          <div
+            css={css`
+              position: sticky;
+              bottom: 0;
+              cursor: pointer;
+              background: rgb(222, 222, 221);
+              `}>
+                <div
+                css={css`
+                  border-top: 2px solid rgb(0, 0, 0);
+                  height: 44px;
+                  padding: 10px 16px;
+                  text-align: center;
+                  vertical-align: middle;
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  font-size: 0.9em;
+                  `}>
+                    {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
+                    <span
+                      className="separator"
+                      css={css`
+                        padding: 8px;
+                        color: rgb(168, 169, 174);
+                        `}>/</span>
+                    {formattedUnclaimedPaper()} Unclaimed $PAPER
+                </div>
+          </div>
+      </div>
     </div>
   );
 };
