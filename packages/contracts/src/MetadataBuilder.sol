@@ -220,4 +220,20 @@ library MetadataBuilder {
 
         return DecodedImage({ paletteIndex: paletteIndex, bounds: bounds, rects: rects });
     }
+
+    function attributes(string[] calldata keys, string[] calldata values) external pure returns (string memory) {
+        string memory res = string(abi.encodePacked('['));
+
+        for (uint256 i = 0; i < keys.length; i++) {
+            res = string(abi.encodePacked(res, trait(keys[i], values[i])));
+        }
+
+        res = string(abi.encodePacked(res, ']'));
+        return res;
+    }
+
+    // Helper for encoding as json w/ trait_type / value from opensea
+    function trait(string memory traitType, string memory value) internal pure returns (string memory) {
+        return string(abi.encodePacked('{', '"trait_type": "', traitType, '", ', '"value": "', value, '"', '}'));
+    }
 }

@@ -15,16 +15,16 @@ import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
 
 contract HustlerUser is ERC1155Holder, ERC721Holder {
     DopeWarsLoot loot;
-    SwapMeet swapMeet;
+    SwapMeet swapmeet;
     Hustler hustler;
 
     constructor(
         DopeWarsLoot _loot,
-        SwapMeet _swapMeet,
+        SwapMeet _swapmeet,
         Hustler _hustler
     ) {
         loot = _loot;
-        swapMeet = _swapMeet;
+        swapmeet = _swapmeet;
         hustler = _hustler;
     }
 
@@ -33,7 +33,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 
     function open(uint256 tokenId) public {
-        swapMeet.open(tokenId, '');
+        swapmeet.open(tokenId, '');
     }
 
     function mint() public returns (uint256) {
@@ -50,7 +50,17 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 
     function setApprovalForAll(address operator, bool approved) public {
-        swapMeet.setApprovalForAll(operator, approved);
+        swapmeet.setApprovalForAll(operator, approved);
+    }
+
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public {
+        swapmeet.safeBatchTransferFrom(from, to, ids, amounts, data);
     }
 
     function setDopeApprovalForAll(address operator, bool approved) public {
@@ -61,11 +71,9 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         uint256 id,
         Hustler.Attributes memory attributes,
         uint8[4] calldata body,
-        uint8 bmask,
-        uint8[] calldata slots,
-        uint256[] calldata items
+        uint8 bmask
     ) public {
-        hustler.setMetadata(id, attributes, body, bmask, slots, items);
+        hustler.setMetadata(id, attributes, body, bmask);
     }
 
     function transferERC1155(
@@ -73,16 +81,16 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         uint256 tokenId,
         uint256 amount
     ) public {
-        swapMeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
+        swapmeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
     }
 }
 
 contract HustlerOwner is ERC1155Holder {
-    SwapMeet swapMeet;
+    SwapMeet swapmeet;
     Hustler hustler;
 
-    function init(SwapMeet _swapMeet, Hustler _hustler) public {
-        swapMeet = _swapMeet;
+    function init(SwapMeet _swapmeet, Hustler _hustler) public {
+        swapmeet = _swapmeet;
         hustler = _hustler;
 
         string[] memory palette = new string[](228);
@@ -324,24 +332,12 @@ contract HustlerOwner is ERC1155Holder {
         hustler.setPalette(0, palette);
     }
 
-    function addBody(bytes calldata body) public {
-        hustler.addBody(body);
-    }
-
     function addBodies(bytes[] calldata _bodies) public {
         hustler.addBodies(_bodies);
     }
 
-    function addHead(bytes calldata head) public {
-        hustler.addHead(head);
-    }
-
     function addHeads(bytes[] calldata _heads) public {
         hustler.addHeads(_heads);
-    }
-
-    function addBeard(bytes calldata beard) public {
-        hustler.addBeard(beard);
     }
 
     function addBeards(bytes[] calldata _beards) public {
@@ -379,7 +375,7 @@ contract HustlerTest is DSTest {
     // contracts
     DopeWarsLoot internal loot;
     Components internal components;
-    SwapMeetTester internal swapMeet;
+    SwapMeetTester internal swapmeet;
     HustlerTester internal hustler;
 
     // users
@@ -392,13 +388,13 @@ contract HustlerTest is DSTest {
         // deploy contracts
         loot = new DopeWarsLoot();
         components = new Components(address(owner));
-        swapMeet = new SwapMeetTester(address(components), address(loot), address(owner));
-        hustler = new HustlerTester(address(owner), address(swapMeet));
+        swapmeet = new SwapMeetTester(address(components), address(loot), address(owner));
+        hustler = new HustlerTester(address(owner), address(swapmeet));
 
-        owner.init(swapMeet, hustler);
+        owner.init(swapmeet, hustler);
 
         // create alice's account & claim a bag
-        alice = new HustlerUser(loot, swapMeet, hustler);
+        alice = new HustlerUser(loot, swapmeet, hustler);
         alice.claim(BAG);
         alice.open(BAG);
         assertEq(loot.ownerOf(BAG), address(alice));

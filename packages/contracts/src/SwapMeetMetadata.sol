@@ -108,6 +108,25 @@ contract SwapMeetMetadata {
         return meta;
     }
 
+    function fullname(uint256 tokenId) external view returns (string memory) {
+        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
+        string memory name_ = sc.name(componentType, components[0]);
+        if (components[1] > 0) {
+            name_ = string(abi.encodePacked(name_, ' ', sc.suffix(components[1])));
+        }
+
+        if (components[2] > 0) {
+            string memory prefix = sc.prefix(components[2], components[3]);
+            name_ = string(abi.encodePacked('\\"', prefix, '\\" ', name_));
+        }
+
+        if (components[4] > 0) {
+            name_ = string(abi.encodePacked(name_, ' +1'));
+        }
+
+        return name_;
+    }
+
     function tokenRle(uint256 id, uint8 gender) public view returns (bytes memory) {
         if (rles[id][gender].length > 0) {
             return rles[id][gender];

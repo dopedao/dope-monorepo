@@ -7,15 +7,16 @@ import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
 import { ERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
+import { BitMask } from './BitMask.sol';
 import { ComponentTypes } from './Components.sol';
 import { HustlerMetadata } from './HustlerMetadata.sol';
-import { TokenId } from './TokenId.sol';
 
 library Errors {
     string constant IsNotSwapMeet = 'msg.sender is not the swap meet contract';
     string constant IsHolder = 'msg.sender is not hustler holder';
     string constant EquipSignatureInvalid = 'equip signature invalid';
     string constant NumHustlerIdMismatch = 'num hustler ids does not match num token ids';
+    string constant HustlerDoesntOwnItem = 'hustlder doesnt own item';
 }
 
 /// @title Hustlers
@@ -45,7 +46,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     /// @notice ERC1155 callback which will add an item to the hustlers inventory.
     function onERC1155Received(
         address,
-        address,
+        address from,
         uint256 id,
         uint256 value,
         bytes memory data
@@ -57,8 +58,11 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         // indicate an encoded hustler id.
         (bytes4 sig, uint256 hustlerId) = abi.decode(data, (bytes4, uint256));
         require(sig == equip, Errors.EquipSignatureInvalid);
+        require(balanceOf(from, hustlerId) == 1, 'not hustler owner');
 
-        inventories[hustlerId][id] += value;
+        uint8 slot = slot(id);
+        metadata[hustlerId].mask = BitMask.set(metadata[hustlerId].mask, slot);
+        metadata[hustlerId].slots[slot] = id;
 
         return this.onERC1155Received.selector;
     }
@@ -80,16 +84,36 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
         // If this transfer is initiated from the hustler contract
         // and it a new mint, then it is a mint from dope call.
-        if (operator == address(this) && from == address(0)) {
-            for (uint256 i = 0; i < ids.length; i++) {
-                uint8 slot = TokenId.decode(ids[i], 0);
-                metadata[hustlerId].slots[slot] = ids[i];
-                inventories[hustlerId][ids[i]] += values[i];
+        require(operator == address(this) || balanceOf(from, hustlerId) == 1, 'bla');
+
+        Metadata memory meta = metadata[hustlerId];
+        uint256[] memory unequipIds = new uint256[](ids.length);
+        uint256[] memory unequipValues = new uint256[](ids.length);
+
+        uint256 j = 0;
+        for (uint8 i = 0; i < ids.length; i++) {
+            require(values[i] == 1, 'more than one');
+            uint8 slot = slot(ids[i]);
+
+            if (BitMask.get(meta.mask, slot)) {
+                unequipIds[j] = ids[j];
+                unequipValues[j] = values[i];
+                j++;
             }
-        } else {
-            for (uint256 i = 0; i < ids.length; i++) {
-                inventories[hustlerId][ids[i]] += values[i];
-            }
+
+            metadata[hustlerId].mask = BitMask.set(meta.mask, slot);
+            metadata[hustlerId].slots[slot] = ids[i];
+        }
+
+        uint256 diff = ids.length - j;
+        assembly {
+            // Shrink slice to fit returned ids.
+            mstore(unequipIds, sub(mload(unequipIds), diff))
+            mstore(unequipValues, sub(mload(unequipValues), diff))
+        }
+
+        if (unequipIds.length > 0) {
+            swapmeet.safeBatchTransferFrom(address(this), msg.sender, unequipIds, unequipValues, '');
         }
 
         return this.onERC1155BatchReceived.selector;
@@ -144,17 +168,29 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         palettes[id] = palette;
     }
 
+    // function withdraw(
+    //     uint256 hustlerId,
+    //     uint256 tokenId,
+    //     uint256 amount
+    // ) public onlyHustler(hustlerId) {
+    //     require(inventories[hustlerId][tokenId] >= amount, Errors.HustlerDoesntOwnItem);
+    //     uint8 slot = slot(tokenId);
+    //     if (metadata[hustlerId].slots[slot] == tokenId) {
+    //         metadata[hustlerId].slots[slot] = 0;
+    //     }
+
+    //     inventories[hustlerId][tokenId] -= amount;
+    //     swapmeet.safeTransferFrom(address(this), msg.sender, tokenId, amount, '');
+    // }
+
     function setMetadata(
-        uint256 id,
+        uint256 hustlerId,
         Attributes calldata attributes,
         uint8[4] calldata body,
-        uint8 bmask,
-        uint8[] calldata slots,
-        uint256[] calldata items
-    ) public onlyHolder(id) {
-        setAttributes(id, attributes);
-        setBody(id, body, bmask);
-        setSlots(id, slots, items);
+        uint8 bmask
+    ) public onlyHustler(hustlerId) {
+        setAttributes(hustlerId, attributes);
+        setBody(hustlerId, body, bmask);
     }
 
     function setAttributes(uint256 id, Attributes calldata attributes) internal {
@@ -181,42 +217,10 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         }
     }
 
-    function setSlots(
-        uint256 hustlerId,
-        uint8[] calldata slots,
-        uint256[] calldata items
-    ) internal {
-        if (slots.length == 0) {
-            return;
-        }
-
-        require(items.length == slots.length, 'slots items length mismatch');
-        uint256[] memory ids = new uint256[](slots.length);
-        uint256[] memory amounts = new uint256[](slots.length);
-        for (uint256 i = 0; i < slots.length; i++) {
-            if (inventories[hustlerId][items[i]] == 0) {
-                ids[i] = items[i];
-                amounts[i] = 1;
-            }
-
-            metadata[hustlerId].slots[slots[i]] = items[i];
-        }
-
-        swapmeet.safeBatchTransferFrom(msg.sender, address(this), ids, amounts, abi.encode(equip, hustlerId));
-    }
-
-    function addBody(bytes calldata body) public onlyOwner {
-        bodies.push(body);
-    }
-
     function addBodies(bytes[] calldata _bodies) public onlyOwner {
         for (uint256 i = 0; i < _bodies.length; i++) {
             bodies.push(_bodies[i]);
         }
-    }
-
-    function addHead(bytes calldata head) public onlyOwner {
-        heads.push(head);
     }
 
     function addHeads(bytes[] calldata _heads) public onlyOwner {
@@ -225,17 +229,13 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         }
     }
 
-    function addBeard(bytes calldata beard) public onlyOwner {
-        beards.push(beard);
-    }
-
     function addBeards(bytes[] calldata _beards) public onlyOwner {
         for (uint256 i = 0; i < _beards.length; i++) {
             beards.push(_beards[i]);
         }
     }
 
-    modifier onlyHolder(uint256 id) {
+    modifier onlyHustler(uint256 id) {
         require(balanceOf(msg.sender, id) == 1, Errors.IsHolder);
         _;
     }
