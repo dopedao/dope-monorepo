@@ -2,26 +2,11 @@ import { Bag } from '../src/generated/graphql';
 import { makeVar } from '@apollo/client';
 import DopeJson from 'dope-metrics/output/loot.json';
 import { getRarityForDopeId } from './dope-rarity-check';
-import { OpenSeaAsset } from './OpenSeaAsset';
+import { PickedBag } from './PickedBag';
+import { newEmptyBag } from './EmptyBag';
 
 const highImpossibleRank = 9999;
 
-export type PickedBag = Pick<
-  Bag,
-  | 'id'
-  | 'claimed'
-  | 'clothes'
-  | 'drugs'
-  | 'foot'
-  | 'hand'
-  | 'neck'
-  | 'rank'
-  | 'ring'
-  | 'vehicle'
-  | 'waist'
-  | 'weapon'
-  | 'open_sea_asset'
->;
 type BagClaimCheck = Pick<Bag, 'id' | 'claimed'>;
 // At the time of coding, there were less than 3k unclaimed DOPE tokens.
 type UnclaimedPaperPages = {
@@ -29,33 +14,6 @@ type UnclaimedPaperPages = {
   page_2?: BagClaimCheck[];
   page_3?: BagClaimCheck[];
 };
-
-export const EmptyBagStruct: PickedBag = {
-  id: '',
-  // Let people be happily surprised by learning result of query later
-  claimed: true,
-  clothes: '',
-  drugs: '',
-  foot: '',
-  hand: '',
-  neck: '',
-  rank: highImpossibleRank,
-  ring: '',
-  vehicle: '',
-  waist: '',
-  weapon: '',
-  // // All have been minted already
-  // minted: true,
-  open_sea_asset: new OpenSeaAsset(),
-  // currentOwner: Wallet;
-};
-// Use newEmptyBag() to use as template
-Object.freeze(EmptyBagStruct);
-
-export function newEmptyBag(): PickedBag {
-  const copy = {} as PickedBag;
-  return Object.assign(copy, EmptyBagStruct);
-}
 
 /**
  * Responsible for populating, storing, and returning sorted/filtered

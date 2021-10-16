@@ -1,5 +1,3 @@
-// Github actions doesn't need dotenv file loaded.
-// Only useful from our local machines.
 import * as dotenv from 'dotenv';
 dotenv.config({ path: __dirname + '/../../../.env' });
 

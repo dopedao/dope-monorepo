@@ -1,11 +1,11 @@
 import { css } from '@emotion/react';
+import { PickedBag } from '../../src/PickedBag';
 import { useState } from 'react';
-import LootCardFooterForOwner from './LootCardFooterForOwner';
-import LootCardFooterForMarket from './LootCardFooterForMarket';
 import LootCardBody from './LootCardBody';
+import LootCardFooterForMarket from './LootCardFooterForMarket';
+import LootCardFooterForOwner from './LootCardFooterForOwner';
 import LootLegend from './LootLegend';
 import styled from '@emotion/styled';
-import { PickedBag } from '../../src/DopeDatabase';
 
 const LootCardContainer = styled.div`
   border: 2px solid #000;

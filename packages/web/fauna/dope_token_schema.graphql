@@ -1,0 +1,41 @@
+type DopeToken {
+  id: String!
+  claimed: Boolean
+  unbundled: Boolean
+  rank: Int
+  open_sea: OpenSeaAsset
+  clothes_count: Int
+  clothes_rank: Int
+  clothes: String
+  drugs_count: Int
+  drugs_rank: Int
+  drugs: String
+  foot_count: Int
+  foot_rank: Int
+  foot: String
+  hand_count: Int
+  hand_rank: Int
+  hand: String
+  neck_count: Int
+  neck_rank: Int
+  neck: String
+  ring_count: Int
+  ring_rank: Int
+  ring: String
+  vehicle_count: Int
+  vehicle_rank: Int
+  vehicle: String
+  waist_count: Int
+  waist_rank: Int
+  waist: String
+  weapon_count: Int
+  weapon_rank: Int
+  weapon: String
+}
+
+type OpenSeaAsset {
+  token_id: String
+  is_on_sale: Boolean
+  current_sale_price_gwei: Int
+  last_sale_price_gwei: Int
+}

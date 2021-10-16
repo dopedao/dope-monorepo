@@ -10,7 +10,8 @@
     "test": "jest",
     "test-watch": "jest --watch",
     "dump-opensea": "ts-node --script-mode script/dump-opensea-json.ts",
-    "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh-opensea-sales-cache.ts"
+    "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh-opensea-sales-cache.ts",
+    "fauna:init": "ts-node --script-mode script/init-fauna-database.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.4.11",
@@ -25,6 +26,7 @@
     "classnames": "^2.3.1",
     "dope-metrics": "^1.0.4",
     "dotenv": "^10.0.0",
+    "faunadb": "^4.4.1",
     "framer-motion": "^4",
     "gear-rarity": "^1.0.5",
     "graphql": "^15.5.3",
