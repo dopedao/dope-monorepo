@@ -14,7 +14,7 @@ const viewOnOpenSea = (tokenId: string): void => {
 
 const ContextSensitiveButton = ({ bag }: FooterForMarketProps) => {
   const isOnSale = bag.open_sea_asset?.is_on_sale;
-  const price = bag.open_sea_asset?.current_sale_price;
+  const price = bag.open_sea_asset?.current_sale_price_eth;
   return (
     <Button
       onClick={() => viewOnOpenSea(bag.id)}
@@ -29,7 +29,7 @@ const ContextSensitiveButton = ({ bag }: FooterForMarketProps) => {
 };
 
 const LastSaleOrNever = ({ bag }: FooterForMarketProps) => {
-  const lastSalePrice = bag.open_sea_asset?.last_sale_price;
+  const lastSalePrice = bag.open_sea_asset?.last_sale_price_eth;
   if (lastSalePrice)
     return (
       <span

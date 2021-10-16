@@ -68,18 +68,18 @@ export const ethFromGwei = (gwei: number) => {
 
 export class OpenSeaAsset implements OpenSeaAssetInterface {
   is_on_sale = false;
-  current_sale_price: number | null = null;
-  last_sale_price: number | null = null;
+  current_sale_price_eth: number | null = null;
+  last_sale_price_eth: number | null = null;
   constructor(json?: OpenSeaAssetJsonResponse) {
     if (!json) return;
     if (json.sell_orders && json.sell_orders.length > 0) {
       this.is_on_sale = true;
     }
     if (this.is_on_sale) {
-      this.current_sale_price = ethFromGwei(json.sell_orders[0].current_price);
+      this.current_sale_price_eth = ethFromGwei(json.sell_orders[0].current_price);
     }
     if (json.last_sale) {
-      this.last_sale_price = ethFromGwei(json.last_sale.total_price);
+      this.last_sale_price_eth = ethFromGwei(json.last_sale.total_price);
     }
     // sale_kind == 0 (auction)
   }

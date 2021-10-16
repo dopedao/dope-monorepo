@@ -222,9 +222,9 @@ export type Block_Height = {
 
 export type OpenSeaAsset = {
   __typename?: 'OpenSeaAsset';
-  current_sale_price?: Maybe<Scalars['Int']>;
+  current_sale_price_eth?: Maybe<Scalars['Int']>;
   is_on_sale?: Maybe<Scalars['Boolean']>;
-  last_sale_price?: Maybe<Scalars['Int']>;
+  last_sale_price_eth?: Maybe<Scalars['Int']>;
 };
 
 export enum OrderDirection {
@@ -564,8 +564,8 @@ export type BagQuery = {
     open_sea_asset?: Maybe<{
       __typename?: 'OpenSeaAsset';
       is_on_sale?: Maybe<boolean>;
-      current_sale_price?: Maybe<number>;
-      last_sale_price?: Maybe<number>;
+      current_sale_price_eth?: Maybe<number>;
+      last_sale_price_eth?: Maybe<number>;
     }>;
   }>;
 };
@@ -594,8 +594,8 @@ export type BagsQuery = {
     open_sea_asset?: Maybe<{
       __typename?: 'OpenSeaAsset';
       is_on_sale?: Maybe<boolean>;
-      current_sale_price?: Maybe<number>;
-      last_sale_price?: Maybe<number>;
+      current_sale_price_eth?: Maybe<number>;
+      last_sale_price_eth?: Maybe<number>;
     }>;
   }>;
 };
@@ -716,8 +716,8 @@ export const BagDocument = gql`
       claimed
       open_sea_asset @client {
         is_on_sale
-        current_sale_price
-        last_sale_price
+        current_sale_price_eth
+        last_sale_price_eth
       }
     }
   }
@@ -769,8 +769,8 @@ export const BagsDocument = gql`
       rank @client
       open_sea_asset @client {
         is_on_sale
-        current_sale_price
-        last_sale_price
+        current_sale_price_eth
+        last_sale_price_eth
       }
     }
   }

@@ -1,24 +1,8 @@
+import { FAUNA_KEY, client, q } from '../src/fauna-client';
 import { getRarityForDopeId } from '../src/dope-rarity-check';
-import * as dotenv from 'dotenv';
 import DopeJson from 'dope-metrics/output/loot.json';
-import faunadb from 'faunadb';
 import fetch from 'isomorphic-fetch';
 import fs from 'fs';
-
-dotenv.config({ path: __dirname + '/../../../.env' });
-
-const FAUNA_KEY = process.env.FAUNA_KEY ?? '';
-
-// https://docs.fauna.com/fauna/current/drivers/javascript
-// https://fauna.github.io/faunadb-js/
-const client = new faunadb.Client({
-  secret: FAUNA_KEY,
-  domain: 'db.us.fauna.com',
-  port: 443,
-  scheme: 'https',
-});
-
-const q = faunadb.query;
 
 // Fauna only provides a way to load GraphQL schema through this endpoint
 // https://docs.fauna.com/fauna/current/api/graphql/endpoints?lang=javascript
@@ -92,14 +76,15 @@ const populate = async(tokens: any[]) => {
         )
       )
     );
-    console.log(response);
+    // console.log(response);
+    console.log('Done');
   } catch (error) {
     console.error('Error: %s', error);
   }
 };
 
 (async () => {
-  //await initFromGraphQL();
+  await initFromGraphQL();
   const tokens = buildTokenObjects();
   await populate(tokens);
 })();

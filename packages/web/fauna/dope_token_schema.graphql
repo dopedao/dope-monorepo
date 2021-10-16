@@ -3,7 +3,7 @@ type DopeToken {
   claimed: Boolean
   unbundled: Boolean
   rank: Int
-  open_sea: OpenSeaAsset
+  open_sea: OpenSeaAsset @relation
   clothes_count: Int
   clothes_rank: Int
   clothes: String
@@ -36,6 +36,6 @@ type DopeToken {
 type OpenSeaAsset {
   token_id: String
   is_on_sale: Boolean
-  current_sale_price_gwei: Int
-  last_sale_price_gwei: Int
+  current_sale_price_eth: Float
+  last_sale_price_eth: Float
 }

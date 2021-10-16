@@ -99,20 +99,20 @@ export const compareByRank = (a: PickedBag, b: PickedBag) => {
 
 export const compareByMostAffordable = (a: PickedBag, b: PickedBag) => {
   const highImpossiblePrice = 9999999999999999;
-  const aPrice = a.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
-  const bPrice = b.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
+  const aPrice = a.open_sea_asset?.current_sale_price_eth ?? highImpossiblePrice;
+  const bPrice = b.open_sea_asset?.current_sale_price_eth ?? highImpossiblePrice;
   return aPrice - bPrice;
 };
 
 export const compareByMostExpensive = (a: PickedBag, b: PickedBag) => {
-  const aPrice = a.open_sea_asset?.current_sale_price ?? 0;
-  const bPrice = b.open_sea_asset?.current_sale_price ?? 0;
+  const aPrice = a.open_sea_asset?.current_sale_price_eth ?? 0;
+  const bPrice = b.open_sea_asset?.current_sale_price_eth ?? 0;
   return bPrice - aPrice;
 };
 
 export const compareByHighestLastSale = (a: PickedBag, b: PickedBag) => {
-  const aLastSalePrice = a.open_sea_asset?.last_sale_price ?? 0;
-  const bLastSalePrice = b.open_sea_asset?.last_sale_price ?? 0;
+  const aLastSalePrice = a.open_sea_asset?.last_sale_price_eth ?? 0;
+  const bLastSalePrice = b.open_sea_asset?.last_sale_price_eth ?? 0;
   return bLastSalePrice - aLastSalePrice;
 };
 
