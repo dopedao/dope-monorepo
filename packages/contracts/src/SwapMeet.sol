@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
+import { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import { IERC721 } from '@openzeppelin/contracts/token/ERC721/IERC721.sol';
 import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
@@ -18,21 +19,25 @@ library Errors {
 
 /// @title Dope Gear SwapMeet
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
-/// @notice Allows "opening" your ERC721 Loot bags and extracting the items inside it
-/// The created tokens are ERC1155 compatible, and their on-chain SVG is their name
+/// @notice Allows "opening" your ERC721 dope and extracting the items inside it
 contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
-    // The DOPE bags contract
-    IERC721 immutable bags;
+    // The DOPE dope contract
+    IERC721 immutable dope;
+    IERC20 immutable paper;
+    address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
+    uint256 public cost = 12500000000000000000000;
 
     mapping(uint256 => bool) private opened;
 
     // No need for a URI since we're doing everything onchain
     constructor(
         address _components,
-        address _bags,
+        address _dope,
+        address _paper,
         address _owner
     ) SwapMeetMetadata(_components) ERC1155('') {
-        bags = IERC721(_bags);
+        dope = IERC721(_dope);
+        paper = IERC20(_paper);
         transferOwnership(_owner);
     }
 
@@ -44,12 +49,13 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         bytes memory data
     ) public {
         require(
-            msg.sender == bags.ownerOf(tokenId) || bags.isApprovedForAll(bags.ownerOf(tokenId), msg.sender),
+            msg.sender == dope.ownerOf(tokenId) || dope.isApprovedForAll(dope.ownerOf(tokenId), msg.sender),
             Errors.DoesNotOwnBagOrNotApproved
         );
         require(!opened[tokenId], Errors.AlreadyOpened);
         opened[tokenId] = true;
         _open(to, tokenId, data);
+        paper.transferFrom(msg.sender, timelock, cost);
     }
 
     /// @notice Bulk opens the provided tokenIds. This
@@ -123,8 +129,8 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         uint256[] memory amounts,
         bytes memory data
     ) external onlyOwner returns (uint256[] memory) {
-        require(components.length % 5 == 0, 'invalid components shape');
-        require(components.length / 5 == componentTypes.length, 'component componentType mismatch');
+        require(components.length % 5 == 0, 'components len');
+        require(components.length / 5 == componentTypes.length, 'len mismatch');
         uint256[] memory ids = new uint256[](componentTypes.length);
 
         for (uint256 i = 0; i < components.length; i += 5) {

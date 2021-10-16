@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Snapshot.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Snapshot.sol';
+import '@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol';
+import '@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol';
+import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
 contract Paper is ERC20, ERC20Permit, ERC20Votes, ERC20Snapshot, Ownable {
     // Dope Wars Loot: https://etherscan.io/address/0x8707276DF042E89669d69A177d3DA7dC78bd8723
-    IERC721Enumerable public loot = IERC721Enumerable(0x8707276DF042E89669d69A177d3DA7dC78bd8723);
+    IERC721Enumerable public loot;
     // DopeDAO timelock: https://etherscan.io/address/0xb57ab8767cae33be61ff15167134861865f7d22c
     address public timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
 
@@ -24,7 +24,8 @@ contract Paper is ERC20, ERC20Permit, ERC20Votes, ERC20Snapshot, Ownable {
     // track claimedTokens
     mapping(uint256 => bool) public claimedByTokenId;
 
-    constructor() ERC20("Paper", "PAPER") ERC20Permit("PAPER") {
+    constructor(address dope) ERC20('Paper', 'PAPER') ERC20Permit('PAPER') {
+        loot = IERC721Enumerable(dope);
         transferOwnership(timelock);
     }
 
@@ -41,7 +42,7 @@ contract Paper is ERC20, ERC20Permit, ERC20Votes, ERC20Snapshot, Ownable {
         // Checks
 
         // Check that the msgSender owns the token that is being claimed
-        require(_msgSender() == loot.ownerOf(tokenId), "MUST_OWN_TOKEN_ID");
+        require(_msgSender() == loot.ownerOf(tokenId), 'MUST_OWN_TOKEN_ID');
 
         // Further Checks, Effects, and Interactions are contained within the
         // _claim() function
@@ -56,7 +57,7 @@ contract Paper is ERC20, ERC20Permit, ERC20Votes, ERC20Snapshot, Ownable {
         uint256 tokenBalanceOwner = loot.balanceOf(_msgSender());
 
         // Checks
-        require(tokenBalanceOwner > 0, "NO_TOKENS_OWNED");
+        require(tokenBalanceOwner > 0, 'NO_TOKENS_OWNED');
 
         // i < tokenBalanceOwner because tokenBalanceOwner is 1-indexed
         for (uint256 i = 0; i < tokenBalanceOwner; i++) {
@@ -74,11 +75,11 @@ contract Paper is ERC20, ERC20Permit, ERC20Votes, ERC20Snapshot, Ownable {
         uint256 tokenBalanceOwner = loot.balanceOf(_msgSender());
 
         // Checks
-        require(tokenBalanceOwner > 0, "NO_TOKENS_OWNED");
+        require(tokenBalanceOwner > 0, 'NO_TOKENS_OWNED');
 
         // We use < for ownerIndexEnd and tokenBalanceOwner because
         // tokenOfOwnerByIndex is 0-indexed while the token balance is 1-indexed
-        require(ownerIndexStart >= 0 && ownerIndexEnd < tokenBalanceOwner, "INDEX_OUT_OF_RANGE");
+        require(ownerIndexStart >= 0 && ownerIndexEnd < tokenBalanceOwner, 'INDEX_OUT_OF_RANGE');
 
         // i <= ownerIndexEnd because ownerIndexEnd is 0-indexed
         for (uint256 i = ownerIndexStart; i <= ownerIndexEnd; i++) {
@@ -93,10 +94,10 @@ contract Paper is ERC20, ERC20Permit, ERC20Votes, ERC20Snapshot, Ownable {
         // Checks
         // Check that the token ID is in range
         // We use >= and <= to here because all of the token IDs are 0-indexed
-        require(tokenId >= tokenIdStart && tokenId <= tokenIdEnd, "TOKEN_ID_OUT_OF_RANGE");
+        require(tokenId >= tokenIdStart && tokenId <= tokenIdEnd, 'TOKEN_ID_OUT_OF_RANGE');
 
         // Check that Paper have not already been claimed for a given tokenId
-        require(!claimedByTokenId[tokenId], "PAPER_CLAIMED_FOR_TOKEN_ID");
+        require(!claimedByTokenId[tokenId], 'PAPER_CLAIMED_FOR_TOKEN_ID');
 
         // Effects
 

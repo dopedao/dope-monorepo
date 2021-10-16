@@ -5,6 +5,7 @@ import 'ds-test/test.sol';
 
 import './Hevm.sol';
 import '../../Loot.sol';
+import { Paper } from '../../Paper.sol';
 import { SwapMeet } from '../../SwapMeet.sol';
 import { Components, ComponentTypes } from '../../Components.sol';
 import { TokenId } from '../../TokenId.sol';
@@ -15,24 +16,38 @@ import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 // NB: Using callbacks is hard, since we're a smart contract account we need
 // to be implementing the callbacks
 contract SwapMeetUser is ERC721Holder, ERC1155Holder {
-    DopeWarsLoot loot;
-    SwapMeet swapMeet;
+    DopeWarsLoot dope;
+    SwapMeet swapmeet;
+    Paper paper;
 
-    constructor(DopeWarsLoot _loot, SwapMeet _swapMeet) {
-        loot = _loot;
-        swapMeet = _swapMeet;
+    constructor(
+        DopeWarsLoot _dope,
+        SwapMeet _swapmeet,
+        Paper _paper
+    ) {
+        dope = _dope;
+        swapmeet = _swapmeet;
+        paper = _paper;
     }
 
     function claim(uint256 tokenId) public {
-        loot.claim(tokenId);
+        dope.claim(tokenId);
     }
 
     function open(uint256 tokenId) public {
-        swapMeet.open(tokenId, address(this), '');
+        swapmeet.open(tokenId, address(this), '');
     }
 
     function batchOpen(uint256[] memory ids) public {
-        swapMeet.batchOpen(ids, address(this), '');
+        swapmeet.batchOpen(ids, address(this), '');
+    }
+
+    function approvePaper(uint256 amount) public {
+        paper.approve(address(swapmeet), amount);
+    }
+
+    function claimPaper() public {
+        paper.claimAllForOwner();
     }
 
     function transferERC1155(
@@ -40,7 +55,7 @@ contract SwapMeetUser is ERC721Holder, ERC1155Holder {
         uint256 tokenId,
         uint256 amount
     ) public {
-        swapMeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
+        swapmeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
     }
 }
 
@@ -70,11 +85,11 @@ struct ItemNames {
 
 contract SwapMeetOwner is ERC1155Holder {
     Components sc;
-    SwapMeet swapMeet;
+    SwapMeet swapmeet;
 
-    function init(Components _components, SwapMeet _swapMeet) public {
+    function init(Components _components, SwapMeet _swapmeet) public {
         sc = _components;
-        swapMeet = _swapMeet;
+        swapmeet = _swapmeet;
 
         bytes4[] memory palette = new bytes4[](228);
         bytes4[228] memory _palette = [
@@ -312,7 +327,7 @@ contract SwapMeetOwner is ERC1155Holder {
             palette[i] = _palette[i];
         }
 
-        swapMeet.setPalette(0, palette);
+        swapmeet.setPalette(0, palette);
     }
 
     function addItemComponent(uint8 itemType, string calldata component) public returns (uint8) {
@@ -326,7 +341,7 @@ contract SwapMeetOwner is ERC1155Holder {
         uint256 amount,
         bytes memory data
     ) public returns (uint256) {
-        return swapMeet.mint(account, components, itemType, amount, data);
+        return swapmeet.mint(account, components, itemType, amount, data);
     }
 
     function mintBatch(
@@ -336,7 +351,7 @@ contract SwapMeetOwner is ERC1155Holder {
         uint256[] memory amounts,
         bytes memory data
     ) public returns (uint256[] memory) {
-        return swapMeet.mintBatch(to, components, itemTypes, amounts, data);
+        return swapmeet.mintBatch(to, components, itemTypes, amounts, data);
     }
 
     function setRle(
@@ -344,20 +359,21 @@ contract SwapMeetOwner is ERC1155Holder {
         bytes memory rle,
         bytes memory rle2
     ) public {
-        swapMeet.setRle(id, rle, rle2);
+        swapmeet.setRle(id, rle, rle2);
     }
 
     function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) public {
-        swapMeet.batchSetRle(ids, rles);
+        swapmeet.batchSetRle(ids, rles);
     }
 }
 
 contract SwapMeetTester is SwapMeet {
     constructor(
         address _components,
-        address _bags,
+        address _dope,
+        address _paper,
         address _owner
-    ) SwapMeet(_components, _bags, _owner) {}
+    ) SwapMeet(_components, _dope, _paper, _owner) {}
 
     // View helpers for getting the item ID that corresponds to a bag's items
     function weaponId(uint256 tokenId) public view returns (uint256) {
@@ -456,7 +472,7 @@ contract SwapMeetTester is SwapMeet {
         // components[0] the index in the array
         string memory item = sc.name(componentType, components[0]);
 
-        // We need to do -1 because the 'no description' is not part of loot components
+        // We need to do -1 because the 'no description' is not part of dope components
 
         // add the suffix
         if (components[1] > 0) {
@@ -488,9 +504,10 @@ contract SwapMeetTest is DSTest {
     Hevm internal constant hevm = Hevm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
     // contracts
-    DopeWarsLoot internal loot;
+    DopeWarsLoot internal dope;
+    Paper internal paper;
     Components internal components;
-    SwapMeetTester internal swapMeet;
+    SwapMeetTester internal swapmeet;
 
     // users
     SwapMeetOwner internal owner;
@@ -500,21 +517,25 @@ contract SwapMeetTest is DSTest {
         owner = new SwapMeetOwner();
 
         // deploy contracts
-        loot = new DopeWarsLoot();
+        dope = new DopeWarsLoot();
+        paper = new Paper(address(dope));
         components = new Components(address(owner));
-        swapMeet = new SwapMeetTester(address(components), address(loot), address(owner));
+        swapmeet = new SwapMeetTester(address(components), address(dope), address(paper), address(owner));
 
-        owner.init(components, swapMeet);
+        owner.init(components, swapmeet);
 
         // create alice's account & claim a bag
-        alice = new SwapMeetUser(loot, swapMeet);
+        alice = new SwapMeetUser(dope, swapmeet, paper);
         alice.claim(BAG);
-        assertEq(loot.ownerOf(BAG), address(alice));
+        assertEq(dope.ownerOf(BAG), address(alice));
 
         alice.claim(BULK1_BAG);
         alice.claim(BULK2_BAG);
 
         alice.claim(FIRST_SILVER_RING_BAG);
         alice.claim(SECOND_SILVER_RING_BAG);
+
+        alice.claimPaper();
+        alice.approvePaper(type(uint256).max);
     }
 }

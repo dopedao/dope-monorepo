@@ -228,12 +228,7 @@ contract Components is Ownable {
     ];
     uint256 private constant drugsLength = 19;
 
-    string[] public accessories = [
-        'Bandana',
-        'Fitted Hat White',
-        'Fitted Hat Black',
-        'Glasses Dark'
-    ];
+    string[] public accessories = ['Bandana', 'Fitted Hat White', 'Fitted Hat Black', 'Glasses Dark'];
     uint256 private constant accessoriesLength = 19;
 
     string[] public suffixes = [
@@ -417,7 +412,7 @@ contract Components is Ownable {
         return components;
     }
 
-    function getComponent(uint256 tokenId, uint8 componentType) public pure returns (uint8[5] memory) {
+    function getComponent(uint256 tokenId, uint8 componentType) external pure returns (uint8[5] memory) {
         if (componentType == ComponentTypes.WEAPON) {
             return pluck(tokenId, componentType, weaponsLength);
         } else if (componentType == ComponentTypes.CLOTHES) {
@@ -441,7 +436,7 @@ contract Components is Ownable {
         }
     }
 
-    function addComponent(uint8 componentType, string calldata component) public onlyOwner returns (uint8) {
+    function addComponent(uint8 componentType, string calldata component) external onlyOwner returns (uint8) {
         string[] storage arr;
         if (componentType == ComponentTypes.WEAPON) {
             arr = weapons;

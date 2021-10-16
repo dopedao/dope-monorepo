@@ -38,7 +38,7 @@ contract Metadata is SwapMeetTest {
         owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, '"a big" blaster ahh');
 
-        assertEq(swapMeet.balanceOf(address(owner), id), 5);
+        assertEq(swapmeet.balanceOf(address(owner), id), 5);
     }
 
     function testCreateAndMintATicklerNewWeapons() public {
@@ -52,7 +52,7 @@ contract Metadata is SwapMeetTest {
         owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, 'tickler');
 
-        assertEq(swapMeet.balanceOf(address(owner), id), 1);
+        assertEq(swapmeet.balanceOf(address(owner), id), 1);
     }
 
     function testAK47BagNames() public {
@@ -70,7 +70,7 @@ contract Metadata is SwapMeetTest {
 
         // https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/5726
         uint256 id = 5726;
-        ItemNames memory names = swapMeet.names(id);
+        ItemNames memory names = swapmeet.names(id);
         assertEq(names, expected);
     }
 
@@ -89,12 +89,12 @@ contract Metadata is SwapMeetTest {
 
         // https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/3686
         uint256 id = 3686;
-        ItemNames memory names = swapMeet.names(id);
+        ItemNames memory names = swapmeet.names(id);
         assertEq(names, expected);
     }
 
     function testPlatinumRingFromAtlantaMetadata() public {
-        uint256 id = swapMeet.ringId(2169);
+        uint256 id = swapmeet.ringId(2169);
         Attribute[] memory attributes = new Attribute[](3);
         attributes[0] = Attribute('Slot', 'Ring');
         attributes[1] = Attribute('Item', 'Platinum Ring');
@@ -115,7 +115,7 @@ contract Metadata is SwapMeetTest {
     }
 
     function testHighSupplyBloodStainedShirtFromMobTownMetadata() public {
-        uint256 id = swapMeet.clothesId(3686);
+        uint256 id = swapmeet.clothesId(3686);
         Attribute[] memory attributes = new Attribute[](5);
         attributes[0] = Attribute('Slot', 'Clothes');
         attributes[1] = Attribute('Item', 'Bulletproof Vest');
@@ -127,7 +127,7 @@ contract Metadata is SwapMeetTest {
     }
 
     function testTriggermanFingerlessGlovesFromBuffaloPlusOneMetadata() public {
-        uint256 id = swapMeet.handId(3686);
+        uint256 id = swapmeet.handId(3686);
         Attribute[] memory attributes = new Attribute[](6);
         attributes[0] = Attribute('Slot', 'Hand');
         attributes[1] = Attribute('Item', 'Fingerless Gloves');
@@ -140,7 +140,7 @@ contract Metadata is SwapMeetTest {
     }
 
     function testFreelancePharmacistTriggermanDodgeFromComptonMetadata() public {
-        uint256 id = swapMeet.vehicleId(3686);
+        uint256 id = swapmeet.vehicleId(3686);
         Attribute[] memory attributes = new Attribute[](6);
         attributes[0] = Attribute('Slot', 'Vehicle');
         attributes[1] = Attribute('Item', 'Dodge');
@@ -164,7 +164,7 @@ contract Metadata is SwapMeetTest {
         uint256 baseId = TokenId.toId(components, ComponentTypes.HAND);
 
         owner.setRle(baseId, jordans, jordans);
-        assertEq(string(swapMeet.tokenRle(fullId, 0)), string(jordans));
+        assertEq(string(swapmeet.tokenRle(fullId, 0)), string(jordans));
     }
 
     function assertMetadata(
@@ -172,7 +172,7 @@ contract Metadata is SwapMeetTest {
         Attribute[] memory attributes,
         string memory name
     ) private {
-        string memory meta = swapMeet.uri(tokenId);
+        string memory meta = swapmeet.uri(tokenId);
         string[] memory inputs = new string[](3);
         inputs[0] = 'node';
         inputs[1] = 'scripts/metadata.js';

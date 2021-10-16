@@ -29,7 +29,7 @@ contract HustlerMetadata {
     string private constant _symbol = 'HUSTLERS';
     string private constant description = 'Hustle Hard';
 
-    ISwapMeet immutable swapmeet;
+    ISwapMeet internal immutable swapmeet;
 
     string[2] genders = ['Male', 'Female'];
 
@@ -122,7 +122,7 @@ contract HustlerMetadata {
 
         for (uint8 i = 0; i < 9; i++) {
             if (BitMask.get(metadata[hustlerId].mask, i)) {
-                values[i] = swapmeet.fullname(metadata[hustlerId].slots[i]);
+                (values[i], , , , , ) = swapmeet.params(metadata[hustlerId].slots[i]);
             } else {
                 values[1] = none;
             }

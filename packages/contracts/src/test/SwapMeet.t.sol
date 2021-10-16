@@ -27,9 +27,9 @@ contract Open is SwapMeetTest {
         _amounts[2] = 3;
 
         uint256[] memory ids = owner.mintBatch(address(owner), _components, _itemTypes, _amounts, '');
-        assertEq(swapMeet.balanceOf(address(owner), ids[0]), 1);
-        assertEq(swapMeet.balanceOf(address(owner), ids[1]), 2);
-        assertEq(swapMeet.balanceOf(address(owner), ids[2]), 3);
+        assertEq(swapmeet.balanceOf(address(owner), ids[0]), 1);
+        assertEq(swapmeet.balanceOf(address(owner), ids[1]), 2);
+        assertEq(swapmeet.balanceOf(address(owner), ids[2]), 3);
     }
 
     function testCanOpenBag() public {
@@ -47,14 +47,14 @@ contract Open is SwapMeetTest {
 
     function testCanSetRle() public {
         owner.setRle(1, jordans, fanny);
-        assertEq(string(swapMeet.tokenRle(1, Gender.MALE)), string(jordans));
-        assertEq(string(swapMeet.tokenRle(1, Gender.FEMALE)), string(fanny));
+        assertEq(string(swapmeet.tokenRle(1, Gender.MALE)), string(jordans));
+        assertEq(string(swapmeet.tokenRle(1, Gender.FEMALE)), string(fanny));
     }
 
     function testFailSetRleNonOwner() public {
-        swapMeet.setRle(1, jordans, fanny);
-        assertEq(string(swapMeet.tokenRle(1, Gender.MALE)), string(jordans));
-        assertEq(string(swapMeet.tokenRle(1, Gender.FEMALE)), string(fanny));
+        swapmeet.setRle(1, jordans, fanny);
+        assertEq(string(swapmeet.tokenRle(1, Gender.MALE)), string(jordans));
+        assertEq(string(swapmeet.tokenRle(1, Gender.FEMALE)), string(fanny));
     }
 
     function testCanBatchSetRle() public {
@@ -103,21 +103,21 @@ contract Open is SwapMeetTest {
         alice.open(FIRST_SILVER_RING_BAG);
         alice.open(SECOND_SILVER_RING_BAG);
 
-        ItemIds memory ids = swapMeet.ids(FIRST_SILVER_RING_BAG);
-        assertEq(swapMeet.balanceOf(address(alice), ids.ring), 2);
+        ItemIds memory ids = swapmeet.ids(FIRST_SILVER_RING_BAG);
+        assertEq(swapmeet.balanceOf(address(alice), ids.ring), 2);
     }
 
     // helper for checking ownership of erc1155 tokens after unbundling a bag
     function checkOwns1155s(uint256 tokenId, address who) private {
-        ItemIds memory ids = swapMeet.ids(tokenId);
-        assertEq(swapMeet.balanceOf(who, ids.weapon), 1);
-        assertEq(swapMeet.balanceOf(who, ids.clothes), 1);
-        assertEq(swapMeet.balanceOf(who, ids.vehicle), 1);
-        assertEq(swapMeet.balanceOf(who, ids.waist), 1);
-        assertEq(swapMeet.balanceOf(who, ids.foot), 1);
-        assertEq(swapMeet.balanceOf(who, ids.hand), 1);
-        assertEq(swapMeet.balanceOf(who, ids.drugs), 1);
-        assertEq(swapMeet.balanceOf(who, ids.neck), 1);
-        assertEq(swapMeet.balanceOf(who, ids.ring), 1);
+        ItemIds memory ids = swapmeet.ids(tokenId);
+        assertEq(swapmeet.balanceOf(who, ids.weapon), 1);
+        assertEq(swapmeet.balanceOf(who, ids.clothes), 1);
+        assertEq(swapmeet.balanceOf(who, ids.vehicle), 1);
+        assertEq(swapmeet.balanceOf(who, ids.waist), 1);
+        assertEq(swapmeet.balanceOf(who, ids.foot), 1);
+        assertEq(swapmeet.balanceOf(who, ids.hand), 1);
+        assertEq(swapmeet.balanceOf(who, ids.drugs), 1);
+        assertEq(swapmeet.balanceOf(who, ids.neck), 1);
+        assertEq(swapmeet.balanceOf(who, ids.ring), 1);
     }
 }

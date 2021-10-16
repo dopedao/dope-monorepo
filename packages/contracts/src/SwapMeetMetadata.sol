@@ -55,74 +55,78 @@ contract SwapMeetMetadata {
 
     /// @notice Returns an SVG for the provided token id
     function tokenURI(uint256 tokenId) public view returns (string memory) {
-        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
+        (
+            string memory name_,
+            string memory description_,
+            string memory attributes_,
+            string memory prefix_,
+            string memory subtext_,
+            bytes4 background_
+        ) = params(tokenId);
 
-        if (componentType == ComponentTypes.VEHICLE) {
-            return MetadataBuilder.tokenURI(vehicleSVG(tokenId, components, componentType), palettes);
+        MetadataBuilder.SVGParams memory p;
+        p.name = name_;
+        p.description = description_;
+        p.color = hex'202221';
+        p.background = background_;
+        p.text = prefix_;
+        p.subtext = subtext_;
+        p.attributes = attributes_;
+
+        if (TokenId.decode(tokenId, 0) == ComponentTypes.VEHICLE) {
+            p.parts = vehicleParts(tokenId);
+            p.resolution = 160;
+        } else {
+            p.parts = itemParts(tokenId);
+            p.resolution = 64;
         }
 
-        return MetadataBuilder.tokenURI(itemSVG(tokenId, components, componentType), palettes);
+        return MetadataBuilder.tokenURI(p, palettes);
     }
 
-    function params(uint8[5] memory components, uint8 componentType)
-        private
+    function params(uint256 tokenId)
+        public
         view
-        returns (MetadataBuilder.SVGParams memory meta)
+        returns (
+            string memory,
+            string memory,
+            string memory,
+            string memory,
+            string memory,
+            bytes4
+        )
     {
+        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
+
         uint8 bg = 0;
         string memory name_ = sc.name(componentType, components[0]);
 
-        meta.name = name_;
-        meta.description = description;
-        meta.attributes = sc.attributes(components, componentType);
-
         if (components[1] > 0) {
-            meta.name = string(abi.encodePacked(meta.name, ' ', sc.suffix(components[1])));
-            meta.subtext = meta.name;
+            name_ = string(abi.encodePacked(name_, ' ', sc.suffix(components[1])));
             bg = 1;
-        } else {
-            meta.subtext = name_;
         }
 
+        string memory subtext = name_;
+        string memory prefix;
+
         if (components[2] > 0) {
-            string memory prefix = sc.prefix(components[2], components[3]);
+            prefix = sc.prefix(components[2], components[3]);
+            name_ = string(abi.encodePacked('\\"', prefix, '\\" ', name_));
 
             // NOTE: abi encoding requires a double escape to render double quotes in json.
             // the svg renderer can't handle this (renders \"), so we use a modified font
             // which renders a double quote for back ticks.
-            meta.text = string(abi.encodePacked('`', prefix, '`'));
-            meta.name = string(abi.encodePacked('\\"', prefix, '\\" ', meta.name));
+            prefix = string(abi.encodePacked('`', prefix, '`'));
             bg = 2;
         }
 
         if (components[4] > 0) {
-            meta.subtext = string(abi.encodePacked(meta.subtext, ' +1'));
-            meta.name = string(abi.encodePacked(meta.name, ' +1'));
+            subtext = string(abi.encodePacked(subtext, ' +1'));
+            name_ = string(abi.encodePacked(name_, ' +1'));
             bg = 3;
         }
 
-        meta.background = backgrounds[bg];
-
-        return meta;
-    }
-
-    function fullname(uint256 tokenId) external view returns (string memory) {
-        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
-        string memory name_ = sc.name(componentType, components[0]);
-        if (components[1] > 0) {
-            name_ = string(abi.encodePacked(name_, ' ', sc.suffix(components[1])));
-        }
-
-        if (components[2] > 0) {
-            string memory prefix = sc.prefix(components[2], components[3]);
-            name_ = string(abi.encodePacked('\\"', prefix, '\\" ', name_));
-        }
-
-        if (components[4] > 0) {
-            name_ = string(abi.encodePacked(name_, ' +1'));
-        }
-
-        return name_;
+        return (name_, description, sc.attributes(components, componentType), prefix, subtext, backgrounds[bg]);
     }
 
     function tokenRle(uint256 id, uint8 gender) public view returns (bytes memory) {
@@ -142,11 +146,9 @@ contract SwapMeetMetadata {
         return TokenId.toId(components, componentType);
     }
 
-    function itemSVG(
-        uint256 tokenId,
-        uint8[5] memory components,
-        uint8 componentType
-    ) internal view returns (MetadataBuilder.SVGParams memory p) {
+    function itemParts(uint256 tokenId) internal view returns (bytes[] memory) {
+        uint8 componentType = TokenId.decode(tokenId, 0);
+
         bytes[] memory parts = new bytes[](8);
 
         bytes[4] memory male_ = genderParts(male, tokenId, Gender.MALE, componentType);
@@ -161,11 +163,7 @@ contract SwapMeetMetadata {
         parts[6] = female_[2];
         parts[7] = female_[3];
 
-        p = params(components, componentType);
-        p.resolution = 64;
-        p.color = hex'202221';
-        p.parts = parts;
-        return p;
+        return parts;
     }
 
     function genderParts(
@@ -207,17 +205,9 @@ contract SwapMeetMetadata {
         return parts;
     }
 
-    function vehicleSVG(
-        uint256 tokenId,
-        uint8[5] memory components,
-        uint8 componentType
-    ) internal view returns (MetadataBuilder.SVGParams memory p) {
+    function vehicleParts(uint256 tokenId) internal view returns (bytes[] memory) {
         bytes[] memory parts = new bytes[](1);
         parts[0] = tokenRle(tokenId, 0);
-        p = params(components, componentType);
-        p.resolution = 160;
-        p.color = hex'202221';
-        p.parts = parts;
-        return p;
+        return parts;
     }
 }

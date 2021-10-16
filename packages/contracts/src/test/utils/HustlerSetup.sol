@@ -5,6 +5,7 @@ import 'ds-test/test.sol';
 
 import './Hevm.sol';
 import '../../Loot.sol';
+import { Paper } from '../../Paper.sol';
 import { Hustler } from '../../Hustler.sol';
 import { SwapMeet } from '../../SwapMeet.sol';
 import { Components } from '../../Components.sol';
@@ -14,22 +15,25 @@ import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
 
 contract HustlerUser is ERC1155Holder, ERC721Holder {
-    DopeWarsLoot loot;
+    DopeWarsLoot dope;
     SwapMeet swapmeet;
     Hustler hustler;
+    Paper paper;
 
     constructor(
-        DopeWarsLoot _loot,
+        DopeWarsLoot _dope,
         SwapMeet _swapmeet,
-        Hustler _hustler
+        Hustler _hustler,
+        Paper _paper
     ) {
-        loot = _loot;
+        dope = _dope;
         swapmeet = _swapmeet;
         hustler = _hustler;
+        paper = _paper;
     }
 
     function claim(uint256 tokenId) public {
-        loot.claim(tokenId);
+        dope.claim(tokenId);
     }
 
     function open(uint256 tokenId) public {
@@ -84,7 +88,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 
     function setDopeApprovalForAll(address operator, bool approved) public {
-        loot.setApprovalForAll(operator, approved);
+        dope.setApprovalForAll(operator, approved);
     }
 
     function setMetadata(
@@ -102,6 +106,14 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         uint256 amount
     ) public {
         swapmeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
+    }
+
+    function approvePaper(address who, uint256 amount) public {
+        paper.approve(who, amount);
+    }
+
+    function claimPaper() public {
+        paper.claimAllForOwner();
     }
 }
 
@@ -368,7 +380,7 @@ contract HustlerOwner is ERC1155Holder {
 contract Owner {}
 
 contract HustlerTester is Hustler {
-    constructor(address _owner, address _swapmeet) Hustler(_owner, _swapmeet) {}
+    constructor(address _owner, address _swapmeet, address _paper) Hustler(_owner, _swapmeet, _paper) {}
 
     function getMetadata(uint256 id) public view returns (Metadata memory) {
         return metadata[id];
@@ -395,7 +407,8 @@ contract HustlerTest is DSTest {
     Hevm internal constant hevm = Hevm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
     // contracts
-    DopeWarsLoot internal loot;
+    DopeWarsLoot internal dope;
+    Paper internal paper;
     Components internal components;
     SwapMeetTester internal swapmeet;
     HustlerTester internal hustler;
@@ -409,21 +422,25 @@ contract HustlerTest is DSTest {
         owner = new HustlerOwner();
 
         // deploy contracts
-        loot = new DopeWarsLoot();
+        dope = new DopeWarsLoot();
+        paper = new Paper(address(dope));
         components = new Components(address(owner));
-        swapmeet = new SwapMeetTester(address(components), address(loot), address(owner));
-        hustler = new HustlerTester(address(owner), address(swapmeet));
+        swapmeet = new SwapMeetTester(address(components), address(dope), address(paper), address(owner));
+        hustler = new HustlerTester(address(owner), address(swapmeet), address(paper));
 
         owner.init(swapmeet, hustler);
 
         // create alice's account & claim a bag
-        alice = new HustlerUser(loot, swapmeet, hustler);
+        alice = new HustlerUser(dope, swapmeet, hustler, paper);
         alice.claim(BAG);
+        alice.claimPaper();
+        alice.approvePaper(address(swapmeet), type(uint256).max);
+        alice.approvePaper(address(hustler), type(uint256).max);
         alice.open(BAG);
-        assertEq(loot.ownerOf(BAG), address(alice));
+        assertEq(dope.ownerOf(BAG), address(alice));
 
         alice.claim(OTHER_BAG);
 
-        bob = new HustlerUser(loot, swapmeet, hustler);
+        bob = new HustlerUser(dope, swapmeet, hustler, paper);
     }
 }

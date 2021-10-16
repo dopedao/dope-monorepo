@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
+import { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
 import { ERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
@@ -25,6 +26,8 @@ library Errors {
 contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
 
+    IERC20 immutable paper;
+
     // First 500 are reserved for OG Hustlers.
     uint256 internal curId = 500;
 
@@ -35,7 +38,13 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     }
 
     // No need for a URI since we're doing everything onchain
-    constructor(address _owner, address _swapmeet) ERC1155('') HustlerMetadata(_swapmeet) {
+    constructor(
+        address _owner,
+        address _swapmeet,
+        address _paper
+    ) ERC1155('') HustlerMetadata(_swapmeet) {
+        paper = IERC20(_paper);
+        IERC20(_paper).approve(_swapmeet, type(uint256).max);
         transferOwnership(_owner);
     }
 
@@ -156,6 +165,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         metadata[hustlerId].name = name;
         metadata[hustlerId].background = background;
         metadata[hustlerId].color = color;
+        paper.transferFrom(msg.sender, address(this), swapmeet.cost());
         swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
         return hustlerId;
     }
