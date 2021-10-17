@@ -80,7 +80,7 @@ const DesktopIconList = () => {
       <DesktopIcon
         icon="discord"
         label="Discord"
-        clickAction={() => openBrowserTab('https://discord.gg/6fqqBS7mhY')}
+        clickAction={() => openBrowserTab('https://discord.gg/VFbAX3JzPu')}
       />
     </IconGrid>
   );
