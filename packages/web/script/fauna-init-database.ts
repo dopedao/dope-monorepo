@@ -25,16 +25,73 @@ const initFromGraphQL = async () => {
 
 // Index creation using "values" which is primarily used for sorting
 // https://docs.fauna.com/fauna/current/tutorials/indexes/sort
-const createDopeTokenSortIndex = async (name: string, fieldSort: any) => {
+const createDopeTokenSortIndex = async (name: string, values: any) => {
   console.log(`Creating SORT Index: ${name}`);
   return await client.query(
     q.CreateIndex({
       name: name,
       source: q.Collection('DopeToken'),
-      values: [fieldSort, { field: ['ref'] }]
+      values: values
     })
   );
 }
+
+const createHighestLastSaleIndex = async () => {
+  return await client.query(
+    q.CreateIndex({
+      name: "by-highest-last-sale-no-nulls",
+      source: [
+        {
+          collection: q.Collection("DopeToken"),
+          fields: {
+            ref_if_sold_before: q.Query(
+              q.Lambda(
+                "doc",
+                q.Let(
+                  {
+                    has_been_sold: q.Not(q.IsNull(
+                      q.Select(
+                        ["data", "open_sea_last_sale_price_eth"],
+                        q.Var("doc")
+                      )
+                    ))
+                  },
+                  q.If(
+                    q.Var("has_been_sold"), 
+                    q.Select("ref", q.Var("doc")), 
+                    null
+                  )
+                )
+              )
+            )
+          }
+        }
+      ],
+      values: [
+        { field: ["data", "open_sea_last_sale_price_eth"], reverse: true },
+        { binding: "ref_if_sold_before" }
+      ]
+    })
+  );
+};
+
+const createSortIndexes = async () => {
+  await createDopeTokenSortIndex(
+    'by-rank', 
+    [
+      { field: ['data', 'rank'] },
+      { field: ['ref'] }
+    ]
+  );
+  await createDopeTokenSortIndex(
+    'by-most-affordable',
+    [
+      { field: ['data', 'open_sea_current_sale_price_eth'] },
+      { field: ['ref'] }
+    ]
+  );
+  await createHighestLastSaleIndex();
+};
 
 // Index creation using "terms" which helps searching
 // https://docs.fauna.com/fauna/current/tutorials/indexes/search
@@ -49,6 +106,41 @@ const createDopeTokenSearchIndex = async (name: string, terms: any) => {
   );
 }
 
+const createMatchIndexes = async () => {
+  await createDopeTokenSearchIndex(
+    'item-text',
+    [
+      { field: ['data', 'clothes'] },
+      { field: ['data', 'drugs'] },
+      { field: ['data', 'foot'] },
+      { field: ['data', 'hand'] },
+      { field: ['data', 'neck'] },
+      { field: ['data', 'ring'] },
+      { field: ['data', 'vehicle'] },
+      { field: ['data', 'waist'] },  
+      { field: ['data', 'weapon'] }
+    ]
+  );
+  await createDopeTokenSearchIndex(
+    'paper_claimed',
+    [
+      { field: ['data', 'paper_claimed'] }
+    ]
+  );
+  await createDopeTokenSearchIndex(
+    'items_unbundled',
+    [
+      { field: ['data', 'items_unbundled'] }
+    ]
+  );
+  await createDopeTokenSearchIndex(
+    'on-sale',
+    [
+      { field: ['data', 'open_sea_is_on_sale'] }
+    ]
+  );
+}
+
 (async () => {
   try {
     await initFromGraphQL();
@@ -56,45 +148,8 @@ const createDopeTokenSearchIndex = async (name: string, terms: any) => {
     console.log('…Sleeping to ensure schema committed to Fauna');
     await new Promise(resolve => setTimeout(resolve, 5000));
 
-    await createDopeTokenSortIndex(
-      'by-rank', 
-      { field: ['data', 'rank'] }
-    );
-    await createDopeTokenSortIndex(
-      'by-most-affordable',
-      { field: ['data', 'open_sea_current_sale_price_eth'] }
-    );
-    await createDopeTokenSortIndex(
-      'by-highest-last-sale', 
-      {  field: ['data', 'open_sea_last_sale_price_eth'], reverse: true }
-    );
-
-    await createDopeTokenSearchIndex(
-      'item-text',
-      [
-        { field: ['data', 'clothes'] },
-        { field: ['data', 'drugs'] },
-        { field: ['data', 'foot'] },
-        { field: ['data', 'hand'] },
-        { field: ['data', 'neck'] },
-        { field: ['data', 'ring'] },
-        { field: ['data', 'vehicle'] },
-        { field: ['data', 'waist'] },  
-        { field: ['data', 'weapon'] }
-      ]
-    );
-    await createDopeTokenSearchIndex(
-      'claimed',
-      [{ field: ['data', 'claimed'] }]
-    );
-    await createDopeTokenSearchIndex(
-      'unbundled',
-      [{ field: ['data', 'unbundled'] }]
-    );
-    await createDopeTokenSearchIndex(
-      'on-sale',
-      [{ field: ['data', 'open_sea_is_on_sale'] }]
-    );
+    await createSortIndexes();
+    await createMatchIndexes();
 
     process.exit(0);
   } catch (e) {

@@ -12,14 +12,14 @@ const buildTokenObjects = () => {
     const dopeAsset = lootJsonEntries[i][1];
     const tokenId = Object.keys(dopeAsset)[0];
     const itemValues = Object.values(dopeAsset)[0];
-    // Merge items we have with smart defaults we can update later.
-    // Default claimed / unbundled to worst possible status
-    // and update from The Graph later.
     const tokenDocument = Object.assign(
       {
         token_id: tokenId,
-        claimed: true,
-        unbundled: true,
+        // Merge items we have with smart defaults we can update later.
+        // Default paper_claimed / items_unbundled to worst possible status
+        // and update from The Graph later.
+        paper_claimed: true,
+        items_unbundled: true,
         rank: getRarityForDopeId(tokenId)
       }, 
       itemValues
