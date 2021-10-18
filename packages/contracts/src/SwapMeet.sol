@@ -63,48 +63,54 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         address to,
         bytes memory data
     ) public {
-        require(
-            msg.sender == dope.ownerOf(tokenId) || dope.isApprovedForAll(dope.ownerOf(tokenId), msg.sender),
-            Errors.DoesNotOwnBagOrNotApproved
-        );
-        require(!opened[tokenId], Errors.AlreadyOpened);
-        opened[tokenId] = true;
-        _open(to, tokenId, data);
-        paper.transferFrom(msg.sender, timelock, cost());
+        uint256[] memory ids = new uint256[](1);
+        ids[0] = tokenId;
+        batchOpen(ids, to, data);
     }
 
     /// @notice Bulk opens the provided tokenIds. This
     /// can only be done once per DOPE token.
     function batchOpen(
-        uint256[] calldata ids,
+        uint256[] memory ids,
         address to,
         bytes memory data
     ) public {
-        for (uint256 i = 0; i < ids.length; i++) {
-            open(ids[i], to, data);
+        uint256[] memory amounts = new uint256[](9 * ids.length);
+        uint256[] memory parts = new uint256[](9 * ids.length);
+
+        for (uint256 i = 0; i < 9 * ids.length; i += 9) {
+            uint256 id = ids[i / 9];
+            require(
+                msg.sender == dope.ownerOf(id) || dope.isApprovedForAll(dope.ownerOf(id), msg.sender),
+                Errors.DoesNotOwnBagOrNotApproved
+            );
+            require(!opened[id], Errors.AlreadyOpened);
+            opened[id] = true;
+
+            uint256[] memory items = itemIds(id);
+            parts[i] = items[0];
+            parts[i + 1] = items[1];
+            parts[i + 2] = items[2];
+            parts[i + 3] = items[3];
+            parts[i + 4] = items[4];
+            parts[i + 5] = items[5];
+            parts[i + 6] = items[6];
+            parts[i + 7] = items[7];
+            parts[i + 8] = items[8];
+
+            amounts[i] = 1;
+            amounts[i + 1] = 1;
+            amounts[i + 2] = 1;
+            amounts[i + 3] = 1;
+            amounts[i + 4] = 1;
+            amounts[i + 5] = 1;
+            amounts[i + 6] = 1;
+            amounts[i + 7] = 1;
+            amounts[i + 8] = 1;
         }
-    }
 
-    /// @notice Opens your Loot bag and mints you 9 ERC-1155 tokens for each item
-    /// in that bag
-    function _open(
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) private {
-        uint256[] memory amounts = new uint256[](9);
-        uint256[] memory ids = itemIds(tokenId);
-        amounts[0] = 1;
-        amounts[1] = 1;
-        amounts[2] = 1;
-        amounts[3] = 1;
-        amounts[4] = 1;
-        amounts[5] = 1;
-        amounts[6] = 1;
-        amounts[7] = 1;
-        amounts[8] = 1;
-
-        _mintBatch(to, ids, amounts, data);
+        _mintBatch(to, parts, amounts, data);
+        paper.transferFrom(msg.sender, timelock, cost() * ids.length);
     }
 
     function itemIds(uint256 tokenId) private view returns (uint256[] memory) {
