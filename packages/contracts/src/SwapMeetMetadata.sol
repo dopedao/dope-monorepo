@@ -64,7 +64,7 @@ contract SwapMeetMetadata {
             bytes4 background_
         ) = params(tokenId);
 
-        MetadataBuilder.SVGParams memory p;
+        MetadataBuilder.Params memory p;
         p.name = name_;
         p.description = description_;
         p.color = hex'202221';
@@ -82,6 +82,10 @@ contract SwapMeetMetadata {
         }
 
         return MetadataBuilder.tokenURI(p, palettes);
+    }
+
+    function fullname(uint256 tokenId) public view returns (string memory n) {
+        (n, , , , , ) = params(tokenId);
     }
 
     function params(uint256 tokenId)

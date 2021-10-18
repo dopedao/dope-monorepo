@@ -31,12 +31,6 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     // First 500 are reserved for OG Hustlers.
     uint256 internal curId = 500;
 
-    struct Attributes {
-        string name;
-        bytes4 color;
-        bytes4 background;
-    }
-
     // No need for a URI since we're doing everything onchain
     constructor(
         address _owner,
@@ -174,6 +168,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         uint256 id = curId;
         curId += 1;
         _mint(msg.sender, id, 1, data);
+        metadata[id].age = block.timestamp;
         return id;
     }
 
@@ -208,24 +203,22 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     function setMetadata(
         uint256 hustlerId,
-        Attributes calldata attributes,
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
         uint8[4] calldata body,
         uint8 bmask
     ) public onlyHustler(hustlerId) {
-        setAttributes(hustlerId, attributes);
+        if (bytes(name).length > 0) {
+            metadata[hustlerId].name = name;
+        }
+        if (color.length > 0) {
+            metadata[hustlerId].color = color;
+        }
+        if (background.length > 0) {
+            metadata[hustlerId].background = background;
+        }
         setBody(hustlerId, body, bmask);
-    }
-
-    function setAttributes(uint256 id, Attributes calldata attributes) internal {
-        if (bytes(attributes.name).length > 0) {
-            metadata[id].name = attributes.name;
-        }
-        if (attributes.color.length > 0) {
-            metadata[id].color = attributes.color;
-        }
-        if (attributes.background.length > 0) {
-            metadata[id].background = attributes.background;
-        }
     }
 
     function setBody(

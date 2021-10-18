@@ -53,9 +53,8 @@ contract Setters is HustlerTest {
     function testCanSetName() public {
         uint256 id = alice.mint();
         uint8[4] memory body;
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: 'hustler name', background: '', color: '' });
 
-        alice.setMetadata(id, attributes, body, 0x0);
+        alice.setMetadata(id, 'hustler name', '', '', body, 0x0);
 
         assertEq(hustler.getMetadata(id).name, 'hustler name');
     }
@@ -63,9 +62,8 @@ contract Setters is HustlerTest {
     function testCanSetBackground() public {
         uint256 id = alice.mint();
         uint8[4] memory body;
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: hex'123456', color: '' });
 
-        alice.setMetadata(id, attributes, body, 0x0);
+        alice.setMetadata(id, '', '', hex'123456', body, 0x0);
 
         assertEq(hustler.getMetadata(id).background, hex'123456');
     }
@@ -73,9 +71,8 @@ contract Setters is HustlerTest {
     function testCanSetColor() public {
         uint256 id = alice.mint();
         uint8[4] memory body;
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: hex'123456' });
 
-        alice.setMetadata(id, attributes, body, 0x0);
+        alice.setMetadata(id, '', hex'123456', '', body, 0x0);
 
         assertEq(hustler.getMetadata(id).color, hex'123456');
     }
@@ -84,9 +81,8 @@ contract Setters is HustlerTest {
         uint256 id = alice.mint();
         uint8[4] memory body = [1, 0, 12, 0];
         uint8 mask = 0x05; // 0000 0101
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '' });
 
-        alice.setMetadata(id, attributes, body, mask);
+        alice.setMetadata(id, '', '', '', body, mask);
 
         assertEq(hustler.getMetadata(id).body[0], 1);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -98,9 +94,8 @@ contract Setters is HustlerTest {
         uint256 id = alice.mint();
         uint8[4] memory body = [2, 3, 4, 5];
         uint8 mask = 0x0f; // 0000 1111
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '' });
 
-        alice.setMetadata(id, attributes, body, mask);
+        alice.setMetadata(id, '', '', '', body, mask);
 
         assertEq(hustler.getMetadata(id).body[0], 2);
         assertEq(hustler.getMetadata(id).body[1], 3);
@@ -112,15 +107,13 @@ contract Setters is HustlerTest {
         uint256 id = hustler.mint('');
         uint8[4] memory body = [2, 3, 4, 5];
         uint8 mask = 0x0f; // 0000 1111
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '' });
 
-        alice.setMetadata(id, attributes, body, mask);
+        alice.setMetadata(id, '', '', '', body, mask);
     }
 
     function testCanSetSlotsPartial() public {
         uint256 id = alice.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
-        uint8[4] memory body;
         uint256[] memory items = new uint256[](2);
         items[0] = ids.weapon;
         items[1] = ids.vehicle;
@@ -128,9 +121,6 @@ contract Setters is HustlerTest {
         amounts[0] = 1;
         amounts[1] = 1;
 
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '' });
-
-        alice.setMetadata(id, attributes, body, 0x0);
         alice.safeBatchTransferFrom(address(alice), address(hustler), items, amounts, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
@@ -148,8 +138,6 @@ contract Setters is HustlerTest {
     function testCanSetSlotsFull() public {
         uint256 id = alice.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
-        uint8[4] memory body;
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '' });
 
         uint256[] memory items = new uint256[](9);
         items[0] = ids.weapon;
@@ -174,7 +162,6 @@ contract Setters is HustlerTest {
         amounts[8] = 1;
 
         alice.setApprovalForAll(address(hustler), true);
-        alice.setMetadata(id, attributes, body, 0x0);
         alice.safeBatchTransferFrom(address(alice), address(hustler), items, amounts, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
@@ -194,7 +181,6 @@ contract Setters is HustlerTest {
         uint256 id = alice.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
         uint8[4] memory body;
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '' });
 
         uint256[] memory items = new uint256[](9);
         items[0] = ids.weapon;
@@ -219,7 +205,7 @@ contract Setters is HustlerTest {
         amounts[8] = 1;
 
         alice.setApprovalForAll(address(hustler), true);
-        alice.setMetadata(id, attributes, body, 0x0);
+        alice.setMetadata(id, '', '', '', body, 0x0);
         alice.safeBatchTransferFrom(address(alice), address(hustler), items, amounts, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
@@ -325,9 +311,7 @@ contract Setters is HustlerTest {
         ItemIds memory ids = swapmeet.ids(BAG);
         uint8[4] memory body;
 
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '' });
-
-        alice.setMetadata(id, attributes, body, 0x0);
+        alice.setMetadata(id, '', '', '', body, 0x0);
         alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
@@ -361,9 +345,6 @@ contract Setters is HustlerTest {
         ItemIds memory ids = swapmeet.ids(BAG);
         uint8[4] memory body;
 
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '' });
-
-        alice.setMetadata(id, attributes, body, 0x0);
         alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
@@ -421,7 +402,6 @@ contract Setters is HustlerTest {
         uint256 id = alice.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
         uint8[4] memory body = [0, 0, 0, 0];
-        Hustler.Attributes memory attributes = Hustler.Attributes({ name: '', background: '', color: '' });
 
         uint256[] memory items = new uint256[](9);
         items[0] = ids.weapon;
@@ -435,9 +415,6 @@ contract Setters is HustlerTest {
         items[8] = ids.ring;
 
         alice.setApprovalForAll(address(hustler), true);
-        uint8 bmask = 0x0f; // 0000 1111
-
-        alice.setMetadata(id, attributes, body, bmask);
 
         hustler.tokenURI(id);
     }

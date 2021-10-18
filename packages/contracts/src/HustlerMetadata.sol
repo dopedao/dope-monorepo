@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import { BitMask } from './BitMask.sol';
 import { Gender } from './SwapMeetMetadata.sol';
-import { MetadataBuilder } from './MetadataBuilder.sol';
+import { DisplayTypes, MetadataBuilder } from './MetadataBuilder.sol';
 import { ISwapMeet } from './interfaces/ISwapMeet.sol';
 
 library BodyParts {
@@ -20,6 +20,7 @@ contract HustlerMetadata {
         bytes4 color;
         bytes4 background;
         bytes2 mask;
+        uint256 age;
         uint8[4] body;
         uint256[10] slots;
         string name;
@@ -28,6 +29,20 @@ contract HustlerMetadata {
     string private constant _name = 'Hustlers';
     string private constant _symbol = 'HUSTLERS';
     string private constant description = 'Hustle Hard';
+    string[12] private traitTypes = [
+        'Weapon',
+        'Clothes',
+        'Vehicle',
+        'Waist',
+        'Feet',
+        'Hands',
+        'Drug',
+        'Neck',
+        'Ring',
+        'Gender',
+        'Initiation',
+        'Respect'
+    ];
 
     ISwapMeet internal immutable swapmeet;
 
@@ -69,14 +84,12 @@ contract HustlerMetadata {
     function tokenURI(uint256 hustlerId) public view returns (string memory) {
         Metadata memory meta = metadata[hustlerId];
 
-        (string[] memory keys, string[] memory values) = attributes(hustlerId);
-
-        MetadataBuilder.SVGParams memory p;
+        MetadataBuilder.Params memory p;
         p.name = meta.name;
         p.resolution = 64;
         p.color = meta.background;
         p.parts = parts(hustlerId);
-        p.attributes = MetadataBuilder.attributes(keys, values);
+        p.attributes = MetadataBuilder.attributes(attributes(hustlerId));
         return MetadataBuilder.tokenURI(p, palettes);
     }
 
@@ -102,33 +115,31 @@ contract HustlerMetadata {
         return parts_;
     }
 
-    function attributes(uint256 hustlerId) public view returns (string[] memory, string[] memory) {
-        string memory none = 'None';
-        string[] memory keys = new string[](10);
-        string[] memory values = new string[](10);
+    function attributes(uint256 hustlerId) public view returns (bytes[] memory) {
+        bytes memory none = 'None';
 
-        keys[0] = 'Weapon';
-        keys[1] = 'Clothes';
-        keys[2] = 'Vehicle';
-        keys[3] = 'Waist';
-        keys[4] = 'Feet';
-        keys[5] = 'Hands';
-        keys[6] = 'Drug';
-        keys[7] = 'Neck';
-        keys[8] = 'Ring';
-        keys[9] = 'Gender';
-
-        values[0] = genders[metadata[hustlerId].body[BodyParts.GENDER]];
+        bytes[] memory traits = new bytes[](12);
 
         for (uint8 i = 0; i < 9; i++) {
+            bytes memory v;
             if (BitMask.get(metadata[hustlerId].mask, i)) {
-                (values[i], , , , , ) = swapmeet.params(metadata[hustlerId].slots[i]);
+                v = bytes(swapmeet.fullname(metadata[hustlerId].slots[i]));
             } else {
-                values[1] = none;
+                v = none;
             }
+
+            traits[i] = abi.encode(DisplayTypes.NONE, traitTypes[i], abi.encode(v));
         }
 
-        return (keys, values);
+        traits[9] = abi.encode(
+            DisplayTypes.NONE,
+            traitTypes[9],
+            abi.encode(genders[metadata[hustlerId].body[BodyParts.GENDER]])
+        );
+        traits[10] = abi.encode(DisplayTypes.DATE, traitTypes[10], abi.encode(metadata[hustlerId].age));
+        // traits[11] = abi.encode(0x1, traitTypes[11], abi.encode(metadata[hustlerId].age));
+
+        return traits;
     }
 
     function slot(uint256 id) internal pure returns (uint8) {

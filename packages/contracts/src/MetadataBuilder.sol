@@ -7,10 +7,19 @@ pragma solidity ^0.8.6;
 
 import { Base64, toString } from './MetadataUtils.sol';
 
+library DisplayTypes {
+    uint8 constant NONE = 0x0;
+    uint8 constant RANKING = 0x1;
+    uint8 constant NUMBER = 0x2;
+    uint8 constant BOOST_PERCENT = 0x3;
+    uint8 constant BOOST_NUMBER = 0x4;
+    uint8 constant DATE = 0x5;
+}
+
 library MetadataBuilder {
     bytes16 internal constant HEX = '0123456789abcdef';
 
-    struct SVGParams {
+    struct Params {
         uint8 resolution;
         bytes4 color;
         bytes4 background;
@@ -20,6 +29,12 @@ library MetadataBuilder {
         string description;
         string attributes;
         bytes[] parts;
+    }
+
+    struct Trait {
+        string typ;
+        bytes value;
+        uint8 display;
     }
 
     struct ContentBounds {
@@ -43,7 +58,7 @@ library MetadataBuilder {
     /**
      * @notice Given RLE image parts and color palettes, merge to generate a single SVG image.
      */
-    function generateSVG(SVGParams memory params, mapping(uint8 => bytes4[]) storage palettes)
+    function generateSVG(Params memory params, mapping(uint8 => bytes4[]) storage palettes)
         public
         view
         returns (string memory svg)
@@ -60,7 +75,7 @@ library MetadataBuilder {
         );
     }
 
-    function generateStyles(SVGParams memory params) private pure returns (string memory) {
+    function generateStyles(Params memory params) private pure returns (string memory) {
         return
             string(
                 abi.encodePacked(
@@ -72,7 +87,7 @@ library MetadataBuilder {
             );
     }
 
-    function generateText(SVGParams memory params) private pure returns (string memory) {
+    function generateText(Params memory params) private pure returns (string memory) {
         return
             string(
                 abi.encodePacked(
@@ -93,7 +108,7 @@ library MetadataBuilder {
         return output;
     }
 
-    function tokenURI(SVGParams memory params, mapping(uint8 => bytes4[]) storage palettes)
+    function tokenURI(Params memory params, mapping(uint8 => bytes4[]) storage palettes)
         external
         view
         returns (string memory)
@@ -127,7 +142,7 @@ library MetadataBuilder {
      * @notice Given RLE image parts and color palettes, generate SVG rects.
      */
     // prettier-ignore
-    function generateSVGRects(SVGParams memory params, mapping(uint8 => bytes4[]) storage palettes)
+    function generateSVGRects(Params memory params, mapping(uint8 => bytes4[]) storage palettes)
         private
         view
         returns (string memory svg)
@@ -223,11 +238,11 @@ library MetadataBuilder {
         return DecodedImage({ paletteIndex: paletteIndex, bounds: bounds, rects: rects });
     }
 
-    function attributes(string[] calldata keys, string[] calldata values) external pure returns (string memory) {
+    function attributes(bytes[] calldata traits) external pure returns (string memory) {
         string memory res = string(abi.encodePacked('['));
 
-        for (uint256 i = 0; i < keys.length; i++) {
-            res = string(abi.encodePacked(res, trait(keys[i], values[i])));
+        for (uint256 i = 0; i < traits.length; i++) {
+            res = string(abi.encodePacked(res, trait(traits[i])));
         }
 
         res = string(abi.encodePacked(res, ']'));
@@ -235,8 +250,34 @@ library MetadataBuilder {
     }
 
     // Helper for encoding as json w/ trait_type / value from opensea
-    function trait(string memory traitType, string memory value) internal pure returns (string memory) {
-        return string(abi.encodePacked('{', '"trait_type": "', traitType, '", ', '"value": "', value, '"', '}'));
+    function trait(bytes calldata t) internal pure returns (string memory) {
+        (uint8 d, string memory typ, bytes memory v) = abi.decode(t, (uint8, string, bytes));
+
+        string memory value = '';
+        if (d == 0x0) {
+            value = abi.decode(v, (string));
+            value = string(abi.encodePacked('"', value, '"'));
+        } else {
+            uint256 num = abi.decode(v, (uint256));
+            value = string(abi.encodePacked(toString(num)));
+        }
+
+        if (d == DisplayTypes.RANKING) {
+            return string(abi.encodePacked('{', '"trait_type": "', typ, '", ', '"value": ', value, '}'));
+        }
+
+        string memory display = '';
+        if (d == DisplayTypes.NUMBER) {
+            display = string(abi.encodePacked('"display_type": "number", '));
+        } else if (d == DisplayTypes.BOOST_NUMBER) {
+            display = string(abi.encodePacked('"display_type": "boost_number", '));
+        } else if (d == DisplayTypes.BOOST_PERCENT) {
+            display = string(abi.encodePacked('"display_type": "boost_percentage", '));
+        } else if (d == DisplayTypes.DATE) {
+            display = string(abi.encodePacked('"display_type": "date", '));
+        }
+
+        return string(abi.encodePacked('{"trait_type": "', typ, '", ', display, '"value": ', value, '}'));
     }
 
     function toColor(bytes4 value) internal pure returns (string memory) {

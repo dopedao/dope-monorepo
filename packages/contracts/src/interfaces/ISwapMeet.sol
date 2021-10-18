@@ -19,6 +19,8 @@ interface ISwapMeet is IERC1155 {
             bytes4
         );
 
+    function fullname(uint256 tokenId) external view returns (string memory n);
+
     function tokenRle(uint256 id, uint8 gender) external view returns (bytes memory);
 
     function open(
