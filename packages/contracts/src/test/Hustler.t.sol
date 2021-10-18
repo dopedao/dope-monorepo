@@ -401,7 +401,6 @@ contract Setters is HustlerTest {
 
         uint256 id = alice.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
-        uint8[4] memory body = [0, 0, 0, 0];
 
         uint256[] memory items = new uint256[](9);
         items[0] = ids.weapon;

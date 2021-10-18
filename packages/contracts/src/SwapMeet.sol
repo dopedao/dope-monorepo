@@ -25,7 +25,9 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
     IERC721 immutable dope;
     IERC20 immutable paper;
     address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
-    uint256 public cost = 12500000000000000000000;
+
+    uint256 private immutable deployedAt;
+    uint256 private cost_ = 12500000000000000000000;
 
     mapping(uint256 => bool) private opened;
 
@@ -38,7 +40,20 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
     ) SwapMeetMetadata(_components) ERC1155('') {
         dope = IERC721(_dope);
         paper = IERC20(_paper);
+        deployedAt = block.timestamp;
         transferOwnership(_owner);
+    }
+
+    function cost() public view returns (uint256) {
+        if ((block.timestamp - deployedAt) > 420 days) {
+            return 0;
+        } else if ((block.timestamp - deployedAt) > 180 days) {
+            return 3125000000000000000000;
+        } else if ((block.timestamp - deployedAt) > 90 days) {
+            return 6250000000000000000000;
+        }
+
+        return cost_;
     }
 
     /// @notice Opens the provided tokenId if the sender is owner. This
@@ -55,7 +70,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         require(!opened[tokenId], Errors.AlreadyOpened);
         opened[tokenId] = true;
         _open(to, tokenId, data);
-        paper.transferFrom(msg.sender, timelock, cost);
+        paper.transferFrom(msg.sender, timelock, cost());
     }
 
     /// @notice Bulk opens the provided tokenIds. This

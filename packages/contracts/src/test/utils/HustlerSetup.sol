@@ -405,7 +405,7 @@ contract HustlerTester is Hustler {
     }
 }
 
-contract HustlerTest is DSTest {
+contract HustlerTest is ERC1155Holder, DSTest {
     uint256 internal constant BAG = 10;
     uint256 internal constant OTHER_BAG = 100;
     uint256 internal constant UZI_BAG_1 = 4333;

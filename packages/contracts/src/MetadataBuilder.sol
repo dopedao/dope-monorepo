@@ -31,12 +31,6 @@ library MetadataBuilder {
         bytes[] parts;
     }
 
-    struct Trait {
-        string typ;
-        bytes value;
-        uint8 display;
-    }
-
     struct ContentBounds {
         uint8 top;
         uint8 right;
@@ -242,6 +236,10 @@ library MetadataBuilder {
         string memory res = string(abi.encodePacked('['));
 
         for (uint256 i = 0; i < traits.length; i++) {
+            if (traits[i].length == 0) {
+                continue;
+            }
+
             res = string(abi.encodePacked(res, trait(traits[i])));
         }
 

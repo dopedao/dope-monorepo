@@ -40,6 +40,16 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         paper = IERC20(_paper);
         IERC20(_paper).approve(_swapmeet, type(uint256).max);
         transferOwnership(_owner);
+
+        uint256[] memory ids = new uint256[](500);
+        uint256[] memory amounts = new uint256[](500);
+
+        for (uint256 i = 0; i < 500; i++) {
+            ids[i] = i;
+            amounts[i] = 1;
+        }
+
+        mintOGs(msg.sender, ids, amounts);
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {
@@ -172,14 +182,12 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         return id;
     }
 
-    function mintBatch(
+    function mintOGs(
         address to,
         uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) external onlyOwner returns (uint256[] memory) {
-        _mintBatch(to, ids, amounts, data);
-        return ids;
+        uint256[] memory amounts
+    ) internal returns (uint256[] memory) {
+        _mintBatch(to, ids, amounts, '');
     }
 
     function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {

@@ -45,6 +45,7 @@ contract HustlerMetadata {
     ];
 
     ISwapMeet internal immutable swapmeet;
+    uint256 private immutable deployedAt;
 
     string[2] genders = ['Male', 'Female'];
 
@@ -65,6 +66,7 @@ contract HustlerMetadata {
 
     constructor(address _swapmeet) {
         swapmeet = ISwapMeet(_swapmeet);
+        deployedAt = block.timestamp;
     }
 
     function name() external pure returns (string memory) {
@@ -120,6 +122,10 @@ contract HustlerMetadata {
 
         bytes[] memory traits = new bytes[](12);
 
+        if (metadata[hustlerId].age == 0) {
+            return traits;
+        }
+
         for (uint8 i = 0; i < 9; i++) {
             bytes memory v;
             if (BitMask.get(metadata[hustlerId].mask, i)) {
@@ -137,7 +143,9 @@ contract HustlerMetadata {
             abi.encode(genders[metadata[hustlerId].body[BodyParts.GENDER]])
         );
         traits[10] = abi.encode(DisplayTypes.DATE, traitTypes[10], abi.encode(metadata[hustlerId].age));
-        // traits[11] = abi.encode(0x1, traitTypes[11], abi.encode(metadata[hustlerId].age));
+
+        uint256 respect = (1e5 - ((metadata[hustlerId].age - deployedAt) * 1e5) / (block.timestamp * 1e5)) / 1e3;
+        traits[11] = abi.encode(DisplayTypes.RANKING, traitTypes[11], abi.encode(respect));
 
         return traits;
     }
