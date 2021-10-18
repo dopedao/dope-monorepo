@@ -23,9 +23,13 @@ const initFromGraphQL = async () => {
   });
 };
 
-// Index creation using "values" which is primarily used for sorting
+// Index creation using 'values' which is primarily used for sorting
 // https://docs.fauna.com/fauna/current/tutorials/indexes/sort
-const createDopeTokenSortIndex = async (name: string, values: any) => {
+interface DopeTokenSortIndexInterface {
+  name: string;
+  values: any;
+}
+const createDopeTokenSortIndex = async ({name, values}: DopeTokenSortIndexInterface) => {
   console.log(`Creating SORT Index: ${name}`);
   return await client.query(
     q.CreateIndex({
@@ -36,64 +40,101 @@ const createDopeTokenSortIndex = async (name: string, values: any) => {
   );
 }
 
+// Have to use the fields accessor with bindings here to avoid null entries,
+// which is a bit more complicated than a standard index.
+//
+// This is necessary to prevent items that haven't been sold previously
+// from appearing at the top of the sorted items list.
+//
+// More info about this technique:
+// https://forums.fauna.com/t/excluding-documents-from-index/2157/6
 const createHighestLastSaleIndex = async () => {
   return await client.query(
     q.CreateIndex({
-      name: "by-highest-last-sale-no-nulls",
-      source: [
-        {
-          collection: q.Collection("DopeToken"),
-          fields: {
-            ref_if_sold_before: q.Query(
-              q.Lambda(
-                "doc",
-                q.Let(
-                  {
-                    has_been_sold: q.Not(q.IsNull(
-                      q.Select(
-                        ["data", "open_sea_last_sale_price_eth"],
-                        q.Var("doc")
-                      )
-                    ))
-                  },
-                  q.If(
-                    q.Var("has_been_sold"), 
-                    q.Select("ref", q.Var("doc")), 
-                    null
-                  )
+      name: 'by_highest_last_sale',
+      source: {
+        collection: q.Collection('DopeToken'),
+        fields: {
+          ref_if_sold_before: q.Query(
+            q.Lambda(
+              'doc',
+              q.Let(
+                {
+                  has_been_sold: q.Not(q.IsNull(
+                    q.Select(
+                      ['data', 'open_sea_last_sale_price_eth'],
+                      q.Var('doc')
+                    )
+                  ))
+                },
+                q.If(
+                  q.Var('has_been_sold'), 
+                  q.Select('ref', q.Var('doc')), 
+                  null
                 )
               )
             )
-          }
+          )
         }
-      ],
+      },
       values: [
-        { field: ["data", "open_sea_last_sale_price_eth"], reverse: true },
-        { binding: "ref_if_sold_before" }
+        { field: ['data', 'open_sea_last_sale_price_eth'], reverse: true },
+        { binding: 'ref_if_sold_before' }
+      ]
+    })
+  );
+};
+
+const createMostAffordableIndex = async () => {
+  return await client.query(
+    q.CreateIndex({
+      name: 'by_most_affordable',
+      source: {
+        collection: q.Collection('DopeToken'),
+        fields: {
+          ref_if_on_sale: q.Query(
+            q.Lambda(
+              'doc',
+              q.Let(
+                {
+                  is_on_sale: q.Not(q.IsNull(
+                    q.Select(
+                      ['data', 'open_sea_current_sale_price_eth'],
+                      q.Var('doc')
+                    )
+                  ))
+                },
+                q.If(
+                  q.Var('is_on_sale'), 
+                  q.Select('ref', q.Var('doc')), 
+                  null
+                )
+              )
+            )
+          )
+        }
+      },
+      values: [
+        { field: ['data', 'open_sea_current_sale_price_eth'] },
+        { binding: 'ref_if_on_sale' }
       ]
     })
   );
 };
 
 const createSortIndexes = async () => {
-  await createDopeTokenSortIndex(
-    'by-rank', 
-    [
+  await createDopeTokenSortIndex({
+    name: 'by_rank', 
+    values: [
       { field: ['data', 'rank'] },
       { field: ['ref'] }
     ]
-  );
-  await createDopeTokenSortIndex(
-    'by-most-affordable',
-    [
-      { field: ['data', 'open_sea_current_sale_price_eth'] },
-      { field: ['ref'] }
-    ]
-  );
+  });
+  await createMostAffordableIndex();
   await createHighestLastSaleIndex();
 };
 
-// Index creation using "terms" which helps searching
+// Index creation using 'terms' which helps searching
 // https://docs.fauna.com/fauna/current/tutorials/indexes/search
 const createDopeTokenSearchIndex = async (name: string, terms: any) => {
   console.log(`Creating SEARCH Index: ${name}`);
@@ -108,7 +149,7 @@ const createDopeTokenSearchIndex = async (name: string, terms: any) => {
 
 const createMatchIndexes = async () => {
   await createDopeTokenSearchIndex(
-    'item-text',
+    'item_text',
     [
       { field: ['data', 'clothes'] },
       { field: ['data', 'drugs'] },
@@ -123,21 +164,15 @@ const createMatchIndexes = async () => {
   );
   await createDopeTokenSearchIndex(
     'paper_claimed',
-    [
-      { field: ['data', 'paper_claimed'] }
-    ]
+    [{ field: ['data', 'paper_claimed'] }]
   );
   await createDopeTokenSearchIndex(
     'items_unbundled',
-    [
-      { field: ['data', 'items_unbundled'] }
-    ]
+    [{ field: ['data', 'items_unbundled'] }]
   );
   await createDopeTokenSearchIndex(
-    'on-sale',
-    [
-      { field: ['data', 'open_sea_is_on_sale'] }
-    ]
+    'on_sale',
+    [{ field: ['data', 'open_sea_is_on_sale'] }]
   );
 }
 
