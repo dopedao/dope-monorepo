@@ -92,17 +92,8 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         uint256 tokenId,
         bytes memory data
     ) private {
-        uint256[] memory ids = new uint256[](9);
         uint256[] memory amounts = new uint256[](9);
-        ids[0] = itemId(tokenId, ComponentTypes.WEAPON);
-        ids[1] = itemId(tokenId, ComponentTypes.CLOTHES);
-        ids[2] = itemId(tokenId, ComponentTypes.VEHICLE);
-        ids[3] = itemId(tokenId, ComponentTypes.WAIST);
-        ids[4] = itemId(tokenId, ComponentTypes.FOOT);
-        ids[5] = itemId(tokenId, ComponentTypes.HAND);
-        ids[6] = itemId(tokenId, ComponentTypes.DRUGS);
-        ids[7] = itemId(tokenId, ComponentTypes.NECK);
-        ids[8] = itemId(tokenId, ComponentTypes.RING);
+        uint256[] memory ids = itemIds(tokenId);
         amounts[0] = 1;
         amounts[1] = 1;
         amounts[2] = 1;
@@ -116,9 +107,13 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         _mintBatch(to, ids, amounts, data);
     }
 
-    function itemId(uint256 tokenId, uint8 componentType) private view returns (uint256) {
-        uint8[5] memory components = sc.getComponent(tokenId, componentType);
-        return TokenId.toId(components, componentType);
+    function itemIds(uint256 tokenId) private view returns (uint256[] memory) {
+        uint256[] memory ids = new uint256[](9);
+        uint8[5][9] memory items = sc.items(tokenId);
+        for (uint8 i = 0; i < 9; i++) {
+            ids[i] = TokenId.toId(items[i], i);
+        }
+        return ids;
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {

@@ -153,7 +153,7 @@ contract Metadata is SwapMeetTest {
     }
 
     function testShouldFallbackToBaseItemRLE() public {
-        uint8[5] memory components = components.getComponent(3686, ComponentTypes.HAND);
+        uint8[5] memory components = components.items(3686)[ComponentTypes.HAND];
         uint256 fullId = TokenId.toId(components, ComponentTypes.HAND);
 
         components[1] = 0;

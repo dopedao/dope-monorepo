@@ -186,7 +186,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         address to,
         uint256[] memory ids,
         uint256[] memory amounts
-    ) internal returns (uint256[] memory) {
+    ) internal {
         _mintBatch(to, ids, amounts, '');
     }
 

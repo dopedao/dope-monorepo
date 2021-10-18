@@ -252,7 +252,7 @@ library MetadataBuilder {
         (uint8 d, string memory typ, bytes memory v) = abi.decode(t, (uint8, string, bytes));
 
         string memory value = '';
-        if (d == 0x0) {
+        if (d == DisplayTypes.NONE) {
             value = abi.decode(v, (string));
             value = string(abi.encodePacked('"', value, '"'));
         } else {
