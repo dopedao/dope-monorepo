@@ -1,3 +1,5 @@
+# DOPE NFT tokens with all necessary information to
+# fill our Swap Meet
 type DopeToken {
   id: String!
   claimed: Boolean
@@ -33,4 +35,18 @@ type DopeToken {
   weapon_count: Int
   weapon_rank: Int
   weapon: String
+}
+
+# Defining a resolver here that points to a User Defined Function
+# in Fauna. The UDF is created elsewhere in our DB setup yarn scripts.
+#
+# Process described here: 
+# https://docs.fauna.com/fauna/current/api/graphql/functions#schema-import
+type Query {
+  getSwapMeetPage(
+    q: String,
+    hasUnclaimedPaper: Boolean,
+    isForSale: Boolean,
+    sortByIndexName: String
+  ): [DopeToken!] @resolver(name: "get_swap_meet_page", paginated: true)
 }
