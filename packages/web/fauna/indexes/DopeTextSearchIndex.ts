@@ -26,7 +26,7 @@ export const create = async () => {
                   q.Select(['data', 'waist'], q.Var('doc')),
                   q.Select(['data', 'weapon'], q.Var('doc'))
                 ], ' ')
-              ))
+              ), 3, 3)
             )
           )
         }
