@@ -1,4 +1,4 @@
-import { FAUNA_KEY } from '../src/fauna-client';
+import { FAUNA_KEY } from '../src/fauna_client';
 import fetch from 'isomorphic-fetch';
 import fs from 'fs';
 

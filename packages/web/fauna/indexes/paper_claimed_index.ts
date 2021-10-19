@@ -1,13 +1,14 @@
-import { client, q } from '../../src/fauna-client';
+import { client, q } from '../../src/fauna_client';
 
-// Index creation using 'terms' which helps searching
+// Indexes if $PAPER has been claimed from DOPE Token
 // https://docs.fauna.com/fauna/current/tutorials/indexes/search
 export const create = async () => {
   return await client.query(
     q.CreateIndex({
-      name: 'items_unbundled',
+      name: 'paper_claimed',
       source: q.Collection('DopeToken'),
-      terms: [{ field: ['data', 'items_unbundled'] }]
+      terms: [{ field: ['data', 'paper_claimed'] }]
     })
   );
 }
+    

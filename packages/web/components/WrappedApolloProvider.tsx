@@ -5,7 +5,7 @@ import {
   makeVar,
   useReactiveVar,
 } from '@apollo/client';
-import { getRarityForDopeId } from '../src/dope-rarity-check';
+import { getRarityForDopeId } from '../src/dope_rarity_check';
 import { NETWORK } from '../src/constants';
 import { OpenSeaAsset } from '../src/OpenSeaAsset';
 import { ReactNode, useMemo } from 'react';

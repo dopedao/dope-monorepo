@@ -1,22 +1,32 @@
-import { client, q } from '../../src/fauna-client';
+import { client, q } from '../../src/fauna_client';
 
+// Index of highest last Eth sale on OpenSea
+//
+// Have to use the fields accessor with bindings here to avoid null entries,
+// which is a bit more complicated than a standard index.
+//
+// This is necessary to prevent items that haven't been sold previously
+// from appearing at the top of the sorted items list.
+//
+// More info about this technique:
+// https://forums.fauna.com/t/excluding-documents-from-index/2157/6
 const sourceObj = {
   collection: q.Collection('DopeToken'),
   fields: {
-    ref_if_on_sale: q.Query(
+    ref_if_sold_before: q.Query(
       q.Lambda(
         'doc',
         q.Let(
           {
-            is_on_sale: q.Not(q.IsNull(
+            has_been_sold: q.Not(q.IsNull(
               q.Select(
-                ['data', 'open_sea_current_sale_price_eth'],
+                ['data', 'open_sea_last_sale_price_eth'],
                 q.Var('doc')
               )
             ))
           },
           q.If(
-            q.Var('is_on_sale'), 
+            q.Var('has_been_sold'), 
             q.Select('ref', q.Var('doc')), 
             null
           )
@@ -26,12 +36,10 @@ const sourceObj = {
   }
 };
 const values = [
-  { field: ['data', 'open_sea_current_sale_price_eth'] },
-  { binding: 'ref_if_on_sale' }
-]
+  { field: ['data', 'open_sea_last_sale_price_eth'], reverse: true },
+  { binding: 'ref_if_sold_before' }
+];
 
-// Sort index by Most Affordable ASC
-// 
 // Create standard Index without matching necessary,
 // and another that allows us to combine it with other 
 // indexes for Searching + Sorting as found here:
@@ -41,12 +49,12 @@ export const create = async () => {
   return await client.query(
     q.Do(
       q.CreateIndex({
-        name: 'by_most_affordable',
+        name: 'by_highest_last_sale',
         source: sourceObj,
         values: values
       }),
       q.CreateIndex({
-        name: 'by_most_affordable_with_ref',
+        name: 'by_highest_last_sale_with_ref',
         source: sourceObj,
         values: values,
         terms: [

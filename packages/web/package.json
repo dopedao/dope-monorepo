@@ -9,13 +9,13 @@
     "gen": "graphql-codegen --config codegen.yml",
     "test": "jest",
     "test-watch": "jest --watch",
-    "dump-opensea": "ts-node --script-mode script/dump-opensea-json.ts",
-    "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh-opensea-sales-cache.ts",
+    "dump-opensea": "ts-node --script-mode script/dump_opensea_json.ts",
+    "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh_opensea_sales_cache.ts",
     "db:reset": "yarn db:init && yarn db:index && yarn db:populate && yarn db:refresh-opensea",
-    "db:init": "ts-node --script-mode script/fauna-init-database.ts",
-    "db:index": "ts-node --script-mode script/fauna-create-indexes.ts",
-    "db:populate": "ts-node --script-mode script/fauna-populate-dope-tokens.ts",
-    "db:refresh-opensea": "ts-node --script-mode script/fauna-refresh-opensea.ts"
+    "db:init": "ts-node --script-mode script/fauna_init_database.ts",
+    "db:index": "ts-node --script-mode script/fauna_create_indexes.ts",
+    "db:populate": "ts-node --script-mode script/fauna_populate_dope_tokens.ts",
+    "db:refresh-opensea": "ts-node --script-mode script/fauna_refresh_opensea.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.4.11",

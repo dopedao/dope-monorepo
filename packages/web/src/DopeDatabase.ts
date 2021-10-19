@@ -1,7 +1,7 @@
 import { Bag } from '../src/generated/graphql';
 import { makeVar } from '@apollo/client';
 import DopeJson from 'dope-metrics/output/loot.json';
-import { getRarityForDopeId } from './dope-rarity-check';
+import { getRarityForDopeId } from './dope_rarity_check';
 import { PickedBag } from './PickedBag';
 import { newEmptyBag } from './EmptyBag';
 

@@ -1,8 +1,8 @@
 overwrite: true
 schema: 
   - "https://api.studio.thegraph.com/query/7708/dope-wars/v0.0.17-rinkeby"
-  - "apollo/client-schemas/bag.graphql"
-  - "apollo/client-schemas/open-sea-asset.graphql"
+  - "apollo/client_schemas/bag.graphql"
+  - "apollo/client_schemas/open_sea_asset.graphql"
 documents: "apollo/queries/**/*.graphql"
 generates:
   src/generated/graphql.ts:

@@ -1,7 +1,7 @@
-import { client, q } from '../src/fauna-client';
-import { getRarityForDopeId } from '../src/dope-rarity-check';
+import { client, q } from '../src/fauna_client';
+import { getRarityForDopeId } from '../src/dope_rarity_check';
 import DopeJson from 'dope-metrics/output/loot.json';
-import chunkArray from '../src/chunk-array';
+import chunkArray from '../src/chunk_array';
 
 // Returns data structures that should map to the GraphQL schema for DopeToken
 // as defined in dope_token_schema.graphql

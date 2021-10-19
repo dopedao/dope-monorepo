@@ -1,4 +1,4 @@
-import { client, q } from '../../src/fauna-client';
+import { client, q } from '../../src/fauna_client';
 
 const values = [
   { field: ['data', 'rank'] },

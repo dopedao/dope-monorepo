@@ -4,7 +4,7 @@ import { media } from '../styles/mixins';
 import { useDebounce } from 'usehooks-ts';
 import { css } from '@emotion/react';
 
-import useQueryParam from '../src/use-query-param';
+import useQueryParam from '../src/use_query_param';
 
 import styled from '@emotion/styled';
 

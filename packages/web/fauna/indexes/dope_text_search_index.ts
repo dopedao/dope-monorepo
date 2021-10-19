@@ -1,4 +1,4 @@
-import { client, q } from '../../src/fauna-client';
+import { client, q } from '../../src/fauna_client';
 
 // Concatenates all strings, then splits using NGram feature.
 // Produces a bound field array of tokens we can then use
