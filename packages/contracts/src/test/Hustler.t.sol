@@ -4,7 +4,19 @@ pragma solidity ^0.8.0;
 import './utils/HustlerSetup.sol';
 import './utils/SwapMeetSetup.sol';
 
-contract Setters is HustlerTest {
+struct Attribute {
+    string traitType;
+    string value;
+}
+
+struct Data {
+    string name;
+    string description;
+    string image;
+    Attribute[] attributes;
+}
+
+contract Hustlers is HustlerTest {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
     bytes constant bodyRle =
         hex'000b26361a060003090300050001090313010902000500010904130200050001130114011301090114020005000109021301090113020006000113021501130200060001090213030006000209040006000109011304000400020904130200030001090713010002000109091302000109041301090413010001090113010001090213010902130109011301000113020001090113011601090113011601000113010001130300020901130209010001130100011303000109031302000113010001130300010903130200011301000113030001090113010901130200011301000113030001090313020001130100011302000209041301000113010901130100020907130109011301000209051301000113010902000209021301090313010004000109011302000109011302000400010901130200010901130200040001090113020001090113020004000109011302000109011302000400010901130200010901130200040001090113020001090113020004000109011302000109011302000400021302000213020004000109030001090300040001130300011303000400011303000113030004000113030001130300040001130300011303000400011303000113030004000113030001130300040001130300011303000400011303000113030004000113030001130300040002090200021301090100';
@@ -27,6 +39,8 @@ contract Setters is HustlerTest {
         assertEq(hustler.getMetadata(hustlerId).background, background);
         assertEq(hustler.getMetadata(hustlerId).color, color);
         assertEq(hustler.getMetadata(hustlerId).name, name);
+
+        hustler.tokenURI(hustlerId);
     }
 
     function testCanMintThenTransferHustler() public {
@@ -467,5 +481,23 @@ contract Setters is HustlerTest {
         assertEq(hustler.getMetadata(hustlerId).slots[7], ids.neck);
         assertEq(hustler.getMetadata(hustlerId).slots[8], ids.ring);
         assertEq(hustler.getMetadata(hustlerId).slots[9], 0);
+    }
+
+    function assertMetadata(
+        uint256 hustlerId,
+        Attribute[] memory attributes,
+        string memory name
+    ) private {
+        string memory meta = hustler.uri(hustlerId);
+        string[] memory inputs = new string[](3);
+        inputs[0] = 'node';
+        inputs[1] = 'scripts/metadata.js';
+        inputs[2] = meta;
+        bytes memory res = hevm.ffi(inputs);
+        Data memory data = abi.decode(res, (Data));
+        assertEq(data.name, name);
+        // for (uint256 i = 0; i < attributes.length; i++) {
+        //     assertEq(data.attributes[i], attributes[i]);
+        // }
     }
 }

@@ -63,7 +63,7 @@ library MetadataBuilder {
             abi.encodePacked(
                 '<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">',
                 generateStyles(params),
-                '<rect width="100%" height="100%" fill="#', toColor(params.background), '" />',
+                '<rect width="320px" height="320px" fill="#', toColor(params.background), '" />',
                 generateText(params), generateSVGRects(params, palettes),
                 '</svg>'
             )
@@ -239,6 +239,10 @@ library MetadataBuilder {
         for (uint256 i = 0; i < traits.length; i++) {
             if (traits[i].length == 0) {
                 continue;
+            }
+
+            if (i > 0) {
+                res = string(abi.encodePacked(res, ','));
             }
 
             res = string(abi.encodePacked(res, trait(traits[i])));

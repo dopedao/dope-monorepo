@@ -17,7 +17,7 @@ ComponentsAddr="0x1AED242cC9b94Dd2D69fbEE709c343242DA46F3b"
 # extractABI Components
 # log "Components deployed at:" $ComponentsAddr
 
-# SwapMeetAddr="0x51BCEbD85872dF31e4204bcA4e02Daddf0f0Bc40"
+SwapMeetAddr="0x1c640Acec8b9a31Af83069C48a8cD2B9B521b1dC"
 # echo "deploy SwapMeet $ComponentsAddr $LOOT $PAPER"
 # SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr $LOOT $PAPER)
 # # verify SwapMeet $SwapMeetAddr $ComponentsAddr $LOOT $PAPER

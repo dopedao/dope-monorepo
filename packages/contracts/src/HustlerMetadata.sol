@@ -88,18 +88,14 @@ contract HustlerMetadata {
         MetadataBuilder.Params memory p;
         p.name = metadata[hustlerId].name;
         p.resolution = 64;
-        p.color = metadata[hustlerId].background;
-        p.parts = parts(hustlerId);
-        p.attributes = MetadataBuilder.attributes(attributes(hustlerId));
-        return MetadataBuilder.tokenURI(p, palettes);
-    }
+        p.background = metadata[hustlerId].background;
+        p.color = metadata[hustlerId].color;
+        p.subtext = metadata[hustlerId].name;
 
-    function parts(uint256 hustlerId) public view returns (bytes[] memory) {
-        bytes[] memory parts_ = new bytes[](11);
-
-        parts_[0] = bodies[metadata[hustlerId].body[BodyParts.BODY]];
-        parts_[1] = heads[metadata[hustlerId].body[BodyParts.HEAD]];
-        parts_[2] = beards[metadata[hustlerId].body[BodyParts.BEARD]];
+        p.parts = new bytes[](12);
+        p.parts[0] = bodies[metadata[hustlerId].body[BodyParts.BODY]];
+        p.parts[1] = heads[metadata[hustlerId].body[BodyParts.HEAD]];
+        p.parts[2] = beards[metadata[hustlerId].body[BodyParts.BEARD]];
 
         for (uint8 i = 0; i < 9; i++) {
             if (i == 0x2) {
@@ -107,14 +103,15 @@ contract HustlerMetadata {
             }
 
             if (BitMask.get(metadata[hustlerId].mask, i)) {
-                parts_[i + 3] = swapmeet.tokenRle(
+                p.parts[i + 3] = swapmeet.tokenRle(
                     metadata[hustlerId].slots[i],
                     metadata[hustlerId].body[BodyParts.GENDER]
                 );
             }
         }
 
-        return parts_;
+        p.attributes = MetadataBuilder.attributes(attributes(hustlerId));
+        return MetadataBuilder.tokenURI(p, palettes);
     }
 
     function attributes(uint256 hustlerId) public view returns (bytes[] memory) {

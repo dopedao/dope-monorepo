@@ -10,9 +10,9 @@ abi = [
                 "type": "uint8"
             },
             {
-                "internalType": "string[]",
+                "internalType": "bytes4[]",
                 "name": "palette",
-                "type": "string[]"
+                "type": "bytes4[]"
             }
         ],
         "name": "setPalette",
@@ -99,14 +99,14 @@ with open('/Users/tarrence/Library/Ethereum/keystore/UTC--2021-09-11T21-49-48.51
 f = open("../outputs/output.json", "r")
 meta = json.load(f)
 
-Stockpile = w3.eth.contract(
-    "0xD417FebF055fd149BbD7E9A15194C91554E405Db", abi=abi)
+SwapMeet = w3.eth.contract(
+    "0x1c640Acec8b9a31Af83069C48a8cD2B9B521b1dC", abi=abi)
 
-print(Stockpile.functions.name().call())
+print(SwapMeet.functions.name().call())
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = Stockpile.functions.setPalette(0, meta['partcolors']).buildTransaction({
+txn = SwapMeet.functions.setPalette(0, meta['partcolors']).buildTransaction({
     'chainId': 4,
     'gas': 7000000,
     'maxFeePerGas': w3.toWei('2', 'gwei'),
@@ -141,7 +141,7 @@ def batchSetRle(ids, rles):
 
     nonce = w3.eth.get_transaction_count(
         '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-    txn = Stockpile.functions.batchSetRle(ids, rles).buildTransaction({
+    txn = SwapMeet.functions.batchSetRle(ids, rles).buildTransaction({
         'chainId': 4,
         'gas': 10000000,
         'maxFeePerGas': w3.toWei('2', 'gwei'),
@@ -161,7 +161,7 @@ for category, idxs in components.items():
 
     for idx, genders in idxs.items():
         if category in types:
-            id = Stockpile.functions.toId(
+            id = SwapMeet.functions.toId(
                 [int(idx), 0, 0, 0, 0], types[category]).call()
             ids.append(id)
 

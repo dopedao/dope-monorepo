@@ -35,7 +35,7 @@ for file in glob.glob("../imgs/**/*.png"):
                 if x[3] == 0:
                     cur = 0
                 else:
-                    cur = '%02x%02x%02x%02x' % (
+                    cur = '0x%02x%02x%02x%02x' % (
                         int(x[0]*255), int(x[1]*255), int(x[2]*255), int(x[3]*255))
 
                 out += str(colors[cur])

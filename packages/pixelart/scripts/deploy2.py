@@ -10,9 +10,9 @@ abi = [
                 "type": "uint8"
             },
             {
-                "internalType": "string[]",
+                "internalType": "bytes4[]",
                 "name": "palette",
-                "type": "string[]"
+                "type": "bytes4[]"
             }
         ],
         "name": "setPalette",
@@ -72,20 +72,20 @@ f = open("../outputs/output.json", "r")
 meta = json.load(f)
 
 Hustler = w3.eth.contract(
-    "0xa5bBaeF43EfD4DEf396669960e5f898DbC983296", abi=abi)
+    "0xe8025eA903Fd83DB7577990BE0202E088ABd5432", abi=abi)
 
-# nonce = w3.eth.get_transaction_count(
-#     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-# txn = Hustler.functions.setPalette(0, meta['partcolors']).buildTransaction({
-#     'chainId': 4,
-#     'gas': 7000000,
-#     'maxFeePerGas': w3.toWei('2', 'gwei'),
-#     'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
-#     'nonce': nonce,
-# })
-# signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-# txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-# txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+nonce = w3.eth.get_transaction_count(
+    '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
+txn = Hustler.functions.setPalette(0, meta['partcolors']).buildTransaction({
+    'chainId': 4,
+    'gas': 7000000,
+    'maxFeePerGas': w3.toWei('2', 'gwei'),
+    'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
+    'nonce': nonce,
+})
+signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 components = {}
 for parts in meta["parts"]:
@@ -101,31 +101,31 @@ for parts in meta["parts"]:
 
     components[category][gender].append(part["data"])
 
-# nonce = w3.eth.get_transaction_count(
-#     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-# txn = Hustler.functions.addBodies(components["bodies"]["men"] + components["bodies"]["girls"]).buildTransaction({
-#     'chainId': 4,
-#     'gas': 10000000,
-#     'maxFeePerGas': w3.toWei('2', 'gwei'),
-#     'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
-#     'nonce': nonce,
-# })
-# signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-# txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-# txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+nonce = w3.eth.get_transaction_count(
+    '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
+txn = Hustler.functions.addBodies(components["bodies"]["men"] + components["bodies"]["girls"]).buildTransaction({
+    'chainId': 4,
+    'gas': 10000000,
+    'maxFeePerGas': w3.toWei('2', 'gwei'),
+    'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
+    'nonce': nonce,
+})
+signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
-# nonce = w3.eth.get_transaction_count(
-#     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-# txn = Hustler.functions.addHeads(components["heads"]["men"] + components["heads"]["girls"]).buildTransaction({
-#     'chainId': 4,
-#     'gas': 10000000,
-#     'maxFeePerGas': w3.toWei('2', 'gwei'),
-#     'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
-#     'nonce': nonce,
-# })
-# signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-# txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-# txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+nonce = w3.eth.get_transaction_count(
+    '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
+txn = Hustler.functions.addHeads(components["hair"]["men"] + components["hair"]["girls"]).buildTransaction({
+    'chainId': 4,
+    'gas': 10000000,
+    'maxFeePerGas': w3.toWei('2', 'gwei'),
+    'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
+    'nonce': nonce,
+})
+signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 print(["0x"] + components["beards"]["men"])
 

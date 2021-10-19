@@ -166,17 +166,17 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         return id;
     }
 
-    function mintOGs(address to) external onlyOwner {
-        uint256[] memory ids = new uint256[](500);
-        uint256[] memory amounts = new uint256[](500);
+    // function mintOGs(address to) external onlyOwner {
+    //     uint256[] memory ids = new uint256[](500);
+    //     uint256[] memory amounts = new uint256[](500);
 
-        for (uint256 i = 0; i < 500; i++) {
-            ids[i] = i;
-            amounts[i] = 1;
-        }
+    //     for (uint256 i = 0; i < 500; i++) {
+    //         ids[i] = i;
+    //         amounts[i] = 1;
+    //     }
 
-        _mintBatch(to, ids, amounts, '');
-    }
+    //     _mintBatch(to, ids, amounts, '');
+    // }
 
     function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {
         palettes[id] = palette;
