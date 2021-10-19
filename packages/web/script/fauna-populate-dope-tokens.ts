@@ -1,6 +1,7 @@
 import { client, q } from '../src/fauna-client';
 import { getRarityForDopeId } from '../src/dope-rarity-check';
 import DopeJson from 'dope-metrics/output/loot.json';
+import chunkArray from '../src/chunk-array';
 
 // Returns data structures that should map to the GraphQL schema for DopeToken
 // as defined in dope_token_schema.graphql
@@ -51,7 +52,11 @@ const populate = async(tokens: any[]) => {
 (async () => {
   try {
     const tokens = buildTokenObjects();
-    await populate(tokens);
+    // Chunk tokens into sections to avoid timeout
+    const tokenChunks = chunkArray(tokens, 500);
+    for (const chunk of tokenChunks) {
+      await populate(chunk);
+    }
     process.exit(0);
   } catch (e) {
     console.error(e);

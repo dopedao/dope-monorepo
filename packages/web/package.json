@@ -11,8 +11,9 @@
     "test-watch": "jest --watch",
     "dump-opensea": "ts-node --script-mode script/dump-opensea-json.ts",
     "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh-opensea-sales-cache.ts",
-    "db:reset": "yarn db:init && yarn db:populate && yarn db:refresh-opensea",
+    "db:reset": "yarn db:init && yarn db:populate && yarn db:refresh-opensea && yarn db:index",
     "db:init": "ts-node --script-mode script/fauna-init-database.ts",
+    "db:index": "ts-node --script-mode script/fauna-create-indexes.ts",
     "db:populate": "ts-node --script-mode script/fauna-populate-dope-tokens.ts",
     "db:refresh-opensea": "ts-node --script-mode script/fauna-refresh-opensea.ts"
   },
