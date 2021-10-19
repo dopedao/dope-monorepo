@@ -373,7 +373,9 @@ contract SwapMeetTester is SwapMeet {
         address _dope,
         address _paper,
         address _owner
-    ) SwapMeet(_components, _dope, _paper, _owner) {}
+    ) SwapMeet(_components, _dope, _paper) {
+        transferOwnership(_owner);
+    }
 
     // View helpers for getting the item ID that corresponds to a bag's items
     function weaponId(uint256 tokenId) public view returns (uint256) {

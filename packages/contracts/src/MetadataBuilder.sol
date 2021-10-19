@@ -23,6 +23,7 @@ library MetadataBuilder {
         uint8 resolution;
         bytes4 color;
         bytes4 background;
+        bytes4 viewbox;
         string text;
         string subtext;
         string name;

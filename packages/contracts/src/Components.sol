@@ -222,7 +222,7 @@ contract Components is Ownable {
         'Adderall' // 18
     ];
 
-    string[] public accessories = ['Bandana', 'Fitted Hat White', 'Fitted Hat Black', 'Glasses Dark'];
+    string[] public accessories;
 
     string[] public suffixes = [
         // <no suffix>          // 0

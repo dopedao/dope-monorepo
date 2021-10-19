@@ -35,13 +35,11 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
     constructor(
         address _components,
         address _dope,
-        address _paper,
-        address _owner
+        address _paper
     ) SwapMeetMetadata(_components) {
         dope = IERC721(_dope);
         paper = IERC20(_paper);
         deployedAt = block.timestamp;
-        transferOwnership(_owner);
     }
 
     function cost() public view returns (uint256) {
