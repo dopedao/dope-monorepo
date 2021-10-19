@@ -96,10 +96,11 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         string calldata name,
         bytes4 color,
         bytes4 background,
+        bytes4 viewport,
         uint8[4] calldata body,
-        uint8 bmask
+        bytes2 bmask
     ) public {
-        hustler.setMetadata(id, name, color, background, body, bmask);
+        hustler.setMetadata(id, name, color, background, viewport, body, bmask);
     }
 
     function transferERC1155(
@@ -386,7 +387,9 @@ contract HustlerTester is Hustler {
         address _owner,
         address _swapmeet,
         address _paper
-    ) Hustler(_owner, _swapmeet, _paper) {}
+    ) Hustler(_swapmeet, _paper) {
+        transferOwnership(_owner);
+    }
 
     function getMetadata(uint256 id) public view returns (Metadata memory) {
         return metadata[id];

@@ -31,14 +31,9 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     uint256 internal curId = 500;
 
     // No need for a URI since we're doing everything onchain
-    constructor(
-        address _owner,
-        address _swapmeet,
-        address _paper
-    ) HustlerMetadata(_swapmeet) {
+    constructor(address _swapmeet, address _paper) HustlerMetadata(_swapmeet) {
         paper = IERC20(_paper);
         IERC20(_paper).approve(_swapmeet, type(uint256).max);
-        transferOwnership(_owner);
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {
@@ -207,30 +202,30 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         string calldata name,
         bytes4 color,
         bytes4 background,
+        bytes4 viewport,
         uint8[4] calldata body,
-        uint8 bmask
+        bytes2 mask
     ) public onlyHustler(hustlerId) {
-        if (bytes(name).length > 0) {
+        if (BitMask.get(mask, 0)) {
             require(bytes(name).length < 10, 'nl');
             metadata[hustlerId].name = name;
         }
-        if (color.length > 0) {
+
+        if (BitMask.get(mask, 1)) {
             metadata[hustlerId].color = color;
         }
-        if (background.length > 0) {
+
+        if (BitMask.get(mask, 2)) {
             metadata[hustlerId].background = background;
         }
-        setBody(hustlerId, body, bmask);
-    }
 
-    function setBody(
-        uint256 id,
-        uint8[4] calldata body,
-        uint8 mask
-    ) internal {
-        for (uint256 i = 0; i < 4; i++) {
-            if (uint8(mask & (1 << i)) != 0) {
-                metadata[id].body[i] = body[i];
+        if (BitMask.get(mask, 3)) {
+            metadata[hustlerId].viewport = viewport;
+        }
+
+        for (uint8 i = 0; i < 4; i++) {
+            if (BitMask.get(mask, i + 4)) {
+                metadata[hustlerId].body[i] = body[i];
             }
         }
     }

@@ -20,6 +20,7 @@ contract HustlerMetadata {
         bytes4 color;
         bytes4 background;
         bytes2 mask;
+        bytes4 viewport;
         uint256 age;
         uint8[4] body;
         uint256[10] slots;
@@ -62,7 +63,7 @@ contract HustlerMetadata {
     bytes[] internal beards;
 
     // Hustler metadata
-    mapping(uint256 => Metadata) internal metadata;
+    mapping(uint256 => Metadata) public metadata;
 
     constructor(address _swapmeet) {
         swapmeet = ISwapMeet(_swapmeet);
