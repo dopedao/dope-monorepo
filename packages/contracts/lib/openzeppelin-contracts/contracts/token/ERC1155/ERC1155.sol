@@ -25,16 +25,6 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     // Mapping from account to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
 
-    // Used as the URI for all token types by relying on ID substitution, e.g. https://token-cdn-domain/{id}.json
-    string private _uri;
-
-    /**
-     * @dev See {_setURI}.
-     */
-    constructor(string memory uri_) {
-        _setURI(uri_);
-    }
-
     /**
      * @dev See {IERC165-supportsInterface}.
      */
@@ -56,7 +46,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
      * actual token type ID.
      */
     function uri(uint256) public view virtual override returns (string memory) {
-        return _uri;
+        return "";
     }
 
     /**
@@ -226,29 +216,6 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     }
 
     /**
-     * @dev Sets a new URI for all token types, by relying on the token type ID
-     * substitution mechanism
-     * https://eips.ethereum.org/EIPS/eip-1155#metadata[defined in the EIP].
-     *
-     * By this mechanism, any occurrence of the `\{id\}` substring in either the
-     * URI or any of the amounts in the JSON file at said URI will be replaced by
-     * clients with the token type ID.
-     *
-     * For example, the `https://token-cdn-domain/\{id\}.json` URI would be
-     * interpreted by clients as
-     * `https://token-cdn-domain/000000000000000000000000000000000000000000000000000000000004cce0.json`
-     * for token type ID 0x4cce0.
-     *
-     * See {uri}.
-     *
-     * Because these URIs cannot be meaningfully represented by the {URI} event,
-     * this function emits no events.
-     */
-    function _setURI(string memory newuri) internal virtual {
-        _uri = newuri;
-    }
-
-    /**
      * @dev Creates `amount` tokens of token type `id`, and assigns them to `account`.
      *
      * Emits a {TransferSingle} event.
@@ -306,67 +273,6 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         emit TransferBatch(operator, address(0), to, ids, amounts);
 
         _doSafeBatchTransferAcceptanceCheck(operator, address(0), to, ids, amounts, data);
-    }
-
-    /**
-     * @dev Destroys `amount` tokens of token type `id` from `account`
-     *
-     * Requirements:
-     *
-     * - `account` cannot be the zero address.
-     * - `account` must have at least `amount` tokens of token type `id`.
-     */
-    function _burn(
-        address account,
-        uint256 id,
-        uint256 amount
-    ) internal virtual {
-        require(account != address(0), "ERC1155: burn from the zero address");
-
-        address operator = _msgSender();
-
-        _beforeTokenTransfer(operator, account, address(0), _asSingletonArray(id), _asSingletonArray(amount), "");
-
-        uint256 accountBalance = _balances[id][account];
-        require(accountBalance >= amount, "ERC1155: burn amount exceeds balance");
-        unchecked {
-            _balances[id][account] = accountBalance - amount;
-        }
-
-        emit TransferSingle(operator, account, address(0), id, amount);
-    }
-
-    /**
-     * @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_burn}.
-     *
-     * Requirements:
-     *
-     * - `ids` and `amounts` must have the same length.
-     */
-    function _burnBatch(
-        address account,
-        uint256[] memory ids,
-        uint256[] memory amounts
-    ) internal virtual {
-        require(account != address(0), "ERC1155: burn from the zero address");
-        require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
-
-        address operator = _msgSender();
-
-        _beforeTokenTransfer(operator, account, address(0), ids, amounts, "");
-
-        for (uint256 i = 0; i < ids.length; i++) {
-            uint256 id = ids[i];
-            uint256 amount = amounts[i];
-
-            uint256 accountBalance = _balances[id][account];
-            require(accountBalance >= amount, "ERC1155: burn amount exceeds balance");
-            unchecked {
-                _balances[id][account] = accountBalance - amount;
-            }
-        }
-
-        emit TransferBatch(operator, account, address(0), ids, amounts);
     }
 
     /**
@@ -442,7 +348,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         }
     }
 
-    function _asSingletonArray(uint256 element) private pure returns (uint256[] memory) {
+    function _asSingletonArray(uint256 element) internal pure returns (uint256[] memory) {
         uint256[] memory array = new uint256[](1);
         array[0] = element;
 

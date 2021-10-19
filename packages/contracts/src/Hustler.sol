@@ -35,7 +35,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         address _owner,
         address _swapmeet,
         address _paper
-    ) ERC1155('') HustlerMetadata(_swapmeet) {
+    ) HustlerMetadata(_swapmeet) {
         paper = IERC20(_paper);
         IERC20(_paper).approve(_swapmeet, type(uint256).max);
         transferOwnership(_owner);
@@ -54,7 +54,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes memory data
     ) public override returns (bytes4) {
         // only supports callback from the SwapMeet contract
-        require(msg.sender == address(swapmeet), Errors.IsNotSwapMeet);
+        require(_msgSender() == address(swapmeet), Errors.IsNotSwapMeet);
 
         // Callers should encode the equip signature to explicity
         // indicate an encoded hustler id.
@@ -84,7 +84,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes calldata data
     ) public override returns (bytes4) {
         // only supports callback from the SwapMeet contract
-        require(msg.sender == address(swapmeet), Errors.IsNotSwapMeet);
+        require(_msgSender() == address(swapmeet), Errors.IsNotSwapMeet);
 
         // Callers should encode the equip signature to explicity
         // indicate an encoded hustler id.
@@ -110,7 +110,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         uint256[] memory unequipValues = new uint256[](ids.length);
 
         uint256 j = 0;
-        for (uint8 i = 0; i < ids.length; i++) {
+        for (uint256 i = 0; i < ids.length; i++) {
             require(values[i] == 1, Errors.ValueNotOne);
             uint8 slot = slot(ids[i]);
 
@@ -158,7 +158,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         metadata[hustlerId].name = name;
         metadata[hustlerId].background = background;
         metadata[hustlerId].color = color;
-        paper.transferFrom(msg.sender, address(this), swapmeet.cost());
+        paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
         swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
         return hustlerId;
     }
@@ -166,8 +166,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     function mint(bytes memory data) public returns (uint256) {
         uint256 id = curId;
         curId += 1;
-        _mint(msg.sender, id, 1, data);
         metadata[id].age = block.timestamp;
+        _mint(_msgSender(), id, 1, data);
         return id;
     }
 
@@ -199,7 +199,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         }
 
         metadata[hustlerId].mask = mask;
-        swapmeet.safeBatchTransferFrom(address(this), msg.sender, ids, amounts, '');
+        swapmeet.safeBatchTransferFrom(address(this), _msgSender(), ids, amounts, '');
     }
 
     function setMetadata(
@@ -254,7 +254,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     }
 
     modifier onlyHustler(uint256 id) {
-        require(balanceOf(msg.sender, id) == 1, Errors.IsHolder);
+        require(balanceOf(_msgSender(), id) == 1, Errors.IsHolder);
         _;
     }
 }

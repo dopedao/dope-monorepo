@@ -37,7 +37,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         address _dope,
         address _paper,
         address _owner
-    ) SwapMeetMetadata(_components) ERC1155('') {
+    ) SwapMeetMetadata(_components) {
         dope = IERC721(_dope);
         paper = IERC20(_paper);
         deployedAt = block.timestamp;
@@ -63,9 +63,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         address to,
         bytes memory data
     ) public {
-        uint256[] memory ids = new uint256[](1);
-        ids[0] = tokenId;
-        batchOpen(ids, to, data);
+        batchOpen(_asSingletonArray(tokenId), to, data);
     }
 
     /// @notice Bulk opens the provided tokenIds. This

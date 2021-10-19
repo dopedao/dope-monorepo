@@ -54,9 +54,16 @@ contract Setters is HustlerTest {
         uint256 id = alice.mint();
         uint8[4] memory body;
 
-        alice.setMetadata(id, 'hustler name', '', '', body, 0x0);
+        alice.setMetadata(id, 'hustler', '', '', body, 0x0);
 
-        assertEq(hustler.getMetadata(id).name, 'hustler name');
+        assertEq(hustler.getMetadata(id).name, 'hustler');
+    }
+
+    function testFailCantSetLongName() public {
+        uint256 id = alice.mint();
+        uint8[4] memory body;
+
+        alice.setMetadata(id, 'hustler name', '', '', body, 0x0);
     }
 
     function testCanSetBackground() public {

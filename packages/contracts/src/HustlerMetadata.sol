@@ -84,33 +84,32 @@ contract HustlerMetadata {
 
     /// @notice Returns an SVG for the provided hustler id
     function tokenURI(uint256 hustlerId) public view returns (string memory) {
-        Metadata memory meta = metadata[hustlerId];
-
         MetadataBuilder.Params memory p;
-        p.name = meta.name;
+        p.name = metadata[hustlerId].name;
         p.resolution = 64;
-        p.color = meta.background;
+        p.color = metadata[hustlerId].background;
         p.parts = parts(hustlerId);
         p.attributes = MetadataBuilder.attributes(attributes(hustlerId));
         return MetadataBuilder.tokenURI(p, palettes);
     }
 
     function parts(uint256 hustlerId) public view returns (bytes[] memory) {
-        Metadata memory meta = metadata[hustlerId];
         bytes[] memory parts_ = new bytes[](11);
-        uint8 gender = meta.body[BodyParts.GENDER];
 
-        parts_[0] = bodies[meta.body[BodyParts.BODY]];
-        parts_[1] = heads[meta.body[BodyParts.HEAD]];
-        parts_[2] = beards[meta.body[BodyParts.BEARD]];
+        parts_[0] = bodies[metadata[hustlerId].body[BodyParts.BODY]];
+        parts_[1] = heads[metadata[hustlerId].body[BodyParts.HEAD]];
+        parts_[2] = beards[metadata[hustlerId].body[BodyParts.BEARD]];
 
         for (uint8 i = 0; i < 9; i++) {
             if (i == 0x2) {
                 continue;
             }
 
-            if (BitMask.get(meta.mask, i)) {
-                parts_[i + 3] = swapmeet.tokenRle(meta.slots[i], gender);
+            if (BitMask.get(metadata[hustlerId].mask, i)) {
+                parts_[i + 3] = swapmeet.tokenRle(
+                    metadata[hustlerId].slots[i],
+                    metadata[hustlerId].body[BodyParts.GENDER]
+                );
             }
         }
 
