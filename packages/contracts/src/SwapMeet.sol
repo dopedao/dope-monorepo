@@ -109,8 +109,8 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
             amounts[i + 8] = 1;
         }
 
-        _mintBatch(to, parts, amounts, data);
         paper.transferFrom(msg.sender, timelock, cost() * ids.length);
+        _mintBatch(to, parts, amounts, data);
     }
 
     function itemIds(uint256 tokenId) private view returns (uint256[] memory) {
