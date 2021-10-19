@@ -1,0 +1,37 @@
+// q: String,
+// hasUnclaimedPaper: Boolean,
+// isForSale: Boolean,
+// sortByIndexName: String
+
+// Possibilities (no term = term under Ngram length also)
+// - No term / no filter / sorted
+// - No term / filter / sorted
+// - Term / filter / sorted
+
+
+Paginate(
+  Join(
+    Intersection(
+      // NGram the search term and provide matches that
+      // are hits in all documents.
+      Intersection(
+        Map(
+          NGram(LowerCase('knife'),3,3),
+          Lambda(
+            'term',
+            Match(
+              Index('dope_text_search'),
+              Var('term')
+            )
+          )
+        ),
+      ),
+      // Bundled Items
+      Match(Index('items_unbundled'), true),
+      // $PAPER Claimed items
+      Match(Index('paper_claimed'), true),
+    ),
+    Index('by_rank_with_ref')
+  ),
+  { size: 25 }
+)
