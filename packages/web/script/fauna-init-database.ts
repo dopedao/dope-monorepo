@@ -6,7 +6,7 @@ import fs from 'fs';
 // https://docs.fauna.com/fauna/current/api/graphql/endpoints?lang=javascript
 // https://forums.fauna.com/t/importing-graphql-schema-from-js-file/642/3
 const initFromGraphQL = async () => {
-  console.log('Initializing Collections from GraphQL schema');
+  console.log('Initializing GraphQL schema Collections & Queries');
   const schema = fs.readFileSync(
     __dirname + '/../fauna/dope_token_schema.graphql', 
     'utf8'

@@ -53,7 +53,7 @@ const populate = async(tokens: any[]) => {
   try {
     const tokens = buildTokenObjects();
     // Chunk tokens into sections to avoid timeout
-    const tokenChunks = chunkArray(tokens, 500);
+    const tokenChunks = chunkArray(tokens, 250);
     for (const chunk of tokenChunks) {
       await populate(chunk);
     }
