@@ -43,6 +43,11 @@ contract Hustlers is HustlerTest {
         hustler.tokenURI(hustlerId);
     }
 
+    function testMintFromDope() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+        alice.mintFromDope(OTHER_BAG, 'gangsta', hex'000000', hex'fafafa');
+    }
+
     function testCanMintThenTransferHustler() public {
         alice.setDopeApprovalForAll(address(hustler), true);
 

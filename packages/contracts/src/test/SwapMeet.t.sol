@@ -37,6 +37,10 @@ contract Open is SwapMeetTest {
         checkOwns1155s(BAG, address(alice));
     }
 
+    function testOpenBag() public {
+        alice.open(BAG);
+    }
+
     function testCanBatchOpenBags() public {
         uint256[] memory ids = new uint256[](3);
         ids[0] = BAG;
