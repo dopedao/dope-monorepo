@@ -14,7 +14,7 @@ export const create = async () => {
           n_grams: q.Query(
             q.Lambda(
               'doc',
-              q.NGram(q.LowerCase(
+              q.Distinct(q.NGram(q.LowerCase(
                 q.Concat([
                   q.Select(['data', 'clothes'], q.Var('doc')),
                   q.Select(['data', 'drugs'], q.Var('doc')),
@@ -26,7 +26,7 @@ export const create = async () => {
                   q.Select(['data', 'waist'], q.Var('doc')),
                   q.Select(['data', 'weapon'], q.Var('doc'))
                 ], ' ')
-              ), 3, 3)
+              ), 3, 3))
             )
           )
         }

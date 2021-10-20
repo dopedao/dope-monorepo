@@ -7,31 +7,43 @@
 // - No term / no filter / sorted
 // - No term / filter / sorted
 // - Term / filter / sorted
-
-
-Paginate(
-  Join(
-    Intersection(
-      // NGram the search term and provide matches that
-      // are hits in all documents.
-      Intersection(
-        Map(
-          NGram(LowerCase('knife'),3,3),
-          Lambda(
-            'term',
-            Match(
-              Index('dope_text_search'),
-              Var('term')
-            )
-          )
+// - Term / no filter /
+Map(
+  [['knife', 'paper_claimed', 'by_rank_with_ref']],
+  Lambda(
+    ['search_term', 'filter_index', 'sort_index'],
+    Paginate(
+      If(
+        GTE(Length(Var('search_term')), 3),
+        // Min search term length is 3…
+        // NGram the search term and provide matches that
+        // are hits in all documents.
+        Join(
+          Intersection(
+            Intersection(
+              Map(
+                Distinct(NGram(LowerCase(Var('search_term')),3,3)),
+                Lambda(
+                  'term',
+                  Match(
+                    Index('dope_text_search'),
+                    Var('term')
+                  )
+                )
+              ),
+            ),
+            // Bundled Items
+            Match(Index(Var('filter_index')), true),
+          ),
+          Index(Var('sort_index'))
         ),
+        // Search term too small, just filter and sort
+        Join(
+          Match(Index(Var('filter_index')), true),
+          Index(Var('sort_index'))
+        )
       ),
-      // Bundled Items
-      Match(Index('items_unbundled'), true),
-      // $PAPER Claimed items
-      Match(Index('paper_claimed'), true),
-    ),
-    Index('by_rank_with_ref')
-  ),
-  { size: 25 }
+      { size: 25 }
+    )
+  )
 )
