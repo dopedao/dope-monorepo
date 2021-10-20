@@ -26,10 +26,7 @@ for file in glob.glob("../imgs/**/*.png"):
     for y in cropped:
         for x in y:
             if x[3] != 0:
-                if x[3] == 1.0:
-                    c = '%02x%02x%02x' % (int(x[0]*255), int(x[1]*255), int(x[2]*255))
-                else:
-                    c = '%02x%02x%02x%02x' % (int(x[0]*255), int(x[1]*255), int(x[2]*255), int(x[3]*255))
+                c = '0x%02x%02x%02x%02x' % (int(x[0]*255), int(x[1]*255), int(x[2]*255), int(x[3]*255))
 
                 # c = rgb2hex(int(x[0]*255), int(x[1]*255), int(x[2]*255))
                 colors[c] = True

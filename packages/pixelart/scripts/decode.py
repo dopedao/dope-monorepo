@@ -18,7 +18,7 @@ female_order = {
     "shadow": 0,
     "drugsshadow": 1,
     "bodies": 2,
-    "heads": 3,
+    "hair": 3,
     "rings": 4,
     "hands": 5,
     "clothes": 6,
@@ -33,7 +33,7 @@ men_order = {
     "shadow": 0,
     "drugsshadow": 1,
     "bodies": 2,
-    "heads": 3,
+    "hair": 3,
     "beards": 4,
     "rings": 5,
     "hands": 6,
@@ -102,7 +102,7 @@ for gender, categories in components.items():
             parts[female_order[category]] = sorted(components, key = lambda i: int(i['name'].split("-")[0]))
 
     renders = []
-    for i in range(841):
+    for i in range(5):
         if gender == "men":
             body = randrange(0, 2)
             beard = 0
@@ -163,7 +163,7 @@ for gender, categories in components.items():
 
         img = np.full((resolution, resolution, 4), bg)
         for part in permutation:
-            if part["data"] == "0x000000000000":
+            if part["data"] == "0x":
                 continue
 
             subimg = to_bytes(hexstr=part["data"])
@@ -179,18 +179,18 @@ for gender, categories in components.items():
                 length = subimg[j]
                 c = meta["partcolors"][subimg[j+1]]
                 if c != "":
-                    if len(c) > 6:
-                        continue
+                    # if len(c) > 8:
+                    #     continue
                     #     print(int(c[7:8], 16))
                     #     rgb = hex2rgb("#" + c[:6])
                     #     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
                     #         lookup[length], :3] += np.array(rgb) * (int(c[7:8], 16) / 255) / 255
                     #     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
-                    else:
-                        img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
-                        rgb = hex2rgb("#" + c[:6])
-                        img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
-                            lookup[length], :3] = np.array(rgb) / 255
+                    # else:
+                    img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
+                    rgb = hex2rgb("#" + c[2:8])
+                    img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
+                        lookup[length], :3] = np.array(rgb) / 255
 
                 x += length
                 if x == right:
