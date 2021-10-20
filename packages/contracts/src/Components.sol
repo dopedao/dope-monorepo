@@ -386,6 +386,11 @@ contract Components is Ownable {
         }
     }
 
+    function title(uint256 hustlerId) external view returns (string memory) {
+        uint256 rand = random(string(abi.encodePacked('OG', hustlerId)));
+        return prefix(uint8((rand % namePrefixesLength) + 1), uint8((rand % nameSuffixesLength) + 1));
+    }
+
     function addComponent(uint8 componentType, string calldata component) external onlyOwner returns (uint8) {
         string[] storage arr;
         if (componentType == ComponentTypes.WEAPON) {

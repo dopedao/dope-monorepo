@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import { BitMask } from './BitMask.sol';
+import { Components } from './Components.sol';
 import { Gender } from './SwapMeetMetadata.sol';
 import { DisplayTypes, MetadataBuilder } from './MetadataBuilder.sol';
 import { ISwapMeet } from './interfaces/ISwapMeet.sol';
@@ -30,7 +31,9 @@ contract HustlerMetadata {
     string private constant _name = 'Hustlers';
     string private constant _symbol = 'HUSTLERS';
     string private constant description = 'Hustle Hard';
-    string[12] private traitTypes = [
+    string[13] private traitTypes = [
+        'Class',
+        'Gender',
         'Weapon',
         'Clothes',
         'Vehicle',
@@ -40,12 +43,12 @@ contract HustlerMetadata {
         'Drug',
         'Neck',
         'Ring',
-        'Gender',
         'Initiation',
         'Respect'
     ];
 
     ISwapMeet internal immutable swapmeet;
+    Components internal immutable components;
     uint256 private immutable deployedAt;
 
     string[2] genders = ['Male', 'Female'];
@@ -65,8 +68,9 @@ contract HustlerMetadata {
     // Hustler metadata
     mapping(uint256 => Metadata) public metadata;
 
-    constructor(address _swapmeet) {
+    constructor(address _components, address _swapmeet) {
         swapmeet = ISwapMeet(_swapmeet);
+        components = Components(_components);
         deployedAt = block.timestamp;
     }
 
@@ -91,6 +95,10 @@ contract HustlerMetadata {
         p.background = metadata[hustlerId].background;
         p.color = metadata[hustlerId].color;
         p.subtext = metadata[hustlerId].name;
+
+        if (hustlerId < 500) {
+            p.text = components.title(hustlerId);
+        }
 
         p.parts = new bytes[](12);
         p.parts[0] = bodies[metadata[hustlerId].body[BodyParts.BODY]];
@@ -117,11 +125,22 @@ contract HustlerMetadata {
     function attributes(uint256 hustlerId) public view returns (bytes[] memory) {
         bytes memory none = 'None';
 
-        bytes[] memory traits = new bytes[](12);
+        bytes[] memory traits = new bytes[](13);
 
         if (metadata[hustlerId].age == 0) {
             return traits;
         }
+
+        string memory class = 'Hustler';
+        if (hustlerId < 500) {
+            class = 'Original Gangsta';
+        }
+        traits[0] = abi.encode(DisplayTypes.NONE, traitTypes[0], abi.encode(class));
+        traits[1] = abi.encode(
+            DisplayTypes.NONE,
+            traitTypes[1],
+            abi.encode(genders[metadata[hustlerId].body[BodyParts.GENDER]])
+        );
 
         for (uint8 i = 0; i < 9; i++) {
             bytes memory v;
@@ -131,18 +150,16 @@ contract HustlerMetadata {
                 v = none;
             }
 
-            traits[i] = abi.encode(DisplayTypes.NONE, traitTypes[i], abi.encode(v));
+            traits[i + 2] = abi.encode(DisplayTypes.NONE, traitTypes[i + 2], abi.encode(v));
         }
 
-        traits[9] = abi.encode(
-            DisplayTypes.NONE,
-            traitTypes[9],
-            abi.encode(genders[metadata[hustlerId].body[BodyParts.GENDER]])
-        );
-        traits[10] = abi.encode(DisplayTypes.DATE, traitTypes[10], abi.encode(metadata[hustlerId].age));
+        traits[11] = abi.encode(DisplayTypes.DATE, traitTypes[11], abi.encode(metadata[hustlerId].age));
 
         uint256 respect = (1e5 - ((metadata[hustlerId].age - deployedAt) * 1e5) / (block.timestamp * 1e5)) / 1e3;
-        traits[11] = abi.encode(DisplayTypes.RANKING, traitTypes[11], abi.encode(respect));
+        if (hustlerId < 500) {
+            respect = 100;
+        }
+        traits[12] = abi.encode(DisplayTypes.RANKING, traitTypes[12], abi.encode(respect));
 
         return traits;
     }

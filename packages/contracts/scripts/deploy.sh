@@ -24,7 +24,7 @@ SwapMeetAddr="0x1c640Acec8b9a31Af83069C48a8cD2B9B521b1dC"
 # extractABI SwapMeet
 # log "SwapMeet deployed at:" $SwapMeetAddr
 
-HustlerAddr=$(deploy Hustler $SwapMeetAddr $PAPER)
+HustlerAddr=$(deploy Hustler $ComponentsAddr $SwapMeetAddr $PAPER)
 # verify Hustler $HustlerAddr $SwapMeetAddr
 extractABI Hustler
 log "Hustler deployed at:" $HustlerAddr

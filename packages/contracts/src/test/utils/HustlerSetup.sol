@@ -385,9 +385,10 @@ contract Owner {}
 contract HustlerTester is Hustler {
     constructor(
         address _owner,
+        address _components,
         address _swapmeet,
         address _paper
-    ) Hustler(_swapmeet, _paper) {
+    ) Hustler(_components, _swapmeet, _paper) {
         transferOwnership(_owner);
     }
 
@@ -435,7 +436,7 @@ contract HustlerTest is ERC1155Holder, DSTest {
         paper = new Paper(address(dope));
         components = new Components(address(owner));
         swapmeet = new SwapMeetTester(address(components), address(dope), address(paper), address(owner));
-        hustler = new HustlerTester(address(owner), address(swapmeet), address(paper));
+        hustler = new HustlerTester(address(owner), address(components), address(swapmeet), address(paper));
 
         owner.init(swapmeet, hustler);
 

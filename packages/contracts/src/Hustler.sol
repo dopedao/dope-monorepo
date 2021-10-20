@@ -28,10 +28,15 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     IERC20 immutable paper;
 
     // First 500 are reserved for OG Hustlers.
+    uint256 internal ogId = 0;
     uint256 internal curId = 500;
 
     // No need for a URI since we're doing everything onchain
-    constructor(address _swapmeet, address _paper) HustlerMetadata(_swapmeet) {
+    constructor(
+        address _components,
+        address _swapmeet,
+        address _paper
+    ) HustlerMetadata(_components, _swapmeet) {
         paper = IERC20(_paper);
         IERC20(_paper).approve(_swapmeet, type(uint256).max);
     }
@@ -166,17 +171,13 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         return id;
     }
 
-    // function mintOGs(address to) external onlyOwner {
-    //     uint256[] memory ids = new uint256[](500);
-    //     uint256[] memory amounts = new uint256[](500);
-
-    //     for (uint256 i = 0; i < 500; i++) {
-    //         ids[i] = i;
-    //         amounts[i] = 1;
-    //     }
-
-    //     _mintBatch(to, ids, amounts, '');
-    // }
+    function mintOG(bytes memory data) public returns (uint256) {
+        uint256 id = ogId;
+        ogId += 1;
+        metadata[id].age = block.timestamp;
+        _mint(_msgSender(), id, 1, data);
+        return id;
+    }
 
     function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {
         palettes[id] = palette;

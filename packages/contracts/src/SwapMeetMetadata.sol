@@ -34,7 +34,7 @@ contract SwapMeetMetadata {
     // Item RLE (TokenID => RLE)
     mapping(uint256 => bytes[2]) internal rles;
 
-    Components internal sc;
+    Components internal immutable sc;
 
     constructor(address _components) {
         sc = Components(_components);
