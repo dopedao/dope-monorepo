@@ -3,7 +3,7 @@ query Wallet($id: ID!) {
     id
     address
     paper
-    bags {
+    bags(first: 200) {
       claimed
       id
       clothes @client
