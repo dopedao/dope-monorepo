@@ -22,13 +22,13 @@ library RleParts {
 }
 
 /// @title Hustler Metadata logic
-/// @author Tarrence van As
+/// @author tarrence llc
 contract HustlerMetadata {
     struct Metadata {
         bytes4 color;
         bytes4 background;
         bytes2 mask;
-        bytes4 viewport;
+        bytes4 viewbox;
         uint256 age;
         uint8[4] body;
         uint256[10] slots;
@@ -56,22 +56,15 @@ contract HustlerMetadata {
 
     ISwapMeet internal immutable swapmeet;
     Components internal immutable components;
-    uint256 private immutable deployedAt;
+    uint256 private immutable deployedAt = block.timestamp;
 
     string[2] genders = ['Male', 'Female'];
 
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => bytes4[]) internal palettes;
+
+    // Body part rles
     mapping(uint8 => bytes[]) internal rles;
-
-    // // Bodies (Body number => RLE)
-    // bytes[] internal bodies;
-
-    // // Hairs (Hair number => RLE)
-    // bytes[2][] internal hairs;
-
-    // // Beards (Beard number => RLE)
-    // bytes[] internal beards;
 
     // Hustler metadata
     mapping(uint256 => Metadata) public metadata;
@@ -79,7 +72,6 @@ contract HustlerMetadata {
     constructor(address _components, address _swapmeet) {
         swapmeet = ISwapMeet(_swapmeet);
         components = Components(_components);
-        deployedAt = block.timestamp;
     }
 
     function name() external pure returns (string memory) {
@@ -103,6 +95,7 @@ contract HustlerMetadata {
         p.background = metadata[hustlerId].background;
         p.color = metadata[hustlerId].color;
         p.subtext = metadata[hustlerId].name;
+        p.viewbox = metadata[hustlerId].viewbox;
 
         if (hustlerId < 500) {
             p.text = components.title(hustlerId);
