@@ -188,7 +188,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes2 mask = metadata[hustlerId].mask;
 
         for (uint256 i = 0; i < slots.length; i++) {
-            require(BitMask.get(mask, slots[i]), 'not equipped');
+            require(BitMask.get(mask, slots[i]), 'ne');
             ids[i] = metadata[hustlerId].slots[slots[i]];
             mask = BitMask.unset(mask, slots[i]);
         }
@@ -230,21 +230,9 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         }
     }
 
-    function addBodies(bytes[] calldata _bodies) public onlyOwner {
-        for (uint256 i = 0; i < _bodies.length; i++) {
-            bodies.push(_bodies[i]);
-        }
-    }
-
-    function addHeads(bytes[] calldata _heads) public onlyOwner {
-        for (uint256 i = 0; i < _heads.length; i++) {
-            heads.push(_heads[i]);
-        }
-    }
-
-    function addBeards(bytes[] calldata _beards) public onlyOwner {
-        for (uint256 i = 0; i < _beards.length; i++) {
-            beards.push(_beards[i]);
+    function addRles(uint8 part, bytes[] calldata _rles) public onlyOwner {
+        for (uint256 i = 0; i < _rles.length; i++) {
+            rles[part].push(_rles[i]);
         }
     }
 

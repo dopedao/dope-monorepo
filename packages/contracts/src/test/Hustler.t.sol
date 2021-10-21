@@ -20,25 +20,26 @@ contract Hustlers is HustlerTest {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
     bytes constant bodyRle =
         hex'000b26361a060003090300050001090313010902000500010904130200050001130114011301090114020005000109021301090113020006000113021501130200060001090213030006000209040006000109011304000400020904130200030001090713010002000109091302000109041301090413010001090113010001090213010902130109011301000113020001090113011601090113011601000113010001130300020901130209010001130100011303000109031302000113010001130300010903130200011301000113030001090113010901130200011301000113030001090313020001130100011302000209041301000113010901130100020907130109011301000209051301000113010902000209021301090313010004000109011302000109011302000400010901130200010901130200040001090113020001090113020004000109011302000109011302000400010901130200010901130200040001090113020001090113020004000109011302000109011302000400021302000213020004000109030001090300040001130300011303000400011303000113030004000113030001130300040001130300011303000400011303000113030004000113030001130300040001130300011303000400011303000113030004000113030001130300040002090200021301090100';
-    bytes constant headRle =
+    bytes constant hairRle =
         hex'000924111f0100014d010d014d01000117010d0218010d014d010d031801180119011801170119014d021801170118014d011802100118014d011702180100010002170200';
     bytes constant beardRle = hex'000e24102001080109020a0100020a0100';
 
     function testCanMintFromDope() public {
         bytes[] memory heads = new bytes[](2);
-        heads[0] = headRle;
-        heads[1] = headRle;
-        owner.addHeads(heads);
+        heads[0] = hairRle;
+        heads[1] = hairRle;
+        owner.addRles(RleParts.MALE_HAIR, heads);
+        owner.addRles(RleParts.FEMALE_HAIR, heads);
 
         bytes[] memory beards = new bytes[](2);
         beards[0] = beardRle;
         beards[1] = beardRle;
-        owner.addBeards(beards);
+        owner.addRles(RleParts.BEARD, beards);
 
         bytes[] memory bodies = new bytes[](2);
         bodies[0] = bodyRle;
         bodies[1] = bodyRle;
-        owner.addBodies(bodies);
+        owner.addRles(RleParts.BODY, bodies);
 
         alice.setDopeApprovalForAll(address(hustler), true);
 
@@ -441,7 +442,8 @@ contract Hustlers is HustlerTest {
         bytes[] memory bodies = new bytes[](2);
         bodies[0] = bodyRle;
         bodies[1] = bodyRle;
-        owner.addBodies(bodies);
+
+        owner.addRles(RleParts.BODY, bodies);
         assertEq(string(hustler.getBody(0)), string(bodyRle));
         assertEq(string(hustler.getBody(1)), string(bodyRle));
     }
@@ -450,31 +452,35 @@ contract Hustlers is HustlerTest {
         bytes[] memory beards = new bytes[](2);
         beards[0] = beardRle;
         beards[1] = beardRle;
-        owner.addBeards(beards);
+        owner.addRles(RleParts.BEARD, beards);
+
         assertEq(string(hustler.getBeard(0)), string(beardRle));
         assertEq(string(hustler.getBeard(1)), string(beardRle));
     }
 
-    function testCanAddHeads() public {
-        bytes[] memory heads = new bytes[](2);
-        heads[0] = headRle;
-        heads[1] = headRle;
-        owner.addHeads(heads);
-        assertEq(string(hustler.getHead(0)), string(headRle));
-        assertEq(string(hustler.getHead(1)), string(headRle));
+    function testCanaddHairs() public {
+        bytes[] memory hairs = new bytes[](2);
+        hairs[0] = hairRle;
+        hairs[1] = hairRle;
+        owner.addRles(RleParts.MALE_HAIR, hairs);
+        owner.addRles(RleParts.FEMALE_HAIR, hairs);
+        assertEq(string(hustler.getHair(RleParts.MALE_HAIR, 0)), string(hairRle));
+        assertEq(string(hustler.getHair(RleParts.MALE_HAIR, 1)), string(hairRle));
+        assertEq(string(hustler.getHair(RleParts.FEMALE_HAIR, 0)), string(hairRle));
+        assertEq(string(hustler.getHair(RleParts.FEMALE_HAIR, 1)), string(hairRle));
     }
 
     function testCanBuildTokenURIWithNoRLEs() public {
         bytes[] memory bodies = new bytes[](1);
         bodies[0] = bodyRle;
-        bytes[] memory heads = new bytes[](1);
-        heads[0] = headRle;
+        bytes[] memory hairs = new bytes[](1);
+        hairs[0] = hairRle;
         bytes[] memory beards = new bytes[](1);
         beards[0] = beardRle;
 
-        owner.addBodies(bodies);
-        owner.addHeads(heads);
-        owner.addBeards(beards);
+        owner.addRles(RleParts.BODY, bodies);
+        owner.addRles(RleParts.MALE_HAIR, hairs);
+        owner.addRles(RleParts.BEARD, beards);
 
         uint256 id = 500;
         alice.mint();

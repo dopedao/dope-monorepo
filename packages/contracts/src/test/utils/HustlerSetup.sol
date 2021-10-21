@@ -7,6 +7,7 @@ import './Hevm.sol';
 import '../../Loot.sol';
 import { Paper } from '../../Paper.sol';
 import { Hustler } from '../../Hustler.sol';
+import { RleParts } from '../../HustlerMetadata.sol';
 import { SwapMeet } from '../../SwapMeet.sol';
 import { Components } from '../../Components.sol';
 import { SwapMeetTester } from './SwapMeetSetup.sol';
@@ -394,17 +395,20 @@ contract HustlerOwner is ERC1155Holder {
         hustler.setPalette(0, palette);
     }
 
-    function addBodies(bytes[] calldata _bodies) public {
-        hustler.addBodies(_bodies);
+    function addRles(uint8 part, bytes[] calldata _rles) public {
+        hustler.addRles(part, _rles);
     }
+    // function addBodies(bytes[] calldata _bodies) public {
+    //     hustler.addBodies(_bodies);
+    // }
 
-    function addHeads(bytes[] calldata _heads) public {
-        hustler.addHeads(_heads);
-    }
+    // function addHairs(bytes[] calldata _heads) public {
+    //     hustler.addHairs(_heads);
+    // }
 
-    function addBeards(bytes[] calldata _beards) public {
-        hustler.addBeards(_beards);
-    }
+    // function addBeards(bytes[] calldata _beards) public {
+    //     hustler.addBeards(_beards);
+    // }
 }
 
 contract Owner {}
@@ -424,15 +428,15 @@ contract HustlerTester is Hustler {
     }
 
     function getBody(uint256 id) public view returns (bytes memory) {
-        return bodies[id];
+        return rles[RleParts.BODY][id];
     }
 
-    function getHead(uint256 id) public view returns (bytes memory) {
-        return heads[id];
+    function getHair(uint8 gender, uint256 id) public view returns (bytes memory) {
+        return rles[gender][id];
     }
 
     function getBeard(uint256 id) public view returns (bytes memory) {
-        return beards[id];
+        return rles[RleParts.BEARD][id];
     }
 }
 

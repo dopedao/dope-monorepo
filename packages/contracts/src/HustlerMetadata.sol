@@ -10,7 +10,14 @@ import { ISwapMeet } from './interfaces/ISwapMeet.sol';
 library BodyParts {
     uint8 internal constant GENDER = 0x0;
     uint8 internal constant BODY = 0x1;
-    uint8 internal constant HEAD = 0x2;
+    uint8 internal constant HAIR = 0x2;
+    uint8 internal constant BEARD = 0x3;
+}
+
+library RleParts {
+    uint8 internal constant MALE_HAIR = 0x0;
+    uint8 internal constant FEMALE_HAIR = 0x1;
+    uint8 internal constant BODY = 0x2;
     uint8 internal constant BEARD = 0x3;
 }
 
@@ -55,15 +62,16 @@ contract HustlerMetadata {
 
     // Color Palettes (Index => Hex Colors)
     mapping(uint8 => bytes4[]) internal palettes;
+    mapping(uint8 => bytes[]) internal rles;
 
-    // Bodies (Body number => RLE)
-    bytes[] internal bodies;
+    // // Bodies (Body number => RLE)
+    // bytes[] internal bodies;
 
-    // Heads (Head number => RLE)
-    bytes[] internal heads;
+    // // Hairs (Hair number => RLE)
+    // bytes[2][] internal hairs;
 
-    // Beards (Beard number => RLE)
-    bytes[] internal beards;
+    // // Beards (Beard number => RLE)
+    // bytes[] internal beards;
 
     // Hustler metadata
     mapping(uint256 => Metadata) public metadata;
@@ -101,9 +109,10 @@ contract HustlerMetadata {
         }
 
         p.parts = new bytes[](12);
-        p.parts[0] = bodies[metadata[hustlerId].body[BodyParts.BODY]];
-        p.parts[1] = heads[metadata[hustlerId].body[BodyParts.HEAD]];
-        p.parts[2] = beards[metadata[hustlerId].body[BodyParts.BEARD]];
+        p.parts[0] = rles[RleParts.BODY][metadata[hustlerId].body[BodyParts.BODY]];
+        // Gender index corresponds to rle index
+        p.parts[1] = rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.HAIR]];
+        p.parts[2] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
 
         for (uint8 i = 0; i < 9; i++) {
             if (i == 0x2) {
