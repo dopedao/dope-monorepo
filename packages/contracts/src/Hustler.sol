@@ -28,8 +28,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     IERC20 immutable paper;
 
     // First 500 are reserved for OG Hustlers.
-    uint256 internal ogId = 0;
-    uint256 internal curId = 500;
+    uint256 internal ogs = 0;
+    uint256 internal hustlers = 500;
 
     // No need for a URI since we're doing everything onchain
     constructor(
@@ -153,30 +153,29 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes4 background,
         bytes4 color,
         bytes memory data
-    ) external returns (uint256) {
-        uint256 hustlerId = mint(data);
+    ) external {
+        uint256 hustlerId = hustlers;
         metadata[hustlerId].name = name;
         metadata[hustlerId].background = background;
         metadata[hustlerId].color = color;
+        mint(data);
         paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
         swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
-        return hustlerId;
     }
 
-    function mint(bytes memory data) public returns (uint256) {
-        uint256 id = curId;
-        curId += 1;
-        metadata[id].age = block.timestamp;
+    function mint(bytes memory data) public {
+        uint256 id = hustlers;
+        metadata[hustlers].age = block.timestamp;
+        hustlers += 1;
         _mint(_msgSender(), id, 1, data);
-        return id;
     }
 
-    function mintOG(bytes memory data) public returns (uint256) {
-        uint256 id = ogId;
-        ogId += 1;
+    function mintOG(bytes memory data) public payable {
+        require(msg.value >= 330000000000000000, 'ngmi');
+        uint256 id = ogs;
+        ogs += 1;
         metadata[id].age = block.timestamp;
         _mint(_msgSender(), id, 1, data);
-        return id;
     }
 
     function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {

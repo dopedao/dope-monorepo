@@ -155,7 +155,10 @@ contract HustlerMetadata {
 
         traits[11] = abi.encode(DisplayTypes.DATE, traitTypes[11], abi.encode(metadata[hustlerId].age));
 
-        uint256 respect = (1e5 - ((metadata[hustlerId].age - deployedAt) * 1e5) / (block.timestamp * 1e5)) / 1e3;
+        uint256 respect = (1e5 -
+            ((metadata[hustlerId].age - deployedAt) * 1e5) /
+            ((block.timestamp - deployedAt) * 1e5)) / 1e3;
+
         if (hustlerId < 500) {
             respect = 100;
         }
