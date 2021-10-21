@@ -233,7 +233,7 @@ contract Hustlers is HustlerTest {
         alice.mint();
         uint8[4] memory body;
 
-        alice.setMetadata(id, 'hustler', '', '', '', body, hex'0001');
+        alice.setMetadata(id, 'hustler', '', '', '', '', body, hex'0001');
 
         assertEq(hustler.getMetadata(id).name, 'hustler');
     }
@@ -243,7 +243,7 @@ contract Hustlers is HustlerTest {
         alice.mint();
         uint8[4] memory body;
 
-        alice.setMetadata(id, 'hustler', '', '', '', body, hex'0000');
+        alice.setMetadata(id, 'hustler', '', '', '', '', body, hex'0000');
 
         assertEq(hustler.getMetadata(id).name, '');
     }
@@ -253,7 +253,7 @@ contract Hustlers is HustlerTest {
         alice.mint();
         uint8[4] memory body;
 
-        alice.setMetadata(id, 'hustler name', '', '', '', body, hex'0001');
+        alice.setMetadata(id, 'hustler name', '', '', '', '', body, hex'0001');
     }
 
     function testCanSetBackground() public {
@@ -261,7 +261,7 @@ contract Hustlers is HustlerTest {
         alice.mint();
         uint8[4] memory body;
 
-        alice.setMetadata(id, '', '', hex'123456', '', body, hex'0004');
+        alice.setMetadata(id, '', '', hex'123456', '', '', body, hex'0004');
 
         assertEq(hustler.getMetadata(id).background, hex'123456');
     }
@@ -271,7 +271,7 @@ contract Hustlers is HustlerTest {
         alice.mint();
         uint8[4] memory body;
 
-        alice.setMetadata(id, '', '', hex'123456', '', body, hex'0000');
+        alice.setMetadata(id, '', '', hex'123456', '', '', body, hex'0000');
 
         assertEq(hustler.getMetadata(id).background, '');
     }
@@ -281,7 +281,7 @@ contract Hustlers is HustlerTest {
         alice.mint();
         uint8[4] memory body;
 
-        alice.setMetadata(id, '', hex'123456', '', '', body, hex'0002');
+        alice.setMetadata(id, '', hex'123456', '', '', '', body, hex'0002');
 
         assertEq(hustler.getMetadata(id).color, hex'123456');
     }
@@ -291,7 +291,7 @@ contract Hustlers is HustlerTest {
         alice.mint();
         uint8[4] memory body;
 
-        alice.setMetadata(id, '', hex'123456', '', '', body, hex'0000');
+        alice.setMetadata(id, '', hex'123456', '', '', '', body, hex'0000');
 
         assertEq(hustler.getMetadata(id).color, '');
     }
@@ -301,7 +301,7 @@ contract Hustlers is HustlerTest {
         alice.mint();
         uint8[4] memory body = [1, 0, 12, 0];
 
-        alice.setMetadata(id, '', '', '', '', body, hex'0050');
+        alice.setMetadata(id, '', '', '', '', '', body, hex'0050');
 
         assertEq(hustler.getMetadata(id).body[0], 1);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -314,7 +314,7 @@ contract Hustlers is HustlerTest {
         alice.mint();
         uint8[4] memory body = [2, 3, 4, 5];
 
-        alice.setMetadata(id, '', '', '', '', body, hex'00f0');
+        alice.setMetadata(id, '', '', '', '', '', body, hex'00f0');
 
         assertEq(hustler.getMetadata(id).body[0], 2);
         assertEq(hustler.getMetadata(id).body[1], 3);
@@ -327,7 +327,7 @@ contract Hustlers is HustlerTest {
         hustler.mint('');
         uint8[4] memory body = [2, 3, 4, 5];
 
-        alice.setMetadata(id, '', '', '', '', body, hex'00f0');
+        alice.setMetadata(id, '', '', '', '', '', body, hex'00f0');
     }
 
     function testCanSetSlotsPartial() public {
@@ -614,6 +614,23 @@ contract Hustlers is HustlerTest {
         alice.setApprovalForAll(address(hustler), true);
 
         hustler.tokenURI(id);
+    }
+
+    function testCanRenderCarMode() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        string memory name = 'gangsta';
+        bytes4 background = hex'000000ff';
+        bytes4 color = hex'fafafaff';
+
+        uint256 hustlerId = 500;
+        alice.mintFromDope(OTHER_BAG, name, background, color);
+
+        uint8[4] memory body;
+        alice.setMetadata(hustlerId, '', '', '', '', hex'0001', body, hex'0000');
+        assertEq(hustler.getMetadata(hustlerId).options, hex'0001');
+
+        hustler.tokenURI(hustlerId);
     }
 
     function checkOwns1155s(ItemIds memory ids, address who) private {

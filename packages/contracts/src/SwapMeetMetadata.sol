@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import './Components.sol';
 import './TokenId.sol';
 
-import { MetadataBuilder } from './MetadataBuilder.sol';
+import { MetadataBuilder, Transform } from './MetadataBuilder.sol';
 
 library Gender {
     uint8 internal constant MALE = 0x0;
@@ -178,32 +178,24 @@ contract SwapMeetMetadata {
     ) internal view returns (bytes[4] memory) {
         bytes[4] memory parts;
 
-        int16 offset = 1;
+        int256 direction = 1;
         if (gender == Gender.MALE) {
-            offset = -1;
+            direction = -1;
         }
 
-        bytes memory shadow_ = shadow;
-        shadow_[2] = bytes1(uint8(uint16(int16(uint16(uint8(shadow_[2]))) + (offset * int16(12)))));
-        shadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(shadow_[4]))) + (offset * int16(12)))));
-        parts[0] = shadow_;
+        bytes32 offset = hex'00000C000C';
+
+        parts[0] = Transform.translate(direction, shadow, offset);
 
         if (componentType == ComponentTypes.DRUGS) {
-            bytes memory drugShadow_ = drugShadow;
-            drugShadow_[2] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[2]))) + (offset * int16(12)))));
-            drugShadow_[4] = bytes1(uint8(uint16(int16(uint16(uint8(drugShadow_[4]))) + (offset * int16(12)))));
-            parts[1] = drugShadow_;
+            parts[1] = Transform.translate(direction, drugShadow, offset);
         }
 
-        silhouette[2] = bytes1(uint8(uint16(int16(uint16(uint8(silhouette[2]))) + (offset * int16(12)))));
-        silhouette[4] = bytes1(uint8(uint16(int16(uint16(uint8(silhouette[4]))) + (offset * int16(12)))));
-        parts[2] = silhouette;
+        parts[2] = Transform.translate(direction, silhouette, offset);
 
         bytes memory item = tokenRle(id, gender);
         if (item.length > 0) {
-            item[2] = bytes1(uint8(uint16(int16(uint16(uint8(item[2]))) + (offset * int16(12)))));
-            item[4] = bytes1(uint8(uint16(int16(uint16(uint8(item[4]))) + (offset * int16(12)))));
-            parts[3] = item;
+            parts[3] = Transform.translate(direction, item, offset);
         }
 
         return parts;

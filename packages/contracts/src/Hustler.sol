@@ -220,6 +220,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes4 color,
         bytes4 background,
         bytes4 viewbox,
+        bytes2 options,
         uint8[4] calldata body,
         bytes2 mask
     ) public onlyHustler(hustlerId) {
@@ -245,6 +246,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
                 metadata[hustlerId].body[i] = body[i];
             }
         }
+
+        metadata[hustlerId].options = options;
     }
 
     function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {

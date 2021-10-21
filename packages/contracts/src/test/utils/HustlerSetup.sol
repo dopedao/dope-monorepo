@@ -116,10 +116,11 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         bytes4 color,
         bytes4 background,
         bytes4 viewport,
+        bytes2 options,
         uint8[4] calldata body,
         bytes2 bmask
     ) public {
-        hustler.setMetadata(id, name, color, background, viewport, body, bmask);
+        hustler.setMetadata(id, name, color, background, viewport, options, body, bmask);
     }
 
     function transferERC1155(

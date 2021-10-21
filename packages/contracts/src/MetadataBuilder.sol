@@ -16,6 +16,19 @@ library DisplayTypes {
     uint8 constant DATE = 0x5;
 }
 
+library Transform {
+    function translate(
+        int256 direction,
+        bytes memory b,
+        bytes32 offset
+    ) public pure returns (bytes memory) {
+        assembly {
+            mstore(add(b, 32), add(mload(add(b, 32)), mul(direction, offset)))
+        }
+        return b;
+    }
+}
+
 library MetadataBuilder {
     bytes16 internal constant HEX = '0123456789abcdef';
 
