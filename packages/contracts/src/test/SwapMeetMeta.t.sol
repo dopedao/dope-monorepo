@@ -43,14 +43,50 @@ contract Metadata is SwapMeetTest {
 
     function testCreateAndMintATicklerNewWeapons() public {
         uint8[5] memory components;
-        components[0] = owner.addItemComponent(0x0, 'tickler');
-        uint256 id = owner.mint(address(owner), components, 0x0, 1, '');
+        components[0] = owner.addItemComponent(ComponentTypes.WEAPON, 'tickler');
+        uint256 id = owner.mint(address(owner), components, ComponentTypes.WEAPON, 1, '');
 
         Attribute[] memory attributes = new Attribute[](2);
         attributes[0] = Attribute('Slot', 'Weapon');
         attributes[1] = Attribute('Item', 'tickler');
         owner.setRle(id, jordans, jordans);
         assertMetadata(id, attributes, 'tickler');
+
+        assertEq(swapmeet.balanceOf(address(owner), id), 1);
+    }
+
+    function testCreateAndMintARareHatNewAccessory() public {
+        uint8[5] memory components;
+        components[0] = owner.addItemComponent(ComponentTypes.ACCESSORIES, 'hat');
+        components[1] = 1;
+        components[2] = 1;
+        components[3] = 1;
+        components[4] = 1;
+        uint256 id = owner.mint(address(owner), components, ComponentTypes.ACCESSORIES, 1, '');
+
+        Attribute[] memory attributes = new Attribute[](6);
+        attributes[0] = Attribute('Slot', 'Accessory');
+        attributes[1] = Attribute('Item', 'hat');
+        attributes[2] = Attribute('Suffix', 'from the Bayou');
+        attributes[3] = Attribute('Name Prefix', 'OG');
+        attributes[4] = Attribute('Name Suffix', 'Feared');
+        attributes[5] = Attribute('Augmentation', 'Yes');
+        owner.setRle(id, jordans, jordans);
+        assertMetadata(id, attributes, '"OG Feared" hat from the Bayou +1');
+
+        assertEq(swapmeet.balanceOf(address(owner), id), 1);
+    }
+
+    function testCreateAndMintAHatNewAccessory() public {
+        uint8[5] memory components;
+        components[0] = owner.addItemComponent(ComponentTypes.ACCESSORIES, 'hat');
+        uint256 id = owner.mint(address(owner), components, ComponentTypes.ACCESSORIES, 1, '');
+
+        Attribute[] memory attributes = new Attribute[](2);
+        attributes[0] = Attribute('Slot', 'Accessory');
+        attributes[1] = Attribute('Item', 'hat');
+        owner.setRle(id, jordans, jordans);
+        assertMetadata(id, attributes, 'hat');
 
         assertEq(swapmeet.balanceOf(address(owner), id), 1);
     }

@@ -17,7 +17,7 @@ library Errors {
     string constant EquipSignatureInvalid = 'esi';
     string constant HustlerDoesntOwnItem = 'hdoi';
     string constant ValueNotOne = 'vno';
-    string constant NotEnoughETH = 'ngmi';
+    string constant NotRightETH = 'ngmi';
 }
 
 /// @title Hustlers
@@ -181,7 +181,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes4 color,
         bytes memory data
     ) external payable {
-        uint256 hustlerId = hustlers;
+        uint256 hustlerId = ogs;
         metadata[hustlerId].name = name;
         metadata[hustlerId].background = background;
         metadata[hustlerId].color = color;
@@ -191,7 +191,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     }
 
     function mintOG(bytes memory data) public payable {
-        require(msg.value >= 330000000000000000, Errors.NotEnoughETH);
+        require(msg.value == 330000000000000000, Errors.NotRightETH);
         uint256 id = ogs;
         ogs += 1;
         metadata[id].age = block.timestamp;
@@ -206,6 +206,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         for (uint256 i = 0; i < slots.length; i++) {
             require(BitMask.get(mask, slots[i]), 'ne');
             ids[i] = metadata[hustlerId].slots[slots[i]];
+            amounts[i] = 1;
             mask = BitMask.unset(mask, slots[i]);
         }
 

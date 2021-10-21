@@ -38,7 +38,7 @@ contract HustlerMetadata {
     string private constant _name = 'Hustlers';
     string private constant _symbol = 'HUSTLERS';
     string private constant description = 'Hustle Hard';
-    string[13] private traitTypes = [
+    string[14] private traitTypes = [
         'Class',
         'Gender',
         'Weapon',
@@ -50,6 +50,7 @@ contract HustlerMetadata {
         'Drug',
         'Neck',
         'Ring',
+        'Accessory',
         'Initiation',
         'Respect'
     ];
@@ -101,13 +102,13 @@ contract HustlerMetadata {
             p.text = components.title(hustlerId);
         }
 
-        p.parts = new bytes[](12);
+        p.parts = new bytes[](13);
         p.parts[0] = rles[RleParts.BODY][metadata[hustlerId].body[BodyParts.BODY]];
         // Gender index corresponds to rle index
         p.parts[1] = rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.HAIR]];
         p.parts[2] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
 
-        for (uint8 i = 0; i < 9; i++) {
+        for (uint8 i = 0; i < 10; i++) {
             if (i == 0x2) {
                 continue;
             }
@@ -144,7 +145,7 @@ contract HustlerMetadata {
             abi.encode(genders[metadata[hustlerId].body[BodyParts.GENDER]])
         );
 
-        for (uint8 i = 0; i < 9; i++) {
+        for (uint8 i = 0; i < 10; i++) {
             bytes memory v;
             if (BitMask.get(metadata[hustlerId].mask, i)) {
                 v = bytes(swapmeet.fullname(metadata[hustlerId].slots[i]));

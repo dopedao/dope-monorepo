@@ -16,15 +16,44 @@ struct Data {
     Attribute[] attributes;
 }
 
-contract Hustlers is HustlerTest {
-    bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
-    bytes constant bodyRle =
-        hex'000b26361a060003090300050001090313010902000500010904130200050001130114011301090114020005000109021301090113020006000113021501130200060001090213030006000209040006000109011304000400020904130200030001090713010002000109091302000109041301090413010001090113010001090213010902130109011301000113020001090113011601090113011601000113010001130300020901130209010001130100011303000109031302000113010001130300010903130200011301000113030001090113010901130200011301000113030001090313020001130100011302000209041301000113010901130100020907130109011301000209051301000113010902000209021301090313010004000109011302000109011302000400010901130200010901130200040001090113020001090113020004000109011302000109011302000400010901130200010901130200040001090113020001090113020004000109011302000109011302000400021302000213020004000109030001090300040001130300011303000400011303000113030004000113030001130300040001130300011303000400011303000113030004000113030001130300040001130300011303000400011303000113030004000113030001130300040002090200021301090100';
-    bytes constant hairRle =
-        hex'000924111f0100014d010d014d01000117010d0218010d014d010d031801180119011801170119014d021801170118014d011802100118014d011702180100010002170200';
-    bytes constant beardRle = hex'000e24102001080109020a0100020a0100';
+contract RLES is HustlerTest {
+    function testCanAddBodies() public {
+        bytes[] memory bodies = new bytes[](2);
+        bodies[0] = bodyRle;
+        bodies[1] = bodyRle;
 
-    function testCanMintFromDope() public {
+        owner.addRles(RleParts.BODY, bodies);
+        assertEq(string(hustler.getBody(0)), string(bodyRle));
+        assertEq(string(hustler.getBody(1)), string(bodyRle));
+    }
+
+    function testCanAddBeards() public {
+        bytes[] memory beards = new bytes[](2);
+        beards[0] = beardRle;
+        beards[1] = beardRle;
+        owner.addRles(RleParts.BEARD, beards);
+
+        assertEq(string(hustler.getBeard(0)), string(beardRle));
+        assertEq(string(hustler.getBeard(1)), string(beardRle));
+    }
+
+    function testCanaddHairs() public {
+        bytes[] memory hairs = new bytes[](2);
+        hairs[0] = hairRle;
+        hairs[1] = hairRle;
+        owner.addRles(RleParts.MALE_HAIR, hairs);
+        owner.addRles(RleParts.FEMALE_HAIR, hairs);
+        assertEq(string(hustler.getHair(RleParts.MALE_HAIR, 0)), string(hairRle));
+        assertEq(string(hustler.getHair(RleParts.MALE_HAIR, 1)), string(hairRle));
+        assertEq(string(hustler.getHair(RleParts.FEMALE_HAIR, 0)), string(hairRle));
+        assertEq(string(hustler.getHair(RleParts.FEMALE_HAIR, 1)), string(hairRle));
+    }
+}
+
+contract Hustlers is HustlerTest {
+    function setUp() public override {
+        super.setUp();
+
         bytes[] memory heads = new bytes[](2);
         heads[0] = hairRle;
         heads[1] = hairRle;
@@ -40,7 +69,9 @@ contract Hustlers is HustlerTest {
         bodies[0] = bodyRle;
         bodies[1] = bodyRle;
         owner.addRles(RleParts.BODY, bodies);
+    }
 
+    function testCanMintFromDope() public {
         alice.setDopeApprovalForAll(address(hustler), true);
 
         string memory name = 'gangsta';
@@ -60,6 +91,77 @@ contract Hustlers is HustlerTest {
         hustler.tokenURI(hustlerId);
     }
 
+    function testCanMintOGFromDope() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        string memory name = 'gangsta';
+        bytes4 background = hex'000000ff';
+        bytes4 color = hex'fafafaff';
+
+        uint256 hustlerId = 0;
+        alice.mintOGFromDope{ value: 330000000000000000 }(OTHER_BAG, name, background, color, '');
+        ItemIds memory ids = swapmeet.ids(OTHER_BAG);
+        checkOwns1155s(ids, address(hustler));
+        checkIsEquipped(ids, hustlerId);
+
+        assertEq(hustler.getMetadata(hustlerId).background, background);
+        assertEq(hustler.getMetadata(hustlerId).color, color);
+        assertEq(hustler.getMetadata(hustlerId).name, name);
+
+        hustler.tokenURI(hustlerId);
+    }
+
+    function testFailMintOGFromDopeWithLessEth() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        string memory name = 'gangsta';
+        bytes4 background = hex'000000ff';
+        bytes4 color = hex'fafafaff';
+
+        alice.mintOGFromDope{ value: 330000000000000000 - 1 }(OTHER_BAG, name, background, color, '');
+    }
+
+    function testFailMintOGFromDopeWithMoreEth() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        string memory name = 'gangsta';
+        bytes4 background = hex'000000ff';
+        bytes4 color = hex'fafafaff';
+
+        alice.mintOGFromDope{ value: 330000000000000000 + 1 }(OTHER_BAG, name, background, color, '');
+    }
+
+    function testCanMintOG() public {
+        uint256 hustlerId = 0;
+        alice.mintOG{ value: 330000000000000000 }('');
+        hustler.tokenURI(hustlerId);
+    }
+
+    function testFailMintOGWithLessEth() public {
+        alice.mintOG{ value: 330000000000000000 - 1 }('');
+    }
+
+    function testFailMintOGWithMoreEth() public {
+        alice.mintOG{ value: 330000000000000000 + 1 }('');
+    }
+
+    function testCanSetAccessory() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        string memory name = 'gangsta';
+        bytes4 background = hex'000000ff';
+        bytes4 color = hex'fafafaff';
+
+        uint256 id = 500;
+        alice.mintFromDope(OTHER_BAG, name, background, color);
+        ItemIds memory ids = swapmeet.ids(OTHER_BAG);
+        checkOwns1155s(ids, address(hustler));
+        checkIsEquipped(ids, id);
+
+        alice.safeTransferFrom(address(alice), address(hustler), ACCESSORY, 1, abi.encode(equip, id));
+        hustler.tokenURI(id);
+    }
+
     function testCanMintThenTransferHustler() public {
         alice.setDopeApprovalForAll(address(hustler), true);
 
@@ -76,6 +178,50 @@ contract Hustlers is HustlerTest {
         alice.safeTransferHustlerFrom(address(alice), address(bob), hustlerId, 1, '');
 
         assertEq(hustler.balanceOf(address(bob), hustlerId), 1);
+    }
+
+    function testCanUnequipHustler() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        string memory name = 'gangsta';
+        bytes4 background = hex'000000';
+        bytes4 color = hex'fafafa';
+
+        uint256 hustlerId = 500;
+        alice.mintFromDope(OTHER_BAG, name, background, color);
+        ItemIds memory ids = swapmeet.ids(OTHER_BAG);
+        checkOwns1155s(ids, address(hustler));
+        checkIsEquipped(ids, hustlerId);
+
+        // 0000 0001 1111 1111
+        assertEq(hustler.getMetadata(hustlerId).mask, bytes2(hex'01ff'));
+        uint8[] memory slots = new uint8[](1);
+        slots[0] = 0;
+        alice.unequip(hustlerId, slots);
+        // 0000 0001 1111 1110
+        assertEq(swapmeet.balanceOf(address(alice), ids.weapon), 1);
+        assertEq(bytes32(hustler.getMetadata(hustlerId).mask), bytes32(bytes2(hex'01fe')));
+
+        uint8[] memory slots2 = new uint8[](5);
+        slots2[0] = 1;
+        slots2[1] = 2;
+        slots2[2] = 3;
+        slots2[3] = 4;
+        slots2[4] = 5;
+        alice.unequip(hustlerId, slots2);
+
+        // 0000 0001 1100 0000
+        assertEq(bytes32(hustler.getMetadata(hustlerId).mask), bytes32(bytes2(hex'01c0')));
+        assertEq(swapmeet.balanceOf(address(alice), ids.clothes), 1);
+        assertEq(swapmeet.balanceOf(address(alice), ids.vehicle), 1);
+        assertEq(swapmeet.balanceOf(address(alice), ids.waist), 1);
+        assertEq(swapmeet.balanceOf(address(alice), ids.foot), 1);
+        assertEq(swapmeet.balanceOf(address(alice), ids.hand), 1);
+
+        alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, hustlerId));
+        assertEq(bytes32(hustler.getMetadata(hustlerId).mask), bytes32(bytes2(hex'01c1')));
+        assertEq(swapmeet.balanceOf(address(alice), ids.weapon), 0);
+        assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
     }
 
     function testFailMintFromDopeWithoutApproval() public {
@@ -436,38 +582,6 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(id).slots[0], otherIds.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), otherIds.weapon), 1);
         assertEq(swapmeet.balanceOf(address(alice), ids.weapon), 1);
-    }
-
-    function testCanAddBodies() public {
-        bytes[] memory bodies = new bytes[](2);
-        bodies[0] = bodyRle;
-        bodies[1] = bodyRle;
-
-        owner.addRles(RleParts.BODY, bodies);
-        assertEq(string(hustler.getBody(0)), string(bodyRle));
-        assertEq(string(hustler.getBody(1)), string(bodyRle));
-    }
-
-    function testCanAddBeards() public {
-        bytes[] memory beards = new bytes[](2);
-        beards[0] = beardRle;
-        beards[1] = beardRle;
-        owner.addRles(RleParts.BEARD, beards);
-
-        assertEq(string(hustler.getBeard(0)), string(beardRle));
-        assertEq(string(hustler.getBeard(1)), string(beardRle));
-    }
-
-    function testCanaddHairs() public {
-        bytes[] memory hairs = new bytes[](2);
-        hairs[0] = hairRle;
-        hairs[1] = hairRle;
-        owner.addRles(RleParts.MALE_HAIR, hairs);
-        owner.addRles(RleParts.FEMALE_HAIR, hairs);
-        assertEq(string(hustler.getHair(RleParts.MALE_HAIR, 0)), string(hairRle));
-        assertEq(string(hustler.getHair(RleParts.MALE_HAIR, 1)), string(hairRle));
-        assertEq(string(hustler.getHair(RleParts.FEMALE_HAIR, 0)), string(hairRle));
-        assertEq(string(hustler.getHair(RleParts.FEMALE_HAIR, 1)), string(hairRle));
     }
 
     function testCanBuildTokenURIWithNoRLEs() public {
