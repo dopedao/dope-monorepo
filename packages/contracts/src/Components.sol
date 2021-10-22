@@ -58,7 +58,7 @@ contract Components is Ownable {
         'Drugs',
         'Neck',
         'Ring',
-        'Accessories'
+        'Accessory'
     ];
 
     string[9] internal slotKeys = ['WEAPON', 'CLOTHES', 'VEHICLE', 'WAIST', 'FOOT', 'HAND', 'DRUGS', 'NECK', 'RING'];
@@ -411,6 +411,8 @@ contract Components is Ownable {
             arr = necklaces;
         } else if (componentType == ComponentTypes.RING) {
             arr = rings;
+        } else if (componentType == ComponentTypes.ACCESSORIES) {
+            arr = accessories;
         } else if (componentType == ComponentTypes.NAME_PREFIX) {
             arr = namePrefixes;
         } else if (componentType == ComponentTypes.NAME_SUFFIX) {
@@ -457,6 +459,8 @@ contract Components is Ownable {
             return necklaces[idx];
         } else if (componentType == ComponentTypes.RING) {
             return rings[idx];
+        } else if (componentType == ComponentTypes.ACCESSORIES) {
+            return accessories[idx];
         } else {
             revert(UnexpectedComponent);
         }

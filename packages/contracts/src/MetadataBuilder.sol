@@ -16,6 +16,19 @@ library DisplayTypes {
     uint8 constant DATE = 0x5;
 }
 
+library Transform {
+    function translate(
+        int256 direction,
+        bytes memory b,
+        bytes32 offset
+    ) public pure returns (bytes memory) {
+        assembly {
+            mstore(add(b, 32), add(mload(add(b, 32)), mul(direction, offset)))
+        }
+        return b;
+    }
+}
+
 library MetadataBuilder {
     bytes16 internal constant HEX = '0123456789abcdef';
 
@@ -61,13 +74,32 @@ library MetadataBuilder {
         // prettier-ignore
         return string(
             abi.encodePacked(
-                '<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">',
+                '<svg width="320" height="320" viewBox="', generateViewbox(params.viewbox), '" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">',
                 generateStyles(params),
                 '<rect width="320px" height="320px" fill="#', toColor(params.background), '" />',
                 generateText(params), generateSVGRects(params, palettes),
                 '</svg>'
             )
         );
+    }
+
+    function generateViewbox(bytes4 viewbox) private pure returns (string memory) {
+        if (viewbox[0] == 0 && viewbox[1] == 0 && viewbox[2] == 0 && viewbox[3] == 0) {
+            return '0 0 320 320';
+        }
+
+        return
+            string(
+                abi.encodePacked(
+                    toString(uint256(uint8(viewbox[0]))),
+                    ' ',
+                    toString(uint256(uint8(viewbox[1]))),
+                    ' ',
+                    toString(uint256(uint8(viewbox[2]))),
+                    ' ',
+                    toString(uint256(uint8(viewbox[3])))
+                )
+            );
     }
 
     function generateStyles(Params memory params) private pure returns (string memory) {
