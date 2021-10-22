@@ -12,24 +12,28 @@ import { BitMask } from './BitMask.sol';
 import { HustlerMetadata } from './HustlerMetadata.sol';
 
 library Errors {
-    string constant IsNotSwapMeet = 'sender not swap meet';
-    string constant IsHolder = 'sender not hustler holder';
-    string constant EquipSignatureInvalid = 'equip sig invalid';
-    string constant HustlerDoesntOwnItem = 'hustler doesnt own item';
-    string constant ValueNotOne = 'value not one';
+    string constant IsNotSwapMeet = 'snsm';
+    string constant IsHolder = 'snhh';
+    string constant EquipSignatureInvalid = 'esi';
+    string constant HustlerDoesntOwnItem = 'hdoi';
+    string constant ValueNotOne = 'vno';
+    string constant NotRightETH = 'ngmi';
 }
 
 /// @title Hustlers
-/// @author Tarrence van As
+/// @author tarrence llc
 /// @notice Hustlers are avatars in the dope wars metaverse.
 contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
+    address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
+    address private constant tarrencellc = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
+    address private constant subimagellc = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
 
     IERC20 immutable paper;
 
     // First 500 are reserved for OG Hustlers.
-    uint256 internal ogId = 0;
-    uint256 internal curId = 500;
+    uint256 internal ogs = 0;
+    uint256 internal hustlers = 500;
 
     // No need for a URI since we're doing everything onchain
     constructor(
@@ -153,34 +157,45 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes4 background,
         bytes4 color,
         bytes memory data
-    ) external returns (uint256) {
-        uint256 hustlerId = mint(data);
+    ) external {
+        uint256 hustlerId = hustlers;
         metadata[hustlerId].name = name;
         metadata[hustlerId].background = background;
         metadata[hustlerId].color = color;
+        mint(data);
         paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
         swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
-        return hustlerId;
     }
 
-    function mint(bytes memory data) public returns (uint256) {
-        uint256 id = curId;
-        curId += 1;
+    function mint(bytes memory data) public {
+        uint256 id = hustlers;
+        metadata[hustlers].age = block.timestamp;
+        hustlers += 1;
+        _mint(_msgSender(), id, 1, data);
+    }
+
+    function mintOGFromDope(
+        uint256 tokenId,
+        string calldata name,
+        bytes4 background,
+        bytes4 color,
+        bytes memory data
+    ) external payable {
+        uint256 hustlerId = ogs;
+        metadata[hustlerId].name = name;
+        metadata[hustlerId].background = background;
+        metadata[hustlerId].color = color;
+        mintOG(data);
+        paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
+        swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
+    }
+
+    function mintOG(bytes memory data) public payable {
+        require(msg.value == 330000000000000000, Errors.NotRightETH);
+        uint256 id = ogs;
+        ogs += 1;
         metadata[id].age = block.timestamp;
         _mint(_msgSender(), id, 1, data);
-        return id;
-    }
-
-    function mintOG(bytes memory data) public returns (uint256) {
-        uint256 id = ogId;
-        ogId += 1;
-        metadata[id].age = block.timestamp;
-        _mint(_msgSender(), id, 1, data);
-        return id;
-    }
-
-    function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {
-        palettes[id] = palette;
     }
 
     function unequip(uint256 hustlerId, uint8[] calldata slots) public onlyHustler(hustlerId) {
@@ -189,8 +204,9 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes2 mask = metadata[hustlerId].mask;
 
         for (uint256 i = 0; i < slots.length; i++) {
-            require(BitMask.get(mask, slots[i]), 'not equipped');
+            require(BitMask.get(mask, slots[i]), 'ne');
             ids[i] = metadata[hustlerId].slots[slots[i]];
+            amounts[i] = 1;
             mask = BitMask.unset(mask, slots[i]);
         }
 
@@ -203,7 +219,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         string calldata name,
         bytes4 color,
         bytes4 background,
-        bytes4 viewport,
+        bytes4 viewbox,
+        bytes2 options,
         uint8[4] calldata body,
         bytes2 mask
     ) public onlyHustler(hustlerId) {
@@ -221,7 +238,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         }
 
         if (BitMask.get(mask, 3)) {
-            metadata[hustlerId].viewport = viewport;
+            metadata[hustlerId].viewbox = viewbox;
         }
 
         for (uint8 i = 0; i < 4; i++) {
@@ -229,24 +246,27 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
                 metadata[hustlerId].body[i] = body[i];
             }
         }
+
+        metadata[hustlerId].options = options;
     }
 
-    function addBodies(bytes[] calldata _bodies) public onlyOwner {
-        for (uint256 i = 0; i < _bodies.length; i++) {
-            bodies.push(_bodies[i]);
+    function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {
+        palettes[id] = palette;
+    }
+
+    function addRles(uint8 part, bytes[] calldata _rles) public onlyOwner {
+        for (uint256 i = 0; i < _rles.length; i++) {
+            rles[part].push(_rles[i]);
         }
     }
 
-    function addHeads(bytes[] calldata _heads) public onlyOwner {
-        for (uint256 i = 0; i < _heads.length; i++) {
-            heads.push(_heads[i]);
-        }
-    }
-
-    function addBeards(bytes[] calldata _beards) public onlyOwner {
-        for (uint256 i = 0; i < _beards.length; i++) {
-            beards.push(_beards[i]);
-        }
+    function withdraw() public {
+        // First half
+        payable(timelock).transfer(address(this).balance / 2);
+        // Half of second half (1/4)
+        payable(tarrencellc).transfer(address(this).balance / 2);
+        // Remainder
+        payable(subimagellc).transfer(address(this).balance);
     }
 
     modifier onlyHustler(uint256 id) {

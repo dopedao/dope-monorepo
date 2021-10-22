@@ -54,7 +54,7 @@ abi = [
                 "type": "bytes[]"
             }
         ],
-        "name": "addHeads",
+        "name": "addHairs",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -116,7 +116,7 @@ txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = Hustler.functions.addHeads(components["hair"]["men"] + components["hair"]["girls"]).buildTransaction({
+txn = Hustler.functions.addHairs(components["hair"]["men"] + components["hair"]["girls"]).buildTransaction({
     'chainId': 4,
     'gas': 10000000,
     'maxFeePerGas': w3.toWei('2', 'gwei'),
