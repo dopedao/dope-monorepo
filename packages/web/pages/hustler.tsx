@@ -39,6 +39,5 @@ const Hustler = () => {
     </AppWindow>
   );
 };
-2;
 
 export default Hustler;
