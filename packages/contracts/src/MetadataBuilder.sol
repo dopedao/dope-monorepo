@@ -21,7 +21,7 @@ library Transform {
         int256 direction,
         bytes memory b,
         bytes32 offset
-    ) public pure returns (bytes memory) {
+    ) internal pure returns (bytes memory) {
         assembly {
             mstore(add(b, 32), add(mload(add(b, 32)), mul(direction, offset)))
         }
