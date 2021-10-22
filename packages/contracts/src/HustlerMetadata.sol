@@ -195,7 +195,7 @@ contract HustlerMetadata {
     function attributes(uint256 hustlerId) public view returns (bytes[] memory) {
         bytes memory none = 'None';
 
-        bytes[] memory traits = new bytes[](13);
+        bytes[] memory traits = new bytes[](14);
 
         if (metadata[hustlerId].age == 0) {
             return traits;
@@ -212,7 +212,7 @@ contract HustlerMetadata {
             abi.encode(genders[metadata[hustlerId].body[BodyParts.GENDER]])
         );
 
-        for (uint8 i = 0; i < 10; i++) {
+        for (uint8 i = 0; i < 11; i++) {
             bytes memory v;
             if (BitMask.get(metadata[hustlerId].mask, i)) {
                 v = bytes(swapmeet.fullname(metadata[hustlerId].slots[i]));
@@ -223,7 +223,7 @@ contract HustlerMetadata {
             traits[i + 2] = abi.encode(DisplayTypes.NONE, traitTypes[i + 2], abi.encode(v));
         }
 
-        traits[11] = abi.encode(DisplayTypes.DATE, traitTypes[11], abi.encode(metadata[hustlerId].age));
+        traits[12] = abi.encode(DisplayTypes.DATE, traitTypes[12], abi.encode(metadata[hustlerId].age));
 
         uint256 respect = (1e5 -
             ((metadata[hustlerId].age - deployedAt) * 1e5) /
@@ -232,7 +232,7 @@ contract HustlerMetadata {
         if (hustlerId < 500) {
             respect = 100;
         }
-        traits[12] = abi.encode(DisplayTypes.RANKING, traitTypes[12], abi.encode(respect));
+        traits[13] = abi.encode(DisplayTypes.RANKING, traitTypes[13], abi.encode(respect));
 
         return traits;
     }
