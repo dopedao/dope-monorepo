@@ -1,12 +1,14 @@
 import AppWindow from '../components/AppWindow';
 import ComingSoonDialog from '../components/ComingSoonDialog';
 import Head from '../components/Head';
+import Configuration from '../components/hustler/Configuration';
 
 const Hustler = () => {
   return (
-    <AppWindow padBody={false}>
+    <AppWindow requiresWalletConnection={true}>
       <Head title="Create Your Hustler" />
-      <ComingSoonDialog title="Under Construction">
+      <Configuration />
+      {/* <ComingSoonDialog title="Under Construction">
         <p>
           <a
             className="textLink"
@@ -15,9 +17,10 @@ const Hustler = () => {
             Read the proposal for Dope Wars: Ignition
           </a>
         </p>
-      </ComingSoonDialog>
+      </ComingSoonDialog> */}
     </AppWindow>
   );
 };
+2;
 
 export default Hustler;
