@@ -5,6 +5,7 @@ import ComingSoonDialog from 'components/ComingSoonDialog';
 import Head from 'components/Head';
 import Container from 'components/Container';
 import LoadingBlock from 'components/LoadingBlock';
+import Configuration from '../components/hustler/Configuration';
 
 const Hustler = () => {
   const { account } = useWeb3React();
@@ -21,6 +22,8 @@ const Hustler = () => {
           <LoadingBlock />
           <LoadingBlock />
         </Container>
+      ) : true ? (
+        <Configuration />
       ) : (
         <ComingSoonDialog title="Under Construction">
           <p>
@@ -36,5 +39,6 @@ const Hustler = () => {
     </AppWindow>
   );
 };
+2;
 
 export default Hustler;
