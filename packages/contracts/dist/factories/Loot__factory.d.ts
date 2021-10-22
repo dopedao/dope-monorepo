@@ -1,13 +1,9 @@
 import { Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type { Paper, PaperInterface } from "../Paper";
-export declare class Paper__factory {
+import type { Loot, LootInterface } from "../Loot";
+export declare class Loot__factory {
     static readonly abi: ({
-        inputs: {
-            internalType: string;
-            name: string;
-            type: string;
-        }[];
+        inputs: never[];
         stateMutability: string;
         type: string;
         anonymous?: undefined;
@@ -40,27 +36,7 @@ export declare class Paper__factory {
         stateMutability: string;
         type: string;
         anonymous?: undefined;
-    } | {
-        inputs: {
-            internalType: string;
-            name: string;
-            type: string;
-        }[];
-        name: string;
-        outputs: {
-            components: {
-                internalType: string;
-                name: string;
-                type: string;
-            }[];
-            internalType: string;
-            name: string;
-            type: string;
-        }[];
-        stateMutability: string;
-        type: string;
-        anonymous?: undefined;
     })[];
-    static createInterface(): PaperInterface;
-    static connect(address: string, signerOrProvider: Signer | Provider): Paper;
+    static createInterface(): LootInterface;
+    static connect(address: string, signerOrProvider: Signer | Provider): Loot;
 }

@@ -6,8 +6,3 @@ set -eo pipefail
 . $(dirname $0)/common.sh
 
 dapp build
-
-extractABI DopeComponents
-extractABI Stockpile
-extractABI Character
-extractABI Paper
