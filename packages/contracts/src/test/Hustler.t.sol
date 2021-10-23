@@ -22,9 +22,13 @@ contract RLES is HustlerTest {
         bodies[0] = bodyRle;
         bodies[1] = bodyRle;
 
-        owner.addRles(RleParts.BODY, bodies);
-        assertEq(string(hustler.getBody(0)), string(bodyRle));
-        assertEq(string(hustler.getBody(1)), string(bodyRle));
+        owner.addRles(RleParts.MALE_BODY, bodies);
+        assertEq(string(hustler.getBody(RleParts.MALE_BODY, 0)), string(bodyRle));
+        assertEq(string(hustler.getBody(RleParts.MALE_BODY, 1)), string(bodyRle));
+
+        owner.addRles(RleParts.FEMALE_BODY, bodies);
+        assertEq(string(hustler.getBody(RleParts.FEMALE_BODY, 0)), string(bodyRle));
+        assertEq(string(hustler.getBody(RleParts.FEMALE_BODY, 1)), string(bodyRle));
     }
 
     function testCanAddBeards() public {
@@ -68,7 +72,8 @@ contract Hustlers is HustlerTest {
         bytes[] memory bodies = new bytes[](2);
         bodies[0] = bodyRle;
         bodies[1] = bodyRle;
-        owner.addRles(RleParts.BODY, bodies);
+        owner.addRles(RleParts.MALE_BODY, bodies);
+        owner.addRles(RleParts.FEMALE_BODY, bodies);
     }
 
     function testCanMintFromDope() public {
@@ -602,7 +607,7 @@ contract Hustlers is HustlerTest {
         bytes[] memory beards = new bytes[](1);
         beards[0] = beardRle;
 
-        owner.addRles(RleParts.BODY, bodies);
+        owner.addRles(RleParts.MALE_BODY, bodies);
         owner.addRles(RleParts.MALE_HAIR, hairs);
         owner.addRles(RleParts.BEARD, beards);
 

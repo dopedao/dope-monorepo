@@ -15,10 +15,11 @@ library BodyParts {
 }
 
 library RleParts {
-    uint8 internal constant MALE_HAIR = 0x0;
-    uint8 internal constant FEMALE_HAIR = 0x1;
-    uint8 internal constant BODY = 0x2;
-    uint8 internal constant BEARD = 0x3;
+    uint8 internal constant MALE_BODY = 0x0;
+    uint8 internal constant FEMALE_BODY = 0x1;
+    uint8 internal constant MALE_HAIR = 0x2;
+    uint8 internal constant FEMALE_HAIR = 0x3;
+    uint8 internal constant BEARD = 0x4;
 }
 
 library RenderOptions {
@@ -129,9 +130,9 @@ contract HustlerMetadata {
 
     function hustlerParts(uint256 hustlerId) public view returns (bytes[] memory) {
         bytes[] memory parts = new bytes[](13);
-        parts[0] = rles[RleParts.BODY][metadata[hustlerId].body[BodyParts.BODY]];
         // Gender index corresponds to rle index
-        parts[1] = rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.HAIR]];
+        parts[0] = rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.BODY]];
+        parts[1] = rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]];
         parts[2] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
 
         if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {}
@@ -160,12 +161,16 @@ contract HustlerMetadata {
         }
 
         bytes32 offset = hex'00331D331D';
-        parts[1] = Transform.translate(1, rles[RleParts.BODY][metadata[hustlerId].body[BodyParts.BODY]], offset);
+        parts[1] = Transform.translate(
+            1,
+            rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.BODY]],
+            offset
+        );
 
         // Gender index corresponds to rle index
         parts[2] = Transform.translate(
             1,
-            rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.HAIR]],
+            rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]],
             offset
         );
 
