@@ -455,12 +455,12 @@ contract HustlerTester is Hustler {
         return metadata[id];
     }
 
-    function getBody(uint256 id) public view returns (bytes memory) {
-        return rles[RleParts.BODY][id];
+    function getBody(uint8 slot, uint256 id) public view returns (bytes memory) {
+        return rles[slot][id];
     }
 
-    function getHair(uint8 gender, uint256 id) public view returns (bytes memory) {
-        return rles[gender][id];
+    function getHair(uint8 slot, uint256 id) public view returns (bytes memory) {
+        return rles[slot][id];
     }
 
     function getBeard(uint256 id) public view returns (bytes memory) {
