@@ -34,13 +34,13 @@ contract HustlerMetadata {
     struct Metadata {
         bytes4 color;
         bytes4 background;
-        bytes4 viewbox;
         bytes2 mask;
         bytes2 options;
-        uint256 age;
+        uint8[4] viewbox;
         uint8[4] body;
-        uint256[10] slots;
         uint8[10] order;
+        uint256 age;
+        uint256[10] slots;
         string name;
     }
 
@@ -49,7 +49,7 @@ contract HustlerMetadata {
     string private constant description = 'Hustle Hard';
     string[14] private traitTypes = [
         'Class',
-        'Gender',
+        'Sex',
         'Weapon',
         'Clothes',
         'Vehicle',
