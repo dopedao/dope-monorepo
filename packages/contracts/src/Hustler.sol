@@ -18,6 +18,7 @@ library Errors {
     string constant HustlerDoesntOwnItem = 'hdoi';
     string constant ValueNotOne = 'vno';
     string constant NotRightETH = 'ngmi';
+    string constant NoMore = 'nomo';
 }
 
 /// @title Hustlers
@@ -191,7 +192,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     }
 
     function mintOG(bytes memory data) public payable {
-        require(msg.value == 330000000000000000, Errors.NotRightETH);
+        require(msg.value == 250000000000000000, Errors.NotRightETH);
+        require(ogs < 500, Errors.NoMore);
         uint256 id = ogs;
         ogs += 1;
         metadata[id].age = block.timestamp;
@@ -219,8 +221,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         string calldata name,
         bytes4 color,
         bytes4 background,
-        bytes4 viewbox,
         bytes2 options,
+        uint8[4] calldata viewbox,
         uint8[4] calldata body,
         bytes2 mask
     ) public onlyHustler(hustlerId) {

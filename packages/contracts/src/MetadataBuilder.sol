@@ -36,7 +36,7 @@ library MetadataBuilder {
         uint8 resolution;
         bytes4 color;
         bytes4 background;
-        bytes4 viewbox;
+        uint8[4] viewbox;
         string text;
         string subtext;
         string name;
@@ -83,7 +83,7 @@ library MetadataBuilder {
         );
     }
 
-    function generateViewbox(bytes4 viewbox) private pure returns (string memory) {
+    function generateViewbox(uint8[4] memory viewbox) private pure returns (string memory) {
         if (viewbox[0] == 0 && viewbox[1] == 0 && viewbox[2] == 0 && viewbox[3] == 0) {
             return '0 0 320 320';
         }
@@ -91,13 +91,13 @@ library MetadataBuilder {
         return
             string(
                 abi.encodePacked(
-                    toString(uint256(uint8(viewbox[0]))),
+                    toString(viewbox[0]),
                     ' ',
-                    toString(uint256(uint8(viewbox[1]))),
+                    toString(viewbox[1]),
                     ' ',
-                    toString(uint256(uint8(viewbox[2]))),
+                    toString(viewbox[2]),
                     ' ',
-                    toString(uint256(uint8(viewbox[3])))
+                    toString(viewbox[3])
                 )
             );
     }
