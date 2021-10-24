@@ -11,18 +11,18 @@ set -eo pipefail
 # log "MetadataBuilder deployed at:" $MetadataBuilderAddr
 
 # Deploy.
-ComponentsAddr="0x26A916Ad4d2ab1cB4B86C1abd18042B2b9dAFD08"
-# ComponentsAddr=$(deploy Components $ETH_FROM)
-# # verify Components $ComponentsAddr $ETH_FROM
-# extractABI Components
-# log "Components deployed at:" $ComponentsAddr
+# ComponentsAddr="0x26A916Ad4d2ab1cB4B86C1abd18042B2b9dAFD08"
+ComponentsAddr=$(deploy Components $ETH_FROM)
+# verify Components $ComponentsAddr $ETH_FROM
+extractABI Components
+log "Components deployed at:" $ComponentsAddr
 
-SwapMeetAddr="0x37366C3ba457acB86ef67DBB3d94E21487f23074"
-# echo "deploy SwapMeet $ComponentsAddr $LOOT $PAPER"
-# SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr $LOOT $PAPER)
-# # verify SwapMeet $SwapMeetAddr $ComponentsAddr $LOOT $PAPER
-# extractABI SwapMeet
-# log "SwapMeet deployed at:" $SwapMeetAddr
+# SwapMeetAddr="0x37366C3ba457acB86ef67DBB3d94E21487f23074"
+echo "deploy SwapMeet $ComponentsAddr $LOOT $PAPER"
+SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr $LOOT $PAPER)
+# verify SwapMeet $SwapMeetAddr $ComponentsAddr $LOOT $PAPER
+extractABI SwapMeet
+log "SwapMeet deployed at:" $SwapMeetAddr
 
 HustlerAddr=$(deploy Hustler $ComponentsAddr $SwapMeetAddr $PAPER)
 # verify Hustler $HustlerAddr $SwapMeetAddr

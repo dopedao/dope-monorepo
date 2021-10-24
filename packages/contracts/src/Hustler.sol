@@ -9,7 +9,7 @@ import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
 import { ERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
 import { BitMask } from './BitMask.sol';
-import { HustlerMetadata } from './HustlerMetadata.sol';
+import { BodyParts, HustlerMetadata } from './HustlerMetadata.sol';
 
 library Errors {
     string constant IsNotSwapMeet = 'snsm';
@@ -19,6 +19,7 @@ library Errors {
     string constant ValueNotOne = 'vno';
     string constant NotRightETH = 'ngmi';
     string constant NoMore = 'nomo';
+    string constant NotOG = 'notog';
 }
 
 /// @title Hustlers
@@ -244,6 +245,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
         for (uint8 i = 0; i < 4; i++) {
             if (BitMask.get(mask, i + 4)) {
+                require(!(i == BodyParts.BODY && body[i] % 5 == 0) || hustlerId < 500, Errors.NotOG);
                 metadata[hustlerId].body[i] = body[i];
             }
         }
