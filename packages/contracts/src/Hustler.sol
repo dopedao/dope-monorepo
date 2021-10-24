@@ -27,8 +27,8 @@ library Errors {
 contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
     address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
-    address private constant tarrencellc = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
-    address private constant subimagellc = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
+    address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
+    address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
 
     IERC20 immutable paper;
 
@@ -182,22 +182,21 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes4 color,
         bytes memory data
     ) external payable {
-        uint256 hustlerId = ogs;
-        metadata[hustlerId].name = name;
-        metadata[hustlerId].background = background;
-        metadata[hustlerId].color = color;
-        mintOG(data);
-        paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
-        swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
-    }
-
-    function mintOG(bytes memory data) public payable {
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
+
         uint256 id = ogs;
         ogs += 1;
+
+        metadata[id].name = name;
+        metadata[id].background = background;
+        metadata[id].color = color;
+
         metadata[id].age = block.timestamp;
         _mint(_msgSender(), id, 1, data);
+
+        paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
+        swapmeet.open(tokenId, address(this), abi.encode(equip, id));
     }
 
     function unequip(uint256 hustlerId, uint8[] calldata slots) public onlyHustler(hustlerId) {

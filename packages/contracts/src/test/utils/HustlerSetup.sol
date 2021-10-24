@@ -54,10 +54,6 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         hustler.mintFromDope(tokenId, name, background, color, '');
     }
 
-    function mintOG(bytes memory data) public payable {
-        hustler.mintOG{ value: msg.value }(data);
-    }
-
     function mintOGFromDope(
         uint256 tokenId,
         string calldata name,
