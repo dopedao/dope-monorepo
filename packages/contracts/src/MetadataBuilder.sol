@@ -5,6 +5,7 @@
 
 pragma solidity ^0.8.6;
 
+import { IPaletteProvider } from './interfaces/ISwapMeet.sol';
 import { Base64, toString } from './MetadataUtils.sol';
 
 library DisplayTypes {
@@ -66,7 +67,7 @@ library MetadataBuilder {
     /**
      * @notice Given RLE image parts and color palettes, merge to generate a single SVG image.
      */
-    function generateSVG(Params memory params, mapping(uint8 => bytes4[]) storage palettes)
+    function generateSVG(Params memory params, IPaletteProvider paletteProvider)
         public
         view
         returns (string memory svg)
@@ -77,7 +78,7 @@ library MetadataBuilder {
                 '<svg width="320" height="320" viewBox="', generateViewbox(params.viewbox), '" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">',
                 generateStyles(params),
                 '<rect width="320px" height="320px" fill="#', toColor(params.background), '" />',
-                generateText(params), generateSVGRects(params, palettes),
+                generateText(params), generateSVGRects(params, paletteProvider),
                 '</svg>'
             )
         );
@@ -135,12 +136,8 @@ library MetadataBuilder {
         return output;
     }
 
-    function tokenURI(Params memory params, mapping(uint8 => bytes4[]) storage palettes)
-        external
-        view
-        returns (string memory)
-    {
-        string memory output = Base64.encode(bytes(generateSVG(params, palettes)));
+    function tokenURI(Params memory params, IPaletteProvider paletteProvider) external view returns (string memory) {
+        string memory output = Base64.encode(bytes(generateSVG(params, paletteProvider)));
         string memory json = Base64.encode(
             bytes(
                 string(
@@ -169,7 +166,7 @@ library MetadataBuilder {
      * @notice Given RLE image parts and color palettes, generate SVG rects.
      */
     // prettier-ignore
-    function generateSVGRects(Params memory params, mapping(uint8 => bytes4[]) storage palettes)
+    function generateSVGRects(Params memory params, IPaletteProvider paletteProvider)
         private
         view
         returns (string memory svg)
@@ -188,7 +185,7 @@ library MetadataBuilder {
             }
         
             DecodedImage memory image = _decodeRLEImage(params.parts[p]);
-            bytes4[] storage palette = palettes[image.paletteIndex];
+            bytes4[] memory palette = paletteProvider.palette(image.paletteIndex);
             uint256 currentX = image.bounds.left;
             uint256 currentY = image.bounds.top;
             uint256 cursor;

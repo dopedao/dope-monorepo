@@ -73,9 +73,6 @@ contract HustlerMetadata {
     bytes private constant drugShadow = hex'00362f37290622';
     string[2] genders = ['Male', 'Female'];
 
-    // Color Palettes (Index => Hex Colors)
-    mapping(uint8 => bytes4[]) internal palettes;
-
     // Body part rles
     mapping(uint8 => bytes[]) internal rles;
 
@@ -127,7 +124,7 @@ contract HustlerMetadata {
         }
 
         p.attributes = MetadataBuilder.attributes(attributes(hustlerId));
-        return MetadataBuilder.tokenURI(p, palettes);
+        return MetadataBuilder.tokenURI(p, swapmeet);
     }
 
     function hustlerParts(uint256 hustlerId) public view returns (bytes[] memory) {

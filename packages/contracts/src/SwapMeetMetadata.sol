@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import './Components.sol';
 import './TokenId.sol';
 
+import { IPaletteProvider } from './interfaces/ISwapMeet.sol';
 import { MetadataBuilder, Transform } from './MetadataBuilder.sol';
 
 library Gender {
@@ -15,7 +16,7 @@ library Gender {
 /// the individual items inside a Loot bag.
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
-contract SwapMeetMetadata {
+contract SwapMeetMetadata is IPaletteProvider {
     string private constant _name = 'Swap Meet';
     string private constant description = 'Get fitted.';
     bytes private constant female =
@@ -46,6 +47,10 @@ contract SwapMeetMetadata {
 
     function symbol() external pure returns (string memory) {
         return 'SWAP';
+    }
+
+    function palette(uint8 id) external view override returns (bytes4[] memory) {
+        return palettes[id];
     }
 
     /// @dev Opensea contract metadata: https://docs.opensea.io/docs/contract-level-metadata
@@ -81,7 +86,7 @@ contract SwapMeetMetadata {
             p.resolution = 64;
         }
 
-        return MetadataBuilder.tokenURI(p, palettes);
+        return MetadataBuilder.tokenURI(p, this);
     }
 
     function fullname(uint256 tokenId) public view returns (string memory n) {

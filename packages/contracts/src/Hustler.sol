@@ -251,10 +251,6 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         metadata[hustlerId].options = options;
     }
 
-    function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {
-        palettes[id] = palette;
-    }
-
     function addRles(uint8 part, bytes[] calldata _rles) public onlyOwner {
         for (uint256 i = 0; i < _rles.length; i++) {
             rles[part].push(_rles[i]);
