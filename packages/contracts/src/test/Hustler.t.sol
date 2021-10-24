@@ -308,6 +308,37 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(id).body[3], 0);
     }
 
+    function testFailSetOGBodyForNoneOG() public {
+        uint256 id = 500;
+        alice.mint();
+        uint8[4] memory body = [0, 5, 0, 0];
+        uint8[4] memory viewbox;
+
+        alice.setMetadata(id, '', '', '', '', viewbox, body, hex'0020');
+
+        assertEq(hustler.getMetadata(id).body[0], 0);
+        assertEq(hustler.getMetadata(id).body[1], 0);
+        assertEq(hustler.getMetadata(id).body[2], 12);
+        assertEq(hustler.getMetadata(id).body[3], 0);
+    }
+
+    function testCanSetOGBody() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        uint256 id = 0;
+        alice.mintOGFromDope{ value: 250000000000000000 }(OTHER_BAG, '', '', '', '');
+
+        uint8[4] memory body = [0, 5, 0, 0];
+        uint8[4] memory viewbox;
+
+        alice.setMetadata(id, '', '', '', '', viewbox, body, hex'0020');
+
+        assertEq(hustler.getMetadata(id).body[0], 0);
+        assertEq(hustler.getMetadata(id).body[1], 5);
+        assertEq(hustler.getMetadata(id).body[2], 0);
+        assertEq(hustler.getMetadata(id).body[3], 0);
+    }
+
     function testCanSetBodyFull() public {
         uint256 id = 500;
         alice.mint();
