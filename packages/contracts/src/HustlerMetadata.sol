@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import { BitMask } from './BitMask.sol';
-import { Components } from './Components.sol';
+import { Components, ComponentTypes } from './Components.sol';
 import { Gender } from './SwapMeetMetadata.sol';
 import { DisplayTypes, MetadataBuilder, Transform } from './MetadataBuilder.sol';
 import { ISwapMeet } from './interfaces/ISwapMeet.sol';
@@ -69,6 +69,8 @@ contract HustlerMetadata {
     Components internal immutable components;
     uint256 private immutable deployedAt = block.timestamp;
 
+    bytes private constant shadow = hex'0036283818022201000d22050009220200';
+    bytes private constant drugShadow = hex'00362f37290622';
     string[2] genders = ['Male', 'Female'];
 
     // Color Palettes (Index => Hex Colors)
@@ -129,24 +131,29 @@ contract HustlerMetadata {
     }
 
     function hustlerParts(uint256 hustlerId) public view returns (bytes[] memory) {
-        bytes[] memory parts = new bytes[](13);
+        bytes[] memory parts = new bytes[](15);
         // Gender index corresponds to rle index
-        parts[0] = rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.BODY]];
-        parts[1] = rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]];
-        parts[2] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
+        parts[0] = shadow;
+        parts[2] = rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.BODY]];
+        parts[3] = rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]];
+        parts[4] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
 
         if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {}
 
         for (uint8 i = 0; i < 10; i++) {
-            if (i == 0x2) {
+            if (i == ComponentTypes.VEHICLE) {
                 continue;
             }
 
             if (BitMask.get(metadata[hustlerId].mask, i)) {
-                parts[i + 3] = swapmeet.tokenRle(
+                parts[i + 5] = swapmeet.tokenRle(
                     metadata[hustlerId].slots[i],
                     metadata[hustlerId].body[BodyParts.GENDER]
                 );
+
+                if (i == ComponentTypes.DRUGS) {
+                    parts[1] = drugShadow;
+                }
             }
         }
 
@@ -154,31 +161,33 @@ contract HustlerMetadata {
     }
 
     function carParts(uint256 hustlerId) public view returns (bytes[] memory) {
-        bytes[] memory parts = new bytes[](14);
+        bytes[] memory parts = new bytes[](16);
 
-        if (BitMask.get(metadata[hustlerId].mask, 0x2)) {
-            parts[0] = swapmeet.tokenRle(metadata[hustlerId].slots[0x2], 0);
+        if (BitMask.get(metadata[hustlerId].mask, ComponentTypes.VEHICLE)) {
+            parts[0] = swapmeet.tokenRle(metadata[hustlerId].slots[ComponentTypes.VEHICLE], 0);
         }
 
         bytes32 offset = hex'00331D331D';
-        parts[1] = Transform.translate(
+        parts[1] = Transform.translate(1, shadow, offset);
+
+        parts[3] = Transform.translate(
             1,
             rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.BODY]],
             offset
         );
 
         // Gender index corresponds to rle index
-        parts[2] = Transform.translate(
+        parts[4] = Transform.translate(
             1,
             rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]],
             offset
         );
 
-        parts[3] = Transform.translate(1, rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]], offset);
+        parts[5] = Transform.translate(1, rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]], offset);
 
         for (uint8 i = 0; i < 10; i++) {
             if (BitMask.get(metadata[hustlerId].mask, i)) {
-                if (i == 0x2) {
+                if (i == ComponentTypes.VEHICLE) {
                     continue;
                 }
 
@@ -190,7 +199,11 @@ contract HustlerMetadata {
                     Transform.translate(1, rle_, offset);
                 }
 
-                parts[i + 4] = rle_;
+                parts[i + 6] = rle_;
+
+                if (i == ComponentTypes.DRUGS) {
+                    parts[2] = Transform.translate(1, drugShadow, offset);
+                }
             }
         }
 

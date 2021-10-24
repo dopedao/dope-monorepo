@@ -136,20 +136,6 @@ contract Hustlers is HustlerTest {
         alice.mintOGFromDope{ value: 250000000000000000 + 1 }(OTHER_BAG, name, background, color, '');
     }
 
-    function testCanMintOG() public {
-        uint256 hustlerId = 0;
-        alice.mintOG{ value: 250000000000000000 }('');
-        hustler.tokenURI(hustlerId);
-    }
-
-    function testFailMintOGWithLessEth() public {
-        alice.mintOG{ value: 250000000000000000 - 1 }('');
-    }
-
-    function testFailMintOGWithMoreEth() public {
-        alice.mintOG{ value: 250000000000000000 + 1 }('');
-    }
-
     function testCanSetAccessory() public {
         alice.setDopeApprovalForAll(address(hustler), true);
 
@@ -701,5 +687,17 @@ contract Benchmark is HustlerTest {
 
     function testMintFromDope() public {
         alice.mintFromDope(OTHER_BAG, 'gangsta', hex'000000ff', hex'fafafaff');
+    }
+
+    function testMintOGFromDope() public {
+        alice.mintOGFromDope{ value: 250000000000000000 }(OTHER_BAG, 'gangsta', hex'000000ff', hex'fafafaff', '');
+    }
+
+    function testCanMint() public {
+        alice.mint();
+    }
+
+    function testCanOpen() public {
+        alice.open(OTHER_BAG);
     }
 }
