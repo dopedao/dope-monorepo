@@ -32,9 +32,8 @@ interface HustlerInterface extends ethers.utils.Interface {
     "isApprovedForAll(address,address)": FunctionFragment;
     "metadata(uint256)": FunctionFragment;
     "mint(bytes)": FunctionFragment;
-    "mintFromDope(uint256,string,bytes4,bytes4,bytes)": FunctionFragment;
-    "mintOG(bytes)": FunctionFragment;
-    "mintOGFromDope(uint256,string,bytes4,bytes4,bytes)": FunctionFragment;
+    "mintFromDope(uint256,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)": FunctionFragment;
+    "mintOGFromDope(uint256,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
@@ -43,8 +42,7 @@ interface HustlerInterface extends ethers.utils.Interface {
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "setMetadata(uint256,string,bytes4,bytes4,bytes4,bytes2,uint8[4],bytes2)": FunctionFragment;
-    "setPalette(uint8,bytes4[])": FunctionFragment;
+    "setMetadata(uint256,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -93,12 +91,31 @@ interface HustlerInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "mint", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "mintFromDope",
-    values: [BigNumberish, string, BytesLike, BytesLike, BytesLike]
+    values: [
+      BigNumberish,
+      string,
+      BytesLike,
+      BytesLike,
+      BytesLike,
+      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      BytesLike,
+      BytesLike
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "mintOG", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "mintOGFromDope",
-    values: [BigNumberish, string, BytesLike, BytesLike, BytesLike]
+    values: [
+      BigNumberish,
+      string,
+      BytesLike,
+      BytesLike,
+      BytesLike,
+      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      BytesLike,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -134,14 +151,10 @@ interface HustlerInterface extends ethers.utils.Interface {
       BytesLike,
       BytesLike,
       BytesLike,
-      BytesLike,
+      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       BytesLike
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setPalette",
-    values: [BigNumberish, BytesLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -189,7 +202,6 @@ interface HustlerInterface extends ethers.utils.Interface {
     functionFragment: "mintFromDope",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "mintOG", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "mintOGFromDope",
     data: BytesLike
@@ -224,7 +236,6 @@ interface HustlerInterface extends ethers.utils.Interface {
     functionFragment: "setMetadata",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setPalette", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -379,10 +390,9 @@ export class Hustler extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, string, string, string, BigNumber, string] & {
+      [string, string, string, string, BigNumber, string] & {
         color: string;
         background: string;
-        viewbox: string;
         mask: string;
         options: string;
         age: BigNumber;
@@ -398,22 +408,25 @@ export class Hustler extends BaseContract {
     mintFromDope(
       tokenId: BigNumberish,
       name: string,
-      background: BytesLike,
       color: BytesLike,
+      background: BytesLike,
+      options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      mask: BytesLike,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    mintOG(
-      data: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     mintOGFromDope(
       tokenId: BigNumberish,
       name: string,
-      background: BytesLike,
       color: BytesLike,
+      background: BytesLike,
+      options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      mask: BytesLike,
       data: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -473,16 +486,10 @@ export class Hustler extends BaseContract {
       name: string,
       color: BytesLike,
       background: BytesLike,
-      viewbox: BytesLike,
       options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setPalette(
-      id: BigNumberish,
-      palette: BytesLike[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -561,10 +568,9 @@ export class Hustler extends BaseContract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [string, string, string, string, string, BigNumber, string] & {
+    [string, string, string, string, BigNumber, string] & {
       color: string;
       background: string;
-      viewbox: string;
       mask: string;
       options: string;
       age: BigNumber;
@@ -580,22 +586,25 @@ export class Hustler extends BaseContract {
   mintFromDope(
     tokenId: BigNumberish,
     name: string,
-    background: BytesLike,
     color: BytesLike,
+    background: BytesLike,
+    options: BytesLike,
+    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+    body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+    mask: BytesLike,
     data: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  mintOG(
-    data: BytesLike,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   mintOGFromDope(
     tokenId: BigNumberish,
     name: string,
-    background: BytesLike,
     color: BytesLike,
+    background: BytesLike,
+    options: BytesLike,
+    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+    body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+    mask: BytesLike,
     data: BytesLike,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -655,16 +664,10 @@ export class Hustler extends BaseContract {
     name: string,
     color: BytesLike,
     background: BytesLike,
-    viewbox: BytesLike,
     options: BytesLike,
+    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
     body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
     mask: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setPalette(
-    id: BigNumberish,
-    palette: BytesLike[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -740,10 +743,9 @@ export class Hustler extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, string, string, string, BigNumber, string] & {
+      [string, string, string, string, BigNumber, string] & {
         color: string;
         background: string;
-        viewbox: string;
         mask: string;
         options: string;
         age: BigNumber;
@@ -756,19 +758,25 @@ export class Hustler extends BaseContract {
     mintFromDope(
       tokenId: BigNumberish,
       name: string,
-      background: BytesLike,
       color: BytesLike,
+      background: BytesLike,
+      options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      mask: BytesLike,
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    mintOG(data: BytesLike, overrides?: CallOverrides): Promise<void>;
-
     mintOGFromDope(
       tokenId: BigNumberish,
       name: string,
-      background: BytesLike,
       color: BytesLike,
+      background: BytesLike,
+      options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      mask: BytesLike,
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -826,16 +834,10 @@ export class Hustler extends BaseContract {
       name: string,
       color: BytesLike,
       background: BytesLike,
-      viewbox: BytesLike,
       options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setPalette(
-      id: BigNumberish,
-      palette: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1033,22 +1035,25 @@ export class Hustler extends BaseContract {
     mintFromDope(
       tokenId: BigNumberish,
       name: string,
-      background: BytesLike,
       color: BytesLike,
+      background: BytesLike,
+      options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      mask: BytesLike,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    mintOG(
-      data: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     mintOGFromDope(
       tokenId: BigNumberish,
       name: string,
-      background: BytesLike,
       color: BytesLike,
+      background: BytesLike,
+      options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      mask: BytesLike,
       data: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1108,16 +1113,10 @@ export class Hustler extends BaseContract {
       name: string,
       color: BytesLike,
       background: BytesLike,
-      viewbox: BytesLike,
       options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setPalette(
-      id: BigNumberish,
-      palette: BytesLike[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1206,22 +1205,25 @@ export class Hustler extends BaseContract {
     mintFromDope(
       tokenId: BigNumberish,
       name: string,
-      background: BytesLike,
       color: BytesLike,
+      background: BytesLike,
+      options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      mask: BytesLike,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintOG(
-      data: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     mintOGFromDope(
       tokenId: BigNumberish,
       name: string,
-      background: BytesLike,
       color: BytesLike,
+      background: BytesLike,
+      options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      mask: BytesLike,
       data: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1281,16 +1283,10 @@ export class Hustler extends BaseContract {
       name: string,
       color: BytesLike,
       background: BytesLike,
-      viewbox: BytesLike,
       options: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setPalette(
-      id: BigNumberish,
-      palette: BytesLike[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

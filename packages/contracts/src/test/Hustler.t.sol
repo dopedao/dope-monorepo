@@ -353,6 +353,27 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(id).body[3], 0);
     }
 
+    function testCanSetOnMint() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        uint256 id = 0;
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintOGFromDope{ value: 250000000000000000 }(
+            OTHER_BAG,
+            'tarrence',
+            hex'000000ff',
+            hex'ffffffff',
+            hex'0006',
+            viewbox,
+            body,
+            hex'000f',
+            ''
+        );
+
+        require(bytes(hustler.uri(id)).length > 0);
+    }
+
     function testFailSetOGBodyForNoneOG() public {
         uint256 id = 500;
         alice.mint();
@@ -383,6 +404,27 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(id).body[1], 5);
         assertEq(hustler.getMetadata(id).body[2], 0);
         assertEq(hustler.getMetadata(id).body[3], 0);
+    }
+
+    function testCanSetOGOnMint() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        uint256 id = 0;
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintOGFromDope{ value: 250000000000000000 }(
+            OTHER_BAG,
+            'tarrence',
+            hex'000000ff',
+            hex'ffffffff',
+            hex'0006',
+            viewbox,
+            body,
+            hex'000f',
+            ''
+        );
+
+        require(bytes(hustler.uri(id)).length > 0);
     }
 
     function testCanSetBodyFull() public {

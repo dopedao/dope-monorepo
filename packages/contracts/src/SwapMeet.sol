@@ -163,10 +163,6 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         return opened[id];
     }
 
-    // function burn(uint256 id, uint256 amount) external {
-    //     _burn(msg.sender, id, amount);
-    // }
-
     function setPalette(uint8 id, bytes4[] memory palette) external onlyOwner {
         palettes[id] = palette;
     }

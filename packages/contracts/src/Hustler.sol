@@ -266,7 +266,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
         for (uint8 i = 0; i < 4; i++) {
             if (BitMask.get(mask, i + 4)) {
-                require(!(i == BodyParts.BODY && body[i] % 5 == 0) || hustlerId < 500, Errors.NotOG);
+                require(!(i == BodyParts.BODY && (body[i] + 1) % 6 == 0) || hustlerId < 500, Errors.NotOG);
                 metadata[hustlerId].body[i] = body[i];
             }
         }
