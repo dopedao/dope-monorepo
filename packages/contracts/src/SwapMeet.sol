@@ -3,10 +3,10 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
-import { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import { IERC721 } from '@openzeppelin/contracts/token/ERC721/IERC721.sol';
-import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
-import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
+import { IERC20 } from '../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import { IERC721 } from '../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol';
+import { ERC1155 } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol';
+import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
 
 import { ComponentTypes } from './Components.sol';
 import { Gender, SwapMeetMetadata } from './SwapMeetMetadata.sol';
@@ -162,10 +162,6 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
     function isOpened(uint256 id) external view returns (bool) {
         return opened[id];
     }
-
-    // function burn(uint256 id, uint256 amount) external {
-    //     _burn(msg.sender, id, amount);
-    // }
 
     function setPalette(uint8 id, bytes4[] memory palette) external onlyOwner {
         palettes[id] = palette;

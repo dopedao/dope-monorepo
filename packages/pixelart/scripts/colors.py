@@ -4,15 +4,21 @@ import numpy as np
 import glob
 import json
 from collections import OrderedDict
+import sys
 
-f = open("../outputs/partcolors.json", "r")
+typ = sys.argv[1]
+
+f = open("../outputs/"+typ+"/output.json", "r")
 meta = json.load(f)
 
 colors = OrderedDict()
-for c in meta["partcolors"]:
-    colors[c] = True
+if 'partcolors' in meta:
+    for c in meta["partcolors"]:
+        colors[c] = True
+else:
+    colors[""] = True
 
-for file in glob.glob("../imgs/**/*.png"):
+for file in glob.glob("../imgs/"+typ+"/**/*.png"):
     img = image.imread(file)
     a = np.where(img[:, :, 3] != 0)
 
@@ -26,12 +32,10 @@ for file in glob.glob("../imgs/**/*.png"):
     for y in cropped:
         for x in y:
             if x[3] != 0:
-                c = '0x%02x%02x%02x%02x' % (int(x[0]*255), int(x[1]*255), int(x[2]*255), int(x[3]*255))
-
-                # c = rgb2hex(int(x[0]*255), int(x[1]*255), int(x[2]*255))
+                c = '0x%02x%02x%02x%02x' % (
+                    int(x[0]*255), int(x[1]*255), int(x[2]*255), int(x[3]*255))
                 colors[c] = True
 
 meta["partcolors"] = list(colors.keys())
-
-f = open("../outputs/partcolors.json", "w")
+f = open("../outputs/"+typ+"/output.json", "w")
 json.dump(meta, f, indent=4)

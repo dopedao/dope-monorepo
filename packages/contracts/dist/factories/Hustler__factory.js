@@ -345,11 +345,6 @@ var _abi = [
                 type: "bytes4",
             },
             {
-                internalType: "bytes4",
-                name: "viewbox",
-                type: "bytes4",
-            },
-            {
                 internalType: "bytes2",
                 name: "mask",
                 type: "bytes2",
@@ -400,13 +395,33 @@ var _abi = [
             },
             {
                 internalType: "bytes4",
-                name: "background",
+                name: "color",
                 type: "bytes4",
             },
             {
                 internalType: "bytes4",
-                name: "color",
+                name: "background",
                 type: "bytes4",
+            },
+            {
+                internalType: "bytes2",
+                name: "options",
+                type: "bytes2",
+            },
+            {
+                internalType: "uint8[4]",
+                name: "viewbox",
+                type: "uint8[4]",
+            },
+            {
+                internalType: "uint8[4]",
+                name: "body",
+                type: "uint8[4]",
+            },
+            {
+                internalType: "bytes2",
+                name: "mask",
+                type: "bytes2",
             },
             {
                 internalType: "bytes",
@@ -417,19 +432,6 @@ var _abi = [
         name: "mintFromDope",
         outputs: [],
         stateMutability: "nonpayable",
-        type: "function",
-    },
-    {
-        inputs: [
-            {
-                internalType: "bytes",
-                name: "data",
-                type: "bytes",
-            },
-        ],
-        name: "mintOG",
-        outputs: [],
-        stateMutability: "payable",
         type: "function",
     },
     {
@@ -446,13 +448,33 @@ var _abi = [
             },
             {
                 internalType: "bytes4",
-                name: "background",
+                name: "color",
                 type: "bytes4",
             },
             {
                 internalType: "bytes4",
-                name: "color",
+                name: "background",
                 type: "bytes4",
+            },
+            {
+                internalType: "bytes2",
+                name: "options",
+                type: "bytes2",
+            },
+            {
+                internalType: "uint8[4]",
+                name: "viewbox",
+                type: "uint8[4]",
+            },
+            {
+                internalType: "uint8[4]",
+                name: "body",
+                type: "uint8[4]",
+            },
+            {
+                internalType: "bytes2",
+                name: "mask",
+                type: "bytes2",
             },
             {
                 internalType: "bytes",
@@ -683,14 +705,14 @@ var _abi = [
                 type: "bytes4",
             },
             {
-                internalType: "bytes4",
-                name: "viewbox",
-                type: "bytes4",
-            },
-            {
                 internalType: "bytes2",
                 name: "options",
                 type: "bytes2",
+            },
+            {
+                internalType: "uint8[4]",
+                name: "viewbox",
+                type: "uint8[4]",
             },
             {
                 internalType: "uint8[4]",
@@ -704,24 +726,6 @@ var _abi = [
             },
         ],
         name: "setMetadata",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-    },
-    {
-        inputs: [
-            {
-                internalType: "uint8",
-                name: "id",
-                type: "uint8",
-            },
-            {
-                internalType: "bytes4[]",
-                name: "palette",
-                type: "bytes4[]",
-            },
-        ],
-        name: "setPalette",
         outputs: [],
         stateMutability: "nonpayable",
         type: "function",

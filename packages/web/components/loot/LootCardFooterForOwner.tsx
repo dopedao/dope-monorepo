@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { BigNumber, constants } from 'ethers';
 import { NETWORK } from '../../src/constants';
 import {
+  Paper,
   Paper__factory,
   SwapMeet__factory,
   Hustler__factory,
@@ -64,41 +65,43 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   );
 
   useEffect(() => {
-    if (paper) {
-      paper.balanceOf(account).then(setHasEnoughPaper);
+    if (account && paper) {
+      paper
+        .balanceOf(account)
+        .then(balance => setHasEnoughPaper(balance.gt('12500000000000000000000')));
     }
-  }, [paper]);
+  }, [account, paper]);
 
   useEffect(() => {
-    if (dope) {
+    if (account && dope) {
       dope
         .isApprovedForAll(account, NETWORK[chainId as 1 | 4].contracts.hustlers)
         .then(setIsDopeApproved);
     }
-  }, [dope]);
+  }, [account, dope]);
 
   useEffect(() => {
-    if (paper) {
+    if (account && paper) {
       paper
         .allowance(account, NETWORK[chainId as 1 | 4].contracts.hustlers)
         .then((allowance: BigNumber) =>
           setIsPaperApproved(allowance.gte('12500000000000000000000')),
         );
     }
-  }, [paper]);
+  }, [account, paper]);
 
   return (
     <>
       <div>
         <Button
-          disabled={bag.claimed}
+          disabled={bag.claimed || !paper}
           onClick={async () => {
-            await paper.claimById(bag.id);
+            await paper!.claimById(bag.id);
           }}
         >
           Claim Paper
         </Button>
-        {chainId == 4 && (
+        {chainId == 4 && swapmeet && paper && dope && hustlers && (
           <>
             <Button
               disabled={isPaperApproved}
@@ -121,23 +124,45 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
             </Button>
             <Button
               onClick={async () => {
-                await hustlers.mintFromDope(bag.id, 'name', '0xffffffff', '0x000000ff', '0x');
+                await hustlers.mintFromDope(
+                  bag.id,
+                  'name',
+                  '0x000000ff',
+                  '0xffffffff',
+                  '0x0006',
+                  [0, 0, 0, 0],
+                  [0, 0, 0, 0],
+                  '0x00ff',
+                  '0x',
+                );
               }}
             >
               Mint Hustler
             </Button>
             <Button
               onClick={async () => {
-                await hustlers.mintOGFromDope(bag.id, 'name', '0xffffffff', '0x000000ff', '0x', {
-                  value: '330000000000000000',
-                });
+                await hustlers.mintOGFromDope(
+                  bag.id,
+                  'name',
+                  '0x000000ff',
+                  '0xffffffff',
+                  '0x0006',
+                  [0, 0, 0, 0],
+                  [0, 0, 0, 0],
+                  '0x000f',
+                  '0x',
+                  {
+                    value: '250000000000000000',
+                  },
+                );
               }}
             >
               Mint Original Gangsta
             </Button>
             <Button
+              disabled={!account}
               onClick={async () => {
-                await swapmeet.open(bag.id);
+                await swapmeet.open(bag.id, account!, '');
               }}
             >
               Unbundle

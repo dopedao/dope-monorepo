@@ -96,17 +96,17 @@ with open('/Users/tarrence/Library/Ethereum/keystore/UTC--2021-09-11T21-49-48.51
     encrypted_key = keyfile.read()
     private_key = w3.eth.account.decrypt(encrypted_key, "")
 
-f = open("../outputs/output.json", "r")
+f = open("../outputs/ITEMS/output.json", "r")
 meta = json.load(f)
 
 SwapMeet = w3.eth.contract(
-    "0x37366C3ba457acB86ef67DBB3d94E21487f23074", abi=abi)
+    "0x18B215855B6395907EB4F94173f9ef91fA3DdE24", abi=abi)
 
 print(SwapMeet.functions.name().call())
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = SwapMeet.functions.setPalette(0, meta['partcolors']).buildTransaction({
+txn = SwapMeet.functions.setPalette(1, meta['partcolors']).buildTransaction({
     'chainId': 4,
     'gas': 7000000,
     'maxFeePerGas': w3.toWei('2', 'gwei'),
