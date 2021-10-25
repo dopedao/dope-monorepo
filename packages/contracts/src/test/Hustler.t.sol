@@ -84,7 +84,9 @@ contract Hustlers is HustlerTest {
         bytes4 color = hex'fafafaff';
 
         uint256 hustlerId = 500;
-        alice.mintFromDope(OTHER_BAG, name, background, color);
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintFromDope(OTHER_BAG, name, color, background, hex'', viewbox, body, hex'000f');
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
@@ -104,7 +106,19 @@ contract Hustlers is HustlerTest {
         bytes4 color = hex'fafafaff';
 
         uint256 hustlerId = 0;
-        alice.mintOGFromDope{ value: 250000000000000000 }(OTHER_BAG, name, background, color, '');
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintOGFromDope{ value: 250000000000000000 }(
+            OTHER_BAG,
+            name,
+            color,
+            background,
+            hex'',
+            viewbox,
+            body,
+            hex'000f',
+            ''
+        );
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
@@ -122,8 +136,19 @@ contract Hustlers is HustlerTest {
         string memory name = 'gangsta';
         bytes4 background = hex'000000ff';
         bytes4 color = hex'fafafaff';
-
-        alice.mintOGFromDope{ value: 250000000000000000 - 1 }(OTHER_BAG, name, background, color, '');
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintOGFromDope{ value: 250000000000000000 - 1 }(
+            OTHER_BAG,
+            name,
+            color,
+            background,
+            hex'',
+            viewbox,
+            body,
+            hex'',
+            ''
+        );
     }
 
     function testFailMintOGFromDopeWithMoreEth() public {
@@ -132,8 +157,19 @@ contract Hustlers is HustlerTest {
         string memory name = 'gangsta';
         bytes4 background = hex'000000ff';
         bytes4 color = hex'fafafaff';
-
-        alice.mintOGFromDope{ value: 250000000000000000 + 1 }(OTHER_BAG, name, background, color, '');
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintOGFromDope{ value: 250000000000000000 + 1 }(
+            OTHER_BAG,
+            name,
+            color,
+            background,
+            hex'',
+            viewbox,
+            body,
+            hex'',
+            ''
+        );
     }
 
     function testCanSetAccessory() public {
@@ -144,7 +180,9 @@ contract Hustlers is HustlerTest {
         bytes4 color = hex'fafafaff';
 
         uint256 id = 500;
-        alice.mintFromDope(OTHER_BAG, name, background, color);
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintFromDope(OTHER_BAG, name, color, background, hex'', viewbox, body, hex'');
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, id);
@@ -161,7 +199,9 @@ contract Hustlers is HustlerTest {
         bytes4 color = hex'fafafa';
 
         uint256 hustlerId = 500;
-        alice.mintFromDope(OTHER_BAG, name, background, color);
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintFromDope(OTHER_BAG, name, color, background, hex'', viewbox, body, hex'');
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
@@ -179,7 +219,10 @@ contract Hustlers is HustlerTest {
         bytes4 color = hex'fafafa';
 
         uint256 hustlerId = 500;
-        alice.mintFromDope(OTHER_BAG, name, background, color);
+
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintFromDope(OTHER_BAG, name, color, background, hex'', viewbox, body, hex'');
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
@@ -216,7 +259,9 @@ contract Hustlers is HustlerTest {
     }
 
     function testFailMintFromDopeWithoutApproval() public {
-        alice.mintFromDope(OTHER_BAG, '', '', '');
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintFromDope(OTHER_BAG, '', '', '', hex'', viewbox, body, hex'');
     }
 
     function testCanSetName() public {
@@ -326,12 +371,13 @@ contract Hustlers is HustlerTest {
         alice.setDopeApprovalForAll(address(hustler), true);
 
         uint256 id = 0;
-        alice.mintOGFromDope{ value: 250000000000000000 }(OTHER_BAG, '', '', '', '');
-
-        uint8[4] memory body = [0, 5, 0, 0];
+        uint8[4] memory body;
         uint8[4] memory viewbox;
+        alice.mintOGFromDope{ value: 250000000000000000 }(OTHER_BAG, '', '', '', hex'', viewbox, body, hex'', '');
 
-        alice.setMetadata(id, '', '', '', '', viewbox, body, hex'0020');
+        uint8[4] memory body2 = [0, 5, 0, 0];
+
+        alice.setMetadata(id, '', '', '', '', viewbox, body2, hex'0020');
 
         assertEq(hustler.getMetadata(id).body[0], 0);
         assertEq(hustler.getMetadata(id).body[1], 5);
@@ -656,10 +702,10 @@ contract Hustlers is HustlerTest {
         bytes4 color = hex'fafafaff';
 
         uint256 hustlerId = 500;
-        alice.mintFromDope(OTHER_BAG, name, background, color);
-
         uint8[4] memory body;
         uint8[4] memory viewbox;
+        alice.mintFromDope(OTHER_BAG, name, color, background, hex'', viewbox, body, hex'');
+
         alice.setMetadata(hustlerId, '', '', '', hex'0001', viewbox, body, hex'0000');
         assertEq(hustler.getMetadata(hustlerId).options, hex'0001');
 
@@ -717,11 +763,25 @@ contract Benchmark is HustlerTest {
     }
 
     function testMintFromDope() public {
-        alice.mintFromDope(OTHER_BAG, 'gangsta', hex'000000ff', hex'fafafaff');
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintFromDope(OTHER_BAG, 'gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'');
     }
 
     function testMintOGFromDope() public {
-        alice.mintOGFromDope{ value: 250000000000000000 }(OTHER_BAG, 'gangsta', hex'000000ff', hex'fafafaff', '');
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintOGFromDope{ value: 250000000000000000 }(
+            OTHER_BAG,
+            'gangsta',
+            hex'000000ff',
+            hex'fafafaff',
+            hex'',
+            viewbox,
+            body,
+            hex'',
+            ''
+        );
     }
 
     function testCanMint() public {

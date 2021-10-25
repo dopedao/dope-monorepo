@@ -48,20 +48,38 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     function mintFromDope(
         uint256 tokenId,
         string calldata name,
+        bytes4 color,
         bytes4 background,
-        bytes4 color
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask
     ) public {
-        hustler.mintFromDope(tokenId, name, background, color, '');
+        hustler.mintFromDope(tokenId, name, color, background, options, viewbox, body, mask, '');
     }
 
     function mintOGFromDope(
         uint256 tokenId,
         string calldata name,
-        bytes4 background,
         bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask,
         bytes memory data
     ) public payable {
-        hustler.mintOGFromDope{ value: msg.value }(tokenId, name, background, color, data);
+        hustler.mintOGFromDope{ value: msg.value }(
+            tokenId,
+            name,
+            color,
+            background,
+            options,
+            viewbox,
+            body,
+            mask,
+            data
+        );
     }
 
     function unequip(uint256 hustlerId, uint8[] calldata slots) public {
