@@ -1,7 +1,7 @@
 import json
 from web3 import Web3
 
-abi = [
+swapmeetABI = [
     {
         "inputs": [
             {
@@ -19,7 +19,10 @@ abi = [
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
-    },
+    }
+]
+
+hustlersABI = [
     {
         "inputs": [
             {
@@ -47,15 +50,18 @@ with open('/Users/tarrence/Library/Ethereum/keystore/UTC--2021-09-11T21-49-48.51
     encrypted_key = keyfile.read()
     private_key = w3.eth.account.decrypt(encrypted_key, "")
 
-f = open("../outputs/output.json", "r")
+f = open("../outputs/BODY_PARTS/output.json", "r")
 meta = json.load(f)
 
 Hustler = w3.eth.contract(
-    "0xED3259c562F7e7A0635db575FD524Dc9035c6ab3", abi=abi)
+    "0x7291b381a4b3ebb275D6714f55FdA94aBf02a036", abi=hustlersABI)
+
+SwapMeet = w3.eth.contract(
+    "0x18B215855B6395907EB4F94173f9ef91fA3DdE24", abi=swapmeetABI)
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = Hustler.functions.setPalette(0, meta['partcolors']).buildTransaction({
+txn = SwapMeet.functions.setPalette(0, meta['partcolors']).buildTransaction({
     'chainId': 4,
     'gas': 7000000,
     'maxFeePerGas': w3.toWei('2', 'gwei'),

@@ -99,6 +99,8 @@ contract Hustlers is HustlerTest {
     }
 
     function testCanMintOGFromDope() public {
+        hevm.warp(1337);
+
         alice.setDopeApprovalForAll(address(hustler), true);
 
         string memory name = 'gangsta';
@@ -126,8 +128,25 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(hustlerId).background, background);
         assertEq(hustler.getMetadata(hustlerId).color, color);
         assertEq(hustler.getMetadata(hustlerId).name, name);
+        assertEq(hustler.getMetadata(hustlerId).age, block.timestamp);
 
-        hustler.tokenURI(hustlerId);
+        Attribute[] memory attributes = new Attribute[](14);
+        attributes[0] = Attribute('Class', 'Original Gangsta');
+        attributes[1] = Attribute('Sex', 'Male');
+        attributes[2] = Attribute('Weapon', 'Pepper Spray from Hong Kong');
+        attributes[3] = Attribute('Clothes', 'Leather Vest');
+        attributes[4] = Attribute('Vehicle', 'BMW M3');
+        attributes[5] = Attribute('Waist', 'Laces');
+        attributes[6] = Attribute('Feet', 'Open Toe Sandals from Mob Town');
+        attributes[7] = Attribute('Hands', 'Rubber Gloves');
+        attributes[8] = Attribute('Drug', 'Cocaine');
+        attributes[9] = Attribute('Neck', 'Bronze Chain');
+        attributes[10] = Attribute('Ring', 'Titanium Ring from Hong Kong');
+        attributes[11] = Attribute('Accessory', 'None');
+        attributes[12] = Attribute('Initiation', '1337');
+        attributes[13] = Attribute('Respect', '100');
+
+        assertMetadata(hustlerId, attributes, name);
     }
 
     function testFailMintOGFromDopeWithLessEth() public {
@@ -792,9 +811,14 @@ contract Hustlers is HustlerTest {
         bytes memory res = hevm.ffi(inputs);
         Data memory data = abi.decode(res, (Data));
         assertEq(data.name, name);
-        // for (uint256 i = 0; i < attributes.length; i++) {
-        //     assertEq(data.attributes[i], attributes[i]);
-        // }
+        for (uint256 i = 0; i < attributes.length; i++) {
+            assertEq(data.attributes[i], attributes[i]);
+        }
+    }
+
+    function assertEq(Attribute memory attribute, Attribute memory expected) private {
+        assertEq(attribute.traitType, expected.traitType);
+        assertEq(attribute.value, expected.value);
     }
 }
 
