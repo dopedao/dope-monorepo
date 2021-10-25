@@ -9,7 +9,7 @@ import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
 import { ERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
 import { BitMask } from './BitMask.sol';
-import { HustlerMetadata } from './HustlerMetadata.sol';
+import { BodyParts, HustlerMetadata } from './HustlerMetadata.sol';
 
 library Errors {
     string constant IsNotSwapMeet = 'snsm';
@@ -18,6 +18,8 @@ library Errors {
     string constant HustlerDoesntOwnItem = 'hdoi';
     string constant ValueNotOne = 'vno';
     string constant NotRightETH = 'ngmi';
+    string constant NoMore = 'nomo';
+    string constant NotOG = 'notog';
 }
 
 /// @title Hustlers
@@ -26,8 +28,8 @@ library Errors {
 contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
     address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
-    address private constant tarrencellc = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
-    address private constant subimagellc = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
+    address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
+    address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
 
     IERC20 immutable paper;
 
@@ -154,14 +156,20 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     function mintFromDope(
         uint256 tokenId,
         string calldata name,
-        bytes4 background,
         bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask,
         bytes memory data
     ) external {
         uint256 hustlerId = hustlers;
         metadata[hustlerId].name = name;
         metadata[hustlerId].background = background;
         metadata[hustlerId].color = color;
+
+        setMeta(hustlerId, name, color, background, options, viewbox, body, mask);
         mint(data);
         paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
         swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
@@ -177,25 +185,27 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     function mintOGFromDope(
         uint256 tokenId,
         string calldata name,
-        bytes4 background,
         bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask,
         bytes memory data
     ) external payable {
-        uint256 hustlerId = ogs;
-        metadata[hustlerId].name = name;
-        metadata[hustlerId].background = background;
-        metadata[hustlerId].color = color;
-        mintOG(data);
-        paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
-        swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
-    }
+        require(msg.value == 250000000000000000, Errors.NotRightETH);
+        require(ogs < 500, Errors.NoMore);
 
-    function mintOG(bytes memory data) public payable {
-        require(msg.value == 330000000000000000, Errors.NotRightETH);
         uint256 id = ogs;
         ogs += 1;
+
         metadata[id].age = block.timestamp;
+        setMeta(id, name, color, background, options, viewbox, body, mask);
+
         _mint(_msgSender(), id, 1, data);
+
+        paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
+        swapmeet.open(tokenId, address(this), abi.encode(equip, id));
     }
 
     function unequip(uint256 hustlerId, uint8[] calldata slots) public onlyHustler(hustlerId) {
@@ -219,11 +229,24 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         string calldata name,
         bytes4 color,
         bytes4 background,
-        bytes4 viewbox,
         bytes2 options,
+        uint8[4] calldata viewbox,
         uint8[4] calldata body,
         bytes2 mask
     ) public onlyHustler(hustlerId) {
+        setMeta(hustlerId, name, color, background, options, viewbox, body, mask);
+    }
+
+    function setMeta(
+        uint256 hustlerId,
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask
+    ) internal {
         if (BitMask.get(mask, 0)) {
             require(bytes(name).length < 10, 'nl');
             metadata[hustlerId].name = name;
@@ -243,15 +266,12 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
         for (uint8 i = 0; i < 4; i++) {
             if (BitMask.get(mask, i + 4)) {
+                require(!(i == BodyParts.BODY && body[i] % 5 == 0) || hustlerId < 500, Errors.NotOG);
                 metadata[hustlerId].body[i] = body[i];
             }
         }
 
         metadata[hustlerId].options = options;
-    }
-
-    function setPalette(uint8 id, bytes4[] memory palette) public onlyOwner {
-        palettes[id] = palette;
     }
 
     function addRles(uint8 part, bytes[] calldata _rles) public onlyOwner {

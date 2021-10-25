@@ -84,11 +84,11 @@ struct ItemNames {
 }
 
 contract SwapMeetOwner is ERC1155Holder {
-    Components sc;
+    Components components;
     SwapMeet swapmeet;
 
     function init(Components _components, SwapMeet _swapmeet) public {
-        sc = _components;
+        components = _components;
         swapmeet = _swapmeet;
 
         bytes4[] memory palette = new bytes4[](255);
@@ -358,27 +358,27 @@ contract SwapMeetOwner is ERC1155Holder {
     }
 
     function addItemComponent(uint8 itemType, string calldata component) public returns (uint8) {
-        return sc.addComponent(itemType, component);
+        return components.addComponent(itemType, component);
     }
 
     function mint(
         address account,
-        uint8[5] memory components,
+        uint8[5] memory components_,
         uint8 itemType,
         uint256 amount,
         bytes memory data
     ) public returns (uint256) {
-        return swapmeet.mint(account, components, itemType, amount, data);
+        return swapmeet.mint(account, components_, itemType, amount, data);
     }
 
     function mintBatch(
         address to,
-        uint8[] memory components,
+        uint8[] memory components_,
         uint8[] memory itemTypes,
         uint256[] memory amounts,
         bytes memory data
     ) public returns (uint256[] memory) {
-        return swapmeet.mintBatch(to, components, itemTypes, amounts, data);
+        return swapmeet.mintBatch(to, components_, itemTypes, amounts, data);
     }
 
     function setRle(
