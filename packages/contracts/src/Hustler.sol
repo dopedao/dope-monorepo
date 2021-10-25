@@ -156,14 +156,20 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     function mintFromDope(
         uint256 tokenId,
         string calldata name,
-        bytes4 background,
         bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask,
         bytes memory data
     ) external {
         uint256 hustlerId = hustlers;
         metadata[hustlerId].name = name;
         metadata[hustlerId].background = background;
         metadata[hustlerId].color = color;
+
+        setMeta(hustlerId, name, color, background, options, viewbox, body, mask);
         mint(data);
         paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
         swapmeet.open(tokenId, address(this), abi.encode(equip, hustlerId));
@@ -179,8 +185,12 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     function mintOGFromDope(
         uint256 tokenId,
         string calldata name,
-        bytes4 background,
         bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask,
         bytes memory data
     ) external payable {
         require(msg.value == 250000000000000000, Errors.NotRightETH);
@@ -189,11 +199,9 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         uint256 id = ogs;
         ogs += 1;
 
-        metadata[id].name = name;
-        metadata[id].background = background;
-        metadata[id].color = color;
-
         metadata[id].age = block.timestamp;
+        setMeta(id, name, color, background, options, viewbox, body, mask);
+
         _mint(_msgSender(), id, 1, data);
 
         paper.transferFrom(_msgSender(), address(this), swapmeet.cost());
@@ -226,6 +234,19 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         uint8[4] calldata body,
         bytes2 mask
     ) public onlyHustler(hustlerId) {
+        setMeta(hustlerId, name, color, background, options, viewbox, body, mask);
+    }
+
+    function setMeta(
+        uint256 hustlerId,
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask
+    ) internal {
         if (BitMask.get(mask, 0)) {
             require(bytes(name).length < 10, 'nl');
             metadata[hustlerId].name = name;
