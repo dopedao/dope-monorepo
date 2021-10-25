@@ -472,6 +472,25 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint8",
+        name: "id",
+        type: "uint8",
+      },
+    ],
+    name: "palette",
+    outputs: [
+      {
+        internalType: "bytes4[]",
+        name: "",
+        type: "bytes4[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",

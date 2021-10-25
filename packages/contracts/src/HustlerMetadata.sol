@@ -69,8 +69,8 @@ contract HustlerMetadata {
     Components internal immutable components;
     uint256 private immutable deployedAt = block.timestamp;
 
-    bytes private constant shadow = hex'0036283818022201000d22050009220200';
-    bytes private constant drugShadow = hex'00362f37290622';
+    bytes private constant shadow = hex'0036283818022b01000d2b0500092b0200';
+    bytes private constant drugShadow = hex'00362f3729062b';
     string[2] genders = ['Male', 'Female'];
 
     // Body part rles

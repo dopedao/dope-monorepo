@@ -4,7 +4,7 @@
 
 pragma solidity ^0.8.6;
 
-import { IERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+import { IERC1155 } from '../../lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol';
 
 interface IPaletteProvider {
     function palette(uint8) external view returns (bytes4[] memory);

@@ -35,6 +35,7 @@ interface SwapMeetInterface extends ethers.utils.Interface {
     "name()": FunctionFragment;
     "open(uint256,address,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
+    "palette(uint8)": FunctionFragment;
     "params(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
@@ -104,6 +105,10 @@ interface SwapMeetInterface extends ethers.utils.Interface {
     values: [BigNumberish, string, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "palette",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "params",
     values: [BigNumberish]
@@ -184,6 +189,7 @@ interface SwapMeetInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "open", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "palette", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "params", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -389,6 +395,8 @@ export class SwapMeet extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    palette(id: BigNumberish, overrides?: CallOverrides): Promise<[string[]]>;
+
     params(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -547,6 +555,8 @@ export class SwapMeet extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  palette(id: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
+
   params(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -701,6 +711,8 @@ export class SwapMeet extends BaseContract {
     ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
+
+    palette(id: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
 
     params(
       tokenId: BigNumberish,
@@ -973,6 +985,8 @@ export class SwapMeet extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    palette(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
     params(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1137,6 +1151,11 @@ export class SwapMeet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    palette(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     params(
       tokenId: BigNumberish,

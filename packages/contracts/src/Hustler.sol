@@ -3,10 +3,10 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
-import { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
-import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
-import { ERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
+import { IERC20 } from '../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import { ERC1155 } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol';
+import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
+import { ERC1155Receiver } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
 import { BitMask } from './BitMask.sol';
 import { BodyParts, HustlerMetadata } from './HustlerMetadata.sol';
@@ -197,10 +197,9 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         require(ogs < 500, Errors.NoMore);
 
         uint256 id = ogs;
-        ogs += 1;
-
         metadata[id].age = block.timestamp;
         setMeta(id, name, color, background, options, viewbox, body, mask);
+        ogs += 1;
 
         _mint(_msgSender(), id, 1, data);
 
@@ -266,7 +265,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
         for (uint8 i = 0; i < 4; i++) {
             if (BitMask.get(mask, i + 4)) {
-                require(!(i == BodyParts.BODY && body[i] % 5 == 0) || hustlerId < 500, Errors.NotOG);
+                require(!(i == BodyParts.BODY && (body[i] + 1) % 6 == 0) || hustlerId < 500, Errors.NotOG);
                 metadata[hustlerId].body[i] = body[i];
             }
         }
