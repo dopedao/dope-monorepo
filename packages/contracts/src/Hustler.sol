@@ -10,6 +10,7 @@ import { ERC1155Receiver } from '../lib/openzeppelin-contracts/contracts/token/E
 
 import { BitMask } from './BitMask.sol';
 import { BodyParts, HustlerMetadata } from './HustlerMetadata.sol';
+import { IBouncer } from './interfaces/IHustler.sol';
 
 library Errors {
     string constant IsNotSwapMeet = 'snsm';
@@ -28,6 +29,7 @@ library Errors {
 /// @notice Hustlers are avatars in the dope wars metaverse.
 contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
+    IBouncer private bouncer;
     address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
     address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
     address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
@@ -58,7 +60,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     /// @notice ERC1155 callback which will add an item to the hustlers inventory.
     function onERC1155Received(
-        address,
+        address operator,
         address from,
         uint256 id,
         uint256 value,
@@ -66,6 +68,10 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     ) public override returns (bytes4) {
         // only supports callback from the SwapMeet contract
         require(_msgSender() == address(swapmeet), Errors.IsNotSwapMeet);
+
+        if (address(bouncer) != address(0)) {
+            bouncer.onERC1155Received(operator, from, id, value, data);
+        }
 
         // Callers should encode the equip signature to explicity
         // indicate an encoded hustler id.
@@ -96,6 +102,10 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     ) public override returns (bytes4) {
         // only supports callback from the SwapMeet contract
         require(_msgSender() == address(swapmeet), Errors.IsNotSwapMeet);
+
+        if (address(bouncer) != address(0)) {
+            bouncer.onERC1155BatchReceived(operator, from, ids, values, data);
+        }
 
         // Callers should encode the equip signature to explicity
         // indicate an encoded hustler id.
@@ -216,6 +226,10 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     }
 
     function unequip(uint256 hustlerId, uint8[] calldata slots) public onlyHustler(hustlerId) {
+        if (address(bouncer) != address(0)) {
+            bouncer.onUnequip(hustlerId, slots);
+        }
+
         uint256[] memory ids = new uint256[](slots.length);
         uint256[] memory amounts = new uint256[](slots.length);
         bytes2 mask = metadata[hustlerId].mask;
@@ -300,6 +314,33 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     function setRelease(uint256 timestamp) external onlyOwner {
         release = timestamp;
+    }
+
+    function setBouncer(address bouncer_) external onlyOwner {
+        bouncer = IBouncer(bouncer_);
+    }
+
+    function _beforeTokenTransfer(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) internal override {
+        if (address(bouncer) != address(0)) {
+            bool reset = bouncer.beforeTokenTransfer(operator, from, to, ids, amounts, data);
+
+            if (!reset) {
+                return;
+            }
+        }
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            if (ids[i] >= 500) {
+                metadata[ids[i]].age = block.timestamp;
+            }
+        }
     }
 
     modifier onlyHustler(uint256 id) {
