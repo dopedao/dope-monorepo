@@ -31,7 +31,6 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
 
     mapping(uint256 => bool) private opened;
 
-    // No need for a URI since we're doing everything onchain
     constructor(
         address _components,
         address _dope,

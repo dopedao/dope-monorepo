@@ -72,7 +72,7 @@ contract SwapMeetMetadata is IPaletteProvider {
         MetadataBuilder.Params memory p;
         p.name = name_;
         p.description = description_;
-        p.color = hex'202221';
+        p.color = hex'202221ff';
         p.background = background_;
         p.text = prefix_;
         p.subtext = subtext_;

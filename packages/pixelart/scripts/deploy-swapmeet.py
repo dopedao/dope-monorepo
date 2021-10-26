@@ -100,7 +100,7 @@ f = open("../outputs/ITEMS/output.json", "r")
 meta = json.load(f)
 
 SwapMeet = w3.eth.contract(
-    "0x18B215855B6395907EB4F94173f9ef91fA3DdE24", abi=abi)
+    "0x87d22eDaa26F9098A26A15e80A36c73345e0E18E", abi=abi)
 
 print(SwapMeet.functions.name().call())
 

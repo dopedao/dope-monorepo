@@ -54,10 +54,10 @@ f = open("../outputs/BODY_PARTS/output.json", "r")
 meta = json.load(f)
 
 Hustler = w3.eth.contract(
-    "0x7291b381a4b3ebb275D6714f55FdA94aBf02a036", abi=hustlersABI)
+    "0x930E8D8bb6700a26814fB4638B5ae7aAA2A06c79", abi=hustlersABI)
 
 SwapMeet = w3.eth.contract(
-    "0x18B215855B6395907EB4F94173f9ef91fA3DdE24", abi=swapmeetABI)
+    "0x87d22eDaa26F9098A26A15e80A36c73345e0E18E", abi=swapmeetABI)
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
@@ -88,7 +88,7 @@ for parts in meta["parts"]:
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = Hustler.functions.addRles(2, components["bodies"]["men"] + components["bodies"]["girls"]).buildTransaction({
+txn = Hustler.functions.addRles(0, components["bodies"]["men"]).buildTransaction({
     'chainId': 4,
     'gas': 10000000,
     'maxFeePerGas': w3.toWei('2', 'gwei'),
@@ -101,7 +101,7 @@ txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = Hustler.functions.addRles(0, components["hair"]["men"]).buildTransaction({
+txn = Hustler.functions.addRles(1, components["bodies"]["girls"]).buildTransaction({
     'chainId': 4,
     'gas': 10000000,
     'maxFeePerGas': w3.toWei('2', 'gwei'),
@@ -114,7 +114,7 @@ txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = Hustler.functions.addRles(1, components["hair"]["girls"]).buildTransaction({
+txn = Hustler.functions.addRles(2, components["hair"]["men"]).buildTransaction({
     'chainId': 4,
     'gas': 10000000,
     'maxFeePerGas': w3.toWei('2', 'gwei'),
@@ -127,7 +127,20 @@ txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = Hustler.functions.addRles(3, ["0x"] + components["beards"]["men"]).buildTransaction({
+txn = Hustler.functions.addRles(3, components["hair"]["girls"]).buildTransaction({
+    'chainId': 4,
+    'gas': 10000000,
+    'maxFeePerGas': w3.toWei('2', 'gwei'),
+    'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
+    'nonce': nonce,
+})
+signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+
+nonce = w3.eth.get_transaction_count(
+    '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
+txn = Hustler.functions.addRles(4, ["0x"] + components["beards"]["men"]).buildTransaction({
     'chainId': 4,
     'gas': 10000000,
     'maxFeePerGas': w3.toWei('2', 'gwei'),
