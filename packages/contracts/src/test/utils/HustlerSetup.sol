@@ -179,6 +179,10 @@ contract HustlerOwner is ERC1155Holder, SwapMeetOwner {
     ) public returns (uint256) {
         return swapmeet.mint(account, _components, itemType, amount, data);
     }
+
+    function setRelease(uint256 timestamp) public {
+        hustler.setRelease(timestamp);
+    }
 }
 
 contract Owner {}
