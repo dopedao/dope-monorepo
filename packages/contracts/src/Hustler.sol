@@ -20,6 +20,7 @@ library Errors {
     string constant NotRightETH = 'ngmi';
     string constant NoMore = 'nomo';
     string constant NotOG = 'notog';
+    string constant NotTime = 'wait';
 }
 
 /// @title Hustlers
@@ -32,6 +33,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
 
     IERC20 immutable paper;
+
+    uint256 public release;
 
     event MetadataUpdate(uint256 id);
 
@@ -178,6 +181,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     }
 
     function mint(bytes memory data) public {
+        require(release != 0 && release < block.timestamp, Errors.NotTime);
+
         uint256 id = hustlers;
         metadata[hustlers].age = block.timestamp;
         hustlers += 1;
@@ -195,6 +200,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes2 mask,
         bytes memory data
     ) external payable {
+        require(release != 0 && release < block.timestamp, Errors.NotTime);
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
 
@@ -290,6 +296,10 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         payable(tarrencellc).transfer(address(this).balance / 2);
         // Remainder
         payable(subimagellc).transfer(address(this).balance);
+    }
+
+    function setRelease(uint256 timestamp) external onlyOwner {
+        release = timestamp;
     }
 
     modifier onlyHustler(uint256 id) {
