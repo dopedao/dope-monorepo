@@ -252,6 +252,10 @@ contract HustlerMetadata {
         return traits;
     }
 
+    function bodyRle(uint8 part, uint256 idx) external view returns (bytes memory) {
+        return rles[part][idx];
+    }
+
     function slot(uint256 id) internal pure returns (uint8) {
         return uint8(id & 0xff);
     }

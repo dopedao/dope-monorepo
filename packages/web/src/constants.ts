@@ -13,8 +13,8 @@ export const NETWORK = {
     contracts: {
       dope: '0xEf879818335a10Db667810a9B668A8F537389194',
       paper: '0x7988fCA891B30cF8E23459B09b851F9d79B17215',
-      swapmeet: '0x18B215855B6395907EB4F94173f9ef91fA3DdE24',
-      hustlers: '0x7291b381a4b3ebb275D6714f55FdA94aBf02a036'
+      swapmeet: '0x87d22eDaa26F9098A26A15e80A36c73345e0E18E',
+      hustlers: '0x930E8D8bb6700a26814fB4638B5ae7aAA2A06c79'
     },
     rpc: 'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
     subgraph: 'https://api.studio.thegraph.com/query/7708/dope-wars/v0.0.17-rinkeby',

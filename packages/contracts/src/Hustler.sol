@@ -33,6 +33,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     IERC20 immutable paper;
 
+    event MetadataUpdate(uint256 id);
+
     // First 500 are reserved for OG Hustlers.
     uint256 internal ogs = 0;
     uint256 internal hustlers = 500;
@@ -271,6 +273,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         }
 
         metadata[hustlerId].options = options;
+
+        emit MetadataUpdate(hustlerId);
     }
 
     function addRles(uint8 part, bytes[] calldata _rles) public onlyOwner {
