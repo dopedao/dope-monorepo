@@ -58,6 +58,9 @@ contract Hustlers is HustlerTest {
     function setUp() public override {
         super.setUp();
 
+        owner.setRelease(block.timestamp + 1);
+        hevm.warp(block.timestamp + 2);
+
         bytes[] memory heads = new bytes[](2);
         heads[0] = hairRle;
         heads[1] = hairRle;
@@ -826,6 +829,8 @@ contract Benchmark is HustlerTest {
     function setUp() public override {
         super.setUp();
         alice.setDopeApprovalForAll(address(hustler), true);
+        owner.setRelease(block.timestamp + 1);
+        hevm.warp(block.timestamp + 2);
     }
 
     function testMintFromDope() public {
