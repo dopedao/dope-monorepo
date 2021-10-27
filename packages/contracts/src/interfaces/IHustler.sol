@@ -5,6 +5,35 @@
 
 pragma solidity ^0.8.6;
 
+interface IBouncer {
+    function onERC1155BatchReceived(
+        address operator,
+        address from,
+        uint256[] calldata ids,
+        uint256[] calldata values,
+        bytes calldata data
+    ) external;
+
+    function onERC1155Received(
+        address,
+        address from,
+        uint256 id,
+        uint256 value,
+        bytes memory data
+    ) external;
+
+    function onUnequip(uint256 hustlerId, uint8[] calldata slots) external;
+
+    function beforeTokenTransfer(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) external returns (bool);
+}
+
 interface IHustler {
     function equipmentOf(address) external view returns (uint48[] memory);
 

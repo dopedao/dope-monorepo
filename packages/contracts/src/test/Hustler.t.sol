@@ -825,6 +825,99 @@ contract Hustlers is HustlerTest {
     }
 }
 
+contract Bouncing is HustlerTest {
+    function setUp() public override {
+        super.setUp();
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        owner.setRelease(block.timestamp + 1);
+        hevm.warp(block.timestamp + 2);
+    }
+
+    function testTransferHustlerResetsRespect() public {
+        uint256 id = 500;
+
+        hevm.warp(100);
+        alice.mint();
+        assertEq(hustler.getMetadata(id).age, 100);
+
+        hevm.warp(200);
+        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+        assertEq(hustler.getMetadata(id).age, 200);
+    }
+
+    function testFailTransferHustlerBouncerRevert() public {
+        Bouncer bouncer = new Bouncer();
+        owner.setBouncer(address(bouncer));
+
+        bouncer.set(true, false);
+
+        uint256 id = 500;
+
+        hevm.warp(100);
+        alice.mint();
+        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+    }
+
+    function testTransferDoesntResetRespectWBouncer() public {
+        Bouncer bouncer = new Bouncer();
+        owner.setBouncer(address(bouncer));
+
+        bouncer.set(false, false);
+
+        uint256 id = 500;
+
+        hevm.warp(100);
+        alice.mint();
+        assertEq(hustler.getMetadata(id).age, 100);
+
+        hevm.warp(200);
+        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+        assertEq(hustler.getMetadata(id).age, 100);
+    }
+
+    function testTransferDoesResetRespectWBouncer() public {
+        Bouncer bouncer = new Bouncer();
+        owner.setBouncer(address(bouncer));
+
+        bouncer.set(false, true);
+
+        uint256 id = 500;
+
+        hevm.warp(100);
+        alice.mint();
+        assertEq(hustler.getMetadata(id).age, 100);
+
+        hevm.warp(200);
+        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+        assertEq(hustler.getMetadata(id).age, 200);
+    }
+
+    function testTransferOGDoesNotResetRespect() public {
+        uint256 id = 0;
+
+        hevm.warp(100);
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+        alice.mintOGFromDope{ value: 250000000000000000 }(
+            OTHER_BAG,
+            'gangsta',
+            hex'000000ff',
+            hex'fafafaff',
+            hex'',
+            viewbox,
+            body,
+            hex'',
+            ''
+        );
+        assertEq(hustler.getMetadata(id).age, 100);
+
+        hevm.warp(200);
+        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+        assertEq(hustler.getMetadata(id).age, 100);
+    }
+}
+
 contract Benchmark is HustlerTest {
     function setUp() public override {
         super.setUp();

@@ -154,6 +154,52 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 }
 
+contract Bouncer {
+    bool shouldRevert;
+    bool shouldReset = true;
+
+    function set(bool r, bool t) external {
+        shouldRevert = r;
+        shouldReset = t;
+    }
+
+    function onERC1155BatchReceived(
+        address,
+        address,
+        uint256[] calldata,
+        uint256[] calldata,
+        bytes calldata
+    ) external view {
+        require(!shouldRevert);
+    }
+
+    function onERC1155Received(
+        address,
+        address,
+        uint256,
+        uint256,
+        bytes memory
+    ) external view {
+        require(!shouldRevert);
+    }
+
+    function onUnequip(uint256, uint8[] calldata) external view {
+        require(!shouldRevert);
+    }
+
+    function beforeTokenTransfer(
+        address,
+        address,
+        address,
+        uint256[] memory,
+        uint256[] memory,
+        bytes memory
+    ) external view returns (bool) {
+        require(!shouldRevert);
+        return shouldReset;
+    }
+}
+
 contract HustlerOwner is ERC1155Holder, SwapMeetOwner {
     Hustler hustler;
 
@@ -182,6 +228,10 @@ contract HustlerOwner is ERC1155Holder, SwapMeetOwner {
 
     function setRelease(uint256 timestamp) public {
         hustler.setRelease(timestamp);
+    }
+
+    function setBouncer(address b) public {
+        hustler.setBouncer(b);
     }
 }
 
