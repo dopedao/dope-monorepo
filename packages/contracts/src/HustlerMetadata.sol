@@ -47,7 +47,7 @@ contract HustlerMetadata {
 
     string private constant _name = 'Hustlers';
     string private constant _symbol = 'HUSTLERS';
-    string private constant description = 'Hustle Hard';
+    string private constant description = 'Hustle Hard.';
     string[14] private traitTypes = [
         'Class',
         'Sex',
@@ -101,6 +101,7 @@ contract HustlerMetadata {
     function tokenURI(uint256 hustlerId) public view returns (string memory) {
         MetadataBuilder.Params memory p;
         p.name = metadata[hustlerId].name;
+        p.description = description;
 
         p.background = metadata[hustlerId].background;
         p.color = metadata[hustlerId].color;
@@ -124,6 +125,26 @@ contract HustlerMetadata {
         }
 
         p.attributes = MetadataBuilder.attributes(attributes(hustlerId));
+        return MetadataBuilder.tokenURI(p, swapmeet);
+    }
+
+    function render(
+        string calldata title,
+        string calldata subtitle,
+        uint8 resolution,
+        bytes4 background,
+        bytes4 color,
+        uint8[4] calldata viewbox,
+        bytes[] calldata parts
+    ) external view returns (string memory) {
+        MetadataBuilder.Params memory p;
+        p.name = subtitle;
+        p.text = title;
+        p.background = background;
+        p.color = color;
+        p.viewbox = viewbox;
+        p.parts = parts;
+        p.resolution = resolution;
         return MetadataBuilder.tokenURI(p, swapmeet);
     }
 
