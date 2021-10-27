@@ -340,6 +340,8 @@ contract Components is Ownable {
     ];
     uint256 private constant nameSuffixesLength = 18;
 
+    event AddComponent(uint256 id, uint256 componentType, string component);
+
     constructor(address _owner) {
         transferOwnership(_owner);
     }
@@ -436,6 +438,8 @@ contract Components is Ownable {
         ) {
             id = id + 1;
         }
+
+        emit AddComponent(id, componentType, component);
 
         return id;
     }

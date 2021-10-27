@@ -31,6 +31,8 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
 
     mapping(uint256 => bool) private opened;
 
+    event SetRle(uint256 id);
+
     constructor(
         address _components,
         address _dope,
@@ -173,6 +175,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
     ) public onlyOwner {
         rles[id][Gender.MALE] = male;
         rles[id][Gender.FEMALE] = female;
+        emit SetRle(id);
     }
 
     function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) external onlyOwner {

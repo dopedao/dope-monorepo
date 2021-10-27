@@ -38,6 +38,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     uint256 public release;
 
+    event AddRles(uint8 part);
     event MetadataUpdate(uint256 id);
 
     // First 500 are reserved for OG Hustlers.
@@ -301,6 +302,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         for (uint256 i = 0; i < _rles.length; i++) {
             rles[part].push(_rles[i]);
         }
+
+        emit AddRles(part);
     }
 
     function withdraw() public {
