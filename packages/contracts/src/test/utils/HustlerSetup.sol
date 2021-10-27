@@ -154,7 +154,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 }
 
-contract Bouncer {
+contract Enforcer {
     bool shouldRevert;
     bool shouldReset = true;
 
@@ -230,8 +230,8 @@ contract HustlerOwner is ERC1155Holder, SwapMeetOwner {
         hustler.setRelease(timestamp);
     }
 
-    function setBouncer(address b) public {
-        hustler.setBouncer(b);
+    function setEnforcer(address b) public {
+        hustler.setEnforcer(b);
     }
 }
 

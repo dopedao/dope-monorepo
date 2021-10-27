@@ -5,7 +5,7 @@
 
 pragma solidity ^0.8.6;
 
-interface IBouncer {
+interface IEnforcer {
     function onERC1155BatchReceived(
         address operator,
         address from,

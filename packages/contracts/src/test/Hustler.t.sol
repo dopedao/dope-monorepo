@@ -846,11 +846,11 @@ contract Bouncing is HustlerTest {
         assertEq(hustler.getMetadata(id).age, 200);
     }
 
-    function testFailTransferHustlerBouncerRevert() public {
-        Bouncer bouncer = new Bouncer();
-        owner.setBouncer(address(bouncer));
+    function testFailTransferHustlerEnforcerRevert() public {
+        Enforcer enforcer = new Enforcer();
+        owner.setEnforcer(address(enforcer));
 
-        bouncer.set(true, false);
+        enforcer.set(true, false);
 
         uint256 id = 500;
 
@@ -859,11 +859,11 @@ contract Bouncing is HustlerTest {
         alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
     }
 
-    function testTransferDoesntResetRespectWBouncer() public {
-        Bouncer bouncer = new Bouncer();
-        owner.setBouncer(address(bouncer));
+    function testTransferDoesntResetRespectWEnforcer() public {
+        Enforcer enforcer = new Enforcer();
+        owner.setEnforcer(address(enforcer));
 
-        bouncer.set(false, false);
+        enforcer.set(false, false);
 
         uint256 id = 500;
 
@@ -876,11 +876,11 @@ contract Bouncing is HustlerTest {
         assertEq(hustler.getMetadata(id).age, 100);
     }
 
-    function testTransferDoesResetRespectWBouncer() public {
-        Bouncer bouncer = new Bouncer();
-        owner.setBouncer(address(bouncer));
+    function testTransferDoesResetRespectWEnforcer() public {
+        Enforcer enforcer = new Enforcer();
+        owner.setEnforcer(address(enforcer));
 
-        bouncer.set(false, true);
+        enforcer.set(false, true);
 
         uint256 id = 500;
 
