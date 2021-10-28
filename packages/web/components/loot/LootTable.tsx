@@ -75,7 +75,7 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
 
   return (
     <PanelContainer
-      className={className}
+      className={ className }
       css={css`
         tfoot th {
           // Screen > Tablet display items side by side

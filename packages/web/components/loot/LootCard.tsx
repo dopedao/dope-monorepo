@@ -8,7 +8,7 @@ import LootCardFooterForOwner from './LootCardFooterForOwner';
 import LootLegend from './LootLegend';
 import PanelContainer from '../PanelContainer';
 import PanelFooter from '../PanelFooter';
-import PanelTitleBarFlex from '../PanelTitleBarFlex';
+import PanelTitleBar from '../PanelTitleBar';
 
 interface Props {
   footer: 'for-marketplace' | 'for-owner';
@@ -60,6 +60,8 @@ const LootCard = ({
           key={`loot-card_${bag.id}`}
           className={`lootCard ${isExpanded ? '' : 'collapsed'}`}
           css={css`
+            display: flex;
+            flex-direction: column;
             &.collapsed {
               max-height: 225px;
               .lootCardBody {
@@ -68,7 +70,7 @@ const LootCard = ({
             }
           `}
         >
-          <PanelTitleBarFlex>
+          <PanelTitleBar>
             <div
               css={css`
                 width: 32px;
@@ -82,7 +84,7 @@ const LootCard = ({
             >
               {showCollapse && <ToggleButton />}
             </div>
-          </PanelTitleBarFlex>
+          </PanelTitleBar>
           <LootCardBody bag={bag} />
           {footer && footer === 'for-owner' && (
             <PanelFooter>
