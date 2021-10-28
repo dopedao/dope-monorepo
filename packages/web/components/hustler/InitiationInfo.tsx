@@ -32,10 +32,10 @@ const InitiationInfo = () => {
             Hustlers are the in-game representation of characters inside DOPE WARS. Each Hustler gains RESPECT based on the amount of time passed since their Initiation. RESPECT will be useful in the upcoming DOPE WARS game, and provide your Hustler with certain advantages.
           </p>
           <p>
-            <em>For a limited time 500 OG Hustlers are available for Initiation. OGs start out with 100 RESPECT Points, and receive a special title.</em> A Hustler’s appearance is customizable, based on the items in their inventory and attributes you select.
+            <em>For a limited time 500 OG Hustlers are available for Initiation. OGs start out with 100 RESPECT Points, and receive a special title.</em>
           </p>
           <p>
-            All Hustler artwork is stored on the Ethereum blockchain, with a next-level technical approach that few projects can match.
+            A Hustler’s appearance is customizable, based on the items in their inventory and attributes you select. All Hustler artwork is stored on the Ethereum blockchain, with a next-level technical approach that few projects can match.
           </p>
         </PanelBody>
       </PanelContainer>
