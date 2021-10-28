@@ -2,7 +2,9 @@ import { css } from '@emotion/react';
 import { media } from 'styles/mixins';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
+
 import CheckIcon from 'components/icons/Check';
+import PanelContainer from 'components/PanelContainer';
 
 interface Props {
   className?: string;
@@ -72,12 +74,9 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
   );
 
   return (
-    <div
+    <PanelContainer
       className={className}
       css={css`
-        border: 2px solid #000;
-        background-color: #fff;
-        overflow: scroll;
         tfoot th {
           // Screen > Tablet display items side by side
           span.separator {
@@ -175,7 +174,7 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
           </div>
         </div>
       </div>
-    </div>
+    </PanelContainer>
   );
 };
 
