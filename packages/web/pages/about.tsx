@@ -36,9 +36,6 @@ const TextBody = styled.div`
   h4 {
     margin-bottom: 8px;
   }
-  em {
-    background-color: rgba(255, 252, 63, 0.5);
-  }
   img[src*='#float-left'] {
     width: 50%;
     float: left;
