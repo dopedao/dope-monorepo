@@ -5,6 +5,7 @@ const PanelContainer = styled.div`
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 `;
 
 export default PanelContainer;

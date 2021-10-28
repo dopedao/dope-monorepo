@@ -24,7 +24,6 @@ export default function Initiate() {
             src="/images/hustler/Man_24.png"
             objectFit="cover"
           />
-
           <InitiationFooter />
         </PanelContainer>
 
