@@ -1802,6 +1802,7 @@ __metadata:
     parse-data-url: ^4.0.1
     raw-loader: ^4.0.2
     react: 17.0.2
+    react-countdown: ^2.3.2
     react-dom: 17.0.2
     react-draggable: ^4.4.4
     react-infinite-scroller: ^1.2.4
@@ -16867,6 +16868,18 @@ __metadata:
   peerDependencies:
     react: ^15.3.0 || ^16.0.0 || ^17.0.0
   checksum: 1ce12cabd73567b5d593ec604d0f2a59d5b818e49a96ebb2403281d43f2bbfa4091af64128d5d36e2214d30c6f9f9b043839b15515dfff9ce6851ee62c72eccc
+  languageName: node
+  linkType: hard
+
+"react-countdown@npm:^2.3.2":
+  version: 2.3.2
+  resolution: "react-countdown@npm:2.3.2"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ">= 15"
+    react-dom: ">= 15"
+  checksum: 670d7f6f355cd2c862fde2039e3fbaf39dae2925d2dea78c0406c04a9a5c35cca61bbd137de04a965ebdbbbaee5d435a06f06c0786a86d7bfc175b4fd9789e19
   languageName: node
   linkType: hard
 
