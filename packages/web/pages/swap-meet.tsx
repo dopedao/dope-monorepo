@@ -4,6 +4,7 @@ import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import AppWindow from '../components/AppWindow';
+import DopeWarsExeNav from '../components/DopeWarsExeNav';
 import Head from '../components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
 import LoadingBlock from '../components/LoadingBlock';
@@ -179,7 +180,12 @@ const MarketList = () => {
 
 export default function SwapMeet() {
   return (
-    <AppWindow padBody={false} scrollable={false} height="90vh">
+    <AppWindow 
+      navbar={<DopeWarsExeNav />} 
+      padBody={false} 
+      scrollable={false} 
+      height="90vh"
+    >
       <Head title={title} />
       <MarketList />
     </AppWindow>
