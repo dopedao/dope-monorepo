@@ -6,7 +6,12 @@ import CheckIcon from 'components/icons/Check';
 
 interface Props {
   className?: string;
-  data: { id: string; claimed: boolean; rank: number }[];
+  data: {
+    id: string;
+    claimed: boolean;
+    bundled: boolean;
+    rank: number;
+  }[];
   selected: number;
   onSelect: (i: number) => void;
 }
@@ -30,9 +35,18 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
   const items = useMemo(
     () =>
       data
-        .map(({ id, claimed, rank }, idx) => ({
+        .map(({ id, bundled, claimed, rank }, idx) => ({
           id,
           rank,
+          bundled: bundled ? (
+            ''
+          ) : (
+            <CheckIcon
+              css={css`
+                display: inline;
+              `}
+            />
+          ),
           claimed: claimed ? (
             ''
           ) : (
@@ -107,12 +121,12 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
               <Tr>
                 <Th onClick={() => setSort('id')}>Dope ID</Th>
                 <Th onClick={() => setSort('rank')}>Rank</Th>
-                {/* <Th onClick={() => setSort('percentile')}>Percent</Th> */}
-                <Th>Paper?</Th>
+                <Th>Paper</Th>
+                <Th>Bundled</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {items.map(({ id, rank, claimed, idx }) => (
+              {items.map(({ id, rank, bundled, claimed, idx }) => (
                 <Tr
                   className={selected === idx ? 'selected' : ''}
                   key={id}
@@ -121,6 +135,7 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
                   <Td>{id}</Td>
                   <Td>{rank}</Td>
                   <Td>{claimed}</Td>
+                  <Td>{bundled}</Td>
                 </Tr>
               ))}
             </Tbody>

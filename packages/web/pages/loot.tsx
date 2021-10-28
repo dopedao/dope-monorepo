@@ -9,7 +9,8 @@ import LoadingBlock from 'components/LoadingBlock';
 import LootCard from 'components/loot/LootCard';
 import LootTable from 'components/loot/LootTable';
 import NoLootCard from 'components/loot/NoLootCard';
-import Container from 'components/Container';
+import StackedResponsiveContainer from '../components/StackedResponsiveContainer';
+import DopeWarsExeNav from '../components/DopeWarsExeNav';
 
 export default function LootWindow() {
   const { account } = useWeb3React();
@@ -24,17 +25,18 @@ export default function LootWindow() {
       requiresWalletConnection={true}
       balance={data?.wallet?.paper}
       loadingBalance={loading}
+      navbar={<DopeWarsExeNav />}
     >
       <Head />
       {loading ? (
-        <Container>
+        <StackedResponsiveContainer>
           <LoadingBlock />
           <LoadingBlock />
-        </Container>
+        </StackedResponsiveContainer>
       ) : !data?.wallet?.bags || data.wallet.bags.length === 0 ? (
         <NoLootCard />
       ) : (
-        <Container>
+        <StackedResponsiveContainer>
           <LootTable
             data={data.wallet.bags.map(({ id, claimed, rank }) => ({
               id,
@@ -46,7 +48,7 @@ export default function LootWindow() {
             onSelect={setSelected}
           />
           <LootCard bag={data.wallet.bags[selected]} footer="for-owner" />
-        </Container>
+        </StackedResponsiveContainer>
       )}
     </AppWindow>
   );

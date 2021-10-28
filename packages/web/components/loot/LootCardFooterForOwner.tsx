@@ -13,6 +13,7 @@ import {
 } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
+import Link from 'next/link';
 
 interface Props {
   bag: Pick<Bag, 'id' | 'claimed'>;
@@ -92,89 +93,71 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   }, [account, chainId, paper]);
 
   return (
-    <>
-      <div>
-        <Button
-          disabled={bag.claimed || !paper}
-          onClick={async () => {
-            await paper!.claimById(bag.id);
-          }}
-        >
-          Claim Paper
-        </Button>
-        {chainId == 4 && swapmeet && paper && dope && hustlers && (
-          <>
-            <Button
-              disabled={isPaperApproved}
-              onClick={async () => {
-                await paper.increaseAllowance(
-                  NETWORK[chainId as 1 | 4].contracts.hustlers,
-                  constants.MaxUint256,
-                );
-              }}
-            >
-              Approve Paper
+    <div>
+      {chainId == 4 && (
+        <>
+          {/* <Button
+            disabled={isPaperApproved}
+            onClick={async () => {
+              await paper.increaseAllowance(
+                NETWORK[chainId as 1 | 4].contracts.hustlers,
+                constants.MaxUint256,
+              );
+            }}
+          >
+            Approve Paper
+          </Button>
+          <Button
+            disabled={isDopeApproved}
+            onClick={async () => {
+              await dope.setApprovalForAll(NETWORK[chainId as 1 | 4].contracts.hustlers, true);
+            }}
+          >
+            Approve Dope
+          </Button>
+          <Button
+            onClick={async () => {
+              await hustlers.mintFromDope(bag.id, 'name', '0xffffffff', '0x000000ff', '0x');
+            }}
+          >
+            Mint Hustler
+          </Button>
+          <Button
+            onClick={async () => {
+              await hustlers.mintOGFromDope(bag.id, 'name', '0xffffffff', '0x000000ff', '0x', {
+                value: '330000000000000000',
+              });
+            }}
+          >
+            Mint Original Gangsta
+          </Button> */}
+          <Link href="/hustlers/initiate">
+            <Button variant="primary">
+              Initiate Hustler
             </Button>
-            <Button
-              disabled={isDopeApproved}
-              onClick={async () => {
-                await dope.setApprovalForAll(NETWORK[chainId as 1 | 4].contracts.hustlers, true);
-              }}
-            >
-              Approve Dope
-            </Button>
-            <Button
-              onClick={async () => {
-                await hustlers.mintFromDope(
-                  bag.id,
-                  'name',
-                  '0x000000ff',
-                  '0xffffffff',
-                  '0x0006',
-                  [0, 0, 0, 0],
-                  [0, 0, 0, 0],
-                  '0x00ff',
-                  '0x',
-                );
-              }}
-            >
-              Mint Hustler
-            </Button>
-            <Button
-              onClick={async () => {
-                await hustlers.mintOGFromDope(
-                  bag.id,
-                  'name',
-                  '0x000000ff',
-                  '0xffffffff',
-                  '0x0006',
-                  [0, 0, 0, 0],
-                  [0, 0, 0, 0],
-                  '0x000f',
-                  '0x',
-                  {
-                    value: '250000000000000000',
-                  },
-                );
-              }}
-            >
-              Mint Original Gangsta
-            </Button>
-            <Button
-              disabled={!account}
-              onClick={async () => {
-                await swapmeet.open(bag.id, account!, '');
-              }}
-            >
-              Unbundle
-            </Button>
-          </>
-        )}
-      </div>
+          </Link>
+          <Button
+            onClick={async () => {
+              await swapmeet.open(bag.id);
+            }}
+          >
+            Unbundle
+          </Button>
+        </>
+      )}
+      <Button
+        disabled={bag.claimed}
+        onClick={async () => {
+          await paper.claimById(bag.id);
+        }}
+      >
+        Claim Paper
+      </Button>
       <div
         css={css`
-          text-align: right;
+          float: right;
           cursor: pointer;
+          padding: 4px;
         `}
         onClick={() => toggleVisibility()}
       >
@@ -184,12 +167,11 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
           height="24"
           css={css`
             display: inline-block;
-            margin-left: 8px;
           `}
           alt="info"
         />
       </div>
-    </>
+    </div>
   );
 };
 export default LootCardFooterForOwner;

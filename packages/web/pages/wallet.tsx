@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
 import { useWalletQuery } from 'src/generated/graphql';
+import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import DisconnectWallet from 'components/DisconnectWallet';
@@ -21,6 +22,7 @@ const Wallet = () => {
 
   return (
     <AppWindow
+      navbar={<DopeWarsExeNav />}
       requiresWalletConnection={true}
       padBody={false}
       balance={data?.wallet?.paper}
