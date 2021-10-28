@@ -94,7 +94,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
 
   return (
     <div>
-      {chainId == 4 && (
+      {chainId == 4 && swapmeet && paper && account && (
         <>
           {/* <Button
             disabled={isPaperApproved}
@@ -132,27 +132,27 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
             Mint Original Gangsta
           </Button> */}
           <Link href="/hustlers/initiate">
-            <Button variant="primary">
-              Initiate Hustler
-            </Button>
+            <Button variant="primary">Initiate Hustler</Button>
           </Link>
           <Button
             onClick={async () => {
-              await swapmeet.open(bag.id);
+              await swapmeet.open(bag.id, account, '');
             }}
           >
             Unbundle
           </Button>
         </>
       )}
-      <Button
-        disabled={bag.claimed}
-        onClick={async () => {
-          await paper.claimById(bag.id);
-        }}
-      >
-        Claim Paper
-      </Button>
+      {paper && (
+        <Button
+          disabled={bag.claimed}
+          onClick={async () => {
+            await paper.claimById(bag.id);
+          }}
+        >
+          Claim Paper
+        </Button>
+      )}
       <div
         css={css`
           float: right;
