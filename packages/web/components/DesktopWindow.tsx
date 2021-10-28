@@ -18,6 +18,7 @@ interface DesktopWindowProps {
   height?: number | string;
   titleChildren?: React.ReactNode;
   children: React.ReactNode;
+  onResize?: any;
 }
 
 const DesktopWindow = ({
@@ -28,11 +29,17 @@ const DesktopWindow = ({
   height = 768,
   titleChildren,
   children,
+  onResize,
 }: DesktopWindowProps) => {
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const toggleFullScreen = () => setIsFullScreen(!isFullScreen);
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+    if (onResize) {
+      setTimeout(onResize, 500);
+    }
+  }
   const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
   const WindowWrapper = styled.div`
