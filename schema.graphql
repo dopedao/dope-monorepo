@@ -35,12 +35,29 @@ type Bag @entity {
   currentOwner: Wallet!
   minted: BigInt!
   claimed: Boolean!
+  opened: Boolean!
+}
+
+type RLE @entity {
+  id: ID!
+  male: Bytes!
+  female: Bytes!
+}
+
+type Item @entity {
+  id: ID!
+  name: String!
+  data: String!
+  owner: Wallet!
+  base: Item!
+  rle: RLE
 }
 
 type Wallet @entity {
   id: ID!
   address: Bytes!
   bags: [Bag!]! @derivedFrom(field: "currentOwner")
+  items: [Item!]! @derivedFrom(field: "owner")
   bagsHeld: BigInt!
   joined: BigInt!
   paper: BigInt!
