@@ -4,7 +4,7 @@ import { NavLink } from './NavLink';
 import { useWeb3React } from '@web3-react/core';
 import Image from 'next/image';
 
-const AppWindowTitleBar = () => {
+const DopeWarsExeNav = () => {
   const { account } = useWeb3React();
   return (
     <div
@@ -66,4 +66,4 @@ const AppWindowTitleBar = () => {
   );
 };
 
-export default AppWindowTitleBar;
+export default DopeWarsExeNav;

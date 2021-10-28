@@ -19,6 +19,7 @@ export type Scalars = {
 
 export type Bag = {
   __typename?: 'Bag';
+  bundled: Scalars['Boolean'];
   claimed: Scalars['Boolean'];
   clothes: Scalars['String'];
   currentOwner: Wallet;
@@ -254,6 +255,7 @@ export type Query_MetaArgs = {
 export type QueryBagArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -263,6 +265,7 @@ export type QueryBagsArgs = {
   orderBy?: Maybe<Bag_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Bag_Filter>;
 };
 
@@ -271,6 +274,7 @@ export type QuerySearchArgs = {
   block?: Maybe<Block_Height>;
   first?: Maybe<Scalars['Int']>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   text: Scalars['String'];
 };
 
@@ -278,6 +282,7 @@ export type QuerySearchArgs = {
 export type QueryTransferArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -287,6 +292,7 @@ export type QueryTransfersArgs = {
   orderBy?: Maybe<Transfer_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Transfer_Filter>;
 };
 
@@ -294,6 +300,7 @@ export type QueryTransfersArgs = {
 export type QueryWalletArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -303,6 +310,7 @@ export type QueryWalletsArgs = {
   orderBy?: Maybe<Wallet_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Wallet_Filter>;
 };
 
@@ -327,6 +335,7 @@ export type Subscription_MetaArgs = {
 export type SubscriptionBagArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -336,6 +345,7 @@ export type SubscriptionBagsArgs = {
   orderBy?: Maybe<Bag_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Bag_Filter>;
 };
 
@@ -343,6 +353,7 @@ export type SubscriptionBagsArgs = {
 export type SubscriptionTransferArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -352,6 +363,7 @@ export type SubscriptionTransfersArgs = {
   orderBy?: Maybe<Transfer_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Transfer_Filter>;
 };
 
@@ -359,6 +371,7 @@ export type SubscriptionTransfersArgs = {
 export type SubscriptionWalletArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -368,6 +381,7 @@ export type SubscriptionWalletsArgs = {
   orderBy?: Maybe<Wallet_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Wallet_Filter>;
 };
 
@@ -568,7 +582,7 @@ export type BagQueryVariables = Exact<{
 }>;
 
 
-export type BagQuery = { __typename?: 'Query', bag?: Maybe<{ __typename?: 'Bag', id: string, claimed: boolean, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
+export type BagQuery = { __typename?: 'Query', bag?: Maybe<{ __typename?: 'Bag', id: string, claimed: boolean, bundled: boolean, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
 
 export type BagsQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
@@ -576,7 +590,7 @@ export type BagsQueryVariables = Exact<{
 }>;
 
 
-export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
+export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, bundled: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
 
 export type SearchQueryVariables = Exact<{
   text: Scalars['String'];
@@ -643,6 +657,7 @@ export const BagDocument = gql`
   bag(id: $tokenId) {
     id
     claimed
+    bundled @client
     open_sea_asset @client {
       is_on_sale
       current_sale_price
@@ -683,6 +698,7 @@ export const BagsDocument = gql`
     query Bags($first: Int, $skip: Int) {
   bags(first: $first, skip: $skip) {
     claimed
+    bundled @client
     id
     clothes @client
     foot @client
