@@ -156,8 +156,11 @@ export default function GlobalStyles() {
         a.textLink,
         .markdownContainer a {
           text-decoration: underline !important;
-          color: #3523fe !important;
+          color: var(--primary) !important;
         }
+        a.primary {
+          color: var(--primary);
+        },
         p,
         ol,
         ul {
