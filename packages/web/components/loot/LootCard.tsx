@@ -60,8 +60,6 @@ const LootCard = ({
           key={`loot-card_${bag.id}`}
           className={`lootCard ${isExpanded ? '' : 'collapsed'}`}
           css={css`
-            display: flex;
-            flex-direction: column;
             &.collapsed {
               max-height: 225px;
               .lootCardBody {
