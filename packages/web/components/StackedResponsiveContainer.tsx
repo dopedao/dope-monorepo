@@ -3,26 +3,29 @@ import styled from '@emotion/styled';
 
 // Contains side-by-side columns on desktop, stacked items on mobile.
 const StackedResponsiveContainer = styled.div`
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  // Mobile screens stack, 16px gap
-  flex-flow: column nowrap;
-  gap: 16px;
+  // Mobile phones just stack regularly with box layout
+  display: block;
   & > div {
-    flex: 1;
-    overflow-y: auto;
-  }
-  & > div:last-child {
-    flex: 2;
-  }
-  // Screen > Tablet display items side by side
+    margin-bottom: 16px;
+  }  
+
+  // Screen > Tablet display items side by side via FlexBox
   ${media.tablet`
-    flex-flow: row nowrap;
-    & > div:last-child {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    // Mobile screens stack, 16px gap  
+    gap: 16px;
+    & > div {
+      margin: 0;
       flex: 1;
-    } 
-  `}
+      overflow-y: auto;
+    }
+    flex-flow: row nowrap;
+      & > div:last-child {
+        flex: 1;
+      } 
+    `}
 `;
 
 export default StackedResponsiveContainer;

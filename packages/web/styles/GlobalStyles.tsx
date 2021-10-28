@@ -165,6 +165,10 @@ export default function GlobalStyles() {
           line-height: 1.5;
         }
 
+        em {
+          background-color: rgba(255, 252, 63, 0.5);
+        }
+
         /* CUSTOM */
         .button {
           ${buttonStyle};
