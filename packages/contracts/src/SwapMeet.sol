@@ -31,6 +31,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
 
     mapping(uint256 => bool) private opened;
 
+    event Opened(uint256[] ids);
     event SetRle(uint256 id);
 
     constructor(
@@ -108,9 +109,11 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
 
         paper.transferFrom(msg.sender, timelock, cost() * ids.length);
         _mintBatch(to, parts, amounts, data);
+
+        emit Opened(ids);
     }
 
-    function itemIds(uint256 tokenId) private view returns (uint256[] memory) {
+    function itemIds(uint256 tokenId) public view returns (uint256[] memory) {
         uint256[] memory ids = new uint256[](9);
         uint8[5][9] memory items = sc.items(tokenId);
         for (uint8 i = 0; i < 9; i++) {
