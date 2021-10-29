@@ -151,6 +151,10 @@ contract SwapMeetMetadata is IPaletteProvider {
         return rles[TokenId.toId(components, componentType)][gender];
     }
 
+    function fromId(uint256 id) public pure returns (uint8[5] memory, uint8) {
+        return TokenId.fromId(id);
+    }
+
     function toId(uint8[5] memory components, uint8 componentType) public pure returns (uint256) {
         return TokenId.toId(components, componentType);
     }
