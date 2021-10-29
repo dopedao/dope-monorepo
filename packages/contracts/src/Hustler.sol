@@ -226,7 +226,9 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         swapmeet.open(tokenId, address(this), abi.encode(equip, id));
     }
 
-    function unequip(uint256 hustlerId, uint8[] calldata slots) public onlyHustler(hustlerId) {
+    function unequip(uint256 hustlerId, uint8[] calldata slots) public {
+        require(balanceOf(_msgSender(), hustlerId) == 1 || _msgSender() == address(enforcer), Errors.IsHolder);
+
         if (address(enforcer) != address(0)) {
             enforcer.onUnequip(hustlerId, slots);
         }
