@@ -145,6 +145,7 @@ contract HustlerMetadata {
         p.viewbox = viewbox;
         p.parts = parts;
         p.resolution = resolution;
+        p.attributes = '[]';
         return MetadataBuilder.tokenURI(p, swapmeet);
     }
 
