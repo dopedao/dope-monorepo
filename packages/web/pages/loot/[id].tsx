@@ -31,16 +31,16 @@ const HustlerFromLoot = () => {
   useEffect(() => {
     if (swapmeet && id) {
       swapmeet.itemIds(id as string).then(ids =>
+        // Excludes vehicle (2) and orders layers
         setItemIds([
-          ids[0],
+          ids[6],
+          ids[8],
+          ids[5],
           ids[1],
-          // Exclude vehicle
           ids[3],
           ids[4],
-          ids[5],
-          ids[6],
           ids[7],
-          ids[8],
+          ids[0],
         ]),
       );
     }
