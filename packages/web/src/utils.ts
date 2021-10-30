@@ -23,3 +23,11 @@ export const getShortAddress = (address: string | undefined | null) => {
   }
   return address;
 };
+
+export const zeroPad = (i: number) => {
+  let iStr = i.toString();
+  if (i < 10) {
+    iStr = `0${iStr}`;
+  }
+  return iStr;
+}
