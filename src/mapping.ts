@@ -10,9 +10,36 @@ import {
   TransferBatch,
   TransferSingle,
 } from "../generated/SwapMeet/SwapMeet";
-import { Bag, Item, RLE, Transfer, Wallet } from "../generated/schema";
+
+import {
+  AddRles,
+  Hustler as HustlerContract,
+  MetadataUpdate,
+  TransferBatch as HustlerTransferBatch,
+  TransferSingle as HustlerTransferSingle,
+} from "../generated/Hustler/Hustler";
+
+import {
+  Bag,
+  Item,
+  ItemBalances,
+  Hustler,
+  Transfer,
+  Wallet,
+  MaleBody,
+  MaleHair,
+  FemaleBody,
+  FemaleHair,
+  Beard,
+} from "../generated/schema";
 import { DopeWarsLoot } from "../generated/DopeWarsLoot/DopeWarsLoot";
-import { BigInt, ByteArray, Bytes, json } from "@graphprotocol/graph-ts";
+import {
+  Address,
+  BigInt,
+  ByteArray,
+  Bytes,
+  json,
+} from "@graphprotocol/graph-ts";
 
 export function handleDopeTransfer(event: DopeTransferEvent): void {
   let fromAddress = event.params.from;
@@ -134,18 +161,23 @@ export function handlePaperTransfer(event: PaperTransferEvent): void {
   }
 }
 
-export function handleSwapMeetSetRle(event: SetRle): void {
-  let swapmeet = SwapMeet.bind(event.address);
-  let id = event.params.id.toString();
-  let rle = RLE.load(id);
-
-  if (!rle) {
-    rle = new RLE(id);
+function upsertItem(swapmeet: SwapMeet, id: BigInt): void {
+  let item = Item.load(id.toString());
+  if (!item) {
+    item = new Item(id.toString());
+    item.name = swapmeet.fullname(id);
+    item.data = swapmeet.tokenURI(id);
   }
 
-  rle.male = swapmeet.tokenRle(event.params.id, 0);
-  rle.female = swapmeet.tokenRle(event.params.id, 1);
-  rle.save()
+  item.maleRle = swapmeet.tokenRle(id, 0);
+  item.femaleRle = swapmeet.tokenRle(id, 1);
+  item.save();
+}
+
+export function handleSwapMeetSetRle(event: SetRle): void {
+  let swapmeet = SwapMeet.bind(event.address);
+  let id = event.params.id;
+  upsertItem(swapmeet, id);
 }
 
 interface Trait {
@@ -179,6 +211,7 @@ export function handleSwapMeetTransferBatch(event: TransferBatch): void {
 
   let swapmeet = SwapMeet.bind(event.address);
   let ids = event.params.ids;
+  let values = event.params.values;
 
   for (let j = 0; j < ids.length; j++) {
     let id = ids[j];
@@ -187,17 +220,28 @@ export function handleSwapMeetTransferBatch(event: TransferBatch): void {
       item = new Item(id.toString());
       item.name = swapmeet.fullname(id);
       item.data = swapmeet.tokenURI(id);
-
-      let v = swapmeet.fromId(id);
-      v.value0[1] = 0;
-      v.value0[2] = 0;
-      v.value0[3] = 0;
-      v.value0[4] = 0;
-      item.base = swapmeet.toId(v.value0, v.value1).toString();
+      item.maleRle = swapmeet.tokenRle(id, 0);
+      item.femaleRle = swapmeet.tokenRle(id, 1);
+      item.save();
     }
 
-    item.owner = toId;
-    item.save()
+    let value = values[j];
+    if (!isZeroAddress(fromId)) {
+      let fromBalance = ItemBalances.load(fromId + "-" + id.toString());
+      fromBalance.balance = fromBalance.balance.minus(value);
+      fromBalance.save();
+    }
+
+    let toBalance = ItemBalances.load(toId + "-" + id.toString());
+    if (!toBalance) {
+      toBalance = new ItemBalances(toId + "-" + id.toString());
+      toBalance.item = id.toString();
+      toBalance.wallet = toId;
+      toBalance.balance = BigInt.fromI32(0);
+    }
+
+    toBalance.balance = toBalance.balance.plus(value);
+    toBalance.save();
   }
 }
 
@@ -226,17 +270,26 @@ export function handleSwapMeetTransfer(event: TransferSingle): void {
     item = new Item(id.toString());
     item.name = swapmeet.fullname(id);
     item.data = swapmeet.tokenURI(id);
-
-    let v = swapmeet.fromId(id);
-    v.value0[1] = 0;
-    v.value0[2] = 0;
-    v.value0[3] = 0;
-    v.value0[4] = 0;
-    item.base = swapmeet.toId(v.value0, v.value1).toString();
   }
 
-  item.owner = toId;
-  item.save()
+  item.save();
+
+  if (!isZeroAddress(fromId)) {
+    let fromBalance = ItemBalances.load(fromId + "-" + id.toString());
+    fromBalance.balance = fromBalance.balance.minus(event.params.value);
+    fromBalance.save();
+  }
+
+  let toBalance = ItemBalances.load(toId + "-" + id.toString());
+  if (!toBalance) {
+    toBalance = new ItemBalances(toId + "-" + id.toString());
+    toBalance.item = id.toString();
+    toBalance.wallet = toId;
+    toBalance.balance = BigInt.fromI32(0);
+  }
+
+  toBalance.balance = toBalance.balance.plus(event.params.value);
+  toBalance.save();
 }
 
 export function handleSwapMeetOpened(event: Opened): void {
@@ -245,6 +298,128 @@ export function handleSwapMeetOpened(event: Opened): void {
     let bag = Bag.load(ids[i].toString());
     bag.opened = true;
     bag.save();
+  }
+}
+
+export function handleHustlerBatchTransfer(event: HustlerTransferBatch): void {
+  let fromAddress = event.params.from;
+  let toAddress = event.params.to;
+  let fromId = fromAddress.toHex();
+  let fromWallet = Wallet.load(fromId);
+
+  if (!fromWallet) {
+    fromWallet = newWallet(fromId, fromAddress, event.block.timestamp);
+    fromWallet.save();
+  }
+
+  let toId = toAddress.toHex();
+  let toWallet = Wallet.load(toId);
+  if (!toWallet) {
+    toWallet = newWallet(toId, toAddress, event.block.timestamp);
+    toWallet.save();
+  }
+
+  let c = HustlerContract.bind(event.address);
+  let ids = event.params.ids;
+
+  for (let j = 0; j < ids.length; j++) {
+    let id = ids[j];
+    let hustler = Hustler.load(id.toString());
+    if (!hustler) {
+      hustler = new Hustler(id.toString());
+      hustler.data = c.tokenURI(id);
+    }
+
+    hustler.owner = toId;
+    hustler.save();
+  }
+}
+
+export function handleHustlerTransfer(event: HustlerTransferSingle): void {
+  let fromAddress = event.params.from;
+  let toAddress = event.params.to;
+  let fromId = fromAddress.toHex();
+  let fromWallet = Wallet.load(fromId);
+
+  if (!fromWallet) {
+    fromWallet = newWallet(fromId, fromAddress, event.block.timestamp);
+    fromWallet.save();
+  }
+
+  let toId = toAddress.toHex();
+  let toWallet = Wallet.load(toId);
+  if (!toWallet) {
+    toWallet = newWallet(toId, toAddress, event.block.timestamp);
+    toWallet.save();
+  }
+
+  let c = HustlerContract.bind(event.address);
+  let id = event.params.id;
+  let hustler = Hustler.load(id.toString());
+  if (!hustler) {
+    hustler = new Hustler(id.toString());
+    hustler.data = c.tokenURI(id);
+  }
+  hustler.owner = toId;
+  hustler.save();
+}
+
+export function handleHustlerMetadataUpdate(event: MetadataUpdate): void {
+  let id = event.params.id;
+  let c = HustlerContract.bind(event.address);
+  let hustler = Hustler.load(id.toString());
+  if (!hustler) {
+    hustler = new Hustler(id.toString());
+    hustler.owner = "0x0000000000000000000000000000000000000000";
+  }
+  hustler.data = c.tokenURI(id);
+  hustler.save();
+}
+
+export function handleHustlerAddRles(event: AddRles): void {
+  let len = event.params.len;
+  let part = event.params.part;
+  let c = HustlerContract.bind(event.address);
+
+  for (let i = 0; i < len.toI32(); i++) {
+    let rle = c.bodyRle(part, BigInt.fromI32(i));
+
+    if (BigInt.fromI32(part) == BigInt.fromI32(0)) {
+      let mb = MaleBody.load(i.toString());
+      if (!mb) {
+        mb = new MaleBody(i.toString());
+        mb.rle = rle;
+        mb.save();
+      }
+    } else if (BigInt.fromI32(part) == BigInt.fromI32(1)) {
+      let fb = FemaleBody.load(i.toString());
+      if (!fb) {
+        fb = new FemaleBody(i.toString());
+        fb.rle = rle;
+        fb.save();
+      }
+    } else if (BigInt.fromI32(part) == BigInt.fromI32(2)) {
+      let mh = MaleHair.load(i.toString());
+      if (!mh) {
+        mh = new MaleHair(i.toString());
+        mh.rle = rle;
+        mh.save();
+      }
+    } else if (BigInt.fromI32(part) == BigInt.fromI32(3)) {
+      let fh = FemaleHair.load(i.toString());
+      if (!fh) {
+        fh = new FemaleHair(i.toString());
+        fh.rle = rle;
+        fh.save();
+      }
+    } else if (BigInt.fromI32(part) == BigInt.fromI32(4)) {
+      let b = Beard.load(i.toString());
+      if (!b) {
+        b = new Beard(i.toString());
+        b.rle = rle;
+        b.save();
+      }
+    }
   }
 }
 
