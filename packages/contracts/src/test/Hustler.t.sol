@@ -79,6 +79,35 @@ contract Hustlers is HustlerTest {
         owner.addRles(RleParts.FEMALE_BODY, bodies);
     }
 
+    function testCanMintAll() public {
+        alice.setDopeApprovalForAll(address(hustler), true);
+
+        string memory name = 'gangsta';
+        bytes4 background = hex'000000ff';
+        bytes4 color = hex'fafafaff';
+
+        uint8[4] memory body;
+        uint8[4] memory viewbox;
+
+        for (uint256 i = 1; i < 8001; i++) {
+            if (i == BAG || i == OTHER_BAG) {
+                alice.mint();
+                continue;
+            }
+
+            alice.claim(i);
+            alice.claimPaper(i);
+
+            uint256 hustlerId = 499 + i;
+
+            alice.mintFromDope(i, name, color, background, hex'', viewbox, body, hex'000f');
+            ItemIds memory ids = swapmeet.ids(i);
+            checkOwns1155s(ids, address(hustler));
+            checkIsEquipped(ids, hustlerId);
+            hustler.tokenURI(hustlerId);
+        }
+    }
+
     function testCanMintFromDope() public {
         alice.setDopeApprovalForAll(address(hustler), true);
 
@@ -777,15 +806,15 @@ contract Hustlers is HustlerTest {
     }
 
     function checkOwns1155s(ItemIds memory ids, address who) private {
-        assertEq(swapmeet.balanceOf(who, ids.weapon), 1);
-        assertEq(swapmeet.balanceOf(who, ids.clothes), 1);
-        assertEq(swapmeet.balanceOf(who, ids.vehicle), 1);
-        assertEq(swapmeet.balanceOf(who, ids.waist), 1);
-        assertEq(swapmeet.balanceOf(who, ids.foot), 1);
-        assertEq(swapmeet.balanceOf(who, ids.hand), 1);
-        assertEq(swapmeet.balanceOf(who, ids.drugs), 1);
-        assertEq(swapmeet.balanceOf(who, ids.neck), 1);
-        assertEq(swapmeet.balanceOf(who, ids.ring), 1);
+        assert(swapmeet.balanceOf(who, ids.weapon) >= 1);
+        assert(swapmeet.balanceOf(who, ids.clothes) >= 1);
+        assert(swapmeet.balanceOf(who, ids.vehicle) >= 1);
+        assert(swapmeet.balanceOf(who, ids.waist) >= 1);
+        assert(swapmeet.balanceOf(who, ids.foot) >= 1);
+        assert(swapmeet.balanceOf(who, ids.hand) >= 1);
+        assert(swapmeet.balanceOf(who, ids.drugs) >= 1);
+        assert(swapmeet.balanceOf(who, ids.neck) >= 1);
+        assert(swapmeet.balanceOf(who, ids.ring) >= 1);
     }
 
     function checkIsEquipped(ItemIds memory ids, uint256 hustlerId) private {

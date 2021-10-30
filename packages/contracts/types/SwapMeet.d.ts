@@ -30,6 +30,7 @@ interface SwapMeetInterface extends ethers.utils.Interface {
     "fullname(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isOpened(uint256)": FunctionFragment;
+    "itemIds(uint256)": FunctionFragment;
     "mint(address,uint8[5],uint8,uint256,bytes)": FunctionFragment;
     "mintBatch(address,uint8[],uint8[],uint256[],bytes)": FunctionFragment;
     "name()": FunctionFragment;
@@ -45,6 +46,7 @@ interface SwapMeetInterface extends ethers.utils.Interface {
     "setRle(uint256,bytes,bytes)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
+    "toBaseId(uint256)": FunctionFragment;
     "toId(uint8[5],uint8)": FunctionFragment;
     "tokenRle(uint256,uint8)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -83,6 +85,10 @@ interface SwapMeetInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "isOpened",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "itemIds",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -143,6 +149,10 @@ interface SwapMeetInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "toBaseId",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "toId",
     values: [
       [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish],
@@ -184,6 +194,7 @@ interface SwapMeetInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isOpened", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "itemIds", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintBatch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -214,6 +225,7 @@ interface SwapMeetInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "toBaseId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "toId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenRle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
@@ -225,14 +237,18 @@ interface SwapMeetInterface extends ethers.utils.Interface {
 
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "Opened(uint256[])": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "SetRle(uint256)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Opened"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetRle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
@@ -246,9 +262,13 @@ export type ApprovalForAllEvent = TypedEvent<
   }
 >;
 
+export type OpenedEvent = TypedEvent<[BigNumber[]] & { ids: BigNumber[] }>;
+
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
 >;
+
+export type SetRleEvent = TypedEvent<[BigNumber] & { id: BigNumber }>;
 
 export type TransferBatchEvent = TypedEvent<
   [string, string, string, BigNumber[], BigNumber[]] & {
@@ -360,6 +380,11 @@ export class SwapMeet extends BaseContract {
 
     isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
 
+    itemIds(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
+
     mint(
       to: string,
       components: [
@@ -450,6 +475,8 @@ export class SwapMeet extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
+    toBaseId(id: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
+
     toId(
       components: [
         BigNumberish,
@@ -519,6 +546,11 @@ export class SwapMeet extends BaseContract {
   ): Promise<boolean>;
 
   isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+  itemIds(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
 
   mint(
     to: string,
@@ -610,6 +642,8 @@ export class SwapMeet extends BaseContract {
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
+  toBaseId(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
   toId(
     components: [
       BigNumberish,
@@ -676,6 +710,11 @@ export class SwapMeet extends BaseContract {
     ): Promise<boolean>;
 
     isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+    itemIds(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
     mint(
       to: string,
@@ -765,6 +804,8 @@ export class SwapMeet extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
+    toBaseId(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
     toId(
       components: [
         BigNumberish,
@@ -812,6 +853,12 @@ export class SwapMeet extends BaseContract {
       { account: string; operator: string; approved: boolean }
     >;
 
+    "Opened(uint256[])"(
+      ids?: null
+    ): TypedEventFilter<[BigNumber[]], { ids: BigNumber[] }>;
+
+    Opened(ids?: null): TypedEventFilter<[BigNumber[]], { ids: BigNumber[] }>;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -827,6 +874,12 @@ export class SwapMeet extends BaseContract {
       [string, string],
       { previousOwner: string; newOwner: string }
     >;
+
+    "SetRle(uint256)"(
+      id?: null
+    ): TypedEventFilter<[BigNumber], { id: BigNumber }>;
+
+    SetRle(id?: null): TypedEventFilter<[BigNumber], { id: BigNumber }>;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
       operator?: string | null,
@@ -950,6 +1003,11 @@ export class SwapMeet extends BaseContract {
 
     isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+    itemIds(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     mint(
       to: string,
       components: [
@@ -1040,6 +1098,8 @@ export class SwapMeet extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
+    toBaseId(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
     toId(
       components: [
         BigNumberish,
@@ -1114,6 +1174,11 @@ export class SwapMeet extends BaseContract {
 
     isOpened(
       id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    itemIds(
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1209,6 +1274,11 @@ export class SwapMeet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    toBaseId(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     toId(
       components: [

@@ -176,11 +176,21 @@ interface ComponentsInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "weapons", data: BytesLike): Result;
 
   events: {
+    "AddComponent(uint256,uint256,string)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "AddComponent"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export type AddComponentEvent = TypedEvent<
+  [BigNumber, BigNumber, string] & {
+    id: BigNumber;
+    componentType: BigNumber;
+    component: string;
+  }
+>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
@@ -558,6 +568,24 @@ export class Components extends BaseContract {
   };
 
   filters: {
+    "AddComponent(uint256,uint256,string)"(
+      id?: null,
+      componentType?: null,
+      component?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, string],
+      { id: BigNumber; componentType: BigNumber; component: string }
+    >;
+
+    AddComponent(
+      id?: null,
+      componentType?: null,
+      component?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, string],
+      { id: BigNumber; componentType: BigNumber; component: string }
+    >;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null

@@ -31,6 +31,25 @@ var _abi = [
         anonymous: false,
         inputs: [
             {
+                indexed: false,
+                internalType: "uint8",
+                name: "part",
+                type: "uint8",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "len",
+                type: "uint256",
+            },
+        ],
+        name: "AddRles",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
                 indexed: true,
                 internalType: "address",
                 name: "account",
@@ -50,6 +69,19 @@ var _abi = [
             },
         ],
         name: "ApprovalForAll",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "id",
+                type: "uint256",
+            },
+        ],
+        name: "MetadataUpdate",
         type: "event",
     },
     {
@@ -244,6 +276,30 @@ var _abi = [
                 internalType: "uint256[]",
                 name: "",
                 type: "uint256[]",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "uint8",
+                name: "part",
+                type: "uint8",
+            },
+            {
+                internalType: "uint256",
+                name: "idx",
+                type: "uint256",
+            },
+        ],
+        name: "bodyRle",
+        outputs: [
+            {
+                internalType: "bytes",
+                name: "",
+                type: "bytes",
             },
         ],
         stateMutability: "view",
@@ -543,7 +599,7 @@ var _abi = [
         inputs: [
             {
                 internalType: "address",
-                name: "",
+                name: "operator",
                 type: "address",
             },
             {
@@ -586,6 +642,68 @@ var _abi = [
                 internalType: "address",
                 name: "",
                 type: "address",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "release",
+        outputs: [
+            {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "string",
+                name: "title",
+                type: "string",
+            },
+            {
+                internalType: "string",
+                name: "subtitle",
+                type: "string",
+            },
+            {
+                internalType: "uint8",
+                name: "resolution",
+                type: "uint8",
+            },
+            {
+                internalType: "bytes4",
+                name: "background",
+                type: "bytes4",
+            },
+            {
+                internalType: "bytes4",
+                name: "color",
+                type: "bytes4",
+            },
+            {
+                internalType: "uint8[4]",
+                name: "viewbox",
+                type: "uint8[4]",
+            },
+            {
+                internalType: "bytes[]",
+                name: "parts",
+                type: "bytes[]",
+            },
+        ],
+        name: "render",
+        outputs: [
+            {
+                internalType: "string",
+                name: "",
+                type: "string",
             },
         ],
         stateMutability: "view",
@@ -685,6 +803,19 @@ var _abi = [
     {
         inputs: [
             {
+                internalType: "address",
+                name: "enforcer_",
+                type: "address",
+            },
+        ],
+        name: "setEnforcer",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
                 internalType: "uint256",
                 name: "hustlerId",
                 type: "uint256",
@@ -726,6 +857,19 @@ var _abi = [
             },
         ],
         name: "setMetadata",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "uint256",
+                name: "timestamp",
+                type: "uint256",
+            },
+        ],
+        name: "setRelease",
         outputs: [],
         stateMutability: "nonpayable",
         type: "function",
