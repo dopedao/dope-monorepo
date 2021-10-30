@@ -46,8 +46,8 @@ export default function AppWindow({
   `;
 
   return (
-    <DesktopWindow 
-      title={title || 'DOPEWARS.EXE'} 
+    <DesktopWindow
+      title={title || 'DOPEWARS.EXE'}
       titleChildren={navbar}
       width={width}
       height={height}

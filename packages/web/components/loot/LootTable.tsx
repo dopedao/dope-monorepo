@@ -7,11 +7,11 @@ import PanelContainer from '../PanelContainer';
 
 interface Props {
   className?: string;
-  data: { 
-    id: string; 
-    claimed: boolean; 
-    bundled: boolean; 
-    rank: number 
+  data: {
+    id: string;
+    claimed: boolean;
+    bundled: boolean;
+    rank: number;
   }[];
   selected: number;
   onSelect: (i: number) => void;
@@ -74,7 +74,7 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
 
   return (
     <PanelContainer
-      className={ className }
+      className={className}
       css={css`
         tfoot th {
           // Screen > Tablet display items side by side
@@ -97,74 +97,81 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
     >
       <div
         css={css`
-          display:flex;
+          display: flex;
           min-height: 100%;
           flex-direction: column;
           align-items: stretch;
-          `}>
+        `}
+      >
+        <div
+          css={css`
+            flex-grow: 1;
+          `}
+        >
+          <Table variant="dope">
+            <colgroup>
+              <col width="25%" />
+              <col width="25%" />
+              {/* <col width="25%" /> */}
+              <col width="25%" />
+            </colgroup>
+            <Thead>
+              <Tr>
+                <Th onClick={() => setSort('id')}>Dope ID</Th>
+                <Th onClick={() => setSort('rank')}>Rank</Th>
+                <Th>Paper</Th>
+                <Th>Bundled</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {items.map(({ id, rank, bundled, claimed, idx }) => (
+                <Tr
+                  className={selected === idx ? 'selected' : ''}
+                  key={id}
+                  onClick={() => onSelect(idx)}
+                >
+                  <Td>{id}</Td>
+                  <Td>{rank}</Td>
+                  <Td>{claimed}</Td>
+                  <Td>{bundled}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </div>
+        <div
+          css={css`
+            position: sticky;
+            bottom: 0;
+            cursor: pointer;
+            background: rgb(222, 222, 221);
+          `}
+        >
           <div
             css={css`
-              flex-grow: 1;
-              `}>
-              <Table variant="dope">
-                <colgroup>
-                  <col width="25%" />
-                  <col width="25%" />
-                  {/* <col width="25%" /> */}
-                  <col width="25%" />
-                </colgroup>
-                <Thead>
-                  <Tr>
-                    <Th onClick={() => setSort('id')}>Dope ID</Th>
-                    <Th onClick={() => setSort('rank')}>Rank</Th>
-                    <Th>Paper</Th>
-                    <Th>Bundled</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {items.map(({ id, rank, bundled, claimed, idx }) => (
-                    <Tr
-                      className={selected === idx ? 'selected' : ''}
-                      key={id}
-                      onClick={() => onSelect(idx)}
-                    >
-                      <Td>{id}</Td>
-                      <Td>{rank}</Td>
-                      <Td>{claimed}</Td>
-                      <Td>{bundled}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
+              border-top: 2px solid rgb(0, 0, 0);
+              height: 44px;
+              padding: 10px 16px;
+              text-align: center;
+              vertical-align: middle;
+              text-transform: uppercase;
+              font-weight: 600;
+              font-size: 0.9em;
+            `}
+          >
+            {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
+            <span
+              className="separator"
+              css={css`
+                padding: 8px;
+                color: rgb(168, 169, 174);
+              `}
+            >
+              /
+            </span>
+            {formattedUnclaimedPaper()} Unclaimed $PAPER
           </div>
-          <div
-            css={css`
-              position: sticky;
-              bottom: 0;
-              cursor: pointer;
-              background: rgb(222, 222, 221);
-              `}>
-                <div
-                css={css`
-                  border-top: 2px solid rgb(0, 0, 0);
-                  height: 44px;
-                  padding: 10px 16px;
-                  text-align: center;
-                  vertical-align: middle;
-                  text-transform: uppercase;
-                  font-weight: 600;
-                  font-size: 0.9em;
-                  `}>
-                    {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
-                    <span
-                      className="separator"
-                      css={css`
-                        padding: 8px;
-                        color: rgb(168, 169, 174);
-                        `}>/</span>
-                    {formattedUnclaimedPaper()} Unclaimed $PAPER
-                </div>
-          </div>
+        </div>
       </div>
     </PanelContainer>
   );

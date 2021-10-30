@@ -160,7 +160,8 @@ export default function GlobalStyles() {
         }
         a.primary {
           color: var(--primary);
-        },
+        }
+        ,
         p,
         ol,
         ul {

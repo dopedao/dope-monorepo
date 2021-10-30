@@ -11,32 +11,49 @@ import PanelFooter from '../PanelFooter';
 const hasDopeNft = false;
 
 const NoDopeMessage = () => {
-  const caution = <span css={css`color: #767674;`}>***</span>;
+  const caution = (
+    <span
+      css={css`
+        color: #767674;
+      `}
+    >
+      ***
+    </span>
+  );
   return (
-    <PanelFooter css={css`height:auto;`}>
-      <div css={css`text-align:center;padding:16px;`}>
-        <p>{caution} NO BUNDLED DOPE IN WALLET {caution}</p>
+    <PanelFooter
+      css={css`
+        height: auto;
+      `}
+    >
+      <div
+        css={css`
+          text-align: center;
+          padding: 16px;
+        `}
+      >
+        <p>
+          {caution} NO BUNDLED DOPE IN WALLET {caution}
+        </p>
         <Link href="/swap-meet?status=For+Sale&sort_by=Most+Affordable">
-          <Button variant='primary'>Shop for DOPE NFTs</Button>
+          <Button variant="primary">Shop for DOPE NFTs</Button>
         </Link>
       </div>
     </PanelFooter>
   );
-}
+};
 
 const SubPanelForm = styled.div`
   border-top: 1px solid black;
   background-color: #ffffff;
   select {
-    border-bottom: 1px solid #DEDEDD;
+    border-bottom: 1px solid #dededd;
   }
 `;
 
-
-
-const InitiationFooterDopeContent = () => {  
+const InitiationFooterDopeContent = () => {
   const { account } = useWeb3React();
-  if (!account) return <NoDopeMessage />
+  if (!account) return <NoDopeMessage />;
 
   const [dopeToInitiate, setDopeToInitiate] = useState<string>('');
 
@@ -59,33 +76,37 @@ const InitiationFooterDopeContent = () => {
     // Prevent controls from showing if no qualified DOPE
     if (bundledDope.length == 0) return <NoDopeMessage />;
 
-    return <div>
-      <SubPanelForm>
-        <Select size="sm" variant="filterBar" onChange={handleDopeChange} value={dopeToInitiate}>
-          <option disabled>YOUR DOPE</option>
-          {bundledDope.map(dopeNft => (
-            <option>DOPE NFT #{dopeNft.id}</option>
-          ))}
-        </Select>
-        <div css={css`
-          display: flex;
-          justify-content: space-between;
-          padding: 8px 12px;
-        `}>
-          <Link href="/hustler/customize">
-            <a className="primary">Customize Appearance</a>
-          </Link>
-          <Link href="/randomize">
-            <a className="primary">Randomize</a>
-          </Link>
-        </div>
-      </SubPanelForm>
-      <PanelFooter>
-        <div></div>
-        <Button variant='primary'>Continue Initiation</Button>
-      </PanelFooter>
-    </div>
+    return (
+      <div>
+        <SubPanelForm>
+          <Select size="sm" variant="filterBar" onChange={handleDopeChange} value={dopeToInitiate}>
+            <option disabled>YOUR DOPE</option>
+            {bundledDope.map(dopeNft => (
+              <option>DOPE NFT #{dopeNft.id}</option>
+            ))}
+          </Select>
+          <div
+            css={css`
+              display: flex;
+              justify-content: space-between;
+              padding: 8px 12px;
+            `}
+          >
+            <Link href="/hustler/customize">
+              <a className="primary">Customize Appearance</a>
+            </Link>
+            <Link href="/randomize">
+              <a className="primary">Randomize</a>
+            </Link>
+          </div>
+        </SubPanelForm>
+        <PanelFooter>
+          <div></div>
+          <Button variant="primary">Continue Initiation</Button>
+        </PanelFooter>
+      </div>
+    );
   }
-}
+};
 
 export default InitiationFooterDopeContent;

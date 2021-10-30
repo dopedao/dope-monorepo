@@ -180,12 +180,7 @@ const MarketList = () => {
 
 export default function SwapMeet() {
   return (
-    <AppWindow 
-      navbar={<DopeWarsExeNav />} 
-      padBody={false} 
-      scrollable={false} 
-      height="90vh"
-    >
+    <AppWindow navbar={<DopeWarsExeNav />} padBody={false} scrollable={false} height="90vh">
       <Head title={title} />
       <MarketList />
     </AppWindow>

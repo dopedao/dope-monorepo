@@ -7,9 +7,7 @@ import DesktopWindowTitleBar from './DesktopWindowTitleBar';
 import Draggable from 'react-draggable';
 import React from 'react';
 import styled from '@emotion/styled';
-import WindowPosition, {
-  WindowPositionReactive
-} from '../src/WindowPosition';
+import WindowPosition, { WindowPositionReactive } from '../src/WindowPosition';
 import { useReactiveVar } from '@apollo/client';
 
 interface DesktopWindowProps {
@@ -75,12 +73,20 @@ const DesktopWindow = ({
       const transformValue = el.getAttribute('style') || '';
       windowPosition.updatePosition(transformValue);
     }
-  }
+  };
 
   return (
     <ConditionalWrapper
       condition={shouldBeDraggable}
-      wrap={children => <Draggable onStop={handleStop} defaultPosition={windowPosition.position} handle=".windowTitleBar">{children}</Draggable>}
+      wrap={children => (
+        <Draggable
+          onStop={handleStop}
+          defaultPosition={windowPosition.position}
+          handle=".windowTitleBar"
+        >
+          {children}
+        </Draggable>
+      )}
     >
       <WindowWrapper className={isFullScreen ? '' : 'floating'}>
         <DesktopWindowTitleBar

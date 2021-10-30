@@ -12,11 +12,7 @@ const Wallet = () => {
   };
 
   return (
-    <AppWindow 
-      navbar={<DopeWarsExeNav />}
-      requiresWalletConnection={true}
-      padBody={false}
-    >
+    <AppWindow navbar={<DopeWarsExeNav />} requiresWalletConnection={true} padBody={false}>
       <Head />
       <DisconnectWallet onClose={() => closeApp()} />
     </AppWindow>

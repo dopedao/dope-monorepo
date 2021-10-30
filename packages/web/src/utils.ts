@@ -13,4 +13,4 @@ export const zeroPad = (i: number) => {
     iStr = `0${iStr}`;
   }
   return iStr;
-}
+};
