@@ -1260,7 +1260,7 @@ export type WalletQueryVariables = Exact<{
 }>;
 
 
-export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> }> };
+export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, bundled: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> }> };
 
 
 export const AllUnclaimedBagsDocument = gql`
@@ -1457,6 +1457,7 @@ export const WalletDocument = gql`
     bags(first: 200) {
       claimed
       id
+      bundled @client
       clothes @client
       foot @client
       hand @client

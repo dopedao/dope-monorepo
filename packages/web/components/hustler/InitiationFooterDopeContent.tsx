@@ -7,38 +7,6 @@ import { useWalletQuery } from '../../src/generated/graphql';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import PanelFooter from '../PanelFooter';
-import LoadingBlock from '../LoadingBlock';
-
-const AuthenticatedContent = ({ id }: { id: string }) => {
-  const { account } = useWeb3React();
-
-  const { data, loading } = useWalletQuery({
-    variables: { id: account.toLowerCase() },
-  });
-  const [selected, setSelected] = useState(0);
-
-  if (loading) {
-    return <LoadingBlock />;
-  } else if (!data?.wallet?.bags || data.wallet.bags.length === 0) {
-    return <NoLootCard />;
-  } else {
-    return (
-      <FlexFiftyContainer>
-        <LootTable
-          data={data.wallet.bags.map(({ bundled, claimed, id, rank }) => ({
-            bundled,
-            claimed,
-            id,
-            rank,
-          }))}
-          selected={selected}
-          onSelect={setSelected}
-        />
-        <LootCard bag={data.wallet.bags[selected]} footer="for-owner" />
-      </FlexFiftyContainer>
-    );
-  }
-};
 
 const hasDopeNft = false;
 
@@ -47,7 +15,7 @@ const NoDopeMessage = () => {
   return (
     <PanelFooter css={css`height:auto;`}>
       <div css={css`text-align:center;padding:16px;`}>
-        <p>{caution} NO DOPE IN WALLET {caution}</p>
+        <p>{caution} NO BUNDLED DOPE IN WALLET {caution}</p>
         <Link href="/swap-meet?status=For+Sale&sort_by=Most+Affordable">
           <Button variant='primary'>Shop for DOPE NFTs</Button>
         </Link>
@@ -64,7 +32,12 @@ const SubPanelForm = styled.div`
   }
 `;
 
-const MintHustlerControls = () => {
+
+
+const InitiationFooterDopeContent = () => {  
+  const { account } = useWeb3React();
+  if (!account) return <NoDopeMessage />
+
   const [dopeToInitiate, setDopeToInitiate] = useState<string>('');
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -73,40 +46,45 @@ const MintHustlerControls = () => {
     // statusCallback(value);
   };
 
-  return <div>
-    <SubPanelForm>
-      <Select size="sm" variant="filterBar" onChange={handleDopeChange} value={dopeToInitiate}>
-        <option disabled>UNBUNDLED DOPE</option>
-        {/* {statusKeys.map(value => (
-          <option>{value}</option>
-        ))} */}
-      </Select>
-      <div css={css`
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 12px;
-      `}>
-        <Link href="/hustler/customize">
-          <a className="primary">Customize Appearance</a>
-        </Link>
-        <Link href="/randomize">
-          <a className="primary">Randomize</a>
-        </Link>
-      </div>
-    </SubPanelForm>
-    <PanelFooter>
-      <div></div>
-      <Button variant='primary'>Continue Initiation</Button>
-    </PanelFooter>
-  </div>
-}
+  const { data, loading } = useWalletQuery({
+    variables: { id: account.toLowerCase() },
+  });
 
-
-const InitiationFooterDopeContent = () => {  
-  if (hasDopeNft) {
-    return <MintHustlerControls />;    
-  } else {
+  if (loading) {
+    return <PanelFooter>Loading…</PanelFooter>;
+  } else if (!data?.wallet?.bags || data.wallet.bags.length === 0) {
     return <NoDopeMessage />;
+  } else {
+    const bundledDope = data.wallet.bags.filter(dopeNft => dopeNft.bundled);
+    // Prevent controls from showing if no qualified DOPE
+    if (bundledDope.length == 0) return <NoDopeMessage />;
+
+    return <div>
+      <SubPanelForm>
+        <Select size="sm" variant="filterBar" onChange={handleDopeChange} value={dopeToInitiate}>
+          <option disabled>YOUR DOPE</option>
+          {bundledDope.map(dopeNft => (
+            <option>DOPE NFT #{dopeNft.id}</option>
+          ))}
+        </Select>
+        <div css={css`
+          display: flex;
+          justify-content: space-between;
+          padding: 8px 12px;
+        `}>
+          <Link href="/hustler/customize">
+            <a className="primary">Customize Appearance</a>
+          </Link>
+          <Link href="/randomize">
+            <a className="primary">Randomize</a>
+          </Link>
+        </div>
+      </SubPanelForm>
+      <PanelFooter>
+        <div></div>
+        <Button variant='primary'>Continue Initiation</Button>
+      </PanelFooter>
+    </div>
   }
 }
 
