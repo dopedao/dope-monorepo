@@ -21,6 +21,31 @@ var _abi = [
         anonymous: false,
         inputs: [
             {
+                indexed: false,
+                internalType: "uint256",
+                name: "id",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "componentType",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "string",
+                name: "component",
+                type: "string",
+            },
+        ],
+        name: "AddComponent",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
                 indexed: true,
                 internalType: "address",
                 name: "previousOwner",

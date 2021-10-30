@@ -152,6 +152,10 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     function claimPaper() public {
         paper.claimAllForOwner();
     }
+
+    function claimPaper(uint256 tokenId) public {
+        paper.claimById(tokenId);
+    }
 }
 
 contract Enforcer {
