@@ -10,7 +10,7 @@ interface Metadata {
   image: string;
 }
 
-const Render = ({ itemIds }: { itemIds: BigNumber[] }) => {
+const RenderFromItemIds = ({ itemIds }: { itemIds: BigNumber[] }) => {
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
   const [bodyRles, setBodyRles] = useState<string[]>([]);
@@ -80,4 +80,4 @@ const Render = ({ itemIds }: { itemIds: BigNumber[] }) => {
   );
 };
 
-export default Render;
+export default RenderFromItemIds;
