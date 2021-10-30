@@ -6,3 +6,11 @@ export const isTouchDevice = () => {
       (navigator as any).msMaxTouchPoints > 0)
   );
 };
+
+export const zeroPad = (i: number) => {
+  let iStr = i.toString();
+  if (i < 10) {
+    iStr = `0${iStr}`;
+  }
+  return iStr;
+}
