@@ -156,20 +156,24 @@ contract HustlerMetadata {
         parts[3] = rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]];
         parts[4] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
 
-        if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {}
+        uint8[10] memory order = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {
+            order = metadata[hustlerId].order;
+        }
 
         for (uint8 i = 0; i < 10; i++) {
-            if (i == ComponentTypes.VEHICLE) {
+            uint8 j = order[i];
+            if (j == ComponentTypes.VEHICLE) {
                 continue;
             }
 
-            if (BitMask.get(metadata[hustlerId].mask, i)) {
-                parts[i + 5] = swapmeet.tokenRle(
-                    metadata[hustlerId].slots[i],
+            if (BitMask.get(metadata[hustlerId].mask, j)) {
+                parts[j + 5] = swapmeet.tokenRle(
+                    metadata[hustlerId].slots[j],
                     metadata[hustlerId].body[BodyParts.GENDER]
                 );
 
-                if (i == ComponentTypes.DRUGS) {
+                if (j == ComponentTypes.DRUGS) {
                     parts[1] = drugShadow;
                 }
             }
