@@ -26,6 +26,7 @@ interface HustlerInterface extends ethers.utils.Interface {
     "attributes(uint256)": FunctionFragment;
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
+    "bodyRle(uint8,uint256)": FunctionFragment;
     "carParts(uint256)": FunctionFragment;
     "contractURI()": FunctionFragment;
     "hustlerParts(uint256)": FunctionFragment;
@@ -38,11 +39,15 @@ interface HustlerInterface extends ethers.utils.Interface {
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
+    "release()": FunctionFragment;
+    "render(string,string,uint8,bytes4,bytes4,uint8[4],bytes[])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setEnforcer(address)": FunctionFragment;
     "setMetadata(uint256,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2)": FunctionFragment;
+    "setRelease(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -67,6 +72,10 @@ interface HustlerInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "balanceOfBatch",
     values: [string[], BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "bodyRle",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "carParts",
@@ -127,6 +136,19 @@ interface HustlerInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "release", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "render",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BytesLike,
+      BytesLike,
+      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      BytesLike[]
+    ]
+  ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -143,6 +165,7 @@ interface HustlerInterface extends ethers.utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
+  encodeFunctionData(functionFragment: "setEnforcer", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setMetadata",
     values: [
@@ -155,6 +178,10 @@ interface HustlerInterface extends ethers.utils.Interface {
       [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       BytesLike
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setRelease",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -183,6 +210,7 @@ interface HustlerInterface extends ethers.utils.Interface {
     functionFragment: "balanceOfBatch",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "bodyRle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "carParts", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "contractURI",
@@ -216,6 +244,8 @@ interface HustlerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "release", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "render", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -233,9 +263,14 @@ interface HustlerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setEnforcer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setMetadata",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setRelease", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -251,19 +286,27 @@ interface HustlerInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
+    "AddRles(uint8,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "MetadataUpdate(uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "AddRles"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MetadataUpdate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
 }
+
+export type AddRlesEvent = TypedEvent<
+  [number, BigNumber] & { part: number; len: BigNumber }
+>;
 
 export type ApprovalForAllEvent = TypedEvent<
   [string, string, boolean] & {
@@ -272,6 +315,8 @@ export type ApprovalForAllEvent = TypedEvent<
     approved: boolean;
   }
 >;
+
+export type MetadataUpdateEvent = TypedEvent<[BigNumber] & { id: BigNumber }>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
@@ -368,6 +413,12 @@ export class Hustler extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
+    bodyRle(
+      part: BigNumberish,
+      idx: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     carParts(
       hustlerId: BigNumberish,
       overrides?: CallOverrides
@@ -443,7 +494,7 @@ export class Hustler extends BaseContract {
     ): Promise<ContractTransaction>;
 
     onERC1155Received(
-      arg0: string,
+      operator: string,
       from: string,
       id: BigNumberish,
       value: BigNumberish,
@@ -452,6 +503,19 @@ export class Hustler extends BaseContract {
     ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
+
+    release(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    render(
+      title: string,
+      subtitle: string,
+      resolution: BigNumberish,
+      background: BytesLike,
+      color: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      parts: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -481,6 +545,11 @@ export class Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setEnforcer(
+      enforcer_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setMetadata(
       hustlerId: BigNumberish,
       name: string,
@@ -490,6 +559,11 @@ export class Hustler extends BaseContract {
       viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setRelease(
+      timestamp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -545,6 +619,12 @@ export class Hustler extends BaseContract {
     ids: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
+
+  bodyRle(
+    part: BigNumberish,
+    idx: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   carParts(
     hustlerId: BigNumberish,
@@ -621,7 +701,7 @@ export class Hustler extends BaseContract {
   ): Promise<ContractTransaction>;
 
   onERC1155Received(
-    arg0: string,
+    operator: string,
     from: string,
     id: BigNumberish,
     value: BigNumberish,
@@ -630,6 +710,19 @@ export class Hustler extends BaseContract {
   ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
+
+  release(overrides?: CallOverrides): Promise<BigNumber>;
+
+  render(
+    title: string,
+    subtitle: string,
+    resolution: BigNumberish,
+    background: BytesLike,
+    color: BytesLike,
+    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+    parts: BytesLike[],
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -659,6 +752,11 @@ export class Hustler extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setEnforcer(
+    enforcer_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setMetadata(
     hustlerId: BigNumberish,
     name: string,
@@ -668,6 +766,11 @@ export class Hustler extends BaseContract {
     viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
     body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
     mask: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setRelease(
+    timestamp: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -720,6 +823,12 @@ export class Hustler extends BaseContract {
       ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
+
+    bodyRle(
+      part: BigNumberish,
+      idx: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     carParts(
       hustlerId: BigNumberish,
@@ -793,7 +902,7 @@ export class Hustler extends BaseContract {
     ): Promise<string>;
 
     onERC1155Received(
-      arg0: string,
+      operator: string,
       from: string,
       id: BigNumberish,
       value: BigNumberish,
@@ -802,6 +911,19 @@ export class Hustler extends BaseContract {
     ): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
+
+    release(overrides?: CallOverrides): Promise<BigNumber>;
+
+    render(
+      title: string,
+      subtitle: string,
+      resolution: BigNumberish,
+      background: BytesLike,
+      color: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      parts: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -829,6 +951,8 @@ export class Hustler extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setEnforcer(enforcer_: string, overrides?: CallOverrides): Promise<void>;
+
     setMetadata(
       hustlerId: BigNumberish,
       name: string,
@@ -838,6 +962,11 @@ export class Hustler extends BaseContract {
       viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setRelease(
+      timestamp: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -870,6 +999,16 @@ export class Hustler extends BaseContract {
   };
 
   filters: {
+    "AddRles(uint8,uint256)"(
+      part?: null,
+      len?: null
+    ): TypedEventFilter<[number, BigNumber], { part: number; len: BigNumber }>;
+
+    AddRles(
+      part?: null,
+      len?: null
+    ): TypedEventFilter<[number, BigNumber], { part: number; len: BigNumber }>;
+
     "ApprovalForAll(address,address,bool)"(
       account?: string | null,
       operator?: string | null,
@@ -887,6 +1026,12 @@ export class Hustler extends BaseContract {
       [string, string, boolean],
       { account: string; operator: string; approved: boolean }
     >;
+
+    "MetadataUpdate(uint256)"(
+      id?: null
+    ): TypedEventFilter<[BigNumber], { id: BigNumber }>;
+
+    MetadataUpdate(id?: null): TypedEventFilter<[BigNumber], { id: BigNumber }>;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
@@ -1007,6 +1152,12 @@ export class Hustler extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    bodyRle(
+      part: BigNumberish,
+      idx: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     carParts(
       hustlerId: BigNumberish,
       overrides?: CallOverrides
@@ -1070,7 +1221,7 @@ export class Hustler extends BaseContract {
     ): Promise<BigNumber>;
 
     onERC1155Received(
-      arg0: string,
+      operator: string,
       from: string,
       id: BigNumberish,
       value: BigNumberish,
@@ -1079,6 +1230,19 @@ export class Hustler extends BaseContract {
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    release(overrides?: CallOverrides): Promise<BigNumber>;
+
+    render(
+      title: string,
+      subtitle: string,
+      resolution: BigNumberish,
+      background: BytesLike,
+      color: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      parts: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1108,6 +1272,11 @@ export class Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setEnforcer(
+      enforcer_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setMetadata(
       hustlerId: BigNumberish,
       name: string,
@@ -1117,6 +1286,11 @@ export class Hustler extends BaseContract {
       viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setRelease(
+      timestamp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1171,6 +1345,12 @@ export class Hustler extends BaseContract {
     balanceOfBatch(
       accounts: string[],
       ids: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    bodyRle(
+      part: BigNumberish,
+      idx: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1240,7 +1420,7 @@ export class Hustler extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     onERC1155Received(
-      arg0: string,
+      operator: string,
       from: string,
       id: BigNumberish,
       value: BigNumberish,
@@ -1249,6 +1429,19 @@ export class Hustler extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    release(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    render(
+      title: string,
+      subtitle: string,
+      resolution: BigNumberish,
+      background: BytesLike,
+      color: BytesLike,
+      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+      parts: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1278,6 +1471,11 @@ export class Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setEnforcer(
+      enforcer_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setMetadata(
       hustlerId: BigNumberish,
       name: string,
@@ -1287,6 +1485,11 @@ export class Hustler extends BaseContract {
       viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setRelease(
+      timestamp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
