@@ -17,12 +17,12 @@ ComponentsAddr="0x3f69057d320b5b0d58f6b15d440c1f5b9bb6ee08"
 # extractABI Components
 # log "Components deployed at:" $ComponentsAddr
 
-SwapMeetAddr="0xD34F4f54F9c47A3394E204e116Bdc6534d4D8c8B"
-# echo "deploy SwapMeet $ComponentsAddr $LOOT $PAPER"
-# SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr $LOOT $PAPER)
-# # verify SwapMeet $SwapMeetAddr $ComponentsAddr $LOOT $PAPER
-# extractABI SwapMeet
-# log "SwapMeet deployed at:" $SwapMeetAddr
+# SwapMeetAddr="0x52aA7619E1eCEEbCBFF7d26C749488d6AD888516"
+echo "deploy SwapMeet $ComponentsAddr $LOOT $PAPER"
+SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr $LOOT $PAPER)
+# verify SwapMeet $SwapMeetAddr $ComponentsAddr $LOOT $PAPER
+extractABI SwapMeet
+log "SwapMeet deployed at:" $SwapMeetAddr
 
 HustlerAddr=$(deploy Hustler $ComponentsAddr $SwapMeetAddr $PAPER)
 # verify Hustler $HustlerAddr $SwapMeetAddr

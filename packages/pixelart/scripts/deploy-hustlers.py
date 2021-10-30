@@ -1,5 +1,6 @@
 import json
 from web3 import Web3
+import re
 
 swapmeetABI = [
     {
@@ -54,27 +55,27 @@ f = open("../outputs/BODY_PARTS/output.json", "r")
 meta = json.load(f)
 
 Hustler = w3.eth.contract(
-    "0x216ABeBe4014cfea66EFE885dbE888f1d9170dAB", abi=hustlersABI)
+    "0x7E9c72F6440A817d71Cc1441873Ef0747330922B", abi=hustlersABI)
 
 SwapMeet = w3.eth.contract(
-    "0xD34F4f54F9c47A3394E204e116Bdc6534d4D8c8B", abi=swapmeetABI)
+    "0x52aA7619E1eCEEbCBFF7d26C749488d6AD888516", abi=swapmeetABI)
 
-nonce = w3.eth.get_transaction_count(
-    '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
-txn = SwapMeet.functions.setPalette(0, meta['partcolors']).buildTransaction({
-    'chainId': 4,
-    'gas': 7000000,
-    'maxFeePerGas': w3.toWei('25', 'gwei'),
-    'maxPriorityFeePerGas': w3.toWei('2', 'gwei'),
-    'nonce': nonce,
-})
-signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-print("sending set palette", txn_hash)
-txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+# nonce = w3.eth.get_transaction_count(
+#     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
+# txn = SwapMeet.functions.setPalette(0, meta['partcolors']).buildTransaction({
+#     'chainId': 4,
+#     'gas': 7000000,
+#     'maxFeePerGas': w3.toWei('25', 'gwei'),
+#     'maxPriorityFeePerGas': w3.toWei('2', 'gwei'),
+#     'nonce': nonce,
+# })
+# signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+# txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+# print("sending set palette", txn_hash)
+# txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 components = {}
-for parts in meta["parts"]:
+for parts in sorted(meta["parts"], key=lambda d: int(d[0]['name'].split("-")[0])):
     part = parts[0]
     gender = part["gender"]
     category = part["category"]
@@ -85,6 +86,7 @@ for parts in meta["parts"]:
     if gender not in components[category]:
         components[category][gender] = []
 
+    print(part["name"])
     components[category][gender].append(part["data"])
 
 nonce = w3.eth.get_transaction_count(

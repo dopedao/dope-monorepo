@@ -99,10 +99,28 @@ with open('/Users/tarrence/Library/Ethereum/keystore/UTC--2021-10-27T23-02-33.25
 f = open("../outputs/ITEMS/output.json", "r")
 meta = json.load(f)
 
+f = open("../outputs/BODY_PARTS/output.json", "r")
+bodymeta = json.load(f)
+
 SwapMeet = w3.eth.contract(
-    "0xD34F4f54F9c47A3394E204e116Bdc6534d4D8c8B", abi=abi)
+    "0x52aA7619E1eCEEbCBFF7d26C749488d6AD888516", abi=abi)
 
 print(SwapMeet.functions.name().call())
+
+nonce = w3.eth.get_transaction_count(
+    '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
+txn = SwapMeet.functions.setPalette(0, bodymeta['partcolors']).buildTransaction({
+    'chainId': 4,
+    'gas': 1770897,
+    'maxFeePerGas': w3.toWei('100', 'gwei'),
+    'maxPriorityFeePerGas': w3.toWei('5', 'gwei'),
+    'nonce': nonce,
+})
+signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+print(txn_hash)
+txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+
 
 nonce = w3.eth.get_transaction_count(
     '0x35754FD45136F2a9996a75Cf2955315C9Cd35054')
