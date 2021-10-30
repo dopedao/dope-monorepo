@@ -50,8 +50,8 @@ export default function AppWindow({
   const { account } = useWeb3React();
 
   return (
-    <DesktopWindow 
-      title={title || 'DOPEWARS.EXE'} 
+    <DesktopWindow
+      title={title || 'DOPEWARS.EXE'}
       titleChildren={navbar}
       width={width}
       height={height}

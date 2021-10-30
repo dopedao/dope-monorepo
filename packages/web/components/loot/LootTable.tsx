@@ -75,7 +75,7 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
 
   return (
     <PanelContainer
-      className={ className }
+      className={className}
       css={css`
         tfoot th {
           // Screen > Tablet display items side by side
@@ -142,27 +142,36 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
         </div>
         <div
           css={css`
-            border-top: 2px solid rgb(0, 0, 0);
-            height: 44px;
-            padding: 10px 16px;
-            text-align: center;
-            vertical-align: middle;
-            text-transform: uppercase;
-            font-weight: 600;
-            font-size: 0.9em;
+            position: sticky;
+            bottom: 0;
+            cursor: pointer;
+            background: rgb(222, 222, 221);
           `}
         >
-          {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
-          <span
-            className="separator"
+          <div
             css={css`
-              padding: 8px;
-              color: rgb(168, 169, 174);
+              border-top: 2px solid rgb(0, 0, 0);
+              height: 44px;
+              padding: 10px 16px;
+              text-align: center;
+              vertical-align: middle;
+              text-transform: uppercase;
+              font-weight: 600;
+              font-size: 0.9em;
             `}
           >
-            /
-          </span>
-          {formattedUnclaimedPaper()} Unclaimed $PAPER
+            {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
+            <span
+              className="separator"
+              css={css`
+                padding: 8px;
+                color: rgb(168, 169, 174);
+              `}
+            >
+              /
+            </span>
+            {formattedUnclaimedPaper()} Unclaimed $PAPER
+          </div>
         </div>
       </div>
     </PanelContainer>

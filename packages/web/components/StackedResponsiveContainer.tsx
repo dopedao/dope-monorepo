@@ -7,7 +7,7 @@ const StackedResponsiveContainer = styled.div`
   display: block;
   & > div {
     margin-bottom: 16px;
-  }  
+  }
 
   // Screen > Tablet display items side by side via FlexBox
   ${media.tablet`

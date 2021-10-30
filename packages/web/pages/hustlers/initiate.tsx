@@ -12,21 +12,20 @@ const title = 'Initiate New Hustler';
 
 export default function Initiate() {
   return (
-    <AppWindow requiresWalletConnection={true} scrollable={ true }>
+    <AppWindow requiresWalletConnection={true} scrollable={true}>
       <Head title={title} />
       <StackedResponsiveContainer>
-        
         <InitiationInfo />
 
-        <PanelContainer css={css`min-height:500px;`}>
+        <PanelContainer
+          css={css`
+            min-height: 500px;
+          `}
+        >
           <PanelTitleBar>Hustler</PanelTitleBar>
-          <Image 
-            src="/images/hustler/Man_24.png"
-            objectFit="cover"
-          />
+          <Image src="/images/hustler/Man_24.png" objectFit="cover" />
           <InitiationFooter />
         </PanelContainer>
-
       </StackedResponsiveContainer>
     </AppWindow>
   );

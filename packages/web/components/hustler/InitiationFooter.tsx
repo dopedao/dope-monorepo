@@ -75,7 +75,7 @@ const CountdownWrapper = styled.div`
   font-size: 2.5em;
   padding: 8px;
   span.dots {
-    color: #A8A9AE;
+    color: #a8a9ae;
   }
 `;
 
@@ -89,15 +89,16 @@ interface CountdownRenderProps {
 
 const countSeparator = (sep: string) => {
   return <span className="dots">{sep}</span>;
-}
+};
 
-const countdownRenderer = (
-  { days, hours, minutes, seconds, completed }: 
-  CountdownRenderProps
-)  => {
+const countdownRenderer = ({ days, hours, minutes, seconds, completed }: CountdownRenderProps) => {
   // Custom Countdown render for style points
   return (
-    <PanelFooter css={css`height:auto;`}>
+    <PanelFooter
+      css={css`
+        height: auto;
+      `}
+    >
       <CountdownWrapper>
         {zeroPad(days)}
         {countSeparator('D')}
@@ -114,16 +115,16 @@ const countdownRenderer = (
 
 const InitiationFooter = () => {
   const hustlerMintTime = new Date(2021, 10, 1, 12);
-  const currentTime = new Date();;
+  const currentTime = new Date();
 
   const { chainId } = useWeb3React();
-  const onTestNetOrAfterLaunch = (chainId == 4) || (currentTime >= hustlerMintTime);
+  const onTestNetOrAfterLaunch = chainId == 4 || currentTime >= hustlerMintTime;
 
   if (onTestNetOrAfterLaunch) {
     return <InitiationFooterDopeContent />;
   } else {
-    return <Countdown date={hustlerMintTime} renderer={countdownRenderer} />
+    return <Countdown date={hustlerMintTime} renderer={countdownRenderer} />;
   }
-}
+};
 
 export default InitiationFooter;
