@@ -3,13 +3,14 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
-import { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
-import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
-import { ERC1155Receiver } from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
+import { IERC20 } from '../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import { ERC1155 } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol';
+import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
+import { ERC1155Receiver } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
 import { BitMask } from './BitMask.sol';
 import { BodyParts, HustlerMetadata } from './HustlerMetadata.sol';
+import { IEnforcer } from './interfaces/IHustler.sol';
 
 library Errors {
     string constant IsNotSwapMeet = 'snsm';
@@ -20,6 +21,7 @@ library Errors {
     string constant NotRightETH = 'ngmi';
     string constant NoMore = 'nomo';
     string constant NotOG = 'notog';
+    string constant NotTime = 'wait';
 }
 
 /// @title Hustlers
@@ -27,11 +29,17 @@ library Errors {
 /// @notice Hustlers are avatars in the dope wars metaverse.
 contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
+    IEnforcer private enforcer;
     address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
     address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
     address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
 
     IERC20 immutable paper;
+
+    uint256 public release;
+
+    event AddRles(uint8 part, uint256 len);
+    event MetadataUpdate(uint256 id);
 
     // First 500 are reserved for OG Hustlers.
     uint256 internal ogs = 0;
@@ -53,7 +61,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     /// @notice ERC1155 callback which will add an item to the hustlers inventory.
     function onERC1155Received(
-        address,
+        address operator,
         address from,
         uint256 id,
         uint256 value,
@@ -61,6 +69,10 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     ) public override returns (bytes4) {
         // only supports callback from the SwapMeet contract
         require(_msgSender() == address(swapmeet), Errors.IsNotSwapMeet);
+
+        if (address(enforcer) != address(0)) {
+            enforcer.onERC1155Received(operator, from, id, value, data);
+        }
 
         // Callers should encode the equip signature to explicity
         // indicate an encoded hustler id.
@@ -91,6 +103,10 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     ) public override returns (bytes4) {
         // only supports callback from the SwapMeet contract
         require(_msgSender() == address(swapmeet), Errors.IsNotSwapMeet);
+
+        if (address(enforcer) != address(0)) {
+            enforcer.onERC1155BatchReceived(operator, from, ids, values, data);
+        }
 
         // Callers should encode the equip signature to explicity
         // indicate an encoded hustler id.
@@ -176,6 +192,8 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     }
 
     function mint(bytes memory data) public {
+        require(release != 0 && release < block.timestamp, Errors.NotTime);
+
         uint256 id = hustlers;
         metadata[hustlers].age = block.timestamp;
         hustlers += 1;
@@ -193,14 +211,14 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         bytes2 mask,
         bytes memory data
     ) external payable {
+        require(release != 0 && release < block.timestamp, Errors.NotTime);
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
 
         uint256 id = ogs;
-        ogs += 1;
-
         metadata[id].age = block.timestamp;
         setMeta(id, name, color, background, options, viewbox, body, mask);
+        ogs += 1;
 
         _mint(_msgSender(), id, 1, data);
 
@@ -208,7 +226,13 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         swapmeet.open(tokenId, address(this), abi.encode(equip, id));
     }
 
-    function unequip(uint256 hustlerId, uint8[] calldata slots) public onlyHustler(hustlerId) {
+    function unequip(uint256 hustlerId, uint8[] calldata slots) public {
+        require(balanceOf(_msgSender(), hustlerId) == 1 || _msgSender() == address(enforcer), Errors.IsHolder);
+
+        if (address(enforcer) != address(0)) {
+            enforcer.onUnequip(hustlerId, slots);
+        }
+
         uint256[] memory ids = new uint256[](slots.length);
         uint256[] memory amounts = new uint256[](slots.length);
         bytes2 mask = metadata[hustlerId].mask;
@@ -266,18 +290,22 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
         for (uint8 i = 0; i < 4; i++) {
             if (BitMask.get(mask, i + 4)) {
-                require(!(i == BodyParts.BODY && body[i] % 5 == 0) || hustlerId < 500, Errors.NotOG);
+                require(!(i == BodyParts.BODY && (body[i] + 1) % 6 == 0) || hustlerId < 500, Errors.NotOG);
                 metadata[hustlerId].body[i] = body[i];
             }
         }
 
         metadata[hustlerId].options = options;
+
+        emit MetadataUpdate(hustlerId);
     }
 
     function addRles(uint8 part, bytes[] calldata _rles) public onlyOwner {
         for (uint256 i = 0; i < _rles.length; i++) {
             rles[part].push(_rles[i]);
         }
+
+        emit AddRles(part, _rles.length);
     }
 
     function withdraw() public {
@@ -287,6 +315,37 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         payable(tarrencellc).transfer(address(this).balance / 2);
         // Remainder
         payable(subimagellc).transfer(address(this).balance);
+    }
+
+    function setRelease(uint256 timestamp) external onlyOwner {
+        release = timestamp;
+    }
+
+    function setEnforcer(address enforcer_) external onlyOwner {
+        enforcer = IEnforcer(enforcer_);
+    }
+
+    function _beforeTokenTransfer(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) internal override {
+        if (address(enforcer) != address(0)) {
+            bool reset = enforcer.beforeTokenTransfer(operator, from, to, ids, amounts, data);
+
+            if (!reset) {
+                return;
+            }
+        }
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            if (ids[i] >= 500) {
+                metadata[ids[i]].age = block.timestamp;
+            }
+        }
     }
 
     modifier onlyHustler(uint256 id) {

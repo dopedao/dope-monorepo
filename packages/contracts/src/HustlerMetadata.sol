@@ -47,7 +47,7 @@ contract HustlerMetadata {
 
     string private constant _name = 'Hustlers';
     string private constant _symbol = 'HUSTLERS';
-    string private constant description = 'Hustle Hard';
+    string private constant description = 'Hustle Hard.';
     string[14] private traitTypes = [
         'Class',
         'Sex',
@@ -69,8 +69,8 @@ contract HustlerMetadata {
     Components internal immutable components;
     uint256 private immutable deployedAt = block.timestamp;
 
-    bytes private constant shadow = hex'0036283818022201000d22050009220200';
-    bytes private constant drugShadow = hex'00362f37290622';
+    bytes private constant shadow = hex'0036283818022b01000d2b0500092b0200';
+    bytes private constant drugShadow = hex'00362f3729062b';
     string[2] genders = ['Male', 'Female'];
 
     // Body part rles
@@ -101,6 +101,7 @@ contract HustlerMetadata {
     function tokenURI(uint256 hustlerId) public view returns (string memory) {
         MetadataBuilder.Params memory p;
         p.name = metadata[hustlerId].name;
+        p.description = description;
 
         p.background = metadata[hustlerId].background;
         p.color = metadata[hustlerId].color;
@@ -127,6 +128,26 @@ contract HustlerMetadata {
         return MetadataBuilder.tokenURI(p, swapmeet);
     }
 
+    function render(
+        string calldata title,
+        string calldata subtitle,
+        uint8 resolution,
+        bytes4 background,
+        bytes4 color,
+        uint8[4] calldata viewbox,
+        bytes[] calldata parts
+    ) external view returns (string memory) {
+        MetadataBuilder.Params memory p;
+        p.name = subtitle;
+        p.text = title;
+        p.background = background;
+        p.color = color;
+        p.viewbox = viewbox;
+        p.parts = parts;
+        p.resolution = resolution;
+        return MetadataBuilder.tokenURI(p, swapmeet);
+    }
+
     function hustlerParts(uint256 hustlerId) public view returns (bytes[] memory) {
         bytes[] memory parts = new bytes[](15);
         // Gender index corresponds to rle index
@@ -135,20 +156,24 @@ contract HustlerMetadata {
         parts[3] = rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]];
         parts[4] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
 
-        if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {}
+        uint8[10] memory order = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {
+            order = metadata[hustlerId].order;
+        }
 
         for (uint8 i = 0; i < 10; i++) {
-            if (i == ComponentTypes.VEHICLE) {
+            uint8 j = order[i];
+            if (j == ComponentTypes.VEHICLE) {
                 continue;
             }
 
-            if (BitMask.get(metadata[hustlerId].mask, i)) {
-                parts[i + 5] = swapmeet.tokenRle(
-                    metadata[hustlerId].slots[i],
+            if (BitMask.get(metadata[hustlerId].mask, j)) {
+                parts[j + 5] = swapmeet.tokenRle(
+                    metadata[hustlerId].slots[j],
                     metadata[hustlerId].body[BodyParts.GENDER]
                 );
 
-                if (i == ComponentTypes.DRUGS) {
+                if (j == ComponentTypes.DRUGS) {
                     parts[1] = drugShadow;
                 }
             }
@@ -250,6 +275,10 @@ contract HustlerMetadata {
         traits[13] = abi.encode(DisplayTypes.RANKING, traitTypes[13], abi.encode(respect));
 
         return traits;
+    }
+
+    function bodyRle(uint8 part, uint256 idx) external view returns (bytes memory) {
+        return rles[part][idx];
     }
 
     function slot(uint256 id) internal pure returns (uint8) {

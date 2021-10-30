@@ -3,10 +3,10 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
-import { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import { IERC721 } from '@openzeppelin/contracts/token/ERC721/IERC721.sol';
-import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
-import { Ownable } from '@openzeppelin/contracts/access/Ownable.sol';
+import { IERC20 } from '../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import { IERC721 } from '../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol';
+import { ERC1155 } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol';
+import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
 
 import { ComponentTypes } from './Components.sol';
 import { Gender, SwapMeetMetadata } from './SwapMeetMetadata.sol';
@@ -31,7 +31,9 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
 
     mapping(uint256 => bool) private opened;
 
-    // No need for a URI since we're doing everything onchain
+    event Opened(uint256[] ids);
+    event SetRle(uint256 id);
+
     constructor(
         address _components,
         address _dope,
@@ -107,9 +109,11 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
 
         paper.transferFrom(msg.sender, timelock, cost() * ids.length);
         _mintBatch(to, parts, amounts, data);
+
+        emit Opened(ids);
     }
 
-    function itemIds(uint256 tokenId) private view returns (uint256[] memory) {
+    function itemIds(uint256 tokenId) public view returns (uint256[] memory) {
         uint256[] memory ids = new uint256[](9);
         uint8[5][9] memory items = sc.items(tokenId);
         for (uint8 i = 0; i < 9; i++) {
@@ -163,10 +167,6 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         return opened[id];
     }
 
-    // function burn(uint256 id, uint256 amount) external {
-    //     _burn(msg.sender, id, amount);
-    // }
-
     function setPalette(uint8 id, bytes4[] memory palette) external onlyOwner {
         palettes[id] = palette;
     }
@@ -178,6 +178,7 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
     ) public onlyOwner {
         rles[id][Gender.MALE] = male;
         rles[id][Gender.FEMALE] = female;
+        emit SetRle(id);
     }
 
     function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) external onlyOwner {

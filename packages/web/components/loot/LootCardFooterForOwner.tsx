@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { BigNumber, constants } from 'ethers';
 import { NETWORK } from '../../src/constants';
 import {
+  Paper,
   Paper__factory,
   SwapMeet__factory,
   Hustler__factory,
@@ -65,32 +66,34 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   );
 
   useEffect(() => {
-    if (paper) {
-      paper.balanceOf(account).then(setHasEnoughPaper);
+    if (account && paper) {
+      paper
+        .balanceOf(account)
+        .then(balance => setHasEnoughPaper(balance.gt('12500000000000000000000')));
     }
-  }, [paper]);
+  }, [account, paper]);
 
   useEffect(() => {
-    if (dope) {
+    if (account && dope) {
       dope
         .isApprovedForAll(account, NETWORK[chainId as 1 | 4].contracts.hustlers)
         .then(setIsDopeApproved);
     }
-  }, [dope]);
+  }, [account, dope]);
 
   useEffect(() => {
-    if (paper) {
+    if (account && paper) {
       paper
         .allowance(account, NETWORK[chainId as 1 | 4].contracts.hustlers)
         .then((allowance: BigNumber) =>
           setIsPaperApproved(allowance.gte('12500000000000000000000')),
         );
     }
-  }, [paper]);
+  }, [account, paper]);
 
   return (
     <div>
-      {chainId == 4 && (
+      {chainId == 4 && swapmeet && paper && account && (
         <>
           {/* <Button
             disabled={isPaperApproved}
@@ -128,27 +131,27 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
             Mint Original Gangsta
           </Button> */}
           <Link href="/hustlers/initiate">
-            <Button variant="primary">
-              Initiate Hustler
-            </Button>
+            <Button variant="primary">Initiate Hustler</Button>
           </Link>
           <Button
             onClick={async () => {
-              await swapmeet.open(bag.id);
+              await swapmeet.open(bag.id, account, '');
             }}
           >
             Unbundle
           </Button>
         </>
       )}
-      <Button
-        disabled={bag.claimed}
-        onClick={async () => {
-          await paper.claimById(bag.id);
-        }}
-      >
-        Claim Paper
-      </Button>
+      {paper && (
+        <Button
+          disabled={bag.claimed}
+          onClick={async () => {
+            await paper.claimById(bag.id);
+          }}
+        >
+          Claim Paper
+        </Button>
+      )}
       <div
         css={css`
           float: right;
