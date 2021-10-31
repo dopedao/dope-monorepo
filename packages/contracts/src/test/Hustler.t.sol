@@ -79,34 +79,34 @@ contract Hustlers is HustlerTest {
         owner.addRles(RleParts.FEMALE_BODY, bodies);
     }
 
-    function testCanMintAll() public {
-        alice.setDopeApprovalForAll(address(hustler), true);
+    // function testCanMintAll() public {
+    //     alice.setDopeApprovalForAll(address(hustler), true);
 
-        string memory name = 'gangsta';
-        bytes4 background = hex'000000ff';
-        bytes4 color = hex'fafafaff';
+    //     string memory name = 'gangsta';
+    //     bytes4 background = hex'000000ff';
+    //     bytes4 color = hex'fafafaff';
 
-        uint8[4] memory body;
-        uint8[4] memory viewbox;
+    //     uint8[4] memory body;
+    //     uint8[4] memory viewbox;
 
-        for (uint256 i = 1; i < 8001; i++) {
-            if (i == BAG || i == OTHER_BAG) {
-                alice.mint();
-                continue;
-            }
+    //     for (uint256 i = 1; i < 8001; i++) {
+    //         if (i == BAG || i == OTHER_BAG) {
+    //             alice.mint();
+    //             continue;
+    //         }
 
-            alice.claim(i);
-            alice.claimPaper(i);
+    //         alice.claim(i);
+    //         alice.claimPaper(i);
 
-            uint256 hustlerId = 499 + i;
+    //         uint256 hustlerId = 499 + i;
 
-            alice.mintFromDope(i, name, color, background, hex'', viewbox, body, hex'000f');
-            ItemIds memory ids = swapmeet.ids(i);
-            checkOwns1155s(ids, address(hustler));
-            checkIsEquipped(ids, hustlerId);
-            hustler.tokenURI(hustlerId);
-        }
-    }
+    //         alice.mintFromDope(i, name, color, background, hex'', viewbox, body, hex'000f');
+    //         ItemIds memory ids = swapmeet.ids(i);
+    //         checkOwns1155s(ids, address(hustler));
+    //         checkIsEquipped(ids, hustlerId);
+    //         hustler.tokenURI(hustlerId);
+    //     }
+    // }
 
     function testCanMintFromDope() public {
         alice.setDopeApprovalForAll(address(hustler), true);
