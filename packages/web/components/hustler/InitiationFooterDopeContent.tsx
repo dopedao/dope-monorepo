@@ -1,14 +1,14 @@
-import styled from '@emotion/styled';
 import { Button } from '@chakra-ui/button';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
+import { HustlerIdToInitiate } from '../../src/HustlerInitiation';
+import { useReactiveVar } from '@apollo/client';
 import { Select } from '@chakra-ui/react';
 import { useWalletQuery } from '../../src/generated/graphql';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import PanelFooter from '../PanelFooter';
-
-const hasDopeNft = false;
+import styled from '@emotion/styled';
 
 const NoDopeMessage = () => {
   const caution = (
@@ -55,12 +55,12 @@ const InitiationFooterDopeContent = () => {
   const { account } = useWeb3React();
   if (!account) return <NoDopeMessage />;
 
-  const [dopeToInitiate, setDopeToInitiate] = useState<string>('');
+  const visibleHustlerId = useReactiveVar(HustlerIdToInitiate);
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    setDopeToInitiate(value);
-    // statusCallback(value);
+    console.log(value);
+    HustlerIdToInitiate(value);
   };
 
   const { data, loading } = useWalletQuery({
@@ -79,10 +79,14 @@ const InitiationFooterDopeContent = () => {
     return (
       <div>
         <SubPanelForm>
-          <Select size="sm" variant="filterBar" onChange={handleDopeChange} value={dopeToInitiate}>
+          <Select size="sm" 
+            variant="filterBar" 
+            onChange={handleDopeChange} 
+            value={visibleHustlerId}
+          >
             <option disabled>YOUR DOPE</option>
             {bundledDope.map(dopeNft => (
-              <option>DOPE NFT #{dopeNft.id}</option>
+              <option value={dopeNft.id}>DOPE NFT #{dopeNft.id}</option>
             ))}
           </Select>
           <div
