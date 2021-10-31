@@ -1,16 +1,21 @@
 import { css } from '@emotion/react';
+import { useReactiveVar } from '@apollo/client';
+import { HustlerIdToInitiate } from '../../src/HustlerInitiation';
 import AppWindow from '../../components/AppWindow';
-import { Image } from '@chakra-ui/image';
 import Head from '../../components/Head';
-import StackedResponsiveContainer from '../../components/StackedResponsiveContainer';
+import InitiationFooter from '../../components/hustler/InitiationFooter';
+import InitiationInfo from '../../components/hustler/InitiationInfo';
 import PanelContainer from '../../components/PanelContainer';
 import PanelTitleBar from '../../components/PanelTitleBar';
-import InitiationInfo from '../../components/hustler/InitiationInfo';
-import InitiationFooter from '../../components/hustler/InitiationFooter';
+import RenderFromLootId from '../../components/hustler/RenderFromLootId';
+import StackedResponsiveContainer from '../../components/StackedResponsiveContainer';
 
 const title = 'Initiate New Hustler';
 
 export default function Initiate() {
+
+  const visibleHustlerId = useReactiveVar(HustlerIdToInitiate);
+
   return (
     <AppWindow requiresWalletConnection={true} scrollable={true}>
       <Head title={title} />
@@ -20,10 +25,13 @@ export default function Initiate() {
         <PanelContainer
           css={css`
             min-height: 500px;
+            // This bg color will have to change once we can configure it
+            // It's the default right now for testnet renders.
+            background-color: #B6CCC3;
           `}
         >
           <PanelTitleBar>Hustler</PanelTitleBar>
-          <Image src="/images/hustler/Man_24.png" objectFit="cover" />
+          <RenderFromLootId id={visibleHustlerId} />
           <InitiationFooter />
         </PanelContainer>
       </StackedResponsiveContainer>

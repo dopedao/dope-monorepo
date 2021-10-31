@@ -4,6 +4,9 @@ import { Select } from '@chakra-ui/react';
 import { ChangeEvent, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { zeroPad } from '../../src/utils';
+import { HustlerIdToInitiate } from '../../src/HustlerInitiation';
+import { getRandomNumber } from '../../src/utils';
+import { useEffect } from 'react';
 import PanelFooter from '../PanelFooter';
 import styled from '@emotion/styled';
 // https://github.com/ndresx/react-countdown
@@ -114,7 +117,7 @@ const countdownRenderer = ({ days, hours, minutes, seconds, completed }: Countdo
 };
 
 const InitiationFooter = () => {
-  const hustlerMintTime = new Date(2021, 10, 1, 12);
+  const hustlerMintTime = new Date(2021, 10, 4, 12);
   const currentTime = new Date();
 
   const { chainId } = useWeb3React();
@@ -123,6 +126,13 @@ const InitiationFooter = () => {
   if (onTestNetOrAfterLaunch) {
     return <InitiationFooterDopeContent />;
   } else {
+    // Render random hustler as countdown approached
+    useEffect(() => {
+      const randomHustlerRender = setInterval(() => {
+        HustlerIdToInitiate(getRandomNumber(1,8000).toString());
+      }, 6000);
+      return () => clearInterval(randomHustlerRender);
+    });
     return <Countdown date={hustlerMintTime} renderer={countdownRenderer} />;
   }
 };

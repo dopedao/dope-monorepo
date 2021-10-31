@@ -4,6 +4,7 @@
 // that pulses to indicate a loading state.
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { getRandomNumber } from '../src/utils';
 
 const Container = styled.div`
   height: 100%;
@@ -41,12 +42,8 @@ const Container = styled.div`
   }
 `;
 
-const getRandomNumber = (min: number, max: number) => {
-  return Math.floor(Math.random() * max) + min;
-};
-
-const LoadingBlock = () => {
-  const randomRowLength = getRandomNumber(2, 20);
+const LoadingBlock = ({maxRows = 20}: {maxRows?: number}) => {
+  const randomRowLength = getRandomNumber(2, maxRows);
   const rows = [];
   for (let i = 0; i < randomRowLength; i++) {
     rows.push(

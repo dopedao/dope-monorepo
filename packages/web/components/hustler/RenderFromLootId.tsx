@@ -1,9 +1,11 @@
-import { SwapMeet__factory } from '@dopewars/contracts';
-import { useEffect, useMemo, useState } from 'react';
+import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber, providers } from 'ethers';
 import { NETWORK } from '../../src/constants';
-import RenderFromItemIds from '../../components/hustler/RenderFromItemIds';
+import { SwapMeet__factory } from '@dopewars/contracts';
+import { useEffect, useMemo, useState } from 'react';
+import { css } from '@emotion/react';
 import LoadingBlock from '../LoadingBlock';
+import RenderFromItemIds from '../../components/hustler/RenderFromItemIds';
 
 const RenderFromLootId = ({id}: {id: string}) => {
 
@@ -42,9 +44,13 @@ const RenderFromLootId = ({id}: {id: string}) => {
   }, [swapmeet, id]);
 
   if (itemIds) {
-    return <RenderFromItemIds itemIds={itemIds} />
+    return (
+      <AspectRatio ratio={1}>
+        <RenderFromItemIds itemIds={itemIds} />
+      </AspectRatio>
+    );
   } else {
-    return <LoadingBlock />;
+    return <div css={css`padding:16px;`}><LoadingBlock maxRows={10} /></div>;
   }
 };
 
