@@ -64,7 +64,7 @@ const TextBody = styled.div`
 const AboutContent = `
 # What is this?
 
-The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
+The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum and [StarkWare](https://starkware.co/) blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
 
 DOPE WARS is also an ongoing NFT art project and experiment in decentralized project governance using a [DAO](https://ethereum.org/en/dao/).
 
