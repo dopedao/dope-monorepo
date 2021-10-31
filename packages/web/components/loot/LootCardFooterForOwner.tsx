@@ -1,8 +1,10 @@
+import { useRouter } from 'next/router';
 import { Bag } from '../../src/generated/graphql';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { BigNumber, constants } from 'ethers';
 import { NETWORK } from '../../src/constants';
+import { HustlerIdToInitiate } from '../../src/HustlerInitiation';
 import {
   Paper,
   Paper__factory,
@@ -91,6 +93,14 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
     }
   }, [account, paper]);
 
+  const router = useRouter();
+  const initiateHustler = () => {
+    // Set reactive var to this loot ID, which will
+    // pre-populate it on the initiation screen.
+    HustlerIdToInitiate(bag.id);
+    router.push('/hustlers/initiate');
+  };
+
   return (
     <div>
       {chainId == 4 && swapmeet && paper && account && (
@@ -130,9 +140,12 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
           >
             Mint Original Gangsta
           </Button> */}
-          <Link href="/hustlers/initiate">
-            <Button variant="primary">Initiate Hustler</Button>
-          </Link>
+          <Button 
+            variant="primary"
+            onClick={() => initiateHustler()}
+          >
+            Initiate Hustler
+          </Button>
           <Button
             onClick={async () => {
               await swapmeet.open(bag.id, account, '');

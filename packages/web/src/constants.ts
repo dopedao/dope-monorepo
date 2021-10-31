@@ -1,3 +1,4 @@
+export const NUM_DOPE_TOKENS = 8000;
 export const NETWORK = {
   1: {
     contracts: {

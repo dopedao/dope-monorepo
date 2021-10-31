@@ -9,6 +9,7 @@ import styled from '@emotion/styled';
 // https://github.com/ndresx/react-countdown
 import Countdown from 'react-countdown';
 import InitiationFooterDopeContent from './InitiationFooterDopeContent';
+import { NUM_DOPE_TOKENS } from '../../src/constants';
 
 const CountdownWrapper = styled.div`
   text-align: center;
@@ -60,16 +61,26 @@ const InitiationFooter = () => {
   const { chainId } = useWeb3React();
   const onTestNetOrAfterLaunch = chainId == 4 || currentTime >= hustlerMintTime;
 
+  // Render random hustler as countdown approached
+  let randomHustlerRenderInterval: any;
+  useEffect(() => {
+    if (!onTestNetOrAfterLaunch) {
+      randomHustlerRenderInterval = setInterval(() => {
+        // Set random ID > NUM_DOPE_TOKENS
+        // because we use this as a check to see if it was set
+        // randomly or intentionally elsewhere in the code.
+        HustlerIdToInitiate(
+          getRandomNumber(NUM_DOPE_TOKENS+1,NUM_DOPE_TOKENS*2
+        ).toString());
+      }, 6000);
+    }
+    return () => clearInterval(randomHustlerRenderInterval);
+  });
+
   if (onTestNetOrAfterLaunch) {
+    clearInterval(randomHustlerRenderInterval);
     return <InitiationFooterDopeContent />;
   } else {
-    // Render random hustler as countdown approached
-    useEffect(() => {
-      const randomHustlerRender = setInterval(() => {
-        HustlerIdToInitiate(getRandomNumber(1,8000).toString());
-      }, 6000);
-      return () => clearInterval(randomHustlerRender);
-    });
     return <Countdown date={hustlerMintTime} renderer={countdownRenderer} />;
   }
 };
