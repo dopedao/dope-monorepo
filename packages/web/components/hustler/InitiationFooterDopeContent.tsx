@@ -2,9 +2,11 @@ import { Button } from '@chakra-ui/button';
 import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
 import { HustlerIdToInitiate } from '../../src/HustlerInitiation';
-import { useReactiveVar } from '@apollo/client';
+import { NUM_DOPE_TOKENS } from '../../src/constants';
+import { PickedBag } from '../../src/DopeDatabase';
 import { Select } from '@chakra-ui/react';
-import { useWalletQuery } from '../../src/generated/graphql';
+import { useReactiveVar } from '@apollo/client';
+import { useWalletQuery, WalletQuery } from '../../src/generated/graphql';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import PanelFooter from '../PanelFooter';
@@ -63,8 +65,27 @@ const InitiationFooterDopeContent = () => {
     HustlerIdToInitiate(value);
   };
 
+  const getBundledDopeFromData = (data: WalletQuery) => {
+    let bundledDope = [] as PickedBag[];
+    if (data?.wallet?.bags && data.wallet.bags.length > 0) {
+      bundledDope = data.wallet.bags.filter((dopeNft: PickedBag) => dopeNft.bundled);    
+    }
+    return bundledDope;
+  }
+
   const { data, loading } = useWalletQuery({
     variables: { id: account.toLowerCase() },
+    // Set first item as selected when it comes back from
+    // the contract query.
+    onCompleted: (data) => {
+      const bundledDope = getBundledDopeFromData(data);
+      const randomHustlerSelected = (parseInt(visibleHustlerId) > NUM_DOPE_TOKENS);
+      if (bundledDope.length > 0 && randomHustlerSelected) {
+        const firstDopeId = bundledDope[0].id;
+        console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
+        HustlerIdToInitiate(firstDopeId);
+      }
+    }
   });
 
   if (loading) {
@@ -72,10 +93,9 @@ const InitiationFooterDopeContent = () => {
   } else if (!data?.wallet?.bags || data.wallet.bags.length === 0) {
     return <NoDopeMessage />;
   } else {
-    const bundledDope = data.wallet.bags.filter(dopeNft => dopeNft.bundled);
     // Prevent controls from showing if no qualified DOPE
+    const bundledDope = getBundledDopeFromData(data);
     if (bundledDope.length == 0) return <NoDopeMessage />;
-
     return (
       <div>
         <SubPanelForm>
@@ -86,7 +106,12 @@ const InitiationFooterDopeContent = () => {
           >
             <option disabled>YOUR DOPE</option>
             {bundledDope.map(dopeNft => (
-              <option value={dopeNft.id}>DOPE NFT #{dopeNft.id}</option>
+              <option 
+                key={dopeNft.id}
+                value={dopeNft.id}
+              >
+                DOPE NFT #{dopeNft.id}
+              </option>
             ))}
           </Select>
           <div

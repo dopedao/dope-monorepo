@@ -11,67 +11,8 @@ import PanelFooter from '../PanelFooter';
 import styled from '@emotion/styled';
 // https://github.com/ndresx/react-countdown
 import Countdown from 'react-countdown';
-import Link from 'next/link';
-
-const hasDopeNft = false;
-
-const NoDopeMessage = () => {
-  return (
-    <PanelFooter css={css`height:auto;`}>
-      <div css={css`text-align:center;padding:16px;`}>
-        <p>** NO DOPE IN WALLET **</p>
-        <Link href="/swap-meet?status=For+Sale&sort_by=Most+Affordable">
-          <Button variant='primary'>Shop for DOPE NFTs</Button>
-        </Link>
-      </div>
-    </PanelFooter>
-  );
-}
-
-const SubPanelForm = styled.div`
-  border-top: 1px solid black;
-  background-color: #ffffff;
-  select {
-    border-bottom: 1px solid #DEDEDD;
-  }
-`;
-
-const MintHustlerControls = () => {
-  const [dopeToInitiate, setDopeToInitiate] = useState<string>('');
-
-  const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setDopeToInitiate(value);
-    // statusCallback(value);
-  };
-
-  return <div>
-    <SubPanelForm>
-      <Select size="sm" variant="filterBar" onChange={handleDopeChange} value={dopeToInitiate}>
-        <option disabled>UNBUNDLED DOPE</option>
-        {/* {statusKeys.map(value => (
-          <option>{value}</option>
-        ))} */}
-      </Select>
-      <div css={css`
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 12px;
-      `}>
-        <Link href="/hustler/customize">
-          <a className="primary">Customize Appearance</a>
-        </Link>
-        <Link href="/randomize">
-          <a className="primary">Randomize</a>
-        </Link>
-      </div>
-    </SubPanelForm>
-    <PanelFooter>
-      <div></div>
-      <Button variant='primary'>Continue Initiation</Button>
-    </PanelFooter>
-  </div>
-}
+import InitiationFooterDopeContent from './InitiationFooterDopeContent';
+import { NUM_DOPE_TOKENS } from '../../src/constants';
 
 const CountdownWrapper = styled.div`
   text-align: center;
@@ -123,16 +64,26 @@ const InitiationFooter = () => {
   const { chainId } = useWeb3React();
   const onTestNetOrAfterLaunch = chainId == 4 || currentTime >= hustlerMintTime;
 
+  // Render random hustler as countdown approached
+  let randomHustlerRenderInterval: any;
+  useEffect(() => {
+    if (!onTestNetOrAfterLaunch) {
+      randomHustlerRenderInterval = setInterval(() => {
+        // Set random ID > NUM_DOPE_TOKENS
+        // because we use this as a check to see if it was set
+        // randomly or intentionally elsewhere in the code.
+        HustlerIdToInitiate(
+          getRandomNumber(NUM_DOPE_TOKENS+1,NUM_DOPE_TOKENS*2
+        ).toString());
+      }, 6000);
+    }
+    return () => clearInterval(randomHustlerRenderInterval);
+  });
+
   if (onTestNetOrAfterLaunch) {
+    clearInterval(randomHustlerRenderInterval);
     return <InitiationFooterDopeContent />;
   } else {
-    // Render random hustler as countdown approached
-    useEffect(() => {
-      const randomHustlerRender = setInterval(() => {
-        HustlerIdToInitiate(getRandomNumber(1,8000).toString());
-      }, 6000);
-      return () => clearInterval(randomHustlerRender);
-    });
     return <Countdown date={hustlerMintTime} renderer={countdownRenderer} />;
   }
 };
