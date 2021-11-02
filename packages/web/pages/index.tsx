@@ -6,10 +6,12 @@ const IndexWrapper = styled(PageWrapper)`
   max-width: var(--content-width-xl);
 `;
 
-export default () => {
+const index = () => {
   return (
     <IndexWrapper>
       <Head />
     </IndexWrapper>
   );
 };
+
+export default index;
