@@ -157,7 +157,7 @@ contract HustlerMetadata {
         parts[3] = rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]];
         parts[4] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
 
-        uint8[10] memory order = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        uint8[10] memory order = [2, 6, 8, 5, 1, 3, 4, 7, 0, 9];
         if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {
             order = metadata[hustlerId].order;
         }
