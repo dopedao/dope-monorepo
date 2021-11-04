@@ -4,7 +4,8 @@ import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { BigNumber, constants } from 'ethers';
 import { NETWORK } from '../../src/constants';
-import { HustlerIdToInitiate } from '../../src/HustlerInitiation';
+import { HustlerInitConfig } from '../../src/HustlerInitiation';
+import { useReactiveVar } from '@apollo/client';
 import {
   Paper,
   Paper__factory,
@@ -14,7 +15,6 @@ import {
 } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import Link from 'next/link';
 
 interface Props {
   bag: Pick<Bag, 'id' | 'claimed'>;
@@ -94,10 +94,10 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   }, [account, paper]);
 
   const router = useRouter();
+  const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const initiateHustler = () => {
-    // Set reactive var to this loot ID, which will
-    // pre-populate it on the initiation screen.
-    HustlerIdToInitiate(bag.id);
+    hustlerConfig.dope_id = bag.id;
+    HustlerInitConfig(hustlerConfig);
     router.push('/hustlers/initiate');
   };
 

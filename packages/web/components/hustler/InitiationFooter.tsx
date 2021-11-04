@@ -1,15 +1,13 @@
 import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
 import { zeroPad } from '../../src/utils';
-import { HustlerIdToInitiate } from '../../src/HustlerInitiation';
-import { getRandomNumber } from '../../src/utils';
+import { HustlerInitConfig, getRandomHustler } from '../../src/HustlerInitiation';
 import { useEffect } from 'react';
 import PanelFooter from '../PanelFooter';
 import styled from '@emotion/styled';
 // https://github.com/ndresx/react-countdown
 import Countdown from 'react-countdown';
 import InitiationFooterDopeContent from './InitiationFooterDopeContent';
-import { NUM_DOPE_TOKENS } from '../../src/constants';
 
 const CountdownWrapper = styled.div`
   text-align: center;
@@ -55,7 +53,7 @@ const countdownRenderer = ({ days, hours, minutes, seconds, completed }: Countdo
 };
 
 const InitiationFooter = () => {
-  const hustlerMintTime = new Date(2021, 10, 4, 12);
+  const hustlerMintTime = new Date(2021, 10, 11, 12);
   const currentTime = new Date();
 
   const { chainId } = useWeb3React();
@@ -66,12 +64,7 @@ const InitiationFooter = () => {
   useEffect(() => {
     if (!onTestNetOrAfterLaunch) {
       randomHustlerRenderInterval = setInterval(() => {
-        // Set random ID > NUM_DOPE_TOKENS
-        // because we use this as a check to see if it was set
-        // randomly or intentionally elsewhere in the code.
-        HustlerIdToInitiate(
-          getRandomNumber(NUM_DOPE_TOKENS+1,NUM_DOPE_TOKENS*2
-        ).toString());
+        HustlerInitConfig(getRandomHustler());
       }, 6000);
     }
     return () => clearInterval(randomHustlerRenderInterval);

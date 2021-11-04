@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { useReactiveVar } from '@apollo/client';
-import { HustlerIdToInitiate } from '../../src/HustlerInitiation';
+import { HustlerInitConfig } from '../../src/HustlerInitiation';
 import AppWindow from '../../components/AppWindow';
 import Head from '../../components/Head';
 import InitiationFooter from '../../components/hustler/InitiationFooter';
@@ -14,7 +14,7 @@ const title = 'Initiate New Hustler';
 
 export default function Initiate() {
 
-  const visibleHustlerId = useReactiveVar(HustlerIdToInitiate);
+  const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   return (
     <AppWindow requiresWalletConnection={true} scrollable={true}>
@@ -31,7 +31,7 @@ export default function Initiate() {
           `}
         >
           <PanelTitleBar>Hustler</PanelTitleBar>
-          <RenderFromLootId id={visibleHustlerId} />
+          <RenderFromLootId id={hustlerConfig.dope_id} />
           <InitiationFooter />
         </PanelContainer>
       </StackedResponsiveContainer>

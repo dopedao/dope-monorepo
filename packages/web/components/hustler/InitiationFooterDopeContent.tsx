@@ -1,7 +1,9 @@
 import { Button } from '@chakra-ui/button';
+import { Switch } from '@chakra-ui/switch';
+import { Spinner } from '@chakra-ui/spinner';
 import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
-import { HustlerIdToInitiate } from '../../src/HustlerInitiation';
+import { HustlerInitConfig } from '../../src/HustlerInitiation';
 import { NUM_DOPE_TOKENS } from '../../src/constants';
 import { PickedBag } from '../../src/DopeDatabase';
 import { Select } from '@chakra-ui/react';
@@ -53,17 +55,27 @@ const SubPanelForm = styled.div`
   }
 `;
 
+const SpinnerContainer = styled.div`
+  border: 0px;
+  .chakra-spinner {
+    margin: 0 .5em;
+  }
+`;
+
 const InitiationFooterDopeContent = () => {
   const { account } = useWeb3React();
   if (!account) return <NoDopeMessage />;
 
-  const visibleHustlerId = useReactiveVar(HustlerIdToInitiate);
+  const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    console.log(value);
-    HustlerIdToInitiate(value);
+    HustlerInitConfig({...hustlerConfig, dope_id: value});
   };
+
+  const handleOgSwitchChange = () => {
+    HustlerInitConfig({...hustlerConfig, mint_og: !hustlerConfig.mint_og});
+  }
 
   const getBundledDopeFromData = (data: WalletQuery) => {
     let bundledDope = [] as PickedBag[];
@@ -79,17 +91,22 @@ const InitiationFooterDopeContent = () => {
     // the contract query.
     onCompleted: (data) => {
       const bundledDope = getBundledDopeFromData(data);
-      const randomHustlerSelected = (parseInt(visibleHustlerId) > NUM_DOPE_TOKENS);
+      const randomHustlerSelected = (parseInt(hustlerConfig.dope_id) > NUM_DOPE_TOKENS);
       if (bundledDope.length > 0 && randomHustlerSelected) {
         const firstDopeId = bundledDope[0].id;
         console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
-        HustlerIdToInitiate(firstDopeId);
+        HustlerInitConfig({...hustlerConfig, dope_id: firstDopeId});
       }
     }
   });
 
   if (loading) {
-    return <PanelFooter>Loading…</PanelFooter>;
+    return <PanelFooter>
+      <SpinnerContainer>
+        <Spinner size="xs" />
+        Finding unbundled DOPE NFT loot in your wallet
+      </SpinnerContainer>
+    </PanelFooter>;
   } else if (!data?.wallet?.bags || data.wallet.bags.length === 0) {
     return <NoDopeMessage />;
   } else {
@@ -102,7 +119,7 @@ const InitiationFooterDopeContent = () => {
           <Select size="sm" 
             variant="filterBar" 
             onChange={handleDopeChange} 
-            value={visibleHustlerId}
+            value={hustlerConfig.dope_id}
           >
             <option disabled>YOUR DOPE</option>
             {bundledDope.map(dopeNft => (
@@ -130,7 +147,12 @@ const InitiationFooterDopeContent = () => {
           </div>
         </SubPanelForm>
         <PanelFooter>
-          <div></div>
+          <div>
+            <Switch 
+              isChecked={hustlerConfig.mint_og}
+              onChange={handleOgSwitchChange}
+            /> Initiate OG
+          </div>
           <Button variant="primary">Continue Initiation</Button>
         </PanelFooter>
       </div>
