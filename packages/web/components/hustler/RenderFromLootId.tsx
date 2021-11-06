@@ -19,7 +19,6 @@ interface HustlerRenderProps {
 const RenderFromLootId = ({id, sex, body, hair, facialHair}: HustlerRenderProps) => {
 
   const [itemIds, setItemIds] = useState<BigNumber[]>();
-  // const [bodyIds, setBodyIds] = useState<string[]>();
 
   const provider = useMemo(
     () =>
@@ -65,7 +64,16 @@ const RenderFromLootId = ({id, sex, body, hair, facialHair}: HustlerRenderProps)
       </AspectRatio>
     );
   } else {
-    return <div css={css`padding:16px;`}><LoadingBlock maxRows={10} /></div>;
+    return (
+      <div css={css`
+        padding:16px;
+        display: flex;
+        flex-align: center;
+        justify-content: center;
+      `}>
+        <LoadingBlock maxRows={10} />
+      </div>
+    );
   }
 };
 

@@ -2,9 +2,9 @@ import { BigNumber, providers } from 'ethers';
 import { css } from '@emotion/react';
 import { HustlerSex } from '../../src/HustlerInitiation';
 import { NETWORK } from '../../src/constants';
+import LoadingBlock from '../LoadingBlock';
 import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
-
 
 // then the 2nd arg is the index which corresponds to what they are in the image folders
 
@@ -24,6 +24,7 @@ const RenderFromItemIds = ({ itemIds, sex, body, hair, facialHair }: HustlerRend
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
   const [bodyRles, setBodyRles] = useState<string[]>([]);
+  const [hasRenderedFromChain, setHasRenderedFromChain] = useState(false);
 
   const provider = useMemo(
     () =>
@@ -73,12 +74,14 @@ const RenderFromItemIds = ({ itemIds, sex, body, hair, facialHair }: HustlerRend
 
   useEffect(() => {
     if (!swapmeet) return;
+    setHasRenderedFromChain(false);
     const sexIndex = (sex && sex == 'female') ? 1 : 0;
     Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(setItemRles);
   }, [itemIds, swapmeet, sex]);
 
   useEffect(() => {
     if (!hustlers) return;
+    setHasRenderedFromChain(false);
     const {bodyParams, hairParams, facialHairParams} = getBodyRleParams();
     const promises = [
       hustlers.bodyRle(...bodyParams), 
@@ -101,9 +104,12 @@ const RenderFromItemIds = ({ itemIds, sex, body, hair, facialHair }: HustlerRend
           meta = meta.replace(', "attributes":', '');
           const decoded = JSON.parse(meta);
           setJson(decoded as Metadata);
+          setHasRenderedFromChain(true);
         });
     }
   }, [hustlers, itemRles, bodyRles]);
+
+  if (hasRenderedFromChain === false) return <LoadingBlock />;
 
   return (
     <div
@@ -124,6 +130,7 @@ const RenderFromItemIds = ({ itemIds, sex, body, hair, facialHair }: HustlerRend
       )}
     </div>
   );
+
 };
 
 export default RenderFromItemIds;
