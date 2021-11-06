@@ -3,7 +3,7 @@ import { Switch } from '@chakra-ui/switch';
 import { Spinner } from '@chakra-ui/spinner';
 import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
-import { HustlerInitConfig, isHustlerRandom } from '../../src/HustlerInitiation';
+import { HustlerInitConfig, isHustlerRandom, getRandomHustler } from '../../src/HustlerInitiation';
 import { PickedBag } from '../../src/DopeDatabase';
 import { Select } from '@chakra-ui/react';
 import { useReactiveVar } from '@apollo/client';
@@ -69,11 +69,20 @@ const InitiationFooterDopeContent = () => {
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    HustlerInitConfig({...hustlerConfig, dope_id: value});
+    HustlerInitConfig({...hustlerConfig, dopeId: value});
   };
 
   const handleOgSwitchChange = () => {
-    HustlerInitConfig({...hustlerConfig, mint_og: !hustlerConfig.mint_og});
+    HustlerInitConfig({...hustlerConfig, mintOg: !hustlerConfig.mintOg});
+  }
+  
+  const randomizeAttributes = () => {
+    const randomHustler = getRandomHustler();
+    HustlerInitConfig({
+      ...randomHustler, 
+      mintOg: hustlerConfig.mintOg,  
+      dopeId: hustlerConfig.dopeId
+    });
   }
 
   const getBundledDopeFromData = (data: WalletQuery) => {
@@ -93,7 +102,7 @@ const InitiationFooterDopeContent = () => {
       if (bundledDope.length > 0 && isHustlerRandom()) {
         const firstDopeId = bundledDope[0].id;
         console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
-        HustlerInitConfig({...hustlerConfig, dope_id: firstDopeId});
+        HustlerInitConfig({...hustlerConfig, dopeId: firstDopeId});
       }
     }
   });
@@ -117,7 +126,7 @@ const InitiationFooterDopeContent = () => {
           <Select size="sm" 
             variant="filterBar" 
             onChange={handleDopeChange} 
-            value={hustlerConfig.dope_id}
+            value={hustlerConfig.dopeId}
           >
             <option disabled>YOUR DOPE</option>
             {bundledDope.map(dopeNft => (
@@ -139,15 +148,13 @@ const InitiationFooterDopeContent = () => {
             <Link href="/hustler/customize">
               <a className="primary">Customize Appearance</a>
             </Link>
-            <Link href="/randomize">
-              <a className="primary">Randomize</a>
-            </Link>
+            <a className="primary" onClick={() => randomizeAttributes()}>Randomize</a>
           </div>
         </SubPanelForm>
         <PanelFooter>
           <div>
             <Switch 
-              isChecked={hustlerConfig.mint_og}
+              isChecked={hustlerConfig.mintOg}
               onChange={handleOgSwitchChange}
             /> Initiate OG
           </div>

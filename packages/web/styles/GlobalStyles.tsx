@@ -152,6 +152,8 @@ export default function GlobalStyles() {
         }
         a {
           font-weight: 400;
+          cursor: pointer;
+          cursor: hand;
         }
         a.textLink,
         .markdownContainer a {

@@ -16,8 +16,8 @@ export const DEFAULT_BG_COLORS = [
 ];
 
 interface HustlerCustomization {
-  mint_og: boolean;
-  dope_id: string;
+  mintOg: boolean;
+  dopeId: string;
   sex: HustlerSex;
   body: number;
   hair: number;
@@ -36,18 +36,18 @@ interface HustlerCustomization {
 
 export const getRandomHustler = (): HustlerCustomization => {
   return {
-    mint_og: false,
-    dope_id: getRandomHustlerId(),
+    mintOg: false,
+    dopeId: getRandomHustlerId(),
     sex: HUSTLER_SEXES[getRandomNumber(0,1)] as HustlerSex,
     body: getRandomNumber(0,5),
     hair: getRandomNumber(0,18),
     facialHair: getRandomNumber(0,12),
-    bgColor: DEFAULT_BG_COLORS[getRandomNumber(0,DEFAULT_BG_COLORS.length)]
+    bgColor: DEFAULT_BG_COLORS[getRandomNumber(0,DEFAULT_BG_COLORS.length-1)]
   };
 };
 
 export const HustlerInitConfig = makeVar(getRandomHustler());
 
 export const isHustlerRandom = (): boolean => {
-  return parseInt(HustlerInitConfig().dope_id) > NUM_DOPE_TOKENS;
+  return parseInt(HustlerInitConfig().dopeId) > NUM_DOPE_TOKENS;
 }

@@ -32,7 +32,7 @@ export default function Initiate() {
         >
           <PanelTitleBar>Hustler</PanelTitleBar>
           <RenderFromLootId 
-            id={hustlerConfig.dope_id} 
+            id={hustlerConfig.dopeId} 
             sex={hustlerConfig.sex}
             body={hustlerConfig.body}
             hair={hustlerConfig.hair}

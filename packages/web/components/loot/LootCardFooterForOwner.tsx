@@ -96,7 +96,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   const router = useRouter();
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const initiateHustler = () => {
-    hustlerConfig.dope_id = bag.id;
+    hustlerConfig.dopeId = bag.id;
     HustlerInitConfig(hustlerConfig);
     router.push('/hustlers/initiate');
   };
