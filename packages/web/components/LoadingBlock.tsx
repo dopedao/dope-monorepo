@@ -10,7 +10,7 @@ const Container = styled.div`
   height: 100%;
   flex-direction: column;
   & > div {
-    background-color: white;
+    background-color: #000;
     opacity: 0.1;
     height: 32px;
     margin-bottom: 8px;

@@ -27,7 +27,7 @@ export default function Initiate() {
             min-height: 500px;
             // This bg color will have to change once we can configure it
             // It's the default right now for testnet renders.
-            background-color: #B6CCC3;
+            background-color: ${hustlerConfig.bgColor};
           `}
         >
           <PanelTitleBar>Hustler</PanelTitleBar>
@@ -37,6 +37,7 @@ export default function Initiate() {
             body={hustlerConfig.body}
             hair={hustlerConfig.hair}
             facialHair={hustlerConfig.facialHair}       
+            bgColor={hustlerConfig.bgColor}
           />
           <InitiationFooter />
         </PanelContainer>

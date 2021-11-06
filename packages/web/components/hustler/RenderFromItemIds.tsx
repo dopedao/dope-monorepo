@@ -1,10 +1,11 @@
 import { BigNumber, providers } from 'ethers';
 import { css } from '@emotion/react';
-import { HustlerSex } from '../../src/HustlerInitiation';
+import { HustlerSex, DEFAULT_BG_COLORS } from '../../src/HustlerInitiation';
 import { NETWORK } from '../../src/constants';
 import LoadingBlock from '../LoadingBlock';
 import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
+import { hexColorToBase16 } from '../../src/utils';
 
 // then the 2nd arg is the index which corresponds to what they are in the image folders
 
@@ -18,9 +19,10 @@ interface HustlerRenderProps {
   body?: number;
   hair?: number;
   facialHair?: number;
+  bgColor?: string;
 }
 
-const RenderFromItemIds = ({ itemIds, sex, body, hair, facialHair }: HustlerRenderProps) => {
+const RenderFromItemIds = ({ itemIds, sex, body, hair, facialHair, bgColor = DEFAULT_BG_COLORS[0] }: HustlerRenderProps) => {
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
   const [bodyRles, setBodyRles] = useState<string[]>([]);
@@ -97,7 +99,7 @@ const RenderFromItemIds = ({ itemIds, sex, body, hair, facialHair }: HustlerRend
   useEffect(() => {
     if (hustlers && bodyRles && itemRles) {
       hustlers
-        .render('', '', 64, '0xb6ccc3ff', '0x202221ff', [0, 0, 0, 0], [...bodyRles, ...itemRles])
+        .render('', '', 64, hexColorToBase16(bgColor), '0x202221ff', [0, 0, 0, 0], [...bodyRles, ...itemRles])
         .then(meta => {
           meta = meta.replace('data:application/json;base64,', '');
           meta = Buffer.from(meta, 'base64').toString();

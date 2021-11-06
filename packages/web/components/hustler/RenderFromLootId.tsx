@@ -14,9 +14,12 @@ interface HustlerRenderProps {
   body?: number;
   hair?: number;
   facialHair?: number;
+  bgColor?: string;
 }
 
-const RenderFromLootId = ({id, sex, body, hair, facialHair}: HustlerRenderProps) => {
+const RenderFromLootId = (
+  {id, sex, body, hair, facialHair, bgColor}: HustlerRenderProps
+) => {
 
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
@@ -59,7 +62,8 @@ const RenderFromLootId = ({id, sex, body, hair, facialHair}: HustlerRenderProps)
           sex={sex}
           body={body}
           hair={hair}
-          facialHair={facialHair}   
+          facialHair={facialHair}
+          bgColor={bgColor}
         />
       </AspectRatio>
     );
