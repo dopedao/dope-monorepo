@@ -84,7 +84,16 @@ const RenderFromItemIds = ({
     if (!hustlers) return;
     setHasRenderedFromChain(false);
     const { bodyParams, hairParams, facialHairParams } = getBodyRleParams();
-    const promises = [hustlers.bodyRle(...bodyParams), hustlers.bodyRle(...hairParams)];
+    console.log('body');
+    console.log(bodyParams);
+    console.log('hair');
+    console.log(hairParams);
+    console.log('facial hair');
+    console.log(facialHairParams);
+    const promises = [
+      hustlers.bodyRle(...bodyParams), 
+      hustlers.bodyRle(...hairParams)
+    ];
     // No female beards for now because they're unsupported
     if (sex == 'male' && facialHair) {
       promises.push(hustlers.bodyRle(...facialHairParams));
@@ -94,6 +103,8 @@ const RenderFromItemIds = ({
 
   useEffect(() => {
     if (hustlers && bodyRles && itemRles) {
+      const hustlerShadowHex = '0x0036283818022b01000d2b0500092b0200';
+      const drugShadowHex = '0x00362f3729062b';
       hustlers
         .render(
           '',
@@ -102,7 +113,7 @@ const RenderFromItemIds = ({
           hexColorToBase16(bgColor),
           '0x202221ff',
           [0, 0, 0, 0],
-          [...bodyRles, ...itemRles],
+          [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles],
         )
         .then(meta => {
           meta = meta.replace('data:application/json;base64,', '');
@@ -113,9 +124,9 @@ const RenderFromItemIds = ({
           setHasRenderedFromChain(true);
         });
     }
-  }, [hustlers, itemRles, bodyRles]);
+  }, [swapmeet, hustlers, itemRles, bodyRles]);
 
-  if (hasRenderedFromChain === false) return <LoadingBlock />;
+  if (hasRenderedFromChain === false) return <LoadingBlock maxRows={5} />;
 
   return (
     <div

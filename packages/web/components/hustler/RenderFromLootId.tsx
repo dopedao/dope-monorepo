@@ -65,7 +65,7 @@ const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor }: HustlerR
           justify-content: center;
         `}
       >
-        <LoadingBlock maxRows={10} />
+        <LoadingBlock maxRows={5} />
       </div>
     );
   }
