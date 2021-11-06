@@ -57,8 +57,7 @@ const InitiationFooter = () => {
   const currentTime = new Date();
 
   const { chainId } = useWeb3React();
-  // const onTestNetOrAfterLaunch = chainId == 4 || currentTime >= hustlerMintTime;
-  const onTestNetOrAfterLaunch = true;
+  const onTestNetOrAfterLaunch = chainId == 4 || currentTime >= hustlerMintTime;
 
   // Render random hustler as countdown approached
   let randomHustlerRenderInterval: any;
