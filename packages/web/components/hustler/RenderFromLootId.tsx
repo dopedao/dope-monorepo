@@ -1,13 +1,22 @@
 import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber, providers } from 'ethers';
+import { css } from '@emotion/react';
+import { HustlerSex } from '../../src/HustlerInitiation';
 import { NETWORK } from '../../src/constants';
 import { SwapMeet__factory } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
-import { css } from '@emotion/react';
 import LoadingBlock from '../LoadingBlock';
 import RenderFromItemIds from '../../components/hustler/RenderFromItemIds';
 
-const RenderFromLootId = ({id}: {id: string}) => {
+interface HustlerRenderProps {
+  id: string;
+  sex?: HustlerSex;
+  body?: number;
+  hair?: number;
+  facialHair?: number;
+}
+
+const RenderFromLootId = ({id, sex, body, hair, facialHair}: HustlerRenderProps) => {
 
   const [itemIds, setItemIds] = useState<BigNumber[]>();
   // const [bodyIds, setBodyIds] = useState<string[]>();
@@ -46,7 +55,13 @@ const RenderFromLootId = ({id}: {id: string}) => {
   if (itemIds) {
     return (
       <AspectRatio ratio={1}>
-        <RenderFromItemIds itemIds={itemIds} />
+        <RenderFromItemIds 
+          itemIds={itemIds} 
+          sex={sex}
+          body={body}
+          hair={hair}
+          facialHair={facialHair}   
+        />
       </AspectRatio>
     );
   } else {

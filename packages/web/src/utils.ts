@@ -16,5 +16,5 @@ export const zeroPad = (i: number) => {
 };
 
 export const getRandomNumber = (min: number, max: number) => {
-  return Math.floor(Math.random() * max) + min;
+  return Math.floor(Math.random() * (max+1)) + min;
 };

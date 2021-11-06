@@ -2,9 +2,10 @@
 // For storing state relating to initiating a hustler
 import { makeVar } from '@apollo/client';
 import { getRandomNumber } from './utils';
+import { NUM_DOPE_TOKENS } from './constants';
 
 const HUSTLER_SEXES = ['male', 'female'];
-type HustlerSex = 'male' | 'female';
+export type HustlerSex = 'male' | 'female';
 
 interface HustlerCustomization {
   mint_og: boolean;
@@ -20,19 +21,23 @@ interface HustlerCustomization {
  * as a check to see if it was set randomly or intentionally 
  * elsewhere in the code.
  */
-export function getRandomHustlerId(): string {
-  return getRandomNumber(8001, 20000).toString();
+ export const getRandomHustlerId = (): string => {
+  return getRandomNumber(NUM_DOPE_TOKENS+1, NUM_DOPE_TOKENS*2).toString();
 }
 
-export function getRandomHustler(): HustlerCustomization {
+export const getRandomHustler = (): HustlerCustomization => {
   return {
     mint_og: false,
     dope_id: getRandomHustlerId(),
     sex: HUSTLER_SEXES[getRandomNumber(0,1)] as HustlerSex,
-    body: 0,
-    hair: 0,
-    facialHair: 0
+    body: getRandomNumber(0,5),
+    hair: getRandomNumber(0,18),
+    facialHair: getRandomNumber(0,12)
   };
 };
 
 export const HustlerInitConfig = makeVar(getRandomHustler());
+
+export const isHustlerRandom = (): boolean => {
+  return parseInt(HustlerInitConfig().dope_id) > NUM_DOPE_TOKENS;
+}

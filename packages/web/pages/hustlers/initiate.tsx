@@ -31,7 +31,13 @@ export default function Initiate() {
           `}
         >
           <PanelTitleBar>Hustler</PanelTitleBar>
-          <RenderFromLootId id={hustlerConfig.dope_id} />
+          <RenderFromLootId 
+            id={hustlerConfig.dope_id} 
+            sex={hustlerConfig.sex}
+            body={hustlerConfig.body}
+            hair={hustlerConfig.hair}
+            facialHair={hustlerConfig.facialHair}       
+          />
           <InitiationFooter />
         </PanelContainer>
       </StackedResponsiveContainer>

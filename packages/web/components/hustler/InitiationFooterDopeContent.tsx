@@ -3,8 +3,7 @@ import { Switch } from '@chakra-ui/switch';
 import { Spinner } from '@chakra-ui/spinner';
 import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
-import { HustlerInitConfig } from '../../src/HustlerInitiation';
-import { NUM_DOPE_TOKENS } from '../../src/constants';
+import { HustlerInitConfig, isHustlerRandom } from '../../src/HustlerInitiation';
 import { PickedBag } from '../../src/DopeDatabase';
 import { Select } from '@chakra-ui/react';
 import { useReactiveVar } from '@apollo/client';
@@ -91,8 +90,7 @@ const InitiationFooterDopeContent = () => {
     // the contract query.
     onCompleted: (data) => {
       const bundledDope = getBundledDopeFromData(data);
-      const randomHustlerSelected = (parseInt(hustlerConfig.dope_id) > NUM_DOPE_TOKENS);
-      if (bundledDope.length > 0 && randomHustlerSelected) {
+      if (bundledDope.length > 0 && isHustlerRandom()) {
         const firstDopeId = bundledDope[0].id;
         console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
         HustlerInitConfig({...hustlerConfig, dope_id: firstDopeId});

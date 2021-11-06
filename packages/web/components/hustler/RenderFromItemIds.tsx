@@ -1,16 +1,26 @@
-import { css } from '@emotion/react';
-import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
-import { useWeb3React } from '@web3-react/core';
-import { useEffect, useMemo, useState } from 'react';
 import { BigNumber, providers } from 'ethers';
-
+import { css } from '@emotion/react';
+import { HustlerSex } from '../../src/HustlerInitiation';
 import { NETWORK } from '../../src/constants';
+import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
+import { useEffect, useMemo, useState } from 'react';
+
+
+// then the 2nd arg is the index which corresponds to what they are in the image folders
 
 interface Metadata {
   image: string;
 }
 
-const RenderFromItemIds = ({ itemIds }: { itemIds: BigNumber[] }) => {
+interface HustlerRenderProps {
+  itemIds: BigNumber[];
+  sex?: HustlerSex;
+  body?: number;
+  hair?: number;
+  facialHair?: number;
+}
+
+const RenderFromItemIds = ({ itemIds, sex, body, hair, facialHair }: HustlerRenderProps) => {
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
   const [bodyRles, setBodyRles] = useState<string[]>([]);
@@ -33,17 +43,53 @@ const RenderFromItemIds = ({ itemIds }: { itemIds: BigNumber[] }) => {
     [provider],
   );
 
-  useEffect(() => {
-    if (swapmeet) {
-      Promise.all(itemIds.map(id => swapmeet.tokenRle(id, 0))).then(setItemRles);
-    }
-  }, [itemIds, swapmeet]);
+  /**
+   * Maps our understanding of layers to what's in the smart contract
+   * Generates parameters we can then spread and assign to hustlers.bodyRle
+   * which returns SVG layer to render from the blockchain.
+   * 
+   * 0: male body
+   * 1: female body
+   * 2: male hair
+   * 3: female hair
+   * 4: beards
+   */
+  const getBodyRleParams = () => {
+    const bodyParams: [number, number] = [
+      (sex && sex == 'female') ? 1 : 0,
+      body ?? 0
+    ];
+    const hairParams: [number, number] = [
+      (sex && sex == 'female') ? 3 : 2,
+      hair ?? 0
+    ];
+    const facialHairParams: [number, number] = [
+      4, facialHair ?? 0
+    ];
+    return {bodyParams, hairParams, facialHairParams};
+  }
+
+  // facialHair?: number;
 
   useEffect(() => {
-    if (hustlers) {
-      Promise.all([hustlers.bodyRle(0, 0), hustlers.bodyRle(2, 0)]).then(setBodyRles);
+    if (!swapmeet) return;
+    const sexIndex = (sex && sex == 'female') ? 1 : 0;
+    Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(setItemRles);
+  }, [itemIds, swapmeet, sex]);
+
+  useEffect(() => {
+    if (!hustlers) return;
+    const {bodyParams, hairParams, facialHairParams} = getBodyRleParams();
+    const promises = [
+      hustlers.bodyRle(...bodyParams), 
+      hustlers.bodyRle(...hairParams)
+    ];
+    // No female beards for now because they're unsupported
+    if (sex == 'male' && facialHair) {
+      promises.push(hustlers.bodyRle(...facialHairParams));
     }
-  }, [hustlers]);
+    Promise.all(promises).then(setBodyRles);
+  }, [hustlers, sex, body, hair, facialHair]);
 
   useEffect(() => {
     if (hustlers && bodyRles && itemRles) {
