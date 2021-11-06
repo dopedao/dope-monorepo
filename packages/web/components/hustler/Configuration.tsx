@@ -48,17 +48,19 @@ const Configuration = () => {
   );
 
   const onSubmit = useCallback(
-    async (values: Values) =>
+    async (values: Values) => {
+      if (!hustlers) return;
       hustlers.setMetadata(
         0,
         values.name,
         values.color,
         values.background,
         '0x00000000',
-        '0x0006',
         [0, 0, 0, 0],
-        '0x0007',
-      ),
+        [0, 0, 0, 0],
+        '',
+      );
+    },
     [hustlers],
   );
 
