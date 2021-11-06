@@ -145,9 +145,9 @@ const InitiationFooterDopeContent = () => {
               padding: 8px 12px;
             `}
           >
-            <Link href="/hustler/customize">
+            {/* <Link href="/hustler/customize">
               <a className="primary">Customize Appearance</a>
-            </Link>
+            </Link> */}
             <a className="primary" onClick={() => randomizeAttributes()}>
               Randomize
             </a>
@@ -157,7 +157,7 @@ const InitiationFooterDopeContent = () => {
           <div>
             <Switch isChecked={hustlerConfig.mintOg} onChange={handleOgSwitchChange} /> Initiate OG
           </div>
-          <Button variant="primary">Continue Initiation</Button>
+          <Button variant="primary" disabled>Continue Initiation</Button>
         </PanelFooter>
       </div>
     );
