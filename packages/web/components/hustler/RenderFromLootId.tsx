@@ -17,10 +17,7 @@ interface HustlerRenderProps {
   bgColor?: string;
 }
 
-const RenderFromLootId = (
-  {id, sex, body, hair, facialHair, bgColor}: HustlerRenderProps
-) => {
-
+const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor }: HustlerRenderProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
   const provider = useMemo(
@@ -40,16 +37,7 @@ const RenderFromLootId = (
     if (swapmeet && id) {
       swapmeet.itemIds(id as string).then(ids =>
         // Excludes vehicle (2) and orders layers
-        setItemIds([
-          ids[6],
-          ids[8],
-          ids[5],
-          ids[1],
-          ids[3],
-          ids[4],
-          ids[7],
-          ids[0],
-        ]),
+        setItemIds([ids[6], ids[8], ids[5], ids[1], ids[3], ids[4], ids[7], ids[0]]),
       );
     }
   }, [swapmeet, id]);
@@ -57,8 +45,8 @@ const RenderFromLootId = (
   if (itemIds) {
     return (
       <AspectRatio ratio={1}>
-        <RenderFromItemIds 
-          itemIds={itemIds} 
+        <RenderFromItemIds
+          itemIds={itemIds}
           sex={sex}
           body={body}
           hair={hair}
@@ -69,12 +57,14 @@ const RenderFromLootId = (
     );
   } else {
     return (
-      <div css={css`
-        padding:16px;
-        display: flex;
-        flex-align: center;
-        justify-content: center;
-      `}>
+      <div
+        css={css`
+          padding: 16px;
+          display: flex;
+          flex-align: center;
+          justify-content: center;
+        `}
+      >
         <LoadingBlock maxRows={10} />
       </div>
     );

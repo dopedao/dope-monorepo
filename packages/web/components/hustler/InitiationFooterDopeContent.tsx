@@ -57,7 +57,7 @@ const SubPanelForm = styled.div`
 const SpinnerContainer = styled.div`
   border: 0px;
   .chakra-spinner {
-    margin: 0 .5em;
+    margin: 0 0.5em;
   }
 `;
 
@@ -69,51 +69,53 @@ const InitiationFooterDopeContent = () => {
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    HustlerInitConfig({...hustlerConfig, dopeId: value});
+    HustlerInitConfig({ ...hustlerConfig, dopeId: value });
   };
 
   const handleOgSwitchChange = () => {
-    HustlerInitConfig({...hustlerConfig, mintOg: !hustlerConfig.mintOg});
-  }
-  
+    HustlerInitConfig({ ...hustlerConfig, mintOg: !hustlerConfig.mintOg });
+  };
+
   const randomizeAttributes = () => {
     const randomHustler = getRandomHustler();
     HustlerInitConfig({
-      ...randomHustler, 
-      mintOg: hustlerConfig.mintOg,  
-      dopeId: hustlerConfig.dopeId
+      ...randomHustler,
+      mintOg: hustlerConfig.mintOg,
+      dopeId: hustlerConfig.dopeId,
     });
-  }
+  };
 
   const getBundledDopeFromData = (data: WalletQuery) => {
     let bundledDope = [] as PickedBag[];
     if (data?.wallet?.bags && data.wallet.bags.length > 0) {
-      bundledDope = data.wallet.bags.filter((dopeNft: PickedBag) => dopeNft.bundled);    
+      bundledDope = data.wallet.bags.filter((dopeNft: PickedBag) => dopeNft.bundled);
     }
     return bundledDope;
-  }
+  };
 
   const { data, loading } = useWalletQuery({
     variables: { id: account.toLowerCase() },
     // Set first item as selected when it comes back from
     // the contract query.
-    onCompleted: (data) => {
+    onCompleted: data => {
       const bundledDope = getBundledDopeFromData(data);
       if (bundledDope.length > 0 && isHustlerRandom()) {
         const firstDopeId = bundledDope[0].id;
         console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
-        HustlerInitConfig({...hustlerConfig, dopeId: firstDopeId});
+        HustlerInitConfig({ ...hustlerConfig, dopeId: firstDopeId });
       }
-    }
+    },
   });
 
   if (loading) {
-    return <PanelFooter>
-      <SpinnerContainer>
-        <Spinner size="xs" />
-        Finding unbundled DOPE NFT loot in your wallet
-      </SpinnerContainer>
-    </PanelFooter>;
+    return (
+      <PanelFooter>
+        <SpinnerContainer>
+          <Spinner size="xs" />
+          Finding unbundled DOPE NFT loot in your wallet
+        </SpinnerContainer>
+      </PanelFooter>
+    );
   } else if (!data?.wallet?.bags || data.wallet.bags.length === 0) {
     return <NoDopeMessage />;
   } else {
@@ -123,17 +125,15 @@ const InitiationFooterDopeContent = () => {
     return (
       <div>
         <SubPanelForm>
-          <Select size="sm" 
-            variant="filterBar" 
-            onChange={handleDopeChange} 
+          <Select
+            size="sm"
+            variant="filterBar"
+            onChange={handleDopeChange}
             value={hustlerConfig.dopeId}
           >
             <option disabled>YOUR DOPE</option>
             {bundledDope.map(dopeNft => (
-              <option 
-                key={dopeNft.id}
-                value={dopeNft.id}
-              >
+              <option key={dopeNft.id} value={dopeNft.id}>
                 DOPE NFT #{dopeNft.id}
               </option>
             ))}
@@ -148,15 +148,14 @@ const InitiationFooterDopeContent = () => {
             <Link href="/hustler/customize">
               <a className="primary">Customize Appearance</a>
             </Link>
-            <a className="primary" onClick={() => randomizeAttributes()}>Randomize</a>
+            <a className="primary" onClick={() => randomizeAttributes()}>
+              Randomize
+            </a>
           </div>
         </SubPanelForm>
         <PanelFooter>
           <div>
-            <Switch 
-              isChecked={hustlerConfig.mintOg}
-              onChange={handleOgSwitchChange}
-            /> Initiate OG
+            <Switch isChecked={hustlerConfig.mintOg} onChange={handleOgSwitchChange} /> Initiate OG
           </div>
           <Button variant="primary">Continue Initiation</Button>
         </PanelFooter>

@@ -140,10 +140,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
           >
             Mint Original Gangsta
           </Button> */}
-          <Button 
-            variant="primary"
-            onClick={() => initiateHustler()}
-          >
+          <Button variant="primary" onClick={() => initiateHustler()}>
             Initiate Hustler
           </Button>
           <Button

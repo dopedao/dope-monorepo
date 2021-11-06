@@ -13,7 +13,6 @@ import StackedResponsiveContainer from '../../components/StackedResponsiveContai
 const title = 'Initiate New Hustler';
 
 export default function Initiate() {
-
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   return (
@@ -31,12 +30,12 @@ export default function Initiate() {
           `}
         >
           <PanelTitleBar>Hustler</PanelTitleBar>
-          <RenderFromLootId 
-            id={hustlerConfig.dopeId} 
+          <RenderFromLootId
+            id={hustlerConfig.dopeId}
             sex={hustlerConfig.sex}
             body={hustlerConfig.body}
             hair={hustlerConfig.hair}
-            facialHair={hustlerConfig.facialHair}       
+            facialHair={hustlerConfig.facialHair}
             bgColor={hustlerConfig.bgColor}
           />
           <InitiationFooter />

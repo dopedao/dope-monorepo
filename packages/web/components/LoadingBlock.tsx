@@ -42,7 +42,7 @@ const Container = styled.div`
   }
 `;
 
-const LoadingBlock = ({maxRows = 20}: {maxRows?: number}) => {
+const LoadingBlock = ({ maxRows = 20 }: { maxRows?: number }) => {
   const randomRowLength = getRandomNumber(2, maxRows);
   const rows = [];
   for (let i = 0; i < randomRowLength; i++) {
