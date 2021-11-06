@@ -9,12 +9,10 @@ export type HustlerSex = 'male' | 'female';
 
 export const DEFAULT_BG_COLORS = [
   '#434345',
-  '#FFFEBF',
-  '#EFC8FA',
-  '#FAE8DF',
+  '#97ADCC',
   '#F1D8AB',
-  '#E6F0DE',
-  
+  '#F2C4C5',
+  '#B6CCC3'
 ];
 
 interface HustlerCustomization {
