@@ -27,7 +27,8 @@ size   :; ./scripts/contract-size.sh ${contract}
 deploy :; @./scripts/deploy.sh
 
 # mainnet
-deploy-mainnet: export ETH_RPC_URL = $(call network,mainnet)
+deploy-mainnet: export ETH_RPC_URL = https://ancient-morning-wave.quiknode.pro/0d888ce1d2caa53e7004a067641c905934ef0efa/
+# $(call network,mainnet)
 deploy-mainnet: export LOOT=0x8707276df042e89669d69a177d3da7dc78bd8723
 deploy-mainnet: export PAPER=0x7aE1D57b58fA6411F32948314BadD83583eE0e8C
 deploy-mainnet: check-api-key deploy
@@ -37,6 +38,18 @@ deploy-rinkeby: export ETH_RPC_URL = $(call network,rinkeby)
 deploy-rinkeby: export LOOT=0xEf879818335a10Db667810a9B668A8F537389194
 deploy-rinkeby: export PAPER=0x7988fCA891B30cF8E23459B09b851F9d79B17215
 deploy-rinkeby: check-api-key deploy
+
+# kovan
+deploy-kovan: export ETH_RPC_URL = $(call network,kovan)
+deploy-kovan: export LOOT=0xEf879818335a10Db667810a9B668A8F537389194
+deploy-kovan: export PAPER=0x7988fCA891B30cF8E23459B09b851F9d79B17215
+deploy-kovan: check-api-key deploy
+
+# opt-kovan
+deploy-opt-kovan: export ETH_RPC_URL = https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg
+deploy-opt-kovan: export LOOT=0xEf879818335a10Db667810a9B668A8F537389194
+deploy-opt-kovan: export PAPER=0x7988fCA891B30cF8E23459B09b851F9d79B17215
+deploy-opt-kovan: check-api-key deploy
 
 # testnet
 deploy-testnet:; @./scripts/test-deploy.sh

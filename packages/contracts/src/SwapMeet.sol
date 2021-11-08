@@ -21,50 +21,10 @@ library Errors {
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 dope and extracting the items inside it
 contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
-    // The DOPE dope contract
-    IERC721 immutable dope;
-    IERC20 immutable paper;
-    address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
-
-    uint256 private immutable deployedAt;
-    uint256 private cost_ = 12500000000000000000000;
-
-    mapping(uint256 => bool) private opened;
-
     event Opened(uint256[] ids);
     event SetRle(uint256 id);
 
-    constructor(
-        address _components,
-        address _dope,
-        address _paper
-    ) SwapMeetMetadata(_components) {
-        dope = IERC721(_dope);
-        paper = IERC20(_paper);
-        deployedAt = block.timestamp;
-    }
-
-    function cost() public view returns (uint256) {
-        if ((block.timestamp - deployedAt) > 420 days) {
-            return 0;
-        } else if ((block.timestamp - deployedAt) > 180 days) {
-            return 3125000000000000000000;
-        } else if ((block.timestamp - deployedAt) > 90 days) {
-            return 6250000000000000000000;
-        }
-
-        return cost_;
-    }
-
-    /// @notice Opens the provided tokenId if the sender is owner. This
-    /// can only be done once per DOPE token.
-    function open(
-        uint256 tokenId,
-        address to,
-        bytes memory data
-    ) public {
-        batchOpen(_asSingletonArray(tokenId), to, data);
-    }
+    constructor(address _components) SwapMeetMetadata(_components) {}
 
     /// @notice Bulk opens the provided tokenIds. This
     /// can only be done once per DOPE token.
@@ -72,18 +32,12 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         uint256[] memory ids,
         address to,
         bytes memory data
-    ) public {
+    ) external onlyOwner {
         uint256[] memory amounts = new uint256[](9 * ids.length);
         uint256[] memory parts = new uint256[](9 * ids.length);
 
         for (uint256 i = 0; i < 9 * ids.length; i += 9) {
             uint256 id = ids[i / 9];
-            require(
-                msg.sender == dope.ownerOf(id) || dope.isApprovedForAll(dope.ownerOf(id), msg.sender),
-                Errors.DoesNotOwnBagOrNotApproved
-            );
-            require(!opened[id], Errors.AlreadyOpened);
-            opened[id] = true;
 
             uint256[] memory items = itemIds(id);
             parts[i] = items[0];
@@ -107,7 +61,6 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
             amounts[i + 8] = 1;
         }
 
-        paper.transferFrom(msg.sender, timelock, cost() * ids.length);
         _mintBatch(to, parts, amounts, data);
 
         emit Opened(ids);
@@ -161,10 +114,6 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
 
         _mintBatch(to, ids, amounts, data);
         return ids;
-    }
-
-    function isOpened(uint256 id) external view returns (bool) {
-        return opened[id];
     }
 
     function setPalette(uint8 id, bytes4[] memory palette) external onlyOwner {

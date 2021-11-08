@@ -210,11 +210,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         uint8[4] calldata body,
         bytes2 mask,
         bytes memory data
-    ) external payable {
-        require(release != 0 && release < block.timestamp, Errors.NotTime);
-        require(msg.value == 250000000000000000, Errors.NotRightETH);
-        require(ogs < 500, Errors.NoMore);
-
+    ) external onlyOwner {
         uint256 id = ogs;
         metadata[id].age = block.timestamp;
         setMeta(id, name, color, background, options, viewbox, body, mask);
@@ -306,15 +302,6 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         }
 
         emit AddRles(part, _rles.length);
-    }
-
-    function withdraw() public {
-        // First half
-        payable(timelock).transfer(address(this).balance / 2);
-        // Half of second half (1/4)
-        payable(tarrencellc).transfer(address(this).balance / 2);
-        // Remainder
-        payable(subimagellc).transfer(address(this).balance);
     }
 
     function setRelease(uint256 timestamp) external onlyOwner {
