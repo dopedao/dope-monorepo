@@ -295,7 +295,8 @@ contract HustlerTest is ERC1155Holder, DSTest {
 
         // deploy contracts
         dope = new DopeWarsLoot();
-        components = new Components(address(owner));
+        components = new Components();
+        components.transferOwnership(address(owner));
         alice = new HustlerUser(dope, cdm);
         swapmeet = new SwapMeetTester(address(components), address(alice), cdm, address(owner));
         hustler = new HustlerTester(address(owner), address(components), address(swapmeet), address(alice), cdm);

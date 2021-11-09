@@ -8,6 +8,7 @@ import { Address } from '../lib/openzeppelin-contracts/contracts/utils/Address.s
 
 import { iOVM_CrossDomainMessenger } from './interfaces/iOVM_CrossDomainMessenger.sol';
 import { ISwapMeet } from './interfaces/ISwapMeet.sol';
+import { IHustler } from './interfaces/IHustler.sol';
 
 library Errors {
     string constant IsNotSwapMeet = 'snsm';
@@ -33,8 +34,8 @@ contract Initiator is Ownable {
     address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
     address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
 
-    address immutable hustler;
-    address immutable swapmeet;
+    address private hustler;
+    address private swapmeet;
     IERC721 immutable dope;
     IERC20 immutable paper;
 
@@ -45,14 +46,12 @@ contract Initiator is Ownable {
 
     mapping(uint256 => bool) private opened;
 
-    constructor(
-        IERC721 dope_,
-        IERC20 paper_,
-        address swapmeet_,
-        address hustler_
-    ) {
+    constructor(IERC721 dope_, IERC20 paper_) {
         dope = dope_;
         paper = paper_;
+    }
+
+    function setL2Contracts(address swapmeet_, address hustler_) external onlyOwner {
         swapmeet = swapmeet_;
         hustler = hustler_;
     }
@@ -70,12 +69,15 @@ contract Initiator is Ownable {
     function mintOGFromDopeTo(
         uint256 id,
         address to,
+        bytes memory data,
         uint32 openGasLimit
     ) external payable {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
 
+        bytes memory message = abi.encodeWithSelector(IHustler.mintOGTo.selector, id, to, data);
+        messenger.sendMessage(hustler, message, 1000000);
         open(id, to, abi.encode(equip, id), openGasLimit);
     }
 
@@ -96,22 +98,6 @@ contract Initiator is Ownable {
         paper.transferFrom(msg.sender, timelock, cost());
 
         emit Opened(id);
-    }
-
-    function mint(
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask
-    ) internal {
-        // messenger.sendMessage(
-        //     hustler,
-        //     abi.encodeWithSignature('open(uint256, address, bytes)', id, msg.sender, data),
-        //     1000000
-        // );
     }
 
     function withdraw() public {

@@ -119,6 +119,7 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
         (uint256[] memory unequipIds, uint256[] memory unequipValues) = batchEquip(hustlerId, ids, values);
 
         if (unequipIds.length > 0) {
+            // TODO:
             swapmeet.safeBatchTransferFrom(address(this), from, unequipIds, unequipValues, '');
         }
 
@@ -206,6 +207,7 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
         bytes2 mask,
         bytes memory data
     ) external override onlyInitiator {
+        require(id < 500, 'to big id');
         metadata[id].age = block.timestamp;
         setMeta(id, name, color, background, options, viewbox, body, mask);
         _mint(to, id, 1, data);

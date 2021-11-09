@@ -584,7 +584,8 @@ contract SwapMeetTest is DSTest {
 
         // deploy contracts
         dope = new DopeWarsLoot();
-        components = new Components(address(owner));
+        components = new Components();
+        components.transferOwnership(address(owner));
 
         // create alice's account & claim a bag
         alice = new SwapMeetUser(dope, cdm);

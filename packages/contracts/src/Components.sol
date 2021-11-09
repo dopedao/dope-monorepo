@@ -342,10 +342,6 @@ contract Components is Ownable {
 
     event AddComponent(uint256 id, uint256 componentType, string component);
 
-    constructor(address _owner) {
-        transferOwnership(_owner);
-    }
-
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
     }
