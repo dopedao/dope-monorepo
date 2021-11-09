@@ -679,7 +679,18 @@ contract Hustlers is HustlerTest {
         alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, id));
     }
 
-    // Add test open to hustler from l1
+    function testFailOpeningToAlreadyEquippedHustler() public {
+        uint256 id = 500;
+        alice.mint();
+        ItemIds memory ids = swapmeet.ids(BAG);
+
+        alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, id));
+
+        assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
+        assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
+
+        alice.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
+    }
 
     function testSettingSlotReturnsExistingItem() public {
         uint256 id = 500;
