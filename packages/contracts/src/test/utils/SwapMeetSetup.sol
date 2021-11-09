@@ -4,8 +4,10 @@ pragma solidity ^0.8.0;
 import 'ds-test/test.sol';
 
 import './Hevm.sol';
+import './iOVM_FakeCrossDomainMessenger.sol';
 import '../../Loot.sol';
-import { Paper } from '../../Paper.sol';
+import { iOVM_CrossDomainMessenger } from '../../interfaces/iOVM_CrossDomainMessenger.sol';
+import { ISwapMeet } from '../../interfaces/ISwapMeet.sol';
 import { SwapMeet } from '../../SwapMeet.sol';
 import { Components, ComponentTypes } from '../../Components.sol';
 import { TokenId } from '../../TokenId.sol';
@@ -16,38 +18,26 @@ import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 // NB: Using callbacks is hard, since we're a smart contract account we need
 // to be implementing the callbacks
 contract SwapMeetUser is ERC721Holder, ERC1155Holder {
+    iOVM_CrossDomainMessenger cdm;
     DopeWarsLoot dope;
     SwapMeet swapmeet;
-    Paper paper;
 
-    constructor(
-        DopeWarsLoot _dope,
-        SwapMeet _swapmeet,
-        Paper _paper
-    ) {
+    constructor(DopeWarsLoot _dope, iOVM_CrossDomainMessenger _cdm) {
         dope = _dope;
-        swapmeet = _swapmeet;
-        paper = _paper;
+        cdm = _cdm;
+    }
+
+    function setSwapMeet(SwapMeet swapmeet_) public {
+        swapmeet = swapmeet_;
     }
 
     function claim(uint256 tokenId) public {
         dope.claim(tokenId);
     }
 
-    function open(uint256 tokenId) public {
-        swapmeet.open(tokenId, address(this), '');
-    }
-
-    function batchOpen(uint256[] memory ids) public {
-        swapmeet.batchOpen(ids, address(this), '');
-    }
-
-    function approvePaper(uint256 amount) public {
-        paper.approve(address(swapmeet), amount);
-    }
-
-    function claimPaper() public {
-        paper.claimAllForOwner();
+    function open(uint256 id) public {
+        bytes memory message = abi.encodeWithSelector(ISwapMeet.open.selector, id, address(this), '');
+        cdm.sendMessage(address(swapmeet), message, 1000000);
     }
 
     function transferERC1155(
@@ -442,10 +432,11 @@ contract SwapMeetOwner is ERC1155Holder {
 contract SwapMeetTester is SwapMeet {
     constructor(
         address _components,
-        address _dope,
-        address _paper,
+        address _initiator,
+        iOVM_CrossDomainMessenger cdm,
         address _owner
-    ) SwapMeet(_components, _dope, _paper) {
+    ) SwapMeet(_components, _initiator) {
+        ovmL2CrossDomainMessenger = cdm;
         transferOwnership(_owner);
     }
 
@@ -579,27 +570,35 @@ contract SwapMeetTest is DSTest {
 
     // contracts
     DopeWarsLoot internal dope;
-    Paper internal paper;
     Components internal components;
     SwapMeetTester internal swapmeet;
+    iOVM_FakeCrossDomainMessenger internal cdm;
 
     // users
     SwapMeetOwner internal owner;
     SwapMeetUser internal alice;
 
     function setUp() public virtual {
+        cdm = new iOVM_FakeCrossDomainMessenger();
         owner = new SwapMeetOwner();
 
         // deploy contracts
         dope = new DopeWarsLoot();
-        paper = new Paper(address(dope));
         components = new Components(address(owner));
-        swapmeet = new SwapMeetTester(address(components), address(dope), address(paper), address(owner));
+
+        // create alice's account & claim a bag
+        alice = new SwapMeetUser(dope, cdm);
+        // cdm.setSender(address(alice));
+        swapmeet = new SwapMeetTester(
+            address(components),
+            address(alice),
+            iOVM_CrossDomainMessenger(cdm),
+            address(owner)
+        );
+        alice.setSwapMeet(swapmeet);
 
         owner.init(components, swapmeet);
 
-        // create alice's account & claim a bag
-        alice = new SwapMeetUser(dope, swapmeet, paper);
         alice.claim(BAG);
         assertEq(dope.ownerOf(BAG), address(alice));
 
@@ -608,8 +607,5 @@ contract SwapMeetTest is DSTest {
 
         alice.claim(FIRST_SILVER_RING_BAG);
         alice.claim(SECOND_SILVER_RING_BAG);
-
-        alice.claimPaper();
-        alice.approvePaper(type(uint256).max);
     }
 }

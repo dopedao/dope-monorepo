@@ -11,59 +11,57 @@ import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.
 import { ComponentTypes } from './Components.sol';
 import { Gender, SwapMeetMetadata } from './SwapMeetMetadata.sol';
 import { TokenId } from './TokenId.sol';
-
-library Errors {
-    string constant DoesNotOwnBagOrNotApproved = 'not sender bag or not approved';
-    string constant AlreadyOpened = 'already opened';
-}
+import { iOVM_CrossDomainMessenger } from './interfaces/iOVM_CrossDomainMessenger.sol';
+import { ISwapMeet } from './interfaces/ISwapMeet.sol';
 
 /// @title Dope Gear SwapMeet
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @notice Allows "opening" your ERC721 dope and extracting the items inside it
-contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
-    event Opened(uint256[] ids);
+contract SwapMeet is ISwapMeet, ERC1155, SwapMeetMetadata, Ownable {
     event SetRle(uint256 id);
 
-    constructor(address _components) SwapMeetMetadata(_components) {}
+    address immutable initiator;
+
+    iOVM_CrossDomainMessenger ovmL2CrossDomainMessenger =
+        iOVM_CrossDomainMessenger(0x4200000000000000000000000000000000000007);
+
+    constructor(address _components, address _initiator) SwapMeetMetadata(_components) {
+        initiator = _initiator;
+    }
 
     /// @notice Bulk opens the provided tokenIds. This
     /// can only be done once per DOPE token.
-    function batchOpen(
-        uint256[] memory ids,
+    function open(
+        uint256 id,
         address to,
         bytes memory data
-    ) external onlyOwner {
-        uint256[] memory amounts = new uint256[](9 * ids.length);
-        uint256[] memory parts = new uint256[](9 * ids.length);
+    ) external override onlyInitiator {
+        uint256[] memory amounts = new uint256[](9);
+        uint256[] memory parts = new uint256[](9);
 
-        for (uint256 i = 0; i < 9 * ids.length; i += 9) {
-            uint256 id = ids[i / 9];
+        uint256 i = 0;
+        uint256[] memory items = itemIds(id);
+        parts[i] = items[0];
+        parts[i + 1] = items[1];
+        parts[i + 2] = items[2];
+        parts[i + 3] = items[3];
+        parts[i + 4] = items[4];
+        parts[i + 5] = items[5];
+        parts[i + 6] = items[6];
+        parts[i + 7] = items[7];
+        parts[i + 8] = items[8];
 
-            uint256[] memory items = itemIds(id);
-            parts[i] = items[0];
-            parts[i + 1] = items[1];
-            parts[i + 2] = items[2];
-            parts[i + 3] = items[3];
-            parts[i + 4] = items[4];
-            parts[i + 5] = items[5];
-            parts[i + 6] = items[6];
-            parts[i + 7] = items[7];
-            parts[i + 8] = items[8];
-
-            amounts[i] = 1;
-            amounts[i + 1] = 1;
-            amounts[i + 2] = 1;
-            amounts[i + 3] = 1;
-            amounts[i + 4] = 1;
-            amounts[i + 5] = 1;
-            amounts[i + 6] = 1;
-            amounts[i + 7] = 1;
-            amounts[i + 8] = 1;
-        }
+        amounts[i] = 1;
+        amounts[i + 1] = 1;
+        amounts[i + 2] = 1;
+        amounts[i + 3] = 1;
+        amounts[i + 4] = 1;
+        amounts[i + 5] = 1;
+        amounts[i + 6] = 1;
+        amounts[i + 7] = 1;
+        amounts[i + 8] = 1;
 
         _mintBatch(to, parts, amounts, data);
-
-        emit Opened(ids);
     }
 
     function itemIds(uint256 tokenId) public view returns (uint256[] memory) {
@@ -136,5 +134,16 @@ contract SwapMeet is ERC1155, SwapMeetMetadata, Ownable {
         for (uint256 i = 0; i < rles.length; i += 2) {
             setRle(ids[i / 2], rles[i], rles[i + 1]);
         }
+    }
+
+    /**
+     * @dev Throws if called by any account other than the l1 intiator.
+     */
+    modifier onlyInitiator() {
+        require(
+            _msgSender() == address(ovmL2CrossDomainMessenger) &&
+                ovmL2CrossDomainMessenger.xDomainMessageSender() == initiator
+        );
+        _;
     }
 }

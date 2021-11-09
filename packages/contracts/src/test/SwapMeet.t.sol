@@ -37,18 +37,6 @@ contract Open is SwapMeetTest {
         checkOwns1155s(BAG, address(alice));
     }
 
-    function testOpenBag() public {
-        alice.open(BAG);
-    }
-
-    function testCanBatchOpenBags() public {
-        uint256[] memory ids = new uint256[](3);
-        ids[0] = BAG;
-        ids[1] = BULK1_BAG;
-        ids[2] = BULK2_BAG;
-        alice.batchOpen(ids);
-    }
-
     function testCanSetRle() public {
         owner.setRle(1, jordans, fanny);
         assertEq(string(swapmeet.tokenRle(1, Gender.MALE)), string(jordans));
@@ -94,14 +82,14 @@ contract Open is SwapMeetTest {
         owner.batchSetRle(ids, rles);
     }
 
-    function testFailCannotOpenBagTwice() public {
-        alice.open(BAG);
-        alice.open(BAG);
-    }
+    // function testFailCannotOpenBagTwice() public {
+    //     alice.open(BAG);
+    //     alice.open(BAG);
+    // }
 
-    function testFailCannotOpenBagYouDoNotOwn() public {
-        alice.open(OTHER_BAG);
-    }
+    // function testFailCannotOpenBagYouDoNotOwn() public {
+    //     alice.open(OTHER_BAG);
+    // }
 
     function testSameItemsHaveCorrectBalance() public {
         alice.open(FIRST_SILVER_RING_BAG);

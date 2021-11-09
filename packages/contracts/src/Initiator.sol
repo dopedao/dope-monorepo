@@ -4,8 +4,10 @@ pragma solidity ^0.8.0;
 import { IERC20 } from '../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import { IERC721 } from '../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol';
 import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
+import { Address } from '../lib/openzeppelin-contracts/contracts/utils/Address.sol';
 
 import { iOVM_CrossDomainMessenger } from './interfaces/iOVM_CrossDomainMessenger.sol';
+import { ISwapMeet } from './interfaces/ISwapMeet.sol';
 
 library Errors {
     string constant IsNotSwapMeet = 'snsm';
@@ -21,7 +23,9 @@ library Errors {
     string constant AlreadyOpened = 'already opened';
 }
 
-contract CrossDomainMessenger is Ownable {
+contract Initiator is Ownable {
+    event Opened(uint256 id);
+
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
 
     iOVM_CrossDomainMessenger messenger = iOVM_CrossDomainMessenger(0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1);
@@ -29,6 +33,7 @@ contract CrossDomainMessenger is Ownable {
     address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
     address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
 
+    address immutable hustler;
     address immutable swapmeet;
     IERC721 immutable dope;
     IERC20 immutable paper;
@@ -43,11 +48,70 @@ contract CrossDomainMessenger is Ownable {
     constructor(
         IERC721 dope_,
         IERC20 paper_,
-        address swapmeet_
+        address swapmeet_,
+        address hustler_
     ) {
         dope = dope_;
         paper = paper_;
         swapmeet = swapmeet_;
+        hustler = hustler_;
+    }
+
+    function mintFromDopeTo(
+        uint256 id,
+        address to,
+        uint32 openGasLimit
+    ) external {
+        require(release != 0 && release < block.timestamp, Errors.NotTime);
+
+        open(id, to, abi.encode(equip, id), openGasLimit);
+    }
+
+    function mintOGFromDopeTo(
+        uint256 id,
+        address to,
+        uint32 openGasLimit
+    ) external payable {
+        require(release != 0 && release < block.timestamp, Errors.NotTime);
+        require(msg.value == 250000000000000000, Errors.NotRightETH);
+        require(ogs < 500, Errors.NoMore);
+
+        open(id, to, abi.encode(equip, id), openGasLimit);
+    }
+
+    function open(
+        uint256 id,
+        address to,
+        bytes memory data,
+        uint32 gasLimit
+    ) public {
+        require(msg.sender == dope.ownerOf(id), Errors.DoesNotOwnBagOrNotApproved);
+        require(!opened[id], Errors.AlreadyOpened);
+        opened[id] = true;
+
+        bytes memory message = abi.encodeWithSelector(ISwapMeet.open.selector, id, to, data);
+
+        messenger.sendMessage(swapmeet, message, gasLimit);
+
+        paper.transferFrom(msg.sender, timelock, cost());
+
+        emit Opened(id);
+    }
+
+    function mint(
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask
+    ) internal {
+        // messenger.sendMessage(
+        //     hustler,
+        //     abi.encodeWithSignature('open(uint256, address, bytes)', id, msg.sender, data),
+        //     1000000
+        // );
     }
 
     function withdraw() public {
@@ -57,62 +121,6 @@ contract CrossDomainMessenger is Ownable {
         payable(tarrencellc).transfer(address(this).balance / 2);
         // Remainder
         payable(subimagellc).transfer(address(this).balance);
-    }
-
-    function mintFromDope(uint256 id) external payable {
-        require(release != 0 && release < block.timestamp, Errors.NotTime);
-        open(id);
-
-        uint256[] memory ids = new uint256[](1);
-        ids[0] = id;
-
-        messenger.sendMessage(
-            swapmeet,
-            abi.encodeWithSignature('batchOpen(uint256[], address)', ids, msg.sender),
-            1000000
-        );
-
-        paper.transferFrom(msg.sender, timelock, cost());
-    }
-
-    function mintOGFromDope(uint256 id) external payable {
-        require(release != 0 && release < block.timestamp, Errors.NotTime);
-        require(msg.value == 250000000000000000, Errors.NotRightETH);
-        require(ogs < 500, Errors.NoMore);
-
-        open(id);
-
-        uint256[] memory ids = new uint256[](1);
-        ids[0] = id;
-
-        messenger.sendMessage(
-            swapmeet,
-            abi.encodeWithSignature('batchOpen(uint256[], address, bytes)', ids, msg.sender, abi.encode(equip, id)),
-            1000000
-        );
-
-        paper.transferFrom(msg.sender, timelock, cost());
-    }
-
-    function batchOpen(uint256[] memory ids) public {
-        for (uint256 i = 0; i < 9 * ids.length; i += 9) {
-            uint256 id = ids[i / 9];
-            open(id);
-        }
-
-        messenger.sendMessage(
-            swapmeet,
-            abi.encodeWithSignature('batchOpen(uint256[], address)', ids, msg.sender),
-            1000000
-        );
-
-        paper.transferFrom(msg.sender, timelock, cost() * ids.length);
-    }
-
-    function open(uint256 id) internal {
-        require(msg.sender == dope.ownerOf(id), Errors.DoesNotOwnBagOrNotApproved);
-        require(!opened[id], Errors.AlreadyOpened);
-        opened[id] = true;
     }
 
     function cost() public view returns (uint256) {

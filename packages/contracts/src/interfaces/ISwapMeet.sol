@@ -10,8 +10,12 @@ interface IPaletteProvider {
     function palette(uint8) external view returns (bytes4[] memory);
 }
 
-interface ISwapMeet is IPaletteProvider, IERC1155 {
-    function params(uint256 tokenId)
+interface ISwapMeetMetadata {
+    function fullname(uint256 id) external view returns (string memory n);
+
+    function tokenRle(uint256 id, uint8 gender) external view returns (bytes memory);
+
+    function params(uint256 id)
         external
         view
         returns (
@@ -22,16 +26,12 @@ interface ISwapMeet is IPaletteProvider, IERC1155 {
             string memory,
             bytes4
         );
+}
 
-    function fullname(uint256 tokenId) external view returns (string memory n);
-
-    function tokenRle(uint256 id, uint8 gender) external view returns (bytes memory);
-
+interface ISwapMeet is ISwapMeetMetadata, IPaletteProvider, IERC1155 {
     function open(
-        uint256 tokenId,
+        uint256 id,
         address to,
         bytes memory data
     ) external;
-
-    function cost() external returns (uint256);
 }
