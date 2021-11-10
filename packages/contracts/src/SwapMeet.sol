@@ -3,16 +3,16 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
-import { IERC20 } from '../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
-import { IERC721 } from '../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol';
-import { ERC1155 } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol';
-import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol';
+import '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
 
-import { ComponentTypes } from './Components.sol';
-import { Gender, SwapMeetMetadata } from './SwapMeetMetadata.sol';
-import { TokenId } from './TokenId.sol';
-import { iOVM_CrossDomainMessenger } from './interfaces/iOVM_CrossDomainMessenger.sol';
-import { ISwapMeet } from './interfaces/ISwapMeet.sol';
+import './Components.sol';
+import './SwapMeetMetadata.sol';
+import './TokenId.sol';
+import './interfaces/iOVM_CrossDomainMessenger.sol';
+import './interfaces/ISwapMeet.sol';
 
 /// @title Dope Gear SwapMeet
 /// @author Tarrence van As, forked from Georgios Konstantopoulos

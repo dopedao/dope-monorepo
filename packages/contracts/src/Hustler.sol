@@ -3,14 +3,14 @@ pragma solidity ^0.8.0;
 
 // ============ Imports ============
 
-import { ERC1155 } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol';
-import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
-import { ERC1155Receiver } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol';
-import { iOVM_CrossDomainMessenger } from './interfaces/iOVM_CrossDomainMessenger.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol';
+import '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol';
+import './interfaces/iOVM_CrossDomainMessenger.sol';
 
-import { BitMask } from './BitMask.sol';
-import { BodyParts, HustlerMetadata } from './HustlerMetadata.sol';
-import { IEnforcer, IHustler } from './interfaces/IHustler.sol';
+import './BitMask.sol';
+import './HustlerMetadata.sol';
+import './interfaces/IHustler.sol';
 
 library Errors {
     string constant IsNotSwapMeet = 'snsm';
@@ -30,9 +30,6 @@ library Errors {
 contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
     bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
     IEnforcer private enforcer;
-    address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
-    address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
-    address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
     iOVM_CrossDomainMessenger ovmL2CrossDomainMessenger =
         iOVM_CrossDomainMessenger(0x4200000000000000000000000000000000000007);
 
@@ -44,7 +41,6 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
     // First 500 are reserved for OG Hustlers.
     uint256 internal hustlers = 500;
 
-    // No need for a URI since we're doing everything onchain
     constructor(
         address _components,
         address _swapmeet,

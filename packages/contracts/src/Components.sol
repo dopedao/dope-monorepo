@@ -27,7 +27,7 @@ pragma solidity ^0.8.4;
 
 import '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
 
-import { toString } from './MetadataUtils.sol';
+import './MetadataUtils.sol';
 
 library ComponentTypes {
     uint8 internal constant WEAPON = 0x0;

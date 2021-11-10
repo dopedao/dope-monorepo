@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import './Components.sol';
 import './TokenId.sol';
 
-import { IPaletteProvider } from './interfaces/ISwapMeet.sol';
-import { MetadataBuilder, Transform } from './MetadataBuilder.sol';
-import { ISwapMeetMetadata } from './interfaces/ISwapMeet.sol';
+import './interfaces/ISwapMeet.sol';
+import './MetadataBuilder.sol';
+import './interfaces/ISwapMeet.sol';
 
 library Gender {
     uint8 internal constant MALE = 0x0;

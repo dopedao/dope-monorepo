@@ -19,4 +19,10 @@ export const NETWORK = {
     rpc: 'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
     subgraph: 'https://api.studio.thegraph.com/query/7708/dope-wars/v0.1.18-rinkeby',
   },
+  69: {
+    contracts: {
+      swapmeet: '0x52aA7619E1eCEEbCBFF7d26C749488d6AD888516',
+      hustlers: '0x7E9c72F6440A817d71Cc1441873Ef0747330922B',
+    },
+  },
 };
