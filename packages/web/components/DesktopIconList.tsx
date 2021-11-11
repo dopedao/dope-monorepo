@@ -47,25 +47,30 @@ const DesktopIconList = () => {
         clickAction={() => openLocalRoute('/terms-of-service')}
       />
       <DesktopIcon icon="tv" label="DOPE TV" clickAction={() => openLocalRoute('/dope-tv')} />
-      <DesktopIcon 
-        icon="file" 
-        label="ABOUT.FAQ" 
-        clickAction={() => openLocalRoute('/about')} 
-      />
+      <DesktopIcon icon="file" label="ABOUT.FAQ" clickAction={() => openLocalRoute('/about')} />
       {/* <DesktopIcon 
         icon="file-chart" 
         label="DOPE Stats" 
         clickAction={() => openBrowserTab('https://dune.xyz/HorizonXP/Dope-Wars-Degen-Dashboard')} 
       /> */}
-      <DesktopIcon 
-        icon="paper-bill-desktop" 
-        label="GET $PAPER" 
-        clickAction={() => openBrowserTab('https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483')} 
+      <DesktopIcon
+        icon="paper-bill-desktop"
+        label="GET $PAPER"
+        clickAction={() =>
+          openBrowserTab(
+            'https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483',
+          )
+        }
       />
       <DesktopIcon
         icon="tally"
         label="Dope DAO"
         clickAction={() => openBrowserTab('https://www.withtally.com/governance/dopeWars')}
+      />
+      <DesktopIcon
+        icon="telegram"
+        label="Telegram"
+        clickAction={() => openBrowserTab('https://t.me/DopeWarsPaper')}
       />
       <DesktopIcon
         icon="open-sea"
