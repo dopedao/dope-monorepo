@@ -112,9 +112,10 @@ function getClient(uri: string) {
 
 const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
   const { chainId } = useWeb3React();
-  const uri = useMemo(() => (chainId ? NETWORK[chainId as 1 | 4].subgraph : NETWORK[1].subgraph), [
-    chainId,
-  ]);
+  const uri = useMemo(
+    () => (chainId ? NETWORK[chainId as 1 | 4].subgraph : NETWORK[1].subgraph),
+    [chainId],
+  );
   const client = getClient(uri);
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 
