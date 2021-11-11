@@ -23,7 +23,7 @@ interface Values {
   renderName: boolean;
 }
 
-const Configuration = () => {
+const ConfigurationControls = () => {
   const { chainId, library, account } = useWeb3React();
 
   function validateName(value: string) {
@@ -135,4 +135,4 @@ const Configuration = () => {
   );
 };
 
-export default Configuration;
+export default ConfigurationControls;

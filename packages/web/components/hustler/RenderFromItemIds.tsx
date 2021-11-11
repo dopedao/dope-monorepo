@@ -1,13 +1,12 @@
+import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber, providers } from 'ethers';
-import { css } from '@emotion/react';
+import { hexColorToBase16 } from '../../src/utils';
 import { HustlerSex, DEFAULT_BG_COLORS } from '../../src/HustlerInitiation';
 import { NETWORK } from '../../src/constants';
-import LoadingBlock from '../LoadingBlock';
 import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
-import { hexColorToBase16 } from '../../src/utils';
-
-// then the 2nd arg is the index which corresponds to what they are in the image folders
+import { css } from '@emotion/react';
+import LoadingBlockSquareCentered from '../LoadingBlockSquareCentered';
 
 interface Metadata {
   image: string;
@@ -126,26 +125,16 @@ const RenderFromItemIds = ({
     }
   }, [swapmeet, hustlers, itemRles, bodyRles]);
 
-  if (hasRenderedFromChain === false) return <LoadingBlock maxRows={5} />;
+  if (hasRenderedFromChain === false) return <LoadingBlockSquareCentered />;
 
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-align: center;
-        justify-content: center;
-      `}
-    >
+    // Need to set overflow hidden so whole container doesn't scroll
+    // and cause flexbox layout to shift.
+    <AspectRatio ratio={1} css={css`overflow: hidden;`}>
       {json && (
-        <img
-          css={css`
-            width: 640px;
-            height: 640px;
-          `}
-          src={json.image}
-        ></img>
+        <img src={json.image}></img>
       )}
-    </div>
+    </AspectRatio>
   );
 };
 

@@ -21,3 +21,5 @@ export const NETWORK = {
     subgraph: 'https://api.studio.thegraph.com/query/7708/dope-wars/v0.1.18-rinkeby',
   },
 };
+
+export const HUSTLER_MINT_TIME = new Date(2021, 10, 20, 21);

@@ -1,33 +1,37 @@
 import { css } from '@emotion/react';
 import { HustlerInitConfig } from '../../src/HustlerInitiation';
 import { useReactiveVar } from '@apollo/client';
+import { useWeb3React } from '@web3-react/core';
+import { HUSTLER_MINT_TIME } from '../../src/constants';
 import AppWindow from '../../components/AppWindow';
+import ConfigurationControls from '../../components/hustler/ConfigurationControls';
 import Head from '../../components/Head';
-import InitiationFooter from '../../components/hustler/InitiationFooter';
-import InitiationInfo from '../../components/hustler/InitiationInfo';
 import PanelContainer from '../../components/PanelContainer';
 import PanelTitleBar from '../../components/PanelTitleBar';
 import RenderFromLootId from '../../components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from '../../components/StackedResponsiveContainer';
 
-const title = 'Initiate New Hustler';
 
-export default function Initiate() {
+const Hustler = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
+  // const currentTime = new Date();
+  // const { chainId } = useWeb3React();
+  // const onTestNetOrAfterHustlerLaunch = chainId == 4 || currentTime >= HUSTLER_MINT_TIME;
 
   return (
-    <AppWindow requiresWalletConnection={true} scrollable={true}>
-      <Head title={title} />
+    <AppWindow requiresWalletConnection={true}>
+      <Head title="Create Your Hustler" />
       <StackedResponsiveContainer>
+        <ConfigurationControls />
         <PanelContainer
           css={css`
-            min-height: 400px;
+            min-height: 500px;
             // This bg color will have to change once we can configure it
             // It's the default right now for testnet renders.
             background-color: ${hustlerConfig.bgColor};
           `}
         >
-          <PanelTitleBar>Hustler</PanelTitleBar>
+          <PanelTitleBar>DOPE ID {hustlerConfig.dopeId}</PanelTitleBar>
           <RenderFromLootId
             id={hustlerConfig.dopeId}
             sex={hustlerConfig.sex}
@@ -36,10 +40,10 @@ export default function Initiate() {
             facialHair={hustlerConfig.facialHair}
             bgColor={hustlerConfig.bgColor}
           />
-          <InitiationFooter />
         </PanelContainer>
-        <InitiationInfo />
       </StackedResponsiveContainer>
     </AppWindow>
   );
-}
+};
+
+export default Hustler;

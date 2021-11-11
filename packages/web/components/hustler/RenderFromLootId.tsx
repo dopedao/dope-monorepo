@@ -1,4 +1,3 @@
-import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber, providers } from 'ethers';
 import { css } from '@emotion/react';
 import { HustlerSex } from '../../src/HustlerInitiation';
@@ -7,6 +6,7 @@ import { SwapMeet__factory } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
 import LoadingBlock from '../LoadingBlock';
 import RenderFromItemIds from '../../components/hustler/RenderFromItemIds';
+import LoadingBlockSquareCentered from '../LoadingBlockSquareCentered';
 
 interface HustlerRenderProps {
   id: string;
@@ -44,30 +44,17 @@ const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor }: HustlerR
 
   if (itemIds) {
     return (
-      <AspectRatio ratio={1}>
-        <RenderFromItemIds
-          itemIds={itemIds}
-          sex={sex}
-          body={body}
-          hair={hair}
-          facialHair={facialHair}
-          bgColor={bgColor}
-        />
-      </AspectRatio>
+      <RenderFromItemIds
+        itemIds={itemIds}
+        sex={sex}
+        body={body}
+        hair={hair}
+        facialHair={facialHair}
+        bgColor={bgColor}
+      />
     );
   } else {
-    return (
-      <div
-        css={css`
-          padding: 16px;
-          display: flex;
-          flex-align: center;
-          justify-content: center;
-        `}
-      >
-        <LoadingBlock maxRows={5} />
-      </div>
-    );
+    return <LoadingBlockSquareCentered />;
   }
 };
 
