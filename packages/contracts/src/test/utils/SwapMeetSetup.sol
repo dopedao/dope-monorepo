@@ -15,40 +15,6 @@ import { TokenId } from '../../TokenId.sol';
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 
-// NB: Using callbacks is hard, since we're a smart contract account we need
-// to be implementing the callbacks
-contract SwapMeetUser is ERC721Holder, ERC1155Holder {
-    iOVM_CrossDomainMessenger cdm;
-    DopeWarsLoot dope;
-    SwapMeet swapmeet;
-
-    constructor(DopeWarsLoot _dope, iOVM_CrossDomainMessenger _cdm) {
-        dope = _dope;
-        cdm = _cdm;
-    }
-
-    function setSwapMeet(SwapMeet swapmeet_) public {
-        swapmeet = swapmeet_;
-    }
-
-    function claim(uint256 tokenId) public {
-        dope.claim(tokenId);
-    }
-
-    function open(uint256 id) public {
-        bytes memory message = abi.encodeWithSelector(ISwapMeet.open.selector, id, address(this), '');
-        cdm.sendMessage(address(swapmeet), message, 1000000);
-    }
-
-    function transferERC1155(
-        address to,
-        uint256 tokenId,
-        uint256 amount
-    ) public {
-        swapmeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
-    }
-}
-
 struct ItemIds {
     uint256 weapon;
     uint256 clothes;
@@ -73,11 +39,17 @@ struct ItemNames {
     string ring;
 }
 
-contract SwapMeetOwner is ERC1155Holder {
+contract SwapMeetOwner is ERC1155Holder, ERC721Holder {
+    DopeWarsLoot dope;
     Components components;
     SwapMeet swapmeet;
 
-    function init(Components _components, SwapMeet _swapmeet) public {
+    function init(
+        DopeWarsLoot _dope,
+        Components _components,
+        SwapMeet _swapmeet
+    ) public {
+        dope = _dope;
         components = _components;
         swapmeet = _swapmeet;
 
@@ -427,16 +399,30 @@ contract SwapMeetOwner is ERC1155Holder {
     function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) public {
         swapmeet.batchSetRle(ids, rles);
     }
+
+    function setSwapMeet(SwapMeet swapmeet_) public {
+        swapmeet = swapmeet_;
+    }
+
+    function claim(uint256 tokenId) public {
+        dope.claim(tokenId);
+    }
+
+    function open(uint256 id) public {
+        swapmeet.open(id, address(this), '');
+    }
+
+    function transferERC1155(
+        address to,
+        uint256 tokenId,
+        uint256 amount
+    ) public {
+        swapmeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
+    }
 }
 
 contract SwapMeetTester is SwapMeet {
-    constructor(
-        address _components,
-        address _initiator,
-        iOVM_CrossDomainMessenger cdm,
-        address _owner
-    ) SwapMeet(_components, _initiator) {
-        ovmL2CrossDomainMessenger = cdm;
+    constructor(address _components, address _owner) SwapMeet(_components) {
         transferOwnership(_owner);
     }
 
@@ -572,14 +558,11 @@ contract SwapMeetTest is DSTest {
     DopeWarsLoot internal dope;
     Components internal components;
     SwapMeetTester internal swapmeet;
-    iOVM_FakeCrossDomainMessenger internal cdm;
 
     // users
     SwapMeetOwner internal owner;
-    SwapMeetUser internal alice;
 
     function setUp() public virtual {
-        cdm = new iOVM_FakeCrossDomainMessenger();
         owner = new SwapMeetOwner();
 
         // deploy contracts
@@ -587,26 +570,18 @@ contract SwapMeetTest is DSTest {
         components = new Components();
         components.transferOwnership(address(owner));
 
-        // create alice's account & claim a bag
-        alice = new SwapMeetUser(dope, cdm);
-        // cdm.setSender(address(alice));
-        swapmeet = new SwapMeetTester(
-            address(components),
-            address(alice),
-            iOVM_CrossDomainMessenger(cdm),
-            address(owner)
-        );
-        alice.setSwapMeet(swapmeet);
+        // create owner's account & claim a bag
+        swapmeet = new SwapMeetTester(address(components), address(owner));
 
-        owner.init(components, swapmeet);
+        owner.init(dope, components, swapmeet);
 
-        alice.claim(BAG);
-        assertEq(dope.ownerOf(BAG), address(alice));
+        owner.claim(BAG);
+        assertEq(dope.ownerOf(BAG), address(owner));
 
-        alice.claim(BULK1_BAG);
-        alice.claim(BULK2_BAG);
+        owner.claim(BULK1_BAG);
+        owner.claim(BULK2_BAG);
 
-        alice.claim(FIRST_SILVER_RING_BAG);
-        alice.claim(SECOND_SILVER_RING_BAG);
+        owner.claim(FIRST_SILVER_RING_BAG);
+        owner.claim(SECOND_SILVER_RING_BAG);
     }
 }

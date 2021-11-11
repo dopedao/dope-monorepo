@@ -39,6 +39,8 @@ contract Controller is IController {
         maintainer = msg.sender;
     }
 
+    /** INITIATOR ACTIONS */
+
     function mintTo(
         uint256 dopeId,
         address to,
@@ -51,8 +53,9 @@ contract Controller is IController {
         bytes2 mask,
         bytes memory data
     ) external override onlyInitiator {
-        uint256 hustlerId = hustler.mintTo(to, name, color, background, options, viewbox, body, mask, data);
+        uint256 hustlerId = hustler.mintTo(address(this), name, color, background, options, viewbox, body, mask, '');
         swapmeet.open(dopeId, address(hustler), abi.encode(equip, hustlerId));
+        hustler.safeTransferFrom(address(this), to, hustlerId, 1, data);
     }
 
     function mintOGTo(
@@ -67,8 +70,9 @@ contract Controller is IController {
         bytes2 mask,
         bytes memory data
     ) external override onlyInitiator {
-        uint256 hustlerId = hustler.mintOGTo(to, name, color, background, options, viewbox, body, mask, data);
+        uint256 hustlerId = hustler.mintOGTo(address(this), name, color, background, options, viewbox, body, mask, '');
         swapmeet.open(dopeId, address(hustler), abi.encode(equip, hustlerId));
+        hustler.safeTransferFrom(address(this), to, hustlerId, 1, data);
     }
 
     function open(uint256 dopeId, address to) external override onlyInitiator {

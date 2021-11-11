@@ -86,16 +86,16 @@ contract Hustlers is HustlerTest {
 
     //     for (uint256 i = 1; i < 8001; i++) {
     //         if (i == BAG || i == OTHER_BAG) {
-    //             alice.mint();
+    //             owner.mint();
     //             continue;
     //         }
 
-    //         alice.claim(i);
-    //         alice.claimPaper(i);
+    //         owner.claim(i);
+    //         owner.claimPaper(i);
 
     //         uint256 hustlerId = 499 + i;
 
-    //         alice.mint(i, name, color, background, hex'', viewbox, body, hex'000f');
+    //         owner.mint(i, name, color, background, hex'', viewbox, body, hex'000f');
     //         ItemIds memory ids = swapmeet.ids(i);
     //         checkOwns1155s(ids, address(hustler));
     //         checkIsEquipped(ids, hustlerId);
@@ -111,8 +111,8 @@ contract Hustlers is HustlerTest {
         uint256 hustlerId = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mint(name, color, background, hex'', viewbox, body, hex'000f');
-        alice.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
+        owner.mint(name, color, background, hex'', viewbox, body, hex'000f');
+        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
@@ -134,8 +134,8 @@ contract Hustlers is HustlerTest {
         uint256 hustlerId = 0;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mintOG(hustlerId, name, color, background, hex'', viewbox, body, hex'000f', '');
-        alice.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
+        owner.mintOG(name, color, background, hex'', viewbox, body, hex'000f', '');
+        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
@@ -170,7 +170,7 @@ contract Hustlers is HustlerTest {
     //     bytes4 color = hex'fafafaff';
     //     uint8[4] memory body;
     //     uint8[4] memory viewbox;
-    //     alice.mintOGFromDope{ value: 250000000000000000 - 1 }(
+    //     owner.mintOGFromDope{ value: 250000000000000000 - 1 }(
     //         OTHER_BAG,
     //         name,
     //         color,
@@ -189,7 +189,7 @@ contract Hustlers is HustlerTest {
     //     bytes4 color = hex'fafafaff';
     //     uint8[4] memory body;
     //     uint8[4] memory viewbox;
-    //     alice.mintOGFromDope{ value: 250000000000000000 + 1 }(
+    //     owner.mintOGFromDope{ value: 250000000000000000 + 1 }(
     //         OTHER_BAG,
     //         name,
     //         color,
@@ -210,14 +210,14 @@ contract Hustlers is HustlerTest {
         uint256 id = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mint(name, color, background, hex'', viewbox, body, hex'');
-        alice.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
+        owner.mint(name, color, background, hex'', viewbox, body, hex'');
+        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
 
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, id);
 
-        alice.safeTransferFrom(address(alice), address(hustler), ACCESSORY, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(address(owner), address(hustler), ACCESSORY, 1, abi.encode(equip, id));
         hustler.tokenURI(id);
     }
 
@@ -229,8 +229,8 @@ contract Hustlers is HustlerTest {
         uint256 hustlerId = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mint(name, color, background, hex'', viewbox, body, hex'');
-        alice.safeTransferHustlerFrom(address(alice), address(bob), hustlerId, 1, '');
+        owner.mint(name, color, background, hex'', viewbox, body, hex'');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), hustlerId, 1, '');
 
         assertEq(hustler.balanceOf(address(bob), hustlerId), 1);
     }
@@ -244,8 +244,8 @@ contract Hustlers is HustlerTest {
 
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mint(name, color, background, hex'', viewbox, body, hex'');
-        alice.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
+        owner.mint(name, color, background, hex'', viewbox, body, hex'');
+        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
@@ -254,9 +254,9 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(hustlerId).mask, bytes2(hex'01ff'));
         uint8[] memory slots = new uint8[](1);
         slots[0] = 0;
-        alice.unequip(hustlerId, slots);
+        owner.unequip(hustlerId, slots);
         // 0000 0001 1111 1110
-        assertEq(swapmeet.balanceOf(address(alice), ids.weapon), 1);
+        assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 1);
         assertEq(bytes32(hustler.getMetadata(hustlerId).mask), bytes32(bytes2(hex'01fe')));
 
         uint8[] memory slots2 = new uint8[](5);
@@ -265,104 +265,104 @@ contract Hustlers is HustlerTest {
         slots2[2] = 3;
         slots2[3] = 4;
         slots2[4] = 5;
-        alice.unequip(hustlerId, slots2);
+        owner.unequip(hustlerId, slots2);
 
         // 0000 0001 1100 0000
         assertEq(bytes32(hustler.getMetadata(hustlerId).mask), bytes32(bytes2(hex'01c0')));
-        assertEq(swapmeet.balanceOf(address(alice), ids.clothes), 1);
-        assertEq(swapmeet.balanceOf(address(alice), ids.vehicle), 1);
-        assertEq(swapmeet.balanceOf(address(alice), ids.waist), 1);
-        assertEq(swapmeet.balanceOf(address(alice), ids.foot), 1);
-        assertEq(swapmeet.balanceOf(address(alice), ids.hand), 1);
+        assertEq(swapmeet.balanceOf(address(owner), ids.clothes), 1);
+        assertEq(swapmeet.balanceOf(address(owner), ids.vehicle), 1);
+        assertEq(swapmeet.balanceOf(address(owner), ids.waist), 1);
+        assertEq(swapmeet.balanceOf(address(owner), ids.foot), 1);
+        assertEq(swapmeet.balanceOf(address(owner), ids.hand), 1);
 
-        alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, hustlerId));
+        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, hustlerId));
         assertEq(bytes32(hustler.getMetadata(hustlerId).mask), bytes32(bytes2(hex'01c1')));
-        assertEq(swapmeet.balanceOf(address(alice), ids.weapon), 0);
+        assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 0);
         assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
     }
 
     function testCanSetName() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, 'hustler', '', '', '', viewbox, body, hex'0001');
+        owner.setMetadata(id, 'hustler', '', '', '', viewbox, body, hex'0001');
 
         assertEq(hustler.getMetadata(id).name, 'hustler');
     }
 
     function testSettingNameWithoutMaskIsNoop() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, 'hustler', '', '', '', viewbox, body, hex'0000');
+        owner.setMetadata(id, 'hustler', '', '', '', viewbox, body, hex'0000');
 
         assertEq(hustler.getMetadata(id).name, '');
     }
 
     function testFailCantSetLongName() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, 'hustler name', '', '', '', viewbox, body, hex'0001');
+        owner.setMetadata(id, 'hustler name', '', '', '', viewbox, body, hex'0001');
     }
 
     function testCanSetBackground() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, '', '', hex'123456', '', viewbox, body, hex'0004');
+        owner.setMetadata(id, '', '', hex'123456', '', viewbox, body, hex'0004');
 
         assertEq(hustler.getMetadata(id).background, hex'123456');
     }
 
     function testSettingBackgroundWithoutMaskIsNoop() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, '', '', hex'123456', '', viewbox, body, hex'0000');
+        owner.setMetadata(id, '', '', hex'123456', '', viewbox, body, hex'0000');
 
         assertEq(hustler.getMetadata(id).background, '');
     }
 
     function testCanSetColor() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, '', hex'123456', '', '', viewbox, body, hex'0002');
+        owner.setMetadata(id, '', hex'123456', '', '', viewbox, body, hex'0002');
 
         assertEq(hustler.getMetadata(id).color, hex'123456');
     }
 
     function testSettingColorWithoutMaskIsNoop() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, '', hex'123456', '', '', viewbox, body, hex'0000');
+        owner.setMetadata(id, '', hex'123456', '', '', viewbox, body, hex'0000');
 
         assertEq(hustler.getMetadata(id).color, '');
     }
 
     function testCanSetBodyPartial() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body = [1, 0, 12, 0];
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, '', '', '', '', viewbox, body, hex'0050');
+        owner.setMetadata(id, '', '', '', '', viewbox, body, hex'0050');
 
         assertEq(hustler.getMetadata(id).body[0], 1);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -374,18 +374,18 @@ contract Hustlers is HustlerTest {
         uint256 id = 0;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mintOG(id, 'tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, hex'000f', '');
+        owner.mintOG('tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, hex'000f', '');
 
         require(bytes(hustler.uri(id)).length > 0);
     }
 
     function testFailSetOGBodyForNoneOG() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body = [0, 5, 0, 0];
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, '', '', '', '', viewbox, body, hex'0020');
+        owner.setMetadata(id, '', '', '', '', viewbox, body, hex'0020');
 
         assertEq(hustler.getMetadata(id).body[0], 0);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -397,11 +397,11 @@ contract Hustlers is HustlerTest {
         uint256 id = 0;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mintOG(id, '', '', '', hex'', viewbox, body, hex'', '');
+        owner.mintOG('', '', '', hex'', viewbox, body, hex'', '');
 
         uint8[4] memory body2 = [0, 5, 0, 0];
 
-        alice.setMetadata(id, '', '', '', '', viewbox, body2, hex'0020');
+        owner.setMetadata(id, '', '', '', '', viewbox, body2, hex'0020');
 
         assertEq(hustler.getMetadata(id).body[0], 0);
         assertEq(hustler.getMetadata(id).body[1], 5);
@@ -413,18 +413,18 @@ contract Hustlers is HustlerTest {
         uint256 id = 0;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mintOG(id, 'tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, hex'000f', '');
+        owner.mintOG('tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, hex'000f', '');
 
         require(bytes(hustler.uri(id)).length > 0);
     }
 
     function testCanSetBodyFull() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         uint8[4] memory body = [2, 3, 4, 5];
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, '', '', '', '', viewbox, body, hex'00f0');
+        owner.setMetadata(id, '', '', '', '', viewbox, body, hex'00f0');
 
         assertEq(hustler.getMetadata(id).body[0], 2);
         assertEq(hustler.getMetadata(id).body[1], 3);
@@ -434,16 +434,16 @@ contract Hustlers is HustlerTest {
 
     function testFailCantSetMetadataOfUnowned() public {
         uint256 id = 500;
-        hustler.mint(address(this), '');
+        hustler.mintTo(address(this), '');
         uint8[4] memory body = [2, 3, 4, 5];
         uint8[4] memory viewbox;
 
-        alice.setMetadata(id, '', '', '', '', viewbox, body, hex'00f0');
+        owner.setMetadata(id, '', '', '', '', viewbox, body, hex'00f0');
     }
 
     function testCanSetSlotsPartial() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
         uint256[] memory items = new uint256[](2);
         items[0] = ids.weapon;
@@ -452,7 +452,7 @@ contract Hustlers is HustlerTest {
         amounts[0] = 1;
         amounts[1] = 1;
 
-        alice.safeBatchTransferFrom(address(alice), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], 0);
@@ -468,7 +468,7 @@ contract Hustlers is HustlerTest {
 
     function testCanSetSlotsFull() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
 
         uint256[] memory items = new uint256[](9);
@@ -493,8 +493,8 @@ contract Hustlers is HustlerTest {
         amounts[7] = 1;
         amounts[8] = 1;
 
-        alice.setApprovalForAll(address(hustler), true);
-        alice.safeBatchTransferFrom(address(alice), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.setApprovalForAll(address(hustler), true);
+        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], ids.clothes);
@@ -511,7 +511,7 @@ contract Hustlers is HustlerTest {
 
     function testSettingSlotsFullReturnsExisting() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
 
         uint256[] memory items = new uint256[](9);
@@ -536,8 +536,8 @@ contract Hustlers is HustlerTest {
         amounts[7] = 1;
         amounts[8] = 1;
 
-        alice.setApprovalForAll(address(hustler), true);
-        alice.safeBatchTransferFrom(address(alice), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.setApprovalForAll(address(hustler), true);
+        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], ids.clothes);
@@ -551,7 +551,7 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(id).slots[9], 0);
         checkOwns1155s(ids, address(hustler));
 
-        alice.open(OTHER_BAG, address(alice), '');
+        owner.open(OTHER_BAG, address(owner), '');
 
         ItemIds memory otherIds = swapmeet.ids(OTHER_BAG);
         uint256[] memory otherItems = new uint256[](9);
@@ -564,7 +564,7 @@ contract Hustlers is HustlerTest {
         otherItems[6] = otherIds.drugs;
         otherItems[7] = otherIds.neck;
         otherItems[8] = otherIds.ring;
-        alice.safeBatchTransferFrom(address(alice), address(hustler), otherItems, amounts, abi.encode(equip, id));
+        owner.safeBatchTransferFrom(address(owner), address(hustler), otherItems, amounts, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], otherIds.weapon);
         assertEq(hustler.getMetadata(id).slots[1], otherIds.clothes);
@@ -576,14 +576,14 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(id).slots[7], otherIds.neck);
         assertEq(hustler.getMetadata(id).slots[8], otherIds.ring);
         assertEq(hustler.getMetadata(id).slots[9], 0);
-        checkOwns1155s(ids, address(alice));
+        checkOwns1155s(ids, address(owner));
         checkOwns1155s(otherIds, address(hustler));
     }
 
     function testBatchSettingSlotsSameSlotReturnsFirst() public {
         uint256 id = 500;
-        alice.mint();
-        alice.open(OTHER_BAG, address(alice), abi.encode(equip, id));
+        owner.mint();
+        owner.open(OTHER_BAG, address(owner), abi.encode(equip, id));
         ItemIds memory ids = swapmeet.ids(BAG);
         ItemIds memory otherIds = swapmeet.ids(OTHER_BAG);
 
@@ -595,18 +595,18 @@ contract Hustlers is HustlerTest {
         amounts[0] = 1;
         amounts[1] = 1;
 
-        alice.setApprovalForAll(address(hustler), true);
-        alice.safeBatchTransferFrom(address(alice), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.setApprovalForAll(address(hustler), true);
+        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], otherIds.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), otherIds.weapon), 1);
-        assertEq(swapmeet.balanceOf(address(alice), ids.weapon), 1);
+        assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 1);
     }
 
     function testFailBatchSettingSlotsOfUnowned() public {
         uint256 id = 500;
-        hustler.mint(address(this), '');
-        alice.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
+        hustler.mintTo(address(this), '');
+        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
 
         ItemIds memory ids = swapmeet.ids(BAG);
 
@@ -616,18 +616,18 @@ contract Hustlers is HustlerTest {
         uint256[] memory amounts = new uint256[](1);
         amounts[0] = 1;
 
-        alice.setApprovalForAll(address(hustler), true);
-        alice.safeBatchTransferFrom(address(alice), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.setApprovalForAll(address(hustler), true);
+        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
     }
 
     function testFailBatchSettingSlotWithDuplicate() public {
         uint256 id = 500;
-        alice.mint();
-        alice.claim(UZI_BAG_1);
-        alice.open(UZI_BAG_1, address(hustler), abi.encode(equip, id));
+        owner.mint();
+        owner.claim(UZI_BAG_1);
+        owner.open(UZI_BAG_1, address(hustler), abi.encode(equip, id));
 
-        alice.claim(UZI_BAG_2);
-        alice.open(UZI_BAG_2, address(hustler), abi.encode(equip, id));
+        owner.claim(UZI_BAG_2);
+        owner.open(UZI_BAG_2, address(hustler), abi.encode(equip, id));
 
         ItemIds memory ids = swapmeet.ids(UZI_BAG_1);
 
@@ -637,18 +637,18 @@ contract Hustlers is HustlerTest {
         uint256[] memory amounts = new uint256[](1);
         amounts[0] = 2;
 
-        alice.setApprovalForAll(address(hustler), true);
-        alice.safeBatchTransferFrom(address(alice), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.setApprovalForAll(address(hustler), true);
+        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
         assertEq(hustler.getMetadata(id).slots[0], 0);
-        assertEq(swapmeet.balanceOf(address(alice), ids.weapon), 2);
+        assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 2);
     }
 
     function testCanSetSingleSlot() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
 
-        alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
@@ -656,60 +656,60 @@ contract Hustlers is HustlerTest {
 
     function testFailSettingSlotWithDuplicate() public {
         uint256 id = 500;
-        alice.mint();
-        alice.claim(UZI_BAG_1);
-        alice.open(UZI_BAG_1, address(hustler), abi.encode(equip, id));
+        owner.mint();
+        owner.claim(UZI_BAG_1);
+        owner.open(UZI_BAG_1, address(hustler), abi.encode(equip, id));
 
-        alice.claim(UZI_BAG_2);
-        alice.open(UZI_BAG_2, address(hustler), abi.encode(equip, id));
+        owner.claim(UZI_BAG_2);
+        owner.open(UZI_BAG_2, address(hustler), abi.encode(equip, id));
 
         ItemIds memory ids = swapmeet.ids(UZI_BAG_1);
 
-        alice.setApprovalForAll(address(hustler), true);
-        alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 2, abi.encode(equip, id));
+        owner.setApprovalForAll(address(hustler), true);
+        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 2, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], 0);
-        assertEq(swapmeet.balanceOf(address(alice), ids.weapon), 2);
+        assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 2);
     }
 
     function tesFailtCantSetSlotOfUnownedHustler() public {
         uint256 id = 500;
-        hustler.mint(address(this), '');
+        hustler.mintTo(address(this), '');
         ItemIds memory ids = swapmeet.ids(BAG);
-        alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, id));
     }
 
     function testFailOpeningToAlreadyEquippedHustler() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
 
-        alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
 
-        alice.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
+        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
     }
 
     function testSettingSlotReturnsExistingItem() public {
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
 
-        alice.safeTransferFrom(address(alice), address(hustler), ids.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
 
-        alice.open(OTHER_BAG, address(alice), '');
+        owner.open(OTHER_BAG, address(owner), '');
         ItemIds memory otherIds = swapmeet.ids(OTHER_BAG);
 
-        alice.safeTransferFrom(address(alice), address(hustler), otherIds.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(address(owner), address(hustler), otherIds.weapon, 1, abi.encode(equip, id));
 
         assertEq(hustler.getMetadata(id).slots[0], otherIds.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), otherIds.weapon), 1);
-        assertEq(swapmeet.balanceOf(address(alice), ids.weapon), 1);
+        assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 1);
     }
 
     function testCanBuildTokenURIWithNoRLEs() public {
@@ -725,7 +725,7 @@ contract Hustlers is HustlerTest {
         owner.addRles(RleParts.BEARD, beards);
 
         uint256 id = 500;
-        alice.mint();
+        owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
 
         uint256[] memory items = new uint256[](9);
@@ -739,7 +739,7 @@ contract Hustlers is HustlerTest {
         items[7] = ids.neck;
         items[8] = ids.ring;
 
-        alice.setApprovalForAll(address(hustler), true);
+        owner.setApprovalForAll(address(hustler), true);
 
         hustler.tokenURI(id);
     }
@@ -752,9 +752,9 @@ contract Hustlers is HustlerTest {
         uint256 hustlerId = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mint(name, color, background, hex'', viewbox, body, hex'');
+        owner.mint(name, color, background, hex'', viewbox, body, hex'');
 
-        alice.setMetadata(hustlerId, '', '', '', hex'0001', viewbox, body, hex'0000');
+        owner.setMetadata(hustlerId, '', '', '', hex'0001', viewbox, body, hex'0000');
         assertEq(hustler.getMetadata(hustlerId).options, hex'0001');
 
         hustler.tokenURI(hustlerId);
@@ -818,11 +818,11 @@ contract Bouncing is HustlerTest {
         uint256 id = 500;
 
         hevm.warp(100);
-        alice.mint();
+        owner.mint();
         assertEq(hustler.getMetadata(id).age, 100);
 
         hevm.warp(200);
-        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
         assertEq(hustler.getMetadata(id).age, 200);
     }
 
@@ -835,8 +835,8 @@ contract Bouncing is HustlerTest {
         uint256 id = 500;
 
         hevm.warp(100);
-        alice.mint();
-        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+        owner.mint();
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
     }
 
     function testTransferDoesntResetRespectWEnforcer() public {
@@ -848,11 +848,11 @@ contract Bouncing is HustlerTest {
         uint256 id = 500;
 
         hevm.warp(100);
-        alice.mint();
+        owner.mint();
         assertEq(hustler.getMetadata(id).age, 100);
 
         hevm.warp(200);
-        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
         assertEq(hustler.getMetadata(id).age, 100);
     }
 
@@ -865,11 +865,11 @@ contract Bouncing is HustlerTest {
         uint256 id = 500;
 
         hevm.warp(100);
-        alice.mint();
+        owner.mint();
         assertEq(hustler.getMetadata(id).age, 100);
 
         hevm.warp(200);
-        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
         assertEq(hustler.getMetadata(id).age, 200);
     }
 
@@ -879,11 +879,11 @@ contract Bouncing is HustlerTest {
         hevm.warp(100);
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mintOG(id, 'gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'', '');
+        owner.mintOG('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'', '');
         assertEq(hustler.getMetadata(id).age, 100);
 
         hevm.warp(200);
-        alice.safeTransferHustlerFrom(address(alice), address(bob), id, 1, '');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
         assertEq(hustler.getMetadata(id).age, 100);
     }
 }
@@ -896,16 +896,16 @@ contract Benchmark is HustlerTest {
     function testMintFromDope() public {
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mint('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'');
+        owner.mint('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'');
     }
 
     function testMintOGFromDope() public {
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        alice.mintOG(0, 'gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'', '');
+        owner.mintOG('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'', '');
     }
 
     function testCanMint() public {
-        alice.mint();
+        owner.mint();
     }
 }

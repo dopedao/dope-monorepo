@@ -33,8 +33,8 @@ contract Open is SwapMeetTest {
     }
 
     function testCanOpenBag() public {
-        alice.open(BAG);
-        checkOwns1155s(BAG, address(alice));
+        owner.open(BAG);
+        checkOwns1155s(BAG, address(owner));
     }
 
     function testCanSetRle() public {
@@ -83,20 +83,20 @@ contract Open is SwapMeetTest {
     }
 
     // function testFailCannotOpenBagTwice() public {
-    //     alice.open(BAG);
-    //     alice.open(BAG);
+    //     owner.open(BAG);
+    //     owner.open(BAG);
     // }
 
     // function testFailCannotOpenBagYouDoNotOwn() public {
-    //     alice.open(OTHER_BAG);
+    //     owner.open(OTHER_BAG);
     // }
 
     function testSameItemsHaveCorrectBalance() public {
-        alice.open(FIRST_SILVER_RING_BAG);
-        alice.open(SECOND_SILVER_RING_BAG);
+        owner.open(FIRST_SILVER_RING_BAG);
+        owner.open(SECOND_SILVER_RING_BAG);
 
         ItemIds memory ids = swapmeet.ids(FIRST_SILVER_RING_BAG);
-        assertEq(swapmeet.balanceOf(address(alice), ids.ring), 2);
+        assertEq(swapmeet.balanceOf(address(owner), ids.ring), 2);
     }
 
     // helper for checking ownership of erc1155 tokens after unbundling a bag

@@ -92,12 +92,13 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
         // indicate an encoded hustler id.
         (bytes4 sig, uint256 hustlerId) = abi.decode(data, (bytes4, uint256));
         require(sig == equip, Errors.EquipSignatureInvalid);
-        require(msg.sender == owner() || balanceOf(from, hustlerId) == 1, Errors.IsHolder);
+
+        // Received from address(0) when opened directly to hustler
+        require(from == address(0) || balanceOf(from, hustlerId) == 1, Errors.IsHolder);
 
         (uint256[] memory unequipIds, uint256[] memory unequipValues) = batchEquip(hustlerId, ids, values);
 
         if (unequipIds.length > 0) {
-            // TODO:
             swapmeet.safeBatchTransferFrom(address(this), from, unequipIds, unequipValues, '');
         }
 
@@ -144,7 +145,7 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
         public
         view
         virtual
-        override(ERC1155, ERC1155Receiver)
+        override(IERC165, ERC1155, ERC1155Receiver)
         returns (bool)
     {
         return ERC1155.supportsInterface(interfaceId) || ERC1155Receiver.supportsInterface(interfaceId);
@@ -160,7 +161,7 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
         uint8[4] calldata body,
         bytes2 mask,
         bytes memory data
-    ) external returns (uint256) {
+    ) external override returns (uint256) {
         uint256 hustlerId = hustlers;
         setMeta(hustlerId, name, color, background, options, viewbox, body, mask);
         mintTo(to, data);

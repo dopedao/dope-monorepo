@@ -106,7 +106,7 @@ contract SwapMeet is ISwapMeet, ERC1155, SwapMeetMetadata, Ownable {
         return ids;
     }
 
-    function setPalette(uint8 id, bytes4[] memory palette) external onlyOwner {
+    function setPalette(uint8 id, bytes4[] memory palette) external override onlyOwner {
         palettes[id] = palette;
     }
 
@@ -114,13 +114,13 @@ contract SwapMeet is ISwapMeet, ERC1155, SwapMeetMetadata, Ownable {
         uint256 id,
         bytes memory male,
         bytes memory female
-    ) public onlyOwner {
+    ) public override onlyOwner {
         rles[id][Gender.MALE] = male;
         rles[id][Gender.FEMALE] = female;
         emit SetRle(id);
     }
 
-    function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) external onlyOwner {
+    function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) external override onlyOwner {
         require(ids.length == rles.length / 2, 'ids rles mismatch');
 
         for (uint256 i = 0; i < rles.length; i += 2) {

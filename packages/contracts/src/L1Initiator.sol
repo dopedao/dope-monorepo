@@ -7,8 +7,7 @@ import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.
 import { Address } from '../lib/openzeppelin-contracts/contracts/utils/Address.sol';
 
 import { iOVM_CrossDomainMessenger } from './interfaces/iOVM_CrossDomainMessenger.sol';
-import { ISwapMeet } from './interfaces/ISwapMeet.sol';
-import { IHustler } from './interfaces/IHustler.sol';
+import { IController } from './interfaces/IController.sol';
 
 library Errors {
     string constant NotRightETH = 'ngmi';
@@ -28,7 +27,7 @@ contract Initiator is Ownable {
     address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
     address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
 
-    address private hustler;
+    address private controller;
     address private swapmeet;
     IERC721 immutable dope;
     IERC20 immutable paper;
@@ -45,9 +44,9 @@ contract Initiator is Ownable {
         paper = paper_;
     }
 
-    function setL2Contracts(address swapmeet_, address hustler_) external onlyOwner {
+    function setL2Contracts(address swapmeet_, address controller_) external onlyOwner {
         swapmeet = swapmeet_;
-        hustler = hustler_;
+        controller = controller_;
     }
 
     function mintFromDopeTo(
@@ -61,13 +60,13 @@ contract Initiator is Ownable {
         uint8[4] calldata body,
         bytes2 mask,
         bytes memory data,
-        uint32 openGasLimit,
-        uint32 mintGasLimit
+        uint32 gasLimit
     ) external {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
 
         bytes memory message = abi.encodeWithSelector(
-            IHustler.mintTo.selector,
+            IController.mintTo.selector,
+            id,
             to,
             name,
             color,
@@ -78,9 +77,7 @@ contract Initiator is Ownable {
             mask,
             data
         );
-        messenger.sendMessage(hustler, message, mintGasLimit);
-
-        open(id, to, abi.encode(equip, id), openGasLimit);
+        messenger.sendMessage(controller, message, gasLimit);
     }
 
     function mintOGFromDopeTo(
@@ -94,19 +91,17 @@ contract Initiator is Ownable {
         uint8[4] calldata body,
         bytes2 mask,
         bytes memory data,
-        uint32 openGasLimit,
-        uint32 mintGasLimit
+        uint32 gasLimit
     ) external payable {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
 
-        uint256 hustlerId = ogs;
         ogs += 1;
 
         bytes memory message = abi.encodeWithSelector(
-            IHustler.mintOGTo.selector,
-            hustlerId,
+            IController.mintOGTo.selector,
+            id,
             to,
             name,
             color,
@@ -117,8 +112,7 @@ contract Initiator is Ownable {
             mask,
             data
         );
-        messenger.sendMessage(hustler, message, mintGasLimit);
-        open(id, to, abi.encode(equip, hustlerId), openGasLimit);
+        messenger.sendMessage(controller, message, gasLimit);
     }
 
     function open(
@@ -131,8 +125,7 @@ contract Initiator is Ownable {
         require(!opened[id], Errors.AlreadyOpened);
         opened[id] = true;
 
-        bytes memory message = abi.encodeWithSelector(ISwapMeet.open.selector, id, to, data);
-
+        bytes memory message = abi.encodeWithSelector(IController.open.selector, id, to, data);
         messenger.sendMessage(swapmeet, message, gasLimit);
 
         paper.transferFrom(msg.sender, timelock, cost());

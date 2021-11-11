@@ -19,27 +19,81 @@ import { IHustler } from '../../interfaces/IHustler.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
 
-contract HustlerUser is ERC1155Holder, ERC721Holder {
-    iOVM_CrossDomainMessenger cdm;
-    DopeWarsLoot dope;
-    SwapMeet swapmeet;
+contract Enforcer {
+    bool shouldRevert;
+    bool shouldReset = true;
+
+    function set(bool r, bool t) external {
+        shouldRevert = r;
+        shouldReset = t;
+    }
+
+    function onERC1155BatchReceived(
+        address,
+        address,
+        uint256[] calldata,
+        uint256[] calldata,
+        bytes calldata
+    ) external view {
+        require(!shouldRevert);
+    }
+
+    function onERC1155Received(
+        address,
+        address,
+        uint256,
+        uint256,
+        bytes memory
+    ) external view {
+        require(!shouldRevert);
+    }
+
+    function onUnequip(uint256, uint8[] calldata) external view {
+        require(!shouldRevert);
+    }
+
+    function beforeTokenTransfer(
+        address,
+        address,
+        address,
+        uint256[] memory,
+        uint256[] memory,
+        bytes memory
+    ) external view returns (bool) {
+        require(!shouldRevert);
+        return shouldReset;
+    }
+}
+
+contract HustlerOwner is ERC1155Holder, ERC721Holder, SwapMeetOwner {
     Hustler hustler;
 
-    constructor(DopeWarsLoot _dope, iOVM_CrossDomainMessenger _cdm) {
-        dope = _dope;
-        cdm = _cdm;
-    }
-
-    function setSwapMeet(SwapMeet _swapmeet) public {
-        swapmeet = _swapmeet;
-    }
-
-    function setHustler(Hustler _hustler) public {
+    function init(
+        DopeWarsLoot _dope,
+        Components _components,
+        SwapMeet _swapmeet,
+        Hustler _hustler
+    ) public {
+        super.init(_dope, _components, _swapmeet);
         hustler = _hustler;
     }
 
-    function claim(uint256 tokenId) public {
-        dope.claim(tokenId);
+    function addRles(uint8 part, bytes[] calldata _rles) public {
+        hustler.addRles(part, _rles);
+    }
+
+    function mintItem(
+        address account,
+        uint8[5] memory _components,
+        uint8 itemType,
+        uint256 amount,
+        bytes memory data
+    ) public returns (uint256) {
+        return swapmeet.mint(account, _components, itemType, amount, data);
+    }
+
+    function setEnforcer(address b) public {
+        hustler.setEnforcer(b);
     }
 
     function open(
@@ -47,8 +101,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         address to,
         bytes memory data
     ) public {
-        bytes memory message = abi.encodeWithSelector(ISwapMeet.open.selector, id, to, data);
-        cdm.sendMessage(address(swapmeet), message, 1000000);
+        swapmeet.open(id, to, data);
     }
 
     function mint() public {
@@ -68,7 +121,6 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 
     function mintOG(
-        uint256 id,
         string calldata name,
         bytes4 color,
         bytes4 background,
@@ -78,20 +130,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         bytes2 mask,
         bytes memory data
     ) public payable {
-        bytes memory message = abi.encodeWithSelector(
-            IHustler.mintOGTo.selector,
-            id,
-            address(this),
-            name,
-            color,
-            background,
-            options,
-            viewbox,
-            body,
-            mask,
-            data
-        );
-        cdm.sendMessage(address(hustler), message, 1000000);
+        hustler.mintOGTo(address(this), name, color, background, options, viewbox, body, mask, data);
     }
 
     function unequip(uint256 hustlerId, uint8[] calldata slots) public {
@@ -144,91 +183,6 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     ) public {
         hustler.setMetadata(id, name, color, background, options, viewport, body, bmask);
     }
-
-    function transferERC1155(
-        address to,
-        uint256 tokenId,
-        uint256 amount
-    ) public {
-        swapmeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
-    }
-}
-
-contract Enforcer {
-    bool shouldRevert;
-    bool shouldReset = true;
-
-    function set(bool r, bool t) external {
-        shouldRevert = r;
-        shouldReset = t;
-    }
-
-    function onERC1155BatchReceived(
-        address,
-        address,
-        uint256[] calldata,
-        uint256[] calldata,
-        bytes calldata
-    ) external view {
-        require(!shouldRevert);
-    }
-
-    function onERC1155Received(
-        address,
-        address,
-        uint256,
-        uint256,
-        bytes memory
-    ) external view {
-        require(!shouldRevert);
-    }
-
-    function onUnequip(uint256, uint8[] calldata) external view {
-        require(!shouldRevert);
-    }
-
-    function beforeTokenTransfer(
-        address,
-        address,
-        address,
-        uint256[] memory,
-        uint256[] memory,
-        bytes memory
-    ) external view returns (bool) {
-        require(!shouldRevert);
-        return shouldReset;
-    }
-}
-
-contract HustlerOwner is ERC1155Holder, SwapMeetOwner {
-    Hustler hustler;
-
-    function init(
-        Components _components,
-        SwapMeet _swapmeet,
-        Hustler _hustler
-    ) public {
-        super.init(_components, _swapmeet);
-        hustler = _hustler;
-    }
-
-    function addRles(uint8 part, bytes[] calldata _rles) public {
-        hustler.addRles(part, _rles);
-    }
-
-    function mintItem(
-        address account,
-        uint8[5] memory _components,
-        uint8 itemType,
-        uint256 amount,
-        bytes memory data
-    ) public returns (uint256) {
-        return swapmeet.mint(account, _components, itemType, amount, data);
-    }
-
-    function setEnforcer(address b) public {
-        hustler.setEnforcer(b);
-    }
 }
 
 contract Owner {}
@@ -237,11 +191,8 @@ contract HustlerTester is Hustler {
     constructor(
         address _owner,
         address _components,
-        address _swapmeet,
-        address _initiator,
-        iOVM_CrossDomainMessenger cdm
-    ) Hustler(_components, _swapmeet, _initiator) {
-        ovmL2CrossDomainMessenger = cdm;
+        address _swapmeet
+    ) Hustler(_components, _swapmeet) {
         transferOwnership(_owner);
     }
 
@@ -282,41 +233,34 @@ contract HustlerTest is ERC1155Holder, DSTest {
     Components internal components;
     SwapMeetTester internal swapmeet;
     HustlerTester internal hustler;
-    iOVM_FakeCrossDomainMessenger internal cdm;
 
     // users
     HustlerOwner internal owner;
-    HustlerUser internal alice;
-    HustlerUser internal bob;
+    HustlerOwner internal bob;
 
     function setUp() public virtual {
-        cdm = new iOVM_FakeCrossDomainMessenger();
         owner = new HustlerOwner();
 
         // deploy contracts
         dope = new DopeWarsLoot();
         components = new Components();
         components.transferOwnership(address(owner));
-        alice = new HustlerUser(dope, cdm);
-        swapmeet = new SwapMeetTester(address(components), address(alice), cdm, address(owner));
-        hustler = new HustlerTester(address(owner), address(components), address(swapmeet), address(alice), cdm);
-        alice.setSwapMeet(swapmeet);
-        alice.setHustler(hustler);
+        swapmeet = new SwapMeetTester(address(components), address(owner));
+        hustler = new HustlerTester(address(owner), address(components), address(swapmeet));
 
-        owner.init(components, swapmeet, hustler);
+        owner.init(dope, components, swapmeet, hustler);
 
-        alice.claim(BAG);
-        alice.open(BAG, address(alice), '');
-        assertEq(dope.ownerOf(BAG), address(alice));
+        owner.claim(BAG);
+        owner.open(BAG, address(owner), '');
+        assertEq(dope.ownerOf(BAG), address(owner));
 
-        alice.claim(OTHER_BAG);
+        owner.claim(OTHER_BAG);
 
         uint8[5] memory _components;
         _components[0] = owner.addItemComponent(ComponentTypes.ACCESSORY, 'hat');
-        ACCESSORY = owner.mintItem(address(alice), _components, ComponentTypes.ACCESSORY, 1, '');
+        ACCESSORY = owner.mintItem(address(owner), _components, ComponentTypes.ACCESSORY, 1, '');
 
-        bob = new HustlerUser(dope, cdm);
-        bob.setSwapMeet(swapmeet);
-        bob.setHustler(hustler);
+        bob = new HustlerOwner();
+        // bob.init(dope, components, swapmeet, hustler);
     }
 }

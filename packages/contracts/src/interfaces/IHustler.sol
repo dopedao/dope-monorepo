@@ -3,6 +3,8 @@
 
 /// @title Interface for Hustler
 
+import '../../lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol';
+
 pragma solidity ^0.8.6;
 
 interface IEnforcer {
@@ -34,7 +36,7 @@ interface IEnforcer {
     ) external returns (bool);
 }
 
-interface IHustler {
+interface IHustler is IERC1155 {
     function mintOGTo(
         address to,
         string calldata name,
