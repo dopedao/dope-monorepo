@@ -34,4 +34,30 @@ interface ISwapMeet is ISwapMeetMetadata, IPaletteProvider, IERC1155 {
         address to,
         bytes memory data
     ) external;
+
+    function mint(
+        address to,
+        uint8[5] memory components,
+        uint8 componentType,
+        uint256 amount,
+        bytes memory data
+    ) external returns (uint256);
+
+    function mintBatch(
+        address to,
+        uint8[] memory components,
+        uint8[] memory componentTypes,
+        uint256[] memory amounts,
+        bytes memory data
+    ) external returns (uint256[] memory);
+
+    function setPalette(uint8 id, bytes4[] memory palette) external;
+
+    function setRle(
+        uint256 id,
+        bytes memory male,
+        bytes memory female
+    ) external;
+
+    function batchSetRle(uint256[] calldata ids, bytes[] calldata rles) external;
 }

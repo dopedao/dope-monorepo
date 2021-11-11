@@ -11,14 +11,8 @@ import { ISwapMeet } from './interfaces/ISwapMeet.sol';
 import { IHustler } from './interfaces/IHustler.sol';
 
 library Errors {
-    string constant IsNotSwapMeet = 'snsm';
-    string constant IsHolder = 'snhh';
-    string constant EquipSignatureInvalid = 'esi';
-    string constant HustlerDoesntOwnItem = 'hdoi';
-    string constant ValueNotOne = 'vno';
     string constant NotRightETH = 'ngmi';
     string constant NoMore = 'nomo';
-    string constant NotOG = 'notog';
     string constant NotTime = 'wait';
     string constant DoesNotOwnBagOrNotApproved = 'not sender bag or not approved';
     string constant AlreadyOpened = 'already opened';
@@ -59,9 +53,32 @@ contract Initiator is Ownable {
     function mintFromDopeTo(
         uint256 id,
         address to,
-        uint32 openGasLimit
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask,
+        bytes memory data,
+        uint32 openGasLimit,
+        uint32 mintGasLimit
     ) external {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
+
+        bytes memory message = abi.encodeWithSelector(
+            IHustler.mintTo.selector,
+            to,
+            name,
+            color,
+            background,
+            options,
+            viewbox,
+            body,
+            mask,
+            data
+        );
+        messenger.sendMessage(hustler, message, mintGasLimit);
 
         open(id, to, abi.encode(equip, id), openGasLimit);
     }
@@ -69,16 +86,39 @@ contract Initiator is Ownable {
     function mintOGFromDopeTo(
         uint256 id,
         address to,
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask,
         bytes memory data,
-        uint32 openGasLimit
+        uint32 openGasLimit,
+        uint32 mintGasLimit
     ) external payable {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
 
-        bytes memory message = abi.encodeWithSelector(IHustler.mintOGTo.selector, id, to, data);
-        messenger.sendMessage(hustler, message, 1000000);
-        open(id, to, abi.encode(equip, id), openGasLimit);
+        uint256 hustlerId = ogs;
+        ogs += 1;
+
+        bytes memory message = abi.encodeWithSelector(
+            IHustler.mintOGTo.selector,
+            hustlerId,
+            to,
+            name,
+            color,
+            background,
+            options,
+            viewbox,
+            body,
+            mask,
+            data
+        );
+        messenger.sendMessage(hustler, message, mintGasLimit);
+        open(id, to, abi.encode(equip, hustlerId), openGasLimit);
     }
 
     function open(
@@ -98,6 +138,10 @@ contract Initiator is Ownable {
         paper.transferFrom(msg.sender, timelock, cost());
 
         emit Opened(id);
+    }
+
+    function setRelease(uint256 _release) external onlyOwner {
+        release = _release;
     }
 
     function withdraw() public {

@@ -5,7 +5,7 @@ import 'ds-test/test.sol';
 
 import './Hevm.sol';
 import './iOVM_FakeCrossDomainMessenger.sol';
-import '../../Loot.sol';
+import '../../DopeWarsLoot.sol';
 import { iOVM_CrossDomainMessenger } from '../../interfaces/iOVM_CrossDomainMessenger.sol';
 import { ISwapMeet } from '../../interfaces/ISwapMeet.sol';
 import { SwapMeet } from '../../SwapMeet.sol';

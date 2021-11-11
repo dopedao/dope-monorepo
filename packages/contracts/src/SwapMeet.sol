@@ -11,7 +11,6 @@ import '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
 import './Components.sol';
 import './SwapMeetMetadata.sol';
 import './TokenId.sol';
-import './interfaces/iOVM_CrossDomainMessenger.sol';
 import './interfaces/ISwapMeet.sol';
 
 /// @title Dope Gear SwapMeet
@@ -20,14 +19,7 @@ import './interfaces/ISwapMeet.sol';
 contract SwapMeet is ISwapMeet, ERC1155, SwapMeetMetadata, Ownable {
     event SetRle(uint256 id);
 
-    address immutable initiator;
-
-    iOVM_CrossDomainMessenger ovmL2CrossDomainMessenger =
-        iOVM_CrossDomainMessenger(0x4200000000000000000000000000000000000007);
-
-    constructor(address _components, address _initiator) SwapMeetMetadata(_components) {
-        initiator = _initiator;
-    }
+    constructor(address _components) SwapMeetMetadata(_components) {}
 
     /// @notice Bulk opens the provided tokenIds. This
     /// can only be done once per DOPE token.
@@ -35,7 +27,7 @@ contract SwapMeet is ISwapMeet, ERC1155, SwapMeetMetadata, Ownable {
         uint256 id,
         address to,
         bytes memory data
-    ) external override onlyInitiator {
+    ) external override onlyOwner {
         uint256[] memory amounts = new uint256[](9);
         uint256[] memory parts = new uint256[](9);
 
@@ -83,7 +75,7 @@ contract SwapMeet is ISwapMeet, ERC1155, SwapMeetMetadata, Ownable {
         uint8 componentType,
         uint256 amount,
         bytes memory data
-    ) external onlyOwner returns (uint256) {
+    ) external override onlyOwner returns (uint256) {
         uint256 id = TokenId.toId(components, componentType);
         _mint(to, id, amount, data);
         return id;
@@ -95,7 +87,7 @@ contract SwapMeet is ISwapMeet, ERC1155, SwapMeetMetadata, Ownable {
         uint8[] memory componentTypes,
         uint256[] memory amounts,
         bytes memory data
-    ) external onlyOwner returns (uint256[] memory) {
+    ) external override onlyOwner returns (uint256[] memory) {
         require(components.length % 5 == 0, 'components len');
         require(components.length / 5 == componentTypes.length, 'len mismatch');
         uint256[] memory ids = new uint256[](componentTypes.length);
@@ -134,16 +126,5 @@ contract SwapMeet is ISwapMeet, ERC1155, SwapMeetMetadata, Ownable {
         for (uint256 i = 0; i < rles.length; i += 2) {
             setRle(ids[i / 2], rles[i], rles[i + 1]);
         }
-    }
-
-    /**
-     * @dev Throws if called by any account other than the l1 intiator.
-     */
-    modifier onlyInitiator() {
-        require(
-            _msgSender() == address(ovmL2CrossDomainMessenger) &&
-                ovmL2CrossDomainMessenger.xDomainMessageSender() == initiator
-        );
-        _;
     }
 }

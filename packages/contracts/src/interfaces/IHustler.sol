@@ -36,7 +36,6 @@ interface IEnforcer {
 
 interface IHustler {
     function mintOGTo(
-        uint256 id,
         address to,
         string calldata name,
         bytes4 color,
@@ -46,5 +45,21 @@ interface IHustler {
         uint8[4] calldata body,
         bytes2 mask,
         bytes memory data
-    ) external;
+    ) external returns (uint256);
+
+    function mintTo(
+        address to,
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask,
+        bytes memory data
+    ) external returns (uint256);
+
+    function setEnforcer(address enforcer_) external;
+
+    function addRles(uint8 part, bytes[] calldata _rles) external;
 }

@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import 'ds-test/test.sol';
 
 import './Hevm.sol';
-import '../../Loot.sol';
+import '../../DopeWarsLoot.sol';
 import './iOVM_FakeCrossDomainMessenger.sol';
 import { Paper } from '../../Paper.sol';
 import { Hustler } from '../../Hustler.sol';
@@ -52,7 +52,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     }
 
     function mint() public {
-        hustler.mint(address(this), '');
+        hustler.mintTo(address(this), '');
     }
 
     function mint(
@@ -64,7 +64,7 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
         uint8[4] calldata body,
         bytes2 mask
     ) public {
-        hustler.mint(address(this), name, color, background, options, viewbox, body, mask, '');
+        hustler.mintTo(address(this), name, color, background, options, viewbox, body, mask, '');
     }
 
     function mintOG(
