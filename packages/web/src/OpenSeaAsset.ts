@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import { NETWORK } from './constants';
-import { OpenSeaAsset as OpenSeaAssetInterface } from '../src/generated/graphql';
+import { OpenSeaAsset as OpenSeaAssetInterface } from 'src/generated/graphql';
 
 // ⚠️ WARNING
 //    This only works on PRODUCTION code.

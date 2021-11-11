@@ -5,14 +5,14 @@ import {
   makeVar,
   useReactiveVar,
 } from '@apollo/client';
-import { getRarityForDopeId } from '../src/dope-rarity-check';
-import { NETWORK } from '../src/constants';
-import { OpenSeaAsset } from '../src/OpenSeaAsset';
+import { getRarityForDopeId } from 'src/dope-rarity-check';
+import { NETWORK } from 'src/constants';
+import { OpenSeaAsset } from 'src/OpenSeaAsset';
 import { ReactNode, useMemo } from 'react';
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import DopeDatabase, { DopeDbCacheReactive } from '../src/DopeDatabase';
-import { valueFromCachedLoot } from '../src/DopeJsonParser';
+import DopeDatabase, { DopeDbCacheReactive } from 'src/DopeDatabase';
+import { valueFromCachedLoot } from 'src/DopeJsonParser';
 
 /**
  * We use the below declaration to specify client-only field getters,
@@ -112,10 +112,9 @@ function getClient(uri: string) {
 
 const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
   const { chainId } = useWeb3React();
-  const uri = useMemo(
-    () => (chainId ? NETWORK[chainId as 1 | 4].subgraph : NETWORK[1].subgraph),
-    [chainId],
-  );
+  const uri = useMemo(() => (chainId ? NETWORK[chainId as 1 | 4].subgraph : NETWORK[1].subgraph), [
+    chainId,
+  ]);
   const client = getClient(uri);
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 

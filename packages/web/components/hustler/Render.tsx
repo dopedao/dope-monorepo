@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useEffect, useMemo, useState } from 'react';
 import { BigNumber, providers } from 'ethers';
 
-import { NETWORK } from '../../src/constants';
+import { NETWORK } from 'src/constants';
 
 interface Metadata {
   image: string;
@@ -63,18 +63,20 @@ const Render = ({ itemIds }: { itemIds: BigNumber[] }) => {
     <div
       css={css`
         display: flex;
-        flex-align: center;
+        align-self: center;
         justify-content: center;
       `}
     >
       {json && (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           css={css`
             width: 640px;
             height: 640px;
           `}
+          alt=""
           src={json.image}
-        ></img>
+        />
       )}
     </div>
   );

@@ -1,6 +1,6 @@
-import { media } from '../styles/mixins';
+import { media } from 'styles/mixins';
 import { useRouter } from 'next/router';
-import DesktopIcon from '../components/DesktopIcon';
+import DesktopIcon from 'components/DesktopIcon';
 import styled from '@emotion/styled';
 
 const IconGrid = styled.div`
