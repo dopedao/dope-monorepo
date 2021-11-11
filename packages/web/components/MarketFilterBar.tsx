@@ -1,11 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Input, Select } from '@chakra-ui/react';
-import { media } from '../styles/mixins';
+import { media } from 'styles/mixins';
 import { useDebounce } from 'usehooks-ts';
 import { css } from '@emotion/react';
-
-import useQueryParam from '../src/use-query-param';
-
+import useQueryParam from 'src/use-query-param';
 import styled from '@emotion/styled';
 
 export const statusKeys = ['All', 'Has Unclaimed $PAPER', 'For Sale'];
@@ -80,13 +79,13 @@ const MarketFilterBar = ({
 
   useEffect(() => {
     searchCallback(debouncedSearchValue);
-  }, [debouncedSearchValue]);
+  }, [debouncedSearchValue, searchCallback]);
 
   useEffect(() => {
     console.log('Setting initial states on Swap Meet from query params');
     statusCallback(status);
     sortByCallback(sortBy);
-  }, []);
+  }, [sortBy, sortByCallback, status, statusCallback]);
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -127,7 +126,7 @@ const MarketFilterBar = ({
         `}
         onClick={() => compactViewCallback(!compactSwitchOn)}
       >
-        <img src={`${iconPath}/${icon}.svg`} />
+        <img alt="toggle" src={`${iconPath}/${icon}.svg`} />
       </div>
     );
   };
@@ -146,16 +145,16 @@ const MarketFilterBar = ({
       <div>
         <Select size="sm" variant="filterBar" onChange={handleStatusChange} value={status}>
           <option disabled>Status…</option>
-          {statusKeys.map(value => (
-            <option>{value}</option>
+          {statusKeys.map((value, index) => (
+            <option key={`${value}-${index}`}>{value}</option>
           ))}
         </Select>
       </div>
       <div>
         <Select size="sm" variant="filterBar" onChange={handleSortChange} value={sortBy}>
           <option disabled>Sort By…</option>
-          {sortKeys.map(value => (
-            <option>{value}</option>
+          {sortKeys.map((value, index) => (
+            <option key={`${value}-${index}`}>{value}</option>
           ))}
         </Select>
       </div>

@@ -1,5 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import { css } from '@emotion/react';
-import { media } from '../styles/mixins';
+import { media } from 'styles/mixins';
 import { ReactNode, useCallback, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
@@ -61,30 +62,30 @@ const Dialog = ({
       <div
         ref={content}
         css={css`
-        background: #DEDEDD;
-        box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px;
-        rgba(255, 255, 255, 0.25);
-        padding: 16px;
-        border: 2px solid;
-        display: flex;
-        align-items: flex-start;
-        gap: 16px;
-        margin: 16px;
-        h3 {
-          font-size: var(--text-02);
-          line-height: 1.25em;
-          padding: 0;
-          margin-bottom: 16px;
-        }
-        font-size: 1em;
-        ${media.tablet`
+          background: #dededd;
+          box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25),
+            inset 1px 1px 0px rgba(255, 255, 255, 0.25);
+          padding: 16px;
+          border: 2px solid;
+          display: flex;
+          align-items: flex-start;
+          gap: 16px;
+          margin: 16px;
+          h3 {
+            font-size: var(--text-02);
+            line-height: 1.25em;
+            padding: 0;
+            margin-bottom: 16px;
+          }
+          font-size: 1em;
+          ${media.tablet`
           padding: 32px;
           text-align: left;
           max-width: 600px;
         `}
-      `}
+        `}
       >
-        {icon && <img src={`/images/icon/${icon}.svg`} />}
+        {icon && <img alt={title} src={`/images/icon/${icon}.svg`} />}
         <div>
           {!!title && <h3>{title}</h3>}
           {children}

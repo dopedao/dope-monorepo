@@ -8,7 +8,9 @@ class WindowPosition {
 
   updatePosition(transformStyle: string) {
     // pull the current DesktopWindow location from the CSS style on the DOM object
-    const transformArr = transformStyle.match(/translate\((-?\d+(?:\.\d*)?)px, (-?\d+(?:\.\d*)?)px\)/);
+    const transformArr = transformStyle.match(
+      /translate\((-?\d+(?:\.\d*)?)px, (-?\d+(?:\.\d*)?)px\)/,
+    );
     if (transformArr && transformArr.length === 3) {
       this.position = {
         x: parseFloat(transformArr[1]),

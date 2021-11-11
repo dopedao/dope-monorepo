@@ -1,6 +1,6 @@
 import ReactMarkdown from 'react-markdown';
-import Head from '../components/Head';
-import DesktopWindow from '../components/DesktopWindow';
+import Head from 'components/Head';
+import DesktopWindow from 'components/DesktopWindow';
 import styled from '@emotion/styled';
 
 const TextBody = styled.div`

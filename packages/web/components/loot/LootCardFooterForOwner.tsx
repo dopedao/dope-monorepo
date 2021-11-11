@@ -1,8 +1,9 @@
-import { Bag } from '../../src/generated/graphql';
+/* eslint-disable @next/next/no-img-element */
+import { Bag } from 'src/generated/graphql';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { BigNumber, constants } from 'ethers';
-import { NETWORK } from '../../src/constants';
+import { NETWORK } from 'src/constants';
 import {
   Paper,
   Paper__factory,
@@ -31,7 +32,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
       chainId
         ? Paper__factory.connect(NETWORK[chainId as 1 | 4].contracts.paper, library.getSigner())
         : null,
-    [chainId],
+    [chainId, library],
   );
 
   const dope = useMemo(
@@ -39,7 +40,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
       chainId
         ? Loot__factory.connect(NETWORK[chainId as 1 | 4].contracts.dope, library.getSigner())
         : null,
-    [chainId],
+    [chainId, library],
   );
 
   const swapmeet = useMemo(
@@ -50,7 +51,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
             library.getSigner(),
           )
         : null,
-    [chainId],
+    [chainId, library],
   );
 
   const hustlers = useMemo(
@@ -61,7 +62,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
             library.getSigner(),
           )
         : null,
-    [chainId],
+    [chainId, library],
   );
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
         .isApprovedForAll(account, NETWORK[chainId as 1 | 4].contracts.hustlers)
         .then(setIsDopeApproved);
     }
-  }, [account, dope]);
+  }, [account, chainId, dope]);
 
   useEffect(() => {
     if (account && paper) {
@@ -88,7 +89,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
           setIsPaperApproved(allowance.gte('12500000000000000000000')),
         );
     }
-  }, [account, paper]);
+  }, [account, chainId, paper]);
 
   return (
     <>
@@ -185,6 +186,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
             display: inline-block;
             margin-left: 8px;
           `}
+          alt="info"
         />
       </div>
     </>
