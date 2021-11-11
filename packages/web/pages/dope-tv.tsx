@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import DesktopWindow from '../components/DesktopWindow';
-import Head from '../components/Head';
-import Twitch from '../src/twitch-embed-v1';
+import DesktopWindow from 'components/DesktopWindow';
+import Head from 'components/Head';
+import Twitch from 'src/twitch-embed-v1';
 
 const title = 'DOPE TV';
 

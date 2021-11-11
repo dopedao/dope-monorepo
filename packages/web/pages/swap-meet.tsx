@@ -1,14 +1,14 @@
-import { isTouchDevice } from '../src/utils';
-import { media } from '../styles/mixins';
-import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
+import { isTouchDevice } from 'src/utils';
+import { media } from 'styles/mixins';
+import { useAllUnclaimedBagsQuery } from 'src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
-import AppWindow from '../components/AppWindow';
-import Head from '../components/Head';
+import AppWindow from 'components/AppWindow';
+import Head from 'components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
-import LoadingBlock from '../components/LoadingBlock';
-import LootCard from '../components/loot/LootCard';
-import MarketFilterBar from '../components/MarketFilterBar';
+import LoadingBlock from 'components/LoadingBlock';
+import LootCard from 'components/loot/LootCard';
+import MarketFilterBar from 'components/MarketFilterBar';
 import styled from '@emotion/styled';
 
 import DopeDatabase, {
@@ -21,7 +21,7 @@ import DopeDatabase, {
   testForUnclaimedPaper,
   testForSale,
   PickedBag,
-} from '../src/DopeDatabase';
+} from 'src/DopeDatabase';
 
 const title = 'SWAP MEET';
 
@@ -63,7 +63,7 @@ const ContentLoading = (
 );
 const ContentEmpty = (
   <Container>
-    <h2>Can't find what you're looking for…</h2>
+    <h2>{`Can't find what you're looking for…`}</h2>
   </Container>
 );
 
@@ -118,7 +118,7 @@ const MarketList = () => {
     const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
     const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
     return filterItemsBySearchString(filteredItems, searchInputValue);
-  }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper]);
+  }, [statusKey, sortByKey, dopeDb.items, searchInputValue]);
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
 
@@ -127,7 +127,7 @@ const MarketList = () => {
     itemsVisible = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
     setIsTyping(false);
-  }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper]);
+  }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper, filteredSortedItems]);
 
   // Increasing itemsVisible simply increases the window size
   // into the cached data we render in window.

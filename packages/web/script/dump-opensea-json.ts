@@ -1,5 +1,5 @@
-import { getOpenSeaAssetPagesJson } from '../src/OpenSeaAsset';
 import fs from 'fs';
+import { getOpenSeaAssetPagesJson } from 'src/OpenSeaAsset';
 
 /**
  * Dumps raw output from OpenSea REST API

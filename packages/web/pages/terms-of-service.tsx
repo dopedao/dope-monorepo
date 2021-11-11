@@ -1,9 +1,9 @@
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
-import DesktopWindow from '../components/DesktopWindow';
-import Dialog from '../components/Dialog';
-import Head from '../components/Head';
+import DesktopWindow from 'components/DesktopWindow';
+import Dialog from 'components/Dialog';
+import Head from 'components/Head';
 import styled from '@emotion/styled';
 
 const title = 'TERMS OF SERVICE';
@@ -36,8 +36,8 @@ export default function Market() {
       <Dialog css={dialogCss} title={title} icon="stop-hand">
         <TosWrapper>
           <p>
-            To the maximum extent permitted by applicable law, and except as expressly set forth
-            herein, this software is provided on "as is" basis.
+            {`To the maximum extent permitted by applicable law, and except as expressly set forth
+            herein, this software is provided on "as is" basis.`}
           </p>
           <p>
             The DOPE DAO does not make and specifically disclaims, all express and implied

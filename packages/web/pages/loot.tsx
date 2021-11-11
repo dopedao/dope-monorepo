@@ -1,13 +1,13 @@
-import { media } from '../styles/mixins';
+import { media } from 'styles/mixins';
 import { useState } from 'react';
-import { useWalletQuery } from '../src/generated/graphql';
+import { useWalletQuery } from 'src/generated/graphql';
 import { useWeb3React } from '@web3-react/core';
-import AppWindow from '../components/AppWindow';
-import Head from '../components/Head';
-import LoadingBlock from '../components/LoadingBlock';
-import LootCard from '../components/loot/LootCard';
-import LootTable from '../components/loot/LootTable';
-import NoLootCard from '../components/loot/NoLootCard';
+import AppWindow from 'components/AppWindow';
+import Head from 'components/Head';
+import LoadingBlock from 'components/LoadingBlock';
+import LootCard from 'components/loot/LootCard';
+import LootTable from 'components/loot/LootTable';
+import NoLootCard from 'components/loot/NoLootCard';
 import styled from '@emotion/styled';
 
 const Container = styled.div`

@@ -1,13 +1,13 @@
-import '../styles/reset.css';
+import 'styles/reset.css';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
-import DesktopIconList from '../components/DesktopIconList';
-import GlobalStyles from '../styles/GlobalStyles';
-import PageLoadingIndicator from '../components/PageLoadingIndicator';
-import theme from '../styles/theme';
+import DesktopIconList from 'components/DesktopIconList';
+import GlobalStyles from 'styles/GlobalStyles';
+import PageLoadingIndicator from 'components/PageLoadingIndicator';
+import theme from 'styles/theme';
 import type { AppProps } from 'next/app';
-import WrappedApolloProvider from '../components/WrappedApolloProvider';
+import WrappedApolloProvider from 'components/WrappedApolloProvider';
 
 // Error tracking and tracing from Sentry.io
 import * as Sentry from '@sentry/react';
