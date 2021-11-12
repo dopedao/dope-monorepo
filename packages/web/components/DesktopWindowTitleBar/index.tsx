@@ -5,6 +5,7 @@ import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import DesktopWindowTitleButton from 'components/DesktopWindowTitleButton';
 import { formatLargeNumber } from 'src/utils';
 import { Header, RightColumn, TitleBar, TitleBarDescription, ENSAddressWrapper } from './styles';
+import { ethers } from 'ethers';
 
 type WindowTitleBarProps = {
   title: string | undefined;
@@ -52,8 +53,6 @@ const DesktopWindowTitleBar = ({
     getEns();
   }, [account, chainId, library]);
 
-  console.log({ balance });
-
   return (
     <div className="windowTitleBar">
       <Header>
@@ -67,7 +66,9 @@ const DesktopWindowTitleBar = ({
           <RightColumn>
             {account && (
               <>
-                {balance && <div>{formatLargeNumber(Number(120000))} $PAPER</div>}
+                {balance && (
+                  <div>{formatLargeNumber(Number(ethers.utils.formatEther(balance)))} $PAPER</div>
+                )}
                 <span>|</span>
                 <ENSAddressWrapper>{ensAddress}</ENSAddressWrapper>
               </>

@@ -15,7 +15,7 @@ const HustlerFromLoot = () => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [bodyIds, setBodyIds] = useState<string[]>();
 
-  const provider = useMemo(
+  const provider = useMemo<any>(
     () =>
       new providers.JsonRpcProvider(
         'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
