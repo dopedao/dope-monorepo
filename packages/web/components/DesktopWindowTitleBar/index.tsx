@@ -66,9 +66,10 @@ const DesktopWindowTitleBar = ({
           <RightColumn>
             {account && (
               <>
-                {balance && (
-                  <div>{formatLargeNumber(Number(ethers.utils.formatEther(balance)))} $PAPER</div>
-                )}
+                <div>
+                  {balance ? formatLargeNumber(Number(ethers.utils.formatEther(balance))) : 0}{' '}
+                  $PAPER
+                </div>
                 <span>|</span>
                 <ENSAddressWrapper>{ensAddress}</ENSAddressWrapper>
               </>

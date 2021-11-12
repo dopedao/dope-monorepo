@@ -1,9 +1,7 @@
 import { css } from '@emotion/react';
 import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
-import { useWeb3React } from '@web3-react/core';
 import { useEffect, useMemo, useState } from 'react';
 import { BigNumber, providers } from 'ethers';
-
 import { NETWORK } from 'src/constants';
 
 interface Metadata {

@@ -44,9 +44,7 @@ export default function AppWindow({
   balance,
   children,
 }: AppWindowProps) {
-  const { account, library } = useWeb3React();
-
-  console.log({ account, library });
+  const { account } = useWeb3React();
 
   return (
     <DesktopWindow
