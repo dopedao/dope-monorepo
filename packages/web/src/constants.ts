@@ -19,6 +19,14 @@ export const NETWORK = {
     rpc: 'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
     subgraph: 'https://api.studio.thegraph.com/query/7708/dope-wars/v0.1.18-rinkeby',
   },
+  42: {
+    contracts: {
+      dope: '0xd2761Ee62d8772343070A5dE02C436F788EdF60a',
+      paper: '0x781B575CA559263eb232B854195D6dC0AB720105',
+    },
+    rpc: 'https://eth-kovan.alchemyapi.io/v2/UloBYQ33fXVpI0WFONXO-CgTl4uy93T6',
+    subgraph: 'https://api.studio.thegraph.com/query/7708/dope-wars/v0.1.18-rinkeby',
+  },
   69: {
     contracts: {
       swapmeet: '0x52aA7619E1eCEEbCBFF7d26C749488d6AD888516',

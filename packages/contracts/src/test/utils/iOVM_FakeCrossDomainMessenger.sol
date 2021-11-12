@@ -6,10 +6,6 @@ import { iOVM_CrossDomainMessenger } from '../../interfaces/iOVM_CrossDomainMess
 contract iOVM_FakeCrossDomainMessenger is iOVM_CrossDomainMessenger {
     address sender;
 
-    // function setSender(address s) public {
-    //     sender = s;
-    // }
-
     function xDomainMessageSender() external view override returns (address) {
         return sender;
     }

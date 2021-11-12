@@ -36,7 +36,7 @@ interface IEnforcer {
     ) external returns (bool);
 }
 
-interface IHustler is IERC1155 {
+interface IHustlerActions {
     function mintOGTo(
         address to,
         string calldata name,
@@ -65,3 +65,5 @@ interface IHustler is IERC1155 {
 
     function addRles(uint8 part, bytes[] calldata _rles) external;
 }
+
+interface IHustler is IERC1155, IHustlerActions {}

@@ -20,15 +20,12 @@ library Errors {
 contract Initiator is Ownable {
     event Opened(uint256 id);
 
-    bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
-
     iOVM_CrossDomainMessenger messenger = iOVM_CrossDomainMessenger(0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1);
     address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
     address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
     address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
 
     address private controller;
-    address private swapmeet;
     IERC721 immutable dope;
     IERC20 immutable paper;
 
@@ -44,8 +41,7 @@ contract Initiator is Ownable {
         paper = paper_;
     }
 
-    function setL2Contracts(address swapmeet_, address controller_) external onlyOwner {
-        swapmeet = swapmeet_;
+    function setL2Contracts(address controller_) external onlyOwner {
         controller = controller_;
     }
 
@@ -126,7 +122,7 @@ contract Initiator is Ownable {
         opened[id] = true;
 
         bytes memory message = abi.encodeWithSelector(IController.open.selector, id, to, data);
-        messenger.sendMessage(swapmeet, message, gasLimit);
+        messenger.sendMessage(controller, message, gasLimit);
 
         paper.transferFrom(msg.sender, timelock, cost());
 
