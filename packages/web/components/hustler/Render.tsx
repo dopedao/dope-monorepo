@@ -15,7 +15,7 @@ const Render = ({ itemIds }: { itemIds: BigNumber[] }) => {
   const [itemRles, setItemRles] = useState<string[]>([]);
   const [bodyRles, setBodyRles] = useState<string[]>([]);
 
-  const provider = useMemo(
+  const provider = useMemo<any>(
     () =>
       new providers.JsonRpcProvider(
         'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
