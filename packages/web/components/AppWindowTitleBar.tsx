@@ -6,6 +6,7 @@ import Image from 'next/image';
 
 const AppWindowTitleBar = () => {
   const { account } = useWeb3React();
+
   return (
     <div
       id="app-title-bar_nav-items"

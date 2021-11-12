@@ -33,47 +33,39 @@ const Container = styled.div`
   `}
 `;
 
-const AuthenticatedContent = ({ id }: { id: string }) => {
+export default function LootWindow() {
+  const { account } = useWeb3React();
   const { data, loading } = useWalletQuery({
-    variables: { id: id.toLowerCase() },
+    variables: { id: account?.toLowerCase() || '' },
+    skip: !account,
   });
   const [selected, setSelected] = useState(0);
 
-  if (loading) {
-    return (
-      <Container>
-        <LoadingBlock />
-        <LoadingBlock />
-      </Container>
-    );
-  } else if (!data?.wallet?.bags || data.wallet.bags.length === 0) {
-    return <NoLootCard />;
-  } else {
-    return (
-      <Container>
-        <LootTable
-          data={data.wallet.bags.map(({ id, claimed, rank }) => ({
-            id,
-            rank,
-            claimed,
-            unbundled: false,
-          }))}
-          selected={selected}
-          onSelect={setSelected}
-        />
-        <LootCard bag={data.wallet.bags[selected]} footer="for-owner" />
-      </Container>
-    );
-  }
-};
-
-export default function LootWindow() {
-  const { account } = useWeb3React();
   return (
-    <AppWindow requiresWalletConnection={true}>
+    <AppWindow requiresWalletConnection={true} balance={data?.wallet?.paper}>
       <Head />
-      {/* eslint-disable-next-line */}
-      <AuthenticatedContent id={account!} />
+      {loading ? (
+        <Container>
+          <LoadingBlock />
+          <LoadingBlock />
+        </Container>
+      ) : !data?.wallet?.bags || data.wallet.bags.length === 0 ? (
+        <NoLootCard />
+      ) : (
+        <Container>
+          <LootTable
+            data={data.wallet.bags.map(({ id, claimed, rank }) => ({
+              id,
+              rank,
+              claimed,
+              unbundled: false,
+            }))}
+            selected={selected}
+            onSelect={setSelected}
+          />
+          <LootCard bag={data.wallet.bags[selected]} footer="for-owner" />
+        </Container>
+      )}
     </AppWindow>
   );
 }
