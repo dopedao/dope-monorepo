@@ -1,6 +1,6 @@
 import { media } from '../styles/mixins';
 import { returnBreakpoint } from '../styles/breakpoints';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { isTouchDevice } from '../src/utils';
 import ConditionalWrapper from './ConditionalWrapper';
 import DesktopWindowTitleBar from './DesktopWindowTitleBar';
@@ -18,7 +18,7 @@ interface DesktopWindowProps {
   height?: number | string;
   titleChildren?: React.ReactNode;
   children: React.ReactNode;
-  onResize?: any;
+  onResize: () => void;
 }
 
 const DesktopWindow = ({
@@ -36,10 +36,10 @@ const DesktopWindow = ({
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
-    if (onResize) {
-      setTimeout(onResize, 500);
-    }
   }
+
+  useEffect(onResize, [isFullScreen]);
+
   const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
   const WindowWrapper = styled.div`

@@ -24,9 +24,6 @@ export default function DopeTv() {
       layout: 'video',
     });
   }
-  useEffect(() => {
-    embedTwitchStream();
-  }, []);
   return (
     <>
       <Head title={title} />
