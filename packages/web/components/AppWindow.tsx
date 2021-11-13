@@ -1,4 +1,4 @@
-import { getBreakpointWidth } from '../styles/breakpoints';
+import { getBreakpointWidth } from 'styles/breakpoints';
 import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from './AppWindowFooter';
 import AppWindowTitleBar from './AppWindowTitleBar';
@@ -45,8 +45,8 @@ export default function AppWindow({
   `;
 
   return (
-    <DesktopWindow 
-      title={title || 'DOPEWARS.EXE'} 
+    <DesktopWindow
+      title={title || 'DOPEWARS.EXE'}
       titleChildren={<AppWindowTitleBar />}
       width={width}
       height={height}

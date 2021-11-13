@@ -1,6 +1,6 @@
-import AppWindow from '../components/AppWindow';
-import ComingSoonDialog from '../components/ComingSoonDialog';
-import Head from '../components/Head';
+import AppWindow from 'components/AppWindow';
+import ComingSoonDialog from 'components/ComingSoonDialog';
+import Head from 'components/Head';
 
 const Hustler = () => {
   return (

@@ -152,6 +152,10 @@ contract HustlerUser is ERC1155Holder, ERC721Holder {
     function claimPaper() public {
         paper.claimAllForOwner();
     }
+
+    function claimPaper(uint256 tokenId) public {
+        paper.claimById(tokenId);
+    }
 }
 
 contract Enforcer {
@@ -315,8 +319,8 @@ contract HustlerTest is ERC1155Holder, DSTest {
         alice.claim(OTHER_BAG);
 
         uint8[5] memory _components;
-        _components[0] = owner.addItemComponent(ComponentTypes.ACCESSORIES, 'hat');
-        ACCESSORY = owner.mintItem(address(alice), _components, ComponentTypes.ACCESSORIES, 1, '');
+        _components[0] = owner.addItemComponent(ComponentTypes.ACCESSORY, 'hat');
+        ACCESSORY = owner.mintItem(address(alice), _components, ComponentTypes.ACCESSORY, 1, '');
 
         bob = new HustlerUser(dope, swapmeet, hustler, paper);
     }

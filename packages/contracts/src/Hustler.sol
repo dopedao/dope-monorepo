@@ -38,7 +38,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
 
     uint256 public release;
 
-    event AddRles(uint8 part);
+    event AddRles(uint8 part, uint256 len);
     event MetadataUpdate(uint256 id);
 
     // First 500 are reserved for OG Hustlers.
@@ -226,7 +226,9 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
         swapmeet.open(tokenId, address(this), abi.encode(equip, id));
     }
 
-    function unequip(uint256 hustlerId, uint8[] calldata slots) public onlyHustler(hustlerId) {
+    function unequip(uint256 hustlerId, uint8[] calldata slots) public {
+        require(balanceOf(_msgSender(), hustlerId) == 1 || _msgSender() == address(enforcer), Errors.IsHolder);
+
         if (address(enforcer) != address(0)) {
             enforcer.onUnequip(hustlerId, slots);
         }
@@ -303,7 +305,7 @@ contract Hustler is ERC1155, ERC1155Receiver, HustlerMetadata, Ownable {
             rles[part].push(_rles[i]);
         }
 
-        emit AddRles(part);
+        emit AddRles(part, _rles.length);
     }
 
     function withdraw() public {

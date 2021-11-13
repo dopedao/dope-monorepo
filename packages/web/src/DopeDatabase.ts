@@ -1,4 +1,4 @@
-import { Bag } from '../src/generated/graphql';
+import { Bag } from 'src/generated/graphql';
 import { makeVar } from '@apollo/client';
 import DopeJson from 'dope-metrics/output/loot.json';
 import { getRarityForDopeId } from './dope-rarity-check';

@@ -39,7 +39,7 @@ library ComponentTypes {
     uint8 internal constant DRUGS = 0x6;
     uint8 internal constant NECK = 0x7;
     uint8 internal constant RING = 0x8;
-    uint8 internal constant ACCESSORIES = 0x9;
+    uint8 internal constant ACCESSORY = 0x9;
     uint8 internal constant NAME_PREFIX = 0xa;
     uint8 internal constant NAME_SUFFIX = 0xb;
     uint8 internal constant SUFFIX = 0xc;
@@ -414,7 +414,7 @@ contract Components is Ownable {
             arr = necklaces;
         } else if (componentType == ComponentTypes.RING) {
             arr = rings;
-        } else if (componentType == ComponentTypes.ACCESSORIES) {
+        } else if (componentType == ComponentTypes.ACCESSORY) {
             arr = accessories;
         } else if (componentType == ComponentTypes.NAME_PREFIX) {
             arr = namePrefixes;
@@ -464,7 +464,7 @@ contract Components is Ownable {
             return necklaces[idx];
         } else if (componentType == ComponentTypes.RING) {
             return rings[idx];
-        } else if (componentType == ComponentTypes.ACCESSORIES) {
+        } else if (componentType == ComponentTypes.ACCESSORY) {
             return accessories[idx];
         } else {
             revert(UnexpectedComponent);
