@@ -50,6 +50,7 @@ export default function AppWindow({
       titleChildren={<AppWindowTitleBar />}
       width={width}
       height={height}
+      onResize={() => console.log('Window Resized')}
     >
       {requiresWalletConnection === true && !account ? (
         <ConnectWallet />
