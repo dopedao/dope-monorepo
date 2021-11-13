@@ -21,6 +21,7 @@ import PanelBody from '../PanelBody';
 import PanelContainer from '../PanelContainer';
 import PanelTitleBar from '../PanelTitleBar';
 import SkinToneSelector from './SkinToneSelector';
+import SexSelector from './SexSelector';
 import styled from '@emotion/styled';
 
 interface Values {
@@ -144,6 +145,7 @@ const ConfigurationControls = () => {
             </Stack></PanelBody>
           </PanelContainer>
           <SkinToneSelector />
+          <SexSelector />
           <HStack mt={4} justify="end">
             <Button>
               Randomize

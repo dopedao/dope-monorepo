@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import { HustlerInitConfig } from '../../src/HustlerInitiation';
-import { RadioGroupProps } from '@chakra-ui/radio';
 import { useRadioGroup } from '@chakra-ui/radio';
 import { useReactiveVar } from '@apollo/client';
 import PanelBody from '../PanelBody';
@@ -19,7 +18,7 @@ const SKIN_TONE_COLORS = [
   '#77F8F8'
 ];
 
-const SkinToneSelector = (props: RadioGroupProps) => {
+const SkinToneSelector = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
