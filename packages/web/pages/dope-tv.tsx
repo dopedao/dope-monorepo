@@ -14,7 +14,7 @@ const TwitchEmbedContainer = styled.div`
 `;
 
 export default function DopeTv() {
-  useEffect(() => {
+  const embedTwitchStream = () => {
     new Twitch.Embed('twitch-embed-container', {
       width: '100%',
       height: '100%',
@@ -23,11 +23,12 @@ export default function DopeTv() {
       parent: ['localhost', 'dopewars.gg'],
       layout: 'video',
     });
-  }, []);
+  };
+
   return (
     <>
       <Head title={title} />
-      <DesktopWindow title={title} width={1024} height={576}>
+      <DesktopWindow title={title} width={1024} height={576} onResize={embedTwitchStream}>
         <TwitchEmbedContainer id="twitch-embed-container" />
       </DesktopWindow>
     </>
