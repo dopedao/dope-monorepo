@@ -18,7 +18,7 @@ interface DesktopWindowProps {
   height?: number | string;
   titleChildren?: React.ReactNode;
   children: React.ReactNode;
-  onResize: () => void;
+  onResize(): void;
 }
 
 const DesktopWindow = ({
