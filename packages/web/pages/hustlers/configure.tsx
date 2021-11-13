@@ -11,7 +11,6 @@ import PanelTitleBar from '../../components/PanelTitleBar';
 import RenderFromLootId from '../../components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from '../../components/StackedResponsiveContainer';
 
-
 const Hustler = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
   // const currentTime = new Date();
@@ -22,7 +21,6 @@ const Hustler = () => {
     <AppWindow requiresWalletConnection={true}>
       <Head title="Create Your Hustler" />
       <StackedResponsiveContainer>
-        <ConfigurationControls />
         <PanelContainer
           css={css`
             min-height: 500px;
@@ -31,7 +29,7 @@ const Hustler = () => {
             background-color: ${hustlerConfig.bgColor};
           `}
         >
-          <PanelTitleBar>DOPE ID {hustlerConfig.dopeId}</PanelTitleBar>
+          <PanelTitleBar>DOPE NFT #{hustlerConfig.dopeId}</PanelTitleBar>
           <RenderFromLootId
             id={hustlerConfig.dopeId}
             sex={hustlerConfig.sex}
@@ -40,7 +38,11 @@ const Hustler = () => {
             facialHair={hustlerConfig.facialHair}
             bgColor={hustlerConfig.bgColor}
           />
+          <div></div>
         </PanelContainer>
+        <div>
+          <ConfigurationControls />
+        </div>
       </StackedResponsiveContainer>
     </AppWindow>
   );

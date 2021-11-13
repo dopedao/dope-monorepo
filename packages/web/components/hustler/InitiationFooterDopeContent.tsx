@@ -145,8 +145,8 @@ const InitiationFooterDopeContent = () => {
               padding: 8px 12px;
             `}
           >
-            <Link href="/hustlers/customize">
-              <a className="primary">Customize Appearance</a>
+            <Link href="/hustlers/configure">
+              <a className="primary">Configure Appearance</a>
             </Link>
             <a className="primary" onClick={() => randomizeAttributes()}>
               Randomize
