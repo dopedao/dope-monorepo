@@ -145,6 +145,7 @@ contract HustlerMetadata {
         p.viewbox = viewbox;
         p.parts = parts;
         p.resolution = resolution;
+        p.attributes = '[]';
         return MetadataBuilder.tokenURI(p, swapmeet);
     }
 
@@ -156,20 +157,24 @@ contract HustlerMetadata {
         parts[3] = rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]];
         parts[4] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
 
-        if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {}
+        uint8[10] memory order = [2, 6, 8, 5, 1, 3, 4, 7, 0, 9];
+        if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {
+            order = metadata[hustlerId].order;
+        }
 
         for (uint8 i = 0; i < 10; i++) {
-            if (i == ComponentTypes.VEHICLE) {
+            uint8 j = order[i];
+            if (j == ComponentTypes.VEHICLE) {
                 continue;
             }
 
-            if (BitMask.get(metadata[hustlerId].mask, i)) {
-                parts[i + 5] = swapmeet.tokenRle(
-                    metadata[hustlerId].slots[i],
+            if (BitMask.get(metadata[hustlerId].mask, j)) {
+                parts[j + 5] = swapmeet.tokenRle(
+                    metadata[hustlerId].slots[j],
                     metadata[hustlerId].body[BodyParts.GENDER]
                 );
 
-                if (i == ComponentTypes.DRUGS) {
+                if (j == ComponentTypes.DRUGS) {
                     parts[1] = drugShadow;
                 }
             }

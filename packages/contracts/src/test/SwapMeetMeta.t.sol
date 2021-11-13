@@ -57,12 +57,12 @@ contract Metadata is SwapMeetTest {
 
     function testCreateAndMintARareHatNewAccessory() public {
         uint8[5] memory components;
-        components[0] = owner.addItemComponent(ComponentTypes.ACCESSORIES, 'hat');
+        components[0] = owner.addItemComponent(ComponentTypes.ACCESSORY, 'hat');
         components[1] = 1;
         components[2] = 1;
         components[3] = 1;
         components[4] = 1;
-        uint256 id = owner.mint(address(owner), components, ComponentTypes.ACCESSORIES, 1, '');
+        uint256 id = owner.mint(address(owner), components, ComponentTypes.ACCESSORY, 1, '');
 
         Attribute[] memory attributes = new Attribute[](6);
         attributes[0] = Attribute('Slot', 'Accessory');
@@ -79,8 +79,8 @@ contract Metadata is SwapMeetTest {
 
     function testCreateAndMintAHatNewAccessory() public {
         uint8[5] memory components;
-        components[0] = owner.addItemComponent(ComponentTypes.ACCESSORIES, 'hat');
-        uint256 id = owner.mint(address(owner), components, ComponentTypes.ACCESSORIES, 1, '');
+        components[0] = owner.addItemComponent(ComponentTypes.ACCESSORY, 'hat');
+        uint256 id = owner.mint(address(owner), components, ComponentTypes.ACCESSORY, 1, '');
 
         Attribute[] memory attributes = new Attribute[](2);
         attributes[0] = Attribute('Slot', 'Accessory');

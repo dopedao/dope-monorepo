@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { media } from '../styles/mixins';
+import { media } from 'styles/mixins';
 import { NavLink } from './NavLink';
 import { useWeb3React } from '@web3-react/core';
 import Image from 'next/image';
