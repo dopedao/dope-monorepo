@@ -8,7 +8,7 @@ import './iOVM_FakeCrossDomainMessenger.sol';
 
 import { iOVM_CrossDomainMessenger } from '../../interfaces/iOVM_CrossDomainMessenger.sol';
 import { IComponents } from '../../interfaces/IComponents.sol';
-import { IHustler, IHustler } from '../../interfaces/IHustler.sol';
+import { IHustler } from '../../interfaces/IHustler.sol';
 import { ISwapMeet } from '../../interfaces/ISwapMeet.sol';
 import { IController } from '../../interfaces/IController.sol';
 import { Controller } from '../../Controller.sol';

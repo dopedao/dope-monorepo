@@ -164,44 +164,6 @@ contract Hustlers is HustlerTest {
         assertMetadata(hustlerId, attributes, name);
     }
 
-    // function testFailMintOGFromDopeWithLessEth() public {
-    //     string memory name = 'gangsta';
-    //     bytes4 background = hex'000000ff';
-    //     bytes4 color = hex'fafafaff';
-    //     uint8[4] memory body;
-    //     uint8[4] memory viewbox;
-    //     owner.mintOGFromDope{ value: 250000000000000000 - 1 }(
-    //         OTHER_BAG,
-    //         name,
-    //         color,
-    //         background,
-    //         hex'',
-    //         viewbox,
-    //         body,
-    //         hex'',
-    //         ''
-    //     );
-    // }
-
-    // function testFailMintOGFromDopeWithMoreEth() public {
-    //     string memory name = 'gangsta';
-    //     bytes4 background = hex'000000ff';
-    //     bytes4 color = hex'fafafaff';
-    //     uint8[4] memory body;
-    //     uint8[4] memory viewbox;
-    //     owner.mintOGFromDope{ value: 250000000000000000 + 1 }(
-    //         OTHER_BAG,
-    //         name,
-    //         color,
-    //         background,
-    //         hex'',
-    //         viewbox,
-    //         body,
-    //         hex'',
-    //         ''
-    //     );
-    // }
-
     function testCanSetAccessory() public {
         string memory name = 'gangsta';
         bytes4 background = hex'000000ff';

@@ -36,12 +36,13 @@ contract Initiator is Ownable {
 
     mapping(uint256 => bool) private opened;
 
-    constructor(IERC721 dope_, IERC20 paper_) {
+    constructor(
+        IERC721 dope_,
+        IERC20 paper_,
+        address controller_
+    ) {
         dope = dope_;
         paper = paper_;
-    }
-
-    function setL2Contracts(address controller_) external onlyOwner {
         controller = controller_;
     }
 
@@ -59,6 +60,10 @@ contract Initiator is Ownable {
         uint32 gasLimit
     ) external {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
+        require(msg.sender == dope.ownerOf(id), Errors.DoesNotOwnBagOrNotApproved);
+        require(!opened[id], Errors.AlreadyOpened);
+
+        opened[id] = true;
 
         bytes memory message = abi.encodeWithSelector(
             IController.mintTo.selector,
@@ -74,6 +79,8 @@ contract Initiator is Ownable {
             data
         );
         messenger.sendMessage(controller, message, gasLimit);
+
+        paper.transferFrom(msg.sender, timelock, cost());
     }
 
     function mintOGFromDopeTo(
@@ -90,9 +97,12 @@ contract Initiator is Ownable {
         uint32 gasLimit
     ) external payable {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
+        require(msg.sender == dope.ownerOf(id), Errors.DoesNotOwnBagOrNotApproved);
+        require(!opened[id], Errors.AlreadyOpened);
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
 
+        opened[id] = true;
         ogs += 1;
 
         bytes memory message = abi.encodeWithSelector(
@@ -109,6 +119,8 @@ contract Initiator is Ownable {
             data
         );
         messenger.sendMessage(controller, message, gasLimit);
+
+        paper.transferFrom(msg.sender, timelock, cost());
     }
 
     function open(
@@ -116,7 +128,8 @@ contract Initiator is Ownable {
         address to,
         bytes memory data,
         uint32 gasLimit
-    ) public {
+    ) external {
+        require(release != 0 && release < block.timestamp, Errors.NotTime);
         require(msg.sender == dope.ownerOf(id), Errors.DoesNotOwnBagOrNotApproved);
         require(!opened[id], Errors.AlreadyOpened);
         opened[id] = true;
@@ -133,7 +146,7 @@ contract Initiator is Ownable {
         release = _release;
     }
 
-    function withdraw() public {
+    function withdraw() external {
         // First half
         payable(timelock).transfer(address(this).balance / 2);
         // Half of second half (1/4)
