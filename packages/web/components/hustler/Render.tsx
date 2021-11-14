@@ -1,9 +1,7 @@
 import { css } from '@emotion/react';
 import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
-import { useWeb3React } from '@web3-react/core';
 import { useEffect, useMemo, useState } from 'react';
 import { BigNumber, providers } from 'ethers';
-
 import { NETWORK } from 'src/constants';
 
 interface Metadata {
@@ -15,7 +13,7 @@ const Render = ({ itemIds }: { itemIds: BigNumber[] }) => {
   const [itemRles, setItemRles] = useState<string[]>([]);
   const [bodyRles, setBodyRles] = useState<string[]>([]);
 
-  const provider = useMemo(
+  const provider = useMemo<any>(
     () =>
       new providers.JsonRpcProvider(
         'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',

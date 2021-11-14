@@ -19,6 +19,8 @@
     "@chakra-ui/react": "^1.6.7",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@ensdomains/ensjs": "^2.0.1",
+    "@ensdomains/react-ens-address": "^0.0.30",
     "@types/node": "^16.10.2",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
@@ -27,6 +29,7 @@
     "classnames": "^2.3.1",
     "dope-metrics": "^1.0.4",
     "dotenv": "^10.0.0",
+    "ethers": "^5.5.1",
     "framer-motion": "^4",
     "gear-rarity": "^1.0.5",
     "graphql": "^15.5.3",
@@ -35,8 +38,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-table": "^7.7.0",
-    "swr": "^0.5.6",
-    "web3": "^1.5.2"
+    "swr": "^0.5.6"
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.3.0",
