@@ -73,7 +73,7 @@ const DesktopWindow = ({
     if (onResize) {
       onResize()
     }
-  }, [isFullScreen]);
+  }, [isFullScreen, onResize]);
 
   const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
