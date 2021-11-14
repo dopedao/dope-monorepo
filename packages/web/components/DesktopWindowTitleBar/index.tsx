@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import DesktopWindowTitleButton from 'components/DesktopWindowTitleButton';
-import { formatLargeNumber } from 'src/utils';
+import { formatLargeNumber, getShortAddress } from 'src/utils';
+import { media } from 'styles/mixins';
 import { Header, RightColumn, TitleBar, TitleBarDescription, ENSAddressWrapper } from './styles';
-import { ethers } from 'ethers';
 
 type WindowTitleBarProps = {
   title: string | undefined;
@@ -71,7 +72,7 @@ const DesktopWindowTitleBar = ({
                   $PAPER
                 </div>
                 <span>|</span>
-                <ENSAddressWrapper>{ensAddress}</ENSAddressWrapper>
+                <ENSAddressWrapper>{ensAddress || getShortAddress(account)}</ENSAddressWrapper>
               </>
             )}
             {!isTouchDevice && (

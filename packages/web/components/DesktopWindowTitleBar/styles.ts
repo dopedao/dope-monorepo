@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { media } from 'styles/mixins';
 
 export const Header = styled.header`
   background: #141011;
@@ -25,8 +26,18 @@ export const RightColumn = styled.div`
   display: flex;
   align-items: center;
 
+  div:first-child {
+    @media (max-width: 680px) {
+      display: none;
+    }
+  }
+
   span {
     margin: 0 12px;
+
+    @media (max-width: 680px) {
+      display: none;
+    }
   }
 `;
 
