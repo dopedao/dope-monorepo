@@ -1,6 +1,6 @@
 import { isTouchDevice } from 'src/utils';
 import { media } from 'styles/mixins';
-import { useAllUnclaimedBagsQuery } from 'src/generated/graphql';
+import { useAllUnclaimedBagsQuery, useWalletQuery } from 'src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import AppWindow from 'components/AppWindow';
@@ -22,6 +22,7 @@ import DopeDatabase, {
   testForSale,
   PickedBag,
 } from 'src/DopeDatabase';
+import { useWeb3React } from '@web3-react/core';
 
 const title = 'SWAP MEET';
 
@@ -177,11 +178,26 @@ const MarketList = () => {
   );
 };
 
-export default function SwapMeet() {
+const SwapMeet = () => {
+  const { account } = useWeb3React();
+  const { data, loading } = useWalletQuery({
+    variables: { id: account?.toLowerCase() || '' },
+    skip: !account,
+  });
+
   return (
-    <AppWindow padBody={false} scrollable={false} height="90vh">
+    <AppWindow padBody={false} scrollable={false} height="90vh" balance={data?.wallet?.paper}>
       <Head title={title} />
-      <MarketList />
+      {loading ? (
+        <Container>
+          <LoadingBlock />
+          <LoadingBlock />
+        </Container>
+      ) : (
+        <MarketList />
+      )}
     </AppWindow>
   );
-}
+};
+
+export default SwapMeet;

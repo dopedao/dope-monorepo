@@ -15,6 +15,7 @@ interface AppWindowProps {
   children: React.ReactNode;
   width?: number | string;
   height?: number | string;
+  balance?: string;
 }
 
 const getBodyPadding = () => {
@@ -25,6 +26,14 @@ const getBodyPadding = () => {
   return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
 };
 
+const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean }>`
+  position: relative;
+  height: 100%;
+  overflow: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
+  background-color: #a8a9ae;
+  padding: ${({ padBody }) => (padBody ? getBodyPadding() : '0px')};
+`;
+
 export default function AppWindow({
   title,
   requiresWalletConnection = false,
@@ -32,17 +41,10 @@ export default function AppWindow({
   scrollable = true,
   width,
   height,
+  balance,
   children,
 }: AppWindowProps) {
   const { account } = useWeb3React();
-
-  const AppWindowBody = styled.div`
-    position: relative;
-    height: 100%;
-    overflow: ${scrollable ? 'scroll' : 'hidden'};
-    background-color: #a8a9ae;
-    padding: ${padBody ? getBodyPadding() : '0px'};
-  `;
 
   return (
     <DesktopWindow
@@ -50,11 +52,14 @@ export default function AppWindow({
       titleChildren={<AppWindowTitleBar />}
       width={width}
       height={height}
+      balance={balance}
     >
       {requiresWalletConnection === true && !account ? (
         <ConnectWallet />
       ) : (
-        <AppWindowBody className="appWindowBody">{children}</AppWindowBody>
+        <AppWindowBody className="appWindowBody" scrollable={scrollable} padBody={padBody}>
+          {children}
+        </AppWindowBody>
       )}
       <AppWindowFooter />
     </DesktopWindow>

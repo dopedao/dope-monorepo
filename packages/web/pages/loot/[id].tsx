@@ -7,15 +7,24 @@ import { NETWORK } from 'src/constants';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import Render from 'components/hustler/Render';
+import { useWeb3React } from '@web3-react/core';
+import { useWalletQuery } from 'src/generated/graphql';
+import Container from 'components/Container';
+import LoadingBlock from 'components/LoadingBlock';
 
 const HustlerFromLoot = () => {
   const router = useRouter();
   const { id } = router.query;
+  const { account } = useWeb3React();
+  const { data, loading } = useWalletQuery({
+    variables: { id: account?.toLowerCase() || '' },
+    skip: !account,
+  });
 
   const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [bodyIds, setBodyIds] = useState<string[]>();
 
-  const provider = useMemo(
+  const provider = useMemo<any>(
     () =>
       new providers.JsonRpcProvider(
         'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
@@ -38,9 +47,16 @@ const HustlerFromLoot = () => {
   }, [swapmeet, id]);
 
   return (
-    <AppWindow padBody={false}>
+    <AppWindow padBody={false} balance={data?.wallet?.paper}>
       <Head title="Hustler Preview" />
-      {itemIds && <Render itemIds={itemIds} />}
+      {loading ? (
+        <Container>
+          <LoadingBlock />
+          <LoadingBlock />
+        </Container>
+      ) : (
+        itemIds && <Render itemIds={itemIds} />
+      )}
     </AppWindow>
   );
 };
