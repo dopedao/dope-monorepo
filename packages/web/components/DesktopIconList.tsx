@@ -2,6 +2,7 @@ import { media } from 'styles/mixins';
 import { useRouter } from 'next/router';
 import DesktopIcon from 'components/DesktopIcon';
 import styled from '@emotion/styled';
+import { useWAGMI } from 'hooks/web3';
 
 const IconGrid = styled.div`
   position: fixed;
@@ -38,6 +39,8 @@ const DesktopIconList = () => {
   const openBrowserTab = (url: string): void => {
     window.open(url, '_blank')?.focus();
   };
+
+  useWAGMI();
 
   return (
     <IconGrid>

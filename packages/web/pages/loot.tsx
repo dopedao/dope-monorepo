@@ -20,7 +20,11 @@ export default function LootWindow() {
   const [selected, setSelected] = useState(0);
 
   return (
-    <AppWindow requiresWalletConnection={true} balance={data?.wallet?.paper}>
+    <AppWindow
+      requiresWalletConnection={true}
+      balance={data?.wallet?.paper}
+      loadingBalance={loading}
+    >
       <Head />
       {loading ? (
         <Container>

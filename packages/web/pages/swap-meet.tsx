@@ -186,7 +186,13 @@ const SwapMeet = () => {
   });
 
   return (
-    <AppWindow padBody={false} scrollable={false} height="90vh" balance={data?.wallet?.paper}>
+    <AppWindow
+      padBody={false}
+      scrollable={false}
+      height="90vh"
+      balance={data?.wallet?.paper}
+      loadingBalance={loading}
+    >
       <Head title={title} />
       {loading ? (
         <Container>

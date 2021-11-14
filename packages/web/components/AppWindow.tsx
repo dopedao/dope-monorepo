@@ -16,6 +16,7 @@ interface AppWindowProps {
   width?: number | string;
   height?: number | string;
   balance?: string;
+  loadingBalance?: boolean;
 }
 
 const getBodyPadding = () => {
@@ -42,6 +43,7 @@ export default function AppWindow({
   width,
   height,
   balance,
+  loadingBalance,
   children,
 }: AppWindowProps) {
   const { account } = useWeb3React();
@@ -53,6 +55,7 @@ export default function AppWindow({
       width={width}
       height={height}
       balance={balance}
+      loadingBalance={loadingBalance}
     >
       {requiresWalletConnection === true && !account ? (
         <ConnectWallet />

@@ -14,7 +14,7 @@ const Hustler = () => {
   });
 
   return (
-    <AppWindow padBody={false} balance={data?.wallet?.paper}>
+    <AppWindow padBody={false} balance={data?.wallet?.paper} loadingBalance={loading}>
       <Head title="Create Your Hustler" />
       {loading ? (
         <Container>
