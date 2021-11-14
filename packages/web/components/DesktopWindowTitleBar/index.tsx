@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
@@ -14,6 +15,7 @@ type WindowTitleBarProps = {
   isFullScreen: boolean;
   toggleFullScreen(): void;
   balance?: string;
+  loadingBalance?: boolean;
   children: React.ReactNode;
 };
 
@@ -23,6 +25,7 @@ const DesktopWindowTitleBar = ({
   isFullScreen,
   toggleFullScreen,
   balance,
+  loadingBalance,
   children,
 }: WindowTitleBarProps) => {
   const [ensAddress, setEnsAddress] = useState<string | null>(null);
@@ -44,7 +47,6 @@ const DesktopWindowTitleBar = ({
         const name = await ens.getName(account);
         setEnsAddress(name?.name);
       } catch (error) {
-        console.log(error);
         setEnsAddress(null);
       } finally {
         Promise.resolve();
@@ -67,10 +69,14 @@ const DesktopWindowTitleBar = ({
           <RightColumn>
             {account && (
               <>
-                <div>
-                  {balance ? formatLargeNumber(Number(ethers.utils.formatEther(balance))) : 0}{' '}
-                  $PAPER
-                </div>
+                {loadingBalance ? (
+                  <div>__.__ $PAPER</div>
+                ) : (
+                  <div>
+                    {balance ? formatLargeNumber(Number(ethers.utils.formatEther(balance))) : 0}{' '}
+                    $PAPER
+                  </div>
+                )}
                 <span>|</span>
                 <ENSAddressWrapper>{ensAddress || getShortAddress(account)}</ENSAddressWrapper>
               </>

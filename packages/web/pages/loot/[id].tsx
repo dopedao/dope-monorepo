@@ -47,7 +47,7 @@ const HustlerFromLoot = () => {
   }, [swapmeet, id]);
 
   return (
-    <AppWindow padBody={false} balance={data?.wallet?.paper}>
+    <AppWindow padBody={false} balance={data?.wallet?.paper} loadingBalance={loading}>
       <Head title="Hustler Preview" />
       {loading ? (
         <Container>

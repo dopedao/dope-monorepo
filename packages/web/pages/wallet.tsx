@@ -20,7 +20,12 @@ const Wallet = () => {
   };
 
   return (
-    <AppWindow requiresWalletConnection={true} padBody={false} balance={data?.wallet?.paper}>
+    <AppWindow
+      requiresWalletConnection={true}
+      padBody={false}
+      balance={data?.wallet?.paper}
+      loadingBalance={loading}
+    >
       <Head />
       {loading ? (
         <Container>
