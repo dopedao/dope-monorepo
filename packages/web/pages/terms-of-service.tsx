@@ -31,7 +31,7 @@ export default function Market() {
     router.replace('/');
   };
   return (
-    <DesktopWindow title={title} onResize={() => console.log('Window Resized')}>
+    <DesktopWindow title={title}>
       <Head title="TOS" />
       <Dialog css={dialogCss} title={title} icon="stop-hand">
         <TosWrapper>

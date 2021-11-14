@@ -16,7 +16,7 @@ interface DesktopWindowProps {
   height?: number | string;
   titleChildren?: React.ReactNode;
   children: React.ReactNode;
-  onResize(): void;
+  onResize?: () => void;
 }
 
 const DesktopWindow = ({
@@ -36,7 +36,11 @@ const DesktopWindow = ({
     setIsFullScreen(!isFullScreen);
   }
 
-  useEffect(onResize, [isFullScreen]);
+  useEffect(() => {
+    if (onResize) {
+      onResize()
+    }
+  }, [isFullScreen]);
 
   const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
