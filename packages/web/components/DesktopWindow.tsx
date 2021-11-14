@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import Draggable from 'react-draggable';
 import styled from '@emotion/styled';
@@ -17,6 +17,7 @@ type DesktopWindowProps = {
   balance?: string;
   loadingBalance?: boolean;
   children: ReactNode;
+  onResize?: () => void;
 };
 
 const WindowWrapper = styled.div<{ width: number | string; height: number | string }>`
@@ -61,6 +62,7 @@ const DesktopWindow = ({
   balance,
   loadingBalance,
   children,
+  onResize,
 }: DesktopWindowProps) => {
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
@@ -69,6 +71,12 @@ const DesktopWindow = ({
   const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
+
+  useEffect(() => {
+    if (onResize) {
+      onResize();
+    }
+  }, [isFullScreen]);
 
   const handleStop = () => {
     const el = document.querySelector('.floating');
