@@ -15,6 +15,7 @@ type DesktopWindowProps = {
   height?: number | string;
   titleChildren?: ReactNode;
   balance?: string;
+  loadingBalance?: boolean;
   children: ReactNode;
 };
 
@@ -58,6 +59,7 @@ const DesktopWindow = ({
   height = 768,
   titleChildren,
   balance,
+  loadingBalance,
   children,
 }: DesktopWindowProps) => {
   // Controls if window is full-screen or not on desktop.
@@ -96,6 +98,7 @@ const DesktopWindow = ({
           isFullScreen={isFullScreen}
           toggleFullScreen={toggleFullScreen}
           balance={balance}
+          loadingBalance={loadingBalance}
         >
           {titleChildren}
         </DesktopWindowTitleBar>
