@@ -43,6 +43,7 @@ const HairSelector = () => {
         </NumberInput>
         {/* Only render Facial Hair for Males  */}
         {hustlerConfig.sex === 'male' && <>
+          <br/>
           <FormLabel htmlFor="facial_hair">Facial Hair</FormLabel>
           <NumberInput 
             name="facial_hair"
