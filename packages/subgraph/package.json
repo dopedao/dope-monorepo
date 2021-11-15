@@ -1,0 +1,20 @@
+{
+  "name": "gear",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --studio dope-wars",
+    "create-local": "graph create --node http://localhost:8020/ dope-wars",
+    "remove-local": "graph remove --node http://localhost:8020/ dope-wars",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 dope-wars"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.21.1",
+    "@graphprotocol/graph-ts": "0.20.0"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "tarrenceva",
+  "description": ""
+}
