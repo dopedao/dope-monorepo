@@ -16,6 +16,7 @@ SOLC_VERSION := 0_8_6
 solc:; nix-env -f https://github.com/dapphub/dapptools/archive/master.tar.gz -iA solc-static-versions.solc_${SOLC_VERSION}
 
 # Build & test
+# build  : export DAPP_LIBRARIES=" src/MetadataBuilder.sol:MetadataBuilder:0xd2761Ee62d8772343070A5dE02C436F788EdF60a"
 build  :; ./scripts/build.sh
 test   :; dapp test --ffi # enable if you need the `ffi` cheat code on HEVM
 clean  :; dapp clean
@@ -24,19 +25,33 @@ estimate :; ./scripts/estimate-gas.sh ${contract}
 size   :; ./scripts/contract-size.sh ${contract}
 
 # Deployment helpers
-deploy :; @./scripts/deploy.sh
+deploy-l1 :; @./scripts/deploy-l1.sh
+deploy-l2 :; @./scripts/deploy-l2.sh
 
 # mainnet
-deploy-mainnet: export ETH_RPC_URL = $(call network,mainnet)
+deploy-mainnet: export ETH_RPC_URL = https://ancient-morning-wave.quiknode.pro/0d888ce1d2caa53e7004a067641c905934ef0efa/
+# $(call network,mainnet)
 deploy-mainnet: export LOOT=0x8707276df042e89669d69a177d3da7dc78bd8723
 deploy-mainnet: export PAPER=0x7aE1D57b58fA6411F32948314BadD83583eE0e8C
-deploy-mainnet: check-api-key deploy
+deploy-mainnet: check-api-key deploy-l1
 
 # rinkeby
 deploy-rinkeby: export ETH_RPC_URL = $(call network,rinkeby)
 deploy-rinkeby: export LOOT=0xEf879818335a10Db667810a9B668A8F537389194
 deploy-rinkeby: export PAPER=0x7988fCA891B30cF8E23459B09b851F9d79B17215
-deploy-rinkeby: check-api-key deploy
+deploy-rinkeby: check-api-key deploy-l1
+
+# kovan
+deploy-kovan: export ETH_RPC_URL = $(call network,kovan)
+deploy-kovan: export CONTROLLER=0xe7e8f3b0502Fc1357B5504C8262541Da1472f6De
+deploy-kovan: export LOOT=0xd2761Ee62d8772343070A5dE02C436F788EdF60a
+deploy-kovan: export PAPER=0x781B575CA559263eb232B854195D6dC0AB720105
+deploy-kovan: check-api-key deploy-l1
+
+# opt-kovan
+deploy-opt-kovan: export DAPP_LIBRARIES=" src/MetadataBuilder.sol:MetadataBuilder:0xd2761Ee62d8772343070A5dE02C436F788EdF60a"
+deploy-opt-kovan: export ETH_RPC_URL = https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg
+deploy-opt-kovan: check-api-key deploy-l2
 
 # testnet
 deploy-testnet:; @./scripts/test-deploy.sh
