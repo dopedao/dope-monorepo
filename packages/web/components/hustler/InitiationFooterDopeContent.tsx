@@ -3,7 +3,7 @@ import { Switch } from '@chakra-ui/switch';
 import { Spinner } from '@chakra-ui/spinner';
 import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
-import { HustlerInitConfig, isHustlerRandom, getRandomHustler } from '../../src/HustlerInitiation';
+import { HustlerInitConfig, isHustlerRandom, randomizeHustlerAttributes } from '../../src/HustlerInitiation';
 import { PickedBag } from '../../src/DopeDatabase';
 import { Select } from '@chakra-ui/react';
 import { useReactiveVar } from '@apollo/client';
@@ -76,15 +76,6 @@ const InitiationFooterDopeContent = () => {
     HustlerInitConfig({ ...hustlerConfig, mintOg: !hustlerConfig.mintOg });
   };
 
-  const randomizeAttributes = () => {
-    const randomHustler = getRandomHustler();
-    HustlerInitConfig({
-      ...randomHustler,
-      mintOg: hustlerConfig.mintOg,
-      dopeId: hustlerConfig.dopeId,
-    });
-  };
-
   const getBundledDopeFromData = (data: WalletQuery) => {
     let bundledDope = [] as PickedBag[];
     if (data?.wallet?.bags && data.wallet.bags.length > 0) {
@@ -148,7 +139,7 @@ const InitiationFooterDopeContent = () => {
             <Link href="/hustlers/configure">
               <a className="primary">Configure Appearance</a>
             </Link>
-            <a className="primary" onClick={() => randomizeAttributes()}>
+            <a className="primary" onClick={() => randomizeHustlerAttributes()}>
               Randomize
             </a>
           </div>

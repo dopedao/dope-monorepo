@@ -46,3 +46,13 @@ export const HustlerInitConfig = makeVar(getRandomHustler());
 export const isHustlerRandom = (): boolean => {
   return parseInt(HustlerInitConfig().dopeId) > NUM_DOPE_TOKENS;
 };
+
+export const randomizeHustlerAttributes = () => {
+  const randomHustler = getRandomHustler();
+  const hustlerConfig = HustlerInitConfig();
+  HustlerInitConfig({
+    ...randomHustler,
+    mintOg: hustlerConfig.mintOg,
+    dopeId: hustlerConfig.dopeId,
+  });
+};

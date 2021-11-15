@@ -5,7 +5,7 @@ import {
 } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import { Hustler, Hustler__factory } from '@dopewars/contracts';
-import { HustlerInitConfig } from '../../src/HustlerInitiation';
+import { HustlerInitConfig, randomizeHustlerAttributes } from '../../src/HustlerInitiation';
 import { NETWORK } from '../../src/constants';
 import { useMemo, useCallback } from 'react';
 import { useReactiveVar } from '@apollo/client';
@@ -75,7 +75,7 @@ const ConfigurationControls = () => {
           <SexSelector />
           <HairSelector />
           <HStack mt={4} justify="end">
-            <Button>
+            <Button onClick={() => randomizeHustlerAttributes()}>
               Randomize
             </Button>
             <Button isLoading={props.isSubmitting} type="submit" variant="primary">
