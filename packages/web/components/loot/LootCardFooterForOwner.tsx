@@ -1,11 +1,14 @@
+/* eslint-disable @next/next/no-img-element */
+import { useEffect, useMemo, useState } from 'react';
+import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
-import { Bag } from '../../src/generated/graphql';
+import { useReactiveVar } from '@apollo/client';
+import { Bag } from 'src/generated/graphql';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
-import { BigNumber, constants } from 'ethers';
-import { NETWORK } from '../../src/constants';
-import { HustlerInitConfig } from '../../src/HustlerInitiation';
-import { useReactiveVar } from '@apollo/client';
+import { BigNumber } from 'ethers';
+import { NETWORK } from 'src/constants';
+import { HustlerInitConfig } from 'src/HustlerInitiation';
 import {
   Paper,
   Paper__factory,
@@ -13,8 +16,6 @@ import {
   Hustler__factory,
   Loot__factory,
 } from '@dopewars/contracts';
-import { useEffect, useMemo, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
 
 interface Props {
   bag: Pick<Bag, 'id' | 'claimed'>;
@@ -34,7 +35,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
       chainId
         ? Paper__factory.connect(NETWORK[chainId as 1 | 4].contracts.paper, library.getSigner())
         : null,
-    [chainId],
+    [chainId, library],
   );
 
   const dope = useMemo(
@@ -42,7 +43,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
       chainId
         ? Loot__factory.connect(NETWORK[chainId as 1 | 4].contracts.dope, library.getSigner())
         : null,
-    [chainId],
+    [chainId, library],
   );
 
   const swapmeet = useMemo(
@@ -53,7 +54,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
             library.getSigner(),
           )
         : null,
-    [chainId],
+    [chainId, library],
   );
 
   const hustlers = useMemo(
@@ -64,7 +65,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
             library.getSigner(),
           )
         : null,
-    [chainId],
+    [chainId, library],
   );
 
   useEffect(() => {
@@ -81,7 +82,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
         .isApprovedForAll(account, NETWORK[chainId as 1 | 4].contracts.hustlers)
         .then(setIsDopeApproved);
     }
-  }, [account, dope]);
+  }, [account, chainId, dope]);
 
   useEffect(() => {
     if (account && paper) {
@@ -91,7 +92,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
           setIsPaperApproved(allowance.gte('12500000000000000000000')),
         );
     }
-  }, [account, paper]);
+  }, [account, chainId, paper]);
 
   const router = useRouter();
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
@@ -177,6 +178,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
           css={css`
             display: inline-block;
           `}
+          alt="info"
         />
       </div>
     </div>

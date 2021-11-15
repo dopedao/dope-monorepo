@@ -1,13 +1,14 @@
-import { css } from '@emotion/react';
-import { PickedBag } from '../../src/DopeDatabase';
+/* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
+import { css } from '@emotion/react';
+import { PickedBag } from 'src/DopeDatabase';
 import LootCardBody from './LootCardBody';
 import LootCardFooterForMarket from './LootCardFooterForMarket';
 import LootCardFooterForOwner from './LootCardFooterForOwner';
 import LootLegend from './LootLegend';
-import PanelContainer from '../PanelContainer';
-import PanelFooter from '../PanelFooter';
-import PanelTitleBarFlex from '../PanelTitleBarFlex';
+import PanelContainer from 'components/PanelContainer';
+import PanelFooter from 'components/PanelFooter';
+import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
 
 interface Props {
   footer: 'for-marketplace' | 'for-owner';
@@ -44,7 +45,7 @@ const LootCard = ({
           align-items: center;
         `}
       >
-        <img src={`${iconPath}/${icon}.svg`} onClick={() => setIsExpanded(!isExpanded)} />
+        <img src={`${iconPath}/${icon}.svg`} alt="" onClick={() => setIsExpanded(!isExpanded)} />
       </div>
     );
   };
