@@ -16,6 +16,7 @@ SOLC_VERSION := 0_8_6
 solc:; nix-env -f https://github.com/dapphub/dapptools/archive/master.tar.gz -iA solc-static-versions.solc_${SOLC_VERSION}
 
 # Build & test
+# build  : export DAPP_LIBRARIES=" src/MetadataBuilder.sol:MetadataBuilder:0xd2761Ee62d8772343070A5dE02C436F788EdF60a"
 build  :; ./scripts/build.sh
 test   :; dapp test --ffi # enable if you need the `ffi` cheat code on HEVM
 clean  :; dapp clean
@@ -42,13 +43,14 @@ deploy-rinkeby: check-api-key deploy-l1
 
 # kovan
 deploy-kovan: export ETH_RPC_URL = $(call network,kovan)
+deploy-kovan: export CONTROLLER=0xe7e8f3b0502Fc1357B5504C8262541Da1472f6De
 deploy-kovan: export LOOT=0xd2761Ee62d8772343070A5dE02C436F788EdF60a
 deploy-kovan: export PAPER=0x781B575CA559263eb232B854195D6dC0AB720105
 deploy-kovan: check-api-key deploy-l1
 
 # opt-kovan
+deploy-opt-kovan: export DAPP_LIBRARIES=" src/MetadataBuilder.sol:MetadataBuilder:0xd2761Ee62d8772343070A5dE02C436F788EdF60a"
 deploy-opt-kovan: export ETH_RPC_URL = https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg
-deploy-opt-kovan: export INITIATOR=0x4B5B7F242594BB97F7cA427e6BE3eD5A22D9fd18
 deploy-opt-kovan: check-api-key deploy-l2
 
 # testnet

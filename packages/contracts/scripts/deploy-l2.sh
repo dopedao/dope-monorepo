@@ -18,15 +18,21 @@ ComponentsAddr="0x781B575CA559263eb232B854195D6dC0AB720105"
 # extractABI Components
 # log "Components deployed at:" $ComponentsAddr
 
-SwapMeetAddr="0x39f5042303b671fE1252e80e483e9eeB13b083A3"
-# echo "deploy SwapMeet $ComponentsAddr $INITIATOR"
-# SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr $INITIATOR)
-# # verify SwapMeet $SwapMeetAddr $ComponentsAddr $INITIATOR
+SwapMeetAddr="0x781A6002A4221c0E52fC283D285b703890024C97"
+# echo "deploy SwapMeet $ComponentsAddr"
+# SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr)
+# # verify SwapMeet $SwapMeetAddr $ComponentsAddr
 # extractABI SwapMeet
 # log "SwapMeet deployed at:" $SwapMeetAddr
 
-# 0x915A52027F071c0788c21118092cf2DfF4a02bc9
-HustlerAddr=$(deploy Hustler $ComponentsAddr $SwapMeetAddr $INITIATOR)
-# verify Hustler $HustlerAddr $SwapMeetAddr
-extractABI Hustler
-log "Hustler deployed at:" $HustlerAddr
+HustlerAddr="0x577d9c7FF9B506d7305194698b4103a3fE3532f0"
+# HustlerAddr=$(deploy Hustler $ComponentsAddr $SwapMeetAddr)
+# # verify Hustler $HustlerAddr $SwapMeetAddr
+# extractABI Hustler
+# log "Hustler deployed at:" $HustlerAddr
+
+# 0xe7e8f3b0502Fc1357B5504C8262541Da1472f6De
+ControllerAddr=$(deploy Controller $ComponentsAddr $SwapMeetAddr $HustlerAddr)
+# verify Controller $ControllerAddr $SwapMeetAddr
+extractABI Controller
+log "Controller deployed at:" $ControllerAddr

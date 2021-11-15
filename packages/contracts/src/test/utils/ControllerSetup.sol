@@ -346,7 +346,7 @@ contract ControllerTester is Controller {
         IHustler hustler_,
         address dao_,
         address cdm_
-    ) Controller(components_, swapmeet_, hustler_, address(0)) {
+    ) Controller(components_, swapmeet_, hustler_) {
         ovmL2CrossDomainMessenger = iOVM_CrossDomainMessenger(cdm_);
         dao = dao_;
     }

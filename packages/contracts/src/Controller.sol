@@ -30,13 +30,11 @@ contract Controller is IController, ERC1155Holder {
     constructor(
         IComponents components_,
         ISwapMeet swapmeet_,
-        IHustler hustler_,
-        address initiator_
+        IHustler hustler_
     ) {
         components = components_;
         swapmeet = swapmeet_;
         hustler = hustler_;
-        initiator = initiator_;
         maintainer = msg.sender;
     }
 

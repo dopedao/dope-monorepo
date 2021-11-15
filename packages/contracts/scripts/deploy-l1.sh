@@ -11,7 +11,7 @@ set -eo pipefail
 # log "Paper deployed at:" $PaperAddr
 
 # 0x39f5042303b671fE1252e80e483e9eeB13b083A3
-InitiatorAddr=$(deploy Initiator $LOOT $PAPER)
-# verify Initiator $InitiatorAddr $LOOT $PAPER
+InitiatorAddr=$(deploy Initiator $LOOT $PAPER $CONTROLLER)
+# verify Initiator $InitiatorAddr $LOOT $PAPER $CONTROLLER
 extractABI Initiator
 log "Initiator deployed at:" $InitiatorAddr
