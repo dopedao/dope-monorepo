@@ -5,7 +5,9 @@ import { NUM_DOPE_TOKENS } from './constants';
 
 const HUSTLER_SEXES = ['male', 'female'];
 export type HustlerSex = 'male' | 'female';
-
+export const MAX_BODIES = 5;
+export const MAX_HAIR = 18;
+export const MAX_FACIAL_HAIR = 12;
 export const DEFAULT_BG_COLORS = ['#434345', '#97ADCC', '#F1D8AB', '#F2C4C5', '#B6CCC3'];
 
 interface HustlerCustomization {
@@ -32,9 +34,9 @@ export const getRandomHustler = (): HustlerCustomization => {
     mintOg: false,
     dopeId: getRandomHustlerId(),
     sex: HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex,
-    body: getRandomNumber(0, 5),
-    hair: getRandomNumber(0, 18),
-    facialHair: getRandomNumber(0, 12),
+    body: getRandomNumber(0, MAX_BODIES),
+    hair: getRandomNumber(0, MAX_HAIR),
+    facialHair: getRandomNumber(0, MAX_FACIAL_HAIR),
     bgColor: DEFAULT_BG_COLORS[getRandomNumber(0, DEFAULT_BG_COLORS.length - 1)],
   };
 };

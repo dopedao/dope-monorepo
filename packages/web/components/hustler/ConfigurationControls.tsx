@@ -8,11 +8,12 @@ import { Hustler, Hustler__factory } from '@dopewars/contracts';
 import { HustlerInitConfig } from '../../src/HustlerInitiation';
 import { NETWORK } from '../../src/constants';
 import { useMemo, useCallback } from 'react';
-import { useWeb3React } from '@web3-react/core';
 import { useReactiveVar } from '@apollo/client';
-import SkinToneSelector from './SkinToneSelector';
-import SexSelector from './SexSelector';
+import { useWeb3React } from '@web3-react/core';
+import HairSelector from './HairSelector';
 import NameColorTitleControls from './NameColorTitleControls';
+import SexSelector from './SexSelector';
+import SkinToneSelector from './SkinToneSelector';
 
 interface Values {
   name: string;
@@ -72,6 +73,7 @@ const ConfigurationControls = () => {
           <NameColorTitleControls />
           <SkinToneSelector />
           <SexSelector />
+          <HairSelector />
           <HStack mt={4} justify="end">
             <Button>
               Randomize
