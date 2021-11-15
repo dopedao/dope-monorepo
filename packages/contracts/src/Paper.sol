@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Snapshot.sol';
-import '@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol';
-import '@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol';
-import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol';
-import '@openzeppelin/contracts/access/Ownable.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Snapshot.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Enumerable.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC20/extensions/draft-ERC20Permit.sol';
+import '../lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Votes.sol';
+import '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
 
 contract Paper is ERC20, ERC20Permit, ERC20Votes, ERC20Snapshot, Ownable {
     // Dope Wars Loot: https://etherscan.io/address/0x8707276DF042E89669d69A177d3DA7dC78bd8723

@@ -4,8 +4,9 @@ pragma solidity ^0.8.0;
 import './Components.sol';
 import './TokenId.sol';
 
-import { IPaletteProvider } from './interfaces/ISwapMeet.sol';
-import { MetadataBuilder, Transform } from './MetadataBuilder.sol';
+import './interfaces/ISwapMeet.sol';
+import './MetadataBuilder.sol';
+import './interfaces/ISwapMeet.sol';
 
 library Gender {
     uint8 internal constant MALE = 0x0;
@@ -16,7 +17,7 @@ library Gender {
 /// the individual items inside a Loot bag.
 /// @author Tarrence van As, forked from Georgios Konstantopoulos
 /// @dev Inherit from this contract and use it to generate metadata for your tokens
-contract SwapMeetMetadata is IPaletteProvider {
+contract SwapMeetMetadata is ISwapMeetMetadata, IPaletteProvider {
     string private constant _name = 'Swap Meet';
     string private constant description = 'Get fitted.';
     bytes private constant female =
@@ -89,13 +90,14 @@ contract SwapMeetMetadata is IPaletteProvider {
         return MetadataBuilder.tokenURI(p, this);
     }
 
-    function fullname(uint256 tokenId) public view returns (string memory n) {
-        (n, , , , , ) = params(tokenId);
+    function fullname(uint256 id) public view override returns (string memory n) {
+        (n, , , , , ) = params(id);
     }
 
-    function params(uint256 tokenId)
+    function params(uint256 id)
         public
         view
+        override
         returns (
             string memory,
             string memory,
@@ -105,7 +107,7 @@ contract SwapMeetMetadata is IPaletteProvider {
             bytes4
         )
     {
-        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
+        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(id);
 
         uint8 bg = 0;
         string memory name_ = sc.name(componentType, components[0]);
@@ -138,7 +140,7 @@ contract SwapMeetMetadata is IPaletteProvider {
         return (name_, description, sc.attributes(components, componentType), prefix, subtext, backgrounds[bg]);
     }
 
-    function tokenRle(uint256 id, uint8 gender) public view returns (bytes memory) {
+    function tokenRle(uint256 id, uint8 gender) public view override returns (bytes memory) {
         if (rles[id][gender].length > 0) {
             return rles[id][gender];
         }

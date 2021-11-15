@@ -27,7 +27,7 @@ pragma solidity ^0.8.4;
 
 import '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
 
-import { toString } from './MetadataUtils.sol';
+import './MetadataUtils.sol';
 
 library ComponentTypes {
     uint8 internal constant WEAPON = 0x0;
@@ -341,10 +341,6 @@ contract Components is Ownable {
     uint256 private constant nameSuffixesLength = 18;
 
     event AddComponent(uint256 id, uint256 componentType, string component);
-
-    constructor(address _owner) {
-        transferOwnership(_owner);
-    }
 
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
