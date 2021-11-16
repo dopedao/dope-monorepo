@@ -8,7 +8,18 @@ import LoadingBlock from '../LoadingBlock';
 import RenderFromItemIds, { HustlerRenderProps } from '../../components/hustler/RenderFromItemIds';
 import LoadingBlockSquareCentered from '../LoadingBlockSquareCentered';
 
-const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor, textColor }: HustlerRenderProps) => {
+interface RenderFromLootIdProps extends Omit<HustlerRenderProps, 'itemIds'> { id: string };
+
+const RenderFromLootId = ({
+  bgColor,
+  body,
+  facialHair,
+  hair,
+  id,
+  name,
+  sex,
+  textColor,
+}: RenderFromLootIdProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
   const provider = useMemo<any>(
