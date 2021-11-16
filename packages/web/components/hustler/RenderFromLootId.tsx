@@ -1,21 +1,20 @@
-import { BigNumber, providers } from 'ethers';
-import { css } from '@emotion/react';
-import { HustlerSex } from '../../src/HustlerInitiation';
-import { NETWORK } from '../../src/constants';
-import { SwapMeet__factory } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
-import LoadingBlock from '../LoadingBlock';
-import RenderFromItemIds from '../../components/hustler/RenderFromItemIds';
-import LoadingBlockSquareCentered from '../LoadingBlockSquareCentered';
+import { BigNumber, providers } from 'ethers';
+import { HustlerSex } from 'src/HustlerInitiation';
+import { NETWORK } from 'src/constants';
+import { SwapMeet__factory } from '@dopewars/contracts';
+import LoadingBlock from 'components/LoadingBlock';
+import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
+import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 
-interface HustlerRenderProps {
+export type HustlerRenderProps = {
   id: string;
   sex?: HustlerSex;
   body?: number;
   hair?: number;
   facialHair?: number;
   bgColor?: string;
-}
+};
 
 const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor }: HustlerRenderProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
@@ -35,7 +34,7 @@ const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor }: HustlerR
 
   useEffect(() => {
     if (swapmeet && id) {
-      swapmeet.itemIds(id as string).then(ids =>
+      swapmeet.itemIds(id).then(ids =>
         // Excludes vehicle (2) and orders layers
         setItemIds([ids[6], ids[8], ids[5], ids[1], ids[3], ids[4], ids[7], ids[0]]),
       );
