@@ -83,7 +83,6 @@ const RenderFromItemIds = ({
 
     if (!hustlers) return;
     setHasRenderedFromChain(false);
-    const { bodyParams, hairParams, facialHairParams } = getBodyRleParams();
     // DEBUG INFO for when contract call fails.
     // Was tracking down bug that happens on Rinkeby.
     // console.log('body');
