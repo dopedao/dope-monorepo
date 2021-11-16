@@ -4,159 +4,20 @@ pragma solidity ^0.8.0;
 import 'ds-test/test.sol';
 
 import './Hevm.sol';
-import '../../Loot.sol';
+import '../../DopeWarsLoot.sol';
+import './iOVM_FakeCrossDomainMessenger.sol';
 import { Paper } from '../../Paper.sol';
 import { Hustler } from '../../Hustler.sol';
 import { RleParts } from '../../HustlerMetadata.sol';
 import { SwapMeet } from '../../SwapMeet.sol';
 import { Components, ComponentTypes } from '../../Components.sol';
 import { SwapMeetOwner, SwapMeetTester } from './SwapMeetSetup.sol';
+import { iOVM_CrossDomainMessenger } from '../../interfaces/iOVM_CrossDomainMessenger.sol';
+import { ISwapMeet } from '../../interfaces/ISwapMeet.sol';
+import { IHustler } from '../../interfaces/IHustler.sol';
 
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
-
-contract HustlerUser is ERC1155Holder, ERC721Holder {
-    DopeWarsLoot dope;
-    SwapMeet swapmeet;
-    Hustler hustler;
-    Paper paper;
-
-    constructor(
-        DopeWarsLoot _dope,
-        SwapMeet _swapmeet,
-        Hustler _hustler,
-        Paper _paper
-    ) {
-        dope = _dope;
-        swapmeet = _swapmeet;
-        hustler = _hustler;
-        paper = _paper;
-    }
-
-    function claim(uint256 tokenId) public {
-        dope.claim(tokenId);
-    }
-
-    function open(uint256 tokenId) public {
-        swapmeet.open(tokenId, address(this), '');
-    }
-
-    function mint() public {
-        hustler.mint('');
-    }
-
-    function mintFromDope(
-        uint256 tokenId,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask
-    ) public {
-        hustler.mintFromDope(tokenId, name, color, background, options, viewbox, body, mask, '');
-    }
-
-    function mintOGFromDope(
-        uint256 tokenId,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
-        bytes memory data
-    ) public payable {
-        hustler.mintOGFromDope{ value: msg.value }(
-            tokenId,
-            name,
-            color,
-            background,
-            options,
-            viewbox,
-            body,
-            mask,
-            data
-        );
-    }
-
-    function unequip(uint256 hustlerId, uint8[] calldata slots) public {
-        hustler.unequip(hustlerId, slots);
-    }
-
-    function setApprovalForAll(address operator, bool approved) public {
-        swapmeet.setApprovalForAll(operator, approved);
-    }
-
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) public {
-        swapmeet.safeTransferFrom(from, to, id, amount, data);
-    }
-
-    function safeBatchTransferFrom(
-        address from,
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) public {
-        swapmeet.safeBatchTransferFrom(from, to, ids, amounts, data);
-    }
-
-    function safeTransferHustlerFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) public {
-        hustler.safeTransferFrom(from, to, id, amount, data);
-    }
-
-    function setDopeApprovalForAll(address operator, bool approved) public {
-        dope.setApprovalForAll(operator, approved);
-    }
-
-    function setMetadata(
-        uint256 id,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewport,
-        uint8[4] calldata body,
-        bytes2 bmask
-    ) public {
-        hustler.setMetadata(id, name, color, background, options, viewport, body, bmask);
-    }
-
-    function transferERC1155(
-        address to,
-        uint256 tokenId,
-        uint256 amount
-    ) public {
-        swapmeet.safeTransferFrom(address(this), to, tokenId, amount, '0x');
-    }
-
-    function approvePaper(address who, uint256 amount) public {
-        paper.approve(who, amount);
-    }
-
-    function claimPaper() public {
-        paper.claimAllForOwner();
-    }
-
-    function claimPaper(uint256 tokenId) public {
-        paper.claimById(tokenId);
-    }
-}
 
 contract Enforcer {
     bool shouldRevert;
@@ -204,15 +65,16 @@ contract Enforcer {
     }
 }
 
-contract HustlerOwner is ERC1155Holder, SwapMeetOwner {
+contract HustlerOwner is ERC1155Holder, ERC721Holder, SwapMeetOwner {
     Hustler hustler;
 
     function init(
+        DopeWarsLoot _dope,
         Components _components,
         SwapMeet _swapmeet,
         Hustler _hustler
     ) public {
-        super.init(_components, _swapmeet);
+        super.init(_dope, _components, _swapmeet);
         hustler = _hustler;
     }
 
@@ -230,12 +92,96 @@ contract HustlerOwner is ERC1155Holder, SwapMeetOwner {
         return swapmeet.mint(account, _components, itemType, amount, data);
     }
 
-    function setRelease(uint256 timestamp) public {
-        hustler.setRelease(timestamp);
-    }
-
     function setEnforcer(address b) public {
         hustler.setEnforcer(b);
+    }
+
+    function open(
+        uint256 id,
+        address to,
+        bytes memory data
+    ) public {
+        swapmeet.open(id, to, data);
+    }
+
+    function mint() public {
+        hustler.mintTo(address(this), '');
+    }
+
+    function mint(
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask
+    ) public {
+        hustler.mintTo(address(this), name, color, background, options, viewbox, body, mask, '');
+    }
+
+    function mintOG(
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewbox,
+        uint8[4] calldata body,
+        bytes2 mask,
+        bytes memory data
+    ) public payable {
+        hustler.mintOGTo(address(this), name, color, background, options, viewbox, body, mask, data);
+    }
+
+    function unequip(uint256 hustlerId, uint8[] calldata slots) public {
+        hustler.unequip(hustlerId, slots);
+    }
+
+    function setApprovalForAll(address operator, bool approved) public {
+        swapmeet.setApprovalForAll(operator, approved);
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public {
+        swapmeet.safeTransferFrom(from, to, id, amount, data);
+    }
+
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public {
+        swapmeet.safeBatchTransferFrom(from, to, ids, amounts, data);
+    }
+
+    function safeTransferHustlerFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public {
+        hustler.safeTransferFrom(from, to, id, amount, data);
+    }
+
+    function setMetadata(
+        uint256 id,
+        string calldata name,
+        bytes4 color,
+        bytes4 background,
+        bytes2 options,
+        uint8[4] calldata viewport,
+        uint8[4] calldata body,
+        bytes2 bmask
+    ) public {
+        hustler.setMetadata(id, name, color, background, options, viewport, body, bmask);
     }
 }
 
@@ -245,9 +191,8 @@ contract HustlerTester is Hustler {
     constructor(
         address _owner,
         address _components,
-        address _swapmeet,
-        address _paper
-    ) Hustler(_components, _swapmeet, _paper) {
+        address _swapmeet
+    ) Hustler(_components, _swapmeet) {
         transferOwnership(_owner);
     }
 
@@ -285,43 +230,37 @@ contract HustlerTest is ERC1155Holder, DSTest {
 
     // contracts
     DopeWarsLoot internal dope;
-    Paper internal paper;
     Components internal components;
     SwapMeetTester internal swapmeet;
     HustlerTester internal hustler;
 
     // users
     HustlerOwner internal owner;
-    HustlerUser internal alice;
-    HustlerUser internal bob;
+    HustlerOwner internal bob;
 
     function setUp() public virtual {
         owner = new HustlerOwner();
 
         // deploy contracts
         dope = new DopeWarsLoot();
-        paper = new Paper(address(dope));
-        components = new Components(address(owner));
-        swapmeet = new SwapMeetTester(address(components), address(dope), address(paper), address(owner));
-        hustler = new HustlerTester(address(owner), address(components), address(swapmeet), address(paper));
+        components = new Components();
+        components.transferOwnership(address(owner));
+        swapmeet = new SwapMeetTester(address(components), address(owner));
+        hustler = new HustlerTester(address(owner), address(components), address(swapmeet));
 
-        owner.init(components, swapmeet, hustler);
+        owner.init(dope, components, swapmeet, hustler);
 
-        // create alice's account & claim a bag
-        alice = new HustlerUser(dope, swapmeet, hustler, paper);
-        alice.claim(BAG);
-        alice.claimPaper();
-        alice.approvePaper(address(swapmeet), type(uint256).max);
-        alice.approvePaper(address(hustler), type(uint256).max);
-        alice.open(BAG);
-        assertEq(dope.ownerOf(BAG), address(alice));
+        owner.claim(BAG);
+        owner.open(BAG, address(owner), '');
+        assertEq(dope.ownerOf(BAG), address(owner));
 
-        alice.claim(OTHER_BAG);
+        owner.claim(OTHER_BAG);
 
         uint8[5] memory _components;
         _components[0] = owner.addItemComponent(ComponentTypes.ACCESSORY, 'hat');
-        ACCESSORY = owner.mintItem(address(alice), _components, ComponentTypes.ACCESSORY, 1, '');
+        ACCESSORY = owner.mintItem(address(owner), _components, ComponentTypes.ACCESSORY, 1, '');
 
-        bob = new HustlerUser(dope, swapmeet, hustler, paper);
+        bob = new HustlerOwner();
+        // bob.init(dope, components, swapmeet, hustler);
     }
 }

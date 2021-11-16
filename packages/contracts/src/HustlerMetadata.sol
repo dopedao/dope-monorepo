@@ -1,11 +1,11 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import { BitMask } from './BitMask.sol';
-import { Components, ComponentTypes } from './Components.sol';
-import { Gender } from './SwapMeetMetadata.sol';
-import { DisplayTypes, MetadataBuilder, Transform } from './MetadataBuilder.sol';
-import { ISwapMeet } from './interfaces/ISwapMeet.sol';
+import './BitMask.sol';
+import './Components.sol';
+import './SwapMeetMetadata.sol';
+import './MetadataBuilder.sol';
+import './interfaces/ISwapMeet.sol';
 
 library BodyParts {
     uint8 internal constant GENDER = 0x0;

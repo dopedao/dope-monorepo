@@ -5,8 +5,8 @@
 
 pragma solidity ^0.8.6;
 
-import { IPaletteProvider } from './interfaces/ISwapMeet.sol';
-import { Base64, toString } from './MetadataUtils.sol';
+import './interfaces/ISwapMeet.sol';
+import './MetadataUtils.sol';
 
 library DisplayTypes {
     uint8 constant NONE = 0x0;
