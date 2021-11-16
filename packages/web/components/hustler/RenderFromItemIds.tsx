@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber, providers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
@@ -95,7 +96,7 @@ const RenderFromItemIds = ({
       promises.push(hustlers.bodyRle(...facialHairParams));
     }
     Promise.all(promises).then(setBodyRles);
-  }, [hustlers, sex, body, hair, facialHair]);
+  }, [hustlers, sex, body, hair, facialHair, getBodyRleParams]);
 
   useEffect(() => {
     if (hustlers && bodyRles && itemRles) {
@@ -120,7 +121,7 @@ const RenderFromItemIds = ({
           setHasRenderedFromChain(true);
         });
     }
-  }, [swapmeet, hustlers, itemRles, bodyRles]);
+  }, [swapmeet, hustlers, itemRles, bodyRles, bgColor]);
 
   if (hasRenderedFromChain === false) return <LoadingBlockSquareCentered />;
 
@@ -133,7 +134,7 @@ const RenderFromItemIds = ({
         overflow: hidden;
       `}
     >
-      {json && <img src={json.image}></img>}
+      {json && <img src={json.image} alt="" />}
     </AspectRatio>
   );
 };

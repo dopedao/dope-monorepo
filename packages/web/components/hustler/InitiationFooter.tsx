@@ -62,6 +62,7 @@ const InitiationFooter = () => {
   let randomHustlerRenderInterval: any;
   useEffect(() => {
     if (!onTestNetOrAfterHustlerLaunch) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       randomHustlerRenderInterval = setInterval(() => {
         HustlerInitConfig(getRandomHustler());
       }, 6000);

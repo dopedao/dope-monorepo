@@ -30,7 +30,7 @@ const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor }: HustlerR
 
   const swapmeet = useMemo(
     () => SwapMeet__factory.connect(NETWORK[4].contracts.swapmeet, provider),
-    [],
+    [provider],
   );
 
   useEffect(() => {

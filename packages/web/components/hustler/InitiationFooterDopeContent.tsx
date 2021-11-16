@@ -3,7 +3,11 @@ import { Switch } from '@chakra-ui/switch';
 import { Spinner } from '@chakra-ui/spinner';
 import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
-import { HustlerInitConfig, isHustlerRandom, randomizeHustlerAttributes } from '../../src/HustlerInitiation';
+import {
+  HustlerInitConfig,
+  isHustlerRandom,
+  randomizeHustlerAttributes,
+} from '../../src/HustlerInitiation';
 import { PickedBag } from '../../src/DopeDatabase';
 import { Select } from '@chakra-ui/react';
 import { useReactiveVar } from '@apollo/client';
@@ -38,7 +42,7 @@ const NoDopeMessage = () => {
         <p>
           {caution} NO BUNDLED DOPE IN WALLET {caution}
         </p>
-        <Link href="/swap-meet?status=For+Sale&sort_by=Most+Affordable">
+        <Link href="/swap-meet?status=For+Sale&sort_by=Most+Affordable" passHref>
           <Button variant="primary">Shop for DOPE NFTs</Button>
         </Link>
       </div>
