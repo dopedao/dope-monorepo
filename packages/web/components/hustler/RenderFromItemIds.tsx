@@ -107,7 +107,7 @@ const RenderFromItemIds = ({
       hustlers
         .render(
           '',
-          name,
+          "gangsta",
           64,
           hexColorToBase16(bgColor),
           hexColorToBase16(textColor),
