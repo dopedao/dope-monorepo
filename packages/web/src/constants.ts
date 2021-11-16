@@ -22,4 +22,4 @@ export const NETWORK = {
   },
 };
 
-export const HUSTLER_MINT_TIME = new Date(2021, 10, 20, 21);
+export const HUSTLER_MINT_TIME = new Date(2021, 10, 21, 12);
