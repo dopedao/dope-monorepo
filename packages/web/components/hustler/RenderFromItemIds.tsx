@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber, providers } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { hexColorToBase16 } from 'src/utils';
 import { HustlerSex, DEFAULT_BG_COLORS } from 'src/HustlerInitiation';
@@ -64,12 +64,12 @@ const RenderFromItemIds = ({
    * 3: female hair
    * 4: beards
    */
-  const getBodyRleParams = () => {
+  const getBodyRleParams = useCallback(() => {
     const bodyParams: [number, number] = [sex && sex == 'female' ? 1 : 0, body ?? 0];
     const hairParams: [number, number] = [sex && sex == 'female' ? 3 : 2, hair ?? 0];
     const facialHairParams: [number, number] = [4, facialHair ?? 0];
     return { bodyParams, hairParams, facialHairParams };
-  };
+  }, [body, facialHair, hair, sex]);
 
   // facialHair?: number;
 

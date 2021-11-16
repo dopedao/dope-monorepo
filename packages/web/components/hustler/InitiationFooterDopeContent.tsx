@@ -3,19 +3,19 @@ import { Switch } from '@chakra-ui/switch';
 import { Spinner } from '@chakra-ui/spinner';
 import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import { Select } from '@chakra-ui/react';
+import { useReactiveVar } from '@apollo/client';
+import { useWeb3React } from '@web3-react/core';
+import Link from 'next/link';
+import { useWalletQuery, WalletQuery } from 'src/generated/graphql';
 import {
   HustlerInitConfig,
   isHustlerRandom,
   randomizeHustlerAttributes,
-} from '../../src/HustlerInitiation';
-import { PickedBag } from '../../src/DopeDatabase';
-import { Select } from '@chakra-ui/react';
-import { useReactiveVar } from '@apollo/client';
-import { useWalletQuery, WalletQuery } from '../../src/generated/graphql';
-import { useWeb3React } from '@web3-react/core';
-import Link from 'next/link';
-import PanelFooter from '../PanelFooter';
-import styled from '@emotion/styled';
+} from 'src/HustlerInitiation';
+import { PickedBag } from 'src/DopeDatabase';
+import PanelFooter from 'components/PanelFooter';
 
 const NoDopeMessage = () => {
   const caution = (
@@ -67,7 +67,6 @@ const SpinnerContainer = styled.div`
 
 const InitiationFooterDopeContent = () => {
   const { account } = useWeb3React();
-  if (!account) return <NoDopeMessage />;
 
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
@@ -89,7 +88,8 @@ const InitiationFooterDopeContent = () => {
   };
 
   const { data, loading } = useWalletQuery({
-    variables: { id: account.toLowerCase() },
+    variables: { id: account?.toLowerCase() || '' },
+    skip: !account,
     // Set first item as selected when it comes back from
     // the contract query.
     onCompleted: data => {
@@ -101,6 +101,8 @@ const InitiationFooterDopeContent = () => {
       }
     },
   });
+
+  if (!account) return <NoDopeMessage />;
 
   if (loading) {
     return (
