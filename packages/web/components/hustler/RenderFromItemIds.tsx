@@ -42,18 +42,18 @@ const RenderFromItemIds = ({
   const provider = useMemo<any>(
     () =>
       new providers.JsonRpcProvider(
-        'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
+        'https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg',
       ),
     [],
   );
 
   const swapmeet = useMemo(
-    () => SwapMeet__factory.connect(NETWORK[4].contracts.swapmeet, provider),
+    () => SwapMeet__factory.connect(NETWORK[69].contracts.swapmeet, provider),
     [provider],
   );
 
   const hustlers = useMemo(
-    () => Hustler__factory.connect(NETWORK[4].contracts.hustlers, provider),
+    () => Hustler__factory.connect(NETWORK[69].contracts.hustlers, provider),
     [provider],
   );
 
@@ -117,7 +117,6 @@ const RenderFromItemIds = ({
         .then(meta => {
           meta = meta.replace('data:application/json;base64,', '');
           meta = Buffer.from(meta, 'base64').toString();
-          meta = meta.replace(', "attributes":', '');
           const decoded = JSON.parse(meta);
           setJson(decoded as Metadata);
           setHasRenderedFromChain(true);
