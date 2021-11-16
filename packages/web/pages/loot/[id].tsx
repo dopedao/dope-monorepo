@@ -1,18 +1,17 @@
-import { useRouter } from 'next/router';
-import { SwapMeet__factory } from '@dopewars/contracts';
-import { useEffect, useMemo, useState } from 'react';
-import { BigNumber, providers } from 'ethers';
-
-import { NETWORK } from 'src/constants';
-import AppWindow from 'components/AppWindow';
-import Head from 'components/Head';
-import Render from 'components/hustler/Render';
+import styled from '@emotion/styled';
+import { useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { useWalletQuery } from 'src/generated/graphql';
+import { HustlerInitConfig } from 'src/HustlerConfig';
+import { useRouter } from 'next/router';
+import DesktopWindow from 'components/DesktopWindow';
+import RenderFromLootId from 'components/hustler/RenderFromLootId';
+import Head from 'components/Head';
 import Container from 'components/Container';
 import LoadingBlock from 'components/LoadingBlock';
 
 const HustlerFromLoot = () => {
+  const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const router = useRouter();
   const { id } = router.query;
   const { account } = useWeb3React();
@@ -21,43 +20,41 @@ const HustlerFromLoot = () => {
     skip: !account,
   });
 
-  const [itemIds, setItemIds] = useState<BigNumber[]>();
-  const [bodyIds, setBodyIds] = useState<string[]>();
+  const title = `Hustler Preview: ${id}`;
 
-  const provider = useMemo<any>(
-    () =>
-      new providers.JsonRpcProvider(
-        'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
-      ),
-    [],
-  );
-
-  const swapmeet = useMemo(
-    () => SwapMeet__factory.connect(NETWORK[4].contracts.swapmeet, provider),
-    [provider],
-  );
-
-  useEffect(() => {
-    if (swapmeet && id) {
-      swapmeet.itemIds(id as string).then(ids =>
-        // Excludes vehicle (2) and orders layers
-        setItemIds([ids[6], ids[8], ids[5], ids[1], ids[3], ids[4], ids[7], ids[0]]),
-      );
+  const HustlerContainer = styled.div`
+    background-color: ${hustlerConfig.bgColor};
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    & > * {
+      flex: 1;
     }
-  }, [swapmeet, id]);
+  `;
 
   return (
-    <AppWindow padBody={false} balance={data?.wallet?.paper} loadingBalance={loading}>
-      <Head title="Hustler Preview" />
+    <DesktopWindow title={title} balance={data?.wallet?.paper} loadingBalance={loading}>
+      <Head title={title} />
       {loading ? (
         <Container>
           <LoadingBlock />
           <LoadingBlock />
         </Container>
       ) : (
-        itemIds && <Render itemIds={itemIds} />
+        <HustlerContainer>
+          <RenderFromLootId
+            id={id?.toString() ?? '1'}
+            sex={hustlerConfig.sex}
+            body={hustlerConfig.body}
+            hair={hustlerConfig.hair}
+            facialHair={hustlerConfig.facialHair}
+            bgColor={hustlerConfig.bgColor}
+          />
+        </HustlerContainer>
       )}
-    </AppWindow>
+    </DesktopWindow>
   );
 };
 

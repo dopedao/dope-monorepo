@@ -3,6 +3,7 @@ import { media } from 'styles/mixins';
 import { useAllUnclaimedBagsQuery, useWalletQuery } from 'src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
+import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -192,6 +193,7 @@ const SwapMeet = () => {
       height="90vh"
       balance={data?.wallet?.paper}
       loadingBalance={loading}
+      navbar={<DopeWarsExeNav />}
     >
       <Head title={title} />
       {loading ? (

@@ -36,9 +36,6 @@ const TextBody = styled.div`
   h4 {
     margin-bottom: 8px;
   }
-  em {
-    background-color: rgba(255, 252, 63, 0.5);
-  }
   img[src*='#float-left'] {
     width: 50%;
     float: left;
@@ -125,7 +122,7 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 ----
 
 ### The DOPE DAO is supported by gamers like you
-[Purchase DOPE NFT items on OpenSea](https://opensea.io/collection/dope-v4) to claim your votes on DOPE DAO proposals and play the upcoming game.
+[Purchase DOPE NFT loot on OpenSea](https://opensea.io/collection/dope-v4) to claim your votes on DOPE DAO proposals and play the upcoming game.
 
 ----
 

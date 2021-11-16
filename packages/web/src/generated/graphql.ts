@@ -19,6 +19,7 @@ export type Scalars = {
 
 export type Bag = {
   __typename?: 'Bag';
+  bundled: Scalars['Boolean'];
   claimed: Scalars['Boolean'];
   clothes: Scalars['String'];
   currentOwner: Wallet;
@@ -29,6 +30,7 @@ export type Bag = {
   minted: Scalars['BigInt'];
   neck: Scalars['String'];
   open_sea_asset?: Maybe<OpenSeaAsset>;
+  opened: Scalars['Boolean'];
   rank: Scalars['Int'];
   ring: Scalars['String'];
   vehicle: Scalars['String'];
@@ -141,6 +143,10 @@ export type Bag_Filter = {
   neck_not_in?: Maybe<Array<Scalars['String']>>;
   neck_not_starts_with?: Maybe<Scalars['String']>;
   neck_starts_with?: Maybe<Scalars['String']>;
+  opened?: Maybe<Scalars['Boolean']>;
+  opened_in?: Maybe<Array<Scalars['Boolean']>>;
+  opened_not?: Maybe<Scalars['Boolean']>;
+  opened_not_in?: Maybe<Array<Scalars['Boolean']>>;
   ring?: Maybe<Scalars['String']>;
   ring_contains?: Maybe<Scalars['String']>;
   ring_ends_with?: Maybe<Scalars['String']>;
@@ -209,16 +215,339 @@ export enum Bag_OrderBy {
   Id = 'id',
   Minted = 'minted',
   Neck = 'neck',
+  Opened = 'opened',
   Ring = 'ring',
   Vehicle = 'vehicle',
   Waist = 'waist',
   Weapon = 'weapon',
 }
 
+export type Beard = {
+  __typename?: 'Beard';
+  id: Scalars['ID'];
+  rle: Scalars['Bytes'];
+};
+
+export type Beard_Filter = {
+  id?: Maybe<Scalars['ID']>;
+  id_gt?: Maybe<Scalars['ID']>;
+  id_gte?: Maybe<Scalars['ID']>;
+  id_in?: Maybe<Array<Scalars['ID']>>;
+  id_lt?: Maybe<Scalars['ID']>;
+  id_lte?: Maybe<Scalars['ID']>;
+  id_not?: Maybe<Scalars['ID']>;
+  id_not_in?: Maybe<Array<Scalars['ID']>>;
+  rle?: Maybe<Scalars['Bytes']>;
+  rle_contains?: Maybe<Scalars['Bytes']>;
+  rle_in?: Maybe<Array<Scalars['Bytes']>>;
+  rle_not?: Maybe<Scalars['Bytes']>;
+  rle_not_contains?: Maybe<Scalars['Bytes']>;
+  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+};
+
+export enum Beard_OrderBy {
+  Id = 'id',
+  Rle = 'rle',
+}
+
 export type Block_Height = {
   hash?: Maybe<Scalars['Bytes']>;
   number?: Maybe<Scalars['Int']>;
 };
+
+export type FemaleBody = {
+  __typename?: 'FemaleBody';
+  id: Scalars['ID'];
+  rle: Scalars['Bytes'];
+};
+
+export type FemaleBody_Filter = {
+  id?: Maybe<Scalars['ID']>;
+  id_gt?: Maybe<Scalars['ID']>;
+  id_gte?: Maybe<Scalars['ID']>;
+  id_in?: Maybe<Array<Scalars['ID']>>;
+  id_lt?: Maybe<Scalars['ID']>;
+  id_lte?: Maybe<Scalars['ID']>;
+  id_not?: Maybe<Scalars['ID']>;
+  id_not_in?: Maybe<Array<Scalars['ID']>>;
+  rle?: Maybe<Scalars['Bytes']>;
+  rle_contains?: Maybe<Scalars['Bytes']>;
+  rle_in?: Maybe<Array<Scalars['Bytes']>>;
+  rle_not?: Maybe<Scalars['Bytes']>;
+  rle_not_contains?: Maybe<Scalars['Bytes']>;
+  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+};
+
+export enum FemaleBody_OrderBy {
+  Id = 'id',
+  Rle = 'rle',
+}
+
+export type FemaleHair = {
+  __typename?: 'FemaleHair';
+  id: Scalars['ID'];
+  rle: Scalars['Bytes'];
+};
+
+export type FemaleHair_Filter = {
+  id?: Maybe<Scalars['ID']>;
+  id_gt?: Maybe<Scalars['ID']>;
+  id_gte?: Maybe<Scalars['ID']>;
+  id_in?: Maybe<Array<Scalars['ID']>>;
+  id_lt?: Maybe<Scalars['ID']>;
+  id_lte?: Maybe<Scalars['ID']>;
+  id_not?: Maybe<Scalars['ID']>;
+  id_not_in?: Maybe<Array<Scalars['ID']>>;
+  rle?: Maybe<Scalars['Bytes']>;
+  rle_contains?: Maybe<Scalars['Bytes']>;
+  rle_in?: Maybe<Array<Scalars['Bytes']>>;
+  rle_not?: Maybe<Scalars['Bytes']>;
+  rle_not_contains?: Maybe<Scalars['Bytes']>;
+  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+};
+
+export enum FemaleHair_OrderBy {
+  Id = 'id',
+  Rle = 'rle',
+}
+
+export type Hustler = {
+  __typename?: 'Hustler';
+  data: Scalars['String'];
+  id: Scalars['ID'];
+  owner: Wallet;
+};
+
+export type Hustler_Filter = {
+  data?: Maybe<Scalars['String']>;
+  data_contains?: Maybe<Scalars['String']>;
+  data_ends_with?: Maybe<Scalars['String']>;
+  data_gt?: Maybe<Scalars['String']>;
+  data_gte?: Maybe<Scalars['String']>;
+  data_in?: Maybe<Array<Scalars['String']>>;
+  data_lt?: Maybe<Scalars['String']>;
+  data_lte?: Maybe<Scalars['String']>;
+  data_not?: Maybe<Scalars['String']>;
+  data_not_contains?: Maybe<Scalars['String']>;
+  data_not_ends_with?: Maybe<Scalars['String']>;
+  data_not_in?: Maybe<Array<Scalars['String']>>;
+  data_not_starts_with?: Maybe<Scalars['String']>;
+  data_starts_with?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['ID']>;
+  id_gt?: Maybe<Scalars['ID']>;
+  id_gte?: Maybe<Scalars['ID']>;
+  id_in?: Maybe<Array<Scalars['ID']>>;
+  id_lt?: Maybe<Scalars['ID']>;
+  id_lte?: Maybe<Scalars['ID']>;
+  id_not?: Maybe<Scalars['ID']>;
+  id_not_in?: Maybe<Array<Scalars['ID']>>;
+  owner?: Maybe<Scalars['String']>;
+  owner_contains?: Maybe<Scalars['String']>;
+  owner_ends_with?: Maybe<Scalars['String']>;
+  owner_gt?: Maybe<Scalars['String']>;
+  owner_gte?: Maybe<Scalars['String']>;
+  owner_in?: Maybe<Array<Scalars['String']>>;
+  owner_lt?: Maybe<Scalars['String']>;
+  owner_lte?: Maybe<Scalars['String']>;
+  owner_not?: Maybe<Scalars['String']>;
+  owner_not_contains?: Maybe<Scalars['String']>;
+  owner_not_ends_with?: Maybe<Scalars['String']>;
+  owner_not_in?: Maybe<Array<Scalars['String']>>;
+  owner_not_starts_with?: Maybe<Scalars['String']>;
+  owner_starts_with?: Maybe<Scalars['String']>;
+};
+
+export enum Hustler_OrderBy {
+  Data = 'data',
+  Id = 'id',
+  Owner = 'owner',
+}
+
+export type Item = {
+  __typename?: 'Item';
+  data: Scalars['String'];
+  femaleRle: Scalars['Bytes'];
+  id: Scalars['ID'];
+  maleRle: Scalars['Bytes'];
+  name: Scalars['String'];
+};
+
+export type ItemBalances = {
+  __typename?: 'ItemBalances';
+  balance: Scalars['BigInt'];
+  id: Scalars['ID'];
+  item: Item;
+  wallet: Wallet;
+};
+
+export type ItemBalances_Filter = {
+  balance?: Maybe<Scalars['BigInt']>;
+  balance_gt?: Maybe<Scalars['BigInt']>;
+  balance_gte?: Maybe<Scalars['BigInt']>;
+  balance_in?: Maybe<Array<Scalars['BigInt']>>;
+  balance_lt?: Maybe<Scalars['BigInt']>;
+  balance_lte?: Maybe<Scalars['BigInt']>;
+  balance_not?: Maybe<Scalars['BigInt']>;
+  balance_not_in?: Maybe<Array<Scalars['BigInt']>>;
+  id?: Maybe<Scalars['ID']>;
+  id_gt?: Maybe<Scalars['ID']>;
+  id_gte?: Maybe<Scalars['ID']>;
+  id_in?: Maybe<Array<Scalars['ID']>>;
+  id_lt?: Maybe<Scalars['ID']>;
+  id_lte?: Maybe<Scalars['ID']>;
+  id_not?: Maybe<Scalars['ID']>;
+  id_not_in?: Maybe<Array<Scalars['ID']>>;
+  item?: Maybe<Scalars['String']>;
+  item_contains?: Maybe<Scalars['String']>;
+  item_ends_with?: Maybe<Scalars['String']>;
+  item_gt?: Maybe<Scalars['String']>;
+  item_gte?: Maybe<Scalars['String']>;
+  item_in?: Maybe<Array<Scalars['String']>>;
+  item_lt?: Maybe<Scalars['String']>;
+  item_lte?: Maybe<Scalars['String']>;
+  item_not?: Maybe<Scalars['String']>;
+  item_not_contains?: Maybe<Scalars['String']>;
+  item_not_ends_with?: Maybe<Scalars['String']>;
+  item_not_in?: Maybe<Array<Scalars['String']>>;
+  item_not_starts_with?: Maybe<Scalars['String']>;
+  item_starts_with?: Maybe<Scalars['String']>;
+  wallet?: Maybe<Scalars['String']>;
+  wallet_contains?: Maybe<Scalars['String']>;
+  wallet_ends_with?: Maybe<Scalars['String']>;
+  wallet_gt?: Maybe<Scalars['String']>;
+  wallet_gte?: Maybe<Scalars['String']>;
+  wallet_in?: Maybe<Array<Scalars['String']>>;
+  wallet_lt?: Maybe<Scalars['String']>;
+  wallet_lte?: Maybe<Scalars['String']>;
+  wallet_not?: Maybe<Scalars['String']>;
+  wallet_not_contains?: Maybe<Scalars['String']>;
+  wallet_not_ends_with?: Maybe<Scalars['String']>;
+  wallet_not_in?: Maybe<Array<Scalars['String']>>;
+  wallet_not_starts_with?: Maybe<Scalars['String']>;
+  wallet_starts_with?: Maybe<Scalars['String']>;
+};
+
+export enum ItemBalances_OrderBy {
+  Balance = 'balance',
+  Id = 'id',
+  Item = 'item',
+  Wallet = 'wallet',
+}
+
+export type Item_Filter = {
+  data?: Maybe<Scalars['String']>;
+  data_contains?: Maybe<Scalars['String']>;
+  data_ends_with?: Maybe<Scalars['String']>;
+  data_gt?: Maybe<Scalars['String']>;
+  data_gte?: Maybe<Scalars['String']>;
+  data_in?: Maybe<Array<Scalars['String']>>;
+  data_lt?: Maybe<Scalars['String']>;
+  data_lte?: Maybe<Scalars['String']>;
+  data_not?: Maybe<Scalars['String']>;
+  data_not_contains?: Maybe<Scalars['String']>;
+  data_not_ends_with?: Maybe<Scalars['String']>;
+  data_not_in?: Maybe<Array<Scalars['String']>>;
+  data_not_starts_with?: Maybe<Scalars['String']>;
+  data_starts_with?: Maybe<Scalars['String']>;
+  femaleRle?: Maybe<Scalars['Bytes']>;
+  femaleRle_contains?: Maybe<Scalars['Bytes']>;
+  femaleRle_in?: Maybe<Array<Scalars['Bytes']>>;
+  femaleRle_not?: Maybe<Scalars['Bytes']>;
+  femaleRle_not_contains?: Maybe<Scalars['Bytes']>;
+  femaleRle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+  id?: Maybe<Scalars['ID']>;
+  id_gt?: Maybe<Scalars['ID']>;
+  id_gte?: Maybe<Scalars['ID']>;
+  id_in?: Maybe<Array<Scalars['ID']>>;
+  id_lt?: Maybe<Scalars['ID']>;
+  id_lte?: Maybe<Scalars['ID']>;
+  id_not?: Maybe<Scalars['ID']>;
+  id_not_in?: Maybe<Array<Scalars['ID']>>;
+  maleRle?: Maybe<Scalars['Bytes']>;
+  maleRle_contains?: Maybe<Scalars['Bytes']>;
+  maleRle_in?: Maybe<Array<Scalars['Bytes']>>;
+  maleRle_not?: Maybe<Scalars['Bytes']>;
+  maleRle_not_contains?: Maybe<Scalars['Bytes']>;
+  maleRle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+  name?: Maybe<Scalars['String']>;
+  name_contains?: Maybe<Scalars['String']>;
+  name_ends_with?: Maybe<Scalars['String']>;
+  name_gt?: Maybe<Scalars['String']>;
+  name_gte?: Maybe<Scalars['String']>;
+  name_in?: Maybe<Array<Scalars['String']>>;
+  name_lt?: Maybe<Scalars['String']>;
+  name_lte?: Maybe<Scalars['String']>;
+  name_not?: Maybe<Scalars['String']>;
+  name_not_contains?: Maybe<Scalars['String']>;
+  name_not_ends_with?: Maybe<Scalars['String']>;
+  name_not_in?: Maybe<Array<Scalars['String']>>;
+  name_not_starts_with?: Maybe<Scalars['String']>;
+  name_starts_with?: Maybe<Scalars['String']>;
+};
+
+export enum Item_OrderBy {
+  Data = 'data',
+  FemaleRle = 'femaleRle',
+  Id = 'id',
+  MaleRle = 'maleRle',
+  Name = 'name',
+}
+
+export type MaleBody = {
+  __typename?: 'MaleBody';
+  id: Scalars['ID'];
+  rle: Scalars['Bytes'];
+};
+
+export type MaleBody_Filter = {
+  id?: Maybe<Scalars['ID']>;
+  id_gt?: Maybe<Scalars['ID']>;
+  id_gte?: Maybe<Scalars['ID']>;
+  id_in?: Maybe<Array<Scalars['ID']>>;
+  id_lt?: Maybe<Scalars['ID']>;
+  id_lte?: Maybe<Scalars['ID']>;
+  id_not?: Maybe<Scalars['ID']>;
+  id_not_in?: Maybe<Array<Scalars['ID']>>;
+  rle?: Maybe<Scalars['Bytes']>;
+  rle_contains?: Maybe<Scalars['Bytes']>;
+  rle_in?: Maybe<Array<Scalars['Bytes']>>;
+  rle_not?: Maybe<Scalars['Bytes']>;
+  rle_not_contains?: Maybe<Scalars['Bytes']>;
+  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+};
+
+export enum MaleBody_OrderBy {
+  Id = 'id',
+  Rle = 'rle',
+}
+
+export type MaleHair = {
+  __typename?: 'MaleHair';
+  id: Scalars['ID'];
+  rle: Scalars['Bytes'];
+};
+
+export type MaleHair_Filter = {
+  id?: Maybe<Scalars['ID']>;
+  id_gt?: Maybe<Scalars['ID']>;
+  id_gte?: Maybe<Scalars['ID']>;
+  id_in?: Maybe<Array<Scalars['ID']>>;
+  id_lt?: Maybe<Scalars['ID']>;
+  id_lte?: Maybe<Scalars['ID']>;
+  id_not?: Maybe<Scalars['ID']>;
+  id_not_in?: Maybe<Array<Scalars['ID']>>;
+  rle?: Maybe<Scalars['Bytes']>;
+  rle_contains?: Maybe<Scalars['Bytes']>;
+  rle_in?: Maybe<Array<Scalars['Bytes']>>;
+  rle_not?: Maybe<Scalars['Bytes']>;
+  rle_not_contains?: Maybe<Scalars['Bytes']>;
+  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+};
+
+export enum MaleHair_OrderBy {
+  Id = 'id',
+  Rle = 'rle',
+}
 
 export type OpenSeaAsset = {
   __typename?: 'OpenSeaAsset';
@@ -238,6 +567,21 @@ export type Query = {
   _meta?: Maybe<_Meta_>;
   bag?: Maybe<Bag>;
   bags: Array<Bag>;
+  beard?: Maybe<Beard>;
+  beards: Array<Beard>;
+  femaleBodies: Array<FemaleBody>;
+  femaleBody?: Maybe<FemaleBody>;
+  femaleHair?: Maybe<FemaleHair>;
+  femaleHairs: Array<FemaleHair>;
+  hustler?: Maybe<Hustler>;
+  hustlers: Array<Hustler>;
+  item?: Maybe<Item>;
+  itemBalances: Array<ItemBalances>;
+  items: Array<Item>;
+  maleBodies: Array<MaleBody>;
+  maleBody?: Maybe<MaleBody>;
+  maleHair?: Maybe<MaleHair>;
+  maleHairs: Array<MaleHair>;
   search: Array<Bag>;
   transfer?: Maybe<Transfer>;
   transfers: Array<Transfer>;
@@ -252,6 +596,7 @@ export type Query_MetaArgs = {
 export type QueryBagArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 export type QueryBagsArgs = {
@@ -260,19 +605,144 @@ export type QueryBagsArgs = {
   orderBy?: Maybe<Bag_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Bag_Filter>;
+};
+
+export type QueryBeardArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryBeardsArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Beard_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<Beard_Filter>;
+};
+
+export type QueryFemaleBodiesArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<FemaleBody_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<FemaleBody_Filter>;
+};
+
+export type QueryFemaleBodyArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryFemaleHairArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryFemaleHairsArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<FemaleHair_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<FemaleHair_Filter>;
+};
+
+export type QueryHustlerArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryHustlersArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Hustler_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<Hustler_Filter>;
+};
+
+export type QueryItemArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryItemBalancesArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<ItemBalances_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<ItemBalances_Filter>;
+};
+
+export type QueryItemsArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Item_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<Item_Filter>;
+};
+
+export type QueryMaleBodiesArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<MaleBody_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<MaleBody_Filter>;
+};
+
+export type QueryMaleBodyArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryMaleHairArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryMaleHairsArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<MaleHair_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<MaleHair_Filter>;
 };
 
 export type QuerySearchArgs = {
   block?: Maybe<Block_Height>;
   first?: Maybe<Scalars['Int']>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   text: Scalars['String'];
 };
 
 export type QueryTransferArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 export type QueryTransfersArgs = {
@@ -281,12 +751,14 @@ export type QueryTransfersArgs = {
   orderBy?: Maybe<Transfer_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Transfer_Filter>;
 };
 
 export type QueryWalletArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 export type QueryWalletsArgs = {
@@ -295,6 +767,7 @@ export type QueryWalletsArgs = {
   orderBy?: Maybe<Wallet_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Wallet_Filter>;
 };
 
@@ -304,6 +777,21 @@ export type Subscription = {
   _meta?: Maybe<_Meta_>;
   bag?: Maybe<Bag>;
   bags: Array<Bag>;
+  beard?: Maybe<Beard>;
+  beards: Array<Beard>;
+  femaleBodies: Array<FemaleBody>;
+  femaleBody?: Maybe<FemaleBody>;
+  femaleHair?: Maybe<FemaleHair>;
+  femaleHairs: Array<FemaleHair>;
+  hustler?: Maybe<Hustler>;
+  hustlers: Array<Hustler>;
+  item?: Maybe<Item>;
+  itemBalances: Array<ItemBalances>;
+  items: Array<Item>;
+  maleBodies: Array<MaleBody>;
+  maleBody?: Maybe<MaleBody>;
+  maleHair?: Maybe<MaleHair>;
+  maleHairs: Array<MaleHair>;
   transfer?: Maybe<Transfer>;
   transfers: Array<Transfer>;
   wallet?: Maybe<Wallet>;
@@ -317,6 +805,7 @@ export type Subscription_MetaArgs = {
 export type SubscriptionBagArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 export type SubscriptionBagsArgs = {
@@ -325,12 +814,136 @@ export type SubscriptionBagsArgs = {
   orderBy?: Maybe<Bag_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Bag_Filter>;
+};
+
+export type SubscriptionBeardArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionBeardsArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Beard_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<Beard_Filter>;
+};
+
+export type SubscriptionFemaleBodiesArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<FemaleBody_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<FemaleBody_Filter>;
+};
+
+export type SubscriptionFemaleBodyArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionFemaleHairArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionFemaleHairsArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<FemaleHair_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<FemaleHair_Filter>;
+};
+
+export type SubscriptionHustlerArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionHustlersArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Hustler_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<Hustler_Filter>;
+};
+
+export type SubscriptionItemArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionItemBalancesArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<ItemBalances_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<ItemBalances_Filter>;
+};
+
+export type SubscriptionItemsArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Item_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<Item_Filter>;
+};
+
+export type SubscriptionMaleBodiesArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<MaleBody_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<MaleBody_Filter>;
+};
+
+export type SubscriptionMaleBodyArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionMaleHairArgs = {
+  block?: Maybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionMaleHairsArgs = {
+  block?: Maybe<Block_Height>;
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<MaleHair_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: Maybe<MaleHair_Filter>;
 };
 
 export type SubscriptionTransferArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 export type SubscriptionTransfersArgs = {
@@ -339,12 +952,14 @@ export type SubscriptionTransfersArgs = {
   orderBy?: Maybe<Transfer_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Transfer_Filter>;
 };
 
 export type SubscriptionWalletArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 export type SubscriptionWalletsArgs = {
@@ -353,6 +968,7 @@ export type SubscriptionWalletsArgs = {
   orderBy?: Maybe<Wallet_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
   where?: Maybe<Wallet_Filter>;
 };
 
@@ -447,7 +1063,9 @@ export type Wallet = {
   address: Scalars['Bytes'];
   bags: Array<Bag>;
   bagsHeld: Scalars['BigInt'];
+  hustlers: Array<Hustler>;
   id: Scalars['ID'];
+  items: Array<ItemBalances>;
   joined: Scalars['BigInt'];
   paper: Scalars['BigInt'];
 };
@@ -458,6 +1076,22 @@ export type WalletBagsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
   where?: Maybe<Bag_Filter>;
+};
+
+export type WalletHustlersArgs = {
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Hustler_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  where?: Maybe<Hustler_Filter>;
+};
+
+export type WalletItemsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<ItemBalances_OrderBy>;
+  orderDirection?: Maybe<OrderDirection>;
+  skip?: Maybe<Scalars['Int']>;
+  where?: Maybe<ItemBalances_Filter>;
 };
 
 export type Wallet_Filter = {
@@ -505,7 +1139,9 @@ export enum Wallet_OrderBy {
   Address = 'address',
   Bags = 'bags',
   BagsHeld = 'bagsHeld',
+  Hustlers = 'hustlers',
   Id = 'id',
+  Items = 'items',
   Joined = 'joined',
   Paper = 'paper',
 }
@@ -561,6 +1197,7 @@ export type BagQuery = {
     __typename?: 'Bag';
     id: string;
     claimed: boolean;
+    bundled: boolean;
     open_sea_asset?: Maybe<{
       __typename?: 'OpenSeaAsset';
       is_on_sale?: Maybe<boolean>;
@@ -580,6 +1217,7 @@ export type BagsQuery = {
   bags: Array<{
     __typename?: 'Bag';
     claimed: boolean;
+    bundled: boolean;
     id: string;
     clothes: string;
     foot: string;
@@ -639,6 +1277,7 @@ export type WalletQuery = {
       __typename?: 'Bag';
       claimed: boolean;
       id: string;
+      bundled: boolean;
       clothes: string;
       foot: string;
       hand: string;
@@ -714,6 +1353,7 @@ export const BagDocument = gql`
     bag(id: $tokenId) {
       id
       claimed
+      bundled @client
       open_sea_asset @client {
         is_on_sale
         current_sale_price
@@ -756,6 +1396,7 @@ export const BagsDocument = gql`
   query Bags($first: Int, $skip: Int) {
     bags(first: $first, skip: $skip) {
       claimed
+      bundled @client
       id
       clothes @client
       foot @client
@@ -866,6 +1507,7 @@ export const WalletDocument = gql`
       bags(first: 200) {
         claimed
         id
+        bundled @client
         clothes @client
         foot @client
         hand @client

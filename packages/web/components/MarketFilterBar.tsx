@@ -71,7 +71,6 @@ const MarketFilterBar = ({
   const [sortBy, setSortBy] = useQueryParam('sort_by', sortKeys[0]);
   const [status, setStatus] = useQueryParam('status', statusKeys[0]);
   const [searchValue, setSearchValue] = useQueryParam('q', '');
-  // const [searchValue, setSearchValue] = useState<string>('');
 
   // Debounce hook lets us fill search string on type, but not do anything
   // until debounced value gets changed.

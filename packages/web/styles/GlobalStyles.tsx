@@ -152,12 +152,18 @@ export default function GlobalStyles() {
         }
         a {
           font-weight: 400;
+          cursor: pointer;
+          cursor: hand;
         }
         a.textLink,
         .markdownContainer a {
           text-decoration: underline !important;
-          color: #3523fe !important;
+          color: var(--primary) !important;
         }
+        a.primary {
+          color: var(--primary);
+        }
+        ,
         p,
         ol,
         ul {
@@ -165,6 +171,9 @@ export default function GlobalStyles() {
           line-height: 1.5;
         }
 
+        em {
+          background-color: rgba(255, 252, 63, 0.5);
+        }
         /* CUSTOM */
         .button {
           ${buttonStyle};

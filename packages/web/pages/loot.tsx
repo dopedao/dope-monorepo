@@ -1,15 +1,43 @@
-import { media } from 'styles/mixins';
 import { useState } from 'react';
-import styled from '@emotion/styled';
-import { useWeb3React } from '@web3-react/core';
 import { useWalletQuery } from 'src/generated/graphql';
+import { useWeb3React } from '@web3-react/core';
+import styled from '@emotion/styled';
+import { media } from 'styles/mixins';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
 import LootCard from 'components/loot/LootCard';
 import LootTable from 'components/loot/LootTable';
 import NoLootCard from 'components/loot/NoLootCard';
-import Container from 'components/Container';
+import DopeWarsExeNav from 'components/DopeWarsExeNav';
+
+const FlexFiftyContainer = styled.div`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  // Mobile screens stack, 16px gap
+  flex-flow: column nowrap;
+  gap: 16px;
+  // Makes containers stack on one full screen – no scroll
+  & > div {
+    flex: 1;
+    overflow-y: auto;
+  }
+  & > div:last-child {
+    flex: 2;
+  }
+  // Screen > Tablet display items side by side
+  ${media.tablet`
+  & > div {
+    flex: 1;
+    overflow-y: auto;
+  }
+  flex-flow: row nowrap;
+    & > div:last-child {
+      flex: 1;
+    } 
+  `}
+`;
 
 export default function LootWindow() {
   const { account } = useWeb3React();
@@ -24,29 +52,30 @@ export default function LootWindow() {
       requiresWalletConnection={true}
       balance={data?.wallet?.paper}
       loadingBalance={loading}
+      navbar={<DopeWarsExeNav />}
     >
       <Head />
       {loading ? (
-        <Container>
+        <FlexFiftyContainer>
           <LoadingBlock />
           <LoadingBlock />
-        </Container>
+        </FlexFiftyContainer>
       ) : !data?.wallet?.bags || data.wallet.bags.length === 0 ? (
         <NoLootCard />
       ) : (
-        <Container>
+        <FlexFiftyContainer>
           <LootTable
-            data={data.wallet.bags.map(({ id, claimed, rank }) => ({
+            data={data.wallet.bags.map(({ bundled, claimed, id, rank }) => ({
+              bundled,
+              claimed,
               id,
               rank,
-              claimed,
-              unbundled: false,
             }))}
             selected={selected}
             onSelect={setSelected}
           />
           <LootCard bag={data.wallet.bags[selected]} footer="for-owner" />
-        </Container>
+        </FlexFiftyContainer>
       )}
     </AppWindow>
   );

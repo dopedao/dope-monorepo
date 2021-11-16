@@ -37,6 +37,9 @@ function getClient(uri: string) {
       typePolicies: {
         Bag: {
           fields: {
+            bundled(): boolean {
+              return true;
+            },
             clothes(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'clothes');
@@ -87,18 +90,6 @@ function getClient(uri: string) {
               read(_, { storage }) {
                 if (!storage.var) {
                   storage.var = makeVar(new OpenSeaAsset());
-                  // const tokenId = readField('id') as string;
-                  // if (tokenId === undefined) {
-                  //   return storage.var();
-                  // }
-                  // getOpenSeaAssetJson(tokenId)
-                  //   .then(response => response.json())
-                  //   .then(data => storage.var(new OpenSeaAsset(data)))
-                  //   .catch(error => {
-                  //     // console.log("OPENSEA FETCH ERROR");
-                  //     // console.log(error);
-                  //     return storage.var();
-                  //   });
                 }
                 return storage.var();
               },
