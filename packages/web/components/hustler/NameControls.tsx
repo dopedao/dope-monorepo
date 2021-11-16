@@ -74,7 +74,7 @@ const NameControls = ({
                     id="render-title"
                     onChange={e => {
                       formikChangeHandler(e);
-                      HustlerInitConfig({ ...hustlerConfig, renderTitle: field.value });
+                      HustlerInitConfig({ ...hustlerConfig, renderTitle: e.target.checked });
                     }}
                   />
                 </FormControl>
@@ -91,7 +91,7 @@ const NameControls = ({
                     id="render-name"
                     onChange={e => {
                       formikChangeHandler(e);
-                      HustlerInitConfig({ ...hustlerConfig, renderName: field.value });
+                      HustlerInitConfig({ ...hustlerConfig, renderName: e.target.checked });
                     }}
                   />
                 </FormControl>
