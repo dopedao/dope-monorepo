@@ -1,15 +1,15 @@
 import { css } from '@emotion/react';
-import { HustlerInitConfig } from '../../src/HustlerInitiation';
 import { useReactiveVar } from '@apollo/client';
-import { useWeb3React } from '@web3-react/core';
-import { HUSTLER_MINT_TIME } from '../../src/constants';
-import AppWindow from '../../components/AppWindow';
-import ConfigurationControls from '../../components/hustler/ConfigurationControls';
-import Head from '../../components/Head';
-import PanelContainer from '../../components/PanelContainer';
-import PanelTitleBar from '../../components/PanelTitleBar';
-import RenderFromLootId from '../../components/hustler/RenderFromLootId';
-import StackedResponsiveContainer from '../../components/StackedResponsiveContainer';
+// import { useWeb3React } from '@web3-react/core';
+import { HustlerInitConfig } from 'src/HustlerInitiation';
+// import { HUSTLER_MINT_TIME } from 'src/constants';
+import AppWindow from 'components/AppWindow';
+import ConfigurationControls from 'components/hustler/ConfigurationControls';
+import Head from 'components/Head';
+import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
+import RenderFromLootId from 'components/hustler/RenderFromLootId';
+import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
 const Hustler = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber, providers } from 'ethers';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { hexColorToBase16 } from 'src/utils';
 import { HustlerSex, DEFAULT_BG_COLORS } from 'src/HustlerInitiation';
@@ -9,9 +9,9 @@ import { NETWORK } from 'src/constants';
 import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 
-interface Metadata {
+type Metadata = {
   image: string;
-}
+};
 
 export interface HustlerRenderProps {
   itemIds: BigNumber[];
@@ -57,34 +57,30 @@ const RenderFromItemIds = ({
     [provider],
   );
 
-  /**
-   * Maps our understanding of layers to what's in the smart contract
-   * Generates parameters we can then spread and assign to hustlers.bodyRle
-   * which returns SVG layer to render from the blockchain.
-   *
-   * 0: male body
-   * 1: female body
-   * 2: male hair
-   * 3: female hair
-   * 4: beards
-   */
-  const getBodyRleParams = useCallback(() => {
-    const bodyParams: [number, number] = [sex && sex == 'female' ? 1 : 0, body ?? 0];
-    const hairParams: [number, number] = [sex && sex == 'female' ? 3 : 2, hair ?? 0];
-    const facialHairParams: [number, number] = [4, facialHair ?? 0];
-    return { bodyParams, hairParams, facialHairParams };
-  }, [body, facialHair, hair, sex]);
-
   // facialHair?: number;
 
   useEffect(() => {
-    if (!swapmeet) return;
     setHasRenderedFromChain(false);
     const sexIndex = sex && sex == 'female' ? 1 : 0;
     Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(setItemRles);
-  }, [itemIds, swapmeet, sex]);
+  }, [itemIds, sex, swapmeet]);
 
   useEffect(() => {
+    /**
+     * Maps our understanding of layers to what's in the smart contract
+     * Generates parameters we can then spread and assign to hustlers.bodyRle
+     * which returns SVG layer to render from the blockchain.
+     *
+     * 0: male body
+     * 1: female body
+     * 2: male hair
+     * 3: female hair
+     * 4: beards
+     */
+    const bodyParams: [number, number] = [sex && sex == 'female' ? 1 : 0, body ?? 0];
+    const hairParams: [number, number] = [sex && sex == 'female' ? 3 : 2, hair ?? 0];
+    const facialHairParams: [number, number] = [4, facialHair ?? 0];
+
     if (!hustlers) return;
     setHasRenderedFromChain(false);
     const { bodyParams, hairParams, facialHairParams } = getBodyRleParams();
@@ -101,8 +97,9 @@ const RenderFromItemIds = ({
     if (sex == 'male' && facialHair) {
       promises.push(hustlers.bodyRle(...facialHairParams));
     }
+
     Promise.all(promises).then(setBodyRles);
-  }, [hustlers, sex, body, hair, facialHair, getBodyRleParams]);
+  }, [hustlers, sex, body, hair, facialHair]);
 
   useEffect(() => {
     if (hustlers && bodyRles && itemRles) {
@@ -127,9 +124,9 @@ const RenderFromItemIds = ({
           setHasRenderedFromChain(true);
         });
     }
-  }, [swapmeet, hustlers, itemRles, bodyRles, bgColor]);
+  }, [swapmeet, hustlers, itemRles, bodyRles, name, textColor, bgColor]);
 
-  if (hasRenderedFromChain === false) return <LoadingBlockSquareCentered />;
+  if (!hasRenderedFromChain) return <LoadingBlockSquareCentered />;
 
   return (
     // Need to set overflow hidden so whole container doesn't scroll

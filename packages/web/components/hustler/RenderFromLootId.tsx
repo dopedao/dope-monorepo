@@ -1,10 +1,7 @@
-import { BigNumber, providers } from 'ethers';
-import { css } from '@emotion/react';
-import { HustlerSex } from '../../src/HustlerInitiation';
-import { NETWORK } from '../../src/constants';
-import { SwapMeet__factory } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
-import LoadingBlock from '../LoadingBlock';
+import { BigNumber, providers } from 'ethers';
+import { NETWORK } from 'src/constants';
+import { SwapMeet__factory } from '@dopewars/contracts';
 import RenderFromItemIds, { HustlerRenderProps } from '../../components/hustler/RenderFromItemIds';
 import LoadingBlockSquareCentered from '../LoadingBlockSquareCentered';
 
@@ -37,7 +34,7 @@ const RenderFromLootId = ({
 
   useEffect(() => {
     if (swapmeet && id) {
-      swapmeet.itemIds(id as string).then(ids =>
+      swapmeet.itemIds(id).then(ids =>
         // Excludes vehicle (2) and orders layers
         setItemIds([ids[6], ids[8], ids[5], ids[1], ids[3], ids[4], ids[7], ids[0]]),
       );

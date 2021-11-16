@@ -1,23 +1,21 @@
 import { css } from '@emotion/react';
-import { HustlerInitConfig } from '../../src/HustlerInitiation';
 import { useReactiveVar } from '@apollo/client';
-import AppWindow from '../../components/AppWindow';
-import Head from '../../components/Head';
-import InitiationFooter from '../../components/hustler/InitiationFooter';
-import InitiationInfo from '../../components/hustler/InitiationInfo';
-import PanelContainer from '../../components/PanelContainer';
-import PanelTitleBar from '../../components/PanelTitleBar';
-import RenderFromLootId from '../../components/hustler/RenderFromLootId';
-import StackedResponsiveContainer from '../../components/StackedResponsiveContainer';
+import { HustlerInitConfig } from 'src/HustlerInitiation';
+import AppWindow from 'components/AppWindow';
+import Head from 'components/Head';
+import InitiationFooter from 'components/hustler/InitiationFooter';
+import InitiationInfo from 'components/hustler/InitiationInfo';
+import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
+import RenderFromLootId from 'components/hustler/RenderFromLootId';
+import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
-const title = 'Initiate New Hustler';
-
-export default function Initiate() {
+const Initiate = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   return (
     <AppWindow requiresWalletConnection={true} scrollable={true}>
-      <Head title={title} />
+      <Head title="Initiate New Hustler" />
       <StackedResponsiveContainer>
         <PanelContainer
           css={css`
@@ -44,4 +42,6 @@ export default function Initiate() {
       </StackedResponsiveContainer>
     </AppWindow>
   );
-}
+};
+
+export default Initiate;

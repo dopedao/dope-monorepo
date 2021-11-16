@@ -1,24 +1,19 @@
-import { 
-  Flex,
-  Radio,
-  RadioGroup,
-  Spacer
-} from '@chakra-ui/react';
-import { HustlerInitConfig, HustlerSex } from '../../src/HustlerInitiation';
+import { Flex, Radio, RadioGroup, Spacer } from '@chakra-ui/react';
+import { HustlerInitConfig, HustlerSex } from 'src/HustlerInitiation';
 import { useReactiveVar } from '@apollo/client';
-import PanelBody from '../PanelBody';
-import PanelContainer from '../PanelContainer';
-import PanelTitleBar from '../PanelTitleBar';
+import PanelBody from 'components/PanelBody';
+import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
 
-const SexSelector = () => {  
+const SexSelector = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   return (
     <PanelContainer>
       <PanelTitleBar>Sex</PanelTitleBar>
       <PanelBody>
-        <RadioGroup 
-          onChange={(value) => HustlerInitConfig({ ...hustlerConfig, sex: value as HustlerSex })}
+        <RadioGroup
+          onChange={value => HustlerInitConfig({ ...hustlerConfig, sex: value as HustlerSex })}
           value={hustlerConfig.sex}
         >
           <Flex>
@@ -28,7 +23,7 @@ const SexSelector = () => {
             <Radio value="female">Female</Radio>
             <Spacer />
           </Flex>
-        </RadioGroup>        
+        </RadioGroup>
       </PanelBody>
     </PanelContainer>
   );
