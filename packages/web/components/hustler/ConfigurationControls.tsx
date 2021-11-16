@@ -1,17 +1,25 @@
-import { Button, HStack, Stack } from '@chakra-ui/react';
-import { useMemo, useCallback } from 'react';
+import {
+  Button,
+  HStack,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  Stack,
+} from '@chakra-ui/react';
+
 import { useReactiveVar } from '@apollo/client';
-import { useWeb3React } from '@web3-react/core';
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field  } from 'formik';
+import ColorPicker from 'components/ColorPicker';
 import { useRouter } from 'next/router';
 import {
   HustlerInitConfig,
   randomizeHustlerAttributes,
   HustlerCustomization,
+  DEFAULT_BG_COLORS,
+  DEFAULT_TEXT_COLORS,
 } from 'src/HustlerInitiation';
-import { NETWORK } from 'src/constants';
 import HairSelector from './HairSelector';
-import NameColorTitleControls from './NameColorTitleControls';
+import NameControls from './NameControls';
 import SexSelector from './SexSelector';
 import SkinToneSelector from './SkinToneSelector';
 
@@ -22,7 +30,7 @@ const ConfigurationControls = () => {
 
   return (
     <Formik
-      initialValues={ {...hustlerConfig} }
+      initialValues={{ ...hustlerConfig }}
       onSubmit={async (values: HustlerCustomization, actions) => {
         router.replace('/hustlers/initiate');
       }}
@@ -30,7 +38,41 @@ const ConfigurationControls = () => {
       {props => (
         <Form>
           <Stack spacing={4}>
-            <NameColorTitleControls formikChangeHandler={props.handleChange} />
+            <NameControls formikChangeHandler={props.handleChange} />
+
+            <HStack>
+              <Field name="bgColor">
+                {({ field, form }: FieldProps) => (
+                  <FormControl isInvalid={!!form.errors.bgColor && !!form.touched.bgColor}>
+                    <FormLabel htmlFor="background">Background Color</FormLabel>
+                    <ColorPicker
+                      colors={DEFAULT_BG_COLORS}
+                      selectedColor={hustlerConfig.bgColor}
+                      changeCallback={value =>
+                        HustlerInitConfig({ ...hustlerConfig, bgColor: value })
+                      }
+                    />
+                    <FormErrorMessage>{form.errors.bgColor}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="textColor">
+                {({ field, form }: FieldProps) => (
+                  <FormControl isInvalid={!!form.errors.textColor && !!form.touched.textColor}>
+                    <FormLabel htmlFor="color">Text Color</FormLabel>
+                    <ColorPicker
+                      colors={DEFAULT_TEXT_COLORS}
+                      selectedColor={hustlerConfig.textColor}
+                      changeCallback={value =>
+                        HustlerInitConfig({ ...hustlerConfig, textColor: value })
+                      }
+                    />
+                    <FormErrorMessage>{form.errors.textColor}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
+            </HStack>
+
             <SkinToneSelector />
             <SexSelector />
             <HairSelector />

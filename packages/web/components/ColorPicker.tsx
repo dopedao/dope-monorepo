@@ -72,7 +72,7 @@ const ColorPicker = ({colors, selectedColor, changeCallback}: ColorPickerProps) 
         >
           <Center height="100%">{color}</Center>
         </PopoverHeader>
-        <PopoverBody height="148px">
+        <PopoverBody height="96px">
           <SimpleGrid columns={5} spacing={2}>
             {colors.map((c) => (
               <Button
