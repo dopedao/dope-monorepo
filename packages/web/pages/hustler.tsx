@@ -5,6 +5,7 @@ import ComingSoonDialog from 'components/ComingSoonDialog';
 import Head from 'components/Head';
 import Container from 'components/Container';
 import LoadingBlock from 'components/LoadingBlock';
+import DopeWarsExeNav from 'components/DopeWarsExeNav';
 
 const Hustler = () => {
   const { account } = useWeb3React();
@@ -14,7 +15,12 @@ const Hustler = () => {
   });
 
   return (
-    <AppWindow padBody={false} balance={data?.wallet?.paper} loadingBalance={loading}>
+    <AppWindow
+      padBody={false}
+      balance={data?.wallet?.paper}
+      loadingBalance={loading}
+      navbar={<DopeWarsExeNav />}
+    >
       <Head title="Create Your Hustler" />
       {loading ? (
         <Container>

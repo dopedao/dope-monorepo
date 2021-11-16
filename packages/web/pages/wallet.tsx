@@ -6,6 +6,7 @@ import Head from 'components/Head';
 import DisconnectWallet from 'components/DisconnectWallet';
 import Container from 'components/Container';
 import LoadingBlock from 'components/LoadingBlock';
+import DopeWarsExeNav from 'components/DopeWarsExeNav';
 
 const Wallet = () => {
   const router = useRouter();
@@ -25,6 +26,7 @@ const Wallet = () => {
       padBody={false}
       balance={data?.wallet?.paper}
       loadingBalance={loading}
+      navbar={<DopeWarsExeNav />}
     >
       <Head />
       {loading ? (

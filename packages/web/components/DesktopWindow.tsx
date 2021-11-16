@@ -76,7 +76,7 @@ const DesktopWindow = ({
     if (onResize) {
       onResize();
     }
-  }, [isFullScreen]);
+  }, [isFullScreen, onResize]);
 
   const handleStop = () => {
     const el = document.querySelector('.floating');

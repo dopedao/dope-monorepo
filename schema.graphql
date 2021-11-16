@@ -1,0 +1,105 @@
+type _Schema_
+  @fulltext(
+    name: "search"
+    language: en
+    algorithm: rank
+    include: [
+      {
+        entity: "Bag"
+        fields: [
+          { name: "clothes" }
+          { name: "foot" }
+          { name: "hand" }
+          { name: "neck" }
+          { name: "ring" }
+          { name: "waist" }
+          { name: "weapon" }
+          { name: "drugs" }
+          { name: "vehicle" }
+        ]
+      }
+    ]
+  )
+
+type Bag @entity {
+  id: ID!
+  clothes: String!
+  foot: String!
+  hand: String!
+  neck: String!
+  ring: String!
+  waist: String!
+  weapon: String!
+  drugs: String!
+  vehicle: String!
+  currentOwner: Wallet!
+  minted: BigInt!
+  claimed: Boolean!
+  opened: Boolean!
+}
+
+type MaleBody @entity {
+  id: ID!
+  rle: Bytes!
+}
+
+type FemaleBody @entity {
+  id: ID!
+  rle: Bytes!
+}
+
+type MaleHair @entity {
+  id: ID!
+  rle: Bytes!
+}
+
+type FemaleHair @entity {
+  id: ID!
+  rle: Bytes!
+}
+
+type Beard @entity {
+  id: ID!
+  rle: Bytes!
+}
+
+type Item @entity {
+  id: ID!
+  name: String!
+  data: String!
+  maleRle: Bytes!
+  femaleRle: Bytes!
+}
+
+type ItemBalances @entity {
+  id: ID!
+  item: Item!
+  wallet: Wallet!
+  balance: BigInt!
+}
+
+type Hustler @entity {
+  id: ID!
+  owner: Wallet!
+  data: String!
+}
+
+type Wallet @entity {
+  id: ID!
+  address: Bytes!
+  bags: [Bag!]! @derivedFrom(field: "currentOwner")
+  items: [ItemBalances!]! @derivedFrom(field: "wallet")
+  hustlers: [Hustler!]! @derivedFrom(field: "owner")
+  bagsHeld: BigInt!
+  joined: BigInt!
+  paper: BigInt!
+}
+
+type Transfer @entity {
+  id: ID!
+  bag: Bag!
+  from: Wallet!
+  to: Wallet!
+  txHash: Bytes!
+  timestamp: BigInt!
+}

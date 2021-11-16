@@ -1,7 +1,6 @@
 import { getBreakpointWidth } from 'styles/breakpoints';
 import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from './AppWindowFooter';
-import AppWindowTitleBar from './AppWindowTitleBar';
 import ConnectWallet from './ConnectWallet';
 import DesktopWindow from './DesktopWindow';
 import React from 'react';
@@ -13,6 +12,7 @@ interface AppWindowProps {
   padBody?: boolean;
   scrollable?: boolean;
   children: React.ReactNode;
+  navbar?: React.ReactNode;
   width?: number | string;
   height?: number | string;
   balance?: string;
@@ -45,13 +45,14 @@ export default function AppWindow({
   balance,
   loadingBalance,
   children,
+  navbar,
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
   return (
     <DesktopWindow
       title={title || 'DOPEWARS.EXE'}
-      titleChildren={<AppWindowTitleBar />}
+      titleChildren={navbar}
       width={width}
       height={height}
       balance={balance}

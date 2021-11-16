@@ -22,3 +22,5 @@ artifacts
 .DS_Store
 *.pem
 /out
+
+multisol*

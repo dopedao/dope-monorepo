@@ -1,3 +1,4 @@
+export const NUM_DOPE_TOKENS = 8000;
 export const NETWORK = {
   1: {
     contracts: {
@@ -37,3 +38,5 @@ export const NETWORK = {
     rpc: 'https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg',
   },
 };
+
+export const HUSTLER_MINT_TIME = new Date(2021, 10, 21, 12);
