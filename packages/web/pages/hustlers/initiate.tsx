@@ -10,12 +10,14 @@ import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
+const title="Initiate Your Hustler"
+
 const Initiate = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   return (
-    <AppWindow requiresWalletConnection={true} scrollable={true}>
-      <Head title="Initiate New Hustler" />
+    <AppWindow requiresWalletConnection={true} scrollable={true} title={title}>
+      <Head title={title} />
       <StackedResponsiveContainer>
         <PanelContainer
           css={css`
