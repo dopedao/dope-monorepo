@@ -33,27 +33,27 @@ const NameColorTitleControls = () => {
       <Field name="name" validate={validateName}>
         {({ field, form }: FieldProps) => (
           <FormControl mb={2} isInvalid={!!form.errors.name && !!form.touched.name}>
-            <FormLabel htmlFor="name">First name</FormLabel>
+            <FormLabel htmlFor="name">Name</FormLabel>
             <Input {...field} id="name" placeholder="name" maxLength={NAME_MAX_LENGTH} />
             <FormErrorMessage>{form.errors.name}</FormErrorMessage>
           </FormControl>
         )}
       </Field>
-      <Field name="background">
+      <Field name="bgColor">
         {({ field, form }: FieldProps) => (
-          <FormControl isInvalid={!!form.errors.background && !!form.touched.background}>
+          <FormControl isInvalid={!!form.errors.bgColor && !!form.touched.bgColor}>
             <FormLabel htmlFor="background">Background Color</FormLabel>
-            <Input {...field} id="background" placeholder="background" />
-            <FormErrorMessage>{form.errors.background}</FormErrorMessage>
+            <Input {...field} id="bgColor" placeholder="bgColor" />
+            <FormErrorMessage>{form.errors.bgColor}</FormErrorMessage>
           </FormControl>
         )}
       </Field>
-      <Field name="color">
+      <Field name="textColor">
         {({ field, form }: FieldProps) => (
-          <FormControl isInvalid={!!form.errors.color && !!form.touched.color}>
+          <FormControl isInvalid={!!form.errors.textColor && !!form.touched.textColor}>
             <FormLabel htmlFor="color">Text Color</FormLabel>
-            <Input {...field} id="color" placeholder="color" />
-            <FormErrorMessage>{form.errors.color}</FormErrorMessage>
+            <Input {...field} id="textColor" placeholder="textColor" />
+            <FormErrorMessage>{form.errors.textColor}</FormErrorMessage>
           </FormControl>
         )}
       </Field>
