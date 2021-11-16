@@ -1,15 +1,11 @@
-import {
-  Button,
-  HStack,
-  Stack
-} from '@chakra-ui/react';
-import { Formik, Form } from 'formik';
-import { Hustler, Hustler__factory } from '@dopewars/contracts';
-import { HustlerInitConfig, randomizeHustlerAttributes } from '../../src/HustlerInitiation';
-import { NETWORK } from '../../src/constants';
+import { Button, HStack, Stack } from '@chakra-ui/react';
 import { useMemo, useCallback } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
+import { Formik, Form } from 'formik';
+import { Hustler, Hustler__factory } from '@dopewars/contracts';
+import { HustlerInitConfig, randomizeHustlerAttributes } from 'src/HustlerInitiation';
+import { NETWORK } from 'src/constants';
 import HairSelector from './HairSelector';
 import NameColorTitleControls from './NameColorTitleControls';
 import SexSelector from './SexSelector';
@@ -35,7 +31,7 @@ const ConfigurationControls = () => {
             library.getSigner(),
           )
         : null,
-    [chainId],
+    [chainId, library],
   );
 
   const onSubmit = useCallback(
@@ -69,20 +65,20 @@ const ConfigurationControls = () => {
       }}
     >
       {props => (
-        <Form><Stack spacing={4}>
-          <NameColorTitleControls />
-          <SkinToneSelector />
-          <SexSelector />
-          <HairSelector />
-          <HStack mt={4} justify="end">
-            <Button onClick={() => randomizeHustlerAttributes()}>
-              Randomize
-            </Button>
-            <Button isLoading={props.isSubmitting} type="submit" variant="primary">
-              Finish Configuration
-            </Button>
-          </HStack>
-        </Stack></Form>
+        <Form>
+          <Stack spacing={4}>
+            <NameColorTitleControls />
+            <SkinToneSelector />
+            <SexSelector />
+            <HairSelector />
+            <HStack mt={4} justify="end">
+              <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
+              <Button isLoading={props.isSubmitting} type="submit" variant="primary">
+                Finish Configuration
+              </Button>
+            </HStack>
+          </Stack>
+        </Form>
       )}
     </Formik>
   );

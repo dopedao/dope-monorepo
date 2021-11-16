@@ -20,7 +20,7 @@ interface HustlerRenderProps {
 const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor }: HustlerRenderProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
-  const provider = useMemo(
+  const provider = useMemo<any>(
     () =>
       new providers.JsonRpcProvider(
         'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',

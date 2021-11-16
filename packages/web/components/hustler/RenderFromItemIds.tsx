@@ -1,12 +1,12 @@
 import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber, providers } from 'ethers';
-import { hexColorToBase16 } from '../../src/utils';
-import { HustlerSex, DEFAULT_BG_COLORS } from '../../src/HustlerInitiation';
-import { NETWORK } from '../../src/constants';
-import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
-import LoadingBlockSquareCentered from '../LoadingBlockSquareCentered';
+import { hexColorToBase16 } from 'src/utils';
+import { HustlerSex, DEFAULT_BG_COLORS } from 'src/HustlerInitiation';
+import { NETWORK } from 'src/constants';
+import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
+import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 
 interface Metadata {
   image: string;
@@ -34,7 +34,7 @@ const RenderFromItemIds = ({
   const [bodyRles, setBodyRles] = useState<string[]>([]);
   const [hasRenderedFromChain, setHasRenderedFromChain] = useState(false);
 
-  const provider = useMemo(
+  const provider = useMemo<any>(
     () =>
       new providers.JsonRpcProvider(
         'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
@@ -89,10 +89,7 @@ const RenderFromItemIds = ({
     console.log(hairParams);
     console.log('facial hair');
     console.log(facialHairParams);
-    const promises = [
-      hustlers.bodyRle(...bodyParams), 
-      hustlers.bodyRle(...hairParams)
-    ];
+    const promises = [hustlers.bodyRle(...bodyParams), hustlers.bodyRle(...hairParams)];
     // No female beards for now because they're unsupported
     if (sex == 'male' && facialHair) {
       promises.push(hustlers.bodyRle(...facialHairParams));
@@ -130,10 +127,13 @@ const RenderFromItemIds = ({
   return (
     // Need to set overflow hidden so whole container doesn't scroll
     // and cause flexbox layout to shift.
-    <AspectRatio ratio={1} css={css`overflow: hidden;`}>
-      {json && (
-        <img src={json.image}></img>
-      )}
+    <AspectRatio
+      ratio={1}
+      css={css`
+        overflow: hidden;
+      `}
+    >
+      {json && <img src={json.image}></img>}
     </AspectRatio>
   );
 };
