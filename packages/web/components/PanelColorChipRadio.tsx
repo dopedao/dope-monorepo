@@ -2,12 +2,12 @@ import { Box } from '@chakra-ui/layout';
 import { RadioProps } from '@chakra-ui/radio';
 import { useRadio } from '@chakra-ui/radio';
 
-const SELECTOR_SIZE = '64px';
-interface SkinToneRadioProps extends RadioProps {
+const SELECTOR_SIZE = '48px';
+interface ChipRadioProps extends RadioProps {
   color: string;
 }
 
-const SkinToneRadio = (props: SkinToneRadioProps) => {
+const PanelColorChipRadio = (props: ChipRadioProps) => {
   const { getInputProps, getCheckboxProps } = useRadio(props);
   const input = getInputProps();
   const checkbox = getCheckboxProps();
@@ -45,6 +45,4 @@ const SkinToneRadio = (props: SkinToneRadioProps) => {
   );
 }
 
-export default SkinToneRadio;
-
-
+export default PanelColorChipRadio;

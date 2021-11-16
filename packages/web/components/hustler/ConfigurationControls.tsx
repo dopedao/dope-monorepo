@@ -1,15 +1,6 @@
-import {
-  Button,
-  HStack,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Stack,
-} from '@chakra-ui/react';
-
+import { Button, HStack, Stack } from '@chakra-ui/react';
 import { useReactiveVar } from '@apollo/client';
-import { Formik, Form, Field  } from 'formik';
-import ColorPicker from 'components/ColorPicker';
+import { Formik, Form } from 'formik';
 import { useRouter } from 'next/router';
 import {
   HustlerInitConfig,
@@ -17,16 +8,24 @@ import {
   HustlerCustomization,
   DEFAULT_BG_COLORS,
   DEFAULT_TEXT_COLORS,
+  SKIN_TONE_COLORS,
 } from 'src/HustlerInitiation';
+import { useEffect, useState } from 'react';
 import HairSelector from './HairSelector';
 import NameControls from './NameControls';
 import SexSelector from './SexSelector';
-import SkinToneSelector from './SkinToneSelector';
+// import SkinToneSelector from './SkinToneSelector';
+import PanelColorSelector from 'components/PanelColorSelector';
 
 const ConfigurationControls = () => {
   const router = useRouter();
-
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
+
+  const [showTextColor, setShowTextColor] = useState(false);
+
+  useEffect(() => {
+    setShowTextColor(hustlerConfig.renderName == false || hustlerConfig.renderTitle == false);
+  }, [hustlerConfig])
 
   return (
     <Formik
@@ -40,40 +39,38 @@ const ConfigurationControls = () => {
           <Stack spacing={4}>
             <NameControls formikChangeHandler={props.handleChange} />
 
-            <HStack>
-              <Field name="bgColor">
-                {({ field, form }: FieldProps) => (
-                  <FormControl isInvalid={!!form.errors.bgColor && !!form.touched.bgColor}>
-                    <FormLabel htmlFor="background">Background Color</FormLabel>
-                    <ColorPicker
-                      colors={DEFAULT_BG_COLORS}
-                      selectedColor={hustlerConfig.bgColor}
-                      changeCallback={value =>
-                        HustlerInitConfig({ ...hustlerConfig, bgColor: value })
-                      }
-                    />
-                    <FormErrorMessage>{form.errors.bgColor}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="textColor">
-                {({ field, form }: FieldProps) => (
-                  <FormControl isInvalid={!!form.errors.textColor && !!form.touched.textColor}>
-                    <FormLabel htmlFor="color">Text Color</FormLabel>
-                    <ColorPicker
-                      colors={DEFAULT_TEXT_COLORS}
-                      selectedColor={hustlerConfig.textColor}
-                      changeCallback={value =>
-                        HustlerInitConfig({ ...hustlerConfig, textColor: value })
-                      }
-                    />
-                    <FormErrorMessage>{form.errors.textColor}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
-            </HStack>
+            <PanelColorSelector
+              title="Background"
+              colors={DEFAULT_BG_COLORS}
+              value={hustlerConfig.bgColor}
+              changeCallback={color => {
+                HustlerInitConfig({ ...hustlerConfig, bgColor: color });
+              }}
+            />
 
-            <SkinToneSelector />
+            {showTextColor && (
+              <PanelColorSelector
+                title="Text Color"
+                colors={DEFAULT_TEXT_COLORS}
+                value={hustlerConfig.textColor}
+                changeCallback={color => {
+                  HustlerInitConfig({ ...hustlerConfig, textColor: color });
+                }}
+              />
+            )}
+
+            <PanelColorSelector
+              title="Skin Tone"
+              colors={SKIN_TONE_COLORS}
+              value={SKIN_TONE_COLORS[hustlerConfig.body]}
+              changeCallback={color => {
+                HustlerInitConfig({
+                  ...hustlerConfig,
+                  body: SKIN_TONE_COLORS.findIndex(el => el == color),
+                });
+              }}
+            />
+
             <SexSelector />
             <HairSelector />
             <HStack mt={4} justify="end">

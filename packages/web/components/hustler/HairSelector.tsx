@@ -26,7 +26,7 @@ const HairSelector = () => {
 
   return (
     <PanelContainer>
-      <PanelTitleBar>Hair</PanelTitleBar>
+      <PanelTitleBar>Other</PanelTitleBar>
       <PanelBody>
         <FormLabel htmlFor="hair">Hair</FormLabel>
         <NumberInput 
