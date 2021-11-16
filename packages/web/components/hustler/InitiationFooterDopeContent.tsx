@@ -9,11 +9,7 @@ import { useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import { useWalletQuery, WalletQuery } from 'src/generated/graphql';
-import {
-  HustlerInitConfig,
-  isHustlerRandom,
-  randomizeHustlerAttributes,
-} from 'src/HustlerConfig';
+import { HustlerInitConfig, isHustlerRandom, randomizeHustlerAttributes } from 'src/HustlerConfig';
 import { PickedBag } from 'src/DopeDatabase';
 import PanelFooter from 'components/PanelFooter';
 

@@ -22,7 +22,7 @@ export interface HustlerRenderProps {
   bgColor?: string;
   textColor?: string;
   name?: string;
-};
+}
 
 const RenderFromItemIds = ({
   itemIds,

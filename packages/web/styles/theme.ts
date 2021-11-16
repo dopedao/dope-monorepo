@@ -93,7 +93,7 @@ export default extendTheme({
         },
       },
     },
-    
+
     Table: {
       variants: {
         dope: {

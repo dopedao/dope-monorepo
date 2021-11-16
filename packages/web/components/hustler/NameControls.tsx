@@ -1,8 +1,4 @@
-import {
-  HustlerInitConfig,
-  DEFAULT_BG_COLORS,
-  DEFAULT_TEXT_COLORS,
-} from 'src/HustlerConfig';
+import { HustlerInitConfig, DEFAULT_BG_COLORS, DEFAULT_TEXT_COLORS } from 'src/HustlerConfig';
 import { useReactiveVar } from '@apollo/client';
 import {
   Input,

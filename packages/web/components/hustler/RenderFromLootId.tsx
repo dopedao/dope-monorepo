@@ -5,7 +5,9 @@ import { SwapMeet__factory } from '@dopewars/contracts';
 import RenderFromItemIds, { HustlerRenderProps } from '../../components/hustler/RenderFromItemIds';
 import LoadingBlockSquareCentered from '../LoadingBlockSquareCentered';
 
-interface RenderFromLootIdProps extends Omit<HustlerRenderProps, 'itemIds'> { id: string };
+interface RenderFromLootIdProps extends Omit<HustlerRenderProps, 'itemIds'> {
+  id: string;
+}
 
 const RenderFromLootId = ({
   bgColor,

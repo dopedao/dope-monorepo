@@ -15,35 +15,43 @@ const SKIN_TONE_COLORS = [
   '#AE6C37',
   '#983B0F',
   // Alien for OGs only
-  '#77F8F8'
+  '#77F8F8',
 ];
 
 const SkinToneSelector = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
-    name: "skintone",
+    name: 'skintone',
     defaultValue: 0,
-    onChange: (value) => HustlerInitConfig({ ...hustlerConfig, body: parseInt(value) }),
+    onChange: value => HustlerInitConfig({ ...hustlerConfig, body: parseInt(value) }),
     value: hustlerConfig.body,
-  })
+  });
   const group = getRootProps();
 
   return (
     <PanelContainer>
       <PanelTitleBar>Skin Tone</PanelTitleBar>
-      <PanelBody css={css`display:flex;gap:16px;`} {...group}>
-        { SKIN_TONE_COLORS.map((color, index) => {
-          return <PanelColorChipRadio 
-            {...getRadioProps({ value: index })}
-            value={index}
-            key={index} 
-            color={color} 
-          />
+      <PanelBody
+        css={css`
+          display: flex;
+          gap: 16px;
+        `}
+        {...group}
+      >
+        {SKIN_TONE_COLORS.map((color, index) => {
+          return (
+            <PanelColorChipRadio
+              {...getRadioProps({ value: index })}
+              value={index}
+              key={index}
+              color={color}
+            />
+          );
         })}
       </PanelBody>
     </PanelContainer>
   );
-}
+};
 
 export default SkinToneSelector;

@@ -12,12 +12,7 @@ interface ColorSelectorProps {
   value?: string;
 }
 
-const PanelColorSelector = ({
-  changeCallback,
-  colors,
-  title,
-  value,
-}: ColorSelectorProps) => {
+const PanelColorSelector = ({ changeCallback, colors, title, value }: ColorSelectorProps) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: title.replace(' ', '-'),
     defaultValue: 0,

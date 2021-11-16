@@ -27,22 +27,22 @@ const PanelColorChipRadio = (props: ChipRadioProps) => {
         bg={props.color}
         height={SELECTOR_SIZE}
         _checked={{
-          borderWidth: "4px",
-          borderColor: "#000000",
-          outline: "4px solid",
-          outlineColor: "#000000",
+          borderWidth: '4px',
+          borderColor: '#000000',
+          outline: '4px solid',
+          outlineColor: '#000000',
         }}
         _focus={{
-          boxShadow: "outline",
-          borderColor: "#000000",
-          outline: "4px solid",
-          outlineColor: "#000000",
+          boxShadow: 'outline',
+          borderColor: '#000000',
+          outline: '4px solid',
+          outlineColor: '#000000',
         }}
       >
         &nbsp;
       </Box>
     </Box>
   );
-}
+};
 
 export default PanelColorChipRadio;

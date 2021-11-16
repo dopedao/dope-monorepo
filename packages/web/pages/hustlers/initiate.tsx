@@ -26,7 +26,7 @@ const Initiate = () => {
           `}
         >
           <PanelTitleBar>Hustler</PanelTitleBar>
-          <RenderFromLootId 
+          <RenderFromLootId
             id={hustlerConfig.dopeId}
             sex={hustlerConfig.sex}
             body={hustlerConfig.body}

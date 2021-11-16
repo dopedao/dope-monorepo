@@ -10,12 +10,7 @@ export const MAX_BODIES = 5;
 export const MAX_HAIR = 18;
 export const MAX_FACIAL_HAIR = 12;
 export const DEFAULT_BG_COLORS = ['#434345', '#97ADCC', '#F1D8AB', '#F2C4C5', '#B6CCC3', '#EDEFEE'];
-export const DEFAULT_TEXT_COLORS = [
-  '#000000', 
-  '#333333',
-  '#dddddd',
-  '#ffffff'
-];
+export const DEFAULT_TEXT_COLORS = ['#000000', '#333333', '#dddddd', '#ffffff'];
 // From lightest to darkest
 export const SKIN_TONE_COLORS = [
   '#FFD99C',
@@ -24,22 +19,21 @@ export const SKIN_TONE_COLORS = [
   '#AE6C37',
   '#983B0F',
   // Alien for OGs only
-  '#77F8F8'
+  '#77F8F8',
 ];
 
-
 export type HustlerCustomization = {
-  bgColor: string,
-  body: number,
-  dopeId: string,
-  facialHair: number,
-  hair: number,
-  mintOg: boolean,
-  name?: string,
-  renderName?: boolean,
-  renderTitle?: boolean,
-  sex: HustlerSex,
-  textColor: string,
+  bgColor: string;
+  body: number;
+  dopeId: string;
+  facialHair: number;
+  hair: number;
+  mintOg: boolean;
+  name?: string;
+  renderName?: boolean;
+  renderTitle?: boolean;
+  sex: HustlerSex;
+  textColor: string;
 };
 
 /**
