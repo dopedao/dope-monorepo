@@ -9,6 +9,7 @@ import LoadingBlock from 'components/LoadingBlock';
 import LootCard from 'components/loot/LootCard';
 import LootTable from 'components/loot/LootTable';
 import NoLootCard from 'components/loot/NoLootCard';
+import DopeWarsExeNav from 'components/DopeWarsExeNav';
 
 const FlexFiftyContainer = styled.div`
   height: 100%;
@@ -51,6 +52,7 @@ export default function LootWindow() {
       requiresWalletConnection={true}
       balance={data?.wallet?.paper}
       loadingBalance={loading}
+      navbar={<DopeWarsExeNav />}
     >
       <Head />
       {loading ? (
