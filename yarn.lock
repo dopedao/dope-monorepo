@@ -3767,11 +3767,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphprotocol/graph-cli@npm:0.21.1":
-  version: 0.21.1
-  resolution: "@graphprotocol/graph-cli@npm:0.21.1"
+"@graphprotocol/graph-cli@npm:0.23.2":
+  version: 0.23.2
+  resolution: "@graphprotocol/graph-cli@npm:0.23.2"
   dependencies:
-    assemblyscript: "git+https://github.com/AssemblyScript/assemblyscript.git#v0.6"
+    assemblyscript: 0.19.10
+    binary-install-raw: 0.0.13
     chalk: ^3.0.0
     chokidar: ^3.0.2
     debug: ^4.1.1
@@ -3789,20 +3790,22 @@ __metadata:
     pkginfo: ^0.4.1
     prettier: ^1.13.5
     request: ^2.88.0
+    semver: 7.3.5
     tmp-promise: ^3.0.2
+    which: 2.0.2
     yaml: ^1.5.1
   bin:
     graph: bin/graph
-  checksum: afe66a1e7459774bbef207a435cad539ff71a84cb2f2a0764aff7c492c5a3fd6ff2441de27cd3b3def9ad40867db282176eaabbfaa8c9e8f657a273d9540e524
+  checksum: 806ccbdf97330d6803a7d07ebea28f02ebfbbc6d2c39810a2c7e669a259dd5557316cb7e251106be2a69bc8d979d62d705a5e9af780a7d08e2315ee323325267
   languageName: node
   linkType: hard
 
-"@graphprotocol/graph-ts@npm:0.20.0":
-  version: 0.20.0
-  resolution: "@graphprotocol/graph-ts@npm:0.20.0"
+"@graphprotocol/graph-ts@npm:0.23.1":
+  version: 0.23.1
+  resolution: "@graphprotocol/graph-ts@npm:0.23.1"
   dependencies:
-    assemblyscript: "git+https://github.com/AssemblyScript/assemblyscript.git#36040d5b5312f19a025782b5e36663823494c2f3"
-  checksum: 0d61b37d927b0f3dd1428c65a8c1f8ee6bff84e061c7100ba9e4f81095a11857a308f595926d48b0ae2b1dd54e334bccc9c6db4fd24c8c0bb2607fa2bf0ddd95
+    assemblyscript: 0.19.10
+  checksum: dbccebee9517e389989a5a2b976b88427b0467adebf4ce72d00aa4f0af27d044f9e09e09b83d5b4784bd39855947947207a951b4e0a093c6017d921025017375
   languageName: node
   linkType: hard
 
@@ -5797,13 +5800,6 @@ __metadata:
   version: 2.4.4
   resolution: "@popperjs/core@npm:2.4.4"
   checksum: 77bf4fb8fa16c67a7b017172264533d6a04481def64f99b503cd4d99195a541235f46c26afdcb212d9fc08e72c4f8012769422cd491831e6520b0c8367f8cd86
-  languageName: node
-  linkType: hard
-
-"@protobufjs/utf8@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@protobufjs/utf8@npm:1.1.0"
-  checksum: f9bf3163d13aaa3b6f5e6fbf37a116e094ea021c0e1f2a7ccd0e12a29e2ce08dafba4e8b36e13f8ed7397e1591610ce880ed1289af4d66cf4ace8a36a9557278
   languageName: node
   linkType: hard
 
@@ -8080,37 +8076,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"assemblyscript@git+https://github.com/AssemblyScript/assemblyscript.git#36040d5b5312f19a025782b5e36663823494c2f3":
-  version: 0.6.0
-  resolution: "assemblyscript@https://github.com/AssemblyScript/assemblyscript.git#commit=36040d5b5312f19a025782b5e36663823494c2f3"
+"assemblyscript@npm:0.19.10":
+  version: 0.19.10
+  resolution: "assemblyscript@npm:0.19.10"
   dependencies:
-    "@protobufjs/utf8": ^1.1.0
-    binaryen: 77.0.0-nightly.20190407
-    glob: ^7.1.3
+    binaryen: 101.0.0-nightly.20210723
     long: ^4.0.0
-    opencollective-postinstall: ^2.0.0
-    source-map-support: ^0.5.11
   bin:
     asc: bin/asc
     asinit: bin/asinit
-  checksum: b31854d77203dc90bb6fa88a7466a71a746ea25667b1a4f5d57c95bfc6ab3dde4bff9e6c323143a3a63e8e0fe64ca8b52046b7e43e461b52444f0fd7ba129252
-  languageName: node
-  linkType: hard
-
-"assemblyscript@git+https://github.com/AssemblyScript/assemblyscript.git#v0.6":
-  version: 0.6.0
-  resolution: "assemblyscript@https://github.com/AssemblyScript/assemblyscript.git#commit=3ed76a97f05335504166fce1653da75f4face28f"
-  dependencies:
-    "@protobufjs/utf8": ^1.1.0
-    binaryen: 77.0.0-nightly.20190407
-    glob: ^7.1.3
-    long: ^4.0.0
-    opencollective-postinstall: ^2.0.0
-    source-map-support: ^0.5.11
-  bin:
-    asc: bin/asc
-    asinit: bin/asinit
-  checksum: fda292f6b3b8b4a9bd4457c9143e50145f8473f3d664e48c057638a9bb1c8e890cd4de4e38e18dd4334240394621cfd9d01afee344ab049c5a7072fe855329b5
+  checksum: d4087bcbae402eb0e972a78d8dfee607b2b51f4b29fcee5359f4db3052912ec12492a8714916bed8424f7f495f9357c7c6ab2482ba1d4ea4a44c55a86df5a67c
   languageName: node
   linkType: hard
 
@@ -8324,7 +8299,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.21.4":
+"axios@npm:^0.21.1, axios@npm:^0.21.4":
   version: 0.21.4
   resolution: "axios@npm:0.21.4"
   dependencies:
@@ -9327,14 +9302,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"binaryen@npm:77.0.0-nightly.20190407":
-  version: 77.0.0-nightly.20190407
-  resolution: "binaryen@npm:77.0.0-nightly.20190407"
+"binary-install-raw@npm:0.0.13":
+  version: 0.0.13
+  resolution: "binary-install-raw@npm:0.0.13"
+  dependencies:
+    axios: ^0.21.1
+    rimraf: ^3.0.2
+    tar: ^6.1.0
+  checksum: f18515976237100459b4e2983832c941421ed8767c7fbc0ca716aa96210ccdd6c8ae9fdb9e0c39099248ebd8a3f4653560cb0b655192bb3b4efa1f7be204343a
+  languageName: node
+  linkType: hard
+
+"binaryen@npm:101.0.0-nightly.20210723":
+  version: 101.0.0-nightly.20210723
+  resolution: "binaryen@npm:101.0.0-nightly.20210723"
   bin:
-    binaryen-as: bin/as.js
-    binaryen-dis: bin/dis.js
-    binaryen-opt: bin/opt.js
-  checksum: 756334720191ec02b28b1fa153009338bee63ead43d5923faa7c651b7b97183b020f2ade712fab45d4cc714cae5bfeef3e8a5624246f87207ee4d847e181f6a9
+    wasm-opt: bin/wasm-opt
+  checksum: b1f7cc8e9fb4f1530e9454b5ea6deba17e2d863cea4efc6d0ba1b2af2325e9080c29df0ffeaf9708d455705a629a6a4fbef0ac29ed789a4e316b4c1437879f57
   languageName: node
   linkType: hard
 
@@ -15137,8 +15121,8 @@ fsevents@~2.1.1:
   version: 0.0.0-use.local
   resolution: "gear@workspace:packages/subgraph"
   dependencies:
-    "@graphprotocol/graph-cli": 0.21.1
-    "@graphprotocol/graph-ts": 0.20.0
+    "@graphprotocol/graph-cli": 0.23.2
+    "@graphprotocol/graph-ts": 0.23.1
   languageName: unknown
   linkType: soft
 
@@ -22345,15 +22329,6 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
-"opencollective-postinstall@npm:^2.0.0":
-  version: 2.0.3
-  resolution: "opencollective-postinstall@npm:2.0.3"
-  bin:
-    opencollective-postinstall: index.js
-  checksum: 0a68c5cef135e46d11e665d5077398285d1ce5311c948e8327b435791c409744d4a6bb9c55bd6507fb5f2ef34b0ad920565adcdaf974cbdae701aead6f32b396
-  languageName: node
-  linkType: hard
-
 "optimism@npm:^0.16.1":
   version: 0.16.1
   resolution: "optimism@npm:0.16.1"
@@ -25306,7 +25281,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"semver@npm:7.x, semver@npm:^7.0.0, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5":
+"semver@npm:7.3.5, semver@npm:7.x, semver@npm:^7.0.0, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5":
   version: 7.3.5
   resolution: "semver@npm:7.3.5"
   dependencies:
@@ -25907,7 +25882,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:^0.5.11, source-map-support@npm:^0.5.13, source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.17, source-map-support@npm:^0.5.19, source-map-support@npm:^0.5.6":
+"source-map-support@npm:^0.5.13, source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.17, source-map-support@npm:^0.5.19, source-map-support@npm:^0.5.6":
   version: 0.5.20
   resolution: "source-map-support@npm:0.5.20"
   dependencies:
@@ -26921,7 +26896,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tar@npm:^6.0.2, tar@npm:^6.1.2":
+"tar@npm:^6.0.2, tar@npm:^6.1.0, tar@npm:^6.1.2":
   version: 6.1.11
   resolution: "tar@npm:6.1.11"
   dependencies:
