@@ -29,8 +29,23 @@ const theme = extendTheme({
   }
 });
 
-const ColorPicker = (colors: string[], selectedColor?: string) => {
+interface ColorPickerProps {
+  colors: string[];
+  selectedColor?: string;
+  changeCallback?(value: string): void;
+}
+
+const ColorPicker = ({colors, selectedColor, changeCallback}: ColorPickerProps) => {
   const [color, setColor] = useState(selectedColor ?? colors[0]);
+
+  const handleColorInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleColorChange(e.target.value);
+  }
+
+  const handleColorChange = (color: string) => {
+    setColor(color);
+    if (typeof changeCallback === 'function') changeCallback(color);
+  }
 
   return <>
     <Popover variant="picker">
@@ -38,14 +53,14 @@ const ColorPicker = (colors: string[], selectedColor?: string) => {
         <Button
           aria-label={color}
           background={color}
-          height="22px"
-          width="22px"
+          height="64px"
+          width="64px"
           padding={0}
           minWidth="unset"
           borderRadius={3}
         ></Button>
       </PopoverTrigger>
-      <PopoverContent width="170px">
+      <PopoverContent width="196px">
         <PopoverArrow bg={color} />
         <PopoverCloseButton color="white" />
         <PopoverHeader
@@ -57,21 +72,21 @@ const ColorPicker = (colors: string[], selectedColor?: string) => {
         >
           <Center height="100%">{color}</Center>
         </PopoverHeader>
-        <PopoverBody height="120px">
+        <PopoverBody height="148px">
           <SimpleGrid columns={5} spacing={2}>
             {colors.map((c) => (
               <Button
                 key={c}
                 aria-label={c}
                 background={c}
-                height="22px"
-                width="22px"
+                height="32px"
+                width="32px"
                 padding={0}
                 minWidth="unset"
                 borderRadius={3}
                 _hover={{ background: c }}
                 onClick={() => {
-                  setColor(c);
+                  handleColorChange(c);
                 }}
               ></Button>
             ))}
@@ -82,9 +97,7 @@ const ColorPicker = (colors: string[], selectedColor?: string) => {
             placeholder="red.100"
             size="sm"
             value={color}
-            onChange={(e) => {
-              setColor(e.target.value);
-            }}
+            onChange={handleColorInputChange}
           />
         </PopoverBody>
       </PopoverContent>

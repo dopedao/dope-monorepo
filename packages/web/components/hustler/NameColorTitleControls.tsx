@@ -1,4 +1,4 @@
-import { HustlerInitConfig, HustlerCustomization } from '../../src/HustlerInitiation';
+import { HustlerInitConfig, DEFAULT_BG_COLORS, DEFAULT_TEXT_COLORS } from '../../src/HustlerInitiation';
 import { useReactiveVar } from '@apollo/client';
 import { Input, FormControl, FormLabel, FormErrorMessage, Switch, Stack } from '@chakra-ui/react';
 import { Field, FieldProps } from 'formik';
@@ -56,15 +56,10 @@ const NameColorTitleControls = ({
             {({ field, form }: FieldProps) => (
               <FormControl isInvalid={!!form.errors.bgColor && !!form.touched.bgColor}>
                 <FormLabel htmlFor="background">Background Color</FormLabel>
-                <Input 
-                  {...field} 
-                  id="bgColor" 
-                  placeholder="bgColor" 
-                  onChange={
-                    (e) => { 
-                      formikChangeHandler(e);
-                      HustlerInitConfig({ ...hustlerConfig, bgColor: field.value }) }
-                  }
+                <ColorPicker 
+                  colors={DEFAULT_BG_COLORS} 
+                  selectedColor={hustlerConfig.bgColor} 
+                  changeCallback={(value) => HustlerInitConfig({ ...hustlerConfig, bgColor: value })}
                 />
                 <FormErrorMessage>{form.errors.bgColor}</FormErrorMessage>
               </FormControl>
@@ -74,15 +69,10 @@ const NameColorTitleControls = ({
             {({ field, form }: FieldProps) => (
               <FormControl isInvalid={!!form.errors.textColor && !!form.touched.textColor}>
                 <FormLabel htmlFor="color">Text Color</FormLabel>
-                <Input 
-                  {...field} 
-                  id="textColor" 
-                  placeholder="textColor" 
-                  onChange={
-                    (e) => { 
-                      formikChangeHandler(e);
-                      HustlerInitConfig({ ...hustlerConfig, textColor: field.value }) }
-                  }
+                <ColorPicker 
+                  colors={DEFAULT_TEXT_COLORS} 
+                  selectedColor={hustlerConfig.textColor} 
+                  changeCallback={(value) => HustlerInitConfig({ ...hustlerConfig, textColor: value })}
                 />
                 <FormErrorMessage>{form.errors.textColor}</FormErrorMessage>
               </FormControl>

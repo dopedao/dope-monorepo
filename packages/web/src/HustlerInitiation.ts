@@ -10,6 +10,7 @@ export const MAX_BODIES = 5;
 export const MAX_HAIR = 18;
 export const MAX_FACIAL_HAIR = 12;
 export const DEFAULT_BG_COLORS = ['#434345', '#97ADCC', '#F1D8AB', '#F2C4C5', '#B6CCC3'];
+export const DEFAULT_TEXT_COLORS = ['#000000', '#ffffff', '#333333', '#ffcc00'];
 
 export type HustlerCustomization = {
   bgColor: string,
