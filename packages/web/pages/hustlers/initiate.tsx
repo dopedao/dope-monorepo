@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { useReactiveVar } from '@apollo/client';
-import { HustlerInitConfig } from 'src/HustlerInitiation';
+import { HustlerInitConfig } from 'src/HustlerConfig';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import InitiationFooter from 'components/hustler/InitiationFooter';

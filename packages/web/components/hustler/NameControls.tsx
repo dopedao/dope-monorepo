@@ -2,7 +2,7 @@ import {
   HustlerInitConfig,
   DEFAULT_BG_COLORS,
   DEFAULT_TEXT_COLORS,
-} from '../../src/HustlerInitiation';
+} from 'src/HustlerConfig';
 import { useReactiveVar } from '@apollo/client';
 import {
   Input,
@@ -14,10 +14,9 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { Field, FieldProps } from 'formik';
-import PanelBody from '../PanelBody';
-import PanelContainer from '../PanelContainer';
-import PanelTitleBar from '../PanelTitleBar';
-import ColorPicker from 'components/ColorPicker';
+import PanelBody from 'components/PanelBody';
+import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
 
 const NAME_MAX_LENGTH = 9;
 const FIELD_SPACING = '16px';

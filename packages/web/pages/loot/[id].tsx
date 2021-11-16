@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { useWalletQuery } from 'src/generated/graphql';
-import { HustlerInitConfig } from 'src/HustlerInitiation';
+import { HustlerInitConfig } from 'src/HustlerConfig';
 import { useRouter } from 'next/router';
 import DesktopWindow from 'components/DesktopWindow';
 import RenderFromLootId from 'components/hustler/RenderFromLootId';

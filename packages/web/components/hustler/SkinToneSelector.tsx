@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
-import { HustlerInitConfig } from 'src/HustlerInitiation';
+import { HustlerInitConfig } from 'src/HustlerConfig';
 import { useRadioGroup } from '@chakra-ui/radio';
 import { useReactiveVar } from '@apollo/client';
-import PanelBody from '../PanelBody';
+import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
 import PanelColorChipRadio from 'components/PanelColorChipRadio';

@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { useReactiveVar } from '@apollo/client';
 // import { useWeb3React } from '@web3-react/core';
-import { HustlerInitConfig } from 'src/HustlerInitiation';
+import { HustlerInitConfig } from 'src/HustlerConfig';
 // import { HUSTLER_MINT_TIME } from 'src/constants';
 import AppWindow from 'components/AppWindow';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';

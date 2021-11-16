@@ -8,7 +8,7 @@ import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { BigNumber } from 'ethers';
 import { NETWORK } from 'src/constants';
-import { HustlerInitConfig } from 'src/HustlerInitiation';
+import { HustlerInitConfig } from 'src/HustlerConfig';
 import {
   Paper,
   Paper__factory,

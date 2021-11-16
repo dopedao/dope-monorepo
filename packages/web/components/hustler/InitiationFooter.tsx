@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
-import { zeroPad } from '../../src/utils';
-import { HustlerInitConfig, getRandomHustler } from '../../src/HustlerInitiation';
-import { HUSTLER_MINT_TIME } from '../../src/constants';
+import { zeroPad } from 'src/utils';
+import { HustlerInitConfig, getRandomHustler } from 'src/HustlerConfig';
+import { HUSTLER_MINT_TIME } from 'src/constants';
 import { useEffect } from 'react';
-import PanelFooter from '../PanelFooter';
+import PanelFooter from 'components/PanelFooter';
 import styled from '@emotion/styled';
 // https://github.com/ndresx/react-countdown
 import Countdown from 'react-countdown';

@@ -15,7 +15,7 @@ import {
   HustlerSex,
   MAX_HAIR,
   MAX_FACIAL_HAIR,
-} from '../../src/HustlerInitiation';
+} from 'src/HustlerConfig';
 import { useReactiveVar } from '@apollo/client';
 import PanelBody from '../PanelBody';
 import PanelContainer from '../PanelContainer';

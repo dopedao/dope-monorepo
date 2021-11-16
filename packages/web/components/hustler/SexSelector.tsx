@@ -1,5 +1,5 @@
 import { Flex, Radio, RadioGroup, Spacer } from '@chakra-ui/react';
-import { HustlerInitConfig, HustlerSex } from 'src/HustlerInitiation';
+import { HustlerInitConfig, HustlerSex } from 'src/HustlerConfig';
 import { useReactiveVar } from '@apollo/client';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';

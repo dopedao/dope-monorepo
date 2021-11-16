@@ -13,7 +13,7 @@ import {
   HustlerInitConfig,
   isHustlerRandom,
   randomizeHustlerAttributes,
-} from 'src/HustlerInitiation';
+} from 'src/HustlerConfig';
 import { PickedBag } from 'src/DopeDatabase';
 import PanelFooter from 'components/PanelFooter';
 

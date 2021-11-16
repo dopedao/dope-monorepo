@@ -4,7 +4,7 @@ import { BigNumber, providers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { hexColorToBase16 } from 'src/utils';
-import { HustlerSex, DEFAULT_BG_COLORS } from 'src/HustlerInitiation';
+import { HustlerSex, DEFAULT_BG_COLORS } from 'src/HustlerConfig';
 import { NETWORK } from 'src/constants';
 import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';

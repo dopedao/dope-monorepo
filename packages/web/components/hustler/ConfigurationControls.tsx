@@ -9,7 +9,7 @@ import {
   DEFAULT_BG_COLORS,
   DEFAULT_TEXT_COLORS,
   SKIN_TONE_COLORS,
-} from 'src/HustlerInitiation';
+} from 'src/HustlerConfig';
 import { useEffect, useState } from 'react';
 import HairSelector from './HairSelector';
 import NameControls from './NameControls';
