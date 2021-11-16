@@ -11,18 +11,18 @@ export const MAX_HAIR = 18;
 export const MAX_FACIAL_HAIR = 12;
 export const DEFAULT_BG_COLORS = ['#434345', '#97ADCC', '#F1D8AB', '#F2C4C5', '#B6CCC3'];
 
-export interface HustlerCustomization {
-  bgColor: string;
-  body: number;
-  dopeId: string;
-  facialHair: number;
-  hair: number;
-  mintOg: boolean;
-  name?: string;
-  renderName?: boolean;
-  renderTitle?: boolean;
-  sex: HustlerSex;
-  textColor: string;
+export type HustlerCustomization = {
+  bgColor: string,
+  body: number,
+  dopeId: string,
+  facialHair: number,
+  hair: number,
+  mintOg: boolean,
+  name?: string,
+  renderName?: boolean,
+  renderTitle?: boolean,
+  sex: HustlerSex,
+  textColor: string,
 };
 
 /**

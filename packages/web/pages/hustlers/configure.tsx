@@ -37,6 +37,8 @@ const Hustler = () => {
             hair={hustlerConfig.hair}
             facialHair={hustlerConfig.facialHair}
             bgColor={hustlerConfig.bgColor}
+            textColor={hustlerConfig.textColor}
+            name={hustlerConfig.name}
           />
           <div></div>
         </PanelContainer>

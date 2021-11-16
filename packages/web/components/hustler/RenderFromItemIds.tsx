@@ -13,14 +13,16 @@ interface Metadata {
   image: string;
 }
 
-interface HustlerRenderProps {
+export interface HustlerRenderProps {
   itemIds: BigNumber[];
   sex?: HustlerSex;
   body?: number;
   hair?: number;
   facialHair?: number;
   bgColor?: string;
-}
+  textColor?: string;
+  name?: string;
+};
 
 const RenderFromItemIds = ({
   itemIds,
@@ -29,6 +31,8 @@ const RenderFromItemIds = ({
   hair,
   facialHair,
   bgColor = DEFAULT_BG_COLORS[0],
+  textColor = '#000000',
+  name = '',
 }: HustlerRenderProps) => {
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
@@ -84,12 +88,14 @@ const RenderFromItemIds = ({
     if (!hustlers) return;
     setHasRenderedFromChain(false);
     const { bodyParams, hairParams, facialHairParams } = getBodyRleParams();
-    console.log('body');
-    console.log(bodyParams);
-    console.log('hair');
-    console.log(hairParams);
-    console.log('facial hair');
-    console.log(facialHairParams);
+    // DEBUG INFO for when contract call fails.
+    // Was tracking down bug that happens on Rinkeby.
+    // console.log('body');
+    // console.log(bodyParams);
+    // console.log('hair');
+    // console.log(hairParams);
+    // console.log('facial hair');
+    // console.log(facialHairParams);
     const promises = [hustlers.bodyRle(...bodyParams), hustlers.bodyRle(...hairParams)];
     // No female beards for now because they're unsupported
     if (sex == 'male' && facialHair) {
@@ -105,10 +111,10 @@ const RenderFromItemIds = ({
       hustlers
         .render(
           '',
-          '',
+          name,
           64,
           hexColorToBase16(bgColor),
-          '0x202221ff',
+          hexColorToBase16(textColor),
           [0, 0, 0, 0],
           [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles],
         )

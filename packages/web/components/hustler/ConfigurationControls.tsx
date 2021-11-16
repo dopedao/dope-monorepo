@@ -3,6 +3,7 @@ import { useMemo, useCallback } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { Formik, Form } from 'formik';
+import { useRouter } from 'next/router';
 import {
   HustlerInitConfig,
   randomizeHustlerAttributes,
@@ -15,19 +16,21 @@ import SexSelector from './SexSelector';
 import SkinToneSelector from './SkinToneSelector';
 
 const ConfigurationControls = () => {
+  const router = useRouter();
+
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   return (
     <Formik
       initialValues={ {...hustlerConfig} }
       onSubmit={async (values: HustlerCustomization, actions) => {
-        await onSubmit(values);
+        router.replace('/hustlers/initiate');
       }}
     >
       {props => (
         <Form>
           <Stack spacing={4}>
-            <NameColorTitleControls />
+            <NameColorTitleControls formikChangeHandler={props.handleChange} />
             <SkinToneSelector />
             <SexSelector />
             <HairSelector />

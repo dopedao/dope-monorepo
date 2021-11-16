@@ -5,19 +5,10 @@ import { NETWORK } from '../../src/constants';
 import { SwapMeet__factory } from '@dopewars/contracts';
 import { useEffect, useMemo, useState } from 'react';
 import LoadingBlock from '../LoadingBlock';
-import RenderFromItemIds from '../../components/hustler/RenderFromItemIds';
+import RenderFromItemIds, { HustlerRenderProps } from '../../components/hustler/RenderFromItemIds';
 import LoadingBlockSquareCentered from '../LoadingBlockSquareCentered';
 
-interface HustlerRenderProps {
-  id: string;
-  sex?: HustlerSex;
-  body?: number;
-  hair?: number;
-  facialHair?: number;
-  bgColor?: string;
-}
-
-const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor }: HustlerRenderProps) => {
+const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor, textColor }: HustlerRenderProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
   const provider = useMemo<any>(
@@ -51,6 +42,8 @@ const RenderFromLootId = ({ id, sex, body, hair, facialHair, bgColor }: HustlerR
         hair={hair}
         facialHair={facialHair}
         bgColor={bgColor}
+        textColor={textColor}
+        name={name}
       />
     );
   } else {

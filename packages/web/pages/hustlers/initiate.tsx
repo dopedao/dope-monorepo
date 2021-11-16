@@ -28,13 +28,15 @@ export default function Initiate() {
           `}
         >
           <PanelTitleBar>Hustler</PanelTitleBar>
-          <RenderFromLootId
+          <RenderFromLootId 
             id={hustlerConfig.dopeId}
             sex={hustlerConfig.sex}
             body={hustlerConfig.body}
             hair={hustlerConfig.hair}
             facialHair={hustlerConfig.facialHair}
             bgColor={hustlerConfig.bgColor}
+            textColor={hustlerConfig.textColor}
+            name={hustlerConfig.name}
           />
           <InitiationFooter />
         </PanelContainer>

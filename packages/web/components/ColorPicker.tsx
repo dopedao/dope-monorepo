@@ -29,21 +29,8 @@ const theme = extendTheme({
   }
 });
 
-const ColorPicker = () => {
-  const [color, setColor] = useState("gray.500");
-
-  const colors = [
-    "gray.500",
-    "red.500",
-    "gray.700",
-    "green.500",
-    "blue.500",
-    "blue.800",
-    "yellow.500",
-    "orange.500",
-    "purple.500",
-    "pink.500"
-  ];
+const ColorPicker = (colors: string[], selectedColor?: string) => {
+  const [color, setColor] = useState(selectedColor ?? colors[0]);
 
   return <>
     <Popover variant="picker">
