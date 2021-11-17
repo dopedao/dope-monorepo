@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { BigNumber, providers } from 'ethers';
 import { NETWORK } from 'src/constants';
 import { SwapMeet__factory } from '@dopewars/contracts';
-import RenderFromItemIds, { HustlerRenderProps } from '../../components/hustler/RenderFromItemIds';
-import LoadingBlockSquareCentered from '../LoadingBlockSquareCentered';
+import RenderFromItemIds, { HustlerRenderProps } from 'components/hustler/RenderFromItemIds';
+import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 
 interface RenderFromLootIdProps extends Omit<HustlerRenderProps, 'itemIds'> {
   id: string;
@@ -16,6 +16,8 @@ const RenderFromLootId = ({
   hair,
   id,
   name,
+  renderName,
+  renderTitle,
   sex,
   textColor,
 }: RenderFromLootIdProps) => {
@@ -46,14 +48,16 @@ const RenderFromLootId = ({
   if (itemIds) {
     return (
       <RenderFromItemIds
-        itemIds={itemIds}
-        sex={sex}
-        body={body}
-        hair={hair}
-        facialHair={facialHair}
         bgColor={bgColor}
-        textColor={textColor}
+        body={body}
+        facialHair={facialHair}
+        hair={hair}
+        itemIds={itemIds}
         name={name}
+        renderName={renderName}
+        renderTitle={renderTitle}
+        sex={sex}
+        textColor={textColor}
       />
     );
   } else {

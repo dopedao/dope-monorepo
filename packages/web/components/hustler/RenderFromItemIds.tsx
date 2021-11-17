@@ -14,25 +14,29 @@ type Metadata = {
 };
 
 export interface HustlerRenderProps {
-  itemIds: BigNumber[];
-  sex?: HustlerSex;
-  body?: number;
-  hair?: number;
-  facialHair?: number;
   bgColor?: string;
-  textColor?: string;
+  body?: number;
+  facialHair?: number;
+  hair?: number;
+  itemIds: BigNumber[];
   name?: string;
+  renderName?: boolean;
+  renderTitle?: boolean;
+  sex?: HustlerSex;
+  textColor?: string;
 }
 
 const RenderFromItemIds = ({
-  itemIds,
-  sex,
-  body,
-  hair,
-  facialHair,
   bgColor = DEFAULT_BG_COLORS[0],
-  textColor = '#000000',
+  body,
+  facialHair,
+  hair,
+  itemIds,
   name = '',
+  renderName = false,
+  renderTitle = false,
+  sex,
+  textColor = '#000000',
 }: HustlerRenderProps) => {
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
@@ -108,8 +112,8 @@ const RenderFromItemIds = ({
       console.log(`name ${name}`);
       hustlers
         .render(
-          name, // title
-          name, // subtitle – should this be "name" ?
+          renderTitle ? name : '', // title
+          renderName ? name : '', // subtitle – should this be "name" ?
           64,
           hexColorToBase16(bgColor),
           hexColorToBase16(textColor),
@@ -124,7 +128,7 @@ const RenderFromItemIds = ({
           setHasRenderedFromChain(true);
         });
     }
-  }, [swapmeet, hustlers, itemRles, bodyRles, name, textColor, bgColor]);
+  }, [swapmeet, hustlers, itemRles, bodyRles, name, textColor, bgColor, renderName, renderTitle]);
 
   if (!hasRenderedFromChain) return <LoadingBlockSquareCentered />;
 
