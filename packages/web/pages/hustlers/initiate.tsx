@@ -42,14 +42,16 @@ const Initiate = () => {
         >
           <PanelTitleBar>Hustler</PanelTitleBar>
           <RenderFromLootId
-            id={hustlerConfig.dopeId}
-            sex={hustlerConfig.sex}
-            body={hustlerConfig.body}
-            hair={hustlerConfig.hair}
-            facialHair={hustlerConfig.facialHair}
             bgColor={hustlerConfig.bgColor}
-            textColor={hustlerConfig.textColor}
+            body={hustlerConfig.body}
+            facialHair={hustlerConfig.facialHair}
+            hair={hustlerConfig.hair}
+            id={hustlerConfig.dopeId}
             name={hustlerConfig.name}
+            renderName={hustlerConfig.renderName}
+            renderTitle={hustlerConfig.renderTitle}
+            sex={hustlerConfig.sex}
+            textColor={hustlerConfig.textColor}
           />
           <InitiationFooter />
         </PanelContainer>
