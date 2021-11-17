@@ -1,29 +1,16 @@
-import styled from '@emotion/styled';
 import { useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { useWalletQuery } from 'src/generated/graphql';
 import { HustlerInitConfig } from 'src/HustlerConfig';
 import { useRouter } from 'next/router';
 import DesktopWindow from 'components/DesktopWindow';
-import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import Head from 'components/Head';
 import Container from 'components/Container';
 import LoadingBlock from 'components/LoadingBlock';
+import Steps from 'features/hustlers/modules/Steps';
+import HustlerProvider from 'features/hustlers/HustlerProvider';
 
-const HustlerContainer = styled.div<{ bgColor: string }>`
-  background-color: ${({ bgColor }) => bgColor};
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-
-  & > * {
-    flex: 1;
-  }
-`;
-
-const Loot = () => {
+const ApproveSpend = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const router = useRouter();
   const { id } = router.query;
@@ -44,19 +31,12 @@ const Loot = () => {
           <LoadingBlock />
         </Container>
       ) : (
-        <HustlerContainer bgColor={hustlerConfig.bgColor}>
-          <RenderFromLootId
-            id={id?.toString() ?? '1'}
-            sex={hustlerConfig.sex}
-            body={hustlerConfig.body}
-            hair={hustlerConfig.hair}
-            facialHair={hustlerConfig.facialHair}
-            bgColor={hustlerConfig.bgColor}
-          />
-        </HustlerContainer>
+        <HustlerProvider>
+          <Steps hustlerConfig={hustlerConfig} id={id} />
+        </HustlerProvider>
       )}
     </DesktopWindow>
   );
 };
 
-export default Loot;
+export default ApproveSpend;
