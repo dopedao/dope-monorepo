@@ -38,7 +38,7 @@ const DesktopWindowTitleBar = ({
 
   useEffect(() => {
     const getEns = async () => {
-      if (!account) {
+      if (!account || chainId === 42) {
         return null;
       }
       const ens = new ENS({ provider: library, ensAddress: getEnsAddress(chainId) });

@@ -32,10 +32,10 @@ HustlerAddr="0x577d9c7FF9B506d7305194698b4103a3fE3532f0"
 # log "Hustler deployed at:" $HustlerAddr
 
 # 0xe7e8f3b0502Fc1357B5504C8262541Da1472f6De
-# ControllerAddr=$(deploy Controller $ComponentsAddr $SwapMeetAddr $HustlerAddr)
-# # verify Controller $ControllerAddr $SwapMeetAddr
-# extractABI Controller
-# log "Controller deployed at:" $ControllerAddr
+ControllerAddr=$(deploy Controller $ComponentsAddr $SwapMeetAddr $HustlerAddr)
+# verify Controller $ControllerAddr $SwapMeetAddr
+extractABI Controller
+log "Controller deployed at:" $ControllerAddr
 
 # GetPalettesAddr=$(deploy GetPalettes)
 # log "GetPalettes deployed at:" $GetPalettesAddr
@@ -103,5 +103,5 @@ HustlerAddr="0x577d9c7FF9B506d7305194698b4103a3fE3532f0"
 # GetMenBeardsAddr=$(deploy GetMenBeards)
 # log "GetMenBeards deployed at:" $GetMenBeardsAddr
 
-SetAllAddr=$(deploy SetAll)
-log "SetAll deployed at:" $SetAllAddr
+# SetAllAddr=$(deploy SetAll)
+# log "SetAll deployed at:" $SetAllAddr
