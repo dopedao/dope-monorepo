@@ -9,13 +9,7 @@ import { css } from '@emotion/react';
 import { BigNumber } from 'ethers';
 import { NETWORK } from 'src/constants';
 import { HustlerInitConfig } from 'src/HustlerConfig';
-import {
-  Paper,
-  Paper__factory,
-  SwapMeet__factory,
-  Hustler__factory,
-  Loot__factory,
-} from '@dopewars/contracts';
+import { Paper__factory, Initiator__factory } from '@dopewars/contracts';
 
 interface Props {
   bag: Pick<Bag, 'id' | 'claimed'>;
@@ -27,41 +21,21 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
 
   const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
 
-  const [isDopeApproved, setIsDopeApproved] = useState<boolean>();
   const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
 
   const paper = useMemo(
     () =>
       chainId
-        ? Paper__factory.connect(NETWORK[chainId as 1 | 4].contracts.paper, library.getSigner())
+        ? Paper__factory.connect(NETWORK[chainId as 1 | 42].contracts.paper, library.getSigner())
         : null,
     [chainId, library],
   );
 
-  const dope = useMemo(
+  const initiator = useMemo(
     () =>
       chainId
-        ? Loot__factory.connect(NETWORK[chainId as 1 | 4].contracts.dope, library.getSigner())
-        : null,
-    [chainId, library],
-  );
-
-  const swapmeet = useMemo(
-    () =>
-      chainId
-        ? SwapMeet__factory.connect(
-            NETWORK[chainId as 1 | 4].contracts.swapmeet,
-            library.getSigner(),
-          )
-        : null,
-    [chainId, library],
-  );
-
-  const hustlers = useMemo(
-    () =>
-      chainId
-        ? Hustler__factory.connect(
-            NETWORK[chainId as 1 | 4].contracts.hustlers,
+        ? Initiator__factory.connect(
+            NETWORK[chainId as 42].contracts.initiator,
             library.getSigner(),
           )
         : null,
@@ -77,17 +51,9 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   }, [account, paper]);
 
   useEffect(() => {
-    if (account && dope) {
-      dope
-        .isApprovedForAll(account, NETWORK[chainId as 1 | 4].contracts.hustlers)
-        .then(setIsDopeApproved);
-    }
-  }, [account, chainId, dope]);
-
-  useEffect(() => {
     if (account && paper) {
       paper
-        .allowance(account, NETWORK[chainId as 1 | 4].contracts.hustlers)
+        .allowance(account, NETWORK[chainId as 42].contracts.initiator)
         .then((allowance: BigNumber) =>
           setIsPaperApproved(allowance.gte('12500000000000000000000')),
         );
@@ -104,49 +70,14 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
 
   return (
     <div>
-      {chainId == 4 && swapmeet && paper && account && (
+      {chainId == 42 && initiator && paper && account && (
         <>
-          {/* <Button
-            disabled={isPaperApproved}
-            onClick={async () => {
-              await paper.increaseAllowance(
-                NETWORK[chainId as 1 | 4].contracts.hustlers,
-                constants.MaxUint256,
-              );
-            }}
-          >
-            Approve Paper
-          </Button>
-          <Button
-            disabled={isDopeApproved}
-            onClick={async () => {
-              await dope.setApprovalForAll(NETWORK[chainId as 1 | 4].contracts.hustlers, true);
-            }}
-          >
-            Approve Dope
-          </Button>
-          <Button
-            onClick={async () => {
-              await hustlers.mintFromDope(bag.id, 'name', '0xffffffff', '0x000000ff', '0x');
-            }}
-          >
-            Mint Hustler
-          </Button>
-          <Button
-            onClick={async () => {
-              await hustlers.mintOGFromDope(bag.id, 'name', '0xffffffff', '0x000000ff', '0x', {
-                value: '330000000000000000',
-              });
-            }}
-          >
-            Mint Original Gangsta
-          </Button> */}
           <Button variant="primary" onClick={() => initiateHustler()}>
             Initiate Hustler
           </Button>
           <Button
             onClick={async () => {
-              await swapmeet.open(bag.id, account, '');
+              await initiator.open(bag.id, account, '0x', 500000);
             }}
           >
             Unbundle
