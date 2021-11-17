@@ -33,7 +33,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
 
   const initiator = useMemo(
     () =>
-      chainId
+      chainId && chainId == 42
         ? Initiator__factory.connect(
             NETWORK[chainId as 42].contracts.initiator,
             library.getSigner(),
@@ -51,7 +51,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   }, [account, paper]);
 
   useEffect(() => {
-    if (account && paper) {
+    if (account && paper && chainId == 42) {
       paper
         .allowance(account, NETWORK[chainId as 42].contracts.initiator)
         .then((allowance: BigNumber) =>
