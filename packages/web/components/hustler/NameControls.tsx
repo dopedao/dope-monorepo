@@ -1,5 +1,7 @@
 import { HustlerInitConfig, DEFAULT_BG_COLORS, DEFAULT_TEXT_COLORS } from 'src/HustlerConfig';
+import { useDebounce } from 'usehooks-ts';
 import { useReactiveVar } from '@apollo/client';
+import { useState, useEffect } from 'react';
 import {
   Input,
   HStack,
@@ -29,6 +31,21 @@ const NameControls = () => {
     return error;
   };
 
+  const [hustlerName, setHustlerName] = useState(hustlerConfig.name ?? '');
+  const [nameFieldDirty, setNameFieldDirty] = useState(false);
+  const debouncedHustlerName = useDebounce<string>(hustlerName, 250);
+
+  useEffect(() => {
+    // Set from typing
+    if (nameFieldDirty && hustlerConfig.name !== debouncedHustlerName) {
+      HustlerInitConfig({ ...hustlerConfig, name: debouncedHustlerName });
+      setNameFieldDirty(false);
+    // Set from randomize or external change
+    } else if (!nameFieldDirty && hustlerConfig.name !== debouncedHustlerName) {
+      setHustlerName(hustlerConfig.name ?? '');
+    }
+  }, [debouncedHustlerName, hustlerConfig, nameFieldDirty]);
+
   return (
     <PanelContainer>
       <PanelTitleBar>Display</PanelTitleBar>
@@ -40,9 +57,10 @@ const NameControls = () => {
               id="name"
               placeholder="name"
               maxLength={NAME_MAX_LENGTH}
-              value={hustlerConfig.name}
+              value={hustlerName}
               onChange={e => {
-                HustlerInitConfig({ ...hustlerConfig, name: e.currentTarget.value });
+                setNameFieldDirty(true);
+                setHustlerName(e.currentTarget.value)
               }}
             />
           </FormControl>

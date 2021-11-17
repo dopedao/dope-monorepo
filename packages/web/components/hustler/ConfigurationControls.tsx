@@ -24,7 +24,6 @@ const ConfigurationControls = () => {
 
   useEffect(() => {
     setShowTextColor(hustlerConfig.renderName == true || hustlerConfig.renderTitle == true);
-    console.log(hustlerConfig.renderName == true || hustlerConfig.renderTitle == true);
   }, [hustlerConfig]);
 
   return (
