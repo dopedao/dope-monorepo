@@ -1,9 +1,9 @@
+
 import { css } from '@emotion/react';
-import { useReactiveVar } from '@apollo/client';
-import { useWeb3React } from '@web3-react/core';
 import { HustlerInitConfig } from 'src/HustlerConfig';
+import { useReactiveVar } from '@apollo/client';
 import { useWalletQuery } from 'src/generated/graphql';
-// import { HUSTLER_MINT_TIME } from 'src/constants';
+import { useWeb3React } from '@web3-react/core';
 import AppWindow from 'components/AppWindow';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import Head from 'components/Head';
@@ -11,6 +11,8 @@ import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
+import ZoomControls from 'components/hustler/ZoomControls';
+
 
 const Hustler = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
@@ -51,8 +53,9 @@ const Hustler = () => {
             renderTitle={hustlerConfig.renderTitle}
             sex={hustlerConfig.sex}
             textColor={hustlerConfig.textColor}
+            zoomWindow={hustlerConfig.zoomWindow}
           />
-          <div></div>
+          <ZoomControls />
         </PanelContainer>
         <div>
           <ConfigurationControls />

@@ -51,6 +51,7 @@ const HustlerFromLoot = () => {
             hair={hustlerConfig.hair}
             facialHair={hustlerConfig.facialHair}
             bgColor={hustlerConfig.bgColor}
+            zoomWindow={hustlerConfig.zoomWindow}
           />
         </HustlerContainer>
       )}
