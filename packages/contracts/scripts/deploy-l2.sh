@@ -12,30 +12,33 @@ set -eo pipefail
 # log "MetadataBuilder deployed at:" $MetadataBuilderAddr
 
 # Deploy.
-ComponentsAddr="0x781B575CA559263eb232B854195D6dC0AB720105"
+# Optimism Kovan
+# ComponentsAddr="0x781B575CA559263eb232B854195D6dC0AB720105"
+# Optimism
+ComponentsAddr="0x3810960a570F1C0B49F630970FeE9ACb64Ef8bf1"
 # ComponentsAddr=$(deploy Components)
-# verify Components $ComponentsAddr
-# extractABI Components
 # log "Components deployed at:" $ComponentsAddr
 
-SwapMeetAddr="0x781A6002A4221c0E52fC283D285b703890024C97"
-# echo "deploy SwapMeet $ComponentsAddr"
+# Optimism Kovan
+# SwapMeetAddr="0x781A6002A4221c0E52fC283D285b703890024C97"
+# Optimism
+SwapMeetAddr="0xB3cCb05742bDbd51Daa24f036FC5489f5ca0f38c"
 # SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr)
-# # verify SwapMeet $SwapMeetAddr $ComponentsAddr
-# extractABI SwapMeet
 # log "SwapMeet deployed at:" $SwapMeetAddr
 
-HustlerAddr="0x577d9c7FF9B506d7305194698b4103a3fE3532f0"
+# Optimism Kovan
+# HustlerAddr="0x577d9c7FF9B506d7305194698b4103a3fE3532f0"
+# Optimism
+HustlerAddr="0xE9DACD8118917e3A0522f45c191C6abe88d271B0"
 # HustlerAddr=$(deploy Hustler $ComponentsAddr $SwapMeetAddr)
-# # verify Hustler $HustlerAddr $SwapMeetAddr
-# extractABI Hustler
 # log "Hustler deployed at:" $HustlerAddr
 
+# Optimism Kovan
 # 0xe7e8f3b0502Fc1357B5504C8262541Da1472f6De
-ControllerAddr=$(deploy Controller $ComponentsAddr $SwapMeetAddr $HustlerAddr)
-# verify Controller $ControllerAddr $SwapMeetAddr
-extractABI Controller
-log "Controller deployed at:" $ControllerAddr
+# Optimism
+# 0xd48055cbd433d93F1Aa000dfCd6EC36F39C0FDB6
+# ControllerAddr=$(deploy Controller $ComponentsAddr $SwapMeetAddr $HustlerAddr)
+# log "Controller deployed at:" $ControllerAddr
 
 # GetPalettesAddr=$(deploy GetPalettes)
 # log "GetPalettes deployed at:" $GetPalettesAddr
