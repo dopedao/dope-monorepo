@@ -61,8 +61,6 @@ const RenderFromItemIds = ({
     [provider],
   );
 
-  // facialHair?: number;
-
   useEffect(() => {
     setHasRenderedFromChain(false);
     const sexIndex = sex && sex == 'female' ? 1 : 0;
@@ -106,6 +104,7 @@ const RenderFromItemIds = ({
 
   useEffect(() => {
     if (hustlers && bodyRles && itemRles) {
+      setHasRenderedFromChain(false);
       const hustlerShadowHex = '0x0036283818022b01000d2b0500092b0200';
       const drugShadowHex = '0x00362f3729062b';
       hustlers
