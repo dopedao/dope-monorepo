@@ -11,8 +11,6 @@ const ZoomContainer = styled.div`
   justify-content: space-between;
   padding: 1em;
   width: 100%;
-  // position: relative;
-  // top: -50%;
 `;
  
 const indexFromZoomValue = (
