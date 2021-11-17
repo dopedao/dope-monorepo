@@ -18,11 +18,6 @@ var _abi = [
                 name: "_swapmeet",
                 type: "address",
             },
-            {
-                internalType: "address",
-                name: "_paper",
-                type: "address",
-            },
         ],
         stateMutability: "nonpayable",
         type: "constructor",
@@ -338,6 +333,19 @@ var _abi = [
         type: "function",
     },
     {
+        inputs: [],
+        name: "enforcer",
+        outputs: [
+            {
+                internalType: "contract IEnforcer",
+                name: "",
+                type: "address",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
         inputs: [
             {
                 internalType: "uint256",
@@ -427,22 +435,9 @@ var _abi = [
     {
         inputs: [
             {
-                internalType: "bytes",
-                name: "data",
-                type: "bytes",
-            },
-        ],
-        name: "mint",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-    },
-    {
-        inputs: [
-            {
-                internalType: "uint256",
-                name: "tokenId",
-                type: "uint256",
+                internalType: "address",
+                name: "to",
+                type: "address",
             },
             {
                 internalType: "string",
@@ -485,7 +480,31 @@ var _abi = [
                 type: "bytes",
             },
         ],
-        name: "mintFromDope",
+        name: "mintOGTo",
+        outputs: [
+            {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+            },
+        ],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "address",
+                name: "to",
+                type: "address",
+            },
+            {
+                internalType: "bytes",
+                name: "data",
+                type: "bytes",
+            },
+        ],
+        name: "mintTo",
         outputs: [],
         stateMutability: "nonpayable",
         type: "function",
@@ -493,9 +512,9 @@ var _abi = [
     {
         inputs: [
             {
-                internalType: "uint256",
-                name: "tokenId",
-                type: "uint256",
+                internalType: "address",
+                name: "to",
+                type: "address",
             },
             {
                 internalType: "string",
@@ -538,9 +557,15 @@ var _abi = [
                 type: "bytes",
             },
         ],
-        name: "mintOGFromDope",
-        outputs: [],
-        stateMutability: "payable",
+        name: "mintTo",
+        outputs: [
+            {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+            },
+        ],
+        stateMutability: "nonpayable",
         type: "function",
     },
     {
@@ -642,19 +667,6 @@ var _abi = [
                 internalType: "address",
                 name: "",
                 type: "address",
-            },
-        ],
-        stateMutability: "view",
-        type: "function",
-    },
-    {
-        inputs: [],
-        name: "release",
-        outputs: [
-            {
-                internalType: "uint256",
-                name: "",
-                type: "uint256",
             },
         ],
         stateMutability: "view",
@@ -864,19 +876,6 @@ var _abi = [
     {
         inputs: [
             {
-                internalType: "uint256",
-                name: "timestamp",
-                type: "uint256",
-            },
-        ],
-        name: "setRelease",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-    },
-    {
-        inputs: [
-            {
                 internalType: "bytes4",
                 name: "interfaceId",
                 type: "bytes4",
@@ -973,13 +972,6 @@ var _abi = [
             },
         ],
         stateMutability: "view",
-        type: "function",
-    },
-    {
-        inputs: [],
-        name: "withdraw",
-        outputs: [],
-        stateMutability: "nonpayable",
         type: "function",
     },
 ];

@@ -7,17 +7,6 @@ exports.Components__factory = void 0;
 var ethers_1 = require("ethers");
 var _abi = [
     {
-        inputs: [
-            {
-                internalType: "address",
-                name: "_owner",
-                type: "address",
-            },
-        ],
-        stateMutability: "nonpayable",
-        type: "constructor",
-    },
-    {
         anonymous: false,
         inputs: [
             {

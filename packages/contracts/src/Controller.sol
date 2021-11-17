@@ -24,7 +24,7 @@ contract Controller is IController, ERC1155Holder {
     IHustler private hustler;
     ISwapMeet private swapmeet;
     address public initiator;
-    address public dao = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
+    address public dao;
     address public maintainer;
 
     constructor(
@@ -35,6 +35,7 @@ contract Controller is IController, ERC1155Holder {
         components = components_;
         swapmeet = swapmeet_;
         hustler = hustler_;
+        dao = msg.sender;
         maintainer = msg.sender;
     }
 
