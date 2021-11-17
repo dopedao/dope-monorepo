@@ -30,14 +30,6 @@ const ConfigurationControls = () => {
     <>
       <Stack spacing={4}>
         <NameControls />
-        <PanelColorSelector
-          title="Background"
-          colors={DEFAULT_BG_COLORS}
-          value={hustlerConfig.bgColor}
-          changeCallback={color => {
-            HustlerInitConfig({ ...hustlerConfig, bgColor: color });
-          }}
-        />
 
         {showTextColor && (
           <PanelColorSelector
@@ -49,6 +41,15 @@ const ConfigurationControls = () => {
             }}
           />
         )}
+
+        <PanelColorSelector
+          title="Background"
+          colors={DEFAULT_BG_COLORS}
+          value={hustlerConfig.bgColor}
+          changeCallback={color => {
+            HustlerInitConfig({ ...hustlerConfig, bgColor: color });
+          }}
+        />
 
         <PanelColorSelector
           title="Skin Tone"
