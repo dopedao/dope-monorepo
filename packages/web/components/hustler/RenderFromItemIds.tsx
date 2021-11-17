@@ -108,8 +108,6 @@ const RenderFromItemIds = ({
     if (hustlers && bodyRles && itemRles) {
       const hustlerShadowHex = '0x0036283818022b01000d2b0500092b0200';
       const drugShadowHex = '0x00362f3729062b';
-      console.log(`text ${hexColorToBase16(textColor)}`);
-      console.log(`name ${name}`);
       hustlers
         .render(
           renderTitle ? name : '', // title
