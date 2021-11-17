@@ -179,14 +179,6 @@ for gender, categories in components.items():
                 length = subimg[j]
                 c = meta["partcolors"][subimg[j+1]]
                 if c != "":
-                    # if len(c) > 8:
-                    #     continue
-                    #     print(int(c[7:8], 16))
-                    #     rgb = hex2rgb("#" + c[:6])
-                    #     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
-                    #         lookup[length], :3] += np.array(rgb) * (int(c[7:8], 16) / 255) / 255
-                    #     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
-                    # else:
                     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] + lookup[length], 3] = 1.0
                     rgb = hex2rgb("#" + c[2:8])
                     img[lookup[y]: lookup[y+1], lookup[x]: lookup[x] +
