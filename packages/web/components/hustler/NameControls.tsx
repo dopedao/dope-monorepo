@@ -1,5 +1,7 @@
 import { HustlerInitConfig, DEFAULT_BG_COLORS, DEFAULT_TEXT_COLORS } from 'src/HustlerConfig';
+import { useDebounce } from 'usehooks-ts';
 import { useReactiveVar } from '@apollo/client';
+import { useState, useEffect } from 'react';
 import {
   Input,
   HStack,
@@ -9,7 +11,6 @@ import {
   Switch,
   Stack,
 } from '@chakra-ui/react';
-import { Field, FieldProps } from 'formik';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
@@ -17,11 +18,7 @@ import PanelTitleBar from 'components/PanelTitleBar';
 const NAME_MAX_LENGTH = 9;
 const FIELD_SPACING = '16px';
 
-const NameControls = ({
-  formikChangeHandler,
-}: {
-  formikChangeHandler: (e: React.ChangeEvent) => void;
-}) => {
+const NameControls = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   const validateName = (value: string) => {
@@ -34,64 +31,64 @@ const NameControls = ({
     return error;
   };
 
+  const [hustlerName, setHustlerName] = useState(hustlerConfig.name ?? '');
+  const [nameFieldDirty, setNameFieldDirty] = useState(false);
+  const debouncedHustlerName = useDebounce<string>(hustlerName, 250);
+
+  useEffect(() => {
+    // Set from typing
+    if (nameFieldDirty && hustlerConfig.name !== debouncedHustlerName) {
+      HustlerInitConfig({ ...hustlerConfig, name: debouncedHustlerName });
+      setNameFieldDirty(false);
+    // Set from randomize or external change
+    } else if (!nameFieldDirty && hustlerConfig.name !== debouncedHustlerName) {
+      setHustlerName(hustlerConfig.name ?? '');
+    }
+  }, [debouncedHustlerName, hustlerConfig, nameFieldDirty]);
+
   return (
     <PanelContainer>
       <PanelTitleBar>Display</PanelTitleBar>
       <PanelBody>
         <Stack spacing={FIELD_SPACING}>
-          <Field name="name" validate={validateName}>
-            {({ field, form }: FieldProps) => (
-              <FormControl mb={2} isInvalid={!!form.errors.name && !!form.touched.name}>
-                <FormLabel htmlFor="name">Name</FormLabel>
-                <Input
-                  {...field}
-                  id="name"
-                  placeholder="name"
-                  maxLength={NAME_MAX_LENGTH}
-                  onChange={e => {
-                    formikChangeHandler(e);
-                    HustlerInitConfig({ ...hustlerConfig, name: field.value });
-                  }}
-                />
-                <FormErrorMessage>{form.errors.name}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
+          <FormControl mb={2}>
+            <FormLabel htmlFor="name">Name</FormLabel>
+            <Input
+              id="name"
+              placeholder="name"
+              maxLength={NAME_MAX_LENGTH}
+              value={hustlerName}
+              onChange={e => {
+                setNameFieldDirty(true);
+                setHustlerName(e.currentTarget.value)
+              }}
+            />
+          </FormControl>
           <HStack>
-            <Field name="renderTitle">
-              {({ field }: FieldProps) => (
-                <FormControl display="flex" alignItems="center">
-                  <FormLabel htmlFor="render-title" mb="0">
-                    Show Title?
-                  </FormLabel>
-                  <Switch
-                    {...field}
-                    id="render-title"
-                    onChange={e => {
-                      formikChangeHandler(e);
-                      HustlerInitConfig({ ...hustlerConfig, renderTitle: e.target.checked });
-                    }}
-                  />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="renderName">
-              {({ field }: FieldProps) => (
-                <FormControl display="flex" alignItems="center">
-                  <FormLabel htmlFor="render-name" mb="0">
-                    Show Name?
-                  </FormLabel>
-                  <Switch
-                    {...field}
-                    id="render-name"
-                    onChange={e => {
-                      formikChangeHandler(e);
-                      HustlerInitConfig({ ...hustlerConfig, renderName: e.target.checked });
-                    }}
-                  />
-                </FormControl>
-              )}
-            </Field>
+            <FormControl display="flex" alignItems="center">
+              <FormLabel htmlFor="render-title" mb="0">
+                Show Title?
+              </FormLabel>
+              <Switch
+                id="render-title"
+                checked={hustlerConfig.renderTitle}
+                onChange={e => {
+                  HustlerInitConfig({ ...hustlerConfig, renderTitle: e.target.checked });
+                }}
+              />
+            </FormControl>
+            <FormControl display="flex" alignItems="center">
+              <FormLabel htmlFor="render-name" mb="0">
+                Show Name?
+              </FormLabel>
+              <Switch
+                id="render-name"
+                checked={hustlerConfig.renderName}
+                onChange={e => {
+                  HustlerInitConfig({ ...hustlerConfig, renderName: e.target.checked });
+                }}
+              />
+            </FormControl>
           </HStack>
         </Stack>
       </PanelBody>
