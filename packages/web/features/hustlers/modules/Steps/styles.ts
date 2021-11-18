@@ -7,6 +7,7 @@ export const HustlerContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
+  padding-top: 50px;
 
   .chakra-aspect-ratio > img {
     width: 400px;

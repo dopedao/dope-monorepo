@@ -22,11 +22,50 @@ const Stepper = () => {
   const hustler = useHustler();
   const dispatchHustler = useDispatchHustler();
 
+  const handleDisable = (step: number) => {
+    switch (step) {
+      case 0:
+        if (hustler.isCustomizeDone) {
+          return false;
+        }
+      case 1:
+        if (hustler.isCustomizeDone) {
+          return false;
+        }
+      case 2:
+        if (hustler.isCustomizeDone && hustler.isApprovalDone) {
+          return false;
+        }
+      case 3:
+        if (hustler.isCustomizeDone && hustler.isApprovalDone) {
+          return false;
+        }
+      default:
+        return true;
+    }
+  };
+
   const goToStep = (step: number) => {
-    dispatchHustler({
-      type: 'GO_TO_STEP',
-      currentStep: step,
-    });
+    switch (step) {
+      case 0:
+        if (hustler.isCustomizeDone) {
+          return dispatchHustler({ type: 'GO_TO_CUSTOMIZE_STEP' });
+        }
+      case 1:
+        if (hustler.isCustomizeDone) {
+          return dispatchHustler({ type: 'GO_TO_APPROVE_STEP' });
+        }
+      case 2:
+        if (hustler.isCustomizeDone && hustler.isApprovalDone) {
+          return dispatchHustler({ type: 'GO_TO_APPROVE_STEP' });
+        }
+      case 3:
+        if (hustler.isCustomizeDone && hustler.isApprovalDone) {
+          return dispatchHustler({ type: 'GO_TO_APPROVE_STEP' });
+        }
+      default:
+        break;
+    }
   };
 
   return (
@@ -38,6 +77,7 @@ const Stepper = () => {
               type="button"
               onClick={() => goToStep(step)}
               isActive={hustler.currentStep === step}
+              disabled={handleDisable(step)}
             >
               {title}
             </Button>

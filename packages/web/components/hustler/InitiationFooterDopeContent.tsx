@@ -12,6 +12,7 @@ import { useWalletQuery, WalletQuery } from 'src/generated/graphql';
 import { HustlerInitConfig, isHustlerRandom, randomizeHustlerAttributes } from 'src/HustlerConfig';
 import { PickedBag } from 'src/DopeDatabase';
 import PanelFooter from 'components/PanelFooter';
+import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 
 const NoDopeMessage = () => {
   const caution = (
@@ -63,7 +64,7 @@ const SpinnerContainer = styled.div`
 
 const InitiationFooterDopeContent = () => {
   const { account } = useWeb3React();
-
+  const dispatchHustler = useDispatchHustler();
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -97,6 +98,12 @@ const InitiationFooterDopeContent = () => {
       }
     },
   });
+
+  const goToNextStep = () => {
+    dispatchHustler({
+      type: 'GO_TO_APPROVE_STEP',
+    });
+  };
 
   if (!account) return <NoDopeMessage />;
 
@@ -150,7 +157,9 @@ const InitiationFooterDopeContent = () => {
           <div>
             <Switch isChecked={hustlerConfig.mintOg} onChange={handleOgSwitchChange} /> Initiate OG
           </div>
-          <Button variant="primary">Continue Initiation</Button>
+          <Button variant="primary" onClick={goToNextStep}>
+            Continue Initiation
+          </Button>
         </PanelFooter>
       </div>
     );

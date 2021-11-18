@@ -20,9 +20,9 @@ const Steps = ({ hustlerConfig }: StepsProps) => {
       case 0:
         return <Initiate hustlerConfig={hustlerConfig} />;
       case 1:
-        return <Approve />;
+        return <Approve hustlerConfig={hustlerConfig} />;
       case 2:
-        return <Finalize />;
+        return <Finalize hustlerConfig={hustlerConfig} />;
       default:
         return <Initiate hustlerConfig={hustlerConfig} />;
     }
