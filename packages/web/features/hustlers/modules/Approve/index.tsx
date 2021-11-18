@@ -69,7 +69,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
             <PanelTitleBar>Approve $PAPER Spend</PanelTitleBar>
             <PanelBody>
               <p>
-                We need you to allow our Swap Meet to spend 12,500 $PAPER for Tde unbundling of your
+                We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of your
                 DOPE NFT #{hustlerConfig.dopeId}.
               </p>
               <Button>Approve $PAPER Spend</Button>
