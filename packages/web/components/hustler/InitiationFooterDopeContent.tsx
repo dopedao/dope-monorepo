@@ -1,6 +1,10 @@
-import { Button } from '@chakra-ui/button';
-import { Switch } from '@chakra-ui/switch';
-import { Spinner } from '@chakra-ui/spinner';
+import {
+  Button,
+  FormLabel,
+  Spinner,
+  Switch,
+} from '@chakra-ui/react';
+
 import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -155,7 +159,12 @@ const InitiationFooterDopeContent = () => {
         </SubPanelForm>
         <PanelFooter>
           <div>
-            <Switch isChecked={hustlerConfig.mintOg} onChange={handleOgSwitchChange} /> Initiate OG
+            <Switch 
+              id="initiate-og-switch"
+              isChecked={hustlerConfig.mintOg} 
+              onChange={handleOgSwitchChange} 
+            />
+            <label htmlFor="initiate-og-switch" css={css`margin-left:.5em;`}>Initiate OG</label>
           </div>
           <Button variant="primary" onClick={goToNextStep}>
             Continue Initiation

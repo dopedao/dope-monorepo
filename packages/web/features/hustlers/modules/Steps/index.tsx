@@ -13,12 +13,11 @@ export type StepsProps = {
 };
 
 const Steps = ({ hustlerConfig }: StepsProps) => {
+  console.log(hustlerConfig);
   const hustler = useHustler();
 
   const stepToRender = () => {
     switch (hustler.currentStep) {
-      case 0:
-        return <Initiate hustlerConfig={hustlerConfig} />;
       case 1:
         return <Approve hustlerConfig={hustlerConfig} />;
       case 2:
