@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import { AspectRatio } from '@chakra-ui/layout';
-import { BigNumberish, providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { hexColorToBase16 } from 'src/utils';
-import { HustlerSex, DEFAULT_BG_COLORS, ZOOM_WINDOWS } from 'src/HustlerConfig';
+import { HustlerSex, DEFAULT_BG_COLORS, ZOOM_WINDOWS, ZoomWindow } from 'src/HustlerConfig';
 import { NETWORK } from 'src/constants';
 import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
@@ -24,7 +24,7 @@ export interface HustlerRenderProps {
   renderTitle?: boolean;
   sex?: HustlerSex;
   textColor?: string;
-  zoomWindow: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+  zoomWindow: ZoomWindow;
 }
 
 const RenderFromItemIds = ({
