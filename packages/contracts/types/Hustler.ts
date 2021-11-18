@@ -12,15 +12,19 @@ import {
   BaseContract,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+} from "./common";
 
-interface HustlerInterface extends ethers.utils.Interface {
+export interface HustlerInterface extends ethers.utils.Interface {
   functions: {
     "addRles(uint8,bytes[])": FunctionFragment;
     "attributes(uint256)": FunctionFragment;
@@ -29,17 +33,16 @@ interface HustlerInterface extends ethers.utils.Interface {
     "bodyRle(uint8,uint256)": FunctionFragment;
     "carParts(uint256)": FunctionFragment;
     "contractURI()": FunctionFragment;
+    "enforcer()": FunctionFragment;
     "hustlerParts(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "metadata(uint256)": FunctionFragment;
-    "mint(bytes)": FunctionFragment;
-    "mintFromDope(uint256,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)": FunctionFragment;
-    "mintOGFromDope(uint256,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)": FunctionFragment;
+    "mintOGTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)": FunctionFragment;
+    "mintTo(address,bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
-    "release()": FunctionFragment;
     "render(string,string,uint8,bytes4,bytes4,uint8[4],bytes[])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
@@ -47,14 +50,12 @@ interface HustlerInterface extends ethers.utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setEnforcer(address)": FunctionFragment;
     "setMetadata(uint256,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2)": FunctionFragment;
-    "setRelease(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unequip(uint256,uint8[])": FunctionFragment;
     "uri(uint256)": FunctionFragment;
-    "withdraw()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -85,6 +86,7 @@ interface HustlerInterface extends ethers.utils.Interface {
     functionFragment: "contractURI",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "enforcer", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "hustlerParts",
     values: [BigNumberish]
@@ -97,11 +99,10 @@ interface HustlerInterface extends ethers.utils.Interface {
     functionFragment: "metadata",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "mint", values: [BytesLike]): string;
   encodeFunctionData(
-    functionFragment: "mintFromDope",
+    functionFragment: "mintOGTo",
     values: [
-      BigNumberish,
+      string,
       string,
       BytesLike,
       BytesLike,
@@ -113,18 +114,8 @@ interface HustlerInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "mintOGFromDope",
-    values: [
-      BigNumberish,
-      string,
-      BytesLike,
-      BytesLike,
-      BytesLike,
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      BytesLike,
-      BytesLike
-    ]
+    functionFragment: "mintTo",
+    values: [string, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -136,7 +127,6 @@ interface HustlerInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(functionFragment: "release", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "render",
     values: [
@@ -180,10 +170,6 @@ interface HustlerInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "setRelease",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -201,7 +187,6 @@ interface HustlerInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish[]]
   ): string;
   encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "addRles", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "attributes", data: BytesLike): Result;
@@ -216,6 +201,7 @@ interface HustlerInterface extends ethers.utils.Interface {
     functionFragment: "contractURI",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "enforcer", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "hustlerParts",
     data: BytesLike
@@ -225,15 +211,8 @@ interface HustlerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "metadata", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "mintFromDope",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintOGFromDope",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "mintOGTo", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mintTo", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "onERC1155BatchReceived",
@@ -244,7 +223,6 @@ interface HustlerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "release", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "render", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -270,7 +248,6 @@ interface HustlerInterface extends ethers.utils.Interface {
     functionFragment: "setMetadata",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setRelease", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -283,7 +260,6 @@ interface HustlerInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "unequip", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
     "AddRles(uint8,uint256)": EventFragment;
@@ -305,25 +281,34 @@ interface HustlerInterface extends ethers.utils.Interface {
 }
 
 export type AddRlesEvent = TypedEvent<
-  [number, BigNumber] & { part: number; len: BigNumber }
+  [number, BigNumber],
+  { part: number; len: BigNumber }
 >;
+
+export type AddRlesEventFilter = TypedEventFilter<AddRlesEvent>;
 
 export type ApprovalForAllEvent = TypedEvent<
-  [string, string, boolean] & {
-    account: string;
-    operator: string;
-    approved: boolean;
-  }
+  [string, string, boolean],
+  { account: string; operator: string; approved: boolean }
 >;
 
-export type MetadataUpdateEvent = TypedEvent<[BigNumber] & { id: BigNumber }>;
+export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+
+export type MetadataUpdateEvent = TypedEvent<[BigNumber], { id: BigNumber }>;
+
+export type MetadataUpdateEventFilter = TypedEventFilter<MetadataUpdateEvent>;
 
 export type OwnershipTransferredEvent = TypedEvent<
-  [string, string] & { previousOwner: string; newOwner: string }
+  [string, string],
+  { previousOwner: string; newOwner: string }
 >;
 
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
+
 export type TransferBatchEvent = TypedEvent<
-  [string, string, string, BigNumber[], BigNumber[]] & {
+  [string, string, string, BigNumber[], BigNumber[]],
+  {
     operator: string;
     from: string;
     to: string;
@@ -332,8 +317,11 @@ export type TransferBatchEvent = TypedEvent<
   }
 >;
 
+export type TransferBatchEventFilter = TypedEventFilter<TransferBatchEvent>;
+
 export type TransferSingleEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber] & {
+  [string, string, string, BigNumber, BigNumber],
+  {
     operator: string;
     from: string;
     to: string;
@@ -342,52 +330,40 @@ export type TransferSingleEvent = TypedEvent<
   }
 >;
 
+export type TransferSingleEventFilter = TypedEventFilter<TransferSingleEvent>;
+
 export type URIEvent = TypedEvent<
-  [string, BigNumber] & { value: string; id: BigNumber }
+  [string, BigNumber],
+  { value: string; id: BigNumber }
 >;
 
-export class Hustler extends BaseContract {
+export type URIEventFilter = TypedEventFilter<URIEvent>;
+
+export interface Hustler extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
-  off<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  on<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  once<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): this;
+  interface: HustlerInterface;
 
-  listeners(eventName?: string): Array<Listener>;
-  off(eventName: string, listener: Listener): this;
-  on(eventName: string, listener: Listener): this;
-  once(eventName: string, listener: Listener): this;
-  removeListener(eventName: string, listener: Listener): this;
-  removeAllListeners(eventName?: string): this;
-
-  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
-    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
+  queryFilter<TEvent extends TypedEvent>(
+    event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
+  ): Promise<Array<TEvent>>;
 
-  interface: HustlerInterface;
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
+  listeners(eventName?: string): Array<Listener>;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
+  removeAllListeners(eventName?: string): this;
+  off: OnEvent<this>;
+  on: OnEvent<this>;
+  once: OnEvent<this>;
+  removeListener: OnEvent<this>;
 
   functions: {
     addRles(
@@ -426,6 +402,8 @@ export class Hustler extends BaseContract {
 
     contractURI(overrides?: CallOverrides): Promise<[string]>;
 
+    enforcer(overrides?: CallOverrides): Promise<[string]>;
+
     hustlerParts(
       hustlerId: BigNumberish,
       overrides?: CallOverrides
@@ -451,13 +429,8 @@ export class Hustler extends BaseContract {
       }
     >;
 
-    mint(
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    mintFromDope(
-      tokenId: BigNumberish,
+    mintOGTo(
+      to: string,
       name: string,
       color: BytesLike,
       background: BytesLike,
@@ -469,8 +442,14 @@ export class Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    mintOGFromDope(
-      tokenId: BigNumberish,
+    "mintTo(address,bytes)"(
+      to: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+      to: string,
       name: string,
       color: BytesLike,
       background: BytesLike,
@@ -479,7 +458,7 @@ export class Hustler extends BaseContract {
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
       data: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
@@ -503,8 +482,6 @@ export class Hustler extends BaseContract {
     ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
-
-    release(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     render(
       title: string,
@@ -562,11 +539,6 @@ export class Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setRelease(
-      timestamp: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -591,10 +563,6 @@ export class Hustler extends BaseContract {
     ): Promise<ContractTransaction>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-
-    withdraw(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
   addRles(
@@ -633,6 +601,8 @@ export class Hustler extends BaseContract {
 
   contractURI(overrides?: CallOverrides): Promise<string>;
 
+  enforcer(overrides?: CallOverrides): Promise<string>;
+
   hustlerParts(
     hustlerId: BigNumberish,
     overrides?: CallOverrides
@@ -658,13 +628,8 @@ export class Hustler extends BaseContract {
     }
   >;
 
-  mint(
-    data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  mintFromDope(
-    tokenId: BigNumberish,
+  mintOGTo(
+    to: string,
     name: string,
     color: BytesLike,
     background: BytesLike,
@@ -676,8 +641,14 @@ export class Hustler extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  mintOGFromDope(
-    tokenId: BigNumberish,
+  "mintTo(address,bytes)"(
+    to: string,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+    to: string,
     name: string,
     color: BytesLike,
     background: BytesLike,
@@ -686,7 +657,7 @@ export class Hustler extends BaseContract {
     body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
     mask: BytesLike,
     data: BytesLike,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
@@ -710,8 +681,6 @@ export class Hustler extends BaseContract {
   ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
-
-  release(overrides?: CallOverrides): Promise<BigNumber>;
 
   render(
     title: string,
@@ -769,11 +738,6 @@ export class Hustler extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setRelease(
-    timestamp: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -795,10 +759,6 @@ export class Hustler extends BaseContract {
   ): Promise<ContractTransaction>;
 
   uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  withdraw(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   callStatic: {
     addRles(
@@ -837,6 +797,8 @@ export class Hustler extends BaseContract {
 
     contractURI(overrides?: CallOverrides): Promise<string>;
 
+    enforcer(overrides?: CallOverrides): Promise<string>;
+
     hustlerParts(
       hustlerId: BigNumberish,
       overrides?: CallOverrides
@@ -862,10 +824,8 @@ export class Hustler extends BaseContract {
       }
     >;
 
-    mint(data: BytesLike, overrides?: CallOverrides): Promise<void>;
-
-    mintFromDope(
-      tokenId: BigNumberish,
+    mintOGTo(
+      to: string,
       name: string,
       color: BytesLike,
       background: BytesLike,
@@ -875,10 +835,16 @@ export class Hustler extends BaseContract {
       mask: BytesLike,
       data: BytesLike,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "mintTo(address,bytes)"(
+      to: string,
+      data: BytesLike,
+      overrides?: CallOverrides
     ): Promise<void>;
 
-    mintOGFromDope(
-      tokenId: BigNumberish,
+    "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+      to: string,
       name: string,
       color: BytesLike,
       background: BytesLike,
@@ -888,7 +854,7 @@ export class Hustler extends BaseContract {
       mask: BytesLike,
       data: BytesLike,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -911,8 +877,6 @@ export class Hustler extends BaseContract {
     ): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
-
-    release(overrides?: CallOverrides): Promise<BigNumber>;
 
     render(
       title: string,
@@ -965,11 +929,6 @@ export class Hustler extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setRelease(
-      timestamp: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -994,60 +953,34 @@ export class Hustler extends BaseContract {
     ): Promise<void>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    withdraw(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
-    "AddRles(uint8,uint256)"(
-      part?: null,
-      len?: null
-    ): TypedEventFilter<[number, BigNumber], { part: number; len: BigNumber }>;
-
-    AddRles(
-      part?: null,
-      len?: null
-    ): TypedEventFilter<[number, BigNumber], { part: number; len: BigNumber }>;
+    "AddRles(uint8,uint256)"(part?: null, len?: null): AddRlesEventFilter;
+    AddRles(part?: null, len?: null): AddRlesEventFilter;
 
     "ApprovalForAll(address,address,bool)"(
       account?: string | null,
       operator?: string | null,
       approved?: null
-    ): TypedEventFilter<
-      [string, string, boolean],
-      { account: string; operator: string; approved: boolean }
-    >;
-
+    ): ApprovalForAllEventFilter;
     ApprovalForAll(
       account?: string | null,
       operator?: string | null,
       approved?: null
-    ): TypedEventFilter<
-      [string, string, boolean],
-      { account: string; operator: string; approved: boolean }
-    >;
+    ): ApprovalForAllEventFilter;
 
-    "MetadataUpdate(uint256)"(
-      id?: null
-    ): TypedEventFilter<[BigNumber], { id: BigNumber }>;
-
-    MetadataUpdate(id?: null): TypedEventFilter<[BigNumber], { id: BigNumber }>;
+    "MetadataUpdate(uint256)"(id?: null): MetadataUpdateEventFilter;
+    MetadataUpdate(id?: null): MetadataUpdateEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null
-    ): TypedEventFilter<
-      [string, string],
-      { previousOwner: string; newOwner: string }
-    >;
-
+    ): OwnershipTransferredEventFilter;
     OwnershipTransferred(
       previousOwner?: string | null,
       newOwner?: string | null
-    ): TypedEventFilter<
-      [string, string],
-      { previousOwner: string; newOwner: string }
-    >;
+    ): OwnershipTransferredEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
       operator?: string | null,
@@ -1055,33 +988,14 @@ export class Hustler extends BaseContract {
       to?: string | null,
       ids?: null,
       values?: null
-    ): TypedEventFilter<
-      [string, string, string, BigNumber[], BigNumber[]],
-      {
-        operator: string;
-        from: string;
-        to: string;
-        ids: BigNumber[];
-        values: BigNumber[];
-      }
-    >;
-
+    ): TransferBatchEventFilter;
     TransferBatch(
       operator?: string | null,
       from?: string | null,
       to?: string | null,
       ids?: null,
       values?: null
-    ): TypedEventFilter<
-      [string, string, string, BigNumber[], BigNumber[]],
-      {
-        operator: string;
-        from: string;
-        to: string;
-        ids: BigNumber[];
-        values: BigNumber[];
-      }
-    >;
+    ): TransferBatchEventFilter;
 
     "TransferSingle(address,address,address,uint256,uint256)"(
       operator?: string | null,
@@ -1089,43 +1003,20 @@ export class Hustler extends BaseContract {
       to?: string | null,
       id?: null,
       value?: null
-    ): TypedEventFilter<
-      [string, string, string, BigNumber, BigNumber],
-      {
-        operator: string;
-        from: string;
-        to: string;
-        id: BigNumber;
-        value: BigNumber;
-      }
-    >;
-
+    ): TransferSingleEventFilter;
     TransferSingle(
       operator?: string | null,
       from?: string | null,
       to?: string | null,
       id?: null,
       value?: null
-    ): TypedEventFilter<
-      [string, string, string, BigNumber, BigNumber],
-      {
-        operator: string;
-        from: string;
-        to: string;
-        id: BigNumber;
-        value: BigNumber;
-      }
-    >;
+    ): TransferSingleEventFilter;
 
     "URI(string,uint256)"(
       value?: null,
       id?: BigNumberish | null
-    ): TypedEventFilter<[string, BigNumber], { value: string; id: BigNumber }>;
-
-    URI(
-      value?: null,
-      id?: BigNumberish | null
-    ): TypedEventFilter<[string, BigNumber], { value: string; id: BigNumber }>;
+    ): URIEventFilter;
+    URI(value?: null, id?: BigNumberish | null): URIEventFilter;
   };
 
   estimateGas: {
@@ -1165,6 +1056,8 @@ export class Hustler extends BaseContract {
 
     contractURI(overrides?: CallOverrides): Promise<BigNumber>;
 
+    enforcer(overrides?: CallOverrides): Promise<BigNumber>;
+
     hustlerParts(
       hustlerId: BigNumberish,
       overrides?: CallOverrides
@@ -1178,13 +1071,8 @@ export class Hustler extends BaseContract {
 
     metadata(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    mint(
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    mintFromDope(
-      tokenId: BigNumberish,
+    mintOGTo(
+      to: string,
       name: string,
       color: BytesLike,
       background: BytesLike,
@@ -1196,8 +1084,14 @@ export class Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    mintOGFromDope(
-      tokenId: BigNumberish,
+    "mintTo(address,bytes)"(
+      to: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+      to: string,
       name: string,
       color: BytesLike,
       background: BytesLike,
@@ -1206,7 +1100,7 @@ export class Hustler extends BaseContract {
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
       data: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1230,8 +1124,6 @@ export class Hustler extends BaseContract {
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    release(overrides?: CallOverrides): Promise<BigNumber>;
 
     render(
       title: string,
@@ -1289,11 +1181,6 @@ export class Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setRelease(
-      timestamp: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1318,10 +1205,6 @@ export class Hustler extends BaseContract {
     ): Promise<BigNumber>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdraw(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1361,6 +1244,8 @@ export class Hustler extends BaseContract {
 
     contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    enforcer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     hustlerParts(
       hustlerId: BigNumberish,
       overrides?: CallOverrides
@@ -1377,13 +1262,8 @@ export class Hustler extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    mint(
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintFromDope(
-      tokenId: BigNumberish,
+    mintOGTo(
+      to: string,
       name: string,
       color: BytesLike,
       background: BytesLike,
@@ -1395,8 +1275,14 @@ export class Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    mintOGFromDope(
-      tokenId: BigNumberish,
+    "mintTo(address,bytes)"(
+      to: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+      to: string,
       name: string,
       color: BytesLike,
       background: BytesLike,
@@ -1405,7 +1291,7 @@ export class Hustler extends BaseContract {
       body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       mask: BytesLike,
       data: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1429,8 +1315,6 @@ export class Hustler extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    release(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     render(
       title: string,
@@ -1488,11 +1372,6 @@ export class Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setRelease(
-      timestamp: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1519,10 +1398,6 @@ export class Hustler extends BaseContract {
     uri(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

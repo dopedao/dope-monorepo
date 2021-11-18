@@ -8,17 +8,6 @@ import type { Components, ComponentsInterface } from "../Components";
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_owner",
-        type: "address",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
     anonymous: false,
     inputs: [
       {

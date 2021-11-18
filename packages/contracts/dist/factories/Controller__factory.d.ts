@@ -1,7 +1,7 @@
 import { Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type { Character, CharacterInterface } from "../Character";
-export declare class Character__factory {
+import type { Controller, ControllerInterface } from "../Controller";
+export declare class Controller__factory {
     static readonly abi: ({
         inputs: {
             internalType: string;
@@ -10,20 +10,7 @@ export declare class Character__factory {
         }[];
         stateMutability: string;
         type: string;
-        anonymous?: undefined;
         name?: undefined;
-        outputs?: undefined;
-    } | {
-        anonymous: boolean;
-        inputs: {
-            indexed: boolean;
-            internalType: string;
-            name: string;
-            type: string;
-        }[];
-        name: string;
-        type: string;
-        stateMutability?: undefined;
         outputs?: undefined;
     } | {
         inputs: {
@@ -39,8 +26,7 @@ export declare class Character__factory {
         }[];
         stateMutability: string;
         type: string;
-        anonymous?: undefined;
     })[];
-    static createInterface(): CharacterInterface;
-    static connect(address: string, signerOrProvider: Signer | Provider): Character;
+    static createInterface(): ControllerInterface;
+    static connect(address: string, signerOrProvider: Signer | Provider): Controller;
 }

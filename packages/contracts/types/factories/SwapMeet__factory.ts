@@ -14,16 +14,6 @@ const _abi = [
         name: "_components",
         type: "address",
       },
-      {
-        internalType: "address",
-        name: "_dope",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_paper",
-        type: "address",
-      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -51,19 +41,6 @@ const _abi = [
       },
     ],
     name: "ApprovalForAll",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint256[]",
-        name: "ids",
-        type: "uint256[]",
-      },
-    ],
-    name: "Opened",
     type: "event",
   },
   {
@@ -247,29 +224,6 @@ const _abi = [
         type: "uint256[]",
       },
       {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
-      },
-    ],
-    name: "batchOpen",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256[]",
-        name: "ids",
-        type: "uint256[]",
-      },
-      {
         internalType: "bytes[]",
         name: "rles",
         type: "bytes[]",
@@ -294,23 +248,10 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "cost",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
-        name: "tokenId",
+        name: "id",
         type: "uint256",
       },
     ],
@@ -339,25 +280,6 @@ const _abi = [
       },
     ],
     name: "isApprovedForAll",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "id",
-        type: "uint256",
-      },
-    ],
-    name: "isOpened",
     outputs: [
       {
         internalType: "bool",
@@ -482,7 +404,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "tokenId",
+        name: "id",
         type: "uint256",
       },
       {
@@ -537,7 +459,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "tokenId",
+        name: "id",
         type: "uint256",
       },
     ],

@@ -12,6 +12,7 @@
 		"format": "prettier --write 'packages/web/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
 	},
 	"devDependencies": {
+		"@typechain/ethers-v5": "^8.0.2",
 		"@types/mocha": "^8.2.2",
 		"@types/node": "^14.14.34",
 		"lerna": "^3.22.1",

@@ -5,11 +5,15 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 
 const injected = new InjectedConnector({
-  supportedChainIds: [1, 4],
+  supportedChainIds: [1, 4, 42, 69],
 });
 
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 1: 'https://rinkeby.infura.io/v3/e5aa7a5479d34ead8cfbf074cf05fd67' },
+  rpc: {
+    1: 'https://eth-mainnet.alchemyapi.io/v2/4YF7OoE2seG3X12m9bfIJdiRv2zwUaAx',
+    42: 'https://eth-kovan.alchemyapi.io/v2/UloBYQ33fXVpI0WFONXO-CgTl4uy93T6',
+    69: 'https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg',
+  },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
 });

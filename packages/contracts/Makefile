@@ -43,7 +43,7 @@ deploy-rinkeby: check-api-key deploy-l1
 
 # kovan
 deploy-kovan: export ETH_RPC_URL = $(call network,kovan)
-deploy-kovan: export CONTROLLER=0xe7e8f3b0502Fc1357B5504C8262541Da1472f6De
+deploy-kovan: export CONTROLLER=0x7E99DE44232C88df11D14af078be64b38236FA3A
 deploy-kovan: export LOOT=0xd2761Ee62d8772343070A5dE02C436F788EdF60a
 deploy-kovan: export PAPER=0x781B575CA559263eb232B854195D6dC0AB720105
 deploy-kovan: check-api-key deploy-l1

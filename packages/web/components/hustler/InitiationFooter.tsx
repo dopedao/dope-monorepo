@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import { zeroPad } from 'src/utils';
 import { HustlerInitConfig, getRandomHustler } from 'src/HustlerConfig';
 import { HUSTLER_MINT_TIME } from 'src/constants';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import PanelFooter from 'components/PanelFooter';
 import styled from '@emotion/styled';
 // https://github.com/ndresx/react-countdown
@@ -56,7 +56,11 @@ const countdownRenderer = ({ days, hours, minutes, seconds, completed }: Countdo
 const InitiationFooter = () => {
   const currentTime = new Date();
   const { chainId } = useWeb3React();
-  const onTestNetOrAfterHustlerLaunch = chainId == 4 || currentTime >= HUSTLER_MINT_TIME;
+  const onTestNetOrAfterHustlerLaunch = chainId == 42 || currentTime >= HUSTLER_MINT_TIME;
+
+  useMemo(() => {
+
+  }, [])
 
   // Render random hustler as countdown approached
   let randomHustlerRenderInterval: any;
