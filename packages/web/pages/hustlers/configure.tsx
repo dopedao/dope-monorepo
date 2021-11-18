@@ -1,18 +1,19 @@
-
+import { Button, HStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { HustlerInitConfig } from 'src/HustlerConfig';
+import { HustlerInitConfig, randomizeHustlerAttributes } from 'src/HustlerConfig';
 import { useReactiveVar } from '@apollo/client';
 import { useWalletQuery } from 'src/generated/graphql';
 import { useWeb3React } from '@web3-react/core';
 import AppWindow from 'components/AppWindow';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import Head from 'components/Head';
+import Link from 'next/link';
 import PanelContainer from 'components/PanelContainer';
+import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
-
 
 const Configure = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
@@ -30,6 +31,17 @@ const Configure = () => {
       requiresWalletConnection={true}
       balance={data?.wallet?.paper}
       loadingBalance={loading}
+      padBody={false}
+      navbar={ account && 
+        <PanelFooter css={css`width:100%;`}>
+          <HStack mt={0} justify="space-between">
+            <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
+            <Link href="/hustlers/initiate" passHref>
+              <Button variant="primary">Finish Configuration</Button>
+            </Link>
+          </HStack>
+        </PanelFooter>
+      }
     >
       <Head title="Create Your Hustler" />
       <StackedResponsiveContainer>

@@ -1,8 +1,7 @@
-import { Button, HStack, Stack } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import { useReactiveVar } from '@apollo/client';
 import {
   HustlerInitConfig,
-  randomizeHustlerAttributes,
   DEFAULT_BG_COLORS,
   DEFAULT_TEXT_COLORS,
   SKIN_TONE_COLORS,
@@ -67,12 +66,6 @@ const ConfigurationControls = () => {
         <SexSelector />
         <HairSelector />
       </Stack>
-      <HStack mt={4} justify="end">
-        <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
-        <Button variant="primary">
-          Finish Configuration
-        </Button>
-      </HStack>
     </>
   );
 };
