@@ -20,6 +20,7 @@ const RenderFromLootId = ({
   renderTitle,
   sex,
   textColor,
+  zoomWindow,
 }: RenderFromLootIdProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
@@ -58,6 +59,7 @@ const RenderFromLootId = ({
         renderTitle={renderTitle}
         sex={sex}
         textColor={textColor}
+        zoomWindow={zoomWindow}
       />
     );
   } else {

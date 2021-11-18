@@ -3,7 +3,7 @@ import { makeVar } from '@apollo/client';
 import { getRandomNumber } from './utils';
 import { NUM_DOPE_TOKENS } from './constants';
 import { HUSTLER_NAMES } from './hustler-names';
-
+import { BigNumberish } from 'ethers';
 const HUSTLER_SEXES = ['male', 'female'];
 export type HustlerSex = 'male' | 'female';
 export const MAX_BODIES = 5;
@@ -22,6 +22,12 @@ export const SKIN_TONE_COLORS = [
   '#77F8F8',
 ];
 
+export type ZoomWindow = [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+export const ZOOM_WINDOWS = [
+  [0, 0, 0, 0] as ZoomWindow, // default
+  [110, 20, 100, 100] as ZoomWindow, // mugshot
+];
+
 export type HustlerCustomization = {
   bgColor: string;
   body: number;
@@ -34,6 +40,7 @@ export type HustlerCustomization = {
   renderTitle?: boolean;
   sex: HustlerSex;
   textColor: string;
+  zoomWindow: ZoomWindow;
 };
 
 /**
@@ -58,6 +65,7 @@ export const getRandomHustler = (): HustlerCustomization => {
     renderTitle: false,
     sex: HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex,
     textColor: '#000000',
+    zoomWindow: ZOOM_WINDOWS[0],
   };
 };
 

@@ -4,7 +4,7 @@ import { BigNumber, providers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { hexColorToBase16 } from 'src/utils';
-import { HustlerSex, DEFAULT_BG_COLORS } from 'src/HustlerConfig';
+import { HustlerSex, DEFAULT_BG_COLORS, ZOOM_WINDOWS, ZoomWindow } from 'src/HustlerConfig';
 import { NETWORK } from 'src/constants';
 import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
@@ -24,6 +24,7 @@ export interface HustlerRenderProps {
   renderTitle?: boolean;
   sex?: HustlerSex;
   textColor?: string;
+  zoomWindow: ZoomWindow;
 }
 
 const RenderFromItemIds = ({
@@ -37,6 +38,7 @@ const RenderFromItemIds = ({
   renderTitle = false,
   sex,
   textColor = '#000000',
+  zoomWindow,
 }: HustlerRenderProps) => {
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
@@ -114,7 +116,7 @@ const RenderFromItemIds = ({
           64,
           hexColorToBase16(bgColor),
           hexColorToBase16(textColor),
-          [0, 0, 0, 0],
+          zoomWindow,
           [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles],
         )
         .then(meta => {
@@ -125,7 +127,7 @@ const RenderFromItemIds = ({
           setHasRenderedFromChain(true);
         });
     }
-  }, [swapmeet, hustlers, itemRles, bodyRles, name, textColor, bgColor, renderName, renderTitle]);
+  }, [swapmeet, hustlers, itemRles, bodyRles, name, textColor, bgColor, renderName, renderTitle, zoomWindow]);
 
   if (!hasRenderedFromChain) return <LoadingBlockSquareCentered />;
 

@@ -52,6 +52,7 @@ const Initiate = () => {
             renderTitle={hustlerConfig.renderTitle}
             sex={hustlerConfig.sex}
             textColor={hustlerConfig.textColor}
+            zoomWindow={hustlerConfig.zoomWindow}
           />
           <InitiationFooter />
         </PanelContainer>
