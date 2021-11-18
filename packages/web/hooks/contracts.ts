@@ -1,5 +1,4 @@
-import { useMemo } from 'react';
-import { useWeb3React } from '@web3-react/core';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Paper__factory,
   Initiator__factory,
@@ -44,10 +43,13 @@ export const useHustler = () => {
   );
 };
 
-export const useReleaseDate = () => {
+export const useReleaseDate = (): number | undefined => {
+  const [releaseDate, setReleaseDate] = useState<number>();
   const initator = useInitiator();
-  return useMemo(async () => {
-    const release = await initator?.release();
-    return release;
+
+  useEffect(() => {
+    initator.release().then(date => setReleaseDate(date.toNumber()));
   }, [initator]);
+
+  return releaseDate;
 };

@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import { zeroPad } from 'src/utils';
 import { HustlerInitConfig, getRandomHustler } from 'src/HustlerConfig';
 import { HUSTLER_MINT_TIME } from 'src/constants';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import PanelFooter from 'components/PanelFooter';
 import styled from '@emotion/styled';
 // https://github.com/ndresx/react-countdown
@@ -55,19 +55,19 @@ const countdownRenderer = ({ days, hours, minutes, seconds, completed }: Countdo
 };
 
 const InitiationFooter = () => {
-  const currentTime = new Date();
-  const { chainId } = useWeb3React();
-  const onTestNetOrAfterHustlerLaunch = chainId == 42 || currentTime >= HUSTLER_MINT_TIME;
   const releaseDate = useReleaseDate();
+  const [isLaunched, setIsLaunched] = useState(false);
 
-  useMemo(() => {
-
-  }, [])
+  useEffect(() => {
+    if (releaseDate) {
+      setIsLaunched(new Date() >= new Date(releaseDate * 1000));
+    }
+  }, [releaseDate]);
 
   // Render random hustler as countdown approached
   let randomHustlerRenderInterval: any;
   useEffect(() => {
-    if (!onTestNetOrAfterHustlerLaunch) {
+    if (!isLaunched) {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       randomHustlerRenderInterval = setInterval(() => {
         HustlerInitConfig(getRandomHustler());
@@ -76,7 +76,7 @@ const InitiationFooter = () => {
     return () => clearInterval(randomHustlerRenderInterval);
   });
 
-  if (onTestNetOrAfterHustlerLaunch) {
+  if (isLaunched) {
     clearInterval(randomHustlerRenderInterval);
     return <InitiationFooterDopeContent />;
   } else {

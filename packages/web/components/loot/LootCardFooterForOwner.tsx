@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
@@ -7,10 +7,7 @@ import { Bag } from 'src/generated/graphql';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { BigNumber } from 'ethers';
-import { NETWORK } from 'src/constants';
 import { HustlerInitConfig } from 'src/HustlerConfig';
-import { Paper__factory, Initiator__factory } from '@dopewars/contracts';
-import { useRPCProvider } from 'hooks/web3';
 import { useInitiator, usePaper } from 'hooks/contracts';
 
 interface Props {
@@ -19,9 +16,7 @@ interface Props {
 }
 
 const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
-  const { chainId, library, account } = useWeb3React();
-
-  const provider = useRPCProvider(10);
+  const { chainId, account } = useWeb3React();
 
   const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
 
@@ -31,7 +26,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   const initiator = useInitiator();
 
   useEffect(() => {
-    if (account && paper) {
+    if (account) {
       paper
         .balanceOf(account)
         .then(balance => setHasEnoughPaper(balance.gt('12500000000000000000000')));
@@ -39,9 +34,9 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   }, [account, paper]);
 
   useEffect(() => {
-    if (account && paper) {
+    if (account) {
       paper
-        .allowance(account, NETWORK[chainId as 1 | 42].contracts.initiator)
+        .allowance(account, initiator.address)
         .then((allowance: BigNumber) =>
           setIsPaperApproved(allowance.gte('12500000000000000000000')),
         );
