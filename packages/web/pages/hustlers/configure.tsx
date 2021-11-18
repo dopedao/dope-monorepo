@@ -15,6 +15,8 @@ import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
 
+const title="Hustler Configuration"
+
 const Configure = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const { account } = useWeb3React();
@@ -32,9 +34,10 @@ const Configure = () => {
       balance={data?.wallet?.paper}
       loadingBalance={loading}
       padBody={false}
+      title={title}
       footer={ account && 
         <PanelFooter css={css`width:100%;border-top-width:1px;`}>
-          <HStack mt={0} justify="space-between">
+          <HStack mt={0} justify="end">
             <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
             <Link href="/hustlers/initiate" passHref>
               <Button variant="primary">Finish Configuration</Button>
@@ -43,7 +46,7 @@ const Configure = () => {
         </PanelFooter>
       }
     >
-      <Head title="Create Your Hustler" />
+      <Head title={title} />
       <StackedResponsiveContainer>
         <PanelContainer
           css={css`
