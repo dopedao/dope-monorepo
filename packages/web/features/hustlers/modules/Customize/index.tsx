@@ -14,8 +14,6 @@ const Customize = ({ hustlerConfig }: StepsProps) => (
       <PanelContainer
         css={css`
           min-height: 400px;
-          // This bg color will have to change once we can configure it
-          // It's the default right now for testnet renders.
           background-color: ${hustlerConfig.bgColor};
         `}
       >
