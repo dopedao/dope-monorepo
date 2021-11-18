@@ -23,9 +23,10 @@ export const SKIN_TONE_COLORS = [
   '#77F8F8',
 ];
 
+export type ZoomWindow = [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
 export const ZOOM_WINDOWS = [
-  [0, 0, 0, 0], // default
-  [110, 40, 100, 100], // mugshot
+  [0, 0, 0, 0] as ZoomWindow, // default
+  [110, 20, 100, 100] as ZoomWindow, // mugshot
 ];
 
 export type HustlerCustomization = {
@@ -40,7 +41,7 @@ export type HustlerCustomization = {
   renderTitle?: boolean;
   sex: HustlerSex;
   textColor: string;
-  zoomWindow: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+  zoomWindow: ZoomWindow;
 };
 
 /**

@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { HustlerInitConfig, ZOOM_WINDOWS } from 'src/HustlerConfig';
+import { HustlerInitConfig, ZoomWindow, ZOOM_WINDOWS } from 'src/HustlerConfig';
 import { useReactiveVar } from '@apollo/client';
 import { Button } from '@chakra-ui/button';
 import { Image } from '@chakra-ui/image';
 import styled from '@emotion/styled';
-import { BigNumberish } from '@ethersproject/bignumber';
 
 const ZoomContainer = styled.div`
   display: flex;
@@ -14,7 +13,7 @@ const ZoomContainer = styled.div`
 `;
  
 const indexFromZoomValue = (
-  zoomValue: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  zoomValue: ZoomWindow
 ) => {
   let index = ZOOM_WINDOWS.findIndex(window => window == zoomValue);
   if (index == -1) index = 0;
