@@ -4,11 +4,18 @@ export const NETWORK = {
     contracts: {
       dope: '0x8707276df042e89669d69a177d3da7dc78bd8723',
       paper: '0x7ae1d57b58fa6411f32948314badd83583ee0e8c',
-      swapmeet: '0xd1A506727b8f4221B55C22b2B62B7BE6635E0569',
-      hustlers: '0xED3259c562F7e7A0635db575FD524Dc9035c6ab3',
+      initiator: '0xd48055cbd433d93F1Aa000dfCd6EC36F39C0FDB6'
     },
     rpc: 'https://eth-mainnet.alchemyapi.io/v2/4YF7OoE2seG3X12m9bfIJdiRv2zwUaAx',
     subgraph: 'https://api.studio.thegraph.com/query/7708/dope-wars/v0.0.9',
+  },
+  10: {
+    contracts: {
+      controller: '0xd48055cbd433d93F1Aa000dfCd6EC36F39C0FDB6',
+      swapmeet: '0xB3cCb05742bDbd51Daa24f036FC5489f5ca0f38c',
+      hustlers: '0xE9DACD8118917e3A0522f45c191C6abe88d271B0',
+    },
+    rpc: 'https://opt-mainnet.g.alchemy.com/v2/k8J6YaoTtJVIs4ZxTo26zIPfBiCveX2m',
   },
   4: {
     contracts: {

@@ -31,9 +31,15 @@ deploy-l2 :; @./scripts/deploy-l2.sh
 # mainnet
 deploy-mainnet: export ETH_RPC_URL = https://ancient-morning-wave.quiknode.pro/0d888ce1d2caa53e7004a067641c905934ef0efa/
 # $(call network,mainnet)
+deploy-mainnet: export CONTROLLER=0xd48055cbd433d93F1Aa000dfCd6EC36F39C0FDB6
 deploy-mainnet: export LOOT=0x8707276df042e89669d69a177d3da7dc78bd8723
 deploy-mainnet: export PAPER=0x7aE1D57b58fA6411F32948314BadD83583eE0e8C
 deploy-mainnet: check-api-key deploy-l1
+
+# optimism
+# deploy-optimism: export DAPP_LIBRARIES=" src/MetadataBuilder.sol:MetadataBuilder:0xd2761Ee62d8772343070A5dE02C436F788EdF60a"
+deploy-optimism: export ETH_RPC_URL = https://opt-mainnet.g.alchemy.com/v2/k8J6YaoTtJVIs4ZxTo26zIPfBiCveX2m
+deploy-optimism: check-api-key deploy-l2
 
 # rinkeby
 deploy-rinkeby: export ETH_RPC_URL = $(call network,rinkeby)

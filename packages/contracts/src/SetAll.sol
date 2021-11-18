@@ -17,11 +17,11 @@ interface IPaletteGetter {
 }
 
 contract SetAll is Ownable {
-    IHustler h = IHustler(0x577d9c7FF9B506d7305194698b4103a3fE3532f0);
-    ISwapMeet sm = ISwapMeet(0x781A6002A4221c0E52fC283D285b703890024C97);
+    IHustler h = IHustler(0xE9DACD8118917e3A0522f45c191C6abe88d271B0);
+    ISwapMeet sm = ISwapMeet(0xB3cCb05742bDbd51Daa24f036FC5489f5ca0f38c);
 
     function setPalletes() external onlyOwner {
-        (bytes4[] memory hp, bytes4[] memory sp) = IPaletteGetter(0x8855262C25E52A718b705a4F12C7D07d81De45F4)
+        (bytes4[] memory hp, bytes4[] memory sp) = IPaletteGetter(0xaa37b6ea5BA775f2736C3726B56d98FF2F6445e6)
             .getPalletes();
 
         sm.setPalette(0, hp);
@@ -29,80 +29,80 @@ contract SetAll is Ownable {
     }
 
     function setRles1() external onlyOwner {
-        (uint256[] memory ids, bytes[] memory rles) = IRlesGetter(0xFC76625c44Ed19dE5D30b80d80F0804a7f27CF04).getRles();
+        (uint256[] memory ids, bytes[] memory rles) = IRlesGetter(0x57f32f9c0E2Eb094759Ad76a4101714bae97c379).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x1dB3760593Fe0F4343770b05FD265066A5200F42).getRles();
+        (ids, rles) = IRlesGetter(0x96D8ED546E5374ED69A03D17d72A799A7A9b29e4).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x6459C3D043b169219Ef0a3459FF38497f0761274).getRles();
+        (ids, rles) = IRlesGetter(0xC8011c0158BeA25e1C40Ff84189E494717eF8558).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x94403d345577936324b5631423bdC2e022f6f2a4).getRles();
+        (ids, rles) = IRlesGetter(0x836eEbbA45DCabCFE5108b006A0cEC72A14dB61C).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x9a9c457e76a66eDd992beD7C8F8d768fFd4f062f).getRles();
+        (ids, rles) = IRlesGetter(0xdddF32Ec4f8e1acC3dcd3FBce7869776ba32067e).getRles();
         sm.batchSetRle(ids, rles);
     }
 
     function setRles2() external onlyOwner {
-        (uint256[] memory ids, bytes[] memory rles) = IRlesGetter(0xFC5f8ec50dd016e50c3adEF302471744286f634f).getRles();
+        (uint256[] memory ids, bytes[] memory rles) = IRlesGetter(0x219f75d739a48701462f2795F6a69770710B0c9d).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x9F7338554a9EA465735f9d59d2fDc13fdDff1C77).getRles();
+        (ids, rles) = IRlesGetter(0x35c234Ee2E15062324f1232EF9B4c41EA5E85B5c).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x5A13B6f74F7b049cB93e19038FF71938183D0F17).getRles();
+        (ids, rles) = IRlesGetter(0x24c4d2705F6F0D6B6cE37b066a3D74C53B649c20).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x3389d5543a931904B987108C33c9fFFdadBB4200).getRles();
+        (ids, rles) = IRlesGetter(0x8F29231Cc91BeA2BFAfd3C6B3CdBAE2f54Cc58f5).getRles();
         sm.batchSetRle(ids, rles);
     }
 
     function setRles3() external onlyOwner {
-        (uint256[] memory ids, bytes[] memory rles) = IRlesGetter(0x985e193663884E1368B56006B70A0C1E8471384a).getRles();
+        (uint256[] memory ids, bytes[] memory rles) = IRlesGetter(0x7aa8e897d712CFB9C7cb6B37634A1C4d21181c8B).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x2Ac1EE3A5a3d587D11717Dd8848608f07E4e1b5B).getRles();
+        (ids, rles) = IRlesGetter(0x8685bDE610cf4136B7E40A7DA16950C3046e2f32).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x6c766C4b9e251A58F751EcA039d21b407934e2a6).getRles();
+        (ids, rles) = IRlesGetter(0xd2eAB485e9F0199ba2119Aba4dB2937d1459574F).getRles();
         sm.batchSetRle(ids, rles);
     }
 
     function setRles4() external onlyOwner {
-        (uint256[] memory ids, bytes[] memory rles) = IRlesGetter(0xd2f0A91764e04815f910d0a4B1b77F5E8485aDB1).getRles();
+        (uint256[] memory ids, bytes[] memory rles) = IRlesGetter(0x6A99c2696E13b2a2a7f37D2F76F7c024EFC414D2).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x4954dca38907ce7DCC25153f8c56a297B83F7D1A).getRles();
+        (ids, rles) = IRlesGetter(0x622f0715DcBf3eaa2F56c25c0603E66F082A3e74).getRles();
         sm.batchSetRle(ids, rles);
 
-        (ids, rles) = IRlesGetter(0x8eC7EFeB566a4f0f83A2AC17856378761f9546fB).getRles();
+        (ids, rles) = IRlesGetter(0x6E49d90806Af9B541DD517B2aCBCb362B25F2Fec).getRles();
         sm.batchSetRle(ids, rles);
     }
 
     function setMaleBodyRles() external onlyOwner {
-        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0xA7851a40f6B3FeE29EC04A4C38b381c47EDf3bdD).getRles();
+        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0xA92C2ae3E1CAa57B254f5675E77DC38f4e336E60).getRles();
         h.addRles(uint8(id), rles);
     }
 
     function setFemaleBodyRles() external onlyOwner {
-        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0x5eFe3Ffb56CE36F1e67C36e85Dfa532d1F3B865f).getRles();
+        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0x275C0c779ccd4D5D3A9d507d8529c943C4d59bCF).getRles();
         h.addRles(uint8(id), rles);
     }
 
     function setMaleHairRles() external onlyOwner {
-        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0x8F4099E5E7AeBb455DA286e1f2300834F3f5B59E).getRles();
+        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0x1F58541635B9dA02Cbe073451046ecAC29b1f582).getRles();
         h.addRles(uint8(id), rles);
     }
 
     function setFemaleHairRles() external onlyOwner {
-        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0xeE6Ba2715e49983351F4F871613Bce5E173c137d).getRles();
+        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0x0Be4Cd601fA9b21dD1cAda6a3893Fd998Bf5970D).getRles();
         h.addRles(uint8(id), rles);
     }
 
     function setMaleBeardRles() external onlyOwner {
-        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0x47Df09c7a80b6a357F99cDd9a0Af4339fED27faA).getRles();
+        (uint256 id, bytes[] memory rles) = IRlesBodyGetter(0x3A2077B3de49d58c7eB1C93f8c37A0A524330C4b).getRles();
         h.addRles(uint8(id), rles);
     }
 

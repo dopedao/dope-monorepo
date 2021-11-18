@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Unlicense
 
 /*
-
     Components.sol
     
     This is a utility contract to make it easier for other
