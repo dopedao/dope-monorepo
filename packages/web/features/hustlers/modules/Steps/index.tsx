@@ -1,7 +1,6 @@
 import { HustlerCustomization } from 'src/HustlerConfig';
 import useHustler from 'features/hustlers/hooks/useHustler';
-import Initiate from 'features/hustlers/modules/Initiate';
-// import Customize from 'features/hustlers/modules/Customize';
+import Begin from 'features/hustlers/modules/Begin';
 import Approve from 'features/hustlers/modules/Approve';
 import Finalize from 'features/hustlers/modules/Finalize';
 import Stepper from 'features/hustlers/components/Stepper';
@@ -23,7 +22,7 @@ const Steps = ({ hustlerConfig }: StepsProps) => {
       case 2:
         return <Finalize hustlerConfig={hustlerConfig} />;
       default:
-        return <Initiate hustlerConfig={hustlerConfig} />;
+        return <Begin hustlerConfig={hustlerConfig} />;
     }
   };
 
