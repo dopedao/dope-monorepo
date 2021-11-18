@@ -9,7 +9,7 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
 const Finalize = ({ hustlerConfig }: StepsProps) => (
   <>
-    <Head title="Initiate Your Hustler" />
+    <Head title="Finalize" />
     <StackedResponsiveContainer>
       <PanelContainer
         css={css`
@@ -31,6 +31,7 @@ const Finalize = ({ hustlerConfig }: StepsProps) => (
           renderTitle={hustlerConfig.renderTitle}
           sex={hustlerConfig.sex}
           textColor={hustlerConfig.textColor}
+          zoomWindow={hustlerConfig.zoomWindow}
         />
         <InitiationFooter />
       </PanelContainer>

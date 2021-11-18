@@ -9,7 +9,7 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
 const Approve = ({ hustlerConfig }: StepsProps) => (
   <>
-    <Head title="Initiate Your Hustler" />
+    <Head title="Approve spend" />
     <StackedResponsiveContainer>
       <PanelContainer
         css={css`
@@ -31,6 +31,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => (
           renderTitle={hustlerConfig.renderTitle}
           sex={hustlerConfig.sex}
           textColor={hustlerConfig.textColor}
+          zoomWindow={hustlerConfig.zoomWindow}
         />
         <InitiationFooter />
       </PanelContainer>
