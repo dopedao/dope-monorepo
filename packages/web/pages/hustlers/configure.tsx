@@ -1,13 +1,12 @@
 import { Button, HStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { HustlerInitConfig, randomizeHustlerAttributes } from 'src/HustlerConfig';
+import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
-import { useWalletQuery } from 'src/generated/graphql';
 import { useWeb3React } from '@web3-react/core';
+import { HustlerInitConfig, randomizeHustlerAttributes } from 'src/HustlerConfig';
 import AppWindow from 'components/AppWindow';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import Head from 'components/Head';
-import Link from 'next/link';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
@@ -15,15 +14,11 @@ import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
 
-const title="Hustler Configuration"
+const title = 'Hustler Configuration';
 
 const Configure = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const { account } = useWeb3React();
-  const { data, loading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
   // const currentTime = new Date();
   // const { chainId } = useWeb3React();
   // const onTestNetOrAfterHustlerLaunch = chainId == 4 || currentTime >= HUSTLER_MINT_TIME;
@@ -31,19 +26,24 @@ const Configure = () => {
   return (
     <AppWindow
       requiresWalletConnection={true}
-      balance={data?.wallet?.paper}
-      loadingBalance={loading}
       padBody={false}
       title={title}
-      footer={ account && 
-        <PanelFooter css={css`width:100%;border-top-width:1px;`}>
-          <HStack mt={0} justify="end">
-            <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
-            <Link href="/hustlers/initiate" passHref>
-              <Button variant="primary">Finish Configuration</Button>
-            </Link>
-          </HStack>
-        </PanelFooter>
+      footer={
+        account && (
+          <PanelFooter
+            css={css`
+              width: 100%;
+              border-top-width: 1px;
+            `}
+          >
+            <HStack mt={0} justify="end">
+              <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
+              <Link href="/hustlers/initiate" passHref>
+                <Button variant="primary">Finish Configuration</Button>
+              </Link>
+            </HStack>
+          </PanelFooter>
+        )
       }
     >
       <Head title={title} />

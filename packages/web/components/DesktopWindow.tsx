@@ -2,6 +2,8 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import Draggable from 'react-draggable';
 import styled from '@emotion/styled';
+import { useWeb3React } from '@web3-react/core';
+import { useWalletQuery } from 'src/generated/graphql';
 import { media } from 'styles/mixins';
 import { returnBreakpoint } from 'styles/breakpoints';
 import { isTouchDevice } from 'src/utils';
@@ -59,11 +61,14 @@ const DesktopWindow = ({
   width = 1024,
   height = 768,
   titleChildren,
-  balance,
-  loadingBalance,
   children,
   onResize,
 }: DesktopWindowProps) => {
+  const { account } = useWeb3React();
+  const { data, loading } = useWalletQuery({
+    variables: { id: account?.toLowerCase() || '' },
+    skip: !account,
+  });
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -105,8 +110,8 @@ const DesktopWindow = ({
           isTouchDevice={isTouchDevice()}
           isFullScreen={isFullScreen}
           toggleFullScreen={toggleFullScreen}
-          balance={balance}
-          loadingBalance={loadingBalance}
+          balance={data?.wallet?.paper}
+          loadingBalance={loading}
         >
           {titleChildren}
         </DesktopWindowTitleBar>
