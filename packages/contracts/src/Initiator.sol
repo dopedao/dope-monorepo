@@ -20,10 +20,10 @@ library Errors {
 contract Initiator is Ownable {
     event Opened(uint256 id);
 
-    iOVM_CrossDomainMessenger messenger = iOVM_CrossDomainMessenger(0x4361d0F75A0186C05f971c566dC6bEa5957483fD);
+    iOVM_CrossDomainMessenger messenger = iOVM_CrossDomainMessenger(0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1);
     address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
     address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
-    address private constant subimagellc = 0xA776C616c223b31Ccf1513E2CB1b5333730AA239;
+    address private constant facesdba = 0xA2dE2d19edb4094c79FB1A285F3c30c77931Bf1e;
 
     address private controller;
     IERC721 immutable dope;
@@ -81,6 +81,8 @@ contract Initiator is Ownable {
         messenger.sendMessage(controller, message, gasLimit);
 
         paper.transferFrom(msg.sender, timelock, cost());
+
+        emit Opened(id);
     }
 
     function mintOGFromDopeTo(
@@ -121,6 +123,8 @@ contract Initiator is Ownable {
         messenger.sendMessage(controller, message, gasLimit);
 
         paper.transferFrom(msg.sender, timelock, cost());
+
+        emit Opened(id);
     }
 
     function open(
@@ -132,6 +136,7 @@ contract Initiator is Ownable {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
         require(msg.sender == dope.ownerOf(id), Errors.DoesNotOwnBagOrNotApproved);
         require(!opened[id], Errors.AlreadyOpened);
+
         opened[id] = true;
 
         bytes memory message = abi.encodeWithSelector(IController.open.selector, id, to, data);
@@ -152,7 +157,7 @@ contract Initiator is Ownable {
         // Half of second half (1/4)
         payable(tarrencellc).transfer(address(this).balance / 2);
         // Remainder
-        payable(subimagellc).transfer(address(this).balance);
+        payable(facesdba).transfer(address(this).balance);
     }
 
     function cost() public view returns (uint256) {
