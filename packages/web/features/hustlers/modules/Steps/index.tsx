@@ -31,7 +31,7 @@ const Steps = ({ hustlerConfig }: StepsProps) => {
   return (
     <>
       <Stepper />
-      <HustlerContainer bgColor={hustlerConfig.bgColor}>{stepToRender()}</HustlerContainer>
+      <HustlerContainer>{stepToRender()}</HustlerContainer>
     </>
   );
 };

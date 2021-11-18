@@ -1,9 +1,7 @@
 import styled from '@emotion/styled';
 
-type HustlerContainerProps = { bgColor: string };
-
-export const HustlerContainer = styled.div<HustlerContainerProps>`
-  background-color: ${({ bgColor }) => bgColor};
+export const HustlerContainer = styled.div`
+  background-color: #a8a9ae;
   height: 100%;
   width: 100%;
   display: flex;
