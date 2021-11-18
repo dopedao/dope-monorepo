@@ -4,13 +4,12 @@ export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 111px;
+  padding: 4px 128px;
   border-bottom: 2px solid #1c1c1c;
   border-top: 2px solid #1c1c1c;
   position: fixed;
   width: 100%;
-  background: #d0d0d0;
-
+  background: #434345;
   @media (max-width: 640px) {
     width: 80%;
   }
@@ -21,7 +20,7 @@ type ButtonProps = {
 };
 
 export const Button = styled.button<ButtonProps>`
-  padding: 8px 16px;
+  padding: 4px 12px;
   border-radius: 8px;
   color: #ffffff;
 
@@ -30,10 +29,8 @@ export const Button = styled.button<ButtonProps>`
   }
 
   ${({ isActive }) =>
-    isActive &&
-    `
-    background: #434345;
-  `}
+    isActive && `background: #202221;`
+  }
 `;
 
 export const Item = styled.div``;

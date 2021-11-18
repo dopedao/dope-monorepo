@@ -6,7 +6,7 @@ import Steps from 'features/hustlers/modules/Steps';
 import HustlerProvider from 'features/hustlers/HustlerProvider';
 import AppWindow from 'components/AppWindow';
 import LoadingBlock from 'components/LoadingBlock';
-import Container from 'components/Container';
+import { css } from '@emotion/react';
 
 const InitiatePage = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
@@ -26,10 +26,9 @@ const InitiatePage = () => {
       padBody={false}
     >
       {loading ? (
-        <Container>
+        <div css={css`padding:32px;`}>
           <LoadingBlock />
-          <LoadingBlock />
-        </Container>
+        </div>
       ) : (
         <HustlerProvider>
           <Steps hustlerConfig={hustlerConfig} />

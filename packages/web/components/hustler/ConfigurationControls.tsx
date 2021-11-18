@@ -1,13 +1,12 @@
 import { Button, HStack, Stack } from '@chakra-ui/react';
 import { useReactiveVar } from '@apollo/client';
-import { useRouter } from 'next/router';
 import {
   HustlerInitConfig,
   randomizeHustlerAttributes,
-  HustlerCustomization,
   DEFAULT_BG_COLORS,
   DEFAULT_TEXT_COLORS,
   SKIN_TONE_COLORS,
+  ZOOM_WINDOWS,
 } from 'src/HustlerConfig';
 import { useEffect, useState } from 'react';
 import HairSelector from './HairSelector';
@@ -17,19 +16,21 @@ import SexSelector from './SexSelector';
 import PanelColorSelector from 'components/PanelColorSelector';
 
 const ConfigurationControls = () => {
-  const router = useRouter();
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   const [showTextColor, setShowTextColor] = useState(false);
+  const [showNameControls, setShowNameControls] = useState(false);
 
   useEffect(() => {
     setShowTextColor(hustlerConfig.renderName == true || hustlerConfig.renderTitle == true);
+    setShowNameControls(hustlerConfig.zoomWindow == ZOOM_WINDOWS[0]);
   }, [hustlerConfig]);
 
   return (
     <>
       <Stack spacing={4}>
-        <NameControls />
+        {/* Title controls only make sense when zoomed out fully */}
+        {showNameControls && <NameControls /> }
 
         {showTextColor && (
           <PanelColorSelector
@@ -65,13 +66,13 @@ const ConfigurationControls = () => {
 
         <SexSelector />
         <HairSelector />
-        <HStack mt={4} justify="end">
-          <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
-          <Button variant="primary">
-            Finish Configuration
-          </Button>
-        </HStack>
       </Stack>
+      <HStack mt={4} justify="end">
+        <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
+        <Button variant="primary">
+          Finish Configuration
+        </Button>
+      </HStack>
     </>
   );
 };
