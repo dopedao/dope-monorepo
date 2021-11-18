@@ -1,7 +1,10 @@
 import { css } from '@emotion/react';
-import { Button, Stack, Switch, Table, Thead, Tbody, Tr, Td, Th, Input } from '@chakra-ui/react';
+import { Button, Stack, Switch, Table, Tr, Td, Input } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { BigNumber, constants } from 'ethers';
+import { useWeb3React } from '@web3-react/core';
+
 import { StepsProps } from 'features/hustlers/modules/Steps';
-import { useState } from 'react';
 import { HustlerInitConfig } from 'src/HustlerConfig';
 import Head from 'components/Head';
 import HustlerPanel from 'components/hustler/HustlerPanel';
@@ -11,11 +14,38 @@ import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
+import { useInitiator, usePaper } from 'hooks/contracts';
 
 const Approve = ({ hustlerConfig }: StepsProps) => {
-  const [showMintToAddressBox, setShowMintToAddressBox] = useState(hustlerConfig.mintAddress != null);
+  const { chainId, account } = useWeb3React();
+  const [showMintToAddressBox, setShowMintToAddressBox] = useState(
+    hustlerConfig.mintAddress != null,
+  );
   const [canMint, setCanMint] = useState(false);
+  const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
+  const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
+
   const dispatchHustler = useDispatchHustler();
+  const paper = usePaper();
+  const initiator = useInitiator();
+
+  useEffect(() => {
+    if (account) {
+      paper
+        .balanceOf(account)
+        .then(balance => setHasEnoughPaper(balance.gt('12500000000000000000000')));
+    }
+  }, [account, paper]);
+
+  useEffect(() => {
+    if (account) {
+      paper
+        .allowance(account, initiator.address)
+        .then((allowance: BigNumber) =>
+          setIsPaperApproved(allowance.gte('12500000000000000000000')),
+        );
+    }
+  }, [account, chainId, paper]);
 
   const handleOgSwitchChange = () => {
     HustlerInitConfig({ ...hustlerConfig, mintOg: !hustlerConfig.mintOg });
@@ -72,7 +102,11 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                 We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of your
                 DOPE NFT #{hustlerConfig.dopeId}.
               </p>
-              <Button>Approve $PAPER Spend</Button>
+              <Button
+                onClick={async () => await paper.approve(initiator.address, constants.MaxUint256)}
+              >
+                Approve $PAPER Spend
+              </Button>
             </PanelBody>
           </PanelContainer>
           {!showMintToAddressBox && (
