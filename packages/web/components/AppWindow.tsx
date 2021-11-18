@@ -1,18 +1,16 @@
+import { ReactNode } from 'react';
+import styled from '@emotion/styled';
 import { getBreakpointWidth } from 'styles/breakpoints';
 import { useWeb3React } from '@web3-react/core';
-import AppWindowFooter from './AppWindowFooter';
-import ConnectWallet from './ConnectWallet';
-import DesktopWindow from './DesktopWindow';
-import React from 'react';
-import styled from '@emotion/styled';
+import AppWindowFooter from 'components/AppWindowFooter';
+import ConnectWallet from 'components/ConnectWallet';
+import DesktopWindow from 'components/DesktopWindow';
 
 interface AppWindowProps {
-  balance?: string;
-  children: React.ReactNode;
-  footer?: React.ReactNode;
+  children: ReactNode;
+  footer?: ReactNode;
   height?: number | string;
-  loadingBalance?: boolean;
-  navbar?: React.ReactNode;
+  navbar?: ReactNode;
   padBody?: boolean;
   requiresWalletConnection?: boolean;
   scrollable?: boolean;
@@ -43,8 +41,6 @@ export default function AppWindow({
   scrollable = true,
   width,
   height,
-  balance,
-  loadingBalance,
   children,
   navbar,
   footer,
@@ -57,8 +53,6 @@ export default function AppWindow({
       titleChildren={navbar}
       width={width}
       height={height}
-      balance={balance}
-      loadingBalance={loadingBalance}
     >
       {requiresWalletConnection === true && !account ? (
         <ConnectWallet />
