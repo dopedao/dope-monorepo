@@ -4,29 +4,20 @@ import { Web3Provider } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { providers } from 'ethers';
-import { provider } from 'aws-sdk/lib/credentials/credential_provider_chain';
+import { NETWORK } from 'src/constants';
 
 const injected = new InjectedConnector({
   supportedChainIds: [1, 4, 42, 69],
 });
 
-const rpc = {
-  1: 'https://eth-mainnet.alchemyapi.io/v2/4YF7OoE2seG3X12m9bfIJdiRv2zwUaAx',
-  10: 'https://opt-mainnet.g.alchemy.com/v2/k8J6YaoTtJVIs4ZxTo26zIPfBiCveX2m',
-  42: 'https://eth-kovan.alchemyapi.io/v2/UloBYQ33fXVpI0WFONXO-CgTl4uy93T6',
-  69: 'https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg',
-};
-
 export const useRPCProvider = (id: 1 | 10 | 42 | 69) =>
-  useMemo<providers.JsonRpcProvider>(() => new providers.JsonRpcProvider(rpc[id]), []);
+  useMemo<providers.JsonRpcProvider>(() => new providers.JsonRpcProvider(NETWORK[id].rpc), []);
 
 export const useEthereum = (): {
   chainId: 1 | 42;
   provider: providers.JsonRpcProvider;
 } => {
   // Default to mainnet
-  let rpcProvider = useRPCProvider(1);
-  const [provider, setProvider] = useState<providers.JsonRpcProvider>(rpcProvider);
   const { chainId, library } = useWeb3React();
 
   let ethChainId: 1 | 42 = 1;
@@ -38,7 +29,8 @@ export const useEthereum = (): {
     ethChainId = 42;
   }
 
-  rpcProvider = useRPCProvider(ethChainId);
+  const rpcProvider = useRPCProvider(ethChainId);
+  const [provider, setProvider] = useState<providers.JsonRpcProvider>(rpcProvider);
 
   useEffect(() => {
     if (chainId && chainId === ethChainId) {
@@ -56,8 +48,6 @@ export const useOptimism = (): {
   provider: providers.JsonRpcProvider;
 } => {
   // Default to optimism mainnet
-  let rpcProvider = useRPCProvider(10);
-  const [provider, setProvider] = useState<providers.JsonRpcProvider>(rpcProvider);
   const { chainId, library } = useWeb3React();
 
   let optimismChainId: 10 | 69 = 10;
@@ -69,7 +59,8 @@ export const useOptimism = (): {
     optimismChainId = 69;
   }
 
-  rpcProvider = useRPCProvider(optimismChainId);
+  const rpcProvider = useRPCProvider(optimismChainId);
+  const [provider, setProvider] = useState<providers.JsonRpcProvider>(rpcProvider);
 
   useEffect(() => {
     if (chainId && chainId === optimismChainId) {
@@ -83,7 +74,13 @@ export const useOptimism = (): {
 };
 
 export const walletconnect = new WalletConnectConnector({
-  rpc,
+  rpc: Object.keys(NETWORK).reduce(
+    (rpcs, chainId) => ({
+      ...rpcs,
+      [chainId]: NETWORK[parseInt(chainId, 10) as 1 | 10 | 42 | 69].rpc,
+    }),
+    {},
+  ),
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
 });
