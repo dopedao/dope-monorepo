@@ -5,6 +5,8 @@ export const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 5px 111px;
+  border-bottom: 2px solid #1c1c1c;
+  border-top: 2px solid #1c1c1c;
 
   @media (max-width: 640px) {
     width: 80%;

@@ -1,5 +1,5 @@
 import { createContext, ReactNode, Reducer, useReducer } from 'react';
-import HuslterReducer, { INITIAL_STATE } from 'features/hustlers/hustlerReducer';
+import HustlerReducer, { INITIAL_STATE } from 'features/hustlers/hustlerReducer';
 import type { DispatchHustler, HustlerState, HustlerActions } from 'features/hustlers/types';
 
 type HustlerProviderProps = {
@@ -12,7 +12,7 @@ export const HustlerDispatchContext = createContext<DispatchHustler | undefined>
 
 const HustlerProvider = ({ children, initialHustlerData }: HustlerProviderProps) => {
   const [hustler, dispatchHustler] = useReducer<Reducer<HustlerState, HustlerActions>>(
-    HuslterReducer,
+    HustlerReducer,
     initialHustlerData || INITIAL_STATE,
   );
 
