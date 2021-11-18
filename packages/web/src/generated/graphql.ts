@@ -4,7 +4,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {};
+const defaultOptions =  {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -219,335 +219,14 @@ export enum Bag_OrderBy {
   Ring = 'ring',
   Vehicle = 'vehicle',
   Waist = 'waist',
-  Weapon = 'weapon',
-}
-
-export type Beard = {
-  __typename?: 'Beard';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type Beard_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
-};
-
-export enum Beard_OrderBy {
-  Id = 'id',
-  Rle = 'rle',
+  Weapon = 'weapon'
 }
 
 export type Block_Height = {
   hash?: Maybe<Scalars['Bytes']>;
   number?: Maybe<Scalars['Int']>;
+  number_gte?: Maybe<Scalars['Int']>;
 };
-
-export type FemaleBody = {
-  __typename?: 'FemaleBody';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type FemaleBody_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
-};
-
-export enum FemaleBody_OrderBy {
-  Id = 'id',
-  Rle = 'rle',
-}
-
-export type FemaleHair = {
-  __typename?: 'FemaleHair';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type FemaleHair_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
-};
-
-export enum FemaleHair_OrderBy {
-  Id = 'id',
-  Rle = 'rle',
-}
-
-export type Hustler = {
-  __typename?: 'Hustler';
-  data: Scalars['String'];
-  id: Scalars['ID'];
-  owner: Wallet;
-};
-
-export type Hustler_Filter = {
-  data?: Maybe<Scalars['String']>;
-  data_contains?: Maybe<Scalars['String']>;
-  data_ends_with?: Maybe<Scalars['String']>;
-  data_gt?: Maybe<Scalars['String']>;
-  data_gte?: Maybe<Scalars['String']>;
-  data_in?: Maybe<Array<Scalars['String']>>;
-  data_lt?: Maybe<Scalars['String']>;
-  data_lte?: Maybe<Scalars['String']>;
-  data_not?: Maybe<Scalars['String']>;
-  data_not_contains?: Maybe<Scalars['String']>;
-  data_not_ends_with?: Maybe<Scalars['String']>;
-  data_not_in?: Maybe<Array<Scalars['String']>>;
-  data_not_starts_with?: Maybe<Scalars['String']>;
-  data_starts_with?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  owner?: Maybe<Scalars['String']>;
-  owner_contains?: Maybe<Scalars['String']>;
-  owner_ends_with?: Maybe<Scalars['String']>;
-  owner_gt?: Maybe<Scalars['String']>;
-  owner_gte?: Maybe<Scalars['String']>;
-  owner_in?: Maybe<Array<Scalars['String']>>;
-  owner_lt?: Maybe<Scalars['String']>;
-  owner_lte?: Maybe<Scalars['String']>;
-  owner_not?: Maybe<Scalars['String']>;
-  owner_not_contains?: Maybe<Scalars['String']>;
-  owner_not_ends_with?: Maybe<Scalars['String']>;
-  owner_not_in?: Maybe<Array<Scalars['String']>>;
-  owner_not_starts_with?: Maybe<Scalars['String']>;
-  owner_starts_with?: Maybe<Scalars['String']>;
-};
-
-export enum Hustler_OrderBy {
-  Data = 'data',
-  Id = 'id',
-  Owner = 'owner',
-}
-
-export type Item = {
-  __typename?: 'Item';
-  data: Scalars['String'];
-  femaleRle: Scalars['Bytes'];
-  id: Scalars['ID'];
-  maleRle: Scalars['Bytes'];
-  name: Scalars['String'];
-};
-
-export type ItemBalances = {
-  __typename?: 'ItemBalances';
-  balance: Scalars['BigInt'];
-  id: Scalars['ID'];
-  item: Item;
-  wallet: Wallet;
-};
-
-export type ItemBalances_Filter = {
-  balance?: Maybe<Scalars['BigInt']>;
-  balance_gt?: Maybe<Scalars['BigInt']>;
-  balance_gte?: Maybe<Scalars['BigInt']>;
-  balance_in?: Maybe<Array<Scalars['BigInt']>>;
-  balance_lt?: Maybe<Scalars['BigInt']>;
-  balance_lte?: Maybe<Scalars['BigInt']>;
-  balance_not?: Maybe<Scalars['BigInt']>;
-  balance_not_in?: Maybe<Array<Scalars['BigInt']>>;
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  item?: Maybe<Scalars['String']>;
-  item_contains?: Maybe<Scalars['String']>;
-  item_ends_with?: Maybe<Scalars['String']>;
-  item_gt?: Maybe<Scalars['String']>;
-  item_gte?: Maybe<Scalars['String']>;
-  item_in?: Maybe<Array<Scalars['String']>>;
-  item_lt?: Maybe<Scalars['String']>;
-  item_lte?: Maybe<Scalars['String']>;
-  item_not?: Maybe<Scalars['String']>;
-  item_not_contains?: Maybe<Scalars['String']>;
-  item_not_ends_with?: Maybe<Scalars['String']>;
-  item_not_in?: Maybe<Array<Scalars['String']>>;
-  item_not_starts_with?: Maybe<Scalars['String']>;
-  item_starts_with?: Maybe<Scalars['String']>;
-  wallet?: Maybe<Scalars['String']>;
-  wallet_contains?: Maybe<Scalars['String']>;
-  wallet_ends_with?: Maybe<Scalars['String']>;
-  wallet_gt?: Maybe<Scalars['String']>;
-  wallet_gte?: Maybe<Scalars['String']>;
-  wallet_in?: Maybe<Array<Scalars['String']>>;
-  wallet_lt?: Maybe<Scalars['String']>;
-  wallet_lte?: Maybe<Scalars['String']>;
-  wallet_not?: Maybe<Scalars['String']>;
-  wallet_not_contains?: Maybe<Scalars['String']>;
-  wallet_not_ends_with?: Maybe<Scalars['String']>;
-  wallet_not_in?: Maybe<Array<Scalars['String']>>;
-  wallet_not_starts_with?: Maybe<Scalars['String']>;
-  wallet_starts_with?: Maybe<Scalars['String']>;
-};
-
-export enum ItemBalances_OrderBy {
-  Balance = 'balance',
-  Id = 'id',
-  Item = 'item',
-  Wallet = 'wallet',
-}
-
-export type Item_Filter = {
-  data?: Maybe<Scalars['String']>;
-  data_contains?: Maybe<Scalars['String']>;
-  data_ends_with?: Maybe<Scalars['String']>;
-  data_gt?: Maybe<Scalars['String']>;
-  data_gte?: Maybe<Scalars['String']>;
-  data_in?: Maybe<Array<Scalars['String']>>;
-  data_lt?: Maybe<Scalars['String']>;
-  data_lte?: Maybe<Scalars['String']>;
-  data_not?: Maybe<Scalars['String']>;
-  data_not_contains?: Maybe<Scalars['String']>;
-  data_not_ends_with?: Maybe<Scalars['String']>;
-  data_not_in?: Maybe<Array<Scalars['String']>>;
-  data_not_starts_with?: Maybe<Scalars['String']>;
-  data_starts_with?: Maybe<Scalars['String']>;
-  femaleRle?: Maybe<Scalars['Bytes']>;
-  femaleRle_contains?: Maybe<Scalars['Bytes']>;
-  femaleRle_in?: Maybe<Array<Scalars['Bytes']>>;
-  femaleRle_not?: Maybe<Scalars['Bytes']>;
-  femaleRle_not_contains?: Maybe<Scalars['Bytes']>;
-  femaleRle_not_in?: Maybe<Array<Scalars['Bytes']>>;
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  maleRle?: Maybe<Scalars['Bytes']>;
-  maleRle_contains?: Maybe<Scalars['Bytes']>;
-  maleRle_in?: Maybe<Array<Scalars['Bytes']>>;
-  maleRle_not?: Maybe<Scalars['Bytes']>;
-  maleRle_not_contains?: Maybe<Scalars['Bytes']>;
-  maleRle_not_in?: Maybe<Array<Scalars['Bytes']>>;
-  name?: Maybe<Scalars['String']>;
-  name_contains?: Maybe<Scalars['String']>;
-  name_ends_with?: Maybe<Scalars['String']>;
-  name_gt?: Maybe<Scalars['String']>;
-  name_gte?: Maybe<Scalars['String']>;
-  name_in?: Maybe<Array<Scalars['String']>>;
-  name_lt?: Maybe<Scalars['String']>;
-  name_lte?: Maybe<Scalars['String']>;
-  name_not?: Maybe<Scalars['String']>;
-  name_not_contains?: Maybe<Scalars['String']>;
-  name_not_ends_with?: Maybe<Scalars['String']>;
-  name_not_in?: Maybe<Array<Scalars['String']>>;
-  name_not_starts_with?: Maybe<Scalars['String']>;
-  name_starts_with?: Maybe<Scalars['String']>;
-};
-
-export enum Item_OrderBy {
-  Data = 'data',
-  FemaleRle = 'femaleRle',
-  Id = 'id',
-  MaleRle = 'maleRle',
-  Name = 'name',
-}
-
-export type MaleBody = {
-  __typename?: 'MaleBody';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type MaleBody_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
-};
-
-export enum MaleBody_OrderBy {
-  Id = 'id',
-  Rle = 'rle',
-}
-
-export type MaleHair = {
-  __typename?: 'MaleHair';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type MaleHair_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
-};
-
-export enum MaleHair_OrderBy {
-  Id = 'id',
-  Rle = 'rle',
-}
 
 export type OpenSeaAsset = {
   __typename?: 'OpenSeaAsset';
@@ -558,7 +237,7 @@ export type OpenSeaAsset = {
 
 export enum OrderDirection {
   Asc = 'asc',
-  Desc = 'desc',
+  Desc = 'desc'
 }
 
 export type Query = {
@@ -567,21 +246,6 @@ export type Query = {
   _meta?: Maybe<_Meta_>;
   bag?: Maybe<Bag>;
   bags: Array<Bag>;
-  beard?: Maybe<Beard>;
-  beards: Array<Beard>;
-  femaleBodies: Array<FemaleBody>;
-  femaleBody?: Maybe<FemaleBody>;
-  femaleHair?: Maybe<FemaleHair>;
-  femaleHairs: Array<FemaleHair>;
-  hustler?: Maybe<Hustler>;
-  hustlers: Array<Hustler>;
-  item?: Maybe<Item>;
-  itemBalances: Array<ItemBalances>;
-  items: Array<Item>;
-  maleBodies: Array<MaleBody>;
-  maleBody?: Maybe<MaleBody>;
-  maleHair?: Maybe<MaleHair>;
-  maleHairs: Array<MaleHair>;
   search: Array<Bag>;
   transfer?: Maybe<Transfer>;
   transfers: Array<Transfer>;
@@ -589,15 +253,18 @@ export type Query = {
   wallets: Array<Wallet>;
 };
 
+
 export type Query_MetaArgs = {
   block?: Maybe<Block_Height>;
 };
+
 
 export type QueryBagArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
+
 
 export type QueryBagsArgs = {
   block?: Maybe<Block_Height>;
@@ -609,127 +276,6 @@ export type QueryBagsArgs = {
   where?: Maybe<Bag_Filter>;
 };
 
-export type QueryBeardArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type QueryBeardsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Beard_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Beard_Filter>;
-};
-
-export type QueryFemaleBodiesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<FemaleBody_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<FemaleBody_Filter>;
-};
-
-export type QueryFemaleBodyArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type QueryFemaleHairArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type QueryFemaleHairsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<FemaleHair_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<FemaleHair_Filter>;
-};
-
-export type QueryHustlerArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type QueryHustlersArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Hustler_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Hustler_Filter>;
-};
-
-export type QueryItemArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type QueryItemBalancesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<ItemBalances_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<ItemBalances_Filter>;
-};
-
-export type QueryItemsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Item_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Item_Filter>;
-};
-
-export type QueryMaleBodiesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<MaleBody_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<MaleBody_Filter>;
-};
-
-export type QueryMaleBodyArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type QueryMaleHairArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type QueryMaleHairsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<MaleHair_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<MaleHair_Filter>;
-};
 
 export type QuerySearchArgs = {
   block?: Maybe<Block_Height>;
@@ -739,11 +285,13 @@ export type QuerySearchArgs = {
   text: Scalars['String'];
 };
 
+
 export type QueryTransferArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
+
 
 export type QueryTransfersArgs = {
   block?: Maybe<Block_Height>;
@@ -755,11 +303,13 @@ export type QueryTransfersArgs = {
   where?: Maybe<Transfer_Filter>;
 };
 
+
 export type QueryWalletArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
+
 
 export type QueryWalletsArgs = {
   block?: Maybe<Block_Height>;
@@ -777,36 +327,24 @@ export type Subscription = {
   _meta?: Maybe<_Meta_>;
   bag?: Maybe<Bag>;
   bags: Array<Bag>;
-  beard?: Maybe<Beard>;
-  beards: Array<Beard>;
-  femaleBodies: Array<FemaleBody>;
-  femaleBody?: Maybe<FemaleBody>;
-  femaleHair?: Maybe<FemaleHair>;
-  femaleHairs: Array<FemaleHair>;
-  hustler?: Maybe<Hustler>;
-  hustlers: Array<Hustler>;
-  item?: Maybe<Item>;
-  itemBalances: Array<ItemBalances>;
-  items: Array<Item>;
-  maleBodies: Array<MaleBody>;
-  maleBody?: Maybe<MaleBody>;
-  maleHair?: Maybe<MaleHair>;
-  maleHairs: Array<MaleHair>;
   transfer?: Maybe<Transfer>;
   transfers: Array<Transfer>;
   wallet?: Maybe<Wallet>;
   wallets: Array<Wallet>;
 };
 
+
 export type Subscription_MetaArgs = {
   block?: Maybe<Block_Height>;
 };
+
 
 export type SubscriptionBagArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
+
 
 export type SubscriptionBagsArgs = {
   block?: Maybe<Block_Height>;
@@ -818,133 +356,13 @@ export type SubscriptionBagsArgs = {
   where?: Maybe<Bag_Filter>;
 };
 
-export type SubscriptionBeardArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type SubscriptionBeardsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Beard_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Beard_Filter>;
-};
-
-export type SubscriptionFemaleBodiesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<FemaleBody_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<FemaleBody_Filter>;
-};
-
-export type SubscriptionFemaleBodyArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type SubscriptionFemaleHairArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type SubscriptionFemaleHairsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<FemaleHair_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<FemaleHair_Filter>;
-};
-
-export type SubscriptionHustlerArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type SubscriptionHustlersArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Hustler_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Hustler_Filter>;
-};
-
-export type SubscriptionItemArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type SubscriptionItemBalancesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<ItemBalances_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<ItemBalances_Filter>;
-};
-
-export type SubscriptionItemsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Item_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Item_Filter>;
-};
-
-export type SubscriptionMaleBodiesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<MaleBody_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<MaleBody_Filter>;
-};
-
-export type SubscriptionMaleBodyArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type SubscriptionMaleHairArgs = {
-  block?: Maybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type SubscriptionMaleHairsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<MaleHair_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<MaleHair_Filter>;
-};
 
 export type SubscriptionTransferArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
+
 
 export type SubscriptionTransfersArgs = {
   block?: Maybe<Block_Height>;
@@ -956,11 +374,13 @@ export type SubscriptionTransfersArgs = {
   where?: Maybe<Transfer_Filter>;
 };
 
+
 export type SubscriptionWalletArgs = {
   block?: Maybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
+
 
 export type SubscriptionWalletsArgs = {
   block?: Maybe<Block_Height>;
@@ -1055,7 +475,7 @@ export enum Transfer_OrderBy {
   Id = 'id',
   Timestamp = 'timestamp',
   To = 'to',
-  TxHash = 'txHash',
+  TxHash = 'txHash'
 }
 
 export type Wallet = {
@@ -1063,12 +483,11 @@ export type Wallet = {
   address: Scalars['Bytes'];
   bags: Array<Bag>;
   bagsHeld: Scalars['BigInt'];
-  hustlers: Array<Hustler>;
   id: Scalars['ID'];
-  items: Array<ItemBalances>;
   joined: Scalars['BigInt'];
   paper: Scalars['BigInt'];
 };
+
 
 export type WalletBagsArgs = {
   first?: Maybe<Scalars['Int']>;
@@ -1076,22 +495,6 @@ export type WalletBagsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   skip?: Maybe<Scalars['Int']>;
   where?: Maybe<Bag_Filter>;
-};
-
-export type WalletHustlersArgs = {
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Hustler_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  where?: Maybe<Hustler_Filter>;
-};
-
-export type WalletItemsArgs = {
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<ItemBalances_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  where?: Maybe<ItemBalances_Filter>;
 };
 
 export type Wallet_Filter = {
@@ -1139,11 +542,9 @@ export enum Wallet_OrderBy {
   Address = 'address',
   Bags = 'bags',
   BagsHeld = 'bagsHeld',
-  Hustlers = 'hustlers',
   Id = 'id',
-  Items = 'items',
   Joined = 'joined',
-  Paper = 'paper',
+  Paper = 'paper'
 }
 
 export type _Block_ = {
@@ -1152,6 +553,8 @@ export type _Block_ = {
   hash?: Maybe<Scalars['Bytes']>;
   /** The block number */
   number: Scalars['Int'];
+  /** The minimum block number */
+  number_gte: Scalars['Int'];
 };
 
 /** The type for the top-level _meta field */
@@ -1175,68 +578,28 @@ export enum _SubgraphErrorPolicy_ {
   /** Data will be returned even if the subgraph has indexing errors */
   Allow = 'allow',
   /** If the subgraph has indexing errors, data will be omitted. The default. */
-  Deny = 'deny',
+  Deny = 'deny'
 }
 
-export type AllUnclaimedBagsQueryVariables = Exact<{ [key: string]: never }>;
+export type AllUnclaimedBagsQueryVariables = Exact<{ [key: string]: never; }>;
 
-export type AllUnclaimedBagsQuery = {
-  __typename?: 'Query';
-  page_1: Array<{ __typename?: 'Bag'; claimed: boolean; id: string }>;
-  page_2: Array<{ __typename?: 'Bag'; claimed: boolean; id: string }>;
-  page_3: Array<{ __typename?: 'Bag'; claimed: boolean; id: string }>;
-};
+
+export type AllUnclaimedBagsQuery = { __typename?: 'Query', page_1: Array<{ __typename?: 'Bag', claimed: boolean, id: string }>, page_2: Array<{ __typename?: 'Bag', claimed: boolean, id: string }>, page_3: Array<{ __typename?: 'Bag', claimed: boolean, id: string }> };
 
 export type BagQueryVariables = Exact<{
   tokenId: Scalars['ID'];
 }>;
 
-export type BagQuery = {
-  __typename?: 'Query';
-  bag?: Maybe<{
-    __typename?: 'Bag';
-    id: string;
-    claimed: boolean;
-    bundled: boolean;
-    open_sea_asset?: Maybe<{
-      __typename?: 'OpenSeaAsset';
-      is_on_sale?: Maybe<boolean>;
-      current_sale_price?: Maybe<number>;
-      last_sale_price?: Maybe<number>;
-    }>;
-  }>;
-};
+
+export type BagQuery = { __typename?: 'Query', bag?: Maybe<{ __typename?: 'Bag', id: string, claimed: boolean, bundled: boolean, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
 
 export type BagsQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
   skip?: Maybe<Scalars['Int']>;
 }>;
 
-export type BagsQuery = {
-  __typename?: 'Query';
-  bags: Array<{
-    __typename?: 'Bag';
-    claimed: boolean;
-    bundled: boolean;
-    id: string;
-    clothes: string;
-    foot: string;
-    hand: string;
-    drugs: string;
-    neck: string;
-    ring: string;
-    vehicle: string;
-    waist: string;
-    weapon: string;
-    rank: number;
-    open_sea_asset?: Maybe<{
-      __typename?: 'OpenSeaAsset';
-      is_on_sale?: Maybe<boolean>;
-      current_sale_price?: Maybe<number>;
-      last_sale_price?: Maybe<number>;
-    }>;
-  }>;
-};
+
+export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, bundled: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
 
 export type SearchQueryVariables = Exact<{
   text: Scalars['String'];
@@ -1244,70 +607,33 @@ export type SearchQueryVariables = Exact<{
   skip?: Maybe<Scalars['Int']>;
 }>;
 
-export type SearchQuery = {
-  __typename?: 'Query';
-  search: Array<{
-    __typename?: 'Bag';
-    id: string;
-    clothes: string;
-    foot: string;
-    hand: string;
-    drugs: string;
-    neck: string;
-    ring: string;
-    vehicle: string;
-    waist: string;
-    weapon: string;
-    claimed: boolean;
-  }>;
-};
+
+export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean }> };
 
 export type WalletQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-export type WalletQuery = {
-  __typename?: 'Query';
-  wallet?: Maybe<{
-    __typename?: 'Wallet';
-    id: string;
-    address: any;
-    paper: any;
-    bags: Array<{
-      __typename?: 'Bag';
-      claimed: boolean;
-      id: string;
-      bundled: boolean;
-      clothes: string;
-      foot: string;
-      hand: string;
-      drugs: string;
-      neck: string;
-      ring: string;
-      vehicle: string;
-      waist: string;
-      weapon: string;
-      rank: number;
-    }>;
-  }>;
-};
+
+export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, bundled: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> }> };
+
 
 export const AllUnclaimedBagsDocument = gql`
-  query AllUnclaimedBags {
-    page_1: bags(first: 1000, skip: 0, where: { claimed: false }) {
-      claimed
-      id
-    }
-    page_2: bags(first: 1000, skip: 1000, where: { claimed: false }) {
-      claimed
-      id
-    }
-    page_3: bags(first: 1000, skip: 2000, where: { claimed: false }) {
-      claimed
-      id
-    }
+    query AllUnclaimedBags {
+  page_1: bags(first: 1000, skip: 0, where: {claimed: false}) {
+    claimed
+    id
   }
-`;
+  page_2: bags(first: 1000, skip: 1000, where: {claimed: false}) {
+    claimed
+    id
+  }
+  page_3: bags(first: 1000, skip: 2000, where: {claimed: false}) {
+    claimed
+    id
+  }
+}
+    `;
 
 /**
  * __useAllUnclaimedBagsQuery__
@@ -1324,44 +650,31 @@ export const AllUnclaimedBagsDocument = gql`
  *   },
  * });
  */
-export function useAllUnclaimedBagsQuery(
-  baseOptions?: Apollo.QueryHookOptions<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(
-    AllUnclaimedBagsDocument,
-    options,
-  );
-}
-export function useAllUnclaimedBagsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(
-    AllUnclaimedBagsDocument,
-    options,
-  );
-}
+export function useAllUnclaimedBagsQuery(baseOptions?: Apollo.QueryHookOptions<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(AllUnclaimedBagsDocument, options);
+      }
+export function useAllUnclaimedBagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(AllUnclaimedBagsDocument, options);
+        }
 export type AllUnclaimedBagsQueryHookResult = ReturnType<typeof useAllUnclaimedBagsQuery>;
 export type AllUnclaimedBagsLazyQueryHookResult = ReturnType<typeof useAllUnclaimedBagsLazyQuery>;
-export type AllUnclaimedBagsQueryResult = Apollo.QueryResult<
-  AllUnclaimedBagsQuery,
-  AllUnclaimedBagsQueryVariables
->;
+export type AllUnclaimedBagsQueryResult = Apollo.QueryResult<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>;
 export const BagDocument = gql`
-  query Bag($tokenId: ID!) {
-    bag(id: $tokenId) {
-      id
-      claimed
-      bundled @client
-      open_sea_asset @client {
-        is_on_sale
-        current_sale_price
-        last_sale_price
-      }
+    query Bag($tokenId: ID!) {
+  bag(id: $tokenId) {
+    id
+    claimed
+    bundled @client
+    open_sea_asset @client {
+      is_on_sale
+      current_sale_price
+      last_sale_price
     }
   }
-`;
+}
+    `;
 
 /**
  * __useBagQuery__
@@ -1380,42 +693,40 @@ export const BagDocument = gql`
  * });
  */
 export function useBagQuery(baseOptions: Apollo.QueryHookOptions<BagQuery, BagQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<BagQuery, BagQueryVariables>(BagDocument, options);
-}
-export function useBagLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<BagQuery, BagQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<BagQuery, BagQueryVariables>(BagDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BagQuery, BagQueryVariables>(BagDocument, options);
+      }
+export function useBagLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BagQuery, BagQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BagQuery, BagQueryVariables>(BagDocument, options);
+        }
 export type BagQueryHookResult = ReturnType<typeof useBagQuery>;
 export type BagLazyQueryHookResult = ReturnType<typeof useBagLazyQuery>;
 export type BagQueryResult = Apollo.QueryResult<BagQuery, BagQueryVariables>;
 export const BagsDocument = gql`
-  query Bags($first: Int, $skip: Int) {
-    bags(first: $first, skip: $skip) {
-      claimed
-      bundled @client
-      id
-      clothes @client
-      foot @client
-      hand @client
-      drugs @client
-      neck @client
-      ring @client
-      vehicle @client
-      waist @client
-      weapon @client
-      rank @client
-      open_sea_asset @client {
-        is_on_sale
-        current_sale_price
-        last_sale_price
-      }
+    query Bags($first: Int, $skip: Int) {
+  bags(first: $first, skip: $skip) {
+    claimed
+    bundled @client
+    id
+    clothes @client
+    foot @client
+    hand @client
+    drugs @client
+    neck @client
+    ring @client
+    vehicle @client
+    waist @client
+    weapon @client
+    rank @client
+    open_sea_asset @client {
+      is_on_sale
+      current_sale_price
+      last_sale_price
     }
   }
-`;
+}
+    `;
 
 /**
  * __useBagsQuery__
@@ -1435,35 +746,33 @@ export const BagsDocument = gql`
  * });
  */
 export function useBagsQuery(baseOptions?: Apollo.QueryHookOptions<BagsQuery, BagsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
-}
-export function useBagsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<BagsQuery, BagsQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
+      }
+export function useBagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BagsQuery, BagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
+        }
 export type BagsQueryHookResult = ReturnType<typeof useBagsQuery>;
 export type BagsLazyQueryHookResult = ReturnType<typeof useBagsLazyQuery>;
 export type BagsQueryResult = Apollo.QueryResult<BagsQuery, BagsQueryVariables>;
 export const SearchDocument = gql`
-  query Search($text: String!, $first: Int, $skip: Int) {
-    search(text: $text, first: $first, skip: $skip) {
-      id
-      clothes
-      foot
-      hand
-      drugs
-      neck
-      ring
-      vehicle
-      waist
-      weapon
-      claimed
-    }
+    query Search($text: String!, $first: Int, $skip: Int) {
+  search(text: $text, first: $first, skip: $skip) {
+    id
+    clothes
+    foot
+    hand
+    drugs
+    neck
+    ring
+    vehicle
+    waist
+    weapon
+    claimed
   }
-`;
+}
+    `;
 
 /**
  * __useSearchQuery__
@@ -1483,45 +792,41 @@ export const SearchDocument = gql`
  *   },
  * });
  */
-export function useSearchQuery(
-  baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
-}
-export function useSearchLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
-}
+export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+      }
+export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+        }
 export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
 export const WalletDocument = gql`
-  query Wallet($id: ID!) {
-    wallet(id: $id) {
+    query Wallet($id: ID!) {
+  wallet(id: $id) {
+    id
+    address
+    paper
+    bags(first: 200) {
+      claimed
       id
-      address
-      paper
-      bags(first: 200) {
-        claimed
-        id
-        bundled @client
-        clothes @client
-        foot @client
-        hand @client
-        drugs @client
-        neck @client
-        ring @client
-        vehicle @client
-        waist @client
-        weapon @client
-        rank @client
-      }
+      bundled @client
+      clothes @client
+      foot @client
+      hand @client
+      drugs @client
+      neck @client
+      ring @client
+      vehicle @client
+      waist @client
+      weapon @client
+      rank @client
     }
   }
-`;
+}
+    `;
 
 /**
  * __useWalletQuery__
@@ -1539,18 +844,14 @@ export const WalletDocument = gql`
  *   },
  * });
  */
-export function useWalletQuery(
-  baseOptions: Apollo.QueryHookOptions<WalletQuery, WalletQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
-}
-export function useWalletLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<WalletQuery, WalletQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
-}
+export function useWalletQuery(baseOptions: Apollo.QueryHookOptions<WalletQuery, WalletQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
+      }
+export function useWalletLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WalletQuery, WalletQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
+        }
 export type WalletQueryHookResult = ReturnType<typeof useWalletQuery>;
 export type WalletLazyQueryHookResult = ReturnType<typeof useWalletLazyQuery>;
 export type WalletQueryResult = Apollo.QueryResult<WalletQuery, WalletQueryVariables>;

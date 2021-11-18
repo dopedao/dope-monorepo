@@ -32,6 +32,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@dopewars/subgraph@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@dopewars/subgraph@workspace:."
+  dependencies:
+    "@graphprotocol/graph-cli": 0.23.2
+    "@graphprotocol/graph-ts": 0.23.1
+    cross-var: ^1.1.0
+    dotenv: ^10.0.0
+    dotenv-cli: ^4.1.0
+    fs-extra: ^10.0.0
+    handlebars: ^4.7.7
+    js-yaml: ^4.1.0
+    typy: ^3.3.0
+  languageName: unknown
+  linkType: soft
+
 "@gar/promisify@npm:^1.0.1":
   version: 1.1.2
   resolution: "@gar/promisify@npm:1.1.2"
@@ -2526,22 +2542,6 @@ fsevents@~2.3.2:
   checksum: a89b53cee65579b46832e050b5f3a79a832cc422c190de79c6b8e2e15296ab92faddde6ddf2d376875cbba2b043efa99b9e1ed8124e7365f61b04e3cee9d40ee
   languageName: node
   linkType: hard
-
-"gear@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "gear@workspace:."
-  dependencies:
-    "@graphprotocol/graph-cli": 0.23.2
-    "@graphprotocol/graph-ts": 0.23.1
-    cross-var: ^1.1.0
-    dotenv: ^10.0.0
-    dotenv-cli: ^4.1.0
-    fs-extra: ^10.0.0
-    handlebars: ^4.7.7
-    js-yaml: ^4.1.0
-    typy: ^3.3.0
-  languageName: unknown
-  linkType: soft
 
 "get-intrinsic@npm:^1.0.2":
   version: 1.1.1
