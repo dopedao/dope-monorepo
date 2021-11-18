@@ -37,6 +37,7 @@ export default function GlobalStyles() {
           --space-lg: calc(var(--base-unit) * 5);
 
           /* TYPOGRAPHY */
+          --text-small: 0.9em;
           --text-00: 1em;
           --text-01: 1.125em;
           --text-02: 1.25em;
@@ -169,6 +170,10 @@ export default function GlobalStyles() {
         ul {
           padding-bottom: var(--space-sm);
           line-height: 1.5;
+        }
+
+        .small {
+          font-size: var(--text-small);
         }
 
         em {

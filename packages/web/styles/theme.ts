@@ -68,6 +68,16 @@ export default extendTheme({
             },
           },
         },
+        linkBlack: {
+          boxShadow: 'none',
+          textShadow: 'none',
+          outline: '0px',
+          fontWeight: 'normal',
+          color: '#000000',
+          fontSize: '1em',
+          width: 'auto',
+          display: 'inline-block',
+        },
         primary: {
           backgroundColor: 'var(--primary)',
           color: '#ffffff',
