@@ -1,8 +1,6 @@
 import {
   Button,
-  FormLabel,
   Spinner,
-  Switch,
 } from '@chakra-ui/react';
 
 import { ChangeEvent } from 'react';
@@ -76,10 +74,6 @@ const InitiationFooterDopeContent = () => {
     HustlerInitConfig({ ...hustlerConfig, dopeId: value });
   };
 
-  const handleOgSwitchChange = () => {
-    HustlerInitConfig({ ...hustlerConfig, mintOg: !hustlerConfig.mintOg });
-  };
-
   const getBundledDopeFromData = (data: WalletQuery) => {
     let bundledDope = [] as PickedBag[];
     if (data?.wallet?.bags && data.wallet.bags.length > 0) {
@@ -142,32 +136,18 @@ const InitiationFooterDopeContent = () => {
               </option>
             ))}
           </Select>
-          <div
-            css={css`
-              display: flex;
-              justify-content: space-between;
-              padding: 8px 12px;
-            `}
-          >
-            <Link href="/hustlers/configure">
-              <a className="primary">Configure Appearance</a>
-            </Link>
-            <a className="primary" onClick={() => randomizeHustlerAttributes()}>
-              Randomize
-            </a>
-          </div>
         </SubPanelForm>
         <PanelFooter>
           <div>
-            <Switch 
-              id="initiate-og-switch"
-              isChecked={hustlerConfig.mintOg} 
-              onChange={handleOgSwitchChange} 
-            />
-            <label htmlFor="initiate-og-switch" css={css`margin-left:.5em;`}>Initiate OG</label>
+            <Link href="/hustlers/configure" passHref>
+              <Button>Configure</Button>
+            </Link>
+            <Button onClick={() => randomizeHustlerAttributes()}>
+              Randomize
+            </Button>
           </div>
           <Button variant="primary" onClick={goToNextStep}>
-            Continue Initiation
+            Next 👉 Initiate
           </Button>
         </PanelFooter>
       </div>
