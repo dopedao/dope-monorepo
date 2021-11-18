@@ -3,8 +3,7 @@ import { makeVar } from '@apollo/client';
 import { getRandomNumber } from './utils';
 import { NUM_DOPE_TOKENS } from './constants';
 import { HUSTLER_NAMES } from './hustler-names';
-import { BigNumberish } from '@ethersproject/abi/node_modules/@ethersproject/bignumber';
-
+import { BigNumberish } from 'ethers';
 const HUSTLER_SEXES = ['male', 'female'];
 export type HustlerSex = 'male' | 'female';
 export const MAX_BODIES = 5;
