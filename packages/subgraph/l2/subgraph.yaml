@@ -1,0 +1,56 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: SwapMeet
+    network: optimism
+    source:
+      address: "0xB3cCb05742bDbd51Daa24f036FC5489f5ca0f38c"
+      abi: SwapMeet
+      startBlock: 189320
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Wallet
+        - Item
+        - RLE
+      abis:
+        - name: SwapMeet
+          file: ../abis/SwapMeet.json
+      eventHandlers:
+        - event: SetRle(uint256)
+          handler: handleSwapMeetSetRle
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleSwapMeetTransfer
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleSwapMeetTransferBatch
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: Hustler
+    network: optimism
+    source:
+      address: "0xE9DACD8118917e3A0522f45c191C6abe88d271B0"
+      abi: Hustler
+      startBlock: 189334
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Wallet
+      abis:
+        - name: Hustler
+          file: ../abis/Hustler.json
+      eventHandlers:
+        - event: AddRles(uint8,uint256)
+          handler: handleHustlerAddRles
+        - event: MetadataUpdate(uint256)
+          handler: handleHustlerMetadataUpdate
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleHustlerTransfer
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleHustlerTransferBatch
+      file: ./src/mapping.ts

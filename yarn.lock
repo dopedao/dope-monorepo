@@ -8372,6 +8372,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-helper-bindify-decorators@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "babel-helper-bindify-decorators@npm:6.24.1"
+  dependencies:
+    babel-runtime: ^6.22.0
+    babel-traverse: ^6.24.1
+    babel-types: ^6.24.1
+  checksum: cf599470dfc580bc1e3be8551222ffbc50bfd3b629331da63c09d2fd6a1ae8ddfd3f71a73905a18be1abd17c65c737b27e940fdcbaeca4bd3f82ab7ed0bf1ad1
+  languageName: node
+  linkType: hard
+
 "babel-helper-builder-binary-assignment-operator-visitor@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-helper-builder-binary-assignment-operator-visitor@npm:6.24.1"
@@ -8415,6 +8426,18 @@ __metadata:
     babel-traverse: ^6.24.1
     babel-types: ^6.24.1
   checksum: 1bafdb51ce3dd95cf25d712d24a0c3c2ae02ff58118c77462f14ede4d8161aaee42c5c759c3d3a3344a5851b8b0f8d16b395713413b8194e1c3264fc5b12b754
+  languageName: node
+  linkType: hard
+
+"babel-helper-explode-class@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "babel-helper-explode-class@npm:6.24.1"
+  dependencies:
+    babel-helper-bindify-decorators: ^6.24.1
+    babel-runtime: ^6.22.0
+    babel-traverse: ^6.24.1
+    babel-types: ^6.24.1
+  checksum: fd535caf92727a96f7027f8372a28480b521d7c0435e1c875d673c3fa9da7eaf7265f5d2c59ffc053200a10ab978d346435ee7676aa6e65ae07214a2e56ca4a3
   languageName: node
   linkType: hard
 
@@ -8651,6 +8674,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-plugin-syntax-async-generators@npm:^6.5.0":
+  version: 6.13.0
+  resolution: "babel-plugin-syntax-async-generators@npm:6.13.0"
+  checksum: 215da3e75068579387f89f340d80329dd346eedf39e5ae8275652156a758e51374e1a93542f22b3de11dea24bf9abc777425cefc21295ab4d4192fa10715f93b
+  languageName: node
+  linkType: hard
+
+"babel-plugin-syntax-class-constructor-call@npm:^6.18.0":
+  version: 6.18.0
+  resolution: "babel-plugin-syntax-class-constructor-call@npm:6.18.0"
+  checksum: 2e8ecf022845f0eb7cf89b7b0280ad6ddc344c3ca325b91bb094cbce22b5d79ba3ac7379868c4bad515d10107f21ea5c4948047e61b0dc57efe47116a4be81fc
+  languageName: node
+  linkType: hard
+
+"babel-plugin-syntax-class-properties@npm:^6.8.0":
+  version: 6.13.0
+  resolution: "babel-plugin-syntax-class-properties@npm:6.13.0"
+  checksum: 440bb227e98a4e76b087ecef2a8e9ba917158bbfd447e5ad80924b4c02fab88a79500892a17c262040329c33d2f74106a906a1361589ea4a9910fedc03210adc
+  languageName: node
+  linkType: hard
+
+"babel-plugin-syntax-decorators@npm:^6.13.0":
+  version: 6.13.0
+  resolution: "babel-plugin-syntax-decorators@npm:6.13.0"
+  checksum: e0dfccacd12034badd5c1dc6e7497f402d0d2c7cdab0610ba69bc9cb8e6538677b2eeaae0efdaeb43bb52bb090584aa32f7b16971127649990da52fe650b2037
+  languageName: node
+  linkType: hard
+
+"babel-plugin-syntax-do-expressions@npm:^6.8.0":
+  version: 6.13.0
+  resolution: "babel-plugin-syntax-do-expressions@npm:6.13.0"
+  checksum: fc1fe46dbd76303ab632718f8769e87f750238d4a702f744b436554e2c63c807fdf83ec235e49bcb6be1761cced601df7cf62a5a88422837ba1c8d8f8ac834c9
+  languageName: node
+  linkType: hard
+
+"babel-plugin-syntax-dynamic-import@npm:^6.18.0":
+  version: 6.18.0
+  resolution: "babel-plugin-syntax-dynamic-import@npm:6.18.0"
+  checksum: 0a7a98ecb63878d65d4fd35e5435b0a7ad8e5c43b394389ce82298733c7a5d95c4373f1dd68566694214dad64abd0fec1e4eb7ee9ca7d1ee06d502e630d61600
+  languageName: node
+  linkType: hard
+
 "babel-plugin-syntax-exponentiation-operator@npm:^6.8.0":
   version: 6.13.0
   resolution: "babel-plugin-syntax-exponentiation-operator@npm:6.13.0"
@@ -8658,10 +8723,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-plugin-syntax-export-extensions@npm:^6.8.0":
+  version: 6.13.0
+  resolution: "babel-plugin-syntax-export-extensions@npm:6.13.0"
+  checksum: c38f99baf21aa2d701289434b160f3537c7e68fa657d0cb6ae505d3d9a7cdc96d09d0834b583abb7865b2c6e02c400609d3ee54d6c28fe190ac1e9abfc7e0cb9
+  languageName: node
+  linkType: hard
+
+"babel-plugin-syntax-function-bind@npm:^6.8.0":
+  version: 6.13.0
+  resolution: "babel-plugin-syntax-function-bind@npm:6.13.0"
+  checksum: 1fa81c95237e6248b57447bdb3a48b670b5517cde810229113e15b788b441693b6993c97eba343b813843b19b45d7121f84869dd69a4b9ef52951adbf445f48b
+  languageName: node
+  linkType: hard
+
 "babel-plugin-syntax-jsx@npm:^6.18.0":
   version: 6.18.0
   resolution: "babel-plugin-syntax-jsx@npm:6.18.0"
   checksum: 0c7ce5b81d6cfc01a7dd7a76a9a8f090ee02ba5c890310f51217ef1a7e6163fb7848994bbc14fd560117892e82240df9c7157ad0764da67ca5f2afafb73a7d27
+  languageName: node
+  linkType: hard
+
+"babel-plugin-syntax-object-rest-spread@npm:^6.8.0":
+  version: 6.13.0
+  resolution: "babel-plugin-syntax-object-rest-spread@npm:6.13.0"
+  checksum: 14083f2783c760f5f199160f48e42ad4505fd35fc7cf9c4530812b176705259562b77db6d3ddc5e3cbce9e9b2b61ec9db3065941f0949b68e77cae3e395a6eef
   languageName: node
   linkType: hard
 
@@ -8679,7 +8765,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-async-to-generator@npm:^6.22.0":
+"babel-plugin-transform-async-generator-functions@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "babel-plugin-transform-async-generator-functions@npm:6.24.1"
+  dependencies:
+    babel-helper-remap-async-to-generator: ^6.24.1
+    babel-plugin-syntax-async-generators: ^6.5.0
+    babel-runtime: ^6.22.0
+  checksum: 015c1344915563e97b63ae55f9fd9e511cbdd01d945c2539011f2d9eb2c0d3644a7ed24032e71558c745340e75b63a6591a6d947118c5d226fb25e1f9e601d2e
+  languageName: node
+  linkType: hard
+
+"babel-plugin-transform-async-to-generator@npm:^6.22.0, babel-plugin-transform-async-to-generator@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-async-to-generator@npm:6.24.1"
   dependencies:
@@ -8687,6 +8784,52 @@ __metadata:
     babel-plugin-syntax-async-functions: ^6.8.0
     babel-runtime: ^6.22.0
   checksum: ffe8b4b2ed6db1f413ede385bd1a36f39e02a64ed79ce02779440049af75215c98f8debdc70eb01430bfd889f792682b0136576fe966f7f9e1b30e2a54695a8d
+  languageName: node
+  linkType: hard
+
+"babel-plugin-transform-class-constructor-call@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "babel-plugin-transform-class-constructor-call@npm:6.24.1"
+  dependencies:
+    babel-plugin-syntax-class-constructor-call: ^6.18.0
+    babel-runtime: ^6.22.0
+    babel-template: ^6.24.1
+  checksum: 0cf3177d706ecbfd8c665f7831258ffbdc72df097af64cba417f54c583d996b535ef3bd92c007acb3d7c915028ba5b413addda6e7d619ed96542fcddfc36d68d
+  languageName: node
+  linkType: hard
+
+"babel-plugin-transform-class-properties@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "babel-plugin-transform-class-properties@npm:6.24.1"
+  dependencies:
+    babel-helper-function-name: ^6.24.1
+    babel-plugin-syntax-class-properties: ^6.8.0
+    babel-runtime: ^6.22.0
+    babel-template: ^6.24.1
+  checksum: b3395063599e7aa07685b74f57b52cb887732f07435abc6b5a07778a12627df4a7f398749e0d863ccdcfa7a8e18a124950f8a3817eea4d32b7549389ffdaf72c
+  languageName: node
+  linkType: hard
+
+"babel-plugin-transform-decorators@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "babel-plugin-transform-decorators@npm:6.24.1"
+  dependencies:
+    babel-helper-explode-class: ^6.24.1
+    babel-plugin-syntax-decorators: ^6.13.0
+    babel-runtime: ^6.22.0
+    babel-template: ^6.24.1
+    babel-types: ^6.24.1
+  checksum: b5bd01a390b12146fad42e03a81dd360b85e3134aa29ce24c5f56a665fa3c182765dd33dff243f15f9e0361630991a6c31eb2491056174f535cedf0beb8b7f40
+  languageName: node
+  linkType: hard
+
+"babel-plugin-transform-do-expressions@npm:^6.22.0":
+  version: 6.22.0
+  resolution: "babel-plugin-transform-do-expressions@npm:6.22.0"
+  dependencies:
+    babel-plugin-syntax-do-expressions: ^6.8.0
+    babel-runtime: ^6.22.0
+  checksum: 57c8e2be37ea7bba49ab6e6698b9eeb60fe993add59e4f26f1f53862b4e688d0b825e245eb8b668d160db23d3ae8787d7520904d3ae2c6303d73e76367d89f81
   languageName: node
   linkType: hard
 
@@ -8708,7 +8851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-block-scoping@npm:^6.23.0":
+"babel-plugin-transform-es2015-block-scoping@npm:^6.23.0, babel-plugin-transform-es2015-block-scoping@npm:^6.24.1":
   version: 6.26.0
   resolution: "babel-plugin-transform-es2015-block-scoping@npm:6.26.0"
   dependencies:
@@ -8721,7 +8864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-classes@npm:^6.23.0":
+"babel-plugin-transform-es2015-classes@npm:^6.23.0, babel-plugin-transform-es2015-classes@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-classes@npm:6.24.1"
   dependencies:
@@ -8738,7 +8881,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-computed-properties@npm:^6.22.0":
+"babel-plugin-transform-es2015-computed-properties@npm:^6.22.0, babel-plugin-transform-es2015-computed-properties@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-computed-properties@npm:6.24.1"
   dependencies:
@@ -8748,7 +8891,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-destructuring@npm:^6.23.0":
+"babel-plugin-transform-es2015-destructuring@npm:^6.22.0, babel-plugin-transform-es2015-destructuring@npm:^6.23.0":
   version: 6.23.0
   resolution: "babel-plugin-transform-es2015-destructuring@npm:6.23.0"
   dependencies:
@@ -8757,7 +8900,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-duplicate-keys@npm:^6.22.0":
+"babel-plugin-transform-es2015-duplicate-keys@npm:^6.22.0, babel-plugin-transform-es2015-duplicate-keys@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-duplicate-keys@npm:6.24.1"
   dependencies:
@@ -8767,7 +8910,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-for-of@npm:^6.23.0":
+"babel-plugin-transform-es2015-for-of@npm:^6.22.0, babel-plugin-transform-es2015-for-of@npm:^6.23.0":
   version: 6.23.0
   resolution: "babel-plugin-transform-es2015-for-of@npm:6.23.0"
   dependencies:
@@ -8776,7 +8919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-function-name@npm:^6.22.0":
+"babel-plugin-transform-es2015-function-name@npm:^6.22.0, babel-plugin-transform-es2015-function-name@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-function-name@npm:6.24.1"
   dependencies:
@@ -8819,7 +8962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-modules-systemjs@npm:^6.23.0":
+"babel-plugin-transform-es2015-modules-systemjs@npm:^6.23.0, babel-plugin-transform-es2015-modules-systemjs@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-modules-systemjs@npm:6.24.1"
   dependencies:
@@ -8830,7 +8973,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-modules-umd@npm:^6.23.0":
+"babel-plugin-transform-es2015-modules-umd@npm:^6.23.0, babel-plugin-transform-es2015-modules-umd@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-modules-umd@npm:6.24.1"
   dependencies:
@@ -8841,7 +8984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-object-super@npm:^6.22.0":
+"babel-plugin-transform-es2015-object-super@npm:^6.22.0, babel-plugin-transform-es2015-object-super@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-object-super@npm:6.24.1"
   dependencies:
@@ -8851,7 +8994,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-parameters@npm:^6.23.0":
+"babel-plugin-transform-es2015-parameters@npm:^6.23.0, babel-plugin-transform-es2015-parameters@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-parameters@npm:6.24.1"
   dependencies:
@@ -8865,7 +9008,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-shorthand-properties@npm:^6.22.0":
+"babel-plugin-transform-es2015-shorthand-properties@npm:^6.22.0, babel-plugin-transform-es2015-shorthand-properties@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-shorthand-properties@npm:6.24.1"
   dependencies:
@@ -8884,7 +9027,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-sticky-regex@npm:^6.22.0":
+"babel-plugin-transform-es2015-sticky-regex@npm:^6.22.0, babel-plugin-transform-es2015-sticky-regex@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-sticky-regex@npm:6.24.1"
   dependencies:
@@ -8904,7 +9047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-typeof-symbol@npm:^6.23.0":
+"babel-plugin-transform-es2015-typeof-symbol@npm:^6.22.0, babel-plugin-transform-es2015-typeof-symbol@npm:^6.23.0":
   version: 6.23.0
   resolution: "babel-plugin-transform-es2015-typeof-symbol@npm:6.23.0"
   dependencies:
@@ -8913,7 +9056,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-es2015-unicode-regex@npm:^6.22.0":
+"babel-plugin-transform-es2015-unicode-regex@npm:^6.22.0, babel-plugin-transform-es2015-unicode-regex@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-es2015-unicode-regex@npm:6.24.1"
   dependencies:
@@ -8924,7 +9067,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-exponentiation-operator@npm:^6.22.0":
+"babel-plugin-transform-exponentiation-operator@npm:^6.22.0, babel-plugin-transform-exponentiation-operator@npm:^6.24.1":
   version: 6.24.1
   resolution: "babel-plugin-transform-exponentiation-operator@npm:6.24.1"
   dependencies:
@@ -8935,7 +9078,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-regenerator@npm:^6.22.0":
+"babel-plugin-transform-export-extensions@npm:^6.22.0":
+  version: 6.22.0
+  resolution: "babel-plugin-transform-export-extensions@npm:6.22.0"
+  dependencies:
+    babel-plugin-syntax-export-extensions: ^6.8.0
+    babel-runtime: ^6.22.0
+  checksum: a3355d1cbe2bd33ffdb49c3bf48998aba4469e3ddb5c2baa76762c942dbeb4c270fb59af1e8fe1d135e107fa8869d946d2ce077952b47af72a3014977721acf6
+  languageName: node
+  linkType: hard
+
+"babel-plugin-transform-function-bind@npm:^6.22.0":
+  version: 6.22.0
+  resolution: "babel-plugin-transform-function-bind@npm:6.22.0"
+  dependencies:
+    babel-plugin-syntax-function-bind: ^6.8.0
+    babel-runtime: ^6.22.0
+  checksum: e81245c334b4c5ce3da1a12fc03c14cb80d868f722592d485bfe6d74e06379632189bfed761373f076934534a103364eabcfc98a86fff664989f4b919aa5871e
+  languageName: node
+  linkType: hard
+
+"babel-plugin-transform-object-rest-spread@npm:^6.22.0":
+  version: 6.26.0
+  resolution: "babel-plugin-transform-object-rest-spread@npm:6.26.0"
+  dependencies:
+    babel-plugin-syntax-object-rest-spread: ^6.8.0
+    babel-runtime: ^6.26.0
+  checksum: aad583fb0d08073678838f77fa822788b9a0b842ba33e34f8d131246852f7ed31cfb5fdf57644dec952f84dcae862a27dbf3d12ccbee6bdb0aed6e7ed13ca9ba
+  languageName: node
+  linkType: hard
+
+"babel-plugin-transform-regenerator@npm:^6.22.0, babel-plugin-transform-regenerator@npm:^6.24.1":
   version: 6.26.0
   resolution: "babel-plugin-transform-regenerator@npm:6.26.0"
   dependencies:
@@ -9014,6 +9187,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-preset-es2015@npm:^6.18.0":
+  version: 6.24.1
+  resolution: "babel-preset-es2015@npm:6.24.1"
+  dependencies:
+    babel-plugin-check-es2015-constants: ^6.22.0
+    babel-plugin-transform-es2015-arrow-functions: ^6.22.0
+    babel-plugin-transform-es2015-block-scoped-functions: ^6.22.0
+    babel-plugin-transform-es2015-block-scoping: ^6.24.1
+    babel-plugin-transform-es2015-classes: ^6.24.1
+    babel-plugin-transform-es2015-computed-properties: ^6.24.1
+    babel-plugin-transform-es2015-destructuring: ^6.22.0
+    babel-plugin-transform-es2015-duplicate-keys: ^6.24.1
+    babel-plugin-transform-es2015-for-of: ^6.22.0
+    babel-plugin-transform-es2015-function-name: ^6.24.1
+    babel-plugin-transform-es2015-literals: ^6.22.0
+    babel-plugin-transform-es2015-modules-amd: ^6.24.1
+    babel-plugin-transform-es2015-modules-commonjs: ^6.24.1
+    babel-plugin-transform-es2015-modules-systemjs: ^6.24.1
+    babel-plugin-transform-es2015-modules-umd: ^6.24.1
+    babel-plugin-transform-es2015-object-super: ^6.24.1
+    babel-plugin-transform-es2015-parameters: ^6.24.1
+    babel-plugin-transform-es2015-shorthand-properties: ^6.24.1
+    babel-plugin-transform-es2015-spread: ^6.22.0
+    babel-plugin-transform-es2015-sticky-regex: ^6.24.1
+    babel-plugin-transform-es2015-template-literals: ^6.22.0
+    babel-plugin-transform-es2015-typeof-symbol: ^6.22.0
+    babel-plugin-transform-es2015-unicode-regex: ^6.24.1
+    babel-plugin-transform-regenerator: ^6.24.1
+  checksum: ce8af7631f20b9e249f49bb55b64d91665828b7c272131163c58ee3a7f4ac73b9fd4dee6943f71bfd4f307d689f1af9b35887ac5430ed7f2ddc92ad7251b6343
+  languageName: node
+  linkType: hard
+
 "babel-preset-fbjs@npm:^3.3.0":
   version: 3.4.0
   resolution: "babel-preset-fbjs@npm:3.4.0"
@@ -9063,7 +9268,54 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-register@npm:^6.26.0":
+"babel-preset-stage-0@npm:^6.16.0":
+  version: 6.24.1
+  resolution: "babel-preset-stage-0@npm:6.24.1"
+  dependencies:
+    babel-plugin-transform-do-expressions: ^6.22.0
+    babel-plugin-transform-function-bind: ^6.22.0
+    babel-preset-stage-1: ^6.24.1
+  checksum: e3e93fe060a5a7054ad4131aba4d94478d97fa8944b3cb9666467d3c7fa5c1512f266c5a3213a455669a6d9ff04d62fc85205c16d83256399955f7deec598ae5
+  languageName: node
+  linkType: hard
+
+"babel-preset-stage-1@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "babel-preset-stage-1@npm:6.24.1"
+  dependencies:
+    babel-plugin-transform-class-constructor-call: ^6.24.1
+    babel-plugin-transform-export-extensions: ^6.22.0
+    babel-preset-stage-2: ^6.24.1
+  checksum: 11df462b1b48d284c310819c20dbcf0c2f9c73997d2e1ecf5693c79b5a8bbb383e62ba6c265912f3805688755737ac3298b1e9026011caf41fb015da59b087e8
+  languageName: node
+  linkType: hard
+
+"babel-preset-stage-2@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "babel-preset-stage-2@npm:6.24.1"
+  dependencies:
+    babel-plugin-syntax-dynamic-import: ^6.18.0
+    babel-plugin-transform-class-properties: ^6.24.1
+    babel-plugin-transform-decorators: ^6.24.1
+    babel-preset-stage-3: ^6.24.1
+  checksum: 427b25bdf2cedf3a9be54f9c8ee8312528246f2a37c87c29396279f5d83bdd7b218139d2a9ca900c07747ac4c2bb7a041096af20992c03a2667e5f28acd030cd
+  languageName: node
+  linkType: hard
+
+"babel-preset-stage-3@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "babel-preset-stage-3@npm:6.24.1"
+  dependencies:
+    babel-plugin-syntax-trailing-function-commas: ^6.22.0
+    babel-plugin-transform-async-generator-functions: ^6.24.1
+    babel-plugin-transform-async-to-generator: ^6.24.1
+    babel-plugin-transform-exponentiation-operator: ^6.24.1
+    babel-plugin-transform-object-rest-spread: ^6.22.0
+  checksum: 321a8ef701a7da537f21bbab89e1111c67874b8b4cb2a77150391a9a24e95fe21d057675b698ac2607b4cac7f72aa242be425bd4eeb7c694de1374055ae26d05
+  languageName: node
+  linkType: hard
+
+"babel-register@npm:^6.18.0, babel-register@npm:^6.26.0":
   version: 6.26.0
   resolution: "babel-register@npm:6.26.0"
   dependencies:
@@ -11427,7 +11679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
+"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
   dependencies:
@@ -11435,6 +11687,21 @@ __metadata:
     shebang-command: ^2.0.0
     which: ^2.0.1
   checksum: 671cc7c7288c3a8406f3c69a3ae2fc85555c04169e9d611def9a675635472614f1c0ed0ef80955d5b6d4e724f6ced67f0ad1bb006c2ea643488fcfef994d7f52
+  languageName: node
+  linkType: hard
+
+"cross-var@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "cross-var@npm:1.1.0"
+  dependencies:
+    babel-preset-es2015: ^6.18.0
+    babel-preset-stage-0: ^6.16.0
+    babel-register: ^6.18.0
+    cross-spawn: ^5.0.1
+    exit: ^0.1.2
+  bin:
+    cross-var: ./index.js
+  checksum: 0f283179aadbf2ce16da5e3094640033fb5a43bf79667961603218ef26032519ea7959e2de96f896560bb6e623087bd93e042538c7ed11a134619fd99b421534
   languageName: node
   linkType: hard
 
@@ -12323,6 +12590,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv-cli@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "dotenv-cli@npm:4.1.0"
+  dependencies:
+    cross-spawn: ^7.0.1
+    dotenv: ^8.1.0
+    dotenv-expand: ^5.1.0
+    minimist: ^1.1.3
+  bin:
+    dotenv: cli.js
+  checksum: 3b47c70fc61d4d659d553904593da8df33ee75b15a4315884da2b1e8e34c398b400faf9ebcda2032e808a4a0530d2bd6bf331130a00cd6c0ddfbab60b156c1e3
+  languageName: node
+  linkType: hard
+
+"dotenv-expand@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "dotenv-expand@npm:5.1.0"
+  checksum: 8017675b7f254384915d55f9eb6388e577cf0a1231a28d54b0ca03b782be9501b0ac90ac57338636d395fa59051e6209e9b44b8ddf169ce6076dffb5dea227d3
+  languageName: node
+  linkType: hard
+
 "dotenv@npm:^10.0.0":
   version: 10.0.0
   resolution: "dotenv@npm:10.0.0"
@@ -12330,7 +12618,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^8.2.0":
+"dotenv@npm:^8.1.0, dotenv@npm:^8.2.0":
   version: 8.6.0
   resolution: "dotenv@npm:8.6.0"
   checksum: 38e902c80b0666ab59e9310a3d24ed237029a7ce34d976796349765ac96b8d769f6df19090f1f471b77a25ca391971efde8a1ea63bb83111bd8bec8e5cc9b2cd
@@ -14877,6 +15165,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fs-extra@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "fs-extra@npm:10.0.0"
+  dependencies:
+    graceful-fs: ^4.2.0
+    jsonfile: ^6.0.1
+    universalify: ^2.0.0
+  checksum: 5285a3d8f34b917cf2b66af8c231a40c1623626e9d701a20051d3337be16c6d7cac94441c8b3732d47a92a2a027886ca93c69b6a4ae6aee3c89650d2a8880c0a
+  languageName: node
+  linkType: hard
+
 "fs-extra@npm:^4.0.2, fs-extra@npm:^4.0.3":
   version: 4.0.3
   resolution: "fs-extra@npm:4.0.3"
@@ -15127,6 +15426,13 @@ fsevents@~2.1.1:
   dependencies:
     "@graphprotocol/graph-cli": 0.23.2
     "@graphprotocol/graph-ts": 0.23.1
+    cross-var: ^1.1.0
+    dotenv: ^10.0.0
+    dotenv-cli: ^4.1.0
+    fs-extra: ^10.0.0
+    handlebars: ^4.7.7
+    js-yaml: ^4.1.0
+    typy: ^3.3.0
   languageName: unknown
   linkType: soft
 
@@ -15716,7 +16022,7 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
-"handlebars@npm:^4.7.6":
+"handlebars@npm:^4.7.6, handlebars@npm:^4.7.7":
   version: 4.7.7
   resolution: "handlebars@npm:4.7.7"
   dependencies:
@@ -18385,7 +18691,7 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.0.0":
+"js-yaml@npm:^4.0.0, js-yaml@npm:^4.1.0":
   version: 4.1.0
   resolution: "js-yaml@npm:4.1.0"
   dependencies:
@@ -27789,6 +28095,13 @@ resolve@^2.0.0-next.3:
   version: 2.6.1
   resolution: "typical@npm:2.6.1"
   checksum: 6af04fefe50d90d3471f058b2cdc0f49b7436bdd605cd00acea7965926ff388a5a7d692ef144f45fccee6f8e896c065702ecc44b69057e2ce88c09e897c7d3a4
+  languageName: node
+  linkType: hard
+
+"typy@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "typy@npm:3.3.0"
+  checksum: 409529672989a6281a56810f5a0be3256ceccb8e73166a9344da53713b935ad036ca10fe702240e55ff0265e2e1a09c19d74b5dd10ce2366759027d24fa0089b
   languageName: node
   linkType: hard
 
