@@ -7,16 +7,17 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 interface AppWindowProps {
-  title?: string | undefined;
-  requiresWalletConnection?: boolean;
-  padBody?: boolean;
-  scrollable?: boolean;
-  children: React.ReactNode;
-  navbar?: React.ReactNode;
-  width?: number | string;
-  height?: number | string;
   balance?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  height?: number | string;
   loadingBalance?: boolean;
+  navbar?: React.ReactNode;
+  padBody?: boolean;
+  requiresWalletConnection?: boolean;
+  scrollable?: boolean;
+  title?: string | undefined;
+  width?: number | string;
 }
 
 const getBodyPadding = () => {
@@ -46,6 +47,7 @@ export default function AppWindow({
   loadingBalance,
   children,
   navbar,
+  footer,
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
@@ -65,7 +67,7 @@ export default function AppWindow({
           {children}
         </AppWindowBody>
       )}
-      <AppWindowFooter />
+      <AppWindowFooter>{footer}</AppWindowFooter>
     </DesktopWindow>
   );
 }

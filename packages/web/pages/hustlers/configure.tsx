@@ -32,8 +32,8 @@ const Configure = () => {
       balance={data?.wallet?.paper}
       loadingBalance={loading}
       padBody={false}
-      navbar={ account && 
-        <PanelFooter css={css`width:100%;`}>
+      footer={ account && 
+        <PanelFooter css={css`width:100%;border-top-width:1px;`}>
           <HStack mt={0} justify="space-between">
             <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
             <Link href="/hustlers/initiate" passHref>
