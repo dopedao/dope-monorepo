@@ -35,19 +35,12 @@ const Configure = () => {
       loadingBalance={loading}
       padBody={false}
       title={title}
-      footer={ account && 
-        <PanelFooter css={css`width:100%;border-top-width:1px;`}>
-          <HStack mt={0} justify="end">
-            <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
-            <Link href="/hustlers/initiate" passHref>
-              <Button variant="primary">Finish Configuration</Button>
-            </Link>
-          </HStack>
-        </PanelFooter>
-      }
     >
       <Head title={title} />
       <StackedResponsiveContainer>
+        <div>
+          <ConfigurationControls />
+        </div>
         <PanelContainer
           css={css`
             min-height: 500px;
@@ -70,11 +63,16 @@ const Configure = () => {
             textColor={hustlerConfig.textColor}
             zoomWindow={hustlerConfig.zoomWindow}
           />
-          <ZoomControls />
+          <PanelFooter css={css`width:100%;border-top-width:1px;`}>
+            <ZoomControls />
+            <HStack mt={0} justify="end">
+              <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
+              <Link href="/hustlers/initiate" passHref>
+                <Button variant="primary">Finish Configuration</Button>
+              </Link>
+            </HStack>
+          </PanelFooter>
         </PanelContainer>
-        <div>
-          <ConfigurationControls />
-        </div>
       </StackedResponsiveContainer>
     </AppWindow>
   );

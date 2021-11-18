@@ -10,11 +10,11 @@ const STEPS = [
   },
   {
     step: 1,
-    title: 'Approve Spend',
+    title: 'Initiate',
   },
   {
     step: 2,
-    title: 'Finalize',
+    title: 'Party',
   },
 ];
 

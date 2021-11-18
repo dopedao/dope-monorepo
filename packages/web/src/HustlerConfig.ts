@@ -41,6 +41,7 @@ export type HustlerCustomization = {
   sex: HustlerSex;
   textColor: string;
   zoomWindow: ZoomWindow;
+  mintAddress?: string;
 };
 
 /**
