@@ -4,6 +4,7 @@ import { NETWORK } from 'src/constants';
 import { SwapMeet__factory } from '@dopewars/contracts';
 import RenderFromItemIds, { HustlerRenderProps } from 'components/hustler/RenderFromItemIds';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
+import { useSwapMeet } from 'hooks/contracts';
 
 interface RenderFromLootIdProps extends Omit<HustlerRenderProps, 'itemIds'> {
   id: string;
@@ -24,21 +25,10 @@ const RenderFromLootId = ({
 }: RenderFromLootIdProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
-  const provider = useMemo<any>(
-    () =>
-      new providers.JsonRpcProvider(
-        'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
-      ),
-    [],
-  );
-
-  const swapmeet = useMemo(
-    () => SwapMeet__factory.connect(NETWORK[4].contracts.swapmeet, provider),
-    [provider],
-  );
+  const swapmeet = useSwapMeet();
 
   useEffect(() => {
-    if (swapmeet && id) {
+    if (id) {
       swapmeet.itemIds(id).then(ids =>
         // Excludes vehicle (2) and orders layers
         setItemIds([ids[6], ids[8], ids[5], ids[1], ids[3], ids[4], ids[7], ids[0]]),
