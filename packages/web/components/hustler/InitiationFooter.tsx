@@ -9,6 +9,7 @@ import styled from '@emotion/styled';
 // https://github.com/ndresx/react-countdown
 import Countdown from 'react-countdown';
 import InitiationFooterDopeContent from './InitiationFooterDopeContent';
+import { useReleaseDate } from 'hooks/contracts';
 
 const CountdownWrapper = styled.div`
   text-align: center;
@@ -57,6 +58,7 @@ const InitiationFooter = () => {
   const currentTime = new Date();
   const { chainId } = useWeb3React();
   const onTestNetOrAfterHustlerLaunch = chainId == 42 || currentTime >= HUSTLER_MINT_TIME;
+  const releaseDate = useReleaseDate();
 
   useMemo(() => {
 

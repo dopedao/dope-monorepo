@@ -10,6 +10,8 @@ import { BigNumber } from 'ethers';
 import { NETWORK } from 'src/constants';
 import { HustlerInitConfig } from 'src/HustlerConfig';
 import { Paper__factory, Initiator__factory } from '@dopewars/contracts';
+import { useRPCProvider } from 'hooks/web3';
+import { useInitiator, usePaper } from 'hooks/contracts';
 
 interface Props {
   bag: Pick<Bag, 'id' | 'claimed'>;
@@ -19,28 +21,14 @@ interface Props {
 const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   const { chainId, library, account } = useWeb3React();
 
+  const provider = useRPCProvider(10);
+
   const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
 
   const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
 
-  const paper = useMemo(
-    () =>
-      chainId
-        ? Paper__factory.connect(NETWORK[chainId as 1 | 42].contracts.paper, library.getSigner())
-        : null,
-    [chainId, library],
-  );
-
-  const initiator = useMemo(
-    () =>
-      chainId && chainId == 42
-        ? Initiator__factory.connect(
-            NETWORK[chainId as 42].contracts.initiator,
-            library.getSigner(),
-          )
-        : null,
-    [chainId, library],
-  );
+  const paper = usePaper();
+  const initiator = useInitiator();
 
   useEffect(() => {
     if (account && paper) {
@@ -51,9 +39,9 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   }, [account, paper]);
 
   useEffect(() => {
-    if (account && paper && chainId == 42) {
+    if (account && paper) {
       paper
-        .allowance(account, NETWORK[chainId as 42].contracts.initiator)
+        .allowance(account, NETWORK[chainId as 1 | 42].contracts.initiator)
         .then((allowance: BigNumber) =>
           setIsPaperApproved(allowance.gte('12500000000000000000000')),
         );
@@ -70,12 +58,13 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
 
   return (
     <div>
-      {chainId == 42 && initiator && paper && account && (
+      {initiator && paper && account && (
         <>
           <Button variant="primary" onClick={() => initiateHustler()}>
             Initiate Hustler
           </Button>
           <Button
+            disabled={chainId !== 42}
             onClick={async () => {
               await initiator.open(bag.id, account, '0x', 500000);
             }}

@@ -1,19 +1,89 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { providers } from 'ethers';
+import { provider } from 'aws-sdk/lib/credentials/credential_provider_chain';
 
 const injected = new InjectedConnector({
   supportedChainIds: [1, 4, 42, 69],
 });
 
+const rpc = {
+  1: 'https://eth-mainnet.alchemyapi.io/v2/4YF7OoE2seG3X12m9bfIJdiRv2zwUaAx',
+  10: 'https://opt-mainnet.g.alchemy.com/v2/k8J6YaoTtJVIs4ZxTo26zIPfBiCveX2m',
+  42: 'https://eth-kovan.alchemyapi.io/v2/UloBYQ33fXVpI0WFONXO-CgTl4uy93T6',
+  69: 'https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg',
+};
+
+export const useRPCProvider = (id: 1 | 10 | 42 | 69) =>
+  useMemo<providers.JsonRpcProvider>(() => new providers.JsonRpcProvider(rpc[id]), []);
+
+export const useEthereum = (): {
+  chainId: 1 | 42;
+  provider: providers.JsonRpcProvider;
+} => {
+  // Default to mainnet
+  let rpcProvider = useRPCProvider(1);
+  const [provider, setProvider] = useState<providers.JsonRpcProvider>(rpcProvider);
+  const { chainId, library } = useWeb3React();
+
+  let ethChainId: 1 | 42 = 1;
+  if (!chainId || chainId === 10) {
+    ethChainId = 1;
+  } else if (chainId === 1 || chainId === 42) {
+    ethChainId = chainId;
+  } else if (chainId === 69) {
+    ethChainId = 42;
+  }
+
+  rpcProvider = useRPCProvider(ethChainId);
+
+  useEffect(() => {
+    if (chainId && chainId === ethChainId) {
+      setProvider(library.getSigner());
+    } else {
+      setProvider(rpcProvider);
+    }
+  }, [chainId, ethChainId, rpcProvider]);
+
+  return { provider, chainId: ethChainId };
+};
+
+export const useOptimism = (): {
+  chainId: 10 | 69;
+  provider: providers.JsonRpcProvider;
+} => {
+  // Default to optimism mainnet
+  let rpcProvider = useRPCProvider(10);
+  const [provider, setProvider] = useState<providers.JsonRpcProvider>(rpcProvider);
+  const { chainId, library } = useWeb3React();
+
+  let optimismChainId: 10 | 69 = 10;
+  if (!chainId || chainId === 1) {
+    optimismChainId = 10;
+  } else if (chainId === 10 || chainId === 69) {
+    optimismChainId = chainId;
+  } else if (chainId === 42) {
+    optimismChainId = 69;
+  }
+
+  rpcProvider = useRPCProvider(optimismChainId);
+
+  useEffect(() => {
+    if (chainId && chainId === optimismChainId) {
+      setProvider(library.getSigner());
+    } else {
+      setProvider(rpcProvider);
+    }
+  }, [chainId, optimismChainId, rpcProvider]);
+
+  return { provider, chainId: optimismChainId };
+};
+
 export const walletconnect = new WalletConnectConnector({
-  rpc: {
-    1: 'https://eth-mainnet.alchemyapi.io/v2/4YF7OoE2seG3X12m9bfIJdiRv2zwUaAx',
-    42: 'https://eth-kovan.alchemyapi.io/v2/UloBYQ33fXVpI0WFONXO-CgTl4uy93T6',
-    69: 'https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg',
-  },
+  rpc,
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
 });

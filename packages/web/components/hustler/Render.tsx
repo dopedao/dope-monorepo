@@ -1,8 +1,7 @@
 import { css } from '@emotion/react';
-import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
-import { useEffect, useMemo, useState } from 'react';
-import { BigNumber, providers } from 'ethers';
-import { NETWORK } from 'src/constants';
+import { useEffect, useState } from 'react';
+import { BigNumber } from 'ethers';
+import { useHustler, useSwapMeet } from 'hooks/contracts';
 
 interface Metadata {
   image: string;
@@ -13,23 +12,8 @@ const Render = ({ itemIds }: { itemIds: BigNumber[] }) => {
   const [itemRles, setItemRles] = useState<string[]>([]);
   const [bodyRles, setBodyRles] = useState<string[]>([]);
 
-  const provider = useMemo<any>(
-    () =>
-      new providers.JsonRpcProvider(
-        'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
-      ),
-    [],
-  );
-
-  const swapmeet = useMemo(
-    () => SwapMeet__factory.connect(NETWORK[4].contracts.swapmeet, provider),
-    [provider],
-  );
-
-  const hustlers = useMemo(
-    () => Hustler__factory.connect(NETWORK[4].contracts.hustlers, provider),
-    [provider],
-  );
+  const swapmeet = useSwapMeet();
+  const hustlers = useHustler();
 
   useEffect(() => {
     if (swapmeet) {

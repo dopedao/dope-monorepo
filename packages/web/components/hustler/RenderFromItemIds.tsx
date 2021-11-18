@@ -1,13 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { AspectRatio } from '@chakra-ui/layout';
-import { BigNumber, providers } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
+import { BigNumber } from 'ethers';
+import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { hexColorToBase16 } from 'src/utils';
 import { HustlerSex, DEFAULT_BG_COLORS, ZOOM_WINDOWS, ZoomWindow } from 'src/HustlerConfig';
-import { NETWORK } from 'src/constants';
-import { SwapMeet__factory, Hustler__factory } from '@dopewars/contracts';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
+import { useHustler, useSwapMeet } from 'hooks/contracts';
 
 type Metadata = {
   image: string;
@@ -45,23 +44,8 @@ const RenderFromItemIds = ({
   const [bodyRles, setBodyRles] = useState<string[]>([]);
   const [hasRenderedFromChain, setHasRenderedFromChain] = useState(false);
 
-  const provider = useMemo<any>(
-    () =>
-      new providers.JsonRpcProvider(
-        'https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg',
-      ),
-    [],
-  );
-
-  const swapmeet = useMemo(
-    () => SwapMeet__factory.connect(NETWORK[69].contracts.swapmeet, provider),
-    [provider],
-  );
-
-  const hustlers = useMemo(
-    () => Hustler__factory.connect(NETWORK[69].contracts.hustlers, provider),
-    [provider],
-  );
+  const swapmeet = useSwapMeet();
+  const hustlers = useHustler();
 
   useEffect(() => {
     setHasRenderedFromChain(false);
@@ -127,7 +111,18 @@ const RenderFromItemIds = ({
           setHasRenderedFromChain(true);
         });
     }
-  }, [swapmeet, hustlers, itemRles, bodyRles, name, textColor, bgColor, renderName, renderTitle, zoomWindow]);
+  }, [
+    swapmeet,
+    hustlers,
+    itemRles,
+    bodyRles,
+    name,
+    textColor,
+    bgColor,
+    renderName,
+    renderTitle,
+    zoomWindow,
+  ]);
 
   if (!hasRenderedFromChain) return <LoadingBlockSquareCentered />;
 
