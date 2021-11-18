@@ -14,7 +14,7 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
 
 
-const Hustler = () => {
+const Configure = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const { account } = useWeb3React();
   const { data, loading } = useWalletQuery({
@@ -65,4 +65,4 @@ const Hustler = () => {
   );
 };
 
-export default Hustler;
+export default Configure;

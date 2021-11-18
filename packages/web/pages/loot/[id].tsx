@@ -10,7 +10,20 @@ import Head from 'components/Head';
 import Container from 'components/Container';
 import LoadingBlock from 'components/LoadingBlock';
 
-const HustlerFromLoot = () => {
+const HustlerContainer = styled.div<{ bgColor: string }>`
+  background-color: ${({ bgColor }) => bgColor};
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  & > * {
+    flex: 1;
+  }
+`;
+
+const Loot = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const router = useRouter();
   const { id } = router.query;
@@ -22,18 +35,6 @@ const HustlerFromLoot = () => {
 
   const title = `Hustler Preview: ${id}`;
 
-  const HustlerContainer = styled.div`
-    background-color: ${hustlerConfig.bgColor};
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    & > * {
-      flex: 1;
-    }
-  `;
-
   return (
     <DesktopWindow title={title} balance={data?.wallet?.paper} loadingBalance={loading}>
       <Head title={title} />
@@ -43,7 +44,7 @@ const HustlerFromLoot = () => {
           <LoadingBlock />
         </Container>
       ) : (
-        <HustlerContainer>
+        <HustlerContainer bgColor={hustlerConfig.bgColor}>
           <RenderFromLootId
             id={id?.toString() ?? '1'}
             sex={hustlerConfig.sex}
@@ -59,4 +60,4 @@ const HustlerFromLoot = () => {
   );
 };
 
-export default HustlerFromLoot;
+export default Loot;

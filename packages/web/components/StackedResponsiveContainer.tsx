@@ -5,6 +5,8 @@ import styled from '@emotion/styled';
 const StackedResponsiveContainer = styled.div`
   // Mobile phones just stack regularly with box layout
   display: block;
+  padding: 32px;
+
   & > div {
     margin-bottom: 16px;
   }
