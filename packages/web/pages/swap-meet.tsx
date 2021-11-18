@@ -1,17 +1,16 @@
-import { isTouchDevice } from 'src/utils';
-import { media } from 'styles/mixins';
-import { useAllUnclaimedBagsQuery, useWalletQuery } from 'src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
+import styled from '@emotion/styled';
+import InfiniteScroll from 'react-infinite-scroller';
+import { useAllUnclaimedBagsQuery } from 'src/generated/graphql';
+import { isTouchDevice } from 'src/utils';
+import { media } from 'styles/mixins';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
-import InfiniteScroll from 'react-infinite-scroller';
 import LoadingBlock from 'components/LoadingBlock';
 import LootCard from 'components/loot/LootCard';
 import MarketFilterBar from 'components/MarketFilterBar';
-import styled from '@emotion/styled';
-
 import DopeDatabase, {
   compareByHighestLastSale,
   compareByMostAffordable,
@@ -23,9 +22,6 @@ import DopeDatabase, {
   testForSale,
   PickedBag,
 } from 'src/DopeDatabase';
-import { useWeb3React } from '@web3-react/core';
-
-const title = 'SWAP MEET';
 
 // To prevent all 8k items from showing at once and overloading
 // the DOM we fake loading more using infinite scroll.
@@ -179,33 +175,11 @@ const MarketList = () => {
   );
 };
 
-const SwapMeet = () => {
-  const { account } = useWeb3React();
-  const { data, loading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
-
-  return (
-    <AppWindow
-      padBody={false}
-      scrollable={false}
-      height="90vh"
-      balance={data?.wallet?.paper}
-      loadingBalance={loading}
-      navbar={<DopeWarsExeNav />}
-    >
-      <Head title={title} />
-      {loading ? (
-        <Container>
-          <LoadingBlock />
-          <LoadingBlock />
-        </Container>
-      ) : (
-        <MarketList />
-      )}
-    </AppWindow>
-  );
-};
+const SwapMeet = () => (
+  <AppWindow padBody={false} scrollable={false} height="90vh" navbar={<DopeWarsExeNav />}>
+    <Head title="SWAP MEET" />
+    <MarketList />
+  </AppWindow>
+);
 
 export default SwapMeet;

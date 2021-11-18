@@ -48,12 +48,7 @@ export default function LootWindow() {
   const [selected, setSelected] = useState(0);
 
   return (
-    <AppWindow
-      requiresWalletConnection={true}
-      balance={data?.wallet?.paper}
-      loadingBalance={loading}
-      navbar={<DopeWarsExeNav />}
-    >
+    <AppWindow requiresWalletConnection={true} navbar={<DopeWarsExeNav />}>
       <Head />
       {loading ? (
         <FlexFiftyContainer>
