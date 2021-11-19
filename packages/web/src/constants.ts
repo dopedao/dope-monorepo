@@ -7,6 +7,7 @@ export const NETWORK = {
       initiator: '0xd48055cbd433d93F1Aa000dfCd6EC36F39C0FDB6',
     },
     rpc: 'https://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj',
+    ws: 'wss://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj',
     subgraph: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
   },
   10: {
@@ -16,6 +17,7 @@ export const NETWORK = {
       hustlers: '0xE9DACD8118917e3A0522f45c191C6abe88d271B0',
     },
     rpc: 'https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG',
+    ws: 'wss://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG',
     subgraph: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-optimism',
   },
   42: {
@@ -25,6 +27,7 @@ export const NETWORK = {
       initiator: '0x8eC7EFeB566a4f0f83A2AC17856378761f9546fB',
     },
     rpc: 'https://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-',
+    ws: 'wss://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-',
     subgraph: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-kovan',
   },
   69: {
@@ -34,6 +37,7 @@ export const NETWORK = {
       hustlers: '0x577d9c7FF9B506d7305194698b4103a3fE3532f0',
     },
     rpc: 'https://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9',
+    ws: 'wss://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9',
     subgraph: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-kovan-optimism',
   },
 };

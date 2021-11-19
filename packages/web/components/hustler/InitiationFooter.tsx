@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import { useWeb3React } from '@web3-react/core';
 import { zeroPad } from 'src/utils';
 import { HustlerInitConfig, getRandomHustler } from 'src/HustlerConfig';
 import { useEffect, useState } from 'react';
@@ -8,6 +7,7 @@ import styled from '@emotion/styled';
 // https://github.com/ndresx/react-countdown
 import Countdown from 'react-countdown';
 import InitiationFooterDopeContent from './InitiationFooterDopeContent';
+import { useLastestBlock } from 'hooks/web3';
 import { useReleaseDate } from 'hooks/contracts';
 
 const CountdownWrapper = styled.div`
@@ -55,13 +55,14 @@ const countdownRenderer = ({ days, hours, minutes, seconds, completed }: Countdo
 
 const InitiationFooter = () => {
   const releaseDate = useReleaseDate();
+  const latest = useLastestBlock();
   const [isLaunched, setIsLaunched] = useState(false);
 
   useEffect(() => {
-    if (releaseDate) {
-      setIsLaunched(new Date() >= releaseDate);
+    if (latest && releaseDate) {
+      setIsLaunched(new Date(latest.timestamp * 1000) >= releaseDate);
     }
-  }, [releaseDate]);
+  }, [latest, releaseDate]);
 
   // Render random hustler as countdown approached
   let randomHustlerRenderInterval: any;
@@ -73,7 +74,7 @@ const InitiationFooter = () => {
       }, 16000);
     }
     return () => clearInterval(randomHustlerRenderInterval);
-  });
+  }, []);
 
   if (isLaunched) {
     clearInterval(randomHustlerRenderInterval);

@@ -13,6 +13,9 @@ const injected = new InjectedConnector({
 export const useRPCProvider = (id: 1 | 10 | 42 | 69) =>
   useMemo<providers.JsonRpcProvider>(() => new providers.JsonRpcProvider(NETWORK[id].rpc), []);
 
+export const useWebSocketProvider = (id: 1 | 10 | 42 | 69) =>
+  useMemo<providers.WebSocketProvider>(() => new providers.WebSocketProvider(NETWORK[id].ws), []);
+
 export const useEthereum = (
   defaultSigner: boolean = true,
 ): {
@@ -205,6 +208,19 @@ export const useWAGMI = () => {
   const triedEager = useEagerConnect();
 
   useInactiveListener(!triedEager || !!activatingConnector);
+};
+
+export const useLastestBlock = (): providers.Block | undefined => {
+  const { chainId, provider } = useEthereum();
+  const [latest, setLatest] = useState<providers.Block>();
+  const ws = useWebSocketProvider(chainId);
+  const onBlock = useCallback(async block => setLatest(await provider.getBlock(block)), [provider]);
+
+  useEffect(() => {
+    provider.getBlock('latest').then(setLatest), [provider, setLatest];
+  }, []);
+  ws.on('blocks', onBlock);
+  return latest;
 };
 
 export default useWeb3Provider;
