@@ -6,7 +6,7 @@ query Wallet($id: ID!) {
     bags(first: 200) {
       claimed
       id
-      bundled @client
+      opened
       clothes @client
       foot @client
       hand @client
