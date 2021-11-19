@@ -77,7 +77,7 @@ const WebAmpPlayer = ({hidden}: Props) => {
     script.async = true;
     document.body.appendChild(script);
     script.onload = () => {
-      if (previousWebAmp.current) previousWebAmp.current.dispose();
+      if (previousWebAmp.current) (previousWebAmp.current as any).dispose();
       const Webamp = (window as any).Webamp;
       const webamp = new Webamp({initialTracks: playerTracks});
       // Returns a promise indicating when it's done loading.
@@ -87,7 +87,7 @@ const WebAmpPlayer = ({hidden}: Props) => {
 
     return () => {
       if (previousWebAmp.current) {
-        previousWebAmp.current.dispose();
+        (previousWebAmp.current as any).dispose();
         previousWebAmp.current = null;
       }
     };
