@@ -95,7 +95,7 @@ const MintSuccess = () => {
                     Your Hustler is making their way to the Optimism network.
                     <br/><br/>
                     It could take up to 15 minutes for that to happen.
-                    In the meantime, let's get it crackin…
+                    In the meantime, lets get it crackin…
                   </p>
                   <Button
                     onClick={() => {
