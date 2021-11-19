@@ -14,7 +14,7 @@ import { Components, ComponentTypes } from '../../Components.sol';
 import { SwapMeetOwner, SwapMeetTester } from './SwapMeetSetup.sol';
 import { iOVM_CrossDomainMessenger } from '../../interfaces/iOVM_CrossDomainMessenger.sol';
 import { ISwapMeet } from '../../interfaces/ISwapMeet.sol';
-import { IHustler } from '../../interfaces/IHustler.sol';
+import { IHustler, IHustlerActions } from '../../interfaces/IHustler.sol';
 
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 import '@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol';
@@ -115,9 +115,20 @@ contract HustlerOwner is ERC1155Holder, ERC721Holder, SwapMeetOwner {
         bytes2 options,
         uint8[4] calldata viewbox,
         uint8[4] calldata body,
+        uint8[10] calldata order,
         bytes2 mask
     ) public {
-        hustler.mintTo(address(this), name, color, background, options, viewbox, body, mask, '');
+        IHustlerActions.SetMetadata memory metadata = IHustlerActions.SetMetadata({
+            name: name,
+            color: color,
+            background: background,
+            options: options,
+            viewbox: viewbox,
+            body: body,
+            order: order,
+            mask: mask
+        });
+        hustler.mintTo(address(this), metadata, '');
     }
 
     function mintOG(
@@ -127,10 +138,21 @@ contract HustlerOwner is ERC1155Holder, ERC721Holder, SwapMeetOwner {
         bytes2 options,
         uint8[4] calldata viewbox,
         uint8[4] calldata body,
+        uint8[10] calldata order,
         bytes2 mask,
         bytes memory data
     ) public payable {
-        hustler.mintOGTo(address(this), name, color, background, options, viewbox, body, mask, data);
+        IHustlerActions.SetMetadata memory metadata = IHustlerActions.SetMetadata({
+            name: name,
+            color: color,
+            background: background,
+            options: options,
+            viewbox: viewbox,
+            body: body,
+            order: order,
+            mask: mask
+        });
+        hustler.mintOGTo(address(this), metadata, data);
     }
 
     function unequip(uint256 hustlerId, uint8[] calldata slots) public {
@@ -177,11 +199,22 @@ contract HustlerOwner is ERC1155Holder, ERC721Holder, SwapMeetOwner {
         bytes4 color,
         bytes4 background,
         bytes2 options,
-        uint8[4] calldata viewport,
+        uint8[4] calldata viewbox,
         uint8[4] calldata body,
-        bytes2 bmask
+        uint8[10] calldata order,
+        bytes2 mask
     ) public {
-        hustler.setMetadata(id, name, color, background, options, viewport, body, bmask);
+        IHustlerActions.SetMetadata memory metadata = IHustlerActions.SetMetadata({
+            name: name,
+            color: color,
+            background: background,
+            options: options,
+            viewbox: viewbox,
+            body: body,
+            order: order,
+            mask: mask
+        });
+        hustler.setMetadata(id, metadata);
     }
 }
 

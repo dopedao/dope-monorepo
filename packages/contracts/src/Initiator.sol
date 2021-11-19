@@ -8,6 +8,7 @@ import {Address} from "../lib/openzeppelin-contracts/contracts/utils/Address.sol
 
 import {iOVM_CrossDomainMessenger} from "./interfaces/iOVM_CrossDomainMessenger.sol";
 import {IController} from "./interfaces/IController.sol";
+import {IHustlerActions} from "./interfaces/IHustler.sol";
 
 library Errors {
     string constant NotRightETH = "ngmi";
@@ -59,13 +60,7 @@ contract Initiator is Ownable {
     function mintFromDopeTo(
         uint256 id,
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
+        IHustlerActions.SetMetadata calldata meta,
         bytes memory data,
         uint32 gasLimit
     ) external {
@@ -75,8 +70,8 @@ contract Initiator is Ownable {
             Errors.DoesNotOwnBagOrNotApproved
         );
         require(!opened[id], Errors.AlreadyOpened);
-        require(bytes(name).length < 10, "nl");
-        require((body[1] + 1) % 6 != 0, "og skin");
+        require(bytes(meta.name).length < 10, "nl");
+        require((meta.body[1] + 1) % 6 != 0, "og skin");
         require(gasLimit > 1000000, "not enough gas");
 
         opened[id] = true;
@@ -85,13 +80,7 @@ contract Initiator is Ownable {
             IController.mintTo.selector,
             id,
             to,
-            name,
-            color,
-            background,
-            options,
-            viewbox,
-            body,
-            mask,
+            meta,
             data
         );
         messenger.sendMessage(controller, message, gasLimit);
@@ -104,13 +93,7 @@ contract Initiator is Ownable {
     function mintOGFromDopeTo(
         uint256 id,
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
+        IHustlerActions.SetMetadata calldata meta,
         bytes memory data,
         uint32 gasLimit
     ) external payable {
@@ -122,7 +105,7 @@ contract Initiator is Ownable {
         require(!opened[id], Errors.AlreadyOpened);
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
-        require(bytes(name).length < 10, "nl");
+        require(bytes(meta.name).length < 10, "nl");
         require(gasLimit > 1000000, "not enough gas");
 
         opened[id] = true;
@@ -132,13 +115,7 @@ contract Initiator is Ownable {
             IController.mintOGTo.selector,
             id,
             to,
-            name,
-            color,
-            background,
-            options,
-            viewbox,
-            body,
-            mask,
+            meta,
             data
         );
         messenger.sendMessage(controller, message, gasLimit);

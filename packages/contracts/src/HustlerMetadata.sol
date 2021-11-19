@@ -27,7 +27,7 @@ library RenderOptions {
     uint8 internal constant CAR = 0x0;
     uint8 internal constant TITLE = 0x1;
     uint8 internal constant NAME = 0x2;
-    uint8 internal constant ORDERING = 0x2;
+    uint8 internal constant ORDERING = 0x3;
 }
 
 /// @title Hustler Metadata logic

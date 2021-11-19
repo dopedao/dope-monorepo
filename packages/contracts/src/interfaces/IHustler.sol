@@ -3,7 +3,7 @@
 
 /// @title Interface for Hustler
 
-import '../../lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol';
+import "../../lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol";
 
 pragma solidity ^0.8.6;
 
@@ -37,28 +37,27 @@ interface IEnforcer {
 }
 
 interface IHustlerActions {
+    struct SetMetadata {
+        bytes4 color;
+        bytes4 background;
+        bytes2 options;
+        uint8[4] viewbox;
+        uint8[4] body;
+        uint8[10] order;
+        bytes2 mask;
+        string name;
+    }
+
     function mintOGTo(
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
-        bytes memory data
+        SetMetadata calldata m,
+        bytes calldata data
     ) external returns (uint256);
 
     function mintTo(
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
-        bytes memory data
+        SetMetadata calldata m,
+        bytes calldata data
     ) external returns (uint256);
 
     function setEnforcer(address enforcer_) external;

@@ -8,6 +8,7 @@ import './iOVM_FakeCrossDomainMessenger.sol';
 
 import { iOVM_CrossDomainMessenger } from '../../interfaces/iOVM_CrossDomainMessenger.sol';
 import { IController } from '../../interfaces/IController.sol';
+import { IHustler, IHustlerActions } from '../../interfaces/IController.sol';
 import { Initiator } from '../../Initiator.sol';
 
 import { ERC20 } from '../../../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol';
@@ -56,10 +57,21 @@ contract InitiatorUser is ERC721Holder, ERC1155Holder {
         bytes2 options,
         uint8[4] calldata viewbox,
         uint8[4] calldata body,
+        uint8[10] calldata order,
         bytes2 mask,
         bytes memory data
     ) public {
-        initiator.mintFromDopeTo(id, to, name, color, background, options, viewbox, body, mask, data, 1e6);
+        IHustlerActions.SetMetadata memory metadata = IHustlerActions.SetMetadata({
+            name: name,
+            color: color,
+            background: background,
+            options: options,
+            viewbox: viewbox,
+            body: body,
+            order: order,
+            mask: mask
+        });
+        initiator.mintFromDopeTo(id, to, metadata, data, 1e7);
     }
 
     function mintOGFromDopeTo(
@@ -71,21 +83,26 @@ contract InitiatorUser is ERC721Holder, ERC1155Holder {
         bytes2 options,
         uint8[4] calldata viewbox,
         uint8[4] calldata body,
+        uint8[10] calldata order,
         bytes2 mask,
         bytes memory data
     ) public payable {
+        IHustlerActions.SetMetadata memory metadata = IHustlerActions.SetMetadata({
+            name: name,
+            color: color,
+            background: background,
+            options: options,
+            viewbox: viewbox,
+            body: body,
+            order: order,
+            mask: mask
+        });
         initiator.mintOGFromDopeTo{ value: msg.value }(
             id,
             to,
-            name,
-            color,
-            background,
-            options,
-            viewbox,
-            body,
-            mask,
+            metadata,
             data,
-            1e6
+            1e7
         );
     }
 
@@ -94,7 +111,7 @@ contract InitiatorUser is ERC721Holder, ERC1155Holder {
         address to,
         bytes memory data
     ) public {
-        initiator.open(id, to, data, 1e6);
+        initiator.open(id, to, data, 1e7);
     }
 
     function approvePaper(address spender, uint256 amount) public {
@@ -137,26 +154,14 @@ contract FakeController {
     function mintOGTo(
         uint256 dopeId,
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
+        IHustler.SetMetadata calldata m,
         bytes memory data
     ) external payable {}
 
     function mintTo(
         uint256 dopeId,
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
+        IHustler.SetMetadata calldata m,
         bytes memory data
     ) external {}
 
@@ -186,6 +191,7 @@ contract InitiatorTest is DSTest {
     bytes4 internal color = hex'fafafaff';
     uint8[4] internal body;
     uint8[4] internal viewbox;
+    uint8[10] internal order;
 
     function setUp() public virtual {
         dope = new Dope();

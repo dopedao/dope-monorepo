@@ -2,21 +2,21 @@
 
 pragma solidity ^0.8.0;
 
-import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
-import { ERC1155Holder } from '../lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol';
+import {Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import {ERC1155Holder} from "../lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 
-import { iOVM_CrossDomainMessenger } from './interfaces/iOVM_CrossDomainMessenger.sol';
-import { ISwapMeet } from './interfaces/ISwapMeet.sol';
-import { IHustler } from './interfaces/IHustler.sol';
-import { IController } from './interfaces/IController.sol';
-import { IComponents } from './interfaces/IComponents.sol';
+import {iOVM_CrossDomainMessenger} from "./interfaces/iOVM_CrossDomainMessenger.sol";
+import {ISwapMeet} from "./interfaces/ISwapMeet.sol";
+import {IHustler} from "./interfaces/IHustler.sol";
+import {IController} from "./interfaces/IController.sol";
+import {IComponents} from "./interfaces/IComponents.sol";
 
 library Errors {
-    string constant NoMore = 'nomo';
+    string constant NoMore = "nomo";
 }
 
 contract Controller is IController, ERC1155Holder {
-    bytes4 constant equip = bytes4(keccak256('swapmeetequip'));
+    bytes4 constant equip = bytes4(keccak256("swapmeetequip"));
 
     iOVM_CrossDomainMessenger ovmL2CrossDomainMessenger =
         iOVM_CrossDomainMessenger(0x4200000000000000000000000000000000000007);
@@ -45,25 +45,13 @@ contract Controller is IController, ERC1155Holder {
     function mintTo(
         uint256 dopeId,
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
+        IHustler.SetMetadata calldata meta,
         bytes memory data
     ) external override onlyInitiator {
         uint256 hustlerId = hustler.mintTo(
             address(this),
-            name,
-            color,
-            background,
-            options,
-            viewbox,
-            body,
-            mask,
-            'init'
+            meta,
+            "init"
         );
         swapmeet.open(dopeId, address(hustler), abi.encode(equip, hustlerId));
         hustler.safeTransferFrom(address(this), to, hustlerId, 1, data);
@@ -72,26 +60,10 @@ contract Controller is IController, ERC1155Holder {
     function mintOGTo(
         uint256 dopeId,
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
+        IHustler.SetMetadata calldata meta,
         bytes memory data
     ) external override onlyInitiator {
-        uint256 hustlerId = hustler.mintOGTo(
-            address(this),
-            name,
-            color,
-            background,
-            options,
-            viewbox,
-            body,
-            mask,
-            'init'
-        );
+        uint256 hustlerId = hustler.mintOGTo(address(this), meta, "init");
         swapmeet.open(dopeId, address(hustler), abi.encode(equip, hustlerId));
         hustler.safeTransferFrom(address(this), to, hustlerId, 1, data);
     }
@@ -110,11 +82,26 @@ contract Controller is IController, ERC1155Holder {
         components.addComponent(0x9, component);
     }
 
-    function addBodyRles(uint8 part, bytes[] calldata _rles) external onlyMaintainer {
+    function mintAccessory(
+        address to,
+        uint8[5] memory components_,
+        uint256 amount,
+        bytes memory data
+    ) external onlyMaintainer {
+        swapmeet.mint(to, components_, 0x9, amount, data);
+    }
+
+    function addBodyRles(uint8 part, bytes[] calldata _rles)
+        external
+        onlyMaintainer
+    {
         hustler.addRles(part, _rles);
     }
 
-    function setPalette(uint8 id, bytes4[] memory palette) external onlyMaintainer {
+    function setPalette(uint8 id, bytes4[] memory palette)
+        external
+        onlyMaintainer
+    {
         swapmeet.setPalette(id, palette);
     }
 
@@ -126,7 +113,10 @@ contract Controller is IController, ERC1155Holder {
         swapmeet.setRle(id, male, female);
     }
 
-    function batchSetItemRle(uint256[] calldata ids, bytes[] calldata rles) external onlyMaintainer {
+    function batchSetItemRle(uint256[] calldata ids, bytes[] calldata rles)
+        external
+        onlyMaintainer
+    {
         swapmeet.batchSetRle(ids, rles);
     }
 
@@ -152,7 +142,11 @@ contract Controller is IController, ERC1155Holder {
         swapmeet.mintBatch(to, components_, componentTypes, amounts, data);
     }
 
-    function addItemComponent(uint8 componentType, string calldata component) external override onlyDAO {
+    function addItemComponent(uint8 componentType, string calldata component)
+        external
+        override
+        onlyDAO
+    {
         components.addComponent(componentType, component);
     }
 
@@ -180,7 +174,7 @@ contract Controller is IController, ERC1155Holder {
         bytes memory
     ) public view override returns (bytes4) {
         if (operator != address(this)) {
-            return '';
+            return "";
         }
 
         return this.onERC1155Received.selector;
@@ -193,7 +187,7 @@ contract Controller is IController, ERC1155Holder {
         uint256[] calldata,
         bytes calldata
     ) public pure override returns (bytes4) {
-        return '';
+        return "";
     }
 
     /**
@@ -214,9 +208,12 @@ contract Controller is IController, ERC1155Holder {
 
     modifier onlyDAO() {
         if (msg.sender == address(ovmL2CrossDomainMessenger)) {
-            require(ovmL2CrossDomainMessenger.xDomainMessageSender() == dao, 'not l1 dao');
+            require(
+                ovmL2CrossDomainMessenger.xDomainMessageSender() == dao,
+                "not l1 dao"
+            );
         } else {
-            require(msg.sender == dao, 'not l2 dao');
+            require(msg.sender == dao, "not l2 dao");
         }
         _;
     }
