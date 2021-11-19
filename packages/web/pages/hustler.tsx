@@ -4,10 +4,13 @@ import ComingSoonDialog from 'components/ComingSoonDialog';
 import Head from 'components/Head';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import { useHustlersWalletQuery } from 'src/generated/graphql';
+import { useOptimismClient } from 'components/EthereumApolloProvider';
 
 const Hustler = () => {
   const { account } = useWeb3React();
+  const client = useOptimismClient();
   const { data, loading } = useHustlersWalletQuery({
+    client,
     variables: { id: account?.toLowerCase() || '' },
     skip: !account,
   });
