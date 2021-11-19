@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { media } from "styles/mixins";
 import styled from '@emotion/styled';
 
 // Winamp Player with our DOPE chiptunes
@@ -47,7 +48,7 @@ const playerTracks: WebAmpTrack[] = [];
 TRACKS.forEach(track => {
   playerTracks.push({
     metaData: {
-      artist: 'DOPE DAO',
+      artist: '@baronvonfuture',
       title: track.title,
     },
     url: BUCKET_URL + track.title,
@@ -57,21 +58,17 @@ TRACKS.forEach(track => {
 
 const Container = styled.div`
   position: absolute;
-  top: 50%;
+  top: 25%;
   left: 50%;
-  translate(-50%, -50%);
+  translate(-50%, -25%);
 `
 
-interface Props {
-  hidden: boolean;
-}
-
-const WebAmpPlayer = ({hidden}: Props) => {
+const WebAmpPlayer = () => {
   const containerEl = useRef(null);
   const previousWebAmp = useRef(null);
 
   useEffect(() => {
-    if (typeof window == 'undefined' || !containerEl.current || hidden) return;
+    if (typeof window == 'undefined' || !containerEl.current) return;
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/webamp@1.4.2/built/webamp.bundle.min.js';
     script.async = true;
@@ -79,7 +76,11 @@ const WebAmpPlayer = ({hidden}: Props) => {
     script.onload = () => {
       if (previousWebAmp.current) (previousWebAmp.current as any).dispose();
       const Webamp = (window as any).Webamp;
-      const webamp = new Webamp({initialTracks: playerTracks});
+      const webamp = new Webamp({
+        initialTracks: playerTracks,
+        // more available here - https://skins.webamp.org/
+        initialSkin: { url: '/webamp_skins/OS8_AMP-Teal.wsz'},
+      });
       // Returns a promise indicating when it's done loading.
       webamp.renderWhenReady(containerEl.current);
       webamp.play();
@@ -92,7 +93,7 @@ const WebAmpPlayer = ({hidden}: Props) => {
         previousWebAmp.current = null;
       }
     };
-  }, [containerEl, hidden]);
+  }, [containerEl]);
 
   return (
     <Container id="webamp-container" ref={containerEl}></Container>
