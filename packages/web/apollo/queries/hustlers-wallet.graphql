@@ -4,6 +4,7 @@ query HustlersWallet($id: ID!) {
     address
     hustlers(first: 50) {
       id
+      data
     }
   }
 }

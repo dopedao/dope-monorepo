@@ -104,15 +104,20 @@ function getClient(uri: string) {
 
 export const useOptimismClient = () => {
   const { chainId } = useOptimism();
+
   const uri = useMemo(
     () => (chainId ? NETWORK[chainId as 10 | 69].subgraph : NETWORK[10].subgraph),
     [chainId],
   );
 
-  return new ApolloClient({
-    uri,
-    cache: new InMemoryCache(),
-  });
+  return useMemo(
+    () =>
+      new ApolloClient({
+        uri,
+        cache: new InMemoryCache(),
+      }),
+    [uri],
+  );
 };
 
 const EthereumApolloProvider = ({ children }: { children: ReactNode }) => {
