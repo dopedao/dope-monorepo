@@ -47,7 +47,14 @@ const DesktopIconList = () => {
       <DesktopIcon
         icon="dopewars-exe"
         label="DOPEWARS.EXE"
-        clickAction={() => openLocalRoute('/terms-of-service')}
+        clickAction={() => {
+          const hasAgreed = window.localStorage.getItem('tos');
+          if (hasAgreed === 'true') {
+            openLocalRoute('/swap-meet');
+          } else {
+            openLocalRoute('/terms-of-service');
+          }
+        }}
       />
       <DesktopIcon icon="tv" label="DOPE TV" clickAction={() => openLocalRoute('/dope-tv')} />
       <DesktopIcon icon="file" label="ABOUT.FAQ" clickAction={() => openLocalRoute('/about')} />
