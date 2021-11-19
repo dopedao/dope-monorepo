@@ -3,7 +3,7 @@ import { makeVar } from '@apollo/client';
 import { getRandomNumber } from './utils';
 import { NUM_DOPE_TOKENS } from './constants';
 import { HUSTLER_NAMES } from './hustler-names';
-import { BigNumberish } from 'ethers';
+import { BigNumber } from 'ethers';
 const HUSTLER_SEXES = ['male', 'female'];
 export type HustlerSex = 'male' | 'female';
 export const MAX_BODIES = 5;
@@ -22,10 +22,10 @@ export const SKIN_TONE_COLORS = [
   '#77F8F8',
 ];
 
-export type ZoomWindow = [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+export type ZoomWindow = [BigNumber, BigNumber, BigNumber, BigNumber];
 export const ZOOM_WINDOWS = [
-  [0, 0, 0, 0] as ZoomWindow, // default
-  [110, 20, 100, 100] as ZoomWindow, // mugshot
+  [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)] as ZoomWindow, // default
+  [BigNumber.from(110), BigNumber.from(20), BigNumber.from(100), BigNumber.from(100)] as ZoomWindow, // mugshot
 ];
 
 export type HustlerCustomization = {

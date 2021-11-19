@@ -14,7 +14,7 @@ import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
-import { useCrossDomainMessenger, useController, useInitiator, usePaper } from 'hooks/contracts';
+import { useInitiator, usePaper } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
 import Spinner from 'svg/Spinner';
 
@@ -76,23 +76,53 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
       mintOg,
     } = hustlerConfig;
 
+    const setname = name ? name : '';
     const color = '0x' + textColor.slice(1) + 'ff';
     const background = '0x' + bgColor.slice(1) + 'ff';
-    const options = '0x0000';
     const bodyParts: [BigNumber, BigNumber, BigNumber, BigNumber] = [
       sex == 'male' ? BigNumber.from(0) : BigNumber.from(1),
       BigNumber.from(body),
       BigNumber.from(hair),
       BigNumber.from(facialHair),
     ];
-    const mask = '0x001f';
+
+    let bitoptions = 0;
+
+    if (renderTitle) {
+      bitoptions += 10;
+    }
+
+    if (renderName) {
+      bitoptions += 100;
+    }
+
+    const options =
+      '0x' +
+      parseInt('' + bitoptions, 2)
+        .toString(16)
+        .padStart(4, '0');
+
+    let bitmask = 11110110;
+    if (setname.length > 0) {
+      bitmask += 1;
+    }
+
+    if (zoomWindow[0].gt(0) || zoomWindow[0].gt(1) || zoomWindow[0].gt(2) || zoomWindow[0].gt(3)) {
+      bitmask += 1000;
+    }
+
+    const mask =
+      '0x' +
+      parseInt('' + bitmask, 2)
+        .toString(16)
+        .padStart(4, '0');
 
     if (mintOg) {
       initiator
         .mintOGFromDopeTo(
           dopeId,
           mintAddress ? mintAddress : account,
-          name ? name : '',
+          setname,
           color,
           background,
           options,
@@ -112,7 +142,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
         .mintFromDopeTo(
           dopeId,
           mintAddress ? mintAddress : account,
-          name ? name : '',
+          setname,
           color,
           background,
           options,
