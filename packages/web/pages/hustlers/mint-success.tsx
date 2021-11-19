@@ -59,6 +59,16 @@ const PLUGS = [
     link: 'https://twitter.com/eth_worm',
     name: 'Perama',
     suffix: 'The ETH Worm',
+  }, 
+  {
+    link: 'https://twitter.com/bellgloom',
+    name: 'Bellgloom',
+    prefix: 'The Last Word',
+  },
+  {
+    link: 'https://twitter.com/_541va_',
+    name: 'M1',
+    prefix: 'Stickman',
   },
 ]
 const PlugContainer = styled.div`
@@ -98,7 +108,7 @@ const PlugContainer = styled.div`
       top: -100em;
     }
   }
-  animation: scroll-in 33s linear 2.5s;
+  animation: scroll-in 50s linear 2.5s;
 `;
 
 const MastheadContainer = styled.div`
