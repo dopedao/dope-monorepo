@@ -13,7 +13,9 @@ const injected = new InjectedConnector({
 export const useRPCProvider = (id: 1 | 10 | 42 | 69) =>
   useMemo<providers.JsonRpcProvider>(() => new providers.JsonRpcProvider(NETWORK[id].rpc), []);
 
-export const useEthereum = (): {
+export const useEthereum = (
+  defaultSigner: boolean = true,
+): {
   chainId: 1 | 42;
   provider: providers.JsonRpcProvider;
 } => {
@@ -33,12 +35,12 @@ export const useEthereum = (): {
   const [provider, setProvider] = useState<providers.JsonRpcProvider>(rpcProvider);
 
   useEffect(() => {
-    if (chainId && chainId === ethChainId) {
+    if (chainId && defaultSigner && chainId === ethChainId) {
       setProvider(library.getSigner());
     } else {
       setProvider(rpcProvider);
     }
-  }, [chainId, ethChainId, rpcProvider]);
+  }, [chainId, defaultSigner, ethChainId, rpcProvider]);
 
   return { provider, chainId: ethChainId };
 };
@@ -71,6 +73,19 @@ export const useOptimism = (): {
   }, [chainId, optimismChainId, rpcProvider]);
 
   return { provider, chainId: optimismChainId };
+};
+
+export const useIsContract = (account: string | null | undefined) => {
+  const { provider } = useEthereum(false);
+  const [isContract, setIsContract] = useState<Boolean>();
+
+  useEffect(() => {
+    if (account) {
+      provider.getCode(account).then(code => setIsContract(code != '0x'));
+    }
+  }, [account, provider]);
+
+  return isContract;
 };
 
 export const walletconnect = new WalletConnectConnector({

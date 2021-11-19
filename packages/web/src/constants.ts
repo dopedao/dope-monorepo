@@ -17,16 +17,6 @@ export const NETWORK = {
     },
     rpc: 'https://opt-mainnet.g.alchemy.com/v2/k8J6YaoTtJVIs4ZxTo26zIPfBiCveX2m',
   },
-  4: {
-    contracts: {
-      dope: '0xEf879818335a10Db667810a9B668A8F537389194',
-      paper: '0x7988fCA891B30cF8E23459B09b851F9d79B17215',
-      swapmeet: '0x52aA7619E1eCEEbCBFF7d26C749488d6AD888516',
-      hustlers: '0x7E9c72F6440A817d71Cc1441873Ef0747330922B',
-    },
-    rpc: 'https://eth-rinkeby.alchemyapi.io/v2/_UcVUJUlskxh3u6aDOeeUgAWkVk4FwZ4',
-    subgraph: 'https://api.studio.thegraph.com/query/7708/dope-wars/v0.1.18-rinkeby',
-  },
   42: {
     contracts: {
       dope: '0xd2761Ee62d8772343070A5dE02C436F788EdF60a',
