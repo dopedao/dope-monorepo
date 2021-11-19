@@ -104,6 +104,7 @@ function getClient(uri: string) {
 
 export const useOptimismClient = () => {
   const { chainId } = useOptimism();
+
   const uri = useMemo(
     () => (chainId ? NETWORK[chainId as 10 | 69].subgraph : NETWORK[10].subgraph),
     [chainId],

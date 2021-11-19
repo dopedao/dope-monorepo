@@ -1254,7 +1254,7 @@ export type HustlersWalletQueryVariables = Exact<{
 }>;
 
 
-export type HustlersWalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, hustlers: Array<{ __typename?: 'Hustler', id: string }> }> };
+export type HustlersWalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, hustlers: Array<{ __typename?: 'Hustler', id: string, data: string }> }> };
 
 export type SearchQueryVariables = Exact<{
   text: Scalars['String'];
@@ -1418,6 +1418,7 @@ export const HustlersWalletDocument = gql`
     address
     hustlers(first: 50) {
       id
+      data
     }
   }
 }
