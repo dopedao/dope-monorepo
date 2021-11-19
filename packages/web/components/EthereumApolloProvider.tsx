@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import DopeDatabase, { DopeDbCacheReactive } from 'src/DopeDatabase';
 import { valueFromCachedLoot } from 'src/DopeJsonParser';
+import { useEthereum, useOptimism } from 'hooks/web3';
 
 /**
  * We use the below declaration to specify client-only field getters,
@@ -101,8 +102,19 @@ function getClient(uri: string) {
   });
 }
 
-const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
-  const { chainId } = useWeb3React();
+export const OptimismApolloProvider = ({ children }: { children: ReactNode }) => {
+  const { chainId } = useOptimism();
+  const uri = useMemo(
+    () => (chainId ? NETWORK[chainId as 10 | 69].subgraph : NETWORK[10].subgraph),
+    [chainId],
+  );
+  const client = getClient(uri);
+
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+};
+
+const EthereumApolloProvider = ({ children }: { children: ReactNode }) => {
+  const { chainId } = useEthereum();
   const uri = useMemo(
     () => (chainId ? NETWORK[chainId as 1 | 42].subgraph : NETWORK[1].subgraph),
     [chainId],
@@ -117,4 +129,5 @@ const WrappedApolloProvider = ({ children }: { children: ReactNode }) => {
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
-export default WrappedApolloProvider;
+
+export default EthereumApolloProvider;
