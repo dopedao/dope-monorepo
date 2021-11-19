@@ -63,12 +63,19 @@ const PLUGS = [
 ]
 const PlugContainer = styled.div`
   position: fixed;
-  top: 50%;
+  top: 80%;
   left: 50%;
+  width: 90%;
   transform: translate(-50%, 0%);
   color: white;
+  ${media.tablet`
+    width: 50%;
+  `}
   img, ul li {
-    margin-bottom: 15em;
+    margin-bottom: 7.25em;
+    ${media.tablet`
+      margin-bottom: 15em;
+    `}
   }
   ul li {
     font-size: 1.25em;
@@ -85,13 +92,13 @@ const PlugContainer = styled.div`
   }
   @keyframes scroll-in {
     0% {
-      top: 50%;
+      top: 80%;
     }
     100% {
-      top: 0%;
+      top: -100em;
     }
   }
-  animation: scroll-in 25s infinite 2.5s;
+  animation: scroll-in 33s linear 2.5s;
 `;
 
 const MastheadContainer = styled.div`

@@ -58,9 +58,9 @@ TRACKS.forEach(track => {
 
 const Container = styled.div`
   position: absolute;
-  top: 15%;
+  top: 25%;
   left: 50%;
-  translate(-50%, -50%);
+  translate(-50%, -25%);
 `
 
 const WebAmpPlayer = () => {
