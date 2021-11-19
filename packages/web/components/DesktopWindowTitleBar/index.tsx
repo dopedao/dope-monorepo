@@ -1,13 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from 'react';
+import { css } from '@emotion/react';
 import { ethers } from 'ethers';
+import { formatLargeNumber, getShortAddress } from 'src/utils';
+import { Header, RightColumn, TitleBar, TitleBarDescription, ENSAddressWrapper } from './styles';
+import { media } from 'styles/mixins';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
-import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import DesktopWindowTitleButton from 'components/DesktopWindowTitleButton';
-import { formatLargeNumber, getShortAddress } from 'src/utils';
-import { media } from 'styles/mixins';
-import { Header, RightColumn, TitleBar, TitleBarDescription, ENSAddressWrapper } from './styles';
+import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 
 type WindowTitleBarProps = {
   title: string | undefined;
@@ -67,27 +68,29 @@ const DesktopWindowTitleBar = ({
             {title || 'UNTITLED'}
           </TitleBarDescription>
           <RightColumn>
-            {account && (
-              <>
-                {loadingBalance ? (
-                  <div>__.__ $PAPER</div>
-                ) : (
-                  <div>
-                    {balance ? formatLargeNumber(Number(ethers.utils.formatEther(balance))) : 0}{' '}
-                    $PAPER
-                  </div>
+              <div css={css`cursor:pointer;cursor:hand;white-space:nowrap;display:flex;`} onClick={() =>router.replace('/wallet')}>
+                {account && (
+                  <>
+                    {loadingBalance ? (
+                      <div>__.__ $PAPER</div>
+                    ) : (
+                      <div>
+                        {balance ? formatLargeNumber(Number(ethers.utils.formatEther(balance))) : 0}{' '}
+                        $PAPER
+                      </div>
+                    )}
+                    <span>|</span>
+                    <ENSAddressWrapper>{ensAddress || getShortAddress(account)}</ENSAddressWrapper>
+                  </>
                 )}
-                <span>|</span>
-                <ENSAddressWrapper>{ensAddress || getShortAddress(account)}</ENSAddressWrapper>
-              </>
-            )}
-            {!isTouchDevice && (
-              <DesktopWindowTitleButton
-                icon={isFullScreen ? 'window-restore' : 'window-maximize'}
-                title={isFullScreen ? 'Minimize' : 'Maximize'}
-                clickAction={toggleFullScreen}
-              />
-            )}
+              </div>
+              {!isTouchDevice && (
+                <DesktopWindowTitleButton
+                  icon={isFullScreen ? 'window-restore' : 'window-maximize'}
+                  title={isFullScreen ? 'Minimize' : 'Maximize'}
+                  clickAction={toggleFullScreen}
+                />
+              )}
           </RightColumn>
         </TitleBar>
         {children}
