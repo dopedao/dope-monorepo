@@ -100,15 +100,18 @@ const PlugContainer = styled.div`
     color: #FDFF6E;
     font-size: 0.9em;
   }
+  opacity: 0;
   @keyframes scroll-in {
     0% {
       top: 80%;
+      opacity: 1;
     }
     100% {
       top: -100em;
+      opacity: 1;
     }
   }
-  animation: scroll-in 50s linear 2.5s;
+  animation: scroll-in 50s linear 2s;
 `;
 
 const MastheadContainer = styled.div`
