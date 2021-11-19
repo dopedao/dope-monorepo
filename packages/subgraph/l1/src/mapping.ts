@@ -7,6 +7,7 @@ import {
 } from "../generated/Paper/Paper";
 import { Bag, Transfer, Wallet } from "../generated/schema";
 import { DopeWarsLoot } from "../generated/DopeWarsLoot/DopeWarsLoot";
+import { Opened } from "../generated/Initiator/Initiator";
 
 export function handleDopeTransfer(event: DopeTransferEvent): void {
   let fromAddress = event.params.from;
@@ -132,14 +133,15 @@ export function handlePaperTransfer(event: PaperTransferEvent): void {
   }
 }
 
-// export function handleSwapMeetOpened(event: Opened): void {
-//   let ids = event.params.ids;
-//   for (let i = 0; i < ids.length; i++) {
-//     let bag = Bag.load(ids[i].toString());
-//     bag.opened = true;
-//     bag.save();
-//   }
-// }
+export function handleDopeOpened(event: Opened): void {
+  let id = event.params.id;
+  let bag = Bag.load(id.toString());
+  if (!bag) {
+    return;
+  }
+  bag.opened = true;
+  bag.save();
+}
 
 function isZeroAddress(string: string): boolean {
   return string == "0x0000000000000000000000000000000000000000";
