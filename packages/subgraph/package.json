@@ -1,5 +1,5 @@
 {
-	"name": "gear",
+	"name": "@dopewars/subgraph",
 	"license": "UNLICENSED",
 	"scripts": {
 		"prep:kovan": "npm run prep:kovan:l1 && npm run prep:kovan:l2",

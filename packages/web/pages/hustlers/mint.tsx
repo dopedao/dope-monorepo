@@ -7,7 +7,7 @@
 //   () =>
 //     chainId
 //       ? Hustler__factory.connect(
-//           NETWORK[chainId as 1 | 4].contracts.hustlers,
+//           NETWORK[chainId as 1 | 42].contracts.hustlers,
 //           library.getSigner(),
 //         )
 //       : null,
