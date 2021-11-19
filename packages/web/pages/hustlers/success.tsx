@@ -1,15 +1,10 @@
 import { getRandomNumber } from 'src/utils';
-import { 
-  Button,
-  Image,
-  HStack,
-  Spacer
-} from '@chakra-ui/react';
+import { Button, Image, HStack, Spacer } from '@chakra-ui/react';
+import Link from 'next/link';
 import { useState } from 'react';
 import Head from 'components/Head';
 import styled from '@emotion/styled';
 import WebAmpPlayer from 'components/WebAmpPlayer';
-
 
 const MASTHEADS = ['dope.svg', 'hell-yeah.svg', 'success.svg'];
 
@@ -25,7 +20,7 @@ const ScreenSaver = styled.div`
   width: 100%;
   height: 100%;
   z-index: 0;
-  background: #000000 url('/images/hustler/bridge_no_hustlers.png') center / cover no-repeat fixed;
+  background: #000000 url('/images/hustler/bridge_with_hustlers.png') center / cover no-repeat fixed;
 `;
 const MastheadContainer = styled.div`
   position: fixed;
@@ -74,22 +69,17 @@ const Success = () => {
           <Image src={randomMast()} alt="Dope." />
         </MastheadContainer>
       </ScreenSaver>
-      <HStack 
-        m={4} 
-        gridGap={1} 
-        bottom={0} 
-        right={0} 
-        position="absolute" 
-        justifyContent="end"
-      >
-        <Button 
-          onClick={() => { setShowMusicPlayer(true) }} 
+      <HStack m={4} gridGap={1} bottom={0} right={0} position="absolute" justifyContent="end">
+        <Button
+          onClick={() => {
+            setShowMusicPlayer(true);
+          }}
         >
           Gangsta Party
         </Button>
-        <Button>
-          Mint another Hustler
-        </Button>
+        <Link href="/hustlers/initiate/" passHref>
+          <Button>Mint another Hustler</Button>
+        </Link>
       </HStack>
     </>
   );
