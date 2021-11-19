@@ -6,7 +6,7 @@ export const NETWORK = {
       paper: '0x7ae1d57b58fa6411f32948314badd83583ee0e8c',
       initiator: '0xd48055cbd433d93F1Aa000dfCd6EC36F39C0FDB6',
     },
-    rpc: 'https://eth-mainnet.alchemyapi.io/v2/4YF7OoE2seG3X12m9bfIJdiRv2zwUaAx',
+    rpc: 'https://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj',
     subgraph: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
   },
   10: {
@@ -15,7 +15,7 @@ export const NETWORK = {
       swapmeet: '0xB3cCb05742bDbd51Daa24f036FC5489f5ca0f38c',
       hustlers: '0xE9DACD8118917e3A0522f45c191C6abe88d271B0',
     },
-    rpc: 'https://opt-mainnet.g.alchemy.com/v2/k8J6YaoTtJVIs4ZxTo26zIPfBiCveX2m',
+    rpc: 'https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG',
     subgraph: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-optimism',
   },
   42: {
@@ -24,7 +24,7 @@ export const NETWORK = {
       paper: '0x781B575CA559263eb232B854195D6dC0AB720105',
       initiator: '0x8eC7EFeB566a4f0f83A2AC17856378761f9546fB',
     },
-    rpc: 'https://eth-kovan.alchemyapi.io/v2/UloBYQ33fXVpI0WFONXO-CgTl4uy93T6',
+    rpc: 'https://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-',
     subgraph: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-kovan',
   },
   69: {
@@ -33,9 +33,7 @@ export const NETWORK = {
       swapmeet: '0x781A6002A4221c0E52fC283D285b703890024C97',
       hustlers: '0x577d9c7FF9B506d7305194698b4103a3fE3532f0',
     },
-    rpc: 'https://opt-kovan.g.alchemy.com/v2/GAJJKOHOzfVI1jmgOf2OcL--sj4Yyedg',
+    rpc: 'https://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9',
     subgraph: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-kovan-optimism',
   },
 };
-
-export const HUSTLER_MINT_TIME = new Date(2021, 10, 20, 12);

@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
 import { zeroPad } from 'src/utils';
 import { HustlerInitConfig, getRandomHustler } from 'src/HustlerConfig';
-import { HUSTLER_MINT_TIME } from 'src/constants';
 import { useEffect, useState } from 'react';
 import PanelFooter from 'components/PanelFooter';
 import styled from '@emotion/styled';
@@ -60,7 +59,7 @@ const InitiationFooter = () => {
 
   useEffect(() => {
     if (releaseDate) {
-      setIsLaunched(new Date() >= new Date(releaseDate * 1000));
+      setIsLaunched(new Date() >= releaseDate);
     }
   }, [releaseDate]);
 
@@ -71,7 +70,7 @@ const InitiationFooter = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       randomHustlerRenderInterval = setInterval(() => {
         HustlerInitConfig(getRandomHustler());
-      }, 6000);
+      }, 16000);
     }
     return () => clearInterval(randomHustlerRenderInterval);
   });
@@ -79,8 +78,10 @@ const InitiationFooter = () => {
   if (isLaunched) {
     clearInterval(randomHustlerRenderInterval);
     return <InitiationFooterDopeContent />;
+  } else if (releaseDate) {
+    return <Countdown date={releaseDate} renderer={countdownRenderer} />;
   } else {
-    return <Countdown date={HUSTLER_MINT_TIME} renderer={countdownRenderer} />;
+    return <div>loading</div>;
   }
 };
 

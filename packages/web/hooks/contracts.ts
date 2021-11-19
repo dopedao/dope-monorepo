@@ -64,12 +64,12 @@ export const useHustler = () => {
   );
 };
 
-export const useReleaseDate = (): number | undefined => {
-  const [releaseDate, setReleaseDate] = useState<number>();
+export const useReleaseDate = (): Date | undefined => {
+  const [releaseDate, setReleaseDate] = useState<Date>();
   const initator = useInitiator();
 
   useEffect(() => {
-    initator.release().then(date => setReleaseDate(date.toNumber()));
+    initator.release().then(date => setReleaseDate(new Date(date.toNumber() * 1000)));
   }, [initator]);
 
   return releaseDate;
