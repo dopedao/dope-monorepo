@@ -25,11 +25,14 @@ export default function Market() {
   const router = useRouter();
 
   const handleAgree = () => {
+    window.localStorage.setItem('tos', 'true');
     router.replace('/swap-meet');
   };
+
   const handleDisagree = () => {
     router.replace('/');
   };
+
   return (
     <DesktopWindow title={title}>
       <Head title="TOS" />
