@@ -1,35 +1,40 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import { IERC20 } from '../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
-import { IERC721 } from '../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol';
-import { Ownable } from '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
-import { Address } from '../lib/openzeppelin-contracts/contracts/utils/Address.sol';
+import {IERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
+import {Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import {Address} from "../lib/openzeppelin-contracts/contracts/utils/Address.sol";
 
-import { iOVM_CrossDomainMessenger } from './interfaces/iOVM_CrossDomainMessenger.sol';
-import { IController } from './interfaces/IController.sol';
+import {iOVM_CrossDomainMessenger} from "./interfaces/iOVM_CrossDomainMessenger.sol";
+import {IController} from "./interfaces/IController.sol";
 
 library Errors {
-    string constant NotRightETH = 'ngmi';
-    string constant NoMore = 'nomo';
-    string constant NotTime = 'wait';
-    string constant DoesNotOwnBagOrNotApproved = 'not sender bag or not approved';
-    string constant AlreadyOpened = 'already opened';
+    string constant NotRightETH = "ngmi";
+    string constant NoMore = "nomo";
+    string constant NotTime = "wait";
+    string constant DoesNotOwnBagOrNotApproved =
+        "not sender bag or not approved";
+    string constant AlreadyOpened = "already opened";
 }
 
 contract Initiator is Ownable {
     event Opened(uint256 id);
 
-    iOVM_CrossDomainMessenger messenger = iOVM_CrossDomainMessenger(0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1);
-    address private constant timelock = 0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
-    address private constant tarrencellc = 0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
-    address private constant facesdba = 0xA2dE2d19edb4094c79FB1A285F3c30c77931Bf1e;
+    iOVM_CrossDomainMessenger messenger =
+        iOVM_CrossDomainMessenger(0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1);
+    address private constant timelock =
+        0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
+    address private constant tarrencellc =
+        0x75043C4d65f87FBB69b51Fa06F227E8d29731cDD;
+    address private constant facesdba =
+        0xA2dE2d19edb4094c79FB1A285F3c30c77931Bf1e;
 
     address private controller;
     IERC721 immutable dope;
     IERC20 immutable paper;
 
-    uint256 internal ogs = 0;
+    uint256 internal ogs = 2;
     uint256 public release;
     uint256 private initialCost = 12500000000000000000000;
     uint256 private immutable deployedAt = block.timestamp;
@@ -44,6 +49,11 @@ contract Initiator is Ownable {
         dope = dope_;
         paper = paper_;
         controller = controller_;
+
+        opened[1976] = true;
+        emit Opened(1976);
+        opened[4380] = true;
+        emit Opened(4380);
     }
 
     function mintFromDopeTo(
@@ -60,8 +70,14 @@ contract Initiator is Ownable {
         uint32 gasLimit
     ) external {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
-        require(msg.sender == dope.ownerOf(id), Errors.DoesNotOwnBagOrNotApproved);
+        require(
+            msg.sender == dope.ownerOf(id),
+            Errors.DoesNotOwnBagOrNotApproved
+        );
         require(!opened[id], Errors.AlreadyOpened);
+        require(bytes(name).length < 10, "nl");
+        require((body[1] + 1) % 6 != 0, "og skin");
+        require(gasLimit > 1000000, "not enough gas");
 
         opened[id] = true;
 
@@ -99,10 +115,15 @@ contract Initiator is Ownable {
         uint32 gasLimit
     ) external payable {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
-        require(msg.sender == dope.ownerOf(id), Errors.DoesNotOwnBagOrNotApproved);
+        require(
+            msg.sender == dope.ownerOf(id),
+            Errors.DoesNotOwnBagOrNotApproved
+        );
         require(!opened[id], Errors.AlreadyOpened);
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
+        require(bytes(name).length < 10, "nl");
+        require(gasLimit > 1000000, "not enough gas");
 
         opened[id] = true;
         ogs += 1;
@@ -134,12 +155,21 @@ contract Initiator is Ownable {
         uint32 gasLimit
     ) external {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
-        require(msg.sender == dope.ownerOf(id), Errors.DoesNotOwnBagOrNotApproved);
+        require(
+            msg.sender == dope.ownerOf(id),
+            Errors.DoesNotOwnBagOrNotApproved
+        );
         require(!opened[id], Errors.AlreadyOpened);
+        require(gasLimit >= 450000, "not enough gas");
 
         opened[id] = true;
 
-        bytes memory message = abi.encodeWithSelector(IController.open.selector, id, to, data);
+        bytes memory message = abi.encodeWithSelector(
+            IController.open.selector,
+            id,
+            to,
+            data
+        );
         messenger.sendMessage(controller, message, gasLimit);
 
         paper.transferFrom(msg.sender, timelock, cost());
