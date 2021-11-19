@@ -5,7 +5,7 @@ import InitiationFooter from 'components/hustler/InitiationFooter';
 import InitiationInfo from 'components/hustler/InitiationInfo';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
-const Initiate = ({ hustlerConfig }: StepsProps) => (
+const Begin = ({ hustlerConfig }: StepsProps) => (
   <>
     <Head title="Initiate Your Hustler" />
     <StackedResponsiveContainer>
@@ -15,4 +15,4 @@ const Initiate = ({ hustlerConfig }: StepsProps) => (
   </>
 );
 
-export default Initiate;
+export default Begin;
