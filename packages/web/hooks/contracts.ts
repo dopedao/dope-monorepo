@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  CrossDomainMessenger__factory,
+  Controller__factory,
   Paper__factory,
   Initiator__factory,
   Hustler__factory,
@@ -25,11 +27,30 @@ export const usePaper = () => {
   );
 };
 
+export const useController = () => {
+  const { chainId, provider } = useOptimism();
+
+  return useMemo(
+    () => Controller__factory.connect(NETWORK[chainId].contracts.controller, provider),
+    [chainId, provider],
+  );
+};
+
 export const useSwapMeet = () => {
   const { chainId, provider } = useOptimism();
 
   return useMemo(
     () => SwapMeet__factory.connect(NETWORK[chainId].contracts.swapmeet, provider),
+    [chainId, provider],
+  );
+};
+
+export const useCrossDomainMessenger = () => {
+  const { chainId, provider } = useOptimism();
+
+  return useMemo(
+    () =>
+      CrossDomainMessenger__factory.connect('0x4200000000000000000000000000000000000007', provider),
     [chainId, provider],
   );
 };
