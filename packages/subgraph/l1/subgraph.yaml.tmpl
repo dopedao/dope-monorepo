@@ -44,3 +44,23 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handlePaperTransfer
       file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: Initiator
+    network: {{networkName}}
+    source:
+      address: "{{contracts.initiator.address}}"
+      abi: Initiator
+      startBlock: {{contracts.initiator.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Wallet
+      abis:
+        - name: Initiator
+          file: ../abis/Initiator.json
+      eventHandlers:
+        - event: Opened(uint256)
+          handler: handleDopeOpened
+      file: ./src/mapping.ts
