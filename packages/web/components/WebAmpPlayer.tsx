@@ -82,6 +82,7 @@ const WebAmpPlayer = ({hidden}: Props) => {
       const webamp = new Webamp({initialTracks: playerTracks});
       // Returns a promise indicating when it's done loading.
       webamp.renderWhenReady(containerEl.current);
+      webamp.play();
       previousWebAmp.current = webamp;
     }
 
