@@ -7,7 +7,7 @@ import GlobalStyles from 'styles/GlobalStyles';
 import PageLoadingIndicator from 'components/PageLoadingIndicator';
 import theme from 'styles/theme';
 import type { AppProps } from 'next/app';
-import WrappedApolloProvider from 'components/WrappedApolloProvider';
+import EthereumApolloProvider, { OptimismApolloProvider } from 'components/EthereumApolloProvider';
 
 // Error tracking and tracing from Sentry.io
 import * as Sentry from '@sentry/react';
@@ -34,13 +34,15 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
       <GlobalStyles />
       <ChakraProvider theme={theme}>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <WrappedApolloProvider>
-            <main>
-              <PageLoadingIndicator />
-              <DesktopIconList />
-              <Component {...pageProps} />
-            </main>
-          </WrappedApolloProvider>
+          <EthereumApolloProvider>
+            <OptimismApolloProvider>
+              <main>
+                <PageLoadingIndicator />
+                <DesktopIconList />
+                <Component {...pageProps} />
+              </main>
+            </OptimismApolloProvider>
+          </EthereumApolloProvider>
         </Web3ReactProvider>
       </ChakraProvider>
     </>

@@ -1,6 +1,7 @@
 overwrite: true
 schema:
   - "https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars"
+  - "https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-optimism"
   - "apollo/client-schemas/bag.graphql"
   - "apollo/client-schemas/open-sea-asset.graphql"
 documents: "apollo/queries/**/*.graphql"
