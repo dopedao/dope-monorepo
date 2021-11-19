@@ -16,8 +16,10 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 import { useInitiator, usePaper } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
+import Spinner from 'svg/Spinner';
 
 const Approve = ({ hustlerConfig }: StepsProps) => {
+  const [isLoading, setLoading] = useState(false);
   const { chainId, account } = useWeb3React();
   const [showMintToAddressBox, setShowMintToAddressBox] = useState(
     hustlerConfig.mintAddress != null,
@@ -47,7 +49,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
           setIsPaperApproved(allowance.gte('12500000000000000000000')),
         );
     }
-  }, [account, chainId, paper]);
+  }, [account, chainId, initiator.address, paper]);
 
   const handleOgSwitchChange = () => {
     HustlerInitConfig({ ...hustlerConfig, mintOg: !hustlerConfig.mintOg });
@@ -105,9 +107,20 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                 DOPE NFT #{hustlerConfig.dopeId}.
               </p>
               <Button
-                onClick={async () => await paper.approve(initiator.address, constants.MaxUint256)}
+                onClick={async () => {
+                  setLoading(true);
+                  try {
+                    const txn = await paper.approve(initiator.address, constants.MaxUint256);
+                    await txn.wait(1);
+                  } catch (error) {
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                disabled={isLoading}
+                width="220px"
               >
-                Approve $PAPER Spend
+                {isLoading ? <Spinner /> : 'Approve $PAPER Spend'}
               </Button>
             </PanelBody>
           </PanelContainer>
