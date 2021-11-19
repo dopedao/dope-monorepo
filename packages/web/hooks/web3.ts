@@ -218,8 +218,8 @@ export const useLastestBlock = (): providers.Block | undefined => {
 
   useEffect(() => {
     provider.getBlock('latest').then(setLatest), [provider, setLatest];
+    ws.on('blocks', onBlock);
   }, []);
-  ws.on('blocks', onBlock);
   return latest;
 };
 
