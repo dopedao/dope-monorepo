@@ -1,6 +1,6 @@
 overwrite: true
-schema: 
-  - "https://api.studio.thegraph.com/query/7708/dope-wars/v0.1.18-rinkeby"
+schema:
+  - "https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars"
   - "apollo/client-schemas/bag.graphql"
   - "apollo/client-schemas/open-sea-asset.graphql"
 documents: "apollo/queries/**/*.graphql"
