@@ -14,7 +14,7 @@ import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
-import { useInitiator, usePaper } from 'hooks/contracts';
+import { useCrossDomainMessenger, useController, useInitiator, usePaper } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
 import Spinner from 'svg/Spinner';
 
@@ -30,8 +30,8 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
   const isContract = useIsContract(account);
 
   const dispatchHustler = useDispatchHustler();
-  const paper = usePaper();
   const initiator = useInitiator();
+  const paper = usePaper();
 
   useEffect(() => {
     if (account) {
@@ -55,10 +55,79 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
     HustlerInitConfig({ ...hustlerConfig, mintOg: !hustlerConfig.mintOg });
   };
 
-  const goToNextStep = () => {
-    dispatchHustler({
-      type: 'GO_TO_FINALIZE_STEP',
-    });
+  const mintHustler = () => {
+    if (!account) {
+      return;
+    }
+
+    const {
+      dopeId,
+      body,
+      bgColor,
+      facialHair,
+      hair,
+      name,
+      renderName,
+      renderTitle,
+      sex,
+      textColor,
+      zoomWindow,
+      mintAddress,
+      mintOg,
+    } = hustlerConfig;
+
+    const color = '0x' + textColor.slice(1) + 'ff';
+    const background = '0x' + bgColor.slice(1) + 'ff';
+    const options = '0x0000';
+    const bodyParts: [BigNumber, BigNumber, BigNumber, BigNumber] = [
+      sex == 'male' ? BigNumber.from(0) : BigNumber.from(1),
+      BigNumber.from(body),
+      BigNumber.from(hair),
+      BigNumber.from(facialHair),
+    ];
+    const mask = '0x001f';
+
+    if (mintOg) {
+      initiator
+        .mintOGFromDopeTo(
+          dopeId,
+          mintAddress ? mintAddress : account,
+          name ? name : '',
+          color,
+          background,
+          options,
+          zoomWindow,
+          bodyParts,
+          mask,
+          '0x',
+          1000000,
+        )
+        .then(() =>
+          dispatchHustler({
+            type: 'GO_TO_FINALIZE_STEP',
+          }),
+        );
+    } else {
+      initiator
+        .mintFromDopeTo(
+          dopeId,
+          mintAddress ? mintAddress : account,
+          name ? name : '',
+          color,
+          background,
+          options,
+          zoomWindow,
+          bodyParts,
+          mask,
+          '0x',
+          1000000,
+        )
+        .then(() =>
+          dispatchHustler({
+            type: 'GO_TO_FINALIZE_STEP',
+          }),
+        );
+    }
   };
 
   const handleMintAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,7 +236,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                 </label>
               </div>
               {/* TODO ADD BELOW disabled={!canMint} */}
-              <Button variant="primary" onClick={goToNextStep}>
+              <Button variant="primary" onClick={mintHustler}>
                 {hustlerConfig.mintOg ? '👑 Initiate OG 👑' : '✨ Initiate Hustler ✨'}
               </Button>
             </PanelFooter>
