@@ -13,11 +13,11 @@ set -eo pipefail
 
 # Deploy.
 # Optimism Kovan
-ComponentsAddr="0x781B575CA559263eb232B854195D6dC0AB720105"
+# ComponentsAddr="0x781B575CA559263eb232B854195D6dC0AB720105"
 # Optimism
-# ComponentsAddr="0x3810960a570F1C0B49F630970FeE9ACb64Ef8bf1"
-# ComponentsAddr=$(deploy Components)
-# log "Components deployed at:" $ComponentsAddr
+# ComponentsAddr="0x32705A4f4f2b5F072c30D541FD24A0baD39117DB"
+ComponentsAddr=$(deploy Components)
+log "Components deployed at:" $ComponentsAddr
 
 # Optimism Kovan
 # SwapMeetAddr="0x781A6002A4221c0E52fC283D285b703890024C97"

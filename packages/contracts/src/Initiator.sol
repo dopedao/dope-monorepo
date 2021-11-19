@@ -23,7 +23,7 @@ contract Initiator is Ownable {
     event Opened(uint256 id);
 
     iOVM_CrossDomainMessenger messenger =
-        iOVM_CrossDomainMessenger(0x4361d0F75A0186C05f971c566dC6bEa5957483fD);
+        iOVM_CrossDomainMessenger(0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1);
     address private constant timelock =
         0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
     address private constant tarrencellc =

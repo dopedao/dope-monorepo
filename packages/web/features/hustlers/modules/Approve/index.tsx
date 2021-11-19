@@ -131,7 +131,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
 
     if (mintOg) {
       initiator
-        .mintOGFromDopeTo(dopeId, mintAddress ? mintAddress : account, metadata, '0x', 1200000, {
+        .mintOGFromDopeTo(dopeId, mintAddress ? mintAddress : account, metadata, '0x', 1500000, {
           value: '250000000000000000',
         })
         .then(() =>
@@ -141,7 +141,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
         );
     } else {
       initiator
-        .mintFromDopeTo(dopeId, mintAddress ? mintAddress : account, metadata, '0x', 1200000)
+        .mintFromDopeTo(dopeId, mintAddress ? mintAddress : account, metadata, '0x', 1500000)
         .then(() =>
           dispatchHustler({
             type: 'GO_TO_FINALIZE_STEP',

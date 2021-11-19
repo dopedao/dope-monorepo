@@ -277,7 +277,7 @@ contract Hustlers is HustlerTest {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.setMetadata(id, 'hustler name', '', '', '', viewbox, body, order, hex'0001');
+        owner.setMetadata(id, 'hustler name hustler name', '', '', '', viewbox, body, order, hex'0001');
     }
 
     function testCanSetBackground() public {

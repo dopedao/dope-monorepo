@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: DopeWarsLoot
-    network: kovan
+    network: mainnet
     source:
-      address: "0xd2761Ee62d8772343070A5dE02C436F788EdF60a"
+      address: "0x8707276df042e89669d69a177d3da7dc78bd8723"
       abi: DopeWarsLoot
-      startBlock: 28278714
+      startBlock: 13136082
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -24,11 +24,11 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: Paper
-    network: kovan
+    network: mainnet
     source:
-      address: "0x781B575CA559263eb232B854195D6dC0AB720105"
+      address: "0x7ae1d57b58fa6411f32948314badd83583ee0e8c"
       abi: Paper
-      startBlock: 28278725
+      startBlock: 13162150
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -46,11 +46,11 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: Initiator
-    network: kovan
+    network: mainnet
     source:
-      address: "0x812D76C65bc80599cb778Ba3AecEf1a4AC197ae3"
+      address: "0xC8011c0158BeA25e1C40Ff84189E494717eF8558"
       abi: Initiator
-      startBlock: 28457043
+      startBlock: 13648341
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

@@ -31,7 +31,7 @@ deploy-l2 :; @./scripts/deploy-l2.sh
 # mainnet
 deploy-mainnet: export ETH_RPC_URL = https://ancient-morning-wave.quiknode.pro/0d888ce1d2caa53e7004a067641c905934ef0efa/
 # $(call network,mainnet)
-deploy-mainnet: export CONTROLLER=0xd48055cbd433d93F1Aa000dfCd6EC36F39C0FDB6
+deploy-mainnet: export CONTROLLER=0x6942B1b6965EF771743AF4Ea2A3244A4310BEC8f
 deploy-mainnet: export LOOT=0x8707276df042e89669d69a177d3da7dc78bd8723
 deploy-mainnet: export PAPER=0x7aE1D57b58fA6411F32948314BadD83583eE0e8C
 deploy-mainnet: check-api-key deploy-l1
