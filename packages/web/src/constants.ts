@@ -24,7 +24,7 @@ export const NETWORK = {
     contracts: {
       dope: '0xd2761Ee62d8772343070A5dE02C436F788EdF60a',
       paper: '0x781B575CA559263eb232B854195D6dC0AB720105',
-      initiator: '0x8eC7EFeB566a4f0f83A2AC17856378761f9546fB',
+      initiator: '0x812D76C65bc80599cb778Ba3AecEf1a4AC197ae3',
     },
     rpc: 'https://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-',
     ws: 'wss://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-',
@@ -32,9 +32,9 @@ export const NETWORK = {
   },
   69: {
     contracts: {
-      controller: '0x7E99DE44232C88df11D14af078be64b38236FA3A',
-      swapmeet: '0x781A6002A4221c0E52fC283D285b703890024C97',
-      hustlers: '0x577d9c7FF9B506d7305194698b4103a3fE3532f0',
+      controller: '0x560ac3bB6b0bCF669a2a18e33c7538394EA35fF2',
+      swapmeet: '0x293f20F4ACeEE50B9a9273C3133A132DE0108e99',
+      hustlers: '0x079BE497471CDB22324c6448bf8486024633D262',
     },
     rpc: 'https://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9',
     ws: 'wss://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9',

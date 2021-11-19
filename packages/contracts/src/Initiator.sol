@@ -23,7 +23,7 @@ contract Initiator is Ownable {
     event Opened(uint256 id);
 
     iOVM_CrossDomainMessenger messenger =
-        iOVM_CrossDomainMessenger(0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1);
+        iOVM_CrossDomainMessenger(0x4361d0F75A0186C05f971c566dC6bEa5957483fD);
     address private constant timelock =
         0xB57Ab8767CAe33bE61fF15167134861865F7D22C;
     address private constant tarrencellc =
@@ -35,7 +35,7 @@ contract Initiator is Ownable {
     IERC721 immutable dope;
     IERC20 immutable paper;
 
-    uint256 internal ogs = 2;
+    uint256 internal ogs = 0;
     uint256 public release;
     uint256 private initialCost = 12500000000000000000000;
     uint256 private immutable deployedAt = block.timestamp;
@@ -50,11 +50,6 @@ contract Initiator is Ownable {
         dope = dope_;
         paper = paper_;
         controller = controller_;
-
-        opened[1976] = true;
-        emit Opened(1976);
-        opened[4380] = true;
-        emit Opened(4380);
     }
 
     function mintFromDopeTo(
@@ -70,9 +65,9 @@ contract Initiator is Ownable {
             Errors.DoesNotOwnBagOrNotApproved
         );
         require(!opened[id], Errors.AlreadyOpened);
-        require(bytes(meta.name).length < 10, "nl");
+        require(bytes(meta.name).length < 21, "nl");
         require((meta.body[1] + 1) % 6 != 0, "og skin");
-        require(gasLimit > 1000000, "not enough gas");
+        require(gasLimit > 1e6, "not enough gas");
 
         opened[id] = true;
 
@@ -105,8 +100,8 @@ contract Initiator is Ownable {
         require(!opened[id], Errors.AlreadyOpened);
         require(msg.value == 250000000000000000, Errors.NotRightETH);
         require(ogs < 500, Errors.NoMore);
-        require(bytes(meta.name).length < 10, "nl");
-        require(gasLimit > 1000000, "not enough gas");
+        require(bytes(meta.name).length < 21, "nl");
+        require(gasLimit > 1e6, "not enough gas");
 
         opened[id] = true;
         ogs += 1;
@@ -137,7 +132,7 @@ contract Initiator is Ownable {
             Errors.DoesNotOwnBagOrNotApproved
         );
         require(!opened[id], Errors.AlreadyOpened);
-        require(gasLimit >= 450000, "not enough gas");
+        require(gasLimit >= 45e4, "not enough gas");
 
         opened[id] = true;
 

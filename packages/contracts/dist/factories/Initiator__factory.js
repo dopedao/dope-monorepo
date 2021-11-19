@@ -104,39 +104,51 @@ var _abi = [
                 type: "address",
             },
             {
-                internalType: "string",
-                name: "name",
-                type: "string",
-            },
-            {
-                internalType: "bytes4",
-                name: "color",
-                type: "bytes4",
-            },
-            {
-                internalType: "bytes4",
-                name: "background",
-                type: "bytes4",
-            },
-            {
-                internalType: "bytes2",
-                name: "options",
-                type: "bytes2",
-            },
-            {
-                internalType: "uint8[4]",
-                name: "viewbox",
-                type: "uint8[4]",
-            },
-            {
-                internalType: "uint8[4]",
-                name: "body",
-                type: "uint8[4]",
-            },
-            {
-                internalType: "bytes2",
-                name: "mask",
-                type: "bytes2",
+                components: [
+                    {
+                        internalType: "bytes4",
+                        name: "color",
+                        type: "bytes4",
+                    },
+                    {
+                        internalType: "bytes4",
+                        name: "background",
+                        type: "bytes4",
+                    },
+                    {
+                        internalType: "bytes2",
+                        name: "options",
+                        type: "bytes2",
+                    },
+                    {
+                        internalType: "uint8[4]",
+                        name: "viewbox",
+                        type: "uint8[4]",
+                    },
+                    {
+                        internalType: "uint8[4]",
+                        name: "body",
+                        type: "uint8[4]",
+                    },
+                    {
+                        internalType: "uint8[10]",
+                        name: "order",
+                        type: "uint8[10]",
+                    },
+                    {
+                        internalType: "bytes2",
+                        name: "mask",
+                        type: "bytes2",
+                    },
+                    {
+                        internalType: "string",
+                        name: "name",
+                        type: "string",
+                    },
+                ],
+                internalType: "struct IHustlerActions.SetMetadata",
+                name: "meta",
+                type: "tuple",
             },
             {
                 internalType: "bytes",
@@ -167,39 +179,51 @@ var _abi = [
                 type: "address",
             },
             {
-                internalType: "string",
-                name: "name",
-                type: "string",
-            },
-            {
-                internalType: "bytes4",
-                name: "color",
-                type: "bytes4",
-            },
-            {
-                internalType: "bytes4",
-                name: "background",
-                type: "bytes4",
-            },
-            {
-                internalType: "bytes2",
-                name: "options",
-                type: "bytes2",
-            },
-            {
-                internalType: "uint8[4]",
-                name: "viewbox",
-                type: "uint8[4]",
-            },
-            {
-                internalType: "uint8[4]",
-                name: "body",
-                type: "uint8[4]",
-            },
-            {
-                internalType: "bytes2",
-                name: "mask",
-                type: "bytes2",
+                components: [
+                    {
+                        internalType: "bytes4",
+                        name: "color",
+                        type: "bytes4",
+                    },
+                    {
+                        internalType: "bytes4",
+                        name: "background",
+                        type: "bytes4",
+                    },
+                    {
+                        internalType: "bytes2",
+                        name: "options",
+                        type: "bytes2",
+                    },
+                    {
+                        internalType: "uint8[4]",
+                        name: "viewbox",
+                        type: "uint8[4]",
+                    },
+                    {
+                        internalType: "uint8[4]",
+                        name: "body",
+                        type: "uint8[4]",
+                    },
+                    {
+                        internalType: "uint8[10]",
+                        name: "order",
+                        type: "uint8[10]",
+                    },
+                    {
+                        internalType: "bytes2",
+                        name: "mask",
+                        type: "bytes2",
+                    },
+                    {
+                        internalType: "string",
+                        name: "name",
+                        type: "string",
+                    },
+                ],
+                internalType: "struct IHustlerActions.SetMetadata",
+                name: "meta",
+                type: "tuple",
             },
             {
                 internalType: "bytes",

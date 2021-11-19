@@ -227,7 +227,7 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
         bytes2 mask
     ) internal {
         if (BitMask.get(mask, 0)) {
-            require(bytes(name).length < 10, 'nl');
+            require(bytes(name).length < 21, 'nl');
             metadata[hustlerId].name = name;
         }
 

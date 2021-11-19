@@ -31,18 +31,18 @@ kovan:
       startBlock: 28278725
       address: "0x781B575CA559263eb232B854195D6dC0AB720105"
     initiator:
-      startBlock: 28425250
-      address: "0x8eC7EFeB566a4f0f83A2AC17856378761f9546fB"
+      startBlock: 28457043
+      address: "0x812D76C65bc80599cb778Ba3AecEf1a4AC197ae3"
   networkName: kovan
 kovan-optimism:
   contracts:
     controller:
-      startBlock: 85887
-      address: "0x7E99DE44232C88df11D14af078be64b38236FA3A"
+      startBlock: 106538
+      address: "0x560ac3bB6b0bCF669a2a18e33c7538394EA35fF2"
     swapmeet:
-      startBlock: 71210
-      address: "0x781A6002A4221c0E52fC283D285b703890024C97"
+      startBlock: 106534
+      address: "0x293f20F4ACeEE50B9a9273C3133A132DE0108e99"
     hustlers:
-      startBlock: 71211
-      address: "0x577d9c7FF9B506d7305194698b4103a3fE3532f0"
+      startBlock: 106536
+      address: "0x079BE497471CDB22324c6448bf8486024633D262"
   networkName: optimism-kovan
