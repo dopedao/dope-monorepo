@@ -249,8 +249,13 @@ const MintSuccess = () => {
         width="100%"
         justifyContent="end"
       >
+        <Link href="/hustler" passHref>
+          <a target="your-squad" rel="noreferrer">
+            <Button>Peep Your Squad</Button>
+          </a>
+        </Link>
         <Link href="/hustlers/initiate/" passHref>
-          <Button>Mint another Hustler</Button>
+          <Button variant="primary">Mint Another Hustler</Button>
         </Link>
       </HStack>
     </>
