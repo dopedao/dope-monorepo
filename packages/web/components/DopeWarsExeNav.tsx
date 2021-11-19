@@ -55,14 +55,6 @@ const DopeWarsExeNav = () => {
       <NavLink href="/hustler">
         <a>Hustlers</a>
       </NavLink>
-      {account && (
-        <NavLink href="/wallet">
-          <a>
-            {account && account.slice(0, 8)}…
-            <Image src="/images/icon/connected.svg" width={16} height={16} alt="Connected" />
-          </a>
-        </NavLink>
-      )}
     </div>
   );
 };
