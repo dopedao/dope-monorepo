@@ -13,15 +13,6 @@ const randomMast = () => {
   return path + MASTHEADS[getRandomNumber(0, MASTHEADS.length - 1)];
 };
 
-const ScreenSaver = styled.div`
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  background: #000000 url('/images/hustler/bridge_with_hustlers.png') center / cover no-repeat fixed;
-`;
 const MastheadContainer = styled.div`
   position: fixed;
   width: 40%;
@@ -59,24 +50,41 @@ const MastheadContainer = styled.div`
 `;
 
 const Success = () => {
-  const [showMusicPlayer, setShowMusicPlayer] = useState(false);
+  const [gangstaParty, setGangstaParty] = useState(false);
+
+  const image = (gangstaParty ? 'bridge_with_hustlers.png' : 'bridge_no_hustlers.png');
+
+  const ScreenSaver = styled.div`
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background: #000000 url('/images/hustler/${image}') center / cover no-repeat fixed;
+  `;
+
   return (
     <>
       <Head title="Bridging Hustler to Optimism" />
       <ScreenSaver>
-        <WebAmpPlayer hidden={!showMusicPlayer} />
-        <MastheadContainer>
-          <Image src={randomMast()} alt="Dope." />
-        </MastheadContainer>
+        <WebAmpPlayer hidden={!gangstaParty} />
+        {!gangstaParty &&
+          <MastheadContainer>
+            <Image src={randomMast()} alt="Dope." />
+          </MastheadContainer>        
+        }
       </ScreenSaver>
       <HStack m={4} gridGap={1} bottom={0} right={0} position="absolute" justifyContent="end">
-        <Button
-          onClick={() => {
-            setShowMusicPlayer(true);
-          }}
-        >
-          Gangsta Party
-        </Button>
+        {!gangstaParty && 
+          <Button
+            onClick={() => {
+              setGangstaParty(true);
+            }}
+          >
+            Gangsta Party
+          </Button>
+        }
         <Link href="/hustlers/initiate/" passHref>
           <Button>Mint another Hustler</Button>
         </Link>
