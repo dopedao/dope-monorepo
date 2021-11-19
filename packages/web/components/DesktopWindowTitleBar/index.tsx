@@ -41,9 +41,9 @@ const DesktopWindowTitleBar = ({
       if (!account || chainId === 42) {
         return null;
       }
-      const ens = new ENS({ provider: library, ensAddress: getEnsAddress(chainId) });
 
       try {
+        const ens = new ENS({ provider: library, ensAddress: getEnsAddress(chainId) });
         const name = await ens.getName(account);
         setEnsAddress(name?.name);
       } catch (error) {
