@@ -15,6 +15,7 @@ import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 import { useInitiator, usePaper } from 'hooks/contracts';
+import { useIsContract } from 'hooks/web3';
 
 const Approve = ({ hustlerConfig }: StepsProps) => {
   const { chainId, account } = useWeb3React();
@@ -24,6 +25,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
   const [canMint, setCanMint] = useState(false);
   const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
   const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
+  const isContract = useIsContract(account);
 
   const dispatchHustler = useDispatchHustler();
   const paper = usePaper();
