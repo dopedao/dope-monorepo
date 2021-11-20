@@ -31,7 +31,7 @@ deploy-l2 :; @./scripts/deploy-l2.sh
 # mainnet
 deploy-mainnet: export ETH_RPC_URL = https://ancient-morning-wave.quiknode.pro/0d888ce1d2caa53e7004a067641c905934ef0efa/
 # $(call network,mainnet)
-deploy-mainnet: export CONTROLLER=0x6942B1b6965EF771743AF4Ea2A3244A4310BEC8f
+deploy-mainnet: export CONTROLLER=0x124760902088dDBFEb8F27210D3B0C645a5c0A8B
 deploy-mainnet: export LOOT=0x8707276df042e89669d69a177d3da7dc78bd8723
 deploy-mainnet: export PAPER=0x7aE1D57b58fA6411F32948314BadD83583eE0e8C
 deploy-mainnet: check-api-key deploy-l1
@@ -49,7 +49,7 @@ deploy-rinkeby: check-api-key deploy-l1
 
 # kovan
 deploy-kovan: export ETH_RPC_URL = $(call network,kovan)
-deploy-kovan: export CONTROLLER=0x560ac3bB6b0bCF669a2a18e33c7538394EA35fF2
+deploy-kovan: export CONTROLLER=0x99A89AF659d5AF027b3d94BB0B169873b46d6351
 deploy-kovan: export LOOT=0xd2761Ee62d8772343070A5dE02C436F788EdF60a
 deploy-kovan: export PAPER=0x781B575CA559263eb232B854195D6dC0AB720105
 deploy-kovan: check-api-key deploy-l1

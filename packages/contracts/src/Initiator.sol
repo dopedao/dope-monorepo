@@ -123,7 +123,6 @@ contract Initiator is Ownable {
     function open(
         uint256 id,
         address to,
-        bytes memory data,
         uint32 gasLimit
     ) external {
         require(release != 0 && release < block.timestamp, Errors.NotTime);
@@ -139,8 +138,7 @@ contract Initiator is Ownable {
         bytes memory message = abi.encodeWithSelector(
             IController.open.selector,
             id,
-            to,
-            data
+            to
         );
         messenger.sendMessage(controller, message, gasLimit);
 

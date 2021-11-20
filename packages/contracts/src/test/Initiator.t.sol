@@ -21,7 +21,7 @@ contract UserBeforeRelease is InitiatorTest {
     }
 
     function testFailOpen() public {
-        user.open(1, address(initiator), '');
+        user.open(1, address(initiator));
     }
 }
 
@@ -55,7 +55,7 @@ contract UserAfterRelease is InitiatorTest {
     }
 
     function testFailOpenWithNoPaperApproval() public {
-        user.open(1, address(initiator), '');
+        user.open(1, address(initiator));
     }
 
     function testMintFromDopeTo() public {
@@ -116,7 +116,7 @@ contract UserAfterRelease is InitiatorTest {
 
     function testOpen() public {
         user.approvePaper(address(initiator), 1e25);
-        user.open(1, address(initiator), '');
+        user.open(1, address(initiator));
     }
 
     function testFailMintFromDopeToTwice() public {
@@ -165,6 +165,6 @@ contract UserAfterRelease is InitiatorTest {
 
     function testFailOpenWhenNotOwner() public {
         user.approvePaper(address(initiator), 1e25);
-        user.open(2, address(initiator), '');
+        user.open(2, address(initiator));
     }
 }
