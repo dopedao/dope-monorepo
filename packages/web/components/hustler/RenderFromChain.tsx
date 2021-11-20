@@ -93,7 +93,7 @@ const RenderFromChain = ({ data, id }: HustlerItemProps) => (
       >
         {data.name}
         &nbsp;
-        {parseInt(id) <= 500 && 'OG'}#{id}
+        {parseInt(id) < 500 && 'OG'}#{id}
       </h4>
     </div>
   </HustlerWrapper>
