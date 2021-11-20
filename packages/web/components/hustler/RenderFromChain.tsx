@@ -90,8 +90,9 @@ const RenderFromChain = ({ data, id }: HustlerItemProps) => (
         text-align: center;
       `}
     >
-      {parseInt(id) <= 500 && 'OG '}
       {data.name}
+      &nbsp;
+      {parseInt(id) <= 500 && `(OG #${id})`}
     </h4>
   </div>
 </HustlerWrapper>
