@@ -52,6 +52,12 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
     }
   }, [account, chainId, initiator.address, paper]);
 
+  useEffect(() => {
+    if (hasEnoughPaper && (!isContract || (isContract && hustlerConfig.mintAddress))) {
+      setCanMint(true);
+    }
+  }, [hasEnoughPaper, isContract, hustlerConfig.mintAddress]);
+
   const handleOgSwitchChange = () => {
     HustlerInitConfig({ ...hustlerConfig, mintOg: !hustlerConfig.mintOg });
   };
@@ -180,40 +186,37 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                     <Td>ETH</Td>
                   </Tr>
                 )}
-                <Tr>
-                  <Td></Td>
-                  <Td textAlign="right">( gas )</Td>
-                  <Td>ETH</Td>
-                </Tr>
               </Table>
             </PanelBody>
           </PanelContainer>
-          <PanelContainer>
-            <PanelTitleBar>Approve $PAPER Spend</PanelTitleBar>
-            <PanelBody>
-              <p>
-                We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of your
-                DOPE NFT #{hustlerConfig.dopeId}.
-              </p>
-              <Button
-                onClick={async () => {
-                  setLoading(true);
-                  try {
-                    const txn = await paper.approve(initiator.address, constants.MaxUint256);
-                    await txn.wait(1);
-                  } catch (error) {
-                  } finally {
-                    setLoading(false);
-                  }
-                }}
-                disabled={isLoading}
-                width="220px"
-              >
-                {isLoading ? <Spinner /> : 'Approve $PAPER Spend'}
-              </Button>
-            </PanelBody>
-          </PanelContainer>
-          {!showMintToAddressBox && (
+          {!isPaperApproved && (
+            <PanelContainer>
+              <PanelTitleBar>Approve $PAPER Spend</PanelTitleBar>
+              <PanelBody>
+                <p>
+                  We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of
+                  your DOPE NFT #{hustlerConfig.dopeId}.
+                </p>
+                <Button
+                  onClick={async () => {
+                    setLoading(true);
+                    try {
+                      const txn = await paper.approve(initiator.address, constants.MaxUint256);
+                      await txn.wait(1);
+                    } catch (error) {
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={isLoading}
+                  width="220px"
+                >
+                  {isLoading ? <Spinner /> : 'Approve $PAPER Spend'}
+                </Button>
+              </PanelBody>
+            </PanelContainer>
+          )}
+          {!showMintToAddressBox && !isContract && (
             <Button variant="linkBlack" onClick={() => setShowMintToAddressBox(true)}>
               Send Hustler to a friend?
             </Button>
@@ -223,6 +226,22 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
               <PanelTitleBar>Mint to Different Address</PanelTitleBar>
               <PanelBody>
                 <p>Send this Hustler to a friend, or another wallet?</p>
+                <Input
+                  placeholder="0x…"
+                  onChange={handleMintAddressChange}
+                  value={hustlerConfig.mintAddress}
+                />
+              </PanelBody>
+            </PanelContainer>
+          )}
+          {isContract && (
+            <PanelContainer>
+              <PanelTitleBar>Mint to Different Address</PanelTitleBar>
+              <PanelBody>
+                <p>
+                  It looks like you are using a contract wallet. Please set the optimism address you
+                  want your hustler minted to.
+                </p>
                 <Input
                   placeholder="0x…"
                   onChange={handleMintAddressChange}
@@ -255,8 +274,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                   Claim OG ###
                 </label>
               </div>
-              {/* TODO ADD BELOW disabled={!canMint} */}
-              <Button variant="primary" onClick={mintHustler}>
+              <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
                 {hustlerConfig.mintOg ? '👑 Initiate OG 👑' : '✨ Initiate Hustler ✨'}
               </Button>
             </PanelFooter>
