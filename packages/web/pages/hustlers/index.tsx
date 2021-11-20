@@ -14,14 +14,15 @@ import Dialog from 'components/Dialog';
 import { Button } from '@chakra-ui/react';
 import Link from 'next/link';
 
-const streetBackground = "#613D57 url('/images/hustler/street_scene.png') center / cover repeat-y fixed";
+const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
+const streetBackground = "#613D57 url('/images/hustler/street_scene.png') top / contain repeat-y fixed";
 
 const Container = styled.div`
   padding: 16px 8px;
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  background: ${streetBackground};
+  background: ${brickBackground};
   .hustlerGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
