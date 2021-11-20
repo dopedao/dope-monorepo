@@ -17,8 +17,13 @@ interface IPaletteGetter {
 }
 
 contract SetAll is Ownable {
-    IHustler h = IHustler(0xE9DACD8118917e3A0522f45c191C6abe88d271B0);
-    ISwapMeet sm = ISwapMeet(0xB3cCb05742bDbd51Daa24f036FC5489f5ca0f38c);
+    IHustler h;
+    ISwapMeet sm;
+
+    constructor(IHustler h_, ISwapMeet sm_) {
+        h = h_;
+        sm = sm_;
+    }
 
     function setPalletes() external onlyOwner {
         (bytes4[] memory hp, bytes4[] memory sp) = IPaletteGetter(0xaa37b6ea5BA775f2736C3726B56d98FF2F6445e6)

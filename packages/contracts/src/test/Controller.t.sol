@@ -10,8 +10,9 @@ contract Initiator is ControllerTest {
         bytes4 color = hex'fafafaff';
         uint8[4] memory body;
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        initiator.mintTo(1, address(initiator), name, color, background, hex'', viewbox, body, hex'', '');
+        initiator.mintTo(1, address(initiator), name, color, background, hex'', viewbox, body, order, hex'', '');
     }
 
     function testFailNonInitiatorCanMintTo() public {
@@ -25,8 +26,9 @@ contract Initiator is ControllerTest {
         bytes4 color = hex'fafafaff';
         uint8[4] memory body;
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        initiator.mintOGTo(420, address(initiator), name, color, background, hex'', viewbox, body, hex'', '');
+        initiator.mintOGTo(420, address(initiator), name, color, background, hex'', viewbox, body, order, hex'', '');
     }
 
     function testFailNonInitiatorCanMintOGTo() public {

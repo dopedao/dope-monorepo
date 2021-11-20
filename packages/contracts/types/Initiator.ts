@@ -25,12 +25,76 @@ import type {
   OnEvent,
 } from "./common";
 
+export type SetMetadataStruct = {
+  color: BytesLike;
+  background: BytesLike;
+  options: BytesLike;
+  viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+  body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+  order: [
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish
+  ];
+  mask: BytesLike;
+  name: string;
+};
+
+export type SetMetadataStructOutput = [
+  string,
+  string,
+  string,
+  [number, number, number, number],
+  [number, number, number, number],
+  [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ],
+  string,
+  string
+] & {
+  color: string;
+  background: string;
+  options: string;
+  viewbox: [number, number, number, number];
+  body: [number, number, number, number];
+  order: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
+  mask: string;
+  name: string;
+};
+
 export interface InitiatorInterface extends ethers.utils.Interface {
   functions: {
     "cost()": FunctionFragment;
     "isOpened(uint256)": FunctionFragment;
-    "mintFromDopeTo(uint256,address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes,uint32)": FunctionFragment;
-    "mintOGFromDopeTo(uint256,address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes,uint32)": FunctionFragment;
+    "mintFromDopeTo(uint256,address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes,uint32)": FunctionFragment;
+    "mintOGFromDopeTo(uint256,address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes,uint32)": FunctionFragment;
     "open(uint256,address,bytes,uint32)": FunctionFragment;
     "owner()": FunctionFragment;
     "release()": FunctionFragment;
@@ -47,35 +111,11 @@ export interface InitiatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mintFromDopeTo",
-    values: [
-      BigNumberish,
-      string,
-      string,
-      BytesLike,
-      BytesLike,
-      BytesLike,
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      BytesLike,
-      BytesLike,
-      BigNumberish
-    ]
+    values: [BigNumberish, string, SetMetadataStruct, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "mintOGFromDopeTo",
-    values: [
-      BigNumberish,
-      string,
-      string,
-      BytesLike,
-      BytesLike,
-      BytesLike,
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      BytesLike,
-      BytesLike,
-      BigNumberish
-    ]
+    values: [BigNumberish, string, SetMetadataStruct, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "open",
@@ -176,13 +216,7 @@ export interface Initiator extends BaseContract {
     mintFromDopeTo(
       id: BigNumberish,
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      meta: SetMetadataStruct,
       data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -191,13 +225,7 @@ export interface Initiator extends BaseContract {
     mintOGFromDopeTo(
       id: BigNumberish,
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      meta: SetMetadataStruct,
       data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -241,13 +269,7 @@ export interface Initiator extends BaseContract {
   mintFromDopeTo(
     id: BigNumberish,
     to: string,
-    name: string,
-    color: BytesLike,
-    background: BytesLike,
-    options: BytesLike,
-    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    mask: BytesLike,
+    meta: SetMetadataStruct,
     data: BytesLike,
     gasLimit: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -256,13 +278,7 @@ export interface Initiator extends BaseContract {
   mintOGFromDopeTo(
     id: BigNumberish,
     to: string,
-    name: string,
-    color: BytesLike,
-    background: BytesLike,
-    options: BytesLike,
-    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    mask: BytesLike,
+    meta: SetMetadataStruct,
     data: BytesLike,
     gasLimit: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -306,13 +322,7 @@ export interface Initiator extends BaseContract {
     mintFromDopeTo(
       id: BigNumberish,
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      meta: SetMetadataStruct,
       data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: CallOverrides
@@ -321,13 +331,7 @@ export interface Initiator extends BaseContract {
     mintOGFromDopeTo(
       id: BigNumberish,
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      meta: SetMetadataStruct,
       data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: CallOverrides
@@ -382,13 +386,7 @@ export interface Initiator extends BaseContract {
     mintFromDopeTo(
       id: BigNumberish,
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      meta: SetMetadataStruct,
       data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -397,13 +395,7 @@ export interface Initiator extends BaseContract {
     mintOGFromDopeTo(
       id: BigNumberish,
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      meta: SetMetadataStruct,
       data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -451,13 +443,7 @@ export interface Initiator extends BaseContract {
     mintFromDopeTo(
       id: BigNumberish,
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      meta: SetMetadataStruct,
       data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -466,13 +452,7 @@ export interface Initiator extends BaseContract {
     mintOGFromDopeTo(
       id: BigNumberish,
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      meta: SetMetadataStruct,
       data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }

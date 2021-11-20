@@ -3,33 +3,23 @@
 
 /// @title Interface for Hustler
 
+import "./IHustler.sol";
+
 pragma solidity ^0.8.6;
 
 interface IController {
     function mintOGTo(
         uint256 dopeId,
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
-        bytes memory data
+        IHustler.SetMetadata calldata m,
+        bytes calldata data
     ) external;
 
     function mintTo(
         uint256 dopeId,
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
-        bytes memory data
+        IHustler.SetMetadata calldata m,
+        bytes calldata data
     ) external;
 
     function open(
@@ -54,7 +44,8 @@ interface IController {
         bytes memory data
     ) external;
 
-    function addItemComponent(uint8 componentType, string calldata component) external;
+    function addItemComponent(uint8 componentType, string calldata component)
+        external;
 
     function setEnforcer(address) external;
 

@@ -13,11 +13,11 @@ contract Owner is InitiatorTest {
 
 contract UserBeforeRelease is InitiatorTest {
     function testFailMintFromDopeTo() public {
-        user.mintFromDopeTo(1, address(initiator), name, color, background, hex'', viewbox, body, hex'', '');
+        user.mintFromDopeTo(1, address(initiator), name, color, background, hex'', viewbox, body, order, hex'', '');
     }
 
     function testFailMintOGFromDopeTo() public {
-        user.mintOGFromDopeTo(1, address(initiator), name, color, background, hex'', viewbox, body, hex'', '');
+        user.mintOGFromDopeTo(1, address(initiator), name, color, background, hex'', viewbox, body, order, hex'', '');
     }
 
     function testFailOpen() public {
@@ -35,7 +35,7 @@ contract UserAfterRelease is InitiatorTest {
     }
 
     function testFailMintFromDopeToWithNoPaperApproval() public {
-        user.mintFromDopeTo(1, address(initiator), name, color, background, hex'', viewbox, body, hex'', '');
+        user.mintFromDopeTo(1, address(initiator), name, color, background, hex'', viewbox, body, order, hex'', '');
     }
 
     function testFailMintOGFromDopeToWithNoPaperApproval() public {
@@ -48,6 +48,7 @@ contract UserAfterRelease is InitiatorTest {
             hex'',
             viewbox,
             body,
+            order,
             hex'',
             ''
         );
@@ -59,7 +60,7 @@ contract UserAfterRelease is InitiatorTest {
 
     function testMintFromDopeTo() public {
         user.approvePaper(address(initiator), 1e25);
-        user.mintFromDopeTo(1, address(initiator), name, color, background, hex'', viewbox, body, hex'', '');
+        user.mintFromDopeTo(1, address(initiator), name, color, background, hex'', viewbox, body, order, hex'', '');
     }
 
     function testMintOGFromDopeTo() public {
@@ -73,6 +74,7 @@ contract UserAfterRelease is InitiatorTest {
             hex'',
             viewbox,
             body,
+            order,
             hex'',
             ''
         );
@@ -89,6 +91,7 @@ contract UserAfterRelease is InitiatorTest {
             hex'',
             viewbox,
             body,
+            order,
             hex'',
             ''
         );
@@ -105,6 +108,7 @@ contract UserAfterRelease is InitiatorTest {
             hex'',
             viewbox,
             body,
+            order,
             hex'',
             ''
         );
@@ -132,7 +136,14 @@ contract UserAfterRelease is InitiatorTest {
 
     function testFailMintFromDopeToWhenNotOwner() public {
         user.approvePaper(address(initiator), 1e25);
-        user.mintFromDopeTo(2, address(initiator), name, color, background, hex'', viewbox, body, hex'', '');
+        user.mintFromDopeTo(2, address(initiator), name, color, background, hex'', viewbox, body, order, hex'', '');
+    }
+
+    function testFailMintFromDopeWithOGBody() public {
+        user.approvePaper(address(initiator), 1e25);
+        body[1] = 5;
+        user.mintFromDopeTo(1, address(initiator), name, color, background, hex'', viewbox, body, order, hex'', '');
+        body[1] = 0;
     }
 
     function testFailMintOGFromDopeToWhenNotOwner() public {
@@ -146,6 +157,7 @@ contract UserAfterRelease is InitiatorTest {
             hex'',
             viewbox,
             body,
+            order,
             hex'',
             ''
         );

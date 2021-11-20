@@ -111,7 +111,9 @@ contract Hustlers is HustlerTest {
         uint256 hustlerId = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mint(name, color, background, hex'', viewbox, body, hex'000f');
+        uint8[10] memory order;
+
+        owner.mint(name, color, background, hex'', viewbox, body, order, hex'000f');
         owner.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
@@ -134,7 +136,8 @@ contract Hustlers is HustlerTest {
         uint256 hustlerId = 0;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mintOG(name, color, background, hex'', viewbox, body, hex'000f', '');
+        uint8[10] memory order;
+        owner.mintOG(name, color, background, hex'', viewbox, body, order, hex'000f', '');
         owner.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
@@ -172,7 +175,8 @@ contract Hustlers is HustlerTest {
         uint256 id = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mint(name, color, background, hex'', viewbox, body, hex'');
+        uint8[10] memory order;
+        owner.mint(name, color, background, hex'', viewbox, body, order, hex'');
         owner.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
 
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
@@ -191,7 +195,8 @@ contract Hustlers is HustlerTest {
         uint256 hustlerId = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mint(name, color, background, hex'', viewbox, body, hex'');
+        uint8[10] memory order;
+        owner.mint(name, color, background, hex'', viewbox, body, order, hex'');
         owner.safeTransferHustlerFrom(address(owner), address(bob), hustlerId, 1, '');
 
         assertEq(hustler.balanceOf(address(bob), hustlerId), 1);
@@ -206,7 +211,8 @@ contract Hustlers is HustlerTest {
 
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mint(name, color, background, hex'', viewbox, body, hex'');
+        uint8[10] memory order;
+        owner.mint(name, color, background, hex'', viewbox, body, order, hex'');
         owner.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
         checkOwns1155s(ids, address(hustler));
@@ -248,8 +254,8 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
-
-        owner.setMetadata(id, 'hustler', '', '', '', viewbox, body, hex'0001');
+        uint8[10] memory order;
+        owner.setMetadata(id, 'hustler', '', '', '', viewbox, body, order, hex'0001');
 
         assertEq(hustler.getMetadata(id).name, 'hustler');
     }
@@ -259,8 +265,8 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
-
-        owner.setMetadata(id, 'hustler', '', '', '', viewbox, body, hex'0000');
+        uint8[10] memory order;
+        owner.setMetadata(id, 'hustler', '', '', '', viewbox, body, order, hex'0000');
 
         assertEq(hustler.getMetadata(id).name, '');
     }
@@ -270,8 +276,8 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
-
-        owner.setMetadata(id, 'hustler name', '', '', '', viewbox, body, hex'0001');
+        uint8[10] memory order;
+        owner.setMetadata(id, 'hustler name hustler name', '', '', '', viewbox, body, order, hex'0001');
     }
 
     function testCanSetBackground() public {
@@ -279,8 +285,9 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', hex'123456', '', viewbox, body, hex'0004');
+        owner.setMetadata(id, '', '', hex'123456', '', viewbox, body, order, hex'0004');
 
         assertEq(hustler.getMetadata(id).background, hex'123456');
     }
@@ -290,8 +297,9 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', hex'123456', '', viewbox, body, hex'0000');
+        owner.setMetadata(id, '', '', hex'123456', '', viewbox, body, order, hex'0000');
 
         assertEq(hustler.getMetadata(id).background, '');
     }
@@ -301,8 +309,9 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        owner.setMetadata(id, '', hex'123456', '', '', viewbox, body, hex'0002');
+        owner.setMetadata(id, '', hex'123456', '', '', viewbox, body, order, hex'0002');
 
         assertEq(hustler.getMetadata(id).color, hex'123456');
     }
@@ -312,8 +321,9 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body;
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        owner.setMetadata(id, '', hex'123456', '', '', viewbox, body, hex'0000');
+        owner.setMetadata(id, '', hex'123456', '', '', viewbox, body, order, hex'0000');
 
         assertEq(hustler.getMetadata(id).color, '');
     }
@@ -323,8 +333,9 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body = [1, 0, 12, 0];
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body, hex'0050');
+        owner.setMetadata(id, '', '', '', '', viewbox, body, order, hex'0050');
 
         assertEq(hustler.getMetadata(id).body[0], 1);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -336,7 +347,8 @@ contract Hustlers is HustlerTest {
         uint256 id = 0;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mintOG('tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, hex'000f', '');
+        uint8[10] memory order;
+        owner.mintOG('tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, order, hex'000f', '');
 
         require(bytes(hustler.uri(id)).length > 0);
     }
@@ -346,8 +358,9 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body = [0, 5, 0, 0];
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body, hex'0020');
+        owner.setMetadata(id, '', '', '', '', viewbox, body, order, hex'0020');
 
         assertEq(hustler.getMetadata(id).body[0], 0);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -359,11 +372,12 @@ contract Hustlers is HustlerTest {
         uint256 id = 0;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mintOG('', '', '', hex'', viewbox, body, hex'', '');
+        uint8[10] memory order;
+        owner.mintOG('', '', '', hex'', viewbox, body, order, hex'', '');
 
         uint8[4] memory body2 = [0, 5, 0, 0];
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body2, hex'0020');
+        owner.setMetadata(id, '', '', '', '', viewbox, body2, order, hex'0020');
 
         assertEq(hustler.getMetadata(id).body[0], 0);
         assertEq(hustler.getMetadata(id).body[1], 5);
@@ -375,7 +389,8 @@ contract Hustlers is HustlerTest {
         uint256 id = 0;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mintOG('tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, hex'000f', '');
+        uint8[10] memory order;
+        owner.mintOG('tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, order, hex'000f', '');
 
         require(bytes(hustler.uri(id)).length > 0);
     }
@@ -385,8 +400,9 @@ contract Hustlers is HustlerTest {
         owner.mint();
         uint8[4] memory body = [2, 3, 4, 5];
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body, hex'00f0');
+        owner.setMetadata(id, '', '', '', '', viewbox, body, order, hex'00f0');
 
         assertEq(hustler.getMetadata(id).body[0], 2);
         assertEq(hustler.getMetadata(id).body[1], 3);
@@ -399,8 +415,9 @@ contract Hustlers is HustlerTest {
         hustler.mintTo(address(this), '');
         uint8[4] memory body = [2, 3, 4, 5];
         uint8[4] memory viewbox;
+        uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body, hex'00f0');
+        owner.setMetadata(id, '', '', '', '', viewbox, body, order, hex'00f0');
     }
 
     function testCanSetSlotsPartial() public {
@@ -714,9 +731,10 @@ contract Hustlers is HustlerTest {
         uint256 hustlerId = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mint(name, color, background, hex'', viewbox, body, hex'');
+        uint8[10] memory order;
+        owner.mint(name, color, background, hex'', viewbox, body, order, hex'');
 
-        owner.setMetadata(hustlerId, '', '', '', hex'0001', viewbox, body, hex'0000');
+        owner.setMetadata(hustlerId, '', '', '', hex'0001', viewbox, body, order, hex'0000');
         assertEq(hustler.getMetadata(hustlerId).options, hex'0001');
 
         hustler.tokenURI(hustlerId);
@@ -841,7 +859,8 @@ contract Bouncing is HustlerTest {
         hevm.warp(100);
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mintOG('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'', '');
+        uint8[10] memory order;
+        owner.mintOG('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, order, hex'', '');
         assertEq(hustler.getMetadata(id).age, 100);
 
         hevm.warp(200);
@@ -858,13 +877,15 @@ contract Benchmark is HustlerTest {
     function testMintFromDope() public {
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mint('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'');
+        uint8[10] memory order;
+        owner.mint('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, order, hex'');
     }
 
     function testMintOGFromDope() public {
         uint8[4] memory body;
         uint8[4] memory viewbox;
-        owner.mintOG('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, hex'', '');
+        uint8[10] memory order;
+        owner.mintOG('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, order, hex'', '');
     }
 
     function testCanMint() public {

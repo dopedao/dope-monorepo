@@ -8,7 +8,7 @@ import './iOVM_FakeCrossDomainMessenger.sol';
 
 import { iOVM_CrossDomainMessenger } from '../../interfaces/iOVM_CrossDomainMessenger.sol';
 import { IComponents } from '../../interfaces/IComponents.sol';
-import { IHustler } from '../../interfaces/IHustler.sol';
+import { IHustler, IHustlerActions } from '../../interfaces/IHustler.sol';
 import { ISwapMeet } from '../../interfaces/ISwapMeet.sol';
 import { IController } from '../../interfaces/IController.sol';
 import { Controller } from '../../Controller.sol';
@@ -186,20 +186,25 @@ contract ControllerInitiator is ERC721Holder, ERC1155Holder {
         bytes2 options,
         uint8[4] calldata viewbox,
         uint8[4] calldata body,
+        uint8[10] calldata order,
         bytes2 mask,
         bytes memory data
     ) external {
+        IHustlerActions.SetMetadata memory metadata = IHustlerActions.SetMetadata({
+            name: name,
+            color: color,
+            background: background,
+            options: options,
+            viewbox: viewbox,
+            body: body,
+            order: order,
+            mask: mask
+        });
         bytes memory message = abi.encodeWithSelector(
             IController.mintTo.selector,
             id,
             to,
-            name,
-            color,
-            background,
-            options,
-            viewbox,
-            body,
-            mask,
+            metadata,
             data
         );
         cdm.sendMessage(controller, message, 1000000);
@@ -214,20 +219,25 @@ contract ControllerInitiator is ERC721Holder, ERC1155Holder {
         bytes2 options,
         uint8[4] calldata viewbox,
         uint8[4] calldata body,
+        uint8[10] calldata order,
         bytes2 mask,
         bytes memory data
     ) external {
+        IHustlerActions.SetMetadata memory metadata = IHustlerActions.SetMetadata({
+            name: name,
+            color: color,
+            background: background,
+            options: options,
+            viewbox: viewbox,
+            body: body,
+            order: order,
+            mask: mask
+        });
         bytes memory message = abi.encodeWithSelector(
             IController.mintOGTo.selector,
             id,
             to,
-            name,
-            color,
-            background,
-            options,
-            viewbox,
-            body,
-            mask,
+            metadata,
             data
         );
         cdm.sendMessage(controller, message, 1000000);
@@ -252,13 +262,7 @@ contract FakeComponents is IComponents {
 contract FakeHustler is ERC1155, IHustler {
     function mintOGTo(
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
+        IHustler.SetMetadata calldata m,
         bytes memory data
     ) external override returns (uint256) {
         _mint(to, 69, 1, data);
@@ -267,13 +271,7 @@ contract FakeHustler is ERC1155, IHustler {
 
     function mintTo(
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
+        IHustler.SetMetadata calldata m,
         bytes memory data
     ) external override returns (uint256) {
         _mint(to, 420, 1, data);

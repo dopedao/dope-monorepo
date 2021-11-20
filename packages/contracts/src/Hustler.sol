@@ -154,22 +154,16 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
 
     function mintTo(
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
-        bytes memory data
+        SetMetadata calldata m,
+        bytes calldata data
     ) external override returns (uint256) {
         uint256 hustlerId = hustlers;
-        setMeta(hustlerId, name, color, background, options, viewbox, body, mask);
+        setMeta(hustlerId, m.name, m.color, m.background, m.options, m.viewbox, m.body, m.order, m.mask);
         mintTo(to, data);
         return hustlerId;
     }
 
-    function mintTo(address to, bytes memory data) public {
+    function mintTo(address to, bytes calldata data) public {
         uint256 id = hustlers;
         metadata[hustlers].age = block.timestamp;
         hustlers += 1;
@@ -178,21 +172,15 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
 
     function mintOGTo(
         address to,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask,
-        bytes memory data
+        SetMetadata calldata m,
+        bytes calldata data
     ) external override onlyOwner returns (uint256) {
         require(ogs < 500, 'to big id');
         uint256 hustlerId = ogs;
         ogs += 1;
 
         metadata[hustlerId].age = block.timestamp;
-        setMeta(hustlerId, name, color, background, options, viewbox, body, mask);
+        setMeta(hustlerId, m.name, m.color, m.background, m.options, m.viewbox, m.body, m.order, m.mask);
         _mint(to, hustlerId, 1, data);
 
         return hustlerId;
@@ -222,15 +210,9 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
 
     function setMetadata(
         uint256 hustlerId,
-        string calldata name,
-        bytes4 color,
-        bytes4 background,
-        bytes2 options,
-        uint8[4] calldata viewbox,
-        uint8[4] calldata body,
-        bytes2 mask
+        SetMetadata calldata m
     ) public onlyHustler(hustlerId) {
-        setMeta(hustlerId, name, color, background, options, viewbox, body, mask);
+        setMeta(hustlerId, m.name, m.color, m.background, m.options, m.viewbox, m.body, m.order, m.mask);
     }
 
     function setMeta(
@@ -241,10 +223,11 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
         bytes2 options,
         uint8[4] calldata viewbox,
         uint8[4] calldata body,
+        uint8[10] calldata order,
         bytes2 mask
     ) internal {
         if (BitMask.get(mask, 0)) {
-            require(bytes(name).length < 10, 'nl');
+            require(bytes(name).length < 21, 'nl');
             metadata[hustlerId].name = name;
         }
 
@@ -268,6 +251,10 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
         }
 
         metadata[hustlerId].options = options;
+        
+        if (BitMask.get(mask, 8)) {
+            metadata[hustlerId].order = order;
+        }
 
         emit MetadataUpdate(hustlerId);
     }
