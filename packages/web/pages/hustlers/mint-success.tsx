@@ -7,7 +7,7 @@ import Link from 'next/link';
 import styled from '@emotion/styled';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 
-const MASTHEADS = ['dope.svg', 'hell-yeah.svg', 'success.svg'];
+const MASTHEADS = ['dope.svg', 'hell-yeah.svg', 'success.svg', 'wagmi.svg'];
 
 const randomMast = () => {
   const path = '/images/masthead/';
@@ -69,6 +69,11 @@ const PLUGS = [
     link: 'https://twitter.com/_541va_',
     name: 'M1',
     prefix: 'Stickman',
+  },  
+  {
+    link: 'https://twitter.com/smakosh',
+    name: 'Smakosh',
+    suffix: 'The Kid',
   },
 ]
 const PlugContainer = styled.div`
@@ -107,11 +112,11 @@ const PlugContainer = styled.div`
       opacity: 1;
     }
     100% {
-      top: -100em;
+      top: -200em;
       opacity: 1;
     }
   }
-  animation: scroll-in 50s linear 2s;
+  animation: scroll-in 60s linear 2s;
 `;
 
 const MastheadContainer = styled.div`
