@@ -315,20 +315,18 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
               </PanelBody>
             </PanelContainer>
           )}
+          {warning && (
+            <Alert status="warning">
+              <AlertIcon />
+              {warning}
+            </Alert>
+          )}
           {!showMintToAddressBox && !isContract && (
             <Button variant="linkBlack" onClick={() => setShowMintToAddressBox(true)}>
               Send Hustler to a friend?
             </Button>
           )}
-          {warning && (
-            <p
-              css={css`
-                color: #f31c1c;
-              `}
-            >
-              {warning}
-            </p>
-          )}
+
           {showMintToAddressBox && (
             <PanelContainer>
               <PanelTitleBar>Mint to Different Address</PanelTitleBar>
@@ -383,7 +381,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                 )}
               </div>
               <div>
-                <Switch
+                {/* <Switch
                   id="initiate-og-switch"
                   isChecked={hustlerConfig.mintOg}
                   onChange={handleOgSwitchChange}
@@ -393,9 +391,10 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                   css={css`
                     margin-left: 0.5em;
                   `}
+                  disabled
                 >
                   Claim OG
-                </label>
+                </label> */}
               </div>
               <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
                 {hustlerConfig.mintOg ? '👑 Initiate OG 👑' : '✨ Initiate Hustler ✨'}
