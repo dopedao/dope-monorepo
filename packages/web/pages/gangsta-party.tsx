@@ -50,7 +50,7 @@ const GangstaParty = () => {
 
   return (
     <>
-      <Head title="Bridging Hustler to Optimism" />
+      <Head title="DOPE WARS GANGSTA PARTY" />
       <ScreenSaver>
         <HustlerContainer>
           CHECK ONE TWO
