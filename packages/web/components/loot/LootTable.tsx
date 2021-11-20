@@ -120,7 +120,7 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
                 <Th onClick={() => setSort('id')}>Dope ID</Th>
                 <Th onClick={() => setSort('rank')}>Rank</Th>
                 <Th>Paper</Th>
-                <Th>Unbundled</Th>
+                <Th>Bundled</Th>
               </Tr>
             </Thead>
             <Tbody>
