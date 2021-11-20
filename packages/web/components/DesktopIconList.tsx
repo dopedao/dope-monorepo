@@ -1,8 +1,10 @@
 import { media } from 'styles/mixins';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { useWAGMI } from 'hooks/web3';
 import DesktopIcon from 'components/DesktopIcon';
 import styled from '@emotion/styled';
-import { useWAGMI } from 'hooks/web3';
+import WebAmpPlayer from './WebAmpPlayer';
 
 const IconGrid = styled.div`
   position: fixed;
@@ -32,6 +34,8 @@ const IconGrid = styled.div`
 `;
 
 const DesktopIconList = () => {
+  const [showWebAmp, setShowWebAmp] = useState(false);
+
   const router = useRouter();
   const openLocalRoute = (url: string): void => {
     router.replace(url);
@@ -42,8 +46,10 @@ const DesktopIconList = () => {
 
   useWAGMI();
 
-  return (
+  return (<>
+    { showWebAmp && <WebAmpPlayer onClose={() => setShowWebAmp(false)} /> }
     <IconGrid>
+      <DesktopIcon icon="file" label="READ ME FIRST" clickAction={() => openLocalRoute('/about')} />
       <DesktopIcon
         icon="dopewars-exe"
         label="DOPEWARS.EXE"
@@ -57,7 +63,11 @@ const DesktopIconList = () => {
         }}
       />
       <DesktopIcon icon="tv" label="DOPE TV" clickAction={() => openLocalRoute('/dope-tv')} />
-      <DesktopIcon icon="file" label="ABOUT.FAQ" clickAction={() => openLocalRoute('/about')} />
+      <DesktopIcon
+        icon="winamp"
+        label="DOPE AMP"
+        clickAction={() => setShowWebAmp(true) }
+      />
       {/* <DesktopIcon 
         icon="file-chart" 
         label="DOPE Stats" 
@@ -98,6 +108,6 @@ const DesktopIconList = () => {
         clickAction={() => openBrowserTab('https://discord.gg/VFbAX3JzPu')}
       />
     </IconGrid>
-  );
+  </>);
 };
 export default DesktopIconList;
