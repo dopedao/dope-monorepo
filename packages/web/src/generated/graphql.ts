@@ -1228,6 +1228,16 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
+export type AllHustlersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllHustlersQuery = { __typename?: 'Query', hustlers: Array<{ __typename?: 'Hustler', id: string, data: string }> };
+
+export type AllOpenedBagsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllOpenedBagsQuery = { __typename?: 'Query', page_1: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_2: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_3: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_4: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_5: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_6: Array<{ __typename?: 'Bag', opened: boolean, id: string }> };
+
 export type AllUnclaimedBagsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1262,7 +1272,7 @@ export type SearchQueryVariables = Exact<{
 }>;
 
 
-export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean }> };
+export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean, opened: boolean }> };
 
 export type WalletQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -1272,6 +1282,96 @@ export type WalletQueryVariables = Exact<{
 export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, opened: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> }> };
 
 
+export const AllHustlersDocument = gql`
+    query AllHustlers {
+  hustlers(first: 1000) {
+    id
+    data
+  }
+}
+    `;
+
+/**
+ * __useAllHustlersQuery__
+ *
+ * To run a query within a React component, call `useAllHustlersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllHustlersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllHustlersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllHustlersQuery(baseOptions?: Apollo.QueryHookOptions<AllHustlersQuery, AllHustlersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, options);
+      }
+export function useAllHustlersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllHustlersQuery, AllHustlersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, options);
+        }
+export type AllHustlersQueryHookResult = ReturnType<typeof useAllHustlersQuery>;
+export type AllHustlersLazyQueryHookResult = ReturnType<typeof useAllHustlersLazyQuery>;
+export type AllHustlersQueryResult = Apollo.QueryResult<AllHustlersQuery, AllHustlersQueryVariables>;
+export const AllOpenedBagsDocument = gql`
+    query AllOpenedBags {
+  page_1: bags(first: 1000, skip: 0, where: {opened: true}) {
+    opened
+    id
+  }
+  page_2: bags(first: 1000, skip: 1000, where: {opened: true}) {
+    opened
+    id
+  }
+  page_3: bags(first: 1000, skip: 2000, where: {opened: true}) {
+    opened
+    id
+  }
+  page_4: bags(first: 1000, skip: 3000, where: {opened: true}) {
+    opened
+    id
+  }
+  page_5: bags(first: 1000, skip: 4000, where: {opened: true}) {
+    opened
+    id
+  }
+  page_6: bags(first: 1000, skip: 5000, where: {opened: true}) {
+    opened
+    id
+  }
+}
+    `;
+
+/**
+ * __useAllOpenedBagsQuery__
+ *
+ * To run a query within a React component, call `useAllOpenedBagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllOpenedBagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllOpenedBagsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllOpenedBagsQuery(baseOptions?: Apollo.QueryHookOptions<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>(AllOpenedBagsDocument, options);
+      }
+export function useAllOpenedBagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>(AllOpenedBagsDocument, options);
+        }
+export type AllOpenedBagsQueryHookResult = ReturnType<typeof useAllOpenedBagsQuery>;
+export type AllOpenedBagsLazyQueryHookResult = ReturnType<typeof useAllOpenedBagsLazyQuery>;
+export type AllOpenedBagsQueryResult = Apollo.QueryResult<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>;
 export const AllUnclaimedBagsDocument = gql`
     query AllUnclaimedBags {
   page_1: bags(first: 1000, skip: 0, where: {claimed: false}) {
@@ -1464,6 +1564,7 @@ export const SearchDocument = gql`
     waist
     weapon
     claimed
+    opened
   }
 }
     `;

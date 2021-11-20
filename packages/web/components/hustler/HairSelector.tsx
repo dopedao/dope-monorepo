@@ -16,14 +16,14 @@ import PanelTitleBar from '../PanelTitleBar';
 
 const HairSelector = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
-  const isMale = (hustlerConfig.sex == 'male');
+  const isMale = hustlerConfig.sex == 'male';
 
   return (
     <PanelContainer>
       <PanelTitleBar>Other</PanelTitleBar>
       <PanelBody>
         <Flex gridGap={4}>
-          <Box width={ isMale ? '50%' : '100%' }>
+          <Box width={isMale ? '50%' : '100%'}>
             <FormLabel htmlFor="hair">Hair</FormLabel>
             <NumberInput
               name="hair"

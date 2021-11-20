@@ -24,11 +24,7 @@ const Configure = () => {
   // const onTestNetOrAfterHustlerLaunch = chainId == 4 || currentTime >= HUSTLER_MINT_TIME;
 
   return (
-    <AppWindow
-      requiresWalletConnection={true}
-      padBody={false}
-      title={title}
-    >
+    <AppWindow requiresWalletConnection={true} padBody={false} title={title}>
       <Head title={title} />
       <StackedResponsiveContainer>
         <div>
@@ -55,7 +51,12 @@ const Configure = () => {
             textColor={hustlerConfig.textColor}
             zoomWindow={hustlerConfig.zoomWindow}
           />
-          <PanelFooter css={css`width:100%;border-top-width:1px;`}>
+          <PanelFooter
+            css={css`
+              width: 100%;
+              border-top-width: 1px;
+            `}
+          >
             <ZoomControls />
             <HStack mt={0} justify="end">
               <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>

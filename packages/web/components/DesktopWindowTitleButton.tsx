@@ -17,7 +17,7 @@ const DesktopWindowTitleButton = ({ icon, title, clickAction, children }: IconPr
         background: #141011;
         box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,
           1px 1px 0px rgba(255, 255, 255, 0.25) inset;
-        width: ${ (icon && !children) ? '32px' : 'auto'};
+        width: ${icon && !children ? '32px' : 'auto'};
         padding: 0px 8px;
         height: 32px;
         border-right: 2px solid #000;
@@ -31,11 +31,9 @@ const DesktopWindowTitleButton = ({ icon, title, clickAction, children }: IconPr
           display: block;
         }
       `}
-    > 
-      { icon && 
-        <Image src={`/images/icon/${icon}.svg`} alt={icon} width={16} height={16} />
-      }
-      { children }
+    >
+      {icon && <Image src={`/images/icon/${icon}.svg`} alt={icon} width={16} height={16} />}
+      {children}
     </div>
   );
 };

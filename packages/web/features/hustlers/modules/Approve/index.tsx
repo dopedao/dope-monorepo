@@ -1,15 +1,5 @@
 import { css } from '@emotion/react';
-import {
-  Alert,
-  AlertIcon,
-  Button,
-  Stack,
-  Switch,
-  Table,
-  Tr,
-  Td,
-  Input,
-} from '@chakra-ui/react';
+import { Alert, AlertIcon, Button, Stack, Switch, Table, Tr, Td, Input } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { BigNumber, constants } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
@@ -192,7 +182,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
       // name
       bitoptions += 100;
     }
-    
+
     const options =
       '0x' +
       parseInt('' + bitoptions, 2)
