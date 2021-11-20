@@ -66,6 +66,7 @@ const countdownRenderer = ({ days, hours, minutes, seconds, completed }: Countdo
 };
 
 const Approve = ({ hustlerConfig }: StepsProps) => {
+  const [warning, setWarning] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
   const { chainId, account } = useWeb3React();
   const [showMintToAddressBox, setShowMintToAddressBox] = useState(
@@ -108,15 +109,35 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
   }, [account, chainId, initiator.address, paper]);
 
   useEffect(() => {
+    const isAlienSkin = hustlerConfig.body === 5;
+
     if (
       isLaunched &&
       isPaperApproved &&
       hasEnoughPaper &&
       (!isContract || (isContract && hustlerConfig.mintAddress))
     ) {
-      setCanMint(true);
+      if (isAlienSkin) {
+        if (hustlerConfig.mintOg) {
+          setCanMint(true);
+          setWarning(null);
+        } else {
+          setWarning('You need to claim OG to use this skin or change your skin');
+        }
+      } else {
+        setCanMint(true);
+        setWarning(null);
+      }
     }
-  }, [isLaunched, isPaperApproved, hasEnoughPaper, isContract, hustlerConfig.mintAddress]);
+  }, [
+    isLaunched,
+    isPaperApproved,
+    hasEnoughPaper,
+    isContract,
+    hustlerConfig.mintAddress,
+    hustlerConfig.body,
+    hustlerConfig.mintOg,
+  ]);
 
   const handleOgSwitchChange = () => {
     HustlerInitConfig({ ...hustlerConfig, mintOg: !hustlerConfig.mintOg });
@@ -280,6 +301,15 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
             <Button variant="linkBlack" onClick={() => setShowMintToAddressBox(true)}>
               Send Hustler to a friend?
             </Button>
+          )}
+          {warning && (
+            <p
+              css={css`
+                color: #f31c1c;
+              `}
+            >
+              {warning}
+            </p>
           )}
           {showMintToAddressBox && (
             <PanelContainer>
