@@ -18,7 +18,7 @@ const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% 
 const streetBackground = "#613D57 url('/images/hustler/street_scene.png') top / contain repeat-y fixed";
 
 const Container = styled.div`
-  padding: 16px 8px;
+  padding: 32px 16px;
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
