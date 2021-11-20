@@ -311,6 +311,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                     try {
                       const txn = await paper.approve(initiator.address, constants.MaxUint256);
                       await txn.wait(1);
+                      setIsPaperApproved(true);
                     } catch (error) {
                     } finally {
                       setLoading(false);

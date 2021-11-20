@@ -141,6 +141,7 @@ contract HustlerMetadata {
         MetadataBuilder.Params memory p;
         p.name = subtitle;
         p.text = title;
+        p.subtext = subtitle;
         p.background = background;
         p.color = color;
         p.viewbox = viewbox;

@@ -48,11 +48,7 @@ contract Controller is IController, ERC1155Holder {
         IHustler.SetMetadata calldata meta,
         bytes memory data
     ) external override onlyInitiator {
-        uint256 hustlerId = hustler.mintTo(
-            address(this),
-            meta,
-            "init"
-        );
+        uint256 hustlerId = hustler.mintTo(address(this), meta, "init");
         swapmeet.open(dopeId, address(hustler), abi.encode(equip, hustlerId));
         hustler.safeTransferFrom(address(this), to, hustlerId, 1, data);
     }
@@ -68,12 +64,8 @@ contract Controller is IController, ERC1155Holder {
         hustler.safeTransferFrom(address(this), to, hustlerId, 1, data);
     }
 
-    function open(
-        uint256 dopeId,
-        address to,
-        bytes memory data
-    ) external override onlyInitiator {
-        swapmeet.open(dopeId, to, data);
+    function open(uint256 dopeId, address to) external override onlyInitiator {
+        swapmeet.open(dopeId, to, "");
     }
 
     /** MAINTAINER ACTIONS */
