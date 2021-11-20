@@ -201,13 +201,15 @@ const ScreenSaver = styled.div<{ image: string }>`
 `;
 
 const MintSuccess = () => {
+  const [hasTransfered, setHasTransfered] = useState(false);
   const hustler = useHustler();
   const [gangstaParty, setGangstaParty] = useState(false);
 
   const image = gangstaParty ? 'bridge_with_hustlers.png' : 'bridge_no_hustlers.png';
 
-  const listener = (block: any) => {
+  const listener = (block: string) => {
     console.log(block);
+    setHasTransfered(true);
   };
 
   useEffect(() => {
@@ -242,7 +244,7 @@ const MintSuccess = () => {
             <WebAmpPlayer />
           </>
         )}
-        {!gangstaParty && (
+        {!gangstaParty && !hasTransfered && (
           <>
             <MastheadContainer>
               <Image src={randomMast()} alt="Dope." />
