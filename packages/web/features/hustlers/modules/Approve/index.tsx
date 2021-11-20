@@ -1,5 +1,15 @@
 import { css } from '@emotion/react';
-import { Button, Stack, Switch, Table, Tr, Td, Input } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertIcon,
+  Button,
+  Stack,
+  Switch,
+  Table,
+  Tr,
+  Td,
+  Input,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { BigNumber, constants } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
@@ -270,6 +280,12 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
               </Table>
             </PanelBody>
           </PanelContainer>
+          {isPaperApproved && (
+            <Alert status="success">
+              <AlertIcon />
+              $PAPER Spend Approved
+            </Alert>
+          )}
           {!isPaperApproved && (
             <PanelContainer>
               <PanelTitleBar>Approve $PAPER Spend</PanelTitleBar>
