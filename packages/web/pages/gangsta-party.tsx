@@ -9,133 +9,14 @@ import { useWeb3React } from '@web3-react/core';
 import { useAllHustlersQuery } from 'src/generated/graphql';
 import { useOptimismClient } from 'components/EthereumApolloProvider';
 import RenderFromChain from 'components/hustler/RenderFromChain';
-
-const MASTHEADS = [
-  'dope.svg',
-  'hell-yeah.svg',
-  'success.svg',
-  'wagmi.svg',
-  'GM.svg',
-  'paper-gang.svg',
-];
-
-const randomMast = () => {
-  const path = '/images/masthead/';
-  return path + MASTHEADS[getRandomNumber(0, MASTHEADS.length - 1)];
-};
-
-const PLUGS = [
-  {
-    link: 'https://twitter.com/Mr_faxu',
-    name: 'Mr Fax',
-    prefix: 'Shadowy Superpixeler',
-  },
-  {
-    link: 'https://twitter.com/baronvonfuture',
-    name: 'Bobby Shields',
-    prefix: 'Chiptune Virtuoso',
-  },
-  {
-    link: 'https://twitter.com/BrianDShields',
-    name: 'Penguin',
-    suffix: 'The Wizard',
-  },
-  {
-    link: 'https://twitter.com/SheckyGreen',
-    name: 'Shecky Green',
-    prefix: 'The Source',
-  },
-  {
-    link: 'https://twitter.com/DennisonBertram',
-    name: 'Dennison Bertram',
-    prefix: 'The Godfather',
-  },
-  {
-    link: 'https://twitter.com/tarrenceva',
-    name: 'Tarrence',
-    suffix: 'The Don',
-  },
-  {
-    link: 'https://twitter.com/facesOfEth',
-    name: 'Faces of ETH',
-    prefix: 'Faceless',
-  },
-  {
-    link: 'https://twitter.com/bstsrvdbld',
-    name: 'BestServedBold',
-    prefix: 'One Hitter Quitter',
-  },
-  {
-    link: 'https://twitter.com/eth_worm',
-    name: 'Perama',
-    suffix: 'The ETH Worm',
-  },
-  {
-    link: 'https://twitter.com/bellgloom',
-    name: 'Bellgloom',
-    prefix: 'The Last Word',
-  },
-  {
-    link: 'https://twitter.com/_541va_',
-    name: 'M1',
-    prefix: 'Stickman',
-  },
-  {
-    link: 'https://twitter.com/smakosh',
-    name: 'Smakosh',
-    suffix: 'The Kid',
-  },
-];
-const PlugContainer = styled.div`
-  position: fixed;
-  top: 80%;
-  left: 50%;
-  width: 90%;
-  transform: translate(-50%, 0%);
-  color: white;
-  ${media.tablet`
-    width: 50%;
-  `}
-  img, ul li {
-    margin-bottom: 7.25em;
-    ${media.tablet`
-      margin-bottom: 15em;
-    `}
-  }
-  ul li {
-    font-size: 1.25em;
-    background-color: rgba(255, 255, 255, 0.125);
-    text-align: center;
-  }
-  a {
-    display: block;
-    padding: 1em;
-  }
-  .prefix,
-  .suffix {
-    color: #fdff6e;
-    font-size: 0.9em;
-  }
-  opacity: 0;
-  @keyframes scroll-in {
-    0% {
-      top: 80%;
-      opacity: 1;
-    }
-    100% {
-      top: -200em;
-      opacity: 1;
-    }
-  }
-  animation: scroll-in 60s linear 2s;
-`;
-
+import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
 
 const HustlerContainer = styled.div`
   position: absolute;
   z-index: 100;
   top: 0;
   left: 0;
+  width: 100%;
   padding: 32px 16px;
   height: 100%;
   overflow-y: scroll;
@@ -184,23 +65,8 @@ const GangstaParty = () => {
             </div>
           )}
         </HustlerContainer>
-        <PlugContainer>
-          <Image src="/images/masthead/ogs.svg" alt="DOPE OGS" />
-          <ul>
-            {PLUGS.sort(() => Math.random() - 0.5).map((plug, index) => {
-              return (
-                <li key={`plug-${index}`}>
-                  <a href={plug.link} target={plug.name}>
-                    {plug.prefix ? <div className="prefix">&quot;{plug.prefix}&quot;</div> : ''}
-                    {plug.name}
-                    {plug.suffix ? <div className="suffix">&quot;{plug.suffix}&quot;</div> : ''}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </PlugContainer>
         <WebAmpPlayer />
+        <StickyNoteHustlerMint />
       </ScreenSaver>
       <HStack
         m={4}
@@ -217,7 +83,7 @@ const GangstaParty = () => {
           </a>
         </Link>
         <Link href="/hustlers/initiate/" passHref>
-          <Button variant="primary">Mint A Hustler</Button>
+          <Button variant="primary">Mint a Hustler</Button>
         </Link>
       </HStack>
     </>
