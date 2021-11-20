@@ -3,7 +3,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config({ path: __dirname + '/../../../.env' });
 
-import { getOpenSeaAssets } from 'src/OpenSeaAsset';
+import { getOpenSeaAssets } from '../src/OpenSeaAsset';
 import S3 from 'aws-sdk/clients/s3';
 
 const S3_ID = process.env.S3_ID;
