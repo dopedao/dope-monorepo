@@ -52,9 +52,9 @@ const NameControls = () => {
       <PanelTitleBar>Display</PanelTitleBar>
       <PanelBody>
         <Stack spacing={FIELD_SPACING}>
-          <FormControl mb={2}>
-            <FormLabel htmlFor="name">Name</FormLabel>
-            <HStack>
+          <FormLabel htmlFor="name">Name</FormLabel>
+          <HStack>
+            <FormControl mb={2}>
               <Input
                 id="name"
                 placeholder="name"
@@ -65,20 +65,20 @@ const NameControls = () => {
                   setHustlerName(e.currentTarget.value)
                 }}
               />
-              <Box display="flex" alignItems="center" verticalAlign="center">
-                <Switch
-                  id="render-name"
-                  checked={hustlerConfig.renderName}
-                  onChange={e => {
-                    HustlerInitConfig({ ...hustlerConfig, renderName: e.target.checked });
-                  }}
-                />
-                <FormLabel htmlFor="render-name" ml="2" mt="1">
-                  Visible
-                </FormLabel>
-              </Box>
-            </HStack>
-          </FormControl>
+            </FormControl>
+            <FormControl display="flex" alignItems="center" verticalAlign="center">
+              <Switch
+                id="render-name"
+                checked={hustlerConfig.renderName}
+                onChange={e => {
+                  HustlerInitConfig({ ...hustlerConfig, renderName: e.target.checked });
+                }}
+              />
+              <FormLabel htmlFor="render-name" ml="2" mt="1">
+                Visible
+              </FormLabel>
+            </FormControl>
+          </HStack>
         </Stack>
       </PanelBody>
     </PanelContainer>
