@@ -211,15 +211,16 @@ export const useWAGMI = () => {
 };
 
 export const useLastestBlock = (): providers.Block | undefined => {
-  const { chainId, provider } = useEthereum();
+  const { chainId, provider } = useEthereum(false);
   const [latest, setLatest] = useState<providers.Block>();
-  const ws = useWebSocketProvider(chainId);
-  const onBlock = useCallback(async block => setLatest(await provider.getBlock(block)), [provider]);
 
   useEffect(() => {
-    provider.getBlock('latest').then(setLatest), [provider, setLatest];
-    ws.on('blocks', onBlock);
-  }, []);
+    provider.getBlock('latest').then(setLatest);
+    const interval = setInterval(() => {
+      provider.getBlock('latest').then(setLatest);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [provider, setLatest]);
   return latest;
 };
 
