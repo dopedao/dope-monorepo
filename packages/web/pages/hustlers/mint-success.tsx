@@ -7,7 +7,14 @@ import Link from 'next/link';
 import styled from '@emotion/styled';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 
-const MASTHEADS = ['dope.svg', 'hell-yeah.svg', 'success.svg'];
+const MASTHEADS = [
+  'dope.svg',
+  'hell-yeah.svg',
+  'success.svg',
+  'wagmi.svg',
+  'GM.svg',
+  'paper-gang.svg',
+];
 
 const randomMast = () => {
   const path = '/images/masthead/';
@@ -34,7 +41,7 @@ const PLUGS = [
     link: 'https://twitter.com/SheckyGreen',
     name: 'Shecky Green',
     prefix: 'The Source',
-  }, 
+  },
   {
     link: 'https://twitter.com/DennisonBertram',
     name: 'Dennison Bertram',
@@ -54,12 +61,12 @@ const PLUGS = [
     link: 'https://twitter.com/bstsrvdbld',
     name: 'BestServedBold',
     prefix: 'One Hitter Quitter',
-  }, 
+  },
   {
     link: 'https://twitter.com/eth_worm',
     name: 'Perama',
     suffix: 'The ETH Worm',
-  }, 
+  },
   {
     link: 'https://twitter.com/bellgloom',
     name: 'Bellgloom',
@@ -70,7 +77,12 @@ const PLUGS = [
     name: 'M1',
     prefix: 'Stickman',
   },
-]
+  {
+    link: 'https://twitter.com/smakosh',
+    name: 'Smakosh',
+    suffix: 'The Kid',
+  },
+];
 const PlugContainer = styled.div`
   position: fixed;
   top: 80%;
@@ -89,15 +101,16 @@ const PlugContainer = styled.div`
   }
   ul li {
     font-size: 1.25em;
-    background-color: rgba(255,255,255,0.125);
+    background-color: rgba(255, 255, 255, 0.125);
     text-align: center;
   }
   a {
     display: block;
     padding: 1em;
   }
-  .prefix, .suffix {
-    color: #FDFF6E;
+  .prefix,
+  .suffix {
+    color: #fdff6e;
     font-size: 0.9em;
   }
   opacity: 0;
@@ -107,19 +120,21 @@ const PlugContainer = styled.div`
       opacity: 1;
     }
     100% {
-      top: -100em;
+      top: -200em;
       opacity: 1;
     }
   }
-  animation: scroll-in 50s linear 2s;
+  animation: scroll-in 60s linear 2s;
 `;
 
 const MastheadContainer = styled.div`
   position: fixed;
   top: 150%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -25%);
   width: 80%;
+  display: flex;
+  justify-content: center;
   ${media.tablet`
     width: 50%;
   `}
@@ -145,7 +160,7 @@ const MastheadContainer = styled.div`
       opacity: 1;
     }
     100% {
-      top: 15%;
+      top: 25%;
       opacity: 0;
       display: hidden;
     }
@@ -163,12 +178,15 @@ const AlertContainer = styled.div`
     width: 50%;
   `}
   @keyframes appear {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
-  animation: appear .1s linear 3.1s 1 forwards;
+  animation: appear 0.1s linear 3.1s 1 forwards;
 `;
-
 
 const MintSuccess = () => {
   const [gangstaParty, setGangstaParty] = useState(false);
@@ -189,33 +207,27 @@ const MintSuccess = () => {
     <>
       <Head title="Bridging Hustler to Optimism" />
       <ScreenSaver>
-        {gangstaParty && <>
-          <PlugContainer>
-            <Image src='/images/masthead/ogs.svg' alt="DOPE OGS" />
-            <ul>
-              { PLUGS.sort(() => Math.random() - 0.5).map(((plug, index) => {
-                return(
-                  <li key={`plug-${index}`}>
-                    <a href={plug.link} target={plug.name}>
-                      {plug.prefix ? 
-                        <div className="prefix">
-                          &quot;{plug.prefix}&quot;
-                        </div>
-                        : ''}
-                      {plug.name}
-                      {plug.suffix ? 
-                        <div className="suffix">
-                          &quot;{plug.suffix}&quot;
-                        </div>
-                        : ''}
-                    </a>
-                  </li>
-                );
-              }))}
-            </ul>
-          </PlugContainer>
-          <WebAmpPlayer />
-        </>}
+        {gangstaParty && (
+          <>
+            <PlugContainer>
+              <Image src="/images/masthead/ogs.svg" alt="DOPE OGS" />
+              <ul>
+                {PLUGS.sort(() => Math.random() - 0.5).map((plug, index) => {
+                  return (
+                    <li key={`plug-${index}`}>
+                      <a href={plug.link} target={plug.name}>
+                        {plug.prefix ? <div className="prefix">&quot;{plug.prefix}&quot;</div> : ''}
+                        {plug.name}
+                        {plug.suffix ? <div className="suffix">&quot;{plug.suffix}&quot;</div> : ''}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </PlugContainer>
+            <WebAmpPlayer />
+          </>
+        )}
         {!gangstaParty && (
           <>
             <MastheadContainer>
@@ -226,9 +238,10 @@ const MintSuccess = () => {
                 <div>
                   <p>
                     Your Hustler is making their way to the Optimism network.
-                    <br/><br/>
-                    It could take up to 15 minutes for that to happen.
-                    In the meantime, lets get it crackin homie…
+                    <br />
+                    <br />
+                    It could take up to 15 minutes for that to happen. In the meantime, lets get it
+                    crackin homie…
                   </p>
                   <Button
                     onClick={() => {

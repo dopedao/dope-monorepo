@@ -15,18 +15,6 @@ const InitiationFooter = () => {
     }
   }, [latest, releaseDate]);
 
-  // Render random hustler as countdown approached
-  let randomHustlerRenderInterval: any;
-  useEffect(() => {
-    if (!isLaunched) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      randomHustlerRenderInterval = setInterval(() => {
-        HustlerInitConfig(getRandomHustler());
-      }, 16000);
-    }
-    return () => clearInterval(randomHustlerRenderInterval);
-  }, []);
-
   return <InitiationFooterDopeContent />;
 };
 

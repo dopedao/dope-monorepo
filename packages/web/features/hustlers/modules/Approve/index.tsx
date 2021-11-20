@@ -1,5 +1,15 @@
 import { css } from '@emotion/react';
-import { Button, Stack, Switch, Table, Tr, Td, Input } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertIcon,
+  Button,
+  Stack,
+  Switch,
+  Table,
+  Tr,
+  Td,
+  Input,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { BigNumber, constants } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
@@ -66,6 +76,7 @@ const countdownRenderer = ({ days, hours, minutes, seconds, completed }: Countdo
 };
 
 const Approve = ({ hustlerConfig }: StepsProps) => {
+  const [warning, setWarning] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
   const { chainId, account } = useWeb3React();
   const [showMintToAddressBox, setShowMintToAddressBox] = useState(
@@ -108,15 +119,35 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
   }, [account, chainId, initiator.address, paper]);
 
   useEffect(() => {
+    const isAlienSkin = hustlerConfig.body === 5;
+
     if (
       isLaunched &&
       isPaperApproved &&
       hasEnoughPaper &&
       (!isContract || (isContract && hustlerConfig.mintAddress))
     ) {
-      setCanMint(true);
+      if (isAlienSkin) {
+        if (hustlerConfig.mintOg) {
+          setCanMint(true);
+          setWarning(null);
+        } else {
+          setWarning('ALIEN SKIN is for OGs only. Sorry, please choose another Skin Tone');
+        }
+      } else {
+        setCanMint(true);
+        setWarning(null);
+      }
     }
-  }, [isLaunched, isPaperApproved, hasEnoughPaper, isContract, hustlerConfig.mintAddress]);
+  }, [
+    isLaunched,
+    isPaperApproved,
+    hasEnoughPaper,
+    isContract,
+    hustlerConfig.mintAddress,
+    hustlerConfig.body,
+    hustlerConfig.mintOg,
+  ]);
 
   const handleOgSwitchChange = () => {
     HustlerInitConfig({ ...hustlerConfig, mintOg: !hustlerConfig.mintOg });
@@ -249,6 +280,12 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
               </Table>
             </PanelBody>
           </PanelContainer>
+          {isPaperApproved && (
+            <Alert status="success">
+              <AlertIcon />
+              $PAPER Spend Approved
+            </Alert>
+          )}
           {!isPaperApproved && (
             <PanelContainer>
               <PanelTitleBar>Approve $PAPER Spend</PanelTitleBar>
@@ -280,6 +317,15 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
             <Button variant="linkBlack" onClick={() => setShowMintToAddressBox(true)}>
               Send Hustler to a friend?
             </Button>
+          )}
+          {warning && (
+            <p
+              css={css`
+                color: #f31c1c;
+              `}
+            >
+              {warning}
+            </p>
           )}
           {showMintToAddressBox && (
             <PanelContainer>
@@ -346,7 +392,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                     margin-left: 0.5em;
                   `}
                 >
-                  Claim OG ###
+                  Claim OG
                 </label>
               </div>
               <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
