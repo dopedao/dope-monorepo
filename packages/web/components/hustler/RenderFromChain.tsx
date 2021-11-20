@@ -3,7 +3,8 @@ import { css } from "@emotion/react";
 import { Image } from "@chakra-ui/image";
 
 const HustlerWrapper = styled.div`
-
+  display: flex;
+  flex-direction: column;
   height: 100%;
   overflow: hidden;
   text-align:center;
@@ -85,7 +86,6 @@ const RenderFromChain = ({ data }: HustlerItemProps) => (
         padding: unset;
         font-size: 1em;
         padding: .25em;
-        background-color: #000000;
         color: #ffffff;
         text-align: center;
       `}
