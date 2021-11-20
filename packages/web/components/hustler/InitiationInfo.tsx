@@ -1,9 +1,9 @@
-import { media } from '../../styles/mixins';
+import { media } from 'styles/mixins';
 import { css } from '@emotion/react';
-import PanelBody from '../../components/PanelBody';
-import PanelContainer from '../../components/PanelContainer';
-import PanelTitleBar from '../../components/PanelTitleBar';
 import styled from '@emotion/styled';
+import PanelBody from 'components/PanelBody';
+import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
 
 const VerticalPanelStack = styled.div`
   display: flex;
@@ -12,7 +12,7 @@ const VerticalPanelStack = styled.div`
   gap: 16px;
   height: 100%;
   & > * {
-    flex 0 0 auto;
+    flex: 0 0 auto;
     height: auto;
   }
   // Screen > Tablet display items side by side
@@ -31,7 +31,11 @@ const InitiationInfo = () => {
         <PanelTitleBar>
           <div>Initiation</div>
         </PanelTitleBar>
-        <PanelBody css={css`height:100%;`}>
+        <PanelBody
+          css={css`
+            height: 100%;
+          `}
+        >
           <p>
             Hustlers are the in-game representation of characters inside DOPE WARS. Each Hustler
             gains RESPECT based on the amount of time passed since their Initiation. RESPECT will be
@@ -52,7 +56,11 @@ const InitiationInfo = () => {
       </PanelContainer>
       <PanelContainer>
         <PanelTitleBar>Unbundling</PanelTitleBar>
-        <PanelBody css={css`height:100%;`}>
+        <PanelBody
+          css={css`
+            height: 100%;
+          `}
+        >
           <p>
             Initiating a hustler will Unbundle and create 9 new Item NFTs from one DOPE NFT, and
             equip them on your Hustler. Because each of these new items become their own separate

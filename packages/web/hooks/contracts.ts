@@ -13,6 +13,7 @@ import { useEthereum, useOptimism } from 'hooks/web3';
 
 export const useInitiator = () => {
   const { chainId, provider } = useEthereum();
+
   return useMemo(
     () => Initiator__factory.connect(NETWORK[chainId].contracts.initiator, provider),
     [chainId, provider],

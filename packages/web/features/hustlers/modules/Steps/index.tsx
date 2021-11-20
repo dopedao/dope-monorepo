@@ -12,7 +12,6 @@ export type StepsProps = {
 };
 
 const Steps = ({ hustlerConfig }: StepsProps) => {
-  console.log(hustlerConfig);
   const hustler = useHustler();
 
   const stepToRender = () => {
