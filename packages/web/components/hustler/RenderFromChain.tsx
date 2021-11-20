@@ -11,20 +11,20 @@ const HustlerWrapper = styled.div`
 `;
 
 type Metadata = {
-image: string;
-name?: string;
-description?: string;
-attributes?: {
-  trait_type: string;
-  value: string;
-}[];
+  image: string;
+  name?: string;
+  description?: string;
+  attributes?: {
+    trait_type: string;
+    value: string;
+  }[];
 };
 
 type HustlerItemProps = {
   data: Metadata;
 };
 
-const RenderFromChain = ({ data }: HustlerItemProps) => (
+const RenderFromChain = ({ data, id }: HustlerItemProps) => (
 <HustlerWrapper>
   <div
     css={css`
@@ -90,6 +90,7 @@ const RenderFromChain = ({ data }: HustlerItemProps) => (
         text-align: center;
       `}
     >
+      {parseInt(id) <= 500 && 'OG '}
       {data.name}
     </h4>
   </div>
