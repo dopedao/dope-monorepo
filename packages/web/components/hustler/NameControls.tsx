@@ -15,7 +15,7 @@ import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
 
-const NAME_MAX_LENGTH = 9;
+const NAME_MAX_LENGTH = 20;
 const FIELD_SPACING = '16px';
 
 const NameControls = () => {
