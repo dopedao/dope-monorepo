@@ -63,7 +63,11 @@ const Container = styled.div`
   translate(-50%, -25%);
 `
 
-const WebAmpPlayer = () => {
+interface Props {
+  onClose?: () => void;
+}
+
+const WebAmpPlayer = ({onClose}: Props) => {
   const containerEl = useRef(null);
   const previousWebAmp = useRef(null);
 
@@ -84,6 +88,7 @@ const WebAmpPlayer = () => {
       // Returns a promise indicating when it's done loading.
       webamp.renderWhenReady(containerEl.current);
       webamp.play();
+      if (onClose) webamp.onClose(() => onClose());
       previousWebAmp.current = webamp;
     }
 
