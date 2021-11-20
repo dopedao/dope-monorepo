@@ -1,12 +1,8 @@
-import { useReleaseDate } from "hooks/contracts";
-import Countdown from "react-countdown";
 import { Link } from "@chakra-ui/layout";
 import StickyNote from "./StickyNote";
 import { css } from "@emotion/react";
 
 const StickyNoteHustlerMint = () => {
-  const releaseDate = useReleaseDate();
-
   return (
     <StickyNote maxWidth="312px">
       <h3>
