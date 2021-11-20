@@ -1,0 +1,26 @@
+query AllOpenedBags {
+  page_1: bags(first: 1000, skip: 0, where: {opened: true}) {
+    opened
+    id
+  }
+  page_2: bags(first: 1000, skip: 1000, where: {opened: true}) {
+    opened
+    id
+  }
+  page_3: bags(first: 1000, skip: 2000, where: {opened: true}) {
+    opened
+    id
+  }
+  page_4: bags(first: 1000, skip: 3000, where: {opened: true}) {
+    opened
+    id
+  }
+  page_5: bags(first: 1000, skip: 4000, where: {opened: true}) {
+    opened
+    id
+  }
+  page_6: bags(first: 1000, skip: 5000, where: {opened: true}) {
+    opened
+    id
+  }
+}

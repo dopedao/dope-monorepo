@@ -28,9 +28,7 @@ export const Button = styled.button<ButtonProps>`
     cursor: not-allowed;
   }
 
-  ${({ isActive }) =>
-    isActive && `background: #202221;`
-  }
+  ${({ isActive }) => isActive && `background: #202221;`}
 `;
 
 export const Item = styled.div``;

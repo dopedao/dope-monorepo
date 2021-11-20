@@ -1,15 +1,15 @@
 import { css } from '@emotion/react';
-import { HustlerCustomization } from "src/HustlerConfig";
-import PanelContainer from "components/PanelContainer";
-import PanelTitleBar from "components/PanelTitleBar";
-import RenderFromLootId from "components/hustler/RenderFromLootId";
+import { HustlerCustomization } from 'src/HustlerConfig';
+import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
+import RenderFromLootId from 'components/hustler/RenderFromLootId';
 
 interface Props {
   hustlerConfig: HustlerCustomization;
   footer?: React.ReactNode;
-};
+}
 
-const HustlerPanel = ({hustlerConfig, footer}: Props) => {
+const HustlerPanel = ({ hustlerConfig, footer }: Props) => {
   return (
     <PanelContainer
       css={css`
@@ -30,9 +30,9 @@ const HustlerPanel = ({hustlerConfig, footer}: Props) => {
         textColor={hustlerConfig.textColor}
         zoomWindow={hustlerConfig.zoomWindow}
       />
-      { footer }
+      {footer}
     </PanelContainer>
   );
-}
+};
 
 export default HustlerPanel;

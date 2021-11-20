@@ -29,7 +29,7 @@ const ConfigurationControls = () => {
     <>
       <Stack spacing={4}>
         {/* Title controls only make sense when zoomed out fully */}
-        {showNameControls && <NameControls /> }
+        {showNameControls && <NameControls />}
 
         {showTextColor && (
           <PanelColorSelector

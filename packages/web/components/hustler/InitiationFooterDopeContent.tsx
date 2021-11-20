@@ -1,7 +1,4 @@
-import {
-  Button,
-  Spinner,
-} from '@chakra-ui/react';
+import { Button, Spinner } from '@chakra-ui/react';
 
 import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
@@ -142,12 +139,10 @@ const InitiationFooterDopeContent = () => {
             <Link href="/hustlers/configure" passHref>
               <Button>Configure</Button>
             </Link>
-            <Button onClick={() => randomizeHustlerAttributes()}>
-              Randomize
-            </Button>
+            <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
           </div>
           <Button variant="primary" onClick={goToNextStep}>
-            👉 Next 
+            👉 Next
           </Button>
         </PanelFooter>
       </div>

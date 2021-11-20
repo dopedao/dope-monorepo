@@ -41,7 +41,7 @@ const NameControls = () => {
     if (nameFieldDirty && hustlerConfig.name !== debouncedHustlerName) {
       HustlerInitConfig({ ...hustlerConfig, name: debouncedHustlerName });
       setNameFieldDirty(false);
-    // Set from randomize or external change
+      // Set from randomize or external change
     } else if (!nameFieldDirty && hustlerConfig.name !== debouncedHustlerName) {
       setHustlerName(hustlerConfig.name ?? '');
     }
@@ -62,7 +62,7 @@ const NameControls = () => {
                 value={hustlerName}
                 onChange={e => {
                   setNameFieldDirty(true);
-                  setHustlerName(e.currentTarget.value)
+                  setHustlerName(e.currentTarget.value);
                 }}
               />
             </FormControl>

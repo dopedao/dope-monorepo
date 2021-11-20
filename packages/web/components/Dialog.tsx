@@ -85,7 +85,15 @@ const Dialog = ({
         `}
         `}
       >
-        {icon && <img alt={title} src={`/images/icon/${icon}.svg`} css={css`max-width:44px;`} />}
+        {icon && (
+          <img
+            alt={title}
+            src={`/images/icon/${icon}.svg`}
+            css={css`
+              max-width: 44px;
+            `}
+          />
+        )}
         <div>
           {!!title && <h3>{title}</h3>}
           {children}
