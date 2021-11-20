@@ -147,7 +147,7 @@ const InitiationFooterDopeContent = () => {
             </Button>
           </div>
           <Button variant="primary" onClick={goToNextStep}>
-            Next 👉 Initiate
+            👉 Next 
           </Button>
         </PanelFooter>
       </div>
