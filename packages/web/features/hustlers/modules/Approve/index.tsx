@@ -167,7 +167,6 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
       hair,
       name,
       renderName,
-      renderTitle,
       sex,
       textColor,
       zoomWindow,
@@ -187,14 +186,13 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
 
     let bitoptions = 0;
 
-    if (renderTitle) {
-      bitoptions += 10;
-    }
-
     if (renderName) {
+      // title
+      bitoptions += 10;
+      // name
       bitoptions += 100;
     }
-
+    
     const options =
       '0x' +
       parseInt('' + bitoptions, 2)
