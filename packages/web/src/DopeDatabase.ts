@@ -9,7 +9,7 @@ const highImpossibleRank = 9999;
 export type PickedBag = Pick<
   Bag,
   | 'id'
-  | 'bundled'
+  | 'opened'
   | 'claimed'
   | 'clothes'
   | 'drugs'
@@ -35,7 +35,7 @@ export const EmptyBagStruct: PickedBag = {
   id: '',
   // Let people be happily surprised by learning result of query later
   claimed: true,
-  bundled: false,
+  opened: false,
   clothes: '',
   drugs: '',
   foot: '',

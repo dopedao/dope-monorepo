@@ -19,7 +19,6 @@ export type Scalars = {
 
 export type Bag = {
   __typename?: 'Bag';
-  bundled: Scalars['Boolean'];
   claimed: Scalars['Boolean'];
   clothes: Scalars['String'];
   currentOwner: Wallet;
@@ -1239,7 +1238,7 @@ export type BagQueryVariables = Exact<{
 }>;
 
 
-export type BagQuery = { __typename?: 'Query', bag?: Maybe<{ __typename?: 'Bag', id: string, claimed: boolean, bundled: boolean, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
+export type BagQuery = { __typename?: 'Query', bag?: Maybe<{ __typename?: 'Bag', id: string, claimed: boolean, opened: boolean, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
 
 export type BagsQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
@@ -1247,7 +1246,7 @@ export type BagsQueryVariables = Exact<{
 }>;
 
 
-export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, bundled: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
+export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, opened: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
 
 export type HustlersWalletQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -1270,7 +1269,7 @@ export type WalletQueryVariables = Exact<{
 }>;
 
 
-export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, bundled: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> }> };
+export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, opened: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> }> };
 
 
 export const AllUnclaimedBagsDocument = gql`
@@ -1321,7 +1320,7 @@ export const BagDocument = gql`
   bag(id: $tokenId) {
     id
     claimed
-    bundled @client
+    opened
     open_sea_asset @client {
       is_on_sale
       current_sale_price
@@ -1362,7 +1361,7 @@ export const BagsDocument = gql`
     query Bags($first: Int, $skip: Int) {
   bags(first: $first, skip: $skip) {
     claimed
-    bundled @client
+    opened
     id
     clothes @client
     foot @client
@@ -1507,7 +1506,7 @@ export const WalletDocument = gql`
     bags(first: 200) {
       claimed
       id
-      bundled @client
+      opened
       clothes @client
       foot @client
       hand @client

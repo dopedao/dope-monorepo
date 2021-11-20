@@ -2,7 +2,7 @@ query Bag($tokenId: ID!) {
   bag(id: $tokenId) {
     id
     claimed
-    bundled @client
+    opened
     open_sea_asset @client {
       is_on_sale
       current_sale_price
