@@ -73,12 +73,11 @@ const Hustlers = () => {
       {!loading && data?.wallet?.hustlers && data?.wallet?.hustlers.length > 0 && (
         <Container>
           <div className="hustlerGrid">
-            {data.wallet.hustlers.map(({ id, data }) => {
-              
+            {data.wallet.hustlers.map(({ id, data }) => {              
               let meta = data.replace('data:application/json;base64,', '');
               meta = Buffer.from(meta, 'base64').toString();
               const decoded = JSON.parse(meta);
-              return <RenderFromChain data={decoded} key={id} />;
+              return <RenderFromChain data={decoded} id={id} key={id} />;
             })}
           </div>
         </Container>
