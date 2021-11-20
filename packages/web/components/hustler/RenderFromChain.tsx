@@ -3,15 +3,10 @@ import { css } from "@emotion/react";
 import { Image } from "@chakra-ui/image";
 
 const HustlerWrapper = styled.div`
-display: flex;
-flex-direction: column;
-height: 100%;
-background-color: rgb(255, 255, 255);
-border: 1px solid rgb(229, 232, 235);
-border-radius: 2px;
-position: relative;
-z-index: 2;
-overflow: hidden;
+
+  height: 100%;
+  overflow: hidden;
+  text-align:center;
 `;
 
 type Metadata = {
@@ -25,7 +20,7 @@ attributes?: {
 };
 
 type HustlerItemProps = {
-data: Metadata;
+  data: Metadata;
 };
 
 const RenderFromChain = ({ data }: HustlerItemProps) => (
@@ -65,12 +60,11 @@ const RenderFromChain = ({ data }: HustlerItemProps) => (
       >
         <Image
           css={css`
-            object-fit: contain;
+            object-fit: cover;
             width: auto;
             height: auto;
             max-width: 100%;
             max-height: 100%;
-            border-radius: 0px;
           `}
           src={data.image}
           alt={data.name}
@@ -83,29 +77,21 @@ const RenderFromChain = ({ data }: HustlerItemProps) => (
       justify-content: space-between;
       display: flex;
       flex-direction: column;
-      padding: 12px;
     `}
   >
     <h4
       css={css`
         margin: unset;
         padding: unset;
-        color: #000;
-        font-size: 16px;
+        font-size: 1em;
+        padding: .25em;
+        background-color: #000000;
+        color: #ffffff;
+        text-align: center;
       `}
     >
       {data.name}
     </h4>
-    <p
-      css={css`
-        margin: unset;
-        padding: unset;
-        color: #1b1b1b;
-        font-size: 12px;
-      `}
-    >
-      {data.description}
-    </p>
   </div>
 </HustlerWrapper>
 );

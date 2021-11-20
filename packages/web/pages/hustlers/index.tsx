@@ -16,6 +16,7 @@ const Container = styled.div`
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
+  background: #613D57 url('/images/hustler/street_scene.png') center / cover repeat-y fixed;
   .hustlerGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -55,10 +56,10 @@ const Hustlers = () => {
         <Container>
           <div className="hustlerGrid">
             {data.wallet.hustlers.map(({ id, data }) => {
+              
               let meta = data.replace('data:application/json;base64,', '');
               meta = Buffer.from(meta, 'base64').toString();
               const decoded = JSON.parse(meta);
-
               return <RenderFromChain data={decoded} key={id} />;
             })}
           </div>
