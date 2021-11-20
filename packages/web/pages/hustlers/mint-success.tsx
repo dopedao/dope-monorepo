@@ -123,7 +123,7 @@ const MastheadContainer = styled.div`
   position: fixed;
   top: 150%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -25%);
   width: 80%;
   ${media.tablet`
     width: 50%;
@@ -150,7 +150,7 @@ const MastheadContainer = styled.div`
       opacity: 1;
     }
     100% {
-      top: 15%;
+      top: 25%;
       opacity: 0;
       display: hidden;
     }
