@@ -52,7 +52,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   };
 
   return (
-    <div>        
+    <div>
       <Button variant="primary" onClick={() => initiateHustler()}>
         Begin Initiation
       </Button>

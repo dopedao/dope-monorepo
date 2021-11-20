@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { media } from "styles/mixins";
+import { useEffect, useRef, useState } from 'react';
+import { media } from 'styles/mixins';
 import styled from '@emotion/styled';
 
 // Winamp Player with our DOPE chiptunes
@@ -19,27 +19,27 @@ const BUCKET_URL = 'https://dope-wars-gg.s3.us-west-1.amazonaws.com/';
 const TRACKS = [
   {
     title: '2_of_Amerikas_Most_Wanted.mp3',
-    duration: 213 // 3:33
+    duration: 213, // 3:33
   },
   {
     title: 'Shook_Ones_Pt_2.mp3',
-    duration: 122 // 2:02
+    duration: 122, // 2:02
   },
   {
     title: 'Aint_Nuthin_But_a_G_thang.mp3',
-    duration: 249 // 4:09
+    duration: 249, // 4:09
   },
   {
     title: 'CREAM_WuTang.mp3',
-    duration: 192 // 3:12
+    duration: 192, // 3:12
   },
   {
     title: 'BIG_POPPA.mp3',
-    duration: 288 // 4:48
+    duration: 288, // 4:48
   },
   {
     title: 'So_Fresh_So_Clean.mp3',
-    duration: 238 // 3:58
+    duration: 238, // 3:58
   },
 ];
 
@@ -61,13 +61,13 @@ const Container = styled.div`
   top: 25%;
   left: 50%;
   translate(-50%, -25%);
-`
+`;
 
 interface Props {
   onClose?: () => void;
 }
 
-const WebAmpPlayer = ({onClose}: Props) => {
+const WebAmpPlayer = ({ onClose }: Props) => {
   const containerEl = useRef(null);
   const previousWebAmp = useRef(null);
 
@@ -83,14 +83,14 @@ const WebAmpPlayer = ({onClose}: Props) => {
       const webamp = new Webamp({
         initialTracks: playerTracks,
         // more available here - https://skins.webamp.org/
-        initialSkin: { url: '/webamp_skins/OS8_AMP-Teal.wsz'},
+        initialSkin: { url: '/webamp_skins/OS8_AMP-Teal.wsz' },
       });
       // Returns a promise indicating when it's done loading.
       webamp.renderWhenReady(containerEl.current);
       webamp.play();
       if (onClose) webamp.onClose(() => onClose());
       previousWebAmp.current = webamp;
-    }
+    };
 
     return () => {
       if (previousWebAmp.current) {
@@ -100,9 +100,7 @@ const WebAmpPlayer = ({onClose}: Props) => {
     };
   }, [containerEl]);
 
-  return (
-    <Container id="webamp-container" ref={containerEl}></Container>
-  );
+  return <Container id="webamp-container" ref={containerEl}></Container>;
 };
 
 export default WebAmpPlayer;

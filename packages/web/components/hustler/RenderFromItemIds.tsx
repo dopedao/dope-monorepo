@@ -109,17 +109,7 @@ const RenderFromItemIds = ({
           setHasRenderedFromChain(true);
         });
     }
-  }, [
-    swapmeet,
-    hustlers,
-    itemRles,
-    bodyRles,
-    name,
-    textColor,
-    bgColor,
-    renderName,
-    zoomWindow,
-  ]);
+  }, [swapmeet, hustlers, itemRles, bodyRles, name, textColor, bgColor, renderName, zoomWindow]);
 
   if (!hasRenderedFromChain) return <LoadingBlockSquareCentered />;
 

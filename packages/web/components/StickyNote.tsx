@@ -7,8 +7,7 @@ interface Props {
   maxWidth?: string;
 }
 
-
-const StickyNote = ({children, maxWidth}: Props) => {
+const StickyNote = ({ children, maxWidth }: Props) => {
   const NoteContainer = styled.div`
     padding: 1em;
     z-index: 2;
@@ -19,15 +18,13 @@ const StickyNote = ({children, maxWidth}: Props) => {
     position: absolute;
     right: 1em;
     top: 1em;
-    background-color: #CAFFFF;
+    background-color: #caffff;
     text-align: center;
   `;
   return (
     <Draggable>
-      <NoteContainer>
-        { children }
-      </NoteContainer>
+      <NoteContainer>{children}</NoteContainer>
     </Draggable>
   );
-}
+};
 export default StickyNote;

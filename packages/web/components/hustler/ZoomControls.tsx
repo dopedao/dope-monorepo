@@ -11,21 +11,19 @@ const ZoomContainer = styled.div`
   padding: 1em;
   width: 100%;
 `;
- 
-const indexFromZoomValue = (
-  zoomValue: ZoomWindow
-) => {
+
+const indexFromZoomValue = (zoomValue: ZoomWindow) => {
   let index = ZOOM_WINDOWS.findIndex(window => window == zoomValue);
   if (index == -1) index = 0;
   return index;
-}
+};
 
 const ZoomControls = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const [currentIndex, setCurrentIndex] = useState(
-    indexFromZoomValue(hustlerConfig.zoomWindow ?? [0,0,0,0])
+    indexFromZoomValue(hustlerConfig.zoomWindow ?? [0, 0, 0, 0]),
   );
-  const minIndex = 0
+  const minIndex = 0;
   const maxIndex = ZOOM_WINDOWS.length - 1;
 
   const decrementZoomWindowIndex = () => {
@@ -33,35 +31,35 @@ const ZoomControls = () => {
     if (minIndex > newIndex) newIndex = maxIndex;
     setCurrentIndex(newIndex);
     setHustlerConfig();
-  }
+  };
 
   const incrementZoomWindowIndex = () => {
     let newIndex = currentIndex + 1;
     if (maxIndex < newIndex) newIndex = minIndex;
     setCurrentIndex(newIndex);
     setHustlerConfig();
-  }
+  };
 
   const setHustlerConfig = () => {
-    let renderName = hustlerConfig.renderName
+    let renderName = hustlerConfig.renderName;
     // for mugshots doesn't make sense to render name, because it gets cut off.
     if (currentIndex == 1) renderName = false;
     HustlerInitConfig({
-      ...hustlerConfig, 
+      ...hustlerConfig,
       zoomWindow: ZOOM_WINDOWS[currentIndex],
-      renderName: renderName
+      renderName: renderName,
     });
-  }
+  };
 
   return (
     <ZoomContainer>
-      <Button onClick={() => decrementZoomWindowIndex() }>
+      <Button onClick={() => decrementZoomWindowIndex()}>
         <Image src="/images/icon/chevron-left.svg" alt="Zoom" />
       </Button>
-      <Button onClick={() => incrementZoomWindowIndex() }>
+      <Button onClick={() => incrementZoomWindowIndex()}>
         <Image src="/images/icon/chevron-right.svg" alt="Zoom" />
       </Button>
     </ZoomContainer>
   );
-}
+};
 export default ZoomControls;
