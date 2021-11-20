@@ -101,6 +101,14 @@ const LootCardBody = ({ bag }: Props) => {
           item="125,000"
         />
       )}
+      {!bag.opened && (
+        <Row
+          key="bundled"
+          color={itemBackgroundColors[itemBackgroundColors.length - 1]}
+          slot="Bundled"
+          item="Ready to Unpack"
+        />
+      )}
       {[
         ['Weapon', bag.weapon],
         ['Vehicle', bag.vehicle],
