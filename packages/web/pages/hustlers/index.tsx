@@ -10,13 +10,18 @@ import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import styled from '@emotion/styled';
+import Dialog from 'components/Dialog';
+import { Button } from '@chakra-ui/react';
+import Link from 'next/link';
+
+const streetBackground = "#613D57 url('/images/hustler/street_scene.png') center / cover repeat-y fixed";
 
 const Container = styled.div`
   padding: 16px 8px;
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  background: #613D57 url('/images/hustler/street_scene.png') center / cover repeat-y fixed;
+  background: ${streetBackground};
   .hustlerGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -28,15 +33,27 @@ const Container = styled.div`
   `}
 `;
 
+
 const ContentLoading = (
-  <Container>
-    <LoadingBlock />
-  </Container>
+  <Container><LoadingBlock /></Container>
 );
 const ContentEmpty = (
-  <Container>
-    <h2>{`Can't find what you're looking for…`}</h2>
-  </Container>
+  <Dialog 
+    backgroundCss={streetBackground} 
+    icon="dope-smiley-sad"
+    title='No hustlers found in your wallet' 
+    onClose={() => {}}
+  >
+    <p>
+      Hustlers are the in-game and in-ecosystem characters in the Dope Wars universe. 
+    </p>
+    <p>
+      When you mint a Hustler, you receive a customizable profile pic in the form of a new NFT. This image can be customized at any time, and all the artwork is stored on-chain. 
+    </p>
+    <Link href="/hustlers/initiate">
+      <Button variant="primary">Initiate a Hustler</Button>
+    </Link>
+  </Dialog>
 );
 
 const Hustlers = () => {
@@ -65,7 +82,7 @@ const Hustlers = () => {
           </div>
         </Container>
       )}
-      {!loading && data?.wallet?.hustlers && data?.wallet?.hustlers.length === 0 && ContentEmpty}
+      {!loading && (!data?.wallet?.hustlers || data?.wallet?.hustlers.length === 0) && ContentEmpty }
     </AppWindow>
   );
 };
