@@ -29,6 +29,21 @@ type UnclaimedPaperPages = {
   page_1: BagClaimCheck[];
   page_2?: BagClaimCheck[];
   page_3?: BagClaimCheck[];
+  page_4?: BagClaimCheck[];
+  page_5?: BagClaimCheck[];
+  page_6?: BagClaimCheck[];
+  page_7?: BagClaimCheck[];
+};
+
+type OpenedCheck = Pick<Bag, 'id' | 'opened'>;
+type OpenedBagPages = {
+  page_1: OpenedCheck[];
+  page_2?: OpenedCheck[];
+  page_3?: OpenedCheck[];
+  page_4?: OpenedCheck[];
+  page_5?: OpenedCheck[];
+  page_6?: OpenedCheck[];
+  page_7?: OpenedCheck[];
 };
 
 export const EmptyBagStruct: PickedBag = {
@@ -96,14 +111,23 @@ class DopeDatabase {
 
   updateHasPaperFromQuery(queryResultJson: UnclaimedPaperPages) {
     console.log('updateHasPaperFromQuery');
-    const unclaimedBags = Object.values(queryResultJson).flat(Infinity);
-    for (let i = 0; i < unclaimedBags.length; i++) {
-      const bag = unclaimedBags[i] as BagClaimCheck;
+    const bags = Object.values(queryResultJson).flat(Infinity);
+    for (let i = 0; i < bags.length; i++) {
+      const bag = bags[i] as BagClaimCheck;
       let isClaimed = bag.claimed;
       // Special case for odd token as discussed here
       // https://discord.com/channels/882333869007839252/882333869007839254/897215194743341107
       if (bag.id === '1277') isClaimed = true;
       this.updateRecord(bag.id, 'claimed', isClaimed);
+    }
+  }
+
+  updateOpenedBagsFromQuery(queryResultJson: OpenedBagPages) {
+    console.log('updateOpenedBagsFromQuery');
+    const bags = Object.values(queryResultJson).flat(Infinity);
+    for (let i = 0; i < bags.length; i++) {
+      const bag = bags[i] as OpenedCheck;
+      this.updateRecord(bag.id, 'opened', bag.opened);
     }
   }
 
