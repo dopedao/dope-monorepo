@@ -122,7 +122,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
           setCanMint(true);
           setWarning(null);
         } else {
-          setWarning('You need to claim OG to use this skin or change your skin');
+          setWarning('ALIEN SKIN is for OGs only. Sorry, please choose another Skin Tone');
         }
       } else {
         setCanMint(true);
@@ -376,7 +376,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                     margin-left: 0.5em;
                   `}
                 >
-                  Claim OG ###
+                  Claim OG
                 </label>
               </div>
               <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
