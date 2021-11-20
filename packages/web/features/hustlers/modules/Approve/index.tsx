@@ -3,6 +3,7 @@ import { Button, Stack, Switch, Table, Tr, Td, Input } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { BigNumber, constants } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
+import { SetMetadataStruct } from '@dopewars/contracts/dist/Initiator';
 
 import { StepsProps } from 'features/hustlers/modules/Steps';
 import { HustlerInitConfig } from 'src/HustlerConfig';
@@ -117,21 +118,22 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
         .toString(16)
         .padStart(4, '0');
 
+    const metadata: SetMetadataStruct = {
+      name: setname,
+      color,
+      background,
+      options,
+      viewbox: zoomWindow,
+      body: bodyParts,
+      order: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      mask,
+    };
+
     if (mintOg) {
       initiator
-        .mintOGFromDopeTo(
-          dopeId,
-          mintAddress ? mintAddress : account,
-          setname,
-          color,
-          background,
-          options,
-          zoomWindow,
-          bodyParts,
-          mask,
-          '0x',
-          1000000,
-        )
+        .mintOGFromDopeTo(dopeId, mintAddress ? mintAddress : account, metadata, '0x', 1500000, {
+          value: '250000000000000000',
+        })
         .then(() =>
           dispatchHustler({
             type: 'GO_TO_FINALIZE_STEP',
@@ -139,19 +141,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
         );
     } else {
       initiator
-        .mintFromDopeTo(
-          dopeId,
-          mintAddress ? mintAddress : account,
-          setname,
-          color,
-          background,
-          options,
-          zoomWindow,
-          bodyParts,
-          mask,
-          '0x',
-          1000000,
-        )
+        .mintFromDopeTo(dopeId, mintAddress ? mintAddress : account, metadata, '0x', 1500000)
         .then(() =>
           dispatchHustler({
             type: 'GO_TO_FINALIZE_STEP',
