@@ -21,7 +21,7 @@ const ConfigurationControls = () => {
   const [showNameControls, setShowNameControls] = useState(false);
 
   useEffect(() => {
-    setShowTextColor(hustlerConfig.renderName == true || hustlerConfig.renderTitle == true);
+    setShowTextColor(hustlerConfig.renderName == true);
     setShowNameControls(hustlerConfig.zoomWindow == ZOOM_WINDOWS[0]);
   }, [hustlerConfig]);
 

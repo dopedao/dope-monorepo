@@ -18,7 +18,6 @@ const RenderFromLootId = ({
   id,
   name,
   renderName,
-  renderTitle,
   sex,
   textColor,
   zoomWindow,
@@ -46,7 +45,6 @@ const RenderFromLootId = ({
         itemIds={itemIds}
         name={name}
         renderName={renderName}
-        renderTitle={renderTitle}
         sex={sex}
         textColor={textColor}
         zoomWindow={zoomWindow}
