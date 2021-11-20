@@ -26,8 +26,8 @@ const Container = styled.div`
   .hustlerGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    grid-column-gap: 16px;
-    grid-row-gap: 16px;
+    grid-column-gap: 32px;
+    grid-row-gap: 64px;
   }
   ${media.tablet`
     padding: 32px;
