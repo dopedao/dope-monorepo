@@ -18,7 +18,7 @@ import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
-import { useInitiator, usePaper, useReleaseDate, useHustler } from 'hooks/contracts';
+import { useInitiator, usePaper, useReleaseDate } from 'hooks/contracts';
 import { useIsContract, useLastestBlock } from 'hooks/web3';
 import Spinner from 'svg/Spinner';
 
@@ -82,7 +82,6 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
   const dispatchHustler = useDispatchHustler();
   const initiator = useInitiator();
   const paper = usePaper();
-  const hustler = useHustler();
 
   useEffect(() => {
     if (latest && releaseDate) {
@@ -220,18 +219,6 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
   const handleMintAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     HustlerInitConfig({ ...hustlerConfig, mintAddress: e.target.value });
   };
-
-  const listener = (block: any) => {
-    console.log('new action emited');
-    console.log(block);
-  };
-
-  useEffect(() => {
-    hustler.on('TransferSingle', listener);
-    return () => {
-      hustler.off('TransferSingle', listener);
-    };
-  }, [hustler]);
 
   return (
     <>

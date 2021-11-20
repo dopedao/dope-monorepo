@@ -1,11 +1,12 @@
 import { AlertIcon, Alert, Box, Button, Image, HStack, Spacer } from '@chakra-ui/react';
 import { getRandomNumber } from 'src/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { media } from 'styles/mixins';
 import Head from 'components/Head';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import WebAmpPlayer from 'components/WebAmpPlayer';
+import { useHustler } from 'hooks/contracts';
 
 const MASTHEADS = ['dope.svg', 'hell-yeah.svg', 'success.svg'];
 
@@ -34,7 +35,7 @@ const PLUGS = [
     link: 'https://twitter.com/SheckyGreen',
     name: 'Shecky Green',
     prefix: 'The Source',
-  }, 
+  },
   {
     link: 'https://twitter.com/DennisonBertram',
     name: 'Dennison Bertram',
@@ -54,12 +55,12 @@ const PLUGS = [
     link: 'https://twitter.com/bstsrvdbld',
     name: 'BestServedBold',
     prefix: 'One Hitter Quitter',
-  }, 
+  },
   {
     link: 'https://twitter.com/eth_worm',
     name: 'Perama',
     suffix: 'The ETH Worm',
-  }, 
+  },
   {
     link: 'https://twitter.com/bellgloom',
     name: 'Bellgloom',
@@ -70,7 +71,7 @@ const PLUGS = [
     name: 'M1',
     prefix: 'Stickman',
   },
-]
+];
 const PlugContainer = styled.div`
   position: fixed;
   top: 80%;
@@ -89,15 +90,16 @@ const PlugContainer = styled.div`
   }
   ul li {
     font-size: 1.25em;
-    background-color: rgba(255,255,255,0.125);
+    background-color: rgba(255, 255, 255, 0.125);
     text-align: center;
   }
   a {
     display: block;
     padding: 1em;
   }
-  .prefix, .suffix {
-    color: #FDFF6E;
+  .prefix,
+  .suffix {
+    color: #fdff6e;
     font-size: 0.9em;
   }
   opacity: 0;
@@ -163,59 +165,69 @@ const AlertContainer = styled.div`
     width: 50%;
   `}
   @keyframes appear {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
-  animation: appear .1s linear 3.1s 1 forwards;
+  animation: appear 0.1s linear 3.1s 1 forwards;
 `;
 
+const ScreenSaver = styled.div<{ image: string }>`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: ${({ image }) =>
+    `#000000 url('/images/hustler/${image}') center / cover no-repeat fixed;`};
+`;
 
 const MintSuccess = () => {
+  const hustler = useHustler();
   const [gangstaParty, setGangstaParty] = useState(false);
 
   const image = gangstaParty ? 'bridge_with_hustlers.png' : 'bridge_no_hustlers.png';
 
-  const ScreenSaver = styled.div`
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    background: #000000 url('/images/hustler/${image}') center / cover no-repeat fixed;
-  `;
+  const listener = (block: any) => {
+    console.log(block);
+  };
+
+  useEffect(() => {
+    hustler.on('TransferSingle', listener);
+    return () => {
+      hustler.off('TransferSingle', listener);
+    };
+  }, [hustler]);
 
   return (
     <>
       <Head title="Bridging Hustler to Optimism" />
-      <ScreenSaver>
-        {gangstaParty && <>
-          <PlugContainer>
-            <Image src='/images/masthead/ogs.svg' alt="DOPE OGS" />
-            <ul>
-              { PLUGS.sort(() => Math.random() - 0.5).map(((plug, index) => {
-                return(
-                  <li key={`plug-${index}`}>
-                    <a href={plug.link} target={plug.name}>
-                      {plug.prefix ? 
-                        <div className="prefix">
-                          &quot;{plug.prefix}&quot;
-                        </div>
-                        : ''}
-                      {plug.name}
-                      {plug.suffix ? 
-                        <div className="suffix">
-                          &quot;{plug.suffix}&quot;
-                        </div>
-                        : ''}
-                    </a>
-                  </li>
-                );
-              }))}
-            </ul>
-          </PlugContainer>
-          <WebAmpPlayer />
-        </>}
+      <ScreenSaver image={image}>
+        {gangstaParty && (
+          <>
+            <PlugContainer>
+              <Image src="/images/masthead/ogs.svg" alt="DOPE OGS" />
+              <ul>
+                {PLUGS.sort(() => Math.random() - 0.5).map((plug, index) => {
+                  return (
+                    <li key={`plug-${index}`}>
+                      <a href={plug.link} target={plug.name}>
+                        {plug.prefix ? <div className="prefix">&quot;{plug.prefix}&quot;</div> : ''}
+                        {plug.name}
+                        {plug.suffix ? <div className="suffix">&quot;{plug.suffix}&quot;</div> : ''}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </PlugContainer>
+            <WebAmpPlayer />
+          </>
+        )}
         {!gangstaParty && (
           <>
             <MastheadContainer>
@@ -226,9 +238,10 @@ const MintSuccess = () => {
                 <div>
                   <p>
                     Your Hustler is making their way to the Optimism network.
-                    <br/><br/>
-                    It could take up to 15 minutes for that to happen.
-                    In the meantime, lets get it crackin homie…
+                    <br />
+                    <br />
+                    It could take up to 15 minutes for that to happen. In the meantime, lets get it
+                    crackin homie…
                   </p>
                   <Button
                     onClick={() => {
