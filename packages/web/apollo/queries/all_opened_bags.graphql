@@ -23,6 +23,4 @@ query AllOpenedBags {
     opened
     id
   }
-  # DANGER
-  # Since The Studio Only Goes to 5000 we might miss opened bags!
 }
