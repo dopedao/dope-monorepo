@@ -77,7 +77,7 @@ const InitiationFooterDopeContent = () => {
   const getBundledDopeFromData = (data: WalletQuery) => {
     let bundledDope = [] as PickedBag[];
     if (data?.wallet?.bags && data.wallet.bags.length > 0) {
-      bundledDope = data.wallet.bags.filter((dopeNft: PickedBag) => dopeNft.bundled);
+      bundledDope = data.wallet.bags.filter((dopeNft: PickedBag) => !dopeNft.opened);
     }
     return bundledDope;
   };

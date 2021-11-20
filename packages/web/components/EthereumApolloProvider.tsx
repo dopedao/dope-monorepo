@@ -38,9 +38,6 @@ function getClient(uri: string) {
       typePolicies: {
         Bag: {
           fields: {
-            bundled(): boolean {
-              return true;
-            },
             clothes(_, { readField }): string {
               const tokenId = readField('id') as number;
               return valueFromCachedLoot(tokenId, 'clothes');

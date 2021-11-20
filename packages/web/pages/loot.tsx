@@ -60,8 +60,8 @@ export default function LootWindow() {
       ) : (
         <FlexFiftyContainer>
           <LootTable
-            data={data.wallet.bags.map(({ bundled, claimed, id, rank }) => ({
-              bundled,
+            data={data.wallet.bags.map(({ opened, claimed, id, rank }) => ({
+              opened,
               claimed,
               id,
               rank,

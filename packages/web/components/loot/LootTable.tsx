@@ -10,7 +10,7 @@ interface Props {
   data: {
     id: string;
     claimed: boolean;
-    bundled: boolean;
+    opened: boolean;
     rank: number;
   }[];
   selected: number;
@@ -36,10 +36,10 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
   const items = useMemo(
     () =>
       data
-        .map(({ id, bundled, claimed, rank }, idx) => ({
+        .map(({ id, opened, claimed, rank }, idx) => ({
           id,
           rank,
-          bundled: bundled ? (
+          opened: opened ? (
             ''
           ) : (
             <CheckIcon
@@ -120,11 +120,11 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
                 <Th onClick={() => setSort('id')}>Dope ID</Th>
                 <Th onClick={() => setSort('rank')}>Rank</Th>
                 <Th>Paper</Th>
-                <Th>Bundled</Th>
+                <Th>Unbundled</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {items.map(({ id, rank, bundled, claimed, idx }) => (
+              {items.map(({ id, rank, opened, claimed, idx }) => (
                 <Tr
                   className={selected === idx ? 'selected' : ''}
                   key={id}
@@ -133,7 +133,7 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
                   <Td>{id}</Td>
                   <Td>{rank}</Td>
                   <Td>{claimed}</Td>
-                  <Td>{bundled}</Td>
+                  <Td>{opened}</Td>
                 </Tr>
               ))}
             </Tbody>
