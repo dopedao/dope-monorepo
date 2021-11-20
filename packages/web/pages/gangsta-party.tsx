@@ -13,7 +13,7 @@ import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
 
 const HustlerContainer = styled.div`
   position: absolute;
-  z-index: 100;
+  z-index: 1;
   top: 0;
   left: 0;
   width: 100%;
