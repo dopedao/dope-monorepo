@@ -94,8 +94,7 @@ contract Hustler is IHustler, ERC1155, ERC1155Receiver, HustlerMetadata, Ownable
         (bytes4 sig, uint256 hustlerId) = abi.decode(data, (bytes4, uint256));
         require(sig == equip, Errors.EquipSignatureInvalid);
 
-        // Received from address(0) when opened directly to hustler
-        require(from == address(0) || balanceOf(from, hustlerId) == 1, Errors.IsHolder);
+        require(balanceOf(from, hustlerId) == 1, Errors.IsHolder);
 
         (uint256[] memory unequipIds, uint256[] memory unequipValues) = batchEquip(hustlerId, ids, values);
 

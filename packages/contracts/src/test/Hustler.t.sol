@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import './utils/HustlerSetup.sol';
-import './utils/SwapMeetSetup.sol';
+import "./utils/HustlerSetup.sol";
+import "./utils/SwapMeetSetup.sol";
 
 struct Attribute {
     string traitType;
@@ -23,12 +23,24 @@ contract RLES is HustlerTest {
         bodies[1] = bodyRle;
 
         owner.addRles(RleParts.MALE_BODY, bodies);
-        assertEq(string(hustler.getBody(RleParts.MALE_BODY, 0)), string(bodyRle));
-        assertEq(string(hustler.getBody(RleParts.MALE_BODY, 1)), string(bodyRle));
+        assertEq(
+            string(hustler.getBody(RleParts.MALE_BODY, 0)),
+            string(bodyRle)
+        );
+        assertEq(
+            string(hustler.getBody(RleParts.MALE_BODY, 1)),
+            string(bodyRle)
+        );
 
         owner.addRles(RleParts.FEMALE_BODY, bodies);
-        assertEq(string(hustler.getBody(RleParts.FEMALE_BODY, 0)), string(bodyRle));
-        assertEq(string(hustler.getBody(RleParts.FEMALE_BODY, 1)), string(bodyRle));
+        assertEq(
+            string(hustler.getBody(RleParts.FEMALE_BODY, 0)),
+            string(bodyRle)
+        );
+        assertEq(
+            string(hustler.getBody(RleParts.FEMALE_BODY, 1)),
+            string(bodyRle)
+        );
     }
 
     function testCanAddBeards() public {
@@ -47,10 +59,22 @@ contract RLES is HustlerTest {
         hairs[1] = hairRle;
         owner.addRles(RleParts.MALE_HAIR, hairs);
         owner.addRles(RleParts.FEMALE_HAIR, hairs);
-        assertEq(string(hustler.getHair(RleParts.MALE_HAIR, 0)), string(hairRle));
-        assertEq(string(hustler.getHair(RleParts.MALE_HAIR, 1)), string(hairRle));
-        assertEq(string(hustler.getHair(RleParts.FEMALE_HAIR, 0)), string(hairRle));
-        assertEq(string(hustler.getHair(RleParts.FEMALE_HAIR, 1)), string(hairRle));
+        assertEq(
+            string(hustler.getHair(RleParts.MALE_HAIR, 0)),
+            string(hairRle)
+        );
+        assertEq(
+            string(hustler.getHair(RleParts.MALE_HAIR, 1)),
+            string(hairRle)
+        );
+        assertEq(
+            string(hustler.getHair(RleParts.FEMALE_HAIR, 0)),
+            string(hairRle)
+        );
+        assertEq(
+            string(hustler.getHair(RleParts.FEMALE_HAIR, 1)),
+            string(hairRle)
+        );
     }
 }
 
@@ -104,18 +128,56 @@ contract Hustlers is HustlerTest {
     // }
 
     function testCanMintFromDope() public {
-        string memory name = 'gangsta';
-        bytes4 background = hex'000000ff';
-        bytes4 color = hex'fafafaff';
+        string memory name = "gangsta";
+        bytes4 background = hex"000000ff";
+        bytes4 color = hex"fafafaff";
 
         uint256 hustlerId = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
 
-        owner.mint(name, color, background, hex'', viewbox, body, order, hex'000f');
-        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
+        owner.mint(
+            name,
+            color,
+            background,
+            hex"",
+            viewbox,
+            body,
+            order,
+            hex"000f"
+        );
+        owner.open(OTHER_BAG, address(owner), "");
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
+
+        uint256[] memory idsarr = new uint256[](9);
+        idsarr[0] = ids.weapon;
+        idsarr[1] = ids.clothes;
+        idsarr[2] = ids.vehicle;
+        idsarr[3] = ids.waist;
+        idsarr[4] = ids.foot;
+        idsarr[5] = ids.hand;
+        idsarr[6] = ids.drugs;
+        idsarr[7] = ids.neck;
+        idsarr[8] = ids.ring;
+        uint256[] memory amounts = new uint256[](9);
+        amounts[0] = 1;
+        amounts[1] = 1;
+        amounts[2] = 1;
+        amounts[3] = 1;
+        amounts[4] = 1;
+        amounts[5] = 1;
+        amounts[6] = 1;
+        amounts[7] = 1;
+        amounts[8] = 1;
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            idsarr,
+            amounts,
+            abi.encode(equip, hustlerId)
+        );
+
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
 
@@ -129,17 +191,56 @@ contract Hustlers is HustlerTest {
     function testCanMintOGFromDope() public {
         hevm.warp(1337);
 
-        string memory name = 'gangsta';
-        bytes4 background = hex'000000ff';
-        bytes4 color = hex'fafafaff';
+        string memory name = "gangsta";
+        bytes4 background = hex"000000ff";
+        bytes4 color = hex"fafafaff";
 
         uint256 hustlerId = 0;
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mintOG(name, color, background, hex'', viewbox, body, order, hex'000f', '');
-        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
+        owner.mintOG(
+            name,
+            color,
+            background,
+            hex"",
+            viewbox,
+            body,
+            order,
+            hex"000f",
+            ""
+        );
+        owner.open(OTHER_BAG, address(owner), "");
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
+
+        uint256[] memory idsarr = new uint256[](9);
+        idsarr[0] = ids.weapon;
+        idsarr[1] = ids.clothes;
+        idsarr[2] = ids.vehicle;
+        idsarr[3] = ids.waist;
+        idsarr[4] = ids.foot;
+        idsarr[5] = ids.hand;
+        idsarr[6] = ids.drugs;
+        idsarr[7] = ids.neck;
+        idsarr[8] = ids.ring;
+        uint256[] memory amounts = new uint256[](9);
+        amounts[0] = 1;
+        amounts[1] = 1;
+        amounts[2] = 1;
+        amounts[3] = 1;
+        amounts[4] = 1;
+        amounts[5] = 1;
+        amounts[6] = 1;
+        amounts[7] = 1;
+        amounts[8] = 1;
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            idsarr,
+            amounts,
+            abi.encode(equip, hustlerId)
+        );
+
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
 
@@ -149,83 +250,155 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(hustlerId).age, block.timestamp);
 
         Attribute[] memory attributes = new Attribute[](14);
-        attributes[0] = Attribute('Class', 'Original Gangsta');
-        attributes[1] = Attribute('Sex', 'Male');
-        attributes[2] = Attribute('Weapon', 'Pepper Spray from Hong Kong');
-        attributes[3] = Attribute('Clothes', 'Leather Vest');
-        attributes[4] = Attribute('Vehicle', 'BMW M3');
-        attributes[5] = Attribute('Waist', 'Laces');
-        attributes[6] = Attribute('Feet', 'Open Toe Sandals from Mob Town');
-        attributes[7] = Attribute('Hands', 'Rubber Gloves');
-        attributes[8] = Attribute('Drug', 'Cocaine');
-        attributes[9] = Attribute('Neck', 'Bronze Chain');
-        attributes[10] = Attribute('Ring', 'Titanium Ring from Hong Kong');
-        attributes[11] = Attribute('Accessory', 'None');
-        attributes[12] = Attribute('Initiation', '1337');
-        attributes[13] = Attribute('Respect', '100');
+        attributes[0] = Attribute("Class", "Original Gangsta");
+        attributes[1] = Attribute("Sex", "Male");
+        attributes[2] = Attribute("Weapon", "Pepper Spray from Hong Kong");
+        attributes[3] = Attribute("Clothes", "Leather Vest");
+        attributes[4] = Attribute("Vehicle", "BMW M3");
+        attributes[5] = Attribute("Waist", "Laces");
+        attributes[6] = Attribute("Feet", "Open Toe Sandals from Mob Town");
+        attributes[7] = Attribute("Hands", "Rubber Gloves");
+        attributes[8] = Attribute("Drug", "Cocaine");
+        attributes[9] = Attribute("Neck", "Bronze Chain");
+        attributes[10] = Attribute("Ring", "Titanium Ring from Hong Kong");
+        attributes[11] = Attribute("Accessory", "None");
+        attributes[12] = Attribute("Initiation", "1337");
+        attributes[13] = Attribute("Respect", "100");
 
         assertMetadata(hustlerId, attributes, name);
     }
 
     function testCanSetAccessory() public {
-        string memory name = 'gangsta';
-        bytes4 background = hex'000000ff';
-        bytes4 color = hex'fafafaff';
+        string memory name = "gangsta";
+        bytes4 background = hex"000000ff";
+        bytes4 color = hex"fafafaff";
 
         uint256 id = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mint(name, color, background, hex'', viewbox, body, order, hex'');
-        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
-
+        owner.mint(name, color, background, hex"", viewbox, body, order, hex"");
+        owner.open(OTHER_BAG, address(owner), "");
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
+
+        uint256[] memory idsarr = new uint256[](9);
+        idsarr[0] = ids.weapon;
+        idsarr[1] = ids.clothes;
+        idsarr[2] = ids.vehicle;
+        idsarr[3] = ids.waist;
+        idsarr[4] = ids.foot;
+        idsarr[5] = ids.hand;
+        idsarr[6] = ids.drugs;
+        idsarr[7] = ids.neck;
+        idsarr[8] = ids.ring;
+        uint256[] memory amounts = new uint256[](9);
+        amounts[0] = 1;
+        amounts[1] = 1;
+        amounts[2] = 1;
+        amounts[3] = 1;
+        amounts[4] = 1;
+        amounts[5] = 1;
+        amounts[6] = 1;
+        amounts[7] = 1;
+        amounts[8] = 1;
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            idsarr,
+            amounts,
+            abi.encode(equip, id)
+        );
+
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, id);
 
-        owner.safeTransferFrom(address(owner), address(hustler), ACCESSORY, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(
+            address(owner),
+            address(hustler),
+            ACCESSORY,
+            1,
+            abi.encode(equip, id)
+        );
         hustler.tokenURI(id);
     }
 
     function testCanMintThenTransferHustler() public {
-        string memory name = 'gangsta';
-        bytes4 background = hex'000000';
-        bytes4 color = hex'fafafa';
+        string memory name = "gangsta";
+        bytes4 background = hex"000000";
+        bytes4 color = hex"fafafa";
 
         uint256 hustlerId = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mint(name, color, background, hex'', viewbox, body, order, hex'');
-        owner.safeTransferHustlerFrom(address(owner), address(bob), hustlerId, 1, '');
+        owner.mint(name, color, background, hex"", viewbox, body, order, hex"");
+        owner.safeTransferHustlerFrom(
+            address(owner),
+            address(bob),
+            hustlerId,
+            1,
+            ""
+        );
 
         assertEq(hustler.balanceOf(address(bob), hustlerId), 1);
     }
 
     function testCanUnequipHustler() public {
-        string memory name = 'gangsta';
-        bytes4 background = hex'000000';
-        bytes4 color = hex'fafafa';
+        string memory name = "gangsta";
+        bytes4 background = hex"000000";
+        bytes4 color = hex"fafafa";
 
         uint256 hustlerId = 500;
 
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mint(name, color, background, hex'', viewbox, body, order, hex'');
-        owner.open(OTHER_BAG, address(hustler), abi.encode(equip, hustlerId));
+        owner.mint(name, color, background, hex"", viewbox, body, order, hex"");
+        owner.open(OTHER_BAG, address(owner), "");
         ItemIds memory ids = swapmeet.ids(OTHER_BAG);
+
+        uint256[] memory idsarr = new uint256[](9);
+        idsarr[0] = ids.weapon;
+        idsarr[1] = ids.clothes;
+        idsarr[2] = ids.vehicle;
+        idsarr[3] = ids.waist;
+        idsarr[4] = ids.foot;
+        idsarr[5] = ids.hand;
+        idsarr[6] = ids.drugs;
+        idsarr[7] = ids.neck;
+        idsarr[8] = ids.ring;
+        uint256[] memory amounts = new uint256[](9);
+        amounts[0] = 1;
+        amounts[1] = 1;
+        amounts[2] = 1;
+        amounts[3] = 1;
+        amounts[4] = 1;
+        amounts[5] = 1;
+        amounts[6] = 1;
+        amounts[7] = 1;
+        amounts[8] = 1;
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            idsarr,
+            amounts,
+            abi.encode(equip, hustlerId)
+        );
+
         checkOwns1155s(ids, address(hustler));
         checkIsEquipped(ids, hustlerId);
 
         // 0000 0001 1111 1111
-        assertEq(hustler.getMetadata(hustlerId).mask, bytes2(hex'01ff'));
+        assertEq(hustler.getMetadata(hustlerId).mask, bytes2(hex"01ff"));
         uint8[] memory slots = new uint8[](1);
         slots[0] = 0;
         owner.unequip(hustlerId, slots);
         // 0000 0001 1111 1110
         assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 1);
-        assertEq(bytes32(hustler.getMetadata(hustlerId).mask), bytes32(bytes2(hex'01fe')));
+        assertEq(
+            bytes32(hustler.getMetadata(hustlerId).mask),
+            bytes32(bytes2(hex"01fe"))
+        );
 
         uint8[] memory slots2 = new uint8[](5);
         slots2[0] = 1;
@@ -236,15 +409,27 @@ contract Hustlers is HustlerTest {
         owner.unequip(hustlerId, slots2);
 
         // 0000 0001 1100 0000
-        assertEq(bytes32(hustler.getMetadata(hustlerId).mask), bytes32(bytes2(hex'01c0')));
+        assertEq(
+            bytes32(hustler.getMetadata(hustlerId).mask),
+            bytes32(bytes2(hex"01c0"))
+        );
         assertEq(swapmeet.balanceOf(address(owner), ids.clothes), 1);
         assertEq(swapmeet.balanceOf(address(owner), ids.vehicle), 1);
         assertEq(swapmeet.balanceOf(address(owner), ids.waist), 1);
         assertEq(swapmeet.balanceOf(address(owner), ids.foot), 1);
         assertEq(swapmeet.balanceOf(address(owner), ids.hand), 1);
 
-        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, hustlerId));
-        assertEq(bytes32(hustler.getMetadata(hustlerId).mask), bytes32(bytes2(hex'01c1')));
+        owner.safeTransferFrom(
+            address(owner),
+            address(hustler),
+            ids.weapon,
+            1,
+            abi.encode(equip, hustlerId)
+        );
+        assertEq(
+            bytes32(hustler.getMetadata(hustlerId).mask),
+            bytes32(bytes2(hex"01c1"))
+        );
         assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 0);
         assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
     }
@@ -255,9 +440,19 @@ contract Hustlers is HustlerTest {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.setMetadata(id, 'hustler', '', '', '', viewbox, body, order, hex'0001');
+        owner.setMetadata(
+            id,
+            "hustler",
+            "",
+            "",
+            "",
+            viewbox,
+            body,
+            order,
+            hex"0001"
+        );
 
-        assertEq(hustler.getMetadata(id).name, 'hustler');
+        assertEq(hustler.getMetadata(id).name, "hustler");
     }
 
     function testSettingNameWithoutMaskIsNoop() public {
@@ -266,9 +461,19 @@ contract Hustlers is HustlerTest {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.setMetadata(id, 'hustler', '', '', '', viewbox, body, order, hex'0000');
+        owner.setMetadata(
+            id,
+            "hustler",
+            "",
+            "",
+            "",
+            viewbox,
+            body,
+            order,
+            hex"0000"
+        );
 
-        assertEq(hustler.getMetadata(id).name, '');
+        assertEq(hustler.getMetadata(id).name, "");
     }
 
     function testFailCantSetLongName() public {
@@ -277,7 +482,17 @@ contract Hustlers is HustlerTest {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.setMetadata(id, 'hustler name hustler name', '', '', '', viewbox, body, order, hex'0001');
+        owner.setMetadata(
+            id,
+            "hustler name hustler name",
+            "",
+            "",
+            "",
+            viewbox,
+            body,
+            order,
+            hex"0001"
+        );
     }
 
     function testCanSetBackground() public {
@@ -287,9 +502,19 @@ contract Hustlers is HustlerTest {
         uint8[4] memory viewbox;
         uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', hex'123456', '', viewbox, body, order, hex'0004');
+        owner.setMetadata(
+            id,
+            "",
+            "",
+            hex"123456",
+            "",
+            viewbox,
+            body,
+            order,
+            hex"0004"
+        );
 
-        assertEq(hustler.getMetadata(id).background, hex'123456');
+        assertEq(hustler.getMetadata(id).background, hex"123456");
     }
 
     function testSettingBackgroundWithoutMaskIsNoop() public {
@@ -299,9 +524,19 @@ contract Hustlers is HustlerTest {
         uint8[4] memory viewbox;
         uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', hex'123456', '', viewbox, body, order, hex'0000');
+        owner.setMetadata(
+            id,
+            "",
+            "",
+            hex"123456",
+            "",
+            viewbox,
+            body,
+            order,
+            hex"0000"
+        );
 
-        assertEq(hustler.getMetadata(id).background, '');
+        assertEq(hustler.getMetadata(id).background, "");
     }
 
     function testCanSetColor() public {
@@ -311,9 +546,19 @@ contract Hustlers is HustlerTest {
         uint8[4] memory viewbox;
         uint8[10] memory order;
 
-        owner.setMetadata(id, '', hex'123456', '', '', viewbox, body, order, hex'0002');
+        owner.setMetadata(
+            id,
+            "",
+            hex"123456",
+            "",
+            "",
+            viewbox,
+            body,
+            order,
+            hex"0002"
+        );
 
-        assertEq(hustler.getMetadata(id).color, hex'123456');
+        assertEq(hustler.getMetadata(id).color, hex"123456");
     }
 
     function testSettingColorWithoutMaskIsNoop() public {
@@ -323,9 +568,19 @@ contract Hustlers is HustlerTest {
         uint8[4] memory viewbox;
         uint8[10] memory order;
 
-        owner.setMetadata(id, '', hex'123456', '', '', viewbox, body, order, hex'0000');
+        owner.setMetadata(
+            id,
+            "",
+            hex"123456",
+            "",
+            "",
+            viewbox,
+            body,
+            order,
+            hex"0000"
+        );
 
-        assertEq(hustler.getMetadata(id).color, '');
+        assertEq(hustler.getMetadata(id).color, "");
     }
 
     function testCanSetBodyPartial() public {
@@ -335,7 +590,7 @@ contract Hustlers is HustlerTest {
         uint8[4] memory viewbox;
         uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body, order, hex'0050');
+        owner.setMetadata(id, "", "", "", "", viewbox, body, order, hex"0050");
 
         assertEq(hustler.getMetadata(id).body[0], 1);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -348,7 +603,17 @@ contract Hustlers is HustlerTest {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mintOG('tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, order, hex'000f', '');
+        owner.mintOG(
+            "tarrence",
+            hex"000000ff",
+            hex"ffffffff",
+            hex"0006",
+            viewbox,
+            body,
+            order,
+            hex"000f",
+            ""
+        );
 
         require(bytes(hustler.uri(id)).length > 0);
     }
@@ -360,7 +625,7 @@ contract Hustlers is HustlerTest {
         uint8[4] memory viewbox;
         uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body, order, hex'0020');
+        owner.setMetadata(id, "", "", "", "", viewbox, body, order, hex"0020");
 
         assertEq(hustler.getMetadata(id).body[0], 0);
         assertEq(hustler.getMetadata(id).body[1], 0);
@@ -373,11 +638,11 @@ contract Hustlers is HustlerTest {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mintOG('', '', '', hex'', viewbox, body, order, hex'', '');
+        owner.mintOG("", "", "", hex"", viewbox, body, order, hex"", "");
 
         uint8[4] memory body2 = [0, 5, 0, 0];
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body2, order, hex'0020');
+        owner.setMetadata(id, "", "", "", "", viewbox, body2, order, hex"0020");
 
         assertEq(hustler.getMetadata(id).body[0], 0);
         assertEq(hustler.getMetadata(id).body[1], 5);
@@ -390,7 +655,17 @@ contract Hustlers is HustlerTest {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mintOG('tarrence', hex'000000ff', hex'ffffffff', hex'0006', viewbox, body, order, hex'000f', '');
+        owner.mintOG(
+            "tarrence",
+            hex"000000ff",
+            hex"ffffffff",
+            hex"0006",
+            viewbox,
+            body,
+            order,
+            hex"000f",
+            ""
+        );
 
         require(bytes(hustler.uri(id)).length > 0);
     }
@@ -402,7 +677,7 @@ contract Hustlers is HustlerTest {
         uint8[4] memory viewbox;
         uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body, order, hex'00f0');
+        owner.setMetadata(id, "", "", "", "", viewbox, body, order, hex"00f0");
 
         assertEq(hustler.getMetadata(id).body[0], 2);
         assertEq(hustler.getMetadata(id).body[1], 3);
@@ -412,12 +687,12 @@ contract Hustlers is HustlerTest {
 
     function testFailCantSetMetadataOfUnowned() public {
         uint256 id = 500;
-        hustler.mintTo(address(this), '');
+        hustler.mintTo(address(this), "");
         uint8[4] memory body = [2, 3, 4, 5];
         uint8[4] memory viewbox;
         uint8[10] memory order;
 
-        owner.setMetadata(id, '', '', '', '', viewbox, body, order, hex'00f0');
+        owner.setMetadata(id, "", "", "", "", viewbox, body, order, hex"00f0");
     }
 
     function testCanSetSlotsPartial() public {
@@ -431,7 +706,13 @@ contract Hustlers is HustlerTest {
         amounts[0] = 1;
         amounts[1] = 1;
 
-        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            items,
+            amounts,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], 0);
@@ -473,7 +754,13 @@ contract Hustlers is HustlerTest {
         amounts[8] = 1;
 
         owner.setApprovalForAll(address(hustler), true);
-        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            items,
+            amounts,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], ids.clothes);
@@ -516,7 +803,13 @@ contract Hustlers is HustlerTest {
         amounts[8] = 1;
 
         owner.setApprovalForAll(address(hustler), true);
-        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            items,
+            amounts,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(hustler.getMetadata(id).slots[1], ids.clothes);
@@ -530,7 +823,7 @@ contract Hustlers is HustlerTest {
         assertEq(hustler.getMetadata(id).slots[9], 0);
         checkOwns1155s(ids, address(hustler));
 
-        owner.open(OTHER_BAG, address(owner), '');
+        owner.open(OTHER_BAG, address(owner), "");
 
         ItemIds memory otherIds = swapmeet.ids(OTHER_BAG);
         uint256[] memory otherItems = new uint256[](9);
@@ -543,7 +836,13 @@ contract Hustlers is HustlerTest {
         otherItems[6] = otherIds.drugs;
         otherItems[7] = otherIds.neck;
         otherItems[8] = otherIds.ring;
-        owner.safeBatchTransferFrom(address(owner), address(hustler), otherItems, amounts, abi.encode(equip, id));
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            otherItems,
+            amounts,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], otherIds.weapon);
         assertEq(hustler.getMetadata(id).slots[1], otherIds.clothes);
@@ -575,7 +874,13 @@ contract Hustlers is HustlerTest {
         amounts[1] = 1;
 
         owner.setApprovalForAll(address(hustler), true);
-        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            items,
+            amounts,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], otherIds.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), otherIds.weapon), 1);
@@ -584,7 +889,7 @@ contract Hustlers is HustlerTest {
 
     function testFailBatchSettingSlotsOfUnowned() public {
         uint256 id = 500;
-        hustler.mintTo(address(this), '');
+        hustler.mintTo(address(this), "");
         owner.open(OTHER_BAG, address(hustler), abi.encode(equip, id));
 
         ItemIds memory ids = swapmeet.ids(BAG);
@@ -596,7 +901,13 @@ contract Hustlers is HustlerTest {
         amounts[0] = 1;
 
         owner.setApprovalForAll(address(hustler), true);
-        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            items,
+            amounts,
+            abi.encode(equip, id)
+        );
     }
 
     function testFailBatchSettingSlotWithDuplicate() public {
@@ -617,7 +928,13 @@ contract Hustlers is HustlerTest {
         amounts[0] = 2;
 
         owner.setApprovalForAll(address(hustler), true);
-        owner.safeBatchTransferFrom(address(owner), address(hustler), items, amounts, abi.encode(equip, id));
+        owner.safeBatchTransferFrom(
+            address(owner),
+            address(hustler),
+            items,
+            amounts,
+            abi.encode(equip, id)
+        );
         assertEq(hustler.getMetadata(id).slots[0], 0);
         assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 2);
     }
@@ -627,7 +944,13 @@ contract Hustlers is HustlerTest {
         owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
 
-        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(
+            address(owner),
+            address(hustler),
+            ids.weapon,
+            1,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
@@ -645,7 +968,13 @@ contract Hustlers is HustlerTest {
         ItemIds memory ids = swapmeet.ids(UZI_BAG_1);
 
         owner.setApprovalForAll(address(hustler), true);
-        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 2, abi.encode(equip, id));
+        owner.safeTransferFrom(
+            address(owner),
+            address(hustler),
+            ids.weapon,
+            2,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], 0);
         assertEq(swapmeet.balanceOf(address(owner), ids.weapon), 2);
@@ -653,9 +982,15 @@ contract Hustlers is HustlerTest {
 
     function tesFailtCantSetSlotOfUnownedHustler() public {
         uint256 id = 500;
-        hustler.mintTo(address(this), '');
+        hustler.mintTo(address(this), "");
         ItemIds memory ids = swapmeet.ids(BAG);
-        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(
+            address(owner),
+            address(hustler),
+            ids.weapon,
+            1,
+            abi.encode(equip, id)
+        );
     }
 
     function testFailOpeningToAlreadyEquippedHustler() public {
@@ -663,7 +998,13 @@ contract Hustlers is HustlerTest {
         owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
 
-        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(
+            address(owner),
+            address(hustler),
+            ids.weapon,
+            1,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
@@ -676,15 +1017,27 @@ contract Hustlers is HustlerTest {
         owner.mint();
         ItemIds memory ids = swapmeet.ids(BAG);
 
-        owner.safeTransferFrom(address(owner), address(hustler), ids.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(
+            address(owner),
+            address(hustler),
+            ids.weapon,
+            1,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], ids.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), ids.weapon), 1);
 
-        owner.open(OTHER_BAG, address(owner), '');
+        owner.open(OTHER_BAG, address(owner), "");
         ItemIds memory otherIds = swapmeet.ids(OTHER_BAG);
 
-        owner.safeTransferFrom(address(owner), address(hustler), otherIds.weapon, 1, abi.encode(equip, id));
+        owner.safeTransferFrom(
+            address(owner),
+            address(hustler),
+            otherIds.weapon,
+            1,
+            abi.encode(equip, id)
+        );
 
         assertEq(hustler.getMetadata(id).slots[0], otherIds.weapon);
         assertEq(swapmeet.balanceOf(address(hustler), otherIds.weapon), 1);
@@ -724,18 +1077,28 @@ contract Hustlers is HustlerTest {
     }
 
     function testCanRenderCarMode() public {
-        string memory name = 'gangsta';
-        bytes4 background = hex'000000ff';
-        bytes4 color = hex'fafafaff';
+        string memory name = "gangsta";
+        bytes4 background = hex"000000ff";
+        bytes4 color = hex"fafafaff";
 
         uint256 hustlerId = 500;
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mint(name, color, background, hex'', viewbox, body, order, hex'');
+        owner.mint(name, color, background, hex"", viewbox, body, order, hex"");
 
-        owner.setMetadata(hustlerId, '', '', '', hex'0001', viewbox, body, order, hex'0000');
-        assertEq(hustler.getMetadata(hustlerId).options, hex'0001');
+        owner.setMetadata(
+            hustlerId,
+            "",
+            "",
+            "",
+            hex"0001",
+            viewbox,
+            body,
+            order,
+            hex"0000"
+        );
+        assertEq(hustler.getMetadata(hustlerId).options, hex"0001");
 
         hustler.tokenURI(hustlerId);
     }
@@ -772,8 +1135,8 @@ contract Hustlers is HustlerTest {
     ) private {
         string memory meta = hustler.uri(hustlerId);
         string[] memory inputs = new string[](3);
-        inputs[0] = 'node';
-        inputs[1] = 'scripts/metadata.js';
+        inputs[0] = "node";
+        inputs[1] = "scripts/metadata.js";
         inputs[2] = meta;
         bytes memory res = hevm.ffi(inputs);
         Data memory data = abi.decode(res, (Data));
@@ -783,7 +1146,9 @@ contract Hustlers is HustlerTest {
         }
     }
 
-    function assertEq(Attribute memory attribute, Attribute memory expected) private {
+    function assertEq(Attribute memory attribute, Attribute memory expected)
+        private
+    {
         assertEq(attribute.traitType, expected.traitType);
         assertEq(attribute.value, expected.value);
     }
@@ -802,7 +1167,7 @@ contract Bouncing is HustlerTest {
         assertEq(hustler.getMetadata(id).age, 100);
 
         hevm.warp(200);
-        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, "");
         assertEq(hustler.getMetadata(id).age, 200);
     }
 
@@ -816,7 +1181,7 @@ contract Bouncing is HustlerTest {
 
         hevm.warp(100);
         owner.mint();
-        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, "");
     }
 
     function testTransferDoesntResetRespectWEnforcer() public {
@@ -832,7 +1197,7 @@ contract Bouncing is HustlerTest {
         assertEq(hustler.getMetadata(id).age, 100);
 
         hevm.warp(200);
-        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, "");
         assertEq(hustler.getMetadata(id).age, 100);
     }
 
@@ -849,7 +1214,7 @@ contract Bouncing is HustlerTest {
         assertEq(hustler.getMetadata(id).age, 100);
 
         hevm.warp(200);
-        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, "");
         assertEq(hustler.getMetadata(id).age, 200);
     }
 
@@ -860,11 +1225,21 @@ contract Bouncing is HustlerTest {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mintOG('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, order, hex'', '');
+        owner.mintOG(
+            "gangsta",
+            hex"000000ff",
+            hex"fafafaff",
+            hex"",
+            viewbox,
+            body,
+            order,
+            hex"",
+            ""
+        );
         assertEq(hustler.getMetadata(id).age, 100);
 
         hevm.warp(200);
-        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, '');
+        owner.safeTransferHustlerFrom(address(owner), address(bob), id, 1, "");
         assertEq(hustler.getMetadata(id).age, 100);
     }
 }
@@ -878,14 +1253,33 @@ contract Benchmark is HustlerTest {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mint('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, order, hex'');
+        owner.mint(
+            "gangsta",
+            hex"000000ff",
+            hex"fafafaff",
+            hex"",
+            viewbox,
+            body,
+            order,
+            hex""
+        );
     }
 
     function testMintOGFromDope() public {
         uint8[4] memory body;
         uint8[4] memory viewbox;
         uint8[10] memory order;
-        owner.mintOG('gangsta', hex'000000ff', hex'fafafaff', hex'', viewbox, body, order, hex'', '');
+        owner.mintOG(
+            "gangsta",
+            hex"000000ff",
+            hex"fafafaff",
+            hex"",
+            viewbox,
+            body,
+            order,
+            hex"",
+            ""
+        );
     }
 
     function testCanMint() public {
