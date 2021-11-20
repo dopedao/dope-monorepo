@@ -28,21 +28,29 @@ const ZoomControls = () => {
   const minIndex = 0
   const maxIndex = ZOOM_WINDOWS.length - 1;
 
-  // body: SKIN_TONE_COLORS.findIndex(el => el == color),
-  // 
-
   const decrementZoomWindowIndex = () => {
     let newIndex = currentIndex - 1;
     if (minIndex > newIndex) newIndex = maxIndex;
-    HustlerInitConfig({...hustlerConfig, zoomWindow: ZOOM_WINDOWS[newIndex] });
     setCurrentIndex(newIndex);
+    setHustlerConfig();
   }
 
   const incrementZoomWindowIndex = () => {
     let newIndex = currentIndex + 1;
     if (maxIndex < newIndex) newIndex = minIndex;
-    HustlerInitConfig({...hustlerConfig, zoomWindow: ZOOM_WINDOWS[newIndex] });
     setCurrentIndex(newIndex);
+    setHustlerConfig();
+  }
+
+  const setHustlerConfig = () => {
+    let renderName = hustlerConfig.renderName
+    // for mugshots doesn't make sense to render name, because it gets cut off.
+    if (currentIndex == 1) renderName = false;
+    HustlerInitConfig({
+      ...hustlerConfig, 
+      zoomWindow: ZOOM_WINDOWS[currentIndex],
+      renderName: renderName
+    });
   }
 
   return (

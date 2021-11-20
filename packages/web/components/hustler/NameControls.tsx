@@ -3,6 +3,7 @@ import { useDebounce } from 'usehooks-ts';
 import { useReactiveVar } from '@apollo/client';
 import { useState, useEffect } from 'react';
 import {
+  Box,
   Input,
   HStack,
   FormControl,
@@ -51,36 +52,21 @@ const NameControls = () => {
       <PanelTitleBar>Display</PanelTitleBar>
       <PanelBody>
         <Stack spacing={FIELD_SPACING}>
-          <FormControl mb={2}>
-            <FormLabel htmlFor="name">Name</FormLabel>
-            <Input
-              id="name"
-              placeholder="name"
-              maxLength={NAME_MAX_LENGTH}
-              value={hustlerName}
-              onChange={e => {
-                setNameFieldDirty(true);
-                setHustlerName(e.currentTarget.value)
-              }}
-            />
-          </FormControl>
+          <FormLabel htmlFor="name">Name</FormLabel>
           <HStack>
-            <FormControl display="flex" alignItems="center">
-              <FormLabel htmlFor="render-title" mb="0">
-                Show Title?
-              </FormLabel>
-              <Switch
-                id="render-title"
-                checked={hustlerConfig.renderTitle}
+            <FormControl mb={2}>
+              <Input
+                id="name"
+                placeholder="name"
+                maxLength={NAME_MAX_LENGTH}
+                value={hustlerName}
                 onChange={e => {
-                  HustlerInitConfig({ ...hustlerConfig, renderTitle: e.target.checked });
+                  setNameFieldDirty(true);
+                  setHustlerName(e.currentTarget.value)
                 }}
               />
             </FormControl>
-            <FormControl display="flex" alignItems="center">
-              <FormLabel htmlFor="render-name" mb="0">
-                Show Name?
-              </FormLabel>
+            <FormControl display="flex" alignItems="center" verticalAlign="center">
               <Switch
                 id="render-name"
                 checked={hustlerConfig.renderName}
@@ -88,6 +74,9 @@ const NameControls = () => {
                   HustlerInitConfig({ ...hustlerConfig, renderName: e.target.checked });
                 }}
               />
+              <FormLabel htmlFor="render-name" ml="2" mt="1">
+                Visible
+              </FormLabel>
             </FormControl>
           </HStack>
         </Stack>

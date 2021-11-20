@@ -51,7 +51,6 @@ const Configure = () => {
             id={hustlerConfig.dopeId}
             name={hustlerConfig.name}
             renderName={hustlerConfig.renderName}
-            renderTitle={hustlerConfig.renderTitle}
             sex={hustlerConfig.sex}
             textColor={hustlerConfig.textColor}
             zoomWindow={hustlerConfig.zoomWindow}
