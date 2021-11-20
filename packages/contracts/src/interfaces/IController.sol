@@ -22,11 +22,7 @@ interface IController {
         bytes calldata data
     ) external;
 
-    function open(
-        uint256 dopeId,
-        address to,
-        bytes memory data
-    ) external;
+    function open(uint256 dopeId, address to) external;
 
     function mintItem(
         address to,

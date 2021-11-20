@@ -37,7 +37,7 @@ contract Initiator is ControllerTest {
     }
 
     function testInitiatorCanOpen() public {
-        initiator.open(420, address(initiator), '');
+        initiator.open(420, address(initiator));
     }
 
     function testFailNonInitiatorCanOpen() public {

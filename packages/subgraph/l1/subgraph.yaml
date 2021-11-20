@@ -48,9 +48,9 @@ dataSources:
     name: Initiator
     network: mainnet
     source:
-      address: "0xC8011c0158BeA25e1C40Ff84189E494717eF8558"
+      address: "0x219f75d739a48701462f2795F6a69770710B0c9d"
       abi: Initiator
-      startBlock: 13648341
+      startBlock: 13649810
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
