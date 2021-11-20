@@ -8,7 +8,14 @@ import styled from '@emotion/styled';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 import { useHustler } from 'hooks/contracts';
 
-const MASTHEADS = ['dope.svg', 'hell-yeah.svg', 'success.svg'];
+const MASTHEADS = [
+  'dope.svg',
+  'hell-yeah.svg',
+  'success.svg',
+  'wagmi.svg',
+  'GM.svg',
+  'paper-gang.svg',
+];
 
 const randomMast = () => {
   const path = '/images/masthead/';
@@ -71,6 +78,11 @@ const PLUGS = [
     name: 'M1',
     prefix: 'Stickman',
   },
+  {
+    link: 'https://twitter.com/smakosh',
+    name: 'Smakosh',
+    suffix: 'The Kid',
+  },
 ];
 const PlugContainer = styled.div`
   position: fixed;
@@ -109,19 +121,21 @@ const PlugContainer = styled.div`
       opacity: 1;
     }
     100% {
-      top: -100em;
+      top: -200em;
       opacity: 1;
     }
   }
-  animation: scroll-in 50s linear 2s;
+  animation: scroll-in 60s linear 2s;
 `;
 
 const MastheadContainer = styled.div`
   position: fixed;
   top: 150%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -25%);
   width: 80%;
+  display: flex;
+  justify-content: center;
   ${media.tablet`
     width: 50%;
   `}
@@ -147,7 +161,7 @@ const MastheadContainer = styled.div`
       opacity: 1;
     }
     100% {
-      top: 15%;
+      top: 25%;
       opacity: 0;
       display: hidden;
     }

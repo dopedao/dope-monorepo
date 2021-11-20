@@ -52,12 +52,12 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   };
 
   return (
-    <div>
-      {initiator && paper && account && (
-        <>
-          <Button variant="primary" onClick={() => initiateHustler()}>
-            Initiate Hustler
-          </Button>
+    <div>        
+      <Button variant="primary" onClick={() => initiateHustler()}>
+        Begin Initiation
+      </Button>
+      {/* TODO: UNCOMMENT AFTER HUSTLER LAUNCH */}
+      {/* {initiator && paper && account && (
           <Button
             disabled={chainId !== 42}
             onClick={async () => {
@@ -66,8 +66,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
           >
             Unbundle
           </Button>
-        </>
-      )}
+      )} */}
       {paper && (
         <Button
           disabled={bag.claimed}
