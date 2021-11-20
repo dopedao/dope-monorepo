@@ -105,7 +105,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
     if (account) {
       paper
         .balanceOf(account)
-        .then(balance => setHasEnoughPaper(balance.gt('12500000000000000000000')));
+        .then(balance => setHasEnoughPaper(balance.gte('12500000000000000000000')));
     }
   }, [account, paper]);
 
