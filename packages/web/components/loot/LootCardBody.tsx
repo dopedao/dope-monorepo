@@ -93,22 +93,38 @@ const LootCardBody = ({ bag }: Props) => {
       `}
     >
       <Row key="rank" slot="Rank" item={`${bag.rank} / ${NUM_DOPE_TOKENS}`} />
+
+      {/* PAPER */}
       {!bag.claimed && (
         <Row
           key="paper"
-          color={itemBackgroundColors[itemBackgroundColors.length - 1]}
           slot="$PAPER"
-          item="125,000"
+          item="✅ 125,000 Claimable ✅"
         />
       )}
+      {bag.claimed && (
+        <Row
+          key="paper"
+          slot="$PAPER"
+          item="🚫 Unable to claim 🚫"
+        />
+      )}
+
       {!bag.opened && (
         <Row
           key="bundled"
-          color={itemBackgroundColors[itemBackgroundColors.length - 1]}
           slot="Bundled"
-          item="Ready to Unpack"
+          item="✅ Ready to Unpack ✅"
         />
       )}
+      {bag.opened && (
+        <Row
+          key="bundled"
+          slot="Bundled"
+          item="🚫 Already unbundled 🚫"
+        />
+      )}
+
       {[
         ['Weapon', bag.weapon],
         ['Vehicle', bag.vehicle],
