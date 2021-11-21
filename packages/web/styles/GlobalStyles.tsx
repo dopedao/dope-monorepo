@@ -172,6 +172,11 @@ export default function GlobalStyles() {
           line-height: 1.5;
         }
 
+        ul.normal {
+          list-style-type: square;
+          margin-left: 1.5em;
+        }
+
         .small {
           font-size: var(--text-small);
         }

@@ -53,7 +53,6 @@ const GangstaParty = () => {
       <Head title="DOPE WARS GANGSTA PARTY" />
       <ScreenSaver>
         <HustlerContainer>
-          CHECK ONE TWO
           {!loading && data?.hustlers && data?.hustlers.length > 0 && (
             <div className="hustlerGrid">
               {data.hustlers.map(({ id, data }) => {

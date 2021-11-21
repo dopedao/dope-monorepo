@@ -7,7 +7,7 @@ const StickyNoteHustlerMint = () => {
     <StickyNote maxWidth="312px">
       <h3>
         <Link href="/hustlers/initiate" variation="primary">
-          <a className="primary">👉 Mint OG Hustler Here 👈</a>
+          <a className="primary">👉 Mint Your Hustler Here 👈</a>
         </Link>
       </h3>
       <hr
