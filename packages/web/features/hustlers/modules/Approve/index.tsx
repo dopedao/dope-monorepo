@@ -171,7 +171,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
       sex == 'male' ? BigNumber.from(0) : BigNumber.from(1),
       BigNumber.from(body),
       BigNumber.from(hair),
-      BigNumber.from(facialHair),
+      sex == 'male' ? BigNumber.from(facialHair) : BigNumber.from(0),
     ];
 
     let bitoptions = 0;
