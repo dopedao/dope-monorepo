@@ -76,10 +76,11 @@ const GangstaParty = () => {
         width="100%"
         justifyContent="end"
       >
+        <Link href="/" passHref>
+          <Button>Back to DOPE WARS</Button>
+        </Link>
         <Link href="/hustlers" passHref>
-          <a target="your-squad" rel="noreferrer">
-            <Button>Peep Your Squad</Button>
-          </a>
+          <Button>Peep Your Squad</Button>
         </Link>
         <Link href="/hustlers/initiate/" passHref>
           <Button variant="primary">Mint a Hustler</Button>
