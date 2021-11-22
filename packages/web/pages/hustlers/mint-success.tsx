@@ -1,12 +1,13 @@
 import { AlertIcon, Alert, Box, Button, Image, HStack, Spacer } from '@chakra-ui/react';
 import { getRandomNumber } from 'src/utils';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { media } from 'styles/mixins';
 import Head from 'components/Head';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 import { useHustler } from 'hooks/contracts';
+import { useWeb3React } from '@web3-react/core';
 
 const MASTHEADS = [
   'dope.svg',
@@ -201,23 +202,28 @@ const ScreenSaver = styled.div<{ image: string }>`
 `;
 
 const MintSuccess = () => {
+  const { account } = useWeb3React();
   const [hasTransfered, setHasTransfered] = useState(false);
   const hustler = useHustler();
   const [gangstaParty, setGangstaParty] = useState(false);
 
   const image = gangstaParty ? 'bridge_with_hustlers.png' : 'bridge_no_hustlers.png';
 
-  const listener = (block: string) => {
-    console.log(block);
-    setHasTransfered(true);
-  };
+  const listener = useCallback(
+    (operator: string, _from: string, to: string) => {
+      if (operator === hustler.address && to === account) {
+        setHasTransfered(true);
+      }
+    },
+    [account, hustler.address],
+  );
 
   useEffect(() => {
     hustler.on('TransferSingle', listener);
     return () => {
       hustler.off('TransferSingle', listener);
     };
-  }, [hustler]);
+  }, [hustler, listener]);
 
   return (
     <>
@@ -244,7 +250,7 @@ const MintSuccess = () => {
             <WebAmpPlayer />
           </>
         )}
-        {!gangstaParty && !hasTransfered && (
+        {!gangstaParty && (
           <>
             <MastheadContainer>
               <Image src={randomMast()} alt="Dope." />
@@ -252,13 +258,17 @@ const MintSuccess = () => {
             <AlertContainer>
               <Alert status="success">
                 <div>
-                  <p>
-                    Your Hustler is making their way to the Optimism network.
-                    <br />
-                    <br />
-                    It could take up to 15 minutes for that to happen. In the meantime, lets get it
-                    crackin homie…
-                  </p>
+                  {hasTransfered ? (
+                    <p>Your Hustler has made its way to the Optimism network!</p>
+                  ) : (
+                    <p>
+                      Your Hustler is making their way to the Optimism network.
+                      <br />
+                      <br />
+                      It could take up to 15 minutes for that to happen. In the meantime, lets get
+                      it crackin homie…
+                    </p>
+                  )}
                   <Button
                     onClick={() => {
                       setGangstaParty(true);
