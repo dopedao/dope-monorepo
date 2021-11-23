@@ -225,3 +225,33 @@ export const useLastestBlock = (): providers.Block | undefined => {
 };
 
 export default useWeb3Provider;
+
+export const useSwitchNetwork = (network: 1 | 10 | 42 | 69) => {
+  const { chainId } = useWeb3React();
+  if ((window as any).ethereum) {
+    let params;
+    if (chainId === network) {
+      alert(
+        `Optimistic Ethereum ${NETWORK[network].name} Network has already been added to Metamask.`,
+      );
+      return;
+    } else {
+      params = [
+        {
+          chainId: NETWORK[network].chainId,
+          chainName: NETWORK[network].name,
+          nativeCurrency: NETWORK[network].currency,
+          rpcUrls: [NETWORK[network].rpcUrl],
+          blockExplorerUrls: [NETWORK[network].etherscan],
+        },
+      ];
+    }
+
+    (window as any).ethereum
+      .request({ method: 'wallet_addEthereumChain', params })
+      .then(() => console.log('Success'))
+      .catch((error: Error) => console.log('Error', error.message));
+  } else {
+    alert('Unable to locate a compatible web3 browser!');
+  }
+};
