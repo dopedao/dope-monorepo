@@ -17,12 +17,12 @@ export const NETWORK = {
       symbol: 'ETH',
       decimals: 18,
     },
-    chainId: '',
+    chainId: 1,
   },
   10: {
-    name: 'Optimistic Ethereum Mainnet Kovan',
-    rpcUrl: '',
-    etherscan: '',
+    name: 'Optimistic Ethereum',
+    rpcUrl: 'https://mainnet.optimism.io/',
+    etherscan: 'https://optimistic.etherscan.io/',
     contracts: {
       controller: '0x124760902088dDBFEb8F27210D3B0C645a5c0A8B',
       swapmeet: '0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110',
@@ -36,12 +36,12 @@ export const NETWORK = {
       symbol: 'ETH',
       decimals: 18,
     },
-    chainId: '',
+    chainId: 10,
   },
   42: {
     name: 'Kovan mainnet',
-    rpcUrl: 'https://kovan.optimism.io/',
-    etherscan: 'https://kovan-optimistic.etherscan.io/',
+    rpcUrl: 'https://kovan.infura.io',
+    etherscan: 'https://kovan.etherscan.io/',
     contracts: {
       dope: '0xd2761Ee62d8772343070A5dE02C436F788EdF60a',
       paper: '0x781B575CA559263eb232B854195D6dC0AB720105',
@@ -55,12 +55,12 @@ export const NETWORK = {
       symbol: 'ETH',
       decimals: 18,
     },
-    chainId: '0x45',
+    chainId: 42,
   },
   69: {
     name: 'Optimistic Ethereum Testnet Kovan',
-    rpcUrl: '',
-    etherscan: '',
+    rpcUrl: 'https://kovan.optimism.io/',
+    etherscan: 'https://kovan-optimistic.etherscan.io/',
     contracts: {
       controller: '0x99A89AF659d5AF027b3d94BB0B169873b46d6351',
       swapmeet: '0x7144893df7456fB9678875aa09800d514685850F',
@@ -70,10 +70,10 @@ export const NETWORK = {
     ws: 'wss://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9',
     subgraph: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-kovan-optimism',
     currency: {
-      name: 'ETH',
-      symbol: 'ETH',
+      name: 'Kovan Ether',
+      symbol: 'KOR',
       decimals: 18,
     },
-    chainId: '',
+    chainId: 69,
   },
 };
