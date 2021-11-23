@@ -22,24 +22,6 @@ const StickyNoteHustlerMint = () => {
   const addNetwork = async () => {
     if ((window as any).ethereum) {
       let params;
-      if (chainId === 10) {
-        alert('Optimistic Ethereum Network has already been added to Metamask.');
-        return;
-      } else {
-        params = [
-          {
-            chainId: '0xA',
-            chainName: 'Optimistic Ethereum',
-            nativeCurrency: {
-              name: 'ETH',
-              symbol: 'ETH',
-              decimals: 18,
-            },
-            rpcUrls: ['https://mainnet.optimism.io/'],
-            blockExplorerUrls: ['https://optimistic.etherscan.io/'],
-          },
-        ];
-      }
       if (chainId === 69) {
         alert('Optimistic Ethereum Kovan Test Network has already been added to Metamask.');
         return;
