@@ -1,4 +1,4 @@
-import { Bag } from '../../src/generated/graphql';
+import { Bag } from 'src/generated/graphql';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 

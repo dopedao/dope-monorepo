@@ -3,9 +3,10 @@ query Wallet($id: ID!) {
     id
     address
     paper
-    bags {
+    bags(first: 200) {
       claimed
       id
+      opened
       clothes @client
       foot @client
       hand @client

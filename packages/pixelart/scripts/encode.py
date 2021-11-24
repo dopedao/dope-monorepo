@@ -4,18 +4,20 @@ import json
 from eth_utils import to_hex
 import glob
 import os
+import sys
 
-f = open("../outputs/partcolors.json", "r")
-partcolors = json.load(f)
+typ = sys.argv[1]
+palette_idx = int(sys.argv[2])
 
-f = open("../outputs/output.json", "r")
+f = open("../outputs/"+typ+"/output.json", "r")
 meta = json.load(f)
 
 colors = {0: 0}
-for i, c in enumerate(partcolors["partcolors"]):
+for i, c in enumerate(meta["partcolors"]):
     colors[c] = i
 
-for file in glob.glob("../imgs/**/*.png"):
+meta["parts"] = []
+for file in glob.glob("../imgs/"+typ+"/**/*.png"):
     img = image.imread(file)
 
     a = np.where(img[:, :, 3] != 0)
@@ -23,7 +25,7 @@ for file in glob.glob("../imgs/**/*.png"):
     if len(a[0]) > 0:
         bbox = np.min(a[0]), np.max(a[0]), np.min(a[1]), np.max(a[1])
         cropped = img[bbox[0]:bbox[1]+1, bbox[2]:bbox[3]+1]
-        encoded = [0, bbox[0], bbox[3]+1, bbox[1]+1, bbox[2]]
+        encoded = [palette_idx, bbox[0], bbox[3]+1, bbox[1]+1, bbox[2]]
 
         for y in cropped:
             n = 0
@@ -35,10 +37,8 @@ for file in glob.glob("../imgs/**/*.png"):
                 if x[3] == 0:
                     cur = 0
                 else:
-                    if x[3] == 1.0:
-                        cur = '%02x%02x%02x' % (int(x[0]*255), int(x[1]*255), int(x[2]*255))
-                    else:
-                        cur = '%02x%02x%02x%02x' % (int(x[0]*255), int(x[1]*255), int(x[2]*255), int(x[3]*255))
+                    cur = '0x%02x%02x%02x%02x' % (
+                        int(x[0]*255), int(x[1]*255), int(x[2]*255), int(x[3]*255))
 
                 out += str(colors[cur])
 
@@ -69,5 +69,5 @@ for file in glob.glob("../imgs/**/*.png"):
         "data": to_hex(bytes(encoded))
     }])
 
-f = open("../outputs/output.json", "w")
+f = open("../outputs/"+typ+"/output.json", "w")
 json.dump(meta, f, indent=4)

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Unlicense
 
 /*
-
     Components.sol
     
     This is a utility contract to make it easier for other
@@ -25,9 +24,9 @@
 
 pragma solidity ^0.8.4;
 
-import '@openzeppelin/contracts/access/Ownable.sol';
+import '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
 
-import { toString } from './MetadataUtils.sol';
+import './MetadataUtils.sol';
 
 library ComponentTypes {
     uint8 internal constant WEAPON = 0x0;
@@ -39,7 +38,7 @@ library ComponentTypes {
     uint8 internal constant DRUGS = 0x6;
     uint8 internal constant NECK = 0x7;
     uint8 internal constant RING = 0x8;
-    uint8 internal constant ACCESSORIES = 0x9;
+    uint8 internal constant ACCESSORY = 0x9;
     uint8 internal constant NAME_PREFIX = 0xa;
     uint8 internal constant NAME_SUFFIX = 0xb;
     uint8 internal constant SUFFIX = 0xc;
@@ -48,7 +47,7 @@ library ComponentTypes {
 contract Components is Ownable {
     string constant UnexpectedComponent = 'unexpected component type';
 
-    string[] internal slots = [
+    string[10] internal slots = [
         'Weapon',
         'Clothes',
         'Vehicle',
@@ -58,8 +57,11 @@ contract Components is Ownable {
         'Drugs',
         'Neck',
         'Ring',
-        'Accessories'
+        'Accessory'
     ];
+
+    string[9] internal slotKeys = ['WEAPON', 'CLOTHES', 'VEHICLE', 'WAIST', 'FOOT', 'HAND', 'DRUGS', 'NECK', 'RING'];
+    uint256[9] internal slotLens = [18, 20, 17, 16, 17, 14, 19, 3, 7];
 
     string[] public weapons = [
         'Pocket Knife', // 0
@@ -81,7 +83,6 @@ contract Components is Ownable {
         'Glock', // 16
         'Uzi' // 17
     ];
-    uint256 private constant weaponsLength = 18;
 
     string[] public clothes = [
         'White T Shirt', // 0
@@ -105,7 +106,6 @@ contract Components is Ownable {
         'Shirtless', // 18
         'Naked' // 19
     ];
-    uint256 private constant clothesLength = 20;
 
     string[] public vehicle = [
         'Dodge', // 0
@@ -126,7 +126,6 @@ contract Components is Ownable {
         'C63 AMG', // 15
         'G Wagon' // 16
     ];
-    uint256 private constant vehicleLength = 17;
 
     string[] public waistArmor = [
         'Gucci Belt', // 0
@@ -146,7 +145,6 @@ contract Components is Ownable {
         'Sash', // 14
         'Fanny Pack' // 15
     ];
-    uint256 private constant waistLength = 16;
 
     string[] public footArmor = [
         'Black Air Force 1s', // 0
@@ -167,7 +165,6 @@ contract Components is Ownable {
         'Open Toe Sandals', // 15
         'Barefoot' // 16
     ];
-    uint256 private constant footLength = 17;
 
     string[] public handArmor = [
         'Rubber Gloves', // 0
@@ -185,14 +182,12 @@ contract Components is Ownable {
         'Surgical Gloves', // 12
         'Fingerless Gloves' // 13
     ];
-    uint256 private constant handLength = 14;
 
     string[] public necklaces = [
         'Bronze Chain', // 0
         'Silver Chain', // 1
         'Gold Chain' // 2
     ];
-    uint256 private constant necklacesLength = 3;
 
     string[] public rings = [
         'Gold Ring', // 0
@@ -203,7 +198,6 @@ contract Components is Ownable {
         'Pinky Ring', // 5
         'Thumb Ring' // 6
     ];
-    uint256 private constant ringsLength = 7;
 
     string[] public drugs = [
         'Weed', // 0
@@ -226,15 +220,8 @@ contract Components is Ownable {
         'Molly', // 17
         'Adderall' // 18
     ];
-    uint256 private constant drugsLength = 19;
 
-    string[] public accessories = [
-        'Bandana',
-        'Fitted Hat White',
-        'Fitted Hat Black',
-        'Glasses Dark'
-    ];
-    uint256 private constant accessoriesLength = 19;
+    string[] public accessories;
 
     string[] public suffixes = [
         // <no suffix>          // 0
@@ -352,50 +339,20 @@ contract Components is Ownable {
     ];
     uint256 private constant nameSuffixesLength = 18;
 
-    constructor(address _owner) {
-        transferOwnership(_owner);
-    }
+    event AddComponent(uint256 id, uint256 componentType, string component);
 
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
-    function seed(uint256 tokenId, uint8 componentType) public pure returns (uint256, uint256) {
-        string memory keyPrefix;
-        if (componentType == ComponentTypes.WEAPON) {
-            keyPrefix = 'WEAPON';
-        } else if (componentType == ComponentTypes.CLOTHES) {
-            keyPrefix = 'CLOTHES';
-        } else if (componentType == ComponentTypes.VEHICLE) {
-            keyPrefix = 'VEHICLE';
-        } else if (componentType == ComponentTypes.WAIST) {
-            keyPrefix = 'WAIST';
-        } else if (componentType == ComponentTypes.FOOT) {
-            keyPrefix = 'FOOT';
-        } else if (componentType == ComponentTypes.HAND) {
-            keyPrefix = 'HAND';
-        } else if (componentType == ComponentTypes.DRUGS) {
-            keyPrefix = 'DRUGS';
-        } else if (componentType == ComponentTypes.NECK) {
-            keyPrefix = 'NECK';
-        } else if (componentType == ComponentTypes.RING) {
-            keyPrefix = 'RING';
-        } else {
-            revert(UnexpectedComponent);
-        }
-
-        uint256 rand = random(string(abi.encodePacked(keyPrefix, toString(tokenId))));
+    function seed(uint256 tokenId, uint8 componentType) public view returns (uint256, uint256) {
+        uint256 rand = random(string(abi.encodePacked(slotKeys[componentType], toString(tokenId))));
         return (rand, rand % 21);
     }
 
-    function pluck(
-        uint256 tokenId,
-        uint8 componentType,
-        uint256 sourceArrayLength
-    ) internal pure returns (uint8[5] memory) {
+    function pluck(uint256 rand, uint256 sourceArrayLength) internal pure returns (uint8[5] memory) {
         uint8[5] memory components;
-
-        (uint256 rand, uint256 greatness) = seed(tokenId, componentType);
+        uint256 greatness = rand % 21;
 
         components[0] = uint8(rand % sourceArrayLength);
         components[1] = 0;
@@ -417,31 +374,22 @@ contract Components is Ownable {
         return components;
     }
 
-    function getComponent(uint256 tokenId, uint8 componentType) public pure returns (uint8[5] memory) {
-        if (componentType == ComponentTypes.WEAPON) {
-            return pluck(tokenId, componentType, weaponsLength);
-        } else if (componentType == ComponentTypes.CLOTHES) {
-            return pluck(tokenId, componentType, clothesLength);
-        } else if (componentType == ComponentTypes.VEHICLE) {
-            return pluck(tokenId, componentType, vehicleLength);
-        } else if (componentType == ComponentTypes.WAIST) {
-            return pluck(tokenId, componentType, waistLength);
-        } else if (componentType == ComponentTypes.FOOT) {
-            return pluck(tokenId, componentType, footLength);
-        } else if (componentType == ComponentTypes.HAND) {
-            return pluck(tokenId, componentType, handLength);
-        } else if (componentType == ComponentTypes.DRUGS) {
-            return pluck(tokenId, componentType, drugsLength);
-        } else if (componentType == ComponentTypes.NECK) {
-            return pluck(tokenId, componentType, necklacesLength);
-        } else if (componentType == ComponentTypes.RING) {
-            return pluck(tokenId, componentType, ringsLength);
-        } else {
-            revert(UnexpectedComponent);
+    function items(uint256 tokenId) external view returns (uint8[5][9] memory items_) {
+        string memory id = toString(tokenId);
+
+        for (uint8 i = 0; i < 9; i++) {
+            uint256 rand = random(string(abi.encodePacked(slotKeys[i], id)));
+            items_[i] = pluck(rand, slotLens[i]);
         }
     }
 
-    function addComponent(uint8 componentType, string calldata component) public onlyOwner returns (uint8) {
+    function title(uint256 hustlerId) external view returns (string memory) {
+        uint256 rand = random(string(abi.encodePacked('OG', hustlerId)));
+        // We subtract two to remove the soccer mom/dad prefixes
+        return prefix(uint8((rand % (namePrefixesLength - 2)) + 1), uint8((rand % nameSuffixesLength) + 1));
+    }
+
+    function addComponent(uint8 componentType, string calldata component) external onlyOwner returns (uint8) {
         string[] storage arr;
         if (componentType == ComponentTypes.WEAPON) {
             arr = weapons;
@@ -461,6 +409,8 @@ contract Components is Ownable {
             arr = necklaces;
         } else if (componentType == ComponentTypes.RING) {
             arr = rings;
+        } else if (componentType == ComponentTypes.ACCESSORY) {
+            arr = accessories;
         } else if (componentType == ComponentTypes.NAME_PREFIX) {
             arr = namePrefixes;
         } else if (componentType == ComponentTypes.NAME_SUFFIX) {
@@ -483,6 +433,8 @@ contract Components is Ownable {
         ) {
             id = id + 1;
         }
+
+        emit AddComponent(id, componentType, component);
 
         return id;
     }
@@ -507,6 +459,8 @@ contract Components is Ownable {
             return necklaces[idx];
         } else if (componentType == ComponentTypes.RING) {
             return rings[idx];
+        } else if (componentType == ComponentTypes.ACCESSORY) {
+            return accessories[idx];
         } else {
             revert(UnexpectedComponent);
         }

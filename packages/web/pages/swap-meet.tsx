@@ -1,16 +1,17 @@
-import { isTouchDevice } from '../src/utils';
-import { media } from '../styles/mixins';
-import { useAllUnclaimedBagsQuery } from '../src/generated/graphql';
 import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
-import AppWindow from '../components/AppWindow';
-import Head from '../components/Head';
-import InfiniteScroll from 'react-infinite-scroller';
-import LoadingBlock from '../components/LoadingBlock';
-import LootCard from '../components/loot/LootCard';
-import MarketFilterBar from '../components/MarketFilterBar';
 import styled from '@emotion/styled';
-
+import InfiniteScroll from 'react-infinite-scroller';
+import { useAllUnclaimedBagsQuery, useAllOpenedBagsQuery } from 'src/generated/graphql';
+import { isTouchDevice } from 'src/utils';
+import { media } from 'styles/mixins';
+import DopeWarsExeNav from 'components/DopeWarsExeNav';
+import AppWindow from 'components/AppWindow';
+import Head from 'components/Head';
+import LoadingBlock from 'components/LoadingBlock';
+import LootCard from 'components/loot/LootCard';
+import MarketFilterBar from 'components/MarketFilterBar';
+import { PickedBag } from 'src/PickedBag';
 import DopeDatabase, {
   compareByHighestLastSale,
   compareByMostAffordable,
@@ -20,10 +21,7 @@ import DopeDatabase, {
   filterItemsBySearchString,
   testForUnclaimedPaper,
   testForSale,
-  PickedBag,
-} from '../src/DopeDatabase';
-
-const title = 'SWAP MEET';
+} from 'src/DopeDatabase';
 
 // To prevent all 8k items from showing at once and overloading
 // the DOM we fake loading more using infinite scroll.
@@ -63,7 +61,7 @@ const ContentLoading = (
 );
 const ContentEmpty = (
   <Container>
-    <h2>Can't find what you're looking for…</h2>
+    <h2>{`Can't find what you're looking for…`}</h2>
   </Container>
 );
 
@@ -103,13 +101,24 @@ const MarketList = () => {
 
   // Loads unclaimed $paper status from The Graph,
   // then updates items in reactive var cache.
-  const { data: dataBags } = useAllUnclaimedBagsQuery();
+  const { data: unclaimedBags } = useAllUnclaimedBagsQuery();
   const [hasUpdateDopeDbWithPaper, setHasUpdateDopeDbWithPaper] = useState(false);
-  if (!hasUpdateDopeDbWithPaper && dataBags && dataBags.page_1) {
-    dopeDb.updateHasPaperFromQuery(dataBags);
-    console.log('Updating reactive var');
+  if (!hasUpdateDopeDbWithPaper && unclaimedBags && unclaimedBags.page_1) {
+    dopeDb.updateHasPaperFromQuery(unclaimedBags);
+    console.log('PAPER');
     DopeDbCacheReactive(dopeDb);
     setHasUpdateDopeDbWithPaper(true);
+  }
+
+  // Loads unbundled from The Graph,
+  // then updates items in reactive var cache.
+  const { data: openedBags } = useAllOpenedBagsQuery();
+  const [hasUpdateDopeDbWithBundled, setHasUpdateDopeDbWithBundled] = useState(false);
+  if (!hasUpdateDopeDbWithBundled && openedBags && openedBags.page_1) {
+    dopeDb.updateOpenedBagsFromQuery(openedBags);
+    console.log('BUNDLED');
+    DopeDbCacheReactive(dopeDb);
+    setHasUpdateDopeDbWithBundled(true);
   }
 
   const filteredSortedItems = useMemo(() => {
@@ -118,7 +127,7 @@ const MarketList = () => {
     const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
     const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
     return filterItemsBySearchString(filteredItems, searchInputValue);
-  }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper]);
+  }, [statusKey, sortByKey, dopeDb.items, searchInputValue]);
 
   const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
 
@@ -127,7 +136,7 @@ const MarketList = () => {
     itemsVisible = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
     setIsTyping(false);
-  }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper]);
+  }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper, filteredSortedItems]);
 
   // Increasing itemsVisible simply increases the window size
   // into the cached data we render in window.
@@ -160,7 +169,7 @@ const MarketList = () => {
             useWindow={false}
             className="lootGrid"
           >
-            {visibleItems.map((bag: PickedBag) => (
+            {visibleItems.map((bag) => (
               <LootCard
                 key={`loot-card_${bag.id}_${viewCompactCards}`}
                 bag={bag}
@@ -177,11 +186,11 @@ const MarketList = () => {
   );
 };
 
-export default function SwapMeet() {
-  return (
-    <AppWindow padBody={false} scrollable={false} height="90vh">
-      <Head title={title} />
-      <MarketList />
-    </AppWindow>
-  );
-}
+const SwapMeet = () => (
+  <AppWindow padBody={false} scrollable={false} height="90vh" navbar={<DopeWarsExeNav />}>
+    <Head title="SWAP MEET" />
+    <MarketList />
+  </AppWindow>
+);
+
+export default SwapMeet;

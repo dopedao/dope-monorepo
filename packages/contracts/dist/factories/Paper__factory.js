@@ -7,7 +7,13 @@ exports.Paper__factory = void 0;
 var ethers_1 = require("ethers");
 var _abi = [
     {
-        inputs: [],
+        inputs: [
+            {
+                internalType: "address",
+                name: "dope",
+                type: "address",
+            },
+        ],
         stateMutability: "nonpayable",
         type: "constructor",
     },

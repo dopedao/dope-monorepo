@@ -1,7 +1,7 @@
 const { ethers } = require('ethers')
 const args = process.argv.slice(2);
 
-if(args.length != 1) {
+if (args.length != 1) {
   console.log(`please supply the correct parameters:
     metadata
   `)
@@ -15,6 +15,10 @@ meta = JSON.parse(meta);
 
 const abi = JSON.parse('[{"inputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"string","name":"image","type":"string"},{"components":[{"internalType":"string","name":"trait_type","type":"string"},{"internalType":"string","name":"value","type":"string"}],"internalType":"struct Attribute[]","name":"attributes","type":"tuple[]"}],"internalType":"struct Data","name":"data","type":"tuple"}],"name":"foo","outputs":[],"stateMutability":"nonpayable","type":"function"}]')
 const iface = new ethers.utils.Interface(abi)
+
+for (let i = 0; i < meta.attributes.length; i++) {
+  meta.attributes[i].value = "" + meta.attributes[i].value
+}
 
 meta = [
   [

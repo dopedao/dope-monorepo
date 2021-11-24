@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
 import { LootLegendBackgroundColors } from './LootLegend';
 import ItemRarities from 'dope-metrics/output/item-rarities.json';
-import { PickedBag } from '../../src/PickedBag';
+import { PickedBag } from 'src/PickedBag';
+import { NUM_DOPE_TOKENS } from 'src/constants';
 
 const itemBackgroundColors = Object.values(LootLegendBackgroundColors);
 
@@ -91,15 +92,39 @@ const LootCardBody = ({ bag }: Props) => {
         overflow-y: auto;
       `}
     >
-      <Row key="rank" slot="Rank" item={`${bag.rank} / 8000`} />
+      <Row key="rank" slot="Rank" item={`${bag.rank} / ${NUM_DOPE_TOKENS}`} />
+
+      {/* PAPER */}
       {!bag.claimed && (
         <Row
           key="paper"
-          color={itemBackgroundColors[itemBackgroundColors.length - 1]}
           slot="$PAPER"
-          item="125,000"
+          item="✅ 125,000 Claimable ✅"
         />
       )}
+      {bag.claimed && (
+        <Row
+          key="paper"
+          slot="$PAPER"
+          item="🚫 Unable to claim 🚫"
+        />
+      )}
+
+      {!bag.opened && (
+        <Row
+          key="bundled"
+          slot="Bundled"
+          item="✅ Ready to Unpack ✅"
+        />
+      )}
+      {bag.opened && (
+        <Row
+          key="bundled"
+          slot="Bundled"
+          item="🚫 Already unbundled 🚫"
+        />
+      )}
+
       {[
         ['Weapon', bag.weapon],
         ['Vehicle', bag.vehicle],

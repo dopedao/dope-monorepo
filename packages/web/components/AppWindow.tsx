@@ -1,20 +1,21 @@
-import { getBreakpointWidth } from '../styles/breakpoints';
-import { useWeb3React } from '@web3-react/core';
-import AppWindowFooter from './AppWindowFooter';
-import AppWindowTitleBar from './AppWindowTitleBar';
-import ConnectWallet from './ConnectWallet';
-import DesktopWindow from './DesktopWindow';
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from '@emotion/styled';
+import { getBreakpointWidth } from 'styles/breakpoints';
+import { useWeb3React } from '@web3-react/core';
+import AppWindowFooter from 'components/AppWindowFooter';
+import ConnectWallet from 'components/ConnectWallet';
+import DesktopWindow from 'components/DesktopWindow';
 
 interface AppWindowProps {
-  title?: string | undefined;
-  requiresWalletConnection?: boolean;
-  padBody?: boolean;
-  scrollable?: boolean;
-  children: React.ReactNode;
-  width?: number | string;
+  children: ReactNode;
+  footer?: ReactNode;
   height?: number | string;
+  navbar?: ReactNode;
+  padBody?: boolean;
+  requiresWalletConnection?: boolean;
+  scrollable?: boolean;
+  title?: string | undefined;
+  width?: number | string;
 }
 
 const getBodyPadding = () => {
@@ -25,6 +26,14 @@ const getBodyPadding = () => {
   return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
 };
 
+const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean }>`
+  position: relative;
+  height: 100%;
+  overflow: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
+  background-color: #a8a9ae;
+  padding: ${({ padBody }) => (padBody ? getBodyPadding() : '0px')};
+`;
+
 export default function AppWindow({
   title,
   requiresWalletConnection = false,
@@ -33,30 +42,26 @@ export default function AppWindow({
   width,
   height,
   children,
+  navbar,
+  footer,
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
-  const AppWindowBody = styled.div`
-    position: relative;
-    height: 100%;
-    overflow: ${scrollable ? 'scroll' : 'hidden'};
-    background-color: #a8a9ae;
-    padding: ${padBody ? getBodyPadding() : '0px'};
-  `;
-
   return (
-    <DesktopWindow 
-      title={title || 'DOPEWARS.EXE'} 
-      titleChildren={<AppWindowTitleBar />}
+    <DesktopWindow
+      title={title || 'DOPEWARS.EXE'}
+      titleChildren={navbar}
       width={width}
       height={height}
     >
       {requiresWalletConnection === true && !account ? (
         <ConnectWallet />
       ) : (
-        <AppWindowBody className="appWindowBody">{children}</AppWindowBody>
+        <AppWindowBody className="appWindowBody" scrollable={scrollable} padBody={padBody}>
+          {children}
+        </AppWindowBody>
       )}
-      <AppWindowFooter />
+      <AppWindowFooter>{footer}</AppWindowFooter>
     </DesktopWindow>
   );
 }

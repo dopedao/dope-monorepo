@@ -1,0 +1,10 @@
+query HustlersWallet($id: ID!) {
+  wallet(id: $id) {
+    id
+    address
+    hustlers(first: 50) {
+      id
+      data
+    }
+  }
+}

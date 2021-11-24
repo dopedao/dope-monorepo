@@ -1,5 +1,5 @@
-import { OpenSeaAsset } from './OpenSeaAsset';
-import { PickedBag } from './PickedBag';
+import { OpenSeaAsset } from 'src/OpenSeaAsset';
+import { PickedBag } from 'src/PickedBag';
 
 const highImpossibleRank = 9999;
 
@@ -7,6 +7,7 @@ export const EmptyBagStruct: PickedBag = {
   id: '',
   // Let people be happily surprised by learning result of query later
   claimed: true,
+  opened: true,
   clothes: '',
   drugs: '',
   foot: '',

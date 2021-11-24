@@ -1,6 +1,7 @@
 query Bags($first: Int, $skip: Int) {
   bags(first: $first, skip: $skip) {
     claimed
+    opened
     id
     clothes @client
     foot @client

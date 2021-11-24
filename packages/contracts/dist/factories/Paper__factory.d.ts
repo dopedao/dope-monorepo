@@ -3,7 +3,11 @@ import { Provider } from "@ethersproject/providers";
 import type { Paper, PaperInterface } from "../Paper";
 export declare class Paper__factory {
     static readonly abi: ({
-        inputs: never[];
+        inputs: {
+            internalType: string;
+            name: string;
+            type: string;
+        }[];
         stateMutability: string;
         type: string;
         anonymous?: undefined;

@@ -1,53 +1,14 @@
-import { css } from '@emotion/react';
-import { PickedBag } from '../../src/PickedBag';
+/* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
+import { css } from '@emotion/react';
+import { PickedBag } from 'src/PickedBag';
 import LootCardBody from './LootCardBody';
 import LootCardFooterForMarket from './LootCardFooterForMarket';
 import LootCardFooterForOwner from './LootCardFooterForOwner';
 import LootLegend from './LootLegend';
-import styled from '@emotion/styled';
-
-const LootCardContainer = styled.div`
-  border: 2px solid #000;
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
-  &.collapsed {
-    max-height: 225px;
-    .lootCardBody {
-      overflow-y: hidden;
-    }
-  }
-`;
-const LootTitleBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  line-height: 32px;
-  background: #dededd;
-  border-bottom: 2px solid #000;
-  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25);
-  font-size: var(--text-00);
-  position: 'sticky';
-`;
-const LootFooterContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 44px;
-  background: #dededd;
-  border-top: 2px solid #000;
-  padding: 0 8px;
-  div {
-    flex-grow: 1;
-  }
-  * > button {
-    margin-right: 10px;
-    &:last-of-type {
-      margin-right: 0;
-    }
-  }
-`;
+import PanelContainer from 'components/PanelContainer';
+import PanelFooter from 'components/PanelFooter';
+import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
 
 interface Props {
   footer: 'for-marketplace' | 'for-owner';
@@ -84,7 +45,7 @@ const LootCard = ({
           align-items: center;
         `}
       >
-        <img src={`${iconPath}/${icon}.svg`} onClick={() => setIsExpanded(!isExpanded)} />
+        <img src={`${iconPath}/${icon}.svg`} alt="" onClick={() => setIsExpanded(!isExpanded)} />
       </div>
     );
   };
@@ -95,11 +56,19 @@ const LootCard = ({
         <LootLegend key={`loot-legend_${bag.id}`} toggleVisibility={toggleItemLegendVisibility} />
       )}
       {!isItemLegendVisible && (
-        <LootCardContainer
-          className={`lootCard ${isExpanded ? '' : 'collapsed'}`}
+        <PanelContainer
           key={`loot-card_${bag.id}`}
+          className={`lootCard ${isExpanded ? '' : 'collapsed'}`}
+          css={css`
+            &.collapsed {
+              max-height: 225px;
+              .lootCardBody {
+                overflow-y: hidden;
+              }
+            }
+          `}
         >
-          <LootTitleBar>
+          <PanelTitleBarFlex>
             <div
               css={css`
                 width: 32px;
@@ -113,19 +82,19 @@ const LootCard = ({
             >
               {showCollapse && <ToggleButton />}
             </div>
-          </LootTitleBar>
+          </PanelTitleBarFlex>
           <LootCardBody bag={bag} />
           {footer && footer === 'for-owner' && (
-            <LootFooterContainer>
+            <PanelFooter>
               <LootCardFooterForOwner bag={bag} toggleVisibility={toggleItemLegendVisibility} />
-            </LootFooterContainer>
+            </PanelFooter>
           )}
           {footer && footer === 'for-marketplace' && (
-            <LootFooterContainer>
+            <PanelFooter>
               <LootCardFooterForMarket bag={bag} />
-            </LootFooterContainer>
+            </PanelFooter>
           )}
-        </LootCardContainer>
+        </PanelContainer>
       )}
     </>
   );

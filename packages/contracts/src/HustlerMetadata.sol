@@ -1,36 +1,96 @@
-//SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0
+
 pragma solidity ^0.8.0;
 
+import './BitMask.sol';
 import './Components.sol';
-import './TokenId.sol';
+import './SwapMeetMetadata.sol';
+import './MetadataBuilder.sol';
+import './interfaces/ISwapMeet.sol';
 
-import { MetadataBuilder } from './MetadataBuilder.sol';
-
-library Gender {
-    uint8 internal constant MALE = 0x0;
-    uint8 internal constant FEMALE = 0x1;
+library BodyParts {
+    uint8 internal constant GENDER = 0x0;
+    uint8 internal constant BODY = 0x1;
+    uint8 internal constant HAIR = 0x2;
+    uint8 internal constant BEARD = 0x3;
 }
 
-/// @title Helper contract for generating ERC-1155 token ids and descriptions for
-/// the individual items inside a Loot bag.
-/// @author Tarrence van As, forked from Georgios Konstantopoulos
-/// @dev Inherit from this contract and use it to generate metadata for your tokens
+library RleParts {
+    uint8 internal constant MALE_BODY = 0x0;
+    uint8 internal constant FEMALE_BODY = 0x1;
+    uint8 internal constant MALE_HAIR = 0x2;
+    uint8 internal constant FEMALE_HAIR = 0x3;
+    uint8 internal constant BEARD = 0x4;
+}
+
+library RenderOptions {
+    uint8 internal constant CAR = 0x0;
+    uint8 internal constant TITLE = 0x1;
+    uint8 internal constant NAME = 0x2;
+    uint8 internal constant ORDERING = 0x3;
+}
+
+/// @title Hustler Metadata logic
+/// @author tarrence llc
 contract HustlerMetadata {
+    struct Metadata {
+        bytes4 color;
+        bytes4 background;
+        bytes2 mask;
+        bytes2 options;
+        uint8[4] viewbox;
+        uint8[4] body;
+        uint8[10] order;
+        uint256 age;
+        uint256[10] slots;
+        string name;
+    }
+
     string private constant _name = 'Hustlers';
-    string private constant description = 'Hustle Hard';
+    string private constant _symbol = 'HUSTLERS';
+    string private constant description = 'Hustle Hard.';
+    string[14] private traitTypes = [
+        'Class',
+        'Sex',
+        'Weapon',
+        'Clothes',
+        'Vehicle',
+        'Waist',
+        'Feet',
+        'Hands',
+        'Drug',
+        'Neck',
+        'Ring',
+        'Accessory',
+        'Initiation',
+        'Respect'
+    ];
 
-    // Color Palettes (Index => Hex Colors)
-    mapping(uint8 => string[]) internal palettes;
+    ISwapMeet internal immutable swapmeet;
+    Components internal immutable components;
+    uint256 private immutable deployedAt = block.timestamp;
 
-    // Item RLE (TokenID => RLE)
-    mapping(uint256 => bytes[2]) internal rles;
+    bytes private constant shadow = hex'0036283818022b01000d2b0500092b0200';
+    bytes private constant drugShadow = hex'00362f3729062b';
+    string[2] genders = ['Male', 'Female'];
+
+    // Body part rles
+    mapping(uint8 => bytes[]) internal rles;
+
+    // Hustler metadata
+    mapping(uint256 => Metadata) public metadata;
+
+    constructor(address _components, address _swapmeet) {
+        swapmeet = ISwapMeet(_swapmeet);
+        components = Components(_components);
+    }
 
     function name() external pure returns (string memory) {
         return _name;
     }
 
     function symbol() external pure returns (string memory) {
-        return 'HUSTLERS';
+        return _symbol;
     }
 
     /// @dev Opensea contract metadata: https://docs.opensea.io/docs/contract-level-metadata
@@ -38,39 +98,193 @@ contract HustlerMetadata {
         return MetadataBuilder.contractURI(_name, description);
     }
 
-    /// @notice Returns an SVG for the provided token id
-    // function tokenURI(uint256 tokenId) public view returns (string memory) {
-    //     (uint8[5] memory components, uint8 componentType) = TokenId.fromId(tokenId);
+    /// @notice Returns an SVG for the provided hustler id
+    function tokenURI(uint256 hustlerId) public view returns (string memory) {
+        MetadataBuilder.Params memory p;
+        p.name = metadata[hustlerId].name;
+        p.description = description;
 
-    //     return MetadataBuilder.tokenURI(itemSVG(tokenId, components, componentType), palettes);
-    // }
+        p.background = metadata[hustlerId].background;
+        p.color = metadata[hustlerId].color;
 
-    function params(uint8[5] memory components, uint8 componentType)
-        internal
-        view
-        returns (MetadataBuilder.SVGParams memory)
-    {
-        // uint8 bg = 0;
-        // string memory name = sc.name(componentType, components[0]);
-        MetadataBuilder.SVGParams memory meta;
-        // meta.name = name;
-        meta.description = description;
-        // meta.attributes = sc.attributes(components, componentType);
-        // meta.background = backgrounds[bg];
-
-        return meta;
-    }
-
-    function tokenRle(uint256 id, uint8 gender) public view returns (bytes memory) {
-        if (rles[id][gender].length > 0) {
-            return rles[id][gender];
+        if (BitMask.get(metadata[hustlerId].options, RenderOptions.NAME)) {
+            p.subtext = metadata[hustlerId].name;
         }
 
-        (uint8[5] memory components, uint8 componentType) = TokenId.fromId(id);
-        components[1] = 0;
-        components[2] = 0;
-        components[3] = 0;
-        components[4] = 0;
-        return rles[TokenId.toId(components, componentType)][gender];
+        p.viewbox = metadata[hustlerId].viewbox;
+
+        if (BitMask.get(metadata[hustlerId].options, RenderOptions.TITLE) && hustlerId < 500) {
+            p.text = components.title(hustlerId);
+        }
+
+        if (BitMask.get(metadata[hustlerId].options, RenderOptions.CAR)) {
+            p.resolution = 160;
+            p.parts = carParts(hustlerId);
+        } else {
+            p.resolution = 64;
+            p.parts = hustlerParts(hustlerId);
+        }
+
+        p.attributes = MetadataBuilder.attributes(attributes(hustlerId));
+        return MetadataBuilder.tokenURI(p, swapmeet);
+    }
+
+    function render(
+        string calldata title,
+        string calldata subtitle,
+        uint8 resolution,
+        bytes4 background,
+        bytes4 color,
+        uint8[4] calldata viewbox,
+        bytes[] calldata parts
+    ) external view returns (string memory) {
+        MetadataBuilder.Params memory p;
+        p.name = subtitle;
+        p.text = title;
+        p.subtext = subtitle;
+        p.background = background;
+        p.color = color;
+        p.viewbox = viewbox;
+        p.parts = parts;
+        p.resolution = resolution;
+        p.attributes = '[]';
+        return MetadataBuilder.tokenURI(p, swapmeet);
+    }
+
+    function hustlerParts(uint256 hustlerId) public view returns (bytes[] memory) {
+        bytes[] memory parts = new bytes[](15);
+        // Gender index corresponds to rle index
+        parts[0] = shadow;
+        parts[2] = rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.BODY]];
+        parts[3] = rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]];
+        parts[4] = rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]];
+
+        uint8[10] memory order = [2, 6, 8, 5, 1, 3, 4, 7, 0, 9];
+        if (BitMask.get(metadata[hustlerId].options, RenderOptions.ORDERING)) {
+            order = metadata[hustlerId].order;
+        }
+
+        for (uint8 i = 0; i < 10; i++) {
+            uint8 j = order[i];
+            if (j == ComponentTypes.VEHICLE) {
+                continue;
+            }
+
+            if (BitMask.get(metadata[hustlerId].mask, j)) {
+                parts[j + 5] = swapmeet.tokenRle(
+                    metadata[hustlerId].slots[j],
+                    metadata[hustlerId].body[BodyParts.GENDER]
+                );
+
+                if (j == ComponentTypes.DRUGS) {
+                    parts[1] = drugShadow;
+                }
+            }
+        }
+
+        return parts;
+    }
+
+    function carParts(uint256 hustlerId) public view returns (bytes[] memory) {
+        bytes[] memory parts = new bytes[](16);
+
+        if (BitMask.get(metadata[hustlerId].mask, ComponentTypes.VEHICLE)) {
+            parts[0] = swapmeet.tokenRle(metadata[hustlerId].slots[ComponentTypes.VEHICLE], 0);
+        }
+
+        bytes32 offset = hex'00331D331D';
+        parts[1] = Transform.translate(1, shadow, offset);
+
+        parts[3] = Transform.translate(
+            1,
+            rles[metadata[hustlerId].body[BodyParts.GENDER]][metadata[hustlerId].body[BodyParts.BODY]],
+            offset
+        );
+
+        // Gender index corresponds to rle index
+        parts[4] = Transform.translate(
+            1,
+            rles[metadata[hustlerId].body[BodyParts.GENDER] + 2][metadata[hustlerId].body[BodyParts.HAIR]],
+            offset
+        );
+
+        parts[5] = Transform.translate(1, rles[RleParts.BEARD][metadata[hustlerId].body[BodyParts.BEARD]], offset);
+
+        for (uint8 i = 0; i < 10; i++) {
+            if (BitMask.get(metadata[hustlerId].mask, i)) {
+                if (i == ComponentTypes.VEHICLE) {
+                    continue;
+                }
+
+                bytes memory rle_ = swapmeet.tokenRle(
+                    metadata[hustlerId].slots[i],
+                    metadata[hustlerId].body[BodyParts.GENDER]
+                );
+                if (rle_.length > 4) {
+                    Transform.translate(1, rle_, offset);
+                }
+
+                parts[i + 6] = rle_;
+
+                if (i == ComponentTypes.DRUGS) {
+                    parts[2] = Transform.translate(1, drugShadow, offset);
+                }
+            }
+        }
+
+        return parts;
+    }
+
+    function attributes(uint256 hustlerId) public view returns (bytes[] memory) {
+        bytes memory none = 'None';
+
+        bytes[] memory traits = new bytes[](14);
+
+        if (metadata[hustlerId].age == 0) {
+            return traits;
+        }
+
+        string memory class = 'Hustler';
+        if (hustlerId < 500) {
+            class = 'Original Gangsta';
+        }
+        traits[0] = abi.encode(DisplayTypes.NONE, traitTypes[0], abi.encode(class));
+        traits[1] = abi.encode(
+            DisplayTypes.NONE,
+            traitTypes[1],
+            abi.encode(genders[metadata[hustlerId].body[BodyParts.GENDER]])
+        );
+
+        for (uint8 i = 0; i < 11; i++) {
+            bytes memory v;
+            if (BitMask.get(metadata[hustlerId].mask, i)) {
+                v = bytes(swapmeet.fullname(metadata[hustlerId].slots[i]));
+            } else {
+                v = none;
+            }
+
+            traits[i + 2] = abi.encode(DisplayTypes.NONE, traitTypes[i + 2], abi.encode(v));
+        }
+
+        traits[12] = abi.encode(DisplayTypes.DATE, traitTypes[12], abi.encode(metadata[hustlerId].age));
+
+        uint256 respect = (1e5 -
+            ((metadata[hustlerId].age - deployedAt) * 1e5) /
+            ((block.timestamp - deployedAt) * 1e5)) / 1e3;
+
+        if (hustlerId < 500) {
+            respect = 100;
+        }
+        traits[13] = abi.encode(DisplayTypes.RANKING, traitTypes[13], abi.encode(respect));
+
+        return traits;
+    }
+
+    function bodyRle(uint8 part, uint256 idx) external view returns (bytes memory) {
+        return rles[part][idx];
+    }
+
+    function slot(uint256 id) internal pure returns (uint8) {
+        return uint8(id & 0xff);
     }
 }

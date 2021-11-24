@@ -1,7 +1,10 @@
-import { media } from '../styles/mixins';
+import { media } from 'styles/mixins';
 import { useRouter } from 'next/router';
-import DesktopIcon from '../components/DesktopIcon';
+import { useState } from 'react';
+import { useWAGMI } from 'hooks/web3';
+import DesktopIcon from 'components/DesktopIcon';
 import styled from '@emotion/styled';
+import WebAmpPlayer from './WebAmpPlayer';
 
 const IconGrid = styled.div`
   position: fixed;
@@ -31,6 +34,8 @@ const IconGrid = styled.div`
 `;
 
 const DesktopIconList = () => {
+  const [showWebAmp, setShowWebAmp] = useState(false);
+
   const router = useRouter();
   const openLocalRoute = (url: string): void => {
     router.replace(url);
@@ -39,50 +44,72 @@ const DesktopIconList = () => {
     window.open(url, '_blank')?.focus();
   };
 
+  useWAGMI();
+
   return (
-    <IconGrid>
-      <DesktopIcon
-        icon="dopewars-exe"
-        label="DOPEWARS.EXE"
-        clickAction={() => openLocalRoute('/terms-of-service')}
-      />
-      <DesktopIcon icon="tv" label="DOPE TV" clickAction={() => openLocalRoute('/dope-tv')} />
-      <DesktopIcon 
-        icon="file" 
-        label="ABOUT.FAQ" 
-        clickAction={() => openLocalRoute('/about')} 
-      />
-      {/* <DesktopIcon 
+    <>
+      {showWebAmp && <WebAmpPlayer onClose={() => setShowWebAmp(false)} />}
+      <IconGrid>
+        <DesktopIcon
+          icon="file"
+          label="READ ME FIRST"
+          clickAction={() => openLocalRoute('/about')}
+        />
+        <DesktopIcon
+          icon="dopewars-exe"
+          label="DOPEWARS.EXE"
+          clickAction={() => {
+            const hasAgreed = window.localStorage.getItem('tos');
+            if (hasAgreed === 'true') {
+              openLocalRoute('/swap-meet');
+            } else {
+              openLocalRoute('/terms-of-service');
+            }
+          }}
+        />
+        <DesktopIcon icon="tv" label="DOPE TV" clickAction={() => openLocalRoute('/dope-tv')} />
+        <DesktopIcon icon="winamp" label="DOPE AMP" clickAction={() => setShowWebAmp(true)} />
+        {/* <DesktopIcon 
         icon="file-chart" 
         label="DOPE Stats" 
         clickAction={() => openBrowserTab('https://dune.xyz/HorizonXP/Dope-Wars-Degen-Dashboard')} 
       /> */}
-      <DesktopIcon 
-        icon="paper-bill-desktop" 
-        label="GET $PAPER" 
-        clickAction={() => openBrowserTab('https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483')} 
-      />
-      <DesktopIcon
-        icon="tally"
-        label="Dope DAO"
-        clickAction={() => openBrowserTab('https://www.withtally.com/governance/dopeWars')}
-      />
-      <DesktopIcon
-        icon="open-sea"
-        label="OpenSea"
-        clickAction={() => openBrowserTab('https://opensea.io/collection/dope-v4')}
-      />
-      <DesktopIcon
-        icon="twitter"
-        label="Twitter"
-        clickAction={() => openBrowserTab('https://twitter.com/theDopeWars')}
-      />
-      <DesktopIcon
-        icon="discord"
-        label="Discord"
-        clickAction={() => openBrowserTab('https://discord.gg/6fqqBS7mhY')}
-      />
-    </IconGrid>
+        <DesktopIcon
+          icon="paper-bill-desktop"
+          label="GET $PAPER"
+          clickAction={() =>
+            openBrowserTab(
+              'https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483',
+            )
+          }
+        />
+        <DesktopIcon
+          icon="tally"
+          label="Dope DAO"
+          clickAction={() => openBrowserTab('https://www.withtally.com/governance/dopeWars')}
+        />
+        <DesktopIcon
+          icon="telegram"
+          label="Telegram"
+          clickAction={() => openBrowserTab('https://t.me/DopeWarsPaper')}
+        />
+        <DesktopIcon
+          icon="open-sea"
+          label="OpenSea"
+          clickAction={() => openBrowserTab('https://opensea.io/collection/dope-v4')}
+        />
+        <DesktopIcon
+          icon="twitter"
+          label="Twitter"
+          clickAction={() => openBrowserTab('https://twitter.com/theDopeWars')}
+        />
+        <DesktopIcon
+          icon="discord"
+          label="Discord"
+          clickAction={() => openBrowserTab('https://discord.gg/VFbAX3JzPu')}
+        />
+      </IconGrid>
+    </>
   );
 };
 export default DesktopIconList;

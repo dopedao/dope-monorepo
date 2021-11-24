@@ -3,6 +3,7 @@ export type PickedBag = Pick<
   Bag,
   | 'id'
   | 'claimed'
+  | 'opened'
   | 'clothes'
   | 'drugs'
   | 'foot'

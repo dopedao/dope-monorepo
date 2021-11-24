@@ -1,0 +1,6 @@
+query AllHustlers {
+  hustlers(first: 1000) {
+    id
+    data
+  }
+}

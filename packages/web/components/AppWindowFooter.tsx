@@ -1,6 +1,10 @@
 import { css } from '@emotion/react';
 
-const AppWindowFooter = () => {
+export interface Props {
+  children: React.ReactNode;
+}
+
+const AppWindowFooter = ({ children }: Props) => {
   return (
     <footer
       css={css`
@@ -10,7 +14,9 @@ const AppWindowFooter = () => {
           text-decoration: none;
         }
       `}
-    ></footer>
+    >
+      {children}
+    </footer>
   );
 };
 

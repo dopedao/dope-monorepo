@@ -37,6 +37,7 @@ export default function GlobalStyles() {
           --space-lg: calc(var(--base-unit) * 5);
 
           /* TYPOGRAPHY */
+          --text-small: 0.9em;
           --text-00: 1em;
           --text-01: 1.125em;
           --text-02: 1.25em;
@@ -152,12 +153,18 @@ export default function GlobalStyles() {
         }
         a {
           font-weight: 400;
+          cursor: pointer;
+          cursor: hand;
         }
         a.textLink,
         .markdownContainer a {
           text-decoration: underline !important;
-          color: #3523fe !important;
+          color: var(--primary) !important;
         }
+        a.primary {
+          color: var(--primary);
+        }
+        ,
         p,
         ol,
         ul {
@@ -165,6 +172,18 @@ export default function GlobalStyles() {
           line-height: 1.5;
         }
 
+        ul.normal {
+          list-style-type: square;
+          margin-left: 1.5em;
+        }
+
+        .small {
+          font-size: var(--text-small);
+        }
+
+        em {
+          background-color: rgba(255, 252, 63, 0.5);
+        }
         /* CUSTOM */
         .button {
           ${buttonStyle};

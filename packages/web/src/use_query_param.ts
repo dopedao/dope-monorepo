@@ -1,5 +1,5 @@
-// https://github.com/bandrewfisher/use-query-param
-// https://dev.to/brettfishy/the-easiest-way-to-use-query-parameters-in-react-1ioe
+// https://github.com/bandrewfisher/use_query_param
+// https://dev.to/brettfishy/the-easiest-way-to-use_query_parameters-in-react-1ioe
 import { useState } from 'react';
 
 const getQuery = () => {
