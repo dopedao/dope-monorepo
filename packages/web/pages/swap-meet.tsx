@@ -20,6 +20,7 @@ import DopeDatabase, {
   filterItemsBySearchString,
   testForUnclaimedPaper,
   testForSale,
+  testForNotOpened,
   PickedBag,
 } from 'src/DopeDatabase';
 
@@ -94,6 +95,8 @@ const MarketList = () => {
         return testForUnclaimedPaper;
       case 'For Sale':
         return testForSale;
+      case 'Ready To Unpack':
+        return testForNotOpened;
       default:
         return () => true;
     }
