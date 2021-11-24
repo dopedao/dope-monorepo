@@ -7,7 +7,7 @@ import { css } from '@emotion/react';
 import useQueryParam from 'src/use-query-param';
 import styled from '@emotion/styled';
 
-export const statusKeys = ['All', 'Has Unclaimed $PAPER', 'For Sale'];
+export const statusKeys = ['All', 'Has Unclaimed $PAPER', 'For Sale', 'Ready To Unpack'];
 
 export const sortKeys = ['Top Rank', 'Most Affordable', 'Highest Last Sale'];
 

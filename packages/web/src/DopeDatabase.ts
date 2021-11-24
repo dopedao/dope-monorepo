@@ -188,6 +188,7 @@ export const compareByHighestLastSale = (a: PickedBag, b: PickedBag) => {
 
 export const testForUnclaimedPaper = (bag: PickedBag) => !bag.claimed;
 export const testForSale = (bag: PickedBag) => bag.open_sea_asset?.is_on_sale;
+export const testForNotOpened = (bag: PickedBag) => !bag.opened;
 
 /**
  * Home-rolled full text search for items.
