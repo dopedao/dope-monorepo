@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 import { useHustler } from 'hooks/contracts';
 import { useWeb3React } from '@web3-react/core';
+import { ethers } from 'ethers';
 
 const MASTHEADS = [
   'dope.svg',
@@ -218,12 +219,14 @@ const MintSuccess = () => {
     [account, hustler.address],
   );
 
+  const filter = hustler.filters.TransferSingle(hustler.address, account) as any;
+
   useEffect(() => {
-    hustler.on('TransferSingle', listener);
+    hustler.on(filter, listener);
     return () => {
-      hustler.off('TransferSingle', listener);
+      hustler.off(filter, listener);
     };
-  }, [hustler, listener]);
+  }, [hustler, listener, filter]);
 
   return (
     <>

@@ -1,15 +1,5 @@
 import { css } from '@emotion/react';
-import {
-  Alert,
-  AlertIcon,
-  Button,
-  Stack,
-  Switch,
-  Table,
-  Tr,
-  Td,
-  Input,
-} from '@chakra-ui/react';
+import { Alert, AlertIcon, Button, Stack, Switch, Table, Tr, Td, Input } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { BigNumber, constants } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
@@ -251,18 +241,6 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
   const handleMintAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     HustlerInitConfig({ ...hustlerConfig, mintAddress: e.target.value });
   };
-
-  const listener = (block: any) => {
-    console.log('new action emited');
-    console.log(block);
-  };
-
-  useEffect(() => {
-    hustler.on('TransferSingle', listener);
-    return () => {
-      hustler.off('TransferSingle', listener);
-    };
-  }, [hustler]);
 
   return (
     <>
