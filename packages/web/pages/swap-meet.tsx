@@ -21,6 +21,8 @@ import DopeDatabase, {
   filterItemsBySearchString,
   testForUnclaimedPaper,
   testForSale,
+  testForNotOpened,
+  PickedBag,
 } from 'src/DopeDatabase';
 
 // To prevent all 8k items from showing at once and overloading
@@ -94,6 +96,8 @@ const MarketList = () => {
         return testForUnclaimedPaper;
       case 'For Sale':
         return testForSale;
+      case 'Ready To Unpack':
+        return testForNotOpened;
       default:
         return () => true;
     }
