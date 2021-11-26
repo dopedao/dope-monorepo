@@ -210,14 +210,9 @@ const MintSuccess = () => {
 
   const image = gangstaParty ? 'bridge_with_hustlers.png' : 'bridge_no_hustlers.png';
 
-  const listener = useCallback(
-    (operator: string, _from: string, to: string) => {
-      if (operator === hustler.address && to === account) {
-        setHasTransfered(true);
-      }
-    },
-    [account, hustler.address],
-  );
+  const listener = useCallback(() => {
+    setHasTransfered(true);
+  }, []);
 
   const filter = hustler.filters.TransferSingle(hustler.address, account) as any;
 
