@@ -68,29 +68,37 @@ const DesktopWindowTitleBar = ({
             {title || 'UNTITLED'}
           </TitleBarDescription>
           <RightColumn>
-              <div css={css`cursor:pointer;cursor:hand;white-space:nowrap;display:flex;`} onClick={() =>router.replace('/wallet')}>
-                {account && (
-                  <>
-                    {loadingBalance ? (
-                      <div>__.__ $PAPER</div>
-                    ) : (
-                      <div>
-                        {balance ? formatLargeNumber(Number(ethers.utils.formatEther(balance))) : 0}{' '}
-                        $PAPER
-                      </div>
-                    )}
-                    <span>|</span>
-                    <ENSAddressWrapper>{ensAddress || getShortAddress(account)}</ENSAddressWrapper>
-                  </>
-                )}
-              </div>
-              {!isTouchDevice && (
-                <DesktopWindowTitleButton
-                  icon={isFullScreen ? 'window-restore' : 'window-maximize'}
-                  title={isFullScreen ? 'Minimize' : 'Maximize'}
-                  clickAction={toggleFullScreen}
-                />
+            <div
+              css={css`
+                cursor: pointer;
+                cursor: hand;
+                white-space: nowrap;
+                display: flex;
+              `}
+              onClick={() => router.replace('/wallet')}
+            >
+              {account && (
+                <>
+                  {loadingBalance ? (
+                    <div>__.__ $PAPER</div>
+                  ) : (
+                    <div>
+                      {balance ? formatLargeNumber(Number(ethers.utils.formatEther(balance))) : 0}{' '}
+                      $PAPER
+                    </div>
+                  )}
+                  <span>|</span>
+                  <ENSAddressWrapper>{ensAddress || getShortAddress(account)}</ENSAddressWrapper>
+                </>
               )}
+            </div>
+            {!isTouchDevice && (
+              <DesktopWindowTitleButton
+                icon={isFullScreen ? 'window-restore' : 'window-maximize'}
+                title={isFullScreen ? 'Minimize' : 'Maximize'}
+                clickAction={toggleFullScreen}
+              />
+            )}
           </RightColumn>
         </TitleBar>
         {children}

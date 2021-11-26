@@ -95,7 +95,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
     if (account) {
       paper
         .balanceOf(account)
-        .then(balance => setHasEnoughPaper(balance.gt('12500000000000000000000')));
+        .then(balance => setHasEnoughPaper(balance.gte('12500000000000000000000')));
     }
   }, [account, paper]);
 
@@ -157,7 +157,6 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
       hair,
       name,
       renderName,
-      renderTitle,
       sex,
       textColor,
       zoomWindow,
@@ -172,16 +171,15 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
       sex == 'male' ? BigNumber.from(0) : BigNumber.from(1),
       BigNumber.from(body),
       BigNumber.from(hair),
-      BigNumber.from(facialHair),
+      sex == 'male' ? BigNumber.from(facialHair) : BigNumber.from(0),
     ];
 
     let bitoptions = 0;
 
-    if (renderTitle) {
-      bitoptions += 10;
-    }
-
     if (renderName) {
+      // title
+      bitoptions += 10;
+      // name
       bitoptions += 100;
     }
 
@@ -291,6 +289,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                     try {
                       const txn = await paper.approve(initiator.address, constants.MaxUint256);
                       await txn.wait(1);
+                      setIsPaperApproved(true);
                     } catch (error) {
                     } finally {
                       setLoading(false);
@@ -304,20 +303,18 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
               </PanelBody>
             </PanelContainer>
           )}
+          {warning && (
+            <Alert status="warning">
+              <AlertIcon />
+              {warning}
+            </Alert>
+          )}
           {!showMintToAddressBox && !isContract && (
             <Button variant="linkBlack" onClick={() => setShowMintToAddressBox(true)}>
               Send Hustler to a friend?
             </Button>
           )}
-          {warning && (
-            <p
-              css={css`
-                color: #f31c1c;
-              `}
-            >
-              {warning}
-            </p>
-          )}
+
           {showMintToAddressBox && (
             <PanelContainer>
               <PanelTitleBar>Mint to Different Address</PanelTitleBar>
@@ -372,7 +369,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                 )}
               </div>
               <div>
-                <Switch
+                {/* <Switch
                   id="initiate-og-switch"
                   isChecked={hustlerConfig.mintOg}
                   onChange={handleOgSwitchChange}
@@ -382,9 +379,10 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
                   css={css`
                     margin-left: 0.5em;
                   `}
+                  disabled
                 >
                   Claim OG
-                </label>
+                </label> */}
               </div>
               <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
                 {hustlerConfig.mintOg ? '👑 Initiate OG 👑' : '✨ Initiate Hustler ✨'}

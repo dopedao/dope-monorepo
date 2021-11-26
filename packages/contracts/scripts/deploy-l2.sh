@@ -13,25 +13,25 @@ set -eo pipefail
 
 # Deploy.
 # Optimism Kovan
-# ComponentsAddr="0x781B575CA559263eb232B854195D6dC0AB720105"
+# ComponentsAddr="0xA9d6Ef18457c4d87Ba77d5c22569c93a41b8f326"
 # Optimism
-# ComponentsAddr="0x32705A4f4f2b5F072c30D541FD24A0baD39117DB"
-ComponentsAddr=$(deploy Components)
-log "Components deployed at:" $ComponentsAddr
+ComponentsAddr="0xe03C4eb2a0a797766a5DB708172e04f6A970DC7f"
+# ComponentsAddr=$(deploy Components)
+# log "Components deployed at:" $ComponentsAddr
 
 # Optimism Kovan
 # SwapMeetAddr="0x781A6002A4221c0E52fC283D285b703890024C97"
 # Optimism
-# SwapMeetAddr="0xB3cCb05742bDbd51Daa24f036FC5489f5ca0f38c"
-SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr)
-log "SwapMeet deployed at:" $SwapMeetAddr
+SwapMeetAddr="0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"
+# SwapMeetAddr=$(deploy SwapMeet $ComponentsAddr)
+# log "SwapMeet deployed at:" $SwapMeetAddr
 
 # Optimism Kovan
 # HustlerAddr="0x577d9c7FF9B506d7305194698b4103a3fE3532f0"
 # Optimism
-# HustlerAddr="0xE9DACD8118917e3A0522f45c191C6abe88d271B0"
-HustlerAddr=$(deploy Hustler $ComponentsAddr $SwapMeetAddr)
-log "Hustler deployed at:" $HustlerAddr
+HustlerAddr="0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
+# HustlerAddr=$(deploy Hustler $ComponentsAddr $SwapMeetAddr)
+# log "Hustler deployed at:" $HustlerAddr
 
 # Optimism Kovan
 # 0xe7e8f3b0502Fc1357B5504C8262541Da1472f6De

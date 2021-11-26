@@ -11,5 +11,6 @@ query Search($text: String!, $first: Int, $skip: Int) {
     waist
     weapon
     claimed
+    opened
   }
 }

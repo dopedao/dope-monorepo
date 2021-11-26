@@ -6,9 +6,9 @@ dataSources:
     name: SwapMeet
     network: optimism
     source:
-      address: "0xd30a54d45964abB9a48b652CD0c97Ec18288b01d"
+      address: "0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"
       abi: SwapMeet
-      startBlock: 271353
+      startBlock: 278375
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -32,9 +32,9 @@ dataSources:
     name: Hustler
     network: optimism
     source:
-      address: "0xE2a32A42F3Bb1F5151Dfa4AC30687Ef22498604F"
+      address: "0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
       abi: Hustler
-      startBlock: 271366
+      startBlock: 278746
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

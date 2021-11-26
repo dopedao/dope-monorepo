@@ -37,7 +37,6 @@ export type HustlerCustomization = {
   mintOg: boolean;
   name?: string;
   renderName?: boolean;
-  renderTitle?: boolean;
   sex: HustlerSex;
   textColor: string;
   zoomWindow: ZoomWindow;
@@ -63,7 +62,6 @@ export const getRandomHustler = (): HustlerCustomization => {
     mintOg: false,
     name: HUSTLER_NAMES[getRandomNumber(0, HUSTLER_NAMES.length - 1)],
     renderName: false,
-    renderTitle: false,
     sex: HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex,
     textColor: '#000000',
     zoomWindow: ZOOM_WINDOWS[0],
