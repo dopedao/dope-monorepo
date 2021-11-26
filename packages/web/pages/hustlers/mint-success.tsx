@@ -1,14 +1,13 @@
-import { AlertIcon, Alert, Box, Button, Image, HStack, Spacer } from '@chakra-ui/react';
-import { getRandomNumber } from 'src/utils';
 import { useCallback, useEffect, useState } from 'react';
-import { media } from 'styles/mixins';
-import Head from 'components/Head';
+import { useWeb3React } from '@web3-react/core';
+import { Alert, Button, Image, HStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import styled from '@emotion/styled';
+import { media } from 'styles/mixins';
+import { getRandomNumber } from 'src/utils';
+import Head from 'components/Head';
 import WebAmpPlayer from 'components/WebAmpPlayer';
-import { useHustler } from 'hooks/contracts';
-import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
+import { useController, useHustler } from 'hooks/contracts';
 
 const MASTHEADS = [
   'dope.svg',
@@ -206,6 +205,7 @@ const MintSuccess = () => {
   const { account } = useWeb3React();
   const [hasTransfered, setHasTransfered] = useState(false);
   const hustler = useHustler();
+  const controller = useController();
   const [gangstaParty, setGangstaParty] = useState(false);
 
   const image = gangstaParty ? 'bridge_with_hustlers.png' : 'bridge_no_hustlers.png';
@@ -214,7 +214,8 @@ const MintSuccess = () => {
     setHasTransfered(true);
   }, []);
 
-  const filter = hustler.filters.TransferSingle(hustler.address, account) as any;
+  // TransferSingle(operator, from, to, id, value)
+  const filter = hustler.filters.TransferSingle(controller.address, controller.address, account);
 
   useEffect(() => {
     hustler.on(filter, listener);
