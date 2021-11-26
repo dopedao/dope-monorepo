@@ -14,7 +14,7 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import { useInitiator, usePaper, useSwapMeet } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
 import Spinner from 'svg/Spinner';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import RenderLoot from 'components/loot/RenderLoot';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import AppWindow from 'components/AppWindow';
@@ -88,7 +88,7 @@ const unbundleLoot = () => {
     initiator
       .open(dopeId, mintAddress || account, '0x', 1500000)
       .then(() =>
-        console.log('Go to party')
+        router.replace('/loot/unbundle-success')
     );
   };
 
