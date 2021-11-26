@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Alert, AlertIcon, Button, Stack, Table, Tbody, Tr, Td } from '@chakra-ui/react';
+import { Alert, AlertIcon, Button, Input, Stack, Table, Tbody, Tr, Td } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { BigNumber, constants } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
@@ -20,12 +20,13 @@ import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import AppWindow from 'components/AppWindow';
 
 const Approve = () => {
-  const [warning, setWarning] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
   const { chainId, account } = useWeb3React();
   const {query} = useRouter();
   const dopeId = query.id as string;
 
+  const [showAddressField, setShowAddressField] = useState<boolean>(false);
+  const [mintAddress, setMintAddress] = useState<string>('');
   const [canMint, setCanMint] = useState(false);
   const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
   const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
@@ -36,7 +37,6 @@ const Approve = () => {
   const paper = usePaper();
   const swapmeet = useSwapMeet();
   
-
   useEffect(() => {
     if (dopeId) {
       swapmeet.itemIds(dopeId).then(ids =>
@@ -72,7 +72,6 @@ const Approve = () => {
       (!isContract || (isContract && account))
     ) {
         setCanMint(true);
-        setWarning(null);
     }
   }, [
     isPaperApproved,
@@ -84,12 +83,10 @@ const Approve = () => {
 const unbundleLoot = () => {
     if (!account) {
       return;
-    }
-
-    console.log('unbundling')
+    } 
 
     initiator
-      .open(dopeId, account, '0x', 1500000)
+      .open(dopeId, mintAddress || account, '0x', 1500000)
       .then(() =>
         console.log('Go to party')
     );
@@ -153,11 +150,40 @@ const unbundleLoot = () => {
               </PanelBody>
             </PanelContainer>
           )}
-          {warning && (
-            <Alert status="warning">
-              <AlertIcon />
-              {warning}
-            </Alert>
+                    {!showAddressField && !isContract && (
+            <Button variant="linkBlack" onClick={() => setShowAddressField(true)}>
+              Send Hustler to a friend?
+            </Button>
+          )}
+
+          {showAddressField && (
+            <PanelContainer>
+              <PanelTitleBar>Mint to Different Address</PanelTitleBar>
+              <PanelBody>
+                <p>Send this Hustler to a friend, or another wallet?</p>
+                <Input
+                  placeholder="0x…"
+                  onChange={(e:React.ChangeEvent<HTMLInputElement>) => setMintAddress(e.target.value)}
+                  value={mintAddress}
+                />
+              </PanelBody>
+            </PanelContainer>
+          )}
+          {isContract && (
+            <PanelContainer>
+              <PanelTitleBar>Mint to Different Address</PanelTitleBar>
+              <PanelBody>
+                <p>
+                  It looks like you are using a contract wallet. Please set the optimism address you
+                  want your hustler minted to.
+                </p>
+                <Input
+                  placeholder="0x…"
+                  onChange={(e:React.ChangeEvent<HTMLInputElement>) => setMintAddress(e.target.value)}
+                  value={mintAddress}
+                />
+              </PanelBody>
+            </PanelContainer>
           )}
         </Stack>
         <PanelContainer
