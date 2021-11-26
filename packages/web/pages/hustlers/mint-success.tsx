@@ -1,11 +1,13 @@
-import { AlertIcon, Alert, Box, Button, Image, HStack, Spacer } from '@chakra-ui/react';
-import { getRandomNumber } from 'src/utils';
-import { useState } from 'react';
-import { media } from 'styles/mixins';
-import Head from 'components/Head';
+import { useCallback, useEffect, useState } from 'react';
+import { useWeb3React } from '@web3-react/core';
+import { Alert, Button, Image, HStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import styled from '@emotion/styled';
+import { media } from 'styles/mixins';
+import { getRandomNumber } from 'src/utils';
+import Head from 'components/Head';
 import WebAmpPlayer from 'components/WebAmpPlayer';
+import { useController, useHustler } from 'hooks/contracts';
 
 const MASTHEADS = [
   'dope.svg',
@@ -188,25 +190,44 @@ const AlertContainer = styled.div`
   animation: appear 0.1s linear 3.1s 1 forwards;
 `;
 
+const ScreenSaver = styled.div<{ image: string }>`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: ${({ image }) =>
+    `#000000 url('/images/hustler/${image}') center / cover no-repeat fixed;`};
+`;
+
 const MintSuccess = () => {
+  const { account } = useWeb3React();
+  const [hasTransfered, setHasTransfered] = useState(false);
+  const hustler = useHustler();
+  const controller = useController();
   const [gangstaParty, setGangstaParty] = useState(false);
 
   const image = gangstaParty ? 'bridge_with_hustlers.png' : 'bridge_no_hustlers.png';
 
-  const ScreenSaver = styled.div`
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    background: #000000 url('/images/hustler/${image}') center / cover no-repeat fixed;
-  `;
+  const listener = useCallback(() => {
+    setHasTransfered(true);
+  }, []);
+
+  // TransferSingle(operator, from, to, id, value)
+  const filter = hustler.filters.TransferSingle(controller.address, controller.address, account);
+
+  useEffect(() => {
+    hustler.on(filter, listener);
+    return () => {
+      hustler.off(filter, listener);
+    };
+  }, [hustler, listener, filter]);
 
   return (
     <>
       <Head title="Bridging Hustler to Optimism" />
-      <ScreenSaver>
+      <ScreenSaver image={image}>
         {gangstaParty && (
           <>
             <PlugContainer>
@@ -236,13 +257,17 @@ const MintSuccess = () => {
             <AlertContainer>
               <Alert status="success">
                 <div>
-                  <p>
-                    Your Hustler is making their way to the Optimism network.
-                    <br />
-                    <br />
-                    It could take up to 15 minutes for that to happen. In the meantime, lets get it
-                    crackin homie…
-                  </p>
+                  {hasTransfered ? (
+                    <p>Your Hustler has made its way to the Optimism network!</p>
+                  ) : (
+                    <p>
+                      Your Hustler is making their way to the Optimism network.
+                      <br />
+                      <br />
+                      It could take up to 15 minutes for that to happen. In the meantime, lets get
+                      it crackin homie…
+                    </p>
+                  )}
                   <Button
                     onClick={() => {
                       setGangstaParty(true);
