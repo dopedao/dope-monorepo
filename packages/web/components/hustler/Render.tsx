@@ -28,7 +28,7 @@ const Render = ({ itemIds }: { itemIds: BigNumber[] }) => {
   }, [hustlers]);
 
   useEffect(() => {
-    if (hustlers && bodyRles && itemRles) {
+    if (hustlers && bodyRles.length > 0 && itemRles.length > 0) {
       hustlers
         .render('', '', 64, '0xb6ccc3ff', '0x202221ff', [0, 0, 0, 0], [...bodyRles, ...itemRles])
         .then(meta => {

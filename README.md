@@ -4,11 +4,11 @@ DOPE DAO contains the web app for https://dopewars.gg and Solidity contracts for
 
 ## Testing
 
-This is using the Rinkeby test network by default
-You can [claim Loot tokens for that network using this contract](https://rinkeby.etherscan.io/address/0xEf879818335a10Db667810a9B668A8F537389194#code)
+This is using the Kovan test network by default
+You can [claim Loot tokens for that network using this contract](https://kovan.etherscan.io/address/0xd2761Ee62d8772343070A5dE02C436F788EdF60a#code)
 
-* Switch MetaMask to the `Rinkeby Test Network`
-* Ensure you have tokens in your wallet by visiting the [following the instructions here](https://teller.gitbook.io/teller-1/testing-guide/getting-testnet-tokens-rinkeby)
+* Switch MetaMask to the `Kovan Test Network`
+* Ensure you have tokens in your wallet by [using the Paradigm faucet](https://faucet.paradigm.xyz/)
 * Claim tokens using the contract address above.
 
 ## Packages
