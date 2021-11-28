@@ -54,12 +54,10 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   return (
     <div>
       <Button variant="primary" onClick={() => initiateHustler()}>
-        Begin Initiation
+        Initiate Hustler
       </Button>
       {initiator && paper && account && (
-        <Button disabled={chainId !== 42} onClick={() => router.push(`/loot/${bag.id}/unbundle`)}>
-          Unbundle
-        </Button>
+        <Button onClick={() => router.push(`/loot/${bag.id}/unbundle`)}>Unbundle</Button>
       )}
       {paper && (
         <Button

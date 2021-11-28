@@ -22,7 +22,7 @@ import AppWindow from 'components/AppWindow';
 const Approve = () => {
   const [isLoading, setLoading] = useState(false);
   const { chainId, account } = useWeb3React();
-  const {query} = useRouter();
+  const { query } = useRouter();
   const dopeId = query.id as string;
 
   const [showAddressField, setShowAddressField] = useState<boolean>(false);
@@ -36,7 +36,7 @@ const Approve = () => {
   const initiator = useInitiator();
   const paper = usePaper();
   const swapmeet = useSwapMeet();
-  
+
   useEffect(() => {
     if (dopeId) {
       swapmeet.itemIds(dopeId).then(ids =>
@@ -65,31 +65,19 @@ const Approve = () => {
   }, [account, chainId, initiator.address, paper]);
 
   useEffect(() => {
-
-    if (
-      isPaperApproved &&
-      hasEnoughPaper &&
-      (!isContract || (isContract && account))
-    ) {
-        setCanMint(true);
+    if (isPaperApproved && hasEnoughPaper && (!isContract || (isContract && mintAddress))) {
+      setCanMint(true);
     }
-  }, [
-    isPaperApproved,
-    hasEnoughPaper,
-    isContract,
-    account
-  ]);
+  }, [isPaperApproved, hasEnoughPaper, isContract, account]);
 
-const unbundleLoot = () => {
+  const unbundleLoot = () => {
     if (!account) {
       return;
-    } 
+    }
 
     initiator
-      .open(dopeId, mintAddress || account, '0x', 1500000)
-      .then(() =>
-        router.replace('/loot/unbundle-success')
-    );
+      .open(dopeId, mintAddress || account, '0x', 600000)
+      .then(() => router.replace('/loot/unbundle-success'));
   };
 
   return (
@@ -150,7 +138,7 @@ const unbundleLoot = () => {
               </PanelBody>
             </PanelContainer>
           )}
-                    {!showAddressField && !isContract && (
+          {!showAddressField && !isContract && (
             <Button variant="linkBlack" onClick={() => setShowAddressField(true)}>
               Send Hustler to a friend?
             </Button>
@@ -163,7 +151,9 @@ const unbundleLoot = () => {
                 <p>Send this Hustler to a friend, or another wallet?</p>
                 <Input
                   placeholder="0x…"
-                  onChange={(e:React.ChangeEvent<HTMLInputElement>) => setMintAddress(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setMintAddress(e.target.value)
+                  }
                   value={mintAddress}
                 />
               </PanelBody>
@@ -179,7 +169,9 @@ const unbundleLoot = () => {
                 </p>
                 <Input
                   placeholder="0x…"
-                  onChange={(e:React.ChangeEvent<HTMLInputElement>) => setMintAddress(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setMintAddress(e.target.value)
+                  }
                   value={mintAddress}
                 />
               </PanelBody>
@@ -193,22 +185,23 @@ const unbundleLoot = () => {
           `}
         >
           <PanelTitleBar>Loot</PanelTitleBar>
-          {itemIds ? 
+          {itemIds ? (
             <>
               <RenderLoot itemIds={itemIds} />
               <PanelFooter
-              css={css`
-              padding: 1em;
-              position: relative;
-              `}
+                css={css`
+                  padding: 1em;
+                  position: relative;
+                `}
               >
                 <Button variant="primary" onClick={unbundleLoot} disabled={!canMint}>
                   🔓 Unbundle Loot 🔓
                 </Button>
               </PanelFooter>
             </>
-            : <LoadingBlockSquareCentered />
-      }
+          ) : (
+            <LoadingBlockSquareCentered />
+          )}
         </PanelContainer>
       </StackedResponsiveContainer>
     </AppWindow>
