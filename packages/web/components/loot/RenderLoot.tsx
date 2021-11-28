@@ -12,7 +12,7 @@ type Metadata = {
   image: string;
 };
 
-const RenderLoot = ({ itemIds }: { itemIds: BigNumber[] }) => {
+const RenderLoot = ({ itemIds }: { itemIds?: BigNumber[] }) => {
   const bgColor = DEFAULT_BG_COLORS[1];
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
@@ -22,11 +22,13 @@ const RenderLoot = ({ itemIds }: { itemIds: BigNumber[] }) => {
 
   useEffect(() => {
     const sexIndex = 0;
-    Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(setItemRles);
+    if (itemIds) {
+      Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(setItemRles);
+    }
   }, [itemIds, swapmeet]);
 
   useEffect(() => {
-    if (hustlers && itemRles) {
+    if (hustlers && itemRles.length > 0) {
       const hustlerShadowHex = '0x0036283818022b01000d2b0500092b0200';
       const drugShadowHex = '0x00362f3729062b';
       const bodyHex =

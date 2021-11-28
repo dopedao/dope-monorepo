@@ -124,23 +124,17 @@ const Approve = () => {
           `}
         >
           <PanelTitleBar>Loot</PanelTitleBar>
-          {itemIds ? (
-            <>
-              <RenderLoot itemIds={itemIds} />
-              <PanelFooter
-                css={css`
-                  padding: 1em;
-                  position: relative;
-                `}
-              >
-                <Button variant="primary" onClick={unbundleLoot} disabled={!canMint}>
-                  🔓 Unbundle Loot 🔓
-                </Button>
-              </PanelFooter>
-            </>
-          ) : (
-            <LoadingBlockSquareCentered />
-          )}
+          <RenderLoot itemIds={itemIds} />
+          <PanelFooter
+            css={css`
+              padding: 1em;
+              position: relative;
+            `}
+          >
+            <Button variant="primary" onClick={unbundleLoot} disabled={!canMint}>
+              🔓 Unbundle Loot 🔓
+            </Button>
+          </PanelFooter>
         </PanelContainer>
       </StackedResponsiveContainer>
     </AppWindow>

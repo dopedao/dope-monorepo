@@ -205,7 +205,7 @@ const UnbundleSuccess = () => {
 
   return (
     <>
-      <Head title="Bridging and unbundling loot to Optimism" />
+      <Head title="Bridging and unbundling items to Optimism" />
       <ScreenSaver>
         {gangstaParty && (
           <>
@@ -237,7 +237,7 @@ const UnbundleSuccess = () => {
               <Alert status="success">
                 <div>
                   <p>
-                    Your unbundled loot is making its way to the Optimism network.
+                    Your unbundled items are making their way to the Optimism network.
                     <br />
                     <br />
                     It could take up to 15 minutes for that to happen. In the meantime, lets get it

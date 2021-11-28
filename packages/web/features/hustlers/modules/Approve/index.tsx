@@ -1,10 +1,9 @@
 import { css } from '@emotion/react';
-import { Alert, AlertIcon, Button, Stack, Table, Tr, Td, Input } from '@chakra-ui/react';
+import { Button, Stack, Table, Tr, Td } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { SetMetadataStruct } from '@dopewars/contracts/dist/Initiator';
-import styled from '@emotion/styled';
 
 import ApprovePaper from 'components/panels/ApprovePaper';
 import MintTo from 'components/panels/MintTo';
@@ -22,7 +21,6 @@ import { useInitiator, usePaper } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
 
 const Approve = ({ hustlerConfig }: StepsProps) => {
-  const [warning, setWarning] = useState<string | null>(null);
   const { account } = useWeb3React();
   const [mintTo, setMintTo] = useState(hustlerConfig.mintAddress != null);
   const [canMint, setCanMint] = useState(false);
@@ -45,7 +43,6 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
   useEffect(() => {
     if (isPaperApproved && hasEnoughPaper && (!mintTo || (mintTo && hustlerConfig.mintAddress))) {
       setCanMint(true);
-      setWarning(null);
     }
   }, [isPaperApproved, hasEnoughPaper, isContract, hustlerConfig.mintAddress, hustlerConfig.body]);
 
@@ -165,12 +162,6 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
             We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of your
             DOPE NFT #{hustlerConfig.dopeId}.
           </ApprovePaper>
-          {warning && (
-            <Alert status="warning">
-              <AlertIcon />
-              {warning}
-            </Alert>
-          )}
           <MintTo
             mintTo={mintTo}
             setMintTo={setMintTo}
