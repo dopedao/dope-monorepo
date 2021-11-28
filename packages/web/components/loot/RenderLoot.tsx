@@ -12,12 +12,7 @@ type Metadata = {
   image: string;
 };
 
-export interface HustlerRenderProps {
-  itemIds: BigNumber[];
-  zoomWindow?: ZoomWindow;
-}
-
-const RenderLoot = ({ itemIds, zoomWindow = ZOOM_WINDOWS[0] }: HustlerRenderProps) => {
+const RenderLoot = ({ itemIds }: { itemIds: BigNumber[] }) => {
   const bgColor = DEFAULT_BG_COLORS[1];
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
@@ -37,12 +32,15 @@ const RenderLoot = ({ itemIds, zoomWindow = ZOOM_WINDOWS[0] }: HustlerRenderProp
       const bodyHex =
         '0x000927361907000344040006000544030006000544030006000544030006000544030007000444030007000344040007000244050004000744030002000b44010001000d4401000d4401000d440e440e44024401000b44024401000b44024401000b44024401000b44024401000b44024401000b44024401000b44024401000b44024401000b440c440100014402440100034403000444010003000344030003440200030003440300034402000300034403000344020003000344030003440200030003440300034402000300034403000344020003000344030003440200030003440300034402000300024404000244030003000244040002440300030002440400024403000300024404000244030003000244040002440300030002440400024403000300024404000244030003000244040002440300030002440400024403000300024404000344020003000344030004440100';
       hustlers
-        .render('', '', 64, hexColorToBase16(bgColor), hexColorToBase16(bgColor), zoomWindow, [
-          hustlerShadowHex,
-          drugShadowHex,
-          bodyHex,
-          ...itemRles,
-        ])
+        .render(
+          '',
+          '',
+          64,
+          hexColorToBase16(bgColor),
+          hexColorToBase16(bgColor),
+          [0, 0, 0, 0],
+          [hustlerShadowHex, drugShadowHex, bodyHex, ...itemRles],
+        )
         .then(meta => {
           meta = meta.replace('data:application/json;base64,', '');
           meta = Buffer.from(meta, 'base64').toString();
@@ -50,7 +48,7 @@ const RenderLoot = ({ itemIds, zoomWindow = ZOOM_WINDOWS[0] }: HustlerRenderProp
           setJson(decoded as Metadata);
         });
     }
-  }, [swapmeet, hustlers, itemRles, bgColor, zoomWindow]);
+  }, [hustlers, itemRles, bgColor]);
 
   return (
     <AspectRatio

@@ -11,27 +11,26 @@ import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ApprovePaper from 'components/panels/ApprovePaper';
+import MintTo from 'components/panels/MintTo';
 
 import { useInitiator, usePaper, useSwapMeet } from 'hooks/contracts';
-import { useIsContract } from 'hooks/web3';
 import router, { useRouter } from 'next/router';
 import RenderLoot from 'components/loot/RenderLoot';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import AppWindow from 'components/AppWindow';
 
 const Approve = () => {
-  const { chainId, account } = useWeb3React();
+  const { account } = useWeb3React();
   const { query } = useRouter();
   const dopeId = query.id as string;
 
-  const [showAddressField, setShowAddressField] = useState<boolean>(false);
+  const [mintTo, setMintTo] = useState<boolean>(false);
   const [mintAddress, setMintAddress] = useState<string>('');
   const [canMint, setCanMint] = useState(false);
   const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
   const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
-  const isContract = useIsContract(account);
   const initiator = useInitiator();
   const paper = usePaper();
   const swapmeet = useSwapMeet();
@@ -61,13 +60,13 @@ const Approve = () => {
           setIsPaperApproved(allowance.gte('12500000000000000000000')),
         );
     }
-  }, [account, chainId, initiator.address, paper]);
+  }, [account, initiator.address, paper]);
 
   useEffect(() => {
-    if (isPaperApproved && hasEnoughPaper && (!isContract || (isContract && mintAddress))) {
+    if (isPaperApproved && hasEnoughPaper && (!mintTo || (mintTo && mintAddress))) {
       setCanMint(true);
     }
-  }, [isPaperApproved, hasEnoughPaper, isContract, account]);
+  }, [isPaperApproved, hasEnoughPaper, mintTo, mintAddress]);
 
   const unbundleLoot = () => {
     if (!account) {
@@ -111,45 +110,12 @@ const Approve = () => {
             We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of your
             DOPE NFT #{dopeId}.
           </ApprovePaper>
-          {!showAddressField && !isContract && (
-            <Button variant="linkBlack" onClick={() => setShowAddressField(true)}>
-              Send Hustler to a friend?
-            </Button>
-          )}
-
-          {showAddressField && (
-            <PanelContainer>
-              <PanelTitleBar>Mint to Different Address</PanelTitleBar>
-              <PanelBody>
-                <p>Send this Hustler to a friend, or another wallet?</p>
-                <Input
-                  placeholder="0x…"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setMintAddress(e.target.value)
-                  }
-                  value={mintAddress}
-                />
-              </PanelBody>
-            </PanelContainer>
-          )}
-          {isContract && (
-            <PanelContainer>
-              <PanelTitleBar>Mint to Different Address</PanelTitleBar>
-              <PanelBody>
-                <p>
-                  It looks like you are using a contract wallet. Please set the optimism address you
-                  want your hustler minted to.
-                </p>
-                <Input
-                  placeholder="0x…"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setMintAddress(e.target.value)
-                  }
-                  value={mintAddress}
-                />
-              </PanelBody>
-            </PanelContainer>
-          )}
+          <MintTo
+            mintTo={mintTo}
+            setMintTo={setMintTo}
+            mintAddress={mintAddress}
+            setMintAddress={setMintAddress}
+          />
         </Stack>
         <PanelContainer
           css={css`
