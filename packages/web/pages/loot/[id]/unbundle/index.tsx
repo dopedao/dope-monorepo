@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
-import { Alert, AlertIcon, Button, Input, Stack, Table, Tbody, Tr, Td } from '@chakra-ui/react';
+import { Button, Input, Stack, Table, Tbody, Tr, Td } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { BigNumber, constants } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 
 import Head from 'components/Head';
@@ -10,17 +10,16 @@ import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
+import ApprovePaper from 'components/panels/ApprovePaper';
 
 import { useInitiator, usePaper, useSwapMeet } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
-import Spinner from 'svg/Spinner';
 import router, { useRouter } from 'next/router';
 import RenderLoot from 'components/loot/RenderLoot';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import AppWindow from 'components/AppWindow';
 
 const Approve = () => {
-  const [isLoading, setLoading] = useState(false);
   const { chainId, account } = useWeb3React();
   const { query } = useRouter();
   const dopeId = query.id as string;
@@ -104,40 +103,14 @@ const Approve = () => {
               </Table>
             </PanelBody>
           </PanelContainer>
-          {isPaperApproved && (
-            <Alert status="success">
-              <AlertIcon />
-              $PAPER Spend Approved
-            </Alert>
-          )}
-          {!isPaperApproved && (
-            <PanelContainer>
-              <PanelTitleBar>Approve $PAPER Spend</PanelTitleBar>
-              <PanelBody>
-                <p>
-                  We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of
-                  your DOPE NFT #{dopeId}.
-                </p>
-                <Button
-                  onClick={async () => {
-                    setLoading(true);
-                    try {
-                      const txn = await paper.approve(initiator.address, constants.MaxUint256);
-                      await txn.wait(1);
-                      setIsPaperApproved(true);
-                    } catch (error) {
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  disabled={isLoading}
-                  width="220px"
-                >
-                  {isLoading ? <Spinner /> : 'Approve $PAPER Spend'}
-                </Button>
-              </PanelBody>
-            </PanelContainer>
-          )}
+          <ApprovePaper
+            address={initiator.address}
+            isApproved={isPaperApproved}
+            onApprove={approved => setIsPaperApproved(approved)}
+          >
+            We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of your
+            DOPE NFT #{dopeId}.
+          </ApprovePaper>
           {!showAddressField && !isContract && (
             <Button variant="linkBlack" onClick={() => setShowAddressField(true)}>
               Send Hustler to a friend?

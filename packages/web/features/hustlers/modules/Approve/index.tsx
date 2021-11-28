@@ -1,13 +1,14 @@
 import { css } from '@emotion/react';
-import { Alert, AlertIcon, Button, Stack, Switch, Table, Tr, Td, Input } from '@chakra-ui/react';
+import { Alert, AlertIcon, Button, Stack, Table, Tr, Td, Input } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { BigNumber, constants } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { SetMetadataStruct } from '@dopewars/contracts/dist/Initiator';
 import { zeroPad } from 'src/utils';
 import styled from '@emotion/styled';
 import Countdown from 'react-countdown';
 
+import ApprovePaper from 'components/panels/ApprovePaper';
 import { StepsProps } from 'features/hustlers/modules/Steps';
 import { HustlerInitConfig } from 'src/HustlerConfig';
 import Head from 'components/Head';
@@ -20,7 +21,6 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 import { useInitiator, usePaper, useReleaseDate } from 'hooks/contracts';
 import { useIsContract, useLastestBlock } from 'hooks/web3';
-import Spinner from 'svg/Spinner';
 
 const CountdownWrapper = styled.div`
   text-align: center;
@@ -67,8 +67,7 @@ const countdownRenderer = ({ days, hours, minutes, seconds, completed }: Countdo
 
 const Approve = ({ hustlerConfig }: StepsProps) => {
   const [warning, setWarning] = useState<string | null>(null);
-  const [isLoading, setLoading] = useState(false);
-  const { chainId, account } = useWeb3React();
+  const { account } = useWeb3React();
   const [showMintToAddressBox, setShowMintToAddressBox] = useState(
     hustlerConfig.mintAddress != null,
   );
@@ -97,16 +96,6 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
         .then(balance => setHasEnoughPaper(balance.gte('12500000000000000000000')));
     }
   }, [account, paper]);
-
-  useEffect(() => {
-    if (account) {
-      paper
-        .allowance(account, initiator.address)
-        .then((allowance: BigNumber) =>
-          setIsPaperApproved(allowance.gte('12500000000000000000000')),
-        );
-    }
-  }, [account, chainId, initiator.address, paper]);
 
   useEffect(() => {
     const isAlienSkin = hustlerConfig.body === 5;
@@ -268,40 +257,14 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
               </Table>
             </PanelBody>
           </PanelContainer>
-          {isPaperApproved && (
-            <Alert status="success">
-              <AlertIcon />
-              $PAPER Spend Approved
-            </Alert>
-          )}
-          {!isPaperApproved && (
-            <PanelContainer>
-              <PanelTitleBar>Approve $PAPER Spend</PanelTitleBar>
-              <PanelBody>
-                <p>
-                  We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of
-                  your DOPE NFT #{hustlerConfig.dopeId}.
-                </p>
-                <Button
-                  onClick={async () => {
-                    setLoading(true);
-                    try {
-                      const txn = await paper.approve(initiator.address, constants.MaxUint256);
-                      await txn.wait(1);
-                      setIsPaperApproved(true);
-                    } catch (error) {
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  disabled={isLoading}
-                  width="220px"
-                >
-                  {isLoading ? <Spinner /> : 'Approve $PAPER Spend'}
-                </Button>
-              </PanelBody>
-            </PanelContainer>
-          )}
+          <ApprovePaper
+            address={initiator.address}
+            isApproved={isPaperApproved}
+            onApprove={approved => setIsPaperApproved(approved)}
+          >
+            We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of your
+            DOPE NFT #{hustlerConfig.dopeId}.
+          </ApprovePaper>
           {warning && (
             <Alert status="warning">
               <AlertIcon />
