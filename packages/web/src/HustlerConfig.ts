@@ -6,21 +6,13 @@ import { HUSTLER_NAMES } from './hustler-names';
 import { BigNumber } from 'ethers';
 const HUSTLER_SEXES = ['male', 'female'];
 export type HustlerSex = 'male' | 'female';
-export const MAX_BODIES = 5;
+export const MAX_BODIES = 4;
 export const MAX_HAIR = 18;
 export const MAX_FACIAL_HAIR = 12;
 export const DEFAULT_BG_COLORS = ['#434345', '#97ADCC', '#F1D8AB', '#F2C4C5', '#B6CCC3', '#EDEFEE'];
 export const DEFAULT_TEXT_COLORS = ['#000000', '#333333', '#dddddd', '#ffffff'];
 // From lightest to darkest
-export const SKIN_TONE_COLORS = [
-  '#FFD99C',
-  '#E6A46E',
-  '#CC8850',
-  '#AE6C37',
-  '#983B0F',
-  // Alien for OGs only
-  '#77F8F8',
-];
+export const SKIN_TONE_COLORS = ['#FFD99C', '#E6A46E', '#CC8850', '#AE6C37', '#983B0F'];
 
 export type ZoomWindow = [BigNumber, BigNumber, BigNumber, BigNumber];
 export const ZOOM_WINDOWS = [
@@ -34,7 +26,6 @@ export type HustlerCustomization = {
   dopeId: string;
   facialHair: number;
   hair: number;
-  mintOg: boolean;
   name?: string;
   renderName?: boolean;
   sex: HustlerSex;
@@ -59,7 +50,6 @@ export const getRandomHustler = (): HustlerCustomization => {
     dopeId: getRandomHustlerId(),
     facialHair: getRandomNumber(0, MAX_FACIAL_HAIR),
     hair: getRandomNumber(0, MAX_HAIR),
-    mintOg: false,
     name: HUSTLER_NAMES[getRandomNumber(0, HUSTLER_NAMES.length - 1)],
     renderName: false,
     sex: HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex,
@@ -79,7 +69,6 @@ export const randomizeHustlerAttributes = () => {
   const hustlerConfig = HustlerInitConfig();
   HustlerInitConfig({
     ...randomHustler,
-    mintOg: hustlerConfig.mintOg,
     dopeId: hustlerConfig.dopeId,
   });
 };
