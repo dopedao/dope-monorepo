@@ -52,7 +52,7 @@ export const getRandomHustlerId = (): string => {
   return getRandomNumber(NUM_DOPE_TOKENS + 1, NUM_DOPE_TOKENS * 2).toString();
 };
 
-export const getRandomHustler = (): HustlerCustomization => {
+export const getRandomHustler = (sex?: HustlerSex): HustlerCustomization => {
   return {
     bgColor: DEFAULT_BG_COLORS[getRandomNumber(0, DEFAULT_BG_COLORS.length - 1)],
     body: getRandomNumber(0, MAX_BODIES),
@@ -62,7 +62,7 @@ export const getRandomHustler = (): HustlerCustomization => {
     mintOg: false,
     name: HUSTLER_NAMES[getRandomNumber(0, HUSTLER_NAMES.length - 1)],
     renderName: false,
-    sex: HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex,
+    sex: sex || (HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex),
     textColor: '#000000',
     zoomWindow: ZOOM_WINDOWS[0],
   };
