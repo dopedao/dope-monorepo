@@ -4,6 +4,7 @@ import { Hustler, HustlerQuery, Maybe, useHustlerQuery } from 'src/generated/gra
 import { useOptimismClient } from 'components/EthereumApolloProvider';
 import { useWeb3React } from '@web3-react/core';
 import { makeVar, useReactiveVar } from '@apollo/client';
+import { BigNumber } from 'ethers';
 import { getRandomHustler, HustlerInitConfig } from 'src/HustlerConfig';
 import AppWindow from 'components/AppWindow';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
@@ -13,6 +14,7 @@ import LoadingBlock from 'components/LoadingBlock';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
+import { useHustler } from 'hooks/contracts';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -50,13 +52,39 @@ type HustlerEditProps = {
 };
 
 const HustlerEdit = ({ hustler }: HustlerEditProps) => {
+  const hustlerContract = useHustler();
   const hustlerData = JSON.parse(
     Buffer.from(hustler!.data.replace('data:application/json;base64,', ''), 'base64').toString(),
   );
 
+  // const name = hustlerData?.name
+  // const sex =
+  // const dopeId = hustler?.id
+  // const sex =
+  // const bgColor =
+  // const body =
+  // const facialHair =
+  // const hair =
+  // const textColor =
+  // const zoomWindow =
+
   const hustlerConfig = useReactiveVar(
-    makeVar(getRandomHustler(hustlerData?.attributes[1].value.toLowerCase())),
+    makeVar(
+      getRandomHustler({
+        renderName: !!hustlerData?.name,
+        dopeId: hustler?.id,
+        sex: hustlerData?.attributes[1].value.toLowerCase(),
+        name: hustlerData?.name,
+      }),
+    ),
   );
+
+  console.log({ hustlerData });
+
+  // Ignore this for now
+  hustlerContract.metadata(hustler!.id).then(test => {
+    console.log({ test });
+  });
 
   return <ConfigureHustler config={hustlerConfig} />;
 };

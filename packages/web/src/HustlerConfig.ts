@@ -52,30 +52,42 @@ export const getRandomHustlerId = (): string => {
   return getRandomNumber(NUM_DOPE_TOKENS + 1, NUM_DOPE_TOKENS * 2).toString();
 };
 
-export const getRandomHustler = (sex?: HustlerSex): HustlerCustomization => {
+export const getRandomHustler = ({
+  sex,
+  name,
+  bgColor,
+  body,
+  dopeId,
+  facialHair,
+  hair,
+  mintOg,
+  renderName,
+  textColor,
+  zoomWindow,
+}: Partial<HustlerCustomization>): HustlerCustomization => {
   return {
-    bgColor: DEFAULT_BG_COLORS[getRandomNumber(0, DEFAULT_BG_COLORS.length - 1)],
-    body: getRandomNumber(0, MAX_BODIES),
-    dopeId: getRandomHustlerId(),
-    facialHair: getRandomNumber(0, MAX_FACIAL_HAIR),
-    hair: getRandomNumber(0, MAX_HAIR),
-    mintOg: false,
-    name: HUSTLER_NAMES[getRandomNumber(0, HUSTLER_NAMES.length - 1)],
-    renderName: false,
+    bgColor: bgColor || DEFAULT_BG_COLORS[getRandomNumber(0, DEFAULT_BG_COLORS.length - 1)],
+    body: body || getRandomNumber(0, MAX_BODIES),
+    dopeId: dopeId || getRandomHustlerId(),
+    facialHair: facialHair || getRandomNumber(0, MAX_FACIAL_HAIR),
+    hair: hair || getRandomNumber(0, MAX_HAIR),
+    mintOg: mintOg || false,
+    name: name || HUSTLER_NAMES[getRandomNumber(0, HUSTLER_NAMES.length - 1)],
+    renderName: renderName || false,
     sex: sex || (HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex),
-    textColor: '#000000',
-    zoomWindow: ZOOM_WINDOWS[0],
+    textColor: textColor || '#000000',
+    zoomWindow: zoomWindow || ZOOM_WINDOWS[0],
   };
 };
 
-export const HustlerInitConfig = makeVar(getRandomHustler());
+export const HustlerInitConfig = makeVar(getRandomHustler({}));
 
 export const isHustlerRandom = (): boolean => {
   return parseInt(HustlerInitConfig().dopeId) > NUM_DOPE_TOKENS;
 };
 
 export const randomizeHustlerAttributes = () => {
-  const randomHustler = getRandomHustler();
+  const randomHustler = getRandomHustler({});
   const hustlerConfig = HustlerInitConfig();
   HustlerInitConfig({
     ...randomHustler,
