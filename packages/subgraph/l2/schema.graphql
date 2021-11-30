@@ -42,6 +42,17 @@ type Hustler @entity {
   id: ID!
   owner: Wallet!
   data: String!
+  name: String!
+  image: String!
+  attributes: [Attribute!]! @derivedFrom(field: "hustler")
+}
+
+type Attribute @entity {
+  id: ID!
+  hustler: Hustler!
+  traitType: String!
+  displayType: String!
+  value: String!
 }
 
 type Wallet @entity {
