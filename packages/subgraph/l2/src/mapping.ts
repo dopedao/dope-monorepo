@@ -169,7 +169,7 @@ export function handleSwapMeetTransfer(event: TransferSingle): void {
 	toBalance.save();
 }
 
-export function handleHustlerBatchTransfer(event: HustlerTransferBatch): void {
+export function handleHustlerTransferBatch(event: HustlerTransferBatch): void {
 	let fromAddress = event.params.from;
 	let toAddress = event.params.to;
 	let fromId = fromAddress.toHex();
