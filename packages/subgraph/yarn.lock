@@ -38,6 +38,7 @@ __metadata:
   dependencies:
     "@graphprotocol/graph-cli": 0.23.2
     "@graphprotocol/graph-ts": 0.23.1
+    as-base64: ^0.2.0
     cross-var: ^1.1.0
     dotenv: ^10.0.0
     dotenv-cli: ^4.1.0
@@ -387,6 +388,13 @@ __metadata:
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
   checksum: 83644b56493e89a254bae05702abf3a1101b4fa4d0ca31df1c9985275a5a5bd47b3c27b7fa0b71098d41114d8ca000e6ed90cad764b306f8a503665e4d517ced
+  languageName: node
+  linkType: hard
+
+"as-base64@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "as-base64@npm:0.2.0"
+  checksum: 479649beab1eee481236b4dc1fc388ead2e32ca5dc78f9400799a6f7783afd782b8d8201e231e8f8790ee223a0feec0306224b97c3bb3dbe5a540c448fd243ae
   languageName: node
   linkType: hard
 

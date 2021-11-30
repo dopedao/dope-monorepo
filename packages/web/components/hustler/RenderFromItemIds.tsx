@@ -87,7 +87,7 @@ const RenderFromItemIds = ({
   }, [hustlers, sex, body, hair, facialHair]);
 
   useEffect(() => {
-    if (hustlers && bodyRles && itemRles) {
+    if (hustlers && bodyRles.length > 0 && itemRles.length > 0) {
       setHasRenderedFromChain(false);
       const hustlerShadowHex = '0x0036283818022b01000d2b0500092b0200';
       const drugShadowHex = '0x00362f3729062b';
