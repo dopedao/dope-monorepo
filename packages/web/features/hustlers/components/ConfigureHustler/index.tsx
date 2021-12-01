@@ -10,14 +10,14 @@ import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
 
-type ConfigureHustlerProps = {
+export type ConfigureHustlerProps = {
   config: HustlerCustomization;
 };
 
 const ConfigureHustler = ({ config }: ConfigureHustlerProps) => (
   <StackedResponsiveContainer>
     <div>
-      <ConfigurationControls />
+      <ConfigurationControls config={config} />
     </div>
     <PanelContainer
       css={css`
