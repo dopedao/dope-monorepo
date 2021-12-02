@@ -93,7 +93,7 @@ const RenderFromItemIds = ({
       const drugShadowHex = '0x00362f3729062b';
       hustlers
         .render(
-          renderName ? 'OG TITLE GOES HERE' : '', // title
+          renderName ? name : '', // title
           renderName ? name : '', // subtitle – should this be "name" ?
           64,
           hexColorToBase16(bgColor),

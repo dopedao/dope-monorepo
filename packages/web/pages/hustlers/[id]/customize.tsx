@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { media } from 'styles/mixins';
+import { useEffect, useMemo, useState } from 'react';
 import { Maybe, useHustlerQuery } from 'src/generated/graphql';
 import { useOptimismClient } from 'components/EthereumApolloProvider';
 import { useWeb3React } from '@web3-react/core';
@@ -13,7 +14,6 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
 import { useHustler } from 'hooks/contracts';
-import { useEffect, useState } from 'react';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -34,7 +34,7 @@ const Container = styled.div`
   `}
 `;
 
-const ContentLoading = (
+const ContentLoading = () => (
   <Container>
     <LoadingBlock />
   </Container>
@@ -125,26 +125,37 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
     };
 
     fetchMetadata();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const hustlerConfig = useReactiveVar(makeVar(getRandomHustler({})));
+  const makeVarConfig = useMemo(
+    () =>
+      makeVar(
+        getRandomHustler({
+          renderName: Boolean(fetchedHustlerConfig.name && fetchedHustlerConfig.name.length > 0),
+          dopeId: fetchedHustlerConfig.dopeId,
+          sex: fetchedHustlerConfig.sex,
+          name: fetchedHustlerConfig.name,
+          textColor: fetchedHustlerConfig.textColor,
+          bgColor: fetchedHustlerConfig.bgColor,
+        }),
+      ),
+    [
+      fetchedHustlerConfig.bgColor,
+      fetchedHustlerConfig.dopeId,
+      fetchedHustlerConfig.name,
+      fetchedHustlerConfig.sex,
+      fetchedHustlerConfig.textColor,
+    ],
+  );
+
+  const hustlerConfig = useReactiveVar(makeVarConfig);
 
   return isLoading ? (
-    ContentLoading
+    <ContentLoading />
   ) : (
     <>
-      {console.log({ fetchedHustlerConfig })}
-      <ConfigureHustler
-        config={{
-          ...hustlerConfig,
-          renderName: !!fetchedHustlerConfig.name,
-          dopeId: fetchedHustlerConfig.dopeId || hustlerConfig.dopeId,
-          sex: fetchedHustlerConfig.sex || hustlerConfig.sex,
-          name: fetchedHustlerConfig.name || hustlerConfig.name,
-          textColor: fetchedHustlerConfig.textColor || hustlerConfig.textColor,
-          bgColor: fetchedHustlerConfig.bgColor || hustlerConfig.bgColor,
-        }}
-      />
+      <ConfigureHustler config={hustlerConfig} makeVarConfig={makeVarConfig} />
     </>
   );
 };
@@ -163,7 +174,7 @@ const Hustlers = () => {
     <AppWindow padBody={false} navbar={<DopeWarsExeNav />}>
       <Head title="Your Hustler Squad" />
       {loading || !data?.hustler?.data || !data?.hustler?.data.length ? (
-        ContentLoading
+        <ContentLoading />
       ) : (
         <HustlerEdit hustler={data.hustler} />
       )}

@@ -13,22 +13,20 @@ import SexSelector from 'components/hustler/SexSelector';
 import PanelColorSelector from 'components/PanelColorSelector';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 
-const ConfigurationControls = ({ config }: ConfigureHustlerProps) => {
+const ConfigurationControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
   const [showTextColor, setShowTextColor] = useState(false);
   const [showNameControls, setShowNameControls] = useState(false);
 
   useEffect(() => {
-    setShowTextColor(config.renderName == true);
-    setShowNameControls(config.zoomWindow == ZOOM_WINDOWS[0]);
+    setShowTextColor(config.renderName === true);
+    setShowNameControls(config.zoomWindow === ZOOM_WINDOWS[0]);
   }, [config]);
-
-  console.log({ config });
 
   return (
     <>
       <Stack spacing={4}>
         {/* Title controls only make sense when zoomed out fully */}
-        {showNameControls && <NameControls config={config} />}
+        {showNameControls && <NameControls config={config} makeVarConfig={makeVarConfig} />}
 
         {showTextColor && (
           <PanelColorSelector
@@ -36,7 +34,9 @@ const ConfigurationControls = ({ config }: ConfigureHustlerProps) => {
             colors={DEFAULT_TEXT_COLORS}
             value={config.textColor}
             changeCallback={color => {
-              HustlerInitConfig({ ...config, textColor: color });
+              makeVarConfig
+                ? makeVarConfig({ ...config, textColor: color })
+                : HustlerInitConfig({ ...config, textColor: color });
             }}
           />
         )}
@@ -46,7 +46,9 @@ const ConfigurationControls = ({ config }: ConfigureHustlerProps) => {
           colors={DEFAULT_BG_COLORS}
           value={config.bgColor}
           changeCallback={color => {
-            HustlerInitConfig({ ...config, bgColor: color });
+            makeVarConfig
+              ? makeVarConfig({ ...config, bgColor: color })
+              : HustlerInitConfig({ ...config, bgColor: color });
           }}
         />
 
@@ -55,15 +57,17 @@ const ConfigurationControls = ({ config }: ConfigureHustlerProps) => {
           colors={SKIN_TONE_COLORS}
           value={SKIN_TONE_COLORS[config.body]}
           changeCallback={color => {
-            HustlerInitConfig({
-              ...config,
-              body: SKIN_TONE_COLORS.findIndex(el => el == color),
-            });
+            makeVarConfig
+              ? makeVarConfig({ ...config, body: SKIN_TONE_COLORS.findIndex(el => el == color) })
+              : HustlerInitConfig({
+                  ...config,
+                  body: SKIN_TONE_COLORS.findIndex(el => el == color),
+                });
           }}
         />
 
-        <SexSelector config={config} />
-        <HairSelector config={config} />
+        <SexSelector config={config} makeVarConfig={makeVarConfig} />
+        <HairSelector config={config} makeVarConfig={makeVarConfig} />
       </Stack>
     </>
   );
