@@ -7,6 +7,7 @@ import {
   Hustler__factory,
   SwapMeet__factory,
 } from '@dopewars/contracts';
+import { ethers, BigNumber } from 'ethers';
 
 import { NETWORK } from 'src/constants';
 import { useEthereum, useOptimism } from 'hooks/web3';
@@ -65,13 +66,142 @@ export const useHustler = () => {
   );
 };
 
-export const useReleaseDate = (): Date | undefined => {
-  const [releaseDate, setReleaseDate] = useState<Date>();
-  const initator = useInitiator();
+export const useFetchMetadata = () => {
+  const hustler = useHustler();
+  const { provider } = useOptimism();
 
-  useEffect(() => {
-    initator.release().then(date => setReleaseDate(new Date(date.toNumber() * 1000)));
-  }, [initator]);
+  return async function fetchMetadata(id: BigNumber) {
+    const metadata = await hustler.metadata(id);
+    const name = metadata['name'];
+    const color = metadata['color'];
+    const background = metadata['background'];
 
-  return releaseDate;
+    const METADATA_KEY = ethers.utils.solidityKeccak256(['uint256', 'uint256'], [id, 19]);
+    const VIEWBOX_SLOT = 1;
+    const BODY_SLOT = 2;
+    const ORDER_SLOT = 3;
+    const WEAPON_SLOT = 5;
+    const CLOTHES_SLOT = 6;
+    const VEHICLE_SLOT = 7;
+    const WAIST_SLOT = 8;
+    const FOOT_SLOT = 9;
+    const HAND_SLOT = 10;
+    const DRUGS_SLOT = 11;
+    const NECK_SLOT = 12;
+    const RING_SLOT = 13;
+    const ACCESSORY_SLOT = 14;
+
+    try {
+      const [
+        viewbox,
+        body,
+        order,
+        weapon,
+        clothes,
+        vehicle,
+        waist,
+        foot,
+        hand,
+        drugs,
+        neck,
+        ring,
+        accessory,
+      ] = await Promise.all([
+        provider
+          .getStorageAt(
+            hustler.address,
+            BigNumber.from(METADATA_KEY).add(VIEWBOX_SLOT).toHexString(),
+          )
+          .then(value => [
+            BigNumber.from(ethers.utils.hexDataSlice(value, 31)),
+            BigNumber.from(ethers.utils.hexDataSlice(value, 30, 31)),
+            BigNumber.from(ethers.utils.hexDataSlice(value, 29, 30)),
+            BigNumber.from(ethers.utils.hexDataSlice(value, 28, 29)),
+          ]) as any,
+        provider
+          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(BODY_SLOT).toHexString())
+          .then(value => [
+            BigNumber.from(ethers.utils.hexDataSlice(value, 31)),
+            BigNumber.from(ethers.utils.hexDataSlice(value, 30, 31)),
+            BigNumber.from(ethers.utils.hexDataSlice(value, 29, 30)),
+            BigNumber.from(ethers.utils.hexDataSlice(value, 28, 29)),
+          ]) as any,
+        provider
+          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(ORDER_SLOT).toHexString())
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(
+            hustler.address,
+            BigNumber.from(METADATA_KEY).add(WEAPON_SLOT).toHexString(),
+          )
+          .then(BigNumber.from)
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(
+            hustler.address,
+            BigNumber.from(METADATA_KEY).add(CLOTHES_SLOT).toHexString(),
+          )
+          .then(BigNumber.from)
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(
+            hustler.address,
+            BigNumber.from(METADATA_KEY).add(VEHICLE_SLOT).toHexString(),
+          )
+          .then(BigNumber.from)
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(WAIST_SLOT).toHexString())
+          .then(BigNumber.from)
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(FOOT_SLOT).toHexString())
+          .then(BigNumber.from)
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(HAND_SLOT).toHexString())
+          .then(BigNumber.from)
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(DRUGS_SLOT).toHexString())
+          .then(BigNumber.from)
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(NECK_SLOT).toHexString())
+          .then(BigNumber.from)
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(RING_SLOT).toHexString())
+          .then(BigNumber.from)
+          .then(BigNumber.from),
+        provider
+          .getStorageAt(
+            hustler.address,
+            BigNumber.from(METADATA_KEY).add(ACCESSORY_SLOT).toHexString(),
+          )
+          .then(BigNumber.from),
+      ]);
+
+      return {
+        name,
+        color,
+        background,
+        viewbox,
+        body,
+        order,
+        weapon,
+        clothes,
+        vehicle,
+        waist,
+        foot,
+        hand,
+        drugs,
+        neck,
+        ring,
+        accessory,
+      };
+    } catch (e) {
+      console.error(e);
+    }
+  };
 };
