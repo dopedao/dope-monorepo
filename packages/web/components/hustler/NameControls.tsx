@@ -1,7 +1,7 @@
 import { HustlerInitConfig } from 'src/HustlerConfig';
 import { useDebounce } from 'usehooks-ts';
 import { useState, useEffect } from 'react';
-import { Box, Input, HStack, FormControl, FormLabel, Switch, Stack } from '@chakra-ui/react';
+import { Input, HStack, FormControl, FormLabel, Switch, Stack } from '@chakra-ui/react';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
@@ -60,7 +60,7 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
             <FormControl display="flex" alignItems="center" verticalAlign="center">
               <Switch
                 id="render-name"
-                checked={config.renderName}
+                isChecked={config.renderName}
                 onChange={e => {
                   makeVarConfig
                     ? makeVarConfig({ ...config, renderName: e.target.checked })

@@ -14,7 +14,7 @@ import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
-import { useFetchMetadata, useHustler } from 'hooks/contracts';
+import { useFetchMetadata } from 'hooks/contracts';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -52,41 +52,45 @@ type HustlerEditProps = {
 };
 
 const HustlerEdit = ({ hustler }: HustlerEditProps) => {
-  const [isLoading, setLoading] = useState(false);
+  const router = useRouter();
+  const [isLoading, setLoading] = useState(true);
   const [fetchedHustlerConfig, setHustlerConfig] = useState<Partial<HustlerCustomization>>({});
-  const hustlerContract = useHustler();
-  const hustlerData = JSON.parse(
-    Buffer.from(hustler!.data.replace('data:application/json;base64,', ''), 'base64').toString(),
-  );
 
   const fetchMetadata = useFetchMetadata();
 
   useEffect(() => {
     if (!hustler) {
+      setLoading(false);
       return;
     }
 
     const fetch = async () => {
-      const metadata = await fetchMetadata(BigNumber.from(hustler.id));
+      try {
+        const metadata = await fetchMetadata(BigNumber.from(hustler.id));
 
-      if (!metadata) {
-        // error occured
-        return;
+        if (!metadata) {
+          // error occured
+          return;
+        }
+
+        setHustlerConfig({
+          name: metadata.name,
+          dopeId: hustler.id,
+          sex: metadata.body[0].eq(0) ? 'male' : 'female',
+          textColor: `#${metadata.color.slice(2, -2)}`,
+          bgColor: `#${metadata.background.slice(2, -2).toUpperCase()}`,
+          body: metadata.body[1],
+          hair: metadata.body[2],
+          facialHair: metadata.body[3],
+        });
+        setLoading(false);
+      } catch (error) {
+        router.push('/404');
       }
-
-      setHustlerConfig({
-        name: metadata.name,
-        dopeId: hustler.id,
-        sex: metadata.body[0].eq(0),
-        textColor: `#${metadata.color.slice(2, -2)}`,
-        bgColor: `#${metadata.background.slice(2, -2)}`,
-        body: metadata.body[1],
-        hair: metadata.body[2],
-        facialHair: metadata.body[3],
-      });
     };
 
     fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hustler]);
 
   const makeVarConfig = useMemo(
@@ -99,11 +103,17 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
           name: fetchedHustlerConfig.name,
           textColor: fetchedHustlerConfig.textColor,
           bgColor: fetchedHustlerConfig.bgColor,
+          facialHair: fetchedHustlerConfig.facialHair,
+          hair: fetchedHustlerConfig.hair,
+          body: fetchedHustlerConfig.body,
         }),
       ),
     [
       fetchedHustlerConfig.bgColor,
+      fetchedHustlerConfig.body,
       fetchedHustlerConfig.dopeId,
+      fetchedHustlerConfig.facialHair,
+      fetchedHustlerConfig.hair,
       fetchedHustlerConfig.name,
       fetchedHustlerConfig.sex,
       fetchedHustlerConfig.textColor,
