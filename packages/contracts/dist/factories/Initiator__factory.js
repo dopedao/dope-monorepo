@@ -254,11 +254,6 @@ var _abi = [
                 type: "address",
             },
             {
-                internalType: "bytes",
-                name: "data",
-                type: "bytes",
-            },
-            {
                 internalType: "uint32",
                 name: "gasLimit",
                 type: "uint32",
