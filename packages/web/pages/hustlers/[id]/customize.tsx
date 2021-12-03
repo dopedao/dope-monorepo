@@ -126,7 +126,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
     <ContentLoading />
   ) : (
     <>
-      <ConfigureHustler config={hustlerConfig} makeVarConfig={makeVarConfig} />
+      <ConfigureHustler config={hustlerConfig} makeVarConfig={makeVarConfig} isCustomize />
     </>
   );
 };
