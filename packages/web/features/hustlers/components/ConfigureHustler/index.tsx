@@ -9,15 +9,17 @@ import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
+import { ReactiveVar } from '@apollo/client';
 
 export type ConfigureHustlerProps = {
   config: HustlerCustomization;
+  makeVarConfig?: ReactiveVar<HustlerCustomization>;
 };
 
-const ConfigureHustler = ({ config }: ConfigureHustlerProps) => (
+const ConfigureHustler = ({ config, makeVarConfig }: ConfigureHustlerProps) => (
   <StackedResponsiveContainer>
     <div>
-      <ConfigurationControls config={config} />
+      <ConfigurationControls config={config} makeVarConfig={makeVarConfig} />
     </div>
     <PanelContainer
       css={css`

@@ -5,12 +5,16 @@ import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 
-const SexSelector = ({ config }: ConfigureHustlerProps) => (
+const SexSelector = ({ config, makeVarConfig }: ConfigureHustlerProps) => (
   <PanelContainer>
     <PanelTitleBar>Sex</PanelTitleBar>
     <PanelBody>
       <RadioGroup
-        onChange={value => HustlerInitConfig({ ...config, sex: value as HustlerSex })}
+        onChange={value => {
+          makeVarConfig
+            ? makeVarConfig({ ...config, sex: value as HustlerSex })
+            : HustlerInitConfig({ ...config, sex: value as HustlerSex });
+        }}
         value={config.sex}
       >
         <Flex>

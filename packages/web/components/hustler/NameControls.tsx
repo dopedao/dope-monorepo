@@ -10,7 +10,7 @@ import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHus
 const NAME_MAX_LENGTH = 20;
 const FIELD_SPACING = '16px';
 
-const NameControls = ({ config }: ConfigureHustlerProps) => {
+const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
   // const validateName = (value: string) => {
   //   let error;
   //   if (!value) {
@@ -28,13 +28,15 @@ const NameControls = ({ config }: ConfigureHustlerProps) => {
   useEffect(() => {
     // Set from typing
     if (nameFieldDirty && config.name !== debouncedHustlerName) {
-      HustlerInitConfig({ ...config, name: debouncedHustlerName });
+      makeVarConfig
+        ? makeVarConfig({ ...config, name: debouncedHustlerName })
+        : HustlerInitConfig({ ...config, name: debouncedHustlerName });
       setNameFieldDirty(false);
       // Set from randomize or external change
     } else if (!nameFieldDirty && config.name !== debouncedHustlerName) {
       setHustlerName(config.name ?? '');
     }
-  }, [debouncedHustlerName, config, nameFieldDirty]);
+  }, [debouncedHustlerName, config, nameFieldDirty, makeVarConfig]);
 
   return (
     <PanelContainer>
@@ -60,7 +62,9 @@ const NameControls = ({ config }: ConfigureHustlerProps) => {
                 id="render-name"
                 checked={config.renderName}
                 onChange={e => {
-                  HustlerInitConfig({ ...config, renderName: e.target.checked });
+                  makeVarConfig
+                    ? makeVarConfig({ ...config, renderName: e.target.checked })
+                    : HustlerInitConfig({ ...config, renderName: e.target.checked });
                 }}
               />
               <FormLabel htmlFor="render-name" ml="2" mt="1">

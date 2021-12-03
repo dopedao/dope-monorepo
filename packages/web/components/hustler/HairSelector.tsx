@@ -14,7 +14,7 @@ import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 
-const HairSelector = ({ config }: ConfigureHustlerProps) => {
+const HairSelector = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
   const isMale = config.sex == 'male';
 
   return (
@@ -29,7 +29,11 @@ const HairSelector = ({ config }: ConfigureHustlerProps) => {
               defaultValue={0}
               min={0}
               max={MAX_HAIR}
-              onChange={value => HustlerInitConfig({ ...config, hair: parseInt(value) })}
+              onChange={value =>
+                makeVarConfig
+                  ? makeVarConfig({ ...config, hair: parseInt(value) })
+                  : HustlerInitConfig({ ...config, hair: parseInt(value) })
+              }
               value={config.hair}
             >
               <NumberInputField />
@@ -48,7 +52,11 @@ const HairSelector = ({ config }: ConfigureHustlerProps) => {
                 defaultValue={0}
                 min={0}
                 max={MAX_FACIAL_HAIR}
-                onChange={value => HustlerInitConfig({ ...config, facialHair: parseInt(value) })}
+                onChange={value =>
+                  makeVarConfig
+                    ? makeVarConfig({ ...config, facialHair: parseInt(value) })
+                    : HustlerInitConfig({ ...config, facialHair: parseInt(value) })
+                }
                 value={config.facialHair}
               >
                 <NumberInputField />
