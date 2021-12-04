@@ -1,0 +1,46 @@
+# Maps a Time GraphQL scalar to a Go time.Time struct.
+scalar Time
+# Timestamp is a RFC3339 string.
+scalar Timestamp
+# Bytes32 is a 32 byte binary string, represented as 0x-prefixed hexadecimal.
+scalar Bytes32
+# Address is a 20 byte Ethereum address, represented as 0x-prefixed hexadecimal.
+scalar Address
+# Bytes is an arbitrary length binary string, represented as 0x-prefixed hexadecimal.
+# An empty byte string is represented as '0x'. Byte strings must have an even number of hexadecimal nybbles.
+scalar Bytes
+# BigInt is a large integer represented as a string.
+scalar BigInt
+# Long is a 64 bit unsigned integer.
+scalar Long
+# AccountID is a CAIP-10 compliant account id.
+scalar AccountID
+# ChainID is a CAIP-2 compliant chain id.
+scalar ChainID
+# AssetID is a CAIP-19 compliant asset id.
+scalar AssetID
+
+type Dope {
+  id: ID!
+  clothes: String!
+  foot: String!
+  hand: String!
+  neck: String!
+  ring: String!
+  waist: String!
+  weapon: String!
+  drugs: String!
+  vehicle: String!
+  claimed: Boolean!
+  opened: Boolean!
+}
+
+type Wallet {
+  id: AccountID!
+  dopes: [Dope!]!
+  paper: BigInt!
+}
+
+type Query {
+  wallets: [Wallet!]
+}
