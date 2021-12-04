@@ -1,42 +1,32 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net/http"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/migrate"
-	"github.com/dopedao/dope-monorepo/packages/api/graph"
+	"entgo.io/ent/dialect/sql"
 
 	"entgo.io/ent/dialect"
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/dopedao/dope-monorepo/packages/api"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	// Create ent.Client and run the schema migration.
-	client, err := ent.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
+	db, err := sql.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
 	if err != nil {
-		log.Fatal("opening ent client", err)
-	}
-	if err := client.Schema.Create(
-		context.Background(),
-		migrate.WithGlobalUniqueID(true),
-	); err != nil {
-		log.Fatal("opening ent client", err)
+		log.Fatal("Connecting to db.") //nolint:gocritic
 	}
 
-	// Configure the server and start listening on :8081.
-	srv := handler.NewDefaultServer(graph.NewSchema(client))
-	http.Handle("/",
-		playground.Handler("api", "/query"),
-	)
-	http.Handle("/query", srv)
+	srv, err := api.NewServer(db)
+	if err != nil {
+		log.Fatal("Creating server.") //nolint:gocritic
+	}
+
+	server := &http.Server{Addr: ":8081", Handler: srv}
+
 	log.Println("listening on :8081")
-	if err := http.ListenAndServe(":8081", nil); err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatal("http server terminated", err)
 	}
 }
