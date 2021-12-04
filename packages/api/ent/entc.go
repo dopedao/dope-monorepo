@@ -22,6 +22,9 @@ func main() {
 	}
 	if err := entc.Generate("./schema", &gen.Config{
 		IDType: &field.TypeInfo{Type: field.TypeString},
+		Features: []gen.Feature{
+			gen.FeatureUpsert,
+		},
 	}, opts...); err != nil {
 		log.Fatalf("running ent codegen: %v", err)
 	}

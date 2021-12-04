@@ -7,6 +7,8 @@ import (
 	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
@@ -19,6 +21,7 @@ type WalletCreate struct {
 	config
 	mutation *WalletMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetPaper sets the "paper" field.
@@ -149,6 +152,7 @@ func (wc *WalletCreate) createSpec() (*Wallet, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	_spec.OnConflict = wc.conflict
 	if id, ok := wc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -183,10 +187,176 @@ func (wc *WalletCreate) createSpec() (*Wallet, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Wallet.Create().
+//		SetPaper(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.WalletUpsert) {
+//			SetPaper(v+v).
+//		}).
+//		Exec(ctx)
+//
+func (wc *WalletCreate) OnConflict(opts ...sql.ConflictOption) *WalletUpsertOne {
+	wc.conflict = opts
+	return &WalletUpsertOne{
+		create: wc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Wallet.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+//
+func (wc *WalletCreate) OnConflictColumns(columns ...string) *WalletUpsertOne {
+	wc.conflict = append(wc.conflict, sql.ConflictColumns(columns...))
+	return &WalletUpsertOne{
+		create: wc,
+	}
+}
+
+type (
+	// WalletUpsertOne is the builder for "upsert"-ing
+	//  one Wallet node.
+	WalletUpsertOne struct {
+		create *WalletCreate
+	}
+
+	// WalletUpsert is the "OnConflict" setter.
+	WalletUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetPaper sets the "paper" field.
+func (u *WalletUpsert) SetPaper(v schema.BigInt) *WalletUpsert {
+	u.Set(wallet.FieldPaper, v)
+	return u
+}
+
+// UpdatePaper sets the "paper" field to the value that was provided on create.
+func (u *WalletUpsert) UpdatePaper() *WalletUpsert {
+	u.SetExcluded(wallet.FieldPaper)
+	return u
+}
+
+// UpdateNewValues updates the fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.Wallet.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(wallet.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+//
+func (u *WalletUpsertOne) UpdateNewValues() *WalletUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(wallet.FieldID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//  client.Wallet.Create().
+//      OnConflict(sql.ResolveWithIgnore()).
+//      Exec(ctx)
+//
+func (u *WalletUpsertOne) Ignore() *WalletUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *WalletUpsertOne) DoNothing() *WalletUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the WalletCreate.OnConflict
+// documentation for more info.
+func (u *WalletUpsertOne) Update(set func(*WalletUpsert)) *WalletUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&WalletUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetPaper sets the "paper" field.
+func (u *WalletUpsertOne) SetPaper(v schema.BigInt) *WalletUpsertOne {
+	return u.Update(func(s *WalletUpsert) {
+		s.SetPaper(v)
+	})
+}
+
+// UpdatePaper sets the "paper" field to the value that was provided on create.
+func (u *WalletUpsertOne) UpdatePaper() *WalletUpsertOne {
+	return u.Update(func(s *WalletUpsert) {
+		s.UpdatePaper()
+	})
+}
+
+// Exec executes the query.
+func (u *WalletUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for WalletCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *WalletUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *WalletUpsertOne) ID(ctx context.Context) (id string, err error) {
+	if u.create.driver.Dialect() == dialect.MySQL {
+		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
+		// fields from the database since MySQL does not support the RETURNING clause.
+		return id, errors.New("ent: WalletUpsertOne.ID is not supported by MySQL driver. Use WalletUpsertOne.Exec instead")
+	}
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *WalletUpsertOne) IDX(ctx context.Context) string {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // WalletCreateBulk is the builder for creating many Wallet entities in bulk.
 type WalletCreateBulk struct {
 	config
 	builders []*WalletCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Wallet entities in the database.
@@ -212,6 +382,7 @@ func (wcb *WalletCreateBulk) Save(ctx context.Context) ([]*Wallet, error) {
 					_, err = mutators[i+1].Mutate(root, wcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = wcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, wcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -258,6 +429,136 @@ func (wcb *WalletCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (wcb *WalletCreateBulk) ExecX(ctx context.Context) {
 	if err := wcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Wallet.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.WalletUpsert) {
+//			SetPaper(v+v).
+//		}).
+//		Exec(ctx)
+//
+func (wcb *WalletCreateBulk) OnConflict(opts ...sql.ConflictOption) *WalletUpsertBulk {
+	wcb.conflict = opts
+	return &WalletUpsertBulk{
+		create: wcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Wallet.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+//
+func (wcb *WalletCreateBulk) OnConflictColumns(columns ...string) *WalletUpsertBulk {
+	wcb.conflict = append(wcb.conflict, sql.ConflictColumns(columns...))
+	return &WalletUpsertBulk{
+		create: wcb,
+	}
+}
+
+// WalletUpsertBulk is the builder for "upsert"-ing
+// a bulk of Wallet nodes.
+type WalletUpsertBulk struct {
+	create *WalletCreateBulk
+}
+
+// UpdateNewValues updates the fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Wallet.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(wallet.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+//
+func (u *WalletUpsertBulk) UpdateNewValues() *WalletUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(wallet.FieldID)
+				return
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Wallet.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+//
+func (u *WalletUpsertBulk) Ignore() *WalletUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *WalletUpsertBulk) DoNothing() *WalletUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the WalletCreateBulk.OnConflict
+// documentation for more info.
+func (u *WalletUpsertBulk) Update(set func(*WalletUpsert)) *WalletUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&WalletUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetPaper sets the "paper" field.
+func (u *WalletUpsertBulk) SetPaper(v schema.BigInt) *WalletUpsertBulk {
+	return u.Update(func(s *WalletUpsert) {
+		s.SetPaper(v)
+	})
+}
+
+// UpdatePaper sets the "paper" field to the value that was provided on create.
+func (u *WalletUpsertBulk) UpdatePaper() *WalletUpsertBulk {
+	return u.Update(func(s *WalletUpsert) {
+		s.UpdatePaper()
+	})
+}
+
+// Exec executes the query.
+func (u *WalletUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the WalletCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for WalletCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *WalletUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
