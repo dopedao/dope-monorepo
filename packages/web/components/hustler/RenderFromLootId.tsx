@@ -1,7 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { BigNumber, providers } from 'ethers';
-import { NETWORK } from 'src/constants';
-import { SwapMeet__factory } from '@dopewars/contracts';
+import { useEffect, useState } from 'react';
+import { BigNumber } from 'ethers';
 import RenderFromItemIds, { HustlerRenderProps } from 'components/hustler/RenderFromItemIds';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import { useSwapMeet } from 'hooks/contracts';

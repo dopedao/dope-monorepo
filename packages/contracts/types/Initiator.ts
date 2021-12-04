@@ -95,7 +95,7 @@ export interface InitiatorInterface extends ethers.utils.Interface {
     "isOpened(uint256)": FunctionFragment;
     "mintFromDopeTo(uint256,address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes,uint32)": FunctionFragment;
     "mintOGFromDopeTo(uint256,address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes,uint32)": FunctionFragment;
-    "open(uint256,address,bytes,uint32)": FunctionFragment;
+    "open(uint256,address,uint32)": FunctionFragment;
     "owner()": FunctionFragment;
     "release()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -119,7 +119,7 @@ export interface InitiatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "open",
-    values: [BigNumberish, string, BytesLike, BigNumberish]
+    values: [BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "release", values?: undefined): string;
@@ -234,7 +234,6 @@ export interface Initiator extends BaseContract {
     open(
       id: BigNumberish,
       to: string,
-      data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -287,7 +286,6 @@ export interface Initiator extends BaseContract {
   open(
     id: BigNumberish,
     to: string,
-    data: BytesLike,
     gasLimit: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -340,7 +338,6 @@ export interface Initiator extends BaseContract {
     open(
       id: BigNumberish,
       to: string,
-      data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -404,7 +401,6 @@ export interface Initiator extends BaseContract {
     open(
       id: BigNumberish,
       to: string,
-      data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -461,7 +457,6 @@ export interface Initiator extends BaseContract {
     open(
       id: BigNumberish,
       to: string,
-      data: BytesLike,
       gasLimit: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

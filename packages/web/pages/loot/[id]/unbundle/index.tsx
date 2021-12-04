@@ -16,7 +16,6 @@ import MintTo from 'components/panels/MintTo';
 import { useInitiator, usePaper, useSwapMeet } from 'hooks/contracts';
 import router, { useRouter } from 'next/router';
 import RenderLoot from 'components/loot/RenderLoot';
-import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import AppWindow from 'components/AppWindow';
 
 const Approve = () => {
@@ -74,7 +73,7 @@ const Approve = () => {
     }
 
     initiator
-      .open(dopeId, mintAddress || account, '0x', 600000)
+      .open(dopeId, mintAddress || account, 1000000)
       .then(() => router.replace('/loot/unbundle-success'));
   };
 

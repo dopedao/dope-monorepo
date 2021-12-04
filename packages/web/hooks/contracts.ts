@@ -6,7 +6,7 @@ import {
   Initiator__factory,
   Hustler__factory,
   SwapMeet__factory,
-} from '@dopewars/contracts';
+} from '@dopewars/contracts/dist';
 
 import { NETWORK } from 'src/constants';
 import { useEthereum, useOptimism } from 'hooks/web3';
