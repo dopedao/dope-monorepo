@@ -4,12 +4,15 @@ import (
 	"context"
 	"log"
 	"math/big"
+	"reflect"
 	"sync"
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/go-retryablehttp"
@@ -22,15 +25,32 @@ type EthClient interface {
 	BlockNumber(ctx context.Context) (uint64, error)
 }
 
-type Engine struct {
-	sync.Mutex
-	latest uint64
-	ent    *ent.Client
-	eth    EthClient
-	ticker *time.Ticker
+type Processor interface {
+	Setup(common.Address, EthClient, *ent.Client) error
+	Initialize(context.Context, uint64, func(string, []interface{})) error
+	ProcessElement(interface{}) func(context.Context, types.Log, func(string, []interface{})) error
 }
 
-func NewEngine(ent *ent.Client, rpcConnStr string, interval time.Duration) *Engine {
+type Contract struct {
+	Address   common.Address
+	Interface reflect.Type
+}
+
+type Config struct {
+	Interval  time.Duration
+	Contracts []Contract
+}
+
+type Engine struct {
+	sync.Mutex
+	latest     uint64
+	ent        *ent.Client
+	eth        EthClient
+	ticker     *time.Ticker
+	processors []Processor
+}
+
+func NewEngine(ent *ent.Client, rpcConnStr string, config Config) *Engine {
 	retryableHTTPClient := retryablehttp.NewClient()
 	c, err := rpc.DialHTTPWithClient(rpcConnStr, retryableHTTPClient.StandardClient())
 	if err != nil {
@@ -42,15 +62,19 @@ func NewEngine(ent *ent.Client, rpcConnStr string, interval time.Duration) *Engi
 	e := &Engine{
 		ent:    ent,
 		eth:    eth,
-		ticker: time.NewTicker(interval),
+		ticker: time.NewTicker(config.Interval),
 	}
 
-	e.sub(context.Background())
+	for _, contract := range config.Contracts {
+		if p, ok := reflect.New(contract.Interface).Interface().(Processor); ok {
+			e.processors = append(e.processors, p)
+		}
+	}
 
 	return e
 }
 
-func (e *Engine) sub(ctx context.Context) {
+func (e *Engine) Sync(ctx context.Context) {
 	defer e.ticker.Stop()
 
 	for {
