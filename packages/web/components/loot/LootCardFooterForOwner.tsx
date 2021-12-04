@@ -18,30 +18,8 @@ interface Props {
 const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   const { chainId, account } = useWeb3React();
 
-  const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
-
-  const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
-
   const paper = usePaper();
   const initiator = useInitiator();
-
-  useEffect(() => {
-    if (account) {
-      paper
-        .balanceOf(account)
-        .then(balance => setHasEnoughPaper(balance.gt('12500000000000000000000')));
-    }
-  }, [account, paper]);
-
-  useEffect(() => {
-    if (account) {
-      paper
-        .allowance(account, initiator.address)
-        .then((allowance: BigNumber) =>
-          setIsPaperApproved(allowance.gte('12500000000000000000000')),
-        );
-    }
-  }, [account, chainId, paper]);
 
   const router = useRouter();
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
