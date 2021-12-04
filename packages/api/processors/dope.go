@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -11,16 +12,18 @@ import (
 
 type DopeProcessor struct {
 	bindings.UnimplementedDopeProcessor
+	ent *ent.Client
 }
 
 func (p *DopeProcessor) Setup(address common.Address, eth interface {
-	ethereum.ChainReader
 	bind.ContractBackend
-}) error {
+	ethereum.ChainReader
+}, ent *ent.Client) error {
 	if err := p.UnimplementedDopeProcessor.Setup(address, eth); err != nil {
 		return err
 	}
 
+	p.ent = ent
 	return nil
 }
 
