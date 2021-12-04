@@ -7,6 +7,8 @@ import (
 	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
@@ -18,6 +20,7 @@ type DopeCreate struct {
 	config
 	mutation *DopeMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetClothes sets the "clothes" field.
@@ -287,6 +290,7 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	_spec.OnConflict = dc.conflict
 	if id, ok := dc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -402,10 +406,436 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Dope.Create().
+//		SetClothes(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.DopeUpsert) {
+//			SetClothes(v+v).
+//		}).
+//		Exec(ctx)
+//
+func (dc *DopeCreate) OnConflict(opts ...sql.ConflictOption) *DopeUpsertOne {
+	dc.conflict = opts
+	return &DopeUpsertOne{
+		create: dc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Dope.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+//
+func (dc *DopeCreate) OnConflictColumns(columns ...string) *DopeUpsertOne {
+	dc.conflict = append(dc.conflict, sql.ConflictColumns(columns...))
+	return &DopeUpsertOne{
+		create: dc,
+	}
+}
+
+type (
+	// DopeUpsertOne is the builder for "upsert"-ing
+	//  one Dope node.
+	DopeUpsertOne struct {
+		create *DopeCreate
+	}
+
+	// DopeUpsert is the "OnConflict" setter.
+	DopeUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetClothes sets the "clothes" field.
+func (u *DopeUpsert) SetClothes(v string) *DopeUpsert {
+	u.Set(dope.FieldClothes, v)
+	return u
+}
+
+// UpdateClothes sets the "clothes" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateClothes() *DopeUpsert {
+	u.SetExcluded(dope.FieldClothes)
+	return u
+}
+
+// SetFoot sets the "foot" field.
+func (u *DopeUpsert) SetFoot(v string) *DopeUpsert {
+	u.Set(dope.FieldFoot, v)
+	return u
+}
+
+// UpdateFoot sets the "foot" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateFoot() *DopeUpsert {
+	u.SetExcluded(dope.FieldFoot)
+	return u
+}
+
+// SetHand sets the "hand" field.
+func (u *DopeUpsert) SetHand(v string) *DopeUpsert {
+	u.Set(dope.FieldHand, v)
+	return u
+}
+
+// UpdateHand sets the "hand" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateHand() *DopeUpsert {
+	u.SetExcluded(dope.FieldHand)
+	return u
+}
+
+// SetNeck sets the "neck" field.
+func (u *DopeUpsert) SetNeck(v string) *DopeUpsert {
+	u.Set(dope.FieldNeck, v)
+	return u
+}
+
+// UpdateNeck sets the "neck" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateNeck() *DopeUpsert {
+	u.SetExcluded(dope.FieldNeck)
+	return u
+}
+
+// SetRing sets the "ring" field.
+func (u *DopeUpsert) SetRing(v string) *DopeUpsert {
+	u.Set(dope.FieldRing, v)
+	return u
+}
+
+// UpdateRing sets the "ring" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateRing() *DopeUpsert {
+	u.SetExcluded(dope.FieldRing)
+	return u
+}
+
+// SetWaist sets the "waist" field.
+func (u *DopeUpsert) SetWaist(v string) *DopeUpsert {
+	u.Set(dope.FieldWaist, v)
+	return u
+}
+
+// UpdateWaist sets the "waist" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateWaist() *DopeUpsert {
+	u.SetExcluded(dope.FieldWaist)
+	return u
+}
+
+// SetWeapon sets the "weapon" field.
+func (u *DopeUpsert) SetWeapon(v string) *DopeUpsert {
+	u.Set(dope.FieldWeapon, v)
+	return u
+}
+
+// UpdateWeapon sets the "weapon" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateWeapon() *DopeUpsert {
+	u.SetExcluded(dope.FieldWeapon)
+	return u
+}
+
+// SetDrugs sets the "drugs" field.
+func (u *DopeUpsert) SetDrugs(v string) *DopeUpsert {
+	u.Set(dope.FieldDrugs, v)
+	return u
+}
+
+// UpdateDrugs sets the "drugs" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateDrugs() *DopeUpsert {
+	u.SetExcluded(dope.FieldDrugs)
+	return u
+}
+
+// SetVehicle sets the "vehicle" field.
+func (u *DopeUpsert) SetVehicle(v string) *DopeUpsert {
+	u.Set(dope.FieldVehicle, v)
+	return u
+}
+
+// UpdateVehicle sets the "vehicle" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateVehicle() *DopeUpsert {
+	u.SetExcluded(dope.FieldVehicle)
+	return u
+}
+
+// SetClaimed sets the "claimed" field.
+func (u *DopeUpsert) SetClaimed(v bool) *DopeUpsert {
+	u.Set(dope.FieldClaimed, v)
+	return u
+}
+
+// UpdateClaimed sets the "claimed" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateClaimed() *DopeUpsert {
+	u.SetExcluded(dope.FieldClaimed)
+	return u
+}
+
+// SetOpened sets the "opened" field.
+func (u *DopeUpsert) SetOpened(v bool) *DopeUpsert {
+	u.Set(dope.FieldOpened, v)
+	return u
+}
+
+// UpdateOpened sets the "opened" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateOpened() *DopeUpsert {
+	u.SetExcluded(dope.FieldOpened)
+	return u
+}
+
+// UpdateNewValues updates the fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.Dope.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(dope.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+//
+func (u *DopeUpsertOne) UpdateNewValues() *DopeUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(dope.FieldID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//  client.Dope.Create().
+//      OnConflict(sql.ResolveWithIgnore()).
+//      Exec(ctx)
+//
+func (u *DopeUpsertOne) Ignore() *DopeUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *DopeUpsertOne) DoNothing() *DopeUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the DopeCreate.OnConflict
+// documentation for more info.
+func (u *DopeUpsertOne) Update(set func(*DopeUpsert)) *DopeUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&DopeUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetClothes sets the "clothes" field.
+func (u *DopeUpsertOne) SetClothes(v string) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetClothes(v)
+	})
+}
+
+// UpdateClothes sets the "clothes" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateClothes() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateClothes()
+	})
+}
+
+// SetFoot sets the "foot" field.
+func (u *DopeUpsertOne) SetFoot(v string) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetFoot(v)
+	})
+}
+
+// UpdateFoot sets the "foot" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateFoot() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateFoot()
+	})
+}
+
+// SetHand sets the "hand" field.
+func (u *DopeUpsertOne) SetHand(v string) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetHand(v)
+	})
+}
+
+// UpdateHand sets the "hand" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateHand() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateHand()
+	})
+}
+
+// SetNeck sets the "neck" field.
+func (u *DopeUpsertOne) SetNeck(v string) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetNeck(v)
+	})
+}
+
+// UpdateNeck sets the "neck" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateNeck() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateNeck()
+	})
+}
+
+// SetRing sets the "ring" field.
+func (u *DopeUpsertOne) SetRing(v string) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetRing(v)
+	})
+}
+
+// UpdateRing sets the "ring" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateRing() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateRing()
+	})
+}
+
+// SetWaist sets the "waist" field.
+func (u *DopeUpsertOne) SetWaist(v string) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetWaist(v)
+	})
+}
+
+// UpdateWaist sets the "waist" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateWaist() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateWaist()
+	})
+}
+
+// SetWeapon sets the "weapon" field.
+func (u *DopeUpsertOne) SetWeapon(v string) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetWeapon(v)
+	})
+}
+
+// UpdateWeapon sets the "weapon" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateWeapon() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateWeapon()
+	})
+}
+
+// SetDrugs sets the "drugs" field.
+func (u *DopeUpsertOne) SetDrugs(v string) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetDrugs(v)
+	})
+}
+
+// UpdateDrugs sets the "drugs" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateDrugs() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateDrugs()
+	})
+}
+
+// SetVehicle sets the "vehicle" field.
+func (u *DopeUpsertOne) SetVehicle(v string) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetVehicle(v)
+	})
+}
+
+// UpdateVehicle sets the "vehicle" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateVehicle() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateVehicle()
+	})
+}
+
+// SetClaimed sets the "claimed" field.
+func (u *DopeUpsertOne) SetClaimed(v bool) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetClaimed(v)
+	})
+}
+
+// UpdateClaimed sets the "claimed" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateClaimed() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateClaimed()
+	})
+}
+
+// SetOpened sets the "opened" field.
+func (u *DopeUpsertOne) SetOpened(v bool) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetOpened(v)
+	})
+}
+
+// UpdateOpened sets the "opened" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateOpened() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateOpened()
+	})
+}
+
+// Exec executes the query.
+func (u *DopeUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for DopeCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *DopeUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *DopeUpsertOne) ID(ctx context.Context) (id string, err error) {
+	if u.create.driver.Dialect() == dialect.MySQL {
+		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
+		// fields from the database since MySQL does not support the RETURNING clause.
+		return id, errors.New("ent: DopeUpsertOne.ID is not supported by MySQL driver. Use DopeUpsertOne.Exec instead")
+	}
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *DopeUpsertOne) IDX(ctx context.Context) string {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // DopeCreateBulk is the builder for creating many Dope entities in bulk.
 type DopeCreateBulk struct {
 	config
 	builders []*DopeCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Dope entities in the database.
@@ -431,6 +861,7 @@ func (dcb *DopeCreateBulk) Save(ctx context.Context) ([]*Dope, error) {
 					_, err = mutators[i+1].Mutate(root, dcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = dcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, dcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -477,6 +908,276 @@ func (dcb *DopeCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (dcb *DopeCreateBulk) ExecX(ctx context.Context) {
 	if err := dcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Dope.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.DopeUpsert) {
+//			SetClothes(v+v).
+//		}).
+//		Exec(ctx)
+//
+func (dcb *DopeCreateBulk) OnConflict(opts ...sql.ConflictOption) *DopeUpsertBulk {
+	dcb.conflict = opts
+	return &DopeUpsertBulk{
+		create: dcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Dope.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+//
+func (dcb *DopeCreateBulk) OnConflictColumns(columns ...string) *DopeUpsertBulk {
+	dcb.conflict = append(dcb.conflict, sql.ConflictColumns(columns...))
+	return &DopeUpsertBulk{
+		create: dcb,
+	}
+}
+
+// DopeUpsertBulk is the builder for "upsert"-ing
+// a bulk of Dope nodes.
+type DopeUpsertBulk struct {
+	create *DopeCreateBulk
+}
+
+// UpdateNewValues updates the fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Dope.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(dope.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+//
+func (u *DopeUpsertBulk) UpdateNewValues() *DopeUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(dope.FieldID)
+				return
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Dope.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+//
+func (u *DopeUpsertBulk) Ignore() *DopeUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *DopeUpsertBulk) DoNothing() *DopeUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the DopeCreateBulk.OnConflict
+// documentation for more info.
+func (u *DopeUpsertBulk) Update(set func(*DopeUpsert)) *DopeUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&DopeUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetClothes sets the "clothes" field.
+func (u *DopeUpsertBulk) SetClothes(v string) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetClothes(v)
+	})
+}
+
+// UpdateClothes sets the "clothes" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateClothes() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateClothes()
+	})
+}
+
+// SetFoot sets the "foot" field.
+func (u *DopeUpsertBulk) SetFoot(v string) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetFoot(v)
+	})
+}
+
+// UpdateFoot sets the "foot" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateFoot() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateFoot()
+	})
+}
+
+// SetHand sets the "hand" field.
+func (u *DopeUpsertBulk) SetHand(v string) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetHand(v)
+	})
+}
+
+// UpdateHand sets the "hand" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateHand() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateHand()
+	})
+}
+
+// SetNeck sets the "neck" field.
+func (u *DopeUpsertBulk) SetNeck(v string) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetNeck(v)
+	})
+}
+
+// UpdateNeck sets the "neck" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateNeck() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateNeck()
+	})
+}
+
+// SetRing sets the "ring" field.
+func (u *DopeUpsertBulk) SetRing(v string) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetRing(v)
+	})
+}
+
+// UpdateRing sets the "ring" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateRing() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateRing()
+	})
+}
+
+// SetWaist sets the "waist" field.
+func (u *DopeUpsertBulk) SetWaist(v string) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetWaist(v)
+	})
+}
+
+// UpdateWaist sets the "waist" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateWaist() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateWaist()
+	})
+}
+
+// SetWeapon sets the "weapon" field.
+func (u *DopeUpsertBulk) SetWeapon(v string) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetWeapon(v)
+	})
+}
+
+// UpdateWeapon sets the "weapon" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateWeapon() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateWeapon()
+	})
+}
+
+// SetDrugs sets the "drugs" field.
+func (u *DopeUpsertBulk) SetDrugs(v string) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetDrugs(v)
+	})
+}
+
+// UpdateDrugs sets the "drugs" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateDrugs() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateDrugs()
+	})
+}
+
+// SetVehicle sets the "vehicle" field.
+func (u *DopeUpsertBulk) SetVehicle(v string) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetVehicle(v)
+	})
+}
+
+// UpdateVehicle sets the "vehicle" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateVehicle() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateVehicle()
+	})
+}
+
+// SetClaimed sets the "claimed" field.
+func (u *DopeUpsertBulk) SetClaimed(v bool) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetClaimed(v)
+	})
+}
+
+// UpdateClaimed sets the "claimed" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateClaimed() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateClaimed()
+	})
+}
+
+// SetOpened sets the "opened" field.
+func (u *DopeUpsertBulk) SetOpened(v bool) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetOpened(v)
+	})
+}
+
+// UpdateOpened sets the "opened" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateOpened() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateOpened()
+	})
+}
+
+// Exec executes the query.
+func (u *DopeUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the DopeCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for DopeCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *DopeUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

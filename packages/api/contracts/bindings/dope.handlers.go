@@ -69,7 +69,6 @@ func (h *UnimplementedDopeProcessor) Setup(address common.Address, eth interface
 
 func (h *UnimplementedDopeProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, func(string, []interface{})) error {
 	return func(ctx context.Context, vLog types.Log, emit func(string, []interface{})) error {
-
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["Approval"].ID.Hex():
