@@ -86,6 +86,12 @@ func (dc *DopeCreate) SetOpened(b bool) *DopeCreate {
 	return dc
 }
 
+// SetID sets the "id" field.
+func (dc *DopeCreate) SetID(s string) *DopeCreate {
+	dc.mutation.SetID(s)
+	return dc
+}
+
 // SetWalletID sets the "wallet" edge to the Wallet entity by ID.
 func (dc *DopeCreate) SetWalletID(id string) *DopeCreate {
 	dc.mutation.SetWalletID(id)
@@ -264,8 +270,9 @@ func (dc *DopeCreate) sqlSave(ctx context.Context) (*Dope, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = string(id)
+	if _spec.ID.Value != nil {
+		_node.ID = _spec.ID.Value.(string)
+	}
 	return _node, nil
 }
 
@@ -280,6 +287,10 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if id, ok := dc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := dc.mutation.Clothes(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -432,10 +443,6 @@ func (dcb *DopeCreateBulk) Save(ctx context.Context) ([]*Dope, error) {
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = string(id)
-				}
 				return nodes[i], nil
 			})
 			for i := len(builder.hooks) - 1; i >= 0; i-- {
