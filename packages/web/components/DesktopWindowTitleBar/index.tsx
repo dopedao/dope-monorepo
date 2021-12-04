@@ -30,7 +30,7 @@ const DesktopWindowTitleBar = ({
   children,
 }: WindowTitleBarProps) => {
   const [ensAddress, setEnsAddress] = useState<string | null>(null);
-  const { account, library, chainId } = useWeb3React();
+  const { account, library } = useWeb3React();
   const router = useRouter();
 
   const closeWindow = (): void => {
@@ -39,12 +39,12 @@ const DesktopWindowTitleBar = ({
 
   useEffect(() => {
     const getEns = async () => {
-      if (!account || chainId === 42) {
+      if (!account) {
         return null;
       }
 
       try {
-        const ens = new ENS({ provider: library, ensAddress: getEnsAddress(chainId) });
+        const ens = new ENS({ provider: library, ensAddress: getEnsAddress(1) });
         const name = await ens.getName(account);
         setEnsAddress(name?.name);
       } catch (error) {
@@ -55,7 +55,7 @@ const DesktopWindowTitleBar = ({
     };
 
     getEns();
-  }, [account, chainId, library]);
+  }, [account, library]);
 
   return (
     <div className="windowTitleBar">
