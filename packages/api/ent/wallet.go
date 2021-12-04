@@ -49,7 +49,7 @@ func (*Wallet) scanValues(columns []string) ([]interface{}, error) {
 		case wallet.FieldPaper:
 			values[i] = new(schema.BigInt)
 		case wallet.FieldID:
-			values[i] = new(sql.NullInt64)
+			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Wallet", columns[i])
 		}
@@ -66,11 +66,11 @@ func (w *Wallet) assignValues(columns []string, values []interface{}) error {
 	for i := range columns {
 		switch columns[i] {
 		case wallet.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				w.ID = value.String
 			}
-			w.ID = string(value.Int64)
 		case wallet.FieldPaper:
 			if value, ok := values[i].(*schema.BigInt); !ok {
 				return fmt.Errorf("unexpected type %T for field paper", values[i])

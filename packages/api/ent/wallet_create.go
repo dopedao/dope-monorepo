@@ -27,6 +27,12 @@ func (wc *WalletCreate) SetPaper(si schema.BigInt) *WalletCreate {
 	return wc
 }
 
+// SetID sets the "id" field.
+func (wc *WalletCreate) SetID(s string) *WalletCreate {
+	wc.mutation.SetID(s)
+	return wc
+}
+
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
 func (wc *WalletCreate) AddDopeIDs(ids ...string) *WalletCreate {
 	wc.mutation.AddDopeIDs(ids...)
@@ -126,8 +132,9 @@ func (wc *WalletCreate) sqlSave(ctx context.Context) (*Wallet, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = string(id)
+	if _spec.ID.Value != nil {
+		_node.ID = _spec.ID.Value.(string)
+	}
 	return _node, nil
 }
 
@@ -142,6 +149,10 @@ func (wc *WalletCreate) createSpec() (*Wallet, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if id, ok := wc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := wc.mutation.Paper(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
@@ -213,10 +224,6 @@ func (wcb *WalletCreateBulk) Save(ctx context.Context) ([]*Wallet, error) {
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = string(id)
-				}
 				return nodes[i], nil
 			})
 			for i := len(builder.hooks) - 1; i >= 0; i-- {

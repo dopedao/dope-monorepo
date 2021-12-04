@@ -74,12 +74,10 @@ func (*Dope) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case dope.FieldClaimed, dope.FieldOpened:
 			values[i] = new(sql.NullBool)
-		case dope.FieldID:
-			values[i] = new(sql.NullInt64)
-		case dope.FieldClothes, dope.FieldFoot, dope.FieldHand, dope.FieldNeck, dope.FieldRing, dope.FieldWaist, dope.FieldWeapon, dope.FieldDrugs, dope.FieldVehicle:
+		case dope.FieldID, dope.FieldClothes, dope.FieldFoot, dope.FieldHand, dope.FieldNeck, dope.FieldRing, dope.FieldWaist, dope.FieldWeapon, dope.FieldDrugs, dope.FieldVehicle:
 			values[i] = new(sql.NullString)
 		case dope.ForeignKeys[0]: // wallet_dopes
-			values[i] = new(sql.NullInt64)
+			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Dope", columns[i])
 		}
@@ -96,11 +94,11 @@ func (d *Dope) assignValues(columns []string, values []interface{}) error {
 	for i := range columns {
 		switch columns[i] {
 		case dope.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				d.ID = value.String
 			}
-			d.ID = string(value.Int64)
 		case dope.FieldClothes:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field clothes", values[i])
@@ -168,11 +166,11 @@ func (d *Dope) assignValues(columns []string, values []interface{}) error {
 				d.Opened = value.Bool
 			}
 		case dope.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field wallet_dopes", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field wallet_dopes", values[i])
 			} else if value.Valid {
 				d.wallet_dopes = new(string)
-				*d.wallet_dopes = string(value.Int64)
+				*d.wallet_dopes = value.String
 			}
 		}
 	}

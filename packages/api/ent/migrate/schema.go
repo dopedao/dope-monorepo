@@ -10,7 +10,7 @@ import (
 var (
 	// DopesColumns holds the columns for the "dopes" table.
 	DopesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, Increment: true},
+		{Name: "id", Type: field.TypeString},
 		{Name: "clothes", Type: field.TypeString},
 		{Name: "foot", Type: field.TypeString},
 		{Name: "hand", Type: field.TypeString},
@@ -40,7 +40,7 @@ var (
 	}
 	// WalletsColumns holds the columns for the "wallets" table.
 	WalletsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, Increment: true},
+		{Name: "id", Type: field.TypeString},
 		{Name: "paper", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
 	}
 	// WalletsTable holds the schema information for the "wallets" table.

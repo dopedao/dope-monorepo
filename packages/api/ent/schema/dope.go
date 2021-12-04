@@ -14,6 +14,7 @@ type Dope struct {
 // Fields of the Dope.
 func (Dope) Fields() []ent.Field {
 	return []ent.Field{
+		field.String("id"),
 		field.String("clothes").
 			Immutable().
 			NotEmpty(),

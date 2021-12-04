@@ -14,8 +14,7 @@ type Wallet struct {
 // Fields of the Wallet.
 func (Wallet) Fields() []ent.Field {
 	return []ent.Field{
-		// field.String("id").
-		// 	GoType(caip.EVMAccountID{}),
+		field.String("id"),
 		field.Int("paper").
 			GoType(BigInt{}).
 			SchemaType(BigIntSchemaType),
