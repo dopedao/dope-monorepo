@@ -40,7 +40,9 @@ func NewServer(db *sql.Driver) (http.Handler, error) {
 	eth := NewEngine(client, "https://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-", Config{
 		Interval: time.Second * 5,
 		Contracts: []Contract{{
-			Address: common.HexToAddress("0xd2761Ee62d8772343070A5dE02C436F788EdF60a"), Interface: reflect.TypeOf(processors.DopeProcessor{}),
+			Address:    common.HexToAddress("0xd2761Ee62d8772343070A5dE02C436F788EdF60a"),
+			StartBlock: 28278714,
+			Interface:  reflect.TypeOf(processors.DopeProcessor{}),
 		}},
 	})
 

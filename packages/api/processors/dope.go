@@ -2,6 +2,7 @@ package processors
 
 import (
 	"context"
+	"log"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
@@ -18,15 +19,19 @@ type DopeProcessor struct {
 func (p *DopeProcessor) Setup(address common.Address, eth interface {
 	bind.ContractBackend
 	ethereum.ChainReader
-}, ent *ent.Client) error {
+}) error {
 	if err := p.UnimplementedDopeProcessor.Setup(address, eth); err != nil {
 		return err
 	}
 
-	p.ent = ent
 	return nil
 }
 
+func (p *DopeProcessor) SetEnt(client *ent.Client) {
+	p.ent = client
+}
+
 func (p *DopeProcessor) ProcessTransfer(ctx context.Context, e *bindings.DopeTransfer, emit func(string, []interface{})) error {
+	log.Print("got transfer event")
 	return nil
 }
