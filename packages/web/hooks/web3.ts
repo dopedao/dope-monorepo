@@ -7,7 +7,7 @@ import { providers } from 'ethers';
 import { NETWORK } from 'src/constants';
 
 const injected = new InjectedConnector({
-  supportedChainIds: [1, 4, 42, 69],
+  supportedChainIds: [1, 10, 42, 69],
 });
 
 export const useRPCProvider = (id: 1 | 10 | 42 | 69) =>
