@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -23,69 +24,31 @@ type DopeCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetClothes sets the "clothes" field.
-func (dc *DopeCreate) SetClothes(s string) *DopeCreate {
-	dc.mutation.SetClothes(s)
-	return dc
-}
-
-// SetFoot sets the "foot" field.
-func (dc *DopeCreate) SetFoot(s string) *DopeCreate {
-	dc.mutation.SetFoot(s)
-	return dc
-}
-
-// SetHand sets the "hand" field.
-func (dc *DopeCreate) SetHand(s string) *DopeCreate {
-	dc.mutation.SetHand(s)
-	return dc
-}
-
-// SetNeck sets the "neck" field.
-func (dc *DopeCreate) SetNeck(s string) *DopeCreate {
-	dc.mutation.SetNeck(s)
-	return dc
-}
-
-// SetRing sets the "ring" field.
-func (dc *DopeCreate) SetRing(s string) *DopeCreate {
-	dc.mutation.SetRing(s)
-	return dc
-}
-
-// SetWaist sets the "waist" field.
-func (dc *DopeCreate) SetWaist(s string) *DopeCreate {
-	dc.mutation.SetWaist(s)
-	return dc
-}
-
-// SetWeapon sets the "weapon" field.
-func (dc *DopeCreate) SetWeapon(s string) *DopeCreate {
-	dc.mutation.SetWeapon(s)
-	return dc
-}
-
-// SetDrugs sets the "drugs" field.
-func (dc *DopeCreate) SetDrugs(s string) *DopeCreate {
-	dc.mutation.SetDrugs(s)
-	return dc
-}
-
-// SetVehicle sets the "vehicle" field.
-func (dc *DopeCreate) SetVehicle(s string) *DopeCreate {
-	dc.mutation.SetVehicle(s)
-	return dc
-}
-
 // SetClaimed sets the "claimed" field.
 func (dc *DopeCreate) SetClaimed(b bool) *DopeCreate {
 	dc.mutation.SetClaimed(b)
 	return dc
 }
 
+// SetNillableClaimed sets the "claimed" field if the given value is not nil.
+func (dc *DopeCreate) SetNillableClaimed(b *bool) *DopeCreate {
+	if b != nil {
+		dc.SetClaimed(*b)
+	}
+	return dc
+}
+
 // SetOpened sets the "opened" field.
 func (dc *DopeCreate) SetOpened(b bool) *DopeCreate {
 	dc.mutation.SetOpened(b)
+	return dc
+}
+
+// SetNillableOpened sets the "opened" field if the given value is not nil.
+func (dc *DopeCreate) SetNillableOpened(b *bool) *DopeCreate {
+	if b != nil {
+		dc.SetOpened(*b)
+	}
 	return dc
 }
 
@@ -114,6 +77,21 @@ func (dc *DopeCreate) SetWallet(w *Wallet) *DopeCreate {
 	return dc.SetWalletID(w.ID)
 }
 
+// AddItemIDs adds the "items" edge to the Item entity by IDs.
+func (dc *DopeCreate) AddItemIDs(ids ...string) *DopeCreate {
+	dc.mutation.AddItemIDs(ids...)
+	return dc
+}
+
+// AddItems adds the "items" edges to the Item entity.
+func (dc *DopeCreate) AddItems(i ...*Item) *DopeCreate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return dc.AddItemIDs(ids...)
+}
+
 // Mutation returns the DopeMutation object of the builder.
 func (dc *DopeCreate) Mutation() *DopeMutation {
 	return dc.mutation
@@ -125,6 +103,7 @@ func (dc *DopeCreate) Save(ctx context.Context) (*Dope, error) {
 		err  error
 		node *Dope
 	)
+	dc.defaults()
 	if len(dc.hooks) == 0 {
 		if err = dc.check(); err != nil {
 			return nil, err
@@ -182,80 +161,20 @@ func (dc *DopeCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (dc *DopeCreate) defaults() {
+	if _, ok := dc.mutation.Claimed(); !ok {
+		v := dope.DefaultClaimed
+		dc.mutation.SetClaimed(v)
+	}
+	if _, ok := dc.mutation.Opened(); !ok {
+		v := dope.DefaultOpened
+		dc.mutation.SetOpened(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (dc *DopeCreate) check() error {
-	if _, ok := dc.mutation.Clothes(); !ok {
-		return &ValidationError{Name: "clothes", err: errors.New(`ent: missing required field "clothes"`)}
-	}
-	if v, ok := dc.mutation.Clothes(); ok {
-		if err := dope.ClothesValidator(v); err != nil {
-			return &ValidationError{Name: "clothes", err: fmt.Errorf(`ent: validator failed for field "clothes": %w`, err)}
-		}
-	}
-	if _, ok := dc.mutation.Foot(); !ok {
-		return &ValidationError{Name: "foot", err: errors.New(`ent: missing required field "foot"`)}
-	}
-	if v, ok := dc.mutation.Foot(); ok {
-		if err := dope.FootValidator(v); err != nil {
-			return &ValidationError{Name: "foot", err: fmt.Errorf(`ent: validator failed for field "foot": %w`, err)}
-		}
-	}
-	if _, ok := dc.mutation.Hand(); !ok {
-		return &ValidationError{Name: "hand", err: errors.New(`ent: missing required field "hand"`)}
-	}
-	if v, ok := dc.mutation.Hand(); ok {
-		if err := dope.HandValidator(v); err != nil {
-			return &ValidationError{Name: "hand", err: fmt.Errorf(`ent: validator failed for field "hand": %w`, err)}
-		}
-	}
-	if _, ok := dc.mutation.Neck(); !ok {
-		return &ValidationError{Name: "neck", err: errors.New(`ent: missing required field "neck"`)}
-	}
-	if v, ok := dc.mutation.Neck(); ok {
-		if err := dope.NeckValidator(v); err != nil {
-			return &ValidationError{Name: "neck", err: fmt.Errorf(`ent: validator failed for field "neck": %w`, err)}
-		}
-	}
-	if _, ok := dc.mutation.Ring(); !ok {
-		return &ValidationError{Name: "ring", err: errors.New(`ent: missing required field "ring"`)}
-	}
-	if v, ok := dc.mutation.Ring(); ok {
-		if err := dope.RingValidator(v); err != nil {
-			return &ValidationError{Name: "ring", err: fmt.Errorf(`ent: validator failed for field "ring": %w`, err)}
-		}
-	}
-	if _, ok := dc.mutation.Waist(); !ok {
-		return &ValidationError{Name: "waist", err: errors.New(`ent: missing required field "waist"`)}
-	}
-	if v, ok := dc.mutation.Waist(); ok {
-		if err := dope.WaistValidator(v); err != nil {
-			return &ValidationError{Name: "waist", err: fmt.Errorf(`ent: validator failed for field "waist": %w`, err)}
-		}
-	}
-	if _, ok := dc.mutation.Weapon(); !ok {
-		return &ValidationError{Name: "weapon", err: errors.New(`ent: missing required field "weapon"`)}
-	}
-	if v, ok := dc.mutation.Weapon(); ok {
-		if err := dope.WeaponValidator(v); err != nil {
-			return &ValidationError{Name: "weapon", err: fmt.Errorf(`ent: validator failed for field "weapon": %w`, err)}
-		}
-	}
-	if _, ok := dc.mutation.Drugs(); !ok {
-		return &ValidationError{Name: "drugs", err: errors.New(`ent: missing required field "drugs"`)}
-	}
-	if v, ok := dc.mutation.Drugs(); ok {
-		if err := dope.DrugsValidator(v); err != nil {
-			return &ValidationError{Name: "drugs", err: fmt.Errorf(`ent: validator failed for field "drugs": %w`, err)}
-		}
-	}
-	if _, ok := dc.mutation.Vehicle(); !ok {
-		return &ValidationError{Name: "vehicle", err: errors.New(`ent: missing required field "vehicle"`)}
-	}
-	if v, ok := dc.mutation.Vehicle(); ok {
-		if err := dope.VehicleValidator(v); err != nil {
-			return &ValidationError{Name: "vehicle", err: fmt.Errorf(`ent: validator failed for field "vehicle": %w`, err)}
-		}
-	}
 	if _, ok := dc.mutation.Claimed(); !ok {
 		return &ValidationError{Name: "claimed", err: errors.New(`ent: missing required field "claimed"`)}
 	}
@@ -295,78 +214,6 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := dc.mutation.Clothes(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: dope.FieldClothes,
-		})
-		_node.Clothes = value
-	}
-	if value, ok := dc.mutation.Foot(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: dope.FieldFoot,
-		})
-		_node.Foot = value
-	}
-	if value, ok := dc.mutation.Hand(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: dope.FieldHand,
-		})
-		_node.Hand = value
-	}
-	if value, ok := dc.mutation.Neck(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: dope.FieldNeck,
-		})
-		_node.Neck = value
-	}
-	if value, ok := dc.mutation.Ring(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: dope.FieldRing,
-		})
-		_node.Ring = value
-	}
-	if value, ok := dc.mutation.Waist(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: dope.FieldWaist,
-		})
-		_node.Waist = value
-	}
-	if value, ok := dc.mutation.Weapon(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: dope.FieldWeapon,
-		})
-		_node.Weapon = value
-	}
-	if value, ok := dc.mutation.Drugs(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: dope.FieldDrugs,
-		})
-		_node.Drugs = value
-	}
-	if value, ok := dc.mutation.Vehicle(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: dope.FieldVehicle,
-		})
-		_node.Vehicle = value
-	}
 	if value, ok := dc.mutation.Claimed(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
@@ -403,6 +250,25 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 		_node.wallet_dopes = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
+	if nodes := dc.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   dope.ItemsTable,
+			Columns: dope.ItemsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -410,7 +276,7 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Dope.Create().
-//		SetClothes(v).
+//		SetClaimed(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -419,7 +285,7 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.DopeUpsert) {
-//			SetClothes(v+v).
+//			SetClaimed(v+v).
 //		}).
 //		Exec(ctx)
 //
@@ -456,114 +322,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetClothes sets the "clothes" field.
-func (u *DopeUpsert) SetClothes(v string) *DopeUpsert {
-	u.Set(dope.FieldClothes, v)
-	return u
-}
-
-// UpdateClothes sets the "clothes" field to the value that was provided on create.
-func (u *DopeUpsert) UpdateClothes() *DopeUpsert {
-	u.SetExcluded(dope.FieldClothes)
-	return u
-}
-
-// SetFoot sets the "foot" field.
-func (u *DopeUpsert) SetFoot(v string) *DopeUpsert {
-	u.Set(dope.FieldFoot, v)
-	return u
-}
-
-// UpdateFoot sets the "foot" field to the value that was provided on create.
-func (u *DopeUpsert) UpdateFoot() *DopeUpsert {
-	u.SetExcluded(dope.FieldFoot)
-	return u
-}
-
-// SetHand sets the "hand" field.
-func (u *DopeUpsert) SetHand(v string) *DopeUpsert {
-	u.Set(dope.FieldHand, v)
-	return u
-}
-
-// UpdateHand sets the "hand" field to the value that was provided on create.
-func (u *DopeUpsert) UpdateHand() *DopeUpsert {
-	u.SetExcluded(dope.FieldHand)
-	return u
-}
-
-// SetNeck sets the "neck" field.
-func (u *DopeUpsert) SetNeck(v string) *DopeUpsert {
-	u.Set(dope.FieldNeck, v)
-	return u
-}
-
-// UpdateNeck sets the "neck" field to the value that was provided on create.
-func (u *DopeUpsert) UpdateNeck() *DopeUpsert {
-	u.SetExcluded(dope.FieldNeck)
-	return u
-}
-
-// SetRing sets the "ring" field.
-func (u *DopeUpsert) SetRing(v string) *DopeUpsert {
-	u.Set(dope.FieldRing, v)
-	return u
-}
-
-// UpdateRing sets the "ring" field to the value that was provided on create.
-func (u *DopeUpsert) UpdateRing() *DopeUpsert {
-	u.SetExcluded(dope.FieldRing)
-	return u
-}
-
-// SetWaist sets the "waist" field.
-func (u *DopeUpsert) SetWaist(v string) *DopeUpsert {
-	u.Set(dope.FieldWaist, v)
-	return u
-}
-
-// UpdateWaist sets the "waist" field to the value that was provided on create.
-func (u *DopeUpsert) UpdateWaist() *DopeUpsert {
-	u.SetExcluded(dope.FieldWaist)
-	return u
-}
-
-// SetWeapon sets the "weapon" field.
-func (u *DopeUpsert) SetWeapon(v string) *DopeUpsert {
-	u.Set(dope.FieldWeapon, v)
-	return u
-}
-
-// UpdateWeapon sets the "weapon" field to the value that was provided on create.
-func (u *DopeUpsert) UpdateWeapon() *DopeUpsert {
-	u.SetExcluded(dope.FieldWeapon)
-	return u
-}
-
-// SetDrugs sets the "drugs" field.
-func (u *DopeUpsert) SetDrugs(v string) *DopeUpsert {
-	u.Set(dope.FieldDrugs, v)
-	return u
-}
-
-// UpdateDrugs sets the "drugs" field to the value that was provided on create.
-func (u *DopeUpsert) UpdateDrugs() *DopeUpsert {
-	u.SetExcluded(dope.FieldDrugs)
-	return u
-}
-
-// SetVehicle sets the "vehicle" field.
-func (u *DopeUpsert) SetVehicle(v string) *DopeUpsert {
-	u.Set(dope.FieldVehicle, v)
-	return u
-}
-
-// UpdateVehicle sets the "vehicle" field to the value that was provided on create.
-func (u *DopeUpsert) UpdateVehicle() *DopeUpsert {
-	u.SetExcluded(dope.FieldVehicle)
-	return u
-}
 
 // SetClaimed sets the "claimed" field.
 func (u *DopeUpsert) SetClaimed(v bool) *DopeUpsert {
@@ -637,132 +395,6 @@ func (u *DopeUpsertOne) Update(set func(*DopeUpsert)) *DopeUpsertOne {
 		set(&DopeUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetClothes sets the "clothes" field.
-func (u *DopeUpsertOne) SetClothes(v string) *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetClothes(v)
-	})
-}
-
-// UpdateClothes sets the "clothes" field to the value that was provided on create.
-func (u *DopeUpsertOne) UpdateClothes() *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateClothes()
-	})
-}
-
-// SetFoot sets the "foot" field.
-func (u *DopeUpsertOne) SetFoot(v string) *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetFoot(v)
-	})
-}
-
-// UpdateFoot sets the "foot" field to the value that was provided on create.
-func (u *DopeUpsertOne) UpdateFoot() *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateFoot()
-	})
-}
-
-// SetHand sets the "hand" field.
-func (u *DopeUpsertOne) SetHand(v string) *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetHand(v)
-	})
-}
-
-// UpdateHand sets the "hand" field to the value that was provided on create.
-func (u *DopeUpsertOne) UpdateHand() *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateHand()
-	})
-}
-
-// SetNeck sets the "neck" field.
-func (u *DopeUpsertOne) SetNeck(v string) *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetNeck(v)
-	})
-}
-
-// UpdateNeck sets the "neck" field to the value that was provided on create.
-func (u *DopeUpsertOne) UpdateNeck() *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateNeck()
-	})
-}
-
-// SetRing sets the "ring" field.
-func (u *DopeUpsertOne) SetRing(v string) *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetRing(v)
-	})
-}
-
-// UpdateRing sets the "ring" field to the value that was provided on create.
-func (u *DopeUpsertOne) UpdateRing() *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateRing()
-	})
-}
-
-// SetWaist sets the "waist" field.
-func (u *DopeUpsertOne) SetWaist(v string) *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetWaist(v)
-	})
-}
-
-// UpdateWaist sets the "waist" field to the value that was provided on create.
-func (u *DopeUpsertOne) UpdateWaist() *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateWaist()
-	})
-}
-
-// SetWeapon sets the "weapon" field.
-func (u *DopeUpsertOne) SetWeapon(v string) *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetWeapon(v)
-	})
-}
-
-// UpdateWeapon sets the "weapon" field to the value that was provided on create.
-func (u *DopeUpsertOne) UpdateWeapon() *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateWeapon()
-	})
-}
-
-// SetDrugs sets the "drugs" field.
-func (u *DopeUpsertOne) SetDrugs(v string) *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetDrugs(v)
-	})
-}
-
-// UpdateDrugs sets the "drugs" field to the value that was provided on create.
-func (u *DopeUpsertOne) UpdateDrugs() *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateDrugs()
-	})
-}
-
-// SetVehicle sets the "vehicle" field.
-func (u *DopeUpsertOne) SetVehicle(v string) *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetVehicle(v)
-	})
-}
-
-// UpdateVehicle sets the "vehicle" field to the value that was provided on create.
-func (u *DopeUpsertOne) UpdateVehicle() *DopeUpsertOne {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateVehicle()
-	})
 }
 
 // SetClaimed sets the "claimed" field.
@@ -846,6 +478,7 @@ func (dcb *DopeCreateBulk) Save(ctx context.Context) ([]*Dope, error) {
 	for i := range dcb.builders {
 		func(i int, root context.Context) {
 			builder := dcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*DopeMutation)
 				if !ok {
@@ -924,7 +557,7 @@ func (dcb *DopeCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.DopeUpsert) {
-//			SetClothes(v+v).
+//			SetClaimed(v+v).
 //		}).
 //		Exec(ctx)
 //
@@ -1006,132 +639,6 @@ func (u *DopeUpsertBulk) Update(set func(*DopeUpsert)) *DopeUpsertBulk {
 		set(&DopeUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetClothes sets the "clothes" field.
-func (u *DopeUpsertBulk) SetClothes(v string) *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetClothes(v)
-	})
-}
-
-// UpdateClothes sets the "clothes" field to the value that was provided on create.
-func (u *DopeUpsertBulk) UpdateClothes() *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateClothes()
-	})
-}
-
-// SetFoot sets the "foot" field.
-func (u *DopeUpsertBulk) SetFoot(v string) *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetFoot(v)
-	})
-}
-
-// UpdateFoot sets the "foot" field to the value that was provided on create.
-func (u *DopeUpsertBulk) UpdateFoot() *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateFoot()
-	})
-}
-
-// SetHand sets the "hand" field.
-func (u *DopeUpsertBulk) SetHand(v string) *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetHand(v)
-	})
-}
-
-// UpdateHand sets the "hand" field to the value that was provided on create.
-func (u *DopeUpsertBulk) UpdateHand() *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateHand()
-	})
-}
-
-// SetNeck sets the "neck" field.
-func (u *DopeUpsertBulk) SetNeck(v string) *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetNeck(v)
-	})
-}
-
-// UpdateNeck sets the "neck" field to the value that was provided on create.
-func (u *DopeUpsertBulk) UpdateNeck() *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateNeck()
-	})
-}
-
-// SetRing sets the "ring" field.
-func (u *DopeUpsertBulk) SetRing(v string) *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetRing(v)
-	})
-}
-
-// UpdateRing sets the "ring" field to the value that was provided on create.
-func (u *DopeUpsertBulk) UpdateRing() *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateRing()
-	})
-}
-
-// SetWaist sets the "waist" field.
-func (u *DopeUpsertBulk) SetWaist(v string) *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetWaist(v)
-	})
-}
-
-// UpdateWaist sets the "waist" field to the value that was provided on create.
-func (u *DopeUpsertBulk) UpdateWaist() *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateWaist()
-	})
-}
-
-// SetWeapon sets the "weapon" field.
-func (u *DopeUpsertBulk) SetWeapon(v string) *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetWeapon(v)
-	})
-}
-
-// UpdateWeapon sets the "weapon" field to the value that was provided on create.
-func (u *DopeUpsertBulk) UpdateWeapon() *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateWeapon()
-	})
-}
-
-// SetDrugs sets the "drugs" field.
-func (u *DopeUpsertBulk) SetDrugs(v string) *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetDrugs(v)
-	})
-}
-
-// UpdateDrugs sets the "drugs" field to the value that was provided on create.
-func (u *DopeUpsertBulk) UpdateDrugs() *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateDrugs()
-	})
-}
-
-// SetVehicle sets the "vehicle" field.
-func (u *DopeUpsertBulk) SetVehicle(v string) *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.SetVehicle(v)
-	})
-}
-
-// UpdateVehicle sets the "vehicle" field to the value that was provided on create.
-func (u *DopeUpsertBulk) UpdateVehicle() *DopeUpsertBulk {
-	return u.Update(func(s *DopeUpsert) {
-		s.UpdateVehicle()
-	})
 }
 
 // SetClaimed sets the "claimed" field.

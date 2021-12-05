@@ -15,37 +15,10 @@ type Dope struct {
 func (Dope) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
-		field.String("clothes").
-			Immutable().
-			NotEmpty(),
-		field.String("foot").
-			Immutable().
-			NotEmpty(),
-		field.String("hand").
-			Immutable().
-			NotEmpty(),
-		field.String("neck").
-			Immutable().
-			NotEmpty(),
-		field.String("ring").
-			Immutable().
-			NotEmpty(),
-		field.String("waist").
-			Immutable().
-			NotEmpty(),
-		field.String("weapon").
-			Immutable().
-			NotEmpty(),
-		field.String("drugs").
-			Immutable().
-			NotEmpty(),
-		field.String("vehicle").
-			Immutable().
-			NotEmpty(),
 		field.Bool("claimed").
-			Immutable(),
+			Default(false),
 		field.Bool("opened").
-			Immutable(),
+			Default(false),
 	}
 }
 
@@ -53,5 +26,6 @@ func (Dope) Fields() []ent.Field {
 func (Dope) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("wallet", Wallet.Type).Ref("dopes").Unique(),
+		edge.To("items", Item.Type),
 	}
 }

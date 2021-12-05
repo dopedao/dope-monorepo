@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -31,6 +32,7 @@ type OrderFunc func(*sql.Selector)
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		dope.Table:   dope.ValidColumn,
+		item.Table:   item.ValidColumn,
 		wallet.Table: wallet.ValidColumn,
 	}
 	check, ok := checks[table]

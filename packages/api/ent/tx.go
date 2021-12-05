@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// Dope is the client for interacting with the Dope builders.
 	Dope *DopeClient
+	// Item is the client for interacting with the Item builders.
+	Item *ItemClient
 	// Wallet is the client for interacting with the Wallet builders.
 	Wallet *WalletClient
 
@@ -152,6 +154,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Dope = NewDopeClient(tx.config)
+	tx.Item = NewItemClient(tx.config)
 	tx.Wallet = NewWalletClient(tx.config)
 }
 

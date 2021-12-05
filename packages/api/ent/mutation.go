@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
@@ -25,6 +26,7 @@ const (
 
 	// Node types.
 	TypeDope   = "Dope"
+	TypeItem   = "Item"
 	TypeWallet = "Wallet"
 )
 
@@ -34,20 +36,14 @@ type DopeMutation struct {
 	op            Op
 	typ           string
 	id            *string
-	clothes       *string
-	foot          *string
-	hand          *string
-	neck          *string
-	ring          *string
-	waist         *string
-	weapon        *string
-	drugs         *string
-	vehicle       *string
 	claimed       *bool
 	opened        *bool
 	clearedFields map[string]struct{}
 	wallet        *string
 	clearedwallet bool
+	items         map[string]struct{}
+	removeditems  map[string]struct{}
+	cleareditems  bool
 	done          bool
 	oldValue      func(context.Context) (*Dope, error)
 	predicates    []predicate.Dope
@@ -136,330 +132,6 @@ func (m *DopeMutation) ID() (id string, exists bool) {
 		return
 	}
 	return *m.id, true
-}
-
-// SetClothes sets the "clothes" field.
-func (m *DopeMutation) SetClothes(s string) {
-	m.clothes = &s
-}
-
-// Clothes returns the value of the "clothes" field in the mutation.
-func (m *DopeMutation) Clothes() (r string, exists bool) {
-	v := m.clothes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldClothes returns the old "clothes" field's value of the Dope entity.
-// If the Dope object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldClothes(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldClothes is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldClothes requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldClothes: %w", err)
-	}
-	return oldValue.Clothes, nil
-}
-
-// ResetClothes resets all changes to the "clothes" field.
-func (m *DopeMutation) ResetClothes() {
-	m.clothes = nil
-}
-
-// SetFoot sets the "foot" field.
-func (m *DopeMutation) SetFoot(s string) {
-	m.foot = &s
-}
-
-// Foot returns the value of the "foot" field in the mutation.
-func (m *DopeMutation) Foot() (r string, exists bool) {
-	v := m.foot
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFoot returns the old "foot" field's value of the Dope entity.
-// If the Dope object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldFoot(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldFoot is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldFoot requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFoot: %w", err)
-	}
-	return oldValue.Foot, nil
-}
-
-// ResetFoot resets all changes to the "foot" field.
-func (m *DopeMutation) ResetFoot() {
-	m.foot = nil
-}
-
-// SetHand sets the "hand" field.
-func (m *DopeMutation) SetHand(s string) {
-	m.hand = &s
-}
-
-// Hand returns the value of the "hand" field in the mutation.
-func (m *DopeMutation) Hand() (r string, exists bool) {
-	v := m.hand
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldHand returns the old "hand" field's value of the Dope entity.
-// If the Dope object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldHand(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldHand is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldHand requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldHand: %w", err)
-	}
-	return oldValue.Hand, nil
-}
-
-// ResetHand resets all changes to the "hand" field.
-func (m *DopeMutation) ResetHand() {
-	m.hand = nil
-}
-
-// SetNeck sets the "neck" field.
-func (m *DopeMutation) SetNeck(s string) {
-	m.neck = &s
-}
-
-// Neck returns the value of the "neck" field in the mutation.
-func (m *DopeMutation) Neck() (r string, exists bool) {
-	v := m.neck
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldNeck returns the old "neck" field's value of the Dope entity.
-// If the Dope object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldNeck(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldNeck is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldNeck requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldNeck: %w", err)
-	}
-	return oldValue.Neck, nil
-}
-
-// ResetNeck resets all changes to the "neck" field.
-func (m *DopeMutation) ResetNeck() {
-	m.neck = nil
-}
-
-// SetRing sets the "ring" field.
-func (m *DopeMutation) SetRing(s string) {
-	m.ring = &s
-}
-
-// Ring returns the value of the "ring" field in the mutation.
-func (m *DopeMutation) Ring() (r string, exists bool) {
-	v := m.ring
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRing returns the old "ring" field's value of the Dope entity.
-// If the Dope object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldRing(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldRing is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldRing requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRing: %w", err)
-	}
-	return oldValue.Ring, nil
-}
-
-// ResetRing resets all changes to the "ring" field.
-func (m *DopeMutation) ResetRing() {
-	m.ring = nil
-}
-
-// SetWaist sets the "waist" field.
-func (m *DopeMutation) SetWaist(s string) {
-	m.waist = &s
-}
-
-// Waist returns the value of the "waist" field in the mutation.
-func (m *DopeMutation) Waist() (r string, exists bool) {
-	v := m.waist
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldWaist returns the old "waist" field's value of the Dope entity.
-// If the Dope object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldWaist(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldWaist is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldWaist requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldWaist: %w", err)
-	}
-	return oldValue.Waist, nil
-}
-
-// ResetWaist resets all changes to the "waist" field.
-func (m *DopeMutation) ResetWaist() {
-	m.waist = nil
-}
-
-// SetWeapon sets the "weapon" field.
-func (m *DopeMutation) SetWeapon(s string) {
-	m.weapon = &s
-}
-
-// Weapon returns the value of the "weapon" field in the mutation.
-func (m *DopeMutation) Weapon() (r string, exists bool) {
-	v := m.weapon
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldWeapon returns the old "weapon" field's value of the Dope entity.
-// If the Dope object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldWeapon(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldWeapon is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldWeapon requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldWeapon: %w", err)
-	}
-	return oldValue.Weapon, nil
-}
-
-// ResetWeapon resets all changes to the "weapon" field.
-func (m *DopeMutation) ResetWeapon() {
-	m.weapon = nil
-}
-
-// SetDrugs sets the "drugs" field.
-func (m *DopeMutation) SetDrugs(s string) {
-	m.drugs = &s
-}
-
-// Drugs returns the value of the "drugs" field in the mutation.
-func (m *DopeMutation) Drugs() (r string, exists bool) {
-	v := m.drugs
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDrugs returns the old "drugs" field's value of the Dope entity.
-// If the Dope object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldDrugs(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldDrugs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldDrugs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDrugs: %w", err)
-	}
-	return oldValue.Drugs, nil
-}
-
-// ResetDrugs resets all changes to the "drugs" field.
-func (m *DopeMutation) ResetDrugs() {
-	m.drugs = nil
-}
-
-// SetVehicle sets the "vehicle" field.
-func (m *DopeMutation) SetVehicle(s string) {
-	m.vehicle = &s
-}
-
-// Vehicle returns the value of the "vehicle" field in the mutation.
-func (m *DopeMutation) Vehicle() (r string, exists bool) {
-	v := m.vehicle
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldVehicle returns the old "vehicle" field's value of the Dope entity.
-// If the Dope object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldVehicle(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldVehicle is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldVehicle requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldVehicle: %w", err)
-	}
-	return oldValue.Vehicle, nil
-}
-
-// ResetVehicle resets all changes to the "vehicle" field.
-func (m *DopeMutation) ResetVehicle() {
-	m.vehicle = nil
 }
 
 // SetClaimed sets the "claimed" field.
@@ -573,6 +245,60 @@ func (m *DopeMutation) ResetWallet() {
 	m.clearedwallet = false
 }
 
+// AddItemIDs adds the "items" edge to the Item entity by ids.
+func (m *DopeMutation) AddItemIDs(ids ...string) {
+	if m.items == nil {
+		m.items = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.items[ids[i]] = struct{}{}
+	}
+}
+
+// ClearItems clears the "items" edge to the Item entity.
+func (m *DopeMutation) ClearItems() {
+	m.cleareditems = true
+}
+
+// ItemsCleared reports if the "items" edge to the Item entity was cleared.
+func (m *DopeMutation) ItemsCleared() bool {
+	return m.cleareditems
+}
+
+// RemoveItemIDs removes the "items" edge to the Item entity by IDs.
+func (m *DopeMutation) RemoveItemIDs(ids ...string) {
+	if m.removeditems == nil {
+		m.removeditems = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.items, ids[i])
+		m.removeditems[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedItems returns the removed IDs of the "items" edge to the Item entity.
+func (m *DopeMutation) RemovedItemsIDs() (ids []string) {
+	for id := range m.removeditems {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ItemsIDs returns the "items" edge IDs in the mutation.
+func (m *DopeMutation) ItemsIDs() (ids []string) {
+	for id := range m.items {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetItems resets all changes to the "items" edge.
+func (m *DopeMutation) ResetItems() {
+	m.items = nil
+	m.cleareditems = false
+	m.removeditems = nil
+}
+
 // Where appends a list predicates to the DopeMutation builder.
 func (m *DopeMutation) Where(ps ...predicate.Dope) {
 	m.predicates = append(m.predicates, ps...)
@@ -592,34 +318,7 @@ func (m *DopeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DopeMutation) Fields() []string {
-	fields := make([]string, 0, 11)
-	if m.clothes != nil {
-		fields = append(fields, dope.FieldClothes)
-	}
-	if m.foot != nil {
-		fields = append(fields, dope.FieldFoot)
-	}
-	if m.hand != nil {
-		fields = append(fields, dope.FieldHand)
-	}
-	if m.neck != nil {
-		fields = append(fields, dope.FieldNeck)
-	}
-	if m.ring != nil {
-		fields = append(fields, dope.FieldRing)
-	}
-	if m.waist != nil {
-		fields = append(fields, dope.FieldWaist)
-	}
-	if m.weapon != nil {
-		fields = append(fields, dope.FieldWeapon)
-	}
-	if m.drugs != nil {
-		fields = append(fields, dope.FieldDrugs)
-	}
-	if m.vehicle != nil {
-		fields = append(fields, dope.FieldVehicle)
-	}
+	fields := make([]string, 0, 2)
 	if m.claimed != nil {
 		fields = append(fields, dope.FieldClaimed)
 	}
@@ -634,24 +333,6 @@ func (m *DopeMutation) Fields() []string {
 // schema.
 func (m *DopeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case dope.FieldClothes:
-		return m.Clothes()
-	case dope.FieldFoot:
-		return m.Foot()
-	case dope.FieldHand:
-		return m.Hand()
-	case dope.FieldNeck:
-		return m.Neck()
-	case dope.FieldRing:
-		return m.Ring()
-	case dope.FieldWaist:
-		return m.Waist()
-	case dope.FieldWeapon:
-		return m.Weapon()
-	case dope.FieldDrugs:
-		return m.Drugs()
-	case dope.FieldVehicle:
-		return m.Vehicle()
 	case dope.FieldClaimed:
 		return m.Claimed()
 	case dope.FieldOpened:
@@ -665,24 +346,6 @@ func (m *DopeMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *DopeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case dope.FieldClothes:
-		return m.OldClothes(ctx)
-	case dope.FieldFoot:
-		return m.OldFoot(ctx)
-	case dope.FieldHand:
-		return m.OldHand(ctx)
-	case dope.FieldNeck:
-		return m.OldNeck(ctx)
-	case dope.FieldRing:
-		return m.OldRing(ctx)
-	case dope.FieldWaist:
-		return m.OldWaist(ctx)
-	case dope.FieldWeapon:
-		return m.OldWeapon(ctx)
-	case dope.FieldDrugs:
-		return m.OldDrugs(ctx)
-	case dope.FieldVehicle:
-		return m.OldVehicle(ctx)
 	case dope.FieldClaimed:
 		return m.OldClaimed(ctx)
 	case dope.FieldOpened:
@@ -696,69 +359,6 @@ func (m *DopeMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *DopeMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case dope.FieldClothes:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetClothes(v)
-		return nil
-	case dope.FieldFoot:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFoot(v)
-		return nil
-	case dope.FieldHand:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetHand(v)
-		return nil
-	case dope.FieldNeck:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetNeck(v)
-		return nil
-	case dope.FieldRing:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRing(v)
-		return nil
-	case dope.FieldWaist:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetWaist(v)
-		return nil
-	case dope.FieldWeapon:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetWeapon(v)
-		return nil
-	case dope.FieldDrugs:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDrugs(v)
-		return nil
-	case dope.FieldVehicle:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetVehicle(v)
-		return nil
 	case dope.FieldClaimed:
 		v, ok := value.(bool)
 		if !ok {
@@ -822,33 +422,6 @@ func (m *DopeMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *DopeMutation) ResetField(name string) error {
 	switch name {
-	case dope.FieldClothes:
-		m.ResetClothes()
-		return nil
-	case dope.FieldFoot:
-		m.ResetFoot()
-		return nil
-	case dope.FieldHand:
-		m.ResetHand()
-		return nil
-	case dope.FieldNeck:
-		m.ResetNeck()
-		return nil
-	case dope.FieldRing:
-		m.ResetRing()
-		return nil
-	case dope.FieldWaist:
-		m.ResetWaist()
-		return nil
-	case dope.FieldWeapon:
-		m.ResetWeapon()
-		return nil
-	case dope.FieldDrugs:
-		m.ResetDrugs()
-		return nil
-	case dope.FieldVehicle:
-		m.ResetVehicle()
-		return nil
 	case dope.FieldClaimed:
 		m.ResetClaimed()
 		return nil
@@ -861,9 +434,12 @@ func (m *DopeMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DopeMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.wallet != nil {
 		edges = append(edges, dope.EdgeWallet)
+	}
+	if m.items != nil {
+		edges = append(edges, dope.EdgeItems)
 	}
 	return edges
 }
@@ -876,13 +452,22 @@ func (m *DopeMutation) AddedIDs(name string) []ent.Value {
 		if id := m.wallet; id != nil {
 			return []ent.Value{*id}
 		}
+	case dope.EdgeItems:
+		ids := make([]ent.Value, 0, len(m.items))
+		for id := range m.items {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DopeMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.removeditems != nil {
+		edges = append(edges, dope.EdgeItems)
+	}
 	return edges
 }
 
@@ -890,15 +475,24 @@ func (m *DopeMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *DopeMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
+	case dope.EdgeItems:
+		ids := make([]ent.Value, 0, len(m.removeditems))
+		for id := range m.removeditems {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DopeMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedwallet {
 		edges = append(edges, dope.EdgeWallet)
+	}
+	if m.cleareditems {
+		edges = append(edges, dope.EdgeItems)
 	}
 	return edges
 }
@@ -909,6 +503,8 @@ func (m *DopeMutation) EdgeCleared(name string) bool {
 	switch name {
 	case dope.EdgeWallet:
 		return m.clearedwallet
+	case dope.EdgeItems:
+		return m.cleareditems
 	}
 	return false
 }
@@ -931,8 +527,751 @@ func (m *DopeMutation) ResetEdge(name string) error {
 	case dope.EdgeWallet:
 		m.ResetWallet()
 		return nil
+	case dope.EdgeItems:
+		m.ResetItems()
+		return nil
 	}
 	return fmt.Errorf("unknown Dope edge %s", name)
+}
+
+// ItemMutation represents an operation that mutates the Item nodes in the graph.
+type ItemMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *string
+	_type         *item.Type
+	name_prefix   *string
+	name_suffix   *string
+	name          *string
+	suffix        *string
+	augmented     *bool
+	clearedFields map[string]struct{}
+	dopes         map[string]struct{}
+	removeddopes  map[string]struct{}
+	cleareddopes  bool
+	done          bool
+	oldValue      func(context.Context) (*Item, error)
+	predicates    []predicate.Item
+}
+
+var _ ent.Mutation = (*ItemMutation)(nil)
+
+// itemOption allows management of the mutation configuration using functional options.
+type itemOption func(*ItemMutation)
+
+// newItemMutation creates new mutation for the Item entity.
+func newItemMutation(c config, op Op, opts ...itemOption) *ItemMutation {
+	m := &ItemMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeItem,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withItemID sets the ID field of the mutation.
+func withItemID(id string) itemOption {
+	return func(m *ItemMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Item
+		)
+		m.oldValue = func(ctx context.Context) (*Item, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Item.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withItem sets the old Item of the mutation.
+func withItem(node *Item) itemOption {
+	return func(m *ItemMutation) {
+		m.oldValue = func(context.Context) (*Item, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ItemMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ItemMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Item entities.
+func (m *ItemMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ItemMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetType sets the "type" field.
+func (m *ItemMutation) SetType(i item.Type) {
+	m._type = &i
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *ItemMutation) GetType() (r item.Type, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldType(ctx context.Context) (v item.Type, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *ItemMutation) ResetType() {
+	m._type = nil
+}
+
+// SetNamePrefix sets the "name_prefix" field.
+func (m *ItemMutation) SetNamePrefix(s string) {
+	m.name_prefix = &s
+}
+
+// NamePrefix returns the value of the "name_prefix" field in the mutation.
+func (m *ItemMutation) NamePrefix() (r string, exists bool) {
+	v := m.name_prefix
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNamePrefix returns the old "name_prefix" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldNamePrefix(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldNamePrefix is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldNamePrefix requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNamePrefix: %w", err)
+	}
+	return oldValue.NamePrefix, nil
+}
+
+// ClearNamePrefix clears the value of the "name_prefix" field.
+func (m *ItemMutation) ClearNamePrefix() {
+	m.name_prefix = nil
+	m.clearedFields[item.FieldNamePrefix] = struct{}{}
+}
+
+// NamePrefixCleared returns if the "name_prefix" field was cleared in this mutation.
+func (m *ItemMutation) NamePrefixCleared() bool {
+	_, ok := m.clearedFields[item.FieldNamePrefix]
+	return ok
+}
+
+// ResetNamePrefix resets all changes to the "name_prefix" field.
+func (m *ItemMutation) ResetNamePrefix() {
+	m.name_prefix = nil
+	delete(m.clearedFields, item.FieldNamePrefix)
+}
+
+// SetNameSuffix sets the "name_suffix" field.
+func (m *ItemMutation) SetNameSuffix(s string) {
+	m.name_suffix = &s
+}
+
+// NameSuffix returns the value of the "name_suffix" field in the mutation.
+func (m *ItemMutation) NameSuffix() (r string, exists bool) {
+	v := m.name_suffix
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNameSuffix returns the old "name_suffix" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldNameSuffix(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldNameSuffix is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldNameSuffix requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNameSuffix: %w", err)
+	}
+	return oldValue.NameSuffix, nil
+}
+
+// ClearNameSuffix clears the value of the "name_suffix" field.
+func (m *ItemMutation) ClearNameSuffix() {
+	m.name_suffix = nil
+	m.clearedFields[item.FieldNameSuffix] = struct{}{}
+}
+
+// NameSuffixCleared returns if the "name_suffix" field was cleared in this mutation.
+func (m *ItemMutation) NameSuffixCleared() bool {
+	_, ok := m.clearedFields[item.FieldNameSuffix]
+	return ok
+}
+
+// ResetNameSuffix resets all changes to the "name_suffix" field.
+func (m *ItemMutation) ResetNameSuffix() {
+	m.name_suffix = nil
+	delete(m.clearedFields, item.FieldNameSuffix)
+}
+
+// SetName sets the "name" field.
+func (m *ItemMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *ItemMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *ItemMutation) ResetName() {
+	m.name = nil
+}
+
+// SetSuffix sets the "suffix" field.
+func (m *ItemMutation) SetSuffix(s string) {
+	m.suffix = &s
+}
+
+// Suffix returns the value of the "suffix" field in the mutation.
+func (m *ItemMutation) Suffix() (r string, exists bool) {
+	v := m.suffix
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSuffix returns the old "suffix" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldSuffix(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldSuffix is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldSuffix requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSuffix: %w", err)
+	}
+	return oldValue.Suffix, nil
+}
+
+// ClearSuffix clears the value of the "suffix" field.
+func (m *ItemMutation) ClearSuffix() {
+	m.suffix = nil
+	m.clearedFields[item.FieldSuffix] = struct{}{}
+}
+
+// SuffixCleared returns if the "suffix" field was cleared in this mutation.
+func (m *ItemMutation) SuffixCleared() bool {
+	_, ok := m.clearedFields[item.FieldSuffix]
+	return ok
+}
+
+// ResetSuffix resets all changes to the "suffix" field.
+func (m *ItemMutation) ResetSuffix() {
+	m.suffix = nil
+	delete(m.clearedFields, item.FieldSuffix)
+}
+
+// SetAugmented sets the "augmented" field.
+func (m *ItemMutation) SetAugmented(b bool) {
+	m.augmented = &b
+}
+
+// Augmented returns the value of the "augmented" field in the mutation.
+func (m *ItemMutation) Augmented() (r bool, exists bool) {
+	v := m.augmented
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAugmented returns the old "augmented" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldAugmented(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldAugmented is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldAugmented requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAugmented: %w", err)
+	}
+	return oldValue.Augmented, nil
+}
+
+// ClearAugmented clears the value of the "augmented" field.
+func (m *ItemMutation) ClearAugmented() {
+	m.augmented = nil
+	m.clearedFields[item.FieldAugmented] = struct{}{}
+}
+
+// AugmentedCleared returns if the "augmented" field was cleared in this mutation.
+func (m *ItemMutation) AugmentedCleared() bool {
+	_, ok := m.clearedFields[item.FieldAugmented]
+	return ok
+}
+
+// ResetAugmented resets all changes to the "augmented" field.
+func (m *ItemMutation) ResetAugmented() {
+	m.augmented = nil
+	delete(m.clearedFields, item.FieldAugmented)
+}
+
+// AddDopeIDs adds the "dopes" edge to the Dope entity by ids.
+func (m *ItemMutation) AddDopeIDs(ids ...string) {
+	if m.dopes == nil {
+		m.dopes = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.dopes[ids[i]] = struct{}{}
+	}
+}
+
+// ClearDopes clears the "dopes" edge to the Dope entity.
+func (m *ItemMutation) ClearDopes() {
+	m.cleareddopes = true
+}
+
+// DopesCleared reports if the "dopes" edge to the Dope entity was cleared.
+func (m *ItemMutation) DopesCleared() bool {
+	return m.cleareddopes
+}
+
+// RemoveDopeIDs removes the "dopes" edge to the Dope entity by IDs.
+func (m *ItemMutation) RemoveDopeIDs(ids ...string) {
+	if m.removeddopes == nil {
+		m.removeddopes = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.dopes, ids[i])
+		m.removeddopes[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDopes returns the removed IDs of the "dopes" edge to the Dope entity.
+func (m *ItemMutation) RemovedDopesIDs() (ids []string) {
+	for id := range m.removeddopes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DopesIDs returns the "dopes" edge IDs in the mutation.
+func (m *ItemMutation) DopesIDs() (ids []string) {
+	for id := range m.dopes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDopes resets all changes to the "dopes" edge.
+func (m *ItemMutation) ResetDopes() {
+	m.dopes = nil
+	m.cleareddopes = false
+	m.removeddopes = nil
+}
+
+// Where appends a list predicates to the ItemMutation builder.
+func (m *ItemMutation) Where(ps ...predicate.Item) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *ItemMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Item).
+func (m *ItemMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ItemMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m._type != nil {
+		fields = append(fields, item.FieldType)
+	}
+	if m.name_prefix != nil {
+		fields = append(fields, item.FieldNamePrefix)
+	}
+	if m.name_suffix != nil {
+		fields = append(fields, item.FieldNameSuffix)
+	}
+	if m.name != nil {
+		fields = append(fields, item.FieldName)
+	}
+	if m.suffix != nil {
+		fields = append(fields, item.FieldSuffix)
+	}
+	if m.augmented != nil {
+		fields = append(fields, item.FieldAugmented)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ItemMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case item.FieldType:
+		return m.GetType()
+	case item.FieldNamePrefix:
+		return m.NamePrefix()
+	case item.FieldNameSuffix:
+		return m.NameSuffix()
+	case item.FieldName:
+		return m.Name()
+	case item.FieldSuffix:
+		return m.Suffix()
+	case item.FieldAugmented:
+		return m.Augmented()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case item.FieldType:
+		return m.OldType(ctx)
+	case item.FieldNamePrefix:
+		return m.OldNamePrefix(ctx)
+	case item.FieldNameSuffix:
+		return m.OldNameSuffix(ctx)
+	case item.FieldName:
+		return m.OldName(ctx)
+	case item.FieldSuffix:
+		return m.OldSuffix(ctx)
+	case item.FieldAugmented:
+		return m.OldAugmented(ctx)
+	}
+	return nil, fmt.Errorf("unknown Item field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ItemMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case item.FieldType:
+		v, ok := value.(item.Type)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	case item.FieldNamePrefix:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNamePrefix(v)
+		return nil
+	case item.FieldNameSuffix:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNameSuffix(v)
+		return nil
+	case item.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case item.FieldSuffix:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSuffix(v)
+		return nil
+	case item.FieldAugmented:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAugmented(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Item field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ItemMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ItemMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ItemMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Item numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ItemMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(item.FieldNamePrefix) {
+		fields = append(fields, item.FieldNamePrefix)
+	}
+	if m.FieldCleared(item.FieldNameSuffix) {
+		fields = append(fields, item.FieldNameSuffix)
+	}
+	if m.FieldCleared(item.FieldSuffix) {
+		fields = append(fields, item.FieldSuffix)
+	}
+	if m.FieldCleared(item.FieldAugmented) {
+		fields = append(fields, item.FieldAugmented)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ItemMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ItemMutation) ClearField(name string) error {
+	switch name {
+	case item.FieldNamePrefix:
+		m.ClearNamePrefix()
+		return nil
+	case item.FieldNameSuffix:
+		m.ClearNameSuffix()
+		return nil
+	case item.FieldSuffix:
+		m.ClearSuffix()
+		return nil
+	case item.FieldAugmented:
+		m.ClearAugmented()
+		return nil
+	}
+	return fmt.Errorf("unknown Item nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ItemMutation) ResetField(name string) error {
+	switch name {
+	case item.FieldType:
+		m.ResetType()
+		return nil
+	case item.FieldNamePrefix:
+		m.ResetNamePrefix()
+		return nil
+	case item.FieldNameSuffix:
+		m.ResetNameSuffix()
+		return nil
+	case item.FieldName:
+		m.ResetName()
+		return nil
+	case item.FieldSuffix:
+		m.ResetSuffix()
+		return nil
+	case item.FieldAugmented:
+		m.ResetAugmented()
+		return nil
+	}
+	return fmt.Errorf("unknown Item field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ItemMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.dopes != nil {
+		edges = append(edges, item.EdgeDopes)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ItemMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case item.EdgeDopes:
+		ids := make([]ent.Value, 0, len(m.dopes))
+		for id := range m.dopes {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ItemMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removeddopes != nil {
+		edges = append(edges, item.EdgeDopes)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ItemMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case item.EdgeDopes:
+		ids := make([]ent.Value, 0, len(m.removeddopes))
+		for id := range m.removeddopes {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ItemMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.cleareddopes {
+		edges = append(edges, item.EdgeDopes)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ItemMutation) EdgeCleared(name string) bool {
+	switch name {
+	case item.EdgeDopes:
+		return m.cleareddopes
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ItemMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Item unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ItemMutation) ResetEdge(name string) error {
+	switch name {
+	case item.EdgeDopes:
+		m.ResetDopes()
+		return nil
+	}
+	return fmt.Errorf("unknown Item edge %s", name)
 }
 
 // WalletMutation represents an operation that mutates the Wallet nodes in the graph.
