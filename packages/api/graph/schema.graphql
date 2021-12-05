@@ -20,17 +20,32 @@ scalar ChainID
 # AssetID is a CAIP-19 compliant asset id.
 scalar AssetID
 
+enum ItemType {
+  WEAPON
+  CLOTHES
+  VEHCILE
+  WAIST
+  FOOT
+  HAND
+  DRUGS
+  NECK
+  RING
+  ACCESSORY
+}
+
+type Item {
+  id: ID!
+  type: ItemType!
+  Name: String!
+  namePrefix: String
+  nameSuffix: String
+  suffix: String
+  augmented: Boolean
+}
+
 type Dope {
   id: ID!
-  clothes: String!
-  foot: String!
-  hand: String!
-  neck: String!
-  ring: String!
-  waist: String!
-  weapon: String!
-  drugs: String!
-  vehicle: String!
+  items: [Item!]!
   claimed: Boolean!
   opened: Boolean!
 }

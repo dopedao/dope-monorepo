@@ -36,12 +36,12 @@ models:
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID
-  # AccountID:
-  #   model:
-  #     - github.com/ChainAgnostic/go-caip.EVMAccountID
   Long:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/graph/model.Uint64
   BigInt:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/schema.BigInt
+  ItemType:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/item.Type
