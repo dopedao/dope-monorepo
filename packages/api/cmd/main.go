@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
+	db, err := sql.Open(dialect.SQLite, "file:dopewars.db?cache=shared&_fk=1")
 	if err != nil {
 		log.Fatal("Connecting to db.") //nolint:gocritic
 	}

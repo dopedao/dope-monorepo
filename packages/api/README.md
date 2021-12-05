@@ -7,10 +7,11 @@ The Dope Wars api consists of a golang service that exposes a graphql endpoint. 
 Install golang and run the api from the repo root:
 
 ```
-go run packages/api/cmd/main.go
+cd packages/api
+go run cmd/main.go
 ```
 
-The server is exposed on `:8081` and you can visit the playground at `/playground`. Currently, the service needs to be manually bootstrapped.
+The server is exposed on `:8081` and you can visit the playground at `http://localhost:8081/playground`.
 
 ## Architecture
 

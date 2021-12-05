@@ -36,7 +36,7 @@ var componentTypes = []item.Type{item.TypeWeapon, item.TypeClothes, item.TypeVeh
 func main() {
 	ctx := context.Background()
 
-	db, err := sql.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
+	db, err := sql.Open(dialect.SQLite, "file:dopewars.db?cache=shared&_fk=1")
 	if err != nil {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
@@ -109,7 +109,13 @@ func main() {
 				}
 			}
 
-			m.SaveX(ctx)
+			if _, err = m.Save(ctx); err != nil {
+				if ent.IsConstraintError(err) {
+					client.Item.UpdateOneID(ids[j].String()).AddDopes(dope).SaveX(ctx)
+				} else {
+					log.Fatalf("Creating item: %+v", err)
+				}
+			}
 		}
 	}
 }
