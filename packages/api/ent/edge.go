@@ -12,6 +12,22 @@ func (d *Dope) Wallet(ctx context.Context) (*Wallet, error) {
 	return result, MaskNotFound(err)
 }
 
+func (d *Dope) Items(ctx context.Context) ([]*Item, error) {
+	result, err := d.Edges.ItemsOrErr()
+	if IsNotLoaded(err) {
+		result, err = d.QueryItems().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) Dopes(ctx context.Context) ([]*Dope, error) {
+	result, err := i.Edges.DopesOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryDopes().All(ctx)
+	}
+	return result, err
+}
+
 func (w *Wallet) Dopes(ctx context.Context) ([]*Dope, error) {
 	result, err := w.Edges.DopesOrErr()
 	if IsNotLoaded(err) {

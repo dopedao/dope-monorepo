@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -12,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
@@ -27,6 +29,7 @@ type DopeQuery struct {
 	predicates []predicate.Dope
 	// eager-loading edges.
 	withWallet *WalletQuery
+	withItems  *ItemQuery
 	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -79,6 +82,28 @@ func (dq *DopeQuery) QueryWallet() *WalletQuery {
 			sqlgraph.From(dope.Table, dope.FieldID, selector),
 			sqlgraph.To(wallet.Table, wallet.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, dope.WalletTable, dope.WalletColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(dq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryItems chains the current query on the "items" edge.
+func (dq *DopeQuery) QueryItems() *ItemQuery {
+	query := &ItemQuery{config: dq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := dq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := dq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dope.Table, dope.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, dope.ItemsTable, dope.ItemsPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(dq.driver.Dialect(), step)
 		return fromU, nil
@@ -268,6 +293,7 @@ func (dq *DopeQuery) Clone() *DopeQuery {
 		order:      append([]OrderFunc{}, dq.order...),
 		predicates: append([]predicate.Dope{}, dq.predicates...),
 		withWallet: dq.withWallet.Clone(),
+		withItems:  dq.withItems.Clone(),
 		// clone intermediate query.
 		sql:  dq.sql.Clone(),
 		path: dq.path,
@@ -285,18 +311,29 @@ func (dq *DopeQuery) WithWallet(opts ...func(*WalletQuery)) *DopeQuery {
 	return dq
 }
 
+// WithItems tells the query-builder to eager-load the nodes that are connected to
+// the "items" edge. The optional arguments are used to configure the query builder of the edge.
+func (dq *DopeQuery) WithItems(opts ...func(*ItemQuery)) *DopeQuery {
+	query := &ItemQuery{config: dq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	dq.withItems = query
+	return dq
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
 // Example:
 //
 //	var v []struct {
-//		Clothes string `json:"clothes,omitempty"`
+//		Claimed bool `json:"claimed,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Dope.Query().
-//		GroupBy(dope.FieldClothes).
+//		GroupBy(dope.FieldClaimed).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -318,11 +355,11 @@ func (dq *DopeQuery) GroupBy(field string, fields ...string) *DopeGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Clothes string `json:"clothes,omitempty"`
+//		Claimed bool `json:"claimed,omitempty"`
 //	}
 //
 //	client.Dope.Query().
-//		Select(dope.FieldClothes).
+//		Select(dope.FieldClaimed).
 //		Scan(ctx, &v)
 //
 func (dq *DopeQuery) Select(fields ...string) *DopeSelect {
@@ -351,8 +388,9 @@ func (dq *DopeQuery) sqlAll(ctx context.Context) ([]*Dope, error) {
 		nodes       = []*Dope{}
 		withFKs     = dq.withFKs
 		_spec       = dq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			dq.withWallet != nil,
+			dq.withItems != nil,
 		}
 	)
 	if dq.withWallet != nil {
@@ -406,6 +444,71 @@ func (dq *DopeQuery) sqlAll(ctx context.Context) ([]*Dope, error) {
 			}
 			for i := range nodes {
 				nodes[i].Edges.Wallet = n
+			}
+		}
+	}
+
+	if query := dq.withItems; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		ids := make(map[string]*Dope, len(nodes))
+		for _, node := range nodes {
+			ids[node.ID] = node
+			fks = append(fks, node.ID)
+			node.Edges.Items = []*Item{}
+		}
+		var (
+			edgeids []string
+			edges   = make(map[string][]*Dope)
+		)
+		_spec := &sqlgraph.EdgeQuerySpec{
+			Edge: &sqlgraph.EdgeSpec{
+				Inverse: false,
+				Table:   dope.ItemsTable,
+				Columns: dope.ItemsPrimaryKey,
+			},
+			Predicate: func(s *sql.Selector) {
+				s.Where(sql.InValues(dope.ItemsPrimaryKey[0], fks...))
+			},
+			ScanValues: func() [2]interface{} {
+				return [2]interface{}{new(sql.NullString), new(sql.NullString)}
+			},
+			Assign: func(out, in interface{}) error {
+				eout, ok := out.(*sql.NullString)
+				if !ok || eout == nil {
+					return fmt.Errorf("unexpected id value for edge-out")
+				}
+				ein, ok := in.(*sql.NullString)
+				if !ok || ein == nil {
+					return fmt.Errorf("unexpected id value for edge-in")
+				}
+				outValue := eout.String
+				inValue := ein.String
+				node, ok := ids[outValue]
+				if !ok {
+					return fmt.Errorf("unexpected node id in edges: %v", outValue)
+				}
+				if _, ok := edges[inValue]; !ok {
+					edgeids = append(edgeids, inValue)
+				}
+				edges[inValue] = append(edges[inValue], node)
+				return nil
+			},
+		}
+		if err := sqlgraph.QueryEdges(ctx, dq.driver, _spec); err != nil {
+			return nil, fmt.Errorf(`query edges "items": %w`, err)
+		}
+		query.Where(item.IDIn(edgeids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := edges[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected "items" node returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Items = append(nodes[i].Edges.Items, n)
 			}
 		}
 	}

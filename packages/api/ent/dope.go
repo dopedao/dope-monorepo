@@ -16,24 +16,6 @@ type Dope struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
-	// Clothes holds the value of the "clothes" field.
-	Clothes string `json:"clothes,omitempty"`
-	// Foot holds the value of the "foot" field.
-	Foot string `json:"foot,omitempty"`
-	// Hand holds the value of the "hand" field.
-	Hand string `json:"hand,omitempty"`
-	// Neck holds the value of the "neck" field.
-	Neck string `json:"neck,omitempty"`
-	// Ring holds the value of the "ring" field.
-	Ring string `json:"ring,omitempty"`
-	// Waist holds the value of the "waist" field.
-	Waist string `json:"waist,omitempty"`
-	// Weapon holds the value of the "weapon" field.
-	Weapon string `json:"weapon,omitempty"`
-	// Drugs holds the value of the "drugs" field.
-	Drugs string `json:"drugs,omitempty"`
-	// Vehicle holds the value of the "vehicle" field.
-	Vehicle string `json:"vehicle,omitempty"`
 	// Claimed holds the value of the "claimed" field.
 	Claimed bool `json:"claimed,omitempty"`
 	// Opened holds the value of the "opened" field.
@@ -48,9 +30,11 @@ type Dope struct {
 type DopeEdges struct {
 	// Wallet holds the value of the wallet edge.
 	Wallet *Wallet `json:"wallet,omitempty"`
+	// Items holds the value of the items edge.
+	Items []*Item `json:"items,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // WalletOrErr returns the Wallet value or an error if the edge
@@ -67,6 +51,15 @@ func (e DopeEdges) WalletOrErr() (*Wallet, error) {
 	return nil, &NotLoadedError{edge: "wallet"}
 }
 
+// ItemsOrErr returns the Items value or an error if the edge
+// was not loaded in eager-loading.
+func (e DopeEdges) ItemsOrErr() ([]*Item, error) {
+	if e.loadedTypes[1] {
+		return e.Items, nil
+	}
+	return nil, &NotLoadedError{edge: "items"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Dope) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
@@ -74,7 +67,7 @@ func (*Dope) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case dope.FieldClaimed, dope.FieldOpened:
 			values[i] = new(sql.NullBool)
-		case dope.FieldID, dope.FieldClothes, dope.FieldFoot, dope.FieldHand, dope.FieldNeck, dope.FieldRing, dope.FieldWaist, dope.FieldWeapon, dope.FieldDrugs, dope.FieldVehicle:
+		case dope.FieldID:
 			values[i] = new(sql.NullString)
 		case dope.ForeignKeys[0]: // wallet_dopes
 			values[i] = new(sql.NullString)
@@ -98,60 +91,6 @@ func (d *Dope) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				d.ID = value.String
-			}
-		case dope.FieldClothes:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field clothes", values[i])
-			} else if value.Valid {
-				d.Clothes = value.String
-			}
-		case dope.FieldFoot:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field foot", values[i])
-			} else if value.Valid {
-				d.Foot = value.String
-			}
-		case dope.FieldHand:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field hand", values[i])
-			} else if value.Valid {
-				d.Hand = value.String
-			}
-		case dope.FieldNeck:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field neck", values[i])
-			} else if value.Valid {
-				d.Neck = value.String
-			}
-		case dope.FieldRing:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field ring", values[i])
-			} else if value.Valid {
-				d.Ring = value.String
-			}
-		case dope.FieldWaist:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field waist", values[i])
-			} else if value.Valid {
-				d.Waist = value.String
-			}
-		case dope.FieldWeapon:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field weapon", values[i])
-			} else if value.Valid {
-				d.Weapon = value.String
-			}
-		case dope.FieldDrugs:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field drugs", values[i])
-			} else if value.Valid {
-				d.Drugs = value.String
-			}
-		case dope.FieldVehicle:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field vehicle", values[i])
-			} else if value.Valid {
-				d.Vehicle = value.String
 			}
 		case dope.FieldClaimed:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -182,6 +121,11 @@ func (d *Dope) QueryWallet() *WalletQuery {
 	return (&DopeClient{config: d.config}).QueryWallet(d)
 }
 
+// QueryItems queries the "items" edge of the Dope entity.
+func (d *Dope) QueryItems() *ItemQuery {
+	return (&DopeClient{config: d.config}).QueryItems(d)
+}
+
 // Update returns a builder for updating this Dope.
 // Note that you need to call Dope.Unwrap() before calling this method if this Dope
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -205,24 +149,6 @@ func (d *Dope) String() string {
 	var builder strings.Builder
 	builder.WriteString("Dope(")
 	builder.WriteString(fmt.Sprintf("id=%v", d.ID))
-	builder.WriteString(", clothes=")
-	builder.WriteString(d.Clothes)
-	builder.WriteString(", foot=")
-	builder.WriteString(d.Foot)
-	builder.WriteString(", hand=")
-	builder.WriteString(d.Hand)
-	builder.WriteString(", neck=")
-	builder.WriteString(d.Neck)
-	builder.WriteString(", ring=")
-	builder.WriteString(d.Ring)
-	builder.WriteString(", waist=")
-	builder.WriteString(d.Waist)
-	builder.WriteString(", weapon=")
-	builder.WriteString(d.Weapon)
-	builder.WriteString(", drugs=")
-	builder.WriteString(d.Drugs)
-	builder.WriteString(", vehicle=")
-	builder.WriteString(d.Vehicle)
 	builder.WriteString(", claimed=")
 	builder.WriteString(fmt.Sprintf("%v", d.Claimed))
 	builder.WriteString(", opened=")

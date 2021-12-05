@@ -7,30 +7,14 @@ const (
 	Label = "dope"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldClothes holds the string denoting the clothes field in the database.
-	FieldClothes = "clothes"
-	// FieldFoot holds the string denoting the foot field in the database.
-	FieldFoot = "foot"
-	// FieldHand holds the string denoting the hand field in the database.
-	FieldHand = "hand"
-	// FieldNeck holds the string denoting the neck field in the database.
-	FieldNeck = "neck"
-	// FieldRing holds the string denoting the ring field in the database.
-	FieldRing = "ring"
-	// FieldWaist holds the string denoting the waist field in the database.
-	FieldWaist = "waist"
-	// FieldWeapon holds the string denoting the weapon field in the database.
-	FieldWeapon = "weapon"
-	// FieldDrugs holds the string denoting the drugs field in the database.
-	FieldDrugs = "drugs"
-	// FieldVehicle holds the string denoting the vehicle field in the database.
-	FieldVehicle = "vehicle"
 	// FieldClaimed holds the string denoting the claimed field in the database.
 	FieldClaimed = "claimed"
 	// FieldOpened holds the string denoting the opened field in the database.
 	FieldOpened = "opened"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
 	EdgeWallet = "wallet"
+	// EdgeItems holds the string denoting the items edge name in mutations.
+	EdgeItems = "items"
 	// Table holds the table name of the dope in the database.
 	Table = "dopes"
 	// WalletTable is the table that holds the wallet relation/edge.
@@ -40,20 +24,16 @@ const (
 	WalletInverseTable = "wallets"
 	// WalletColumn is the table column denoting the wallet relation/edge.
 	WalletColumn = "wallet_dopes"
+	// ItemsTable is the table that holds the items relation/edge. The primary key declared below.
+	ItemsTable = "dope_items"
+	// ItemsInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	ItemsInverseTable = "items"
 )
 
 // Columns holds all SQL columns for dope fields.
 var Columns = []string{
 	FieldID,
-	FieldClothes,
-	FieldFoot,
-	FieldHand,
-	FieldNeck,
-	FieldRing,
-	FieldWaist,
-	FieldWeapon,
-	FieldDrugs,
-	FieldVehicle,
 	FieldClaimed,
 	FieldOpened,
 }
@@ -63,6 +43,12 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"wallet_dopes",
 }
+
+var (
+	// ItemsPrimaryKey and ItemsColumn2 are the table columns denoting the
+	// primary key for the items relation (M2M).
+	ItemsPrimaryKey = []string{"dope_id", "item_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -80,22 +66,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// ClothesValidator is a validator for the "clothes" field. It is called by the builders before save.
-	ClothesValidator func(string) error
-	// FootValidator is a validator for the "foot" field. It is called by the builders before save.
-	FootValidator func(string) error
-	// HandValidator is a validator for the "hand" field. It is called by the builders before save.
-	HandValidator func(string) error
-	// NeckValidator is a validator for the "neck" field. It is called by the builders before save.
-	NeckValidator func(string) error
-	// RingValidator is a validator for the "ring" field. It is called by the builders before save.
-	RingValidator func(string) error
-	// WaistValidator is a validator for the "waist" field. It is called by the builders before save.
-	WaistValidator func(string) error
-	// WeaponValidator is a validator for the "weapon" field. It is called by the builders before save.
-	WeaponValidator func(string) error
-	// DrugsValidator is a validator for the "drugs" field. It is called by the builders before save.
-	DrugsValidator func(string) error
-	// VehicleValidator is a validator for the "vehicle" field. It is called by the builders before save.
-	VehicleValidator func(string) error
+	// DefaultClaimed holds the default value on creation for the "claimed" field.
+	DefaultClaimed bool
+	// DefaultOpened holds the default value on creation for the "opened" field.
+	DefaultOpened bool
 )

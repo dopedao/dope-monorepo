@@ -15,6 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"github.com/vmihailenco/msgpack/v5"
@@ -457,6 +458,233 @@ func (d *Dope) ToEdge(order *DopeOrder) *DopeEdge {
 	return &DopeEdge{
 		Node:   d,
 		Cursor: order.Field.toCursor(d),
+	}
+}
+
+// ItemEdge is the edge representation of Item.
+type ItemEdge struct {
+	Node   *Item  `json:"node"`
+	Cursor Cursor `json:"cursor"`
+}
+
+// ItemConnection is the connection containing edges to Item.
+type ItemConnection struct {
+	Edges      []*ItemEdge `json:"edges"`
+	PageInfo   PageInfo    `json:"pageInfo"`
+	TotalCount int         `json:"totalCount"`
+}
+
+// ItemPaginateOption enables pagination customization.
+type ItemPaginateOption func(*itemPager) error
+
+// WithItemOrder configures pagination ordering.
+func WithItemOrder(order *ItemOrder) ItemPaginateOption {
+	if order == nil {
+		order = DefaultItemOrder
+	}
+	o := *order
+	return func(pager *itemPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultItemOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithItemFilter configures pagination filter.
+func WithItemFilter(filter func(*ItemQuery) (*ItemQuery, error)) ItemPaginateOption {
+	return func(pager *itemPager) error {
+		if filter == nil {
+			return errors.New("ItemQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type itemPager struct {
+	order  *ItemOrder
+	filter func(*ItemQuery) (*ItemQuery, error)
+}
+
+func newItemPager(opts []ItemPaginateOption) (*itemPager, error) {
+	pager := &itemPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultItemOrder
+	}
+	return pager, nil
+}
+
+func (p *itemPager) applyFilter(query *ItemQuery) (*ItemQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *itemPager) toCursor(i *Item) Cursor {
+	return p.order.Field.toCursor(i)
+}
+
+func (p *itemPager) applyCursors(query *ItemQuery, after, before *Cursor) *ItemQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultItemOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *itemPager) applyOrder(query *ItemQuery, reverse bool) *ItemQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultItemOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultItemOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Item.
+func (i *ItemQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ItemPaginateOption,
+) (*ItemConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newItemPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if i, err = pager.applyFilter(i); err != nil {
+		return nil, err
+	}
+
+	conn := &ItemConnection{Edges: []*ItemEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := i.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := i.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	i = pager.applyCursors(i, after, before)
+	i = pager.applyOrder(i, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		i = i.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		i = i.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := i.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *Item
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Item {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Item {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*ItemEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &ItemEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+// ItemOrderField defines the ordering field of Item.
+type ItemOrderField struct {
+	field    string
+	toCursor func(*Item) Cursor
+}
+
+// ItemOrder defines the ordering of Item.
+type ItemOrder struct {
+	Direction OrderDirection  `json:"direction"`
+	Field     *ItemOrderField `json:"field"`
+}
+
+// DefaultItemOrder is the default ordering of Item.
+var DefaultItemOrder = &ItemOrder{
+	Direction: OrderDirectionAsc,
+	Field: &ItemOrderField{
+		field: item.FieldID,
+		toCursor: func(i *Item) Cursor {
+			return Cursor{ID: i.ID}
+		},
+	},
+}
+
+// ToEdge converts Item into ItemEdge.
+func (i *Item) ToEdge(order *ItemOrder) *ItemEdge {
+	if order == nil {
+		order = DefaultItemOrder
+	}
+	return &ItemEdge{
+		Node:   i,
+		Cursor: order.Field.toCursor(i),
 	}
 }
 

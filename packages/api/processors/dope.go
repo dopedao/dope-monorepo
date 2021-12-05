@@ -32,6 +32,12 @@ func (p *DopeProcessor) SetEnt(client *ent.Client) {
 }
 
 func (p *DopeProcessor) ProcessTransfer(ctx context.Context, e *bindings.DopeTransfer, emit func(string, []interface{})) error {
+	// if e.From == (common.Address{}) {
+	// 	p.ent.Dope.Create().SetID()
+	// }
+
+	p.ent.Wallet.Create().SetID(e.To.Hex())
+
 	log.Print("got transfer event")
 	return nil
 }

@@ -22,6 +22,19 @@ func (f DopeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	return f(ctx, mv)
 }
 
+// The ItemFunc type is an adapter to allow the use of ordinary
+// function as Item mutator.
+type ItemFunc func(context.Context, *ent.ItemMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ItemMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ItemMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The WalletFunc type is an adapter to allow the use of ordinary
 // function as Wallet mutator.
 type WalletFunc func(context.Context, *ent.WalletMutation) (ent.Value, error)

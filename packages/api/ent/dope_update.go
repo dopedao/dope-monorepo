@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
@@ -24,6 +25,34 @@ type DopeUpdate struct {
 // Where appends a list predicates to the DopeUpdate builder.
 func (du *DopeUpdate) Where(ps ...predicate.Dope) *DopeUpdate {
 	du.mutation.Where(ps...)
+	return du
+}
+
+// SetClaimed sets the "claimed" field.
+func (du *DopeUpdate) SetClaimed(b bool) *DopeUpdate {
+	du.mutation.SetClaimed(b)
+	return du
+}
+
+// SetNillableClaimed sets the "claimed" field if the given value is not nil.
+func (du *DopeUpdate) SetNillableClaimed(b *bool) *DopeUpdate {
+	if b != nil {
+		du.SetClaimed(*b)
+	}
+	return du
+}
+
+// SetOpened sets the "opened" field.
+func (du *DopeUpdate) SetOpened(b bool) *DopeUpdate {
+	du.mutation.SetOpened(b)
+	return du
+}
+
+// SetNillableOpened sets the "opened" field if the given value is not nil.
+func (du *DopeUpdate) SetNillableOpened(b *bool) *DopeUpdate {
+	if b != nil {
+		du.SetOpened(*b)
+	}
 	return du
 }
 
@@ -46,6 +75,21 @@ func (du *DopeUpdate) SetWallet(w *Wallet) *DopeUpdate {
 	return du.SetWalletID(w.ID)
 }
 
+// AddItemIDs adds the "items" edge to the Item entity by IDs.
+func (du *DopeUpdate) AddItemIDs(ids ...string) *DopeUpdate {
+	du.mutation.AddItemIDs(ids...)
+	return du
+}
+
+// AddItems adds the "items" edges to the Item entity.
+func (du *DopeUpdate) AddItems(i ...*Item) *DopeUpdate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return du.AddItemIDs(ids...)
+}
+
 // Mutation returns the DopeMutation object of the builder.
 func (du *DopeUpdate) Mutation() *DopeMutation {
 	return du.mutation
@@ -55,6 +99,27 @@ func (du *DopeUpdate) Mutation() *DopeMutation {
 func (du *DopeUpdate) ClearWallet() *DopeUpdate {
 	du.mutation.ClearWallet()
 	return du
+}
+
+// ClearItems clears all "items" edges to the Item entity.
+func (du *DopeUpdate) ClearItems() *DopeUpdate {
+	du.mutation.ClearItems()
+	return du
+}
+
+// RemoveItemIDs removes the "items" edge to Item entities by IDs.
+func (du *DopeUpdate) RemoveItemIDs(ids ...string) *DopeUpdate {
+	du.mutation.RemoveItemIDs(ids...)
+	return du
+}
+
+// RemoveItems removes "items" edges to Item entities.
+func (du *DopeUpdate) RemoveItems(i ...*Item) *DopeUpdate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return du.RemoveItemIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -129,6 +194,20 @@ func (du *DopeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := du.mutation.Claimed(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: dope.FieldClaimed,
+		})
+	}
+	if value, ok := du.mutation.Opened(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: dope.FieldOpened,
+		})
+	}
 	if du.mutation.WalletCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -164,6 +243,60 @@ func (du *DopeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if du.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   dope.ItemsTable,
+			Columns: dope.ItemsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.RemovedItemsIDs(); len(nodes) > 0 && !du.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   dope.ItemsTable,
+			Columns: dope.ItemsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   dope.ItemsTable,
+			Columns: dope.ItemsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, du.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{dope.Label}
@@ -181,6 +314,34 @@ type DopeUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *DopeMutation
+}
+
+// SetClaimed sets the "claimed" field.
+func (duo *DopeUpdateOne) SetClaimed(b bool) *DopeUpdateOne {
+	duo.mutation.SetClaimed(b)
+	return duo
+}
+
+// SetNillableClaimed sets the "claimed" field if the given value is not nil.
+func (duo *DopeUpdateOne) SetNillableClaimed(b *bool) *DopeUpdateOne {
+	if b != nil {
+		duo.SetClaimed(*b)
+	}
+	return duo
+}
+
+// SetOpened sets the "opened" field.
+func (duo *DopeUpdateOne) SetOpened(b bool) *DopeUpdateOne {
+	duo.mutation.SetOpened(b)
+	return duo
+}
+
+// SetNillableOpened sets the "opened" field if the given value is not nil.
+func (duo *DopeUpdateOne) SetNillableOpened(b *bool) *DopeUpdateOne {
+	if b != nil {
+		duo.SetOpened(*b)
+	}
+	return duo
 }
 
 // SetWalletID sets the "wallet" edge to the Wallet entity by ID.
@@ -202,6 +363,21 @@ func (duo *DopeUpdateOne) SetWallet(w *Wallet) *DopeUpdateOne {
 	return duo.SetWalletID(w.ID)
 }
 
+// AddItemIDs adds the "items" edge to the Item entity by IDs.
+func (duo *DopeUpdateOne) AddItemIDs(ids ...string) *DopeUpdateOne {
+	duo.mutation.AddItemIDs(ids...)
+	return duo
+}
+
+// AddItems adds the "items" edges to the Item entity.
+func (duo *DopeUpdateOne) AddItems(i ...*Item) *DopeUpdateOne {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return duo.AddItemIDs(ids...)
+}
+
 // Mutation returns the DopeMutation object of the builder.
 func (duo *DopeUpdateOne) Mutation() *DopeMutation {
 	return duo.mutation
@@ -211,6 +387,27 @@ func (duo *DopeUpdateOne) Mutation() *DopeMutation {
 func (duo *DopeUpdateOne) ClearWallet() *DopeUpdateOne {
 	duo.mutation.ClearWallet()
 	return duo
+}
+
+// ClearItems clears all "items" edges to the Item entity.
+func (duo *DopeUpdateOne) ClearItems() *DopeUpdateOne {
+	duo.mutation.ClearItems()
+	return duo
+}
+
+// RemoveItemIDs removes the "items" edge to Item entities by IDs.
+func (duo *DopeUpdateOne) RemoveItemIDs(ids ...string) *DopeUpdateOne {
+	duo.mutation.RemoveItemIDs(ids...)
+	return duo
+}
+
+// RemoveItems removes "items" edges to Item entities.
+func (duo *DopeUpdateOne) RemoveItems(i ...*Item) *DopeUpdateOne {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return duo.RemoveItemIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -309,6 +506,20 @@ func (duo *DopeUpdateOne) sqlSave(ctx context.Context) (_node *Dope, err error) 
 			}
 		}
 	}
+	if value, ok := duo.mutation.Claimed(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: dope.FieldClaimed,
+		})
+	}
+	if value, ok := duo.mutation.Opened(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: dope.FieldOpened,
+		})
+	}
 	if duo.mutation.WalletCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -336,6 +547,60 @@ func (duo *DopeUpdateOne) sqlSave(ctx context.Context) (_node *Dope, err error) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: wallet.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if duo.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   dope.ItemsTable,
+			Columns: dope.ItemsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.RemovedItemsIDs(); len(nodes) > 0 && !duo.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   dope.ItemsTable,
+			Columns: dope.ItemsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   dope.ItemsTable,
+			Columns: dope.ItemsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
 				},
 			},
 		}
