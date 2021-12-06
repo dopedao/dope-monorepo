@@ -20,6 +20,22 @@ func (d *Dope) Items(ctx context.Context) ([]*Item, error) {
 	return result, err
 }
 
+func (h *Hustler) Wallet(ctx context.Context) (*Wallet, error) {
+	result, err := h.Edges.WalletOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryWallet().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (i *Item) Wallet(ctx context.Context) (*Wallet, error) {
+	result, err := i.Edges.WalletOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryWallet().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (i *Item) Dopes(ctx context.Context) ([]*Dope, error) {
 	result, err := i.Edges.DopesOrErr()
 	if IsNotLoaded(err) {
@@ -28,10 +44,42 @@ func (i *Item) Dopes(ctx context.Context) ([]*Dope, error) {
 	return result, err
 }
 
+func (i *Item) Base(ctx context.Context) (*Item, error) {
+	result, err := i.Edges.BaseOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryBase().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (i *Item) Derivative(ctx context.Context) ([]*Item, error) {
+	result, err := i.Edges.DerivativeOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryDerivative().All(ctx)
+	}
+	return result, err
+}
+
 func (w *Wallet) Dopes(ctx context.Context) ([]*Dope, error) {
 	result, err := w.Edges.DopesOrErr()
 	if IsNotLoaded(err) {
 		result, err = w.QueryDopes().All(ctx)
+	}
+	return result, err
+}
+
+func (w *Wallet) Items(ctx context.Context) ([]*Item, error) {
+	result, err := w.Edges.ItemsOrErr()
+	if IsNotLoaded(err) {
+		result, err = w.QueryItems().All(ctx)
+	}
+	return result, err
+}
+
+func (w *Wallet) Hustlers(ctx context.Context) ([]*Hustler, error) {
+	result, err := w.Edges.HustlersOrErr()
+	if IsNotLoaded(err) {
+		result, err = w.QueryHustlers().All(ctx)
 	}
 	return result, err
 }

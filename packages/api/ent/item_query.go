@@ -15,6 +15,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
 // ItemQuery is the builder for querying Item entities.
@@ -27,7 +28,11 @@ type ItemQuery struct {
 	fields     []string
 	predicates []predicate.Item
 	// eager-loading edges.
-	withDopes *DopeQuery
+	withWallet     *WalletQuery
+	withDopes      *DopeQuery
+	withBase       *ItemQuery
+	withDerivative *ItemQuery
+	withFKs        bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -64,6 +69,28 @@ func (iq *ItemQuery) Order(o ...OrderFunc) *ItemQuery {
 	return iq
 }
 
+// QueryWallet chains the current query on the "wallet" edge.
+func (iq *ItemQuery) QueryWallet() *WalletQuery {
+	query := &WalletQuery{config: iq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := iq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := iq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, selector),
+			sqlgraph.To(wallet.Table, wallet.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, item.WalletTable, item.WalletColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryDopes chains the current query on the "dopes" edge.
 func (iq *ItemQuery) QueryDopes() *DopeQuery {
 	query := &DopeQuery{config: iq.config}
@@ -79,6 +106,50 @@ func (iq *ItemQuery) QueryDopes() *DopeQuery {
 			sqlgraph.From(item.Table, item.FieldID, selector),
 			sqlgraph.To(dope.Table, dope.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, item.DopesTable, item.DopesPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryBase chains the current query on the "base" edge.
+func (iq *ItemQuery) QueryBase() *ItemQuery {
+	query := &ItemQuery{config: iq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := iq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := iq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, item.BaseTable, item.BaseColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDerivative chains the current query on the "derivative" edge.
+func (iq *ItemQuery) QueryDerivative() *ItemQuery {
+	query := &ItemQuery{config: iq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := iq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := iq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.DerivativeTable, item.DerivativeColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
 		return fromU, nil
@@ -262,16 +333,30 @@ func (iq *ItemQuery) Clone() *ItemQuery {
 		return nil
 	}
 	return &ItemQuery{
-		config:     iq.config,
-		limit:      iq.limit,
-		offset:     iq.offset,
-		order:      append([]OrderFunc{}, iq.order...),
-		predicates: append([]predicate.Item{}, iq.predicates...),
-		withDopes:  iq.withDopes.Clone(),
+		config:         iq.config,
+		limit:          iq.limit,
+		offset:         iq.offset,
+		order:          append([]OrderFunc{}, iq.order...),
+		predicates:     append([]predicate.Item{}, iq.predicates...),
+		withWallet:     iq.withWallet.Clone(),
+		withDopes:      iq.withDopes.Clone(),
+		withBase:       iq.withBase.Clone(),
+		withDerivative: iq.withDerivative.Clone(),
 		// clone intermediate query.
 		sql:  iq.sql.Clone(),
 		path: iq.path,
 	}
+}
+
+// WithWallet tells the query-builder to eager-load the nodes that are connected to
+// the "wallet" edge. The optional arguments are used to configure the query builder of the edge.
+func (iq *ItemQuery) WithWallet(opts ...func(*WalletQuery)) *ItemQuery {
+	query := &WalletQuery{config: iq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	iq.withWallet = query
+	return iq
 }
 
 // WithDopes tells the query-builder to eager-load the nodes that are connected to
@@ -282,6 +367,28 @@ func (iq *ItemQuery) WithDopes(opts ...func(*DopeQuery)) *ItemQuery {
 		opt(query)
 	}
 	iq.withDopes = query
+	return iq
+}
+
+// WithBase tells the query-builder to eager-load the nodes that are connected to
+// the "base" edge. The optional arguments are used to configure the query builder of the edge.
+func (iq *ItemQuery) WithBase(opts ...func(*ItemQuery)) *ItemQuery {
+	query := &ItemQuery{config: iq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	iq.withBase = query
+	return iq
+}
+
+// WithDerivative tells the query-builder to eager-load the nodes that are connected to
+// the "derivative" edge. The optional arguments are used to configure the query builder of the edge.
+func (iq *ItemQuery) WithDerivative(opts ...func(*ItemQuery)) *ItemQuery {
+	query := &ItemQuery{config: iq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	iq.withDerivative = query
 	return iq
 }
 
@@ -349,11 +456,21 @@ func (iq *ItemQuery) prepareQuery(ctx context.Context) error {
 func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 	var (
 		nodes       = []*Item{}
+		withFKs     = iq.withFKs
 		_spec       = iq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [4]bool{
+			iq.withWallet != nil,
 			iq.withDopes != nil,
+			iq.withBase != nil,
+			iq.withDerivative != nil,
 		}
 	)
+	if iq.withWallet != nil || iq.withBase != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, item.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &Item{config: iq.config}
 		nodes = append(nodes, node)
@@ -372,6 +489,35 @@ func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
+	}
+
+	if query := iq.withWallet; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Item)
+		for i := range nodes {
+			if nodes[i].wallet_items == nil {
+				continue
+			}
+			fk := *nodes[i].wallet_items
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(wallet.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "wallet_items" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Wallet = n
+			}
+		}
 	}
 
 	if query := iq.withDopes; query != nil {
@@ -439,11 +585,73 @@ func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 		}
 	}
 
+	if query := iq.withBase; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Item)
+		for i := range nodes {
+			if nodes[i].item_derivative == nil {
+				continue
+			}
+			fk := *nodes[i].item_derivative
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_derivative" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Base = n
+			}
+		}
+	}
+
+	if query := iq.withDerivative; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*Item)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Derivative = []*Item{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Item(func(s *sql.Selector) {
+			s.Where(sql.InValues(item.DerivativeColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.item_derivative
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "item_derivative" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_derivative" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Derivative = append(node.Edges.Derivative, n)
+		}
+	}
+
 	return nodes, nil
 }
 
 func (iq *ItemQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := iq.querySpec()
+	_spec.Node.Columns = iq.fields
+	if len(iq.fields) > 0 {
+		_spec.Unique = iq.unique != nil && *iq.unique
+	}
 	return sqlgraph.CountNodes(ctx, iq.driver, _spec)
 }
 
@@ -514,6 +722,9 @@ func (iq *ItemQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if iq.sql != nil {
 		selector = iq.sql
 		selector.Select(selector.Columns(columns...)...)
+	}
+	if iq.unique != nil && *iq.unique {
+		selector.Distinct()
 	}
 	for _, p := range iq.predicates {
 		p(selector)
@@ -793,9 +1004,7 @@ func (igb *ItemGroupBy) sqlQuery() *sql.Selector {
 		for _, f := range igb.fields {
 			columns = append(columns, selector.C(f))
 		}
-		for _, c := range aggregation {
-			columns = append(columns, c)
-		}
+		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
 	return selector.GroupBy(selector.Columns(igb.fields...)...)

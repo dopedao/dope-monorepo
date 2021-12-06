@@ -10,6 +10,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/hashicorp/go-multierror"
@@ -89,12 +90,81 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 	return node, nil
 }
 
+func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     h.ID,
+		Type:   "Hustler",
+		Fields: make([]*Field, 6),
+		Edges:  make([]*Edge, 1),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(h.Type); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "hustler.Type",
+		Name:  "type",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(h.NamePrefix); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "string",
+		Name:  "name_prefix",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(h.NameSuffix); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "string",
+		Name:  "name_suffix",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(h.Name); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "string",
+		Name:  "name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(h.Suffix); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
+		Type:  "string",
+		Name:  "suffix",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(h.Augmented); err != nil {
+		return nil, err
+	}
+	node.Fields[5] = &Field{
+		Type:  "bool",
+		Name:  "augmented",
+		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "Wallet",
+		Name: "wallet",
+	}
+	err = h.QueryWallet().
+		Select(wallet.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	return node, nil
+}
+
 func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     i.ID,
 		Type:   "Item",
 		Fields: make([]*Field, 6),
-		Edges:  make([]*Edge, 1),
+		Edges:  make([]*Edge, 4),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(i.Type); err != nil {
@@ -146,12 +216,42 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{
+		Type: "Wallet",
+		Name: "wallet",
+	}
+	err = i.QueryWallet().
+		Select(wallet.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[1] = &Edge{
 		Type: "Dope",
 		Name: "dopes",
 	}
 	err = i.QueryDopes().
 		Select(dope.FieldID).
-		Scan(ctx, &node.Edges[0].IDs)
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[2] = &Edge{
+		Type: "Item",
+		Name: "base",
+	}
+	err = i.QueryBase().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[2].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[3] = &Edge{
+		Type: "Item",
+		Name: "derivative",
+	}
+	err = i.QueryDerivative().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[3].IDs)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +263,7 @@ func (w *Wallet) Node(ctx context.Context) (node *Node, err error) {
 		ID:     w.ID,
 		Type:   "Wallet",
 		Fields: make([]*Field, 1),
-		Edges:  make([]*Edge, 1),
+		Edges:  make([]*Edge, 3),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(w.Paper); err != nil {
@@ -181,6 +281,26 @@ func (w *Wallet) Node(ctx context.Context) (node *Node, err error) {
 	err = w.QueryDopes().
 		Select(dope.FieldID).
 		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[1] = &Edge{
+		Type: "Item",
+		Name: "items",
+	}
+	err = w.QueryItems().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[2] = &Edge{
+		Type: "Hustler",
+		Name: "hustlers",
+	}
+	err = w.QueryHustlers().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[2].IDs)
 	if err != nil {
 		return nil, err
 	}
@@ -258,6 +378,15 @@ func (c *Client) noder(ctx context.Context, table string, id string) (Noder, err
 		n, err := c.Dope.Query().
 			Where(dope.ID(id)).
 			CollectFields(ctx, "Dope").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case hustler.Table:
+		n, err := c.Hustler.Query().
+			Where(hustler.ID(id)).
+			CollectFields(ctx, "Hustler").
 			Only(ctx)
 		if err != nil {
 			return nil, err
@@ -358,6 +487,19 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		nodes, err := c.Dope.Query().
 			Where(dope.IDIn(ids...)).
 			CollectFields(ctx, "Dope").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case hustler.Table:
+		nodes, err := c.Hustler.Query().
+			Where(hustler.IDIn(ids...)).
+			CollectFields(ctx, "Hustler").
 			All(ctx)
 		if err != nil {
 			return nil, err

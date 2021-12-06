@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
@@ -31,9 +32,10 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		dope.Table:   dope.ValidColumn,
-		item.Table:   item.ValidColumn,
-		wallet.Table: wallet.ValidColumn,
+		dope.Table:    dope.ValidColumn,
+		hustler.Table: hustler.ValidColumn,
+		item.Table:    item.ValidColumn,
+		wallet.Table:  wallet.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {
@@ -145,7 +147,7 @@ func Sum(field string) AggregateFunc {
 	}
 }
 
-// ValidationError returns when validating a field fails.
+// ValidationError returns when validating a field or edge fails.
 type ValidationError struct {
 	Name string // Field or edge name.
 	err  error

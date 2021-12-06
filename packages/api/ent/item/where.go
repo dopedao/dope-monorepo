@@ -688,6 +688,34 @@ func AugmentedNotNil() predicate.Item {
 	})
 }
 
+// HasWallet applies the HasEdge predicate on the "wallet" edge.
+func HasWallet() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(WalletTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, WalletTable, WalletColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasWalletWith applies the HasEdge predicate on the "wallet" edge with a given conditions (other predicates).
+func HasWalletWith(preds ...predicate.Wallet) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(WalletInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, WalletTable, WalletColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasDopes applies the HasEdge predicate on the "dopes" edge.
 func HasDopes() predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
@@ -707,6 +735,62 @@ func HasDopesWith(preds ...predicate.Dope) predicate.Item {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(DopesInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, DopesTable, DopesPrimaryKey...),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasBase applies the HasEdge predicate on the "base" edge.
+func HasBase() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(BaseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, BaseTable, BaseColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasBaseWith applies the HasEdge predicate on the "base" edge with a given conditions (other predicates).
+func HasBaseWith(preds ...predicate.Item) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, BaseTable, BaseColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasDerivative applies the HasEdge predicate on the "derivative" edge.
+func HasDerivative() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(DerivativeTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DerivativeTable, DerivativeColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDerivativeWith applies the HasEdge predicate on the "derivative" edge with a given conditions (other predicates).
+func HasDerivativeWith(preds ...predicate.Item) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DerivativeTable, DerivativeColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

@@ -13,6 +13,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
@@ -27,7 +29,9 @@ type WalletQuery struct {
 	fields     []string
 	predicates []predicate.Wallet
 	// eager-loading edges.
-	withDopes *DopeQuery
+	withDopes    *DopeQuery
+	withItems    *ItemQuery
+	withHustlers *HustlerQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -79,6 +83,50 @@ func (wq *WalletQuery) QueryDopes() *DopeQuery {
 			sqlgraph.From(wallet.Table, wallet.FieldID, selector),
 			sqlgraph.To(dope.Table, dope.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, wallet.DopesTable, wallet.DopesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(wq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryItems chains the current query on the "items" edge.
+func (wq *WalletQuery) QueryItems() *ItemQuery {
+	query := &ItemQuery{config: wq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := wq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := wq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(wallet.Table, wallet.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, wallet.ItemsTable, wallet.ItemsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(wq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryHustlers chains the current query on the "hustlers" edge.
+func (wq *WalletQuery) QueryHustlers() *HustlerQuery {
+	query := &HustlerQuery{config: wq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := wq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := wq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(wallet.Table, wallet.FieldID, selector),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, wallet.HustlersTable, wallet.HustlersColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(wq.driver.Dialect(), step)
 		return fromU, nil
@@ -262,12 +310,14 @@ func (wq *WalletQuery) Clone() *WalletQuery {
 		return nil
 	}
 	return &WalletQuery{
-		config:     wq.config,
-		limit:      wq.limit,
-		offset:     wq.offset,
-		order:      append([]OrderFunc{}, wq.order...),
-		predicates: append([]predicate.Wallet{}, wq.predicates...),
-		withDopes:  wq.withDopes.Clone(),
+		config:       wq.config,
+		limit:        wq.limit,
+		offset:       wq.offset,
+		order:        append([]OrderFunc{}, wq.order...),
+		predicates:   append([]predicate.Wallet{}, wq.predicates...),
+		withDopes:    wq.withDopes.Clone(),
+		withItems:    wq.withItems.Clone(),
+		withHustlers: wq.withHustlers.Clone(),
 		// clone intermediate query.
 		sql:  wq.sql.Clone(),
 		path: wq.path,
@@ -282,6 +332,28 @@ func (wq *WalletQuery) WithDopes(opts ...func(*DopeQuery)) *WalletQuery {
 		opt(query)
 	}
 	wq.withDopes = query
+	return wq
+}
+
+// WithItems tells the query-builder to eager-load the nodes that are connected to
+// the "items" edge. The optional arguments are used to configure the query builder of the edge.
+func (wq *WalletQuery) WithItems(opts ...func(*ItemQuery)) *WalletQuery {
+	query := &ItemQuery{config: wq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	wq.withItems = query
+	return wq
+}
+
+// WithHustlers tells the query-builder to eager-load the nodes that are connected to
+// the "hustlers" edge. The optional arguments are used to configure the query builder of the edge.
+func (wq *WalletQuery) WithHustlers(opts ...func(*HustlerQuery)) *WalletQuery {
+	query := &HustlerQuery{config: wq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	wq.withHustlers = query
 	return wq
 }
 
@@ -350,8 +422,10 @@ func (wq *WalletQuery) sqlAll(ctx context.Context) ([]*Wallet, error) {
 	var (
 		nodes       = []*Wallet{}
 		_spec       = wq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [3]bool{
 			wq.withDopes != nil,
+			wq.withItems != nil,
+			wq.withHustlers != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
@@ -403,11 +477,73 @@ func (wq *WalletQuery) sqlAll(ctx context.Context) ([]*Wallet, error) {
 		}
 	}
 
+	if query := wq.withItems; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*Wallet)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Items = []*Item{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Item(func(s *sql.Selector) {
+			s.Where(sql.InValues(wallet.ItemsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.wallet_items
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "wallet_items" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "wallet_items" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Items = append(node.Edges.Items, n)
+		}
+	}
+
+	if query := wq.withHustlers; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*Wallet)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Hustlers = []*Hustler{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Hustler(func(s *sql.Selector) {
+			s.Where(sql.InValues(wallet.HustlersColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.wallet_hustlers
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "wallet_hustlers" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "wallet_hustlers" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Hustlers = append(node.Edges.Hustlers, n)
+		}
+	}
+
 	return nodes, nil
 }
 
 func (wq *WalletQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := wq.querySpec()
+	_spec.Node.Columns = wq.fields
+	if len(wq.fields) > 0 {
+		_spec.Unique = wq.unique != nil && *wq.unique
+	}
 	return sqlgraph.CountNodes(ctx, wq.driver, _spec)
 }
 
@@ -478,6 +614,9 @@ func (wq *WalletQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if wq.sql != nil {
 		selector = wq.sql
 		selector.Select(selector.Columns(columns...)...)
+	}
+	if wq.unique != nil && *wq.unique {
+		selector.Distinct()
 	}
 	for _, p := range wq.predicates {
 		p(selector)
@@ -757,9 +896,7 @@ func (wgb *WalletGroupBy) sqlQuery() *sql.Selector {
 		for _, f := range wgb.fields {
 			columns = append(columns, selector.C(f))
 		}
-		for _, c := range aggregation {
-			columns = append(columns, c)
-		}
+		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
 	return selector.GroupBy(selector.Columns(wgb.fields...)...)

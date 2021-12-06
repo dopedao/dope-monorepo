@@ -2,13 +2,9 @@ package processors
 
 import (
 	"context"
-	"log"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
 )
 
 type DopeProcessor struct {
@@ -16,28 +12,18 @@ type DopeProcessor struct {
 	ent *ent.Client
 }
 
-func (p *DopeProcessor) Setup(address common.Address, eth interface {
-	bind.ContractBackend
-	ethereum.ChainReader
-}) error {
-	if err := p.UnimplementedDopeProcessor.Setup(address, eth); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (p *DopeProcessor) SetEnt(client *ent.Client) {
 	p.ent = client
 }
 
 func (p *DopeProcessor) ProcessTransfer(ctx context.Context, e *bindings.DopeTransfer, emit func(string, []interface{})) error {
-	// if e.From == (common.Address{}) {
-	// 	p.ent.Dope.Create().SetID()
-	// }
+	if err := p.ent.Wallet.Create().SetID(e.To.Hex()).OnConflict().DoNothing().Exec(ctx); err != nil {
+		return err
+	}
 
-	p.ent.Wallet.Create().SetID(e.To.Hex())
+	if err := p.ent.Dope.UpdateOneID(e.TokenId.String()).SetWalletID(e.To.Hex()).Exec(ctx); err != nil {
+		return err
+	}
 
-	log.Print("got transfer event")
 	return nil
 }

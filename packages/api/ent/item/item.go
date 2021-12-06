@@ -25,15 +25,36 @@ const (
 	FieldSuffix = "suffix"
 	// FieldAugmented holds the string denoting the augmented field in the database.
 	FieldAugmented = "augmented"
+	// EdgeWallet holds the string denoting the wallet edge name in mutations.
+	EdgeWallet = "wallet"
 	// EdgeDopes holds the string denoting the dopes edge name in mutations.
 	EdgeDopes = "dopes"
+	// EdgeBase holds the string denoting the base edge name in mutations.
+	EdgeBase = "base"
+	// EdgeDerivative holds the string denoting the derivative edge name in mutations.
+	EdgeDerivative = "derivative"
 	// Table holds the table name of the item in the database.
 	Table = "items"
+	// WalletTable is the table that holds the wallet relation/edge.
+	WalletTable = "items"
+	// WalletInverseTable is the table name for the Wallet entity.
+	// It exists in this package in order to avoid circular dependency with the "wallet" package.
+	WalletInverseTable = "wallets"
+	// WalletColumn is the table column denoting the wallet relation/edge.
+	WalletColumn = "wallet_items"
 	// DopesTable is the table that holds the dopes relation/edge. The primary key declared below.
 	DopesTable = "dope_items"
 	// DopesInverseTable is the table name for the Dope entity.
 	// It exists in this package in order to avoid circular dependency with the "dope" package.
 	DopesInverseTable = "dopes"
+	// BaseTable is the table that holds the base relation/edge.
+	BaseTable = "items"
+	// BaseColumn is the table column denoting the base relation/edge.
+	BaseColumn = "item_derivative"
+	// DerivativeTable is the table that holds the derivative relation/edge.
+	DerivativeTable = "items"
+	// DerivativeColumn is the table column denoting the derivative relation/edge.
+	DerivativeColumn = "item_derivative"
 )
 
 // Columns holds all SQL columns for item fields.
@@ -47,6 +68,13 @@ var Columns = []string{
 	FieldAugmented,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "items"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"item_derivative",
+	"wallet_items",
+}
+
 var (
 	// DopesPrimaryKey and DopesColumn2 are the table columns denoting the
 	// primary key for the dopes relation (M2M).
@@ -57,6 +85,11 @@ var (
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}

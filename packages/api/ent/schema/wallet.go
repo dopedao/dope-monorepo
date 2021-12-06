@@ -17,7 +17,8 @@ func (Wallet) Fields() []ent.Field {
 		field.String("id"),
 		field.Int("paper").
 			GoType(BigInt{}).
-			SchemaType(BigIntSchemaType),
+			SchemaType(BigIntSchemaType).
+			Default(0),
 	}
 }
 
@@ -25,5 +26,7 @@ func (Wallet) Fields() []ent.Field {
 func (Wallet) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("dopes", Dope.Type),
+		edge.To("items", Item.Type),
+		edge.To("hustlers", Hustler.Type),
 	}
 }

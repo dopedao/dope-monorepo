@@ -15,6 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/vektah/gqlparser/v2/gqlerror"
@@ -458,6 +459,233 @@ func (d *Dope) ToEdge(order *DopeOrder) *DopeEdge {
 	return &DopeEdge{
 		Node:   d,
 		Cursor: order.Field.toCursor(d),
+	}
+}
+
+// HustlerEdge is the edge representation of Hustler.
+type HustlerEdge struct {
+	Node   *Hustler `json:"node"`
+	Cursor Cursor   `json:"cursor"`
+}
+
+// HustlerConnection is the connection containing edges to Hustler.
+type HustlerConnection struct {
+	Edges      []*HustlerEdge `json:"edges"`
+	PageInfo   PageInfo       `json:"pageInfo"`
+	TotalCount int            `json:"totalCount"`
+}
+
+// HustlerPaginateOption enables pagination customization.
+type HustlerPaginateOption func(*hustlerPager) error
+
+// WithHustlerOrder configures pagination ordering.
+func WithHustlerOrder(order *HustlerOrder) HustlerPaginateOption {
+	if order == nil {
+		order = DefaultHustlerOrder
+	}
+	o := *order
+	return func(pager *hustlerPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultHustlerOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithHustlerFilter configures pagination filter.
+func WithHustlerFilter(filter func(*HustlerQuery) (*HustlerQuery, error)) HustlerPaginateOption {
+	return func(pager *hustlerPager) error {
+		if filter == nil {
+			return errors.New("HustlerQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type hustlerPager struct {
+	order  *HustlerOrder
+	filter func(*HustlerQuery) (*HustlerQuery, error)
+}
+
+func newHustlerPager(opts []HustlerPaginateOption) (*hustlerPager, error) {
+	pager := &hustlerPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultHustlerOrder
+	}
+	return pager, nil
+}
+
+func (p *hustlerPager) applyFilter(query *HustlerQuery) (*HustlerQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *hustlerPager) toCursor(h *Hustler) Cursor {
+	return p.order.Field.toCursor(h)
+}
+
+func (p *hustlerPager) applyCursors(query *HustlerQuery, after, before *Cursor) *HustlerQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultHustlerOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *hustlerPager) applyOrder(query *HustlerQuery, reverse bool) *HustlerQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultHustlerOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultHustlerOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Hustler.
+func (h *HustlerQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...HustlerPaginateOption,
+) (*HustlerConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newHustlerPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if h, err = pager.applyFilter(h); err != nil {
+		return nil, err
+	}
+
+	conn := &HustlerConnection{Edges: []*HustlerEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := h.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := h.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	h = pager.applyCursors(h, after, before)
+	h = pager.applyOrder(h, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		h = h.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		h = h.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := h.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *Hustler
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Hustler {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Hustler {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*HustlerEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &HustlerEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+// HustlerOrderField defines the ordering field of Hustler.
+type HustlerOrderField struct {
+	field    string
+	toCursor func(*Hustler) Cursor
+}
+
+// HustlerOrder defines the ordering of Hustler.
+type HustlerOrder struct {
+	Direction OrderDirection     `json:"direction"`
+	Field     *HustlerOrderField `json:"field"`
+}
+
+// DefaultHustlerOrder is the default ordering of Hustler.
+var DefaultHustlerOrder = &HustlerOrder{
+	Direction: OrderDirectionAsc,
+	Field: &HustlerOrderField{
+		field: hustler.FieldID,
+		toCursor: func(h *Hustler) Cursor {
+			return Cursor{ID: h.ID}
+		},
+	},
+}
+
+// ToEdge converts Hustler into HustlerEdge.
+func (h *Hustler) ToEdge(order *HustlerOrder) *HustlerEdge {
+	if order == nil {
+		order = DefaultHustlerOrder
+	}
+	return &HustlerEdge{
+		Node:   h,
+		Cursor: order.Field.toCursor(h),
 	}
 }
 

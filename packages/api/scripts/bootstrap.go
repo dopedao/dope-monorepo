@@ -77,12 +77,13 @@ func main() {
 			log.Fatalf("Getting items: %+v", err)
 		}
 
-		dope, err := client.Dope.Create().SetID(strconv.Itoa(i)).Save(ctx)
-		if err != nil {
-			log.Fatalf("Creating dope: %+v", err)
-		}
+		createDope := client.Dope.Create().SetID(strconv.Itoa(i))
+		itemIDs := []string{}
 
 		for j, item := range items {
+			itemID := ids[j].String()
+			itemIDs = append(itemIDs, itemID)
+
 			attributes, err := components.Attributes(nil, item, uint8(j))
 			if err != nil {
 				log.Fatalf("Getting item name: %+v", err)
@@ -93,10 +94,13 @@ func main() {
 				log.Fatalf("Unmarshalling metadata: %+v", err)
 			}
 
-			m := client.Item.Create().SetID(ids[j].String()).SetType(componentTypes[j]).AddDopes(dope)
+			m := client.Item.Create().SetID(itemID).SetType(componentTypes[j])
+
+			var name string
 			for _, trait := range metadata.Traits {
 				switch trait.TraitType {
 				case "Item":
+					name = trait.Value
 					m.SetName(trait.Value)
 				case "Suffix":
 					m.SetSuffix(trait.Value)
@@ -109,13 +113,31 @@ func main() {
 				}
 			}
 
+			if item[1] != 0 || item[2] != 0 || item[3] != 0 || item[4] != 0 {
+				baseID, err := swapmeet.ToBaseId(nil, ids[j])
+				if err != nil {
+					log.Fatalf("Getting base id: %+v", err)
+				}
+
+				if _, err := client.Item.Create().SetID(baseID.String()).SetType(componentTypes[j]).SetName(name).Save(ctx); err != nil {
+					if !ent.IsConstraintError(err) {
+						log.Fatalf("Creating base item: %+v", err)
+					}
+				}
+
+				m.SetBaseID(baseID.String())
+			}
+
 			if _, err = m.Save(ctx); err != nil {
-				if ent.IsConstraintError(err) {
-					client.Item.UpdateOneID(ids[j].String()).AddDopes(dope).SaveX(ctx)
-				} else {
+				if !ent.IsConstraintError(err) {
 					log.Fatalf("Creating item: %+v", err)
 				}
 			}
+		}
+
+		_, err = createDope.AddItemIDs(itemIDs...).Save(ctx)
+		if err != nil {
+			log.Fatalf("Creating dope: %+v", err)
 		}
 	}
 }

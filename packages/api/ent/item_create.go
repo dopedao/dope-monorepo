@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
 // ItemCreate is the builder for creating a Item entity.
@@ -97,6 +98,25 @@ func (ic *ItemCreate) SetID(s string) *ItemCreate {
 	return ic
 }
 
+// SetWalletID sets the "wallet" edge to the Wallet entity by ID.
+func (ic *ItemCreate) SetWalletID(id string) *ItemCreate {
+	ic.mutation.SetWalletID(id)
+	return ic
+}
+
+// SetNillableWalletID sets the "wallet" edge to the Wallet entity by ID if the given value is not nil.
+func (ic *ItemCreate) SetNillableWalletID(id *string) *ItemCreate {
+	if id != nil {
+		ic = ic.SetWalletID(*id)
+	}
+	return ic
+}
+
+// SetWallet sets the "wallet" edge to the Wallet entity.
+func (ic *ItemCreate) SetWallet(w *Wallet) *ItemCreate {
+	return ic.SetWalletID(w.ID)
+}
+
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
 func (ic *ItemCreate) AddDopeIDs(ids ...string) *ItemCreate {
 	ic.mutation.AddDopeIDs(ids...)
@@ -110,6 +130,40 @@ func (ic *ItemCreate) AddDopes(d ...*Dope) *ItemCreate {
 		ids[i] = d[i].ID
 	}
 	return ic.AddDopeIDs(ids...)
+}
+
+// SetBaseID sets the "base" edge to the Item entity by ID.
+func (ic *ItemCreate) SetBaseID(id string) *ItemCreate {
+	ic.mutation.SetBaseID(id)
+	return ic
+}
+
+// SetNillableBaseID sets the "base" edge to the Item entity by ID if the given value is not nil.
+func (ic *ItemCreate) SetNillableBaseID(id *string) *ItemCreate {
+	if id != nil {
+		ic = ic.SetBaseID(*id)
+	}
+	return ic
+}
+
+// SetBase sets the "base" edge to the Item entity.
+func (ic *ItemCreate) SetBase(i *Item) *ItemCreate {
+	return ic.SetBaseID(i.ID)
+}
+
+// AddDerivativeIDs adds the "derivative" edge to the Item entity by IDs.
+func (ic *ItemCreate) AddDerivativeIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddDerivativeIDs(ids...)
+	return ic
+}
+
+// AddDerivative adds the "derivative" edges to the Item entity.
+func (ic *ItemCreate) AddDerivative(i ...*Item) *ItemCreate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return ic.AddDerivativeIDs(ids...)
 }
 
 // Mutation returns the ItemMutation object of the builder.
@@ -183,15 +237,15 @@ func (ic *ItemCreate) ExecX(ctx context.Context) {
 // check runs all checks and user-defined validators on the builder.
 func (ic *ItemCreate) check() error {
 	if _, ok := ic.mutation.GetType(); !ok {
-		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "type"`)}
+		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "Item.type"`)}
 	}
 	if v, ok := ic.mutation.GetType(); ok {
 		if err := item.TypeValidator(v); err != nil {
-			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "type": %w`, err)}
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Item.type": %w`, err)}
 		}
 	}
 	if _, ok := ic.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "name"`)}
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Item.name"`)}
 	}
 	return nil
 }
@@ -205,7 +259,11 @@ func (ic *ItemCreate) sqlSave(ctx context.Context) (*Item, error) {
 		return nil, err
 	}
 	if _spec.ID.Value != nil {
-		_node.ID = _spec.ID.Value.(string)
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected Item.ID type: %T", _spec.ID.Value)
+		}
 	}
 	return _node, nil
 }
@@ -274,6 +332,26 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 		})
 		_node.Augmented = value
 	}
+	if nodes := ic.mutation.WalletIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.WalletTable,
+			Columns: []string{item.WalletColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: wallet.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.wallet_items = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := ic.mutation.DopesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -285,6 +363,45 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: dope.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.BaseIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.BaseTable,
+			Columns: []string{item.BaseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_derivative = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.DerivativeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.DerivativeTable,
+			Columns: []string{item.DerivativeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
 				},
 			},
 		}
@@ -443,7 +560,7 @@ func (u *ItemUpsert) ClearAugmented() *ItemUpsert {
 	return u
 }
 
-// UpdateNewValues updates the fields using the new values that were set on create except the ID field.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.Item.Create().
@@ -460,6 +577,24 @@ func (u *ItemUpsertOne) UpdateNewValues() *ItemUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(item.FieldID)
+		}
+		if _, exists := u.create.mutation.GetType(); exists {
+			s.SetIgnore(item.FieldType)
+		}
+		if _, exists := u.create.mutation.NamePrefix(); exists {
+			s.SetIgnore(item.FieldNamePrefix)
+		}
+		if _, exists := u.create.mutation.NameSuffix(); exists {
+			s.SetIgnore(item.FieldNameSuffix)
+		}
+		if _, exists := u.create.mutation.Name(); exists {
+			s.SetIgnore(item.FieldName)
+		}
+		if _, exists := u.create.mutation.Suffix(); exists {
+			s.SetIgnore(item.FieldSuffix)
+		}
+		if _, exists := u.create.mutation.Augmented(); exists {
+			s.SetIgnore(item.FieldAugmented)
 		}
 	}))
 	return u
@@ -767,7 +902,7 @@ type ItemUpsertBulk struct {
 	create *ItemCreateBulk
 }
 
-// UpdateNewValues updates the fields using the new values that
+// UpdateNewValues updates the mutable fields using the new values that
 // were set on create. Using this option is equivalent to using:
 //
 //	client.Item.Create().
@@ -786,6 +921,24 @@ func (u *ItemUpsertBulk) UpdateNewValues() *ItemUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(item.FieldID)
 				return
+			}
+			if _, exists := b.mutation.GetType(); exists {
+				s.SetIgnore(item.FieldType)
+			}
+			if _, exists := b.mutation.NamePrefix(); exists {
+				s.SetIgnore(item.FieldNamePrefix)
+			}
+			if _, exists := b.mutation.NameSuffix(); exists {
+				s.SetIgnore(item.FieldNameSuffix)
+			}
+			if _, exists := b.mutation.Name(); exists {
+				s.SetIgnore(item.FieldName)
+			}
+			if _, exists := b.mutation.Suffix(); exists {
+				s.SetIgnore(item.FieldSuffix)
+			}
+			if _, exists := b.mutation.Augmented(); exists {
+				s.SetIgnore(item.FieldAugmented)
 			}
 		}
 	}))
