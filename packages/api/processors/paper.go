@@ -2,6 +2,7 @@ package processors
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
@@ -22,7 +23,7 @@ func (p *PaperProcessor) SetEnt(client *ent.Client) {
 func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e *bindings.PaperTransfer, emit func(string, []interface{})) error {
 	if e.From != (common.Address{}) {
 		if err := p.ent.Wallet.UpdateOneID(e.From.String()).AddPaper(schema.BigInt{Int: new(big.Int).Neg(e.Value)}).Exec(ctx); err != nil {
-			return err
+			return fmt.Errorf("update from wallet: %w", err)
 		}
 	}
 
@@ -34,7 +35,7 @@ func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e *bindings.PaperT
 			Update(func(w *ent.WalletUpsert) {
 				w.AddPaper(schema.BigInt{Int: e.Value})
 			}).Exec(ctx); err != nil {
-			return err
+			return fmt.Errorf("update to wallet: %w", err)
 		}
 	}
 
