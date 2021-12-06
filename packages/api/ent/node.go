@@ -12,6 +12,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/hashicorp/go-multierror"
 )
@@ -258,6 +259,25 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	return node, nil
 }
 
+func (ss *SyncState) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     ss.ID,
+		Type:   "SyncState",
+		Fields: make([]*Field, 1),
+		Edges:  make([]*Edge, 0),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(ss.StartAt); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "uint64",
+		Name:  "start_at",
+		Value: string(buf),
+	}
+	return node, nil
+}
+
 func (w *Wallet) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     w.ID,
@@ -401,6 +421,15 @@ func (c *Client) noder(ctx context.Context, table string, id string) (Noder, err
 			return nil, err
 		}
 		return n, nil
+	case syncstate.Table:
+		n, err := c.SyncState.Query().
+			Where(syncstate.ID(id)).
+			CollectFields(ctx, "SyncState").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
 	case wallet.Table:
 		n, err := c.Wallet.Query().
 			Where(wallet.ID(id)).
@@ -513,6 +542,19 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		nodes, err := c.Item.Query().
 			Where(item.IDIn(ids...)).
 			CollectFields(ctx, "Item").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case syncstate.Table:
+		nodes, err := c.SyncState.Query().
+			Where(syncstate.IDIn(ids...)).
+			CollectFields(ctx, "SyncState").
 			All(ctx)
 		if err != nil {
 			return nil, err

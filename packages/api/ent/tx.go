@@ -18,6 +18,8 @@ type Tx struct {
 	Hustler *HustlerClient
 	// Item is the client for interacting with the Item builders.
 	Item *ItemClient
+	// SyncState is the client for interacting with the SyncState builders.
+	SyncState *SyncStateClient
 	// Wallet is the client for interacting with the Wallet builders.
 	Wallet *WalletClient
 
@@ -158,6 +160,7 @@ func (tx *Tx) init() {
 	tx.Dope = NewDopeClient(tx.config)
 	tx.Hustler = NewHustlerClient(tx.config)
 	tx.Item = NewItemClient(tx.config)
+	tx.SyncState = NewSyncStateClient(tx.config)
 	tx.Wallet = NewWalletClient(tx.config)
 }
 

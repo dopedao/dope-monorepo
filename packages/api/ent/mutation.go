@@ -13,6 +13,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 
 	"entgo.io/ent"
@@ -27,10 +28,11 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeDope    = "Dope"
-	TypeHustler = "Hustler"
-	TypeItem    = "Item"
-	TypeWallet  = "Wallet"
+	TypeDope      = "Dope"
+	TypeHustler   = "Hustler"
+	TypeItem      = "Item"
+	TypeSyncState = "SyncState"
+	TypeWallet    = "Wallet"
 )
 
 // DopeMutation represents an operation that mutates the Dope nodes in the graph.
@@ -2249,6 +2251,359 @@ func (m *ItemMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Item edge %s", name)
+}
+
+// SyncStateMutation represents an operation that mutates the SyncState nodes in the graph.
+type SyncStateMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *string
+	start_at      *uint64
+	addstart_at   *int64
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*SyncState, error)
+	predicates    []predicate.SyncState
+}
+
+var _ ent.Mutation = (*SyncStateMutation)(nil)
+
+// syncstateOption allows management of the mutation configuration using functional options.
+type syncstateOption func(*SyncStateMutation)
+
+// newSyncStateMutation creates new mutation for the SyncState entity.
+func newSyncStateMutation(c config, op Op, opts ...syncstateOption) *SyncStateMutation {
+	m := &SyncStateMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeSyncState,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withSyncStateID sets the ID field of the mutation.
+func withSyncStateID(id string) syncstateOption {
+	return func(m *SyncStateMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *SyncState
+		)
+		m.oldValue = func(ctx context.Context) (*SyncState, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().SyncState.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withSyncState sets the old SyncState of the mutation.
+func withSyncState(node *SyncState) syncstateOption {
+	return func(m *SyncStateMutation) {
+		m.oldValue = func(context.Context) (*SyncState, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m SyncStateMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m SyncStateMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of SyncState entities.
+func (m *SyncStateMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *SyncStateMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *SyncStateMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().SyncState.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetStartAt sets the "start_at" field.
+func (m *SyncStateMutation) SetStartAt(u uint64) {
+	m.start_at = &u
+	m.addstart_at = nil
+}
+
+// StartAt returns the value of the "start_at" field in the mutation.
+func (m *SyncStateMutation) StartAt() (r uint64, exists bool) {
+	v := m.start_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStartAt returns the old "start_at" field's value of the SyncState entity.
+// If the SyncState object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SyncStateMutation) OldStartAt(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStartAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStartAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStartAt: %w", err)
+	}
+	return oldValue.StartAt, nil
+}
+
+// AddStartAt adds u to the "start_at" field.
+func (m *SyncStateMutation) AddStartAt(u int64) {
+	if m.addstart_at != nil {
+		*m.addstart_at += u
+	} else {
+		m.addstart_at = &u
+	}
+}
+
+// AddedStartAt returns the value that was added to the "start_at" field in this mutation.
+func (m *SyncStateMutation) AddedStartAt() (r int64, exists bool) {
+	v := m.addstart_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetStartAt resets all changes to the "start_at" field.
+func (m *SyncStateMutation) ResetStartAt() {
+	m.start_at = nil
+	m.addstart_at = nil
+}
+
+// Where appends a list predicates to the SyncStateMutation builder.
+func (m *SyncStateMutation) Where(ps ...predicate.SyncState) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *SyncStateMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (SyncState).
+func (m *SyncStateMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *SyncStateMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.start_at != nil {
+		fields = append(fields, syncstate.FieldStartAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *SyncStateMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case syncstate.FieldStartAt:
+		return m.StartAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *SyncStateMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case syncstate.FieldStartAt:
+		return m.OldStartAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown SyncState field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SyncStateMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case syncstate.FieldStartAt:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStartAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SyncState field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *SyncStateMutation) AddedFields() []string {
+	var fields []string
+	if m.addstart_at != nil {
+		fields = append(fields, syncstate.FieldStartAt)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *SyncStateMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case syncstate.FieldStartAt:
+		return m.AddedStartAt()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SyncStateMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case syncstate.FieldStartAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStartAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SyncState numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *SyncStateMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *SyncStateMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *SyncStateMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown SyncState nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *SyncStateMutation) ResetField(name string) error {
+	switch name {
+	case syncstate.FieldStartAt:
+		m.ResetStartAt()
+		return nil
+	}
+	return fmt.Errorf("unknown SyncState field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *SyncStateMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *SyncStateMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *SyncStateMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *SyncStateMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *SyncStateMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *SyncStateMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *SyncStateMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown SyncState unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *SyncStateMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown SyncState edge %s", name)
 }
 
 // WalletMutation represents an operation that mutates the Wallet nodes in the graph.
