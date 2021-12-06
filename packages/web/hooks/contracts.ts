@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import {
   CrossDomainMessenger__factory,
   Controller__factory,
@@ -6,9 +6,8 @@ import {
   Initiator__factory,
   Hustler__factory,
   SwapMeet__factory,
-} from '@dopewars/contracts';
+} from '@dopewars/contracts/dist';
 import { ethers, BigNumber } from 'ethers';
-
 import { NETWORK } from 'src/constants';
 import { useEthereum, useOptimism } from 'hooks/web3';
 
