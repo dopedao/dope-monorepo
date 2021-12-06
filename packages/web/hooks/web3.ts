@@ -5,15 +5,18 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { providers } from 'ethers';
 import { NETWORK } from 'src/constants';
+import router from 'next/router';
 
 const injected = new InjectedConnector({
   supportedChainIds: [1, 10, 42, 69],
 });
 
 export const useRPCProvider = (id: 1 | 10 | 42 | 69) =>
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo<providers.JsonRpcProvider>(() => new providers.JsonRpcProvider(NETWORK[id].rpc), []);
 
 export const useWebSocketProvider = (id: 1 | 10 | 42 | 69) =>
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo<providers.WebSocketProvider>(() => new providers.WebSocketProvider(NETWORK[id].ws), []);
 
 export const useEthereum = (
@@ -43,6 +46,7 @@ export const useEthereum = (
     } else {
       setProvider(rpcProvider);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, defaultSigner, ethChainId, rpcProvider]);
 
   return { provider, chainId: ethChainId };
@@ -73,6 +77,7 @@ export const useOptimism = (): {
     } else {
       setProvider(rpcProvider);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, optimismChainId, rpcProvider]);
 
   return { provider, chainId: optimismChainId };
@@ -211,7 +216,7 @@ export const useWAGMI = () => {
 };
 
 export const useLastestBlock = (): providers.Block | undefined => {
-  const { chainId, provider } = useEthereum(false);
+  const { provider } = useEthereum(false);
   const [latest, setLatest] = useState<providers.Block>();
 
   useEffect(() => {
@@ -226,31 +231,53 @@ export const useLastestBlock = (): providers.Block | undefined => {
 
 export default useWeb3Provider;
 
-export const switchNetwork = (network: 1 | 10 | 42 | 69, chainId: number) => {
-  if ((window as any).ethereum) {
-    let params;
-    if (chainId === network) {
-      alert(
-        `Optimistic Ethereum ${NETWORK[network].name} Network has already been added to Metamask.`,
-      );
-      return;
-    } else {
-      params = [
-        {
-          chainId: NETWORK[network].chainId,
-          chainName: NETWORK[network].name,
-          nativeCurrency: NETWORK[network].currency,
-          rpcUrls: [NETWORK[network].rpcUrl],
-          blockExplorerUrls: [NETWORK[network].etherscan],
-        },
-      ];
-    }
+const toHex = (num: number) => {
+  return '0x' + num.toString(16);
+};
 
-    (window as any).ethereum
-      .request({ method: 'wallet_addEthereumChain', params })
-      .then(() => console.log('Success'))
-      .catch((error: Error) => console.log('Error', error.message));
+export const useswitchNetwork = async (
+  nextChainId: 1 | 10 | 42 | 69,
+  currentChainId: number | undefined,
+  forceOptimism = false,
+) => {
+  if (currentChainId && forceOptimism && currentChainId === nextChainId) {
+    return;
   } else {
-    alert('Unable to locate a compatible web3 browser!');
+    if (typeof window !== 'undefined' && window.ethereum) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: toHex(NETWORK[nextChainId].chainId) }],
+        });
+      } catch (error: any) {
+        if (error.code === 4902) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: toHex(NETWORK[nextChainId].chainId),
+                  chainName: NETWORK[nextChainId].name,
+                  nativeCurrency: NETWORK[nextChainId].currency,
+                  rpcUrls: [NETWORK[nextChainId].rpcUrl],
+                  blockExplorerUrls: [NETWORK[nextChainId].etherscan],
+                },
+              ],
+            });
+          } catch (addError) {
+            console.error(addError);
+          }
+        }
+        if (error.code === 4001) {
+          // @TODO: handle this UX on the UI
+          alert('You can only customize your Hustler on Optimistic');
+        }
+      }
+    } else {
+      if (typeof window !== 'undefined')
+        alert(
+          'MetaMask is not installed. Please consider installing it: https://metamask.io/download.html',
+        );
+    }
   }
 };

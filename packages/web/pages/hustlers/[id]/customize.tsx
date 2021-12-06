@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
 import { makeVar, useReactiveVar } from '@apollo/client';
-import { Maybe, useHustlerQuery } from 'src/generated/graphql';
+import { Maybe, useHustlerQuery, useWalletQuery } from 'src/generated/graphql';
 import { getRandomHustler, HustlerCustomization } from 'src/HustlerConfig';
 import { useOptimismClient } from 'components/EthereumApolloProvider';
 import AppWindow from 'components/AppWindow';
@@ -15,6 +15,7 @@ import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
 import { useFetchMetadata } from 'hooks/contracts';
+import { useOptimism, useswitchNetwork } from 'hooks/web3';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -54,7 +55,9 @@ type HustlerEditProps = {
 const HustlerEdit = ({ hustler }: HustlerEditProps) => {
   const router = useRouter();
   const [isLoading, setLoading] = useState(true);
-  const [fetchedHustlerConfig, setHustlerConfig] = useState<Partial<HustlerCustomization>>({});
+  const [fetchedHustlerConfig, setHustlerConfig] = useState<
+    Partial<HustlerCustomization> & { ogTitle?: string }
+  >({});
 
   const fetchMetadata = useFetchMetadata();
 
@@ -74,6 +77,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
         }
 
         setHustlerConfig({
+          ogTitle: metadata.ogTitle,
           name: metadata.name,
           dopeId: hustler.id,
           sex: metadata.body[0].eq(0) ? 'male' : 'female',
@@ -126,25 +130,36 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
     <ContentLoading />
   ) : (
     <>
-      <ConfigureHustler config={hustlerConfig} makeVarConfig={makeVarConfig} isCustomize />
+      <ConfigureHustler
+        config={hustlerConfig}
+        makeVarConfig={makeVarConfig}
+        ogTitle={fetchedHustlerConfig.ogTitle}
+        isCustomize
+      />
     </>
   );
 };
 
 const Hustlers = () => {
   const router = useRouter();
-  const { account } = useWeb3React();
+  const { chainId: optimismChainId } = useOptimism();
+  const { account, chainId } = useWeb3React();
+  const { loading: walletLoading } = useWalletQuery({
+    variables: { id: account?.toLowerCase() || '' },
+    skip: !account,
+  });
   const client = useOptimismClient();
   const { data, loading } = useHustlerQuery({
     client,
     variables: { id: String(router.query.id) },
     skip: !router.query.id || !account,
   });
+  useswitchNetwork(optimismChainId, chainId, true);
 
   return (
     <AppWindow padBody={false} navbar={<DopeWarsExeNav />}>
       <Head title="Your Hustler Squad" />
-      {loading || !data?.hustler?.data || !data?.hustler?.data.length ? (
+      {walletLoading || loading || !data?.hustler?.data || !data?.hustler?.data.length ? (
         <ContentLoading />
       ) : (
         <HustlerEdit hustler={data.hustler} />

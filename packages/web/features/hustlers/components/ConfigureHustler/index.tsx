@@ -1,15 +1,14 @@
+import { useMemo, useState } from 'react';
 import { Button, HStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { ReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Hustler__factory } from '@dopewars/contracts';
-import { useMemo } from 'react';
 import { HustlerCustomization, randomizeHustlerAttributes } from 'src/HustlerConfig';
 import { NETWORK } from 'src/constants';
-import { switchNetwork, useOptimism } from 'hooks/web3';
+import { useOptimism } from 'hooks/web3';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
@@ -17,20 +16,23 @@ import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
+import Spinner from 'svg/Spinner';
 
 export type ConfigureHustlerProps = {
   config: HustlerCustomization;
   makeVarConfig?: ReactiveVar<HustlerCustomization>;
+  ogTitle?: string;
 };
 
 const ConfigureHustler = ({
   config,
   makeVarConfig,
   isCustomize,
+  ogTitle,
 }: ConfigureHustlerProps & { isCustomize?: boolean }) => {
+  const [loading, setLoading] = useState(false);
   const { chainId } = useOptimism();
   const { library, chainId: web3ReactChainId } = useWeb3React();
-  const router = useRouter();
 
   const hustlers = useMemo(
     () =>
@@ -41,12 +43,11 @@ const ConfigureHustler = ({
   );
 
   const customizeHustler = async () => {
-    if (web3ReactChainId && chainId !== web3ReactChainId) {
-      switchNetwork(10, web3ReactChainId);
-    } else {
-      return;
+    setLoading(true);
+    if (web3ReactChainId && web3ReactChainId !== chainId) {
+      setLoading(false);
+      return alert('You must be on the Optimistic network to customize your Hustler.');
     }
-
     const {
       dopeId,
       body,
@@ -111,9 +112,8 @@ const ConfigureHustler = ({
         bodyParts,
         mask,
       );
-
-      router.replace('/hustlers/mint-success');
     }
+    setLoading(false);
   };
 
   return (
@@ -141,6 +141,7 @@ const ConfigureHustler = ({
           sex={config.sex}
           textColor={config.textColor}
           zoomWindow={config.zoomWindow}
+          ogTitle={ogTitle}
         />
         <PanelFooter
           css={css`
@@ -152,8 +153,13 @@ const ConfigureHustler = ({
           <HStack mt={0} justify="end">
             <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
             {isCustomize ? (
-              <Button variant="primary" onClick={customizeHustler}>
-                Save Configuration
+              <Button
+                variant="primary"
+                onClick={customizeHustler}
+                isLoading={loading}
+                width="173.59px"
+              >
+                {loading ? <Spinner /> : 'Save Configuration'}
               </Button>
             ) : (
               <Link href="/hustlers/initiate" passHref>

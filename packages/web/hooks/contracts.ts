@@ -6,6 +6,7 @@ import {
   Initiator__factory,
   Hustler__factory,
   SwapMeet__factory,
+  Components__factory,
 } from '@dopewars/contracts/dist';
 import { ethers, BigNumber } from 'ethers';
 import { NETWORK } from 'src/constants';
@@ -65,11 +66,22 @@ export const useHustler = () => {
   );
 };
 
+export const useHustlerComponents = () => {
+  const { chainId, provider } = useOptimism();
+
+  return useMemo(
+    () => Components__factory.connect(NETWORK[chainId].contracts.components, provider),
+    [chainId, provider],
+  );
+};
+
 export const useFetchMetadata = () => {
+  const hustlerComponents = useHustlerComponents();
   const hustler = useHustler();
   const { provider } = useOptimism();
 
   return async function fetchMetadata(id: BigNumber) {
+    const ogTitle = await hustlerComponents.title(id);
     const metadata = await hustler.metadata(id);
     const name = metadata['name'];
     const color = metadata['color'];
@@ -182,6 +194,7 @@ export const useFetchMetadata = () => {
       ]);
 
       return {
+        ogTitle,
         name,
         color,
         background,
