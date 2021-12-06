@@ -45,6 +45,18 @@ func (i *ItemQuery) collectField(ctx *graphql.OperationContext, field graphql.Co
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ss *SyncStateQuery) CollectFields(ctx context.Context, satisfies ...string) *SyncStateQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		ss = ss.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return ss
+}
+
+func (ss *SyncStateQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *SyncStateQuery {
+	return ss
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (w *WalletQuery) CollectFields(ctx context.Context, satisfies ...string) *WalletQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		w = w.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)

@@ -15,5 +15,8 @@ type Hustler func(*sql.Selector)
 // Item is the predicate function for item builders.
 type Item func(*sql.Selector)
 
+// SyncState is the predicate function for syncstate builders.
+type SyncState func(*sql.Selector)
+
 // Wallet is the predicate function for wallet builders.
 type Wallet func(*sql.Selector)

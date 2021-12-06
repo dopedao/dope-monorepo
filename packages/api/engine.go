@@ -33,6 +33,7 @@ type Contract struct {
 }
 
 type Config struct {
+	RPC       string
 	Interval  time.Duration
 	Contracts []Contract
 }
@@ -46,9 +47,9 @@ type Engine struct {
 	contracts []Contract
 }
 
-func NewEngine(ent *ent.Client, rpcConnStr string, config Config) *Engine {
+func NewEngine(ent *ent.Client, config Config) *Engine {
 	retryableHTTPClient := retryablehttp.NewClient()
-	c, err := rpc.DialHTTPWithClient(rpcConnStr, retryableHTTPClient.StandardClient())
+	c, err := rpc.DialHTTPWithClient(config.RPC, retryableHTTPClient.StandardClient())
 	if err != nil {
 		log.Fatal("Dialing ethereum rpc.") //nolint:gocritic
 	}
