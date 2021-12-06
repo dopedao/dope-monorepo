@@ -102,16 +102,16 @@ const ConfigureHustler = ({
         .padStart(4, '0');
 
     if (hustlers) {
-      await hustlers.setMetadata(
-        BigNumber.from(dopeId),
-        setname,
+      await hustlers.setMetadata(BigNumber.from(dopeId), {
+        name: setname,
         color,
         background,
         options,
-        zoomWindow,
-        bodyParts,
+        viewbox: zoomWindow,
+        body: bodyParts,
         mask,
-      );
+        order: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      });
     }
     setLoading(false);
   };
