@@ -12,6 +12,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 
 	"entgo.io/ent/dialect"
@@ -30,6 +31,8 @@ type Client struct {
 	Hustler *HustlerClient
 	// Item is the client for interacting with the Item builders.
 	Item *ItemClient
+	// SyncState is the client for interacting with the SyncState builders.
+	SyncState *SyncStateClient
 	// Wallet is the client for interacting with the Wallet builders.
 	Wallet *WalletClient
 }
@@ -48,6 +51,7 @@ func (c *Client) init() {
 	c.Dope = NewDopeClient(c.config)
 	c.Hustler = NewHustlerClient(c.config)
 	c.Item = NewItemClient(c.config)
+	c.SyncState = NewSyncStateClient(c.config)
 	c.Wallet = NewWalletClient(c.config)
 }
 
@@ -80,12 +84,13 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		Dope:    NewDopeClient(cfg),
-		Hustler: NewHustlerClient(cfg),
-		Item:    NewItemClient(cfg),
-		Wallet:  NewWalletClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		Dope:      NewDopeClient(cfg),
+		Hustler:   NewHustlerClient(cfg),
+		Item:      NewItemClient(cfg),
+		SyncState: NewSyncStateClient(cfg),
+		Wallet:    NewWalletClient(cfg),
 	}, nil
 }
 
@@ -103,11 +108,12 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		config:  cfg,
-		Dope:    NewDopeClient(cfg),
-		Hustler: NewHustlerClient(cfg),
-		Item:    NewItemClient(cfg),
-		Wallet:  NewWalletClient(cfg),
+		config:    cfg,
+		Dope:      NewDopeClient(cfg),
+		Hustler:   NewHustlerClient(cfg),
+		Item:      NewItemClient(cfg),
+		SyncState: NewSyncStateClient(cfg),
+		Wallet:    NewWalletClient(cfg),
 	}, nil
 }
 
@@ -140,6 +146,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Dope.Use(hooks...)
 	c.Hustler.Use(hooks...)
 	c.Item.Use(hooks...)
+	c.SyncState.Use(hooks...)
 	c.Wallet.Use(hooks...)
 }
 
@@ -523,6 +530,96 @@ func (c *ItemClient) QueryDerivative(i *Item) *ItemQuery {
 // Hooks returns the client hooks.
 func (c *ItemClient) Hooks() []Hook {
 	return c.hooks.Item
+}
+
+// SyncStateClient is a client for the SyncState schema.
+type SyncStateClient struct {
+	config
+}
+
+// NewSyncStateClient returns a client for the SyncState from the given config.
+func NewSyncStateClient(c config) *SyncStateClient {
+	return &SyncStateClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `syncstate.Hooks(f(g(h())))`.
+func (c *SyncStateClient) Use(hooks ...Hook) {
+	c.hooks.SyncState = append(c.hooks.SyncState, hooks...)
+}
+
+// Create returns a create builder for SyncState.
+func (c *SyncStateClient) Create() *SyncStateCreate {
+	mutation := newSyncStateMutation(c.config, OpCreate)
+	return &SyncStateCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SyncState entities.
+func (c *SyncStateClient) CreateBulk(builders ...*SyncStateCreate) *SyncStateCreateBulk {
+	return &SyncStateCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SyncState.
+func (c *SyncStateClient) Update() *SyncStateUpdate {
+	mutation := newSyncStateMutation(c.config, OpUpdate)
+	return &SyncStateUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SyncStateClient) UpdateOne(ss *SyncState) *SyncStateUpdateOne {
+	mutation := newSyncStateMutation(c.config, OpUpdateOne, withSyncState(ss))
+	return &SyncStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SyncStateClient) UpdateOneID(id string) *SyncStateUpdateOne {
+	mutation := newSyncStateMutation(c.config, OpUpdateOne, withSyncStateID(id))
+	return &SyncStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SyncState.
+func (c *SyncStateClient) Delete() *SyncStateDelete {
+	mutation := newSyncStateMutation(c.config, OpDelete)
+	return &SyncStateDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *SyncStateClient) DeleteOne(ss *SyncState) *SyncStateDeleteOne {
+	return c.DeleteOneID(ss.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *SyncStateClient) DeleteOneID(id string) *SyncStateDeleteOne {
+	builder := c.Delete().Where(syncstate.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SyncStateDeleteOne{builder}
+}
+
+// Query returns a query builder for SyncState.
+func (c *SyncStateClient) Query() *SyncStateQuery {
+	return &SyncStateQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a SyncState entity by its id.
+func (c *SyncStateClient) Get(ctx context.Context, id string) (*SyncState, error) {
+	return c.Query().Where(syncstate.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SyncStateClient) GetX(ctx context.Context, id string) *SyncState {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SyncStateClient) Hooks() []Hook {
+	return c.hooks.SyncState
 }
 
 // WalletClient is a client for the Wallet schema.

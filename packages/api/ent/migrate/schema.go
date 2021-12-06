@@ -86,10 +86,21 @@ var (
 			},
 		},
 	}
+	// SyncStatesColumns holds the columns for the "sync_states" table.
+	SyncStatesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "start_at", Type: field.TypeUint64},
+	}
+	// SyncStatesTable holds the schema information for the "sync_states" table.
+	SyncStatesTable = &schema.Table{
+		Name:       "sync_states",
+		Columns:    SyncStatesColumns,
+		PrimaryKey: []*schema.Column{SyncStatesColumns[0]},
+	}
 	// WalletsColumns holds the columns for the "wallets" table.
 	WalletsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "paper", Type: field.TypeInt, Default: 0, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "paper", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
 	}
 	// WalletsTable holds the schema information for the "wallets" table.
 	WalletsTable = &schema.Table{
@@ -127,6 +138,7 @@ var (
 		DopesTable,
 		HustlersTable,
 		ItemsTable,
+		SyncStatesTable,
 		WalletsTable,
 		DopeItemsTable,
 	}
