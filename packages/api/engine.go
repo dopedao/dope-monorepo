@@ -4,15 +4,14 @@ import (
 	"context"
 	"log"
 	"math/big"
-	"reflect"
 	"sync"
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/processors"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/go-retryablehttp"
@@ -27,31 +26,15 @@ type EthClient interface {
 	BlockNumber(ctx context.Context) (uint64, error)
 }
 
-type Processor interface {
-	Setup(common.Address, interface {
-		bind.ContractBackend
-		ethereum.ChainReader
-	}) error
-	SetEnt(*ent.Client)
-	Initialize(context.Context, uint64, func(string, []interface{})) error
-	ProcessElement(interface{}) func(context.Context, types.Log, func(string, []interface{})) error
-}
-
 type Contract struct {
 	Address    common.Address
 	StartBlock uint64
-	Interface  reflect.Type
+	Processor  processors.Processor
 }
 
 type Config struct {
 	Interval  time.Duration
 	Contracts []Contract
-}
-
-type SyncingContract struct {
-	Address   common.Address
-	Processor Processor
-	LastBlock uint64
 }
 
 type Engine struct {
@@ -60,7 +43,7 @@ type Engine struct {
 	ent       *ent.Client
 	eth       EthClient
 	ticker    *time.Ticker
-	contracts []SyncingContract
+	contracts []Contract
 }
 
 func NewEngine(ent *ent.Client, rpcConnStr string, config Config) *Engine {
@@ -79,15 +62,11 @@ func NewEngine(ent *ent.Client, rpcConnStr string, config Config) *Engine {
 	}
 
 	for _, contract := range config.Contracts {
-		p, ok := reflect.New(contract.Interface).Interface().(Processor)
-		if !ok {
-			log.Fatal("Reflecting processor type.")
-		}
-		if err := p.Setup(contract.Address, eth); err != nil {
+		if err := contract.Processor.Setup(contract.Address, eth); err != nil {
 			log.Fatal("Setting up processor.")
 		}
-		p.SetEnt(ent)
-		e.contracts = append(e.contracts, SyncingContract{contract.Address, p, contract.StartBlock - 1})
+		contract.Processor.SetEnt(ent)
+		e.contracts = append(e.contracts, contract)
 	}
 
 	return e
@@ -109,12 +88,12 @@ func (e *Engine) Sync(ctx context.Context) {
 			e.latest = latest
 
 			for _, c := range e.contracts {
-				_from := c.LastBlock + 1
+				_from := c.StartBlock
 				for {
 					_to := Min(latest, _from+blockLimit)
 
 					logs, err := e.eth.FilterLogs(ctx, ethereum.FilterQuery{
-						FromBlock: new(big.Int).SetUint64(c.LastBlock),
+						FromBlock: new(big.Int).SetUint64(c.StartBlock),
 						ToBlock:   new(big.Int).SetUint64(_to),
 						Addresses: []common.Address{c.Address},
 					})
@@ -133,7 +112,7 @@ func (e *Engine) Sync(ctx context.Context) {
 					_from = _to + 1
 
 					if _to == latest {
-						c.LastBlock = latest
+						c.StartBlock = latest + 1
 						return
 					}
 				}

@@ -9,6 +9,7 @@ import (
 )
 
 type SwapMeetProcessor struct {
+	Processor
 	bindings.UnimplementedSwapMeetProcessor
 	ent *ent.Client
 }

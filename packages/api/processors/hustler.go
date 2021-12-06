@@ -8,6 +8,7 @@ import (
 )
 
 type HustlerProcessor struct {
+	Processor
 	bindings.UnimplementedHustlerProcessor
 	ent *ent.Client
 }

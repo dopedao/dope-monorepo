@@ -11,7 +11,7 @@ import (
 )
 
 type PaperProcessor struct {
-	bindings.PaperProcessor
+	bindings.UnimplementedPaperProcessor
 	ent *ent.Client
 }
 

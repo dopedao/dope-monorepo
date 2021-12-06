@@ -89,7 +89,7 @@ var (
 	// WalletsColumns holds the columns for the "wallets" table.
 	WalletsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "paper", Type: field.TypeInt, Default: 0, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "paper", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
 	}
 	// WalletsTable holds the schema information for the "wallets" table.
 	WalletsTable = &schema.Table{

@@ -2428,10 +2428,24 @@ func (m *WalletMutation) AddedPaper() (r schema.BigInt, exists bool) {
 	return *v, true
 }
 
+// ClearPaper clears the value of the "paper" field.
+func (m *WalletMutation) ClearPaper() {
+	m.paper = nil
+	m.addpaper = nil
+	m.clearedFields[wallet.FieldPaper] = struct{}{}
+}
+
+// PaperCleared returns if the "paper" field was cleared in this mutation.
+func (m *WalletMutation) PaperCleared() bool {
+	_, ok := m.clearedFields[wallet.FieldPaper]
+	return ok
+}
+
 // ResetPaper resets all changes to the "paper" field.
 func (m *WalletMutation) ResetPaper() {
 	m.paper = nil
 	m.addpaper = nil
+	delete(m.clearedFields, wallet.FieldPaper)
 }
 
 // AddDopeIDs adds the "dopes" edge to the Dope entity by ids.
@@ -2700,7 +2714,11 @@ func (m *WalletMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *WalletMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(wallet.FieldPaper) {
+		fields = append(fields, wallet.FieldPaper)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -2713,6 +2731,11 @@ func (m *WalletMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *WalletMutation) ClearField(name string) error {
+	switch name {
+	case wallet.FieldPaper:
+		m.ClearPaper()
+		return nil
+	}
 	return fmt.Errorf("unknown Wallet nullable field %s", name)
 }
 
