@@ -10,6 +10,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/migrate"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 
@@ -25,6 +26,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Dope is the client for interacting with the Dope builders.
 	Dope *DopeClient
+	// Hustler is the client for interacting with the Hustler builders.
+	Hustler *HustlerClient
 	// Item is the client for interacting with the Item builders.
 	Item *ItemClient
 	// Wallet is the client for interacting with the Wallet builders.
@@ -43,6 +46,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Dope = NewDopeClient(c.config)
+	c.Hustler = NewHustlerClient(c.config)
 	c.Item = NewItemClient(c.config)
 	c.Wallet = NewWalletClient(c.config)
 }
@@ -76,11 +80,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Dope:   NewDopeClient(cfg),
-		Item:   NewItemClient(cfg),
-		Wallet: NewWalletClient(cfg),
+		ctx:     ctx,
+		config:  cfg,
+		Dope:    NewDopeClient(cfg),
+		Hustler: NewHustlerClient(cfg),
+		Item:    NewItemClient(cfg),
+		Wallet:  NewWalletClient(cfg),
 	}, nil
 }
 
@@ -98,10 +103,11 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		config: cfg,
-		Dope:   NewDopeClient(cfg),
-		Item:   NewItemClient(cfg),
-		Wallet: NewWalletClient(cfg),
+		config:  cfg,
+		Dope:    NewDopeClient(cfg),
+		Hustler: NewHustlerClient(cfg),
+		Item:    NewItemClient(cfg),
+		Wallet:  NewWalletClient(cfg),
 	}, nil
 }
 
@@ -132,6 +138,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Dope.Use(hooks...)
+	c.Hustler.Use(hooks...)
 	c.Item.Use(hooks...)
 	c.Wallet.Use(hooks...)
 }
@@ -258,6 +265,112 @@ func (c *DopeClient) Hooks() []Hook {
 	return c.hooks.Dope
 }
 
+// HustlerClient is a client for the Hustler schema.
+type HustlerClient struct {
+	config
+}
+
+// NewHustlerClient returns a client for the Hustler from the given config.
+func NewHustlerClient(c config) *HustlerClient {
+	return &HustlerClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `hustler.Hooks(f(g(h())))`.
+func (c *HustlerClient) Use(hooks ...Hook) {
+	c.hooks.Hustler = append(c.hooks.Hustler, hooks...)
+}
+
+// Create returns a create builder for Hustler.
+func (c *HustlerClient) Create() *HustlerCreate {
+	mutation := newHustlerMutation(c.config, OpCreate)
+	return &HustlerCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Hustler entities.
+func (c *HustlerClient) CreateBulk(builders ...*HustlerCreate) *HustlerCreateBulk {
+	return &HustlerCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Hustler.
+func (c *HustlerClient) Update() *HustlerUpdate {
+	mutation := newHustlerMutation(c.config, OpUpdate)
+	return &HustlerUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *HustlerClient) UpdateOne(h *Hustler) *HustlerUpdateOne {
+	mutation := newHustlerMutation(c.config, OpUpdateOne, withHustler(h))
+	return &HustlerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *HustlerClient) UpdateOneID(id string) *HustlerUpdateOne {
+	mutation := newHustlerMutation(c.config, OpUpdateOne, withHustlerID(id))
+	return &HustlerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Hustler.
+func (c *HustlerClient) Delete() *HustlerDelete {
+	mutation := newHustlerMutation(c.config, OpDelete)
+	return &HustlerDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *HustlerClient) DeleteOne(h *Hustler) *HustlerDeleteOne {
+	return c.DeleteOneID(h.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *HustlerClient) DeleteOneID(id string) *HustlerDeleteOne {
+	builder := c.Delete().Where(hustler.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &HustlerDeleteOne{builder}
+}
+
+// Query returns a query builder for Hustler.
+func (c *HustlerClient) Query() *HustlerQuery {
+	return &HustlerQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Hustler entity by its id.
+func (c *HustlerClient) Get(ctx context.Context, id string) (*Hustler, error) {
+	return c.Query().Where(hustler.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *HustlerClient) GetX(ctx context.Context, id string) *Hustler {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryWallet queries the wallet edge of a Hustler.
+func (c *HustlerClient) QueryWallet(h *Hustler) *WalletQuery {
+	query := &WalletQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(wallet.Table, wallet.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.WalletTable, hustler.WalletColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *HustlerClient) Hooks() []Hook {
+	return c.hooks.Hustler
+}
+
 // ItemClient is a client for the Item schema.
 type ItemClient struct {
 	config
@@ -343,6 +456,22 @@ func (c *ItemClient) GetX(ctx context.Context, id string) *Item {
 	return obj
 }
 
+// QueryWallet queries the wallet edge of a Item.
+func (c *ItemClient) QueryWallet(i *Item) *WalletQuery {
+	query := &WalletQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(wallet.Table, wallet.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, item.WalletTable, item.WalletColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryDopes queries the dopes edge of a Item.
 func (c *ItemClient) QueryDopes(i *Item) *DopeQuery {
 	query := &DopeQuery{config: c.config}
@@ -352,6 +481,38 @@ func (c *ItemClient) QueryDopes(i *Item) *DopeQuery {
 			sqlgraph.From(item.Table, item.FieldID, id),
 			sqlgraph.To(dope.Table, dope.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, item.DopesTable, item.DopesPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryBase queries the base edge of a Item.
+func (c *ItemClient) QueryBase(i *Item) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, item.BaseTable, item.BaseColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDerivative queries the derivative edge of a Item.
+func (c *ItemClient) QueryDerivative(i *Item) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.DerivativeTable, item.DerivativeColumn),
 		)
 		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
 		return fromV, nil
@@ -458,6 +619,38 @@ func (c *WalletClient) QueryDopes(w *Wallet) *DopeQuery {
 			sqlgraph.From(wallet.Table, wallet.FieldID, id),
 			sqlgraph.To(dope.Table, dope.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, wallet.DopesTable, wallet.DopesColumn),
+		)
+		fromV = sqlgraph.Neighbors(w.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryItems queries the items edge of a Wallet.
+func (c *WalletClient) QueryItems(w *Wallet) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := w.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(wallet.Table, wallet.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, wallet.ItemsTable, wallet.ItemsColumn),
+		)
+		fromV = sqlgraph.Neighbors(w.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlers queries the hustlers edge of a Wallet.
+func (c *WalletClient) QueryHustlers(w *Wallet) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := w.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(wallet.Table, wallet.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, wallet.HustlersTable, wallet.HustlersColumn),
 		)
 		fromV = sqlgraph.Neighbors(w.driver.Dialect(), step)
 		return fromV, nil

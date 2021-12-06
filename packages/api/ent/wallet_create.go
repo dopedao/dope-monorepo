@@ -12,6 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
@@ -27,6 +29,14 @@ type WalletCreate struct {
 // SetPaper sets the "paper" field.
 func (wc *WalletCreate) SetPaper(si schema.BigInt) *WalletCreate {
 	wc.mutation.SetPaper(si)
+	return wc
+}
+
+// SetNillablePaper sets the "paper" field if the given value is not nil.
+func (wc *WalletCreate) SetNillablePaper(si *schema.BigInt) *WalletCreate {
+	if si != nil {
+		wc.SetPaper(*si)
+	}
 	return wc
 }
 
@@ -51,6 +61,36 @@ func (wc *WalletCreate) AddDopes(d ...*Dope) *WalletCreate {
 	return wc.AddDopeIDs(ids...)
 }
 
+// AddItemIDs adds the "items" edge to the Item entity by IDs.
+func (wc *WalletCreate) AddItemIDs(ids ...string) *WalletCreate {
+	wc.mutation.AddItemIDs(ids...)
+	return wc
+}
+
+// AddItems adds the "items" edges to the Item entity.
+func (wc *WalletCreate) AddItems(i ...*Item) *WalletCreate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return wc.AddItemIDs(ids...)
+}
+
+// AddHustlerIDs adds the "hustlers" edge to the Hustler entity by IDs.
+func (wc *WalletCreate) AddHustlerIDs(ids ...string) *WalletCreate {
+	wc.mutation.AddHustlerIDs(ids...)
+	return wc
+}
+
+// AddHustlers adds the "hustlers" edges to the Hustler entity.
+func (wc *WalletCreate) AddHustlers(h ...*Hustler) *WalletCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return wc.AddHustlerIDs(ids...)
+}
+
 // Mutation returns the WalletMutation object of the builder.
 func (wc *WalletCreate) Mutation() *WalletMutation {
 	return wc.mutation
@@ -62,6 +102,7 @@ func (wc *WalletCreate) Save(ctx context.Context) (*Wallet, error) {
 		err  error
 		node *Wallet
 	)
+	wc.defaults()
 	if len(wc.hooks) == 0 {
 		if err = wc.check(); err != nil {
 			return nil, err
@@ -119,10 +160,18 @@ func (wc *WalletCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (wc *WalletCreate) defaults() {
+	if _, ok := wc.mutation.Paper(); !ok {
+		v := wallet.DefaultPaper
+		wc.mutation.SetPaper(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (wc *WalletCreate) check() error {
 	if _, ok := wc.mutation.Paper(); !ok {
-		return &ValidationError{Name: "paper", err: errors.New(`ent: missing required field "paper"`)}
+		return &ValidationError{Name: "paper", err: errors.New(`ent: missing required field "Wallet.paper"`)}
 	}
 	return nil
 }
@@ -136,7 +185,11 @@ func (wc *WalletCreate) sqlSave(ctx context.Context) (*Wallet, error) {
 		return nil, err
 	}
 	if _spec.ID.Value != nil {
-		_node.ID = _spec.ID.Value.(string)
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected Wallet.ID type: %T", _spec.ID.Value)
+		}
 	}
 	return _node, nil
 }
@@ -176,6 +229,44 @@ func (wc *WalletCreate) createSpec() (*Wallet, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: dope.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := wc.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.ItemsTable,
+			Columns: []string{wallet.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := wc.mutation.HustlersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.HustlersTable,
+			Columns: []string{wallet.HustlersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
 				},
 			},
 		}
@@ -250,7 +341,13 @@ func (u *WalletUpsert) UpdatePaper() *WalletUpsert {
 	return u
 }
 
-// UpdateNewValues updates the fields using the new values that were set on create except the ID field.
+// AddPaper adds v to the "paper" field.
+func (u *WalletUpsert) AddPaper(v schema.BigInt) *WalletUpsert {
+	u.Add(wallet.FieldPaper, v)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.Wallet.Create().
@@ -304,6 +401,13 @@ func (u *WalletUpsertOne) Update(set func(*WalletUpsert)) *WalletUpsertOne {
 func (u *WalletUpsertOne) SetPaper(v schema.BigInt) *WalletUpsertOne {
 	return u.Update(func(s *WalletUpsert) {
 		s.SetPaper(v)
+	})
+}
+
+// AddPaper adds v to the "paper" field.
+func (u *WalletUpsertOne) AddPaper(v schema.BigInt) *WalletUpsertOne {
+	return u.Update(func(s *WalletUpsert) {
+		s.AddPaper(v)
 	})
 }
 
@@ -367,6 +471,7 @@ func (wcb *WalletCreateBulk) Save(ctx context.Context) ([]*Wallet, error) {
 	for i := range wcb.builders {
 		func(i int, root context.Context) {
 			builder := wcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*WalletMutation)
 				if !ok {
@@ -476,7 +581,7 @@ type WalletUpsertBulk struct {
 	create *WalletCreateBulk
 }
 
-// UpdateNewValues updates the fields using the new values that
+// UpdateNewValues updates the mutable fields using the new values that
 // were set on create. Using this option is equivalent to using:
 //
 //	client.Wallet.Create().
@@ -533,6 +638,13 @@ func (u *WalletUpsertBulk) Update(set func(*WalletUpsert)) *WalletUpsertBulk {
 func (u *WalletUpsertBulk) SetPaper(v schema.BigInt) *WalletUpsertBulk {
 	return u.Update(func(s *WalletUpsert) {
 		s.SetPaper(v)
+	})
+}
+
+// AddPaper adds v to the "paper" field.
+func (u *WalletUpsertBulk) AddPaper(v schema.BigInt) *WalletUpsertBulk {
+	return u.Update(func(s *WalletUpsert) {
+		s.AddPaper(v)
 	})
 }
 

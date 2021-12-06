@@ -38,7 +38,11 @@ func (Item) Fields() []ent.Field {
 // Edges of the Item.
 func (Item) Edges() []ent.Edge {
 	return []ent.Edge{
+		edge.From("wallet", Wallet.Type).Ref("items").Unique(),
 		edge.From("dopes", Dope.Type).
 			Ref("items"),
+		edge.To("derivative", Item.Type).
+			From("base").
+			Unique(),
 	}
 }

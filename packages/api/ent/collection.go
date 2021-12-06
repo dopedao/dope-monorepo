@@ -21,6 +21,18 @@ func (d *DopeQuery) collectField(ctx *graphql.OperationContext, field graphql.Co
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (h *HustlerQuery) CollectFields(ctx context.Context, satisfies ...string) *HustlerQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		h = h.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return h
+}
+
+func (h *HustlerQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *HustlerQuery {
+	return h
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (i *ItemQuery) CollectFields(ctx context.Context, satisfies ...string) *ItemQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		i = i.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)

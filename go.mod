@@ -4,12 +4,12 @@ go 1.17
 
 require (
 	entgo.io/contrib v0.1.0
-	entgo.io/ent v0.9.1
+	entgo.io/ent v0.9.2-0.20211202152557-7dba6969fad0
 	github.com/99designs/gqlgen v0.14.0
 	github.com/ethereum/go-ethereum v1.10.13
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-retryablehttp v0.7.0
-	github.com/mattn/go-sqlite3 v1.14.8
+	github.com/mattn/go-sqlite3 v1.14.9
 	github.com/rs/cors v1.8.0
 	github.com/rs/zerolog v1.26.0
 	github.com/vektah/gqlparser/v2 v2.2.0
@@ -35,7 +35,7 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
-	github.com/mitchellh/mapstructure v1.4.1 // indirect
+	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rjeczalik/notify v0.9.1 // indirect
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect

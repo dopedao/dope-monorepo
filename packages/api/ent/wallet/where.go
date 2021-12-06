@@ -203,6 +203,62 @@ func HasDopesWith(preds ...predicate.Dope) predicate.Wallet {
 	})
 }
 
+// HasItems applies the HasEdge predicate on the "items" edge.
+func HasItems() predicate.Wallet {
+	return predicate.Wallet(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ItemsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ItemsTable, ItemsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasItemsWith applies the HasEdge predicate on the "items" edge with a given conditions (other predicates).
+func HasItemsWith(preds ...predicate.Item) predicate.Wallet {
+	return predicate.Wallet(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ItemsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ItemsTable, ItemsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasHustlers applies the HasEdge predicate on the "hustlers" edge.
+func HasHustlers() predicate.Wallet {
+	return predicate.Wallet(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HustlersTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, HustlersTable, HustlersColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasHustlersWith applies the HasEdge predicate on the "hustlers" edge with a given conditions (other predicates).
+func HasHustlersWith(preds ...predicate.Hustler) predicate.Wallet {
+	return predicate.Wallet(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HustlersInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, HustlersTable, HustlersColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Wallet) predicate.Wallet {
 	return predicate.Wallet(func(s *sql.Selector) {

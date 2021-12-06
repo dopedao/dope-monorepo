@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
 // Item is the model entity for the Item schema.
@@ -29,25 +30,70 @@ type Item struct {
 	Augmented bool `json:"augmented,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ItemQuery when eager-loading is set.
-	Edges ItemEdges `json:"edges"`
+	Edges           ItemEdges `json:"edges"`
+	item_derivative *string
+	wallet_items    *string
 }
 
 // ItemEdges holds the relations/edges for other nodes in the graph.
 type ItemEdges struct {
+	// Wallet holds the value of the wallet edge.
+	Wallet *Wallet `json:"wallet,omitempty"`
 	// Dopes holds the value of the dopes edge.
 	Dopes []*Dope `json:"dopes,omitempty"`
+	// Base holds the value of the base edge.
+	Base *Item `json:"base,omitempty"`
+	// Derivative holds the value of the derivative edge.
+	Derivative []*Item `json:"derivative,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [4]bool
+}
+
+// WalletOrErr returns the Wallet value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ItemEdges) WalletOrErr() (*Wallet, error) {
+	if e.loadedTypes[0] {
+		if e.Wallet == nil {
+			// The edge wallet was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: wallet.Label}
+		}
+		return e.Wallet, nil
+	}
+	return nil, &NotLoadedError{edge: "wallet"}
 }
 
 // DopesOrErr returns the Dopes value or an error if the edge
 // was not loaded in eager-loading.
 func (e ItemEdges) DopesOrErr() ([]*Dope, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		return e.Dopes, nil
 	}
 	return nil, &NotLoadedError{edge: "dopes"}
+}
+
+// BaseOrErr returns the Base value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ItemEdges) BaseOrErr() (*Item, error) {
+	if e.loadedTypes[2] {
+		if e.Base == nil {
+			// The edge base was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: item.Label}
+		}
+		return e.Base, nil
+	}
+	return nil, &NotLoadedError{edge: "base"}
+}
+
+// DerivativeOrErr returns the Derivative value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) DerivativeOrErr() ([]*Item, error) {
+	if e.loadedTypes[3] {
+		return e.Derivative, nil
+	}
+	return nil, &NotLoadedError{edge: "derivative"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -58,6 +104,10 @@ func (*Item) scanValues(columns []string) ([]interface{}, error) {
 		case item.FieldAugmented:
 			values[i] = new(sql.NullBool)
 		case item.FieldID, item.FieldType, item.FieldNamePrefix, item.FieldNameSuffix, item.FieldName, item.FieldSuffix:
+			values[i] = new(sql.NullString)
+		case item.ForeignKeys[0]: // item_derivative
+			values[i] = new(sql.NullString)
+		case item.ForeignKeys[1]: // wallet_items
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Item", columns[i])
@@ -116,14 +166,43 @@ func (i *Item) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				i.Augmented = value.Bool
 			}
+		case item.ForeignKeys[0]:
+			if value, ok := values[j].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field item_derivative", values[j])
+			} else if value.Valid {
+				i.item_derivative = new(string)
+				*i.item_derivative = value.String
+			}
+		case item.ForeignKeys[1]:
+			if value, ok := values[j].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field wallet_items", values[j])
+			} else if value.Valid {
+				i.wallet_items = new(string)
+				*i.wallet_items = value.String
+			}
 		}
 	}
 	return nil
 }
 
+// QueryWallet queries the "wallet" edge of the Item entity.
+func (i *Item) QueryWallet() *WalletQuery {
+	return (&ItemClient{config: i.config}).QueryWallet(i)
+}
+
 // QueryDopes queries the "dopes" edge of the Item entity.
 func (i *Item) QueryDopes() *DopeQuery {
 	return (&ItemClient{config: i.config}).QueryDopes(i)
+}
+
+// QueryBase queries the "base" edge of the Item entity.
+func (i *Item) QueryBase() *ItemQuery {
+	return (&ItemClient{config: i.config}).QueryBase(i)
+}
+
+// QueryDerivative queries the "derivative" edge of the Item entity.
+func (i *Item) QueryDerivative() *ItemQuery {
+	return (&ItemClient{config: i.config}).QueryDerivative(i)
 }
 
 // Update returns a builder for updating this Item.

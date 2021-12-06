@@ -27,9 +27,13 @@ type Wallet struct {
 type WalletEdges struct {
 	// Dopes holds the value of the dopes edge.
 	Dopes []*Dope `json:"dopes,omitempty"`
+	// Items holds the value of the items edge.
+	Items []*Item `json:"items,omitempty"`
+	// Hustlers holds the value of the hustlers edge.
+	Hustlers []*Hustler `json:"hustlers,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 }
 
 // DopesOrErr returns the Dopes value or an error if the edge
@@ -39,6 +43,24 @@ func (e WalletEdges) DopesOrErr() ([]*Dope, error) {
 		return e.Dopes, nil
 	}
 	return nil, &NotLoadedError{edge: "dopes"}
+}
+
+// ItemsOrErr returns the Items value or an error if the edge
+// was not loaded in eager-loading.
+func (e WalletEdges) ItemsOrErr() ([]*Item, error) {
+	if e.loadedTypes[1] {
+		return e.Items, nil
+	}
+	return nil, &NotLoadedError{edge: "items"}
+}
+
+// HustlersOrErr returns the Hustlers value or an error if the edge
+// was not loaded in eager-loading.
+func (e WalletEdges) HustlersOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[2] {
+		return e.Hustlers, nil
+	}
+	return nil, &NotLoadedError{edge: "hustlers"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -85,6 +107,16 @@ func (w *Wallet) assignValues(columns []string, values []interface{}) error {
 // QueryDopes queries the "dopes" edge of the Wallet entity.
 func (w *Wallet) QueryDopes() *DopeQuery {
 	return (&WalletClient{config: w.config}).QueryDopes(w)
+}
+
+// QueryItems queries the "items" edge of the Wallet entity.
+func (w *Wallet) QueryItems() *ItemQuery {
+	return (&WalletClient{config: w.config}).QueryItems(w)
+}
+
+// QueryHustlers queries the "hustlers" edge of the Wallet entity.
+func (w *Wallet) QueryHustlers() *HustlerQuery {
+	return (&WalletClient{config: w.config}).QueryHustlers(w)
 }
 
 // Update returns a builder for updating this Wallet.

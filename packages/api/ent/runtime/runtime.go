@@ -5,5 +5,6 @@ package runtime
 // The schema-stitching logic is generated in github.com/dopedao/dope-monorepo/packages/api/ent/runtime.go
 
 const (
-	Version = "(devel)" // Version of ent codegen.
+	Version = "v0.9.2-0.20211202152557-7dba6969fad0"            // Version of ent codegen.
+	Sum     = "h1:lReKV955Fxuj4p2/e1trOkSXZ9l7CDWT2UVQQpOPmCo=" // Sum of ent codegen.
 )

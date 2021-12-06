@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
@@ -12,6 +13,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
 // ItemUpdate is the builder for updating Item entities.
@@ -25,6 +27,25 @@ type ItemUpdate struct {
 func (iu *ItemUpdate) Where(ps ...predicate.Item) *ItemUpdate {
 	iu.mutation.Where(ps...)
 	return iu
+}
+
+// SetWalletID sets the "wallet" edge to the Wallet entity by ID.
+func (iu *ItemUpdate) SetWalletID(id string) *ItemUpdate {
+	iu.mutation.SetWalletID(id)
+	return iu
+}
+
+// SetNillableWalletID sets the "wallet" edge to the Wallet entity by ID if the given value is not nil.
+func (iu *ItemUpdate) SetNillableWalletID(id *string) *ItemUpdate {
+	if id != nil {
+		iu = iu.SetWalletID(*id)
+	}
+	return iu
+}
+
+// SetWallet sets the "wallet" edge to the Wallet entity.
+func (iu *ItemUpdate) SetWallet(w *Wallet) *ItemUpdate {
+	return iu.SetWalletID(w.ID)
 }
 
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
@@ -42,9 +63,49 @@ func (iu *ItemUpdate) AddDopes(d ...*Dope) *ItemUpdate {
 	return iu.AddDopeIDs(ids...)
 }
 
+// SetBaseID sets the "base" edge to the Item entity by ID.
+func (iu *ItemUpdate) SetBaseID(id string) *ItemUpdate {
+	iu.mutation.SetBaseID(id)
+	return iu
+}
+
+// SetNillableBaseID sets the "base" edge to the Item entity by ID if the given value is not nil.
+func (iu *ItemUpdate) SetNillableBaseID(id *string) *ItemUpdate {
+	if id != nil {
+		iu = iu.SetBaseID(*id)
+	}
+	return iu
+}
+
+// SetBase sets the "base" edge to the Item entity.
+func (iu *ItemUpdate) SetBase(i *Item) *ItemUpdate {
+	return iu.SetBaseID(i.ID)
+}
+
+// AddDerivativeIDs adds the "derivative" edge to the Item entity by IDs.
+func (iu *ItemUpdate) AddDerivativeIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddDerivativeIDs(ids...)
+	return iu
+}
+
+// AddDerivative adds the "derivative" edges to the Item entity.
+func (iu *ItemUpdate) AddDerivative(i ...*Item) *ItemUpdate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return iu.AddDerivativeIDs(ids...)
+}
+
 // Mutation returns the ItemMutation object of the builder.
 func (iu *ItemUpdate) Mutation() *ItemMutation {
 	return iu.mutation
+}
+
+// ClearWallet clears the "wallet" edge to the Wallet entity.
+func (iu *ItemUpdate) ClearWallet() *ItemUpdate {
+	iu.mutation.ClearWallet()
+	return iu
 }
 
 // ClearDopes clears all "dopes" edges to the Dope entity.
@@ -66,6 +127,33 @@ func (iu *ItemUpdate) RemoveDopes(d ...*Dope) *ItemUpdate {
 		ids[i] = d[i].ID
 	}
 	return iu.RemoveDopeIDs(ids...)
+}
+
+// ClearBase clears the "base" edge to the Item entity.
+func (iu *ItemUpdate) ClearBase() *ItemUpdate {
+	iu.mutation.ClearBase()
+	return iu
+}
+
+// ClearDerivative clears all "derivative" edges to the Item entity.
+func (iu *ItemUpdate) ClearDerivative() *ItemUpdate {
+	iu.mutation.ClearDerivative()
+	return iu
+}
+
+// RemoveDerivativeIDs removes the "derivative" edge to Item entities by IDs.
+func (iu *ItemUpdate) RemoveDerivativeIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveDerivativeIDs(ids...)
+	return iu
+}
+
+// RemoveDerivative removes "derivative" edges to Item entities.
+func (iu *ItemUpdate) RemoveDerivative(i ...*Item) *ItemUpdate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return iu.RemoveDerivativeIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -164,6 +252,41 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: item.FieldAugmented,
 		})
 	}
+	if iu.mutation.WalletCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.WalletTable,
+			Columns: []string{item.WalletColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: wallet.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.WalletIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.WalletTable,
+			Columns: []string{item.WalletColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: wallet.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if iu.mutation.DopesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -218,6 +341,95 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if iu.mutation.BaseCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.BaseTable,
+			Columns: []string{item.BaseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.BaseIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.BaseTable,
+			Columns: []string{item.BaseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.DerivativeCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.DerivativeTable,
+			Columns: []string{item.DerivativeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedDerivativeIDs(); len(nodes) > 0 && !iu.mutation.DerivativeCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.DerivativeTable,
+			Columns: []string{item.DerivativeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.DerivativeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.DerivativeTable,
+			Columns: []string{item.DerivativeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, iu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{item.Label}
@@ -237,6 +449,25 @@ type ItemUpdateOne struct {
 	mutation *ItemMutation
 }
 
+// SetWalletID sets the "wallet" edge to the Wallet entity by ID.
+func (iuo *ItemUpdateOne) SetWalletID(id string) *ItemUpdateOne {
+	iuo.mutation.SetWalletID(id)
+	return iuo
+}
+
+// SetNillableWalletID sets the "wallet" edge to the Wallet entity by ID if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableWalletID(id *string) *ItemUpdateOne {
+	if id != nil {
+		iuo = iuo.SetWalletID(*id)
+	}
+	return iuo
+}
+
+// SetWallet sets the "wallet" edge to the Wallet entity.
+func (iuo *ItemUpdateOne) SetWallet(w *Wallet) *ItemUpdateOne {
+	return iuo.SetWalletID(w.ID)
+}
+
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
 func (iuo *ItemUpdateOne) AddDopeIDs(ids ...string) *ItemUpdateOne {
 	iuo.mutation.AddDopeIDs(ids...)
@@ -252,9 +483,49 @@ func (iuo *ItemUpdateOne) AddDopes(d ...*Dope) *ItemUpdateOne {
 	return iuo.AddDopeIDs(ids...)
 }
 
+// SetBaseID sets the "base" edge to the Item entity by ID.
+func (iuo *ItemUpdateOne) SetBaseID(id string) *ItemUpdateOne {
+	iuo.mutation.SetBaseID(id)
+	return iuo
+}
+
+// SetNillableBaseID sets the "base" edge to the Item entity by ID if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableBaseID(id *string) *ItemUpdateOne {
+	if id != nil {
+		iuo = iuo.SetBaseID(*id)
+	}
+	return iuo
+}
+
+// SetBase sets the "base" edge to the Item entity.
+func (iuo *ItemUpdateOne) SetBase(i *Item) *ItemUpdateOne {
+	return iuo.SetBaseID(i.ID)
+}
+
+// AddDerivativeIDs adds the "derivative" edge to the Item entity by IDs.
+func (iuo *ItemUpdateOne) AddDerivativeIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddDerivativeIDs(ids...)
+	return iuo
+}
+
+// AddDerivative adds the "derivative" edges to the Item entity.
+func (iuo *ItemUpdateOne) AddDerivative(i ...*Item) *ItemUpdateOne {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return iuo.AddDerivativeIDs(ids...)
+}
+
 // Mutation returns the ItemMutation object of the builder.
 func (iuo *ItemUpdateOne) Mutation() *ItemMutation {
 	return iuo.mutation
+}
+
+// ClearWallet clears the "wallet" edge to the Wallet entity.
+func (iuo *ItemUpdateOne) ClearWallet() *ItemUpdateOne {
+	iuo.mutation.ClearWallet()
+	return iuo
 }
 
 // ClearDopes clears all "dopes" edges to the Dope entity.
@@ -276,6 +547,33 @@ func (iuo *ItemUpdateOne) RemoveDopes(d ...*Dope) *ItemUpdateOne {
 		ids[i] = d[i].ID
 	}
 	return iuo.RemoveDopeIDs(ids...)
+}
+
+// ClearBase clears the "base" edge to the Item entity.
+func (iuo *ItemUpdateOne) ClearBase() *ItemUpdateOne {
+	iuo.mutation.ClearBase()
+	return iuo
+}
+
+// ClearDerivative clears all "derivative" edges to the Item entity.
+func (iuo *ItemUpdateOne) ClearDerivative() *ItemUpdateOne {
+	iuo.mutation.ClearDerivative()
+	return iuo
+}
+
+// RemoveDerivativeIDs removes the "derivative" edge to Item entities by IDs.
+func (iuo *ItemUpdateOne) RemoveDerivativeIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveDerivativeIDs(ids...)
+	return iuo
+}
+
+// RemoveDerivative removes "derivative" edges to Item entities.
+func (iuo *ItemUpdateOne) RemoveDerivative(i ...*Item) *ItemUpdateOne {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return iuo.RemoveDerivativeIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -352,7 +650,7 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 	}
 	id, ok := iuo.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing Item.ID for update")}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Item.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := iuo.fields; len(fields) > 0 {
@@ -397,6 +695,41 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 			Type:   field.TypeBool,
 			Column: item.FieldAugmented,
 		})
+	}
+	if iuo.mutation.WalletCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.WalletTable,
+			Columns: []string{item.WalletColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: wallet.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.WalletIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.WalletTable,
+			Columns: []string{item.WalletColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: wallet.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if iuo.mutation.DopesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -444,6 +777,95 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: dope.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.BaseCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.BaseTable,
+			Columns: []string{item.BaseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.BaseIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.BaseTable,
+			Columns: []string{item.BaseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.DerivativeCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.DerivativeTable,
+			Columns: []string{item.DerivativeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedDerivativeIDs(); len(nodes) > 0 && !iuo.mutation.DerivativeCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.DerivativeTable,
+			Columns: []string{item.DerivativeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.DerivativeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.DerivativeTable,
+			Columns: []string{item.DerivativeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
 				},
 			},
 		}

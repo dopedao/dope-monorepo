@@ -4,12 +4,15 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
@@ -35,6 +38,14 @@ func (wu *WalletUpdate) SetPaper(si schema.BigInt) *WalletUpdate {
 	return wu
 }
 
+// SetNillablePaper sets the "paper" field if the given value is not nil.
+func (wu *WalletUpdate) SetNillablePaper(si *schema.BigInt) *WalletUpdate {
+	if si != nil {
+		wu.SetPaper(*si)
+	}
+	return wu
+}
+
 // AddPaper adds si to the "paper" field.
 func (wu *WalletUpdate) AddPaper(si schema.BigInt) *WalletUpdate {
 	wu.mutation.AddPaper(si)
@@ -54,6 +65,36 @@ func (wu *WalletUpdate) AddDopes(d ...*Dope) *WalletUpdate {
 		ids[i] = d[i].ID
 	}
 	return wu.AddDopeIDs(ids...)
+}
+
+// AddItemIDs adds the "items" edge to the Item entity by IDs.
+func (wu *WalletUpdate) AddItemIDs(ids ...string) *WalletUpdate {
+	wu.mutation.AddItemIDs(ids...)
+	return wu
+}
+
+// AddItems adds the "items" edges to the Item entity.
+func (wu *WalletUpdate) AddItems(i ...*Item) *WalletUpdate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return wu.AddItemIDs(ids...)
+}
+
+// AddHustlerIDs adds the "hustlers" edge to the Hustler entity by IDs.
+func (wu *WalletUpdate) AddHustlerIDs(ids ...string) *WalletUpdate {
+	wu.mutation.AddHustlerIDs(ids...)
+	return wu
+}
+
+// AddHustlers adds the "hustlers" edges to the Hustler entity.
+func (wu *WalletUpdate) AddHustlers(h ...*Hustler) *WalletUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return wu.AddHustlerIDs(ids...)
 }
 
 // Mutation returns the WalletMutation object of the builder.
@@ -80,6 +121,48 @@ func (wu *WalletUpdate) RemoveDopes(d ...*Dope) *WalletUpdate {
 		ids[i] = d[i].ID
 	}
 	return wu.RemoveDopeIDs(ids...)
+}
+
+// ClearItems clears all "items" edges to the Item entity.
+func (wu *WalletUpdate) ClearItems() *WalletUpdate {
+	wu.mutation.ClearItems()
+	return wu
+}
+
+// RemoveItemIDs removes the "items" edge to Item entities by IDs.
+func (wu *WalletUpdate) RemoveItemIDs(ids ...string) *WalletUpdate {
+	wu.mutation.RemoveItemIDs(ids...)
+	return wu
+}
+
+// RemoveItems removes "items" edges to Item entities.
+func (wu *WalletUpdate) RemoveItems(i ...*Item) *WalletUpdate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return wu.RemoveItemIDs(ids...)
+}
+
+// ClearHustlers clears all "hustlers" edges to the Hustler entity.
+func (wu *WalletUpdate) ClearHustlers() *WalletUpdate {
+	wu.mutation.ClearHustlers()
+	return wu
+}
+
+// RemoveHustlerIDs removes the "hustlers" edge to Hustler entities by IDs.
+func (wu *WalletUpdate) RemoveHustlerIDs(ids ...string) *WalletUpdate {
+	wu.mutation.RemoveHustlerIDs(ids...)
+	return wu
+}
+
+// RemoveHustlers removes "hustlers" edges to Hustler entities.
+func (wu *WalletUpdate) RemoveHustlers(h ...*Hustler) *WalletUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return wu.RemoveHustlerIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -222,6 +305,114 @@ func (wu *WalletUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if wu.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.ItemsTable,
+			Columns: []string{wallet.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := wu.mutation.RemovedItemsIDs(); len(nodes) > 0 && !wu.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.ItemsTable,
+			Columns: []string{wallet.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := wu.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.ItemsTable,
+			Columns: []string{wallet.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if wu.mutation.HustlersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.HustlersTable,
+			Columns: []string{wallet.HustlersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := wu.mutation.RemovedHustlersIDs(); len(nodes) > 0 && !wu.mutation.HustlersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.HustlersTable,
+			Columns: []string{wallet.HustlersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := wu.mutation.HustlersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.HustlersTable,
+			Columns: []string{wallet.HustlersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, wu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{wallet.Label}
@@ -248,6 +439,14 @@ func (wuo *WalletUpdateOne) SetPaper(si schema.BigInt) *WalletUpdateOne {
 	return wuo
 }
 
+// SetNillablePaper sets the "paper" field if the given value is not nil.
+func (wuo *WalletUpdateOne) SetNillablePaper(si *schema.BigInt) *WalletUpdateOne {
+	if si != nil {
+		wuo.SetPaper(*si)
+	}
+	return wuo
+}
+
 // AddPaper adds si to the "paper" field.
 func (wuo *WalletUpdateOne) AddPaper(si schema.BigInt) *WalletUpdateOne {
 	wuo.mutation.AddPaper(si)
@@ -267,6 +466,36 @@ func (wuo *WalletUpdateOne) AddDopes(d ...*Dope) *WalletUpdateOne {
 		ids[i] = d[i].ID
 	}
 	return wuo.AddDopeIDs(ids...)
+}
+
+// AddItemIDs adds the "items" edge to the Item entity by IDs.
+func (wuo *WalletUpdateOne) AddItemIDs(ids ...string) *WalletUpdateOne {
+	wuo.mutation.AddItemIDs(ids...)
+	return wuo
+}
+
+// AddItems adds the "items" edges to the Item entity.
+func (wuo *WalletUpdateOne) AddItems(i ...*Item) *WalletUpdateOne {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return wuo.AddItemIDs(ids...)
+}
+
+// AddHustlerIDs adds the "hustlers" edge to the Hustler entity by IDs.
+func (wuo *WalletUpdateOne) AddHustlerIDs(ids ...string) *WalletUpdateOne {
+	wuo.mutation.AddHustlerIDs(ids...)
+	return wuo
+}
+
+// AddHustlers adds the "hustlers" edges to the Hustler entity.
+func (wuo *WalletUpdateOne) AddHustlers(h ...*Hustler) *WalletUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return wuo.AddHustlerIDs(ids...)
 }
 
 // Mutation returns the WalletMutation object of the builder.
@@ -293,6 +522,48 @@ func (wuo *WalletUpdateOne) RemoveDopes(d ...*Dope) *WalletUpdateOne {
 		ids[i] = d[i].ID
 	}
 	return wuo.RemoveDopeIDs(ids...)
+}
+
+// ClearItems clears all "items" edges to the Item entity.
+func (wuo *WalletUpdateOne) ClearItems() *WalletUpdateOne {
+	wuo.mutation.ClearItems()
+	return wuo
+}
+
+// RemoveItemIDs removes the "items" edge to Item entities by IDs.
+func (wuo *WalletUpdateOne) RemoveItemIDs(ids ...string) *WalletUpdateOne {
+	wuo.mutation.RemoveItemIDs(ids...)
+	return wuo
+}
+
+// RemoveItems removes "items" edges to Item entities.
+func (wuo *WalletUpdateOne) RemoveItems(i ...*Item) *WalletUpdateOne {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return wuo.RemoveItemIDs(ids...)
+}
+
+// ClearHustlers clears all "hustlers" edges to the Hustler entity.
+func (wuo *WalletUpdateOne) ClearHustlers() *WalletUpdateOne {
+	wuo.mutation.ClearHustlers()
+	return wuo
+}
+
+// RemoveHustlerIDs removes the "hustlers" edge to Hustler entities by IDs.
+func (wuo *WalletUpdateOne) RemoveHustlerIDs(ids ...string) *WalletUpdateOne {
+	wuo.mutation.RemoveHustlerIDs(ids...)
+	return wuo
+}
+
+// RemoveHustlers removes "hustlers" edges to Hustler entities.
+func (wuo *WalletUpdateOne) RemoveHustlers(h ...*Hustler) *WalletUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return wuo.RemoveHustlerIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -369,7 +640,7 @@ func (wuo *WalletUpdateOne) sqlSave(ctx context.Context) (_node *Wallet, err err
 	}
 	id, ok := wuo.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing Wallet.ID for update")}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Wallet.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := wuo.fields; len(fields) > 0 {
@@ -451,6 +722,114 @@ func (wuo *WalletUpdateOne) sqlSave(ctx context.Context) (_node *Wallet, err err
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: dope.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if wuo.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.ItemsTable,
+			Columns: []string{wallet.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := wuo.mutation.RemovedItemsIDs(); len(nodes) > 0 && !wuo.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.ItemsTable,
+			Columns: []string{wallet.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := wuo.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.ItemsTable,
+			Columns: []string{wallet.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if wuo.mutation.HustlersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.HustlersTable,
+			Columns: []string{wallet.HustlersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := wuo.mutation.RemovedHustlersIDs(); len(nodes) > 0 && !wuo.mutation.HustlersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.HustlersTable,
+			Columns: []string{wallet.HustlersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := wuo.mutation.HustlersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.HustlersTable,
+			Columns: []string{wallet.HustlersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
 				},
 			},
 		}

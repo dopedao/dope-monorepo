@@ -22,6 +22,19 @@ func (f DopeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	return f(ctx, mv)
 }
 
+// The HustlerFunc type is an adapter to allow the use of ordinary
+// function as Hustler mutator.
+type HustlerFunc func(context.Context, *ent.HustlerMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f HustlerFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.HustlerMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.HustlerMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The ItemFunc type is an adapter to allow the use of ordinary
 // function as Item mutator.
 type ItemFunc func(context.Context, *ent.ItemMutation) (ent.Value, error)

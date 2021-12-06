@@ -9,6 +9,9 @@ import (
 // Dope is the predicate function for dope builders.
 type Dope func(*sql.Selector)
 
+// Hustler is the predicate function for hustler builders.
+type Hustler func(*sql.Selector)
+
 // Item is the predicate function for item builders.
 type Item func(*sql.Selector)
 

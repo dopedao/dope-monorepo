@@ -176,10 +176,10 @@ func (dc *DopeCreate) defaults() {
 // check runs all checks and user-defined validators on the builder.
 func (dc *DopeCreate) check() error {
 	if _, ok := dc.mutation.Claimed(); !ok {
-		return &ValidationError{Name: "claimed", err: errors.New(`ent: missing required field "claimed"`)}
+		return &ValidationError{Name: "claimed", err: errors.New(`ent: missing required field "Dope.claimed"`)}
 	}
 	if _, ok := dc.mutation.Opened(); !ok {
-		return &ValidationError{Name: "opened", err: errors.New(`ent: missing required field "opened"`)}
+		return &ValidationError{Name: "opened", err: errors.New(`ent: missing required field "Dope.opened"`)}
 	}
 	return nil
 }
@@ -193,7 +193,11 @@ func (dc *DopeCreate) sqlSave(ctx context.Context) (*Dope, error) {
 		return nil, err
 	}
 	if _spec.ID.Value != nil {
-		_node.ID = _spec.ID.Value.(string)
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected Dope.ID type: %T", _spec.ID.Value)
+		}
 	}
 	return _node, nil
 }
@@ -347,7 +351,7 @@ func (u *DopeUpsert) UpdateOpened() *DopeUpsert {
 	return u
 }
 
-// UpdateNewValues updates the fields using the new values that were set on create except the ID field.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.Dope.Create().
@@ -588,7 +592,7 @@ type DopeUpsertBulk struct {
 	create *DopeCreateBulk
 }
 
-// UpdateNewValues updates the fields using the new values that
+// UpdateNewValues updates the mutable fields using the new values that
 // were set on create. Using this option is equivalent to using:
 //
 //	client.Dope.Create().

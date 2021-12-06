@@ -36,7 +36,7 @@ enum ItemType {
 type Item {
   id: ID!
   type: ItemType!
-  Name: String!
+  name: String!
   namePrefix: String
   nameSuffix: String
   suffix: String
@@ -58,4 +58,6 @@ type Wallet {
 
 type Query {
   wallets: [Wallet!]
+  dopes: [Dope!]
+  items: [Item!]
 }
