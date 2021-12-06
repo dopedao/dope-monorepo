@@ -226,8 +226,7 @@ export const useLastestBlock = (): providers.Block | undefined => {
 
 export default useWeb3Provider;
 
-export const useSwitchNetwork = (network: 1 | 10 | 42 | 69) => {
-  const { chainId } = useWeb3React();
+export const switchNetwork = (network: 1 | 10 | 42 | 69, chainId: number) => {
   if ((window as any).ethereum) {
     let params;
     if (chainId === network) {

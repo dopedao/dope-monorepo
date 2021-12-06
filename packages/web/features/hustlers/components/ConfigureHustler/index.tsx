@@ -5,8 +5,11 @@ import { useRouter } from 'next/router';
 import { ReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Hustler, Hustler__factory } from '@dopewars/contracts';
+import { Hustler__factory } from '@dopewars/contracts';
+import { useMemo } from 'react';
 import { HustlerCustomization, randomizeHustlerAttributes } from 'src/HustlerConfig';
+import { NETWORK } from 'src/constants';
+import { switchNetwork, useOptimism } from 'hooks/web3';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
@@ -14,10 +17,6 @@ import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
-import { useHustler } from 'hooks/contracts';
-import { useMemo } from 'react';
-import { NETWORK } from 'src/constants';
-import { useOptimism } from 'hooks/web3';
 
 export type ConfigureHustlerProps = {
   config: HustlerCustomization;
@@ -30,7 +29,7 @@ const ConfigureHustler = ({
   isCustomize,
 }: ConfigureHustlerProps & { isCustomize?: boolean }) => {
   const { chainId } = useOptimism();
-  const { library } = useWeb3React();
+  const { library, chainId: web3ReactChainId } = useWeb3React();
   const router = useRouter();
 
   const hustlers = useMemo(
@@ -42,6 +41,12 @@ const ConfigureHustler = ({
   );
 
   const customizeHustler = async () => {
+    if (web3ReactChainId && chainId !== web3ReactChainId) {
+      switchNetwork(10, web3ReactChainId);
+    } else {
+      return;
+    }
+
     const {
       dopeId,
       body,
@@ -95,18 +100,20 @@ const ConfigureHustler = ({
         .toString(16)
         .padStart(4, '0');
 
-    await hustlers!.setMetadata(
-      BigNumber.from(dopeId),
-      setname,
-      color,
-      background,
-      options,
-      zoomWindow,
-      bodyParts,
-      mask,
-    );
+    if (hustlers) {
+      await hustlers.setMetadata(
+        BigNumber.from(dopeId),
+        setname,
+        color,
+        background,
+        options,
+        zoomWindow,
+        bodyParts,
+        mask,
+      );
 
-    router.replace('/hustlers/mint-success');
+      router.replace('/hustlers/mint-success');
+    }
   };
 
   return (
