@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 
@@ -33,10 +34,25 @@ func NewServer(db *sql.Driver) (http.Handler, error) {
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
-	for _, c := range configs {
-		engine := NewEngine(client, c)
-		go engine.Sync(context.Background())
-	}
+	eth := NewEngine(client, "https://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-", Config{
+		Interval: time.Second * 5,
+		Contracts: []Contract{
+			// DOPE
+			{
+				Address:    common.HexToAddress("0xd2761Ee62d8772343070A5dE02C436F788EdF60a"),
+				StartBlock: 28278714,
+				Processor:  new(processors.DopeProcessor),
+			},
+			// PAPER
+			{
+				Address:    common.HexToAddress("0x7ae1d57b58fa6411f32948314badd83583ee0e8c"),
+				StartBlock: 13162150,
+				Processor:  new(processors.PaperProcessor),
+			},
+		},
+	})
+
+	go eth.Sync(context.Background())
 
 	return cors.Default().Handler(r), nil
 }
