@@ -2,6 +2,7 @@ package processors
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
@@ -29,7 +30,7 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *binding
 func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *bindings.SwapMeetTransferSingle, emit func(string, []interface{})) error {
 	if e.From != (common.Address{}) {
 		if err := p.ent.Wallet.UpdateOneID(e.From.String()).RemoveItemIDs(e.Id.String()).Exec(ctx); err != nil {
-			return err
+			return fmt.Errorf("update from wallet: %w", err)
 		}
 	}
 
@@ -40,7 +41,7 @@ func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *bindin
 			OnConflict().
 			UpdateNewValues().
 			Exec(ctx); err != nil {
-			return err
+			return fmt.Errorf("upsert to wallet: %w", err)
 		}
 	}
 
