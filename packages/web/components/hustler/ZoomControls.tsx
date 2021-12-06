@@ -4,6 +4,7 @@ import { useReactiveVar } from '@apollo/client';
 import { Button } from '@chakra-ui/button';
 import { Image } from '@chakra-ui/image';
 import styled from '@emotion/styled';
+import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 
 const ZoomContainer = styled.div`
   display: flex;
@@ -18,10 +19,9 @@ const indexFromZoomValue = (zoomValue: ZoomWindow) => {
   return index;
 };
 
-const ZoomControls = () => {
-  const hustlerConfig = useReactiveVar(HustlerInitConfig);
+const ZoomControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
   const [currentIndex, setCurrentIndex] = useState(
-    indexFromZoomValue(hustlerConfig.zoomWindow ?? [0, 0, 0, 0]),
+    indexFromZoomValue(config.zoomWindow ?? [0, 0, 0, 0]),
   );
   const minIndex = 0;
   const maxIndex = ZOOM_WINDOWS.length - 1;
@@ -41,14 +41,16 @@ const ZoomControls = () => {
   };
 
   const setHustlerConfig = () => {
-    let renderName = hustlerConfig.renderName;
+    let renderName = config.renderName;
     // for mugshots doesn't make sense to render name, because it gets cut off.
     if (currentIndex == 1) renderName = false;
-    HustlerInitConfig({
-      ...hustlerConfig,
-      zoomWindow: ZOOM_WINDOWS[currentIndex],
-      renderName: renderName,
-    });
+    makeVarConfig
+      ? makeVarConfig({ ...config, zoomWindow: ZOOM_WINDOWS[currentIndex], renderName: renderName })
+      : HustlerInitConfig({
+          ...config,
+          zoomWindow: ZOOM_WINDOWS[currentIndex],
+          renderName: renderName,
+        });
   };
 
   return (

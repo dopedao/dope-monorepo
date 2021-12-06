@@ -149,7 +149,7 @@ const ConfigureHustler = ({
             border-top-width: 1px;
           `}
         >
-          <ZoomControls />
+          <ZoomControls config={config} makeVarConfig={makeVarConfig} />
           <HStack mt={0} justify="end">
             <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
             {isCustomize ? (
