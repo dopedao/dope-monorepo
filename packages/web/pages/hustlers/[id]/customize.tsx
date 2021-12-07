@@ -55,6 +55,7 @@ type HustlerEditProps = {
 const HustlerEdit = ({ hustler }: HustlerEditProps) => {
   const router = useRouter();
   const [isLoading, setLoading] = useState(true);
+  const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [fetchedHustlerConfig, setHustlerConfig] = useState<
     Partial<HustlerCustomization> & { ogTitle?: string }
   >({});
@@ -87,6 +88,19 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
           hair: metadata.body[2],
           facialHair: metadata.body[3],
         });
+
+        const fetchedItemIds = [
+          metadata.weapon,
+          metadata.clothes,
+          metadata.waist,
+          metadata.foot,
+          metadata.hand,
+          metadata.drugs,
+          metadata.neck,
+          metadata.ring,
+        ];
+
+        setItemIds(fetchedItemIds);
         setLoading(false);
       } catch (error) {
         router.push('/404');
@@ -134,6 +148,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
         config={hustlerConfig}
         makeVarConfig={makeVarConfig}
         ogTitle={fetchedHustlerConfig.ogTitle}
+        itemIds={itemIds}
         isCustomize
       />
     </>

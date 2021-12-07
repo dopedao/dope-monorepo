@@ -17,11 +17,13 @@ import RenderFromLootId from 'components/hustler/RenderFromLootId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
 import Spinner from 'svg/Spinner';
+import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
 
 export type ConfigureHustlerProps = {
   config: HustlerCustomization;
   makeVarConfig?: ReactiveVar<HustlerCustomization>;
   ogTitle?: string;
+  itemIds?: BigNumber[];
 };
 
 const ConfigureHustler = ({
@@ -29,6 +31,7 @@ const ConfigureHustler = ({
   makeVarConfig,
   isCustomize,
   ogTitle,
+  itemIds,
 }: ConfigureHustlerProps & { isCustomize?: boolean }) => {
   const [loading, setLoading] = useState(false);
   const { chainId } = useOptimism();
@@ -130,19 +133,35 @@ const ConfigureHustler = ({
         `}
       >
         <PanelTitleBar>DOPE NFT #{config.dopeId}</PanelTitleBar>
-        <RenderFromLootId
-          bgColor={config.bgColor}
-          body={config.body}
-          facialHair={config.facialHair}
-          hair={config.hair}
-          id={config.dopeId}
-          name={config.name}
-          renderName={config.renderName}
-          sex={config.sex}
-          textColor={config.textColor}
-          zoomWindow={config.zoomWindow}
-          ogTitle={ogTitle}
-        />
+        {isCustomize && itemIds ? (
+          <RenderFromItemIds
+            bgColor={config.bgColor}
+            body={config.body}
+            facialHair={config.facialHair}
+            hair={config.hair}
+            itemIds={itemIds}
+            name={config.name}
+            renderName={config.renderName}
+            sex={config.sex}
+            textColor={config.textColor}
+            zoomWindow={config.zoomWindow}
+            ogTitle={ogTitle}
+          />
+        ) : (
+          <RenderFromLootId
+            bgColor={config.bgColor}
+            body={config.body}
+            facialHair={config.facialHair}
+            hair={config.hair}
+            id={config.dopeId}
+            name={config.name}
+            renderName={config.renderName}
+            sex={config.sex}
+            textColor={config.textColor}
+            zoomWindow={config.zoomWindow}
+            ogTitle={ogTitle}
+          />
+        )}
         <PanelFooter
           css={css`
             width: 100%;
