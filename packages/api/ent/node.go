@@ -267,12 +267,12 @@ func (ss *SyncState) Node(ctx context.Context) (node *Node, err error) {
 		Edges:  make([]*Edge, 0),
 	}
 	var buf []byte
-	if buf, err = json.Marshal(ss.StartAt); err != nil {
+	if buf, err = json.Marshal(ss.StartBlock); err != nil {
 		return nil, err
 	}
 	node.Fields[0] = &Field{
 		Type:  "uint64",
-		Name:  "start_at",
+		Name:  "start_block",
 		Value: string(buf),
 	}
 	return node, nil

@@ -90,29 +90,29 @@ func IDLTE(id string) predicate.SyncState {
 	})
 }
 
-// StartAt applies equality check predicate on the "start_at" field. It's identical to StartAtEQ.
-func StartAt(v uint64) predicate.SyncState {
+// StartBlock applies equality check predicate on the "start_block" field. It's identical to StartBlockEQ.
+func StartBlock(v uint64) predicate.SyncState {
 	return predicate.SyncState(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldStartAt), v))
+		s.Where(sql.EQ(s.C(FieldStartBlock), v))
 	})
 }
 
-// StartAtEQ applies the EQ predicate on the "start_at" field.
-func StartAtEQ(v uint64) predicate.SyncState {
+// StartBlockEQ applies the EQ predicate on the "start_block" field.
+func StartBlockEQ(v uint64) predicate.SyncState {
 	return predicate.SyncState(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldStartAt), v))
+		s.Where(sql.EQ(s.C(FieldStartBlock), v))
 	})
 }
 
-// StartAtNEQ applies the NEQ predicate on the "start_at" field.
-func StartAtNEQ(v uint64) predicate.SyncState {
+// StartBlockNEQ applies the NEQ predicate on the "start_block" field.
+func StartBlockNEQ(v uint64) predicate.SyncState {
 	return predicate.SyncState(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldStartAt), v))
+		s.Where(sql.NEQ(s.C(FieldStartBlock), v))
 	})
 }
 
-// StartAtIn applies the In predicate on the "start_at" field.
-func StartAtIn(vs ...uint64) predicate.SyncState {
+// StartBlockIn applies the In predicate on the "start_block" field.
+func StartBlockIn(vs ...uint64) predicate.SyncState {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -124,12 +124,12 @@ func StartAtIn(vs ...uint64) predicate.SyncState {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldStartAt), v...))
+		s.Where(sql.In(s.C(FieldStartBlock), v...))
 	})
 }
 
-// StartAtNotIn applies the NotIn predicate on the "start_at" field.
-func StartAtNotIn(vs ...uint64) predicate.SyncState {
+// StartBlockNotIn applies the NotIn predicate on the "start_block" field.
+func StartBlockNotIn(vs ...uint64) predicate.SyncState {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -141,35 +141,35 @@ func StartAtNotIn(vs ...uint64) predicate.SyncState {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldStartAt), v...))
+		s.Where(sql.NotIn(s.C(FieldStartBlock), v...))
 	})
 }
 
-// StartAtGT applies the GT predicate on the "start_at" field.
-func StartAtGT(v uint64) predicate.SyncState {
+// StartBlockGT applies the GT predicate on the "start_block" field.
+func StartBlockGT(v uint64) predicate.SyncState {
 	return predicate.SyncState(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldStartAt), v))
+		s.Where(sql.GT(s.C(FieldStartBlock), v))
 	})
 }
 
-// StartAtGTE applies the GTE predicate on the "start_at" field.
-func StartAtGTE(v uint64) predicate.SyncState {
+// StartBlockGTE applies the GTE predicate on the "start_block" field.
+func StartBlockGTE(v uint64) predicate.SyncState {
 	return predicate.SyncState(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldStartAt), v))
+		s.Where(sql.GTE(s.C(FieldStartBlock), v))
 	})
 }
 
-// StartAtLT applies the LT predicate on the "start_at" field.
-func StartAtLT(v uint64) predicate.SyncState {
+// StartBlockLT applies the LT predicate on the "start_block" field.
+func StartBlockLT(v uint64) predicate.SyncState {
 	return predicate.SyncState(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldStartAt), v))
+		s.Where(sql.LT(s.C(FieldStartBlock), v))
 	})
 }
 
-// StartAtLTE applies the LTE predicate on the "start_at" field.
-func StartAtLTE(v uint64) predicate.SyncState {
+// StartBlockLTE applies the LTE predicate on the "start_block" field.
+func StartBlockLTE(v uint64) predicate.SyncState {
 	return predicate.SyncState(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldStartAt), v))
+		s.Where(sql.LTE(s.C(FieldStartBlock), v))
 	})
 }
 

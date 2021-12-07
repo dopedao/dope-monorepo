@@ -2256,15 +2256,15 @@ func (m *ItemMutation) ResetEdge(name string) error {
 // SyncStateMutation represents an operation that mutates the SyncState nodes in the graph.
 type SyncStateMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *string
-	start_at      *uint64
-	addstart_at   *int64
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*SyncState, error)
-	predicates    []predicate.SyncState
+	op             Op
+	typ            string
+	id             *string
+	start_block    *uint64
+	addstart_block *int64
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*SyncState, error)
+	predicates     []predicate.SyncState
 }
 
 var _ ent.Mutation = (*SyncStateMutation)(nil)
@@ -2371,60 +2371,60 @@ func (m *SyncStateMutation) IDs(ctx context.Context) ([]string, error) {
 	}
 }
 
-// SetStartAt sets the "start_at" field.
-func (m *SyncStateMutation) SetStartAt(u uint64) {
-	m.start_at = &u
-	m.addstart_at = nil
+// SetStartBlock sets the "start_block" field.
+func (m *SyncStateMutation) SetStartBlock(u uint64) {
+	m.start_block = &u
+	m.addstart_block = nil
 }
 
-// StartAt returns the value of the "start_at" field in the mutation.
-func (m *SyncStateMutation) StartAt() (r uint64, exists bool) {
-	v := m.start_at
+// StartBlock returns the value of the "start_block" field in the mutation.
+func (m *SyncStateMutation) StartBlock() (r uint64, exists bool) {
+	v := m.start_block
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldStartAt returns the old "start_at" field's value of the SyncState entity.
+// OldStartBlock returns the old "start_block" field's value of the SyncState entity.
 // If the SyncState object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SyncStateMutation) OldStartAt(ctx context.Context) (v uint64, err error) {
+func (m *SyncStateMutation) OldStartBlock(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStartAt is only allowed on UpdateOne operations")
+		return v, errors.New("OldStartBlock is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStartAt requires an ID field in the mutation")
+		return v, errors.New("OldStartBlock requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStartAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldStartBlock: %w", err)
 	}
-	return oldValue.StartAt, nil
+	return oldValue.StartBlock, nil
 }
 
-// AddStartAt adds u to the "start_at" field.
-func (m *SyncStateMutation) AddStartAt(u int64) {
-	if m.addstart_at != nil {
-		*m.addstart_at += u
+// AddStartBlock adds u to the "start_block" field.
+func (m *SyncStateMutation) AddStartBlock(u int64) {
+	if m.addstart_block != nil {
+		*m.addstart_block += u
 	} else {
-		m.addstart_at = &u
+		m.addstart_block = &u
 	}
 }
 
-// AddedStartAt returns the value that was added to the "start_at" field in this mutation.
-func (m *SyncStateMutation) AddedStartAt() (r int64, exists bool) {
-	v := m.addstart_at
+// AddedStartBlock returns the value that was added to the "start_block" field in this mutation.
+func (m *SyncStateMutation) AddedStartBlock() (r int64, exists bool) {
+	v := m.addstart_block
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetStartAt resets all changes to the "start_at" field.
-func (m *SyncStateMutation) ResetStartAt() {
-	m.start_at = nil
-	m.addstart_at = nil
+// ResetStartBlock resets all changes to the "start_block" field.
+func (m *SyncStateMutation) ResetStartBlock() {
+	m.start_block = nil
+	m.addstart_block = nil
 }
 
 // Where appends a list predicates to the SyncStateMutation builder.
@@ -2447,8 +2447,8 @@ func (m *SyncStateMutation) Type() string {
 // AddedFields().
 func (m *SyncStateMutation) Fields() []string {
 	fields := make([]string, 0, 1)
-	if m.start_at != nil {
-		fields = append(fields, syncstate.FieldStartAt)
+	if m.start_block != nil {
+		fields = append(fields, syncstate.FieldStartBlock)
 	}
 	return fields
 }
@@ -2458,8 +2458,8 @@ func (m *SyncStateMutation) Fields() []string {
 // schema.
 func (m *SyncStateMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case syncstate.FieldStartAt:
-		return m.StartAt()
+	case syncstate.FieldStartBlock:
+		return m.StartBlock()
 	}
 	return nil, false
 }
@@ -2469,8 +2469,8 @@ func (m *SyncStateMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *SyncStateMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case syncstate.FieldStartAt:
-		return m.OldStartAt(ctx)
+	case syncstate.FieldStartBlock:
+		return m.OldStartBlock(ctx)
 	}
 	return nil, fmt.Errorf("unknown SyncState field %s", name)
 }
@@ -2480,12 +2480,12 @@ func (m *SyncStateMutation) OldField(ctx context.Context, name string) (ent.Valu
 // type.
 func (m *SyncStateMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case syncstate.FieldStartAt:
+	case syncstate.FieldStartBlock:
 		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetStartAt(v)
+		m.SetStartBlock(v)
 		return nil
 	}
 	return fmt.Errorf("unknown SyncState field %s", name)
@@ -2495,8 +2495,8 @@ func (m *SyncStateMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *SyncStateMutation) AddedFields() []string {
 	var fields []string
-	if m.addstart_at != nil {
-		fields = append(fields, syncstate.FieldStartAt)
+	if m.addstart_block != nil {
+		fields = append(fields, syncstate.FieldStartBlock)
 	}
 	return fields
 }
@@ -2506,8 +2506,8 @@ func (m *SyncStateMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *SyncStateMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case syncstate.FieldStartAt:
-		return m.AddedStartAt()
+	case syncstate.FieldStartBlock:
+		return m.AddedStartBlock()
 	}
 	return nil, false
 }
@@ -2517,12 +2517,12 @@ func (m *SyncStateMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *SyncStateMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case syncstate.FieldStartAt:
+	case syncstate.FieldStartBlock:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddStartAt(v)
+		m.AddStartBlock(v)
 		return nil
 	}
 	return fmt.Errorf("unknown SyncState numeric field %s", name)
@@ -2551,8 +2551,8 @@ func (m *SyncStateMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *SyncStateMutation) ResetField(name string) error {
 	switch name {
-	case syncstate.FieldStartAt:
-		m.ResetStartAt()
+	case syncstate.FieldStartBlock:
+		m.ResetStartBlock()
 		return nil
 	}
 	return fmt.Errorf("unknown SyncState field %s", name)
