@@ -52,12 +52,6 @@ func (wu *WalletUpdate) AddPaper(si schema.BigInt) *WalletUpdate {
 	return wu
 }
 
-// ClearPaper clears the value of the "paper" field.
-func (wu *WalletUpdate) ClearPaper() *WalletUpdate {
-	wu.mutation.ClearPaper()
-	return wu
-}
-
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
 func (wu *WalletUpdate) AddDopeIDs(ids ...string) *WalletUpdate {
 	wu.mutation.AddDopeIDs(ids...)
@@ -254,12 +248,6 @@ func (wu *WalletUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: wallet.FieldPaper,
-		})
-	}
-	if wu.mutation.PaperCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
 			Column: wallet.FieldPaper,
 		})
 	}
@@ -462,12 +450,6 @@ func (wuo *WalletUpdateOne) SetNillablePaper(si *schema.BigInt) *WalletUpdateOne
 // AddPaper adds si to the "paper" field.
 func (wuo *WalletUpdateOne) AddPaper(si schema.BigInt) *WalletUpdateOne {
 	wuo.mutation.AddPaper(si)
-	return wuo
-}
-
-// ClearPaper clears the value of the "paper" field.
-func (wuo *WalletUpdateOne) ClearPaper() *WalletUpdateOne {
-	wuo.mutation.ClearPaper()
 	return wuo
 }
 
@@ -691,12 +673,6 @@ func (wuo *WalletUpdateOne) sqlSave(ctx context.Context) (_node *Wallet, err err
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: wallet.FieldPaper,
-		})
-	}
-	if wuo.mutation.PaperCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
 			Column: wallet.FieldPaper,
 		})
 	}

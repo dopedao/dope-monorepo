@@ -49,6 +49,7 @@ type Engine struct {
 
 func NewEngine(client *ent.Client, config Config) *Engine {
 	retryableHTTPClient := retryablehttp.NewClient()
+	retryableHTTPClient.Logger = nil
 	c, err := rpc.DialHTTPWithClient(config.RPC, retryableHTTPClient.StandardClient())
 	if err != nil {
 		log.Fatal("Dialing ethereum rpc.") //nolint:gocritic
@@ -130,7 +131,7 @@ func (e *Engine) Sync(ctx context.Context) {
 
 					if _to == latest {
 						c.StartBlock = _from
-						return
+						break
 					}
 				}
 			}

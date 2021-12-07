@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
 // ID filters vertices based on their ID field.
@@ -91,20 +92,6 @@ func IDLTE(id string) predicate.Hustler {
 	})
 }
 
-// NamePrefix applies equality check predicate on the "name_prefix" field. It's identical to NamePrefixEQ.
-func NamePrefix(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NameSuffix applies equality check predicate on the "name_suffix" field. It's identical to NameSuffixEQ.
-func NameSuffix(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldNameSuffix), v))
-	})
-}
-
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
@@ -112,17 +99,31 @@ func Name(v string) predicate.Hustler {
 	})
 }
 
-// Suffix applies equality check predicate on the "suffix" field. It's identical to SuffixEQ.
-func Suffix(v string) predicate.Hustler {
+// Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
+func Title(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldSuffix), v))
+		s.Where(sql.EQ(s.C(FieldTitle), v))
 	})
 }
 
-// Augmented applies equality check predicate on the "augmented" field. It's identical to AugmentedEQ.
-func Augmented(v bool) predicate.Hustler {
+// Color applies equality check predicate on the "color" field. It's identical to ColorEQ.
+func Color(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAugmented), v))
+		s.Where(sql.EQ(s.C(FieldColor), v))
+	})
+}
+
+// Background applies equality check predicate on the "background" field. It's identical to BackgroundEQ.
+func Background(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBackground), v))
+	})
+}
+
+// Age applies equality check predicate on the "age" field. It's identical to AgeEQ.
+func Age(v schema.BigInt) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAge), v))
 	})
 }
 
@@ -171,256 +172,6 @@ func TypeNotIn(vs ...Type) predicate.Hustler {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldType), v...))
-	})
-}
-
-// NamePrefixEQ applies the EQ predicate on the "name_prefix" field.
-func NamePrefixEQ(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixNEQ applies the NEQ predicate on the "name_prefix" field.
-func NamePrefixNEQ(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixIn applies the In predicate on the "name_prefix" field.
-func NamePrefixIn(vs ...string) predicate.Hustler {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Hustler(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.In(s.C(FieldNamePrefix), v...))
-	})
-}
-
-// NamePrefixNotIn applies the NotIn predicate on the "name_prefix" field.
-func NamePrefixNotIn(vs ...string) predicate.Hustler {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Hustler(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.NotIn(s.C(FieldNamePrefix), v...))
-	})
-}
-
-// NamePrefixGT applies the GT predicate on the "name_prefix" field.
-func NamePrefixGT(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixGTE applies the GTE predicate on the "name_prefix" field.
-func NamePrefixGTE(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixLT applies the LT predicate on the "name_prefix" field.
-func NamePrefixLT(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixLTE applies the LTE predicate on the "name_prefix" field.
-func NamePrefixLTE(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixContains applies the Contains predicate on the "name_prefix" field.
-func NamePrefixContains(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixHasPrefix applies the HasPrefix predicate on the "name_prefix" field.
-func NamePrefixHasPrefix(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixHasSuffix applies the HasSuffix predicate on the "name_prefix" field.
-func NamePrefixHasSuffix(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixIsNil applies the IsNil predicate on the "name_prefix" field.
-func NamePrefixIsNil() predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldNamePrefix)))
-	})
-}
-
-// NamePrefixNotNil applies the NotNil predicate on the "name_prefix" field.
-func NamePrefixNotNil() predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldNamePrefix)))
-	})
-}
-
-// NamePrefixEqualFold applies the EqualFold predicate on the "name_prefix" field.
-func NamePrefixEqualFold(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NamePrefixContainsFold applies the ContainsFold predicate on the "name_prefix" field.
-func NamePrefixContainsFold(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldNamePrefix), v))
-	})
-}
-
-// NameSuffixEQ applies the EQ predicate on the "name_suffix" field.
-func NameSuffixEQ(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixNEQ applies the NEQ predicate on the "name_suffix" field.
-func NameSuffixNEQ(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixIn applies the In predicate on the "name_suffix" field.
-func NameSuffixIn(vs ...string) predicate.Hustler {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Hustler(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.In(s.C(FieldNameSuffix), v...))
-	})
-}
-
-// NameSuffixNotIn applies the NotIn predicate on the "name_suffix" field.
-func NameSuffixNotIn(vs ...string) predicate.Hustler {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Hustler(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.NotIn(s.C(FieldNameSuffix), v...))
-	})
-}
-
-// NameSuffixGT applies the GT predicate on the "name_suffix" field.
-func NameSuffixGT(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixGTE applies the GTE predicate on the "name_suffix" field.
-func NameSuffixGTE(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixLT applies the LT predicate on the "name_suffix" field.
-func NameSuffixLT(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixLTE applies the LTE predicate on the "name_suffix" field.
-func NameSuffixLTE(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixContains applies the Contains predicate on the "name_suffix" field.
-func NameSuffixContains(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixHasPrefix applies the HasPrefix predicate on the "name_suffix" field.
-func NameSuffixHasPrefix(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixHasSuffix applies the HasSuffix predicate on the "name_suffix" field.
-func NameSuffixHasSuffix(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixIsNil applies the IsNil predicate on the "name_suffix" field.
-func NameSuffixIsNil() predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldNameSuffix)))
-	})
-}
-
-// NameSuffixNotNil applies the NotNil predicate on the "name_suffix" field.
-func NameSuffixNotNil() predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldNameSuffix)))
-	})
-}
-
-// NameSuffixEqualFold applies the EqualFold predicate on the "name_suffix" field.
-func NameSuffixEqualFold(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldNameSuffix), v))
-	})
-}
-
-// NameSuffixContainsFold applies the ContainsFold predicate on the "name_suffix" field.
-func NameSuffixContainsFold(v string) predicate.Hustler {
-	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldNameSuffix), v))
 	})
 }
 
@@ -521,6 +272,20 @@ func NameHasSuffix(v string) predicate.Hustler {
 	})
 }
 
+// NameIsNil applies the IsNil predicate on the "name" field.
+func NameIsNil() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldName)))
+	})
+}
+
+// NameNotNil applies the NotNil predicate on the "name" field.
+func NameNotNil() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldName)))
+	})
+}
+
 // NameEqualFold applies the EqualFold predicate on the "name" field.
 func NameEqualFold(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
@@ -535,22 +300,22 @@ func NameContainsFold(v string) predicate.Hustler {
 	})
 }
 
-// SuffixEQ applies the EQ predicate on the "suffix" field.
-func SuffixEQ(v string) predicate.Hustler {
+// TitleEQ applies the EQ predicate on the "title" field.
+func TitleEQ(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldSuffix), v))
+		s.Where(sql.EQ(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixNEQ applies the NEQ predicate on the "suffix" field.
-func SuffixNEQ(v string) predicate.Hustler {
+// TitleNEQ applies the NEQ predicate on the "title" field.
+func TitleNEQ(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldSuffix), v))
+		s.Where(sql.NEQ(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixIn applies the In predicate on the "suffix" field.
-func SuffixIn(vs ...string) predicate.Hustler {
+// TitleIn applies the In predicate on the "title" field.
+func TitleIn(vs ...string) predicate.Hustler {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -562,12 +327,12 @@ func SuffixIn(vs ...string) predicate.Hustler {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldSuffix), v...))
+		s.Where(sql.In(s.C(FieldTitle), v...))
 	})
 }
 
-// SuffixNotIn applies the NotIn predicate on the "suffix" field.
-func SuffixNotIn(vs ...string) predicate.Hustler {
+// TitleNotIn applies the NotIn predicate on the "title" field.
+func TitleNotIn(vs ...string) predicate.Hustler {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -579,112 +344,472 @@ func SuffixNotIn(vs ...string) predicate.Hustler {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldSuffix), v...))
+		s.Where(sql.NotIn(s.C(FieldTitle), v...))
 	})
 }
 
-// SuffixGT applies the GT predicate on the "suffix" field.
-func SuffixGT(v string) predicate.Hustler {
+// TitleGT applies the GT predicate on the "title" field.
+func TitleGT(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldSuffix), v))
+		s.Where(sql.GT(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixGTE applies the GTE predicate on the "suffix" field.
-func SuffixGTE(v string) predicate.Hustler {
+// TitleGTE applies the GTE predicate on the "title" field.
+func TitleGTE(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldSuffix), v))
+		s.Where(sql.GTE(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixLT applies the LT predicate on the "suffix" field.
-func SuffixLT(v string) predicate.Hustler {
+// TitleLT applies the LT predicate on the "title" field.
+func TitleLT(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldSuffix), v))
+		s.Where(sql.LT(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixLTE applies the LTE predicate on the "suffix" field.
-func SuffixLTE(v string) predicate.Hustler {
+// TitleLTE applies the LTE predicate on the "title" field.
+func TitleLTE(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldSuffix), v))
+		s.Where(sql.LTE(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixContains applies the Contains predicate on the "suffix" field.
-func SuffixContains(v string) predicate.Hustler {
+// TitleContains applies the Contains predicate on the "title" field.
+func TitleContains(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldSuffix), v))
+		s.Where(sql.Contains(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixHasPrefix applies the HasPrefix predicate on the "suffix" field.
-func SuffixHasPrefix(v string) predicate.Hustler {
+// TitleHasPrefix applies the HasPrefix predicate on the "title" field.
+func TitleHasPrefix(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldSuffix), v))
+		s.Where(sql.HasPrefix(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixHasSuffix applies the HasSuffix predicate on the "suffix" field.
-func SuffixHasSuffix(v string) predicate.Hustler {
+// TitleHasSuffix applies the HasSuffix predicate on the "title" field.
+func TitleHasSuffix(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldSuffix), v))
+		s.Where(sql.HasSuffix(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixIsNil applies the IsNil predicate on the "suffix" field.
-func SuffixIsNil() predicate.Hustler {
+// TitleIsNil applies the IsNil predicate on the "title" field.
+func TitleIsNil() predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldSuffix)))
+		s.Where(sql.IsNull(s.C(FieldTitle)))
 	})
 }
 
-// SuffixNotNil applies the NotNil predicate on the "suffix" field.
-func SuffixNotNil() predicate.Hustler {
+// TitleNotNil applies the NotNil predicate on the "title" field.
+func TitleNotNil() predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldSuffix)))
+		s.Where(sql.NotNull(s.C(FieldTitle)))
 	})
 }
 
-// SuffixEqualFold applies the EqualFold predicate on the "suffix" field.
-func SuffixEqualFold(v string) predicate.Hustler {
+// TitleEqualFold applies the EqualFold predicate on the "title" field.
+func TitleEqualFold(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldSuffix), v))
+		s.Where(sql.EqualFold(s.C(FieldTitle), v))
 	})
 }
 
-// SuffixContainsFold applies the ContainsFold predicate on the "suffix" field.
-func SuffixContainsFold(v string) predicate.Hustler {
+// TitleContainsFold applies the ContainsFold predicate on the "title" field.
+func TitleContainsFold(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldSuffix), v))
+		s.Where(sql.ContainsFold(s.C(FieldTitle), v))
 	})
 }
 
-// AugmentedEQ applies the EQ predicate on the "augmented" field.
-func AugmentedEQ(v bool) predicate.Hustler {
+// ColorEQ applies the EQ predicate on the "color" field.
+func ColorEQ(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAugmented), v))
+		s.Where(sql.EQ(s.C(FieldColor), v))
 	})
 }
 
-// AugmentedNEQ applies the NEQ predicate on the "augmented" field.
-func AugmentedNEQ(v bool) predicate.Hustler {
+// ColorNEQ applies the NEQ predicate on the "color" field.
+func ColorNEQ(v string) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldAugmented), v))
+		s.Where(sql.NEQ(s.C(FieldColor), v))
 	})
 }
 
-// AugmentedIsNil applies the IsNil predicate on the "augmented" field.
-func AugmentedIsNil() predicate.Hustler {
+// ColorIn applies the In predicate on the "color" field.
+func ColorIn(vs ...string) predicate.Hustler {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldAugmented)))
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldColor), v...))
 	})
 }
 
-// AugmentedNotNil applies the NotNil predicate on the "augmented" field.
-func AugmentedNotNil() predicate.Hustler {
+// ColorNotIn applies the NotIn predicate on the "color" field.
+func ColorNotIn(vs ...string) predicate.Hustler {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
 	return predicate.Hustler(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldAugmented)))
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldColor), v...))
+	})
+}
+
+// ColorGT applies the GT predicate on the "color" field.
+func ColorGT(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldColor), v))
+	})
+}
+
+// ColorGTE applies the GTE predicate on the "color" field.
+func ColorGTE(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldColor), v))
+	})
+}
+
+// ColorLT applies the LT predicate on the "color" field.
+func ColorLT(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldColor), v))
+	})
+}
+
+// ColorLTE applies the LTE predicate on the "color" field.
+func ColorLTE(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldColor), v))
+	})
+}
+
+// ColorContains applies the Contains predicate on the "color" field.
+func ColorContains(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldColor), v))
+	})
+}
+
+// ColorHasPrefix applies the HasPrefix predicate on the "color" field.
+func ColorHasPrefix(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldColor), v))
+	})
+}
+
+// ColorHasSuffix applies the HasSuffix predicate on the "color" field.
+func ColorHasSuffix(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldColor), v))
+	})
+}
+
+// ColorIsNil applies the IsNil predicate on the "color" field.
+func ColorIsNil() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldColor)))
+	})
+}
+
+// ColorNotNil applies the NotNil predicate on the "color" field.
+func ColorNotNil() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldColor)))
+	})
+}
+
+// ColorEqualFold applies the EqualFold predicate on the "color" field.
+func ColorEqualFold(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldColor), v))
+	})
+}
+
+// ColorContainsFold applies the ContainsFold predicate on the "color" field.
+func ColorContainsFold(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldColor), v))
+	})
+}
+
+// BackgroundEQ applies the EQ predicate on the "background" field.
+func BackgroundEQ(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundNEQ applies the NEQ predicate on the "background" field.
+func BackgroundNEQ(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundIn applies the In predicate on the "background" field.
+func BackgroundIn(vs ...string) predicate.Hustler {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Hustler(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldBackground), v...))
+	})
+}
+
+// BackgroundNotIn applies the NotIn predicate on the "background" field.
+func BackgroundNotIn(vs ...string) predicate.Hustler {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Hustler(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldBackground), v...))
+	})
+}
+
+// BackgroundGT applies the GT predicate on the "background" field.
+func BackgroundGT(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundGTE applies the GTE predicate on the "background" field.
+func BackgroundGTE(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundLT applies the LT predicate on the "background" field.
+func BackgroundLT(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundLTE applies the LTE predicate on the "background" field.
+func BackgroundLTE(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundContains applies the Contains predicate on the "background" field.
+func BackgroundContains(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundHasPrefix applies the HasPrefix predicate on the "background" field.
+func BackgroundHasPrefix(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundHasSuffix applies the HasSuffix predicate on the "background" field.
+func BackgroundHasSuffix(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundIsNil applies the IsNil predicate on the "background" field.
+func BackgroundIsNil() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldBackground)))
+	})
+}
+
+// BackgroundNotNil applies the NotNil predicate on the "background" field.
+func BackgroundNotNil() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldBackground)))
+	})
+}
+
+// BackgroundEqualFold applies the EqualFold predicate on the "background" field.
+func BackgroundEqualFold(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldBackground), v))
+	})
+}
+
+// BackgroundContainsFold applies the ContainsFold predicate on the "background" field.
+func BackgroundContainsFold(v string) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldBackground), v))
+	})
+}
+
+// AgeEQ applies the EQ predicate on the "age" field.
+func AgeEQ(v schema.BigInt) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAge), v))
+	})
+}
+
+// AgeNEQ applies the NEQ predicate on the "age" field.
+func AgeNEQ(v schema.BigInt) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldAge), v))
+	})
+}
+
+// AgeIn applies the In predicate on the "age" field.
+func AgeIn(vs ...schema.BigInt) predicate.Hustler {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Hustler(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldAge), v...))
+	})
+}
+
+// AgeNotIn applies the NotIn predicate on the "age" field.
+func AgeNotIn(vs ...schema.BigInt) predicate.Hustler {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Hustler(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldAge), v...))
+	})
+}
+
+// AgeGT applies the GT predicate on the "age" field.
+func AgeGT(v schema.BigInt) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldAge), v))
+	})
+}
+
+// AgeGTE applies the GTE predicate on the "age" field.
+func AgeGTE(v schema.BigInt) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldAge), v))
+	})
+}
+
+// AgeLT applies the LT predicate on the "age" field.
+func AgeLT(v schema.BigInt) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldAge), v))
+	})
+}
+
+// AgeLTE applies the LTE predicate on the "age" field.
+func AgeLTE(v schema.BigInt) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldAge), v))
+	})
+}
+
+// SexEQ applies the EQ predicate on the "sex" field.
+func SexEQ(v Sex) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSex), v))
+	})
+}
+
+// SexNEQ applies the NEQ predicate on the "sex" field.
+func SexNEQ(v Sex) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSex), v))
+	})
+}
+
+// SexIn applies the In predicate on the "sex" field.
+func SexIn(vs ...Sex) predicate.Hustler {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Hustler(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldSex), v...))
+	})
+}
+
+// SexNotIn applies the NotIn predicate on the "sex" field.
+func SexNotIn(vs ...Sex) predicate.Hustler {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Hustler(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldSex), v...))
+	})
+}
+
+// SexIsNil applies the IsNil predicate on the "sex" field.
+func SexIsNil() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldSex)))
+	})
+}
+
+// SexNotNil applies the NotNil predicate on the "sex" field.
+func SexNotNil() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldSex)))
 	})
 }
 
@@ -707,6 +832,62 @@ func HasWalletWith(preds ...predicate.Wallet) predicate.Hustler {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(WalletInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, WalletTable, WalletColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasItems applies the HasEdge predicate on the "items" edge.
+func HasItems() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ItemsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ItemsTable, ItemsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasItemsWith applies the HasEdge predicate on the "items" edge with a given conditions (other predicates).
+func HasItemsWith(preds ...predicate.Item) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ItemsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ItemsTable, ItemsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasBodyparts applies the HasEdge predicate on the "bodyparts" edge.
+func HasBodyparts() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(BodypartsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, BodypartsTable, BodypartsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasBodypartsWith applies the HasEdge predicate on the "bodyparts" edge with a given conditions (other predicates).
+func HasBodypartsWith(preds ...predicate.BodyPart) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(BodypartsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, BodypartsTable, BodypartsColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

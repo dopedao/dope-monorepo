@@ -6,6 +6,16 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
+type RLEs struct {
+	Female string
+	Male   string
+}
+
+type SVGs struct {
+	Female string
+	Male   string
+}
+
 // Item holds the schema definition for the Item entity.
 type Item struct {
 	ent.Schema
@@ -32,6 +42,10 @@ func (Item) Fields() []ent.Field {
 		field.Bool("augmented").
 			Optional().
 			Immutable(),
+		field.JSON("rles", RLEs{}).
+			Optional(),
+		field.String("svg").
+			Optional(),
 	}
 }
 
@@ -39,6 +53,7 @@ func (Item) Fields() []ent.Field {
 func (Item) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("wallet", Wallet.Type).Ref("items").Unique(),
+		edge.From("hustler", Hustler.Type).Ref("items").Unique(),
 		edge.From("dopes", Dope.Type).
 			Ref("items"),
 		edge.To("derivative", Item.Type).

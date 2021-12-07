@@ -9,6 +9,19 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 )
 
+// The BodyPartFunc type is an adapter to allow the use of ordinary
+// function as BodyPart mutator.
+type BodyPartFunc func(context.Context, *ent.BodyPartMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f BodyPartFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.BodyPartMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BodyPartMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The DopeFunc type is an adapter to allow the use of ordinary
 // function as Dope mutator.
 type DopeFunc func(context.Context, *ent.DopeMutation) (ent.Value, error)

@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -18,16 +19,18 @@ type Hustler struct {
 	ID string `json:"id,omitempty"`
 	// Type holds the value of the "type" field.
 	Type hustler.Type `json:"type,omitempty"`
-	// NamePrefix holds the value of the "name_prefix" field.
-	NamePrefix string `json:"name_prefix,omitempty"`
-	// NameSuffix holds the value of the "name_suffix" field.
-	NameSuffix string `json:"name_suffix,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// Suffix holds the value of the "suffix" field.
-	Suffix string `json:"suffix,omitempty"`
-	// Augmented holds the value of the "augmented" field.
-	Augmented bool `json:"augmented,omitempty"`
+	// Title holds the value of the "title" field.
+	Title string `json:"title,omitempty"`
+	// Color holds the value of the "color" field.
+	Color string `json:"color,omitempty"`
+	// Background holds the value of the "background" field.
+	Background string `json:"background,omitempty"`
+	// Age holds the value of the "age" field.
+	Age schema.BigInt `json:"age,omitempty"`
+	// Sex holds the value of the "sex" field.
+	Sex hustler.Sex `json:"sex,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the HustlerQuery when eager-loading is set.
 	Edges           HustlerEdges `json:"edges"`
@@ -38,9 +41,13 @@ type Hustler struct {
 type HustlerEdges struct {
 	// Wallet holds the value of the wallet edge.
 	Wallet *Wallet `json:"wallet,omitempty"`
+	// Items holds the value of the items edge.
+	Items []*Item `json:"items,omitempty"`
+	// Bodyparts holds the value of the bodyparts edge.
+	Bodyparts []*BodyPart `json:"bodyparts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 }
 
 // WalletOrErr returns the Wallet value or an error if the edge
@@ -57,14 +64,32 @@ func (e HustlerEdges) WalletOrErr() (*Wallet, error) {
 	return nil, &NotLoadedError{edge: "wallet"}
 }
 
+// ItemsOrErr returns the Items value or an error if the edge
+// was not loaded in eager-loading.
+func (e HustlerEdges) ItemsOrErr() ([]*Item, error) {
+	if e.loadedTypes[1] {
+		return e.Items, nil
+	}
+	return nil, &NotLoadedError{edge: "items"}
+}
+
+// BodypartsOrErr returns the Bodyparts value or an error if the edge
+// was not loaded in eager-loading.
+func (e HustlerEdges) BodypartsOrErr() ([]*BodyPart, error) {
+	if e.loadedTypes[2] {
+		return e.Bodyparts, nil
+	}
+	return nil, &NotLoadedError{edge: "bodyparts"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Hustler) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case hustler.FieldAugmented:
-			values[i] = new(sql.NullBool)
-		case hustler.FieldID, hustler.FieldType, hustler.FieldNamePrefix, hustler.FieldNameSuffix, hustler.FieldName, hustler.FieldSuffix:
+		case hustler.FieldAge:
+			values[i] = new(schema.BigInt)
+		case hustler.FieldID, hustler.FieldType, hustler.FieldName, hustler.FieldTitle, hustler.FieldColor, hustler.FieldBackground, hustler.FieldSex:
 			values[i] = new(sql.NullString)
 		case hustler.ForeignKeys[0]: // wallet_hustlers
 			values[i] = new(sql.NullString)
@@ -95,35 +120,41 @@ func (h *Hustler) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				h.Type = hustler.Type(value.String)
 			}
-		case hustler.FieldNamePrefix:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field name_prefix", values[i])
-			} else if value.Valid {
-				h.NamePrefix = value.String
-			}
-		case hustler.FieldNameSuffix:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field name_suffix", values[i])
-			} else if value.Valid {
-				h.NameSuffix = value.String
-			}
 		case hustler.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				h.Name = value.String
 			}
-		case hustler.FieldSuffix:
+		case hustler.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field suffix", values[i])
+				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
-				h.Suffix = value.String
+				h.Title = value.String
 			}
-		case hustler.FieldAugmented:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field augmented", values[i])
+		case hustler.FieldColor:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field color", values[i])
 			} else if value.Valid {
-				h.Augmented = value.Bool
+				h.Color = value.String
+			}
+		case hustler.FieldBackground:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field background", values[i])
+			} else if value.Valid {
+				h.Background = value.String
+			}
+		case hustler.FieldAge:
+			if value, ok := values[i].(*schema.BigInt); !ok {
+				return fmt.Errorf("unexpected type %T for field age", values[i])
+			} else if value != nil {
+				h.Age = *value
+			}
+		case hustler.FieldSex:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field sex", values[i])
+			} else if value.Valid {
+				h.Sex = hustler.Sex(value.String)
 			}
 		case hustler.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -140,6 +171,16 @@ func (h *Hustler) assignValues(columns []string, values []interface{}) error {
 // QueryWallet queries the "wallet" edge of the Hustler entity.
 func (h *Hustler) QueryWallet() *WalletQuery {
 	return (&HustlerClient{config: h.config}).QueryWallet(h)
+}
+
+// QueryItems queries the "items" edge of the Hustler entity.
+func (h *Hustler) QueryItems() *ItemQuery {
+	return (&HustlerClient{config: h.config}).QueryItems(h)
+}
+
+// QueryBodyparts queries the "bodyparts" edge of the Hustler entity.
+func (h *Hustler) QueryBodyparts() *BodyPartQuery {
+	return (&HustlerClient{config: h.config}).QueryBodyparts(h)
 }
 
 // Update returns a builder for updating this Hustler.
@@ -167,16 +208,18 @@ func (h *Hustler) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", h.ID))
 	builder.WriteString(", type=")
 	builder.WriteString(fmt.Sprintf("%v", h.Type))
-	builder.WriteString(", name_prefix=")
-	builder.WriteString(h.NamePrefix)
-	builder.WriteString(", name_suffix=")
-	builder.WriteString(h.NameSuffix)
 	builder.WriteString(", name=")
 	builder.WriteString(h.Name)
-	builder.WriteString(", suffix=")
-	builder.WriteString(h.Suffix)
-	builder.WriteString(", augmented=")
-	builder.WriteString(fmt.Sprintf("%v", h.Augmented))
+	builder.WriteString(", title=")
+	builder.WriteString(h.Title)
+	builder.WriteString(", color=")
+	builder.WriteString(h.Color)
+	builder.WriteString(", background=")
+	builder.WriteString(h.Background)
+	builder.WriteString(", age=")
+	builder.WriteString(fmt.Sprintf("%v", h.Age))
+	builder.WriteString(", sex=")
+	builder.WriteString(fmt.Sprintf("%v", h.Sex))
 	builder.WriteByte(')')
 	return builder.String()
 }

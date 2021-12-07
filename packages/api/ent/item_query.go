@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
@@ -29,6 +30,7 @@ type ItemQuery struct {
 	predicates []predicate.Item
 	// eager-loading edges.
 	withWallet     *WalletQuery
+	withHustler    *HustlerQuery
 	withDopes      *DopeQuery
 	withBase       *ItemQuery
 	withDerivative *ItemQuery
@@ -84,6 +86,28 @@ func (iq *ItemQuery) QueryWallet() *WalletQuery {
 			sqlgraph.From(item.Table, item.FieldID, selector),
 			sqlgraph.To(wallet.Table, wallet.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, item.WalletTable, item.WalletColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryHustler chains the current query on the "hustler" edge.
+func (iq *ItemQuery) QueryHustler() *HustlerQuery {
+	query := &HustlerQuery{config: iq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := iq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := iq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, selector),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, item.HustlerTable, item.HustlerColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
 		return fromU, nil
@@ -339,6 +363,7 @@ func (iq *ItemQuery) Clone() *ItemQuery {
 		order:          append([]OrderFunc{}, iq.order...),
 		predicates:     append([]predicate.Item{}, iq.predicates...),
 		withWallet:     iq.withWallet.Clone(),
+		withHustler:    iq.withHustler.Clone(),
 		withDopes:      iq.withDopes.Clone(),
 		withBase:       iq.withBase.Clone(),
 		withDerivative: iq.withDerivative.Clone(),
@@ -356,6 +381,17 @@ func (iq *ItemQuery) WithWallet(opts ...func(*WalletQuery)) *ItemQuery {
 		opt(query)
 	}
 	iq.withWallet = query
+	return iq
+}
+
+// WithHustler tells the query-builder to eager-load the nodes that are connected to
+// the "hustler" edge. The optional arguments are used to configure the query builder of the edge.
+func (iq *ItemQuery) WithHustler(opts ...func(*HustlerQuery)) *ItemQuery {
+	query := &HustlerQuery{config: iq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	iq.withHustler = query
 	return iq
 }
 
@@ -458,14 +494,15 @@ func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 		nodes       = []*Item{}
 		withFKs     = iq.withFKs
 		_spec       = iq.querySpec()
-		loadedTypes = [4]bool{
+		loadedTypes = [5]bool{
 			iq.withWallet != nil,
+			iq.withHustler != nil,
 			iq.withDopes != nil,
 			iq.withBase != nil,
 			iq.withDerivative != nil,
 		}
 	)
-	if iq.withWallet != nil || iq.withBase != nil {
+	if iq.withWallet != nil || iq.withHustler != nil || iq.withBase != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -516,6 +553,35 @@ func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 			}
 			for i := range nodes {
 				nodes[i].Edges.Wallet = n
+			}
+		}
+	}
+
+	if query := iq.withHustler; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Item)
+		for i := range nodes {
+			if nodes[i].hustler_items == nil {
+				continue
+			}
+			fk := *nodes[i].hustler_items
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(hustler.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "hustler_items" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Hustler = n
 			}
 		}
 	}

@@ -175,20 +175,6 @@ func PaperLTE(v schema.BigInt) predicate.Wallet {
 	})
 }
 
-// PaperIsNil applies the IsNil predicate on the "paper" field.
-func PaperIsNil() predicate.Wallet {
-	return predicate.Wallet(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldPaper)))
-	})
-}
-
-// PaperNotNil applies the NotNil predicate on the "paper" field.
-func PaperNotNil() predicate.Wallet {
-	return predicate.Wallet(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldPaper)))
-	})
-}
-
 // HasDopes applies the HasEdge predicate on the "dopes" edge.
 func HasDopes() predicate.Wallet {
 	return predicate.Wallet(func(s *sql.Selector) {

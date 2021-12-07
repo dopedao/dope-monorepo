@@ -11,7 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -29,64 +32,78 @@ func (hc *HustlerCreate) SetType(h hustler.Type) *HustlerCreate {
 	return hc
 }
 
-// SetNamePrefix sets the "name_prefix" field.
-func (hc *HustlerCreate) SetNamePrefix(s string) *HustlerCreate {
-	hc.mutation.SetNamePrefix(s)
-	return hc
-}
-
-// SetNillableNamePrefix sets the "name_prefix" field if the given value is not nil.
-func (hc *HustlerCreate) SetNillableNamePrefix(s *string) *HustlerCreate {
-	if s != nil {
-		hc.SetNamePrefix(*s)
-	}
-	return hc
-}
-
-// SetNameSuffix sets the "name_suffix" field.
-func (hc *HustlerCreate) SetNameSuffix(s string) *HustlerCreate {
-	hc.mutation.SetNameSuffix(s)
-	return hc
-}
-
-// SetNillableNameSuffix sets the "name_suffix" field if the given value is not nil.
-func (hc *HustlerCreate) SetNillableNameSuffix(s *string) *HustlerCreate {
-	if s != nil {
-		hc.SetNameSuffix(*s)
-	}
-	return hc
-}
-
 // SetName sets the "name" field.
 func (hc *HustlerCreate) SetName(s string) *HustlerCreate {
 	hc.mutation.SetName(s)
 	return hc
 }
 
-// SetSuffix sets the "suffix" field.
-func (hc *HustlerCreate) SetSuffix(s string) *HustlerCreate {
-	hc.mutation.SetSuffix(s)
-	return hc
-}
-
-// SetNillableSuffix sets the "suffix" field if the given value is not nil.
-func (hc *HustlerCreate) SetNillableSuffix(s *string) *HustlerCreate {
+// SetNillableName sets the "name" field if the given value is not nil.
+func (hc *HustlerCreate) SetNillableName(s *string) *HustlerCreate {
 	if s != nil {
-		hc.SetSuffix(*s)
+		hc.SetName(*s)
 	}
 	return hc
 }
 
-// SetAugmented sets the "augmented" field.
-func (hc *HustlerCreate) SetAugmented(b bool) *HustlerCreate {
-	hc.mutation.SetAugmented(b)
+// SetTitle sets the "title" field.
+func (hc *HustlerCreate) SetTitle(s string) *HustlerCreate {
+	hc.mutation.SetTitle(s)
 	return hc
 }
 
-// SetNillableAugmented sets the "augmented" field if the given value is not nil.
-func (hc *HustlerCreate) SetNillableAugmented(b *bool) *HustlerCreate {
-	if b != nil {
-		hc.SetAugmented(*b)
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (hc *HustlerCreate) SetNillableTitle(s *string) *HustlerCreate {
+	if s != nil {
+		hc.SetTitle(*s)
+	}
+	return hc
+}
+
+// SetColor sets the "color" field.
+func (hc *HustlerCreate) SetColor(s string) *HustlerCreate {
+	hc.mutation.SetColor(s)
+	return hc
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (hc *HustlerCreate) SetNillableColor(s *string) *HustlerCreate {
+	if s != nil {
+		hc.SetColor(*s)
+	}
+	return hc
+}
+
+// SetBackground sets the "background" field.
+func (hc *HustlerCreate) SetBackground(s string) *HustlerCreate {
+	hc.mutation.SetBackground(s)
+	return hc
+}
+
+// SetNillableBackground sets the "background" field if the given value is not nil.
+func (hc *HustlerCreate) SetNillableBackground(s *string) *HustlerCreate {
+	if s != nil {
+		hc.SetBackground(*s)
+	}
+	return hc
+}
+
+// SetAge sets the "age" field.
+func (hc *HustlerCreate) SetAge(si schema.BigInt) *HustlerCreate {
+	hc.mutation.SetAge(si)
+	return hc
+}
+
+// SetSex sets the "sex" field.
+func (hc *HustlerCreate) SetSex(h hustler.Sex) *HustlerCreate {
+	hc.mutation.SetSex(h)
+	return hc
+}
+
+// SetNillableSex sets the "sex" field if the given value is not nil.
+func (hc *HustlerCreate) SetNillableSex(h *hustler.Sex) *HustlerCreate {
+	if h != nil {
+		hc.SetSex(*h)
 	}
 	return hc
 }
@@ -114,6 +131,36 @@ func (hc *HustlerCreate) SetNillableWalletID(id *string) *HustlerCreate {
 // SetWallet sets the "wallet" edge to the Wallet entity.
 func (hc *HustlerCreate) SetWallet(w *Wallet) *HustlerCreate {
 	return hc.SetWalletID(w.ID)
+}
+
+// AddItemIDs adds the "items" edge to the Item entity by IDs.
+func (hc *HustlerCreate) AddItemIDs(ids ...string) *HustlerCreate {
+	hc.mutation.AddItemIDs(ids...)
+	return hc
+}
+
+// AddItems adds the "items" edges to the Item entity.
+func (hc *HustlerCreate) AddItems(i ...*Item) *HustlerCreate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return hc.AddItemIDs(ids...)
+}
+
+// AddBodypartIDs adds the "bodyparts" edge to the BodyPart entity by IDs.
+func (hc *HustlerCreate) AddBodypartIDs(ids ...string) *HustlerCreate {
+	hc.mutation.AddBodypartIDs(ids...)
+	return hc
+}
+
+// AddBodyparts adds the "bodyparts" edges to the BodyPart entity.
+func (hc *HustlerCreate) AddBodyparts(b ...*BodyPart) *HustlerCreate {
+	ids := make([]string, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return hc.AddBodypartIDs(ids...)
 }
 
 // Mutation returns the HustlerMutation object of the builder.
@@ -194,8 +241,13 @@ func (hc *HustlerCreate) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Hustler.type": %w`, err)}
 		}
 	}
-	if _, ok := hc.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Hustler.name"`)}
+	if _, ok := hc.mutation.Age(); !ok {
+		return &ValidationError{Name: "age", err: errors.New(`ent: missing required field "Hustler.age"`)}
+	}
+	if v, ok := hc.mutation.Sex(); ok {
+		if err := hustler.SexValidator(v); err != nil {
+			return &ValidationError{Name: "sex", err: fmt.Errorf(`ent: validator failed for field "Hustler.sex": %w`, err)}
+		}
 	}
 	return nil
 }
@@ -242,22 +294,6 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 		})
 		_node.Type = value
 	}
-	if value, ok := hc.mutation.NamePrefix(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: hustler.FieldNamePrefix,
-		})
-		_node.NamePrefix = value
-	}
-	if value, ok := hc.mutation.NameSuffix(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: hustler.FieldNameSuffix,
-		})
-		_node.NameSuffix = value
-	}
 	if value, ok := hc.mutation.Name(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -266,21 +302,45 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 		})
 		_node.Name = value
 	}
-	if value, ok := hc.mutation.Suffix(); ok {
+	if value, ok := hc.mutation.Title(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: hustler.FieldSuffix,
+			Column: hustler.FieldTitle,
 		})
-		_node.Suffix = value
+		_node.Title = value
 	}
-	if value, ok := hc.mutation.Augmented(); ok {
+	if value, ok := hc.mutation.Color(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: hustler.FieldAugmented,
+			Column: hustler.FieldColor,
 		})
-		_node.Augmented = value
+		_node.Color = value
+	}
+	if value, ok := hc.mutation.Background(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldBackground,
+		})
+		_node.Background = value
+	}
+	if value, ok := hc.mutation.Age(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: hustler.FieldAge,
+		})
+		_node.Age = value
+	}
+	if value, ok := hc.mutation.Sex(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  value,
+			Column: hustler.FieldSex,
+		})
+		_node.Sex = value
 	}
 	if nodes := hc.mutation.WalletIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -300,6 +360,44 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.wallet_hustlers = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.ItemsTable,
+			Columns: []string{hustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.BodypartsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.BodypartsTable,
+			Columns: []string{hustler.BodypartsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -368,42 +466,6 @@ func (u *HustlerUpsert) UpdateType() *HustlerUpsert {
 	return u
 }
 
-// SetNamePrefix sets the "name_prefix" field.
-func (u *HustlerUpsert) SetNamePrefix(v string) *HustlerUpsert {
-	u.Set(hustler.FieldNamePrefix, v)
-	return u
-}
-
-// UpdateNamePrefix sets the "name_prefix" field to the value that was provided on create.
-func (u *HustlerUpsert) UpdateNamePrefix() *HustlerUpsert {
-	u.SetExcluded(hustler.FieldNamePrefix)
-	return u
-}
-
-// ClearNamePrefix clears the value of the "name_prefix" field.
-func (u *HustlerUpsert) ClearNamePrefix() *HustlerUpsert {
-	u.SetNull(hustler.FieldNamePrefix)
-	return u
-}
-
-// SetNameSuffix sets the "name_suffix" field.
-func (u *HustlerUpsert) SetNameSuffix(v string) *HustlerUpsert {
-	u.Set(hustler.FieldNameSuffix, v)
-	return u
-}
-
-// UpdateNameSuffix sets the "name_suffix" field to the value that was provided on create.
-func (u *HustlerUpsert) UpdateNameSuffix() *HustlerUpsert {
-	u.SetExcluded(hustler.FieldNameSuffix)
-	return u
-}
-
-// ClearNameSuffix clears the value of the "name_suffix" field.
-func (u *HustlerUpsert) ClearNameSuffix() *HustlerUpsert {
-	u.SetNull(hustler.FieldNameSuffix)
-	return u
-}
-
 // SetName sets the "name" field.
 func (u *HustlerUpsert) SetName(v string) *HustlerUpsert {
 	u.Set(hustler.FieldName, v)
@@ -416,39 +478,99 @@ func (u *HustlerUpsert) UpdateName() *HustlerUpsert {
 	return u
 }
 
-// SetSuffix sets the "suffix" field.
-func (u *HustlerUpsert) SetSuffix(v string) *HustlerUpsert {
-	u.Set(hustler.FieldSuffix, v)
+// ClearName clears the value of the "name" field.
+func (u *HustlerUpsert) ClearName() *HustlerUpsert {
+	u.SetNull(hustler.FieldName)
 	return u
 }
 
-// UpdateSuffix sets the "suffix" field to the value that was provided on create.
-func (u *HustlerUpsert) UpdateSuffix() *HustlerUpsert {
-	u.SetExcluded(hustler.FieldSuffix)
+// SetTitle sets the "title" field.
+func (u *HustlerUpsert) SetTitle(v string) *HustlerUpsert {
+	u.Set(hustler.FieldTitle, v)
 	return u
 }
 
-// ClearSuffix clears the value of the "suffix" field.
-func (u *HustlerUpsert) ClearSuffix() *HustlerUpsert {
-	u.SetNull(hustler.FieldSuffix)
+// UpdateTitle sets the "title" field to the value that was provided on create.
+func (u *HustlerUpsert) UpdateTitle() *HustlerUpsert {
+	u.SetExcluded(hustler.FieldTitle)
 	return u
 }
 
-// SetAugmented sets the "augmented" field.
-func (u *HustlerUpsert) SetAugmented(v bool) *HustlerUpsert {
-	u.Set(hustler.FieldAugmented, v)
+// ClearTitle clears the value of the "title" field.
+func (u *HustlerUpsert) ClearTitle() *HustlerUpsert {
+	u.SetNull(hustler.FieldTitle)
 	return u
 }
 
-// UpdateAugmented sets the "augmented" field to the value that was provided on create.
-func (u *HustlerUpsert) UpdateAugmented() *HustlerUpsert {
-	u.SetExcluded(hustler.FieldAugmented)
+// SetColor sets the "color" field.
+func (u *HustlerUpsert) SetColor(v string) *HustlerUpsert {
+	u.Set(hustler.FieldColor, v)
 	return u
 }
 
-// ClearAugmented clears the value of the "augmented" field.
-func (u *HustlerUpsert) ClearAugmented() *HustlerUpsert {
-	u.SetNull(hustler.FieldAugmented)
+// UpdateColor sets the "color" field to the value that was provided on create.
+func (u *HustlerUpsert) UpdateColor() *HustlerUpsert {
+	u.SetExcluded(hustler.FieldColor)
+	return u
+}
+
+// ClearColor clears the value of the "color" field.
+func (u *HustlerUpsert) ClearColor() *HustlerUpsert {
+	u.SetNull(hustler.FieldColor)
+	return u
+}
+
+// SetBackground sets the "background" field.
+func (u *HustlerUpsert) SetBackground(v string) *HustlerUpsert {
+	u.Set(hustler.FieldBackground, v)
+	return u
+}
+
+// UpdateBackground sets the "background" field to the value that was provided on create.
+func (u *HustlerUpsert) UpdateBackground() *HustlerUpsert {
+	u.SetExcluded(hustler.FieldBackground)
+	return u
+}
+
+// ClearBackground clears the value of the "background" field.
+func (u *HustlerUpsert) ClearBackground() *HustlerUpsert {
+	u.SetNull(hustler.FieldBackground)
+	return u
+}
+
+// SetAge sets the "age" field.
+func (u *HustlerUpsert) SetAge(v schema.BigInt) *HustlerUpsert {
+	u.Set(hustler.FieldAge, v)
+	return u
+}
+
+// UpdateAge sets the "age" field to the value that was provided on create.
+func (u *HustlerUpsert) UpdateAge() *HustlerUpsert {
+	u.SetExcluded(hustler.FieldAge)
+	return u
+}
+
+// AddAge adds v to the "age" field.
+func (u *HustlerUpsert) AddAge(v schema.BigInt) *HustlerUpsert {
+	u.Add(hustler.FieldAge, v)
+	return u
+}
+
+// SetSex sets the "sex" field.
+func (u *HustlerUpsert) SetSex(v hustler.Sex) *HustlerUpsert {
+	u.Set(hustler.FieldSex, v)
+	return u
+}
+
+// UpdateSex sets the "sex" field to the value that was provided on create.
+func (u *HustlerUpsert) UpdateSex() *HustlerUpsert {
+	u.SetExcluded(hustler.FieldSex)
+	return u
+}
+
+// ClearSex clears the value of the "sex" field.
+func (u *HustlerUpsert) ClearSex() *HustlerUpsert {
+	u.SetNull(hustler.FieldSex)
 	return u
 }
 
@@ -472,21 +594,6 @@ func (u *HustlerUpsertOne) UpdateNewValues() *HustlerUpsertOne {
 		}
 		if _, exists := u.create.mutation.GetType(); exists {
 			s.SetIgnore(hustler.FieldType)
-		}
-		if _, exists := u.create.mutation.NamePrefix(); exists {
-			s.SetIgnore(hustler.FieldNamePrefix)
-		}
-		if _, exists := u.create.mutation.NameSuffix(); exists {
-			s.SetIgnore(hustler.FieldNameSuffix)
-		}
-		if _, exists := u.create.mutation.Name(); exists {
-			s.SetIgnore(hustler.FieldName)
-		}
-		if _, exists := u.create.mutation.Suffix(); exists {
-			s.SetIgnore(hustler.FieldSuffix)
-		}
-		if _, exists := u.create.mutation.Augmented(); exists {
-			s.SetIgnore(hustler.FieldAugmented)
 		}
 	}))
 	return u
@@ -534,48 +641,6 @@ func (u *HustlerUpsertOne) UpdateType() *HustlerUpsertOne {
 	})
 }
 
-// SetNamePrefix sets the "name_prefix" field.
-func (u *HustlerUpsertOne) SetNamePrefix(v string) *HustlerUpsertOne {
-	return u.Update(func(s *HustlerUpsert) {
-		s.SetNamePrefix(v)
-	})
-}
-
-// UpdateNamePrefix sets the "name_prefix" field to the value that was provided on create.
-func (u *HustlerUpsertOne) UpdateNamePrefix() *HustlerUpsertOne {
-	return u.Update(func(s *HustlerUpsert) {
-		s.UpdateNamePrefix()
-	})
-}
-
-// ClearNamePrefix clears the value of the "name_prefix" field.
-func (u *HustlerUpsertOne) ClearNamePrefix() *HustlerUpsertOne {
-	return u.Update(func(s *HustlerUpsert) {
-		s.ClearNamePrefix()
-	})
-}
-
-// SetNameSuffix sets the "name_suffix" field.
-func (u *HustlerUpsertOne) SetNameSuffix(v string) *HustlerUpsertOne {
-	return u.Update(func(s *HustlerUpsert) {
-		s.SetNameSuffix(v)
-	})
-}
-
-// UpdateNameSuffix sets the "name_suffix" field to the value that was provided on create.
-func (u *HustlerUpsertOne) UpdateNameSuffix() *HustlerUpsertOne {
-	return u.Update(func(s *HustlerUpsert) {
-		s.UpdateNameSuffix()
-	})
-}
-
-// ClearNameSuffix clears the value of the "name_suffix" field.
-func (u *HustlerUpsertOne) ClearNameSuffix() *HustlerUpsertOne {
-	return u.Update(func(s *HustlerUpsert) {
-		s.ClearNameSuffix()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *HustlerUpsertOne) SetName(v string) *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
@@ -590,45 +655,115 @@ func (u *HustlerUpsertOne) UpdateName() *HustlerUpsertOne {
 	})
 }
 
-// SetSuffix sets the "suffix" field.
-func (u *HustlerUpsertOne) SetSuffix(v string) *HustlerUpsertOne {
+// ClearName clears the value of the "name" field.
+func (u *HustlerUpsertOne) ClearName() *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
-		s.SetSuffix(v)
+		s.ClearName()
 	})
 }
 
-// UpdateSuffix sets the "suffix" field to the value that was provided on create.
-func (u *HustlerUpsertOne) UpdateSuffix() *HustlerUpsertOne {
+// SetTitle sets the "title" field.
+func (u *HustlerUpsertOne) SetTitle(v string) *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
-		s.UpdateSuffix()
+		s.SetTitle(v)
 	})
 }
 
-// ClearSuffix clears the value of the "suffix" field.
-func (u *HustlerUpsertOne) ClearSuffix() *HustlerUpsertOne {
+// UpdateTitle sets the "title" field to the value that was provided on create.
+func (u *HustlerUpsertOne) UpdateTitle() *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
-		s.ClearSuffix()
+		s.UpdateTitle()
 	})
 }
 
-// SetAugmented sets the "augmented" field.
-func (u *HustlerUpsertOne) SetAugmented(v bool) *HustlerUpsertOne {
+// ClearTitle clears the value of the "title" field.
+func (u *HustlerUpsertOne) ClearTitle() *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
-		s.SetAugmented(v)
+		s.ClearTitle()
 	})
 }
 
-// UpdateAugmented sets the "augmented" field to the value that was provided on create.
-func (u *HustlerUpsertOne) UpdateAugmented() *HustlerUpsertOne {
+// SetColor sets the "color" field.
+func (u *HustlerUpsertOne) SetColor(v string) *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
-		s.UpdateAugmented()
+		s.SetColor(v)
 	})
 }
 
-// ClearAugmented clears the value of the "augmented" field.
-func (u *HustlerUpsertOne) ClearAugmented() *HustlerUpsertOne {
+// UpdateColor sets the "color" field to the value that was provided on create.
+func (u *HustlerUpsertOne) UpdateColor() *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
-		s.ClearAugmented()
+		s.UpdateColor()
+	})
+}
+
+// ClearColor clears the value of the "color" field.
+func (u *HustlerUpsertOne) ClearColor() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.ClearColor()
+	})
+}
+
+// SetBackground sets the "background" field.
+func (u *HustlerUpsertOne) SetBackground(v string) *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetBackground(v)
+	})
+}
+
+// UpdateBackground sets the "background" field to the value that was provided on create.
+func (u *HustlerUpsertOne) UpdateBackground() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateBackground()
+	})
+}
+
+// ClearBackground clears the value of the "background" field.
+func (u *HustlerUpsertOne) ClearBackground() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.ClearBackground()
+	})
+}
+
+// SetAge sets the "age" field.
+func (u *HustlerUpsertOne) SetAge(v schema.BigInt) *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetAge(v)
+	})
+}
+
+// AddAge adds v to the "age" field.
+func (u *HustlerUpsertOne) AddAge(v schema.BigInt) *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.AddAge(v)
+	})
+}
+
+// UpdateAge sets the "age" field to the value that was provided on create.
+func (u *HustlerUpsertOne) UpdateAge() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateAge()
+	})
+}
+
+// SetSex sets the "sex" field.
+func (u *HustlerUpsertOne) SetSex(v hustler.Sex) *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetSex(v)
+	})
+}
+
+// UpdateSex sets the "sex" field to the value that was provided on create.
+func (u *HustlerUpsertOne) UpdateSex() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateSex()
+	})
+}
+
+// ClearSex clears the value of the "sex" field.
+func (u *HustlerUpsertOne) ClearSex() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.ClearSex()
 	})
 }
 
@@ -817,21 +952,6 @@ func (u *HustlerUpsertBulk) UpdateNewValues() *HustlerUpsertBulk {
 			if _, exists := b.mutation.GetType(); exists {
 				s.SetIgnore(hustler.FieldType)
 			}
-			if _, exists := b.mutation.NamePrefix(); exists {
-				s.SetIgnore(hustler.FieldNamePrefix)
-			}
-			if _, exists := b.mutation.NameSuffix(); exists {
-				s.SetIgnore(hustler.FieldNameSuffix)
-			}
-			if _, exists := b.mutation.Name(); exists {
-				s.SetIgnore(hustler.FieldName)
-			}
-			if _, exists := b.mutation.Suffix(); exists {
-				s.SetIgnore(hustler.FieldSuffix)
-			}
-			if _, exists := b.mutation.Augmented(); exists {
-				s.SetIgnore(hustler.FieldAugmented)
-			}
 		}
 	}))
 	return u
@@ -879,48 +999,6 @@ func (u *HustlerUpsertBulk) UpdateType() *HustlerUpsertBulk {
 	})
 }
 
-// SetNamePrefix sets the "name_prefix" field.
-func (u *HustlerUpsertBulk) SetNamePrefix(v string) *HustlerUpsertBulk {
-	return u.Update(func(s *HustlerUpsert) {
-		s.SetNamePrefix(v)
-	})
-}
-
-// UpdateNamePrefix sets the "name_prefix" field to the value that was provided on create.
-func (u *HustlerUpsertBulk) UpdateNamePrefix() *HustlerUpsertBulk {
-	return u.Update(func(s *HustlerUpsert) {
-		s.UpdateNamePrefix()
-	})
-}
-
-// ClearNamePrefix clears the value of the "name_prefix" field.
-func (u *HustlerUpsertBulk) ClearNamePrefix() *HustlerUpsertBulk {
-	return u.Update(func(s *HustlerUpsert) {
-		s.ClearNamePrefix()
-	})
-}
-
-// SetNameSuffix sets the "name_suffix" field.
-func (u *HustlerUpsertBulk) SetNameSuffix(v string) *HustlerUpsertBulk {
-	return u.Update(func(s *HustlerUpsert) {
-		s.SetNameSuffix(v)
-	})
-}
-
-// UpdateNameSuffix sets the "name_suffix" field to the value that was provided on create.
-func (u *HustlerUpsertBulk) UpdateNameSuffix() *HustlerUpsertBulk {
-	return u.Update(func(s *HustlerUpsert) {
-		s.UpdateNameSuffix()
-	})
-}
-
-// ClearNameSuffix clears the value of the "name_suffix" field.
-func (u *HustlerUpsertBulk) ClearNameSuffix() *HustlerUpsertBulk {
-	return u.Update(func(s *HustlerUpsert) {
-		s.ClearNameSuffix()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *HustlerUpsertBulk) SetName(v string) *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
@@ -935,45 +1013,115 @@ func (u *HustlerUpsertBulk) UpdateName() *HustlerUpsertBulk {
 	})
 }
 
-// SetSuffix sets the "suffix" field.
-func (u *HustlerUpsertBulk) SetSuffix(v string) *HustlerUpsertBulk {
+// ClearName clears the value of the "name" field.
+func (u *HustlerUpsertBulk) ClearName() *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
-		s.SetSuffix(v)
+		s.ClearName()
 	})
 }
 
-// UpdateSuffix sets the "suffix" field to the value that was provided on create.
-func (u *HustlerUpsertBulk) UpdateSuffix() *HustlerUpsertBulk {
+// SetTitle sets the "title" field.
+func (u *HustlerUpsertBulk) SetTitle(v string) *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
-		s.UpdateSuffix()
+		s.SetTitle(v)
 	})
 }
 
-// ClearSuffix clears the value of the "suffix" field.
-func (u *HustlerUpsertBulk) ClearSuffix() *HustlerUpsertBulk {
+// UpdateTitle sets the "title" field to the value that was provided on create.
+func (u *HustlerUpsertBulk) UpdateTitle() *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
-		s.ClearSuffix()
+		s.UpdateTitle()
 	})
 }
 
-// SetAugmented sets the "augmented" field.
-func (u *HustlerUpsertBulk) SetAugmented(v bool) *HustlerUpsertBulk {
+// ClearTitle clears the value of the "title" field.
+func (u *HustlerUpsertBulk) ClearTitle() *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
-		s.SetAugmented(v)
+		s.ClearTitle()
 	})
 }
 
-// UpdateAugmented sets the "augmented" field to the value that was provided on create.
-func (u *HustlerUpsertBulk) UpdateAugmented() *HustlerUpsertBulk {
+// SetColor sets the "color" field.
+func (u *HustlerUpsertBulk) SetColor(v string) *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
-		s.UpdateAugmented()
+		s.SetColor(v)
 	})
 }
 
-// ClearAugmented clears the value of the "augmented" field.
-func (u *HustlerUpsertBulk) ClearAugmented() *HustlerUpsertBulk {
+// UpdateColor sets the "color" field to the value that was provided on create.
+func (u *HustlerUpsertBulk) UpdateColor() *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
-		s.ClearAugmented()
+		s.UpdateColor()
+	})
+}
+
+// ClearColor clears the value of the "color" field.
+func (u *HustlerUpsertBulk) ClearColor() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.ClearColor()
+	})
+}
+
+// SetBackground sets the "background" field.
+func (u *HustlerUpsertBulk) SetBackground(v string) *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetBackground(v)
+	})
+}
+
+// UpdateBackground sets the "background" field to the value that was provided on create.
+func (u *HustlerUpsertBulk) UpdateBackground() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateBackground()
+	})
+}
+
+// ClearBackground clears the value of the "background" field.
+func (u *HustlerUpsertBulk) ClearBackground() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.ClearBackground()
+	})
+}
+
+// SetAge sets the "age" field.
+func (u *HustlerUpsertBulk) SetAge(v schema.BigInt) *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetAge(v)
+	})
+}
+
+// AddAge adds v to the "age" field.
+func (u *HustlerUpsertBulk) AddAge(v schema.BigInt) *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.AddAge(v)
+	})
+}
+
+// UpdateAge sets the "age" field to the value that was provided on create.
+func (u *HustlerUpsertBulk) UpdateAge() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateAge()
+	})
+}
+
+// SetSex sets the "sex" field.
+func (u *HustlerUpsertBulk) SetSex(v hustler.Sex) *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetSex(v)
+	})
+}
+
+// UpdateSex sets the "sex" field to the value that was provided on create.
+func (u *HustlerUpsertBulk) UpdateSex() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateSex()
+	})
+}
+
+// ClearSex clears the value of the "sex" field.
+func (u *HustlerUpsertBulk) ClearSex() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.ClearSex()
 	})
 }
 

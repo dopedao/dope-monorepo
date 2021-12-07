@@ -29,7 +29,7 @@ func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e *bindings.PaperT
 
 	if e.To != (common.Address{}) {
 		if err := p.ent.Wallet.Create().
-			SetID(e.From.String()).
+			SetID(e.To.String()).
 			SetPaper(schema.BigInt{Int: e.Value}).
 			OnConflict().
 			Update(func(w *ent.WalletUpsert) {

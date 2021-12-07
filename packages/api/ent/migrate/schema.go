@@ -8,6 +8,28 @@ import (
 )
 
 var (
+	// BodyPartsColumns holds the columns for the "body_parts" table.
+	BodyPartsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"body", "hair", "beard"}},
+		{Name: "sex", Type: field.TypeEnum, Enums: []string{"male", "female"}},
+		{Name: "rle", Type: field.TypeString},
+		{Name: "hustler_bodyparts", Type: field.TypeString, Nullable: true},
+	}
+	// BodyPartsTable holds the schema information for the "body_parts" table.
+	BodyPartsTable = &schema.Table{
+		Name:       "body_parts",
+		Columns:    BodyPartsColumns,
+		PrimaryKey: []*schema.Column{BodyPartsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "body_parts_hustlers_bodyparts",
+				Columns:    []*schema.Column{BodyPartsColumns[4]},
+				RefColumns: []*schema.Column{HustlersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// DopesColumns holds the columns for the "dopes" table.
 	DopesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
@@ -32,12 +54,13 @@ var (
 	// HustlersColumns holds the columns for the "hustlers" table.
 	HustlersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"weapon", "clothes", "vehicle", "waist", "foot", "hand", "drugs", "neck", "ring", "accessory"}},
-		{Name: "name_prefix", Type: field.TypeString, Nullable: true},
-		{Name: "name_suffix", Type: field.TypeString, Nullable: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "suffix", Type: field.TypeString, Nullable: true},
-		{Name: "augmented", Type: field.TypeBool, Nullable: true},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"original_gangsta", "regular"}},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "title", Type: field.TypeString, Nullable: true},
+		{Name: "color", Type: field.TypeString, Nullable: true},
+		{Name: "background", Type: field.TypeString, Nullable: true},
+		{Name: "age", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "sex", Type: field.TypeEnum, Nullable: true, Enums: []string{"male", "female"}},
 		{Name: "wallet_hustlers", Type: field.TypeString, Nullable: true},
 	}
 	// HustlersTable holds the schema information for the "hustlers" table.
@@ -48,7 +71,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "hustlers_wallets_hustlers",
-				Columns:    []*schema.Column{HustlersColumns[7]},
+				Columns:    []*schema.Column{HustlersColumns[8]},
 				RefColumns: []*schema.Column{WalletsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -63,6 +86,9 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "suffix", Type: field.TypeString, Nullable: true},
 		{Name: "augmented", Type: field.TypeBool, Nullable: true},
+		{Name: "rles", Type: field.TypeJSON, Nullable: true},
+		{Name: "svg", Type: field.TypeString, Nullable: true},
+		{Name: "hustler_items", Type: field.TypeString, Nullable: true},
 		{Name: "item_derivative", Type: field.TypeString, Nullable: true},
 		{Name: "wallet_items", Type: field.TypeString, Nullable: true},
 	}
@@ -73,14 +99,20 @@ var (
 		PrimaryKey: []*schema.Column{ItemsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
+				Symbol:     "items_hustlers_items",
+				Columns:    []*schema.Column{ItemsColumns[9]},
+				RefColumns: []*schema.Column{HustlersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
 				Symbol:     "items_items_derivative",
-				Columns:    []*schema.Column{ItemsColumns[7]},
+				Columns:    []*schema.Column{ItemsColumns[10]},
 				RefColumns: []*schema.Column{ItemsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "items_wallets_items",
-				Columns:    []*schema.Column{ItemsColumns[8]},
+				Columns:    []*schema.Column{ItemsColumns[11]},
 				RefColumns: []*schema.Column{WalletsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -100,7 +132,7 @@ var (
 	// WalletsColumns holds the columns for the "wallets" table.
 	WalletsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "paper", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "paper", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
 	}
 	// WalletsTable holds the schema information for the "wallets" table.
 	WalletsTable = &schema.Table{
@@ -135,6 +167,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		BodyPartsTable,
 		DopesTable,
 		HustlersTable,
 		ItemsTable,
@@ -145,10 +178,12 @@ var (
 )
 
 func init() {
+	BodyPartsTable.ForeignKeys[0].RefTable = HustlersTable
 	DopesTable.ForeignKeys[0].RefTable = WalletsTable
 	HustlersTable.ForeignKeys[0].RefTable = WalletsTable
-	ItemsTable.ForeignKeys[0].RefTable = ItemsTable
-	ItemsTable.ForeignKeys[1].RefTable = WalletsTable
+	ItemsTable.ForeignKeys[0].RefTable = HustlersTable
+	ItemsTable.ForeignKeys[1].RefTable = ItemsTable
+	ItemsTable.ForeignKeys[2].RefTable = WalletsTable
 	DopeItemsTable.ForeignKeys[0].RefTable = DopesTable
 	DopeItemsTable.ForeignKeys[1].RefTable = ItemsTable
 }

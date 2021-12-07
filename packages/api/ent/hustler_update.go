@@ -10,8 +10,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -25,6 +28,119 @@ type HustlerUpdate struct {
 // Where appends a list predicates to the HustlerUpdate builder.
 func (hu *HustlerUpdate) Where(ps ...predicate.Hustler) *HustlerUpdate {
 	hu.mutation.Where(ps...)
+	return hu
+}
+
+// SetName sets the "name" field.
+func (hu *HustlerUpdate) SetName(s string) *HustlerUpdate {
+	hu.mutation.SetName(s)
+	return hu
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableName(s *string) *HustlerUpdate {
+	if s != nil {
+		hu.SetName(*s)
+	}
+	return hu
+}
+
+// ClearName clears the value of the "name" field.
+func (hu *HustlerUpdate) ClearName() *HustlerUpdate {
+	hu.mutation.ClearName()
+	return hu
+}
+
+// SetTitle sets the "title" field.
+func (hu *HustlerUpdate) SetTitle(s string) *HustlerUpdate {
+	hu.mutation.SetTitle(s)
+	return hu
+}
+
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableTitle(s *string) *HustlerUpdate {
+	if s != nil {
+		hu.SetTitle(*s)
+	}
+	return hu
+}
+
+// ClearTitle clears the value of the "title" field.
+func (hu *HustlerUpdate) ClearTitle() *HustlerUpdate {
+	hu.mutation.ClearTitle()
+	return hu
+}
+
+// SetColor sets the "color" field.
+func (hu *HustlerUpdate) SetColor(s string) *HustlerUpdate {
+	hu.mutation.SetColor(s)
+	return hu
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableColor(s *string) *HustlerUpdate {
+	if s != nil {
+		hu.SetColor(*s)
+	}
+	return hu
+}
+
+// ClearColor clears the value of the "color" field.
+func (hu *HustlerUpdate) ClearColor() *HustlerUpdate {
+	hu.mutation.ClearColor()
+	return hu
+}
+
+// SetBackground sets the "background" field.
+func (hu *HustlerUpdate) SetBackground(s string) *HustlerUpdate {
+	hu.mutation.SetBackground(s)
+	return hu
+}
+
+// SetNillableBackground sets the "background" field if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableBackground(s *string) *HustlerUpdate {
+	if s != nil {
+		hu.SetBackground(*s)
+	}
+	return hu
+}
+
+// ClearBackground clears the value of the "background" field.
+func (hu *HustlerUpdate) ClearBackground() *HustlerUpdate {
+	hu.mutation.ClearBackground()
+	return hu
+}
+
+// SetAge sets the "age" field.
+func (hu *HustlerUpdate) SetAge(si schema.BigInt) *HustlerUpdate {
+	hu.mutation.ResetAge()
+	hu.mutation.SetAge(si)
+	return hu
+}
+
+// AddAge adds si to the "age" field.
+func (hu *HustlerUpdate) AddAge(si schema.BigInt) *HustlerUpdate {
+	hu.mutation.AddAge(si)
+	return hu
+}
+
+// SetSex sets the "sex" field.
+func (hu *HustlerUpdate) SetSex(h hustler.Sex) *HustlerUpdate {
+	hu.mutation.SetSex(h)
+	return hu
+}
+
+// SetNillableSex sets the "sex" field if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableSex(h *hustler.Sex) *HustlerUpdate {
+	if h != nil {
+		hu.SetSex(*h)
+	}
+	return hu
+}
+
+// ClearSex clears the value of the "sex" field.
+func (hu *HustlerUpdate) ClearSex() *HustlerUpdate {
+	hu.mutation.ClearSex()
 	return hu
 }
 
@@ -47,6 +163,36 @@ func (hu *HustlerUpdate) SetWallet(w *Wallet) *HustlerUpdate {
 	return hu.SetWalletID(w.ID)
 }
 
+// AddItemIDs adds the "items" edge to the Item entity by IDs.
+func (hu *HustlerUpdate) AddItemIDs(ids ...string) *HustlerUpdate {
+	hu.mutation.AddItemIDs(ids...)
+	return hu
+}
+
+// AddItems adds the "items" edges to the Item entity.
+func (hu *HustlerUpdate) AddItems(i ...*Item) *HustlerUpdate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return hu.AddItemIDs(ids...)
+}
+
+// AddBodypartIDs adds the "bodyparts" edge to the BodyPart entity by IDs.
+func (hu *HustlerUpdate) AddBodypartIDs(ids ...string) *HustlerUpdate {
+	hu.mutation.AddBodypartIDs(ids...)
+	return hu
+}
+
+// AddBodyparts adds the "bodyparts" edges to the BodyPart entity.
+func (hu *HustlerUpdate) AddBodyparts(b ...*BodyPart) *HustlerUpdate {
+	ids := make([]string, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return hu.AddBodypartIDs(ids...)
+}
+
 // Mutation returns the HustlerMutation object of the builder.
 func (hu *HustlerUpdate) Mutation() *HustlerMutation {
 	return hu.mutation
@@ -58,6 +204,48 @@ func (hu *HustlerUpdate) ClearWallet() *HustlerUpdate {
 	return hu
 }
 
+// ClearItems clears all "items" edges to the Item entity.
+func (hu *HustlerUpdate) ClearItems() *HustlerUpdate {
+	hu.mutation.ClearItems()
+	return hu
+}
+
+// RemoveItemIDs removes the "items" edge to Item entities by IDs.
+func (hu *HustlerUpdate) RemoveItemIDs(ids ...string) *HustlerUpdate {
+	hu.mutation.RemoveItemIDs(ids...)
+	return hu
+}
+
+// RemoveItems removes "items" edges to Item entities.
+func (hu *HustlerUpdate) RemoveItems(i ...*Item) *HustlerUpdate {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return hu.RemoveItemIDs(ids...)
+}
+
+// ClearBodyparts clears all "bodyparts" edges to the BodyPart entity.
+func (hu *HustlerUpdate) ClearBodyparts() *HustlerUpdate {
+	hu.mutation.ClearBodyparts()
+	return hu
+}
+
+// RemoveBodypartIDs removes the "bodyparts" edge to BodyPart entities by IDs.
+func (hu *HustlerUpdate) RemoveBodypartIDs(ids ...string) *HustlerUpdate {
+	hu.mutation.RemoveBodypartIDs(ids...)
+	return hu
+}
+
+// RemoveBodyparts removes "bodyparts" edges to BodyPart entities.
+func (hu *HustlerUpdate) RemoveBodyparts(b ...*BodyPart) *HustlerUpdate {
+	ids := make([]string, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return hu.RemoveBodypartIDs(ids...)
+}
+
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (hu *HustlerUpdate) Save(ctx context.Context) (int, error) {
 	var (
@@ -65,12 +253,18 @@ func (hu *HustlerUpdate) Save(ctx context.Context) (int, error) {
 		affected int
 	)
 	if len(hu.hooks) == 0 {
+		if err = hu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = hu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*HustlerMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = hu.check(); err != nil {
+				return 0, err
 			}
 			hu.mutation = mutation
 			affected, err = hu.sqlSave(ctx)
@@ -112,6 +306,16 @@ func (hu *HustlerUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (hu *HustlerUpdate) check() error {
+	if v, ok := hu.mutation.Sex(); ok {
+		if err := hustler.SexValidator(v); err != nil {
+			return &ValidationError{Name: "sex", err: fmt.Errorf(`ent: validator failed for field "Hustler.sex": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -130,28 +334,83 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if hu.mutation.NamePrefixCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+	if value, ok := hu.mutation.Name(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: hustler.FieldNamePrefix,
+			Value:  value,
+			Column: hustler.FieldName,
 		})
 	}
-	if hu.mutation.NameSuffixCleared() {
+	if hu.mutation.NameCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: hustler.FieldNameSuffix,
+			Column: hustler.FieldName,
 		})
 	}
-	if hu.mutation.SuffixCleared() {
+	if value, ok := hu.mutation.Title(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldTitle,
+		})
+	}
+	if hu.mutation.TitleCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: hustler.FieldSuffix,
+			Column: hustler.FieldTitle,
 		})
 	}
-	if hu.mutation.AugmentedCleared() {
+	if value, ok := hu.mutation.Color(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldColor,
+		})
+	}
+	if hu.mutation.ColorCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Column: hustler.FieldAugmented,
+			Type:   field.TypeString,
+			Column: hustler.FieldColor,
+		})
+	}
+	if value, ok := hu.mutation.Background(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldBackground,
+		})
+	}
+	if hu.mutation.BackgroundCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: hustler.FieldBackground,
+		})
+	}
+	if value, ok := hu.mutation.Age(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: hustler.FieldAge,
+		})
+	}
+	if value, ok := hu.mutation.AddedAge(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: hustler.FieldAge,
+		})
+	}
+	if value, ok := hu.mutation.Sex(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  value,
+			Column: hustler.FieldSex,
+		})
+	}
+	if hu.mutation.SexCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Column: hustler.FieldSex,
 		})
 	}
 	if hu.mutation.WalletCleared() {
@@ -189,6 +448,114 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if hu.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.ItemsTable,
+			Columns: []string{hustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.RemovedItemsIDs(); len(nodes) > 0 && !hu.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.ItemsTable,
+			Columns: []string{hustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.ItemsTable,
+			Columns: []string{hustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.BodypartsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.BodypartsTable,
+			Columns: []string{hustler.BodypartsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.RemovedBodypartsIDs(); len(nodes) > 0 && !hu.mutation.BodypartsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.BodypartsTable,
+			Columns: []string{hustler.BodypartsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.BodypartsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.BodypartsTable,
+			Columns: []string{hustler.BodypartsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, hu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{hustler.Label}
@@ -206,6 +573,119 @@ type HustlerUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *HustlerMutation
+}
+
+// SetName sets the "name" field.
+func (huo *HustlerUpdateOne) SetName(s string) *HustlerUpdateOne {
+	huo.mutation.SetName(s)
+	return huo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableName(s *string) *HustlerUpdateOne {
+	if s != nil {
+		huo.SetName(*s)
+	}
+	return huo
+}
+
+// ClearName clears the value of the "name" field.
+func (huo *HustlerUpdateOne) ClearName() *HustlerUpdateOne {
+	huo.mutation.ClearName()
+	return huo
+}
+
+// SetTitle sets the "title" field.
+func (huo *HustlerUpdateOne) SetTitle(s string) *HustlerUpdateOne {
+	huo.mutation.SetTitle(s)
+	return huo
+}
+
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableTitle(s *string) *HustlerUpdateOne {
+	if s != nil {
+		huo.SetTitle(*s)
+	}
+	return huo
+}
+
+// ClearTitle clears the value of the "title" field.
+func (huo *HustlerUpdateOne) ClearTitle() *HustlerUpdateOne {
+	huo.mutation.ClearTitle()
+	return huo
+}
+
+// SetColor sets the "color" field.
+func (huo *HustlerUpdateOne) SetColor(s string) *HustlerUpdateOne {
+	huo.mutation.SetColor(s)
+	return huo
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableColor(s *string) *HustlerUpdateOne {
+	if s != nil {
+		huo.SetColor(*s)
+	}
+	return huo
+}
+
+// ClearColor clears the value of the "color" field.
+func (huo *HustlerUpdateOne) ClearColor() *HustlerUpdateOne {
+	huo.mutation.ClearColor()
+	return huo
+}
+
+// SetBackground sets the "background" field.
+func (huo *HustlerUpdateOne) SetBackground(s string) *HustlerUpdateOne {
+	huo.mutation.SetBackground(s)
+	return huo
+}
+
+// SetNillableBackground sets the "background" field if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableBackground(s *string) *HustlerUpdateOne {
+	if s != nil {
+		huo.SetBackground(*s)
+	}
+	return huo
+}
+
+// ClearBackground clears the value of the "background" field.
+func (huo *HustlerUpdateOne) ClearBackground() *HustlerUpdateOne {
+	huo.mutation.ClearBackground()
+	return huo
+}
+
+// SetAge sets the "age" field.
+func (huo *HustlerUpdateOne) SetAge(si schema.BigInt) *HustlerUpdateOne {
+	huo.mutation.ResetAge()
+	huo.mutation.SetAge(si)
+	return huo
+}
+
+// AddAge adds si to the "age" field.
+func (huo *HustlerUpdateOne) AddAge(si schema.BigInt) *HustlerUpdateOne {
+	huo.mutation.AddAge(si)
+	return huo
+}
+
+// SetSex sets the "sex" field.
+func (huo *HustlerUpdateOne) SetSex(h hustler.Sex) *HustlerUpdateOne {
+	huo.mutation.SetSex(h)
+	return huo
+}
+
+// SetNillableSex sets the "sex" field if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableSex(h *hustler.Sex) *HustlerUpdateOne {
+	if h != nil {
+		huo.SetSex(*h)
+	}
+	return huo
+}
+
+// ClearSex clears the value of the "sex" field.
+func (huo *HustlerUpdateOne) ClearSex() *HustlerUpdateOne {
+	huo.mutation.ClearSex()
+	return huo
 }
 
 // SetWalletID sets the "wallet" edge to the Wallet entity by ID.
@@ -227,6 +707,36 @@ func (huo *HustlerUpdateOne) SetWallet(w *Wallet) *HustlerUpdateOne {
 	return huo.SetWalletID(w.ID)
 }
 
+// AddItemIDs adds the "items" edge to the Item entity by IDs.
+func (huo *HustlerUpdateOne) AddItemIDs(ids ...string) *HustlerUpdateOne {
+	huo.mutation.AddItemIDs(ids...)
+	return huo
+}
+
+// AddItems adds the "items" edges to the Item entity.
+func (huo *HustlerUpdateOne) AddItems(i ...*Item) *HustlerUpdateOne {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return huo.AddItemIDs(ids...)
+}
+
+// AddBodypartIDs adds the "bodyparts" edge to the BodyPart entity by IDs.
+func (huo *HustlerUpdateOne) AddBodypartIDs(ids ...string) *HustlerUpdateOne {
+	huo.mutation.AddBodypartIDs(ids...)
+	return huo
+}
+
+// AddBodyparts adds the "bodyparts" edges to the BodyPart entity.
+func (huo *HustlerUpdateOne) AddBodyparts(b ...*BodyPart) *HustlerUpdateOne {
+	ids := make([]string, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return huo.AddBodypartIDs(ids...)
+}
+
 // Mutation returns the HustlerMutation object of the builder.
 func (huo *HustlerUpdateOne) Mutation() *HustlerMutation {
 	return huo.mutation
@@ -236,6 +746,48 @@ func (huo *HustlerUpdateOne) Mutation() *HustlerMutation {
 func (huo *HustlerUpdateOne) ClearWallet() *HustlerUpdateOne {
 	huo.mutation.ClearWallet()
 	return huo
+}
+
+// ClearItems clears all "items" edges to the Item entity.
+func (huo *HustlerUpdateOne) ClearItems() *HustlerUpdateOne {
+	huo.mutation.ClearItems()
+	return huo
+}
+
+// RemoveItemIDs removes the "items" edge to Item entities by IDs.
+func (huo *HustlerUpdateOne) RemoveItemIDs(ids ...string) *HustlerUpdateOne {
+	huo.mutation.RemoveItemIDs(ids...)
+	return huo
+}
+
+// RemoveItems removes "items" edges to Item entities.
+func (huo *HustlerUpdateOne) RemoveItems(i ...*Item) *HustlerUpdateOne {
+	ids := make([]string, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return huo.RemoveItemIDs(ids...)
+}
+
+// ClearBodyparts clears all "bodyparts" edges to the BodyPart entity.
+func (huo *HustlerUpdateOne) ClearBodyparts() *HustlerUpdateOne {
+	huo.mutation.ClearBodyparts()
+	return huo
+}
+
+// RemoveBodypartIDs removes the "bodyparts" edge to BodyPart entities by IDs.
+func (huo *HustlerUpdateOne) RemoveBodypartIDs(ids ...string) *HustlerUpdateOne {
+	huo.mutation.RemoveBodypartIDs(ids...)
+	return huo
+}
+
+// RemoveBodyparts removes "bodyparts" edges to BodyPart entities.
+func (huo *HustlerUpdateOne) RemoveBodyparts(b ...*BodyPart) *HustlerUpdateOne {
+	ids := make([]string, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return huo.RemoveBodypartIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -252,12 +804,18 @@ func (huo *HustlerUpdateOne) Save(ctx context.Context) (*Hustler, error) {
 		node *Hustler
 	)
 	if len(huo.hooks) == 0 {
+		if err = huo.check(); err != nil {
+			return nil, err
+		}
 		node, err = huo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*HustlerMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = huo.check(); err != nil {
+				return nil, err
 			}
 			huo.mutation = mutation
 			node, err = huo.sqlSave(ctx)
@@ -299,6 +857,16 @@ func (huo *HustlerUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (huo *HustlerUpdateOne) check() error {
+	if v, ok := huo.mutation.Sex(); ok {
+		if err := hustler.SexValidator(v); err != nil {
+			return &ValidationError{Name: "sex", err: fmt.Errorf(`ent: validator failed for field "Hustler.sex": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -334,28 +902,83 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 			}
 		}
 	}
-	if huo.mutation.NamePrefixCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+	if value, ok := huo.mutation.Name(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: hustler.FieldNamePrefix,
+			Value:  value,
+			Column: hustler.FieldName,
 		})
 	}
-	if huo.mutation.NameSuffixCleared() {
+	if huo.mutation.NameCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: hustler.FieldNameSuffix,
+			Column: hustler.FieldName,
 		})
 	}
-	if huo.mutation.SuffixCleared() {
+	if value, ok := huo.mutation.Title(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldTitle,
+		})
+	}
+	if huo.mutation.TitleCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: hustler.FieldSuffix,
+			Column: hustler.FieldTitle,
 		})
 	}
-	if huo.mutation.AugmentedCleared() {
+	if value, ok := huo.mutation.Color(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldColor,
+		})
+	}
+	if huo.mutation.ColorCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Column: hustler.FieldAugmented,
+			Type:   field.TypeString,
+			Column: hustler.FieldColor,
+		})
+	}
+	if value, ok := huo.mutation.Background(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldBackground,
+		})
+	}
+	if huo.mutation.BackgroundCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: hustler.FieldBackground,
+		})
+	}
+	if value, ok := huo.mutation.Age(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: hustler.FieldAge,
+		})
+	}
+	if value, ok := huo.mutation.AddedAge(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: hustler.FieldAge,
+		})
+	}
+	if value, ok := huo.mutation.Sex(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  value,
+			Column: hustler.FieldSex,
+		})
+	}
+	if huo.mutation.SexCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Column: hustler.FieldSex,
 		})
 	}
 	if huo.mutation.WalletCleared() {
@@ -385,6 +1008,114 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: wallet.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.ItemsTable,
+			Columns: []string{hustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.RemovedItemsIDs(); len(nodes) > 0 && !huo.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.ItemsTable,
+			Columns: []string{hustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.ItemsTable,
+			Columns: []string{hustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.BodypartsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.BodypartsTable,
+			Columns: []string{hustler.BodypartsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.RemovedBodypartsIDs(); len(nodes) > 0 && !huo.mutation.BodypartsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.BodypartsTable,
+			Columns: []string{hustler.BodypartsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.BodypartsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   hustler.BodypartsTable,
+			Columns: []string{hustler.BodypartsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
 				},
 			},
 		}

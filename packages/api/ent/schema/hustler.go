@@ -16,22 +16,22 @@ func (Hustler) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.Enum("type").
-			Values("weapon", "clothes", "vehicle", "waist", "foot", "hand", "drugs", "neck", "ring", "accessory").
-			Immutable(),
-		field.String("name_prefix").
-			Optional().
-			Immutable(),
-		field.String("name_suffix").
-			Optional().
+			Values("original_gangsta", "regular").
 			Immutable(),
 		field.String("name").
-			Immutable(),
-		field.String("suffix").
-			Optional().
-			Immutable(),
-		field.Bool("augmented").
-			Optional().
-			Immutable(),
+			Optional(),
+		field.String("title").
+			Optional(),
+		field.String("color").
+			Optional(),
+		field.String("background").
+			Optional(),
+		field.Int("age").
+			GoType(BigInt{}).
+			SchemaType(BigIntSchemaType),
+		field.Enum("sex").
+			Values("male", "female").
+			Optional(),
 	}
 }
 
@@ -39,5 +39,7 @@ func (Hustler) Fields() []ent.Field {
 func (Hustler) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("wallet", Wallet.Type).Ref("hustlers").Unique(),
+		edge.To("items", Item.Type),
+		edge.To("bodyparts", BodyPart.Type),
 	}
 }

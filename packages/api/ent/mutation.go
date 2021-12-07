@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
@@ -28,12 +29,507 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
+	TypeBodyPart  = "BodyPart"
 	TypeDope      = "Dope"
 	TypeHustler   = "Hustler"
 	TypeItem      = "Item"
 	TypeSyncState = "SyncState"
 	TypeWallet    = "Wallet"
 )
+
+// BodyPartMutation represents an operation that mutates the BodyPart nodes in the graph.
+type BodyPartMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *string
+	_type          *bodypart.Type
+	sex            *bodypart.Sex
+	rle            *string
+	clearedFields  map[string]struct{}
+	hustler        *string
+	clearedhustler bool
+	done           bool
+	oldValue       func(context.Context) (*BodyPart, error)
+	predicates     []predicate.BodyPart
+}
+
+var _ ent.Mutation = (*BodyPartMutation)(nil)
+
+// bodypartOption allows management of the mutation configuration using functional options.
+type bodypartOption func(*BodyPartMutation)
+
+// newBodyPartMutation creates new mutation for the BodyPart entity.
+func newBodyPartMutation(c config, op Op, opts ...bodypartOption) *BodyPartMutation {
+	m := &BodyPartMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeBodyPart,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withBodyPartID sets the ID field of the mutation.
+func withBodyPartID(id string) bodypartOption {
+	return func(m *BodyPartMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *BodyPart
+		)
+		m.oldValue = func(ctx context.Context) (*BodyPart, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().BodyPart.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withBodyPart sets the old BodyPart of the mutation.
+func withBodyPart(node *BodyPart) bodypartOption {
+	return func(m *BodyPartMutation) {
+		m.oldValue = func(context.Context) (*BodyPart, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m BodyPartMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m BodyPartMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of BodyPart entities.
+func (m *BodyPartMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *BodyPartMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *BodyPartMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().BodyPart.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetType sets the "type" field.
+func (m *BodyPartMutation) SetType(b bodypart.Type) {
+	m._type = &b
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *BodyPartMutation) GetType() (r bodypart.Type, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the BodyPart entity.
+// If the BodyPart object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BodyPartMutation) OldType(ctx context.Context) (v bodypart.Type, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *BodyPartMutation) ResetType() {
+	m._type = nil
+}
+
+// SetSex sets the "sex" field.
+func (m *BodyPartMutation) SetSex(b bodypart.Sex) {
+	m.sex = &b
+}
+
+// Sex returns the value of the "sex" field in the mutation.
+func (m *BodyPartMutation) Sex() (r bodypart.Sex, exists bool) {
+	v := m.sex
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSex returns the old "sex" field's value of the BodyPart entity.
+// If the BodyPart object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BodyPartMutation) OldSex(ctx context.Context) (v bodypart.Sex, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSex is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSex requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSex: %w", err)
+	}
+	return oldValue.Sex, nil
+}
+
+// ResetSex resets all changes to the "sex" field.
+func (m *BodyPartMutation) ResetSex() {
+	m.sex = nil
+}
+
+// SetRle sets the "rle" field.
+func (m *BodyPartMutation) SetRle(s string) {
+	m.rle = &s
+}
+
+// Rle returns the value of the "rle" field in the mutation.
+func (m *BodyPartMutation) Rle() (r string, exists bool) {
+	v := m.rle
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRle returns the old "rle" field's value of the BodyPart entity.
+// If the BodyPart object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BodyPartMutation) OldRle(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRle is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRle requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRle: %w", err)
+	}
+	return oldValue.Rle, nil
+}
+
+// ResetRle resets all changes to the "rle" field.
+func (m *BodyPartMutation) ResetRle() {
+	m.rle = nil
+}
+
+// SetHustlerID sets the "hustler" edge to the Hustler entity by id.
+func (m *BodyPartMutation) SetHustlerID(id string) {
+	m.hustler = &id
+}
+
+// ClearHustler clears the "hustler" edge to the Hustler entity.
+func (m *BodyPartMutation) ClearHustler() {
+	m.clearedhustler = true
+}
+
+// HustlerCleared reports if the "hustler" edge to the Hustler entity was cleared.
+func (m *BodyPartMutation) HustlerCleared() bool {
+	return m.clearedhustler
+}
+
+// HustlerID returns the "hustler" edge ID in the mutation.
+func (m *BodyPartMutation) HustlerID() (id string, exists bool) {
+	if m.hustler != nil {
+		return *m.hustler, true
+	}
+	return
+}
+
+// HustlerIDs returns the "hustler" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// HustlerID instead. It exists only for internal usage by the builders.
+func (m *BodyPartMutation) HustlerIDs() (ids []string) {
+	if id := m.hustler; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetHustler resets all changes to the "hustler" edge.
+func (m *BodyPartMutation) ResetHustler() {
+	m.hustler = nil
+	m.clearedhustler = false
+}
+
+// Where appends a list predicates to the BodyPartMutation builder.
+func (m *BodyPartMutation) Where(ps ...predicate.BodyPart) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *BodyPartMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (BodyPart).
+func (m *BodyPartMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *BodyPartMutation) Fields() []string {
+	fields := make([]string, 0, 3)
+	if m._type != nil {
+		fields = append(fields, bodypart.FieldType)
+	}
+	if m.sex != nil {
+		fields = append(fields, bodypart.FieldSex)
+	}
+	if m.rle != nil {
+		fields = append(fields, bodypart.FieldRle)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *BodyPartMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case bodypart.FieldType:
+		return m.GetType()
+	case bodypart.FieldSex:
+		return m.Sex()
+	case bodypart.FieldRle:
+		return m.Rle()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *BodyPartMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case bodypart.FieldType:
+		return m.OldType(ctx)
+	case bodypart.FieldSex:
+		return m.OldSex(ctx)
+	case bodypart.FieldRle:
+		return m.OldRle(ctx)
+	}
+	return nil, fmt.Errorf("unknown BodyPart field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BodyPartMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case bodypart.FieldType:
+		v, ok := value.(bodypart.Type)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	case bodypart.FieldSex:
+		v, ok := value.(bodypart.Sex)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSex(v)
+		return nil
+	case bodypart.FieldRle:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRle(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BodyPart field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *BodyPartMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *BodyPartMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BodyPartMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown BodyPart numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *BodyPartMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *BodyPartMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *BodyPartMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown BodyPart nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *BodyPartMutation) ResetField(name string) error {
+	switch name {
+	case bodypart.FieldType:
+		m.ResetType()
+		return nil
+	case bodypart.FieldSex:
+		m.ResetSex()
+		return nil
+	case bodypart.FieldRle:
+		m.ResetRle()
+		return nil
+	}
+	return fmt.Errorf("unknown BodyPart field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *BodyPartMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.hustler != nil {
+		edges = append(edges, bodypart.EdgeHustler)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *BodyPartMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case bodypart.EdgeHustler:
+		if id := m.hustler; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *BodyPartMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *BodyPartMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *BodyPartMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedhustler {
+		edges = append(edges, bodypart.EdgeHustler)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *BodyPartMutation) EdgeCleared(name string) bool {
+	switch name {
+	case bodypart.EdgeHustler:
+		return m.clearedhustler
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *BodyPartMutation) ClearEdge(name string) error {
+	switch name {
+	case bodypart.EdgeHustler:
+		m.ClearHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown BodyPart unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *BodyPartMutation) ResetEdge(name string) error {
+	switch name {
+	case bodypart.EdgeHustler:
+		m.ResetHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown BodyPart edge %s", name)
+}
 
 // DopeMutation represents an operation that mutates the Dope nodes in the graph.
 type DopeMutation struct {
@@ -561,21 +1057,29 @@ func (m *DopeMutation) ResetEdge(name string) error {
 // HustlerMutation represents an operation that mutates the Hustler nodes in the graph.
 type HustlerMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *string
-	_type         *hustler.Type
-	name_prefix   *string
-	name_suffix   *string
-	name          *string
-	suffix        *string
-	augmented     *bool
-	clearedFields map[string]struct{}
-	wallet        *string
-	clearedwallet bool
-	done          bool
-	oldValue      func(context.Context) (*Hustler, error)
-	predicates    []predicate.Hustler
+	op               Op
+	typ              string
+	id               *string
+	_type            *hustler.Type
+	name             *string
+	title            *string
+	color            *string
+	background       *string
+	age              *schema.BigInt
+	addage           *schema.BigInt
+	sex              *hustler.Sex
+	clearedFields    map[string]struct{}
+	wallet           *string
+	clearedwallet    bool
+	items            map[string]struct{}
+	removeditems     map[string]struct{}
+	cleareditems     bool
+	bodyparts        map[string]struct{}
+	removedbodyparts map[string]struct{}
+	clearedbodyparts bool
+	done             bool
+	oldValue         func(context.Context) (*Hustler, error)
+	predicates       []predicate.Hustler
 }
 
 var _ ent.Mutation = (*HustlerMutation)(nil)
@@ -718,104 +1222,6 @@ func (m *HustlerMutation) ResetType() {
 	m._type = nil
 }
 
-// SetNamePrefix sets the "name_prefix" field.
-func (m *HustlerMutation) SetNamePrefix(s string) {
-	m.name_prefix = &s
-}
-
-// NamePrefix returns the value of the "name_prefix" field in the mutation.
-func (m *HustlerMutation) NamePrefix() (r string, exists bool) {
-	v := m.name_prefix
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldNamePrefix returns the old "name_prefix" field's value of the Hustler entity.
-// If the Hustler object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *HustlerMutation) OldNamePrefix(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldNamePrefix is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldNamePrefix requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldNamePrefix: %w", err)
-	}
-	return oldValue.NamePrefix, nil
-}
-
-// ClearNamePrefix clears the value of the "name_prefix" field.
-func (m *HustlerMutation) ClearNamePrefix() {
-	m.name_prefix = nil
-	m.clearedFields[hustler.FieldNamePrefix] = struct{}{}
-}
-
-// NamePrefixCleared returns if the "name_prefix" field was cleared in this mutation.
-func (m *HustlerMutation) NamePrefixCleared() bool {
-	_, ok := m.clearedFields[hustler.FieldNamePrefix]
-	return ok
-}
-
-// ResetNamePrefix resets all changes to the "name_prefix" field.
-func (m *HustlerMutation) ResetNamePrefix() {
-	m.name_prefix = nil
-	delete(m.clearedFields, hustler.FieldNamePrefix)
-}
-
-// SetNameSuffix sets the "name_suffix" field.
-func (m *HustlerMutation) SetNameSuffix(s string) {
-	m.name_suffix = &s
-}
-
-// NameSuffix returns the value of the "name_suffix" field in the mutation.
-func (m *HustlerMutation) NameSuffix() (r string, exists bool) {
-	v := m.name_suffix
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldNameSuffix returns the old "name_suffix" field's value of the Hustler entity.
-// If the Hustler object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *HustlerMutation) OldNameSuffix(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldNameSuffix is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldNameSuffix requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldNameSuffix: %w", err)
-	}
-	return oldValue.NameSuffix, nil
-}
-
-// ClearNameSuffix clears the value of the "name_suffix" field.
-func (m *HustlerMutation) ClearNameSuffix() {
-	m.name_suffix = nil
-	m.clearedFields[hustler.FieldNameSuffix] = struct{}{}
-}
-
-// NameSuffixCleared returns if the "name_suffix" field was cleared in this mutation.
-func (m *HustlerMutation) NameSuffixCleared() bool {
-	_, ok := m.clearedFields[hustler.FieldNameSuffix]
-	return ok
-}
-
-// ResetNameSuffix resets all changes to the "name_suffix" field.
-func (m *HustlerMutation) ResetNameSuffix() {
-	m.name_suffix = nil
-	delete(m.clearedFields, hustler.FieldNameSuffix)
-}
-
 // SetName sets the "name" field.
 func (m *HustlerMutation) SetName(s string) {
 	m.name = &s
@@ -847,107 +1253,274 @@ func (m *HustlerMutation) OldName(ctx context.Context) (v string, err error) {
 	return oldValue.Name, nil
 }
 
+// ClearName clears the value of the "name" field.
+func (m *HustlerMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[hustler.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *HustlerMutation) NameCleared() bool {
+	_, ok := m.clearedFields[hustler.FieldName]
+	return ok
+}
+
 // ResetName resets all changes to the "name" field.
 func (m *HustlerMutation) ResetName() {
 	m.name = nil
+	delete(m.clearedFields, hustler.FieldName)
 }
 
-// SetSuffix sets the "suffix" field.
-func (m *HustlerMutation) SetSuffix(s string) {
-	m.suffix = &s
+// SetTitle sets the "title" field.
+func (m *HustlerMutation) SetTitle(s string) {
+	m.title = &s
 }
 
-// Suffix returns the value of the "suffix" field in the mutation.
-func (m *HustlerMutation) Suffix() (r string, exists bool) {
-	v := m.suffix
+// Title returns the value of the "title" field in the mutation.
+func (m *HustlerMutation) Title() (r string, exists bool) {
+	v := m.title
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldSuffix returns the old "suffix" field's value of the Hustler entity.
+// OldTitle returns the old "title" field's value of the Hustler entity.
 // If the Hustler object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *HustlerMutation) OldSuffix(ctx context.Context) (v string, err error) {
+func (m *HustlerMutation) OldTitle(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSuffix is only allowed on UpdateOne operations")
+		return v, errors.New("OldTitle is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSuffix requires an ID field in the mutation")
+		return v, errors.New("OldTitle requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSuffix: %w", err)
+		return v, fmt.Errorf("querying old value for OldTitle: %w", err)
 	}
-	return oldValue.Suffix, nil
+	return oldValue.Title, nil
 }
 
-// ClearSuffix clears the value of the "suffix" field.
-func (m *HustlerMutation) ClearSuffix() {
-	m.suffix = nil
-	m.clearedFields[hustler.FieldSuffix] = struct{}{}
+// ClearTitle clears the value of the "title" field.
+func (m *HustlerMutation) ClearTitle() {
+	m.title = nil
+	m.clearedFields[hustler.FieldTitle] = struct{}{}
 }
 
-// SuffixCleared returns if the "suffix" field was cleared in this mutation.
-func (m *HustlerMutation) SuffixCleared() bool {
-	_, ok := m.clearedFields[hustler.FieldSuffix]
+// TitleCleared returns if the "title" field was cleared in this mutation.
+func (m *HustlerMutation) TitleCleared() bool {
+	_, ok := m.clearedFields[hustler.FieldTitle]
 	return ok
 }
 
-// ResetSuffix resets all changes to the "suffix" field.
-func (m *HustlerMutation) ResetSuffix() {
-	m.suffix = nil
-	delete(m.clearedFields, hustler.FieldSuffix)
+// ResetTitle resets all changes to the "title" field.
+func (m *HustlerMutation) ResetTitle() {
+	m.title = nil
+	delete(m.clearedFields, hustler.FieldTitle)
 }
 
-// SetAugmented sets the "augmented" field.
-func (m *HustlerMutation) SetAugmented(b bool) {
-	m.augmented = &b
+// SetColor sets the "color" field.
+func (m *HustlerMutation) SetColor(s string) {
+	m.color = &s
 }
 
-// Augmented returns the value of the "augmented" field in the mutation.
-func (m *HustlerMutation) Augmented() (r bool, exists bool) {
-	v := m.augmented
+// Color returns the value of the "color" field in the mutation.
+func (m *HustlerMutation) Color() (r string, exists bool) {
+	v := m.color
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAugmented returns the old "augmented" field's value of the Hustler entity.
+// OldColor returns the old "color" field's value of the Hustler entity.
 // If the Hustler object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *HustlerMutation) OldAugmented(ctx context.Context) (v bool, err error) {
+func (m *HustlerMutation) OldColor(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAugmented is only allowed on UpdateOne operations")
+		return v, errors.New("OldColor is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAugmented requires an ID field in the mutation")
+		return v, errors.New("OldColor requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAugmented: %w", err)
+		return v, fmt.Errorf("querying old value for OldColor: %w", err)
 	}
-	return oldValue.Augmented, nil
+	return oldValue.Color, nil
 }
 
-// ClearAugmented clears the value of the "augmented" field.
-func (m *HustlerMutation) ClearAugmented() {
-	m.augmented = nil
-	m.clearedFields[hustler.FieldAugmented] = struct{}{}
+// ClearColor clears the value of the "color" field.
+func (m *HustlerMutation) ClearColor() {
+	m.color = nil
+	m.clearedFields[hustler.FieldColor] = struct{}{}
 }
 
-// AugmentedCleared returns if the "augmented" field was cleared in this mutation.
-func (m *HustlerMutation) AugmentedCleared() bool {
-	_, ok := m.clearedFields[hustler.FieldAugmented]
+// ColorCleared returns if the "color" field was cleared in this mutation.
+func (m *HustlerMutation) ColorCleared() bool {
+	_, ok := m.clearedFields[hustler.FieldColor]
 	return ok
 }
 
-// ResetAugmented resets all changes to the "augmented" field.
-func (m *HustlerMutation) ResetAugmented() {
-	m.augmented = nil
-	delete(m.clearedFields, hustler.FieldAugmented)
+// ResetColor resets all changes to the "color" field.
+func (m *HustlerMutation) ResetColor() {
+	m.color = nil
+	delete(m.clearedFields, hustler.FieldColor)
+}
+
+// SetBackground sets the "background" field.
+func (m *HustlerMutation) SetBackground(s string) {
+	m.background = &s
+}
+
+// Background returns the value of the "background" field in the mutation.
+func (m *HustlerMutation) Background() (r string, exists bool) {
+	v := m.background
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBackground returns the old "background" field's value of the Hustler entity.
+// If the Hustler object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *HustlerMutation) OldBackground(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBackground is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBackground requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBackground: %w", err)
+	}
+	return oldValue.Background, nil
+}
+
+// ClearBackground clears the value of the "background" field.
+func (m *HustlerMutation) ClearBackground() {
+	m.background = nil
+	m.clearedFields[hustler.FieldBackground] = struct{}{}
+}
+
+// BackgroundCleared returns if the "background" field was cleared in this mutation.
+func (m *HustlerMutation) BackgroundCleared() bool {
+	_, ok := m.clearedFields[hustler.FieldBackground]
+	return ok
+}
+
+// ResetBackground resets all changes to the "background" field.
+func (m *HustlerMutation) ResetBackground() {
+	m.background = nil
+	delete(m.clearedFields, hustler.FieldBackground)
+}
+
+// SetAge sets the "age" field.
+func (m *HustlerMutation) SetAge(si schema.BigInt) {
+	m.age = &si
+	m.addage = nil
+}
+
+// Age returns the value of the "age" field in the mutation.
+func (m *HustlerMutation) Age() (r schema.BigInt, exists bool) {
+	v := m.age
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAge returns the old "age" field's value of the Hustler entity.
+// If the Hustler object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *HustlerMutation) OldAge(ctx context.Context) (v schema.BigInt, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAge is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAge requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAge: %w", err)
+	}
+	return oldValue.Age, nil
+}
+
+// AddAge adds si to the "age" field.
+func (m *HustlerMutation) AddAge(si schema.BigInt) {
+	if m.addage != nil {
+		*m.addage = m.addage.Add(si)
+	} else {
+		m.addage = &si
+	}
+}
+
+// AddedAge returns the value that was added to the "age" field in this mutation.
+func (m *HustlerMutation) AddedAge() (r schema.BigInt, exists bool) {
+	v := m.addage
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAge resets all changes to the "age" field.
+func (m *HustlerMutation) ResetAge() {
+	m.age = nil
+	m.addage = nil
+}
+
+// SetSex sets the "sex" field.
+func (m *HustlerMutation) SetSex(h hustler.Sex) {
+	m.sex = &h
+}
+
+// Sex returns the value of the "sex" field in the mutation.
+func (m *HustlerMutation) Sex() (r hustler.Sex, exists bool) {
+	v := m.sex
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSex returns the old "sex" field's value of the Hustler entity.
+// If the Hustler object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *HustlerMutation) OldSex(ctx context.Context) (v hustler.Sex, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSex is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSex requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSex: %w", err)
+	}
+	return oldValue.Sex, nil
+}
+
+// ClearSex clears the value of the "sex" field.
+func (m *HustlerMutation) ClearSex() {
+	m.sex = nil
+	m.clearedFields[hustler.FieldSex] = struct{}{}
+}
+
+// SexCleared returns if the "sex" field was cleared in this mutation.
+func (m *HustlerMutation) SexCleared() bool {
+	_, ok := m.clearedFields[hustler.FieldSex]
+	return ok
+}
+
+// ResetSex resets all changes to the "sex" field.
+func (m *HustlerMutation) ResetSex() {
+	m.sex = nil
+	delete(m.clearedFields, hustler.FieldSex)
 }
 
 // SetWalletID sets the "wallet" edge to the Wallet entity by id.
@@ -989,6 +1562,114 @@ func (m *HustlerMutation) ResetWallet() {
 	m.clearedwallet = false
 }
 
+// AddItemIDs adds the "items" edge to the Item entity by ids.
+func (m *HustlerMutation) AddItemIDs(ids ...string) {
+	if m.items == nil {
+		m.items = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.items[ids[i]] = struct{}{}
+	}
+}
+
+// ClearItems clears the "items" edge to the Item entity.
+func (m *HustlerMutation) ClearItems() {
+	m.cleareditems = true
+}
+
+// ItemsCleared reports if the "items" edge to the Item entity was cleared.
+func (m *HustlerMutation) ItemsCleared() bool {
+	return m.cleareditems
+}
+
+// RemoveItemIDs removes the "items" edge to the Item entity by IDs.
+func (m *HustlerMutation) RemoveItemIDs(ids ...string) {
+	if m.removeditems == nil {
+		m.removeditems = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.items, ids[i])
+		m.removeditems[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedItems returns the removed IDs of the "items" edge to the Item entity.
+func (m *HustlerMutation) RemovedItemsIDs() (ids []string) {
+	for id := range m.removeditems {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ItemsIDs returns the "items" edge IDs in the mutation.
+func (m *HustlerMutation) ItemsIDs() (ids []string) {
+	for id := range m.items {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetItems resets all changes to the "items" edge.
+func (m *HustlerMutation) ResetItems() {
+	m.items = nil
+	m.cleareditems = false
+	m.removeditems = nil
+}
+
+// AddBodypartIDs adds the "bodyparts" edge to the BodyPart entity by ids.
+func (m *HustlerMutation) AddBodypartIDs(ids ...string) {
+	if m.bodyparts == nil {
+		m.bodyparts = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.bodyparts[ids[i]] = struct{}{}
+	}
+}
+
+// ClearBodyparts clears the "bodyparts" edge to the BodyPart entity.
+func (m *HustlerMutation) ClearBodyparts() {
+	m.clearedbodyparts = true
+}
+
+// BodypartsCleared reports if the "bodyparts" edge to the BodyPart entity was cleared.
+func (m *HustlerMutation) BodypartsCleared() bool {
+	return m.clearedbodyparts
+}
+
+// RemoveBodypartIDs removes the "bodyparts" edge to the BodyPart entity by IDs.
+func (m *HustlerMutation) RemoveBodypartIDs(ids ...string) {
+	if m.removedbodyparts == nil {
+		m.removedbodyparts = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.bodyparts, ids[i])
+		m.removedbodyparts[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedBodyparts returns the removed IDs of the "bodyparts" edge to the BodyPart entity.
+func (m *HustlerMutation) RemovedBodypartsIDs() (ids []string) {
+	for id := range m.removedbodyparts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// BodypartsIDs returns the "bodyparts" edge IDs in the mutation.
+func (m *HustlerMutation) BodypartsIDs() (ids []string) {
+	for id := range m.bodyparts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetBodyparts resets all changes to the "bodyparts" edge.
+func (m *HustlerMutation) ResetBodyparts() {
+	m.bodyparts = nil
+	m.clearedbodyparts = false
+	m.removedbodyparts = nil
+}
+
 // Where appends a list predicates to the HustlerMutation builder.
 func (m *HustlerMutation) Where(ps ...predicate.Hustler) {
 	m.predicates = append(m.predicates, ps...)
@@ -1008,24 +1689,27 @@ func (m *HustlerMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *HustlerMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m._type != nil {
 		fields = append(fields, hustler.FieldType)
-	}
-	if m.name_prefix != nil {
-		fields = append(fields, hustler.FieldNamePrefix)
-	}
-	if m.name_suffix != nil {
-		fields = append(fields, hustler.FieldNameSuffix)
 	}
 	if m.name != nil {
 		fields = append(fields, hustler.FieldName)
 	}
-	if m.suffix != nil {
-		fields = append(fields, hustler.FieldSuffix)
+	if m.title != nil {
+		fields = append(fields, hustler.FieldTitle)
 	}
-	if m.augmented != nil {
-		fields = append(fields, hustler.FieldAugmented)
+	if m.color != nil {
+		fields = append(fields, hustler.FieldColor)
+	}
+	if m.background != nil {
+		fields = append(fields, hustler.FieldBackground)
+	}
+	if m.age != nil {
+		fields = append(fields, hustler.FieldAge)
+	}
+	if m.sex != nil {
+		fields = append(fields, hustler.FieldSex)
 	}
 	return fields
 }
@@ -1037,16 +1721,18 @@ func (m *HustlerMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case hustler.FieldType:
 		return m.GetType()
-	case hustler.FieldNamePrefix:
-		return m.NamePrefix()
-	case hustler.FieldNameSuffix:
-		return m.NameSuffix()
 	case hustler.FieldName:
 		return m.Name()
-	case hustler.FieldSuffix:
-		return m.Suffix()
-	case hustler.FieldAugmented:
-		return m.Augmented()
+	case hustler.FieldTitle:
+		return m.Title()
+	case hustler.FieldColor:
+		return m.Color()
+	case hustler.FieldBackground:
+		return m.Background()
+	case hustler.FieldAge:
+		return m.Age()
+	case hustler.FieldSex:
+		return m.Sex()
 	}
 	return nil, false
 }
@@ -1058,16 +1744,18 @@ func (m *HustlerMutation) OldField(ctx context.Context, name string) (ent.Value,
 	switch name {
 	case hustler.FieldType:
 		return m.OldType(ctx)
-	case hustler.FieldNamePrefix:
-		return m.OldNamePrefix(ctx)
-	case hustler.FieldNameSuffix:
-		return m.OldNameSuffix(ctx)
 	case hustler.FieldName:
 		return m.OldName(ctx)
-	case hustler.FieldSuffix:
-		return m.OldSuffix(ctx)
-	case hustler.FieldAugmented:
-		return m.OldAugmented(ctx)
+	case hustler.FieldTitle:
+		return m.OldTitle(ctx)
+	case hustler.FieldColor:
+		return m.OldColor(ctx)
+	case hustler.FieldBackground:
+		return m.OldBackground(ctx)
+	case hustler.FieldAge:
+		return m.OldAge(ctx)
+	case hustler.FieldSex:
+		return m.OldSex(ctx)
 	}
 	return nil, fmt.Errorf("unknown Hustler field %s", name)
 }
@@ -1084,20 +1772,6 @@ func (m *HustlerMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetType(v)
 		return nil
-	case hustler.FieldNamePrefix:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetNamePrefix(v)
-		return nil
-	case hustler.FieldNameSuffix:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetNameSuffix(v)
-		return nil
 	case hustler.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -1105,19 +1779,40 @@ func (m *HustlerMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case hustler.FieldSuffix:
+	case hustler.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetSuffix(v)
+		m.SetTitle(v)
 		return nil
-	case hustler.FieldAugmented:
-		v, ok := value.(bool)
+	case hustler.FieldColor:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAugmented(v)
+		m.SetColor(v)
+		return nil
+	case hustler.FieldBackground:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBackground(v)
+		return nil
+	case hustler.FieldAge:
+		v, ok := value.(schema.BigInt)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAge(v)
+		return nil
+	case hustler.FieldSex:
+		v, ok := value.(hustler.Sex)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSex(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Hustler field %s", name)
@@ -1126,13 +1821,21 @@ func (m *HustlerMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *HustlerMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addage != nil {
+		fields = append(fields, hustler.FieldAge)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *HustlerMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case hustler.FieldAge:
+		return m.AddedAge()
+	}
 	return nil, false
 }
 
@@ -1141,6 +1844,13 @@ func (m *HustlerMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *HustlerMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case hustler.FieldAge:
+		v, ok := value.(schema.BigInt)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAge(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Hustler numeric field %s", name)
 }
@@ -1149,17 +1859,20 @@ func (m *HustlerMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *HustlerMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(hustler.FieldNamePrefix) {
-		fields = append(fields, hustler.FieldNamePrefix)
+	if m.FieldCleared(hustler.FieldName) {
+		fields = append(fields, hustler.FieldName)
 	}
-	if m.FieldCleared(hustler.FieldNameSuffix) {
-		fields = append(fields, hustler.FieldNameSuffix)
+	if m.FieldCleared(hustler.FieldTitle) {
+		fields = append(fields, hustler.FieldTitle)
 	}
-	if m.FieldCleared(hustler.FieldSuffix) {
-		fields = append(fields, hustler.FieldSuffix)
+	if m.FieldCleared(hustler.FieldColor) {
+		fields = append(fields, hustler.FieldColor)
 	}
-	if m.FieldCleared(hustler.FieldAugmented) {
-		fields = append(fields, hustler.FieldAugmented)
+	if m.FieldCleared(hustler.FieldBackground) {
+		fields = append(fields, hustler.FieldBackground)
+	}
+	if m.FieldCleared(hustler.FieldSex) {
+		fields = append(fields, hustler.FieldSex)
 	}
 	return fields
 }
@@ -1175,17 +1888,20 @@ func (m *HustlerMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *HustlerMutation) ClearField(name string) error {
 	switch name {
-	case hustler.FieldNamePrefix:
-		m.ClearNamePrefix()
+	case hustler.FieldName:
+		m.ClearName()
 		return nil
-	case hustler.FieldNameSuffix:
-		m.ClearNameSuffix()
+	case hustler.FieldTitle:
+		m.ClearTitle()
 		return nil
-	case hustler.FieldSuffix:
-		m.ClearSuffix()
+	case hustler.FieldColor:
+		m.ClearColor()
 		return nil
-	case hustler.FieldAugmented:
-		m.ClearAugmented()
+	case hustler.FieldBackground:
+		m.ClearBackground()
+		return nil
+	case hustler.FieldSex:
+		m.ClearSex()
 		return nil
 	}
 	return fmt.Errorf("unknown Hustler nullable field %s", name)
@@ -1198,20 +1914,23 @@ func (m *HustlerMutation) ResetField(name string) error {
 	case hustler.FieldType:
 		m.ResetType()
 		return nil
-	case hustler.FieldNamePrefix:
-		m.ResetNamePrefix()
-		return nil
-	case hustler.FieldNameSuffix:
-		m.ResetNameSuffix()
-		return nil
 	case hustler.FieldName:
 		m.ResetName()
 		return nil
-	case hustler.FieldSuffix:
-		m.ResetSuffix()
+	case hustler.FieldTitle:
+		m.ResetTitle()
 		return nil
-	case hustler.FieldAugmented:
-		m.ResetAugmented()
+	case hustler.FieldColor:
+		m.ResetColor()
+		return nil
+	case hustler.FieldBackground:
+		m.ResetBackground()
+		return nil
+	case hustler.FieldAge:
+		m.ResetAge()
+		return nil
+	case hustler.FieldSex:
+		m.ResetSex()
 		return nil
 	}
 	return fmt.Errorf("unknown Hustler field %s", name)
@@ -1219,9 +1938,15 @@ func (m *HustlerMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *HustlerMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.wallet != nil {
 		edges = append(edges, hustler.EdgeWallet)
+	}
+	if m.items != nil {
+		edges = append(edges, hustler.EdgeItems)
+	}
+	if m.bodyparts != nil {
+		edges = append(edges, hustler.EdgeBodyparts)
 	}
 	return edges
 }
@@ -1234,13 +1959,31 @@ func (m *HustlerMutation) AddedIDs(name string) []ent.Value {
 		if id := m.wallet; id != nil {
 			return []ent.Value{*id}
 		}
+	case hustler.EdgeItems:
+		ids := make([]ent.Value, 0, len(m.items))
+		for id := range m.items {
+			ids = append(ids, id)
+		}
+		return ids
+	case hustler.EdgeBodyparts:
+		ids := make([]ent.Value, 0, len(m.bodyparts))
+		for id := range m.bodyparts {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *HustlerMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
+	if m.removeditems != nil {
+		edges = append(edges, hustler.EdgeItems)
+	}
+	if m.removedbodyparts != nil {
+		edges = append(edges, hustler.EdgeBodyparts)
+	}
 	return edges
 }
 
@@ -1248,15 +1991,33 @@ func (m *HustlerMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *HustlerMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
+	case hustler.EdgeItems:
+		ids := make([]ent.Value, 0, len(m.removeditems))
+		for id := range m.removeditems {
+			ids = append(ids, id)
+		}
+		return ids
+	case hustler.EdgeBodyparts:
+		ids := make([]ent.Value, 0, len(m.removedbodyparts))
+		for id := range m.removedbodyparts {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *HustlerMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.clearedwallet {
 		edges = append(edges, hustler.EdgeWallet)
+	}
+	if m.cleareditems {
+		edges = append(edges, hustler.EdgeItems)
+	}
+	if m.clearedbodyparts {
+		edges = append(edges, hustler.EdgeBodyparts)
 	}
 	return edges
 }
@@ -1267,6 +2028,10 @@ func (m *HustlerMutation) EdgeCleared(name string) bool {
 	switch name {
 	case hustler.EdgeWallet:
 		return m.clearedwallet
+	case hustler.EdgeItems:
+		return m.cleareditems
+	case hustler.EdgeBodyparts:
+		return m.clearedbodyparts
 	}
 	return false
 }
@@ -1289,6 +2054,12 @@ func (m *HustlerMutation) ResetEdge(name string) error {
 	case hustler.EdgeWallet:
 		m.ResetWallet()
 		return nil
+	case hustler.EdgeItems:
+		m.ResetItems()
+		return nil
+	case hustler.EdgeBodyparts:
+		m.ResetBodyparts()
+		return nil
 	}
 	return fmt.Errorf("unknown Hustler edge %s", name)
 }
@@ -1305,9 +2076,13 @@ type ItemMutation struct {
 	name              *string
 	suffix            *string
 	augmented         *bool
+	rles              *schema.RLEs
+	svg               *string
 	clearedFields     map[string]struct{}
 	wallet            *string
 	clearedwallet     bool
+	hustler           *string
+	clearedhustler    bool
 	dopes             map[string]struct{}
 	removeddopes      map[string]struct{}
 	cleareddopes      bool
@@ -1693,6 +2468,104 @@ func (m *ItemMutation) ResetAugmented() {
 	delete(m.clearedFields, item.FieldAugmented)
 }
 
+// SetRles sets the "rles" field.
+func (m *ItemMutation) SetRles(se schema.RLEs) {
+	m.rles = &se
+}
+
+// Rles returns the value of the "rles" field in the mutation.
+func (m *ItemMutation) Rles() (r schema.RLEs, exists bool) {
+	v := m.rles
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRles returns the old "rles" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldRles(ctx context.Context) (v schema.RLEs, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRles is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRles requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRles: %w", err)
+	}
+	return oldValue.Rles, nil
+}
+
+// ClearRles clears the value of the "rles" field.
+func (m *ItemMutation) ClearRles() {
+	m.rles = nil
+	m.clearedFields[item.FieldRles] = struct{}{}
+}
+
+// RlesCleared returns if the "rles" field was cleared in this mutation.
+func (m *ItemMutation) RlesCleared() bool {
+	_, ok := m.clearedFields[item.FieldRles]
+	return ok
+}
+
+// ResetRles resets all changes to the "rles" field.
+func (m *ItemMutation) ResetRles() {
+	m.rles = nil
+	delete(m.clearedFields, item.FieldRles)
+}
+
+// SetSvg sets the "svg" field.
+func (m *ItemMutation) SetSvg(s string) {
+	m.svg = &s
+}
+
+// Svg returns the value of the "svg" field in the mutation.
+func (m *ItemMutation) Svg() (r string, exists bool) {
+	v := m.svg
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSvg returns the old "svg" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldSvg(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSvg is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSvg requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSvg: %w", err)
+	}
+	return oldValue.Svg, nil
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (m *ItemMutation) ClearSvg() {
+	m.svg = nil
+	m.clearedFields[item.FieldSvg] = struct{}{}
+}
+
+// SvgCleared returns if the "svg" field was cleared in this mutation.
+func (m *ItemMutation) SvgCleared() bool {
+	_, ok := m.clearedFields[item.FieldSvg]
+	return ok
+}
+
+// ResetSvg resets all changes to the "svg" field.
+func (m *ItemMutation) ResetSvg() {
+	m.svg = nil
+	delete(m.clearedFields, item.FieldSvg)
+}
+
 // SetWalletID sets the "wallet" edge to the Wallet entity by id.
 func (m *ItemMutation) SetWalletID(id string) {
 	m.wallet = &id
@@ -1730,6 +2603,45 @@ func (m *ItemMutation) WalletIDs() (ids []string) {
 func (m *ItemMutation) ResetWallet() {
 	m.wallet = nil
 	m.clearedwallet = false
+}
+
+// SetHustlerID sets the "hustler" edge to the Hustler entity by id.
+func (m *ItemMutation) SetHustlerID(id string) {
+	m.hustler = &id
+}
+
+// ClearHustler clears the "hustler" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustler() {
+	m.clearedhustler = true
+}
+
+// HustlerCleared reports if the "hustler" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerCleared() bool {
+	return m.clearedhustler
+}
+
+// HustlerID returns the "hustler" edge ID in the mutation.
+func (m *ItemMutation) HustlerID() (id string, exists bool) {
+	if m.hustler != nil {
+		return *m.hustler, true
+	}
+	return
+}
+
+// HustlerIDs returns the "hustler" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// HustlerID instead. It exists only for internal usage by the builders.
+func (m *ItemMutation) HustlerIDs() (ids []string) {
+	if id := m.hustler; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetHustler resets all changes to the "hustler" edge.
+func (m *ItemMutation) ResetHustler() {
+	m.hustler = nil
+	m.clearedhustler = false
 }
 
 // AddDopeIDs adds the "dopes" edge to the Dope entity by ids.
@@ -1898,7 +2810,7 @@ func (m *ItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ItemMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 8)
 	if m._type != nil {
 		fields = append(fields, item.FieldType)
 	}
@@ -1916,6 +2828,12 @@ func (m *ItemMutation) Fields() []string {
 	}
 	if m.augmented != nil {
 		fields = append(fields, item.FieldAugmented)
+	}
+	if m.rles != nil {
+		fields = append(fields, item.FieldRles)
+	}
+	if m.svg != nil {
+		fields = append(fields, item.FieldSvg)
 	}
 	return fields
 }
@@ -1937,6 +2855,10 @@ func (m *ItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Suffix()
 	case item.FieldAugmented:
 		return m.Augmented()
+	case item.FieldRles:
+		return m.Rles()
+	case item.FieldSvg:
+		return m.Svg()
 	}
 	return nil, false
 }
@@ -1958,6 +2880,10 @@ func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSuffix(ctx)
 	case item.FieldAugmented:
 		return m.OldAugmented(ctx)
+	case item.FieldRles:
+		return m.OldRles(ctx)
+	case item.FieldSvg:
+		return m.OldSvg(ctx)
 	}
 	return nil, fmt.Errorf("unknown Item field %s", name)
 }
@@ -2009,6 +2935,20 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAugmented(v)
 		return nil
+	case item.FieldRles:
+		v, ok := value.(schema.RLEs)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRles(v)
+		return nil
+	case item.FieldSvg:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSvg(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
 }
@@ -2051,6 +2991,12 @@ func (m *ItemMutation) ClearedFields() []string {
 	if m.FieldCleared(item.FieldAugmented) {
 		fields = append(fields, item.FieldAugmented)
 	}
+	if m.FieldCleared(item.FieldRles) {
+		fields = append(fields, item.FieldRles)
+	}
+	if m.FieldCleared(item.FieldSvg) {
+		fields = append(fields, item.FieldSvg)
+	}
 	return fields
 }
 
@@ -2076,6 +3022,12 @@ func (m *ItemMutation) ClearField(name string) error {
 		return nil
 	case item.FieldAugmented:
 		m.ClearAugmented()
+		return nil
+	case item.FieldRles:
+		m.ClearRles()
+		return nil
+	case item.FieldSvg:
+		m.ClearSvg()
 		return nil
 	}
 	return fmt.Errorf("unknown Item nullable field %s", name)
@@ -2103,15 +3055,24 @@ func (m *ItemMutation) ResetField(name string) error {
 	case item.FieldAugmented:
 		m.ResetAugmented()
 		return nil
+	case item.FieldRles:
+		m.ResetRles()
+		return nil
+	case item.FieldSvg:
+		m.ResetSvg()
+		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ItemMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.wallet != nil {
 		edges = append(edges, item.EdgeWallet)
+	}
+	if m.hustler != nil {
+		edges = append(edges, item.EdgeHustler)
 	}
 	if m.dopes != nil {
 		edges = append(edges, item.EdgeDopes)
@@ -2131,6 +3092,10 @@ func (m *ItemMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case item.EdgeWallet:
 		if id := m.wallet; id != nil {
+			return []ent.Value{*id}
+		}
+	case item.EdgeHustler:
+		if id := m.hustler; id != nil {
 			return []ent.Value{*id}
 		}
 	case item.EdgeDopes:
@@ -2155,7 +3120,7 @@ func (m *ItemMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ItemMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.removeddopes != nil {
 		edges = append(edges, item.EdgeDopes)
 	}
@@ -2187,9 +3152,12 @@ func (m *ItemMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ItemMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.clearedwallet {
 		edges = append(edges, item.EdgeWallet)
+	}
+	if m.clearedhustler {
+		edges = append(edges, item.EdgeHustler)
 	}
 	if m.cleareddopes {
 		edges = append(edges, item.EdgeDopes)
@@ -2209,6 +3177,8 @@ func (m *ItemMutation) EdgeCleared(name string) bool {
 	switch name {
 	case item.EdgeWallet:
 		return m.clearedwallet
+	case item.EdgeHustler:
+		return m.clearedhustler
 	case item.EdgeDopes:
 		return m.cleareddopes
 	case item.EdgeBase:
@@ -2226,6 +3196,9 @@ func (m *ItemMutation) ClearEdge(name string) error {
 	case item.EdgeWallet:
 		m.ClearWallet()
 		return nil
+	case item.EdgeHustler:
+		m.ClearHustler()
+		return nil
 	case item.EdgeBase:
 		m.ClearBase()
 		return nil
@@ -2239,6 +3212,9 @@ func (m *ItemMutation) ResetEdge(name string) error {
 	switch name {
 	case item.EdgeWallet:
 		m.ResetWallet()
+		return nil
+	case item.EdgeHustler:
+		m.ResetHustler()
 		return nil
 	case item.EdgeDopes:
 		m.ResetDopes()
@@ -2783,24 +3759,10 @@ func (m *WalletMutation) AddedPaper() (r schema.BigInt, exists bool) {
 	return *v, true
 }
 
-// ClearPaper clears the value of the "paper" field.
-func (m *WalletMutation) ClearPaper() {
-	m.paper = nil
-	m.addpaper = nil
-	m.clearedFields[wallet.FieldPaper] = struct{}{}
-}
-
-// PaperCleared returns if the "paper" field was cleared in this mutation.
-func (m *WalletMutation) PaperCleared() bool {
-	_, ok := m.clearedFields[wallet.FieldPaper]
-	return ok
-}
-
 // ResetPaper resets all changes to the "paper" field.
 func (m *WalletMutation) ResetPaper() {
 	m.paper = nil
 	m.addpaper = nil
-	delete(m.clearedFields, wallet.FieldPaper)
 }
 
 // AddDopeIDs adds the "dopes" edge to the Dope entity by ids.
@@ -3069,11 +4031,7 @@ func (m *WalletMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *WalletMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(wallet.FieldPaper) {
-		fields = append(fields, wallet.FieldPaper)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -3086,11 +4044,6 @@ func (m *WalletMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *WalletMutation) ClearField(name string) error {
-	switch name {
-	case wallet.FieldPaper:
-		m.ClearPaper()
-		return nil
-	}
 	return fmt.Errorf("unknown Wallet nullable field %s", name)
 }
 
