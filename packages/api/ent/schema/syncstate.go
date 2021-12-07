@@ -14,7 +14,7 @@ type SyncState struct {
 func (SyncState) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
-		field.Uint64("start_at"),
+		field.Uint64("start_block"),
 	}
 }
 

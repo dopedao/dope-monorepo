@@ -89,7 +89,7 @@ var (
 	// SyncStatesColumns holds the columns for the "sync_states" table.
 	SyncStatesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "start_at", Type: field.TypeUint64},
+		{Name: "start_block", Type: field.TypeUint64},
 	}
 	// SyncStatesTable holds the schema information for the "sync_states" table.
 	SyncStatesTable = &schema.Table{

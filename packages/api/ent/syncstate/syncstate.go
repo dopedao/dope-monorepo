@@ -7,8 +7,8 @@ const (
 	Label = "sync_state"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldStartAt holds the string denoting the start_at field in the database.
-	FieldStartAt = "start_at"
+	// FieldStartBlock holds the string denoting the start_block field in the database.
+	FieldStartBlock = "start_block"
 	// Table holds the table name of the syncstate in the database.
 	Table = "sync_states"
 )
@@ -16,7 +16,7 @@ const (
 // Columns holds all SQL columns for syncstate fields.
 var Columns = []string{
 	FieldID,
-	FieldStartAt,
+	FieldStartBlock,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

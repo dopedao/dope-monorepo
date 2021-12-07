@@ -15,8 +15,8 @@ type SyncState struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
-	// StartAt holds the value of the "start_at" field.
-	StartAt uint64 `json:"start_at,omitempty"`
+	// StartBlock holds the value of the "start_block" field.
+	StartBlock uint64 `json:"start_block,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -24,7 +24,7 @@ func (*SyncState) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case syncstate.FieldStartAt:
+		case syncstate.FieldStartBlock:
 			values[i] = new(sql.NullInt64)
 		case syncstate.FieldID:
 			values[i] = new(sql.NullString)
@@ -49,11 +49,11 @@ func (ss *SyncState) assignValues(columns []string, values []interface{}) error 
 			} else if value.Valid {
 				ss.ID = value.String
 			}
-		case syncstate.FieldStartAt:
+		case syncstate.FieldStartBlock:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field start_at", values[i])
+				return fmt.Errorf("unexpected type %T for field start_block", values[i])
 			} else if value.Valid {
-				ss.StartAt = uint64(value.Int64)
+				ss.StartBlock = uint64(value.Int64)
 			}
 		}
 	}
@@ -83,8 +83,8 @@ func (ss *SyncState) String() string {
 	var builder strings.Builder
 	builder.WriteString("SyncState(")
 	builder.WriteString(fmt.Sprintf("id=%v", ss.ID))
-	builder.WriteString(", start_at=")
-	builder.WriteString(fmt.Sprintf("%v", ss.StartAt))
+	builder.WriteString(", start_block=")
+	builder.WriteString(fmt.Sprintf("%v", ss.StartBlock))
 	builder.WriteByte(')')
 	return builder.String()
 }
