@@ -11,8 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -26,6 +28,46 @@ type ItemUpdate struct {
 // Where appends a list predicates to the ItemUpdate builder.
 func (iu *ItemUpdate) Where(ps ...predicate.Item) *ItemUpdate {
 	iu.mutation.Where(ps...)
+	return iu
+}
+
+// SetRles sets the "rles" field.
+func (iu *ItemUpdate) SetRles(se schema.RLEs) *ItemUpdate {
+	iu.mutation.SetRles(se)
+	return iu
+}
+
+// SetNillableRles sets the "rles" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableRles(se *schema.RLEs) *ItemUpdate {
+	if se != nil {
+		iu.SetRles(*se)
+	}
+	return iu
+}
+
+// ClearRles clears the value of the "rles" field.
+func (iu *ItemUpdate) ClearRles() *ItemUpdate {
+	iu.mutation.ClearRles()
+	return iu
+}
+
+// SetSvg sets the "svg" field.
+func (iu *ItemUpdate) SetSvg(s string) *ItemUpdate {
+	iu.mutation.SetSvg(s)
+	return iu
+}
+
+// SetNillableSvg sets the "svg" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableSvg(s *string) *ItemUpdate {
+	if s != nil {
+		iu.SetSvg(*s)
+	}
+	return iu
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (iu *ItemUpdate) ClearSvg() *ItemUpdate {
+	iu.mutation.ClearSvg()
 	return iu
 }
 
@@ -46,6 +88,25 @@ func (iu *ItemUpdate) SetNillableWalletID(id *string) *ItemUpdate {
 // SetWallet sets the "wallet" edge to the Wallet entity.
 func (iu *ItemUpdate) SetWallet(w *Wallet) *ItemUpdate {
 	return iu.SetWalletID(w.ID)
+}
+
+// SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
+func (iu *ItemUpdate) SetHustlerID(id string) *ItemUpdate {
+	iu.mutation.SetHustlerID(id)
+	return iu
+}
+
+// SetNillableHustlerID sets the "hustler" edge to the Hustler entity by ID if the given value is not nil.
+func (iu *ItemUpdate) SetNillableHustlerID(id *string) *ItemUpdate {
+	if id != nil {
+		iu = iu.SetHustlerID(*id)
+	}
+	return iu
+}
+
+// SetHustler sets the "hustler" edge to the Hustler entity.
+func (iu *ItemUpdate) SetHustler(h *Hustler) *ItemUpdate {
+	return iu.SetHustlerID(h.ID)
 }
 
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
@@ -105,6 +166,12 @@ func (iu *ItemUpdate) Mutation() *ItemMutation {
 // ClearWallet clears the "wallet" edge to the Wallet entity.
 func (iu *ItemUpdate) ClearWallet() *ItemUpdate {
 	iu.mutation.ClearWallet()
+	return iu
+}
+
+// ClearHustler clears the "hustler" edge to the Hustler entity.
+func (iu *ItemUpdate) ClearHustler() *ItemUpdate {
+	iu.mutation.ClearHustler()
 	return iu
 }
 
@@ -252,6 +319,32 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: item.FieldAugmented,
 		})
 	}
+	if value, ok := iu.mutation.Rles(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: item.FieldRles,
+		})
+	}
+	if iu.mutation.RlesCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: item.FieldRles,
+		})
+	}
+	if value, ok := iu.mutation.Svg(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: item.FieldSvg,
+		})
+	}
+	if iu.mutation.SvgCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: item.FieldSvg,
+		})
+	}
 	if iu.mutation.WalletCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -279,6 +372,41 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: wallet.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.HustlerTable,
+			Columns: []string{item.HustlerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.HustlerTable,
+			Columns: []string{item.HustlerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
 				},
 			},
 		}
@@ -449,6 +577,46 @@ type ItemUpdateOne struct {
 	mutation *ItemMutation
 }
 
+// SetRles sets the "rles" field.
+func (iuo *ItemUpdateOne) SetRles(se schema.RLEs) *ItemUpdateOne {
+	iuo.mutation.SetRles(se)
+	return iuo
+}
+
+// SetNillableRles sets the "rles" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableRles(se *schema.RLEs) *ItemUpdateOne {
+	if se != nil {
+		iuo.SetRles(*se)
+	}
+	return iuo
+}
+
+// ClearRles clears the value of the "rles" field.
+func (iuo *ItemUpdateOne) ClearRles() *ItemUpdateOne {
+	iuo.mutation.ClearRles()
+	return iuo
+}
+
+// SetSvg sets the "svg" field.
+func (iuo *ItemUpdateOne) SetSvg(s string) *ItemUpdateOne {
+	iuo.mutation.SetSvg(s)
+	return iuo
+}
+
+// SetNillableSvg sets the "svg" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableSvg(s *string) *ItemUpdateOne {
+	if s != nil {
+		iuo.SetSvg(*s)
+	}
+	return iuo
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (iuo *ItemUpdateOne) ClearSvg() *ItemUpdateOne {
+	iuo.mutation.ClearSvg()
+	return iuo
+}
+
 // SetWalletID sets the "wallet" edge to the Wallet entity by ID.
 func (iuo *ItemUpdateOne) SetWalletID(id string) *ItemUpdateOne {
 	iuo.mutation.SetWalletID(id)
@@ -466,6 +634,25 @@ func (iuo *ItemUpdateOne) SetNillableWalletID(id *string) *ItemUpdateOne {
 // SetWallet sets the "wallet" edge to the Wallet entity.
 func (iuo *ItemUpdateOne) SetWallet(w *Wallet) *ItemUpdateOne {
 	return iuo.SetWalletID(w.ID)
+}
+
+// SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
+func (iuo *ItemUpdateOne) SetHustlerID(id string) *ItemUpdateOne {
+	iuo.mutation.SetHustlerID(id)
+	return iuo
+}
+
+// SetNillableHustlerID sets the "hustler" edge to the Hustler entity by ID if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableHustlerID(id *string) *ItemUpdateOne {
+	if id != nil {
+		iuo = iuo.SetHustlerID(*id)
+	}
+	return iuo
+}
+
+// SetHustler sets the "hustler" edge to the Hustler entity.
+func (iuo *ItemUpdateOne) SetHustler(h *Hustler) *ItemUpdateOne {
+	return iuo.SetHustlerID(h.ID)
 }
 
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
@@ -525,6 +712,12 @@ func (iuo *ItemUpdateOne) Mutation() *ItemMutation {
 // ClearWallet clears the "wallet" edge to the Wallet entity.
 func (iuo *ItemUpdateOne) ClearWallet() *ItemUpdateOne {
 	iuo.mutation.ClearWallet()
+	return iuo
+}
+
+// ClearHustler clears the "hustler" edge to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustler() *ItemUpdateOne {
+	iuo.mutation.ClearHustler()
 	return iuo
 }
 
@@ -696,6 +889,32 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 			Column: item.FieldAugmented,
 		})
 	}
+	if value, ok := iuo.mutation.Rles(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: item.FieldRles,
+		})
+	}
+	if iuo.mutation.RlesCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: item.FieldRles,
+		})
+	}
+	if value, ok := iuo.mutation.Svg(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: item.FieldSvg,
+		})
+	}
+	if iuo.mutation.SvgCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: item.FieldSvg,
+		})
+	}
 	if iuo.mutation.WalletCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -723,6 +942,41 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: wallet.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.HustlerTable,
+			Columns: []string{item.HustlerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.HustlerTable,
+			Columns: []string{item.HustlerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
 				},
 			},
 		}

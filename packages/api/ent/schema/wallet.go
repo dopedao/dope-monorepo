@@ -18,7 +18,9 @@ func (Wallet) Fields() []ent.Field {
 		field.Int("paper").
 			GoType(BigInt{}).
 			SchemaType(BigIntSchemaType).
-			Optional(),
+			DefaultFunc(func() BigInt {
+				return NewBigInt(0)
+			}),
 	}
 }
 

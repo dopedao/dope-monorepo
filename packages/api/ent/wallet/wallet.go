@@ -2,6 +2,10 @@
 
 package wallet
 
+import (
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+)
+
 const (
 	// Label holds the string label denoting the wallet type in the database.
 	Label = "wallet"
@@ -55,3 +59,8 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultPaper holds the default value on creation for the "paper" field.
+	DefaultPaper func() schema.BigInt
+)

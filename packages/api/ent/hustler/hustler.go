@@ -15,18 +15,24 @@ const (
 	FieldID = "id"
 	// FieldType holds the string denoting the type field in the database.
 	FieldType = "type"
-	// FieldNamePrefix holds the string denoting the name_prefix field in the database.
-	FieldNamePrefix = "name_prefix"
-	// FieldNameSuffix holds the string denoting the name_suffix field in the database.
-	FieldNameSuffix = "name_suffix"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldSuffix holds the string denoting the suffix field in the database.
-	FieldSuffix = "suffix"
-	// FieldAugmented holds the string denoting the augmented field in the database.
-	FieldAugmented = "augmented"
+	// FieldTitle holds the string denoting the title field in the database.
+	FieldTitle = "title"
+	// FieldColor holds the string denoting the color field in the database.
+	FieldColor = "color"
+	// FieldBackground holds the string denoting the background field in the database.
+	FieldBackground = "background"
+	// FieldAge holds the string denoting the age field in the database.
+	FieldAge = "age"
+	// FieldSex holds the string denoting the sex field in the database.
+	FieldSex = "sex"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
 	EdgeWallet = "wallet"
+	// EdgeItems holds the string denoting the items edge name in mutations.
+	EdgeItems = "items"
+	// EdgeBodyparts holds the string denoting the bodyparts edge name in mutations.
+	EdgeBodyparts = "bodyparts"
 	// Table holds the table name of the hustler in the database.
 	Table = "hustlers"
 	// WalletTable is the table that holds the wallet relation/edge.
@@ -36,17 +42,32 @@ const (
 	WalletInverseTable = "wallets"
 	// WalletColumn is the table column denoting the wallet relation/edge.
 	WalletColumn = "wallet_hustlers"
+	// ItemsTable is the table that holds the items relation/edge.
+	ItemsTable = "items"
+	// ItemsInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	ItemsInverseTable = "items"
+	// ItemsColumn is the table column denoting the items relation/edge.
+	ItemsColumn = "hustler_items"
+	// BodypartsTable is the table that holds the bodyparts relation/edge.
+	BodypartsTable = "body_parts"
+	// BodypartsInverseTable is the table name for the BodyPart entity.
+	// It exists in this package in order to avoid circular dependency with the "bodypart" package.
+	BodypartsInverseTable = "body_parts"
+	// BodypartsColumn is the table column denoting the bodyparts relation/edge.
+	BodypartsColumn = "hustler_bodyparts"
 )
 
 // Columns holds all SQL columns for hustler fields.
 var Columns = []string{
 	FieldID,
 	FieldType,
-	FieldNamePrefix,
-	FieldNameSuffix,
 	FieldName,
-	FieldSuffix,
-	FieldAugmented,
+	FieldTitle,
+	FieldColor,
+	FieldBackground,
+	FieldAge,
+	FieldSex,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "hustlers"
@@ -75,16 +96,8 @@ type Type string
 
 // Type values.
 const (
-	TypeWeapon    Type = "weapon"
-	TypeClothes   Type = "clothes"
-	TypeVehicle   Type = "vehicle"
-	TypeWaist     Type = "waist"
-	TypeFoot      Type = "foot"
-	TypeHand      Type = "hand"
-	TypeDrugs     Type = "drugs"
-	TypeNeck      Type = "neck"
-	TypeRing      Type = "ring"
-	TypeAccessory Type = "accessory"
+	TypeOriginalGangsta Type = "original_gangsta"
+	TypeRegular         Type = "regular"
 )
 
 func (_type Type) String() string {
@@ -94,10 +107,33 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeWeapon, TypeClothes, TypeVehicle, TypeWaist, TypeFoot, TypeHand, TypeDrugs, TypeNeck, TypeRing, TypeAccessory:
+	case TypeOriginalGangsta, TypeRegular:
 		return nil
 	default:
 		return fmt.Errorf("hustler: invalid enum value for type field: %q", _type)
+	}
+}
+
+// Sex defines the type for the "sex" enum field.
+type Sex string
+
+// Sex values.
+const (
+	SexMale   Sex = "male"
+	SexFemale Sex = "female"
+)
+
+func (s Sex) String() string {
+	return string(s)
+}
+
+// SexValidator is a validator for the "sex" field enum values. It is called by the builders before save.
+func SexValidator(s Sex) error {
+	switch s {
+	case SexMale, SexFemale:
+		return nil
+	default:
+		return fmt.Errorf("hustler: invalid enum value for sex field: %q", s)
 	}
 }
 
@@ -115,6 +151,24 @@ func (_type *Type) UnmarshalGQL(val interface{}) error {
 	*_type = Type(str)
 	if err := TypeValidator(*_type); err != nil {
 		return fmt.Errorf("%s is not a valid Type", str)
+	}
+	return nil
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (s Sex) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(s.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (s *Sex) UnmarshalGQL(val interface{}) error {
+	str, ok := val.(string)
+	if !ok {
+		return fmt.Errorf("enum %T must be a string", val)
+	}
+	*s = Sex(str)
+	if err := SexValidator(*s); err != nil {
+		return fmt.Errorf("%s is not a valid Sex", str)
 	}
 	return nil
 }

@@ -102,6 +102,7 @@ func (wc *WalletCreate) Save(ctx context.Context) (*Wallet, error) {
 		err  error
 		node *Wallet
 	)
+	wc.defaults()
 	if len(wc.hooks) == 0 {
 		if err = wc.check(); err != nil {
 			return nil, err
@@ -159,8 +160,19 @@ func (wc *WalletCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (wc *WalletCreate) defaults() {
+	if _, ok := wc.mutation.Paper(); !ok {
+		v := wallet.DefaultPaper()
+		wc.mutation.SetPaper(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (wc *WalletCreate) check() error {
+	if _, ok := wc.mutation.Paper(); !ok {
+		return &ValidationError{Name: "paper", err: errors.New(`ent: missing required field "Wallet.paper"`)}
+	}
 	return nil
 }
 
@@ -335,12 +347,6 @@ func (u *WalletUpsert) AddPaper(v schema.BigInt) *WalletUpsert {
 	return u
 }
 
-// ClearPaper clears the value of the "paper" field.
-func (u *WalletUpsert) ClearPaper() *WalletUpsert {
-	u.SetNull(wallet.FieldPaper)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -412,13 +418,6 @@ func (u *WalletUpsertOne) UpdatePaper() *WalletUpsertOne {
 	})
 }
 
-// ClearPaper clears the value of the "paper" field.
-func (u *WalletUpsertOne) ClearPaper() *WalletUpsertOne {
-	return u.Update(func(s *WalletUpsert) {
-		s.ClearPaper()
-	})
-}
-
 // Exec executes the query.
 func (u *WalletUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -472,6 +471,7 @@ func (wcb *WalletCreateBulk) Save(ctx context.Context) ([]*Wallet, error) {
 	for i := range wcb.builders {
 		func(i int, root context.Context) {
 			builder := wcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*WalletMutation)
 				if !ok {
@@ -652,13 +652,6 @@ func (u *WalletUpsertBulk) AddPaper(v schema.BigInt) *WalletUpsertBulk {
 func (u *WalletUpsertBulk) UpdatePaper() *WalletUpsertBulk {
 	return u.Update(func(s *WalletUpsert) {
 		s.UpdatePaper()
-	})
-}
-
-// ClearPaper clears the value of the "paper" field.
-func (u *WalletUpsertBulk) ClearPaper() *WalletUpsertBulk {
-	return u.Update(func(s *WalletUpsert) {
-		s.ClearPaper()
 	})
 }
 

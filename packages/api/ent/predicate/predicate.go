@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// BodyPart is the predicate function for bodypart builders.
+type BodyPart func(*sql.Selector)
+
 // Dope is the predicate function for dope builders.
 type Dope func(*sql.Selector)
 

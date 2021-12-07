@@ -126,6 +126,13 @@ func Augmented(v bool) predicate.Item {
 	})
 }
 
+// Svg applies equality check predicate on the "svg" field. It's identical to SvgEQ.
+func Svg(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSvg), v))
+	})
+}
+
 // TypeEQ applies the EQ predicate on the "type" field.
 func TypeEQ(v Type) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
@@ -688,6 +695,145 @@ func AugmentedNotNil() predicate.Item {
 	})
 }
 
+// RlesIsNil applies the IsNil predicate on the "rles" field.
+func RlesIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRles)))
+	})
+}
+
+// RlesNotNil applies the NotNil predicate on the "rles" field.
+func RlesNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRles)))
+	})
+}
+
+// SvgEQ applies the EQ predicate on the "svg" field.
+func SvgEQ(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSvg), v))
+	})
+}
+
+// SvgNEQ applies the NEQ predicate on the "svg" field.
+func SvgNEQ(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSvg), v))
+	})
+}
+
+// SvgIn applies the In predicate on the "svg" field.
+func SvgIn(vs ...string) predicate.Item {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Item(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldSvg), v...))
+	})
+}
+
+// SvgNotIn applies the NotIn predicate on the "svg" field.
+func SvgNotIn(vs ...string) predicate.Item {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Item(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldSvg), v...))
+	})
+}
+
+// SvgGT applies the GT predicate on the "svg" field.
+func SvgGT(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldSvg), v))
+	})
+}
+
+// SvgGTE applies the GTE predicate on the "svg" field.
+func SvgGTE(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldSvg), v))
+	})
+}
+
+// SvgLT applies the LT predicate on the "svg" field.
+func SvgLT(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldSvg), v))
+	})
+}
+
+// SvgLTE applies the LTE predicate on the "svg" field.
+func SvgLTE(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldSvg), v))
+	})
+}
+
+// SvgContains applies the Contains predicate on the "svg" field.
+func SvgContains(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldSvg), v))
+	})
+}
+
+// SvgHasPrefix applies the HasPrefix predicate on the "svg" field.
+func SvgHasPrefix(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldSvg), v))
+	})
+}
+
+// SvgHasSuffix applies the HasSuffix predicate on the "svg" field.
+func SvgHasSuffix(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldSvg), v))
+	})
+}
+
+// SvgIsNil applies the IsNil predicate on the "svg" field.
+func SvgIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldSvg)))
+	})
+}
+
+// SvgNotNil applies the NotNil predicate on the "svg" field.
+func SvgNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldSvg)))
+	})
+}
+
+// SvgEqualFold applies the EqualFold predicate on the "svg" field.
+func SvgEqualFold(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldSvg), v))
+	})
+}
+
+// SvgContainsFold applies the ContainsFold predicate on the "svg" field.
+func SvgContainsFold(v string) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldSvg), v))
+	})
+}
+
 // HasWallet applies the HasEdge predicate on the "wallet" edge.
 func HasWallet() predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
@@ -707,6 +853,34 @@ func HasWalletWith(preds ...predicate.Wallet) predicate.Item {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(WalletInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, WalletTable, WalletColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasHustler applies the HasEdge predicate on the "hustler" edge.
+func HasHustler() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HustlerTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HustlerTable, HustlerColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasHustlerWith applies the HasEdge predicate on the "hustler" edge with a given conditions (other predicates).
+func HasHustlerWith(preds ...predicate.Hustler) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HustlerInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HustlerTable, HustlerColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

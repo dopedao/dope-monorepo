@@ -9,6 +9,18 @@ import (
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (bp *BodyPartQuery) CollectFields(ctx context.Context, satisfies ...string) *BodyPartQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		bp = bp.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return bp
+}
+
+func (bp *BodyPartQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *BodyPartQuery {
+	return bp
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (d *DopeQuery) CollectFields(ctx context.Context, satisfies ...string) *DopeQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		d = d.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)

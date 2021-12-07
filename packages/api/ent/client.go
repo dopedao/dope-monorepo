@@ -9,6 +9,7 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent/migrate"
 
+	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
@@ -25,6 +26,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// BodyPart is the client for interacting with the BodyPart builders.
+	BodyPart *BodyPartClient
 	// Dope is the client for interacting with the Dope builders.
 	Dope *DopeClient
 	// Hustler is the client for interacting with the Hustler builders.
@@ -48,6 +51,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.BodyPart = NewBodyPartClient(c.config)
 	c.Dope = NewDopeClient(c.config)
 	c.Hustler = NewHustlerClient(c.config)
 	c.Item = NewItemClient(c.config)
@@ -86,6 +90,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:       ctx,
 		config:    cfg,
+		BodyPart:  NewBodyPartClient(cfg),
 		Dope:      NewDopeClient(cfg),
 		Hustler:   NewHustlerClient(cfg),
 		Item:      NewItemClient(cfg),
@@ -109,6 +114,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
 		config:    cfg,
+		BodyPart:  NewBodyPartClient(cfg),
 		Dope:      NewDopeClient(cfg),
 		Hustler:   NewHustlerClient(cfg),
 		Item:      NewItemClient(cfg),
@@ -120,7 +126,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Dope.
+//		BodyPart.
 //		Query().
 //		Count(ctx)
 //
@@ -143,11 +149,118 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.BodyPart.Use(hooks...)
 	c.Dope.Use(hooks...)
 	c.Hustler.Use(hooks...)
 	c.Item.Use(hooks...)
 	c.SyncState.Use(hooks...)
 	c.Wallet.Use(hooks...)
+}
+
+// BodyPartClient is a client for the BodyPart schema.
+type BodyPartClient struct {
+	config
+}
+
+// NewBodyPartClient returns a client for the BodyPart from the given config.
+func NewBodyPartClient(c config) *BodyPartClient {
+	return &BodyPartClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `bodypart.Hooks(f(g(h())))`.
+func (c *BodyPartClient) Use(hooks ...Hook) {
+	c.hooks.BodyPart = append(c.hooks.BodyPart, hooks...)
+}
+
+// Create returns a create builder for BodyPart.
+func (c *BodyPartClient) Create() *BodyPartCreate {
+	mutation := newBodyPartMutation(c.config, OpCreate)
+	return &BodyPartCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of BodyPart entities.
+func (c *BodyPartClient) CreateBulk(builders ...*BodyPartCreate) *BodyPartCreateBulk {
+	return &BodyPartCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for BodyPart.
+func (c *BodyPartClient) Update() *BodyPartUpdate {
+	mutation := newBodyPartMutation(c.config, OpUpdate)
+	return &BodyPartUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BodyPartClient) UpdateOne(bp *BodyPart) *BodyPartUpdateOne {
+	mutation := newBodyPartMutation(c.config, OpUpdateOne, withBodyPart(bp))
+	return &BodyPartUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BodyPartClient) UpdateOneID(id string) *BodyPartUpdateOne {
+	mutation := newBodyPartMutation(c.config, OpUpdateOne, withBodyPartID(id))
+	return &BodyPartUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for BodyPart.
+func (c *BodyPartClient) Delete() *BodyPartDelete {
+	mutation := newBodyPartMutation(c.config, OpDelete)
+	return &BodyPartDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *BodyPartClient) DeleteOne(bp *BodyPart) *BodyPartDeleteOne {
+	return c.DeleteOneID(bp.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *BodyPartClient) DeleteOneID(id string) *BodyPartDeleteOne {
+	builder := c.Delete().Where(bodypart.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BodyPartDeleteOne{builder}
+}
+
+// Query returns a query builder for BodyPart.
+func (c *BodyPartClient) Query() *BodyPartQuery {
+	return &BodyPartQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a BodyPart entity by its id.
+func (c *BodyPartClient) Get(ctx context.Context, id string) (*BodyPart, error) {
+	return c.Query().Where(bodypart.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BodyPartClient) GetX(ctx context.Context, id string) *BodyPart {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryHustler queries the hustler edge of a BodyPart.
+func (c *BodyPartClient) QueryHustler(bp *BodyPart) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := bp.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bodypart.Table, bodypart.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, bodypart.HustlerTable, bodypart.HustlerColumn),
+		)
+		fromV = sqlgraph.Neighbors(bp.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *BodyPartClient) Hooks() []Hook {
+	return c.hooks.BodyPart
 }
 
 // DopeClient is a client for the Dope schema.
@@ -373,6 +486,38 @@ func (c *HustlerClient) QueryWallet(h *Hustler) *WalletQuery {
 	return query
 }
 
+// QueryItems queries the items edge of a Hustler.
+func (c *HustlerClient) QueryItems(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, hustler.ItemsTable, hustler.ItemsColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryBodyparts queries the bodyparts edge of a Hustler.
+func (c *HustlerClient) QueryBodyparts(h *Hustler) *BodyPartQuery {
+	query := &BodyPartQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(bodypart.Table, bodypart.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, hustler.BodypartsTable, hustler.BodypartsColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *HustlerClient) Hooks() []Hook {
 	return c.hooks.Hustler
@@ -472,6 +617,22 @@ func (c *ItemClient) QueryWallet(i *Item) *WalletQuery {
 			sqlgraph.From(item.Table, item.FieldID, id),
 			sqlgraph.To(wallet.Table, wallet.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, item.WalletTable, item.WalletColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustler queries the hustler edge of a Item.
+func (c *ItemClient) QueryHustler(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, item.HustlerTable, item.HustlerColumn),
 		)
 		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
 		return fromV, nil

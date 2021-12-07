@@ -4,6 +4,14 @@ package ent
 
 import "context"
 
+func (bp *BodyPart) Hustler(ctx context.Context) (*Hustler, error) {
+	result, err := bp.Edges.HustlerOrErr()
+	if IsNotLoaded(err) {
+		result, err = bp.QueryHustler().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (d *Dope) Wallet(ctx context.Context) (*Wallet, error) {
 	result, err := d.Edges.WalletOrErr()
 	if IsNotLoaded(err) {
@@ -28,10 +36,34 @@ func (h *Hustler) Wallet(ctx context.Context) (*Wallet, error) {
 	return result, MaskNotFound(err)
 }
 
+func (h *Hustler) Items(ctx context.Context) ([]*Item, error) {
+	result, err := h.Edges.ItemsOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryItems().All(ctx)
+	}
+	return result, err
+}
+
+func (h *Hustler) Bodyparts(ctx context.Context) ([]*BodyPart, error) {
+	result, err := h.Edges.BodypartsOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryBodyparts().All(ctx)
+	}
+	return result, err
+}
+
 func (i *Item) Wallet(ctx context.Context) (*Wallet, error) {
 	result, err := i.Edges.WalletOrErr()
 	if IsNotLoaded(err) {
 		result, err = i.QueryWallet().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (i *Item) Hustler(ctx context.Context) (*Hustler, error) {
+	result, err := i.Edges.HustlerOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustler().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
