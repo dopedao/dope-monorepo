@@ -13,7 +13,7 @@ import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
-import RenderFromLootId from 'components/hustler/RenderFromLootId';
+import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
 import Spinner from 'svg/Spinner';
@@ -148,7 +148,7 @@ const ConfigureHustler = ({
             ogTitle={ogTitle}
           />
         ) : (
-          <RenderFromLootId
+          <RenderFromDopeId
             bgColor={config.bgColor}
             body={config.body}
             facialHair={config.facialHair}
