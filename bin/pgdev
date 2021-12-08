@@ -1,0 +1,13 @@
+set -eu
+DATABASE_URL=postgres://postgres@127.0.0.1:5432/dopewars
+
+mkdir -p pgdata
+PGDATA=pgdata
+
+pg_ctl init -D $PGDATA
+pg_ctl start -D $PGDATA -W
+
+psql $DATABASE_URL -c 'CREATE DATABASE "dopewars"'
+psql $DATABASE_URL -c 'CREATE USER postgres SUPERUSER'
+
+export DATABASE_URL=$DATABASE_URL

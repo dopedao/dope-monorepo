@@ -9,18 +9,18 @@ import (
 	"entgo.io/ent/dialect"
 	"github.com/dopedao/dope-monorepo/packages/api"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 func main() {
-	db, err := sql.Open(dialect.SQLite, "file:dopewars.db?cache=shared&_fk=1")
+	db, err := sql.Open(dialect.Postgres, "postgres://postgres@127.0.0.1:5432/dopewars?sslmode=disable")
 	if err != nil {
-		log.Fatal("Connecting to db.") //nolint:gocritic
+		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
 
 	srv, err := api.NewServer(db)
 	if err != nil {
-		log.Fatal("Creating server.") //nolint:gocritic
+		log.Fatalf("Creating server: %+v", err) //nolint:gocritic
 	}
 
 	server := &http.Server{Addr: ":8081", Handler: srv}

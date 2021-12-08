@@ -20,6 +20,8 @@ RUN apt-get update && ${INSTALL} \
 
 RUN git clone https://github.com/udhos/update-golang && RELEASE=1.17.2 ./update-golang/update-golang.sh
 
+ENV PATH="/usr/local/go/bin:$PATH"
+
 RUN curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
    && echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
    && apt-get update && ${INSTALL} postgresql-13 \

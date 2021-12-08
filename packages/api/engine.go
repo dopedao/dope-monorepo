@@ -98,6 +98,7 @@ func (e *Engine) Sync(ctx context.Context) {
 			e.latest = latest
 
 			for _, c := range e.contracts {
+				log.Printf("Syncing %s from %d to %d.", c.Address.Hex(), c.StartBlock, latest)
 				_from := c.StartBlock
 				for {
 					_to := Min(latest, _from+blockLimit)

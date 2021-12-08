@@ -6,7 +6,13 @@ The Dope Wars api consists of a golang service that exposes a graphql endpoint. 
 
 Install golang and run the api from the repo root:
 
-```
+```bash
+# Launch a runtime instance
+bin/shell
+# Launch a local postgres instance
+sh -c "bin/pgdev"
+
+# Launch the api service
 cd packages/api
 go run cmd/main.go
 ```
