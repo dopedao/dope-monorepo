@@ -20,7 +20,7 @@ import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 import { useInitiator, usePaper } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
 
-const Approve = ({ hustlerConfig }: StepsProps) => {
+const Approve = ({ hustlerConfig, makeVarConfig }: StepsProps) => {
   const { account } = useWeb3React();
   const [mintTo, setMintTo] = useState(hustlerConfig.mintAddress != null);
   const [canMint, setCanMint] = useState(false);
@@ -44,6 +44,7 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
     if (isPaperApproved && hasEnoughPaper && (!mintTo || (mintTo && hustlerConfig.mintAddress))) {
       setCanMint(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPaperApproved, hasEnoughPaper, isContract, hustlerConfig.mintAddress, hustlerConfig.body]);
 
   const mintHustler = () => {
@@ -127,9 +128,11 @@ const Approve = ({ hustlerConfig }: StepsProps) => {
 
   const setMintAddress = useCallback(
     (value: string) => {
-      HustlerInitConfig({ ...hustlerConfig, mintAddress: value });
+      if (makeVarConfig) {
+        makeVarConfig({ ...hustlerConfig, mintAddress: value });
+      }
     },
-    [hustlerConfig],
+    [hustlerConfig, makeVarConfig],
   );
 
   return (

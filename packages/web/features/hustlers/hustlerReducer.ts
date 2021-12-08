@@ -20,6 +20,11 @@ const HustlerReducer = (hustler: typeof INITIAL_STATE, action: HustlerActions): 
         currentStep: 1,
         isCustomizeDone: true,
       };
+    case 'GO_TO_CONFIGURE_STEP':
+      return {
+        ...hustler,
+        currentStep: 1.5,
+      };
     case 'GO_TO_FINALIZE_STEP':
       return {
         ...hustler,

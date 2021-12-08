@@ -170,7 +170,9 @@ const ConfigureHustler = ({
         >
           <ZoomControls config={config} makeVarConfig={makeVarConfig} />
           <HStack mt={0} justify="end">
-            <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
+            <Button onClick={() => randomizeHustlerAttributes(config.dopeId, makeVarConfig)}>
+              Randomize
+            </Button>
             {isCustomize ? (
               <Button
                 variant="primary"

@@ -1,5 +1,5 @@
 // For storing state relating to initiating a hustler
-import { makeVar } from '@apollo/client';
+import { makeVar, ReactiveVar } from '@apollo/client';
 import { getRandomNumber } from './utils';
 import { NUM_DOPE_TOKENS } from './constants';
 import { HUSTLER_NAMES } from './hustler-names';
@@ -75,11 +75,15 @@ export const isHustlerRandom = (): boolean => {
   return parseInt(HustlerInitConfig().dopeId) > NUM_DOPE_TOKENS;
 };
 
-export const randomizeHustlerAttributes = () => {
+export const randomizeHustlerAttributes = (
+  dopeId: string,
+  makeVarConfig?: ReactiveVar<HustlerCustomization>,
+) => {
   const randomHustler = getRandomHustler({});
-  const hustlerConfig = HustlerInitConfig();
-  HustlerInitConfig({
-    ...randomHustler,
-    dopeId: hustlerConfig.dopeId,
-  });
+  if (makeVarConfig) {
+    makeVarConfig({
+      ...randomHustler,
+      dopeId,
+    });
+  }
 };

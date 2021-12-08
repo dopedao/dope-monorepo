@@ -28,9 +28,9 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
   useEffect(() => {
     // Set from typing
     if (nameFieldDirty && config.name !== debouncedHustlerName) {
-      makeVarConfig
-        ? makeVarConfig({ ...config, name: debouncedHustlerName })
-        : HustlerInitConfig({ ...config, name: debouncedHustlerName });
+      if (makeVarConfig) {
+        makeVarConfig({ ...config, name: debouncedHustlerName });
+      }
       setNameFieldDirty(false);
       // Set from randomize or external change
     } else if (!nameFieldDirty && config.name !== debouncedHustlerName) {
@@ -62,9 +62,7 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
                 id="render-name"
                 isChecked={config.renderName}
                 onChange={e => {
-                  makeVarConfig
-                    ? makeVarConfig({ ...config, renderName: e.target.checked })
-                    : HustlerInitConfig({ ...config, renderName: e.target.checked });
+                  if (makeVarConfig) makeVarConfig({ ...config, renderName: e.target.checked });
                 }}
               />
               <FormLabel htmlFor="render-name" ml="2" mt="1">
