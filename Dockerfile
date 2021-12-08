@@ -3,12 +3,20 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:0-3.7-bullseye
 
 ARG INSTALL="apt-get -y install --no-install-recommends"
 
-# [Optional] Uncomment this section to install additional OS packages.
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-   && apt-get -y install --no-install-recommends \
-   libgmp3-dev \
-   software-properties-common && \
-   rm -rf /var/lib/apt/lists/*
+RUN apt-get update && ${INSTALL} \
+   build-essential \
+   git \
+   ca-certificates \
+   cmake \
+   curl \
+   gnupg \
+   libarchive-tools \
+   pkg-config \
+   software-properties-common \
+   libpq-dev \
+   ssh \
+   sudo \
+   && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/udhos/update-golang && RELEASE=1.17.2 ./update-golang/update-golang.sh
 
