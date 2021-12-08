@@ -253,12 +253,12 @@ func (ssq *SyncStateQuery) Clone() *SyncStateQuery {
 // Example:
 //
 //	var v []struct {
-//		StartAt uint64 `json:"start_at,omitempty"`
+//		StartBlock uint64 `json:"start_block,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SyncState.Query().
-//		GroupBy(syncstate.FieldStartAt).
+//		GroupBy(syncstate.FieldStartBlock).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -280,11 +280,11 @@ func (ssq *SyncStateQuery) GroupBy(field string, fields ...string) *SyncStateGro
 // Example:
 //
 //	var v []struct {
-//		StartAt uint64 `json:"start_at,omitempty"`
+//		StartBlock uint64 `json:"start_block,omitempty"`
 //	}
 //
 //	client.SyncState.Query().
-//		Select(syncstate.FieldStartAt).
+//		Select(syncstate.FieldStartBlock).
 //		Scan(ctx, &v)
 //
 func (ssq *SyncStateQuery) Select(fields ...string) *SyncStateSelect {

@@ -22,9 +22,9 @@ type SyncStateCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetStartAt sets the "start_at" field.
-func (ssc *SyncStateCreate) SetStartAt(u uint64) *SyncStateCreate {
-	ssc.mutation.SetStartAt(u)
+// SetStartBlock sets the "start_block" field.
+func (ssc *SyncStateCreate) SetStartBlock(u uint64) *SyncStateCreate {
+	ssc.mutation.SetStartBlock(u)
 	return ssc
 }
 
@@ -104,8 +104,8 @@ func (ssc *SyncStateCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (ssc *SyncStateCreate) check() error {
-	if _, ok := ssc.mutation.StartAt(); !ok {
-		return &ValidationError{Name: "start_at", err: errors.New(`ent: missing required field "SyncState.start_at"`)}
+	if _, ok := ssc.mutation.StartBlock(); !ok {
+		return &ValidationError{Name: "start_block", err: errors.New(`ent: missing required field "SyncState.start_block"`)}
 	}
 	return nil
 }
@@ -144,13 +144,13 @@ func (ssc *SyncStateCreate) createSpec() (*SyncState, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ssc.mutation.StartAt(); ok {
+	if value, ok := ssc.mutation.StartBlock(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint64,
 			Value:  value,
-			Column: syncstate.FieldStartAt,
+			Column: syncstate.FieldStartBlock,
 		})
-		_node.StartAt = value
+		_node.StartBlock = value
 	}
 	return _node, _spec
 }
@@ -159,7 +159,7 @@ func (ssc *SyncStateCreate) createSpec() (*SyncState, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.SyncState.Create().
-//		SetStartAt(v).
+//		SetStartBlock(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -168,7 +168,7 @@ func (ssc *SyncStateCreate) createSpec() (*SyncState, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SyncStateUpsert) {
-//			SetStartAt(v+v).
+//			SetStartBlock(v+v).
 //		}).
 //		Exec(ctx)
 //
@@ -206,21 +206,21 @@ type (
 	}
 )
 
-// SetStartAt sets the "start_at" field.
-func (u *SyncStateUpsert) SetStartAt(v uint64) *SyncStateUpsert {
-	u.Set(syncstate.FieldStartAt, v)
+// SetStartBlock sets the "start_block" field.
+func (u *SyncStateUpsert) SetStartBlock(v uint64) *SyncStateUpsert {
+	u.Set(syncstate.FieldStartBlock, v)
 	return u
 }
 
-// UpdateStartAt sets the "start_at" field to the value that was provided on create.
-func (u *SyncStateUpsert) UpdateStartAt() *SyncStateUpsert {
-	u.SetExcluded(syncstate.FieldStartAt)
+// UpdateStartBlock sets the "start_block" field to the value that was provided on create.
+func (u *SyncStateUpsert) UpdateStartBlock() *SyncStateUpsert {
+	u.SetExcluded(syncstate.FieldStartBlock)
 	return u
 }
 
-// AddStartAt adds v to the "start_at" field.
-func (u *SyncStateUpsert) AddStartAt(v uint64) *SyncStateUpsert {
-	u.Add(syncstate.FieldStartAt, v)
+// AddStartBlock adds v to the "start_block" field.
+func (u *SyncStateUpsert) AddStartBlock(v uint64) *SyncStateUpsert {
+	u.Add(syncstate.FieldStartBlock, v)
 	return u
 }
 
@@ -274,24 +274,24 @@ func (u *SyncStateUpsertOne) Update(set func(*SyncStateUpsert)) *SyncStateUpsert
 	return u
 }
 
-// SetStartAt sets the "start_at" field.
-func (u *SyncStateUpsertOne) SetStartAt(v uint64) *SyncStateUpsertOne {
+// SetStartBlock sets the "start_block" field.
+func (u *SyncStateUpsertOne) SetStartBlock(v uint64) *SyncStateUpsertOne {
 	return u.Update(func(s *SyncStateUpsert) {
-		s.SetStartAt(v)
+		s.SetStartBlock(v)
 	})
 }
 
-// AddStartAt adds v to the "start_at" field.
-func (u *SyncStateUpsertOne) AddStartAt(v uint64) *SyncStateUpsertOne {
+// AddStartBlock adds v to the "start_block" field.
+func (u *SyncStateUpsertOne) AddStartBlock(v uint64) *SyncStateUpsertOne {
 	return u.Update(func(s *SyncStateUpsert) {
-		s.AddStartAt(v)
+		s.AddStartBlock(v)
 	})
 }
 
-// UpdateStartAt sets the "start_at" field to the value that was provided on create.
-func (u *SyncStateUpsertOne) UpdateStartAt() *SyncStateUpsertOne {
+// UpdateStartBlock sets the "start_block" field to the value that was provided on create.
+func (u *SyncStateUpsertOne) UpdateStartBlock() *SyncStateUpsertOne {
 	return u.Update(func(s *SyncStateUpsert) {
-		s.UpdateStartAt()
+		s.UpdateStartBlock()
 	})
 }
 
@@ -426,7 +426,7 @@ func (sscb *SyncStateCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SyncStateUpsert) {
-//			SetStartAt(v+v).
+//			SetStartBlock(v+v).
 //		}).
 //		Exec(ctx)
 //
@@ -510,24 +510,24 @@ func (u *SyncStateUpsertBulk) Update(set func(*SyncStateUpsert)) *SyncStateUpser
 	return u
 }
 
-// SetStartAt sets the "start_at" field.
-func (u *SyncStateUpsertBulk) SetStartAt(v uint64) *SyncStateUpsertBulk {
+// SetStartBlock sets the "start_block" field.
+func (u *SyncStateUpsertBulk) SetStartBlock(v uint64) *SyncStateUpsertBulk {
 	return u.Update(func(s *SyncStateUpsert) {
-		s.SetStartAt(v)
+		s.SetStartBlock(v)
 	})
 }
 
-// AddStartAt adds v to the "start_at" field.
-func (u *SyncStateUpsertBulk) AddStartAt(v uint64) *SyncStateUpsertBulk {
+// AddStartBlock adds v to the "start_block" field.
+func (u *SyncStateUpsertBulk) AddStartBlock(v uint64) *SyncStateUpsertBulk {
 	return u.Update(func(s *SyncStateUpsert) {
-		s.AddStartAt(v)
+		s.AddStartBlock(v)
 	})
 }
 
-// UpdateStartAt sets the "start_at" field to the value that was provided on create.
-func (u *SyncStateUpsertBulk) UpdateStartAt() *SyncStateUpsertBulk {
+// UpdateStartBlock sets the "start_block" field to the value that was provided on create.
+func (u *SyncStateUpsertBulk) UpdateStartBlock() *SyncStateUpsertBulk {
 	return u.Update(func(s *SyncStateUpsert) {
-		s.UpdateStartAt()
+		s.UpdateStartBlock()
 	})
 }
 

@@ -25,8 +25,14 @@ const (
 	FieldSuffix = "suffix"
 	// FieldAugmented holds the string denoting the augmented field in the database.
 	FieldAugmented = "augmented"
+	// FieldRles holds the string denoting the rles field in the database.
+	FieldRles = "rles"
+	// FieldSvg holds the string denoting the svg field in the database.
+	FieldSvg = "svg"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
 	EdgeWallet = "wallet"
+	// EdgeHustler holds the string denoting the hustler edge name in mutations.
+	EdgeHustler = "hustler"
 	// EdgeDopes holds the string denoting the dopes edge name in mutations.
 	EdgeDopes = "dopes"
 	// EdgeBase holds the string denoting the base edge name in mutations.
@@ -42,6 +48,13 @@ const (
 	WalletInverseTable = "wallets"
 	// WalletColumn is the table column denoting the wallet relation/edge.
 	WalletColumn = "wallet_items"
+	// HustlerTable is the table that holds the hustler relation/edge.
+	HustlerTable = "items"
+	// HustlerInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerInverseTable = "hustlers"
+	// HustlerColumn is the table column denoting the hustler relation/edge.
+	HustlerColumn = "hustler_items"
 	// DopesTable is the table that holds the dopes relation/edge. The primary key declared below.
 	DopesTable = "dope_items"
 	// DopesInverseTable is the table name for the Dope entity.
@@ -66,11 +79,14 @@ var Columns = []string{
 	FieldName,
 	FieldSuffix,
 	FieldAugmented,
+	FieldRles,
+	FieldSvg,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "items"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
+	"hustler_items",
 	"item_derivative",
 	"wallet_items",
 }

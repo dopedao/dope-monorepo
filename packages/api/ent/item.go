@@ -3,11 +3,14 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -28,9 +31,14 @@ type Item struct {
 	Suffix string `json:"suffix,omitempty"`
 	// Augmented holds the value of the "augmented" field.
 	Augmented bool `json:"augmented,omitempty"`
+	// Rles holds the value of the "rles" field.
+	Rles schema.RLEs `json:"rles,omitempty"`
+	// Svg holds the value of the "svg" field.
+	Svg string `json:"svg,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ItemQuery when eager-loading is set.
 	Edges           ItemEdges `json:"edges"`
+	hustler_items   *string
 	item_derivative *string
 	wallet_items    *string
 }
@@ -39,6 +47,8 @@ type Item struct {
 type ItemEdges struct {
 	// Wallet holds the value of the wallet edge.
 	Wallet *Wallet `json:"wallet,omitempty"`
+	// Hustler holds the value of the hustler edge.
+	Hustler *Hustler `json:"hustler,omitempty"`
 	// Dopes holds the value of the dopes edge.
 	Dopes []*Dope `json:"dopes,omitempty"`
 	// Base holds the value of the base edge.
@@ -47,7 +57,7 @@ type ItemEdges struct {
 	Derivative []*Item `json:"derivative,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [5]bool
 }
 
 // WalletOrErr returns the Wallet value or an error if the edge
@@ -64,10 +74,24 @@ func (e ItemEdges) WalletOrErr() (*Wallet, error) {
 	return nil, &NotLoadedError{edge: "wallet"}
 }
 
+// HustlerOrErr returns the Hustler value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ItemEdges) HustlerOrErr() (*Hustler, error) {
+	if e.loadedTypes[1] {
+		if e.Hustler == nil {
+			// The edge hustler was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: hustler.Label}
+		}
+		return e.Hustler, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler"}
+}
+
 // DopesOrErr returns the Dopes value or an error if the edge
 // was not loaded in eager-loading.
 func (e ItemEdges) DopesOrErr() ([]*Dope, error) {
-	if e.loadedTypes[1] {
+	if e.loadedTypes[2] {
 		return e.Dopes, nil
 	}
 	return nil, &NotLoadedError{edge: "dopes"}
@@ -76,7 +100,7 @@ func (e ItemEdges) DopesOrErr() ([]*Dope, error) {
 // BaseOrErr returns the Base value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e ItemEdges) BaseOrErr() (*Item, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[3] {
 		if e.Base == nil {
 			// The edge base was loaded in eager-loading,
 			// but was not found.
@@ -90,7 +114,7 @@ func (e ItemEdges) BaseOrErr() (*Item, error) {
 // DerivativeOrErr returns the Derivative value or an error if the edge
 // was not loaded in eager-loading.
 func (e ItemEdges) DerivativeOrErr() ([]*Item, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[4] {
 		return e.Derivative, nil
 	}
 	return nil, &NotLoadedError{edge: "derivative"}
@@ -101,13 +125,17 @@ func (*Item) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case item.FieldRles:
+			values[i] = new([]byte)
 		case item.FieldAugmented:
 			values[i] = new(sql.NullBool)
-		case item.FieldID, item.FieldType, item.FieldNamePrefix, item.FieldNameSuffix, item.FieldName, item.FieldSuffix:
+		case item.FieldID, item.FieldType, item.FieldNamePrefix, item.FieldNameSuffix, item.FieldName, item.FieldSuffix, item.FieldSvg:
 			values[i] = new(sql.NullString)
-		case item.ForeignKeys[0]: // item_derivative
+		case item.ForeignKeys[0]: // hustler_items
 			values[i] = new(sql.NullString)
-		case item.ForeignKeys[1]: // wallet_items
+		case item.ForeignKeys[1]: // item_derivative
+			values[i] = new(sql.NullString)
+		case item.ForeignKeys[2]: // wallet_items
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Item", columns[i])
@@ -166,14 +194,35 @@ func (i *Item) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				i.Augmented = value.Bool
 			}
+		case item.FieldRles:
+			if value, ok := values[j].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field rles", values[j])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &i.Rles); err != nil {
+					return fmt.Errorf("unmarshal field rles: %w", err)
+				}
+			}
+		case item.FieldSvg:
+			if value, ok := values[j].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field svg", values[j])
+			} else if value.Valid {
+				i.Svg = value.String
+			}
 		case item.ForeignKeys[0]:
+			if value, ok := values[j].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field hustler_items", values[j])
+			} else if value.Valid {
+				i.hustler_items = new(string)
+				*i.hustler_items = value.String
+			}
+		case item.ForeignKeys[1]:
 			if value, ok := values[j].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field item_derivative", values[j])
 			} else if value.Valid {
 				i.item_derivative = new(string)
 				*i.item_derivative = value.String
 			}
-		case item.ForeignKeys[1]:
+		case item.ForeignKeys[2]:
 			if value, ok := values[j].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field wallet_items", values[j])
 			} else if value.Valid {
@@ -188,6 +237,11 @@ func (i *Item) assignValues(columns []string, values []interface{}) error {
 // QueryWallet queries the "wallet" edge of the Item entity.
 func (i *Item) QueryWallet() *WalletQuery {
 	return (&ItemClient{config: i.config}).QueryWallet(i)
+}
+
+// QueryHustler queries the "hustler" edge of the Item entity.
+func (i *Item) QueryHustler() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustler(i)
 }
 
 // QueryDopes queries the "dopes" edge of the Item entity.
@@ -240,6 +294,10 @@ func (i *Item) String() string {
 	builder.WriteString(i.Suffix)
 	builder.WriteString(", augmented=")
 	builder.WriteString(fmt.Sprintf("%v", i.Augmented))
+	builder.WriteString(", rles=")
+	builder.WriteString(fmt.Sprintf("%v", i.Rles))
+	builder.WriteString(", svg=")
+	builder.WriteString(i.Svg)
 	builder.WriteByte(')')
 	return builder.String()
 }

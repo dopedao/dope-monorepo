@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -92,6 +94,34 @@ func (ic *ItemCreate) SetNillableAugmented(b *bool) *ItemCreate {
 	return ic
 }
 
+// SetRles sets the "rles" field.
+func (ic *ItemCreate) SetRles(se schema.RLEs) *ItemCreate {
+	ic.mutation.SetRles(se)
+	return ic
+}
+
+// SetNillableRles sets the "rles" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableRles(se *schema.RLEs) *ItemCreate {
+	if se != nil {
+		ic.SetRles(*se)
+	}
+	return ic
+}
+
+// SetSvg sets the "svg" field.
+func (ic *ItemCreate) SetSvg(s string) *ItemCreate {
+	ic.mutation.SetSvg(s)
+	return ic
+}
+
+// SetNillableSvg sets the "svg" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableSvg(s *string) *ItemCreate {
+	if s != nil {
+		ic.SetSvg(*s)
+	}
+	return ic
+}
+
 // SetID sets the "id" field.
 func (ic *ItemCreate) SetID(s string) *ItemCreate {
 	ic.mutation.SetID(s)
@@ -115,6 +145,25 @@ func (ic *ItemCreate) SetNillableWalletID(id *string) *ItemCreate {
 // SetWallet sets the "wallet" edge to the Wallet entity.
 func (ic *ItemCreate) SetWallet(w *Wallet) *ItemCreate {
 	return ic.SetWalletID(w.ID)
+}
+
+// SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
+func (ic *ItemCreate) SetHustlerID(id string) *ItemCreate {
+	ic.mutation.SetHustlerID(id)
+	return ic
+}
+
+// SetNillableHustlerID sets the "hustler" edge to the Hustler entity by ID if the given value is not nil.
+func (ic *ItemCreate) SetNillableHustlerID(id *string) *ItemCreate {
+	if id != nil {
+		ic = ic.SetHustlerID(*id)
+	}
+	return ic
+}
+
+// SetHustler sets the "hustler" edge to the Hustler entity.
+func (ic *ItemCreate) SetHustler(h *Hustler) *ItemCreate {
+	return ic.SetHustlerID(h.ID)
 }
 
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
@@ -332,6 +381,22 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 		})
 		_node.Augmented = value
 	}
+	if value, ok := ic.mutation.Rles(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: item.FieldRles,
+		})
+		_node.Rles = value
+	}
+	if value, ok := ic.mutation.Svg(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: item.FieldSvg,
+		})
+		_node.Svg = value
+	}
 	if nodes := ic.mutation.WalletIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -350,6 +415,26 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.wallet_items = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   item.HustlerTable,
+			Columns: []string{item.HustlerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.hustler_items = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ic.mutation.DopesIDs(); len(nodes) > 0 {
@@ -560,6 +645,42 @@ func (u *ItemUpsert) ClearAugmented() *ItemUpsert {
 	return u
 }
 
+// SetRles sets the "rles" field.
+func (u *ItemUpsert) SetRles(v schema.RLEs) *ItemUpsert {
+	u.Set(item.FieldRles, v)
+	return u
+}
+
+// UpdateRles sets the "rles" field to the value that was provided on create.
+func (u *ItemUpsert) UpdateRles() *ItemUpsert {
+	u.SetExcluded(item.FieldRles)
+	return u
+}
+
+// ClearRles clears the value of the "rles" field.
+func (u *ItemUpsert) ClearRles() *ItemUpsert {
+	u.SetNull(item.FieldRles)
+	return u
+}
+
+// SetSvg sets the "svg" field.
+func (u *ItemUpsert) SetSvg(v string) *ItemUpsert {
+	u.Set(item.FieldSvg, v)
+	return u
+}
+
+// UpdateSvg sets the "svg" field to the value that was provided on create.
+func (u *ItemUpsert) UpdateSvg() *ItemUpsert {
+	u.SetExcluded(item.FieldSvg)
+	return u
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (u *ItemUpsert) ClearSvg() *ItemUpsert {
+	u.SetNull(item.FieldSvg)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -737,6 +858,48 @@ func (u *ItemUpsertOne) UpdateAugmented() *ItemUpsertOne {
 func (u *ItemUpsertOne) ClearAugmented() *ItemUpsertOne {
 	return u.Update(func(s *ItemUpsert) {
 		s.ClearAugmented()
+	})
+}
+
+// SetRles sets the "rles" field.
+func (u *ItemUpsertOne) SetRles(v schema.RLEs) *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetRles(v)
+	})
+}
+
+// UpdateRles sets the "rles" field to the value that was provided on create.
+func (u *ItemUpsertOne) UpdateRles() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateRles()
+	})
+}
+
+// ClearRles clears the value of the "rles" field.
+func (u *ItemUpsertOne) ClearRles() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearRles()
+	})
+}
+
+// SetSvg sets the "svg" field.
+func (u *ItemUpsertOne) SetSvg(v string) *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetSvg(v)
+	})
+}
+
+// UpdateSvg sets the "svg" field to the value that was provided on create.
+func (u *ItemUpsertOne) UpdateSvg() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateSvg()
+	})
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (u *ItemUpsertOne) ClearSvg() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearSvg()
 	})
 }
 
@@ -1082,6 +1245,48 @@ func (u *ItemUpsertBulk) UpdateAugmented() *ItemUpsertBulk {
 func (u *ItemUpsertBulk) ClearAugmented() *ItemUpsertBulk {
 	return u.Update(func(s *ItemUpsert) {
 		s.ClearAugmented()
+	})
+}
+
+// SetRles sets the "rles" field.
+func (u *ItemUpsertBulk) SetRles(v schema.RLEs) *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetRles(v)
+	})
+}
+
+// UpdateRles sets the "rles" field to the value that was provided on create.
+func (u *ItemUpsertBulk) UpdateRles() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateRles()
+	})
+}
+
+// ClearRles clears the value of the "rles" field.
+func (u *ItemUpsertBulk) ClearRles() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearRles()
+	})
+}
+
+// SetSvg sets the "svg" field.
+func (u *ItemUpsertBulk) SetSvg(v string) *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetSvg(v)
+	})
+}
+
+// UpdateSvg sets the "svg" field to the value that was provided on create.
+func (u *ItemUpsertBulk) UpdateSvg() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateSvg()
+	})
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (u *ItemUpsertBulk) ClearSvg() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearSvg()
 	})
 }
 

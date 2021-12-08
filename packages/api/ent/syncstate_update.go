@@ -27,16 +27,16 @@ func (ssu *SyncStateUpdate) Where(ps ...predicate.SyncState) *SyncStateUpdate {
 	return ssu
 }
 
-// SetStartAt sets the "start_at" field.
-func (ssu *SyncStateUpdate) SetStartAt(u uint64) *SyncStateUpdate {
-	ssu.mutation.ResetStartAt()
-	ssu.mutation.SetStartAt(u)
+// SetStartBlock sets the "start_block" field.
+func (ssu *SyncStateUpdate) SetStartBlock(u uint64) *SyncStateUpdate {
+	ssu.mutation.ResetStartBlock()
+	ssu.mutation.SetStartBlock(u)
 	return ssu
 }
 
-// AddStartAt adds u to the "start_at" field.
-func (ssu *SyncStateUpdate) AddStartAt(u int64) *SyncStateUpdate {
-	ssu.mutation.AddStartAt(u)
+// AddStartBlock adds u to the "start_block" field.
+func (ssu *SyncStateUpdate) AddStartBlock(u int64) *SyncStateUpdate {
+	ssu.mutation.AddStartBlock(u)
 	return ssu
 }
 
@@ -117,18 +117,18 @@ func (ssu *SyncStateUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := ssu.mutation.StartAt(); ok {
+	if value, ok := ssu.mutation.StartBlock(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint64,
 			Value:  value,
-			Column: syncstate.FieldStartAt,
+			Column: syncstate.FieldStartBlock,
 		})
 	}
-	if value, ok := ssu.mutation.AddedStartAt(); ok {
+	if value, ok := ssu.mutation.AddedStartBlock(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint64,
 			Value:  value,
-			Column: syncstate.FieldStartAt,
+			Column: syncstate.FieldStartBlock,
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ssu.driver, _spec); err != nil {
@@ -150,16 +150,16 @@ type SyncStateUpdateOne struct {
 	mutation *SyncStateMutation
 }
 
-// SetStartAt sets the "start_at" field.
-func (ssuo *SyncStateUpdateOne) SetStartAt(u uint64) *SyncStateUpdateOne {
-	ssuo.mutation.ResetStartAt()
-	ssuo.mutation.SetStartAt(u)
+// SetStartBlock sets the "start_block" field.
+func (ssuo *SyncStateUpdateOne) SetStartBlock(u uint64) *SyncStateUpdateOne {
+	ssuo.mutation.ResetStartBlock()
+	ssuo.mutation.SetStartBlock(u)
 	return ssuo
 }
 
-// AddStartAt adds u to the "start_at" field.
-func (ssuo *SyncStateUpdateOne) AddStartAt(u int64) *SyncStateUpdateOne {
-	ssuo.mutation.AddStartAt(u)
+// AddStartBlock adds u to the "start_block" field.
+func (ssuo *SyncStateUpdateOne) AddStartBlock(u int64) *SyncStateUpdateOne {
+	ssuo.mutation.AddStartBlock(u)
 	return ssuo
 }
 
@@ -264,18 +264,18 @@ func (ssuo *SyncStateUpdateOne) sqlSave(ctx context.Context) (_node *SyncState, 
 			}
 		}
 	}
-	if value, ok := ssuo.mutation.StartAt(); ok {
+	if value, ok := ssuo.mutation.StartBlock(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint64,
 			Value:  value,
-			Column: syncstate.FieldStartAt,
+			Column: syncstate.FieldStartBlock,
 		})
 	}
-	if value, ok := ssuo.mutation.AddedStartAt(); ok {
+	if value, ok := ssuo.mutation.AddedStartBlock(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint64,
 			Value:  value,
-			Column: syncstate.FieldStartAt,
+			Column: syncstate.FieldStartBlock,
 		})
 	}
 	_node = &SyncState{config: ssuo.config}

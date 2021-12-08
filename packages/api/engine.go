@@ -47,8 +47,9 @@ type Engine struct {
 	contracts []Contract
 }
 
-func NewEngine(ent *ent.Client, config Config) *Engine {
+func NewEngine(client *ent.Client, config Config) *Engine {
 	retryableHTTPClient := retryablehttp.NewClient()
+	retryableHTTPClient.Logger = nil
 	c, err := rpc.DialHTTPWithClient(config.RPC, retryableHTTPClient.StandardClient())
 	if err != nil {
 		log.Fatal("Dialing ethereum rpc.") //nolint:gocritic
@@ -57,17 +58,25 @@ func NewEngine(ent *ent.Client, config Config) *Engine {
 	eth := ethclient.NewClient(c)
 
 	e := &Engine{
-		ent:    ent,
+		ent:    client,
 		eth:    eth,
 		ticker: time.NewTicker(config.Interval),
 	}
 
-	for _, contract := range config.Contracts {
-		if err := contract.Processor.Setup(contract.Address, eth); err != nil {
+	ctx := context.Background()
+	for _, c := range config.Contracts {
+		s, err := client.SyncState.Get(ctx, c.Address.Hex())
+		if err != nil && !ent.IsNotFound(err) {
+			log.Fatalf("Fetching sync state: %+v.", err)
+		} else if err == nil {
+			c.StartBlock = s.StartBlock
+		}
+
+		if err := c.Processor.Setup(c.Address, eth); err != nil {
 			log.Fatal("Setting up processor.")
 		}
-		contract.Processor.SetEnt(ent)
-		e.contracts = append(e.contracts, contract)
+		c.Processor.SetEnt(client)
+		e.contracts = append(e.contracts, c)
 	}
 
 	return e
@@ -100,21 +109,29 @@ func (e *Engine) Sync(ctx context.Context) {
 					})
 					if err != nil {
 						log.Fatalf("Filtering logs: %+v.", err)
-						return
 					}
 
 					for _, l := range logs {
 						if err := c.Processor.ProcessElement(c.Processor)(ctx, l, nil); err != nil {
 							log.Fatalf("Processing element: %+v.", err)
-							return
 						}
 					}
 
 					_from = _to + 1
 
+					if err := e.ent.SyncState.
+						Create().
+						SetID(c.Address.Hex()).
+						SetStartBlock(_from).
+						OnConflict().
+						UpdateStartBlock().
+						Exec(ctx); err != nil {
+						log.Fatalf("Updating sync state: %+v.", err)
+					}
+
 					if _to == latest {
-						c.StartBlock = latest + 1
-						return
+						c.StartBlock = _from
+						break
 					}
 				}
 			}
