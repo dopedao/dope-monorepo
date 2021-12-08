@@ -24,6 +24,7 @@ export type ConfigureHustlerProps = {
   makeVarConfig?: ReactiveVar<HustlerCustomization>;
   ogTitle?: string;
   itemIds?: BigNumber[];
+  goBackToInitialStep?: () => void;
 };
 
 const ConfigureHustler = ({
@@ -32,6 +33,7 @@ const ConfigureHustler = ({
   isCustomize,
   ogTitle,
   itemIds,
+  goBackToInitialStep,
 }: ConfigureHustlerProps & { isCustomize?: boolean }) => {
   const [loading, setLoading] = useState(false);
   const { chainId } = useOptimism();
@@ -183,9 +185,9 @@ const ConfigureHustler = ({
                 {loading ? <Spinner /> : 'Save Configuration'}
               </Button>
             ) : (
-              <Link href="/hustlers/initiate" passHref>
-                <Button variant="primary">Finish Configuration</Button>
-              </Link>
+              <Button onClick={goBackToInitialStep} variant="primary">
+                Finish Configuration
+              </Button>
             )}
           </HStack>
         </PanelFooter>

@@ -117,6 +117,8 @@ const Approve = ({ hustlerConfig, makeVarConfig }: StepsProps) => {
       mask,
     };
 
+    console.log({ metadata });
+
     initiator
       .mintFromDopeTo(dopeId, mintAddress ? mintAddress : account, metadata, '0x', 1500000)
       .then(() =>
