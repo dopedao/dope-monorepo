@@ -5,7 +5,7 @@ import { useWalletQuery } from 'src/generated/graphql';
 import { HustlerInitConfig } from 'src/HustlerConfig';
 import { useRouter } from 'next/router';
 import DesktopWindow from 'components/DesktopWindow';
-import RenderFromLootId from 'components/hustler/RenderFromLootId';
+import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import Head from 'components/Head';
 import Container from 'components/Container';
 import LoadingBlock from 'components/LoadingBlock';
@@ -23,7 +23,7 @@ const HustlerContainer = styled.div<{ bgColor: string }>`
   }
 `;
 
-const Loot = () => {
+const Dope = () => {
   const hustlerConfig = useReactiveVar(HustlerInitConfig);
   const router = useRouter();
   const { id } = router.query;
@@ -45,7 +45,7 @@ const Loot = () => {
         </Container>
       ) : (
         <HustlerContainer bgColor={hustlerConfig.bgColor}>
-          <RenderFromLootId
+          <RenderFromDopeId
             id={id?.toString() ?? '1'}
             sex={hustlerConfig.sex}
             body={hustlerConfig.body}
@@ -60,4 +60,4 @@ const Loot = () => {
   );
 };
 
-export default Loot;
+export default Dope;

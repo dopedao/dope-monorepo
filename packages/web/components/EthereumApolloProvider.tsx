@@ -12,7 +12,7 @@ import { ReactNode, useMemo } from 'react';
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import DopeDatabase, { DopeDbCacheReactive } from 'src/DopeDatabase';
-import { valueFromCachedLoot } from 'src/DopeJsonParser';
+import { valueFromCachedDope } from 'src/DopeJsonParser';
 import { useEthereum, useOptimism } from 'hooks/web3';
 
 /**
@@ -40,39 +40,39 @@ function getClient(uri: string) {
           fields: {
             clothes(_, { readField }): string {
               const tokenId = readField('id') as number;
-              return valueFromCachedLoot(tokenId, 'clothes');
+              return valueFromCachedDope(tokenId, 'clothes');
             },
             foot(_, { readField }): string {
               const tokenId = readField('id') as number;
-              return valueFromCachedLoot(tokenId, 'foot');
+              return valueFromCachedDope(tokenId, 'foot');
             },
             hand(_, { readField }): string {
               const tokenId = readField('id') as number;
-              return valueFromCachedLoot(tokenId, 'hand');
+              return valueFromCachedDope(tokenId, 'hand');
             },
             drugs(_, { readField }): string {
               const tokenId = readField('id') as number;
-              return valueFromCachedLoot(tokenId, 'drugs');
+              return valueFromCachedDope(tokenId, 'drugs');
             },
             neck(_, { readField }): string {
               const tokenId = readField('id') as number;
-              return valueFromCachedLoot(tokenId, 'neck');
+              return valueFromCachedDope(tokenId, 'neck');
             },
             ring(_, { readField }): string {
               const tokenId = readField('id') as number;
-              return valueFromCachedLoot(tokenId, 'ring');
+              return valueFromCachedDope(tokenId, 'ring');
             },
             vehicle(_, { readField }): string {
               const tokenId = readField('id') as number;
-              return valueFromCachedLoot(tokenId, 'vehicle');
+              return valueFromCachedDope(tokenId, 'vehicle');
             },
             waist(_, { readField }): string {
               const tokenId = readField('id') as number;
-              return valueFromCachedLoot(tokenId, 'waist');
+              return valueFromCachedDope(tokenId, 'waist');
             },
             weapon(_, { readField }): string {
               const tokenId = readField('id') as number;
-              return valueFromCachedLoot(tokenId, 'weapon');
+              return valueFromCachedDope(tokenId, 'weapon');
             },
             rank: {
               keyArgs: false,

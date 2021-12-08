@@ -12,7 +12,7 @@ type Metadata = {
   image: string;
 };
 
-const RenderLoot = ({ itemIds }: { itemIds?: BigNumber[] }) => {
+const RenderDope = ({ itemIds }: { itemIds?: BigNumber[] }) => {
   const bgColor = DEFAULT_BG_COLORS[1];
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
@@ -66,4 +66,4 @@ const RenderLoot = ({ itemIds }: { itemIds?: BigNumber[] }) => {
   );
 };
 
-export default RenderLoot;
+export default RenderDope;

@@ -69,7 +69,7 @@ DOPE WARS is also an ongoing NFT art project and experiment in decentralized pro
 
 ## DOPE NFT
 
-![DOPE LOOT NFT #0001](/images/dope-nft-1.svg#float-left)
+![DOPE NFT #0001](/images/dope-nft-1.svg#float-left)
 
 [A limited edition of 8,000 DOPE NFTs were created in September 2021.](https://opensea.io/collection/dope-v4) 
 
@@ -99,7 +99,7 @@ Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them wit
 
 $PAPER was originally distributed through a claimable amount of 125,000 per $DOPE NFT. Each NFT allows a claim of 125,000 $PAPER once and only once – and regardless of the current holder the NFT does not allow for more than one claim. These claims are the only source of $PAPER’s supply currently. 
 
-To see if your Dope Wars Loot NFT is eligible please connect your wallet in DOPEWARS.EXE and view your Loot. If you need to obtain $PAPER, please do so from a site like [Dextools](https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483).
+To see if your DOPE NFT is eligible please connect your wallet in DOPEWARS.EXE and view it. If you need to obtain $PAPER, please do so from a site like [Dextools](https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483).
 
 ## What is the supply of $PAPER?
 
@@ -122,7 +122,7 @@ Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dop
 ----
 
 ### The DOPE DAO is supported by gamers like you
-[Purchase DOPE NFT loot on OpenSea](https://opensea.io/collection/dope-v4) to claim your votes on DOPE DAO proposals and play the upcoming game.
+[Purchase DOPE on OpenSea](https://opensea.io/collection/dope-v4) to claim your votes on DOPE DAO proposals and play the upcoming game.
 
 ----
 

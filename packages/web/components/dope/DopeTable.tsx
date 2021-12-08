@@ -17,7 +17,7 @@ interface Props {
   onSelect: (i: number) => void;
 }
 
-const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
+const DopeTable = ({ className = '', data, selected, onSelect }: Props) => {
   const [sort, setSort] = useState('id');
 
   const amountOfUnclaimedPaper = (): number => {
@@ -177,4 +177,4 @@ const LootTable = ({ className = '', data, selected, onSelect }: Props) => {
   );
 };
 
-export default LootTable;
+export default DopeTable;

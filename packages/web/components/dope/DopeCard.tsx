@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import { PickedBag } from 'src/DopeDatabase';
-import LootCardBody from './LootCardBody';
-import LootCardFooterForMarket from './LootCardFooterForMarket';
-import LootCardFooterForOwner from './LootCardFooterForOwner';
-import LootLegend from './LootLegend';
+import DopeCardBody from './DopeCardBody';
+import DopeCardFooterForMarket from './DopeCardFooterForMarket';
+import DopeCardFooterForOwner from './DopeCardFooterForOwner';
+import DopeLegend from './DopeLegend';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
@@ -17,7 +17,7 @@ interface Props {
   showCollapse?: boolean;
 }
 
-const LootCard = ({
+const DopeCard = ({
   footer,
   bag,
   isExpanded: isExpandedProp = true,
@@ -53,16 +53,16 @@ const LootCard = ({
   return (
     <>
       {isItemLegendVisible && (
-        <LootLegend key={`loot-legend_${bag.id}`} toggleVisibility={toggleItemLegendVisibility} />
+        <DopeLegend key={`dope-legend_${bag.id}`} toggleVisibility={toggleItemLegendVisibility} />
       )}
       {!isItemLegendVisible && (
         <PanelContainer
-          key={`loot-card_${bag.id}`}
-          className={`lootCard ${isExpanded ? '' : 'collapsed'}`}
+          key={`dope-card_${bag.id}`}
+          className={`dopeCard ${isExpanded ? '' : 'collapsed'}`}
           css={css`
             &.collapsed {
               max-height: 225px;
-              .lootCardBody {
+              .dopeCardBody {
                 overflow-y: hidden;
               }
             }
@@ -74,7 +74,7 @@ const LootCard = ({
                 width: 32px;
               `}
             ></div>
-            <div>Dope Wars Loot #{bag.id}</div>
+            <div>DOPE #{bag.id}</div>
             <div
               css={css`
                 width: 32px;
@@ -83,15 +83,15 @@ const LootCard = ({
               {showCollapse && <ToggleButton />}
             </div>
           </PanelTitleBarFlex>
-          <LootCardBody bag={bag} />
+          <DopeCardBody bag={bag} />
           {footer && footer === 'for-owner' && (
             <PanelFooter>
-              <LootCardFooterForOwner bag={bag} toggleVisibility={toggleItemLegendVisibility} />
+              <DopeCardFooterForOwner bag={bag} toggleVisibility={toggleItemLegendVisibility} />
             </PanelFooter>
           )}
           {footer && footer === 'for-marketplace' && (
             <PanelFooter>
-              <LootCardFooterForMarket bag={bag} />
+              <DopeCardFooterForMarket bag={bag} />
             </PanelFooter>
           )}
         </PanelContainer>
@@ -100,4 +100,4 @@ const LootCard = ({
   );
 };
 
-export default LootCard;
+export default DopeCard;

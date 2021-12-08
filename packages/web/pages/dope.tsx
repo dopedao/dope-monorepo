@@ -6,9 +6,9 @@ import { media } from 'styles/mixins';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
-import LootCard from 'components/loot/LootCard';
-import LootTable from 'components/loot/LootTable';
-import NoLootCard from 'components/loot/NoLootCard';
+import DopeCard from 'components/dope/DopeCard';
+import DopeTable from 'components/dope/DopeTable';
+import NoDopeCard from 'components/dope/NoDopeCard';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 
 const FlexFiftyContainer = styled.div`
@@ -39,7 +39,7 @@ const FlexFiftyContainer = styled.div`
   `}
 `;
 
-export default function LootWindow() {
+export default function DopeWindow() {
   const { account } = useWeb3React();
   const { data, loading } = useWalletQuery({
     variables: { id: account?.toLowerCase() || '' },
@@ -56,10 +56,10 @@ export default function LootWindow() {
           <LoadingBlock />
         </FlexFiftyContainer>
       ) : !data?.wallet?.bags || data.wallet.bags.length === 0 ? (
-        <NoLootCard />
+        <NoDopeCard />
       ) : (
         <FlexFiftyContainer>
-          <LootTable
+          <DopeTable
             data={data.wallet.bags.map(({ opened, claimed, id, rank }) => ({
               opened,
               claimed,
@@ -69,7 +69,7 @@ export default function LootWindow() {
             selected={selected}
             onSelect={setSelected}
           />
-          <LootCard bag={data.wallet.bags[selected]} footer="for-owner" />
+          <DopeCard bag={data.wallet.bags[selected]} footer="for-owner" />
         </FlexFiftyContainer>
       )}
     </AppWindow>

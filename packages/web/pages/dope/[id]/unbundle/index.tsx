@@ -15,7 +15,7 @@ import MintTo from 'components/panels/MintTo';
 
 import { useInitiator, usePaper, useSwapMeet } from 'hooks/contracts';
 import router, { useRouter } from 'next/router';
-import RenderLoot from 'components/loot/RenderLoot';
+import RenderDope from 'components/dope/RenderDope';
 import AppWindow from 'components/AppWindow';
 
 const Approve = () => {
@@ -67,18 +67,18 @@ const Approve = () => {
     }
   }, [isPaperApproved, hasEnoughPaper, mintTo, mintAddress]);
 
-  const unbundleLoot = () => {
+  const unbundleDope = () => {
     if (!account) {
       return;
     }
 
     initiator
       .open(dopeId, mintAddress || account, 1000000)
-      .then(() => router.replace('/loot/unbundle-success'));
+      .then(() => router.replace('/dope/unbundle-success'));
   };
 
   return (
-    <AppWindow requiresWalletConnection={true} padBody={false} title="Unbundle Loot">
+    <AppWindow requiresWalletConnection={true} padBody={false} title="Unbundle Dope">
       <Head title="Approve spend" />
       <StackedResponsiveContainer>
         <Stack>
@@ -122,16 +122,16 @@ const Approve = () => {
             background-color: #000;
           `}
         >
-          <PanelTitleBar>Loot</PanelTitleBar>
-          <RenderLoot itemIds={itemIds} />
+          <PanelTitleBar>Dope</PanelTitleBar>
+          <RenderDope itemIds={itemIds} />
           <PanelFooter
             css={css`
               padding: 1em;
               position: relative;
             `}
           >
-            <Button variant="primary" onClick={unbundleLoot} disabled={!canMint}>
-              🔓 Unbundle Loot 🔓
+            <Button variant="primary" onClick={unbundleDope} disabled={!canMint}>
+              🔓 Unbundle Dope 🔓
             </Button>
           </PanelFooter>
         </PanelContainer>
