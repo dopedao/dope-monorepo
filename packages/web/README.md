@@ -2,7 +2,7 @@
 
 ## The DOPE DAO DESKTOP
 
-Contains the DOPEWARS.EXE desktop to view your loot, unbundle, generate Hustlers, and buy/sell.
+Contains the DOPEWARS.EXE desktop to view your DOPE, unbundle, generate Hustlers, and buy/sell.
 
 ### Features
 

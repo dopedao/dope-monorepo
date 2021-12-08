@@ -43,7 +43,7 @@ const LastSaleOrNever = ({ bag }: FooterForMarketProps) => {
   return <></>;
 };
 
-const LootCardFooterForMarket = ({ bag }: FooterForMarketProps) => {
+const DopeCardFooterForMarket = ({ bag }: FooterForMarketProps) => {
   return (
     <>
       <div
@@ -59,4 +59,4 @@ const LootCardFooterForMarket = ({ bag }: FooterForMarketProps) => {
     </>
   );
 };
-export default LootCardFooterForMarket;
+export default DopeCardFooterForMarket;

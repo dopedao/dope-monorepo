@@ -9,7 +9,7 @@ import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
-import LootCard from 'components/loot/LootCard';
+import DopeCard from 'components/dope/DopeCard';
 import MarketFilterBar from 'components/MarketFilterBar';
 import DopeDatabase, {
   compareByHighestLastSale,
@@ -42,13 +42,13 @@ const Container = styled.div`
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  .lootGrid {
+  .dopeGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     grid-column-gap: 16px;
     grid-row-gap: 16px;
   }
-  .lootCard {
+  .dopeCard {
     max-height: auto;
   }
   ${media.tablet`
@@ -170,11 +170,11 @@ const MarketList = () => {
             hasMore={filteredSortedItems.length > visibleItems.length}
             loader={<LoadingBlock key={`loader_${itemsVisible}`} />}
             useWindow={false}
-            className="lootGrid"
+            className="dopeGrid"
           >
             {visibleItems.map((bag: PickedBag) => (
-              <LootCard
-                key={`loot-card_${bag.id}_${viewCompactCards}`}
+              <DopeCard
+                key={`dope-card_${bag.id}_${viewCompactCards}`}
                 bag={bag}
                 footer="for-marketplace"
                 isExpanded={viewCompactCards ? false : true}

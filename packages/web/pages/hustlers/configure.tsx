@@ -10,7 +10,7 @@ import Head from 'components/Head';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
-import RenderFromLootId from 'components/hustler/RenderFromLootId';
+import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
 
@@ -39,7 +39,7 @@ const Configure = () => {
           `}
         >
           <PanelTitleBar>DOPE NFT #{hustlerConfig.dopeId}</PanelTitleBar>
-          <RenderFromLootId
+          <RenderFromDopeId
             bgColor={hustlerConfig.bgColor}
             body={hustlerConfig.body}
             facialHair={hustlerConfig.facialHair}
