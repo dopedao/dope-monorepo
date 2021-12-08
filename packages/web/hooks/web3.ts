@@ -5,7 +5,6 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { providers } from 'ethers';
 import { NETWORK } from 'src/constants';
-import router from 'next/router';
 
 const injected = new InjectedConnector({
   supportedChainIds: [1, 10, 42, 69],
@@ -270,7 +269,11 @@ export const useswitchNetwork = async (
         }
         if (error.code === 4001) {
           // @TODO: handle this UX on the UI
-          alert('You can only customize your Hustler on Optimistic');
+          alert(
+            forceOptimism
+              ? 'You can only customize your Hustler on Optimistic'
+              : 'You have to be on Mainnet in order to initiate a hustler',
+          );
         }
       }
     } else {

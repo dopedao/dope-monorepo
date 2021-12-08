@@ -8,7 +8,6 @@ import { SetMetadataStruct } from '@dopewars/contracts/dist/Initiator';
 import ApprovePaper from 'components/panels/ApprovePaper';
 import MintTo from 'components/panels/MintTo';
 import { StepsProps } from 'features/hustlers/modules/Steps';
-import { HustlerInitConfig } from 'src/HustlerConfig';
 import Head from 'components/Head';
 import HustlerPanel from 'components/hustler/HustlerPanel';
 import PanelBody from 'components/PanelBody';

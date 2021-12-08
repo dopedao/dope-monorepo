@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { makeVar, ReactiveVar, useReactiveVar } from '@apollo/client';
+import { useRouter } from 'next/router';
 import { getRandomHustler, HustlerCustomization } from 'src/HustlerConfig';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
 import useHustler from 'features/hustlers/hooks/useHustler';
@@ -17,9 +18,18 @@ export type StepsProps = {
 };
 
 const Steps = () => {
+  const router = useRouter();
   const hustler = useHustler();
   const dispatch = useDispatchHustler();
-  const makeVarConfig = useMemo(() => makeVar(getRandomHustler({})), []);
+  const makeVarConfig = useMemo(
+    () =>
+      makeVar(
+        getRandomHustler({
+          dopeId: String(router.query.id) || '1',
+        }),
+      ),
+    [router.query.id],
+  );
   const hustlerConfig = useReactiveVar(makeVarConfig);
 
   const goBackToInitialStep = () => {
