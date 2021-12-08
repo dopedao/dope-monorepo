@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { HustlerCustomization } from 'src/HustlerConfig';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
-import RenderFromLootId from 'components/hustler/RenderFromLootId';
+import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 
 interface Props {
   hustlerConfig: HustlerCustomization;
@@ -18,7 +18,7 @@ const HustlerPanel = ({ hustlerConfig, footer }: Props) => {
       `}
     >
       <PanelTitleBar>Hustler</PanelTitleBar>
-      <RenderFromLootId
+      <RenderFromDopeId
         bgColor={hustlerConfig.bgColor}
         body={hustlerConfig.body}
         facialHair={hustlerConfig.facialHair}

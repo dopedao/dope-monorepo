@@ -1,11 +1,11 @@
-// Blank-slate state for the Loot screen,
+// Blank-slate state for the Dope screen,
 // encouraging visitors to go pick up some DOPE.
 import { Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from '@emotion/styled';
 
-const NoLootContainer = styled.div`
+const NoDopeContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color: #202222;
@@ -18,7 +18,7 @@ const NoLootContainer = styled.div`
   }
 `;
 
-const NoLootTitle = styled.div`
+const NoDopeTitle = styled.div`
   text-align: center;
   background-color: #000000;
   color: #ffffff;
@@ -26,7 +26,7 @@ const NoLootTitle = styled.div`
   line-height: 32px;
 `;
 
-const NoLootHustler = styled.div`
+const NoDopeHustler = styled.div`
   flex-grow: 2;
   background: url('/images/tile/chainlink.png') repeat;
   display: flex;
@@ -39,19 +39,19 @@ const NoLootHustler = styled.div`
   }
 `;
 
-const NoLootCard = () => {
+const NoDopeCard = () => {
   const router = useRouter();
   return (
-    <NoLootContainer>
-      <NoLootTitle>No Loot In Connected Wallet</NoLootTitle>
-      <NoLootHustler>
-        <Image src="/images/hustler/no-loot.svg" alt="no loot" width={112} height={350} />
+    <NoDopeContainer>
+      <NoDopeTitle>No Dope In Connected Wallet</NoDopeTitle>
+      <NoDopeHustler>
+        <Image src="/images/hustler/no-dope.svg" alt="no dope" width={112} height={350} />
         <Button variant="primary" onClick={() => router.push('/swap-meet')}>
           Shop The Market
         </Button>
-      </NoLootHustler>
-    </NoLootContainer>
+      </NoDopeHustler>
+    </NoDopeContainer>
   );
 };
 
-export default NoLootCard;
+export default NoDopeCard;

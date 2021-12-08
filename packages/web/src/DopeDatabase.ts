@@ -93,10 +93,10 @@ class DopeDatabase {
   // so we save network requests calling The Graph.
   populateFromJson() {
     console.log('Populating DopeDatabase');
-    const lootJsonEntries = Object.entries(DopeJson);
+    const dopeJsonEntries = Object.entries(DopeJson);
     const tempDB = [];
-    for (let i = 0; i < lootJsonEntries.length; i++) {
-      const dopeAsset = lootJsonEntries[i][1];
+    for (let i = 0; i < dopeJsonEntries.length; i++) {
+      const dopeAsset = dopeJsonEntries[i][1];
       const tokenId = Object.keys(dopeAsset)[0];
       const values = Object.values(dopeAsset)[0];
       const dope = newEmptyBag();

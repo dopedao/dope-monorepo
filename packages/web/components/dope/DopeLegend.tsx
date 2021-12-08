@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { Button } from '@chakra-ui/button';
 import styled from '@emotion/styled';
 
-export const LootLegendBackgroundColors = {
+export const DopeLegendBackgroundColors = {
   Standard: '#fff',
   Basic: '#fff',
   Rare: 'rgba(18,171,23,0.15)',
@@ -12,7 +12,7 @@ export const LootLegendBackgroundColors = {
   'Black Market': 'rgba(255,252,63,0.5)',
 };
 
-const LootLegendContainer = styled.div`
+const DopeLegendContainer = styled.div`
   background: #fff;
   display: flex;
   flex-flow: column wrap;
@@ -27,7 +27,7 @@ const LootLegendContainer = styled.div`
   }
 `;
 
-const LootLegendItem = styled.div`
+const DopeLegendItem = styled.div`
   color: #000;
   padding: 8px;
   margin: 16px 0px;
@@ -37,9 +37,9 @@ interface Props {
   toggleVisibility(): void;
 }
 
-const LootLegend = ({ toggleVisibility }: Props) => {
+const DopeLegend = ({ toggleVisibility }: Props) => {
   return (
-    <LootLegendContainer>
+    <DopeLegendContainer>
       <h4>Item Rarity Legend</h4>
       <div
         css={css`
@@ -47,17 +47,17 @@ const LootLegend = ({ toggleVisibility }: Props) => {
           padding: 8px 16px;
         `}
       >
-        {Object.entries(LootLegendBackgroundColors)
+        {Object.entries(DopeLegendBackgroundColors)
           .map(([key, value]) => {
             return (
-              <LootLegendItem
+              <DopeLegendItem
                 css={css`
                   background-color: ${value};
                 `}
                 key={key}
               >
                 {key}
-              </LootLegendItem>
+              </DopeLegendItem>
             );
           })
           .reverse()
@@ -71,7 +71,7 @@ const LootLegend = ({ toggleVisibility }: Props) => {
       >
         <Button onClick={() => toggleVisibility()}>Close</Button>
       </div>
-    </LootLegendContainer>
+    </DopeLegendContainer>
   );
 };
-export default LootLegend;
+export default DopeLegend;

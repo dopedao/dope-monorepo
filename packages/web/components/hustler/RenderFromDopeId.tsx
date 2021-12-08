@@ -4,11 +4,11 @@ import RenderFromItemIds, { HustlerRenderProps } from 'components/hustler/Render
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import { useSwapMeet } from 'hooks/contracts';
 
-interface RenderFromLootIdProps extends Omit<HustlerRenderProps, 'itemIds'> {
+interface RenderFromDopeIdProps extends Omit<HustlerRenderProps, 'itemIds'> {
   id: string;
 }
 
-const RenderFromLootId = ({
+const RenderFromDopeId = ({
   bgColor,
   body,
   facialHair,
@@ -19,7 +19,7 @@ const RenderFromLootId = ({
   sex,
   textColor,
   zoomWindow,
-}: RenderFromLootIdProps) => {
+}: RenderFromDopeIdProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
   const swapmeet = useSwapMeet();
@@ -53,4 +53,4 @@ const RenderFromLootId = ({
   }
 };
 
-export default RenderFromLootId;
+export default RenderFromDopeId;

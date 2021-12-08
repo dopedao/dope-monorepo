@@ -15,7 +15,7 @@ interface Props {
   toggleVisibility(): void;
 }
 
-const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
+const DopeCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   const { chainId, account } = useWeb3React();
 
   const paper = usePaper();
@@ -35,7 +35,7 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
         Initiate Hustler
       </Button>
       {initiator && paper && account && chainId === 42 && (
-        <Button onClick={() => router.push(`/loot/${bag.id}/unbundle`)}>Unbundle</Button>
+        <Button onClick={() => router.push(`/dope/${bag.id}/unbundle`)}>Unbundle</Button>
       )}
       {paper && (
         <Button
@@ -68,4 +68,4 @@ const LootCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
     </div>
   );
 };
-export default LootCardFooterForOwner;
+export default DopeCardFooterForOwner;
