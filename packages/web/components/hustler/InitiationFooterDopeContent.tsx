@@ -128,7 +128,7 @@ const InitiationFooterDopeContent = ({
       <PanelFooter>
         <SpinnerContainer>
           <Spinner size="xs" />
-          Finding unbundled DOPE NFT loot in your wallet
+          Finding unbundled DOPE in your wallet
         </SpinnerContainer>
       </PanelFooter>
     );

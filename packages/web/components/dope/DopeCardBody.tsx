@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
-import { LootLegendBackgroundColors } from './LootLegend';
+import { DopeLegendBackgroundColors } from './DopeLegend';
 import ItemRarities from 'dope-metrics/output/item-rarities.json';
 import { PickedBag } from 'src/DopeDatabase';
 import { NUM_DOPE_TOKENS } from 'src/constants';
 
-const itemBackgroundColors = Object.values(LootLegendBackgroundColors);
+const itemBackgroundColors = Object.values(DopeLegendBackgroundColors);
 
 const betterItemName = (name = '') => {
   const quotedIndex = name.lastIndexOf('"');
@@ -81,10 +81,10 @@ interface Props {
   bag: PickedBag;
 }
 
-const LootCardBody = ({ bag }: Props) => {
+const DopeCardBody = ({ bag }: Props) => {
   return (
     <div
-      className="lootCardBody"
+      className="dopeCardBody"
       css={css`
         flex: 1;
         background: #fff;
@@ -146,4 +146,4 @@ const LootCardBody = ({ bag }: Props) => {
     </div>
   );
 };
-export default LootCardBody;
+export default DopeCardBody;

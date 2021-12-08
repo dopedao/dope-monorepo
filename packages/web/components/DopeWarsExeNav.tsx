@@ -49,8 +49,8 @@ const DopeWarsExeNav = () => {
       <NavLink href="/swap-meet">
         <a>Swap Meet</a>
       </NavLink>
-      <NavLink href="/loot">
-        <a>Loot</a>
+      <NavLink href="/dope">
+        <a>DOPE</a>
       </NavLink>
       <NavLink href="/hustlers">
         <a>Hustlers</a>
