@@ -1,4 +1,4 @@
-import { extendTheme } from '@chakra-ui/react';
+import { extendTheme, Flex } from '@chakra-ui/react';
 
 const desktopImageCss = [
   "#000000 url('/images/desktop/TONY.gif') center center / contain repeat-y fixed",
@@ -47,6 +47,12 @@ export default extendTheme({
     },
     Button: {
       variants: {
+        back: {
+          display: 'flex',
+          gap: '0.25em',
+          fontSize: 'var(--text-small)',
+          fontWeight: '400',
+        },
         solid: {
           background: '#EDEFEE',
           border: '2px solid #000000',
