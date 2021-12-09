@@ -20,7 +20,7 @@ const buildTokenObjects = () => {
         // Default paper_claimed / items_unbundled to worst possible status
         // and update from The Graph later.
         paper_claimed: true,
-        items_unbundled: true,
+        items_unbundled: false,
         rank: getRarityForDopeId(tokenId)
       }, 
       itemValues

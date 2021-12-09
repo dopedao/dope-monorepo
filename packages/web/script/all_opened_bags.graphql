@@ -1,0 +1,6 @@
+query AllOpenedBags {
+  bags(first: 1000, skip: 0, where: {opened: true}) {
+    opened
+    id
+  }
+}
