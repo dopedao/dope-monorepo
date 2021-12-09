@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { css } from '@emotion/react';
+import { Button } from '@chakra-ui/react';
+import Link from 'next/link';
+import styled from '@emotion/styled';
 import { media } from 'styles/mixins';
 import { useHustlersWalletQuery } from 'src/generated/graphql';
 import { useOptimismClient } from 'components/EthereumApolloProvider';
@@ -9,10 +11,7 @@ import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
 import RenderFromChain from 'components/hustler/RenderFromChain';
-import styled from '@emotion/styled';
 import Dialog from 'components/Dialog';
-import { Button } from '@chakra-ui/react';
-import Link from 'next/link';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 const streetBackground =
@@ -52,7 +51,7 @@ const ContentEmpty = (
       When you mint a Hustler, you receive a customizable profile pic in the form of a new NFT. This
       image can be customized at any time, and all the artwork is stored on-chain.
     </p>
-    <Link href="/hustlers/initiate" passHref>
+    <Link href="/dope" passHref>
       <Button variant="primary">Initiate a Hustler</Button>
     </Link>
   </Dialog>
@@ -78,7 +77,13 @@ const Hustlers = () => {
               let meta = data.replace('data:application/json;base64,', '');
               meta = Buffer.from(meta, 'base64').toString();
               const decoded = JSON.parse(meta);
-              return <RenderFromChain data={decoded} id={id} key={id} />;
+              return (
+                <Link key={id} href={`/hustlers/${id}/customize`}>
+                  <a>
+                    <RenderFromChain data={decoded} id={id} />
+                  </a>
+                </Link>
+              );
             })}
           </div>
         </Container>

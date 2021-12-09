@@ -1,51 +1,42 @@
-import { HustlerInitConfig, DEFAULT_BG_COLORS, DEFAULT_TEXT_COLORS } from 'src/HustlerConfig';
+import { HustlerInitConfig } from 'src/HustlerConfig';
 import { useDebounce } from 'usehooks-ts';
-import { useReactiveVar } from '@apollo/client';
 import { useState, useEffect } from 'react';
-import {
-  Box,
-  Input,
-  HStack,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Switch,
-  Stack,
-} from '@chakra-ui/react';
+import { Input, HStack, FormControl, FormLabel, Switch, Stack } from '@chakra-ui/react';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
+import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 
 const NAME_MAX_LENGTH = 20;
 const FIELD_SPACING = '16px';
 
-const NameControls = () => {
-  const hustlerConfig = useReactiveVar(HustlerInitConfig);
+const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
+  // const validateName = (value: string) => {
+  //   let error;
+  //   if (!value) {
+  //     error = 'Name is required';
+  //   } else if (value.length > NAME_MAX_LENGTH) {
+  //     error = 'Name too long';
+  //   }
+  //   return error;
+  // };
 
-  const validateName = (value: string) => {
-    let error;
-    if (!value) {
-      error = 'Name is required';
-    } else if (value.length > NAME_MAX_LENGTH) {
-      error = 'Name too long';
-    }
-    return error;
-  };
-
-  const [hustlerName, setHustlerName] = useState(hustlerConfig.name ?? '');
+  const [hustlerName, setHustlerName] = useState(config.name ?? '');
   const [nameFieldDirty, setNameFieldDirty] = useState(false);
   const debouncedHustlerName = useDebounce<string>(hustlerName, 250);
 
   useEffect(() => {
     // Set from typing
-    if (nameFieldDirty && hustlerConfig.name !== debouncedHustlerName) {
-      HustlerInitConfig({ ...hustlerConfig, name: debouncedHustlerName });
+    if (nameFieldDirty && config.name !== debouncedHustlerName) {
+      if (makeVarConfig) {
+        makeVarConfig({ ...config, name: debouncedHustlerName });
+      }
       setNameFieldDirty(false);
       // Set from randomize or external change
-    } else if (!nameFieldDirty && hustlerConfig.name !== debouncedHustlerName) {
-      setHustlerName(hustlerConfig.name ?? '');
+    } else if (!nameFieldDirty && config.name !== debouncedHustlerName) {
+      setHustlerName(config.name ?? '');
     }
-  }, [debouncedHustlerName, hustlerConfig, nameFieldDirty]);
+  }, [debouncedHustlerName, config, nameFieldDirty, makeVarConfig]);
 
   return (
     <PanelContainer>
@@ -69,9 +60,9 @@ const NameControls = () => {
             <FormControl display="flex" alignItems="center" verticalAlign="center">
               <Switch
                 id="render-name"
-                checked={hustlerConfig.renderName}
+                isChecked={config.renderName}
                 onChange={e => {
-                  HustlerInitConfig({ ...hustlerConfig, renderName: e.target.checked });
+                  if (makeVarConfig) makeVarConfig({ ...config, renderName: e.target.checked });
                 }}
               />
               <FormLabel htmlFor="render-name" ml="2" mt="1">

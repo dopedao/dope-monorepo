@@ -24,6 +24,70 @@ import type {
   OnEvent,
 } from "./common";
 
+export type SetMetadataStruct = {
+  color: BytesLike;
+  background: BytesLike;
+  options: BytesLike;
+  viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+  body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+  order: [
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish,
+    BigNumberish
+  ];
+  mask: BytesLike;
+  name: string;
+};
+
+export type SetMetadataStructOutput = [
+  string,
+  string,
+  string,
+  [number, number, number, number],
+  [number, number, number, number],
+  [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ],
+  string,
+  string
+] & {
+  color: string;
+  background: string;
+  options: string;
+  viewbox: [number, number, number, number];
+  body: [number, number, number, number];
+  order: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
+  mask: string;
+  name: string;
+};
+
 export interface HustlerInterface extends ethers.utils.Interface {
   functions: {
     "addRles(uint8,bytes[])": FunctionFragment;
@@ -37,7 +101,7 @@ export interface HustlerInterface extends ethers.utils.Interface {
     "hustlerParts(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "metadata(uint256)": FunctionFragment;
-    "mintOGTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)": FunctionFragment;
+    "mintOGTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)": FunctionFragment;
     "mintTo(address,bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
@@ -49,7 +113,7 @@ export interface HustlerInterface extends ethers.utils.Interface {
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setEnforcer(address)": FunctionFragment;
-    "setMetadata(uint256,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2)": FunctionFragment;
+    "setMetadata(uint256,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string))": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -101,17 +165,7 @@ export interface HustlerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mintOGTo",
-    values: [
-      string,
-      string,
-      BytesLike,
-      BytesLike,
-      BytesLike,
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      BytesLike,
-      BytesLike
-    ]
+    values: [string, SetMetadataStruct, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "mintTo",
@@ -158,16 +212,7 @@ export interface HustlerInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "setEnforcer", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setMetadata",
-    values: [
-      BigNumberish,
-      string,
-      BytesLike,
-      BytesLike,
-      BytesLike,
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      BytesLike
-    ]
+    values: [BigNumberish, SetMetadataStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -431,13 +476,7 @@ export interface Hustler extends BaseContract {
 
     mintOGTo(
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -448,15 +487,9 @@ export interface Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+    "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -529,13 +562,7 @@ export interface Hustler extends BaseContract {
 
     setMetadata(
       hustlerId: BigNumberish,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -630,13 +657,7 @@ export interface Hustler extends BaseContract {
 
   mintOGTo(
     to: string,
-    name: string,
-    color: BytesLike,
-    background: BytesLike,
-    options: BytesLike,
-    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    mask: BytesLike,
+    m: SetMetadataStruct,
     data: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -647,15 +668,9 @@ export interface Hustler extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+  "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(
     to: string,
-    name: string,
-    color: BytesLike,
-    background: BytesLike,
-    options: BytesLike,
-    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    mask: BytesLike,
+    m: SetMetadataStruct,
     data: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -728,13 +743,7 @@ export interface Hustler extends BaseContract {
 
   setMetadata(
     hustlerId: BigNumberish,
-    name: string,
-    color: BytesLike,
-    background: BytesLike,
-    options: BytesLike,
-    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-    mask: BytesLike,
+    m: SetMetadataStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -826,13 +835,7 @@ export interface Hustler extends BaseContract {
 
     mintOGTo(
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -843,15 +846,9 @@ export interface Hustler extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+    "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -919,13 +916,7 @@ export interface Hustler extends BaseContract {
 
     setMetadata(
       hustlerId: BigNumberish,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1073,13 +1064,7 @@ export interface Hustler extends BaseContract {
 
     mintOGTo(
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1090,15 +1075,9 @@ export interface Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+    "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1171,13 +1150,7 @@ export interface Hustler extends BaseContract {
 
     setMetadata(
       hustlerId: BigNumberish,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1264,13 +1237,7 @@ export interface Hustler extends BaseContract {
 
     mintOGTo(
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1281,15 +1248,9 @@ export interface Hustler extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "mintTo(address,string,bytes4,bytes4,bytes2,uint8[4],uint8[4],bytes2,bytes)"(
+    "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(
       to: string,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1362,13 +1323,7 @@ export interface Hustler extends BaseContract {
 
     setMetadata(
       hustlerId: BigNumberish,
-      name: string,
-      color: BytesLike,
-      background: BytesLike,
-      options: BytesLike,
-      viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      mask: BytesLike,
+      m: SetMetadataStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

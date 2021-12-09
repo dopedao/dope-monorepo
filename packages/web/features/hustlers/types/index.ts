@@ -1,5 +1,6 @@
 export type HustlerActions =
   | { type: 'GO_TO_CUSTOMIZE_STEP' }
+  | { type: 'GO_TO_CONFIGURE_STEP' }
   | { type: 'GO_TO_APPROVE_STEP' }
   | { type: 'GO_TO_FINALIZE_STEP' }
   | { type: 'COMPLETE' }

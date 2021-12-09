@@ -39,14 +39,13 @@ const ScreenSaver = styled.div`
   width: 100%;
   height: 100%;
   z-index: 0;
-  background: rgba(0,0,0,0.5) url('/images/tile/brick-black.png') center/25% fixed;
+  background: rgba(0, 0, 0, 0.5) url('/images/tile/brick-black.png') center/25% fixed;
 `;
-
 
 const GangstaParty = () => {
   const { account } = useWeb3React();
   const client = useOptimismClient();
-  const { data, loading } = useAllHustlersQuery({client});
+  const { data, loading } = useAllHustlersQuery({ client });
 
   return (
     <>
@@ -82,7 +81,7 @@ const GangstaParty = () => {
         <Link href="/hustlers" passHref>
           <Button>Peep Your Squad</Button>
         </Link>
-        <Link href="/hustlers/initiate/" passHref>
+        <Link href="/dope" passHref>
           <Button variant="primary">Mint a Hustler</Button>
         </Link>
       </HStack>

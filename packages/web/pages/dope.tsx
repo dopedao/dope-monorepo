@@ -10,6 +10,7 @@ import DopeCard from 'components/dope/DopeCard';
 import DopeTable from 'components/dope/DopeTable';
 import NoDopeCard from 'components/dope/NoDopeCard';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
+import { useSwitchEthereum } from 'hooks/web3';
 
 const FlexFiftyContainer = styled.div`
   height: 100%;
@@ -40,11 +41,12 @@ const FlexFiftyContainer = styled.div`
 `;
 
 export default function DopeWindow() {
-  const { account } = useWeb3React();
+  const { account, chainId } = useWeb3React();
   const { data, loading } = useWalletQuery({
     variables: { id: account?.toLowerCase() || '' },
     skip: !account,
   });
+  useSwitchEthereum();
   const [selected, setSelected] = useState(0);
 
   return (

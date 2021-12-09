@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import Head from 'components/Head';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
 const Finalize = () => {
+  const router = useRouter();
+
   useEffect(() => {
     router.replace('/hustlers/mint-success');
-  }, []);
+  }, [router]);
 
   return (
     <>

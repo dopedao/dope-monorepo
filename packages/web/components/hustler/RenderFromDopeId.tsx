@@ -6,6 +6,7 @@ import { useSwapMeet } from 'hooks/contracts';
 
 interface RenderFromDopeIdProps extends Omit<HustlerRenderProps, 'itemIds'> {
   id: string;
+  ogTitle?: string;
 }
 
 const RenderFromDopeId = ({
@@ -19,6 +20,7 @@ const RenderFromDopeId = ({
   sex,
   textColor,
   zoomWindow,
+  ogTitle,
 }: RenderFromDopeIdProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
@@ -46,6 +48,7 @@ const RenderFromDopeId = ({
         sex={sex}
         textColor={textColor}
         zoomWindow={zoomWindow}
+        ogTitle={ogTitle}
       />
     );
   } else {

@@ -4,11 +4,15 @@ import { ChangeEvent } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Select } from '@chakra-ui/react';
-import { useReactiveVar } from '@apollo/client';
+import { ReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import { useWalletQuery, WalletQuery } from 'src/generated/graphql';
-import { HustlerInitConfig, isHustlerRandom, randomizeHustlerAttributes } from 'src/HustlerConfig';
+import {
+  HustlerCustomization,
+  isHustlerRandom,
+  randomizeHustlerAttributes,
+} from 'src/HustlerConfig';
 import { PickedBag } from 'src/DopeDatabase';
 import PanelFooter from 'components/PanelFooter';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
@@ -61,14 +65,23 @@ const SpinnerContainer = styled.div`
   }
 `;
 
-const InitiationFooterDopeContent = () => {
+type InitiationFooterDopeContentProps = {
+  hustlerConfig: HustlerCustomization;
+  makeVarConfig?: ReactiveVar<HustlerCustomization>;
+};
+
+const InitiationFooterDopeContent = ({
+  hustlerConfig,
+  makeVarConfig,
+}: InitiationFooterDopeContentProps) => {
   const { account } = useWeb3React();
   const dispatchHustler = useDispatchHustler();
-  const hustlerConfig = useReactiveVar(HustlerInitConfig);
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    HustlerInitConfig({ ...hustlerConfig, dopeId: value });
+    if (makeVarConfig) {
+      makeVarConfig({ ...hustlerConfig, dopeId: value });
+    }
   };
 
   const getBundledDopeFromData = (data: WalletQuery) => {
@@ -89,7 +102,9 @@ const InitiationFooterDopeContent = () => {
       if (bundledDope.length > 0 && isHustlerRandom()) {
         const firstDopeId = bundledDope[0].id;
         console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
-        HustlerInitConfig({ ...hustlerConfig, dopeId: firstDopeId });
+        if (makeVarConfig) {
+          makeVarConfig({ ...hustlerConfig, dopeId: firstDopeId });
+        }
       }
     },
   });
@@ -97,6 +112,12 @@ const InitiationFooterDopeContent = () => {
   const goToNextStep = () => {
     dispatchHustler({
       type: 'GO_TO_APPROVE_STEP',
+    });
+  };
+
+  const goToConfigureStep = () => {
+    dispatchHustler({
+      type: 'GO_TO_CONFIGURE_STEP',
     });
   };
 
@@ -136,10 +157,10 @@ const InitiationFooterDopeContent = () => {
         </SubPanelForm>
         <PanelFooter>
           <div>
-            <Link href="/hustlers/configure" passHref>
-              <Button>Configure</Button>
-            </Link>
-            <Button onClick={() => randomizeHustlerAttributes()}>Randomize</Button>
+            <Button onClick={goToConfigureStep}>Configure</Button>
+            <Button onClick={() => randomizeHustlerAttributes(hustlerConfig.dopeId, makeVarConfig)}>
+              Randomize
+            </Button>
           </div>
           <Button variant="primary" onClick={goToNextStep}>
             👉 Next
