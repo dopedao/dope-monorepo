@@ -36,7 +36,7 @@ const Container = styled.div`
 
 const ContentLoading = (
   <Container>
-    <LoadingBlock />
+    <LoadingBlock color="white" maxRows={10} />
   </Container>
 );
 const ContentEmpty = (
