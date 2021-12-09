@@ -16,7 +16,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
 
 // ItemQuery is the builder for querying Item entities.
@@ -29,7 +29,7 @@ type ItemQuery struct {
 	fields     []string
 	predicates []predicate.Item
 	// eager-loading edges.
-	withWallet     *WalletQuery
+	withWallets    *WalletItemsQuery
 	withHustler    *HustlerQuery
 	withDopes      *DopeQuery
 	withBase       *ItemQuery
@@ -71,9 +71,9 @@ func (iq *ItemQuery) Order(o ...OrderFunc) *ItemQuery {
 	return iq
 }
 
-// QueryWallet chains the current query on the "wallet" edge.
-func (iq *ItemQuery) QueryWallet() *WalletQuery {
-	query := &WalletQuery{config: iq.config}
+// QueryWallets chains the current query on the "wallets" edge.
+func (iq *ItemQuery) QueryWallets() *WalletItemsQuery {
+	query := &WalletItemsQuery{config: iq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := iq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -84,8 +84,8 @@ func (iq *ItemQuery) QueryWallet() *WalletQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(item.Table, item.FieldID, selector),
-			sqlgraph.To(wallet.Table, wallet.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, item.WalletTable, item.WalletColumn),
+			sqlgraph.To(walletitems.Table, walletitems.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.WalletsTable, item.WalletsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
 		return fromU, nil
@@ -362,7 +362,7 @@ func (iq *ItemQuery) Clone() *ItemQuery {
 		offset:         iq.offset,
 		order:          append([]OrderFunc{}, iq.order...),
 		predicates:     append([]predicate.Item{}, iq.predicates...),
-		withWallet:     iq.withWallet.Clone(),
+		withWallets:    iq.withWallets.Clone(),
 		withHustler:    iq.withHustler.Clone(),
 		withDopes:      iq.withDopes.Clone(),
 		withBase:       iq.withBase.Clone(),
@@ -373,14 +373,14 @@ func (iq *ItemQuery) Clone() *ItemQuery {
 	}
 }
 
-// WithWallet tells the query-builder to eager-load the nodes that are connected to
-// the "wallet" edge. The optional arguments are used to configure the query builder of the edge.
-func (iq *ItemQuery) WithWallet(opts ...func(*WalletQuery)) *ItemQuery {
-	query := &WalletQuery{config: iq.config}
+// WithWallets tells the query-builder to eager-load the nodes that are connected to
+// the "wallets" edge. The optional arguments are used to configure the query builder of the edge.
+func (iq *ItemQuery) WithWallets(opts ...func(*WalletItemsQuery)) *ItemQuery {
+	query := &WalletItemsQuery{config: iq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	iq.withWallet = query
+	iq.withWallets = query
 	return iq
 }
 
@@ -495,14 +495,14 @@ func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 		withFKs     = iq.withFKs
 		_spec       = iq.querySpec()
 		loadedTypes = [5]bool{
-			iq.withWallet != nil,
+			iq.withWallets != nil,
 			iq.withHustler != nil,
 			iq.withDopes != nil,
 			iq.withBase != nil,
 			iq.withDerivative != nil,
 		}
 	)
-	if iq.withWallet != nil || iq.withHustler != nil || iq.withBase != nil {
+	if iq.withHustler != nil || iq.withBase != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -528,32 +528,32 @@ func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 		return nodes, nil
 	}
 
-	if query := iq.withWallet; query != nil {
-		ids := make([]string, 0, len(nodes))
-		nodeids := make(map[string][]*Item)
+	if query := iq.withWallets; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*Item)
 		for i := range nodes {
-			if nodes[i].wallet_items == nil {
-				continue
-			}
-			fk := *nodes[i].wallet_items
-			if _, ok := nodeids[fk]; !ok {
-				ids = append(ids, fk)
-			}
-			nodeids[fk] = append(nodeids[fk], nodes[i])
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Wallets = []*WalletItems{}
 		}
-		query.Where(wallet.IDIn(ids...))
+		query.withFKs = true
+		query.Where(predicate.WalletItems(func(s *sql.Selector) {
+			s.Where(sql.InValues(item.WalletsColumn, fks...))
+		}))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
+			fk := n.item_wallets
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "item_wallets" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "wallet_items" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "item_wallets" returned %v for node %v`, *fk, n.ID)
 			}
-			for i := range nodes {
-				nodes[i].Edges.Wallet = n
-			}
+			node.Edges.Wallets = append(node.Edges.Wallets, n)
 		}
 	}
 

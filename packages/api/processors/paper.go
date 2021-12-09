@@ -8,6 +8,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -31,7 +32,7 @@ func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e *bindings.PaperT
 		if err := p.ent.Wallet.Create().
 			SetID(e.To.String()).
 			SetPaper(schema.BigInt{Int: e.Value}).
-			OnConflict().
+			OnConflictColumns(wallet.FieldID).
 			Update(func(w *ent.WalletUpsert) {
 				w.AddPaper(schema.BigInt{Int: e.Value})
 			}).Exec(ctx); err != nil {

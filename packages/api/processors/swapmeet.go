@@ -11,6 +11,8 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -64,25 +66,24 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapM
 }
 
 func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *bindings.SwapMeetTransferBatch, emit func(string, []interface{})) error {
-	var ids []string
-	for _, id := range e.Ids {
-		ids = append(ids, id.String())
-	}
-
 	if e.From != (common.Address{}) {
-		if err := p.ent.Wallet.UpdateOneID(e.From.String()).RemoveItemIDs(ids...).Exec(ctx); err != nil {
-			return fmt.Errorf("update from wallet: %w", err)
+
+		var ids []string
+		for _, id := range e.Ids {
+			ids = append(ids, fmt.Sprintf("%s-%s", e.From.String(), id.String()))
 		}
+
+		p.ent.WalletItems.Update().Where(walletitems.IDIn(ids...).AddBalance())
 	}
 
 	if e.To != (common.Address{}) {
 		if err := p.ent.Wallet.Create().
 			SetID(e.To.String()).
 			AddItemIDs(ids...).
-			OnConflict().
+			OnConflictColumns(wallet.FieldID).
 			UpdateNewValues().
 			Exec(ctx); err != nil {
-			return fmt.Errorf("upsert to wallet: %w", err)
+			return fmt.Errorf("swapmeet: upsert to wallet: %w", err)
 		}
 	}
 
@@ -100,7 +101,7 @@ func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *bindin
 		if err := p.ent.Wallet.Create().
 			SetID(e.To.String()).
 			AddItemIDs(e.Id.String()).
-			OnConflict().
+			OnConflictColumns(wallet.FieldID).
 			UpdateNewValues().
 			Exec(ctx); err != nil {
 			return fmt.Errorf("upsert to wallet: %w", err)

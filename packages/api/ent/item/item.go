@@ -29,8 +29,8 @@ const (
 	FieldRles = "rles"
 	// FieldSvg holds the string denoting the svg field in the database.
 	FieldSvg = "svg"
-	// EdgeWallet holds the string denoting the wallet edge name in mutations.
-	EdgeWallet = "wallet"
+	// EdgeWallets holds the string denoting the wallets edge name in mutations.
+	EdgeWallets = "wallets"
 	// EdgeHustler holds the string denoting the hustler edge name in mutations.
 	EdgeHustler = "hustler"
 	// EdgeDopes holds the string denoting the dopes edge name in mutations.
@@ -41,13 +41,13 @@ const (
 	EdgeDerivative = "derivative"
 	// Table holds the table name of the item in the database.
 	Table = "items"
-	// WalletTable is the table that holds the wallet relation/edge.
-	WalletTable = "items"
-	// WalletInverseTable is the table name for the Wallet entity.
-	// It exists in this package in order to avoid circular dependency with the "wallet" package.
-	WalletInverseTable = "wallets"
-	// WalletColumn is the table column denoting the wallet relation/edge.
-	WalletColumn = "wallet_items"
+	// WalletsTable is the table that holds the wallets relation/edge.
+	WalletsTable = "wallet_items"
+	// WalletsInverseTable is the table name for the WalletItems entity.
+	// It exists in this package in order to avoid circular dependency with the "walletitems" package.
+	WalletsInverseTable = "wallet_items"
+	// WalletsColumn is the table column denoting the wallets relation/edge.
+	WalletsColumn = "item_wallets"
 	// HustlerTable is the table that holds the hustler relation/edge.
 	HustlerTable = "items"
 	// HustlerInverseTable is the table name for the Hustler entity.
@@ -88,7 +88,6 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"hustler_items",
 	"item_derivative",
-	"wallet_items",
 }
 
 var (

@@ -23,3 +23,6 @@ type SyncState func(*sql.Selector)
 
 // Wallet is the predicate function for wallet builders.
 type Wallet func(*sql.Selector)
+
+// WalletItems is the predicate function for walletitems builders.
+type WalletItems func(*sql.Selector)

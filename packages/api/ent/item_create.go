@@ -15,7 +15,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
 
 // ItemCreate is the builder for creating a Item entity.
@@ -128,23 +128,19 @@ func (ic *ItemCreate) SetID(s string) *ItemCreate {
 	return ic
 }
 
-// SetWalletID sets the "wallet" edge to the Wallet entity by ID.
-func (ic *ItemCreate) SetWalletID(id string) *ItemCreate {
-	ic.mutation.SetWalletID(id)
+// AddWalletIDs adds the "wallets" edge to the WalletItems entity by IDs.
+func (ic *ItemCreate) AddWalletIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddWalletIDs(ids...)
 	return ic
 }
 
-// SetNillableWalletID sets the "wallet" edge to the Wallet entity by ID if the given value is not nil.
-func (ic *ItemCreate) SetNillableWalletID(id *string) *ItemCreate {
-	if id != nil {
-		ic = ic.SetWalletID(*id)
+// AddWallets adds the "wallets" edges to the WalletItems entity.
+func (ic *ItemCreate) AddWallets(w ...*WalletItems) *ItemCreate {
+	ids := make([]string, len(w))
+	for i := range w {
+		ids[i] = w[i].ID
 	}
-	return ic
-}
-
-// SetWallet sets the "wallet" edge to the Wallet entity.
-func (ic *ItemCreate) SetWallet(w *Wallet) *ItemCreate {
-	return ic.SetWalletID(w.ID)
+	return ic.AddWalletIDs(ids...)
 }
 
 // SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
@@ -397,24 +393,23 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 		})
 		_node.Svg = value
 	}
-	if nodes := ic.mutation.WalletIDs(); len(nodes) > 0 {
+	if nodes := ic.mutation.WalletsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   item.WalletTable,
-			Columns: []string{item.WalletColumn},
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.WalletsTable,
+			Columns: []string{item.WalletsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: wallet.FieldID,
+					Column: walletitems.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.wallet_items = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ic.mutation.HustlerIDs(); len(nodes) > 0 {

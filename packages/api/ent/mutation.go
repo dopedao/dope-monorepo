@@ -16,6 +16,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 
 	"entgo.io/ent"
 )
@@ -29,12 +30,13 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeBodyPart  = "BodyPart"
-	TypeDope      = "Dope"
-	TypeHustler   = "Hustler"
-	TypeItem      = "Item"
-	TypeSyncState = "SyncState"
-	TypeWallet    = "Wallet"
+	TypeBodyPart    = "BodyPart"
+	TypeDope        = "Dope"
+	TypeHustler     = "Hustler"
+	TypeItem        = "Item"
+	TypeSyncState   = "SyncState"
+	TypeWallet      = "Wallet"
+	TypeWalletItems = "WalletItems"
 )
 
 // BodyPartMutation represents an operation that mutates the BodyPart nodes in the graph.
@@ -2079,8 +2081,9 @@ type ItemMutation struct {
 	rles              *schema.RLEs
 	svg               *string
 	clearedFields     map[string]struct{}
-	wallet            *string
-	clearedwallet     bool
+	wallets           map[string]struct{}
+	removedwallets    map[string]struct{}
+	clearedwallets    bool
 	hustler           *string
 	clearedhustler    bool
 	dopes             map[string]struct{}
@@ -2566,43 +2569,58 @@ func (m *ItemMutation) ResetSvg() {
 	delete(m.clearedFields, item.FieldSvg)
 }
 
-// SetWalletID sets the "wallet" edge to the Wallet entity by id.
-func (m *ItemMutation) SetWalletID(id string) {
-	m.wallet = &id
+// AddWalletIDs adds the "wallets" edge to the WalletItems entity by ids.
+func (m *ItemMutation) AddWalletIDs(ids ...string) {
+	if m.wallets == nil {
+		m.wallets = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.wallets[ids[i]] = struct{}{}
+	}
 }
 
-// ClearWallet clears the "wallet" edge to the Wallet entity.
-func (m *ItemMutation) ClearWallet() {
-	m.clearedwallet = true
+// ClearWallets clears the "wallets" edge to the WalletItems entity.
+func (m *ItemMutation) ClearWallets() {
+	m.clearedwallets = true
 }
 
-// WalletCleared reports if the "wallet" edge to the Wallet entity was cleared.
-func (m *ItemMutation) WalletCleared() bool {
-	return m.clearedwallet
+// WalletsCleared reports if the "wallets" edge to the WalletItems entity was cleared.
+func (m *ItemMutation) WalletsCleared() bool {
+	return m.clearedwallets
 }
 
-// WalletID returns the "wallet" edge ID in the mutation.
-func (m *ItemMutation) WalletID() (id string, exists bool) {
-	if m.wallet != nil {
-		return *m.wallet, true
+// RemoveWalletIDs removes the "wallets" edge to the WalletItems entity by IDs.
+func (m *ItemMutation) RemoveWalletIDs(ids ...string) {
+	if m.removedwallets == nil {
+		m.removedwallets = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.wallets, ids[i])
+		m.removedwallets[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedWallets returns the removed IDs of the "wallets" edge to the WalletItems entity.
+func (m *ItemMutation) RemovedWalletsIDs() (ids []string) {
+	for id := range m.removedwallets {
+		ids = append(ids, id)
 	}
 	return
 }
 
-// WalletIDs returns the "wallet" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// WalletID instead. It exists only for internal usage by the builders.
-func (m *ItemMutation) WalletIDs() (ids []string) {
-	if id := m.wallet; id != nil {
-		ids = append(ids, *id)
+// WalletsIDs returns the "wallets" edge IDs in the mutation.
+func (m *ItemMutation) WalletsIDs() (ids []string) {
+	for id := range m.wallets {
+		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetWallet resets all changes to the "wallet" edge.
-func (m *ItemMutation) ResetWallet() {
-	m.wallet = nil
-	m.clearedwallet = false
+// ResetWallets resets all changes to the "wallets" edge.
+func (m *ItemMutation) ResetWallets() {
+	m.wallets = nil
+	m.clearedwallets = false
+	m.removedwallets = nil
 }
 
 // SetHustlerID sets the "hustler" edge to the Hustler entity by id.
@@ -3068,8 +3086,8 @@ func (m *ItemMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ItemMutation) AddedEdges() []string {
 	edges := make([]string, 0, 5)
-	if m.wallet != nil {
-		edges = append(edges, item.EdgeWallet)
+	if m.wallets != nil {
+		edges = append(edges, item.EdgeWallets)
 	}
 	if m.hustler != nil {
 		edges = append(edges, item.EdgeHustler)
@@ -3090,10 +3108,12 @@ func (m *ItemMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *ItemMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case item.EdgeWallet:
-		if id := m.wallet; id != nil {
-			return []ent.Value{*id}
+	case item.EdgeWallets:
+		ids := make([]ent.Value, 0, len(m.wallets))
+		for id := range m.wallets {
+			ids = append(ids, id)
 		}
+		return ids
 	case item.EdgeHustler:
 		if id := m.hustler; id != nil {
 			return []ent.Value{*id}
@@ -3121,6 +3141,9 @@ func (m *ItemMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ItemMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 5)
+	if m.removedwallets != nil {
+		edges = append(edges, item.EdgeWallets)
+	}
 	if m.removeddopes != nil {
 		edges = append(edges, item.EdgeDopes)
 	}
@@ -3134,6 +3157,12 @@ func (m *ItemMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *ItemMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
+	case item.EdgeWallets:
+		ids := make([]ent.Value, 0, len(m.removedwallets))
+		for id := range m.removedwallets {
+			ids = append(ids, id)
+		}
+		return ids
 	case item.EdgeDopes:
 		ids := make([]ent.Value, 0, len(m.removeddopes))
 		for id := range m.removeddopes {
@@ -3153,8 +3182,8 @@ func (m *ItemMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ItemMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 5)
-	if m.clearedwallet {
-		edges = append(edges, item.EdgeWallet)
+	if m.clearedwallets {
+		edges = append(edges, item.EdgeWallets)
 	}
 	if m.clearedhustler {
 		edges = append(edges, item.EdgeHustler)
@@ -3175,8 +3204,8 @@ func (m *ItemMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *ItemMutation) EdgeCleared(name string) bool {
 	switch name {
-	case item.EdgeWallet:
-		return m.clearedwallet
+	case item.EdgeWallets:
+		return m.clearedwallets
 	case item.EdgeHustler:
 		return m.clearedhustler
 	case item.EdgeDopes:
@@ -3193,9 +3222,6 @@ func (m *ItemMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *ItemMutation) ClearEdge(name string) error {
 	switch name {
-	case item.EdgeWallet:
-		m.ClearWallet()
-		return nil
 	case item.EdgeHustler:
 		m.ClearHustler()
 		return nil
@@ -3210,8 +3236,8 @@ func (m *ItemMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *ItemMutation) ResetEdge(name string) error {
 	switch name {
-	case item.EdgeWallet:
-		m.ResetWallet()
+	case item.EdgeWallets:
+		m.ResetWallets()
 		return nil
 	case item.EdgeHustler:
 		m.ResetHustler()
@@ -3819,7 +3845,7 @@ func (m *WalletMutation) ResetDopes() {
 	m.removeddopes = nil
 }
 
-// AddItemIDs adds the "items" edge to the Item entity by ids.
+// AddItemIDs adds the "items" edge to the WalletItems entity by ids.
 func (m *WalletMutation) AddItemIDs(ids ...string) {
 	if m.items == nil {
 		m.items = make(map[string]struct{})
@@ -3829,17 +3855,17 @@ func (m *WalletMutation) AddItemIDs(ids ...string) {
 	}
 }
 
-// ClearItems clears the "items" edge to the Item entity.
+// ClearItems clears the "items" edge to the WalletItems entity.
 func (m *WalletMutation) ClearItems() {
 	m.cleareditems = true
 }
 
-// ItemsCleared reports if the "items" edge to the Item entity was cleared.
+// ItemsCleared reports if the "items" edge to the WalletItems entity was cleared.
 func (m *WalletMutation) ItemsCleared() bool {
 	return m.cleareditems
 }
 
-// RemoveItemIDs removes the "items" edge to the Item entity by IDs.
+// RemoveItemIDs removes the "items" edge to the WalletItems entity by IDs.
 func (m *WalletMutation) RemoveItemIDs(ids ...string) {
 	if m.removeditems == nil {
 		m.removeditems = make(map[string]struct{})
@@ -3850,7 +3876,7 @@ func (m *WalletMutation) RemoveItemIDs(ids ...string) {
 	}
 }
 
-// RemovedItems returns the removed IDs of the "items" edge to the Item entity.
+// RemovedItems returns the removed IDs of the "items" edge to the WalletItems entity.
 func (m *WalletMutation) RemovedItemsIDs() (ids []string) {
 	for id := range m.removeditems {
 		ids = append(ids, id)
@@ -4192,4 +4218,485 @@ func (m *WalletMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Wallet edge %s", name)
+}
+
+// WalletItemsMutation represents an operation that mutates the WalletItems nodes in the graph.
+type WalletItemsMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *string
+	balance       *schema.BigInt
+	addbalance    *schema.BigInt
+	clearedFields map[string]struct{}
+	wallet        *string
+	clearedwallet bool
+	item          *string
+	cleareditem   bool
+	done          bool
+	oldValue      func(context.Context) (*WalletItems, error)
+	predicates    []predicate.WalletItems
+}
+
+var _ ent.Mutation = (*WalletItemsMutation)(nil)
+
+// walletitemsOption allows management of the mutation configuration using functional options.
+type walletitemsOption func(*WalletItemsMutation)
+
+// newWalletItemsMutation creates new mutation for the WalletItems entity.
+func newWalletItemsMutation(c config, op Op, opts ...walletitemsOption) *WalletItemsMutation {
+	m := &WalletItemsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeWalletItems,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withWalletItemsID sets the ID field of the mutation.
+func withWalletItemsID(id string) walletitemsOption {
+	return func(m *WalletItemsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *WalletItems
+		)
+		m.oldValue = func(ctx context.Context) (*WalletItems, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().WalletItems.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withWalletItems sets the old WalletItems of the mutation.
+func withWalletItems(node *WalletItems) walletitemsOption {
+	return func(m *WalletItemsMutation) {
+		m.oldValue = func(context.Context) (*WalletItems, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m WalletItemsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m WalletItemsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of WalletItems entities.
+func (m *WalletItemsMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *WalletItemsMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *WalletItemsMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().WalletItems.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetBalance sets the "balance" field.
+func (m *WalletItemsMutation) SetBalance(si schema.BigInt) {
+	m.balance = &si
+	m.addbalance = nil
+}
+
+// Balance returns the value of the "balance" field in the mutation.
+func (m *WalletItemsMutation) Balance() (r schema.BigInt, exists bool) {
+	v := m.balance
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBalance returns the old "balance" field's value of the WalletItems entity.
+// If the WalletItems object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WalletItemsMutation) OldBalance(ctx context.Context) (v schema.BigInt, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBalance is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBalance requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBalance: %w", err)
+	}
+	return oldValue.Balance, nil
+}
+
+// AddBalance adds si to the "balance" field.
+func (m *WalletItemsMutation) AddBalance(si schema.BigInt) {
+	if m.addbalance != nil {
+		*m.addbalance = m.addbalance.Add(si)
+	} else {
+		m.addbalance = &si
+	}
+}
+
+// AddedBalance returns the value that was added to the "balance" field in this mutation.
+func (m *WalletItemsMutation) AddedBalance() (r schema.BigInt, exists bool) {
+	v := m.addbalance
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetBalance resets all changes to the "balance" field.
+func (m *WalletItemsMutation) ResetBalance() {
+	m.balance = nil
+	m.addbalance = nil
+}
+
+// SetWalletID sets the "wallet" edge to the Wallet entity by id.
+func (m *WalletItemsMutation) SetWalletID(id string) {
+	m.wallet = &id
+}
+
+// ClearWallet clears the "wallet" edge to the Wallet entity.
+func (m *WalletItemsMutation) ClearWallet() {
+	m.clearedwallet = true
+}
+
+// WalletCleared reports if the "wallet" edge to the Wallet entity was cleared.
+func (m *WalletItemsMutation) WalletCleared() bool {
+	return m.clearedwallet
+}
+
+// WalletID returns the "wallet" edge ID in the mutation.
+func (m *WalletItemsMutation) WalletID() (id string, exists bool) {
+	if m.wallet != nil {
+		return *m.wallet, true
+	}
+	return
+}
+
+// WalletIDs returns the "wallet" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// WalletID instead. It exists only for internal usage by the builders.
+func (m *WalletItemsMutation) WalletIDs() (ids []string) {
+	if id := m.wallet; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetWallet resets all changes to the "wallet" edge.
+func (m *WalletItemsMutation) ResetWallet() {
+	m.wallet = nil
+	m.clearedwallet = false
+}
+
+// SetItemID sets the "item" edge to the Item entity by id.
+func (m *WalletItemsMutation) SetItemID(id string) {
+	m.item = &id
+}
+
+// ClearItem clears the "item" edge to the Item entity.
+func (m *WalletItemsMutation) ClearItem() {
+	m.cleareditem = true
+}
+
+// ItemCleared reports if the "item" edge to the Item entity was cleared.
+func (m *WalletItemsMutation) ItemCleared() bool {
+	return m.cleareditem
+}
+
+// ItemID returns the "item" edge ID in the mutation.
+func (m *WalletItemsMutation) ItemID() (id string, exists bool) {
+	if m.item != nil {
+		return *m.item, true
+	}
+	return
+}
+
+// ItemIDs returns the "item" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ItemID instead. It exists only for internal usage by the builders.
+func (m *WalletItemsMutation) ItemIDs() (ids []string) {
+	if id := m.item; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetItem resets all changes to the "item" edge.
+func (m *WalletItemsMutation) ResetItem() {
+	m.item = nil
+	m.cleareditem = false
+}
+
+// Where appends a list predicates to the WalletItemsMutation builder.
+func (m *WalletItemsMutation) Where(ps ...predicate.WalletItems) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *WalletItemsMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (WalletItems).
+func (m *WalletItemsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *WalletItemsMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.balance != nil {
+		fields = append(fields, walletitems.FieldBalance)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *WalletItemsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case walletitems.FieldBalance:
+		return m.Balance()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *WalletItemsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case walletitems.FieldBalance:
+		return m.OldBalance(ctx)
+	}
+	return nil, fmt.Errorf("unknown WalletItems field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WalletItemsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case walletitems.FieldBalance:
+		v, ok := value.(schema.BigInt)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBalance(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WalletItems field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *WalletItemsMutation) AddedFields() []string {
+	var fields []string
+	if m.addbalance != nil {
+		fields = append(fields, walletitems.FieldBalance)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *WalletItemsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case walletitems.FieldBalance:
+		return m.AddedBalance()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WalletItemsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case walletitems.FieldBalance:
+		v, ok := value.(schema.BigInt)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddBalance(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WalletItems numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *WalletItemsMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *WalletItemsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *WalletItemsMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown WalletItems nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *WalletItemsMutation) ResetField(name string) error {
+	switch name {
+	case walletitems.FieldBalance:
+		m.ResetBalance()
+		return nil
+	}
+	return fmt.Errorf("unknown WalletItems field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *WalletItemsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.wallet != nil {
+		edges = append(edges, walletitems.EdgeWallet)
+	}
+	if m.item != nil {
+		edges = append(edges, walletitems.EdgeItem)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *WalletItemsMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case walletitems.EdgeWallet:
+		if id := m.wallet; id != nil {
+			return []ent.Value{*id}
+		}
+	case walletitems.EdgeItem:
+		if id := m.item; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *WalletItemsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *WalletItemsMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *WalletItemsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedwallet {
+		edges = append(edges, walletitems.EdgeWallet)
+	}
+	if m.cleareditem {
+		edges = append(edges, walletitems.EdgeItem)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *WalletItemsMutation) EdgeCleared(name string) bool {
+	switch name {
+	case walletitems.EdgeWallet:
+		return m.clearedwallet
+	case walletitems.EdgeItem:
+		return m.cleareditem
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *WalletItemsMutation) ClearEdge(name string) error {
+	switch name {
+	case walletitems.EdgeWallet:
+		m.ClearWallet()
+		return nil
+	case walletitems.EdgeItem:
+		m.ClearItem()
+		return nil
+	}
+	return fmt.Errorf("unknown WalletItems unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *WalletItemsMutation) ResetEdge(name string) error {
+	switch name {
+	case walletitems.EdgeWallet:
+		m.ResetWallet()
+		return nil
+	case walletitems.EdgeItem:
+		m.ResetItem()
+		return nil
+	}
+	return fmt.Errorf("unknown WalletItems edge %s", name)
 }

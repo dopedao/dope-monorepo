@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/processors"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -124,7 +125,7 @@ func (e *Engine) Sync(ctx context.Context) {
 						Create().
 						SetID(c.Address.Hex()).
 						SetStartBlock(_from).
-						OnConflict().
+						OnConflictColumns(syncstate.FieldID).
 						UpdateStartBlock().
 						Exec(ctx); err != nil {
 						log.Fatalf("Updating sync state: %+v.", err)

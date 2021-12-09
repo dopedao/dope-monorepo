@@ -79,3 +79,15 @@ func (w *WalletQuery) CollectFields(ctx context.Context, satisfies ...string) *W
 func (w *WalletQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *WalletQuery {
 	return w
 }
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (wi *WalletItemsQuery) CollectFields(ctx context.Context, satisfies ...string) *WalletItemsQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		wi = wi.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return wi
+}
+
+func (wi *WalletItemsQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *WalletItemsQuery {
+	return wi
+}

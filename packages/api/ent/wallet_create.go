@@ -13,9 +13,9 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
 
 // WalletCreate is the builder for creating a Wallet entity.
@@ -61,17 +61,17 @@ func (wc *WalletCreate) AddDopes(d ...*Dope) *WalletCreate {
 	return wc.AddDopeIDs(ids...)
 }
 
-// AddItemIDs adds the "items" edge to the Item entity by IDs.
+// AddItemIDs adds the "items" edge to the WalletItems entity by IDs.
 func (wc *WalletCreate) AddItemIDs(ids ...string) *WalletCreate {
 	wc.mutation.AddItemIDs(ids...)
 	return wc
 }
 
-// AddItems adds the "items" edges to the Item entity.
-func (wc *WalletCreate) AddItems(i ...*Item) *WalletCreate {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+// AddItems adds the "items" edges to the WalletItems entity.
+func (wc *WalletCreate) AddItems(w ...*WalletItems) *WalletCreate {
+	ids := make([]string, len(w))
+	for i := range w {
+		ids[i] = w[i].ID
 	}
 	return wc.AddItemIDs(ids...)
 }
@@ -247,7 +247,7 @@ func (wc *WalletCreate) createSpec() (*Wallet, *sqlgraph.CreateSpec) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: item.FieldID,
+					Column: walletitems.FieldID,
 				},
 			},
 		}

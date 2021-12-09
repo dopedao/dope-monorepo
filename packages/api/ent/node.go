@@ -15,6 +15,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 	"github.com/hashicorp/go-multierror"
 )
 
@@ -307,11 +308,11 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{
-		Type: "Wallet",
-		Name: "wallet",
+		Type: "WalletItems",
+		Name: "wallets",
 	}
-	err = i.QueryWallet().
-		Select(wallet.FieldID).
+	err = i.QueryWallets().
+		Select(walletitems.FieldID).
 		Scan(ctx, &node.Edges[0].IDs)
 	if err != nil {
 		return nil, err
@@ -405,11 +406,11 @@ func (w *Wallet) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Edges[1] = &Edge{
-		Type: "Item",
+		Type: "WalletItems",
 		Name: "items",
 	}
 	err = w.QueryItems().
-		Select(item.FieldID).
+		Select(walletitems.FieldID).
 		Scan(ctx, &node.Edges[1].IDs)
 	if err != nil {
 		return nil, err
@@ -421,6 +422,45 @@ func (w *Wallet) Node(ctx context.Context) (node *Node, err error) {
 	err = w.QueryHustlers().
 		Select(hustler.FieldID).
 		Scan(ctx, &node.Edges[2].IDs)
+	if err != nil {
+		return nil, err
+	}
+	return node, nil
+}
+
+func (wi *WalletItems) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     wi.ID,
+		Type:   "WalletItems",
+		Fields: make([]*Field, 1),
+		Edges:  make([]*Edge, 2),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(wi.Balance); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "schema.BigInt",
+		Name:  "balance",
+		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "Wallet",
+		Name: "wallet",
+	}
+	err = wi.QueryWallet().
+		Select(wallet.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[1] = &Edge{
+		Type: "Item",
+		Name: "item",
+	}
+	err = wi.QueryItem().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
 	if err != nil {
 		return nil, err
 	}
@@ -543,6 +583,15 @@ func (c *Client) noder(ctx context.Context, table string, id string) (Noder, err
 		n, err := c.Wallet.Query().
 			Where(wallet.ID(id)).
 			CollectFields(ctx, "Wallet").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case walletitems.Table:
+		n, err := c.WalletItems.Query().
+			Where(walletitems.ID(id)).
+			CollectFields(ctx, "WalletItems").
 			Only(ctx)
 		if err != nil {
 			return nil, err
@@ -690,6 +739,19 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		nodes, err := c.Wallet.Query().
 			Where(wallet.IDIn(ids...)).
 			CollectFields(ctx, "Wallet").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case walletitems.Table:
+		nodes, err := c.WalletItems.Query().
+			Where(walletitems.IDIn(ids...)).
+			CollectFields(ctx, "WalletItems").
 			All(ctx)
 		if err != nil {
 			return nil, err
