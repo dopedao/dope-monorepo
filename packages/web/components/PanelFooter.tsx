@@ -17,6 +17,9 @@ const PanelFooter = styled.div`
       margin-right: 0;
     }
   }
+  @media (max-width: 768px) {
+    height: 120px;
+  }
 `;
 
 export default PanelFooter;

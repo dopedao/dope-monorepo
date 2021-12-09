@@ -10,9 +10,16 @@ interface ColorSelectorProps {
   colors: string[];
   title: string;
   value?: string;
+  dopeId?: string;
 }
 
-const PanelColorSelector = ({ changeCallback, colors, title, value }: ColorSelectorProps) => {
+const PanelColorSelector = ({
+  changeCallback,
+  colors,
+  title,
+  value,
+  dopeId,
+}: ColorSelectorProps) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: title.replace(' ', '-'),
     defaultValue: 0,
@@ -31,16 +38,23 @@ const PanelColorSelector = ({ changeCallback, colors, title, value }: ColorSelec
         `}
         {...group}
       >
-        {colors.map((color, index) => {
-          return (
-            <PanelColorChipRadio
-              {...getRadioProps({ value: color })}
-              value={color}
-              key={index}
-              color={color}
-            />
-          );
-        })}
+        {colors
+          .filter(color => {
+            if (dopeId && Number(dopeId) <= 500) {
+              return color;
+            }
+            return color !== '#77F8F8';
+          })
+          .map((color, index) => {
+            return (
+              <PanelColorChipRadio
+                {...getRadioProps({ value: color })}
+                value={color}
+                key={index}
+                color={color}
+              />
+            );
+          })}
       </PanelBody>
     </PanelContainer>
   );
