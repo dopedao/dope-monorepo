@@ -40,7 +40,7 @@ const PanelColorSelector = ({
       >
         {colors
           .filter(color => {
-            if (dopeId && Number(dopeId) <= 500) {
+            if (dopeId && Number(dopeId) < 500) {
               return color;
             }
             return color !== '#77F8F8';
