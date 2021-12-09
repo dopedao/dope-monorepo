@@ -284,3 +284,33 @@ export const useswitchNetwork = async (
     }
   }
 };
+
+export const useSwitchEthereum = () => {
+  const { chainId } = useWeb3React();
+
+  let ethChainId: 1 | 42 = 1;
+  if (!chainId || chainId === 10) {
+    ethChainId = 1;
+  } else if (chainId === 1 || chainId === 42) {
+    ethChainId = chainId;
+  } else if (chainId === 69) {
+    ethChainId = 42;
+  }
+
+  useswitchNetwork(ethChainId, chainId);
+};
+
+export const useSwitchOptimism = () => {
+  const { chainId } = useWeb3React();
+
+  let optimismChainId: 10 | 69 = 10;
+  if (!chainId || chainId === 1) {
+    optimismChainId = 10;
+  } else if (chainId === 10 || chainId === 69) {
+    optimismChainId = chainId;
+  } else if (chainId === 42) {
+    optimismChainId = 69;
+  }
+
+  useswitchNetwork(optimismChainId, chainId, true);
+};

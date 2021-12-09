@@ -10,7 +10,7 @@ import DopeCard from 'components/dope/DopeCard';
 import DopeTable from 'components/dope/DopeTable';
 import NoDopeCard from 'components/dope/NoDopeCard';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
-import { useswitchNetwork } from 'hooks/web3';
+import { useSwitchEthereum } from 'hooks/web3';
 
 const FlexFiftyContainer = styled.div`
   height: 100%;
@@ -46,7 +46,7 @@ export default function DopeWindow() {
     variables: { id: account?.toLowerCase() || '' },
     skip: !account,
   });
-  useswitchNetwork(1, chainId);
+  useSwitchEthereum();
   const [selected, setSelected] = useState(0);
 
   return (

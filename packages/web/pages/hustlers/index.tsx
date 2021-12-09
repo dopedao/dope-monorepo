@@ -51,7 +51,7 @@ const ContentEmpty = (
       When you mint a Hustler, you receive a customizable profile pic in the form of a new NFT. This
       image can be customized at any time, and all the artwork is stored on-chain.
     </p>
-    <Link href="/hustlers/initiate" passHref>
+    <Link href="/dope" passHref>
       <Button variant="primary">Initiate a Hustler</Button>
     </Link>
   </Dialog>

@@ -15,7 +15,7 @@ import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
 import { useFetchMetadata } from 'hooks/contracts';
-import { useOptimism, useswitchNetwork } from 'hooks/web3';
+import { useSwitchOptimism } from 'hooks/web3';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -157,7 +157,6 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
 
 const Hustlers = () => {
   const router = useRouter();
-  const { chainId: optimismChainId } = useOptimism();
   const { account, chainId } = useWeb3React();
   const { loading: walletLoading } = useWalletQuery({
     variables: { id: account?.toLowerCase() || '' },
@@ -169,7 +168,7 @@ const Hustlers = () => {
     variables: { id: String(router.query.id) },
     skip: !router.query.id || !account,
   });
-  useswitchNetwork(optimismChainId, chainId, true);
+  useSwitchOptimism();
 
   return (
     <AppWindow padBody={false} navbar={<DopeWarsExeNav />}>
