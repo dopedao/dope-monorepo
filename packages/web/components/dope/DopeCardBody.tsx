@@ -106,7 +106,7 @@ const DopeCardBody = ({ bag }: Props) => {
         <Row
           key="paper"
           slot="$PAPER"
-          item="🚫 Unable to claim 🚫"
+          item="🚫 Claimed 🚫"
         />
       )}
 
@@ -121,7 +121,7 @@ const DopeCardBody = ({ bag }: Props) => {
         <Row
           key="bundled"
           slot="Bundled"
-          item="🚫 Already unbundled 🚫"
+          item="🚫 Unpacked 🚫"
         />
       )}
 
