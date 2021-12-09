@@ -56,6 +56,7 @@ const ConfigurationControls = ({ config, makeVarConfig }: ConfigureHustlerProps)
           title="Skin Tone"
           colors={SKIN_TONE_COLORS}
           value={SKIN_TONE_COLORS[config.body]}
+          dopeId={config.dopeId}
           changeCallback={color => {
             makeVarConfig
               ? makeVarConfig({ ...config, body: SKIN_TONE_COLORS.findIndex(el => el == color) })

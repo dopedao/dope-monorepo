@@ -1,7 +1,7 @@
-import { HustlerInitConfig } from 'src/HustlerConfig';
 import { useDebounce } from 'usehooks-ts';
 import { useState, useEffect } from 'react';
 import { Input, HStack, FormControl, FormLabel, Switch, Stack } from '@chakra-ui/react';
+import { FormErrorMessage } from '@chakra-ui/form-control';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
@@ -11,19 +11,18 @@ const NAME_MAX_LENGTH = 20;
 const FIELD_SPACING = '16px';
 
 const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
-  // const validateName = (value: string) => {
-  //   let error;
-  //   if (!value) {
-  //     error = 'Name is required';
-  //   } else if (value.length > NAME_MAX_LENGTH) {
-  //     error = 'Name too long';
-  //   }
-  //   return error;
-  // };
-
+  const [errorName, setErrorName] = useState<string | undefined>(undefined);
   const [hustlerName, setHustlerName] = useState(config.name ?? '');
   const [nameFieldDirty, setNameFieldDirty] = useState(false);
   const debouncedHustlerName = useDebounce<string>(hustlerName, 250);
+
+  const validateName = (value: string) => {
+    if (!value) {
+      setErrorName('Name is required');
+    } else if (value.length > NAME_MAX_LENGTH) {
+      setErrorName('Name too long');
+    }
+  };
 
   useEffect(() => {
     // Set from typing
@@ -53,9 +52,11 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
                 value={hustlerName}
                 onChange={e => {
                   setNameFieldDirty(true);
+                  validateName(e.target.value);
                   setHustlerName(e.currentTarget.value);
                 }}
               />
+              {errorName && <FormErrorMessage>{errorName}</FormErrorMessage>}
             </FormControl>
             <FormControl display="flex" alignItems="center" verticalAlign="center">
               <Switch

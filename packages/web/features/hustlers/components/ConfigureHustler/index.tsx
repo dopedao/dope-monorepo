@@ -168,6 +168,10 @@ const ConfigureHustler = ({
           css={css`
             width: 100%;
             border-top-width: 1px;
+            @media (max-width: 960px) {
+              display: flex;
+              flex-direction: column;
+            }
           `}
         >
           <ZoomControls config={config} makeVarConfig={makeVarConfig} />
