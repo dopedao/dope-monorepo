@@ -1,21 +1,24 @@
 /* eslint-disable @next/next/no-img-element */
-import { media } from 'styles/mixins';
-import { useEffect, useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
-import styled from '@emotion/styled';
-import { useRouter } from 'next/router';
-import { useWeb3React } from '@web3-react/core';
+import { Button } from '@chakra-ui/button';
+import { getRandomHustler, HustlerCustomization } from 'src/HustlerConfig';
+import { Image } from '@chakra-ui/image';
 import { makeVar, useReactiveVar } from '@apollo/client';
 import { Maybe, useHustlerQuery, useWalletQuery } from 'src/generated/graphql';
-import { getRandomHustler, HustlerCustomization } from 'src/HustlerConfig';
+import { media } from 'styles/mixins';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+import { useFetchMetadata } from 'hooks/contracts';
 import { useOptimismClient } from 'components/EthereumApolloProvider';
+import { useRouter } from 'next/router';
+import { useSwitchOptimism } from 'hooks/web3';
+import { useWeb3React } from '@web3-react/core';
 import AppWindow from 'components/AppWindow';
-import DopeWarsExeNav from 'components/DopeWarsExeNav';
+import AppWindowNavBar from 'components/AppWindowNavBar';
+import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
 import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
-import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
-import { useFetchMetadata } from 'hooks/contracts';
-import { useSwitchOptimism } from 'hooks/web3';
+import styled from '@emotion/styled';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -155,6 +158,21 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
   );
 };
 
+
+const Nav = () => {
+  return (
+    <AppWindowNavBar>
+      <Link href="/hustlers">
+        <Button variant="back">
+          <Image src="/images/icon/arrow-back.svg" width="16px" alt="Arrow" />
+          Your Hustlers
+        </Button>
+      </Link>
+    </AppWindowNavBar>
+  );
+};
+
+
 const Hustlers = () => {
   const router = useRouter();
   const { account, chainId } = useWeb3React();
@@ -171,7 +189,7 @@ const Hustlers = () => {
   useSwitchOptimism();
 
   return (
-    <AppWindow padBody={false} navbar={<DopeWarsExeNav />}>
+    <AppWindow padBody={false} navbar={<Nav />}>
       <Head title="Your Hustler Squad" />
       {walletLoading || loading || !data?.hustler?.data || !data?.hustler?.data.length ? (
         <ContentLoading />
