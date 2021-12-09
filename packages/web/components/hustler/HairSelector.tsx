@@ -8,15 +8,14 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from '@chakra-ui/react';
-import { HustlerInitConfig, HustlerSex, MAX_HAIR, MAX_FACIAL_HAIR } from 'src/HustlerConfig';
-import { useReactiveVar } from '@apollo/client';
-import PanelBody from '../PanelBody';
-import PanelContainer from '../PanelContainer';
-import PanelTitleBar from '../PanelTitleBar';
+import { HustlerInitConfig, MAX_HAIR, MAX_FACIAL_HAIR } from 'src/HustlerConfig';
+import PanelBody from 'components/PanelBody';
+import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
+import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 
-const HairSelector = () => {
-  const hustlerConfig = useReactiveVar(HustlerInitConfig);
-  const isMale = hustlerConfig.sex == 'male';
+const HairSelector = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
+  const isMale = config.sex == 'male';
 
   return (
     <PanelContainer>
@@ -30,8 +29,12 @@ const HairSelector = () => {
               defaultValue={0}
               min={0}
               max={MAX_HAIR}
-              onChange={value => HustlerInitConfig({ ...hustlerConfig, hair: parseInt(value) })}
-              value={hustlerConfig.hair}
+              onChange={value =>
+                makeVarConfig
+                  ? makeVarConfig({ ...config, hair: parseInt(value) })
+                  : HustlerInitConfig({ ...config, hair: parseInt(value) })
+              }
+              value={config.hair}
             >
               <NumberInputField />
               <NumberInputStepper>
@@ -50,9 +53,11 @@ const HairSelector = () => {
                 min={0}
                 max={MAX_FACIAL_HAIR}
                 onChange={value =>
-                  HustlerInitConfig({ ...hustlerConfig, facialHair: parseInt(value) })
+                  makeVarConfig
+                    ? makeVarConfig({ ...config, facialHair: parseInt(value) })
+                    : HustlerInitConfig({ ...config, facialHair: parseInt(value) })
                 }
-                value={hustlerConfig.facialHair}
+                value={config.facialHair}
               >
                 <NumberInputField />
                 <NumberInputStepper>

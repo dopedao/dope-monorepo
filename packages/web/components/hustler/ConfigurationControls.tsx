@@ -1,5 +1,4 @@
 import { Stack } from '@chakra-ui/react';
-import { useReactiveVar } from '@apollo/client';
 import {
   HustlerInitConfig,
   DEFAULT_BG_COLORS,
@@ -8,36 +7,36 @@ import {
   ZOOM_WINDOWS,
 } from 'src/HustlerConfig';
 import { useEffect, useState } from 'react';
-import HairSelector from './HairSelector';
-import NameControls from './NameControls';
-import SexSelector from './SexSelector';
-// import SkinToneSelector from './SkinToneSelector';
+import HairSelector from 'components/hustler/HairSelector';
+import NameControls from 'components/hustler/NameControls';
+import SexSelector from 'components/hustler/SexSelector';
 import PanelColorSelector from 'components/PanelColorSelector';
+import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 
-const ConfigurationControls = () => {
-  const hustlerConfig = useReactiveVar(HustlerInitConfig);
-
+const ConfigurationControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
   const [showTextColor, setShowTextColor] = useState(false);
   const [showNameControls, setShowNameControls] = useState(false);
 
   useEffect(() => {
-    setShowTextColor(hustlerConfig.renderName == true);
-    setShowNameControls(hustlerConfig.zoomWindow == ZOOM_WINDOWS[0]);
-  }, [hustlerConfig]);
+    setShowTextColor(config.renderName === true);
+    setShowNameControls(config.zoomWindow === ZOOM_WINDOWS[0]);
+  }, [config]);
 
   return (
     <>
       <Stack spacing={4}>
         {/* Title controls only make sense when zoomed out fully */}
-        {showNameControls && <NameControls />}
+        {showNameControls && <NameControls config={config} makeVarConfig={makeVarConfig} />}
 
         {showTextColor && (
           <PanelColorSelector
             title="Text Color"
             colors={DEFAULT_TEXT_COLORS}
-            value={hustlerConfig.textColor}
+            value={config.textColor}
             changeCallback={color => {
-              HustlerInitConfig({ ...hustlerConfig, textColor: color });
+              makeVarConfig
+                ? makeVarConfig({ ...config, textColor: color })
+                : HustlerInitConfig({ ...config, textColor: color });
             }}
           />
         )}
@@ -45,26 +44,30 @@ const ConfigurationControls = () => {
         <PanelColorSelector
           title="Background"
           colors={DEFAULT_BG_COLORS}
-          value={hustlerConfig.bgColor}
+          value={config.bgColor}
           changeCallback={color => {
-            HustlerInitConfig({ ...hustlerConfig, bgColor: color });
+            makeVarConfig
+              ? makeVarConfig({ ...config, bgColor: color })
+              : HustlerInitConfig({ ...config, bgColor: color });
           }}
         />
 
         <PanelColorSelector
           title="Skin Tone"
           colors={SKIN_TONE_COLORS}
-          value={SKIN_TONE_COLORS[hustlerConfig.body]}
+          value={SKIN_TONE_COLORS[config.body]}
           changeCallback={color => {
-            HustlerInitConfig({
-              ...hustlerConfig,
-              body: SKIN_TONE_COLORS.findIndex(el => el == color),
-            });
+            makeVarConfig
+              ? makeVarConfig({ ...config, body: SKIN_TONE_COLORS.findIndex(el => el == color) })
+              : HustlerInitConfig({
+                  ...config,
+                  body: SKIN_TONE_COLORS.findIndex(el => el == color),
+                });
           }}
         />
 
-        <SexSelector />
-        <HairSelector />
+        <SexSelector config={config} makeVarConfig={makeVarConfig} />
+        <HairSelector config={config} makeVarConfig={makeVarConfig} />
       </Stack>
     </>
   );

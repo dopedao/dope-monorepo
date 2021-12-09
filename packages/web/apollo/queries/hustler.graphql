@@ -1,0 +1,6 @@
+query Hustler($id: ID!) {
+  hustler(id: $id) {
+    id
+    data
+  }
+}

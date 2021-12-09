@@ -1,13 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useReactiveVar } from '@apollo/client';
 import { Bag } from 'src/generated/graphql';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
-import { BigNumber } from 'ethers';
-import { HustlerInitConfig } from 'src/HustlerConfig';
 import { useInitiator, usePaper } from 'hooks/contracts';
 
 interface Props {
@@ -22,18 +19,12 @@ const DopeCardFooterForOwner = ({ bag, toggleVisibility }: Props) => {
   const initiator = useInitiator();
 
   const router = useRouter();
-  const hustlerConfig = useReactiveVar(HustlerInitConfig);
-  const initiateHustler = () => {
-    hustlerConfig.dopeId = bag.id;
-    HustlerInitConfig(hustlerConfig);
-    router.push('/hustlers/initiate');
-  };
 
   return (
     <div>
-      <Button variant="primary" onClick={() => initiateHustler()}>
-        Initiate Hustler
-      </Button>
+      <Link href={`/hustlers/${bag.id}/initiate`} passHref>
+        <Button variant="primary">Initiate Hustler</Button>
+      </Link>
       {initiator && paper && account && chainId === 42 && (
         <Button onClick={() => router.push(`/dope/${bag.id}/unbundle`)}>Unbundle</Button>
       )}

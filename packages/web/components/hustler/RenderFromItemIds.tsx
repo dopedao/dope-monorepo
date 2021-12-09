@@ -23,6 +23,7 @@ export interface HustlerRenderProps {
   sex?: HustlerSex;
   textColor?: string;
   zoomWindow: ZoomWindow;
+  ogTitle?: string;
 }
 
 const RenderFromItemIds = ({
@@ -36,6 +37,7 @@ const RenderFromItemIds = ({
   sex,
   textColor = '#000000',
   zoomWindow,
+  ogTitle,
 }: HustlerRenderProps) => {
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
@@ -93,7 +95,7 @@ const RenderFromItemIds = ({
       const drugShadowHex = '0x00362f3729062b';
       hustlers
         .render(
-          renderName ? 'OG TITLE GOES HERE' : '', // title
+          renderName && ogTitle ? ogTitle : '', // title
           renderName ? name : '', // subtitle – should this be "name" ?
           64,
           hexColorToBase16(bgColor),
@@ -109,7 +111,18 @@ const RenderFromItemIds = ({
           setHasRenderedFromChain(true);
         });
     }
-  }, [swapmeet, hustlers, itemRles, bodyRles, name, textColor, bgColor, renderName, zoomWindow]);
+  }, [
+    swapmeet,
+    hustlers,
+    itemRles,
+    bodyRles,
+    name,
+    textColor,
+    bgColor,
+    renderName,
+    zoomWindow,
+    ogTitle,
+  ]);
 
   if (!hasRenderedFromChain) return <LoadingBlockSquareCentered />;
 

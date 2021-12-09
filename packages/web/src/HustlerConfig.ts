@@ -1,5 +1,5 @@
 // For storing state relating to initiating a hustler
-import { makeVar } from '@apollo/client';
+import { makeVar, ReactiveVar } from '@apollo/client';
 import { getRandomNumber } from './utils';
 import { NUM_DOPE_TOKENS } from './constants';
 import { HUSTLER_NAMES } from './hustler-names';
@@ -43,32 +43,47 @@ export const getRandomHustlerId = (): string => {
   return getRandomNumber(NUM_DOPE_TOKENS + 1, NUM_DOPE_TOKENS * 2).toString();
 };
 
-export const getRandomHustler = (): HustlerCustomization => {
+export const getRandomHustler = ({
+  sex,
+  name,
+  bgColor,
+  body,
+  dopeId,
+  facialHair,
+  hair,
+  renderName,
+  textColor,
+  zoomWindow,
+}: Partial<HustlerCustomization>): HustlerCustomization => {
   return {
-    bgColor: DEFAULT_BG_COLORS[getRandomNumber(0, DEFAULT_BG_COLORS.length - 1)],
-    body: getRandomNumber(0, MAX_BODIES),
-    dopeId: getRandomHustlerId(),
-    facialHair: getRandomNumber(0, MAX_FACIAL_HAIR),
-    hair: getRandomNumber(0, MAX_HAIR),
-    name: HUSTLER_NAMES[getRandomNumber(0, HUSTLER_NAMES.length - 1)],
-    renderName: false,
-    sex: HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex,
-    textColor: '#000000',
-    zoomWindow: ZOOM_WINDOWS[0],
+    bgColor: bgColor || DEFAULT_BG_COLORS[getRandomNumber(0, DEFAULT_BG_COLORS.length - 1)],
+    body: body || getRandomNumber(0, MAX_BODIES),
+    dopeId: dopeId || getRandomHustlerId(),
+    facialHair: facialHair || getRandomNumber(0, MAX_FACIAL_HAIR),
+    hair: hair || getRandomNumber(0, MAX_HAIR),
+    name: name || HUSTLER_NAMES[getRandomNumber(0, HUSTLER_NAMES.length - 1)],
+    renderName: renderName || false,
+    sex: sex || (HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex),
+    textColor: textColor || '#000000',
+    zoomWindow: zoomWindow || ZOOM_WINDOWS[0],
   };
 };
 
-export const HustlerInitConfig = makeVar(getRandomHustler());
+export const HustlerInitConfig = makeVar(getRandomHustler({}));
 
 export const isHustlerRandom = (): boolean => {
   return parseInt(HustlerInitConfig().dopeId) > NUM_DOPE_TOKENS;
 };
 
-export const randomizeHustlerAttributes = () => {
-  const randomHustler = getRandomHustler();
-  const hustlerConfig = HustlerInitConfig();
-  HustlerInitConfig({
-    ...randomHustler,
-    dopeId: hustlerConfig.dopeId,
-  });
+export const randomizeHustlerAttributes = (
+  dopeId: string,
+  makeVarConfig?: ReactiveVar<HustlerCustomization>,
+) => {
+  const randomHustler = getRandomHustler({});
+  if (makeVarConfig) {
+    makeVarConfig({
+      ...randomHustler,
+      dopeId,
+    });
+  }
 };

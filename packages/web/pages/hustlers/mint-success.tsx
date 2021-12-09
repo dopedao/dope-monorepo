@@ -295,7 +295,7 @@ const MintSuccess = () => {
             <Button>Peep Your Squad</Button>
           </a>
         </Link>
-        <Link href="/hustlers/initiate/" passHref>
+        <Link href="/dope" passHref>
           <Button variant="primary">Mint Another Hustler</Button>
         </Link>
       </HStack>
