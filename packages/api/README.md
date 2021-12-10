@@ -17,7 +17,7 @@ cd packages/api
 go run cmd/main.go
 ```
 
-The server is exposed on `:8081` and you can visit the playground at `http://localhost:8081/playground`.
+The server is exposed on `:8000` and you can visit the playground at `http://localhost:8000/playground`.
 
 ## Architecture
 
