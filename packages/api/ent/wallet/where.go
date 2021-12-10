@@ -216,7 +216,7 @@ func HasItems() predicate.Wallet {
 }
 
 // HasItemsWith applies the HasEdge predicate on the "items" edge with a given conditions (other predicates).
-func HasItemsWith(preds ...predicate.Item) predicate.Wallet {
+func HasItemsWith(preds ...predicate.WalletItems) predicate.Wallet {
 	return predicate.Wallet(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),

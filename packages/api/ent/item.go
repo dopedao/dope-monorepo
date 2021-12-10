@@ -11,7 +11,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
 // Item is the model entity for the Item schema.
@@ -40,13 +39,12 @@ type Item struct {
 	Edges           ItemEdges `json:"edges"`
 	hustler_items   *string
 	item_derivative *string
-	wallet_items    *string
 }
 
 // ItemEdges holds the relations/edges for other nodes in the graph.
 type ItemEdges struct {
-	// Wallet holds the value of the wallet edge.
-	Wallet *Wallet `json:"wallet,omitempty"`
+	// Wallets holds the value of the wallets edge.
+	Wallets []*WalletItems `json:"wallets,omitempty"`
 	// Hustler holds the value of the hustler edge.
 	Hustler *Hustler `json:"hustler,omitempty"`
 	// Dopes holds the value of the dopes edge.
@@ -60,18 +58,13 @@ type ItemEdges struct {
 	loadedTypes [5]bool
 }
 
-// WalletOrErr returns the Wallet value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e ItemEdges) WalletOrErr() (*Wallet, error) {
+// WalletsOrErr returns the Wallets value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) WalletsOrErr() ([]*WalletItems, error) {
 	if e.loadedTypes[0] {
-		if e.Wallet == nil {
-			// The edge wallet was loaded in eager-loading,
-			// but was not found.
-			return nil, &NotFoundError{label: wallet.Label}
-		}
-		return e.Wallet, nil
+		return e.Wallets, nil
 	}
-	return nil, &NotLoadedError{edge: "wallet"}
+	return nil, &NotLoadedError{edge: "wallets"}
 }
 
 // HustlerOrErr returns the Hustler value or an error if the edge
@@ -134,8 +127,6 @@ func (*Item) scanValues(columns []string) ([]interface{}, error) {
 		case item.ForeignKeys[0]: // hustler_items
 			values[i] = new(sql.NullString)
 		case item.ForeignKeys[1]: // item_derivative
-			values[i] = new(sql.NullString)
-		case item.ForeignKeys[2]: // wallet_items
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Item", columns[i])
@@ -222,21 +213,14 @@ func (i *Item) assignValues(columns []string, values []interface{}) error {
 				i.item_derivative = new(string)
 				*i.item_derivative = value.String
 			}
-		case item.ForeignKeys[2]:
-			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field wallet_items", values[j])
-			} else if value.Valid {
-				i.wallet_items = new(string)
-				*i.wallet_items = value.String
-			}
 		}
 	}
 	return nil
 }
 
-// QueryWallet queries the "wallet" edge of the Item entity.
-func (i *Item) QueryWallet() *WalletQuery {
-	return (&ItemClient{config: i.config}).QueryWallet(i)
+// QueryWallets queries the "wallets" edge of the Item entity.
+func (i *Item) QueryWallets() *WalletItemsQuery {
+	return (&ItemClient{config: i.config}).QueryWallets(i)
 }
 
 // QueryHustler queries the "hustler" edge of the Item entity.

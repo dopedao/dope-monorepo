@@ -11,7 +11,6 @@ import (
 	"github.com/rs/cors"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/migrate"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
 )
 
@@ -19,7 +18,7 @@ func NewServer(db *sql.Driver) (http.Handler, error) {
 	client := ent.NewClient(ent.Driver(db))
 
 	// Run the auto migration tool.
-	if err := client.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
+	if err := client.Schema.Create(context.Background()); err != nil {
 		return nil, err
 	}
 

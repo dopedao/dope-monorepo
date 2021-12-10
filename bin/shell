@@ -1,0 +1,18 @@
+#!/bin/bash
+set -eu
+
+IMG=ghcr.io/dopedao/runtime:latest
+
+docker volume create gocache
+
+export GOCACHE=/app/gocache
+export GOMODCACHE=/app/gocache
+
+exec docker run -it --rm \
+        --mount source=gocache,target=/app/gocache \
+        -v $HOME/go/pkg:/root/go/pkg \
+        -v=`pwd`/..:`pwd`/.. \
+        -w=`pwd` \
+        -p=8081:8081 \
+        -p=5432:5432 \
+  "$IMG" $@

@@ -12,6 +12,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
 )
 
 type InitiatorProcessor interface {
@@ -19,11 +21,11 @@ type InitiatorProcessor interface {
 		ethereum.ChainReader
 		bind.ContractBackend
 	}) error
-	Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error
+	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessOpened(ctx context.Context, e *InitiatorOpened, emit func(string, []interface{})) error
+	ProcessOpened(ctx context.Context, e *InitiatorOpened, tx *ent.Tx) error
 
-	ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred, emit func(string, []interface{})) error
+	ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred, tx *ent.Tx) error
 
 	mustEmbedUnimplementedInitiatorProcessor()
 }
@@ -59,8 +61,8 @@ func (h *UnimplementedInitiatorProcessor) Setup(address common.Address, eth inte
 	return nil
 }
 
-func (h *UnimplementedInitiatorProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, func(string, []interface{})) error {
-	return func(ctx context.Context, vLog types.Log, emit func(string, []interface{})) error {
+func (h *UnimplementedInitiatorProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, *ent.Tx) error {
+	return func(ctx context.Context, vLog types.Log, tx *ent.Tx) error {
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["Opened"].ID.Hex():
@@ -70,7 +72,7 @@ func (h *UnimplementedInitiatorProcessor) ProcessElement(p interface{}) func(con
 			}
 
 			e.Raw = vLog
-			if err := p.(InitiatorProcessor).ProcessOpened(ctx, e, emit); err != nil {
+			if err := p.(InitiatorProcessor).ProcessOpened(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing Opened: %w", err)
 			}
 
@@ -81,7 +83,7 @@ func (h *UnimplementedInitiatorProcessor) ProcessElement(p interface{}) func(con
 			}
 
 			e.Raw = vLog
-			if err := p.(InitiatorProcessor).ProcessOwnershipTransferred(ctx, e, emit); err != nil {
+			if err := p.(InitiatorProcessor).ProcessOwnershipTransferred(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing OwnershipTransferred: %w", err)
 			}
 
@@ -105,15 +107,15 @@ func (h *UnimplementedInitiatorProcessor) UnpackLog(out interface{}, event strin
 	return abi.ParseTopics(out, indexed, log.Topics[1:])
 }
 
-func (h *UnimplementedInitiatorProcessor) Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error {
+func (h *UnimplementedInitiatorProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedInitiatorProcessor) ProcessOpened(ctx context.Context, e *InitiatorOpened, emit func(string, []interface{})) error {
+func (h *UnimplementedInitiatorProcessor) ProcessOpened(ctx context.Context, e *InitiatorOpened, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedInitiatorProcessor) ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred, emit func(string, []interface{})) error {
+func (h *UnimplementedInitiatorProcessor) ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred, tx *ent.Tx) error {
 	return nil
 }
 

@@ -9,12 +9,14 @@ require (
 	github.com/ethereum/go-ethereum v1.10.13
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-retryablehttp v0.7.0
+	github.com/lib/pq v1.10.4
 	github.com/mattn/go-sqlite3 v1.14.9
+	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.8.0
 	github.com/rs/zerolog v1.26.0
 	github.com/vektah/gqlparser/v2 v2.2.0
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9
-	github.com/withtally/ethgen v0.0.1
+	github.com/withtally/ethgen v0.0.3
 )
 
 require (
@@ -36,7 +38,6 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rjeczalik/notify v0.9.1 // indirect
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0 // indirect

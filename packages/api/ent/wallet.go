@@ -28,7 +28,7 @@ type WalletEdges struct {
 	// Dopes holds the value of the dopes edge.
 	Dopes []*Dope `json:"dopes,omitempty"`
 	// Items holds the value of the items edge.
-	Items []*Item `json:"items,omitempty"`
+	Items []*WalletItems `json:"items,omitempty"`
 	// Hustlers holds the value of the hustlers edge.
 	Hustlers []*Hustler `json:"hustlers,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -47,7 +47,7 @@ func (e WalletEdges) DopesOrErr() ([]*Dope, error) {
 
 // ItemsOrErr returns the Items value or an error if the edge
 // was not loaded in eager-loading.
-func (e WalletEdges) ItemsOrErr() ([]*Item, error) {
+func (e WalletEdges) ItemsOrErr() ([]*WalletItems, error) {
 	if e.loadedTypes[1] {
 		return e.Items, nil
 	}
@@ -110,7 +110,7 @@ func (w *Wallet) QueryDopes() *DopeQuery {
 }
 
 // QueryItems queries the "items" edge of the Wallet entity.
-func (w *Wallet) QueryItems() *ItemQuery {
+func (w *Wallet) QueryItems() *WalletItemsQuery {
 	return (&WalletClient{config: w.config}).QueryItems(w)
 }
 

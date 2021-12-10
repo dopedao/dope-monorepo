@@ -834,25 +834,25 @@ func SvgContainsFold(v string) predicate.Item {
 	})
 }
 
-// HasWallet applies the HasEdge predicate on the "wallet" edge.
-func HasWallet() predicate.Item {
+// HasWallets applies the HasEdge predicate on the "wallets" edge.
+func HasWallets() predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(WalletTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, WalletTable, WalletColumn),
+			sqlgraph.To(WalletsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, WalletsTable, WalletsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasWalletWith applies the HasEdge predicate on the "wallet" edge with a given conditions (other predicates).
-func HasWalletWith(preds ...predicate.Wallet) predicate.Item {
+// HasWalletsWith applies the HasEdge predicate on the "wallets" edge with a given conditions (other predicates).
+func HasWalletsWith(preds ...predicate.WalletItems) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(WalletInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, WalletTable, WalletColumn),
+			sqlgraph.To(WalletsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, WalletsTable, WalletsColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

@@ -24,6 +24,8 @@ type Tx struct {
 	SyncState *SyncStateClient
 	// Wallet is the client for interacting with the Wallet builders.
 	Wallet *WalletClient
+	// WalletItems is the client for interacting with the WalletItems builders.
+	WalletItems *WalletItemsClient
 
 	// lazily loaded.
 	client     *Client
@@ -165,6 +167,7 @@ func (tx *Tx) init() {
 	tx.Item = NewItemClient(tx.config)
 	tx.SyncState = NewSyncStateClient(tx.config)
 	tx.Wallet = NewWalletClient(tx.config)
+	tx.WalletItems = NewWalletItemsClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
