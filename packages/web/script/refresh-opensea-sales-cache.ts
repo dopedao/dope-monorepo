@@ -1,9 +1,9 @@
 // Github actions doesn't need dotenv file loaded.
 // Only useful from our local machines.
 import * as dotenv from 'dotenv';
-dotenv.config({ path: __dirname + '/../../../.env' });
+dotenv.config({ path: __dirname + '../../../../.env' });
 
-import { getOpenSeaAssets } from '../src/OpenSeaAsset';
+import { getOpenSeaAssets } from 'utils/OpenSeaAsset';
 import S3 from 'aws-sdk/clients/s3';
 
 const S3_ID = process.env.S3_ID;
