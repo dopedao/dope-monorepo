@@ -46,7 +46,7 @@ type Engine struct {
 	ent       *ent.Client
 	eth       EthClient
 	ticker    *time.Ticker
-	contracts []Contract
+	contracts []*Contract
 }
 
 func NewEngine(client *ent.Client, config Config) *Engine {
@@ -67,6 +67,7 @@ func NewEngine(client *ent.Client, config Config) *Engine {
 
 	ctx := context.Background()
 	for _, c := range config.Contracts {
+		c := c
 		s, err := client.SyncState.Get(ctx, c.Address.Hex())
 		if err != nil && !ent.IsNotFound(err) {
 			log.Fatalf("Fetching sync state: %+v.", err)
@@ -78,7 +79,7 @@ func NewEngine(client *ent.Client, config Config) *Engine {
 			log.Fatal("Setting up processor.")
 		}
 
-		e.contracts = append(e.contracts, c)
+		e.contracts = append(e.contracts, &c)
 	}
 
 	return e
@@ -100,10 +101,16 @@ func (e *Engine) Sync(ctx context.Context) {
 			e.latest = latest
 
 			for _, c := range e.contracts {
-				log.Printf("Syncing %s from %d to %d.", c.Address.Hex(), c.StartBlock, latest)
 				_from := c.StartBlock
 				for {
 					_to := Min(latest, _from+blockLimit)
+
+					if _from > _to {
+						// No new blocks
+						break
+					}
+
+					log.Printf("Syncing %s from %d to %d.", c.Address.Hex(), _from, _to)
 
 					logs, err := e.eth.FilterLogs(ctx, ethereum.FilterQuery{
 						FromBlock: new(big.Int).SetUint64(_from),
@@ -139,7 +146,7 @@ func (e *Engine) Sync(ctx context.Context) {
 					}
 
 					if _to == latest {
-						c.StartBlock = _from
+						c.StartBlock = _to + 1
 						break
 					}
 				}
