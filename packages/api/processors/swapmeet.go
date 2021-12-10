@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"strings"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
@@ -62,23 +63,26 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapM
 
 func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *bindings.SwapMeetTransferBatch, tx *ent.Tx) error {
 	if e.From != (common.Address{}) {
-
-		var ids []string
-		for _, id := range e.Ids {
-			ids = append(ids, fmt.Sprintf("%s-%s", e.From.String(), id.String()))
+		for i, id := range e.Ids {
+			if err := tx.WalletItems.
+				UpdateOneID(fmt.Sprintf("%s-%s", e.From.String(), id.String())).
+				AddBalance(schema.BigInt{Int: new(big.Int).Neg(e.Values[i])}).Exec(ctx); err != nil {
+				return fmt.Errorf("swapmeet: update wallet items balance: %w", err)
+			}
 		}
-
-		tx.WalletItems.Update().Where(walletitems.IDIn(ids...).AddBalance())
 	}
 
 	if e.To != (common.Address{}) {
-		if err := tx.Wallet.Create().
-			SetID(e.To.String()).
-			AddItemIDs(ids...).
-			OnConflictColumns(wallet.FieldID).
-			UpdateNewValues().
-			Exec(ctx); err != nil {
-			return fmt.Errorf("swapmeet: upsert to wallet: %w", err)
+		for i, id := range e.Ids {
+			if err := tx.WalletItems.
+				Create().
+				SetID(fmt.Sprintf("%s-%s", e.To.String(), id.String())).
+				SetBalance(schema.BigInt{Int: e.Values[i]}).
+				OnConflictColumns(walletitems.FieldID).
+				AddBalance(schema.BigInt{Int: e.Values[i]}).
+				Exec(ctx); err != nil {
+				return fmt.Errorf("swapmeet: upsert wallet items balance: %w", err)
+			}
 		}
 	}
 
