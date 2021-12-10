@@ -106,7 +106,7 @@ func (e *Engine) Sync(ctx context.Context) {
 					_to := Min(latest, _from+blockLimit)
 
 					logs, err := e.eth.FilterLogs(ctx, ethereum.FilterQuery{
-						FromBlock: new(big.Int).SetUint64(c.StartBlock),
+						FromBlock: new(big.Int).SetUint64(_from),
 						ToBlock:   new(big.Int).SetUint64(_to),
 						Addresses: []common.Address{c.Address},
 					})
