@@ -1067,8 +1067,8 @@ type HustlerMutation struct {
 	title            *string
 	color            *string
 	background       *string
-	age              *schema.BigInt
-	addage           *schema.BigInt
+	age              *uint64
+	addage           *int64
 	sex              *hustler.Sex
 	clearedFields    map[string]struct{}
 	wallet           *string
@@ -1421,13 +1421,13 @@ func (m *HustlerMutation) ResetBackground() {
 }
 
 // SetAge sets the "age" field.
-func (m *HustlerMutation) SetAge(si schema.BigInt) {
-	m.age = &si
+func (m *HustlerMutation) SetAge(u uint64) {
+	m.age = &u
 	m.addage = nil
 }
 
 // Age returns the value of the "age" field in the mutation.
-func (m *HustlerMutation) Age() (r schema.BigInt, exists bool) {
+func (m *HustlerMutation) Age() (r uint64, exists bool) {
 	v := m.age
 	if v == nil {
 		return
@@ -1438,7 +1438,7 @@ func (m *HustlerMutation) Age() (r schema.BigInt, exists bool) {
 // OldAge returns the old "age" field's value of the Hustler entity.
 // If the Hustler object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *HustlerMutation) OldAge(ctx context.Context) (v schema.BigInt, err error) {
+func (m *HustlerMutation) OldAge(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAge is only allowed on UpdateOne operations")
 	}
@@ -1452,17 +1452,17 @@ func (m *HustlerMutation) OldAge(ctx context.Context) (v schema.BigInt, err erro
 	return oldValue.Age, nil
 }
 
-// AddAge adds si to the "age" field.
-func (m *HustlerMutation) AddAge(si schema.BigInt) {
+// AddAge adds u to the "age" field.
+func (m *HustlerMutation) AddAge(u int64) {
 	if m.addage != nil {
-		*m.addage = m.addage.Add(si)
+		*m.addage += u
 	} else {
-		m.addage = &si
+		m.addage = &u
 	}
 }
 
 // AddedAge returns the value that was added to the "age" field in this mutation.
-func (m *HustlerMutation) AddedAge() (r schema.BigInt, exists bool) {
+func (m *HustlerMutation) AddedAge() (r int64, exists bool) {
 	v := m.addage
 	if v == nil {
 		return
@@ -1803,7 +1803,7 @@ func (m *HustlerMutation) SetField(name string, value ent.Value) error {
 		m.SetBackground(v)
 		return nil
 	case hustler.FieldAge:
-		v, ok := value.(schema.BigInt)
+		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1847,7 +1847,7 @@ func (m *HustlerMutation) AddedField(name string) (ent.Value, bool) {
 func (m *HustlerMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case hustler.FieldAge:
-		v, ok := value.(schema.BigInt)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

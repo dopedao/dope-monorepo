@@ -8,7 +8,6 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -28,7 +27,7 @@ type Hustler struct {
 	// Background holds the value of the "background" field.
 	Background string `json:"background,omitempty"`
 	// Age holds the value of the "age" field.
-	Age schema.BigInt `json:"age,omitempty"`
+	Age uint64 `json:"age,omitempty"`
 	// Sex holds the value of the "sex" field.
 	Sex hustler.Sex `json:"sex,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -88,7 +87,7 @@ func (*Hustler) scanValues(columns []string) ([]interface{}, error) {
 	for i := range columns {
 		switch columns[i] {
 		case hustler.FieldAge:
-			values[i] = new(schema.BigInt)
+			values[i] = new(sql.NullInt64)
 		case hustler.FieldID, hustler.FieldType, hustler.FieldName, hustler.FieldTitle, hustler.FieldColor, hustler.FieldBackground, hustler.FieldSex:
 			values[i] = new(sql.NullString)
 		case hustler.ForeignKeys[0]: // wallet_hustlers
@@ -145,10 +144,10 @@ func (h *Hustler) assignValues(columns []string, values []interface{}) error {
 				h.Background = value.String
 			}
 		case hustler.FieldAge:
-			if value, ok := values[i].(*schema.BigInt); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field age", values[i])
-			} else if value != nil {
-				h.Age = *value
+			} else if value.Valid {
+				h.Age = uint64(value.Int64)
 			}
 		case hustler.FieldSex:
 			if value, ok := values[i].(*sql.NullString); !ok {

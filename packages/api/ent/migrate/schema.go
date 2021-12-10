@@ -59,7 +59,7 @@ var (
 		{Name: "title", Type: field.TypeString, Nullable: true},
 		{Name: "color", Type: field.TypeString, Nullable: true},
 		{Name: "background", Type: field.TypeString, Nullable: true},
-		{Name: "age", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "age", Type: field.TypeUint64},
 		{Name: "sex", Type: field.TypeEnum, Nullable: true, Enums: []string{"male", "female"}},
 		{Name: "wallet_hustlers", Type: field.TypeString, Nullable: true},
 	}
