@@ -29,10 +29,10 @@ const (
 	// DopesColumn is the table column denoting the dopes relation/edge.
 	DopesColumn = "wallet_dopes"
 	// ItemsTable is the table that holds the items relation/edge.
-	ItemsTable = "items"
-	// ItemsInverseTable is the table name for the Item entity.
-	// It exists in this package in order to avoid circular dependency with the "item" package.
-	ItemsInverseTable = "items"
+	ItemsTable = "wallet_items"
+	// ItemsInverseTable is the table name for the WalletItems entity.
+	// It exists in this package in order to avoid circular dependency with the "walletitems" package.
+	ItemsInverseTable = "wallet_items"
 	// ItemsColumn is the table column denoting the items relation/edge.
 	ItemsColumn = "wallet_items"
 	// HustlersTable is the table that holds the hustlers relation/edge.

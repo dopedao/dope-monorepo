@@ -12,6 +12,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
 )
 
 type PaperProcessor interface {
@@ -19,19 +21,19 @@ type PaperProcessor interface {
 		ethereum.ChainReader
 		bind.ContractBackend
 	}) error
-	Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error
+	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessApproval(ctx context.Context, e *PaperApproval, emit func(string, []interface{})) error
+	ProcessApproval(ctx context.Context, e *PaperApproval, tx *ent.Tx) error
 
-	ProcessDelegateChanged(ctx context.Context, e *PaperDelegateChanged, emit func(string, []interface{})) error
+	ProcessDelegateChanged(ctx context.Context, e *PaperDelegateChanged, tx *ent.Tx) error
 
-	ProcessDelegateVotesChanged(ctx context.Context, e *PaperDelegateVotesChanged, emit func(string, []interface{})) error
+	ProcessDelegateVotesChanged(ctx context.Context, e *PaperDelegateVotesChanged, tx *ent.Tx) error
 
-	ProcessOwnershipTransferred(ctx context.Context, e *PaperOwnershipTransferred, emit func(string, []interface{})) error
+	ProcessOwnershipTransferred(ctx context.Context, e *PaperOwnershipTransferred, tx *ent.Tx) error
 
-	ProcessSnapshot(ctx context.Context, e *PaperSnapshot, emit func(string, []interface{})) error
+	ProcessSnapshot(ctx context.Context, e *PaperSnapshot, tx *ent.Tx) error
 
-	ProcessTransfer(ctx context.Context, e *PaperTransfer, emit func(string, []interface{})) error
+	ProcessTransfer(ctx context.Context, e *PaperTransfer, tx *ent.Tx) error
 
 	mustEmbedUnimplementedPaperProcessor()
 }
@@ -67,8 +69,8 @@ func (h *UnimplementedPaperProcessor) Setup(address common.Address, eth interfac
 	return nil
 }
 
-func (h *UnimplementedPaperProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, func(string, []interface{})) error {
-	return func(ctx context.Context, vLog types.Log, emit func(string, []interface{})) error {
+func (h *UnimplementedPaperProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, *ent.Tx) error {
+	return func(ctx context.Context, vLog types.Log, tx *ent.Tx) error {
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["Approval"].ID.Hex():
@@ -78,7 +80,7 @@ func (h *UnimplementedPaperProcessor) ProcessElement(p interface{}) func(context
 			}
 
 			e.Raw = vLog
-			if err := p.(PaperProcessor).ProcessApproval(ctx, e, emit); err != nil {
+			if err := p.(PaperProcessor).ProcessApproval(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing Approval: %w", err)
 			}
 
@@ -89,7 +91,7 @@ func (h *UnimplementedPaperProcessor) ProcessElement(p interface{}) func(context
 			}
 
 			e.Raw = vLog
-			if err := p.(PaperProcessor).ProcessDelegateChanged(ctx, e, emit); err != nil {
+			if err := p.(PaperProcessor).ProcessDelegateChanged(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing DelegateChanged: %w", err)
 			}
 
@@ -100,7 +102,7 @@ func (h *UnimplementedPaperProcessor) ProcessElement(p interface{}) func(context
 			}
 
 			e.Raw = vLog
-			if err := p.(PaperProcessor).ProcessDelegateVotesChanged(ctx, e, emit); err != nil {
+			if err := p.(PaperProcessor).ProcessDelegateVotesChanged(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing DelegateVotesChanged: %w", err)
 			}
 
@@ -111,7 +113,7 @@ func (h *UnimplementedPaperProcessor) ProcessElement(p interface{}) func(context
 			}
 
 			e.Raw = vLog
-			if err := p.(PaperProcessor).ProcessOwnershipTransferred(ctx, e, emit); err != nil {
+			if err := p.(PaperProcessor).ProcessOwnershipTransferred(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing OwnershipTransferred: %w", err)
 			}
 
@@ -122,7 +124,7 @@ func (h *UnimplementedPaperProcessor) ProcessElement(p interface{}) func(context
 			}
 
 			e.Raw = vLog
-			if err := p.(PaperProcessor).ProcessSnapshot(ctx, e, emit); err != nil {
+			if err := p.(PaperProcessor).ProcessSnapshot(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing Snapshot: %w", err)
 			}
 
@@ -133,7 +135,7 @@ func (h *UnimplementedPaperProcessor) ProcessElement(p interface{}) func(context
 			}
 
 			e.Raw = vLog
-			if err := p.(PaperProcessor).ProcessTransfer(ctx, e, emit); err != nil {
+			if err := p.(PaperProcessor).ProcessTransfer(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing Transfer: %w", err)
 			}
 
@@ -157,31 +159,31 @@ func (h *UnimplementedPaperProcessor) UnpackLog(out interface{}, event string, l
 	return abi.ParseTopics(out, indexed, log.Topics[1:])
 }
 
-func (h *UnimplementedPaperProcessor) Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error {
+func (h *UnimplementedPaperProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedPaperProcessor) ProcessApproval(ctx context.Context, e *PaperApproval, emit func(string, []interface{})) error {
+func (h *UnimplementedPaperProcessor) ProcessApproval(ctx context.Context, e *PaperApproval, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedPaperProcessor) ProcessDelegateChanged(ctx context.Context, e *PaperDelegateChanged, emit func(string, []interface{})) error {
+func (h *UnimplementedPaperProcessor) ProcessDelegateChanged(ctx context.Context, e *PaperDelegateChanged, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedPaperProcessor) ProcessDelegateVotesChanged(ctx context.Context, e *PaperDelegateVotesChanged, emit func(string, []interface{})) error {
+func (h *UnimplementedPaperProcessor) ProcessDelegateVotesChanged(ctx context.Context, e *PaperDelegateVotesChanged, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedPaperProcessor) ProcessOwnershipTransferred(ctx context.Context, e *PaperOwnershipTransferred, emit func(string, []interface{})) error {
+func (h *UnimplementedPaperProcessor) ProcessOwnershipTransferred(ctx context.Context, e *PaperOwnershipTransferred, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedPaperProcessor) ProcessSnapshot(ctx context.Context, e *PaperSnapshot, emit func(string, []interface{})) error {
+func (h *UnimplementedPaperProcessor) ProcessSnapshot(ctx context.Context, e *PaperSnapshot, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedPaperProcessor) ProcessTransfer(ctx context.Context, e *PaperTransfer, emit func(string, []interface{})) error {
+func (h *UnimplementedPaperProcessor) ProcessTransfer(ctx context.Context, e *PaperTransfer, tx *ent.Tx) error {
 	return nil
 }
 

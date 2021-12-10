@@ -12,6 +12,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
 )
 
 type DopeProcessor interface {
@@ -19,19 +21,19 @@ type DopeProcessor interface {
 		ethereum.ChainReader
 		bind.ContractBackend
 	}) error
-	Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error
+	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessApproval(ctx context.Context, e *DopeApproval, emit func(string, []interface{})) error
+	ProcessApproval(ctx context.Context, e *DopeApproval, tx *ent.Tx) error
 
-	ProcessApprovalForAll(ctx context.Context, e *DopeApprovalForAll, emit func(string, []interface{})) error
+	ProcessApprovalForAll(ctx context.Context, e *DopeApprovalForAll, tx *ent.Tx) error
 
-	ProcessDelegateChanged(ctx context.Context, e *DopeDelegateChanged, emit func(string, []interface{})) error
+	ProcessDelegateChanged(ctx context.Context, e *DopeDelegateChanged, tx *ent.Tx) error
 
-	ProcessDelegateVotesChanged(ctx context.Context, e *DopeDelegateVotesChanged, emit func(string, []interface{})) error
+	ProcessDelegateVotesChanged(ctx context.Context, e *DopeDelegateVotesChanged, tx *ent.Tx) error
 
-	ProcessOwnershipTransferred(ctx context.Context, e *DopeOwnershipTransferred, emit func(string, []interface{})) error
+	ProcessOwnershipTransferred(ctx context.Context, e *DopeOwnershipTransferred, tx *ent.Tx) error
 
-	ProcessTransfer(ctx context.Context, e *DopeTransfer, emit func(string, []interface{})) error
+	ProcessTransfer(ctx context.Context, e *DopeTransfer, tx *ent.Tx) error
 
 	mustEmbedUnimplementedDopeProcessor()
 }
@@ -67,8 +69,8 @@ func (h *UnimplementedDopeProcessor) Setup(address common.Address, eth interface
 	return nil
 }
 
-func (h *UnimplementedDopeProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, func(string, []interface{})) error {
-	return func(ctx context.Context, vLog types.Log, emit func(string, []interface{})) error {
+func (h *UnimplementedDopeProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, *ent.Tx) error {
+	return func(ctx context.Context, vLog types.Log, tx *ent.Tx) error {
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["Approval"].ID.Hex():
@@ -78,7 +80,7 @@ func (h *UnimplementedDopeProcessor) ProcessElement(p interface{}) func(context.
 			}
 
 			e.Raw = vLog
-			if err := p.(DopeProcessor).ProcessApproval(ctx, e, emit); err != nil {
+			if err := p.(DopeProcessor).ProcessApproval(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing Approval: %w", err)
 			}
 
@@ -89,7 +91,7 @@ func (h *UnimplementedDopeProcessor) ProcessElement(p interface{}) func(context.
 			}
 
 			e.Raw = vLog
-			if err := p.(DopeProcessor).ProcessApprovalForAll(ctx, e, emit); err != nil {
+			if err := p.(DopeProcessor).ProcessApprovalForAll(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing ApprovalForAll: %w", err)
 			}
 
@@ -100,7 +102,7 @@ func (h *UnimplementedDopeProcessor) ProcessElement(p interface{}) func(context.
 			}
 
 			e.Raw = vLog
-			if err := p.(DopeProcessor).ProcessDelegateChanged(ctx, e, emit); err != nil {
+			if err := p.(DopeProcessor).ProcessDelegateChanged(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing DelegateChanged: %w", err)
 			}
 
@@ -111,7 +113,7 @@ func (h *UnimplementedDopeProcessor) ProcessElement(p interface{}) func(context.
 			}
 
 			e.Raw = vLog
-			if err := p.(DopeProcessor).ProcessDelegateVotesChanged(ctx, e, emit); err != nil {
+			if err := p.(DopeProcessor).ProcessDelegateVotesChanged(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing DelegateVotesChanged: %w", err)
 			}
 
@@ -122,7 +124,7 @@ func (h *UnimplementedDopeProcessor) ProcessElement(p interface{}) func(context.
 			}
 
 			e.Raw = vLog
-			if err := p.(DopeProcessor).ProcessOwnershipTransferred(ctx, e, emit); err != nil {
+			if err := p.(DopeProcessor).ProcessOwnershipTransferred(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing OwnershipTransferred: %w", err)
 			}
 
@@ -133,7 +135,7 @@ func (h *UnimplementedDopeProcessor) ProcessElement(p interface{}) func(context.
 			}
 
 			e.Raw = vLog
-			if err := p.(DopeProcessor).ProcessTransfer(ctx, e, emit); err != nil {
+			if err := p.(DopeProcessor).ProcessTransfer(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing Transfer: %w", err)
 			}
 
@@ -157,31 +159,31 @@ func (h *UnimplementedDopeProcessor) UnpackLog(out interface{}, event string, lo
 	return abi.ParseTopics(out, indexed, log.Topics[1:])
 }
 
-func (h *UnimplementedDopeProcessor) Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error {
+func (h *UnimplementedDopeProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedDopeProcessor) ProcessApproval(ctx context.Context, e *DopeApproval, emit func(string, []interface{})) error {
+func (h *UnimplementedDopeProcessor) ProcessApproval(ctx context.Context, e *DopeApproval, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedDopeProcessor) ProcessApprovalForAll(ctx context.Context, e *DopeApprovalForAll, emit func(string, []interface{})) error {
+func (h *UnimplementedDopeProcessor) ProcessApprovalForAll(ctx context.Context, e *DopeApprovalForAll, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedDopeProcessor) ProcessDelegateChanged(ctx context.Context, e *DopeDelegateChanged, emit func(string, []interface{})) error {
+func (h *UnimplementedDopeProcessor) ProcessDelegateChanged(ctx context.Context, e *DopeDelegateChanged, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedDopeProcessor) ProcessDelegateVotesChanged(ctx context.Context, e *DopeDelegateVotesChanged, emit func(string, []interface{})) error {
+func (h *UnimplementedDopeProcessor) ProcessDelegateVotesChanged(ctx context.Context, e *DopeDelegateVotesChanged, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedDopeProcessor) ProcessOwnershipTransferred(ctx context.Context, e *DopeOwnershipTransferred, emit func(string, []interface{})) error {
+func (h *UnimplementedDopeProcessor) ProcessOwnershipTransferred(ctx context.Context, e *DopeOwnershipTransferred, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedDopeProcessor) ProcessTransfer(ctx context.Context, e *DopeTransfer, emit func(string, []interface{})) error {
+func (h *UnimplementedDopeProcessor) ProcessTransfer(ctx context.Context, e *DopeTransfer, tx *ent.Tx) error {
 	return nil
 }
 

@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
 
 // WalletUpdate is the builder for updating Wallet entities.
@@ -67,17 +67,17 @@ func (wu *WalletUpdate) AddDopes(d ...*Dope) *WalletUpdate {
 	return wu.AddDopeIDs(ids...)
 }
 
-// AddItemIDs adds the "items" edge to the Item entity by IDs.
+// AddItemIDs adds the "items" edge to the WalletItems entity by IDs.
 func (wu *WalletUpdate) AddItemIDs(ids ...string) *WalletUpdate {
 	wu.mutation.AddItemIDs(ids...)
 	return wu
 }
 
-// AddItems adds the "items" edges to the Item entity.
-func (wu *WalletUpdate) AddItems(i ...*Item) *WalletUpdate {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+// AddItems adds the "items" edges to the WalletItems entity.
+func (wu *WalletUpdate) AddItems(w ...*WalletItems) *WalletUpdate {
+	ids := make([]string, len(w))
+	for i := range w {
+		ids[i] = w[i].ID
 	}
 	return wu.AddItemIDs(ids...)
 }
@@ -123,23 +123,23 @@ func (wu *WalletUpdate) RemoveDopes(d ...*Dope) *WalletUpdate {
 	return wu.RemoveDopeIDs(ids...)
 }
 
-// ClearItems clears all "items" edges to the Item entity.
+// ClearItems clears all "items" edges to the WalletItems entity.
 func (wu *WalletUpdate) ClearItems() *WalletUpdate {
 	wu.mutation.ClearItems()
 	return wu
 }
 
-// RemoveItemIDs removes the "items" edge to Item entities by IDs.
+// RemoveItemIDs removes the "items" edge to WalletItems entities by IDs.
 func (wu *WalletUpdate) RemoveItemIDs(ids ...string) *WalletUpdate {
 	wu.mutation.RemoveItemIDs(ids...)
 	return wu
 }
 
-// RemoveItems removes "items" edges to Item entities.
-func (wu *WalletUpdate) RemoveItems(i ...*Item) *WalletUpdate {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+// RemoveItems removes "items" edges to WalletItems entities.
+func (wu *WalletUpdate) RemoveItems(w ...*WalletItems) *WalletUpdate {
+	ids := make([]string, len(w))
+	for i := range w {
+		ids[i] = w[i].ID
 	}
 	return wu.RemoveItemIDs(ids...)
 }
@@ -315,7 +315,7 @@ func (wu *WalletUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: item.FieldID,
+					Column: walletitems.FieldID,
 				},
 			},
 		}
@@ -331,7 +331,7 @@ func (wu *WalletUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: item.FieldID,
+					Column: walletitems.FieldID,
 				},
 			},
 		}
@@ -350,7 +350,7 @@ func (wu *WalletUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: item.FieldID,
+					Column: walletitems.FieldID,
 				},
 			},
 		}
@@ -468,17 +468,17 @@ func (wuo *WalletUpdateOne) AddDopes(d ...*Dope) *WalletUpdateOne {
 	return wuo.AddDopeIDs(ids...)
 }
 
-// AddItemIDs adds the "items" edge to the Item entity by IDs.
+// AddItemIDs adds the "items" edge to the WalletItems entity by IDs.
 func (wuo *WalletUpdateOne) AddItemIDs(ids ...string) *WalletUpdateOne {
 	wuo.mutation.AddItemIDs(ids...)
 	return wuo
 }
 
-// AddItems adds the "items" edges to the Item entity.
-func (wuo *WalletUpdateOne) AddItems(i ...*Item) *WalletUpdateOne {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+// AddItems adds the "items" edges to the WalletItems entity.
+func (wuo *WalletUpdateOne) AddItems(w ...*WalletItems) *WalletUpdateOne {
+	ids := make([]string, len(w))
+	for i := range w {
+		ids[i] = w[i].ID
 	}
 	return wuo.AddItemIDs(ids...)
 }
@@ -524,23 +524,23 @@ func (wuo *WalletUpdateOne) RemoveDopes(d ...*Dope) *WalletUpdateOne {
 	return wuo.RemoveDopeIDs(ids...)
 }
 
-// ClearItems clears all "items" edges to the Item entity.
+// ClearItems clears all "items" edges to the WalletItems entity.
 func (wuo *WalletUpdateOne) ClearItems() *WalletUpdateOne {
 	wuo.mutation.ClearItems()
 	return wuo
 }
 
-// RemoveItemIDs removes the "items" edge to Item entities by IDs.
+// RemoveItemIDs removes the "items" edge to WalletItems entities by IDs.
 func (wuo *WalletUpdateOne) RemoveItemIDs(ids ...string) *WalletUpdateOne {
 	wuo.mutation.RemoveItemIDs(ids...)
 	return wuo
 }
 
-// RemoveItems removes "items" edges to Item entities.
-func (wuo *WalletUpdateOne) RemoveItems(i ...*Item) *WalletUpdateOne {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+// RemoveItems removes "items" edges to WalletItems entities.
+func (wuo *WalletUpdateOne) RemoveItems(w ...*WalletItems) *WalletUpdateOne {
+	ids := make([]string, len(w))
+	for i := range w {
+		ids[i] = w[i].ID
 	}
 	return wuo.RemoveItemIDs(ids...)
 }
@@ -740,7 +740,7 @@ func (wuo *WalletUpdateOne) sqlSave(ctx context.Context) (_node *Wallet, err err
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: item.FieldID,
+					Column: walletitems.FieldID,
 				},
 			},
 		}
@@ -756,7 +756,7 @@ func (wuo *WalletUpdateOne) sqlSave(ctx context.Context) (_node *Wallet, err err
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: item.FieldID,
+					Column: walletitems.FieldID,
 				},
 			},
 		}
@@ -775,7 +775,7 @@ func (wuo *WalletUpdateOne) sqlSave(ctx context.Context) (_node *Wallet, err err
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: item.FieldID,
+					Column: walletitems.FieldID,
 				},
 			},
 		}

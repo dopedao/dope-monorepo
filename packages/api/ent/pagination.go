@@ -20,6 +20,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"github.com/vmihailenco/msgpack/v5"
 )
@@ -1596,5 +1597,232 @@ func (w *Wallet) ToEdge(order *WalletOrder) *WalletEdge {
 	return &WalletEdge{
 		Node:   w,
 		Cursor: order.Field.toCursor(w),
+	}
+}
+
+// WalletItemsEdge is the edge representation of WalletItems.
+type WalletItemsEdge struct {
+	Node   *WalletItems `json:"node"`
+	Cursor Cursor       `json:"cursor"`
+}
+
+// WalletItemsConnection is the connection containing edges to WalletItems.
+type WalletItemsConnection struct {
+	Edges      []*WalletItemsEdge `json:"edges"`
+	PageInfo   PageInfo           `json:"pageInfo"`
+	TotalCount int                `json:"totalCount"`
+}
+
+// WalletItemsPaginateOption enables pagination customization.
+type WalletItemsPaginateOption func(*walletItemsPager) error
+
+// WithWalletItemsOrder configures pagination ordering.
+func WithWalletItemsOrder(order *WalletItemsOrder) WalletItemsPaginateOption {
+	if order == nil {
+		order = DefaultWalletItemsOrder
+	}
+	o := *order
+	return func(pager *walletItemsPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultWalletItemsOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithWalletItemsFilter configures pagination filter.
+func WithWalletItemsFilter(filter func(*WalletItemsQuery) (*WalletItemsQuery, error)) WalletItemsPaginateOption {
+	return func(pager *walletItemsPager) error {
+		if filter == nil {
+			return errors.New("WalletItemsQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type walletItemsPager struct {
+	order  *WalletItemsOrder
+	filter func(*WalletItemsQuery) (*WalletItemsQuery, error)
+}
+
+func newWalletItemsPager(opts []WalletItemsPaginateOption) (*walletItemsPager, error) {
+	pager := &walletItemsPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultWalletItemsOrder
+	}
+	return pager, nil
+}
+
+func (p *walletItemsPager) applyFilter(query *WalletItemsQuery) (*WalletItemsQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *walletItemsPager) toCursor(wi *WalletItems) Cursor {
+	return p.order.Field.toCursor(wi)
+}
+
+func (p *walletItemsPager) applyCursors(query *WalletItemsQuery, after, before *Cursor) *WalletItemsQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultWalletItemsOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *walletItemsPager) applyOrder(query *WalletItemsQuery, reverse bool) *WalletItemsQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultWalletItemsOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultWalletItemsOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to WalletItems.
+func (wi *WalletItemsQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...WalletItemsPaginateOption,
+) (*WalletItemsConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newWalletItemsPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if wi, err = pager.applyFilter(wi); err != nil {
+		return nil, err
+	}
+
+	conn := &WalletItemsConnection{Edges: []*WalletItemsEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := wi.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := wi.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	wi = pager.applyCursors(wi, after, before)
+	wi = pager.applyOrder(wi, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		wi = wi.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		wi = wi.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := wi.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *WalletItems
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *WalletItems {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *WalletItems {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*WalletItemsEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &WalletItemsEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+// WalletItemsOrderField defines the ordering field of WalletItems.
+type WalletItemsOrderField struct {
+	field    string
+	toCursor func(*WalletItems) Cursor
+}
+
+// WalletItemsOrder defines the ordering of WalletItems.
+type WalletItemsOrder struct {
+	Direction OrderDirection         `json:"direction"`
+	Field     *WalletItemsOrderField `json:"field"`
+}
+
+// DefaultWalletItemsOrder is the default ordering of WalletItems.
+var DefaultWalletItemsOrder = &WalletItemsOrder{
+	Direction: OrderDirectionAsc,
+	Field: &WalletItemsOrderField{
+		field: walletitems.FieldID,
+		toCursor: func(wi *WalletItems) Cursor {
+			return Cursor{ID: wi.ID}
+		},
+	},
+}
+
+// ToEdge converts WalletItems into WalletItemsEdge.
+func (wi *WalletItems) ToEdge(order *WalletItemsOrder) *WalletItemsEdge {
+	if order == nil {
+		order = DefaultWalletItemsOrder
+	}
+	return &WalletItemsEdge{
+		Node:   wi,
+		Cursor: order.Field.toCursor(wi),
 	}
 }

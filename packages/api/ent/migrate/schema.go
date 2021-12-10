@@ -90,7 +90,6 @@ var (
 		{Name: "svg", Type: field.TypeString, Nullable: true},
 		{Name: "hustler_items", Type: field.TypeString, Nullable: true},
 		{Name: "item_derivative", Type: field.TypeString, Nullable: true},
-		{Name: "wallet_items", Type: field.TypeString, Nullable: true},
 	}
 	// ItemsTable holds the schema information for the "items" table.
 	ItemsTable = &schema.Table{
@@ -108,12 +107,6 @@ var (
 				Symbol:     "items_items_derivative",
 				Columns:    []*schema.Column{ItemsColumns[10]},
 				RefColumns: []*schema.Column{ItemsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "items_wallets_items",
-				Columns:    []*schema.Column{ItemsColumns[11]},
-				RefColumns: []*schema.Column{WalletsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -139,6 +132,33 @@ var (
 		Name:       "wallets",
 		Columns:    WalletsColumns,
 		PrimaryKey: []*schema.Column{WalletsColumns[0]},
+	}
+	// WalletItemsColumns holds the columns for the "wallet_items" table.
+	WalletItemsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "balance", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "item_wallets", Type: field.TypeString, Nullable: true},
+		{Name: "wallet_items", Type: field.TypeString, Nullable: true},
+	}
+	// WalletItemsTable holds the schema information for the "wallet_items" table.
+	WalletItemsTable = &schema.Table{
+		Name:       "wallet_items",
+		Columns:    WalletItemsColumns,
+		PrimaryKey: []*schema.Column{WalletItemsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "wallet_items_items_wallets",
+				Columns:    []*schema.Column{WalletItemsColumns[2]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "wallet_items_wallets_items",
+				Columns:    []*schema.Column{WalletItemsColumns[3]},
+				RefColumns: []*schema.Column{WalletsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// DopeItemsColumns holds the columns for the "dope_items" table.
 	DopeItemsColumns = []*schema.Column{
@@ -173,6 +193,7 @@ var (
 		ItemsTable,
 		SyncStatesTable,
 		WalletsTable,
+		WalletItemsTable,
 		DopeItemsTable,
 	}
 )
@@ -183,7 +204,8 @@ func init() {
 	HustlersTable.ForeignKeys[0].RefTable = WalletsTable
 	ItemsTable.ForeignKeys[0].RefTable = HustlersTable
 	ItemsTable.ForeignKeys[1].RefTable = ItemsTable
-	ItemsTable.ForeignKeys[2].RefTable = WalletsTable
+	WalletItemsTable.ForeignKeys[0].RefTable = ItemsTable
+	WalletItemsTable.ForeignKeys[1].RefTable = WalletsTable
 	DopeItemsTable.ForeignKeys[0].RefTable = DopesTable
 	DopeItemsTable.ForeignKeys[1].RefTable = ItemsTable
 }

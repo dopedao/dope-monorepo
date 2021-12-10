@@ -6,6 +6,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -28,4 +29,10 @@ func init() {
 	walletDescPaper := walletFields[1].Descriptor()
 	// wallet.DefaultPaper holds the default value on creation for the paper field.
 	wallet.DefaultPaper = walletDescPaper.Default.(func() schema.BigInt)
+	walletitemsFields := schema.WalletItems{}.Fields()
+	_ = walletitemsFields
+	// walletitemsDescBalance is the schema descriptor for balance field.
+	walletitemsDescBalance := walletitemsFields[1].Descriptor()
+	// walletitems.DefaultBalance holds the default value on creation for the balance field.
+	walletitems.DefaultBalance = walletitemsDescBalance.Default.(func() schema.BigInt)
 }

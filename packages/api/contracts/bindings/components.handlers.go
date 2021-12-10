@@ -12,6 +12,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
 )
 
 type ComponentsProcessor interface {
@@ -19,11 +21,11 @@ type ComponentsProcessor interface {
 		ethereum.ChainReader
 		bind.ContractBackend
 	}) error
-	Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error
+	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessAddComponent(ctx context.Context, e *ComponentsAddComponent, emit func(string, []interface{})) error
+	ProcessAddComponent(ctx context.Context, e *ComponentsAddComponent, tx *ent.Tx) error
 
-	ProcessOwnershipTransferred(ctx context.Context, e *ComponentsOwnershipTransferred, emit func(string, []interface{})) error
+	ProcessOwnershipTransferred(ctx context.Context, e *ComponentsOwnershipTransferred, tx *ent.Tx) error
 
 	mustEmbedUnimplementedComponentsProcessor()
 }
@@ -59,8 +61,8 @@ func (h *UnimplementedComponentsProcessor) Setup(address common.Address, eth int
 	return nil
 }
 
-func (h *UnimplementedComponentsProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, func(string, []interface{})) error {
-	return func(ctx context.Context, vLog types.Log, emit func(string, []interface{})) error {
+func (h *UnimplementedComponentsProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, *ent.Tx) error {
+	return func(ctx context.Context, vLog types.Log, tx *ent.Tx) error {
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["AddComponent"].ID.Hex():
@@ -70,7 +72,7 @@ func (h *UnimplementedComponentsProcessor) ProcessElement(p interface{}) func(co
 			}
 
 			e.Raw = vLog
-			if err := p.(ComponentsProcessor).ProcessAddComponent(ctx, e, emit); err != nil {
+			if err := p.(ComponentsProcessor).ProcessAddComponent(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing AddComponent: %w", err)
 			}
 
@@ -81,7 +83,7 @@ func (h *UnimplementedComponentsProcessor) ProcessElement(p interface{}) func(co
 			}
 
 			e.Raw = vLog
-			if err := p.(ComponentsProcessor).ProcessOwnershipTransferred(ctx, e, emit); err != nil {
+			if err := p.(ComponentsProcessor).ProcessOwnershipTransferred(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing OwnershipTransferred: %w", err)
 			}
 
@@ -105,15 +107,15 @@ func (h *UnimplementedComponentsProcessor) UnpackLog(out interface{}, event stri
 	return abi.ParseTopics(out, indexed, log.Topics[1:])
 }
 
-func (h *UnimplementedComponentsProcessor) Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error {
+func (h *UnimplementedComponentsProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedComponentsProcessor) ProcessAddComponent(ctx context.Context, e *ComponentsAddComponent, emit func(string, []interface{})) error {
+func (h *UnimplementedComponentsProcessor) ProcessAddComponent(ctx context.Context, e *ComponentsAddComponent, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedComponentsProcessor) ProcessOwnershipTransferred(ctx context.Context, e *ComponentsOwnershipTransferred, emit func(string, []interface{})) error {
+func (h *UnimplementedComponentsProcessor) ProcessOwnershipTransferred(ctx context.Context, e *ComponentsOwnershipTransferred, tx *ent.Tx) error {
 	return nil
 }
 

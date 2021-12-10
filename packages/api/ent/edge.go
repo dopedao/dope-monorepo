@@ -52,12 +52,12 @@ func (h *Hustler) Bodyparts(ctx context.Context) ([]*BodyPart, error) {
 	return result, err
 }
 
-func (i *Item) Wallet(ctx context.Context) (*Wallet, error) {
-	result, err := i.Edges.WalletOrErr()
+func (i *Item) Wallets(ctx context.Context) ([]*WalletItems, error) {
+	result, err := i.Edges.WalletsOrErr()
 	if IsNotLoaded(err) {
-		result, err = i.QueryWallet().Only(ctx)
+		result, err = i.QueryWallets().All(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (i *Item) Hustler(ctx context.Context) (*Hustler, error) {
@@ -100,7 +100,7 @@ func (w *Wallet) Dopes(ctx context.Context) ([]*Dope, error) {
 	return result, err
 }
 
-func (w *Wallet) Items(ctx context.Context) ([]*Item, error) {
+func (w *Wallet) Items(ctx context.Context) ([]*WalletItems, error) {
 	result, err := w.Edges.ItemsOrErr()
 	if IsNotLoaded(err) {
 		result, err = w.QueryItems().All(ctx)
@@ -114,4 +114,20 @@ func (w *Wallet) Hustlers(ctx context.Context) ([]*Hustler, error) {
 		result, err = w.QueryHustlers().All(ctx)
 	}
 	return result, err
+}
+
+func (wi *WalletItems) Wallet(ctx context.Context) (*Wallet, error) {
+	result, err := wi.Edges.WalletOrErr()
+	if IsNotLoaded(err) {
+		result, err = wi.QueryWallet().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (wi *WalletItems) Item(ctx context.Context) (*Item, error) {
+	result, err := wi.Edges.ItemOrErr()
+	if IsNotLoaded(err) {
+		result, err = wi.QueryItem().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }

@@ -14,9 +14,9 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
 
 // WalletQuery is the builder for querying Wallet entities.
@@ -30,7 +30,7 @@ type WalletQuery struct {
 	predicates []predicate.Wallet
 	// eager-loading edges.
 	withDopes    *DopeQuery
-	withItems    *ItemQuery
+	withItems    *WalletItemsQuery
 	withHustlers *HustlerQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -91,8 +91,8 @@ func (wq *WalletQuery) QueryDopes() *DopeQuery {
 }
 
 // QueryItems chains the current query on the "items" edge.
-func (wq *WalletQuery) QueryItems() *ItemQuery {
-	query := &ItemQuery{config: wq.config}
+func (wq *WalletQuery) QueryItems() *WalletItemsQuery {
+	query := &WalletItemsQuery{config: wq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := wq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -103,7 +103,7 @@ func (wq *WalletQuery) QueryItems() *ItemQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(wallet.Table, wallet.FieldID, selector),
-			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.To(walletitems.Table, walletitems.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, wallet.ItemsTable, wallet.ItemsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(wq.driver.Dialect(), step)
@@ -337,8 +337,8 @@ func (wq *WalletQuery) WithDopes(opts ...func(*DopeQuery)) *WalletQuery {
 
 // WithItems tells the query-builder to eager-load the nodes that are connected to
 // the "items" edge. The optional arguments are used to configure the query builder of the edge.
-func (wq *WalletQuery) WithItems(opts ...func(*ItemQuery)) *WalletQuery {
-	query := &ItemQuery{config: wq.config}
+func (wq *WalletQuery) WithItems(opts ...func(*WalletItemsQuery)) *WalletQuery {
+	query := &WalletItemsQuery{config: wq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -483,10 +483,10 @@ func (wq *WalletQuery) sqlAll(ctx context.Context) ([]*Wallet, error) {
 		for i := range nodes {
 			fks = append(fks, nodes[i].ID)
 			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.Items = []*Item{}
+			nodes[i].Edges.Items = []*WalletItems{}
 		}
 		query.withFKs = true
-		query.Where(predicate.Item(func(s *sql.Selector) {
+		query.Where(predicate.WalletItems(func(s *sql.Selector) {
 			s.Where(sql.InValues(wallet.ItemsColumn, fks...))
 		}))
 		neighbors, err := query.All(ctx)

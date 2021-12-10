@@ -12,6 +12,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
 )
 
 type SwapMeetProcessor interface {
@@ -19,19 +21,19 @@ type SwapMeetProcessor interface {
 		ethereum.ChainReader
 		bind.ContractBackend
 	}) error
-	Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error
+	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessApprovalForAll(ctx context.Context, e *SwapMeetApprovalForAll, emit func(string, []interface{})) error
+	ProcessApprovalForAll(ctx context.Context, e *SwapMeetApprovalForAll, tx *ent.Tx) error
 
-	ProcessOwnershipTransferred(ctx context.Context, e *SwapMeetOwnershipTransferred, emit func(string, []interface{})) error
+	ProcessOwnershipTransferred(ctx context.Context, e *SwapMeetOwnershipTransferred, tx *ent.Tx) error
 
-	ProcessSetRle(ctx context.Context, e *SwapMeetSetRle, emit func(string, []interface{})) error
+	ProcessSetRle(ctx context.Context, e *SwapMeetSetRle, tx *ent.Tx) error
 
-	ProcessTransferBatch(ctx context.Context, e *SwapMeetTransferBatch, emit func(string, []interface{})) error
+	ProcessTransferBatch(ctx context.Context, e *SwapMeetTransferBatch, tx *ent.Tx) error
 
-	ProcessTransferSingle(ctx context.Context, e *SwapMeetTransferSingle, emit func(string, []interface{})) error
+	ProcessTransferSingle(ctx context.Context, e *SwapMeetTransferSingle, tx *ent.Tx) error
 
-	ProcessURI(ctx context.Context, e *SwapMeetURI, emit func(string, []interface{})) error
+	ProcessURI(ctx context.Context, e *SwapMeetURI, tx *ent.Tx) error
 
 	mustEmbedUnimplementedSwapMeetProcessor()
 }
@@ -67,8 +69,8 @@ func (h *UnimplementedSwapMeetProcessor) Setup(address common.Address, eth inter
 	return nil
 }
 
-func (h *UnimplementedSwapMeetProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, func(string, []interface{})) error {
-	return func(ctx context.Context, vLog types.Log, emit func(string, []interface{})) error {
+func (h *UnimplementedSwapMeetProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, *ent.Tx) error {
+	return func(ctx context.Context, vLog types.Log, tx *ent.Tx) error {
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["ApprovalForAll"].ID.Hex():
@@ -78,7 +80,7 @@ func (h *UnimplementedSwapMeetProcessor) ProcessElement(p interface{}) func(cont
 			}
 
 			e.Raw = vLog
-			if err := p.(SwapMeetProcessor).ProcessApprovalForAll(ctx, e, emit); err != nil {
+			if err := p.(SwapMeetProcessor).ProcessApprovalForAll(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing ApprovalForAll: %w", err)
 			}
 
@@ -89,7 +91,7 @@ func (h *UnimplementedSwapMeetProcessor) ProcessElement(p interface{}) func(cont
 			}
 
 			e.Raw = vLog
-			if err := p.(SwapMeetProcessor).ProcessOwnershipTransferred(ctx, e, emit); err != nil {
+			if err := p.(SwapMeetProcessor).ProcessOwnershipTransferred(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing OwnershipTransferred: %w", err)
 			}
 
@@ -100,7 +102,7 @@ func (h *UnimplementedSwapMeetProcessor) ProcessElement(p interface{}) func(cont
 			}
 
 			e.Raw = vLog
-			if err := p.(SwapMeetProcessor).ProcessSetRle(ctx, e, emit); err != nil {
+			if err := p.(SwapMeetProcessor).ProcessSetRle(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing SetRle: %w", err)
 			}
 
@@ -111,7 +113,7 @@ func (h *UnimplementedSwapMeetProcessor) ProcessElement(p interface{}) func(cont
 			}
 
 			e.Raw = vLog
-			if err := p.(SwapMeetProcessor).ProcessTransferBatch(ctx, e, emit); err != nil {
+			if err := p.(SwapMeetProcessor).ProcessTransferBatch(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing TransferBatch: %w", err)
 			}
 
@@ -122,7 +124,7 @@ func (h *UnimplementedSwapMeetProcessor) ProcessElement(p interface{}) func(cont
 			}
 
 			e.Raw = vLog
-			if err := p.(SwapMeetProcessor).ProcessTransferSingle(ctx, e, emit); err != nil {
+			if err := p.(SwapMeetProcessor).ProcessTransferSingle(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing TransferSingle: %w", err)
 			}
 
@@ -133,7 +135,7 @@ func (h *UnimplementedSwapMeetProcessor) ProcessElement(p interface{}) func(cont
 			}
 
 			e.Raw = vLog
-			if err := p.(SwapMeetProcessor).ProcessURI(ctx, e, emit); err != nil {
+			if err := p.(SwapMeetProcessor).ProcessURI(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing URI: %w", err)
 			}
 
@@ -157,31 +159,31 @@ func (h *UnimplementedSwapMeetProcessor) UnpackLog(out interface{}, event string
 	return abi.ParseTopics(out, indexed, log.Topics[1:])
 }
 
-func (h *UnimplementedSwapMeetProcessor) Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error {
+func (h *UnimplementedSwapMeetProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedSwapMeetProcessor) ProcessApprovalForAll(ctx context.Context, e *SwapMeetApprovalForAll, emit func(string, []interface{})) error {
+func (h *UnimplementedSwapMeetProcessor) ProcessApprovalForAll(ctx context.Context, e *SwapMeetApprovalForAll, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedSwapMeetProcessor) ProcessOwnershipTransferred(ctx context.Context, e *SwapMeetOwnershipTransferred, emit func(string, []interface{})) error {
+func (h *UnimplementedSwapMeetProcessor) ProcessOwnershipTransferred(ctx context.Context, e *SwapMeetOwnershipTransferred, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedSwapMeetProcessor) ProcessSetRle(ctx context.Context, e *SwapMeetSetRle, emit func(string, []interface{})) error {
+func (h *UnimplementedSwapMeetProcessor) ProcessSetRle(ctx context.Context, e *SwapMeetSetRle, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedSwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *SwapMeetTransferBatch, emit func(string, []interface{})) error {
+func (h *UnimplementedSwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *SwapMeetTransferBatch, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedSwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *SwapMeetTransferSingle, emit func(string, []interface{})) error {
+func (h *UnimplementedSwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *SwapMeetTransferSingle, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedSwapMeetProcessor) ProcessURI(ctx context.Context, e *SwapMeetURI, emit func(string, []interface{})) error {
+func (h *UnimplementedSwapMeetProcessor) ProcessURI(ctx context.Context, e *SwapMeetURI, tx *ent.Tx) error {
 	return nil
 }
 
