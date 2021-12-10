@@ -56,7 +56,7 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e *bindings.Hustl
 	}
 
 	for i := 0; i < int(e.Len.Int64()); i++ {
-		id := int64(n + i)
+		id := int64(n + i - 1)
 		rle, err := p.Contract.BodyRle(nil, e.Part, big.NewInt(id))
 		if err != nil {
 			return fmt.Errorf("hustler: getting body rle part %d, id: %d: %w", e.Part, id, err)
