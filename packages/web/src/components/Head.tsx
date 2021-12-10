@@ -2,8 +2,8 @@ import NextHead from 'next/head';
 
 const defaultTitle = 'DOPEWARS.EXE';
 const defaultDescription = 'Welcome to the streets';
-const defaultOGURL = 'http://dopewars.gg';
-const defaultOGImage = `${defaultOGURL}/fpo/social-card.png`;
+const defaultOGURL = 'https://dopewars.gg';
+const defaultOGImage = `${defaultOGURL}/fpo/social-card.gif`;
 const favicon = '/fpo/favicon.png';
 
 type HeadProps = {
@@ -21,12 +21,13 @@ const Head = ({ title, description, url, ogImage }: HeadProps) => (
     <meta name="description" content={description || defaultDescription} />
     <link rel="icon" type="image/png" sizes="24x24" href={favicon} />
     <meta property="og:url" content={url || defaultOGURL} />
-    <meta property="og:title" content={title || ''} />
+    <meta property="og:title" content={title ? `${defaultTitle} | ${title}` : defaultTitle} />
     <meta property="og:description" content={description || defaultDescription} />
     <meta name="twitter:site" content={url || defaultOGURL} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage || defaultOGImage} />
     <meta property="og:image" content={ogImage || defaultOGImage} />
+    <meta property="og:image:secure_url" content={ogImage || defaultOGImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
   </NextHead>
