@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
 // ID filters vertices based on their ID field.
@@ -121,7 +120,7 @@ func Background(v string) predicate.Hustler {
 }
 
 // Age applies equality check predicate on the "age" field. It's identical to AgeEQ.
-func Age(v schema.BigInt) predicate.Hustler {
+func Age(v uint64) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldAge), v))
 	})
@@ -676,21 +675,21 @@ func BackgroundContainsFold(v string) predicate.Hustler {
 }
 
 // AgeEQ applies the EQ predicate on the "age" field.
-func AgeEQ(v schema.BigInt) predicate.Hustler {
+func AgeEQ(v uint64) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldAge), v))
 	})
 }
 
 // AgeNEQ applies the NEQ predicate on the "age" field.
-func AgeNEQ(v schema.BigInt) predicate.Hustler {
+func AgeNEQ(v uint64) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldAge), v))
 	})
 }
 
 // AgeIn applies the In predicate on the "age" field.
-func AgeIn(vs ...schema.BigInt) predicate.Hustler {
+func AgeIn(vs ...uint64) predicate.Hustler {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -707,7 +706,7 @@ func AgeIn(vs ...schema.BigInt) predicate.Hustler {
 }
 
 // AgeNotIn applies the NotIn predicate on the "age" field.
-func AgeNotIn(vs ...schema.BigInt) predicate.Hustler {
+func AgeNotIn(vs ...uint64) predicate.Hustler {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -724,28 +723,28 @@ func AgeNotIn(vs ...schema.BigInt) predicate.Hustler {
 }
 
 // AgeGT applies the GT predicate on the "age" field.
-func AgeGT(v schema.BigInt) predicate.Hustler {
+func AgeGT(v uint64) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldAge), v))
 	})
 }
 
 // AgeGTE applies the GTE predicate on the "age" field.
-func AgeGTE(v schema.BigInt) predicate.Hustler {
+func AgeGTE(v uint64) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldAge), v))
 	})
 }
 
 // AgeLT applies the LT predicate on the "age" field.
-func AgeLT(v schema.BigInt) predicate.Hustler {
+func AgeLT(v uint64) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldAge), v))
 	})
 }
 
 // AgeLTE applies the LTE predicate on the "age" field.
-func AgeLTE(v schema.BigInt) predicate.Hustler {
+func AgeLTE(v uint64) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldAge), v))
 	})

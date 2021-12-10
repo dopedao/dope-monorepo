@@ -190,7 +190,7 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Fields[5] = &Field{
-		Type:  "schema.BigInt",
+		Type:  "uint64",
 		Name:  "age",
 		Value: string(buf),
 	}

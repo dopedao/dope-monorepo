@@ -5,22 +5,21 @@ import (
 	"encoding/hex"
 	"fmt"
 	"math/big"
-	"strconv"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/ethereum/go-ethereum/common"
 )
 
 const (
 	MaleBody   uint8 = 0
-	FemaleBody       = 1
-	MaleHair         = 2
-	FemaleHair       = 3
-	Beard            = 4
+	FemaleBody uint8 = 1
+	MaleHair   uint8 = 2
+	FemaleHair uint8 = 3
+	Beard      uint8 = 4
 )
 
 type HustlerProcessor struct {
@@ -60,10 +59,10 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e *bindings.Hustl
 		id := int64(n + i)
 		rle, err := p.Contract.BodyRle(nil, e.Part, big.NewInt(id))
 		if err != nil {
-			return fmt.Errorf("hustler: getting body rle: %w", err)
+			return fmt.Errorf("hustler: getting body rle part %d, id: %d: %w", e.Part, id, err)
 		}
 		builders = append(builders, tx.BodyPart.Create().
-			SetID(strconv.Itoa(int(id))).
+			SetID(fmt.Sprintf("%s-%s-%d", sex, part, id)).
 			SetRle(hex.EncodeToString(rle)).
 			SetType(part).
 			SetSex(sex),
@@ -86,8 +85,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *binding
 	tx.Hustler.UpdateOneID(e.Id.String()).
 		SetName(meta.Name).
 		SetBackground(hex.EncodeToString(meta.Background[:])).
-		SetColor(hex.EncodeToString(meta.Color[:])).
-		SetAge(schema.BigInt{Int: meta.Age})
+		SetColor(hex.EncodeToString(meta.Color[:]))
 
 	return nil
 }
@@ -102,10 +100,17 @@ func (p *HustlerProcessor) ProcessTransferBatch(ctx context.Context, e *bindings
 		if err := tx.Wallet.UpdateOneID(e.From.String()).RemoveHustlerIDs(ids...).Exec(ctx); err != nil {
 			return fmt.Errorf("hustler: update from wallet: %w", err)
 		}
+
+		// TODO: reset age for non-og
 	} else {
 		var builders []*ent.HustlerCreate
-		for _, id := range ids {
-			builders = append(builders, tx.Hustler.Create().SetID(id))
+		for i, id := range ids {
+			typ := hustler.TypeRegular
+			if e.Ids[i].Cmp(big.NewInt(500)) == -1 {
+				typ = hustler.TypeOriginalGangsta
+			}
+
+			builders = append(builders, tx.Hustler.Create().SetID(id).SetType(typ).SetAge(e.Raw.BlockNumber))
 		}
 
 		if err := tx.Hustler.CreateBulk(builders...).Exec(ctx); err != nil {
@@ -133,7 +138,12 @@ func (p *HustlerProcessor) ProcessTransferSingle(ctx context.Context, e *binding
 			return fmt.Errorf("hustler: update from wallet: %w", err)
 		}
 	} else {
-		if err := tx.Hustler.Create().SetID(e.Id.String()).Exec(ctx); err != nil {
+		typ := hustler.TypeRegular
+		if e.Id.Cmp(big.NewInt(500)) == -1 {
+			typ = hustler.TypeOriginalGangsta
+		}
+
+		if err := tx.Hustler.Create().SetID(e.Id.String()).SetType(typ).SetAge(e.Raw.BlockNumber).Exec(ctx); err != nil {
 			return fmt.Errorf("hustler: create hustler: %w", err)
 		}
 	}

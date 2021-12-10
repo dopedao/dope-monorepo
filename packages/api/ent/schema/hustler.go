@@ -26,9 +26,7 @@ func (Hustler) Fields() []ent.Field {
 			Optional(),
 		field.String("background").
 			Optional(),
-		field.Int("age").
-			GoType(BigInt{}).
-			SchemaType(BigIntSchemaType),
+		field.Uint64("age"),
 		field.Enum("sex").
 			Values("male", "female").
 			Optional(),

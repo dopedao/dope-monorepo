@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math/big"
 	"sync"
@@ -113,27 +114,28 @@ func (e *Engine) Sync(ctx context.Context) {
 						log.Fatalf("Filtering logs: %+v.", err)
 					}
 
+					_from = _to + 1
+
 					if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
 						for _, l := range logs {
 							if err := c.Processor.ProcessElement(c.Processor)(ctx, l, tx); err != nil {
-								return err
+								return fmt.Errorf("processing element: %w", err)
 							}
 						}
+
+						if err := e.ent.SyncState.
+							Create().
+							SetID(c.Address.Hex()).
+							SetStartBlock(_from).
+							OnConflictColumns(syncstate.FieldID).
+							UpdateStartBlock().
+							Exec(ctx); err != nil {
+							return fmt.Errorf("updating sync state: %w", err)
+						}
+
 						return nil
 					}); err != nil {
-						log.Fatalf("Processing element: %+v.", err)
-					}
-
-					_from = _to + 1
-
-					if err := e.ent.SyncState.
-						Create().
-						SetID(c.Address.Hex()).
-						SetStartBlock(_from).
-						OnConflictColumns(syncstate.FieldID).
-						UpdateStartBlock().
-						Exec(ctx); err != nil {
-						log.Fatalf("Updating sync state: %+v.", err)
+						log.Fatalf("Syncing contract: %+v.", err)
 					}
 
 					if _to == latest {

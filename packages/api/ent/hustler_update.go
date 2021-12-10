@@ -14,7 +14,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -112,15 +111,15 @@ func (hu *HustlerUpdate) ClearBackground() *HustlerUpdate {
 }
 
 // SetAge sets the "age" field.
-func (hu *HustlerUpdate) SetAge(si schema.BigInt) *HustlerUpdate {
+func (hu *HustlerUpdate) SetAge(u uint64) *HustlerUpdate {
 	hu.mutation.ResetAge()
-	hu.mutation.SetAge(si)
+	hu.mutation.SetAge(u)
 	return hu
 }
 
-// AddAge adds si to the "age" field.
-func (hu *HustlerUpdate) AddAge(si schema.BigInt) *HustlerUpdate {
-	hu.mutation.AddAge(si)
+// AddAge adds u to the "age" field.
+func (hu *HustlerUpdate) AddAge(u int64) *HustlerUpdate {
+	hu.mutation.AddAge(u)
 	return hu
 }
 
@@ -388,14 +387,14 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := hu.mutation.Age(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: hustler.FieldAge,
 		})
 	}
 	if value, ok := hu.mutation.AddedAge(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: hustler.FieldAge,
 		})
@@ -656,15 +655,15 @@ func (huo *HustlerUpdateOne) ClearBackground() *HustlerUpdateOne {
 }
 
 // SetAge sets the "age" field.
-func (huo *HustlerUpdateOne) SetAge(si schema.BigInt) *HustlerUpdateOne {
+func (huo *HustlerUpdateOne) SetAge(u uint64) *HustlerUpdateOne {
 	huo.mutation.ResetAge()
-	huo.mutation.SetAge(si)
+	huo.mutation.SetAge(u)
 	return huo
 }
 
-// AddAge adds si to the "age" field.
-func (huo *HustlerUpdateOne) AddAge(si schema.BigInt) *HustlerUpdateOne {
-	huo.mutation.AddAge(si)
+// AddAge adds u to the "age" field.
+func (huo *HustlerUpdateOne) AddAge(u int64) *HustlerUpdateOne {
+	huo.mutation.AddAge(u)
 	return huo
 }
 
@@ -956,14 +955,14 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 	}
 	if value, ok := huo.mutation.Age(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: hustler.FieldAge,
 		})
 	}
 	if value, ok := huo.mutation.AddedAge(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: hustler.FieldAge,
 		})

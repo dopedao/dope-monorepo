@@ -14,7 +14,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -89,8 +88,8 @@ func (hc *HustlerCreate) SetNillableBackground(s *string) *HustlerCreate {
 }
 
 // SetAge sets the "age" field.
-func (hc *HustlerCreate) SetAge(si schema.BigInt) *HustlerCreate {
-	hc.mutation.SetAge(si)
+func (hc *HustlerCreate) SetAge(u uint64) *HustlerCreate {
+	hc.mutation.SetAge(u)
 	return hc
 }
 
@@ -328,7 +327,7 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := hc.mutation.Age(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: hustler.FieldAge,
 		})
@@ -539,7 +538,7 @@ func (u *HustlerUpsert) ClearBackground() *HustlerUpsert {
 }
 
 // SetAge sets the "age" field.
-func (u *HustlerUpsert) SetAge(v schema.BigInt) *HustlerUpsert {
+func (u *HustlerUpsert) SetAge(v uint64) *HustlerUpsert {
 	u.Set(hustler.FieldAge, v)
 	return u
 }
@@ -551,7 +550,7 @@ func (u *HustlerUpsert) UpdateAge() *HustlerUpsert {
 }
 
 // AddAge adds v to the "age" field.
-func (u *HustlerUpsert) AddAge(v schema.BigInt) *HustlerUpsert {
+func (u *HustlerUpsert) AddAge(v uint64) *HustlerUpsert {
 	u.Add(hustler.FieldAge, v)
 	return u
 }
@@ -726,14 +725,14 @@ func (u *HustlerUpsertOne) ClearBackground() *HustlerUpsertOne {
 }
 
 // SetAge sets the "age" field.
-func (u *HustlerUpsertOne) SetAge(v schema.BigInt) *HustlerUpsertOne {
+func (u *HustlerUpsertOne) SetAge(v uint64) *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
 		s.SetAge(v)
 	})
 }
 
 // AddAge adds v to the "age" field.
-func (u *HustlerUpsertOne) AddAge(v schema.BigInt) *HustlerUpsertOne {
+func (u *HustlerUpsertOne) AddAge(v uint64) *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
 		s.AddAge(v)
 	})
@@ -1084,14 +1083,14 @@ func (u *HustlerUpsertBulk) ClearBackground() *HustlerUpsertBulk {
 }
 
 // SetAge sets the "age" field.
-func (u *HustlerUpsertBulk) SetAge(v schema.BigInt) *HustlerUpsertBulk {
+func (u *HustlerUpsertBulk) SetAge(v uint64) *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
 		s.SetAge(v)
 	})
 }
 
 // AddAge adds v to the "age" field.
-func (u *HustlerUpsertBulk) AddAge(v schema.BigInt) *HustlerUpsertBulk {
+func (u *HustlerUpsertBulk) AddAge(v uint64) *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
 		s.AddAge(v)
 	})
