@@ -18,18 +18,13 @@ import (
 
 type SwapMeetProcessor struct {
 	bindings.UnimplementedSwapMeetProcessor
-	ent *ent.Client
-}
-
-func (p *SwapMeetProcessor) SetEnt(client *ent.Client) {
-	p.ent = client
 }
 
 type Metadata struct {
 	Image string `json:"image"`
 }
 
-func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapMeetSetRle, emit func(string, []interface{})) error {
+func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapMeetSetRle, tx *ent.Tx) error {
 	male, err := p.Contract.TokenRle(nil, e.Id, 0)
 	if err != nil {
 		return fmt.Errorf("getting male item rle: %w", err)
@@ -55,7 +50,7 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapM
 		return fmt.Errorf("unmarshalling metadata: %w", err)
 	}
 
-	if err := p.ent.Item.UpdateOneID(e.Id.String()).SetRles(schema.RLEs{
+	if err := tx.Item.UpdateOneID(e.Id.String()).SetRles(schema.RLEs{
 		Male:   hex.EncodeToString(male),
 		Female: hex.EncodeToString(female),
 	}).SetSvg(parsed.Image).Exec(ctx); err != nil {
@@ -65,7 +60,7 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapM
 	return nil
 }
 
-func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *bindings.SwapMeetTransferBatch, emit func(string, []interface{})) error {
+func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *bindings.SwapMeetTransferBatch, tx *ent.Tx) error {
 	if e.From != (common.Address{}) {
 
 		var ids []string
@@ -73,11 +68,11 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *binding
 			ids = append(ids, fmt.Sprintf("%s-%s", e.From.String(), id.String()))
 		}
 
-		p.ent.WalletItems.Update().Where(walletitems.IDIn(ids...).AddBalance())
+		tx.WalletItems.Update().Where(walletitems.IDIn(ids...).AddBalance())
 	}
 
 	if e.To != (common.Address{}) {
-		if err := p.ent.Wallet.Create().
+		if err := tx.Wallet.Create().
 			SetID(e.To.String()).
 			AddItemIDs(ids...).
 			OnConflictColumns(wallet.FieldID).
@@ -90,15 +85,15 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *binding
 	return nil
 }
 
-func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *bindings.SwapMeetTransferSingle, emit func(string, []interface{})) error {
+func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *bindings.SwapMeetTransferSingle, tx *ent.Tx) error {
 	if e.From != (common.Address{}) {
-		if err := p.ent.Wallet.UpdateOneID(e.From.String()).RemoveItemIDs(e.Id.String()).Exec(ctx); err != nil {
+		if err := tx.Wallet.UpdateOneID(e.From.String()).RemoveItemIDs(e.Id.String()).Exec(ctx); err != nil {
 			return fmt.Errorf("update from wallet: %w", err)
 		}
 	}
 
 	if e.To != (common.Address{}) {
-		if err := p.ent.Wallet.Create().
+		if err := tx.Wallet.Create().
 			SetID(e.To.String()).
 			AddItemIDs(e.Id.String()).
 			OnConflictColumns(wallet.FieldID).

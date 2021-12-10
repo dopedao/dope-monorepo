@@ -76,7 +76,7 @@ func NewEngine(client *ent.Client, config Config) *Engine {
 		if err := c.Processor.Setup(c.Address, eth); err != nil {
 			log.Fatal("Setting up processor.")
 		}
-		c.Processor.SetEnt(client)
+
 		e.contracts = append(e.contracts, c)
 	}
 
@@ -113,10 +113,15 @@ func (e *Engine) Sync(ctx context.Context) {
 						log.Fatalf("Filtering logs: %+v.", err)
 					}
 
-					for _, l := range logs {
-						if err := c.Processor.ProcessElement(c.Processor)(ctx, l, nil); err != nil {
-							log.Fatalf("Processing element: %+v.", err)
+					if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
+						for _, l := range logs {
+							if err := c.Processor.ProcessElement(c.Processor)(ctx, l, tx); err != nil {
+								return err
+							}
 						}
+						return nil
+					}); err != nil {
+						log.Fatalf("Processing element: %+v.", err)
 					}
 
 					_from = _to + 1

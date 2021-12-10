@@ -12,15 +12,10 @@ import (
 
 type DopeProcessor struct {
 	bindings.UnimplementedDopeProcessor
-	ent *ent.Client
 }
 
-func (p *DopeProcessor) SetEnt(client *ent.Client) {
-	p.ent = client
-}
-
-func (p *DopeProcessor) ProcessTransfer(ctx context.Context, e *bindings.DopeTransfer, emit func(string, []interface{})) error {
-	if err := p.ent.Wallet.
+func (p *DopeProcessor) ProcessTransfer(ctx context.Context, e *bindings.DopeTransfer, tx *ent.Tx) error {
+	if err := tx.Wallet.
 		Create().
 		SetID(e.To.Hex()).
 		OnConflictColumns(wallet.FieldID).
@@ -32,7 +27,7 @@ func (p *DopeProcessor) ProcessTransfer(ctx context.Context, e *bindings.DopeTra
 		}
 	}
 
-	if err := p.ent.Dope.UpdateOneID(e.TokenId.String()).SetWalletID(e.To.Hex()).Exec(ctx); err != nil {
+	if err := tx.Dope.UpdateOneID(e.TokenId.String()).SetWalletID(e.To.Hex()).Exec(ctx); err != nil {
 		return fmt.Errorf("update dope: %w", err)
 	}
 

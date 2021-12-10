@@ -12,6 +12,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
 )
 
 type HustlerProcessor interface {
@@ -19,21 +21,21 @@ type HustlerProcessor interface {
 		ethereum.ChainReader
 		bind.ContractBackend
 	}) error
-	Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error
+	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessAddRles(ctx context.Context, e *HustlerAddRles, emit func(string, []interface{})) error
+	ProcessAddRles(ctx context.Context, e *HustlerAddRles, tx *ent.Tx) error
 
-	ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll, emit func(string, []interface{})) error
+	ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll, tx *ent.Tx) error
 
-	ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate, emit func(string, []interface{})) error
+	ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate, tx *ent.Tx) error
 
-	ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred, emit func(string, []interface{})) error
+	ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred, tx *ent.Tx) error
 
-	ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch, emit func(string, []interface{})) error
+	ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch, tx *ent.Tx) error
 
-	ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle, emit func(string, []interface{})) error
+	ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle, tx *ent.Tx) error
 
-	ProcessURI(ctx context.Context, e *HustlerURI, emit func(string, []interface{})) error
+	ProcessURI(ctx context.Context, e *HustlerURI, tx *ent.Tx) error
 
 	mustEmbedUnimplementedHustlerProcessor()
 }
@@ -69,8 +71,8 @@ func (h *UnimplementedHustlerProcessor) Setup(address common.Address, eth interf
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, func(string, []interface{})) error {
-	return func(ctx context.Context, vLog types.Log, emit func(string, []interface{})) error {
+func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, *ent.Tx) error {
+	return func(ctx context.Context, vLog types.Log, tx *ent.Tx) error {
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["AddRles"].ID.Hex():
@@ -80,7 +82,7 @@ func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(conte
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessAddRles(ctx, e, emit); err != nil {
+			if err := p.(HustlerProcessor).ProcessAddRles(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing AddRles: %w", err)
 			}
 
@@ -91,7 +93,7 @@ func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(conte
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessApprovalForAll(ctx, e, emit); err != nil {
+			if err := p.(HustlerProcessor).ProcessApprovalForAll(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing ApprovalForAll: %w", err)
 			}
 
@@ -102,7 +104,7 @@ func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(conte
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessMetadataUpdate(ctx, e, emit); err != nil {
+			if err := p.(HustlerProcessor).ProcessMetadataUpdate(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing MetadataUpdate: %w", err)
 			}
 
@@ -113,7 +115,7 @@ func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(conte
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessOwnershipTransferred(ctx, e, emit); err != nil {
+			if err := p.(HustlerProcessor).ProcessOwnershipTransferred(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing OwnershipTransferred: %w", err)
 			}
 
@@ -124,7 +126,7 @@ func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(conte
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessTransferBatch(ctx, e, emit); err != nil {
+			if err := p.(HustlerProcessor).ProcessTransferBatch(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing TransferBatch: %w", err)
 			}
 
@@ -135,7 +137,7 @@ func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(conte
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessTransferSingle(ctx, e, emit); err != nil {
+			if err := p.(HustlerProcessor).ProcessTransferSingle(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing TransferSingle: %w", err)
 			}
 
@@ -146,7 +148,7 @@ func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(conte
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessURI(ctx, e, emit); err != nil {
+			if err := p.(HustlerProcessor).ProcessURI(ctx, e, tx); err != nil {
 				return fmt.Errorf("processing URI: %w", err)
 			}
 
@@ -170,35 +172,35 @@ func (h *UnimplementedHustlerProcessor) UnpackLog(out interface{}, event string,
 	return abi.ParseTopics(out, indexed, log.Topics[1:])
 }
 
-func (h *UnimplementedHustlerProcessor) Initialize(ctx context.Context, start uint64, emit func(string, []interface{})) error {
+func (h *UnimplementedHustlerProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessAddRles(ctx context.Context, e *HustlerAddRles, emit func(string, []interface{})) error {
+func (h *UnimplementedHustlerProcessor) ProcessAddRles(ctx context.Context, e *HustlerAddRles, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll, emit func(string, []interface{})) error {
+func (h *UnimplementedHustlerProcessor) ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate, emit func(string, []interface{})) error {
+func (h *UnimplementedHustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred, emit func(string, []interface{})) error {
+func (h *UnimplementedHustlerProcessor) ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch, emit func(string, []interface{})) error {
+func (h *UnimplementedHustlerProcessor) ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle, emit func(string, []interface{})) error {
+func (h *UnimplementedHustlerProcessor) ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessURI(ctx context.Context, e *HustlerURI, emit func(string, []interface{})) error {
+func (h *UnimplementedHustlerProcessor) ProcessURI(ctx context.Context, e *HustlerURI, tx *ent.Tx) error {
 	return nil
 }
 
