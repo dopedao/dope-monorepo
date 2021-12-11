@@ -1,10 +1,9 @@
-// import { Match } from 'faunadb/src/types/query';
 import { client, q } from '../../src/fauna_client';
 
 export const create = async () => {
   return await client.query(
     q.CreateFunction({
-        name: "get_swap_meet_page2",
+        name: "get_swap_meet_page",
         role: null,
         body: q.Query(
             q.Lambda(
@@ -46,23 +45,21 @@ export const create = async () => {
                         q.Match(q.Index('on_sale'), q.Var('isForSale'))
                     ])
                     ),
-                    // q.Match: Intersection(q.Var('with_c')),
                     match: q.If(
                     q.IsEmpty(q.Var('with_d')),
-                    q.Documents(q.Collection('DopeToken')), // simplq.Ify q.If no filters
+                    q.Documents(q.Collection('DopeToken')), // simplify if no filters
                     q.Intersection(q.Var('with_d'))
                     ),
                     page: q.If(
                     q.Equals(q.Var("before"), q.IsNull(q.Var("before"))),
                     q.If(
                         q.Equals(q.Var("after"), q.IsNull(q.Var("after"))),
-                        q.Paginate(q.Var("q.Match"), { size: q.Var("size") }),
-                        q.Paginate(q.Var("q.Match"), { after: q.Var("after"), size: q.Var("size") })
+                        q.Paginate(q.Var("match"), { size: q.Var("size") }),
+                        q.Paginate(q.Var("match"), { after: q.Var("after"), size: q.Var("size") })
                     ),
-                    q.Paginate(q.Var("q.Match"), { before: q.Var("before"), size: q.Var("size") })
+                    q.Paginate(q.Var("match"), { before: q.Var("before"), size: q.Var("size") })
                     )
                 },
-                // Paginate(q.Var('q.Match'))
                 q.Map(q.Var("page"), q.Lambda("ref", q.Get(q.Var("ref"))))
                 )
             )
