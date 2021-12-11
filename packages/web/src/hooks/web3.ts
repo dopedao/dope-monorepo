@@ -268,17 +268,7 @@ const useswitchNetwork = async (
                 },
               ],
             });
-          } catch (addError) {
-            console.error(addError);
-          }
-        }
-        if (error.code === 4001) {
-          // @TODO: handle this UX on the UI
-          alert(
-            forceOptimism
-              ? 'You can only customize your Hustler on Optimistic'
-              : 'You have to be on Mainnet in order to initiate a hustler',
-          );
+          } catch (addError) {}
         }
       }
     } else {
