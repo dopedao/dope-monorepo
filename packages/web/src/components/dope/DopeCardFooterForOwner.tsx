@@ -25,7 +25,7 @@ const DopeCardFooterForOwner = ({ bag, toggleVisibility }: DopeCardFooterForOwne
       <Link href={`/hustlers/${bag.id}/initiate`} passHref>
         <Button variant="primary">Initiate Hustler</Button>
       </Link>
-      {initiator && paper && account && chainId === 42 && (
+      {initiator && paper && account && (
         <Button onClick={() => router.push(`/dope/${bag.id}/unbundle`)}>Unbundle</Button>
       )}
       {paper && (
