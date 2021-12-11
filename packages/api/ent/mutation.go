@@ -42,18 +42,25 @@ const (
 // BodyPartMutation represents an operation that mutates the BodyPart nodes in the graph.
 type BodyPartMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *string
-	_type          *bodypart.Type
-	sex            *bodypart.Sex
-	rle            *string
-	clearedFields  map[string]struct{}
-	hustler        *string
-	clearedhustler bool
-	done           bool
-	oldValue       func(context.Context) (*BodyPart, error)
-	predicates     []predicate.BodyPart
+	op                    Op
+	typ                   string
+	id                    *string
+	_type                 *bodypart.Type
+	sex                   *bodypart.Sex
+	rle                   *string
+	clearedFields         map[string]struct{}
+	hustler_bodies        map[string]struct{}
+	removedhustler_bodies map[string]struct{}
+	clearedhustler_bodies bool
+	hustler_hairs         map[string]struct{}
+	removedhustler_hairs  map[string]struct{}
+	clearedhustler_hairs  bool
+	hustler_beards        map[string]struct{}
+	removedhustler_beards map[string]struct{}
+	clearedhustler_beards bool
+	done                  bool
+	oldValue              func(context.Context) (*BodyPart, error)
+	predicates            []predicate.BodyPart
 }
 
 var _ ent.Mutation = (*BodyPartMutation)(nil)
@@ -268,43 +275,166 @@ func (m *BodyPartMutation) ResetRle() {
 	m.rle = nil
 }
 
-// SetHustlerID sets the "hustler" edge to the Hustler entity by id.
-func (m *BodyPartMutation) SetHustlerID(id string) {
-	m.hustler = &id
+// AddHustlerBodyIDs adds the "hustler_bodies" edge to the Hustler entity by ids.
+func (m *BodyPartMutation) AddHustlerBodyIDs(ids ...string) {
+	if m.hustler_bodies == nil {
+		m.hustler_bodies = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_bodies[ids[i]] = struct{}{}
+	}
 }
 
-// ClearHustler clears the "hustler" edge to the Hustler entity.
-func (m *BodyPartMutation) ClearHustler() {
-	m.clearedhustler = true
+// ClearHustlerBodies clears the "hustler_bodies" edge to the Hustler entity.
+func (m *BodyPartMutation) ClearHustlerBodies() {
+	m.clearedhustler_bodies = true
 }
 
-// HustlerCleared reports if the "hustler" edge to the Hustler entity was cleared.
-func (m *BodyPartMutation) HustlerCleared() bool {
-	return m.clearedhustler
+// HustlerBodiesCleared reports if the "hustler_bodies" edge to the Hustler entity was cleared.
+func (m *BodyPartMutation) HustlerBodiesCleared() bool {
+	return m.clearedhustler_bodies
 }
 
-// HustlerID returns the "hustler" edge ID in the mutation.
-func (m *BodyPartMutation) HustlerID() (id string, exists bool) {
-	if m.hustler != nil {
-		return *m.hustler, true
+// RemoveHustlerBodyIDs removes the "hustler_bodies" edge to the Hustler entity by IDs.
+func (m *BodyPartMutation) RemoveHustlerBodyIDs(ids ...string) {
+	if m.removedhustler_bodies == nil {
+		m.removedhustler_bodies = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_bodies, ids[i])
+		m.removedhustler_bodies[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerBodies returns the removed IDs of the "hustler_bodies" edge to the Hustler entity.
+func (m *BodyPartMutation) RemovedHustlerBodiesIDs() (ids []string) {
+	for id := range m.removedhustler_bodies {
+		ids = append(ids, id)
 	}
 	return
 }
 
-// HustlerIDs returns the "hustler" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// HustlerID instead. It exists only for internal usage by the builders.
-func (m *BodyPartMutation) HustlerIDs() (ids []string) {
-	if id := m.hustler; id != nil {
-		ids = append(ids, *id)
+// HustlerBodiesIDs returns the "hustler_bodies" edge IDs in the mutation.
+func (m *BodyPartMutation) HustlerBodiesIDs() (ids []string) {
+	for id := range m.hustler_bodies {
+		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetHustler resets all changes to the "hustler" edge.
-func (m *BodyPartMutation) ResetHustler() {
-	m.hustler = nil
-	m.clearedhustler = false
+// ResetHustlerBodies resets all changes to the "hustler_bodies" edge.
+func (m *BodyPartMutation) ResetHustlerBodies() {
+	m.hustler_bodies = nil
+	m.clearedhustler_bodies = false
+	m.removedhustler_bodies = nil
+}
+
+// AddHustlerHairIDs adds the "hustler_hairs" edge to the Hustler entity by ids.
+func (m *BodyPartMutation) AddHustlerHairIDs(ids ...string) {
+	if m.hustler_hairs == nil {
+		m.hustler_hairs = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_hairs[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerHairs clears the "hustler_hairs" edge to the Hustler entity.
+func (m *BodyPartMutation) ClearHustlerHairs() {
+	m.clearedhustler_hairs = true
+}
+
+// HustlerHairsCleared reports if the "hustler_hairs" edge to the Hustler entity was cleared.
+func (m *BodyPartMutation) HustlerHairsCleared() bool {
+	return m.clearedhustler_hairs
+}
+
+// RemoveHustlerHairIDs removes the "hustler_hairs" edge to the Hustler entity by IDs.
+func (m *BodyPartMutation) RemoveHustlerHairIDs(ids ...string) {
+	if m.removedhustler_hairs == nil {
+		m.removedhustler_hairs = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_hairs, ids[i])
+		m.removedhustler_hairs[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerHairs returns the removed IDs of the "hustler_hairs" edge to the Hustler entity.
+func (m *BodyPartMutation) RemovedHustlerHairsIDs() (ids []string) {
+	for id := range m.removedhustler_hairs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerHairsIDs returns the "hustler_hairs" edge IDs in the mutation.
+func (m *BodyPartMutation) HustlerHairsIDs() (ids []string) {
+	for id := range m.hustler_hairs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerHairs resets all changes to the "hustler_hairs" edge.
+func (m *BodyPartMutation) ResetHustlerHairs() {
+	m.hustler_hairs = nil
+	m.clearedhustler_hairs = false
+	m.removedhustler_hairs = nil
+}
+
+// AddHustlerBeardIDs adds the "hustler_beards" edge to the Hustler entity by ids.
+func (m *BodyPartMutation) AddHustlerBeardIDs(ids ...string) {
+	if m.hustler_beards == nil {
+		m.hustler_beards = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_beards[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerBeards clears the "hustler_beards" edge to the Hustler entity.
+func (m *BodyPartMutation) ClearHustlerBeards() {
+	m.clearedhustler_beards = true
+}
+
+// HustlerBeardsCleared reports if the "hustler_beards" edge to the Hustler entity was cleared.
+func (m *BodyPartMutation) HustlerBeardsCleared() bool {
+	return m.clearedhustler_beards
+}
+
+// RemoveHustlerBeardIDs removes the "hustler_beards" edge to the Hustler entity by IDs.
+func (m *BodyPartMutation) RemoveHustlerBeardIDs(ids ...string) {
+	if m.removedhustler_beards == nil {
+		m.removedhustler_beards = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_beards, ids[i])
+		m.removedhustler_beards[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerBeards returns the removed IDs of the "hustler_beards" edge to the Hustler entity.
+func (m *BodyPartMutation) RemovedHustlerBeardsIDs() (ids []string) {
+	for id := range m.removedhustler_beards {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerBeardsIDs returns the "hustler_beards" edge IDs in the mutation.
+func (m *BodyPartMutation) HustlerBeardsIDs() (ids []string) {
+	for id := range m.hustler_beards {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerBeards resets all changes to the "hustler_beards" edge.
+func (m *BodyPartMutation) ResetHustlerBeards() {
+	m.hustler_beards = nil
+	m.clearedhustler_beards = false
+	m.removedhustler_beards = nil
 }
 
 // Where appends a list predicates to the BodyPartMutation builder.
@@ -459,9 +589,15 @@ func (m *BodyPartMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BodyPartMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.hustler != nil {
-		edges = append(edges, bodypart.EdgeHustler)
+	edges := make([]string, 0, 3)
+	if m.hustler_bodies != nil {
+		edges = append(edges, bodypart.EdgeHustlerBodies)
+	}
+	if m.hustler_hairs != nil {
+		edges = append(edges, bodypart.EdgeHustlerHairs)
+	}
+	if m.hustler_beards != nil {
+		edges = append(edges, bodypart.EdgeHustlerBeards)
 	}
 	return edges
 }
@@ -470,17 +606,40 @@ func (m *BodyPartMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *BodyPartMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case bodypart.EdgeHustler:
-		if id := m.hustler; id != nil {
-			return []ent.Value{*id}
+	case bodypart.EdgeHustlerBodies:
+		ids := make([]ent.Value, 0, len(m.hustler_bodies))
+		for id := range m.hustler_bodies {
+			ids = append(ids, id)
 		}
+		return ids
+	case bodypart.EdgeHustlerHairs:
+		ids := make([]ent.Value, 0, len(m.hustler_hairs))
+		for id := range m.hustler_hairs {
+			ids = append(ids, id)
+		}
+		return ids
+	case bodypart.EdgeHustlerBeards:
+		ids := make([]ent.Value, 0, len(m.hustler_beards))
+		for id := range m.hustler_beards {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BodyPartMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
+	if m.removedhustler_bodies != nil {
+		edges = append(edges, bodypart.EdgeHustlerBodies)
+	}
+	if m.removedhustler_hairs != nil {
+		edges = append(edges, bodypart.EdgeHustlerHairs)
+	}
+	if m.removedhustler_beards != nil {
+		edges = append(edges, bodypart.EdgeHustlerBeards)
+	}
 	return edges
 }
 
@@ -488,15 +647,39 @@ func (m *BodyPartMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *BodyPartMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
+	case bodypart.EdgeHustlerBodies:
+		ids := make([]ent.Value, 0, len(m.removedhustler_bodies))
+		for id := range m.removedhustler_bodies {
+			ids = append(ids, id)
+		}
+		return ids
+	case bodypart.EdgeHustlerHairs:
+		ids := make([]ent.Value, 0, len(m.removedhustler_hairs))
+		for id := range m.removedhustler_hairs {
+			ids = append(ids, id)
+		}
+		return ids
+	case bodypart.EdgeHustlerBeards:
+		ids := make([]ent.Value, 0, len(m.removedhustler_beards))
+		for id := range m.removedhustler_beards {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BodyPartMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedhustler {
-		edges = append(edges, bodypart.EdgeHustler)
+	edges := make([]string, 0, 3)
+	if m.clearedhustler_bodies {
+		edges = append(edges, bodypart.EdgeHustlerBodies)
+	}
+	if m.clearedhustler_hairs {
+		edges = append(edges, bodypart.EdgeHustlerHairs)
+	}
+	if m.clearedhustler_beards {
+		edges = append(edges, bodypart.EdgeHustlerBeards)
 	}
 	return edges
 }
@@ -505,8 +688,12 @@ func (m *BodyPartMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *BodyPartMutation) EdgeCleared(name string) bool {
 	switch name {
-	case bodypart.EdgeHustler:
-		return m.clearedhustler
+	case bodypart.EdgeHustlerBodies:
+		return m.clearedhustler_bodies
+	case bodypart.EdgeHustlerHairs:
+		return m.clearedhustler_hairs
+	case bodypart.EdgeHustlerBeards:
+		return m.clearedhustler_beards
 	}
 	return false
 }
@@ -515,9 +702,6 @@ func (m *BodyPartMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *BodyPartMutation) ClearEdge(name string) error {
 	switch name {
-	case bodypart.EdgeHustler:
-		m.ClearHustler()
-		return nil
 	}
 	return fmt.Errorf("unknown BodyPart unique edge %s", name)
 }
@@ -526,8 +710,14 @@ func (m *BodyPartMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *BodyPartMutation) ResetEdge(name string) error {
 	switch name {
-	case bodypart.EdgeHustler:
-		m.ResetHustler()
+	case bodypart.EdgeHustlerBodies:
+		m.ResetHustlerBodies()
+		return nil
+	case bodypart.EdgeHustlerHairs:
+		m.ResetHustlerHairs()
+		return nil
+	case bodypart.EdgeHustlerBeards:
+		m.ResetHustlerBeards()
 		return nil
 	}
 	return fmt.Errorf("unknown BodyPart edge %s", name)
@@ -1059,29 +1249,35 @@ func (m *DopeMutation) ResetEdge(name string) error {
 // HustlerMutation represents an operation that mutates the Hustler nodes in the graph.
 type HustlerMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *string
-	_type            *hustler.Type
-	name             *string
-	title            *string
-	color            *string
-	background       *string
-	age              *uint64
-	addage           *int64
-	sex              *hustler.Sex
-	clearedFields    map[string]struct{}
-	wallet           *string
-	clearedwallet    bool
-	items            map[string]struct{}
-	removeditems     map[string]struct{}
-	cleareditems     bool
-	bodyparts        map[string]struct{}
-	removedbodyparts map[string]struct{}
-	clearedbodyparts bool
-	done             bool
-	oldValue         func(context.Context) (*Hustler, error)
-	predicates       []predicate.Hustler
+	op            Op
+	typ           string
+	id            *string
+	_type         *hustler.Type
+	name          *string
+	title         *string
+	color         *string
+	background    *string
+	age           *uint64
+	addage        *int64
+	sex           *hustler.Sex
+	viewbox       *[]int
+	_order        *[]int
+	svg           *string
+	clearedFields map[string]struct{}
+	wallet        *string
+	clearedwallet bool
+	items         map[string]struct{}
+	removeditems  map[string]struct{}
+	cleareditems  bool
+	body          *string
+	clearedbody   bool
+	hair          *string
+	clearedhair   bool
+	beard         *string
+	clearedbeard  bool
+	done          bool
+	oldValue      func(context.Context) (*Hustler, error)
+	predicates    []predicate.Hustler
 }
 
 var _ ent.Mutation = (*HustlerMutation)(nil)
@@ -1507,22 +1703,130 @@ func (m *HustlerMutation) OldSex(ctx context.Context) (v hustler.Sex, err error)
 	return oldValue.Sex, nil
 }
 
-// ClearSex clears the value of the "sex" field.
-func (m *HustlerMutation) ClearSex() {
-	m.sex = nil
-	m.clearedFields[hustler.FieldSex] = struct{}{}
-}
-
-// SexCleared returns if the "sex" field was cleared in this mutation.
-func (m *HustlerMutation) SexCleared() bool {
-	_, ok := m.clearedFields[hustler.FieldSex]
-	return ok
-}
-
 // ResetSex resets all changes to the "sex" field.
 func (m *HustlerMutation) ResetSex() {
 	m.sex = nil
-	delete(m.clearedFields, hustler.FieldSex)
+}
+
+// SetViewbox sets the "viewbox" field.
+func (m *HustlerMutation) SetViewbox(i []int) {
+	m.viewbox = &i
+}
+
+// Viewbox returns the value of the "viewbox" field in the mutation.
+func (m *HustlerMutation) Viewbox() (r []int, exists bool) {
+	v := m.viewbox
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldViewbox returns the old "viewbox" field's value of the Hustler entity.
+// If the Hustler object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *HustlerMutation) OldViewbox(ctx context.Context) (v []int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldViewbox is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldViewbox requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldViewbox: %w", err)
+	}
+	return oldValue.Viewbox, nil
+}
+
+// ResetViewbox resets all changes to the "viewbox" field.
+func (m *HustlerMutation) ResetViewbox() {
+	m.viewbox = nil
+}
+
+// SetOrder sets the "order" field.
+func (m *HustlerMutation) SetOrder(i []int) {
+	m._order = &i
+}
+
+// Order returns the value of the "order" field in the mutation.
+func (m *HustlerMutation) Order() (r []int, exists bool) {
+	v := m._order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrder returns the old "order" field's value of the Hustler entity.
+// If the Hustler object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *HustlerMutation) OldOrder(ctx context.Context) (v []int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrder: %w", err)
+	}
+	return oldValue.Order, nil
+}
+
+// ResetOrder resets all changes to the "order" field.
+func (m *HustlerMutation) ResetOrder() {
+	m._order = nil
+}
+
+// SetSvg sets the "svg" field.
+func (m *HustlerMutation) SetSvg(s string) {
+	m.svg = &s
+}
+
+// Svg returns the value of the "svg" field in the mutation.
+func (m *HustlerMutation) Svg() (r string, exists bool) {
+	v := m.svg
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSvg returns the old "svg" field's value of the Hustler entity.
+// If the Hustler object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *HustlerMutation) OldSvg(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSvg is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSvg requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSvg: %w", err)
+	}
+	return oldValue.Svg, nil
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (m *HustlerMutation) ClearSvg() {
+	m.svg = nil
+	m.clearedFields[hustler.FieldSvg] = struct{}{}
+}
+
+// SvgCleared returns if the "svg" field was cleared in this mutation.
+func (m *HustlerMutation) SvgCleared() bool {
+	_, ok := m.clearedFields[hustler.FieldSvg]
+	return ok
+}
+
+// ResetSvg resets all changes to the "svg" field.
+func (m *HustlerMutation) ResetSvg() {
+	m.svg = nil
+	delete(m.clearedFields, hustler.FieldSvg)
 }
 
 // SetWalletID sets the "wallet" edge to the Wallet entity by id.
@@ -1618,58 +1922,121 @@ func (m *HustlerMutation) ResetItems() {
 	m.removeditems = nil
 }
 
-// AddBodypartIDs adds the "bodyparts" edge to the BodyPart entity by ids.
-func (m *HustlerMutation) AddBodypartIDs(ids ...string) {
-	if m.bodyparts == nil {
-		m.bodyparts = make(map[string]struct{})
-	}
-	for i := range ids {
-		m.bodyparts[ids[i]] = struct{}{}
-	}
+// SetBodyID sets the "body" edge to the BodyPart entity by id.
+func (m *HustlerMutation) SetBodyID(id string) {
+	m.body = &id
 }
 
-// ClearBodyparts clears the "bodyparts" edge to the BodyPart entity.
-func (m *HustlerMutation) ClearBodyparts() {
-	m.clearedbodyparts = true
+// ClearBody clears the "body" edge to the BodyPart entity.
+func (m *HustlerMutation) ClearBody() {
+	m.clearedbody = true
 }
 
-// BodypartsCleared reports if the "bodyparts" edge to the BodyPart entity was cleared.
-func (m *HustlerMutation) BodypartsCleared() bool {
-	return m.clearedbodyparts
+// BodyCleared reports if the "body" edge to the BodyPart entity was cleared.
+func (m *HustlerMutation) BodyCleared() bool {
+	return m.clearedbody
 }
 
-// RemoveBodypartIDs removes the "bodyparts" edge to the BodyPart entity by IDs.
-func (m *HustlerMutation) RemoveBodypartIDs(ids ...string) {
-	if m.removedbodyparts == nil {
-		m.removedbodyparts = make(map[string]struct{})
-	}
-	for i := range ids {
-		delete(m.bodyparts, ids[i])
-		m.removedbodyparts[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedBodyparts returns the removed IDs of the "bodyparts" edge to the BodyPart entity.
-func (m *HustlerMutation) RemovedBodypartsIDs() (ids []string) {
-	for id := range m.removedbodyparts {
-		ids = append(ids, id)
+// BodyID returns the "body" edge ID in the mutation.
+func (m *HustlerMutation) BodyID() (id string, exists bool) {
+	if m.body != nil {
+		return *m.body, true
 	}
 	return
 }
 
-// BodypartsIDs returns the "bodyparts" edge IDs in the mutation.
-func (m *HustlerMutation) BodypartsIDs() (ids []string) {
-	for id := range m.bodyparts {
-		ids = append(ids, id)
+// BodyIDs returns the "body" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BodyID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) BodyIDs() (ids []string) {
+	if id := m.body; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetBodyparts resets all changes to the "bodyparts" edge.
-func (m *HustlerMutation) ResetBodyparts() {
-	m.bodyparts = nil
-	m.clearedbodyparts = false
-	m.removedbodyparts = nil
+// ResetBody resets all changes to the "body" edge.
+func (m *HustlerMutation) ResetBody() {
+	m.body = nil
+	m.clearedbody = false
+}
+
+// SetHairID sets the "hair" edge to the BodyPart entity by id.
+func (m *HustlerMutation) SetHairID(id string) {
+	m.hair = &id
+}
+
+// ClearHair clears the "hair" edge to the BodyPart entity.
+func (m *HustlerMutation) ClearHair() {
+	m.clearedhair = true
+}
+
+// HairCleared reports if the "hair" edge to the BodyPart entity was cleared.
+func (m *HustlerMutation) HairCleared() bool {
+	return m.clearedhair
+}
+
+// HairID returns the "hair" edge ID in the mutation.
+func (m *HustlerMutation) HairID() (id string, exists bool) {
+	if m.hair != nil {
+		return *m.hair, true
+	}
+	return
+}
+
+// HairIDs returns the "hair" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// HairID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) HairIDs() (ids []string) {
+	if id := m.hair; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetHair resets all changes to the "hair" edge.
+func (m *HustlerMutation) ResetHair() {
+	m.hair = nil
+	m.clearedhair = false
+}
+
+// SetBeardID sets the "beard" edge to the BodyPart entity by id.
+func (m *HustlerMutation) SetBeardID(id string) {
+	m.beard = &id
+}
+
+// ClearBeard clears the "beard" edge to the BodyPart entity.
+func (m *HustlerMutation) ClearBeard() {
+	m.clearedbeard = true
+}
+
+// BeardCleared reports if the "beard" edge to the BodyPart entity was cleared.
+func (m *HustlerMutation) BeardCleared() bool {
+	return m.clearedbeard
+}
+
+// BeardID returns the "beard" edge ID in the mutation.
+func (m *HustlerMutation) BeardID() (id string, exists bool) {
+	if m.beard != nil {
+		return *m.beard, true
+	}
+	return
+}
+
+// BeardIDs returns the "beard" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BeardID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) BeardIDs() (ids []string) {
+	if id := m.beard; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBeard resets all changes to the "beard" edge.
+func (m *HustlerMutation) ResetBeard() {
+	m.beard = nil
+	m.clearedbeard = false
 }
 
 // Where appends a list predicates to the HustlerMutation builder.
@@ -1691,7 +2058,7 @@ func (m *HustlerMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *HustlerMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 10)
 	if m._type != nil {
 		fields = append(fields, hustler.FieldType)
 	}
@@ -1712,6 +2079,15 @@ func (m *HustlerMutation) Fields() []string {
 	}
 	if m.sex != nil {
 		fields = append(fields, hustler.FieldSex)
+	}
+	if m.viewbox != nil {
+		fields = append(fields, hustler.FieldViewbox)
+	}
+	if m._order != nil {
+		fields = append(fields, hustler.FieldOrder)
+	}
+	if m.svg != nil {
+		fields = append(fields, hustler.FieldSvg)
 	}
 	return fields
 }
@@ -1735,6 +2111,12 @@ func (m *HustlerMutation) Field(name string) (ent.Value, bool) {
 		return m.Age()
 	case hustler.FieldSex:
 		return m.Sex()
+	case hustler.FieldViewbox:
+		return m.Viewbox()
+	case hustler.FieldOrder:
+		return m.Order()
+	case hustler.FieldSvg:
+		return m.Svg()
 	}
 	return nil, false
 }
@@ -1758,6 +2140,12 @@ func (m *HustlerMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldAge(ctx)
 	case hustler.FieldSex:
 		return m.OldSex(ctx)
+	case hustler.FieldViewbox:
+		return m.OldViewbox(ctx)
+	case hustler.FieldOrder:
+		return m.OldOrder(ctx)
+	case hustler.FieldSvg:
+		return m.OldSvg(ctx)
 	}
 	return nil, fmt.Errorf("unknown Hustler field %s", name)
 }
@@ -1816,6 +2204,27 @@ func (m *HustlerMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSex(v)
 		return nil
+	case hustler.FieldViewbox:
+		v, ok := value.([]int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetViewbox(v)
+		return nil
+	case hustler.FieldOrder:
+		v, ok := value.([]int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrder(v)
+		return nil
+	case hustler.FieldSvg:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSvg(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Hustler field %s", name)
 }
@@ -1873,8 +2282,8 @@ func (m *HustlerMutation) ClearedFields() []string {
 	if m.FieldCleared(hustler.FieldBackground) {
 		fields = append(fields, hustler.FieldBackground)
 	}
-	if m.FieldCleared(hustler.FieldSex) {
-		fields = append(fields, hustler.FieldSex)
+	if m.FieldCleared(hustler.FieldSvg) {
+		fields = append(fields, hustler.FieldSvg)
 	}
 	return fields
 }
@@ -1902,8 +2311,8 @@ func (m *HustlerMutation) ClearField(name string) error {
 	case hustler.FieldBackground:
 		m.ClearBackground()
 		return nil
-	case hustler.FieldSex:
-		m.ClearSex()
+	case hustler.FieldSvg:
+		m.ClearSvg()
 		return nil
 	}
 	return fmt.Errorf("unknown Hustler nullable field %s", name)
@@ -1934,21 +2343,36 @@ func (m *HustlerMutation) ResetField(name string) error {
 	case hustler.FieldSex:
 		m.ResetSex()
 		return nil
+	case hustler.FieldViewbox:
+		m.ResetViewbox()
+		return nil
+	case hustler.FieldOrder:
+		m.ResetOrder()
+		return nil
+	case hustler.FieldSvg:
+		m.ResetSvg()
+		return nil
 	}
 	return fmt.Errorf("unknown Hustler field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *HustlerMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 5)
 	if m.wallet != nil {
 		edges = append(edges, hustler.EdgeWallet)
 	}
 	if m.items != nil {
 		edges = append(edges, hustler.EdgeItems)
 	}
-	if m.bodyparts != nil {
-		edges = append(edges, hustler.EdgeBodyparts)
+	if m.body != nil {
+		edges = append(edges, hustler.EdgeBody)
+	}
+	if m.hair != nil {
+		edges = append(edges, hustler.EdgeHair)
+	}
+	if m.beard != nil {
+		edges = append(edges, hustler.EdgeBeard)
 	}
 	return edges
 }
@@ -1967,24 +2391,27 @@ func (m *HustlerMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case hustler.EdgeBodyparts:
-		ids := make([]ent.Value, 0, len(m.bodyparts))
-		for id := range m.bodyparts {
-			ids = append(ids, id)
+	case hustler.EdgeBody:
+		if id := m.body; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
+	case hustler.EdgeHair:
+		if id := m.hair; id != nil {
+			return []ent.Value{*id}
+		}
+	case hustler.EdgeBeard:
+		if id := m.beard; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *HustlerMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 5)
 	if m.removeditems != nil {
 		edges = append(edges, hustler.EdgeItems)
-	}
-	if m.removedbodyparts != nil {
-		edges = append(edges, hustler.EdgeBodyparts)
 	}
 	return edges
 }
@@ -1999,27 +2426,27 @@ func (m *HustlerMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case hustler.EdgeBodyparts:
-		ids := make([]ent.Value, 0, len(m.removedbodyparts))
-		for id := range m.removedbodyparts {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *HustlerMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 5)
 	if m.clearedwallet {
 		edges = append(edges, hustler.EdgeWallet)
 	}
 	if m.cleareditems {
 		edges = append(edges, hustler.EdgeItems)
 	}
-	if m.clearedbodyparts {
-		edges = append(edges, hustler.EdgeBodyparts)
+	if m.clearedbody {
+		edges = append(edges, hustler.EdgeBody)
+	}
+	if m.clearedhair {
+		edges = append(edges, hustler.EdgeHair)
+	}
+	if m.clearedbeard {
+		edges = append(edges, hustler.EdgeBeard)
 	}
 	return edges
 }
@@ -2032,8 +2459,12 @@ func (m *HustlerMutation) EdgeCleared(name string) bool {
 		return m.clearedwallet
 	case hustler.EdgeItems:
 		return m.cleareditems
-	case hustler.EdgeBodyparts:
-		return m.clearedbodyparts
+	case hustler.EdgeBody:
+		return m.clearedbody
+	case hustler.EdgeHair:
+		return m.clearedhair
+	case hustler.EdgeBeard:
+		return m.clearedbeard
 	}
 	return false
 }
@@ -2044,6 +2475,15 @@ func (m *HustlerMutation) ClearEdge(name string) error {
 	switch name {
 	case hustler.EdgeWallet:
 		m.ClearWallet()
+		return nil
+	case hustler.EdgeBody:
+		m.ClearBody()
+		return nil
+	case hustler.EdgeHair:
+		m.ClearHair()
+		return nil
+	case hustler.EdgeBeard:
+		m.ClearBeard()
 		return nil
 	}
 	return fmt.Errorf("unknown Hustler unique edge %s", name)
@@ -2059,8 +2499,14 @@ func (m *HustlerMutation) ResetEdge(name string) error {
 	case hustler.EdgeItems:
 		m.ResetItems()
 		return nil
-	case hustler.EdgeBodyparts:
-		m.ResetBodyparts()
+	case hustler.EdgeBody:
+		m.ResetBody()
+		return nil
+	case hustler.EdgeHair:
+		m.ResetHair()
+		return nil
+	case hustler.EdgeBeard:
+		m.ResetBeard()
 		return nil
 	}
 	return fmt.Errorf("unknown Hustler edge %s", name)

@@ -305,25 +305,81 @@ func RleContainsFold(v string) predicate.BodyPart {
 	})
 }
 
-// HasHustler applies the HasEdge predicate on the "hustler" edge.
-func HasHustler() predicate.BodyPart {
+// HasHustlerBodies applies the HasEdge predicate on the "hustler_bodies" edge.
+func HasHustlerBodies() predicate.BodyPart {
 	return predicate.BodyPart(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(HustlerTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, HustlerTable, HustlerColumn),
+			sqlgraph.To(HustlerBodiesTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, HustlerBodiesTable, HustlerBodiesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasHustlerWith applies the HasEdge predicate on the "hustler" edge with a given conditions (other predicates).
-func HasHustlerWith(preds ...predicate.Hustler) predicate.BodyPart {
+// HasHustlerBodiesWith applies the HasEdge predicate on the "hustler_bodies" edge with a given conditions (other predicates).
+func HasHustlerBodiesWith(preds ...predicate.Hustler) predicate.BodyPart {
 	return predicate.BodyPart(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(HustlerInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, HustlerTable, HustlerColumn),
+			sqlgraph.To(HustlerBodiesInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, HustlerBodiesTable, HustlerBodiesColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasHustlerHairs applies the HasEdge predicate on the "hustler_hairs" edge.
+func HasHustlerHairs() predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HustlerHairsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, HustlerHairsTable, HustlerHairsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasHustlerHairsWith applies the HasEdge predicate on the "hustler_hairs" edge with a given conditions (other predicates).
+func HasHustlerHairsWith(preds ...predicate.Hustler) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HustlerHairsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, HustlerHairsTable, HustlerHairsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasHustlerBeards applies the HasEdge predicate on the "hustler_beards" edge.
+func HasHustlerBeards() predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HustlerBeardsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, HustlerBeardsTable, HustlerBeardsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasHustlerBeardsWith applies the HasEdge predicate on the "hustler_beards" edge with a given conditions (other predicates).
+func HasHustlerBeardsWith(preds ...predicate.Hustler) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HustlerBeardsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, HustlerBeardsTable, HustlerBeardsColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

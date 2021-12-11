@@ -28,23 +28,49 @@ func (bpu *BodyPartUpdate) Where(ps ...predicate.BodyPart) *BodyPartUpdate {
 	return bpu
 }
 
-// SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
-func (bpu *BodyPartUpdate) SetHustlerID(id string) *BodyPartUpdate {
-	bpu.mutation.SetHustlerID(id)
+// AddHustlerBodyIDs adds the "hustler_bodies" edge to the Hustler entity by IDs.
+func (bpu *BodyPartUpdate) AddHustlerBodyIDs(ids ...string) *BodyPartUpdate {
+	bpu.mutation.AddHustlerBodyIDs(ids...)
 	return bpu
 }
 
-// SetNillableHustlerID sets the "hustler" edge to the Hustler entity by ID if the given value is not nil.
-func (bpu *BodyPartUpdate) SetNillableHustlerID(id *string) *BodyPartUpdate {
-	if id != nil {
-		bpu = bpu.SetHustlerID(*id)
+// AddHustlerBodies adds the "hustler_bodies" edges to the Hustler entity.
+func (bpu *BodyPartUpdate) AddHustlerBodies(h ...*Hustler) *BodyPartUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
 	}
+	return bpu.AddHustlerBodyIDs(ids...)
+}
+
+// AddHustlerHairIDs adds the "hustler_hairs" edge to the Hustler entity by IDs.
+func (bpu *BodyPartUpdate) AddHustlerHairIDs(ids ...string) *BodyPartUpdate {
+	bpu.mutation.AddHustlerHairIDs(ids...)
 	return bpu
 }
 
-// SetHustler sets the "hustler" edge to the Hustler entity.
-func (bpu *BodyPartUpdate) SetHustler(h *Hustler) *BodyPartUpdate {
-	return bpu.SetHustlerID(h.ID)
+// AddHustlerHairs adds the "hustler_hairs" edges to the Hustler entity.
+func (bpu *BodyPartUpdate) AddHustlerHairs(h ...*Hustler) *BodyPartUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpu.AddHustlerHairIDs(ids...)
+}
+
+// AddHustlerBeardIDs adds the "hustler_beards" edge to the Hustler entity by IDs.
+func (bpu *BodyPartUpdate) AddHustlerBeardIDs(ids ...string) *BodyPartUpdate {
+	bpu.mutation.AddHustlerBeardIDs(ids...)
+	return bpu
+}
+
+// AddHustlerBeards adds the "hustler_beards" edges to the Hustler entity.
+func (bpu *BodyPartUpdate) AddHustlerBeards(h ...*Hustler) *BodyPartUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpu.AddHustlerBeardIDs(ids...)
 }
 
 // Mutation returns the BodyPartMutation object of the builder.
@@ -52,10 +78,67 @@ func (bpu *BodyPartUpdate) Mutation() *BodyPartMutation {
 	return bpu.mutation
 }
 
-// ClearHustler clears the "hustler" edge to the Hustler entity.
-func (bpu *BodyPartUpdate) ClearHustler() *BodyPartUpdate {
-	bpu.mutation.ClearHustler()
+// ClearHustlerBodies clears all "hustler_bodies" edges to the Hustler entity.
+func (bpu *BodyPartUpdate) ClearHustlerBodies() *BodyPartUpdate {
+	bpu.mutation.ClearHustlerBodies()
 	return bpu
+}
+
+// RemoveHustlerBodyIDs removes the "hustler_bodies" edge to Hustler entities by IDs.
+func (bpu *BodyPartUpdate) RemoveHustlerBodyIDs(ids ...string) *BodyPartUpdate {
+	bpu.mutation.RemoveHustlerBodyIDs(ids...)
+	return bpu
+}
+
+// RemoveHustlerBodies removes "hustler_bodies" edges to Hustler entities.
+func (bpu *BodyPartUpdate) RemoveHustlerBodies(h ...*Hustler) *BodyPartUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpu.RemoveHustlerBodyIDs(ids...)
+}
+
+// ClearHustlerHairs clears all "hustler_hairs" edges to the Hustler entity.
+func (bpu *BodyPartUpdate) ClearHustlerHairs() *BodyPartUpdate {
+	bpu.mutation.ClearHustlerHairs()
+	return bpu
+}
+
+// RemoveHustlerHairIDs removes the "hustler_hairs" edge to Hustler entities by IDs.
+func (bpu *BodyPartUpdate) RemoveHustlerHairIDs(ids ...string) *BodyPartUpdate {
+	bpu.mutation.RemoveHustlerHairIDs(ids...)
+	return bpu
+}
+
+// RemoveHustlerHairs removes "hustler_hairs" edges to Hustler entities.
+func (bpu *BodyPartUpdate) RemoveHustlerHairs(h ...*Hustler) *BodyPartUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpu.RemoveHustlerHairIDs(ids...)
+}
+
+// ClearHustlerBeards clears all "hustler_beards" edges to the Hustler entity.
+func (bpu *BodyPartUpdate) ClearHustlerBeards() *BodyPartUpdate {
+	bpu.mutation.ClearHustlerBeards()
+	return bpu
+}
+
+// RemoveHustlerBeardIDs removes the "hustler_beards" edge to Hustler entities by IDs.
+func (bpu *BodyPartUpdate) RemoveHustlerBeardIDs(ids ...string) *BodyPartUpdate {
+	bpu.mutation.RemoveHustlerBeardIDs(ids...)
+	return bpu
+}
+
+// RemoveHustlerBeards removes "hustler_beards" edges to Hustler entities.
+func (bpu *BodyPartUpdate) RemoveHustlerBeards(h ...*Hustler) *BodyPartUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpu.RemoveHustlerBeardIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -130,12 +213,12 @@ func (bpu *BodyPartUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if bpu.mutation.HustlerCleared() {
+	if bpu.mutation.HustlerBodiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   bodypart.HustlerTable,
-			Columns: []string{bodypart.HustlerColumn},
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBodiesTable,
+			Columns: []string{bodypart.HustlerBodiesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -146,12 +229,139 @@ func (bpu *BodyPartUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := bpu.mutation.HustlerIDs(); len(nodes) > 0 {
+	if nodes := bpu.mutation.RemovedHustlerBodiesIDs(); len(nodes) > 0 && !bpu.mutation.HustlerBodiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   bodypart.HustlerTable,
-			Columns: []string{bodypart.HustlerColumn},
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBodiesTable,
+			Columns: []string{bodypart.HustlerBodiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpu.mutation.HustlerBodiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBodiesTable,
+			Columns: []string{bodypart.HustlerBodiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if bpu.mutation.HustlerHairsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerHairsTable,
+			Columns: []string{bodypart.HustlerHairsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpu.mutation.RemovedHustlerHairsIDs(); len(nodes) > 0 && !bpu.mutation.HustlerHairsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerHairsTable,
+			Columns: []string{bodypart.HustlerHairsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpu.mutation.HustlerHairsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerHairsTable,
+			Columns: []string{bodypart.HustlerHairsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if bpu.mutation.HustlerBeardsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBeardsTable,
+			Columns: []string{bodypart.HustlerBeardsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpu.mutation.RemovedHustlerBeardsIDs(); len(nodes) > 0 && !bpu.mutation.HustlerBeardsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBeardsTable,
+			Columns: []string{bodypart.HustlerBeardsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpu.mutation.HustlerBeardsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBeardsTable,
+			Columns: []string{bodypart.HustlerBeardsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -184,23 +394,49 @@ type BodyPartUpdateOne struct {
 	mutation *BodyPartMutation
 }
 
-// SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
-func (bpuo *BodyPartUpdateOne) SetHustlerID(id string) *BodyPartUpdateOne {
-	bpuo.mutation.SetHustlerID(id)
+// AddHustlerBodyIDs adds the "hustler_bodies" edge to the Hustler entity by IDs.
+func (bpuo *BodyPartUpdateOne) AddHustlerBodyIDs(ids ...string) *BodyPartUpdateOne {
+	bpuo.mutation.AddHustlerBodyIDs(ids...)
 	return bpuo
 }
 
-// SetNillableHustlerID sets the "hustler" edge to the Hustler entity by ID if the given value is not nil.
-func (bpuo *BodyPartUpdateOne) SetNillableHustlerID(id *string) *BodyPartUpdateOne {
-	if id != nil {
-		bpuo = bpuo.SetHustlerID(*id)
+// AddHustlerBodies adds the "hustler_bodies" edges to the Hustler entity.
+func (bpuo *BodyPartUpdateOne) AddHustlerBodies(h ...*Hustler) *BodyPartUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
 	}
+	return bpuo.AddHustlerBodyIDs(ids...)
+}
+
+// AddHustlerHairIDs adds the "hustler_hairs" edge to the Hustler entity by IDs.
+func (bpuo *BodyPartUpdateOne) AddHustlerHairIDs(ids ...string) *BodyPartUpdateOne {
+	bpuo.mutation.AddHustlerHairIDs(ids...)
 	return bpuo
 }
 
-// SetHustler sets the "hustler" edge to the Hustler entity.
-func (bpuo *BodyPartUpdateOne) SetHustler(h *Hustler) *BodyPartUpdateOne {
-	return bpuo.SetHustlerID(h.ID)
+// AddHustlerHairs adds the "hustler_hairs" edges to the Hustler entity.
+func (bpuo *BodyPartUpdateOne) AddHustlerHairs(h ...*Hustler) *BodyPartUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpuo.AddHustlerHairIDs(ids...)
+}
+
+// AddHustlerBeardIDs adds the "hustler_beards" edge to the Hustler entity by IDs.
+func (bpuo *BodyPartUpdateOne) AddHustlerBeardIDs(ids ...string) *BodyPartUpdateOne {
+	bpuo.mutation.AddHustlerBeardIDs(ids...)
+	return bpuo
+}
+
+// AddHustlerBeards adds the "hustler_beards" edges to the Hustler entity.
+func (bpuo *BodyPartUpdateOne) AddHustlerBeards(h ...*Hustler) *BodyPartUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpuo.AddHustlerBeardIDs(ids...)
 }
 
 // Mutation returns the BodyPartMutation object of the builder.
@@ -208,10 +444,67 @@ func (bpuo *BodyPartUpdateOne) Mutation() *BodyPartMutation {
 	return bpuo.mutation
 }
 
-// ClearHustler clears the "hustler" edge to the Hustler entity.
-func (bpuo *BodyPartUpdateOne) ClearHustler() *BodyPartUpdateOne {
-	bpuo.mutation.ClearHustler()
+// ClearHustlerBodies clears all "hustler_bodies" edges to the Hustler entity.
+func (bpuo *BodyPartUpdateOne) ClearHustlerBodies() *BodyPartUpdateOne {
+	bpuo.mutation.ClearHustlerBodies()
 	return bpuo
+}
+
+// RemoveHustlerBodyIDs removes the "hustler_bodies" edge to Hustler entities by IDs.
+func (bpuo *BodyPartUpdateOne) RemoveHustlerBodyIDs(ids ...string) *BodyPartUpdateOne {
+	bpuo.mutation.RemoveHustlerBodyIDs(ids...)
+	return bpuo
+}
+
+// RemoveHustlerBodies removes "hustler_bodies" edges to Hustler entities.
+func (bpuo *BodyPartUpdateOne) RemoveHustlerBodies(h ...*Hustler) *BodyPartUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpuo.RemoveHustlerBodyIDs(ids...)
+}
+
+// ClearHustlerHairs clears all "hustler_hairs" edges to the Hustler entity.
+func (bpuo *BodyPartUpdateOne) ClearHustlerHairs() *BodyPartUpdateOne {
+	bpuo.mutation.ClearHustlerHairs()
+	return bpuo
+}
+
+// RemoveHustlerHairIDs removes the "hustler_hairs" edge to Hustler entities by IDs.
+func (bpuo *BodyPartUpdateOne) RemoveHustlerHairIDs(ids ...string) *BodyPartUpdateOne {
+	bpuo.mutation.RemoveHustlerHairIDs(ids...)
+	return bpuo
+}
+
+// RemoveHustlerHairs removes "hustler_hairs" edges to Hustler entities.
+func (bpuo *BodyPartUpdateOne) RemoveHustlerHairs(h ...*Hustler) *BodyPartUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpuo.RemoveHustlerHairIDs(ids...)
+}
+
+// ClearHustlerBeards clears all "hustler_beards" edges to the Hustler entity.
+func (bpuo *BodyPartUpdateOne) ClearHustlerBeards() *BodyPartUpdateOne {
+	bpuo.mutation.ClearHustlerBeards()
+	return bpuo
+}
+
+// RemoveHustlerBeardIDs removes the "hustler_beards" edge to Hustler entities by IDs.
+func (bpuo *BodyPartUpdateOne) RemoveHustlerBeardIDs(ids ...string) *BodyPartUpdateOne {
+	bpuo.mutation.RemoveHustlerBeardIDs(ids...)
+	return bpuo
+}
+
+// RemoveHustlerBeards removes "hustler_beards" edges to Hustler entities.
+func (bpuo *BodyPartUpdateOne) RemoveHustlerBeards(h ...*Hustler) *BodyPartUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpuo.RemoveHustlerBeardIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -310,12 +603,12 @@ func (bpuo *BodyPartUpdateOne) sqlSave(ctx context.Context) (_node *BodyPart, er
 			}
 		}
 	}
-	if bpuo.mutation.HustlerCleared() {
+	if bpuo.mutation.HustlerBodiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   bodypart.HustlerTable,
-			Columns: []string{bodypart.HustlerColumn},
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBodiesTable,
+			Columns: []string{bodypart.HustlerBodiesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -326,12 +619,139 @@ func (bpuo *BodyPartUpdateOne) sqlSave(ctx context.Context) (_node *BodyPart, er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := bpuo.mutation.HustlerIDs(); len(nodes) > 0 {
+	if nodes := bpuo.mutation.RemovedHustlerBodiesIDs(); len(nodes) > 0 && !bpuo.mutation.HustlerBodiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   bodypart.HustlerTable,
-			Columns: []string{bodypart.HustlerColumn},
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBodiesTable,
+			Columns: []string{bodypart.HustlerBodiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpuo.mutation.HustlerBodiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBodiesTable,
+			Columns: []string{bodypart.HustlerBodiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if bpuo.mutation.HustlerHairsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerHairsTable,
+			Columns: []string{bodypart.HustlerHairsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpuo.mutation.RemovedHustlerHairsIDs(); len(nodes) > 0 && !bpuo.mutation.HustlerHairsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerHairsTable,
+			Columns: []string{bodypart.HustlerHairsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpuo.mutation.HustlerHairsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerHairsTable,
+			Columns: []string{bodypart.HustlerHairsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if bpuo.mutation.HustlerBeardsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBeardsTable,
+			Columns: []string{bodypart.HustlerBeardsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpuo.mutation.RemovedHustlerBeardsIDs(); len(nodes) > 0 && !bpuo.mutation.HustlerBeardsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBeardsTable,
+			Columns: []string{bodypart.HustlerBeardsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bpuo.mutation.HustlerBeardsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBeardsTable,
+			Columns: []string{bodypart.HustlerBeardsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{

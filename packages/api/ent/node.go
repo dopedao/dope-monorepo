@@ -51,7 +51,7 @@ func (bp *BodyPart) Node(ctx context.Context) (node *Node, err error) {
 		ID:     bp.ID,
 		Type:   "BodyPart",
 		Fields: make([]*Field, 3),
-		Edges:  make([]*Edge, 1),
+		Edges:  make([]*Edge, 3),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(bp.Type); err != nil {
@@ -80,11 +80,31 @@ func (bp *BodyPart) Node(ctx context.Context) (node *Node, err error) {
 	}
 	node.Edges[0] = &Edge{
 		Type: "Hustler",
-		Name: "hustler",
+		Name: "hustler_bodies",
 	}
-	err = bp.QueryHustler().
+	err = bp.QueryHustlerBodies().
 		Select(hustler.FieldID).
 		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[1] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_hairs",
+	}
+	err = bp.QueryHustlerHairs().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[2] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_beards",
+	}
+	err = bp.QueryHustlerBeards().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[2].IDs)
 	if err != nil {
 		return nil, err
 	}
@@ -142,8 +162,8 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     h.ID,
 		Type:   "Hustler",
-		Fields: make([]*Field, 7),
-		Edges:  make([]*Edge, 3),
+		Fields: make([]*Field, 10),
+		Edges:  make([]*Edge, 5),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(h.Type); err != nil {
@@ -202,6 +222,30 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "sex",
 		Value: string(buf),
 	}
+	if buf, err = json.Marshal(h.Viewbox); err != nil {
+		return nil, err
+	}
+	node.Fields[7] = &Field{
+		Type:  "[]int",
+		Name:  "viewbox",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(h.Order); err != nil {
+		return nil, err
+	}
+	node.Fields[8] = &Field{
+		Type:  "[]int",
+		Name:  "order",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(h.Svg); err != nil {
+		return nil, err
+	}
+	node.Fields[9] = &Field{
+		Type:  "string",
+		Name:  "svg",
+		Value: string(buf),
+	}
 	node.Edges[0] = &Edge{
 		Type: "Wallet",
 		Name: "wallet",
@@ -224,11 +268,31 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 	}
 	node.Edges[2] = &Edge{
 		Type: "BodyPart",
-		Name: "bodyparts",
+		Name: "body",
 	}
-	err = h.QueryBodyparts().
+	err = h.QueryBody().
 		Select(bodypart.FieldID).
 		Scan(ctx, &node.Edges[2].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[3] = &Edge{
+		Type: "BodyPart",
+		Name: "hair",
+	}
+	err = h.QueryHair().
+		Select(bodypart.FieldID).
+		Scan(ctx, &node.Edges[3].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[4] = &Edge{
+		Type: "BodyPart",
+		Name: "beard",
+	}
+	err = h.QueryBeard().
+		Select(bodypart.FieldID).
+		Scan(ctx, &node.Edges[4].IDs)
 	if err != nil {
 		return nil, err
 	}

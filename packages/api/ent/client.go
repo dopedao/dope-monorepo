@@ -249,15 +249,47 @@ func (c *BodyPartClient) GetX(ctx context.Context, id string) *BodyPart {
 	return obj
 }
 
-// QueryHustler queries the hustler edge of a BodyPart.
-func (c *BodyPartClient) QueryHustler(bp *BodyPart) *HustlerQuery {
+// QueryHustlerBodies queries the hustler_bodies edge of a BodyPart.
+func (c *BodyPartClient) QueryHustlerBodies(bp *BodyPart) *HustlerQuery {
 	query := &HustlerQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := bp.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bodypart.Table, bodypart.FieldID, id),
 			sqlgraph.To(hustler.Table, hustler.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, bodypart.HustlerTable, bodypart.HustlerColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, bodypart.HustlerBodiesTable, bodypart.HustlerBodiesColumn),
+		)
+		fromV = sqlgraph.Neighbors(bp.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerHairs queries the hustler_hairs edge of a BodyPart.
+func (c *BodyPartClient) QueryHustlerHairs(bp *BodyPart) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := bp.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bodypart.Table, bodypart.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bodypart.HustlerHairsTable, bodypart.HustlerHairsColumn),
+		)
+		fromV = sqlgraph.Neighbors(bp.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerBeards queries the hustler_beards edge of a BodyPart.
+func (c *BodyPartClient) QueryHustlerBeards(bp *BodyPart) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := bp.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bodypart.Table, bodypart.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bodypart.HustlerBeardsTable, bodypart.HustlerBeardsColumn),
 		)
 		fromV = sqlgraph.Neighbors(bp.driver.Dialect(), step)
 		return fromV, nil
@@ -509,15 +541,47 @@ func (c *HustlerClient) QueryItems(h *Hustler) *ItemQuery {
 	return query
 }
 
-// QueryBodyparts queries the bodyparts edge of a Hustler.
-func (c *HustlerClient) QueryBodyparts(h *Hustler) *BodyPartQuery {
+// QueryBody queries the body edge of a Hustler.
+func (c *HustlerClient) QueryBody(h *Hustler) *BodyPartQuery {
 	query := &BodyPartQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := h.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(hustler.Table, hustler.FieldID, id),
 			sqlgraph.To(bodypart.Table, bodypart.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, hustler.BodypartsTable, hustler.BodypartsColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.BodyTable, hustler.BodyColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHair queries the hair edge of a Hustler.
+func (c *HustlerClient) QueryHair(h *Hustler) *BodyPartQuery {
+	query := &BodyPartQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(bodypart.Table, bodypart.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.HairTable, hustler.HairColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryBeard queries the beard edge of a Hustler.
+func (c *HustlerClient) QueryBeard(h *Hustler) *BodyPartQuery {
+	query := &BodyPartQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(bodypart.Table, bodypart.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.BeardTable, hustler.BeardColumn),
 		)
 		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
 		return fromV, nil

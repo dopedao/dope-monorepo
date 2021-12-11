@@ -27,12 +27,22 @@ const (
 	FieldAge = "age"
 	// FieldSex holds the string denoting the sex field in the database.
 	FieldSex = "sex"
+	// FieldViewbox holds the string denoting the viewbox field in the database.
+	FieldViewbox = "viewbox"
+	// FieldOrder holds the string denoting the order field in the database.
+	FieldOrder = "order"
+	// FieldSvg holds the string denoting the svg field in the database.
+	FieldSvg = "svg"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
 	EdgeWallet = "wallet"
 	// EdgeItems holds the string denoting the items edge name in mutations.
 	EdgeItems = "items"
-	// EdgeBodyparts holds the string denoting the bodyparts edge name in mutations.
-	EdgeBodyparts = "bodyparts"
+	// EdgeBody holds the string denoting the body edge name in mutations.
+	EdgeBody = "body"
+	// EdgeHair holds the string denoting the hair edge name in mutations.
+	EdgeHair = "hair"
+	// EdgeBeard holds the string denoting the beard edge name in mutations.
+	EdgeBeard = "beard"
 	// Table holds the table name of the hustler in the database.
 	Table = "hustlers"
 	// WalletTable is the table that holds the wallet relation/edge.
@@ -49,13 +59,27 @@ const (
 	ItemsInverseTable = "items"
 	// ItemsColumn is the table column denoting the items relation/edge.
 	ItemsColumn = "hustler_items"
-	// BodypartsTable is the table that holds the bodyparts relation/edge.
-	BodypartsTable = "body_parts"
-	// BodypartsInverseTable is the table name for the BodyPart entity.
+	// BodyTable is the table that holds the body relation/edge.
+	BodyTable = "hustlers"
+	// BodyInverseTable is the table name for the BodyPart entity.
 	// It exists in this package in order to avoid circular dependency with the "bodypart" package.
-	BodypartsInverseTable = "body_parts"
-	// BodypartsColumn is the table column denoting the bodyparts relation/edge.
-	BodypartsColumn = "hustler_bodyparts"
+	BodyInverseTable = "body_parts"
+	// BodyColumn is the table column denoting the body relation/edge.
+	BodyColumn = "body_part_hustler_bodies"
+	// HairTable is the table that holds the hair relation/edge.
+	HairTable = "hustlers"
+	// HairInverseTable is the table name for the BodyPart entity.
+	// It exists in this package in order to avoid circular dependency with the "bodypart" package.
+	HairInverseTable = "body_parts"
+	// HairColumn is the table column denoting the hair relation/edge.
+	HairColumn = "body_part_hustler_hairs"
+	// BeardTable is the table that holds the beard relation/edge.
+	BeardTable = "hustlers"
+	// BeardInverseTable is the table name for the BodyPart entity.
+	// It exists in this package in order to avoid circular dependency with the "bodypart" package.
+	BeardInverseTable = "body_parts"
+	// BeardColumn is the table column denoting the beard relation/edge.
+	BeardColumn = "body_part_hustler_beards"
 )
 
 // Columns holds all SQL columns for hustler fields.
@@ -68,11 +92,17 @@ var Columns = []string{
 	FieldBackground,
 	FieldAge,
 	FieldSex,
+	FieldViewbox,
+	FieldOrder,
+	FieldSvg,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "hustlers"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
+	"body_part_hustler_bodies",
+	"body_part_hustler_hairs",
+	"body_part_hustler_beards",
 	"wallet_hustlers",
 }
 
@@ -90,6 +120,13 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultViewbox holds the default value on creation for the "viewbox" field.
+	DefaultViewbox []int
+	// DefaultOrder holds the default value on creation for the "order" field.
+	DefaultOrder []int
+)
 
 // Type defines the type for the "type" enum field.
 type Type string
@@ -116,6 +153,9 @@ func TypeValidator(_type Type) error {
 
 // Sex defines the type for the "sex" enum field.
 type Sex string
+
+// SexMale is the default value of the Sex enum.
+const DefaultSex = SexMale
 
 // Sex values.
 const (

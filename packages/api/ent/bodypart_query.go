@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -26,8 +27,9 @@ type BodyPartQuery struct {
 	fields     []string
 	predicates []predicate.BodyPart
 	// eager-loading edges.
-	withHustler *HustlerQuery
-	withFKs     bool
+	withHustlerBodies *HustlerQuery
+	withHustlerHairs  *HustlerQuery
+	withHustlerBeards *HustlerQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -64,8 +66,8 @@ func (bpq *BodyPartQuery) Order(o ...OrderFunc) *BodyPartQuery {
 	return bpq
 }
 
-// QueryHustler chains the current query on the "hustler" edge.
-func (bpq *BodyPartQuery) QueryHustler() *HustlerQuery {
+// QueryHustlerBodies chains the current query on the "hustler_bodies" edge.
+func (bpq *BodyPartQuery) QueryHustlerBodies() *HustlerQuery {
 	query := &HustlerQuery{config: bpq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := bpq.prepareQuery(ctx); err != nil {
@@ -78,7 +80,51 @@ func (bpq *BodyPartQuery) QueryHustler() *HustlerQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bodypart.Table, bodypart.FieldID, selector),
 			sqlgraph.To(hustler.Table, hustler.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, bodypart.HustlerTable, bodypart.HustlerColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, bodypart.HustlerBodiesTable, bodypart.HustlerBodiesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(bpq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryHustlerHairs chains the current query on the "hustler_hairs" edge.
+func (bpq *BodyPartQuery) QueryHustlerHairs() *HustlerQuery {
+	query := &HustlerQuery{config: bpq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := bpq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := bpq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bodypart.Table, bodypart.FieldID, selector),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bodypart.HustlerHairsTable, bodypart.HustlerHairsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(bpq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryHustlerBeards chains the current query on the "hustler_beards" edge.
+func (bpq *BodyPartQuery) QueryHustlerBeards() *HustlerQuery {
+	query := &HustlerQuery{config: bpq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := bpq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := bpq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bodypart.Table, bodypart.FieldID, selector),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bodypart.HustlerBeardsTable, bodypart.HustlerBeardsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(bpq.driver.Dialect(), step)
 		return fromU, nil
@@ -262,26 +308,50 @@ func (bpq *BodyPartQuery) Clone() *BodyPartQuery {
 		return nil
 	}
 	return &BodyPartQuery{
-		config:      bpq.config,
-		limit:       bpq.limit,
-		offset:      bpq.offset,
-		order:       append([]OrderFunc{}, bpq.order...),
-		predicates:  append([]predicate.BodyPart{}, bpq.predicates...),
-		withHustler: bpq.withHustler.Clone(),
+		config:            bpq.config,
+		limit:             bpq.limit,
+		offset:            bpq.offset,
+		order:             append([]OrderFunc{}, bpq.order...),
+		predicates:        append([]predicate.BodyPart{}, bpq.predicates...),
+		withHustlerBodies: bpq.withHustlerBodies.Clone(),
+		withHustlerHairs:  bpq.withHustlerHairs.Clone(),
+		withHustlerBeards: bpq.withHustlerBeards.Clone(),
 		// clone intermediate query.
 		sql:  bpq.sql.Clone(),
 		path: bpq.path,
 	}
 }
 
-// WithHustler tells the query-builder to eager-load the nodes that are connected to
-// the "hustler" edge. The optional arguments are used to configure the query builder of the edge.
-func (bpq *BodyPartQuery) WithHustler(opts ...func(*HustlerQuery)) *BodyPartQuery {
+// WithHustlerBodies tells the query-builder to eager-load the nodes that are connected to
+// the "hustler_bodies" edge. The optional arguments are used to configure the query builder of the edge.
+func (bpq *BodyPartQuery) WithHustlerBodies(opts ...func(*HustlerQuery)) *BodyPartQuery {
 	query := &HustlerQuery{config: bpq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	bpq.withHustler = query
+	bpq.withHustlerBodies = query
+	return bpq
+}
+
+// WithHustlerHairs tells the query-builder to eager-load the nodes that are connected to
+// the "hustler_hairs" edge. The optional arguments are used to configure the query builder of the edge.
+func (bpq *BodyPartQuery) WithHustlerHairs(opts ...func(*HustlerQuery)) *BodyPartQuery {
+	query := &HustlerQuery{config: bpq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	bpq.withHustlerHairs = query
+	return bpq
+}
+
+// WithHustlerBeards tells the query-builder to eager-load the nodes that are connected to
+// the "hustler_beards" edge. The optional arguments are used to configure the query builder of the edge.
+func (bpq *BodyPartQuery) WithHustlerBeards(opts ...func(*HustlerQuery)) *BodyPartQuery {
+	query := &HustlerQuery{config: bpq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	bpq.withHustlerBeards = query
 	return bpq
 }
 
@@ -349,18 +419,13 @@ func (bpq *BodyPartQuery) prepareQuery(ctx context.Context) error {
 func (bpq *BodyPartQuery) sqlAll(ctx context.Context) ([]*BodyPart, error) {
 	var (
 		nodes       = []*BodyPart{}
-		withFKs     = bpq.withFKs
 		_spec       = bpq.querySpec()
-		loadedTypes = [1]bool{
-			bpq.withHustler != nil,
+		loadedTypes = [3]bool{
+			bpq.withHustlerBodies != nil,
+			bpq.withHustlerHairs != nil,
+			bpq.withHustlerBeards != nil,
 		}
 	)
-	if bpq.withHustler != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, bodypart.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &BodyPart{config: bpq.config}
 		nodes = append(nodes, node)
@@ -381,32 +446,90 @@ func (bpq *BodyPartQuery) sqlAll(ctx context.Context) ([]*BodyPart, error) {
 		return nodes, nil
 	}
 
-	if query := bpq.withHustler; query != nil {
-		ids := make([]string, 0, len(nodes))
-		nodeids := make(map[string][]*BodyPart)
+	if query := bpq.withHustlerBodies; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*BodyPart)
 		for i := range nodes {
-			if nodes[i].hustler_bodyparts == nil {
-				continue
-			}
-			fk := *nodes[i].hustler_bodyparts
-			if _, ok := nodeids[fk]; !ok {
-				ids = append(ids, fk)
-			}
-			nodeids[fk] = append(nodeids[fk], nodes[i])
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.HustlerBodies = []*Hustler{}
 		}
-		query.Where(hustler.IDIn(ids...))
+		query.withFKs = true
+		query.Where(predicate.Hustler(func(s *sql.Selector) {
+			s.Where(sql.InValues(bodypart.HustlerBodiesColumn, fks...))
+		}))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
+			fk := n.body_part_hustler_bodies
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "body_part_hustler_bodies" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "hustler_bodyparts" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "body_part_hustler_bodies" returned %v for node %v`, *fk, n.ID)
 			}
-			for i := range nodes {
-				nodes[i].Edges.Hustler = n
+			node.Edges.HustlerBodies = append(node.Edges.HustlerBodies, n)
+		}
+	}
+
+	if query := bpq.withHustlerHairs; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*BodyPart)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.HustlerHairs = []*Hustler{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Hustler(func(s *sql.Selector) {
+			s.Where(sql.InValues(bodypart.HustlerHairsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.body_part_hustler_hairs
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "body_part_hustler_hairs" is nil for node %v`, n.ID)
 			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "body_part_hustler_hairs" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.HustlerHairs = append(node.Edges.HustlerHairs, n)
+		}
+	}
+
+	if query := bpq.withHustlerBeards; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*BodyPart)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.HustlerBeards = []*Hustler{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Hustler(func(s *sql.Selector) {
+			s.Where(sql.InValues(bodypart.HustlerBeardsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.body_part_hustler_beards
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "body_part_hustler_beards" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "body_part_hustler_beards" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.HustlerBeards = append(node.Edges.HustlerBeards, n)
 		}
 	}
 

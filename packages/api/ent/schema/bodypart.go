@@ -29,6 +29,8 @@ func (BodyPart) Fields() []ent.Field {
 // Edges of the BodyPart.
 func (BodyPart) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("hustler", Hustler.Type).Ref("bodyparts").Unique(),
+		edge.To("hustler_bodies", Hustler.Type),
+		edge.To("hustler_hairs", Hustler.Type),
+		edge.To("hustler_beards", Hustler.Type),
 	}
 }

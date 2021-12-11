@@ -8,7 +8,6 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 )
 
 // BodyPart is the model entity for the BodyPart schema.
@@ -24,31 +23,47 @@ type BodyPart struct {
 	Rle string `json:"rle,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BodyPartQuery when eager-loading is set.
-	Edges             BodyPartEdges `json:"edges"`
-	hustler_bodyparts *string
+	Edges BodyPartEdges `json:"edges"`
 }
 
 // BodyPartEdges holds the relations/edges for other nodes in the graph.
 type BodyPartEdges struct {
-	// Hustler holds the value of the hustler edge.
-	Hustler *Hustler `json:"hustler,omitempty"`
+	// HustlerBodies holds the value of the hustler_bodies edge.
+	HustlerBodies []*Hustler `json:"hustler_bodies,omitempty"`
+	// HustlerHairs holds the value of the hustler_hairs edge.
+	HustlerHairs []*Hustler `json:"hustler_hairs,omitempty"`
+	// HustlerBeards holds the value of the hustler_beards edge.
+	HustlerBeards []*Hustler `json:"hustler_beards,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 }
 
-// HustlerOrErr returns the Hustler value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e BodyPartEdges) HustlerOrErr() (*Hustler, error) {
+// HustlerBodiesOrErr returns the HustlerBodies value or an error if the edge
+// was not loaded in eager-loading.
+func (e BodyPartEdges) HustlerBodiesOrErr() ([]*Hustler, error) {
 	if e.loadedTypes[0] {
-		if e.Hustler == nil {
-			// The edge hustler was loaded in eager-loading,
-			// but was not found.
-			return nil, &NotFoundError{label: hustler.Label}
-		}
-		return e.Hustler, nil
+		return e.HustlerBodies, nil
 	}
-	return nil, &NotLoadedError{edge: "hustler"}
+	return nil, &NotLoadedError{edge: "hustler_bodies"}
+}
+
+// HustlerHairsOrErr returns the HustlerHairs value or an error if the edge
+// was not loaded in eager-loading.
+func (e BodyPartEdges) HustlerHairsOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[1] {
+		return e.HustlerHairs, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_hairs"}
+}
+
+// HustlerBeardsOrErr returns the HustlerBeards value or an error if the edge
+// was not loaded in eager-loading.
+func (e BodyPartEdges) HustlerBeardsOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[2] {
+		return e.HustlerBeards, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_beards"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -57,8 +72,6 @@ func (*BodyPart) scanValues(columns []string) ([]interface{}, error) {
 	for i := range columns {
 		switch columns[i] {
 		case bodypart.FieldID, bodypart.FieldType, bodypart.FieldSex, bodypart.FieldRle:
-			values[i] = new(sql.NullString)
-		case bodypart.ForeignKeys[0]: // hustler_bodyparts
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type BodyPart", columns[i])
@@ -99,21 +112,24 @@ func (bp *BodyPart) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				bp.Rle = value.String
 			}
-		case bodypart.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field hustler_bodyparts", values[i])
-			} else if value.Valid {
-				bp.hustler_bodyparts = new(string)
-				*bp.hustler_bodyparts = value.String
-			}
 		}
 	}
 	return nil
 }
 
-// QueryHustler queries the "hustler" edge of the BodyPart entity.
-func (bp *BodyPart) QueryHustler() *HustlerQuery {
-	return (&BodyPartClient{config: bp.config}).QueryHustler(bp)
+// QueryHustlerBodies queries the "hustler_bodies" edge of the BodyPart entity.
+func (bp *BodyPart) QueryHustlerBodies() *HustlerQuery {
+	return (&BodyPartClient{config: bp.config}).QueryHustlerBodies(bp)
+}
+
+// QueryHustlerHairs queries the "hustler_hairs" edge of the BodyPart entity.
+func (bp *BodyPart) QueryHustlerHairs() *HustlerQuery {
+	return (&BodyPartClient{config: bp.config}).QueryHustlerHairs(bp)
+}
+
+// QueryHustlerBeards queries the "hustler_beards" edge of the BodyPart entity.
+func (bp *BodyPart) QueryHustlerBeards() *HustlerQuery {
+	return (&BodyPartClient{config: bp.config}).QueryHustlerBeards(bp)
 }
 
 // Update returns a builder for updating this BodyPart.

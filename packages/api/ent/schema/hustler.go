@@ -29,6 +29,12 @@ func (Hustler) Fields() []ent.Field {
 		field.Uint64("age"),
 		field.Enum("sex").
 			Values("male", "female").
+			Default("male"),
+		field.Ints("viewbox").
+			Default([]int{0, 0, 0, 0}),
+		field.Ints("order").
+			Default([]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}),
+		field.String("svg").
 			Optional(),
 	}
 }
@@ -38,6 +44,8 @@ func (Hustler) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("wallet", Wallet.Type).Ref("hustlers").Unique(),
 		edge.To("items", Item.Type),
-		edge.To("bodyparts", BodyPart.Type),
+		edge.From("body", BodyPart.Type).Ref("hustler_bodies").Unique(),
+		edge.From("hair", BodyPart.Type).Ref("hustler_hairs").Unique(),
+		edge.From("beard", BodyPart.Type).Ref("hustler_beards").Unique(),
 	}
 }

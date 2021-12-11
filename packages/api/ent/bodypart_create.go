@@ -47,23 +47,49 @@ func (bpc *BodyPartCreate) SetID(s string) *BodyPartCreate {
 	return bpc
 }
 
-// SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
-func (bpc *BodyPartCreate) SetHustlerID(id string) *BodyPartCreate {
-	bpc.mutation.SetHustlerID(id)
+// AddHustlerBodyIDs adds the "hustler_bodies" edge to the Hustler entity by IDs.
+func (bpc *BodyPartCreate) AddHustlerBodyIDs(ids ...string) *BodyPartCreate {
+	bpc.mutation.AddHustlerBodyIDs(ids...)
 	return bpc
 }
 
-// SetNillableHustlerID sets the "hustler" edge to the Hustler entity by ID if the given value is not nil.
-func (bpc *BodyPartCreate) SetNillableHustlerID(id *string) *BodyPartCreate {
-	if id != nil {
-		bpc = bpc.SetHustlerID(*id)
+// AddHustlerBodies adds the "hustler_bodies" edges to the Hustler entity.
+func (bpc *BodyPartCreate) AddHustlerBodies(h ...*Hustler) *BodyPartCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
 	}
+	return bpc.AddHustlerBodyIDs(ids...)
+}
+
+// AddHustlerHairIDs adds the "hustler_hairs" edge to the Hustler entity by IDs.
+func (bpc *BodyPartCreate) AddHustlerHairIDs(ids ...string) *BodyPartCreate {
+	bpc.mutation.AddHustlerHairIDs(ids...)
 	return bpc
 }
 
-// SetHustler sets the "hustler" edge to the Hustler entity.
-func (bpc *BodyPartCreate) SetHustler(h *Hustler) *BodyPartCreate {
-	return bpc.SetHustlerID(h.ID)
+// AddHustlerHairs adds the "hustler_hairs" edges to the Hustler entity.
+func (bpc *BodyPartCreate) AddHustlerHairs(h ...*Hustler) *BodyPartCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpc.AddHustlerHairIDs(ids...)
+}
+
+// AddHustlerBeardIDs adds the "hustler_beards" edge to the Hustler entity by IDs.
+func (bpc *BodyPartCreate) AddHustlerBeardIDs(ids ...string) *BodyPartCreate {
+	bpc.mutation.AddHustlerBeardIDs(ids...)
+	return bpc
+}
+
+// AddHustlerBeards adds the "hustler_beards" edges to the Hustler entity.
+func (bpc *BodyPartCreate) AddHustlerBeards(h ...*Hustler) *BodyPartCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return bpc.AddHustlerBeardIDs(ids...)
 }
 
 // Mutation returns the BodyPartMutation object of the builder.
@@ -216,12 +242,12 @@ func (bpc *BodyPartCreate) createSpec() (*BodyPart, *sqlgraph.CreateSpec) {
 		})
 		_node.Rle = value
 	}
-	if nodes := bpc.mutation.HustlerIDs(); len(nodes) > 0 {
+	if nodes := bpc.mutation.HustlerBodiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   bodypart.HustlerTable,
-			Columns: []string{bodypart.HustlerColumn},
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBodiesTable,
+			Columns: []string{bodypart.HustlerBodiesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -233,7 +259,44 @@ func (bpc *BodyPartCreate) createSpec() (*BodyPart, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.hustler_bodyparts = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bpc.mutation.HustlerHairsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerHairsTable,
+			Columns: []string{bodypart.HustlerHairsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bpc.mutation.HustlerBeardsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bodypart.HustlerBeardsTable,
+			Columns: []string{bodypart.HustlerBeardsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

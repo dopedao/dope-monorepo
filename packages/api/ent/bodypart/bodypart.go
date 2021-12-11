@@ -19,17 +19,35 @@ const (
 	FieldSex = "sex"
 	// FieldRle holds the string denoting the rle field in the database.
 	FieldRle = "rle"
-	// EdgeHustler holds the string denoting the hustler edge name in mutations.
-	EdgeHustler = "hustler"
+	// EdgeHustlerBodies holds the string denoting the hustler_bodies edge name in mutations.
+	EdgeHustlerBodies = "hustler_bodies"
+	// EdgeHustlerHairs holds the string denoting the hustler_hairs edge name in mutations.
+	EdgeHustlerHairs = "hustler_hairs"
+	// EdgeHustlerBeards holds the string denoting the hustler_beards edge name in mutations.
+	EdgeHustlerBeards = "hustler_beards"
 	// Table holds the table name of the bodypart in the database.
 	Table = "body_parts"
-	// HustlerTable is the table that holds the hustler relation/edge.
-	HustlerTable = "body_parts"
-	// HustlerInverseTable is the table name for the Hustler entity.
+	// HustlerBodiesTable is the table that holds the hustler_bodies relation/edge.
+	HustlerBodiesTable = "hustlers"
+	// HustlerBodiesInverseTable is the table name for the Hustler entity.
 	// It exists in this package in order to avoid circular dependency with the "hustler" package.
-	HustlerInverseTable = "hustlers"
-	// HustlerColumn is the table column denoting the hustler relation/edge.
-	HustlerColumn = "hustler_bodyparts"
+	HustlerBodiesInverseTable = "hustlers"
+	// HustlerBodiesColumn is the table column denoting the hustler_bodies relation/edge.
+	HustlerBodiesColumn = "body_part_hustler_bodies"
+	// HustlerHairsTable is the table that holds the hustler_hairs relation/edge.
+	HustlerHairsTable = "hustlers"
+	// HustlerHairsInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerHairsInverseTable = "hustlers"
+	// HustlerHairsColumn is the table column denoting the hustler_hairs relation/edge.
+	HustlerHairsColumn = "body_part_hustler_hairs"
+	// HustlerBeardsTable is the table that holds the hustler_beards relation/edge.
+	HustlerBeardsTable = "hustlers"
+	// HustlerBeardsInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerBeardsInverseTable = "hustlers"
+	// HustlerBeardsColumn is the table column denoting the hustler_beards relation/edge.
+	HustlerBeardsColumn = "body_part_hustler_beards"
 )
 
 // Columns holds all SQL columns for bodypart fields.
@@ -40,21 +58,10 @@ var Columns = []string{
 	FieldRle,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "body_parts"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"hustler_bodyparts",
-}
-
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

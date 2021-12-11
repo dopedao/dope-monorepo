@@ -14,21 +14,12 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"body", "hair", "beard"}},
 		{Name: "sex", Type: field.TypeEnum, Enums: []string{"male", "female"}},
 		{Name: "rle", Type: field.TypeString},
-		{Name: "hustler_bodyparts", Type: field.TypeString, Nullable: true},
 	}
 	// BodyPartsTable holds the schema information for the "body_parts" table.
 	BodyPartsTable = &schema.Table{
 		Name:       "body_parts",
 		Columns:    BodyPartsColumns,
 		PrimaryKey: []*schema.Column{BodyPartsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "body_parts_hustlers_bodyparts",
-				Columns:    []*schema.Column{BodyPartsColumns[4]},
-				RefColumns: []*schema.Column{HustlersColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
 	}
 	// DopesColumns holds the columns for the "dopes" table.
 	DopesColumns = []*schema.Column{
@@ -60,7 +51,13 @@ var (
 		{Name: "color", Type: field.TypeString, Nullable: true},
 		{Name: "background", Type: field.TypeString, Nullable: true},
 		{Name: "age", Type: field.TypeUint64},
-		{Name: "sex", Type: field.TypeEnum, Nullable: true, Enums: []string{"male", "female"}},
+		{Name: "sex", Type: field.TypeEnum, Enums: []string{"male", "female"}, Default: "male"},
+		{Name: "viewbox", Type: field.TypeJSON},
+		{Name: "order", Type: field.TypeJSON},
+		{Name: "svg", Type: field.TypeString, Nullable: true},
+		{Name: "body_part_hustler_bodies", Type: field.TypeString, Nullable: true},
+		{Name: "body_part_hustler_hairs", Type: field.TypeString, Nullable: true},
+		{Name: "body_part_hustler_beards", Type: field.TypeString, Nullable: true},
 		{Name: "wallet_hustlers", Type: field.TypeString, Nullable: true},
 	}
 	// HustlersTable holds the schema information for the "hustlers" table.
@@ -70,8 +67,26 @@ var (
 		PrimaryKey: []*schema.Column{HustlersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
+				Symbol:     "hustlers_body_parts_hustler_bodies",
+				Columns:    []*schema.Column{HustlersColumns[11]},
+				RefColumns: []*schema.Column{BodyPartsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_body_parts_hustler_hairs",
+				Columns:    []*schema.Column{HustlersColumns[12]},
+				RefColumns: []*schema.Column{BodyPartsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_body_parts_hustler_beards",
+				Columns:    []*schema.Column{HustlersColumns[13]},
+				RefColumns: []*schema.Column{BodyPartsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
 				Symbol:     "hustlers_wallets_hustlers",
-				Columns:    []*schema.Column{HustlersColumns[8]},
+				Columns:    []*schema.Column{HustlersColumns[14]},
 				RefColumns: []*schema.Column{WalletsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -199,9 +214,11 @@ var (
 )
 
 func init() {
-	BodyPartsTable.ForeignKeys[0].RefTable = HustlersTable
 	DopesTable.ForeignKeys[0].RefTable = WalletsTable
-	HustlersTable.ForeignKeys[0].RefTable = WalletsTable
+	HustlersTable.ForeignKeys[0].RefTable = BodyPartsTable
+	HustlersTable.ForeignKeys[1].RefTable = BodyPartsTable
+	HustlersTable.ForeignKeys[2].RefTable = BodyPartsTable
+	HustlersTable.ForeignKeys[3].RefTable = WalletsTable
 	ItemsTable.ForeignKeys[0].RefTable = HustlersTable
 	ItemsTable.ForeignKeys[1].RefTable = ItemsTable
 	WalletItemsTable.ForeignKeys[0].RefTable = ItemsTable
