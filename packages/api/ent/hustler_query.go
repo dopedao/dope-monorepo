@@ -29,10 +29,12 @@ type HustlerQuery struct {
 	fields     []string
 	predicates []predicate.Hustler
 	// eager-loading edges.
-	withWallet    *WalletQuery
-	withItems     *ItemQuery
-	withBodyparts *BodyPartQuery
-	withFKs       bool
+	withWallet *WalletQuery
+	withItems  *ItemQuery
+	withBody   *BodyPartQuery
+	withHair   *BodyPartQuery
+	withBeard  *BodyPartQuery
+	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -113,8 +115,8 @@ func (hq *HustlerQuery) QueryItems() *ItemQuery {
 	return query
 }
 
-// QueryBodyparts chains the current query on the "bodyparts" edge.
-func (hq *HustlerQuery) QueryBodyparts() *BodyPartQuery {
+// QueryBody chains the current query on the "body" edge.
+func (hq *HustlerQuery) QueryBody() *BodyPartQuery {
 	query := &BodyPartQuery{config: hq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := hq.prepareQuery(ctx); err != nil {
@@ -127,7 +129,51 @@ func (hq *HustlerQuery) QueryBodyparts() *BodyPartQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
 			sqlgraph.To(bodypart.Table, bodypart.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, hustler.BodypartsTable, hustler.BodypartsColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.BodyTable, hustler.BodyColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryHair chains the current query on the "hair" edge.
+func (hq *HustlerQuery) QueryHair() *BodyPartQuery {
+	query := &BodyPartQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(bodypart.Table, bodypart.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.HairTable, hustler.HairColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryBeard chains the current query on the "beard" edge.
+func (hq *HustlerQuery) QueryBeard() *BodyPartQuery {
+	query := &BodyPartQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(bodypart.Table, bodypart.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.BeardTable, hustler.BeardColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
 		return fromU, nil
@@ -311,14 +357,16 @@ func (hq *HustlerQuery) Clone() *HustlerQuery {
 		return nil
 	}
 	return &HustlerQuery{
-		config:        hq.config,
-		limit:         hq.limit,
-		offset:        hq.offset,
-		order:         append([]OrderFunc{}, hq.order...),
-		predicates:    append([]predicate.Hustler{}, hq.predicates...),
-		withWallet:    hq.withWallet.Clone(),
-		withItems:     hq.withItems.Clone(),
-		withBodyparts: hq.withBodyparts.Clone(),
+		config:     hq.config,
+		limit:      hq.limit,
+		offset:     hq.offset,
+		order:      append([]OrderFunc{}, hq.order...),
+		predicates: append([]predicate.Hustler{}, hq.predicates...),
+		withWallet: hq.withWallet.Clone(),
+		withItems:  hq.withItems.Clone(),
+		withBody:   hq.withBody.Clone(),
+		withHair:   hq.withHair.Clone(),
+		withBeard:  hq.withBeard.Clone(),
 		// clone intermediate query.
 		sql:  hq.sql.Clone(),
 		path: hq.path,
@@ -347,14 +395,36 @@ func (hq *HustlerQuery) WithItems(opts ...func(*ItemQuery)) *HustlerQuery {
 	return hq
 }
 
-// WithBodyparts tells the query-builder to eager-load the nodes that are connected to
-// the "bodyparts" edge. The optional arguments are used to configure the query builder of the edge.
-func (hq *HustlerQuery) WithBodyparts(opts ...func(*BodyPartQuery)) *HustlerQuery {
+// WithBody tells the query-builder to eager-load the nodes that are connected to
+// the "body" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithBody(opts ...func(*BodyPartQuery)) *HustlerQuery {
 	query := &BodyPartQuery{config: hq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	hq.withBodyparts = query
+	hq.withBody = query
+	return hq
+}
+
+// WithHair tells the query-builder to eager-load the nodes that are connected to
+// the "hair" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithHair(opts ...func(*BodyPartQuery)) *HustlerQuery {
+	query := &BodyPartQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withHair = query
+	return hq
+}
+
+// WithBeard tells the query-builder to eager-load the nodes that are connected to
+// the "beard" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithBeard(opts ...func(*BodyPartQuery)) *HustlerQuery {
+	query := &BodyPartQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withBeard = query
 	return hq
 }
 
@@ -424,13 +494,15 @@ func (hq *HustlerQuery) sqlAll(ctx context.Context) ([]*Hustler, error) {
 		nodes       = []*Hustler{}
 		withFKs     = hq.withFKs
 		_spec       = hq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [5]bool{
 			hq.withWallet != nil,
 			hq.withItems != nil,
-			hq.withBodyparts != nil,
+			hq.withBody != nil,
+			hq.withHair != nil,
+			hq.withBeard != nil,
 		}
 	)
-	if hq.withWallet != nil {
+	if hq.withWallet != nil || hq.withBody != nil || hq.withHair != nil || hq.withBeard != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -514,32 +586,90 @@ func (hq *HustlerQuery) sqlAll(ctx context.Context) ([]*Hustler, error) {
 		}
 	}
 
-	if query := hq.withBodyparts; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[string]*Hustler)
+	if query := hq.withBody; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
 		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.Bodyparts = []*BodyPart{}
+			if nodes[i].body_part_hustler_bodies == nil {
+				continue
+			}
+			fk := *nodes[i].body_part_hustler_bodies
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
 		}
-		query.withFKs = true
-		query.Where(predicate.BodyPart(func(s *sql.Selector) {
-			s.Where(sql.InValues(hustler.BodypartsColumn, fks...))
-		}))
+		query.Where(bodypart.IDIn(ids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.hustler_bodyparts
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "hustler_bodyparts" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
+			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "hustler_bodyparts" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "body_part_hustler_bodies" returned %v`, n.ID)
 			}
-			node.Edges.Bodyparts = append(node.Edges.Bodyparts, n)
+			for i := range nodes {
+				nodes[i].Edges.Body = n
+			}
+		}
+	}
+
+	if query := hq.withHair; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].body_part_hustler_hairs == nil {
+				continue
+			}
+			fk := *nodes[i].body_part_hustler_hairs
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(bodypart.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "body_part_hustler_hairs" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Hair = n
+			}
+		}
+	}
+
+	if query := hq.withBeard; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].body_part_hustler_beards == nil {
+				continue
+			}
+			fk := *nodes[i].body_part_hustler_beards
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(bodypart.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "body_part_hustler_beards" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Beard = n
+			}
 		}
 	}
 

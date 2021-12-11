@@ -4,12 +4,28 @@ package ent
 
 import "context"
 
-func (bp *BodyPart) Hustler(ctx context.Context) (*Hustler, error) {
-	result, err := bp.Edges.HustlerOrErr()
+func (bp *BodyPart) HustlerBodies(ctx context.Context) ([]*Hustler, error) {
+	result, err := bp.Edges.HustlerBodiesOrErr()
 	if IsNotLoaded(err) {
-		result, err = bp.QueryHustler().Only(ctx)
+		result, err = bp.QueryHustlerBodies().All(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
+}
+
+func (bp *BodyPart) HustlerHairs(ctx context.Context) ([]*Hustler, error) {
+	result, err := bp.Edges.HustlerHairsOrErr()
+	if IsNotLoaded(err) {
+		result, err = bp.QueryHustlerHairs().All(ctx)
+	}
+	return result, err
+}
+
+func (bp *BodyPart) HustlerBeards(ctx context.Context) ([]*Hustler, error) {
+	result, err := bp.Edges.HustlerBeardsOrErr()
+	if IsNotLoaded(err) {
+		result, err = bp.QueryHustlerBeards().All(ctx)
+	}
+	return result, err
 }
 
 func (d *Dope) Wallet(ctx context.Context) (*Wallet, error) {
@@ -44,12 +60,28 @@ func (h *Hustler) Items(ctx context.Context) ([]*Item, error) {
 	return result, err
 }
 
-func (h *Hustler) Bodyparts(ctx context.Context) ([]*BodyPart, error) {
-	result, err := h.Edges.BodypartsOrErr()
+func (h *Hustler) Body(ctx context.Context) (*BodyPart, error) {
+	result, err := h.Edges.BodyOrErr()
 	if IsNotLoaded(err) {
-		result, err = h.QueryBodyparts().All(ctx)
+		result, err = h.QueryBody().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Hair(ctx context.Context) (*BodyPart, error) {
+	result, err := h.Edges.HairOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryHair().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Beard(ctx context.Context) (*BodyPart, error) {
+	result, err := h.Edges.BeardOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryBeard().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (i *Item) Wallets(ctx context.Context) ([]*WalletItems, error) {

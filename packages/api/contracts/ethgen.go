@@ -7,7 +7,7 @@ import (
 	"log"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/withtally/ethgen/codegen"
+	"github.com/withtally/synceth/codegen"
 )
 
 func main() {

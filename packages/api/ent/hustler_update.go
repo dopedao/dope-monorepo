@@ -137,9 +137,35 @@ func (hu *HustlerUpdate) SetNillableSex(h *hustler.Sex) *HustlerUpdate {
 	return hu
 }
 
-// ClearSex clears the value of the "sex" field.
-func (hu *HustlerUpdate) ClearSex() *HustlerUpdate {
-	hu.mutation.ClearSex()
+// SetViewbox sets the "viewbox" field.
+func (hu *HustlerUpdate) SetViewbox(i []int) *HustlerUpdate {
+	hu.mutation.SetViewbox(i)
+	return hu
+}
+
+// SetOrder sets the "order" field.
+func (hu *HustlerUpdate) SetOrder(i []int) *HustlerUpdate {
+	hu.mutation.SetOrder(i)
+	return hu
+}
+
+// SetSvg sets the "svg" field.
+func (hu *HustlerUpdate) SetSvg(s string) *HustlerUpdate {
+	hu.mutation.SetSvg(s)
+	return hu
+}
+
+// SetNillableSvg sets the "svg" field if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableSvg(s *string) *HustlerUpdate {
+	if s != nil {
+		hu.SetSvg(*s)
+	}
+	return hu
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (hu *HustlerUpdate) ClearSvg() *HustlerUpdate {
+	hu.mutation.ClearSvg()
 	return hu
 }
 
@@ -177,19 +203,61 @@ func (hu *HustlerUpdate) AddItems(i ...*Item) *HustlerUpdate {
 	return hu.AddItemIDs(ids...)
 }
 
-// AddBodypartIDs adds the "bodyparts" edge to the BodyPart entity by IDs.
-func (hu *HustlerUpdate) AddBodypartIDs(ids ...string) *HustlerUpdate {
-	hu.mutation.AddBodypartIDs(ids...)
+// SetBodyID sets the "body" edge to the BodyPart entity by ID.
+func (hu *HustlerUpdate) SetBodyID(id string) *HustlerUpdate {
+	hu.mutation.SetBodyID(id)
 	return hu
 }
 
-// AddBodyparts adds the "bodyparts" edges to the BodyPart entity.
-func (hu *HustlerUpdate) AddBodyparts(b ...*BodyPart) *HustlerUpdate {
-	ids := make([]string, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBodyID sets the "body" edge to the BodyPart entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableBodyID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetBodyID(*id)
 	}
-	return hu.AddBodypartIDs(ids...)
+	return hu
+}
+
+// SetBody sets the "body" edge to the BodyPart entity.
+func (hu *HustlerUpdate) SetBody(b *BodyPart) *HustlerUpdate {
+	return hu.SetBodyID(b.ID)
+}
+
+// SetHairID sets the "hair" edge to the BodyPart entity by ID.
+func (hu *HustlerUpdate) SetHairID(id string) *HustlerUpdate {
+	hu.mutation.SetHairID(id)
+	return hu
+}
+
+// SetNillableHairID sets the "hair" edge to the BodyPart entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableHairID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetHairID(*id)
+	}
+	return hu
+}
+
+// SetHair sets the "hair" edge to the BodyPart entity.
+func (hu *HustlerUpdate) SetHair(b *BodyPart) *HustlerUpdate {
+	return hu.SetHairID(b.ID)
+}
+
+// SetBeardID sets the "beard" edge to the BodyPart entity by ID.
+func (hu *HustlerUpdate) SetBeardID(id string) *HustlerUpdate {
+	hu.mutation.SetBeardID(id)
+	return hu
+}
+
+// SetNillableBeardID sets the "beard" edge to the BodyPart entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableBeardID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetBeardID(*id)
+	}
+	return hu
+}
+
+// SetBeard sets the "beard" edge to the BodyPart entity.
+func (hu *HustlerUpdate) SetBeard(b *BodyPart) *HustlerUpdate {
+	return hu.SetBeardID(b.ID)
 }
 
 // Mutation returns the HustlerMutation object of the builder.
@@ -224,25 +292,22 @@ func (hu *HustlerUpdate) RemoveItems(i ...*Item) *HustlerUpdate {
 	return hu.RemoveItemIDs(ids...)
 }
 
-// ClearBodyparts clears all "bodyparts" edges to the BodyPart entity.
-func (hu *HustlerUpdate) ClearBodyparts() *HustlerUpdate {
-	hu.mutation.ClearBodyparts()
+// ClearBody clears the "body" edge to the BodyPart entity.
+func (hu *HustlerUpdate) ClearBody() *HustlerUpdate {
+	hu.mutation.ClearBody()
 	return hu
 }
 
-// RemoveBodypartIDs removes the "bodyparts" edge to BodyPart entities by IDs.
-func (hu *HustlerUpdate) RemoveBodypartIDs(ids ...string) *HustlerUpdate {
-	hu.mutation.RemoveBodypartIDs(ids...)
+// ClearHair clears the "hair" edge to the BodyPart entity.
+func (hu *HustlerUpdate) ClearHair() *HustlerUpdate {
+	hu.mutation.ClearHair()
 	return hu
 }
 
-// RemoveBodyparts removes "bodyparts" edges to BodyPart entities.
-func (hu *HustlerUpdate) RemoveBodyparts(b ...*BodyPart) *HustlerUpdate {
-	ids := make([]string, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return hu.RemoveBodypartIDs(ids...)
+// ClearBeard clears the "beard" edge to the BodyPart entity.
+func (hu *HustlerUpdate) ClearBeard() *HustlerUpdate {
+	hu.mutation.ClearBeard()
+	return hu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -406,10 +471,31 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: hustler.FieldSex,
 		})
 	}
-	if hu.mutation.SexCleared() {
+	if value, ok := hu.mutation.Viewbox(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: hustler.FieldViewbox,
+		})
+	}
+	if value, ok := hu.mutation.Order(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: hustler.FieldOrder,
+		})
+	}
+	if value, ok := hu.mutation.Svg(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldSvg,
+		})
+	}
+	if hu.mutation.SvgCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Column: hustler.FieldSex,
+			Type:   field.TypeString,
+			Column: hustler.FieldSvg,
 		})
 	}
 	if hu.mutation.WalletCleared() {
@@ -501,12 +587,12 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if hu.mutation.BodypartsCleared() {
+	if hu.mutation.BodyCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.BodypartsTable,
-			Columns: []string{hustler.BodypartsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BodyTable,
+			Columns: []string{hustler.BodyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -517,12 +603,12 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := hu.mutation.RemovedBodypartsIDs(); len(nodes) > 0 && !hu.mutation.BodypartsCleared() {
+	if nodes := hu.mutation.BodyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.BodypartsTable,
-			Columns: []string{hustler.BodypartsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BodyTable,
+			Columns: []string{hustler.BodyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -534,14 +620,65 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.HairCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HairTable,
+			Columns: []string{hustler.HairColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := hu.mutation.BodypartsIDs(); len(nodes) > 0 {
+	if nodes := hu.mutation.HairIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.BodypartsTable,
-			Columns: []string{hustler.BodypartsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HairTable,
+			Columns: []string{hustler.HairColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.BeardCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BeardTable,
+			Columns: []string{hustler.BeardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.BeardIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BeardTable,
+			Columns: []string{hustler.BeardColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -681,9 +818,35 @@ func (huo *HustlerUpdateOne) SetNillableSex(h *hustler.Sex) *HustlerUpdateOne {
 	return huo
 }
 
-// ClearSex clears the value of the "sex" field.
-func (huo *HustlerUpdateOne) ClearSex() *HustlerUpdateOne {
-	huo.mutation.ClearSex()
+// SetViewbox sets the "viewbox" field.
+func (huo *HustlerUpdateOne) SetViewbox(i []int) *HustlerUpdateOne {
+	huo.mutation.SetViewbox(i)
+	return huo
+}
+
+// SetOrder sets the "order" field.
+func (huo *HustlerUpdateOne) SetOrder(i []int) *HustlerUpdateOne {
+	huo.mutation.SetOrder(i)
+	return huo
+}
+
+// SetSvg sets the "svg" field.
+func (huo *HustlerUpdateOne) SetSvg(s string) *HustlerUpdateOne {
+	huo.mutation.SetSvg(s)
+	return huo
+}
+
+// SetNillableSvg sets the "svg" field if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableSvg(s *string) *HustlerUpdateOne {
+	if s != nil {
+		huo.SetSvg(*s)
+	}
+	return huo
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (huo *HustlerUpdateOne) ClearSvg() *HustlerUpdateOne {
+	huo.mutation.ClearSvg()
 	return huo
 }
 
@@ -721,19 +884,61 @@ func (huo *HustlerUpdateOne) AddItems(i ...*Item) *HustlerUpdateOne {
 	return huo.AddItemIDs(ids...)
 }
 
-// AddBodypartIDs adds the "bodyparts" edge to the BodyPart entity by IDs.
-func (huo *HustlerUpdateOne) AddBodypartIDs(ids ...string) *HustlerUpdateOne {
-	huo.mutation.AddBodypartIDs(ids...)
+// SetBodyID sets the "body" edge to the BodyPart entity by ID.
+func (huo *HustlerUpdateOne) SetBodyID(id string) *HustlerUpdateOne {
+	huo.mutation.SetBodyID(id)
 	return huo
 }
 
-// AddBodyparts adds the "bodyparts" edges to the BodyPart entity.
-func (huo *HustlerUpdateOne) AddBodyparts(b ...*BodyPart) *HustlerUpdateOne {
-	ids := make([]string, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBodyID sets the "body" edge to the BodyPart entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableBodyID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetBodyID(*id)
 	}
-	return huo.AddBodypartIDs(ids...)
+	return huo
+}
+
+// SetBody sets the "body" edge to the BodyPart entity.
+func (huo *HustlerUpdateOne) SetBody(b *BodyPart) *HustlerUpdateOne {
+	return huo.SetBodyID(b.ID)
+}
+
+// SetHairID sets the "hair" edge to the BodyPart entity by ID.
+func (huo *HustlerUpdateOne) SetHairID(id string) *HustlerUpdateOne {
+	huo.mutation.SetHairID(id)
+	return huo
+}
+
+// SetNillableHairID sets the "hair" edge to the BodyPart entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableHairID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetHairID(*id)
+	}
+	return huo
+}
+
+// SetHair sets the "hair" edge to the BodyPart entity.
+func (huo *HustlerUpdateOne) SetHair(b *BodyPart) *HustlerUpdateOne {
+	return huo.SetHairID(b.ID)
+}
+
+// SetBeardID sets the "beard" edge to the BodyPart entity by ID.
+func (huo *HustlerUpdateOne) SetBeardID(id string) *HustlerUpdateOne {
+	huo.mutation.SetBeardID(id)
+	return huo
+}
+
+// SetNillableBeardID sets the "beard" edge to the BodyPart entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableBeardID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetBeardID(*id)
+	}
+	return huo
+}
+
+// SetBeard sets the "beard" edge to the BodyPart entity.
+func (huo *HustlerUpdateOne) SetBeard(b *BodyPart) *HustlerUpdateOne {
+	return huo.SetBeardID(b.ID)
 }
 
 // Mutation returns the HustlerMutation object of the builder.
@@ -768,25 +973,22 @@ func (huo *HustlerUpdateOne) RemoveItems(i ...*Item) *HustlerUpdateOne {
 	return huo.RemoveItemIDs(ids...)
 }
 
-// ClearBodyparts clears all "bodyparts" edges to the BodyPart entity.
-func (huo *HustlerUpdateOne) ClearBodyparts() *HustlerUpdateOne {
-	huo.mutation.ClearBodyparts()
+// ClearBody clears the "body" edge to the BodyPart entity.
+func (huo *HustlerUpdateOne) ClearBody() *HustlerUpdateOne {
+	huo.mutation.ClearBody()
 	return huo
 }
 
-// RemoveBodypartIDs removes the "bodyparts" edge to BodyPart entities by IDs.
-func (huo *HustlerUpdateOne) RemoveBodypartIDs(ids ...string) *HustlerUpdateOne {
-	huo.mutation.RemoveBodypartIDs(ids...)
+// ClearHair clears the "hair" edge to the BodyPart entity.
+func (huo *HustlerUpdateOne) ClearHair() *HustlerUpdateOne {
+	huo.mutation.ClearHair()
 	return huo
 }
 
-// RemoveBodyparts removes "bodyparts" edges to BodyPart entities.
-func (huo *HustlerUpdateOne) RemoveBodyparts(b ...*BodyPart) *HustlerUpdateOne {
-	ids := make([]string, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return huo.RemoveBodypartIDs(ids...)
+// ClearBeard clears the "beard" edge to the BodyPart entity.
+func (huo *HustlerUpdateOne) ClearBeard() *HustlerUpdateOne {
+	huo.mutation.ClearBeard()
+	return huo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -974,10 +1176,31 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 			Column: hustler.FieldSex,
 		})
 	}
-	if huo.mutation.SexCleared() {
+	if value, ok := huo.mutation.Viewbox(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: hustler.FieldViewbox,
+		})
+	}
+	if value, ok := huo.mutation.Order(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: hustler.FieldOrder,
+		})
+	}
+	if value, ok := huo.mutation.Svg(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldSvg,
+		})
+	}
+	if huo.mutation.SvgCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Column: hustler.FieldSex,
+			Type:   field.TypeString,
+			Column: hustler.FieldSvg,
 		})
 	}
 	if huo.mutation.WalletCleared() {
@@ -1069,12 +1292,12 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if huo.mutation.BodypartsCleared() {
+	if huo.mutation.BodyCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.BodypartsTable,
-			Columns: []string{hustler.BodypartsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BodyTable,
+			Columns: []string{hustler.BodyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -1085,12 +1308,12 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := huo.mutation.RemovedBodypartsIDs(); len(nodes) > 0 && !huo.mutation.BodypartsCleared() {
+	if nodes := huo.mutation.BodyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.BodypartsTable,
-			Columns: []string{hustler.BodypartsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BodyTable,
+			Columns: []string{hustler.BodyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -1102,14 +1325,65 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.HairCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HairTable,
+			Columns: []string{hustler.HairColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := huo.mutation.BodypartsIDs(); len(nodes) > 0 {
+	if nodes := huo.mutation.HairIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.BodypartsTable,
-			Columns: []string{hustler.BodypartsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HairTable,
+			Columns: []string{hustler.HairColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.BeardCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BeardTable,
+			Columns: []string{hustler.BeardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.BeardIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BeardTable,
+			Columns: []string{hustler.BeardColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{

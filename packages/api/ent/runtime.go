@@ -4,6 +4,7 @@ package ent
 
 import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -23,6 +24,16 @@ func init() {
 	dopeDescOpened := dopeFields[2].Descriptor()
 	// dope.DefaultOpened holds the default value on creation for the opened field.
 	dope.DefaultOpened = dopeDescOpened.Default.(bool)
+	hustlerFields := schema.Hustler{}.Fields()
+	_ = hustlerFields
+	// hustlerDescViewbox is the schema descriptor for viewbox field.
+	hustlerDescViewbox := hustlerFields[8].Descriptor()
+	// hustler.DefaultViewbox holds the default value on creation for the viewbox field.
+	hustler.DefaultViewbox = hustlerDescViewbox.Default.([]int)
+	// hustlerDescOrder is the schema descriptor for order field.
+	hustlerDescOrder := hustlerFields[9].Descriptor()
+	// hustler.DefaultOrder holds the default value on creation for the order field.
+	hustler.DefaultOrder = hustlerDescOrder.Default.([]int)
 	walletFields := schema.Wallet{}.Fields()
 	_ = walletFields
 	// walletDescPaper is the schema descriptor for paper field.

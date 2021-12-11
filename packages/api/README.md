@@ -21,7 +21,7 @@ The server is exposed on `:8000` and you can visit the playground at `http://loc
 
 ## Architecture
 
-The service is a golang microservice which uses [gqlgen](https://github.com/99designs/gqlgen) to generate a graphql api. The graphql api is bound automatically to the db model which is managed by [ent.go](https://github.com/ent/ent). Smart contract bindings and event handlers are generated from abis using [ethgen](https://github.com/withtally/ethgen).
+The service is a golang microservice which uses [gqlgen](https://github.com/99designs/gqlgen) to generate a graphql api. The graphql api is bound automatically to the db model which is managed by [ent.go](https://github.com/ent/ent). Smart contract bindings and event handlers are generated from abis using [ethgen](https://github.com/withtally/synceth).
 
 You can learn more about the graphql <> db auto binding [here](https://entgo.io/docs/tutorial-todo-gql).
 

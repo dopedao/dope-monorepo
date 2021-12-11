@@ -2,9 +2,12 @@ package processors
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"math/big"
+	"strings"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
@@ -12,6 +15,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/ethereum/go-ethereum/common"
+	solsha3 "github.com/miguelmota/go-solidity-sha3"
 )
 
 const (
@@ -76,16 +80,125 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e *bindings.Hustl
 	return nil
 }
 
+var (
+	viewboxSlot = big.NewInt(1)
+	bodySlot    = big.NewInt(2)
+	orderSlot   = big.NewInt(3)
+	// weaponSlot    = big.NewInt(5)
+	// clothesSlot   = big.NewInt(6)
+	// vehicleSlot   = big.NewInt(7)
+	// waistSlot     = big.NewInt(8)
+	// footSlot      = big.NewInt(9)
+	// handSlot      = big.NewInt(10)
+	// drugsSlot     = big.NewInt(11)
+	// neckSlot      = big.NewInt(12)
+	// ringSlot      = big.NewInt(13)
+	// accessorySlot = big.NewInt(14)
+)
+
 func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *bindings.HustlerMetadataUpdate, tx *ent.Tx) error {
 	meta, err := p.Contract.Metadata(nil, e.Id)
 	if err != nil {
 		return fmt.Errorf("hustler: getting metadata: %w", err)
 	}
 
+	metadata, err := p.Contract.TokenURI(nil, e.Id)
+	if err != nil {
+		return fmt.Errorf("getting metadata item rle: %w", err)
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
+	if err != nil {
+		return fmt.Errorf("decoding metadata: %w", err)
+	}
+
+	var parsed Metadata
+	if err := json.Unmarshal(decoded, &parsed); err != nil {
+		return fmt.Errorf("unmarshalling metadata: %w", err)
+	}
+
+	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
+		// types
+		[]string{"uint256", "uint256"},
+
+		// values
+		[]interface{}{
+			e.Id.String(),
+			"19",
+		},
+	))
+
+	viewbox, err := p.Eth.StorageAt(
+		ctx,
+		p.Address,
+		common.BytesToHash(
+			new(big.Int).Add(metadataKey, viewboxSlot).Bytes(),
+		),
+		new(big.Int).SetUint64(e.Raw.BlockNumber))
+	if err != nil {
+		return fmt.Errorf("getting viewbox from storage: %w", err)
+	}
+
+	order, err := p.Eth.StorageAt(
+		ctx,
+		p.Address,
+		common.BytesToHash(
+			new(big.Int).Add(metadataKey, orderSlot).Bytes(),
+		),
+		new(big.Int).SetUint64(e.Raw.BlockNumber))
+	if err != nil {
+		return fmt.Errorf("getting order from storage: %w", err)
+	}
+
+	bodyParts, err := p.Eth.StorageAt(
+		ctx,
+		p.Address,
+		common.BytesToHash(
+			new(big.Int).Add(metadataKey, bodySlot).Bytes(),
+		),
+		new(big.Int).SetUint64(e.Raw.BlockNumber))
+	if err != nil {
+		return fmt.Errorf("getting body from storage: %w", err)
+	}
+
+	sex := hustler.DefaultSex
+	if new(big.Int).SetBytes(bodyParts[31:32]).Uint64() == 1 {
+		sex = hustler.SexFemale
+	} else {
+		sex = hustler.SexMale
+	}
+
+	bodyID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBody, new(big.Int).SetBytes(bodyParts[30:31]).Uint64())
+	hairID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeHair, new(big.Int).SetBytes(bodyParts[29:30]).Uint64())
+	beardID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBeard, new(big.Int).SetBytes(bodyParts[28:29]).Uint64())
+
 	tx.Hustler.UpdateOneID(e.Id.String()).
 		SetName(meta.Name).
 		SetBackground(hex.EncodeToString(meta.Background[:])).
-		SetColor(hex.EncodeToString(meta.Color[:]))
+		SetColor(hex.EncodeToString(meta.Color[:])).
+		SetSex(sex).
+		SetBodyID(bodyID).
+		SetHairID(hairID).
+		SetBeardID(beardID).
+		SetSvg(parsed.Image).
+		SetViewbox([]int{
+			int(new(big.Int).SetBytes(viewbox[31:32]).Int64()),
+			int(new(big.Int).SetBytes(viewbox[30:31]).Int64()),
+			int(new(big.Int).SetBytes(viewbox[29:30]).Int64()),
+			int(new(big.Int).SetBytes(viewbox[28:29]).Int64()),
+		}).
+		SetOrder([]int{
+			int(new(big.Int).SetBytes(order[31:32]).Int64()),
+			int(new(big.Int).SetBytes(order[30:31]).Int64()),
+			int(new(big.Int).SetBytes(order[29:30]).Int64()),
+			int(new(big.Int).SetBytes(order[28:29]).Int64()),
+			int(new(big.Int).SetBytes(order[27:28]).Int64()),
+			int(new(big.Int).SetBytes(order[26:27]).Int64()),
+			int(new(big.Int).SetBytes(order[25:26]).Int64()),
+			int(new(big.Int).SetBytes(order[24:25]).Int64()),
+			int(new(big.Int).SetBytes(order[23:24]).Int64()),
+			int(new(big.Int).SetBytes(order[22:23]).Int64()),
+		})
 
 	return nil
 }

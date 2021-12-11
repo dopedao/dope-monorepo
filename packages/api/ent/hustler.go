@@ -3,10 +3,12 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
@@ -30,10 +32,19 @@ type Hustler struct {
 	Age uint64 `json:"age,omitempty"`
 	// Sex holds the value of the "sex" field.
 	Sex hustler.Sex `json:"sex,omitempty"`
+	// Viewbox holds the value of the "viewbox" field.
+	Viewbox []int `json:"viewbox,omitempty"`
+	// Order holds the value of the "order" field.
+	Order []int `json:"order,omitempty"`
+	// Svg holds the value of the "svg" field.
+	Svg string `json:"svg,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the HustlerQuery when eager-loading is set.
-	Edges           HustlerEdges `json:"edges"`
-	wallet_hustlers *string
+	Edges                    HustlerEdges `json:"edges"`
+	body_part_hustler_bodies *string
+	body_part_hustler_hairs  *string
+	body_part_hustler_beards *string
+	wallet_hustlers          *string
 }
 
 // HustlerEdges holds the relations/edges for other nodes in the graph.
@@ -42,11 +53,15 @@ type HustlerEdges struct {
 	Wallet *Wallet `json:"wallet,omitempty"`
 	// Items holds the value of the items edge.
 	Items []*Item `json:"items,omitempty"`
-	// Bodyparts holds the value of the bodyparts edge.
-	Bodyparts []*BodyPart `json:"bodyparts,omitempty"`
+	// Body holds the value of the body edge.
+	Body *BodyPart `json:"body,omitempty"`
+	// Hair holds the value of the hair edge.
+	Hair *BodyPart `json:"hair,omitempty"`
+	// Beard holds the value of the beard edge.
+	Beard *BodyPart `json:"beard,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [5]bool
 }
 
 // WalletOrErr returns the Wallet value or an error if the edge
@@ -72,13 +87,46 @@ func (e HustlerEdges) ItemsOrErr() ([]*Item, error) {
 	return nil, &NotLoadedError{edge: "items"}
 }
 
-// BodypartsOrErr returns the Bodyparts value or an error if the edge
-// was not loaded in eager-loading.
-func (e HustlerEdges) BodypartsOrErr() ([]*BodyPart, error) {
+// BodyOrErr returns the Body value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e HustlerEdges) BodyOrErr() (*BodyPart, error) {
 	if e.loadedTypes[2] {
-		return e.Bodyparts, nil
+		if e.Body == nil {
+			// The edge body was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: bodypart.Label}
+		}
+		return e.Body, nil
 	}
-	return nil, &NotLoadedError{edge: "bodyparts"}
+	return nil, &NotLoadedError{edge: "body"}
+}
+
+// HairOrErr returns the Hair value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e HustlerEdges) HairOrErr() (*BodyPart, error) {
+	if e.loadedTypes[3] {
+		if e.Hair == nil {
+			// The edge hair was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: bodypart.Label}
+		}
+		return e.Hair, nil
+	}
+	return nil, &NotLoadedError{edge: "hair"}
+}
+
+// BeardOrErr returns the Beard value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e HustlerEdges) BeardOrErr() (*BodyPart, error) {
+	if e.loadedTypes[4] {
+		if e.Beard == nil {
+			// The edge beard was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: bodypart.Label}
+		}
+		return e.Beard, nil
+	}
+	return nil, &NotLoadedError{edge: "beard"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -86,11 +134,19 @@ func (*Hustler) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case hustler.FieldViewbox, hustler.FieldOrder:
+			values[i] = new([]byte)
 		case hustler.FieldAge:
 			values[i] = new(sql.NullInt64)
-		case hustler.FieldID, hustler.FieldType, hustler.FieldName, hustler.FieldTitle, hustler.FieldColor, hustler.FieldBackground, hustler.FieldSex:
+		case hustler.FieldID, hustler.FieldType, hustler.FieldName, hustler.FieldTitle, hustler.FieldColor, hustler.FieldBackground, hustler.FieldSex, hustler.FieldSvg:
 			values[i] = new(sql.NullString)
-		case hustler.ForeignKeys[0]: // wallet_hustlers
+		case hustler.ForeignKeys[0]: // body_part_hustler_bodies
+			values[i] = new(sql.NullString)
+		case hustler.ForeignKeys[1]: // body_part_hustler_hairs
+			values[i] = new(sql.NullString)
+		case hustler.ForeignKeys[2]: // body_part_hustler_beards
+			values[i] = new(sql.NullString)
+		case hustler.ForeignKeys[3]: // wallet_hustlers
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Hustler", columns[i])
@@ -155,7 +211,50 @@ func (h *Hustler) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				h.Sex = hustler.Sex(value.String)
 			}
+		case hustler.FieldViewbox:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field viewbox", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &h.Viewbox); err != nil {
+					return fmt.Errorf("unmarshal field viewbox: %w", err)
+				}
+			}
+		case hustler.FieldOrder:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field order", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &h.Order); err != nil {
+					return fmt.Errorf("unmarshal field order: %w", err)
+				}
+			}
+		case hustler.FieldSvg:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field svg", values[i])
+			} else if value.Valid {
+				h.Svg = value.String
+			}
 		case hustler.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field body_part_hustler_bodies", values[i])
+			} else if value.Valid {
+				h.body_part_hustler_bodies = new(string)
+				*h.body_part_hustler_bodies = value.String
+			}
+		case hustler.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field body_part_hustler_hairs", values[i])
+			} else if value.Valid {
+				h.body_part_hustler_hairs = new(string)
+				*h.body_part_hustler_hairs = value.String
+			}
+		case hustler.ForeignKeys[2]:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field body_part_hustler_beards", values[i])
+			} else if value.Valid {
+				h.body_part_hustler_beards = new(string)
+				*h.body_part_hustler_beards = value.String
+			}
+		case hustler.ForeignKeys[3]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field wallet_hustlers", values[i])
 			} else if value.Valid {
@@ -177,9 +276,19 @@ func (h *Hustler) QueryItems() *ItemQuery {
 	return (&HustlerClient{config: h.config}).QueryItems(h)
 }
 
-// QueryBodyparts queries the "bodyparts" edge of the Hustler entity.
-func (h *Hustler) QueryBodyparts() *BodyPartQuery {
-	return (&HustlerClient{config: h.config}).QueryBodyparts(h)
+// QueryBody queries the "body" edge of the Hustler entity.
+func (h *Hustler) QueryBody() *BodyPartQuery {
+	return (&HustlerClient{config: h.config}).QueryBody(h)
+}
+
+// QueryHair queries the "hair" edge of the Hustler entity.
+func (h *Hustler) QueryHair() *BodyPartQuery {
+	return (&HustlerClient{config: h.config}).QueryHair(h)
+}
+
+// QueryBeard queries the "beard" edge of the Hustler entity.
+func (h *Hustler) QueryBeard() *BodyPartQuery {
+	return (&HustlerClient{config: h.config}).QueryBeard(h)
 }
 
 // Update returns a builder for updating this Hustler.
@@ -219,6 +328,12 @@ func (h *Hustler) String() string {
 	builder.WriteString(fmt.Sprintf("%v", h.Age))
 	builder.WriteString(", sex=")
 	builder.WriteString(fmt.Sprintf("%v", h.Sex))
+	builder.WriteString(", viewbox=")
+	builder.WriteString(fmt.Sprintf("%v", h.Viewbox))
+	builder.WriteString(", order=")
+	builder.WriteString(fmt.Sprintf("%v", h.Order))
+	builder.WriteString(", svg=")
+	builder.WriteString(h.Svg)
 	builder.WriteByte(')')
 	return builder.String()
 }

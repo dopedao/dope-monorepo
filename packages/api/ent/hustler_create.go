@@ -107,6 +107,32 @@ func (hc *HustlerCreate) SetNillableSex(h *hustler.Sex) *HustlerCreate {
 	return hc
 }
 
+// SetViewbox sets the "viewbox" field.
+func (hc *HustlerCreate) SetViewbox(i []int) *HustlerCreate {
+	hc.mutation.SetViewbox(i)
+	return hc
+}
+
+// SetOrder sets the "order" field.
+func (hc *HustlerCreate) SetOrder(i []int) *HustlerCreate {
+	hc.mutation.SetOrder(i)
+	return hc
+}
+
+// SetSvg sets the "svg" field.
+func (hc *HustlerCreate) SetSvg(s string) *HustlerCreate {
+	hc.mutation.SetSvg(s)
+	return hc
+}
+
+// SetNillableSvg sets the "svg" field if the given value is not nil.
+func (hc *HustlerCreate) SetNillableSvg(s *string) *HustlerCreate {
+	if s != nil {
+		hc.SetSvg(*s)
+	}
+	return hc
+}
+
 // SetID sets the "id" field.
 func (hc *HustlerCreate) SetID(s string) *HustlerCreate {
 	hc.mutation.SetID(s)
@@ -147,19 +173,61 @@ func (hc *HustlerCreate) AddItems(i ...*Item) *HustlerCreate {
 	return hc.AddItemIDs(ids...)
 }
 
-// AddBodypartIDs adds the "bodyparts" edge to the BodyPart entity by IDs.
-func (hc *HustlerCreate) AddBodypartIDs(ids ...string) *HustlerCreate {
-	hc.mutation.AddBodypartIDs(ids...)
+// SetBodyID sets the "body" edge to the BodyPart entity by ID.
+func (hc *HustlerCreate) SetBodyID(id string) *HustlerCreate {
+	hc.mutation.SetBodyID(id)
 	return hc
 }
 
-// AddBodyparts adds the "bodyparts" edges to the BodyPart entity.
-func (hc *HustlerCreate) AddBodyparts(b ...*BodyPart) *HustlerCreate {
-	ids := make([]string, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBodyID sets the "body" edge to the BodyPart entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableBodyID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetBodyID(*id)
 	}
-	return hc.AddBodypartIDs(ids...)
+	return hc
+}
+
+// SetBody sets the "body" edge to the BodyPart entity.
+func (hc *HustlerCreate) SetBody(b *BodyPart) *HustlerCreate {
+	return hc.SetBodyID(b.ID)
+}
+
+// SetHairID sets the "hair" edge to the BodyPart entity by ID.
+func (hc *HustlerCreate) SetHairID(id string) *HustlerCreate {
+	hc.mutation.SetHairID(id)
+	return hc
+}
+
+// SetNillableHairID sets the "hair" edge to the BodyPart entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableHairID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetHairID(*id)
+	}
+	return hc
+}
+
+// SetHair sets the "hair" edge to the BodyPart entity.
+func (hc *HustlerCreate) SetHair(b *BodyPart) *HustlerCreate {
+	return hc.SetHairID(b.ID)
+}
+
+// SetBeardID sets the "beard" edge to the BodyPart entity by ID.
+func (hc *HustlerCreate) SetBeardID(id string) *HustlerCreate {
+	hc.mutation.SetBeardID(id)
+	return hc
+}
+
+// SetNillableBeardID sets the "beard" edge to the BodyPart entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableBeardID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetBeardID(*id)
+	}
+	return hc
+}
+
+// SetBeard sets the "beard" edge to the BodyPart entity.
+func (hc *HustlerCreate) SetBeard(b *BodyPart) *HustlerCreate {
+	return hc.SetBeardID(b.ID)
 }
 
 // Mutation returns the HustlerMutation object of the builder.
@@ -173,6 +241,7 @@ func (hc *HustlerCreate) Save(ctx context.Context) (*Hustler, error) {
 		err  error
 		node *Hustler
 	)
+	hc.defaults()
 	if len(hc.hooks) == 0 {
 		if err = hc.check(); err != nil {
 			return nil, err
@@ -230,6 +299,22 @@ func (hc *HustlerCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (hc *HustlerCreate) defaults() {
+	if _, ok := hc.mutation.Sex(); !ok {
+		v := hustler.DefaultSex
+		hc.mutation.SetSex(v)
+	}
+	if _, ok := hc.mutation.Viewbox(); !ok {
+		v := hustler.DefaultViewbox
+		hc.mutation.SetViewbox(v)
+	}
+	if _, ok := hc.mutation.Order(); !ok {
+		v := hustler.DefaultOrder
+		hc.mutation.SetOrder(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (hc *HustlerCreate) check() error {
 	if _, ok := hc.mutation.GetType(); !ok {
@@ -243,10 +328,19 @@ func (hc *HustlerCreate) check() error {
 	if _, ok := hc.mutation.Age(); !ok {
 		return &ValidationError{Name: "age", err: errors.New(`ent: missing required field "Hustler.age"`)}
 	}
+	if _, ok := hc.mutation.Sex(); !ok {
+		return &ValidationError{Name: "sex", err: errors.New(`ent: missing required field "Hustler.sex"`)}
+	}
 	if v, ok := hc.mutation.Sex(); ok {
 		if err := hustler.SexValidator(v); err != nil {
 			return &ValidationError{Name: "sex", err: fmt.Errorf(`ent: validator failed for field "Hustler.sex": %w`, err)}
 		}
+	}
+	if _, ok := hc.mutation.Viewbox(); !ok {
+		return &ValidationError{Name: "viewbox", err: errors.New(`ent: missing required field "Hustler.viewbox"`)}
+	}
+	if _, ok := hc.mutation.Order(); !ok {
+		return &ValidationError{Name: "order", err: errors.New(`ent: missing required field "Hustler.order"`)}
 	}
 	return nil
 }
@@ -341,6 +435,30 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 		})
 		_node.Sex = value
 	}
+	if value, ok := hc.mutation.Viewbox(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: hustler.FieldViewbox,
+		})
+		_node.Viewbox = value
+	}
+	if value, ok := hc.mutation.Order(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: hustler.FieldOrder,
+		})
+		_node.Order = value
+	}
+	if value, ok := hc.mutation.Svg(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: hustler.FieldSvg,
+		})
+		_node.Svg = value
+	}
 	if nodes := hc.mutation.WalletIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -380,12 +498,12 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := hc.mutation.BodypartsIDs(); len(nodes) > 0 {
+	if nodes := hc.mutation.BodyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.BodypartsTable,
-			Columns: []string{hustler.BodypartsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BodyTable,
+			Columns: []string{hustler.BodyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -397,6 +515,47 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.body_part_hustler_bodies = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.HairIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HairTable,
+			Columns: []string{hustler.HairColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.body_part_hustler_hairs = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.BeardIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.BeardTable,
+			Columns: []string{hustler.BeardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: bodypart.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.body_part_hustler_beards = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -567,9 +726,45 @@ func (u *HustlerUpsert) UpdateSex() *HustlerUpsert {
 	return u
 }
 
-// ClearSex clears the value of the "sex" field.
-func (u *HustlerUpsert) ClearSex() *HustlerUpsert {
-	u.SetNull(hustler.FieldSex)
+// SetViewbox sets the "viewbox" field.
+func (u *HustlerUpsert) SetViewbox(v []int) *HustlerUpsert {
+	u.Set(hustler.FieldViewbox, v)
+	return u
+}
+
+// UpdateViewbox sets the "viewbox" field to the value that was provided on create.
+func (u *HustlerUpsert) UpdateViewbox() *HustlerUpsert {
+	u.SetExcluded(hustler.FieldViewbox)
+	return u
+}
+
+// SetOrder sets the "order" field.
+func (u *HustlerUpsert) SetOrder(v []int) *HustlerUpsert {
+	u.Set(hustler.FieldOrder, v)
+	return u
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *HustlerUpsert) UpdateOrder() *HustlerUpsert {
+	u.SetExcluded(hustler.FieldOrder)
+	return u
+}
+
+// SetSvg sets the "svg" field.
+func (u *HustlerUpsert) SetSvg(v string) *HustlerUpsert {
+	u.Set(hustler.FieldSvg, v)
+	return u
+}
+
+// UpdateSvg sets the "svg" field to the value that was provided on create.
+func (u *HustlerUpsert) UpdateSvg() *HustlerUpsert {
+	u.SetExcluded(hustler.FieldSvg)
+	return u
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (u *HustlerUpsert) ClearSvg() *HustlerUpsert {
+	u.SetNull(hustler.FieldSvg)
 	return u
 }
 
@@ -759,10 +954,52 @@ func (u *HustlerUpsertOne) UpdateSex() *HustlerUpsertOne {
 	})
 }
 
-// ClearSex clears the value of the "sex" field.
-func (u *HustlerUpsertOne) ClearSex() *HustlerUpsertOne {
+// SetViewbox sets the "viewbox" field.
+func (u *HustlerUpsertOne) SetViewbox(v []int) *HustlerUpsertOne {
 	return u.Update(func(s *HustlerUpsert) {
-		s.ClearSex()
+		s.SetViewbox(v)
+	})
+}
+
+// UpdateViewbox sets the "viewbox" field to the value that was provided on create.
+func (u *HustlerUpsertOne) UpdateViewbox() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateViewbox()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *HustlerUpsertOne) SetOrder(v []int) *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *HustlerUpsertOne) UpdateOrder() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// SetSvg sets the "svg" field.
+func (u *HustlerUpsertOne) SetSvg(v string) *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetSvg(v)
+	})
+}
+
+// UpdateSvg sets the "svg" field to the value that was provided on create.
+func (u *HustlerUpsertOne) UpdateSvg() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateSvg()
+	})
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (u *HustlerUpsertOne) ClearSvg() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.ClearSvg()
 	})
 }
 
@@ -819,6 +1056,7 @@ func (hcb *HustlerCreateBulk) Save(ctx context.Context) ([]*Hustler, error) {
 	for i := range hcb.builders {
 		func(i int, root context.Context) {
 			builder := hcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*HustlerMutation)
 				if !ok {
@@ -1117,10 +1355,52 @@ func (u *HustlerUpsertBulk) UpdateSex() *HustlerUpsertBulk {
 	})
 }
 
-// ClearSex clears the value of the "sex" field.
-func (u *HustlerUpsertBulk) ClearSex() *HustlerUpsertBulk {
+// SetViewbox sets the "viewbox" field.
+func (u *HustlerUpsertBulk) SetViewbox(v []int) *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
-		s.ClearSex()
+		s.SetViewbox(v)
+	})
+}
+
+// UpdateViewbox sets the "viewbox" field to the value that was provided on create.
+func (u *HustlerUpsertBulk) UpdateViewbox() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateViewbox()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *HustlerUpsertBulk) SetOrder(v []int) *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *HustlerUpsertBulk) UpdateOrder() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// SetSvg sets the "svg" field.
+func (u *HustlerUpsertBulk) SetSvg(v string) *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetSvg(v)
+	})
+}
+
+// UpdateSvg sets the "svg" field to the value that was provided on create.
+func (u *HustlerUpsertBulk) UpdateSvg() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateSvg()
+	})
+}
+
+// ClearSvg clears the value of the "svg" field.
+func (u *HustlerUpsertBulk) ClearSvg() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.ClearSvg()
 	})
 }
 
