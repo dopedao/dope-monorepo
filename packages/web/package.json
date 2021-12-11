@@ -17,6 +17,7 @@
     "db:reset": "yarn db:init && yarn db:index && yarn db:populate && yarn db:refresh-opensea",
     "db:init": "ts-node --script-mode script/fauna_init_database.ts",
     "db:index": "ts-node --script-mode script/fauna_create_indexes.ts",
+    "db:udf": "ts-node --script-mode script/fauna_create_udf.ts",
     "db:populate": "ts-node --script-mode script/fauna_populate_dope_tokens.ts",
     "db:refresh-opensea": "ts-node --script-mode script/fauna_refresh_opensea.ts"
   },

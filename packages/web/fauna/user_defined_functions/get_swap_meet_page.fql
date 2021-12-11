@@ -1,3 +1,4 @@
+// Working version of example query
 // q: String,
 // hasUnclaimedPaper: Boolean,
 // isForSale: Boolean,
@@ -8,42 +9,71 @@
 // - No term / filter / sorted
 // - Term / filter / sorted
 // - Term / no filter /
-Map(
-  [['knife', 'paper_claimed', 'by_rank_with_ref']],
-  Lambda(
-    ['search_term', 'filter_index', 'sort_index'],
-    Paginate(
-      If(
-        GTE(Length(Var('search_term')), 3),
-        // Min search term length is 3…
-        // NGram the search term and provide matches that
-        // are hits in all documents.
-        Join(
-          Intersection(
-            Intersection(
-              Map(
-                Distinct(NGram(LowerCase(Var('search_term')),3,3)),
-                Lambda(
-                  'term',
-                  Match(
-                    Index('dope_text_search'),
-                    Var('term')
-                  )
-                )
-              ),
-            ),
-            // Bundled Items
-            Match(Index(Var('filter_index')), true),
+{
+  name: "get_swap_meet_page",
+  role: null,
+  body: Query(
+    Lambda(
+      [
+        "q",
+        "hasUnclaimedPaper",
+        "isForSale",
+        "hasItemsUnbundled",
+        "size",
+        "after",
+        "before"
+      ],
+      Let(
+        {
+          with_a: If(
+            IsNull(Var("q")),
+            [],
+            [Match(Index("dope_text_search"), Var("q"))]
           ),
-          Index(Var('sort_index'))
-        ),
-        // Search term too small, just filter and sort
-        Join(
-          Match(Index(Var('filter_index')), true),
-          Index(Var('sort_index'))
-        )
-      ),
-      { size: 25 }
+
+          with_b: If(
+            IsNull(Var("hasUnclaimedPaper")),
+            Var("with_a"),
+            Append(Var("with_a"), [
+              Match(Index("paper_claimed"), Var("hasUnclaimedPaper"))
+            ])
+          ),
+          with_c: If(
+            IsNull(Var("hasItemsUnbundled")),
+            Var("with_b"),
+            Append(Var("with_b"), [
+              Match(Index("items_unbundled"), Var("hasItemsUnbundled"))
+            ])
+          ),
+          with_d: If(
+            IsNull(Var("isForSale")),
+            Var("with_c"),
+            Append(Var("with_c"), [Match(Index("on_sale"), Var("isForSale"))])
+          ),
+          // match: Intersection(Var('with_c')),
+          match: If(
+            IsEmpty(Var("with_d")),
+            Documents(Collection("DopeToken")), // simplify if no filters
+            Intersection(Var("with_d"))
+          ),
+
+          // match: Union(
+          //   Match(Index("paper_claimed"), true),
+          //   Match(Index("paper_claimed"))
+          // ),
+          page: If(
+            Equals(Var("before"), IsNull(Var("before"))),
+            If(
+              Equals(Var("after"), IsNull(Var("after"))),
+              Paginate(Var("match"), { size: Var("size") }),
+              Paginate(Var("match"), { after: Var("after"), size: Var("size") })
+            ),
+            Paginate(Var("match"), { before: Var("before"), size: Var("size") })
+          )
+        },
+        // Paginate(Var('match'))
+        Map(Var("page"), Lambda("ref", Get(Var("ref"))))
+      )
     )
   )
-)
+}

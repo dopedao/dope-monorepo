@@ -40,7 +40,7 @@ const getAndUpdatePaperUnclaimed = async () => {
 
   if (unclaimed["data"]) {
     const papersUnclaimed = unclaimed["data"]["bags"];
-    console.log(`Found ${papersUnclaimed.length} paper_unclaimed records`)
+    console.log(`Found ${papersUnclaimed.length} paper_claimed records`)
     const tokensWithPaperUnclaimed = papersUnclaimed.map((tokens: any) => [
       tokens.id,
       {

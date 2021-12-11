@@ -47,6 +47,6 @@ type Query {
     q: String,
     hasUnclaimedPaper: Boolean,
     isForSale: Boolean,
-    sortByIndexName: String
-  ): [DopeToken!] @resolver(name: "get_swap_meet_page", paginated: true)
+    hasItemsUnbundled: Boolean
+  ): [DopeToken] @resolver(name: "get_swap_meet_page", paginated: true)
 }

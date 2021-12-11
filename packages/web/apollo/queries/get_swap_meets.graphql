@@ -1,0 +1,13 @@
+query swapMeet {
+	getSwapMeetPage(_size:10,
+    q:"sil",
+    hasUnclaimedPaper: true,
+    hasItemsUnbundled: true,
+    isForSale:false
+  ) {
+    data { _id foot hand neck
+      paper_claimed items_unbundled
+      open_sea_is_on_sale
+    }
+  }
+}
