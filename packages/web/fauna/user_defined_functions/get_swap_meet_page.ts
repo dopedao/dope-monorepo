@@ -1,8 +1,6 @@
 // import { Match } from 'faunadb/src/types/query';
 import { client, q } from '../../src/fauna_client';
 
-q.CreateFunction
-
 export const create = async () => {
   return await client.query(
     q.CreateFunction({
