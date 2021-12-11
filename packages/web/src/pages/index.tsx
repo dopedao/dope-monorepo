@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { PageWrapper } from 'styles/components';
+import { PageWrapper } from 'ui/styles/components';
 import Head from 'components/Head';
 import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
 

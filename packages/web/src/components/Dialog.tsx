@@ -2,7 +2,7 @@
 import { ReactNode, useCallback, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 
 export interface DialogProps {
   title?: string;

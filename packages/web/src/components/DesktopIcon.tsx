@@ -1,6 +1,6 @@
-import { css } from '@emotion/react';
-import { media } from 'styles/mixins';
 import Image from 'next/image';
+import { css } from '@emotion/react';
+import { media } from 'ui/styles/mixins';
 
 type IconProps = {
   icon: string;

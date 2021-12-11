@@ -1,4 +1,4 @@
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useWAGMI } from 'hooks/web3';

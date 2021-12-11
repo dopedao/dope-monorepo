@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { CloseButton } from '@chakra-ui/close-button';
 import { useWalletQuery } from 'generated/graphql';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';

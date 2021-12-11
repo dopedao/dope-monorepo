@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 
 const Container = styled.div`
   height: 100%;

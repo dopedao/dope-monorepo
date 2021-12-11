@@ -23,11 +23,10 @@ const ConfigurationControls = ({ config, makeVarConfig }: ConfigureHustlerProps)
   }, [config]);
 
   return (
-    <>
+    <div>
       <Stack spacing={4}>
         {/* Title controls only make sense when zoomed out fully */}
         {showNameControls && <NameControls config={config} makeVarConfig={makeVarConfig} />}
-
         {showTextColor && (
           <PanelColorSelector
             title="Text Color"
@@ -40,7 +39,6 @@ const ConfigurationControls = ({ config, makeVarConfig }: ConfigureHustlerProps)
             }}
           />
         )}
-
         <PanelColorSelector
           title="Background"
           colors={DEFAULT_BG_COLORS}
@@ -51,7 +49,6 @@ const ConfigurationControls = ({ config, makeVarConfig }: ConfigureHustlerProps)
               : HustlerInitConfig({ ...config, bgColor: color });
           }}
         />
-
         <PanelColorSelector
           title="Skin Tone"
           colors={SKIN_TONE_COLORS}
@@ -66,11 +63,10 @@ const ConfigurationControls = ({ config, makeVarConfig }: ConfigureHustlerProps)
                 });
           }}
         />
-
         <SexSelector config={config} makeVarConfig={makeVarConfig} />
         <HairSelector config={config} makeVarConfig={makeVarConfig} />
       </Stack>
-    </>
+    </div>
   );
 };
 

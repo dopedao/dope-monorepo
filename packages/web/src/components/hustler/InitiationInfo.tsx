@@ -1,11 +1,11 @@
 import { AlertIcon, Alert } from '@chakra-ui/react';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import Link from 'next/link';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
-import Link from 'next/link';
 
 const VerticalPanelStack = styled.div`
   display: flex;
@@ -68,19 +68,28 @@ const InitiationInfo = () => {
           <h3>More Info</h3>
           <ul className="normal">
             <li>
-              <Link href="https://dope-wars.notion.site/Hustler-Minting-and-Unbundling-25c6dfb9dca64196aedf8def6297c51a"><a className="primary">The Dope Wars Hustler Guide</a></Link>
+              <Link href="https://dope-wars.notion.site/Hustler-Minting-and-Unbundling-25c6dfb9dca64196aedf8def6297c51a">
+                <a className="primary">The Dope Wars Hustler Guide</a>
+              </Link>
             </li>
             <li>
-              <Link href="/hustlers"><a className="primary">Gangsta Party</a></Link>
+              <Link href="/hustlers">
+                <a className="primary">Gangsta Party</a>
+              </Link>
             </li>
           </ul>
         </PanelBody>
       </PanelContainer>
-      <Alert status="info" css={css`max-height:100px;`}>
+      <Alert
+        status="info"
+        css={css`
+          max-height: 100px;
+        `}
+      >
         <AlertIcon />
         <div>
           All OGs have been Initiated, but Hustlers are an infinite mint! Make as many as you want.
-          <br/>
+          <br />
           See you on the streets in 2022.
         </div>
       </Alert>
