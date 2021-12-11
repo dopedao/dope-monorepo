@@ -58,6 +58,16 @@ var (
 		{Name: "body_part_hustler_bodies", Type: field.TypeString, Nullable: true},
 		{Name: "body_part_hustler_hairs", Type: field.TypeString, Nullable: true},
 		{Name: "body_part_hustler_beards", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_weapons", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_clothes", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_vehicles", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_waists", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_feet", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_hands", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_drugs", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_necks", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_rings", Type: field.TypeString, Nullable: true},
+		{Name: "item_hustler_accessories", Type: field.TypeString, Nullable: true},
 		{Name: "wallet_hustlers", Type: field.TypeString, Nullable: true},
 	}
 	// HustlersTable holds the schema information for the "hustlers" table.
@@ -85,8 +95,68 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:     "hustlers_wallets_hustlers",
+				Symbol:     "hustlers_items_hustler_weapons",
 				Columns:    []*schema.Column{HustlersColumns[14]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_items_hustler_clothes",
+				Columns:    []*schema.Column{HustlersColumns[15]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_items_hustler_vehicles",
+				Columns:    []*schema.Column{HustlersColumns[16]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_items_hustler_waists",
+				Columns:    []*schema.Column{HustlersColumns[17]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_items_hustler_feet",
+				Columns:    []*schema.Column{HustlersColumns[18]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_items_hustler_hands",
+				Columns:    []*schema.Column{HustlersColumns[19]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_items_hustler_drugs",
+				Columns:    []*schema.Column{HustlersColumns[20]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_items_hustler_necks",
+				Columns:    []*schema.Column{HustlersColumns[21]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_items_hustler_rings",
+				Columns:    []*schema.Column{HustlersColumns[22]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_items_hustler_accessories",
+				Columns:    []*schema.Column{HustlersColumns[23]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "hustlers_wallets_hustlers",
+				Columns:    []*schema.Column{HustlersColumns[24]},
 				RefColumns: []*schema.Column{WalletsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -103,7 +173,6 @@ var (
 		{Name: "augmented", Type: field.TypeBool, Nullable: true},
 		{Name: "rles", Type: field.TypeJSON, Nullable: true},
 		{Name: "svg", Type: field.TypeString, Nullable: true},
-		{Name: "hustler_items", Type: field.TypeString, Nullable: true},
 		{Name: "item_derivative", Type: field.TypeString, Nullable: true},
 	}
 	// ItemsTable holds the schema information for the "items" table.
@@ -113,14 +182,8 @@ var (
 		PrimaryKey: []*schema.Column{ItemsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "items_hustlers_items",
-				Columns:    []*schema.Column{ItemsColumns[9]},
-				RefColumns: []*schema.Column{HustlersColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
 				Symbol:     "items_items_derivative",
-				Columns:    []*schema.Column{ItemsColumns[10]},
+				Columns:    []*schema.Column{ItemsColumns[9]},
 				RefColumns: []*schema.Column{ItemsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -218,9 +281,18 @@ func init() {
 	HustlersTable.ForeignKeys[0].RefTable = BodyPartsTable
 	HustlersTable.ForeignKeys[1].RefTable = BodyPartsTable
 	HustlersTable.ForeignKeys[2].RefTable = BodyPartsTable
-	HustlersTable.ForeignKeys[3].RefTable = WalletsTable
-	ItemsTable.ForeignKeys[0].RefTable = HustlersTable
-	ItemsTable.ForeignKeys[1].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[3].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[4].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[5].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[6].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[7].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[8].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[9].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[10].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[11].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[12].RefTable = ItemsTable
+	HustlersTable.ForeignKeys[13].RefTable = WalletsTable
+	ItemsTable.ForeignKeys[0].RefTable = ItemsTable
 	WalletItemsTable.ForeignKeys[0].RefTable = ItemsTable
 	WalletItemsTable.ForeignKeys[1].RefTable = WalletsTable
 	DopeItemsTable.ForeignKeys[0].RefTable = DopesTable

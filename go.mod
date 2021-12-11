@@ -15,7 +15,7 @@ require (
 	github.com/rs/zerolog v1.26.0
 	github.com/vektah/gqlparser/v2 v2.2.0
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9
-	github.com/withtally/synceth v0.0.5
+	github.com/withtally/synceth v0.0.6
 )
 
 require (

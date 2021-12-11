@@ -52,12 +52,84 @@ func (h *Hustler) Wallet(ctx context.Context) (*Wallet, error) {
 	return result, MaskNotFound(err)
 }
 
-func (h *Hustler) Items(ctx context.Context) ([]*Item, error) {
-	result, err := h.Edges.ItemsOrErr()
+func (h *Hustler) Weapon(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.WeaponOrErr()
 	if IsNotLoaded(err) {
-		result, err = h.QueryItems().All(ctx)
+		result, err = h.QueryWeapon().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Clothes(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.ClothesOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryClothes().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Vehicle(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.VehicleOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryVehicle().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Waist(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.WaistOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryWaist().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Foot(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.FootOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryFoot().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Hand(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.HandOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryHand().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Drug(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.DrugOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryDrug().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Neck(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.NeckOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryNeck().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Ring(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.RingOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryRing().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Accessory(ctx context.Context) (*Item, error) {
+	result, err := h.Edges.AccessoryOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryAccessory().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (h *Hustler) Body(ctx context.Context) (*BodyPart, error) {
@@ -92,18 +164,90 @@ func (i *Item) Wallets(ctx context.Context) ([]*WalletItems, error) {
 	return result, err
 }
 
-func (i *Item) Hustler(ctx context.Context) (*Hustler, error) {
-	result, err := i.Edges.HustlerOrErr()
-	if IsNotLoaded(err) {
-		result, err = i.QueryHustler().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
 func (i *Item) Dopes(ctx context.Context) ([]*Dope, error) {
 	result, err := i.Edges.DopesOrErr()
 	if IsNotLoaded(err) {
 		result, err = i.QueryDopes().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerWeapons(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerWeaponsOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerWeapons().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerClothes(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerClothesOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerClothes().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerVehicles(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerVehiclesOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerVehicles().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerWaists(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerWaistsOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerWaists().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerFeet(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerFeetOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerFeet().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerHands(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerHandsOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerHands().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerDrugs(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerDrugsOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerDrugs().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerNecks(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerNecksOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerNecks().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerRings(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerRingsOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerRings().All(ctx)
+	}
+	return result, err
+}
+
+func (i *Item) HustlerAccessories(ctx context.Context) ([]*Hustler, error) {
+	result, err := i.Edges.HustlerAccessoriesOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryHustlerAccessories().All(ctx)
 	}
 	return result, err
 }

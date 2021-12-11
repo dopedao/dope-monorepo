@@ -188,19 +188,194 @@ func (hu *HustlerUpdate) SetWallet(w *Wallet) *HustlerUpdate {
 	return hu.SetWalletID(w.ID)
 }
 
-// AddItemIDs adds the "items" edge to the Item entity by IDs.
-func (hu *HustlerUpdate) AddItemIDs(ids ...string) *HustlerUpdate {
-	hu.mutation.AddItemIDs(ids...)
+// SetWeaponID sets the "weapon" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetWeaponID(id string) *HustlerUpdate {
+	hu.mutation.SetWeaponID(id)
 	return hu
 }
 
-// AddItems adds the "items" edges to the Item entity.
-func (hu *HustlerUpdate) AddItems(i ...*Item) *HustlerUpdate {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+// SetNillableWeaponID sets the "weapon" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableWeaponID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetWeaponID(*id)
 	}
-	return hu.AddItemIDs(ids...)
+	return hu
+}
+
+// SetWeapon sets the "weapon" edge to the Item entity.
+func (hu *HustlerUpdate) SetWeapon(i *Item) *HustlerUpdate {
+	return hu.SetWeaponID(i.ID)
+}
+
+// SetClothesID sets the "clothes" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetClothesID(id string) *HustlerUpdate {
+	hu.mutation.SetClothesID(id)
+	return hu
+}
+
+// SetNillableClothesID sets the "clothes" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableClothesID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetClothesID(*id)
+	}
+	return hu
+}
+
+// SetClothes sets the "clothes" edge to the Item entity.
+func (hu *HustlerUpdate) SetClothes(i *Item) *HustlerUpdate {
+	return hu.SetClothesID(i.ID)
+}
+
+// SetVehicleID sets the "vehicle" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetVehicleID(id string) *HustlerUpdate {
+	hu.mutation.SetVehicleID(id)
+	return hu
+}
+
+// SetNillableVehicleID sets the "vehicle" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableVehicleID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetVehicleID(*id)
+	}
+	return hu
+}
+
+// SetVehicle sets the "vehicle" edge to the Item entity.
+func (hu *HustlerUpdate) SetVehicle(i *Item) *HustlerUpdate {
+	return hu.SetVehicleID(i.ID)
+}
+
+// SetWaistID sets the "waist" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetWaistID(id string) *HustlerUpdate {
+	hu.mutation.SetWaistID(id)
+	return hu
+}
+
+// SetNillableWaistID sets the "waist" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableWaistID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetWaistID(*id)
+	}
+	return hu
+}
+
+// SetWaist sets the "waist" edge to the Item entity.
+func (hu *HustlerUpdate) SetWaist(i *Item) *HustlerUpdate {
+	return hu.SetWaistID(i.ID)
+}
+
+// SetFootID sets the "foot" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetFootID(id string) *HustlerUpdate {
+	hu.mutation.SetFootID(id)
+	return hu
+}
+
+// SetNillableFootID sets the "foot" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableFootID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetFootID(*id)
+	}
+	return hu
+}
+
+// SetFoot sets the "foot" edge to the Item entity.
+func (hu *HustlerUpdate) SetFoot(i *Item) *HustlerUpdate {
+	return hu.SetFootID(i.ID)
+}
+
+// SetHandID sets the "hand" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetHandID(id string) *HustlerUpdate {
+	hu.mutation.SetHandID(id)
+	return hu
+}
+
+// SetNillableHandID sets the "hand" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableHandID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetHandID(*id)
+	}
+	return hu
+}
+
+// SetHand sets the "hand" edge to the Item entity.
+func (hu *HustlerUpdate) SetHand(i *Item) *HustlerUpdate {
+	return hu.SetHandID(i.ID)
+}
+
+// SetDrugID sets the "drug" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetDrugID(id string) *HustlerUpdate {
+	hu.mutation.SetDrugID(id)
+	return hu
+}
+
+// SetNillableDrugID sets the "drug" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableDrugID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetDrugID(*id)
+	}
+	return hu
+}
+
+// SetDrug sets the "drug" edge to the Item entity.
+func (hu *HustlerUpdate) SetDrug(i *Item) *HustlerUpdate {
+	return hu.SetDrugID(i.ID)
+}
+
+// SetNeckID sets the "neck" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetNeckID(id string) *HustlerUpdate {
+	hu.mutation.SetNeckID(id)
+	return hu
+}
+
+// SetNillableNeckID sets the "neck" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableNeckID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetNeckID(*id)
+	}
+	return hu
+}
+
+// SetNeck sets the "neck" edge to the Item entity.
+func (hu *HustlerUpdate) SetNeck(i *Item) *HustlerUpdate {
+	return hu.SetNeckID(i.ID)
+}
+
+// SetRingID sets the "ring" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetRingID(id string) *HustlerUpdate {
+	hu.mutation.SetRingID(id)
+	return hu
+}
+
+// SetNillableRingID sets the "ring" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableRingID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetRingID(*id)
+	}
+	return hu
+}
+
+// SetRing sets the "ring" edge to the Item entity.
+func (hu *HustlerUpdate) SetRing(i *Item) *HustlerUpdate {
+	return hu.SetRingID(i.ID)
+}
+
+// SetAccessoryID sets the "accessory" edge to the Item entity by ID.
+func (hu *HustlerUpdate) SetAccessoryID(id string) *HustlerUpdate {
+	hu.mutation.SetAccessoryID(id)
+	return hu
+}
+
+// SetNillableAccessoryID sets the "accessory" edge to the Item entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableAccessoryID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetAccessoryID(*id)
+	}
+	return hu
+}
+
+// SetAccessory sets the "accessory" edge to the Item entity.
+func (hu *HustlerUpdate) SetAccessory(i *Item) *HustlerUpdate {
+	return hu.SetAccessoryID(i.ID)
 }
 
 // SetBodyID sets the "body" edge to the BodyPart entity by ID.
@@ -271,25 +446,64 @@ func (hu *HustlerUpdate) ClearWallet() *HustlerUpdate {
 	return hu
 }
 
-// ClearItems clears all "items" edges to the Item entity.
-func (hu *HustlerUpdate) ClearItems() *HustlerUpdate {
-	hu.mutation.ClearItems()
+// ClearWeapon clears the "weapon" edge to the Item entity.
+func (hu *HustlerUpdate) ClearWeapon() *HustlerUpdate {
+	hu.mutation.ClearWeapon()
 	return hu
 }
 
-// RemoveItemIDs removes the "items" edge to Item entities by IDs.
-func (hu *HustlerUpdate) RemoveItemIDs(ids ...string) *HustlerUpdate {
-	hu.mutation.RemoveItemIDs(ids...)
+// ClearClothes clears the "clothes" edge to the Item entity.
+func (hu *HustlerUpdate) ClearClothes() *HustlerUpdate {
+	hu.mutation.ClearClothes()
 	return hu
 }
 
-// RemoveItems removes "items" edges to Item entities.
-func (hu *HustlerUpdate) RemoveItems(i ...*Item) *HustlerUpdate {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
-	}
-	return hu.RemoveItemIDs(ids...)
+// ClearVehicle clears the "vehicle" edge to the Item entity.
+func (hu *HustlerUpdate) ClearVehicle() *HustlerUpdate {
+	hu.mutation.ClearVehicle()
+	return hu
+}
+
+// ClearWaist clears the "waist" edge to the Item entity.
+func (hu *HustlerUpdate) ClearWaist() *HustlerUpdate {
+	hu.mutation.ClearWaist()
+	return hu
+}
+
+// ClearFoot clears the "foot" edge to the Item entity.
+func (hu *HustlerUpdate) ClearFoot() *HustlerUpdate {
+	hu.mutation.ClearFoot()
+	return hu
+}
+
+// ClearHand clears the "hand" edge to the Item entity.
+func (hu *HustlerUpdate) ClearHand() *HustlerUpdate {
+	hu.mutation.ClearHand()
+	return hu
+}
+
+// ClearDrug clears the "drug" edge to the Item entity.
+func (hu *HustlerUpdate) ClearDrug() *HustlerUpdate {
+	hu.mutation.ClearDrug()
+	return hu
+}
+
+// ClearNeck clears the "neck" edge to the Item entity.
+func (hu *HustlerUpdate) ClearNeck() *HustlerUpdate {
+	hu.mutation.ClearNeck()
+	return hu
+}
+
+// ClearRing clears the "ring" edge to the Item entity.
+func (hu *HustlerUpdate) ClearRing() *HustlerUpdate {
+	hu.mutation.ClearRing()
+	return hu
+}
+
+// ClearAccessory clears the "accessory" edge to the Item entity.
+func (hu *HustlerUpdate) ClearAccessory() *HustlerUpdate {
+	hu.mutation.ClearAccessory()
+	return hu
 }
 
 // ClearBody clears the "body" edge to the BodyPart entity.
@@ -533,12 +747,12 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if hu.mutation.ItemsCleared() {
+	if hu.mutation.WeaponCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.ItemsTable,
-			Columns: []string{hustler.ItemsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WeaponTable,
+			Columns: []string{hustler.WeaponColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -549,12 +763,12 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := hu.mutation.RemovedItemsIDs(); len(nodes) > 0 && !hu.mutation.ItemsCleared() {
+	if nodes := hu.mutation.WeaponIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.ItemsTable,
-			Columns: []string{hustler.ItemsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WeaponTable,
+			Columns: []string{hustler.WeaponColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -566,14 +780,310 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.ClothesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.ClothesTable,
+			Columns: []string{hustler.ClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := hu.mutation.ItemsIDs(); len(nodes) > 0 {
+	if nodes := hu.mutation.ClothesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.ItemsTable,
-			Columns: []string{hustler.ItemsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.ClothesTable,
+			Columns: []string{hustler.ClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.VehicleCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.VehicleTable,
+			Columns: []string{hustler.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.VehicleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.VehicleTable,
+			Columns: []string{hustler.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.WaistCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WaistTable,
+			Columns: []string{hustler.WaistColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.WaistIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WaistTable,
+			Columns: []string{hustler.WaistColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.FootCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.FootTable,
+			Columns: []string{hustler.FootColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.FootIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.FootTable,
+			Columns: []string{hustler.FootColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.HandCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HandTable,
+			Columns: []string{hustler.HandColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.HandIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HandTable,
+			Columns: []string{hustler.HandColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.DrugCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.DrugTable,
+			Columns: []string{hustler.DrugColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.DrugIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.DrugTable,
+			Columns: []string{hustler.DrugColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.NeckCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.NeckTable,
+			Columns: []string{hustler.NeckColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.NeckIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.NeckTable,
+			Columns: []string{hustler.NeckColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.RingCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.RingTable,
+			Columns: []string{hustler.RingColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.RingIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.RingTable,
+			Columns: []string{hustler.RingColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if hu.mutation.AccessoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.AccessoryTable,
+			Columns: []string{hustler.AccessoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.AccessoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.AccessoryTable,
+			Columns: []string{hustler.AccessoryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -869,19 +1379,194 @@ func (huo *HustlerUpdateOne) SetWallet(w *Wallet) *HustlerUpdateOne {
 	return huo.SetWalletID(w.ID)
 }
 
-// AddItemIDs adds the "items" edge to the Item entity by IDs.
-func (huo *HustlerUpdateOne) AddItemIDs(ids ...string) *HustlerUpdateOne {
-	huo.mutation.AddItemIDs(ids...)
+// SetWeaponID sets the "weapon" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetWeaponID(id string) *HustlerUpdateOne {
+	huo.mutation.SetWeaponID(id)
 	return huo
 }
 
-// AddItems adds the "items" edges to the Item entity.
-func (huo *HustlerUpdateOne) AddItems(i ...*Item) *HustlerUpdateOne {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+// SetNillableWeaponID sets the "weapon" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableWeaponID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetWeaponID(*id)
 	}
-	return huo.AddItemIDs(ids...)
+	return huo
+}
+
+// SetWeapon sets the "weapon" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetWeapon(i *Item) *HustlerUpdateOne {
+	return huo.SetWeaponID(i.ID)
+}
+
+// SetClothesID sets the "clothes" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetClothesID(id string) *HustlerUpdateOne {
+	huo.mutation.SetClothesID(id)
+	return huo
+}
+
+// SetNillableClothesID sets the "clothes" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableClothesID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetClothesID(*id)
+	}
+	return huo
+}
+
+// SetClothes sets the "clothes" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetClothes(i *Item) *HustlerUpdateOne {
+	return huo.SetClothesID(i.ID)
+}
+
+// SetVehicleID sets the "vehicle" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetVehicleID(id string) *HustlerUpdateOne {
+	huo.mutation.SetVehicleID(id)
+	return huo
+}
+
+// SetNillableVehicleID sets the "vehicle" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableVehicleID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetVehicleID(*id)
+	}
+	return huo
+}
+
+// SetVehicle sets the "vehicle" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetVehicle(i *Item) *HustlerUpdateOne {
+	return huo.SetVehicleID(i.ID)
+}
+
+// SetWaistID sets the "waist" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetWaistID(id string) *HustlerUpdateOne {
+	huo.mutation.SetWaistID(id)
+	return huo
+}
+
+// SetNillableWaistID sets the "waist" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableWaistID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetWaistID(*id)
+	}
+	return huo
+}
+
+// SetWaist sets the "waist" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetWaist(i *Item) *HustlerUpdateOne {
+	return huo.SetWaistID(i.ID)
+}
+
+// SetFootID sets the "foot" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetFootID(id string) *HustlerUpdateOne {
+	huo.mutation.SetFootID(id)
+	return huo
+}
+
+// SetNillableFootID sets the "foot" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableFootID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetFootID(*id)
+	}
+	return huo
+}
+
+// SetFoot sets the "foot" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetFoot(i *Item) *HustlerUpdateOne {
+	return huo.SetFootID(i.ID)
+}
+
+// SetHandID sets the "hand" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetHandID(id string) *HustlerUpdateOne {
+	huo.mutation.SetHandID(id)
+	return huo
+}
+
+// SetNillableHandID sets the "hand" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableHandID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetHandID(*id)
+	}
+	return huo
+}
+
+// SetHand sets the "hand" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetHand(i *Item) *HustlerUpdateOne {
+	return huo.SetHandID(i.ID)
+}
+
+// SetDrugID sets the "drug" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetDrugID(id string) *HustlerUpdateOne {
+	huo.mutation.SetDrugID(id)
+	return huo
+}
+
+// SetNillableDrugID sets the "drug" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableDrugID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetDrugID(*id)
+	}
+	return huo
+}
+
+// SetDrug sets the "drug" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetDrug(i *Item) *HustlerUpdateOne {
+	return huo.SetDrugID(i.ID)
+}
+
+// SetNeckID sets the "neck" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetNeckID(id string) *HustlerUpdateOne {
+	huo.mutation.SetNeckID(id)
+	return huo
+}
+
+// SetNillableNeckID sets the "neck" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableNeckID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetNeckID(*id)
+	}
+	return huo
+}
+
+// SetNeck sets the "neck" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetNeck(i *Item) *HustlerUpdateOne {
+	return huo.SetNeckID(i.ID)
+}
+
+// SetRingID sets the "ring" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetRingID(id string) *HustlerUpdateOne {
+	huo.mutation.SetRingID(id)
+	return huo
+}
+
+// SetNillableRingID sets the "ring" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableRingID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetRingID(*id)
+	}
+	return huo
+}
+
+// SetRing sets the "ring" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetRing(i *Item) *HustlerUpdateOne {
+	return huo.SetRingID(i.ID)
+}
+
+// SetAccessoryID sets the "accessory" edge to the Item entity by ID.
+func (huo *HustlerUpdateOne) SetAccessoryID(id string) *HustlerUpdateOne {
+	huo.mutation.SetAccessoryID(id)
+	return huo
+}
+
+// SetNillableAccessoryID sets the "accessory" edge to the Item entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableAccessoryID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetAccessoryID(*id)
+	}
+	return huo
+}
+
+// SetAccessory sets the "accessory" edge to the Item entity.
+func (huo *HustlerUpdateOne) SetAccessory(i *Item) *HustlerUpdateOne {
+	return huo.SetAccessoryID(i.ID)
 }
 
 // SetBodyID sets the "body" edge to the BodyPart entity by ID.
@@ -952,25 +1637,64 @@ func (huo *HustlerUpdateOne) ClearWallet() *HustlerUpdateOne {
 	return huo
 }
 
-// ClearItems clears all "items" edges to the Item entity.
-func (huo *HustlerUpdateOne) ClearItems() *HustlerUpdateOne {
-	huo.mutation.ClearItems()
+// ClearWeapon clears the "weapon" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearWeapon() *HustlerUpdateOne {
+	huo.mutation.ClearWeapon()
 	return huo
 }
 
-// RemoveItemIDs removes the "items" edge to Item entities by IDs.
-func (huo *HustlerUpdateOne) RemoveItemIDs(ids ...string) *HustlerUpdateOne {
-	huo.mutation.RemoveItemIDs(ids...)
+// ClearClothes clears the "clothes" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearClothes() *HustlerUpdateOne {
+	huo.mutation.ClearClothes()
 	return huo
 }
 
-// RemoveItems removes "items" edges to Item entities.
-func (huo *HustlerUpdateOne) RemoveItems(i ...*Item) *HustlerUpdateOne {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
-	}
-	return huo.RemoveItemIDs(ids...)
+// ClearVehicle clears the "vehicle" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearVehicle() *HustlerUpdateOne {
+	huo.mutation.ClearVehicle()
+	return huo
+}
+
+// ClearWaist clears the "waist" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearWaist() *HustlerUpdateOne {
+	huo.mutation.ClearWaist()
+	return huo
+}
+
+// ClearFoot clears the "foot" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearFoot() *HustlerUpdateOne {
+	huo.mutation.ClearFoot()
+	return huo
+}
+
+// ClearHand clears the "hand" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearHand() *HustlerUpdateOne {
+	huo.mutation.ClearHand()
+	return huo
+}
+
+// ClearDrug clears the "drug" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearDrug() *HustlerUpdateOne {
+	huo.mutation.ClearDrug()
+	return huo
+}
+
+// ClearNeck clears the "neck" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearNeck() *HustlerUpdateOne {
+	huo.mutation.ClearNeck()
+	return huo
+}
+
+// ClearRing clears the "ring" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearRing() *HustlerUpdateOne {
+	huo.mutation.ClearRing()
+	return huo
+}
+
+// ClearAccessory clears the "accessory" edge to the Item entity.
+func (huo *HustlerUpdateOne) ClearAccessory() *HustlerUpdateOne {
+	huo.mutation.ClearAccessory()
+	return huo
 }
 
 // ClearBody clears the "body" edge to the BodyPart entity.
@@ -1238,12 +1962,12 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if huo.mutation.ItemsCleared() {
+	if huo.mutation.WeaponCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.ItemsTable,
-			Columns: []string{hustler.ItemsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WeaponTable,
+			Columns: []string{hustler.WeaponColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -1254,12 +1978,12 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := huo.mutation.RemovedItemsIDs(); len(nodes) > 0 && !huo.mutation.ItemsCleared() {
+	if nodes := huo.mutation.WeaponIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.ItemsTable,
-			Columns: []string{hustler.ItemsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WeaponTable,
+			Columns: []string{hustler.WeaponColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -1271,14 +1995,310 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.ClothesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.ClothesTable,
+			Columns: []string{hustler.ClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := huo.mutation.ItemsIDs(); len(nodes) > 0 {
+	if nodes := huo.mutation.ClothesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.ItemsTable,
-			Columns: []string{hustler.ItemsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.ClothesTable,
+			Columns: []string{hustler.ClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.VehicleCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.VehicleTable,
+			Columns: []string{hustler.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.VehicleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.VehicleTable,
+			Columns: []string{hustler.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.WaistCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WaistTable,
+			Columns: []string{hustler.WaistColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.WaistIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WaistTable,
+			Columns: []string{hustler.WaistColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.FootCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.FootTable,
+			Columns: []string{hustler.FootColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.FootIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.FootTable,
+			Columns: []string{hustler.FootColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.HandCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HandTable,
+			Columns: []string{hustler.HandColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.HandIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HandTable,
+			Columns: []string{hustler.HandColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.DrugCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.DrugTable,
+			Columns: []string{hustler.DrugColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.DrugIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.DrugTable,
+			Columns: []string{hustler.DrugColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.NeckCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.NeckTable,
+			Columns: []string{hustler.NeckColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.NeckIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.NeckTable,
+			Columns: []string{hustler.NeckColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.RingCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.RingTable,
+			Columns: []string{hustler.RingColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.RingIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.RingTable,
+			Columns: []string{hustler.RingColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.AccessoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.AccessoryTable,
+			Columns: []string{hustler.AccessoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.AccessoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.AccessoryTable,
+			Columns: []string{hustler.AccessoryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{

@@ -31,10 +31,28 @@ const (
 	FieldSvg = "svg"
 	// EdgeWallets holds the string denoting the wallets edge name in mutations.
 	EdgeWallets = "wallets"
-	// EdgeHustler holds the string denoting the hustler edge name in mutations.
-	EdgeHustler = "hustler"
 	// EdgeDopes holds the string denoting the dopes edge name in mutations.
 	EdgeDopes = "dopes"
+	// EdgeHustlerWeapons holds the string denoting the hustler_weapons edge name in mutations.
+	EdgeHustlerWeapons = "hustler_weapons"
+	// EdgeHustlerClothes holds the string denoting the hustler_clothes edge name in mutations.
+	EdgeHustlerClothes = "hustler_clothes"
+	// EdgeHustlerVehicles holds the string denoting the hustler_vehicles edge name in mutations.
+	EdgeHustlerVehicles = "hustler_vehicles"
+	// EdgeHustlerWaists holds the string denoting the hustler_waists edge name in mutations.
+	EdgeHustlerWaists = "hustler_waists"
+	// EdgeHustlerFeet holds the string denoting the hustler_feet edge name in mutations.
+	EdgeHustlerFeet = "hustler_feet"
+	// EdgeHustlerHands holds the string denoting the hustler_hands edge name in mutations.
+	EdgeHustlerHands = "hustler_hands"
+	// EdgeHustlerDrugs holds the string denoting the hustler_drugs edge name in mutations.
+	EdgeHustlerDrugs = "hustler_drugs"
+	// EdgeHustlerNecks holds the string denoting the hustler_necks edge name in mutations.
+	EdgeHustlerNecks = "hustler_necks"
+	// EdgeHustlerRings holds the string denoting the hustler_rings edge name in mutations.
+	EdgeHustlerRings = "hustler_rings"
+	// EdgeHustlerAccessories holds the string denoting the hustler_accessories edge name in mutations.
+	EdgeHustlerAccessories = "hustler_accessories"
 	// EdgeBase holds the string denoting the base edge name in mutations.
 	EdgeBase = "base"
 	// EdgeDerivative holds the string denoting the derivative edge name in mutations.
@@ -48,18 +66,81 @@ const (
 	WalletsInverseTable = "wallet_items"
 	// WalletsColumn is the table column denoting the wallets relation/edge.
 	WalletsColumn = "item_wallets"
-	// HustlerTable is the table that holds the hustler relation/edge.
-	HustlerTable = "items"
-	// HustlerInverseTable is the table name for the Hustler entity.
-	// It exists in this package in order to avoid circular dependency with the "hustler" package.
-	HustlerInverseTable = "hustlers"
-	// HustlerColumn is the table column denoting the hustler relation/edge.
-	HustlerColumn = "hustler_items"
 	// DopesTable is the table that holds the dopes relation/edge. The primary key declared below.
 	DopesTable = "dope_items"
 	// DopesInverseTable is the table name for the Dope entity.
 	// It exists in this package in order to avoid circular dependency with the "dope" package.
 	DopesInverseTable = "dopes"
+	// HustlerWeaponsTable is the table that holds the hustler_weapons relation/edge.
+	HustlerWeaponsTable = "hustlers"
+	// HustlerWeaponsInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerWeaponsInverseTable = "hustlers"
+	// HustlerWeaponsColumn is the table column denoting the hustler_weapons relation/edge.
+	HustlerWeaponsColumn = "item_hustler_weapons"
+	// HustlerClothesTable is the table that holds the hustler_clothes relation/edge.
+	HustlerClothesTable = "hustlers"
+	// HustlerClothesInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerClothesInverseTable = "hustlers"
+	// HustlerClothesColumn is the table column denoting the hustler_clothes relation/edge.
+	HustlerClothesColumn = "item_hustler_clothes"
+	// HustlerVehiclesTable is the table that holds the hustler_vehicles relation/edge.
+	HustlerVehiclesTable = "hustlers"
+	// HustlerVehiclesInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerVehiclesInverseTable = "hustlers"
+	// HustlerVehiclesColumn is the table column denoting the hustler_vehicles relation/edge.
+	HustlerVehiclesColumn = "item_hustler_vehicles"
+	// HustlerWaistsTable is the table that holds the hustler_waists relation/edge.
+	HustlerWaistsTable = "hustlers"
+	// HustlerWaistsInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerWaistsInverseTable = "hustlers"
+	// HustlerWaistsColumn is the table column denoting the hustler_waists relation/edge.
+	HustlerWaistsColumn = "item_hustler_waists"
+	// HustlerFeetTable is the table that holds the hustler_feet relation/edge.
+	HustlerFeetTable = "hustlers"
+	// HustlerFeetInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerFeetInverseTable = "hustlers"
+	// HustlerFeetColumn is the table column denoting the hustler_feet relation/edge.
+	HustlerFeetColumn = "item_hustler_feet"
+	// HustlerHandsTable is the table that holds the hustler_hands relation/edge.
+	HustlerHandsTable = "hustlers"
+	// HustlerHandsInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerHandsInverseTable = "hustlers"
+	// HustlerHandsColumn is the table column denoting the hustler_hands relation/edge.
+	HustlerHandsColumn = "item_hustler_hands"
+	// HustlerDrugsTable is the table that holds the hustler_drugs relation/edge.
+	HustlerDrugsTable = "hustlers"
+	// HustlerDrugsInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerDrugsInverseTable = "hustlers"
+	// HustlerDrugsColumn is the table column denoting the hustler_drugs relation/edge.
+	HustlerDrugsColumn = "item_hustler_drugs"
+	// HustlerNecksTable is the table that holds the hustler_necks relation/edge.
+	HustlerNecksTable = "hustlers"
+	// HustlerNecksInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerNecksInverseTable = "hustlers"
+	// HustlerNecksColumn is the table column denoting the hustler_necks relation/edge.
+	HustlerNecksColumn = "item_hustler_necks"
+	// HustlerRingsTable is the table that holds the hustler_rings relation/edge.
+	HustlerRingsTable = "hustlers"
+	// HustlerRingsInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerRingsInverseTable = "hustlers"
+	// HustlerRingsColumn is the table column denoting the hustler_rings relation/edge.
+	HustlerRingsColumn = "item_hustler_rings"
+	// HustlerAccessoriesTable is the table that holds the hustler_accessories relation/edge.
+	HustlerAccessoriesTable = "hustlers"
+	// HustlerAccessoriesInverseTable is the table name for the Hustler entity.
+	// It exists in this package in order to avoid circular dependency with the "hustler" package.
+	HustlerAccessoriesInverseTable = "hustlers"
+	// HustlerAccessoriesColumn is the table column denoting the hustler_accessories relation/edge.
+	HustlerAccessoriesColumn = "item_hustler_accessories"
 	// BaseTable is the table that holds the base relation/edge.
 	BaseTable = "items"
 	// BaseColumn is the table column denoting the base relation/edge.
@@ -86,7 +167,6 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "items"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"hustler_items",
 	"item_derivative",
 }
 

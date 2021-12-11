@@ -14,6 +14,7 @@ type Processor interface {
 	Setup(common.Address, interface {
 		ethereum.ChainReader
 		ethereum.ChainStateReader
+		ethereum.TransactionReader
 		bind.ContractBackend
 	}) error
 	ProcessElement(interface{}) func(context.Context, types.Log, *ent.Tx) error

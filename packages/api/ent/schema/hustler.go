@@ -43,7 +43,16 @@ func (Hustler) Fields() []ent.Field {
 func (Hustler) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("wallet", Wallet.Type).Ref("hustlers").Unique(),
-		edge.To("items", Item.Type),
+		edge.From("weapon", Item.Type).Ref("hustler_weapons").Unique(),
+		edge.From("clothes", Item.Type).Ref("hustler_clothes").Unique(),
+		edge.From("vehicle", Item.Type).Ref("hustler_vehicles").Unique(),
+		edge.From("waist", Item.Type).Ref("hustler_waists").Unique(),
+		edge.From("foot", Item.Type).Ref("hustler_feet").Unique(),
+		edge.From("hand", Item.Type).Ref("hustler_hands").Unique(),
+		edge.From("drug", Item.Type).Ref("hustler_drugs").Unique(),
+		edge.From("neck", Item.Type).Ref("hustler_necks").Unique(),
+		edge.From("ring", Item.Type).Ref("hustler_rings").Unique(),
+		edge.From("accessory", Item.Type).Ref("hustler_accessories").Unique(),
 		edge.From("body", BodyPart.Type).Ref("hustler_bodies").Unique(),
 		edge.From("hair", BodyPart.Type).Ref("hustler_hairs").Unique(),
 		edge.From("beard", BodyPart.Type).Ref("hustler_beards").Unique(),

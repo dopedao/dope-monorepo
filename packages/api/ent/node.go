@@ -163,7 +163,7 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 		ID:     h.ID,
 		Type:   "Hustler",
 		Fields: make([]*Field, 10),
-		Edges:  make([]*Edge, 5),
+		Edges:  make([]*Edge, 14),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(h.Type); err != nil {
@@ -258,41 +258,131 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 	}
 	node.Edges[1] = &Edge{
 		Type: "Item",
-		Name: "items",
+		Name: "weapon",
 	}
-	err = h.QueryItems().
+	err = h.QueryWeapon().
 		Select(item.FieldID).
 		Scan(ctx, &node.Edges[1].IDs)
 	if err != nil {
 		return nil, err
 	}
 	node.Edges[2] = &Edge{
-		Type: "BodyPart",
-		Name: "body",
+		Type: "Item",
+		Name: "clothes",
 	}
-	err = h.QueryBody().
-		Select(bodypart.FieldID).
+	err = h.QueryClothes().
+		Select(item.FieldID).
 		Scan(ctx, &node.Edges[2].IDs)
 	if err != nil {
 		return nil, err
 	}
 	node.Edges[3] = &Edge{
-		Type: "BodyPart",
-		Name: "hair",
+		Type: "Item",
+		Name: "vehicle",
 	}
-	err = h.QueryHair().
-		Select(bodypart.FieldID).
+	err = h.QueryVehicle().
+		Select(item.FieldID).
 		Scan(ctx, &node.Edges[3].IDs)
 	if err != nil {
 		return nil, err
 	}
 	node.Edges[4] = &Edge{
+		Type: "Item",
+		Name: "waist",
+	}
+	err = h.QueryWaist().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[4].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[5] = &Edge{
+		Type: "Item",
+		Name: "foot",
+	}
+	err = h.QueryFoot().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[5].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[6] = &Edge{
+		Type: "Item",
+		Name: "hand",
+	}
+	err = h.QueryHand().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[6].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[7] = &Edge{
+		Type: "Item",
+		Name: "drug",
+	}
+	err = h.QueryDrug().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[7].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[8] = &Edge{
+		Type: "Item",
+		Name: "neck",
+	}
+	err = h.QueryNeck().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[8].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[9] = &Edge{
+		Type: "Item",
+		Name: "ring",
+	}
+	err = h.QueryRing().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[9].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[10] = &Edge{
+		Type: "Item",
+		Name: "accessory",
+	}
+	err = h.QueryAccessory().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[10].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[11] = &Edge{
+		Type: "BodyPart",
+		Name: "body",
+	}
+	err = h.QueryBody().
+		Select(bodypart.FieldID).
+		Scan(ctx, &node.Edges[11].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[12] = &Edge{
+		Type: "BodyPart",
+		Name: "hair",
+	}
+	err = h.QueryHair().
+		Select(bodypart.FieldID).
+		Scan(ctx, &node.Edges[12].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[13] = &Edge{
 		Type: "BodyPart",
 		Name: "beard",
 	}
 	err = h.QueryBeard().
 		Select(bodypart.FieldID).
-		Scan(ctx, &node.Edges[4].IDs)
+		Scan(ctx, &node.Edges[13].IDs)
 	if err != nil {
 		return nil, err
 	}
@@ -304,7 +394,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 		ID:     i.ID,
 		Type:   "Item",
 		Fields: make([]*Field, 8),
-		Edges:  make([]*Edge, 5),
+		Edges:  make([]*Edge, 14),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(i.Type); err != nil {
@@ -382,42 +472,132 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Edges[1] = &Edge{
-		Type: "Hustler",
-		Name: "hustler",
-	}
-	err = i.QueryHustler().
-		Select(hustler.FieldID).
-		Scan(ctx, &node.Edges[1].IDs)
-	if err != nil {
-		return nil, err
-	}
-	node.Edges[2] = &Edge{
 		Type: "Dope",
 		Name: "dopes",
 	}
 	err = i.QueryDopes().
 		Select(dope.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[2] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_weapons",
+	}
+	err = i.QueryHustlerWeapons().
+		Select(hustler.FieldID).
 		Scan(ctx, &node.Edges[2].IDs)
 	if err != nil {
 		return nil, err
 	}
 	node.Edges[3] = &Edge{
-		Type: "Item",
-		Name: "base",
+		Type: "Hustler",
+		Name: "hustler_clothes",
 	}
-	err = i.QueryBase().
-		Select(item.FieldID).
+	err = i.QueryHustlerClothes().
+		Select(hustler.FieldID).
 		Scan(ctx, &node.Edges[3].IDs)
 	if err != nil {
 		return nil, err
 	}
 	node.Edges[4] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_vehicles",
+	}
+	err = i.QueryHustlerVehicles().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[4].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[5] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_waists",
+	}
+	err = i.QueryHustlerWaists().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[5].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[6] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_feet",
+	}
+	err = i.QueryHustlerFeet().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[6].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[7] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_hands",
+	}
+	err = i.QueryHustlerHands().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[7].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[8] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_drugs",
+	}
+	err = i.QueryHustlerDrugs().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[8].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[9] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_necks",
+	}
+	err = i.QueryHustlerNecks().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[9].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[10] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_rings",
+	}
+	err = i.QueryHustlerRings().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[10].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[11] = &Edge{
+		Type: "Hustler",
+		Name: "hustler_accessories",
+	}
+	err = i.QueryHustlerAccessories().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[11].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[12] = &Edge{
+		Type: "Item",
+		Name: "base",
+	}
+	err = i.QueryBase().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[12].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[13] = &Edge{
 		Type: "Item",
 		Name: "derivative",
 	}
 	err = i.QueryDerivative().
 		Select(item.FieldID).
-		Scan(ctx, &node.Edges[4].IDs)
+		Scan(ctx, &node.Edges[13].IDs)
 	if err != nil {
 		return nil, err
 	}
