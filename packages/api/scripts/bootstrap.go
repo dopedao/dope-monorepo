@@ -6,20 +6,22 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"math/rand"
 	"strconv"
+	"sync"
+	"time"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/migrate"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/go-retryablehttp"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 type Trait struct {
@@ -36,7 +38,7 @@ var componentTypes = []item.Type{item.TypeWeapon, item.TypeClothes, item.TypeVeh
 func main() {
 	ctx := context.Background()
 
-	db, err := sql.Open(dialect.SQLite, "file:dopewars.db?cache=shared&_fk=1")
+	db, err := sql.Open(dialect.Postgres, "postgres://postgres:postgres@localhost:5432?sslmode=disable")
 	if err != nil {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
@@ -44,8 +46,8 @@ func main() {
 	client := ent.NewClient(ent.Driver(db))
 
 	// Run the auto migration tool.
-	if err := client.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
-		log.Fatal("Migrating db.") //nolint:gocritic
+	if err := client.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("Migrating db: %+v", err) //nolint:gocritic
 	}
 
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -66,78 +68,89 @@ func main() {
 		log.Fatalf("Creating SwapMeet bindings: %+v", err)
 	}
 
-	for i := 0; i < 8000; i++ {
-		ids, err := swapmeet.ItemIds(nil, big.NewInt(int64(i)))
-		if err != nil {
-			log.Fatalf("Getting items ids: %+v", err)
-		}
+	var wg sync.WaitGroup
+	wg.Add(8000)
+	for i := 1; i <= 8000; i++ {
+		go func(i int) {
+			r := rand.Intn(300)
+			time.Sleep(time.Duration(r) * time.Second)
 
-		items, err := components.Items(nil, big.NewInt(int64(i)))
-		if err != nil {
-			log.Fatalf("Getting items: %+v", err)
-		}
-
-		createDope := client.Dope.Create().SetID(strconv.Itoa(i))
-		itemIDs := []string{}
-
-		for j, item := range items {
-			itemID := ids[j].String()
-			itemIDs = append(itemIDs, itemID)
-
-			attributes, err := components.Attributes(nil, item, uint8(j))
+			ids, err := swapmeet.ItemIds(nil, big.NewInt(int64(i)))
 			if err != nil {
-				log.Fatalf("Getting item name: %+v", err)
+				log.Fatalf("Getting items ids: %+v", err)
 			}
 
-			var metadata Metadata
-			if err := json.Unmarshal([]byte(fmt.Sprintf("{\"traits\":%s}", attributes)), &metadata); err != nil {
-				log.Fatalf("Unmarshalling metadata: %+v", err)
+			items, err := components.Items(nil, big.NewInt(int64(i)))
+			if err != nil {
+				log.Fatalf("Getting items: %+v", err)
 			}
 
-			m := client.Item.Create().SetID(itemID).SetType(componentTypes[j])
+			createDope := client.Dope.Create().SetID(strconv.Itoa(i))
+			itemIDs := []string{}
 
-			var name string
-			for _, trait := range metadata.Traits {
-				switch trait.TraitType {
-				case "Item":
-					name = trait.Value
-					m.SetName(trait.Value)
-				case "Suffix":
-					m.SetSuffix(trait.Value)
-				case "Name Prefix":
-					m.SetNamePrefix(trait.Value)
-				case "Name Suffix":
-					m.SetNameSuffix(trait.Value)
-				case "Augmentation":
-					m.SetAugmented(true)
-				}
-			}
+			for j, item := range items {
+				itemID := ids[j].String()
+				itemIDs = append(itemIDs, itemID)
 
-			if item[1] != 0 || item[2] != 0 || item[3] != 0 || item[4] != 0 {
-				baseID, err := swapmeet.ToBaseId(nil, ids[j])
+				attributes, err := components.Attributes(nil, item, uint8(j))
 				if err != nil {
-					log.Fatalf("Getting base id: %+v", err)
+					log.Fatalf("Getting item name: %+v", err)
 				}
 
-				if _, err := client.Item.Create().SetID(baseID.String()).SetType(componentTypes[j]).SetName(name).Save(ctx); err != nil {
-					if !ent.IsConstraintError(err) {
-						log.Fatalf("Creating base item: %+v", err)
+				var metadata Metadata
+				if err := json.Unmarshal([]byte(fmt.Sprintf("{\"traits\":%s}", attributes)), &metadata); err != nil {
+					log.Fatalf("Unmarshalling metadata: %+v", err)
+				}
+
+				m := client.Item.Create().SetID(itemID).SetType(componentTypes[j])
+
+				var name string
+				for _, trait := range metadata.Traits {
+					switch trait.TraitType {
+					case "Item":
+						name = trait.Value
+						m.SetName(trait.Value)
+					case "Suffix":
+						m.SetSuffix(trait.Value)
+					case "Name Prefix":
+						m.SetNamePrefix(trait.Value)
+					case "Name Suffix":
+						m.SetNameSuffix(trait.Value)
+					case "Augmentation":
+						m.SetAugmented(true)
 					}
 				}
 
-				m.SetBaseID(baseID.String())
-			}
+				if item[1] != 0 || item[2] != 0 || item[3] != 0 || item[4] != 0 {
+					baseID, err := swapmeet.ToBaseId(nil, ids[j])
+					if err != nil {
+						log.Fatalf("Getting base id: %+v", err)
+					}
 
-			if _, err = m.Save(ctx); err != nil {
-				if !ent.IsConstraintError(err) {
-					log.Fatalf("Creating item: %+v", err)
+					if _, err := client.Item.Create().SetID(baseID.String()).SetType(componentTypes[j]).SetName(name).Save(ctx); err != nil {
+						if !ent.IsConstraintError(err) {
+							log.Fatalf("Creating base item: %+v", err)
+						}
+					}
+
+					m.SetBaseID(baseID.String())
+				}
+
+				if _, err = m.Save(ctx); err != nil {
+					if !ent.IsConstraintError(err) {
+						log.Fatalf("Creating item: %+v", err)
+					}
 				}
 			}
-		}
 
-		_, err = createDope.AddItemIDs(itemIDs...).Save(ctx)
-		if err != nil {
-			log.Fatalf("Creating dope: %+v", err)
-		}
+			_, err = createDope.AddItemIDs(itemIDs...).Save(ctx)
+			if err != nil {
+				log.Fatalf("Creating dope: %+v", err)
+			}
+
+			wg.Done()
+		}(i)
 	}
+
+	wg.Wait()
 }

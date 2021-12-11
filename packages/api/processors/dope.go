@@ -28,7 +28,7 @@ func (p *DopeProcessor) ProcessTransfer(ctx context.Context, e *bindings.DopeTra
 	}
 
 	if err := tx.Dope.UpdateOneID(e.TokenId.String()).SetWalletID(e.To.Hex()).Exec(ctx); err != nil {
-		return fmt.Errorf("update dope: %w", err)
+		return fmt.Errorf("update dope id %s: %w", e.TokenId.String(), err)
 	}
 
 	return nil

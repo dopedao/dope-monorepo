@@ -55,7 +55,7 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapM
 		Male:   hex.EncodeToString(male),
 		Female: hex.EncodeToString(female),
 	}).SetSvg(parsed.Image).Exec(ctx); err != nil {
-		return fmt.Errorf("updating item rles: %w", err)
+		return fmt.Errorf("updating item %s rles: %w", e.Id.String(), err)
 	}
 
 	return nil

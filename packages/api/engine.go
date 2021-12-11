@@ -19,7 +19,7 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-const blockLimit = 2000
+const blockLimit = 1000
 
 type EthClient interface {
 	bind.ContractBackend
@@ -126,7 +126,7 @@ func (e *Engine) Sync(ctx context.Context) {
 					if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
 						for _, l := range logs {
 							if err := c.Processor.ProcessElement(c.Processor)(ctx, l, tx); err != nil {
-								return fmt.Errorf("processing element: %w", err)
+								return fmt.Errorf("processing element tx %s: %w", l.TxHash.Hex(), err)
 							}
 						}
 
