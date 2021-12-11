@@ -5,6 +5,7 @@ const createUdfs = async () => {
   const relativePath = '../fauna/user_defined_functions';
   const indexFileNames = fs.readdirSync(`${__dirname}/${relativePath}`);
   for (const fileName of indexFileNames) {
+    if (!fileName.endsWith('.ts')) continue;
     const importName = fileName.replace('.ts', '');
     console.log(`Creating ${importName}`);
     const index = await import(`${relativePath}/${importName}`);
