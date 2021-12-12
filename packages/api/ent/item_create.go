@@ -143,25 +143,6 @@ func (ic *ItemCreate) AddWallets(w ...*WalletItems) *ItemCreate {
 	return ic.AddWalletIDs(ids...)
 }
 
-// SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
-func (ic *ItemCreate) SetHustlerID(id string) *ItemCreate {
-	ic.mutation.SetHustlerID(id)
-	return ic
-}
-
-// SetNillableHustlerID sets the "hustler" edge to the Hustler entity by ID if the given value is not nil.
-func (ic *ItemCreate) SetNillableHustlerID(id *string) *ItemCreate {
-	if id != nil {
-		ic = ic.SetHustlerID(*id)
-	}
-	return ic
-}
-
-// SetHustler sets the "hustler" edge to the Hustler entity.
-func (ic *ItemCreate) SetHustler(h *Hustler) *ItemCreate {
-	return ic.SetHustlerID(h.ID)
-}
-
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
 func (ic *ItemCreate) AddDopeIDs(ids ...string) *ItemCreate {
 	ic.mutation.AddDopeIDs(ids...)
@@ -175,6 +156,156 @@ func (ic *ItemCreate) AddDopes(d ...*Dope) *ItemCreate {
 		ids[i] = d[i].ID
 	}
 	return ic.AddDopeIDs(ids...)
+}
+
+// AddHustlerWeaponIDs adds the "hustler_weapons" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerWeaponIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerWeaponIDs(ids...)
+	return ic
+}
+
+// AddHustlerWeapons adds the "hustler_weapons" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerWeapons(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerWeaponIDs(ids...)
+}
+
+// AddHustlerClotheIDs adds the "hustler_clothes" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerClotheIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerClotheIDs(ids...)
+	return ic
+}
+
+// AddHustlerClothes adds the "hustler_clothes" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerClothes(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerClotheIDs(ids...)
+}
+
+// AddHustlerVehicleIDs adds the "hustler_vehicles" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerVehicleIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerVehicleIDs(ids...)
+	return ic
+}
+
+// AddHustlerVehicles adds the "hustler_vehicles" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerVehicles(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerVehicleIDs(ids...)
+}
+
+// AddHustlerWaistIDs adds the "hustler_waists" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerWaistIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerWaistIDs(ids...)
+	return ic
+}
+
+// AddHustlerWaists adds the "hustler_waists" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerWaists(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerWaistIDs(ids...)
+}
+
+// AddHustlerFeetIDs adds the "hustler_feet" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerFeetIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerFeetIDs(ids...)
+	return ic
+}
+
+// AddHustlerFeet adds the "hustler_feet" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerFeet(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerFeetIDs(ids...)
+}
+
+// AddHustlerHandIDs adds the "hustler_hands" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerHandIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerHandIDs(ids...)
+	return ic
+}
+
+// AddHustlerHands adds the "hustler_hands" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerHands(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerHandIDs(ids...)
+}
+
+// AddHustlerDrugIDs adds the "hustler_drugs" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerDrugIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerDrugIDs(ids...)
+	return ic
+}
+
+// AddHustlerDrugs adds the "hustler_drugs" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerDrugs(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerDrugIDs(ids...)
+}
+
+// AddHustlerNeckIDs adds the "hustler_necks" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerNeckIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerNeckIDs(ids...)
+	return ic
+}
+
+// AddHustlerNecks adds the "hustler_necks" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerNecks(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerNeckIDs(ids...)
+}
+
+// AddHustlerRingIDs adds the "hustler_rings" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerRingIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerRingIDs(ids...)
+	return ic
+}
+
+// AddHustlerRings adds the "hustler_rings" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerRings(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerRingIDs(ids...)
+}
+
+// AddHustlerAccessoryIDs adds the "hustler_accessories" edge to the Hustler entity by IDs.
+func (ic *ItemCreate) AddHustlerAccessoryIDs(ids ...string) *ItemCreate {
+	ic.mutation.AddHustlerAccessoryIDs(ids...)
+	return ic
+}
+
+// AddHustlerAccessories adds the "hustler_accessories" edges to the Hustler entity.
+func (ic *ItemCreate) AddHustlerAccessories(h ...*Hustler) *ItemCreate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return ic.AddHustlerAccessoryIDs(ids...)
 }
 
 // SetBaseID sets the "base" edge to the Item entity by ID.
@@ -412,26 +543,6 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ic.mutation.HustlerIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   item.HustlerTable,
-			Columns: []string{item.HustlerColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.hustler_items = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	if nodes := ic.mutation.DopesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -443,6 +554,196 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: dope.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerWeaponsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWeaponsTable,
+			Columns: []string{item.HustlerWeaponsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerClothesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerClothesTable,
+			Columns: []string{item.HustlerClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerVehiclesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerVehiclesTable,
+			Columns: []string{item.HustlerVehiclesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerWaistsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWaistsTable,
+			Columns: []string{item.HustlerWaistsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerFeetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerFeetTable,
+			Columns: []string{item.HustlerFeetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerHandsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerHandsTable,
+			Columns: []string{item.HustlerHandsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerDrugsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerDrugsTable,
+			Columns: []string{item.HustlerDrugsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerNecksIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerNecksTable,
+			Columns: []string{item.HustlerNecksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerRingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerRingsTable,
+			Columns: []string{item.HustlerRingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.HustlerAccessoriesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerAccessoriesTable,
+			Columns: []string{item.HustlerAccessoriesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
 				},
 			},
 		}

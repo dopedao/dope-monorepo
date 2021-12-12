@@ -525,15 +525,159 @@ func (c *HustlerClient) QueryWallet(h *Hustler) *WalletQuery {
 	return query
 }
 
-// QueryItems queries the items edge of a Hustler.
-func (c *HustlerClient) QueryItems(h *Hustler) *ItemQuery {
+// QueryWeapon queries the weapon edge of a Hustler.
+func (c *HustlerClient) QueryWeapon(h *Hustler) *ItemQuery {
 	query := &ItemQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := h.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(hustler.Table, hustler.FieldID, id),
 			sqlgraph.To(item.Table, item.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, hustler.ItemsTable, hustler.ItemsColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.WeaponTable, hustler.WeaponColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryClothes queries the clothes edge of a Hustler.
+func (c *HustlerClient) QueryClothes(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.ClothesTable, hustler.ClothesColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryVehicle queries the vehicle edge of a Hustler.
+func (c *HustlerClient) QueryVehicle(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.VehicleTable, hustler.VehicleColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryWaist queries the waist edge of a Hustler.
+func (c *HustlerClient) QueryWaist(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.WaistTable, hustler.WaistColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFoot queries the foot edge of a Hustler.
+func (c *HustlerClient) QueryFoot(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.FootTable, hustler.FootColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHand queries the hand edge of a Hustler.
+func (c *HustlerClient) QueryHand(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.HandTable, hustler.HandColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDrug queries the drug edge of a Hustler.
+func (c *HustlerClient) QueryDrug(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.DrugTable, hustler.DrugColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNeck queries the neck edge of a Hustler.
+func (c *HustlerClient) QueryNeck(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.NeckTable, hustler.NeckColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryRing queries the ring edge of a Hustler.
+func (c *HustlerClient) QueryRing(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.RingTable, hustler.RingColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAccessory queries the accessory edge of a Hustler.
+func (c *HustlerClient) QueryAccessory(h *Hustler) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.AccessoryTable, hustler.AccessoryColumn),
 		)
 		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
 		return fromV, nil
@@ -695,22 +839,6 @@ func (c *ItemClient) QueryWallets(i *Item) *WalletItemsQuery {
 	return query
 }
 
-// QueryHustler queries the hustler edge of a Item.
-func (c *ItemClient) QueryHustler(i *Item) *HustlerQuery {
-	query := &HustlerQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := i.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(item.Table, item.FieldID, id),
-			sqlgraph.To(hustler.Table, hustler.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, item.HustlerTable, item.HustlerColumn),
-		)
-		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // QueryDopes queries the dopes edge of a Item.
 func (c *ItemClient) QueryDopes(i *Item) *DopeQuery {
 	query := &DopeQuery{config: c.config}
@@ -720,6 +848,166 @@ func (c *ItemClient) QueryDopes(i *Item) *DopeQuery {
 			sqlgraph.From(item.Table, item.FieldID, id),
 			sqlgraph.To(dope.Table, dope.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, item.DopesTable, item.DopesPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerWeapons queries the hustler_weapons edge of a Item.
+func (c *ItemClient) QueryHustlerWeapons(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerWeaponsTable, item.HustlerWeaponsColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerClothes queries the hustler_clothes edge of a Item.
+func (c *ItemClient) QueryHustlerClothes(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerClothesTable, item.HustlerClothesColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerVehicles queries the hustler_vehicles edge of a Item.
+func (c *ItemClient) QueryHustlerVehicles(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerVehiclesTable, item.HustlerVehiclesColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerWaists queries the hustler_waists edge of a Item.
+func (c *ItemClient) QueryHustlerWaists(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerWaistsTable, item.HustlerWaistsColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerFeet queries the hustler_feet edge of a Item.
+func (c *ItemClient) QueryHustlerFeet(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerFeetTable, item.HustlerFeetColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerHands queries the hustler_hands edge of a Item.
+func (c *ItemClient) QueryHustlerHands(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerHandsTable, item.HustlerHandsColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerDrugs queries the hustler_drugs edge of a Item.
+func (c *ItemClient) QueryHustlerDrugs(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerDrugsTable, item.HustlerDrugsColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerNecks queries the hustler_necks edge of a Item.
+func (c *ItemClient) QueryHustlerNecks(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerNecksTable, item.HustlerNecksColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerRings queries the hustler_rings edge of a Item.
+func (c *ItemClient) QueryHustlerRings(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerRingsTable, item.HustlerRingsColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustlerAccessories queries the hustler_accessories edge of a Item.
+func (c *ItemClient) QueryHustlerAccessories(i *Item) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, item.HustlerAccessoriesTable, item.HustlerAccessoriesColumn),
 		)
 		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
 		return fromV, nil

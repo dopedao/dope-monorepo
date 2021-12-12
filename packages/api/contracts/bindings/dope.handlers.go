@@ -20,6 +20,7 @@ type DopeProcessor interface {
 	Setup(address common.Address, eth interface {
 		ethereum.ChainReader
 		ethereum.ChainStateReader
+		ethereum.TransactionReader
 		bind.ContractBackend
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
@@ -46,6 +47,7 @@ type UnimplementedDopeProcessor struct {
 	Eth      interface {
 		ethereum.ChainReader
 		ethereum.ChainStateReader
+		ethereum.TransactionReader
 		bind.ContractBackend
 	}
 }
@@ -53,6 +55,7 @@ type UnimplementedDopeProcessor struct {
 func (h *UnimplementedDopeProcessor) Setup(address common.Address, eth interface {
 	ethereum.ChainReader
 	ethereum.ChainStateReader
+	ethereum.TransactionReader
 	bind.ContractBackend
 }) error {
 	contract, err := NewDope(address, eth)

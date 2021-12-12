@@ -18,14 +18,14 @@ type PaperProcessor struct {
 
 func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e *bindings.PaperTransfer, tx *ent.Tx) error {
 	if e.From != (common.Address{}) {
-		if err := tx.Wallet.UpdateOneID(e.From.String()).AddPaper(schema.BigInt{Int: new(big.Int).Neg(e.Value)}).Exec(ctx); err != nil {
+		if err := tx.Wallet.UpdateOneID(e.From.Hex()).AddPaper(schema.BigInt{Int: new(big.Int).Neg(e.Value)}).Exec(ctx); err != nil {
 			return fmt.Errorf("update from wallet: %w", err)
 		}
 	}
 
 	if e.To != (common.Address{}) {
 		if err := tx.Wallet.Create().
-			SetID(e.To.String()).
+			SetID(e.To.Hex()).
 			SetPaper(schema.BigInt{Int: e.Value}).
 			OnConflictColumns(wallet.FieldID).
 			Update(func(w *ent.WalletUpsert) {

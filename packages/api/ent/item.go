@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
@@ -37,7 +36,6 @@ type Item struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ItemQuery when eager-loading is set.
 	Edges           ItemEdges `json:"edges"`
-	hustler_items   *string
 	item_derivative *string
 }
 
@@ -45,17 +43,35 @@ type Item struct {
 type ItemEdges struct {
 	// Wallets holds the value of the wallets edge.
 	Wallets []*WalletItems `json:"wallets,omitempty"`
-	// Hustler holds the value of the hustler edge.
-	Hustler *Hustler `json:"hustler,omitempty"`
 	// Dopes holds the value of the dopes edge.
 	Dopes []*Dope `json:"dopes,omitempty"`
+	// HustlerWeapons holds the value of the hustler_weapons edge.
+	HustlerWeapons []*Hustler `json:"hustler_weapons,omitempty"`
+	// HustlerClothes holds the value of the hustler_clothes edge.
+	HustlerClothes []*Hustler `json:"hustler_clothes,omitempty"`
+	// HustlerVehicles holds the value of the hustler_vehicles edge.
+	HustlerVehicles []*Hustler `json:"hustler_vehicles,omitempty"`
+	// HustlerWaists holds the value of the hustler_waists edge.
+	HustlerWaists []*Hustler `json:"hustler_waists,omitempty"`
+	// HustlerFeet holds the value of the hustler_feet edge.
+	HustlerFeet []*Hustler `json:"hustler_feet,omitempty"`
+	// HustlerHands holds the value of the hustler_hands edge.
+	HustlerHands []*Hustler `json:"hustler_hands,omitempty"`
+	// HustlerDrugs holds the value of the hustler_drugs edge.
+	HustlerDrugs []*Hustler `json:"hustler_drugs,omitempty"`
+	// HustlerNecks holds the value of the hustler_necks edge.
+	HustlerNecks []*Hustler `json:"hustler_necks,omitempty"`
+	// HustlerRings holds the value of the hustler_rings edge.
+	HustlerRings []*Hustler `json:"hustler_rings,omitempty"`
+	// HustlerAccessories holds the value of the hustler_accessories edge.
+	HustlerAccessories []*Hustler `json:"hustler_accessories,omitempty"`
 	// Base holds the value of the base edge.
 	Base *Item `json:"base,omitempty"`
 	// Derivative holds the value of the derivative edge.
 	Derivative []*Item `json:"derivative,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [5]bool
+	loadedTypes [14]bool
 }
 
 // WalletsOrErr returns the Wallets value or an error if the edge
@@ -67,33 +83,109 @@ func (e ItemEdges) WalletsOrErr() ([]*WalletItems, error) {
 	return nil, &NotLoadedError{edge: "wallets"}
 }
 
-// HustlerOrErr returns the Hustler value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e ItemEdges) HustlerOrErr() (*Hustler, error) {
-	if e.loadedTypes[1] {
-		if e.Hustler == nil {
-			// The edge hustler was loaded in eager-loading,
-			// but was not found.
-			return nil, &NotFoundError{label: hustler.Label}
-		}
-		return e.Hustler, nil
-	}
-	return nil, &NotLoadedError{edge: "hustler"}
-}
-
 // DopesOrErr returns the Dopes value or an error if the edge
 // was not loaded in eager-loading.
 func (e ItemEdges) DopesOrErr() ([]*Dope, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[1] {
 		return e.Dopes, nil
 	}
 	return nil, &NotLoadedError{edge: "dopes"}
 }
 
+// HustlerWeaponsOrErr returns the HustlerWeapons value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerWeaponsOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[2] {
+		return e.HustlerWeapons, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_weapons"}
+}
+
+// HustlerClothesOrErr returns the HustlerClothes value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerClothesOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[3] {
+		return e.HustlerClothes, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_clothes"}
+}
+
+// HustlerVehiclesOrErr returns the HustlerVehicles value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerVehiclesOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[4] {
+		return e.HustlerVehicles, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_vehicles"}
+}
+
+// HustlerWaistsOrErr returns the HustlerWaists value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerWaistsOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[5] {
+		return e.HustlerWaists, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_waists"}
+}
+
+// HustlerFeetOrErr returns the HustlerFeet value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerFeetOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[6] {
+		return e.HustlerFeet, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_feet"}
+}
+
+// HustlerHandsOrErr returns the HustlerHands value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerHandsOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[7] {
+		return e.HustlerHands, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_hands"}
+}
+
+// HustlerDrugsOrErr returns the HustlerDrugs value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerDrugsOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[8] {
+		return e.HustlerDrugs, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_drugs"}
+}
+
+// HustlerNecksOrErr returns the HustlerNecks value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerNecksOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[9] {
+		return e.HustlerNecks, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_necks"}
+}
+
+// HustlerRingsOrErr returns the HustlerRings value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerRingsOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[10] {
+		return e.HustlerRings, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_rings"}
+}
+
+// HustlerAccessoriesOrErr returns the HustlerAccessories value or an error if the edge
+// was not loaded in eager-loading.
+func (e ItemEdges) HustlerAccessoriesOrErr() ([]*Hustler, error) {
+	if e.loadedTypes[11] {
+		return e.HustlerAccessories, nil
+	}
+	return nil, &NotLoadedError{edge: "hustler_accessories"}
+}
+
 // BaseOrErr returns the Base value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e ItemEdges) BaseOrErr() (*Item, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[12] {
 		if e.Base == nil {
 			// The edge base was loaded in eager-loading,
 			// but was not found.
@@ -107,7 +199,7 @@ func (e ItemEdges) BaseOrErr() (*Item, error) {
 // DerivativeOrErr returns the Derivative value or an error if the edge
 // was not loaded in eager-loading.
 func (e ItemEdges) DerivativeOrErr() ([]*Item, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[13] {
 		return e.Derivative, nil
 	}
 	return nil, &NotLoadedError{edge: "derivative"}
@@ -124,9 +216,7 @@ func (*Item) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case item.FieldID, item.FieldType, item.FieldNamePrefix, item.FieldNameSuffix, item.FieldName, item.FieldSuffix, item.FieldSvg:
 			values[i] = new(sql.NullString)
-		case item.ForeignKeys[0]: // hustler_items
-			values[i] = new(sql.NullString)
-		case item.ForeignKeys[1]: // item_derivative
+		case item.ForeignKeys[0]: // item_derivative
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Item", columns[i])
@@ -201,13 +291,6 @@ func (i *Item) assignValues(columns []string, values []interface{}) error {
 			}
 		case item.ForeignKeys[0]:
 			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field hustler_items", values[j])
-			} else if value.Valid {
-				i.hustler_items = new(string)
-				*i.hustler_items = value.String
-			}
-		case item.ForeignKeys[1]:
-			if value, ok := values[j].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field item_derivative", values[j])
 			} else if value.Valid {
 				i.item_derivative = new(string)
@@ -223,14 +306,59 @@ func (i *Item) QueryWallets() *WalletItemsQuery {
 	return (&ItemClient{config: i.config}).QueryWallets(i)
 }
 
-// QueryHustler queries the "hustler" edge of the Item entity.
-func (i *Item) QueryHustler() *HustlerQuery {
-	return (&ItemClient{config: i.config}).QueryHustler(i)
-}
-
 // QueryDopes queries the "dopes" edge of the Item entity.
 func (i *Item) QueryDopes() *DopeQuery {
 	return (&ItemClient{config: i.config}).QueryDopes(i)
+}
+
+// QueryHustlerWeapons queries the "hustler_weapons" edge of the Item entity.
+func (i *Item) QueryHustlerWeapons() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerWeapons(i)
+}
+
+// QueryHustlerClothes queries the "hustler_clothes" edge of the Item entity.
+func (i *Item) QueryHustlerClothes() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerClothes(i)
+}
+
+// QueryHustlerVehicles queries the "hustler_vehicles" edge of the Item entity.
+func (i *Item) QueryHustlerVehicles() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerVehicles(i)
+}
+
+// QueryHustlerWaists queries the "hustler_waists" edge of the Item entity.
+func (i *Item) QueryHustlerWaists() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerWaists(i)
+}
+
+// QueryHustlerFeet queries the "hustler_feet" edge of the Item entity.
+func (i *Item) QueryHustlerFeet() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerFeet(i)
+}
+
+// QueryHustlerHands queries the "hustler_hands" edge of the Item entity.
+func (i *Item) QueryHustlerHands() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerHands(i)
+}
+
+// QueryHustlerDrugs queries the "hustler_drugs" edge of the Item entity.
+func (i *Item) QueryHustlerDrugs() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerDrugs(i)
+}
+
+// QueryHustlerNecks queries the "hustler_necks" edge of the Item entity.
+func (i *Item) QueryHustlerNecks() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerNecks(i)
+}
+
+// QueryHustlerRings queries the "hustler_rings" edge of the Item entity.
+func (i *Item) QueryHustlerRings() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerRings(i)
+}
+
+// QueryHustlerAccessories queries the "hustler_accessories" edge of the Item entity.
+func (i *Item) QueryHustlerAccessories() *HustlerQuery {
+	return (&ItemClient{config: i.config}).QueryHustlerAccessories(i)
 }
 
 // QueryBase queries the "base" edge of the Item entity.

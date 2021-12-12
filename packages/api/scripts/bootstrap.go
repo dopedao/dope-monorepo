@@ -72,7 +72,7 @@ func main() {
 	wg.Add(8000)
 	for i := 1; i <= 8000; i++ {
 		go func(i int) {
-			r := rand.Intn(300)
+			r := rand.Intn(180)
 			time.Sleep(time.Duration(r) * time.Second)
 
 			ids, err := swapmeet.ItemIds(nil, big.NewInt(int64(i)))

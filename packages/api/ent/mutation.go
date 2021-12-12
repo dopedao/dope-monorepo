@@ -1249,35 +1249,52 @@ func (m *DopeMutation) ResetEdge(name string) error {
 // HustlerMutation represents an operation that mutates the Hustler nodes in the graph.
 type HustlerMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *string
-	_type         *hustler.Type
-	name          *string
-	title         *string
-	color         *string
-	background    *string
-	age           *uint64
-	addage        *int64
-	sex           *hustler.Sex
-	viewbox       *[]int
-	_order        *[]int
-	svg           *string
-	clearedFields map[string]struct{}
-	wallet        *string
-	clearedwallet bool
-	items         map[string]struct{}
-	removeditems  map[string]struct{}
-	cleareditems  bool
-	body          *string
-	clearedbody   bool
-	hair          *string
-	clearedhair   bool
-	beard         *string
-	clearedbeard  bool
-	done          bool
-	oldValue      func(context.Context) (*Hustler, error)
-	predicates    []predicate.Hustler
+	op               Op
+	typ              string
+	id               *string
+	_type            *hustler.Type
+	name             *string
+	title            *string
+	color            *string
+	background       *string
+	age              *uint64
+	addage           *int64
+	sex              *hustler.Sex
+	viewbox          *[]int
+	_order           *[]int
+	svg              *string
+	clearedFields    map[string]struct{}
+	wallet           *string
+	clearedwallet    bool
+	weapon           *string
+	clearedweapon    bool
+	clothes          *string
+	clearedclothes   bool
+	vehicle          *string
+	clearedvehicle   bool
+	waist            *string
+	clearedwaist     bool
+	foot             *string
+	clearedfoot      bool
+	hand             *string
+	clearedhand      bool
+	drug             *string
+	cleareddrug      bool
+	neck             *string
+	clearedneck      bool
+	ring             *string
+	clearedring      bool
+	accessory        *string
+	clearedaccessory bool
+	body             *string
+	clearedbody      bool
+	hair             *string
+	clearedhair      bool
+	beard            *string
+	clearedbeard     bool
+	done             bool
+	oldValue         func(context.Context) (*Hustler, error)
+	predicates       []predicate.Hustler
 }
 
 var _ ent.Mutation = (*HustlerMutation)(nil)
@@ -1868,58 +1885,394 @@ func (m *HustlerMutation) ResetWallet() {
 	m.clearedwallet = false
 }
 
-// AddItemIDs adds the "items" edge to the Item entity by ids.
-func (m *HustlerMutation) AddItemIDs(ids ...string) {
-	if m.items == nil {
-		m.items = make(map[string]struct{})
-	}
-	for i := range ids {
-		m.items[ids[i]] = struct{}{}
-	}
+// SetWeaponID sets the "weapon" edge to the Item entity by id.
+func (m *HustlerMutation) SetWeaponID(id string) {
+	m.weapon = &id
 }
 
-// ClearItems clears the "items" edge to the Item entity.
-func (m *HustlerMutation) ClearItems() {
-	m.cleareditems = true
+// ClearWeapon clears the "weapon" edge to the Item entity.
+func (m *HustlerMutation) ClearWeapon() {
+	m.clearedweapon = true
 }
 
-// ItemsCleared reports if the "items" edge to the Item entity was cleared.
-func (m *HustlerMutation) ItemsCleared() bool {
-	return m.cleareditems
+// WeaponCleared reports if the "weapon" edge to the Item entity was cleared.
+func (m *HustlerMutation) WeaponCleared() bool {
+	return m.clearedweapon
 }
 
-// RemoveItemIDs removes the "items" edge to the Item entity by IDs.
-func (m *HustlerMutation) RemoveItemIDs(ids ...string) {
-	if m.removeditems == nil {
-		m.removeditems = make(map[string]struct{})
-	}
-	for i := range ids {
-		delete(m.items, ids[i])
-		m.removeditems[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedItems returns the removed IDs of the "items" edge to the Item entity.
-func (m *HustlerMutation) RemovedItemsIDs() (ids []string) {
-	for id := range m.removeditems {
-		ids = append(ids, id)
+// WeaponID returns the "weapon" edge ID in the mutation.
+func (m *HustlerMutation) WeaponID() (id string, exists bool) {
+	if m.weapon != nil {
+		return *m.weapon, true
 	}
 	return
 }
 
-// ItemsIDs returns the "items" edge IDs in the mutation.
-func (m *HustlerMutation) ItemsIDs() (ids []string) {
-	for id := range m.items {
-		ids = append(ids, id)
+// WeaponIDs returns the "weapon" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// WeaponID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) WeaponIDs() (ids []string) {
+	if id := m.weapon; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetItems resets all changes to the "items" edge.
-func (m *HustlerMutation) ResetItems() {
-	m.items = nil
-	m.cleareditems = false
-	m.removeditems = nil
+// ResetWeapon resets all changes to the "weapon" edge.
+func (m *HustlerMutation) ResetWeapon() {
+	m.weapon = nil
+	m.clearedweapon = false
+}
+
+// SetClothesID sets the "clothes" edge to the Item entity by id.
+func (m *HustlerMutation) SetClothesID(id string) {
+	m.clothes = &id
+}
+
+// ClearClothes clears the "clothes" edge to the Item entity.
+func (m *HustlerMutation) ClearClothes() {
+	m.clearedclothes = true
+}
+
+// ClothesCleared reports if the "clothes" edge to the Item entity was cleared.
+func (m *HustlerMutation) ClothesCleared() bool {
+	return m.clearedclothes
+}
+
+// ClothesID returns the "clothes" edge ID in the mutation.
+func (m *HustlerMutation) ClothesID() (id string, exists bool) {
+	if m.clothes != nil {
+		return *m.clothes, true
+	}
+	return
+}
+
+// ClothesIDs returns the "clothes" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ClothesID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) ClothesIDs() (ids []string) {
+	if id := m.clothes; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetClothes resets all changes to the "clothes" edge.
+func (m *HustlerMutation) ResetClothes() {
+	m.clothes = nil
+	m.clearedclothes = false
+}
+
+// SetVehicleID sets the "vehicle" edge to the Item entity by id.
+func (m *HustlerMutation) SetVehicleID(id string) {
+	m.vehicle = &id
+}
+
+// ClearVehicle clears the "vehicle" edge to the Item entity.
+func (m *HustlerMutation) ClearVehicle() {
+	m.clearedvehicle = true
+}
+
+// VehicleCleared reports if the "vehicle" edge to the Item entity was cleared.
+func (m *HustlerMutation) VehicleCleared() bool {
+	return m.clearedvehicle
+}
+
+// VehicleID returns the "vehicle" edge ID in the mutation.
+func (m *HustlerMutation) VehicleID() (id string, exists bool) {
+	if m.vehicle != nil {
+		return *m.vehicle, true
+	}
+	return
+}
+
+// VehicleIDs returns the "vehicle" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// VehicleID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) VehicleIDs() (ids []string) {
+	if id := m.vehicle; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetVehicle resets all changes to the "vehicle" edge.
+func (m *HustlerMutation) ResetVehicle() {
+	m.vehicle = nil
+	m.clearedvehicle = false
+}
+
+// SetWaistID sets the "waist" edge to the Item entity by id.
+func (m *HustlerMutation) SetWaistID(id string) {
+	m.waist = &id
+}
+
+// ClearWaist clears the "waist" edge to the Item entity.
+func (m *HustlerMutation) ClearWaist() {
+	m.clearedwaist = true
+}
+
+// WaistCleared reports if the "waist" edge to the Item entity was cleared.
+func (m *HustlerMutation) WaistCleared() bool {
+	return m.clearedwaist
+}
+
+// WaistID returns the "waist" edge ID in the mutation.
+func (m *HustlerMutation) WaistID() (id string, exists bool) {
+	if m.waist != nil {
+		return *m.waist, true
+	}
+	return
+}
+
+// WaistIDs returns the "waist" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// WaistID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) WaistIDs() (ids []string) {
+	if id := m.waist; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetWaist resets all changes to the "waist" edge.
+func (m *HustlerMutation) ResetWaist() {
+	m.waist = nil
+	m.clearedwaist = false
+}
+
+// SetFootID sets the "foot" edge to the Item entity by id.
+func (m *HustlerMutation) SetFootID(id string) {
+	m.foot = &id
+}
+
+// ClearFoot clears the "foot" edge to the Item entity.
+func (m *HustlerMutation) ClearFoot() {
+	m.clearedfoot = true
+}
+
+// FootCleared reports if the "foot" edge to the Item entity was cleared.
+func (m *HustlerMutation) FootCleared() bool {
+	return m.clearedfoot
+}
+
+// FootID returns the "foot" edge ID in the mutation.
+func (m *HustlerMutation) FootID() (id string, exists bool) {
+	if m.foot != nil {
+		return *m.foot, true
+	}
+	return
+}
+
+// FootIDs returns the "foot" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FootID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) FootIDs() (ids []string) {
+	if id := m.foot; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFoot resets all changes to the "foot" edge.
+func (m *HustlerMutation) ResetFoot() {
+	m.foot = nil
+	m.clearedfoot = false
+}
+
+// SetHandID sets the "hand" edge to the Item entity by id.
+func (m *HustlerMutation) SetHandID(id string) {
+	m.hand = &id
+}
+
+// ClearHand clears the "hand" edge to the Item entity.
+func (m *HustlerMutation) ClearHand() {
+	m.clearedhand = true
+}
+
+// HandCleared reports if the "hand" edge to the Item entity was cleared.
+func (m *HustlerMutation) HandCleared() bool {
+	return m.clearedhand
+}
+
+// HandID returns the "hand" edge ID in the mutation.
+func (m *HustlerMutation) HandID() (id string, exists bool) {
+	if m.hand != nil {
+		return *m.hand, true
+	}
+	return
+}
+
+// HandIDs returns the "hand" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// HandID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) HandIDs() (ids []string) {
+	if id := m.hand; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetHand resets all changes to the "hand" edge.
+func (m *HustlerMutation) ResetHand() {
+	m.hand = nil
+	m.clearedhand = false
+}
+
+// SetDrugID sets the "drug" edge to the Item entity by id.
+func (m *HustlerMutation) SetDrugID(id string) {
+	m.drug = &id
+}
+
+// ClearDrug clears the "drug" edge to the Item entity.
+func (m *HustlerMutation) ClearDrug() {
+	m.cleareddrug = true
+}
+
+// DrugCleared reports if the "drug" edge to the Item entity was cleared.
+func (m *HustlerMutation) DrugCleared() bool {
+	return m.cleareddrug
+}
+
+// DrugID returns the "drug" edge ID in the mutation.
+func (m *HustlerMutation) DrugID() (id string, exists bool) {
+	if m.drug != nil {
+		return *m.drug, true
+	}
+	return
+}
+
+// DrugIDs returns the "drug" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DrugID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) DrugIDs() (ids []string) {
+	if id := m.drug; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetDrug resets all changes to the "drug" edge.
+func (m *HustlerMutation) ResetDrug() {
+	m.drug = nil
+	m.cleareddrug = false
+}
+
+// SetNeckID sets the "neck" edge to the Item entity by id.
+func (m *HustlerMutation) SetNeckID(id string) {
+	m.neck = &id
+}
+
+// ClearNeck clears the "neck" edge to the Item entity.
+func (m *HustlerMutation) ClearNeck() {
+	m.clearedneck = true
+}
+
+// NeckCleared reports if the "neck" edge to the Item entity was cleared.
+func (m *HustlerMutation) NeckCleared() bool {
+	return m.clearedneck
+}
+
+// NeckID returns the "neck" edge ID in the mutation.
+func (m *HustlerMutation) NeckID() (id string, exists bool) {
+	if m.neck != nil {
+		return *m.neck, true
+	}
+	return
+}
+
+// NeckIDs returns the "neck" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// NeckID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) NeckIDs() (ids []string) {
+	if id := m.neck; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetNeck resets all changes to the "neck" edge.
+func (m *HustlerMutation) ResetNeck() {
+	m.neck = nil
+	m.clearedneck = false
+}
+
+// SetRingID sets the "ring" edge to the Item entity by id.
+func (m *HustlerMutation) SetRingID(id string) {
+	m.ring = &id
+}
+
+// ClearRing clears the "ring" edge to the Item entity.
+func (m *HustlerMutation) ClearRing() {
+	m.clearedring = true
+}
+
+// RingCleared reports if the "ring" edge to the Item entity was cleared.
+func (m *HustlerMutation) RingCleared() bool {
+	return m.clearedring
+}
+
+// RingID returns the "ring" edge ID in the mutation.
+func (m *HustlerMutation) RingID() (id string, exists bool) {
+	if m.ring != nil {
+		return *m.ring, true
+	}
+	return
+}
+
+// RingIDs returns the "ring" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// RingID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) RingIDs() (ids []string) {
+	if id := m.ring; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetRing resets all changes to the "ring" edge.
+func (m *HustlerMutation) ResetRing() {
+	m.ring = nil
+	m.clearedring = false
+}
+
+// SetAccessoryID sets the "accessory" edge to the Item entity by id.
+func (m *HustlerMutation) SetAccessoryID(id string) {
+	m.accessory = &id
+}
+
+// ClearAccessory clears the "accessory" edge to the Item entity.
+func (m *HustlerMutation) ClearAccessory() {
+	m.clearedaccessory = true
+}
+
+// AccessoryCleared reports if the "accessory" edge to the Item entity was cleared.
+func (m *HustlerMutation) AccessoryCleared() bool {
+	return m.clearedaccessory
+}
+
+// AccessoryID returns the "accessory" edge ID in the mutation.
+func (m *HustlerMutation) AccessoryID() (id string, exists bool) {
+	if m.accessory != nil {
+		return *m.accessory, true
+	}
+	return
+}
+
+// AccessoryIDs returns the "accessory" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AccessoryID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) AccessoryIDs() (ids []string) {
+	if id := m.accessory; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetAccessory resets all changes to the "accessory" edge.
+func (m *HustlerMutation) ResetAccessory() {
+	m.accessory = nil
+	m.clearedaccessory = false
 }
 
 // SetBodyID sets the "body" edge to the BodyPart entity by id.
@@ -2358,12 +2711,39 @@ func (m *HustlerMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *HustlerMutation) AddedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 14)
 	if m.wallet != nil {
 		edges = append(edges, hustler.EdgeWallet)
 	}
-	if m.items != nil {
-		edges = append(edges, hustler.EdgeItems)
+	if m.weapon != nil {
+		edges = append(edges, hustler.EdgeWeapon)
+	}
+	if m.clothes != nil {
+		edges = append(edges, hustler.EdgeClothes)
+	}
+	if m.vehicle != nil {
+		edges = append(edges, hustler.EdgeVehicle)
+	}
+	if m.waist != nil {
+		edges = append(edges, hustler.EdgeWaist)
+	}
+	if m.foot != nil {
+		edges = append(edges, hustler.EdgeFoot)
+	}
+	if m.hand != nil {
+		edges = append(edges, hustler.EdgeHand)
+	}
+	if m.drug != nil {
+		edges = append(edges, hustler.EdgeDrug)
+	}
+	if m.neck != nil {
+		edges = append(edges, hustler.EdgeNeck)
+	}
+	if m.ring != nil {
+		edges = append(edges, hustler.EdgeRing)
+	}
+	if m.accessory != nil {
+		edges = append(edges, hustler.EdgeAccessory)
 	}
 	if m.body != nil {
 		edges = append(edges, hustler.EdgeBody)
@@ -2385,12 +2765,46 @@ func (m *HustlerMutation) AddedIDs(name string) []ent.Value {
 		if id := m.wallet; id != nil {
 			return []ent.Value{*id}
 		}
-	case hustler.EdgeItems:
-		ids := make([]ent.Value, 0, len(m.items))
-		for id := range m.items {
-			ids = append(ids, id)
+	case hustler.EdgeWeapon:
+		if id := m.weapon; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
+	case hustler.EdgeClothes:
+		if id := m.clothes; id != nil {
+			return []ent.Value{*id}
+		}
+	case hustler.EdgeVehicle:
+		if id := m.vehicle; id != nil {
+			return []ent.Value{*id}
+		}
+	case hustler.EdgeWaist:
+		if id := m.waist; id != nil {
+			return []ent.Value{*id}
+		}
+	case hustler.EdgeFoot:
+		if id := m.foot; id != nil {
+			return []ent.Value{*id}
+		}
+	case hustler.EdgeHand:
+		if id := m.hand; id != nil {
+			return []ent.Value{*id}
+		}
+	case hustler.EdgeDrug:
+		if id := m.drug; id != nil {
+			return []ent.Value{*id}
+		}
+	case hustler.EdgeNeck:
+		if id := m.neck; id != nil {
+			return []ent.Value{*id}
+		}
+	case hustler.EdgeRing:
+		if id := m.ring; id != nil {
+			return []ent.Value{*id}
+		}
+	case hustler.EdgeAccessory:
+		if id := m.accessory; id != nil {
+			return []ent.Value{*id}
+		}
 	case hustler.EdgeBody:
 		if id := m.body; id != nil {
 			return []ent.Value{*id}
@@ -2409,10 +2823,7 @@ func (m *HustlerMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *HustlerMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 5)
-	if m.removeditems != nil {
-		edges = append(edges, hustler.EdgeItems)
-	}
+	edges := make([]string, 0, 14)
 	return edges
 }
 
@@ -2420,24 +2831,45 @@ func (m *HustlerMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *HustlerMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case hustler.EdgeItems:
-		ids := make([]ent.Value, 0, len(m.removeditems))
-		for id := range m.removeditems {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *HustlerMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 14)
 	if m.clearedwallet {
 		edges = append(edges, hustler.EdgeWallet)
 	}
-	if m.cleareditems {
-		edges = append(edges, hustler.EdgeItems)
+	if m.clearedweapon {
+		edges = append(edges, hustler.EdgeWeapon)
+	}
+	if m.clearedclothes {
+		edges = append(edges, hustler.EdgeClothes)
+	}
+	if m.clearedvehicle {
+		edges = append(edges, hustler.EdgeVehicle)
+	}
+	if m.clearedwaist {
+		edges = append(edges, hustler.EdgeWaist)
+	}
+	if m.clearedfoot {
+		edges = append(edges, hustler.EdgeFoot)
+	}
+	if m.clearedhand {
+		edges = append(edges, hustler.EdgeHand)
+	}
+	if m.cleareddrug {
+		edges = append(edges, hustler.EdgeDrug)
+	}
+	if m.clearedneck {
+		edges = append(edges, hustler.EdgeNeck)
+	}
+	if m.clearedring {
+		edges = append(edges, hustler.EdgeRing)
+	}
+	if m.clearedaccessory {
+		edges = append(edges, hustler.EdgeAccessory)
 	}
 	if m.clearedbody {
 		edges = append(edges, hustler.EdgeBody)
@@ -2457,8 +2889,26 @@ func (m *HustlerMutation) EdgeCleared(name string) bool {
 	switch name {
 	case hustler.EdgeWallet:
 		return m.clearedwallet
-	case hustler.EdgeItems:
-		return m.cleareditems
+	case hustler.EdgeWeapon:
+		return m.clearedweapon
+	case hustler.EdgeClothes:
+		return m.clearedclothes
+	case hustler.EdgeVehicle:
+		return m.clearedvehicle
+	case hustler.EdgeWaist:
+		return m.clearedwaist
+	case hustler.EdgeFoot:
+		return m.clearedfoot
+	case hustler.EdgeHand:
+		return m.clearedhand
+	case hustler.EdgeDrug:
+		return m.cleareddrug
+	case hustler.EdgeNeck:
+		return m.clearedneck
+	case hustler.EdgeRing:
+		return m.clearedring
+	case hustler.EdgeAccessory:
+		return m.clearedaccessory
 	case hustler.EdgeBody:
 		return m.clearedbody
 	case hustler.EdgeHair:
@@ -2475,6 +2925,36 @@ func (m *HustlerMutation) ClearEdge(name string) error {
 	switch name {
 	case hustler.EdgeWallet:
 		m.ClearWallet()
+		return nil
+	case hustler.EdgeWeapon:
+		m.ClearWeapon()
+		return nil
+	case hustler.EdgeClothes:
+		m.ClearClothes()
+		return nil
+	case hustler.EdgeVehicle:
+		m.ClearVehicle()
+		return nil
+	case hustler.EdgeWaist:
+		m.ClearWaist()
+		return nil
+	case hustler.EdgeFoot:
+		m.ClearFoot()
+		return nil
+	case hustler.EdgeHand:
+		m.ClearHand()
+		return nil
+	case hustler.EdgeDrug:
+		m.ClearDrug()
+		return nil
+	case hustler.EdgeNeck:
+		m.ClearNeck()
+		return nil
+	case hustler.EdgeRing:
+		m.ClearRing()
+		return nil
+	case hustler.EdgeAccessory:
+		m.ClearAccessory()
 		return nil
 	case hustler.EdgeBody:
 		m.ClearBody()
@@ -2496,8 +2976,35 @@ func (m *HustlerMutation) ResetEdge(name string) error {
 	case hustler.EdgeWallet:
 		m.ResetWallet()
 		return nil
-	case hustler.EdgeItems:
-		m.ResetItems()
+	case hustler.EdgeWeapon:
+		m.ResetWeapon()
+		return nil
+	case hustler.EdgeClothes:
+		m.ResetClothes()
+		return nil
+	case hustler.EdgeVehicle:
+		m.ResetVehicle()
+		return nil
+	case hustler.EdgeWaist:
+		m.ResetWaist()
+		return nil
+	case hustler.EdgeFoot:
+		m.ResetFoot()
+		return nil
+	case hustler.EdgeHand:
+		m.ResetHand()
+		return nil
+	case hustler.EdgeDrug:
+		m.ResetDrug()
+		return nil
+	case hustler.EdgeNeck:
+		m.ResetNeck()
+		return nil
+	case hustler.EdgeRing:
+		m.ResetRing()
+		return nil
+	case hustler.EdgeAccessory:
+		m.ResetAccessory()
 		return nil
 	case hustler.EdgeBody:
 		m.ResetBody()
@@ -2515,34 +3022,62 @@ func (m *HustlerMutation) ResetEdge(name string) error {
 // ItemMutation represents an operation that mutates the Item nodes in the graph.
 type ItemMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *string
-	_type             *item.Type
-	name_prefix       *string
-	name_suffix       *string
-	name              *string
-	suffix            *string
-	augmented         *bool
-	rles              *schema.RLEs
-	svg               *string
-	clearedFields     map[string]struct{}
-	wallets           map[string]struct{}
-	removedwallets    map[string]struct{}
-	clearedwallets    bool
-	hustler           *string
-	clearedhustler    bool
-	dopes             map[string]struct{}
-	removeddopes      map[string]struct{}
-	cleareddopes      bool
-	base              *string
-	clearedbase       bool
-	derivative        map[string]struct{}
-	removedderivative map[string]struct{}
-	clearedderivative bool
-	done              bool
-	oldValue          func(context.Context) (*Item, error)
-	predicates        []predicate.Item
+	op                         Op
+	typ                        string
+	id                         *string
+	_type                      *item.Type
+	name_prefix                *string
+	name_suffix                *string
+	name                       *string
+	suffix                     *string
+	augmented                  *bool
+	rles                       *schema.RLEs
+	svg                        *string
+	clearedFields              map[string]struct{}
+	wallets                    map[string]struct{}
+	removedwallets             map[string]struct{}
+	clearedwallets             bool
+	dopes                      map[string]struct{}
+	removeddopes               map[string]struct{}
+	cleareddopes               bool
+	hustler_weapons            map[string]struct{}
+	removedhustler_weapons     map[string]struct{}
+	clearedhustler_weapons     bool
+	hustler_clothes            map[string]struct{}
+	removedhustler_clothes     map[string]struct{}
+	clearedhustler_clothes     bool
+	hustler_vehicles           map[string]struct{}
+	removedhustler_vehicles    map[string]struct{}
+	clearedhustler_vehicles    bool
+	hustler_waists             map[string]struct{}
+	removedhustler_waists      map[string]struct{}
+	clearedhustler_waists      bool
+	hustler_feet               map[string]struct{}
+	removedhustler_feet        map[string]struct{}
+	clearedhustler_feet        bool
+	hustler_hands              map[string]struct{}
+	removedhustler_hands       map[string]struct{}
+	clearedhustler_hands       bool
+	hustler_drugs              map[string]struct{}
+	removedhustler_drugs       map[string]struct{}
+	clearedhustler_drugs       bool
+	hustler_necks              map[string]struct{}
+	removedhustler_necks       map[string]struct{}
+	clearedhustler_necks       bool
+	hustler_rings              map[string]struct{}
+	removedhustler_rings       map[string]struct{}
+	clearedhustler_rings       bool
+	hustler_accessories        map[string]struct{}
+	removedhustler_accessories map[string]struct{}
+	clearedhustler_accessories bool
+	base                       *string
+	clearedbase                bool
+	derivative                 map[string]struct{}
+	removedderivative          map[string]struct{}
+	clearedderivative          bool
+	done                       bool
+	oldValue                   func(context.Context) (*Item, error)
+	predicates                 []predicate.Item
 }
 
 var _ ent.Mutation = (*ItemMutation)(nil)
@@ -3069,45 +3604,6 @@ func (m *ItemMutation) ResetWallets() {
 	m.removedwallets = nil
 }
 
-// SetHustlerID sets the "hustler" edge to the Hustler entity by id.
-func (m *ItemMutation) SetHustlerID(id string) {
-	m.hustler = &id
-}
-
-// ClearHustler clears the "hustler" edge to the Hustler entity.
-func (m *ItemMutation) ClearHustler() {
-	m.clearedhustler = true
-}
-
-// HustlerCleared reports if the "hustler" edge to the Hustler entity was cleared.
-func (m *ItemMutation) HustlerCleared() bool {
-	return m.clearedhustler
-}
-
-// HustlerID returns the "hustler" edge ID in the mutation.
-func (m *ItemMutation) HustlerID() (id string, exists bool) {
-	if m.hustler != nil {
-		return *m.hustler, true
-	}
-	return
-}
-
-// HustlerIDs returns the "hustler" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// HustlerID instead. It exists only for internal usage by the builders.
-func (m *ItemMutation) HustlerIDs() (ids []string) {
-	if id := m.hustler; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetHustler resets all changes to the "hustler" edge.
-func (m *ItemMutation) ResetHustler() {
-	m.hustler = nil
-	m.clearedhustler = false
-}
-
 // AddDopeIDs adds the "dopes" edge to the Dope entity by ids.
 func (m *ItemMutation) AddDopeIDs(ids ...string) {
 	if m.dopes == nil {
@@ -3160,6 +3656,546 @@ func (m *ItemMutation) ResetDopes() {
 	m.dopes = nil
 	m.cleareddopes = false
 	m.removeddopes = nil
+}
+
+// AddHustlerWeaponIDs adds the "hustler_weapons" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerWeaponIDs(ids ...string) {
+	if m.hustler_weapons == nil {
+		m.hustler_weapons = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_weapons[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerWeapons clears the "hustler_weapons" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerWeapons() {
+	m.clearedhustler_weapons = true
+}
+
+// HustlerWeaponsCleared reports if the "hustler_weapons" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerWeaponsCleared() bool {
+	return m.clearedhustler_weapons
+}
+
+// RemoveHustlerWeaponIDs removes the "hustler_weapons" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerWeaponIDs(ids ...string) {
+	if m.removedhustler_weapons == nil {
+		m.removedhustler_weapons = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_weapons, ids[i])
+		m.removedhustler_weapons[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerWeapons returns the removed IDs of the "hustler_weapons" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerWeaponsIDs() (ids []string) {
+	for id := range m.removedhustler_weapons {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerWeaponsIDs returns the "hustler_weapons" edge IDs in the mutation.
+func (m *ItemMutation) HustlerWeaponsIDs() (ids []string) {
+	for id := range m.hustler_weapons {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerWeapons resets all changes to the "hustler_weapons" edge.
+func (m *ItemMutation) ResetHustlerWeapons() {
+	m.hustler_weapons = nil
+	m.clearedhustler_weapons = false
+	m.removedhustler_weapons = nil
+}
+
+// AddHustlerClotheIDs adds the "hustler_clothes" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerClotheIDs(ids ...string) {
+	if m.hustler_clothes == nil {
+		m.hustler_clothes = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_clothes[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerClothes clears the "hustler_clothes" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerClothes() {
+	m.clearedhustler_clothes = true
+}
+
+// HustlerClothesCleared reports if the "hustler_clothes" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerClothesCleared() bool {
+	return m.clearedhustler_clothes
+}
+
+// RemoveHustlerClotheIDs removes the "hustler_clothes" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerClotheIDs(ids ...string) {
+	if m.removedhustler_clothes == nil {
+		m.removedhustler_clothes = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_clothes, ids[i])
+		m.removedhustler_clothes[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerClothes returns the removed IDs of the "hustler_clothes" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerClothesIDs() (ids []string) {
+	for id := range m.removedhustler_clothes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerClothesIDs returns the "hustler_clothes" edge IDs in the mutation.
+func (m *ItemMutation) HustlerClothesIDs() (ids []string) {
+	for id := range m.hustler_clothes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerClothes resets all changes to the "hustler_clothes" edge.
+func (m *ItemMutation) ResetHustlerClothes() {
+	m.hustler_clothes = nil
+	m.clearedhustler_clothes = false
+	m.removedhustler_clothes = nil
+}
+
+// AddHustlerVehicleIDs adds the "hustler_vehicles" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerVehicleIDs(ids ...string) {
+	if m.hustler_vehicles == nil {
+		m.hustler_vehicles = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_vehicles[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerVehicles clears the "hustler_vehicles" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerVehicles() {
+	m.clearedhustler_vehicles = true
+}
+
+// HustlerVehiclesCleared reports if the "hustler_vehicles" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerVehiclesCleared() bool {
+	return m.clearedhustler_vehicles
+}
+
+// RemoveHustlerVehicleIDs removes the "hustler_vehicles" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerVehicleIDs(ids ...string) {
+	if m.removedhustler_vehicles == nil {
+		m.removedhustler_vehicles = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_vehicles, ids[i])
+		m.removedhustler_vehicles[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerVehicles returns the removed IDs of the "hustler_vehicles" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerVehiclesIDs() (ids []string) {
+	for id := range m.removedhustler_vehicles {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerVehiclesIDs returns the "hustler_vehicles" edge IDs in the mutation.
+func (m *ItemMutation) HustlerVehiclesIDs() (ids []string) {
+	for id := range m.hustler_vehicles {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerVehicles resets all changes to the "hustler_vehicles" edge.
+func (m *ItemMutation) ResetHustlerVehicles() {
+	m.hustler_vehicles = nil
+	m.clearedhustler_vehicles = false
+	m.removedhustler_vehicles = nil
+}
+
+// AddHustlerWaistIDs adds the "hustler_waists" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerWaistIDs(ids ...string) {
+	if m.hustler_waists == nil {
+		m.hustler_waists = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_waists[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerWaists clears the "hustler_waists" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerWaists() {
+	m.clearedhustler_waists = true
+}
+
+// HustlerWaistsCleared reports if the "hustler_waists" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerWaistsCleared() bool {
+	return m.clearedhustler_waists
+}
+
+// RemoveHustlerWaistIDs removes the "hustler_waists" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerWaistIDs(ids ...string) {
+	if m.removedhustler_waists == nil {
+		m.removedhustler_waists = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_waists, ids[i])
+		m.removedhustler_waists[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerWaists returns the removed IDs of the "hustler_waists" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerWaistsIDs() (ids []string) {
+	for id := range m.removedhustler_waists {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerWaistsIDs returns the "hustler_waists" edge IDs in the mutation.
+func (m *ItemMutation) HustlerWaistsIDs() (ids []string) {
+	for id := range m.hustler_waists {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerWaists resets all changes to the "hustler_waists" edge.
+func (m *ItemMutation) ResetHustlerWaists() {
+	m.hustler_waists = nil
+	m.clearedhustler_waists = false
+	m.removedhustler_waists = nil
+}
+
+// AddHustlerFeetIDs adds the "hustler_feet" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerFeetIDs(ids ...string) {
+	if m.hustler_feet == nil {
+		m.hustler_feet = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_feet[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerFeet clears the "hustler_feet" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerFeet() {
+	m.clearedhustler_feet = true
+}
+
+// HustlerFeetCleared reports if the "hustler_feet" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerFeetCleared() bool {
+	return m.clearedhustler_feet
+}
+
+// RemoveHustlerFeetIDs removes the "hustler_feet" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerFeetIDs(ids ...string) {
+	if m.removedhustler_feet == nil {
+		m.removedhustler_feet = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_feet, ids[i])
+		m.removedhustler_feet[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerFeet returns the removed IDs of the "hustler_feet" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerFeetIDs() (ids []string) {
+	for id := range m.removedhustler_feet {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerFeetIDs returns the "hustler_feet" edge IDs in the mutation.
+func (m *ItemMutation) HustlerFeetIDs() (ids []string) {
+	for id := range m.hustler_feet {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerFeet resets all changes to the "hustler_feet" edge.
+func (m *ItemMutation) ResetHustlerFeet() {
+	m.hustler_feet = nil
+	m.clearedhustler_feet = false
+	m.removedhustler_feet = nil
+}
+
+// AddHustlerHandIDs adds the "hustler_hands" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerHandIDs(ids ...string) {
+	if m.hustler_hands == nil {
+		m.hustler_hands = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_hands[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerHands clears the "hustler_hands" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerHands() {
+	m.clearedhustler_hands = true
+}
+
+// HustlerHandsCleared reports if the "hustler_hands" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerHandsCleared() bool {
+	return m.clearedhustler_hands
+}
+
+// RemoveHustlerHandIDs removes the "hustler_hands" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerHandIDs(ids ...string) {
+	if m.removedhustler_hands == nil {
+		m.removedhustler_hands = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_hands, ids[i])
+		m.removedhustler_hands[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerHands returns the removed IDs of the "hustler_hands" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerHandsIDs() (ids []string) {
+	for id := range m.removedhustler_hands {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerHandsIDs returns the "hustler_hands" edge IDs in the mutation.
+func (m *ItemMutation) HustlerHandsIDs() (ids []string) {
+	for id := range m.hustler_hands {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerHands resets all changes to the "hustler_hands" edge.
+func (m *ItemMutation) ResetHustlerHands() {
+	m.hustler_hands = nil
+	m.clearedhustler_hands = false
+	m.removedhustler_hands = nil
+}
+
+// AddHustlerDrugIDs adds the "hustler_drugs" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerDrugIDs(ids ...string) {
+	if m.hustler_drugs == nil {
+		m.hustler_drugs = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_drugs[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerDrugs clears the "hustler_drugs" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerDrugs() {
+	m.clearedhustler_drugs = true
+}
+
+// HustlerDrugsCleared reports if the "hustler_drugs" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerDrugsCleared() bool {
+	return m.clearedhustler_drugs
+}
+
+// RemoveHustlerDrugIDs removes the "hustler_drugs" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerDrugIDs(ids ...string) {
+	if m.removedhustler_drugs == nil {
+		m.removedhustler_drugs = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_drugs, ids[i])
+		m.removedhustler_drugs[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerDrugs returns the removed IDs of the "hustler_drugs" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerDrugsIDs() (ids []string) {
+	for id := range m.removedhustler_drugs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerDrugsIDs returns the "hustler_drugs" edge IDs in the mutation.
+func (m *ItemMutation) HustlerDrugsIDs() (ids []string) {
+	for id := range m.hustler_drugs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerDrugs resets all changes to the "hustler_drugs" edge.
+func (m *ItemMutation) ResetHustlerDrugs() {
+	m.hustler_drugs = nil
+	m.clearedhustler_drugs = false
+	m.removedhustler_drugs = nil
+}
+
+// AddHustlerNeckIDs adds the "hustler_necks" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerNeckIDs(ids ...string) {
+	if m.hustler_necks == nil {
+		m.hustler_necks = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_necks[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerNecks clears the "hustler_necks" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerNecks() {
+	m.clearedhustler_necks = true
+}
+
+// HustlerNecksCleared reports if the "hustler_necks" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerNecksCleared() bool {
+	return m.clearedhustler_necks
+}
+
+// RemoveHustlerNeckIDs removes the "hustler_necks" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerNeckIDs(ids ...string) {
+	if m.removedhustler_necks == nil {
+		m.removedhustler_necks = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_necks, ids[i])
+		m.removedhustler_necks[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerNecks returns the removed IDs of the "hustler_necks" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerNecksIDs() (ids []string) {
+	for id := range m.removedhustler_necks {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerNecksIDs returns the "hustler_necks" edge IDs in the mutation.
+func (m *ItemMutation) HustlerNecksIDs() (ids []string) {
+	for id := range m.hustler_necks {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerNecks resets all changes to the "hustler_necks" edge.
+func (m *ItemMutation) ResetHustlerNecks() {
+	m.hustler_necks = nil
+	m.clearedhustler_necks = false
+	m.removedhustler_necks = nil
+}
+
+// AddHustlerRingIDs adds the "hustler_rings" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerRingIDs(ids ...string) {
+	if m.hustler_rings == nil {
+		m.hustler_rings = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_rings[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerRings clears the "hustler_rings" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerRings() {
+	m.clearedhustler_rings = true
+}
+
+// HustlerRingsCleared reports if the "hustler_rings" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerRingsCleared() bool {
+	return m.clearedhustler_rings
+}
+
+// RemoveHustlerRingIDs removes the "hustler_rings" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerRingIDs(ids ...string) {
+	if m.removedhustler_rings == nil {
+		m.removedhustler_rings = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_rings, ids[i])
+		m.removedhustler_rings[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerRings returns the removed IDs of the "hustler_rings" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerRingsIDs() (ids []string) {
+	for id := range m.removedhustler_rings {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerRingsIDs returns the "hustler_rings" edge IDs in the mutation.
+func (m *ItemMutation) HustlerRingsIDs() (ids []string) {
+	for id := range m.hustler_rings {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerRings resets all changes to the "hustler_rings" edge.
+func (m *ItemMutation) ResetHustlerRings() {
+	m.hustler_rings = nil
+	m.clearedhustler_rings = false
+	m.removedhustler_rings = nil
+}
+
+// AddHustlerAccessoryIDs adds the "hustler_accessories" edge to the Hustler entity by ids.
+func (m *ItemMutation) AddHustlerAccessoryIDs(ids ...string) {
+	if m.hustler_accessories == nil {
+		m.hustler_accessories = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.hustler_accessories[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHustlerAccessories clears the "hustler_accessories" edge to the Hustler entity.
+func (m *ItemMutation) ClearHustlerAccessories() {
+	m.clearedhustler_accessories = true
+}
+
+// HustlerAccessoriesCleared reports if the "hustler_accessories" edge to the Hustler entity was cleared.
+func (m *ItemMutation) HustlerAccessoriesCleared() bool {
+	return m.clearedhustler_accessories
+}
+
+// RemoveHustlerAccessoryIDs removes the "hustler_accessories" edge to the Hustler entity by IDs.
+func (m *ItemMutation) RemoveHustlerAccessoryIDs(ids ...string) {
+	if m.removedhustler_accessories == nil {
+		m.removedhustler_accessories = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.hustler_accessories, ids[i])
+		m.removedhustler_accessories[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHustlerAccessories returns the removed IDs of the "hustler_accessories" edge to the Hustler entity.
+func (m *ItemMutation) RemovedHustlerAccessoriesIDs() (ids []string) {
+	for id := range m.removedhustler_accessories {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HustlerAccessoriesIDs returns the "hustler_accessories" edge IDs in the mutation.
+func (m *ItemMutation) HustlerAccessoriesIDs() (ids []string) {
+	for id := range m.hustler_accessories {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHustlerAccessories resets all changes to the "hustler_accessories" edge.
+func (m *ItemMutation) ResetHustlerAccessories() {
+	m.hustler_accessories = nil
+	m.clearedhustler_accessories = false
+	m.removedhustler_accessories = nil
 }
 
 // SetBaseID sets the "base" edge to the Item entity by id.
@@ -3531,15 +4567,42 @@ func (m *ItemMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ItemMutation) AddedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 14)
 	if m.wallets != nil {
 		edges = append(edges, item.EdgeWallets)
 	}
-	if m.hustler != nil {
-		edges = append(edges, item.EdgeHustler)
-	}
 	if m.dopes != nil {
 		edges = append(edges, item.EdgeDopes)
+	}
+	if m.hustler_weapons != nil {
+		edges = append(edges, item.EdgeHustlerWeapons)
+	}
+	if m.hustler_clothes != nil {
+		edges = append(edges, item.EdgeHustlerClothes)
+	}
+	if m.hustler_vehicles != nil {
+		edges = append(edges, item.EdgeHustlerVehicles)
+	}
+	if m.hustler_waists != nil {
+		edges = append(edges, item.EdgeHustlerWaists)
+	}
+	if m.hustler_feet != nil {
+		edges = append(edges, item.EdgeHustlerFeet)
+	}
+	if m.hustler_hands != nil {
+		edges = append(edges, item.EdgeHustlerHands)
+	}
+	if m.hustler_drugs != nil {
+		edges = append(edges, item.EdgeHustlerDrugs)
+	}
+	if m.hustler_necks != nil {
+		edges = append(edges, item.EdgeHustlerNecks)
+	}
+	if m.hustler_rings != nil {
+		edges = append(edges, item.EdgeHustlerRings)
+	}
+	if m.hustler_accessories != nil {
+		edges = append(edges, item.EdgeHustlerAccessories)
 	}
 	if m.base != nil {
 		edges = append(edges, item.EdgeBase)
@@ -3560,13 +4623,69 @@ func (m *ItemMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case item.EdgeHustler:
-		if id := m.hustler; id != nil {
-			return []ent.Value{*id}
-		}
 	case item.EdgeDopes:
 		ids := make([]ent.Value, 0, len(m.dopes))
 		for id := range m.dopes {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerWeapons:
+		ids := make([]ent.Value, 0, len(m.hustler_weapons))
+		for id := range m.hustler_weapons {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerClothes:
+		ids := make([]ent.Value, 0, len(m.hustler_clothes))
+		for id := range m.hustler_clothes {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerVehicles:
+		ids := make([]ent.Value, 0, len(m.hustler_vehicles))
+		for id := range m.hustler_vehicles {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerWaists:
+		ids := make([]ent.Value, 0, len(m.hustler_waists))
+		for id := range m.hustler_waists {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerFeet:
+		ids := make([]ent.Value, 0, len(m.hustler_feet))
+		for id := range m.hustler_feet {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerHands:
+		ids := make([]ent.Value, 0, len(m.hustler_hands))
+		for id := range m.hustler_hands {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerDrugs:
+		ids := make([]ent.Value, 0, len(m.hustler_drugs))
+		for id := range m.hustler_drugs {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerNecks:
+		ids := make([]ent.Value, 0, len(m.hustler_necks))
+		for id := range m.hustler_necks {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerRings:
+		ids := make([]ent.Value, 0, len(m.hustler_rings))
+		for id := range m.hustler_rings {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerAccessories:
+		ids := make([]ent.Value, 0, len(m.hustler_accessories))
+		for id := range m.hustler_accessories {
 			ids = append(ids, id)
 		}
 		return ids
@@ -3586,12 +4705,42 @@ func (m *ItemMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ItemMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 14)
 	if m.removedwallets != nil {
 		edges = append(edges, item.EdgeWallets)
 	}
 	if m.removeddopes != nil {
 		edges = append(edges, item.EdgeDopes)
+	}
+	if m.removedhustler_weapons != nil {
+		edges = append(edges, item.EdgeHustlerWeapons)
+	}
+	if m.removedhustler_clothes != nil {
+		edges = append(edges, item.EdgeHustlerClothes)
+	}
+	if m.removedhustler_vehicles != nil {
+		edges = append(edges, item.EdgeHustlerVehicles)
+	}
+	if m.removedhustler_waists != nil {
+		edges = append(edges, item.EdgeHustlerWaists)
+	}
+	if m.removedhustler_feet != nil {
+		edges = append(edges, item.EdgeHustlerFeet)
+	}
+	if m.removedhustler_hands != nil {
+		edges = append(edges, item.EdgeHustlerHands)
+	}
+	if m.removedhustler_drugs != nil {
+		edges = append(edges, item.EdgeHustlerDrugs)
+	}
+	if m.removedhustler_necks != nil {
+		edges = append(edges, item.EdgeHustlerNecks)
+	}
+	if m.removedhustler_rings != nil {
+		edges = append(edges, item.EdgeHustlerRings)
+	}
+	if m.removedhustler_accessories != nil {
+		edges = append(edges, item.EdgeHustlerAccessories)
 	}
 	if m.removedderivative != nil {
 		edges = append(edges, item.EdgeDerivative)
@@ -3615,6 +4764,66 @@ func (m *ItemMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case item.EdgeHustlerWeapons:
+		ids := make([]ent.Value, 0, len(m.removedhustler_weapons))
+		for id := range m.removedhustler_weapons {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerClothes:
+		ids := make([]ent.Value, 0, len(m.removedhustler_clothes))
+		for id := range m.removedhustler_clothes {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerVehicles:
+		ids := make([]ent.Value, 0, len(m.removedhustler_vehicles))
+		for id := range m.removedhustler_vehicles {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerWaists:
+		ids := make([]ent.Value, 0, len(m.removedhustler_waists))
+		for id := range m.removedhustler_waists {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerFeet:
+		ids := make([]ent.Value, 0, len(m.removedhustler_feet))
+		for id := range m.removedhustler_feet {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerHands:
+		ids := make([]ent.Value, 0, len(m.removedhustler_hands))
+		for id := range m.removedhustler_hands {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerDrugs:
+		ids := make([]ent.Value, 0, len(m.removedhustler_drugs))
+		for id := range m.removedhustler_drugs {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerNecks:
+		ids := make([]ent.Value, 0, len(m.removedhustler_necks))
+		for id := range m.removedhustler_necks {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerRings:
+		ids := make([]ent.Value, 0, len(m.removedhustler_rings))
+		for id := range m.removedhustler_rings {
+			ids = append(ids, id)
+		}
+		return ids
+	case item.EdgeHustlerAccessories:
+		ids := make([]ent.Value, 0, len(m.removedhustler_accessories))
+		for id := range m.removedhustler_accessories {
+			ids = append(ids, id)
+		}
+		return ids
 	case item.EdgeDerivative:
 		ids := make([]ent.Value, 0, len(m.removedderivative))
 		for id := range m.removedderivative {
@@ -3627,15 +4836,42 @@ func (m *ItemMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ItemMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 14)
 	if m.clearedwallets {
 		edges = append(edges, item.EdgeWallets)
 	}
-	if m.clearedhustler {
-		edges = append(edges, item.EdgeHustler)
-	}
 	if m.cleareddopes {
 		edges = append(edges, item.EdgeDopes)
+	}
+	if m.clearedhustler_weapons {
+		edges = append(edges, item.EdgeHustlerWeapons)
+	}
+	if m.clearedhustler_clothes {
+		edges = append(edges, item.EdgeHustlerClothes)
+	}
+	if m.clearedhustler_vehicles {
+		edges = append(edges, item.EdgeHustlerVehicles)
+	}
+	if m.clearedhustler_waists {
+		edges = append(edges, item.EdgeHustlerWaists)
+	}
+	if m.clearedhustler_feet {
+		edges = append(edges, item.EdgeHustlerFeet)
+	}
+	if m.clearedhustler_hands {
+		edges = append(edges, item.EdgeHustlerHands)
+	}
+	if m.clearedhustler_drugs {
+		edges = append(edges, item.EdgeHustlerDrugs)
+	}
+	if m.clearedhustler_necks {
+		edges = append(edges, item.EdgeHustlerNecks)
+	}
+	if m.clearedhustler_rings {
+		edges = append(edges, item.EdgeHustlerRings)
+	}
+	if m.clearedhustler_accessories {
+		edges = append(edges, item.EdgeHustlerAccessories)
 	}
 	if m.clearedbase {
 		edges = append(edges, item.EdgeBase)
@@ -3652,10 +4888,28 @@ func (m *ItemMutation) EdgeCleared(name string) bool {
 	switch name {
 	case item.EdgeWallets:
 		return m.clearedwallets
-	case item.EdgeHustler:
-		return m.clearedhustler
 	case item.EdgeDopes:
 		return m.cleareddopes
+	case item.EdgeHustlerWeapons:
+		return m.clearedhustler_weapons
+	case item.EdgeHustlerClothes:
+		return m.clearedhustler_clothes
+	case item.EdgeHustlerVehicles:
+		return m.clearedhustler_vehicles
+	case item.EdgeHustlerWaists:
+		return m.clearedhustler_waists
+	case item.EdgeHustlerFeet:
+		return m.clearedhustler_feet
+	case item.EdgeHustlerHands:
+		return m.clearedhustler_hands
+	case item.EdgeHustlerDrugs:
+		return m.clearedhustler_drugs
+	case item.EdgeHustlerNecks:
+		return m.clearedhustler_necks
+	case item.EdgeHustlerRings:
+		return m.clearedhustler_rings
+	case item.EdgeHustlerAccessories:
+		return m.clearedhustler_accessories
 	case item.EdgeBase:
 		return m.clearedbase
 	case item.EdgeDerivative:
@@ -3668,9 +4922,6 @@ func (m *ItemMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *ItemMutation) ClearEdge(name string) error {
 	switch name {
-	case item.EdgeHustler:
-		m.ClearHustler()
-		return nil
 	case item.EdgeBase:
 		m.ClearBase()
 		return nil
@@ -3685,11 +4936,38 @@ func (m *ItemMutation) ResetEdge(name string) error {
 	case item.EdgeWallets:
 		m.ResetWallets()
 		return nil
-	case item.EdgeHustler:
-		m.ResetHustler()
-		return nil
 	case item.EdgeDopes:
 		m.ResetDopes()
+		return nil
+	case item.EdgeHustlerWeapons:
+		m.ResetHustlerWeapons()
+		return nil
+	case item.EdgeHustlerClothes:
+		m.ResetHustlerClothes()
+		return nil
+	case item.EdgeHustlerVehicles:
+		m.ResetHustlerVehicles()
+		return nil
+	case item.EdgeHustlerWaists:
+		m.ResetHustlerWaists()
+		return nil
+	case item.EdgeHustlerFeet:
+		m.ResetHustlerFeet()
+		return nil
+	case item.EdgeHustlerHands:
+		m.ResetHustlerHands()
+		return nil
+	case item.EdgeHustlerDrugs:
+		m.ResetHustlerDrugs()
+		return nil
+	case item.EdgeHustlerNecks:
+		m.ResetHustlerNecks()
+		return nil
+	case item.EdgeHustlerRings:
+		m.ResetHustlerRings()
+		return nil
+	case item.EdgeHustlerAccessories:
+		m.ResetHustlerAccessories()
 		return nil
 	case item.EdgeBase:
 		m.ResetBase()

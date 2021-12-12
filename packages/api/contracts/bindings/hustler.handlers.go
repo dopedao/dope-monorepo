@@ -20,6 +20,7 @@ type HustlerProcessor interface {
 	Setup(address common.Address, eth interface {
 		ethereum.ChainReader
 		ethereum.ChainStateReader
+		ethereum.TransactionReader
 		bind.ContractBackend
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
@@ -48,6 +49,7 @@ type UnimplementedHustlerProcessor struct {
 	Eth      interface {
 		ethereum.ChainReader
 		ethereum.ChainStateReader
+		ethereum.TransactionReader
 		bind.ContractBackend
 	}
 }
@@ -55,6 +57,7 @@ type UnimplementedHustlerProcessor struct {
 func (h *UnimplementedHustlerProcessor) Setup(address common.Address, eth interface {
 	ethereum.ChainReader
 	ethereum.ChainStateReader
+	ethereum.TransactionReader
 	bind.ContractBackend
 }) error {
 	contract, err := NewHustler(address, eth)
