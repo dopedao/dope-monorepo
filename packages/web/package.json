@@ -14,7 +14,7 @@
     "dump-opensea": "ts-node --script-mode script/dump_opensea_json.ts",
     "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh_opensea_sales_cache.ts",
     "refresh-token-metadata": "ts-node --script-mode script/refresh_token_metadata.ts",
-    "db:reset": "yarn db:init && yarn db:index && yarn db:populate && yarn db:refresh-opensea",
+    "db:reset": "yarn db:init && yarn db:index && yarn db:populate && yarn db:refresh-opensea && yarn db:udf",
     "db:init": "ts-node --script-mode script/fauna_init_database.ts",
     "db:index": "ts-node --script-mode script/fauna_create_indexes.ts",
     "db:udf": "ts-node --script-mode script/fauna_create_udf.ts",

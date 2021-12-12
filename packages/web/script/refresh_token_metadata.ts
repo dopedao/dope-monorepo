@@ -1,8 +1,10 @@
 import { client, q } from '../src/fauna_client';
 import fetch from 'isomorphic-fetch';
 import fs from 'fs';
+import path from 'path';
 import { NETWORK } from '../src/constants';
 const subgraphUrl = NETWORK[1].subgraph;
+const QUERY_PATH = "../queries";
 
 const updateFauna = async(data: any) => {
   await client.query(
@@ -22,7 +24,7 @@ const updateFauna = async(data: any) => {
 const getGraphQuery = async (fileName: string) => {
   return JSON.stringify({
     query: fs.readFileSync(
-      __dirname + fileName,
+      path.resolve(__dirname, fileName),
       'utf8'
     ),
     variables: {}
@@ -30,7 +32,7 @@ const getGraphQuery = async (fileName: string) => {
 }
 
 const getAndUpdatePaperUnclaimed = async () => {
-  const graphQuery = await getGraphQuery('/all_unclaimed_bags.graphql');
+  const graphQuery = await getGraphQuery(`${QUERY_PATH}/all_unclaimed_bags.graphql`);
 
   const response = await fetch(subgraphUrl, {
     method: 'POST', 
@@ -54,7 +56,7 @@ const getAndUpdatePaperUnclaimed = async () => {
 }
 
 const getAndUpdateItemUnbundled = async () => {
-  const graphQuery = await getGraphQuery('/all_opened_bags.graphql')
+  const graphQuery = await getGraphQuery(`${QUERY_PATH}/all_opened_bags.graphql`)
 
   const response = await fetch(subgraphUrl, {
     method: 'POST', 
