@@ -4,6 +4,7 @@ import GameScene from "game/scenes/game";
 import Preload from "game/scenes/preload";
 import { IonPhaser } from '@ion-phaser/react';
 import DesktopWindow from "components/DesktopWindow";
+import Phaser from "phaser";
 
 
 export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConfig}) {
