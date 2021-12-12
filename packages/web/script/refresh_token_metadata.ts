@@ -65,16 +65,19 @@ const getAndUpdateItemUnbundled = async () => {
   const unbundled = await response.json();
 
   if (unbundled["data"]) {
-    const itemsUnbundled = unbundled["data"]["bags"];
-    console.log(`Found ${itemsUnbundled.length} paper_unclaimed records`)
-    const tokensWithItemsUnbundled = itemsUnbundled.map((tokens: any) => [
-      tokens.id,
-      {
-        items_unbundled: true
-      }
-    ]);
-    await updateFauna(tokensWithItemsUnbundled)
-    console.log(`updated ${tokensWithItemsUnbundled.length} items_unbundled records`)
+    const itemsUnbundled = unbundled["data"];
+    for (let page in itemsUnbundled) {
+      if (!itemsUnbundled[page].length) continue;
+      console.log(`Found ${itemsUnbundled[page].length} paper_unclaimed records`)
+      const tokensWithItemsUnbundled = itemsUnbundled[page].map((tokens: any) => [
+        tokens.id,
+        {
+          items_unbundled: true
+        }
+      ]);
+      await updateFauna(tokensWithItemsUnbundled)
+      console.log(`updated ${tokensWithItemsUnbundled.length} items_unbundled records`)
+    }
   }
 };
 
