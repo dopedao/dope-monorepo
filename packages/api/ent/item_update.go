@@ -86,25 +86,6 @@ func (iu *ItemUpdate) AddWallets(w ...*WalletItems) *ItemUpdate {
 	return iu.AddWalletIDs(ids...)
 }
 
-// SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
-func (iu *ItemUpdate) SetHustlerID(id string) *ItemUpdate {
-	iu.mutation.SetHustlerID(id)
-	return iu
-}
-
-// SetNillableHustlerID sets the "hustler" edge to the Hustler entity by ID if the given value is not nil.
-func (iu *ItemUpdate) SetNillableHustlerID(id *string) *ItemUpdate {
-	if id != nil {
-		iu = iu.SetHustlerID(*id)
-	}
-	return iu
-}
-
-// SetHustler sets the "hustler" edge to the Hustler entity.
-func (iu *ItemUpdate) SetHustler(h *Hustler) *ItemUpdate {
-	return iu.SetHustlerID(h.ID)
-}
-
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
 func (iu *ItemUpdate) AddDopeIDs(ids ...string) *ItemUpdate {
 	iu.mutation.AddDopeIDs(ids...)
@@ -118,6 +99,156 @@ func (iu *ItemUpdate) AddDopes(d ...*Dope) *ItemUpdate {
 		ids[i] = d[i].ID
 	}
 	return iu.AddDopeIDs(ids...)
+}
+
+// AddHustlerWeaponIDs adds the "hustler_weapons" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerWeaponIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerWeaponIDs(ids...)
+	return iu
+}
+
+// AddHustlerWeapons adds the "hustler_weapons" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerWeapons(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerWeaponIDs(ids...)
+}
+
+// AddHustlerClotheIDs adds the "hustler_clothes" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerClotheIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerClotheIDs(ids...)
+	return iu
+}
+
+// AddHustlerClothes adds the "hustler_clothes" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerClothes(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerClotheIDs(ids...)
+}
+
+// AddHustlerVehicleIDs adds the "hustler_vehicles" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerVehicleIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerVehicleIDs(ids...)
+	return iu
+}
+
+// AddHustlerVehicles adds the "hustler_vehicles" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerVehicles(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerVehicleIDs(ids...)
+}
+
+// AddHustlerWaistIDs adds the "hustler_waists" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerWaistIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerWaistIDs(ids...)
+	return iu
+}
+
+// AddHustlerWaists adds the "hustler_waists" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerWaists(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerWaistIDs(ids...)
+}
+
+// AddHustlerFeetIDs adds the "hustler_feet" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerFeetIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerFeetIDs(ids...)
+	return iu
+}
+
+// AddHustlerFeet adds the "hustler_feet" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerFeet(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerFeetIDs(ids...)
+}
+
+// AddHustlerHandIDs adds the "hustler_hands" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerHandIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerHandIDs(ids...)
+	return iu
+}
+
+// AddHustlerHands adds the "hustler_hands" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerHands(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerHandIDs(ids...)
+}
+
+// AddHustlerDrugIDs adds the "hustler_drugs" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerDrugIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerDrugIDs(ids...)
+	return iu
+}
+
+// AddHustlerDrugs adds the "hustler_drugs" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerDrugs(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerDrugIDs(ids...)
+}
+
+// AddHustlerNeckIDs adds the "hustler_necks" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerNeckIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerNeckIDs(ids...)
+	return iu
+}
+
+// AddHustlerNecks adds the "hustler_necks" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerNecks(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerNeckIDs(ids...)
+}
+
+// AddHustlerRingIDs adds the "hustler_rings" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerRingIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerRingIDs(ids...)
+	return iu
+}
+
+// AddHustlerRings adds the "hustler_rings" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerRings(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerRingIDs(ids...)
+}
+
+// AddHustlerAccessoryIDs adds the "hustler_accessories" edge to the Hustler entity by IDs.
+func (iu *ItemUpdate) AddHustlerAccessoryIDs(ids ...string) *ItemUpdate {
+	iu.mutation.AddHustlerAccessoryIDs(ids...)
+	return iu
+}
+
+// AddHustlerAccessories adds the "hustler_accessories" edges to the Hustler entity.
+func (iu *ItemUpdate) AddHustlerAccessories(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.AddHustlerAccessoryIDs(ids...)
 }
 
 // SetBaseID sets the "base" edge to the Item entity by ID.
@@ -180,12 +311,6 @@ func (iu *ItemUpdate) RemoveWallets(w ...*WalletItems) *ItemUpdate {
 	return iu.RemoveWalletIDs(ids...)
 }
 
-// ClearHustler clears the "hustler" edge to the Hustler entity.
-func (iu *ItemUpdate) ClearHustler() *ItemUpdate {
-	iu.mutation.ClearHustler()
-	return iu
-}
-
 // ClearDopes clears all "dopes" edges to the Dope entity.
 func (iu *ItemUpdate) ClearDopes() *ItemUpdate {
 	iu.mutation.ClearDopes()
@@ -205,6 +330,216 @@ func (iu *ItemUpdate) RemoveDopes(d ...*Dope) *ItemUpdate {
 		ids[i] = d[i].ID
 	}
 	return iu.RemoveDopeIDs(ids...)
+}
+
+// ClearHustlerWeapons clears all "hustler_weapons" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerWeapons() *ItemUpdate {
+	iu.mutation.ClearHustlerWeapons()
+	return iu
+}
+
+// RemoveHustlerWeaponIDs removes the "hustler_weapons" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerWeaponIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerWeaponIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerWeapons removes "hustler_weapons" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerWeapons(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerWeaponIDs(ids...)
+}
+
+// ClearHustlerClothes clears all "hustler_clothes" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerClothes() *ItemUpdate {
+	iu.mutation.ClearHustlerClothes()
+	return iu
+}
+
+// RemoveHustlerClotheIDs removes the "hustler_clothes" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerClotheIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerClotheIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerClothes removes "hustler_clothes" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerClothes(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerClotheIDs(ids...)
+}
+
+// ClearHustlerVehicles clears all "hustler_vehicles" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerVehicles() *ItemUpdate {
+	iu.mutation.ClearHustlerVehicles()
+	return iu
+}
+
+// RemoveHustlerVehicleIDs removes the "hustler_vehicles" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerVehicleIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerVehicleIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerVehicles removes "hustler_vehicles" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerVehicles(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerVehicleIDs(ids...)
+}
+
+// ClearHustlerWaists clears all "hustler_waists" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerWaists() *ItemUpdate {
+	iu.mutation.ClearHustlerWaists()
+	return iu
+}
+
+// RemoveHustlerWaistIDs removes the "hustler_waists" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerWaistIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerWaistIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerWaists removes "hustler_waists" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerWaists(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerWaistIDs(ids...)
+}
+
+// ClearHustlerFeet clears all "hustler_feet" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerFeet() *ItemUpdate {
+	iu.mutation.ClearHustlerFeet()
+	return iu
+}
+
+// RemoveHustlerFeetIDs removes the "hustler_feet" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerFeetIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerFeetIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerFeet removes "hustler_feet" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerFeet(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerFeetIDs(ids...)
+}
+
+// ClearHustlerHands clears all "hustler_hands" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerHands() *ItemUpdate {
+	iu.mutation.ClearHustlerHands()
+	return iu
+}
+
+// RemoveHustlerHandIDs removes the "hustler_hands" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerHandIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerHandIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerHands removes "hustler_hands" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerHands(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerHandIDs(ids...)
+}
+
+// ClearHustlerDrugs clears all "hustler_drugs" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerDrugs() *ItemUpdate {
+	iu.mutation.ClearHustlerDrugs()
+	return iu
+}
+
+// RemoveHustlerDrugIDs removes the "hustler_drugs" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerDrugIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerDrugIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerDrugs removes "hustler_drugs" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerDrugs(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerDrugIDs(ids...)
+}
+
+// ClearHustlerNecks clears all "hustler_necks" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerNecks() *ItemUpdate {
+	iu.mutation.ClearHustlerNecks()
+	return iu
+}
+
+// RemoveHustlerNeckIDs removes the "hustler_necks" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerNeckIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerNeckIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerNecks removes "hustler_necks" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerNecks(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerNeckIDs(ids...)
+}
+
+// ClearHustlerRings clears all "hustler_rings" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerRings() *ItemUpdate {
+	iu.mutation.ClearHustlerRings()
+	return iu
+}
+
+// RemoveHustlerRingIDs removes the "hustler_rings" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerRingIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerRingIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerRings removes "hustler_rings" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerRings(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerRingIDs(ids...)
+}
+
+// ClearHustlerAccessories clears all "hustler_accessories" edges to the Hustler entity.
+func (iu *ItemUpdate) ClearHustlerAccessories() *ItemUpdate {
+	iu.mutation.ClearHustlerAccessories()
+	return iu
+}
+
+// RemoveHustlerAccessoryIDs removes the "hustler_accessories" edge to Hustler entities by IDs.
+func (iu *ItemUpdate) RemoveHustlerAccessoryIDs(ids ...string) *ItemUpdate {
+	iu.mutation.RemoveHustlerAccessoryIDs(ids...)
+	return iu
+}
+
+// RemoveHustlerAccessories removes "hustler_accessories" edges to Hustler entities.
+func (iu *ItemUpdate) RemoveHustlerAccessories(h ...*Hustler) *ItemUpdate {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iu.RemoveHustlerAccessoryIDs(ids...)
 }
 
 // ClearBase clears the "base" edge to the Item entity.
@@ -410,41 +745,6 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if iu.mutation.HustlerCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   item.HustlerTable,
-			Columns: []string{item.HustlerColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := iu.mutation.HustlerIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   item.HustlerTable,
-			Columns: []string{item.HustlerColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if iu.mutation.DopesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -491,6 +791,546 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: dope.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerWeaponsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWeaponsTable,
+			Columns: []string{item.HustlerWeaponsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerWeaponsIDs(); len(nodes) > 0 && !iu.mutation.HustlerWeaponsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWeaponsTable,
+			Columns: []string{item.HustlerWeaponsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerWeaponsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWeaponsTable,
+			Columns: []string{item.HustlerWeaponsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerClothesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerClothesTable,
+			Columns: []string{item.HustlerClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerClothesIDs(); len(nodes) > 0 && !iu.mutation.HustlerClothesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerClothesTable,
+			Columns: []string{item.HustlerClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerClothesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerClothesTable,
+			Columns: []string{item.HustlerClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerVehiclesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerVehiclesTable,
+			Columns: []string{item.HustlerVehiclesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerVehiclesIDs(); len(nodes) > 0 && !iu.mutation.HustlerVehiclesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerVehiclesTable,
+			Columns: []string{item.HustlerVehiclesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerVehiclesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerVehiclesTable,
+			Columns: []string{item.HustlerVehiclesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerWaistsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWaistsTable,
+			Columns: []string{item.HustlerWaistsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerWaistsIDs(); len(nodes) > 0 && !iu.mutation.HustlerWaistsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWaistsTable,
+			Columns: []string{item.HustlerWaistsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerWaistsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWaistsTable,
+			Columns: []string{item.HustlerWaistsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerFeetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerFeetTable,
+			Columns: []string{item.HustlerFeetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerFeetIDs(); len(nodes) > 0 && !iu.mutation.HustlerFeetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerFeetTable,
+			Columns: []string{item.HustlerFeetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerFeetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerFeetTable,
+			Columns: []string{item.HustlerFeetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerHandsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerHandsTable,
+			Columns: []string{item.HustlerHandsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerHandsIDs(); len(nodes) > 0 && !iu.mutation.HustlerHandsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerHandsTable,
+			Columns: []string{item.HustlerHandsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerHandsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerHandsTable,
+			Columns: []string{item.HustlerHandsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerDrugsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerDrugsTable,
+			Columns: []string{item.HustlerDrugsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerDrugsIDs(); len(nodes) > 0 && !iu.mutation.HustlerDrugsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerDrugsTable,
+			Columns: []string{item.HustlerDrugsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerDrugsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerDrugsTable,
+			Columns: []string{item.HustlerDrugsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerNecksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerNecksTable,
+			Columns: []string{item.HustlerNecksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerNecksIDs(); len(nodes) > 0 && !iu.mutation.HustlerNecksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerNecksTable,
+			Columns: []string{item.HustlerNecksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerNecksIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerNecksTable,
+			Columns: []string{item.HustlerNecksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerRingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerRingsTable,
+			Columns: []string{item.HustlerRingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerRingsIDs(); len(nodes) > 0 && !iu.mutation.HustlerRingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerRingsTable,
+			Columns: []string{item.HustlerRingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerRingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerRingsTable,
+			Columns: []string{item.HustlerRingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.HustlerAccessoriesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerAccessoriesTable,
+			Columns: []string{item.HustlerAccessoriesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.RemovedHustlerAccessoriesIDs(); len(nodes) > 0 && !iu.mutation.HustlerAccessoriesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerAccessoriesTable,
+			Columns: []string{item.HustlerAccessoriesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.HustlerAccessoriesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerAccessoriesTable,
+			Columns: []string{item.HustlerAccessoriesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
 				},
 			},
 		}
@@ -662,25 +1502,6 @@ func (iuo *ItemUpdateOne) AddWallets(w ...*WalletItems) *ItemUpdateOne {
 	return iuo.AddWalletIDs(ids...)
 }
 
-// SetHustlerID sets the "hustler" edge to the Hustler entity by ID.
-func (iuo *ItemUpdateOne) SetHustlerID(id string) *ItemUpdateOne {
-	iuo.mutation.SetHustlerID(id)
-	return iuo
-}
-
-// SetNillableHustlerID sets the "hustler" edge to the Hustler entity by ID if the given value is not nil.
-func (iuo *ItemUpdateOne) SetNillableHustlerID(id *string) *ItemUpdateOne {
-	if id != nil {
-		iuo = iuo.SetHustlerID(*id)
-	}
-	return iuo
-}
-
-// SetHustler sets the "hustler" edge to the Hustler entity.
-func (iuo *ItemUpdateOne) SetHustler(h *Hustler) *ItemUpdateOne {
-	return iuo.SetHustlerID(h.ID)
-}
-
 // AddDopeIDs adds the "dopes" edge to the Dope entity by IDs.
 func (iuo *ItemUpdateOne) AddDopeIDs(ids ...string) *ItemUpdateOne {
 	iuo.mutation.AddDopeIDs(ids...)
@@ -694,6 +1515,156 @@ func (iuo *ItemUpdateOne) AddDopes(d ...*Dope) *ItemUpdateOne {
 		ids[i] = d[i].ID
 	}
 	return iuo.AddDopeIDs(ids...)
+}
+
+// AddHustlerWeaponIDs adds the "hustler_weapons" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerWeaponIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerWeaponIDs(ids...)
+	return iuo
+}
+
+// AddHustlerWeapons adds the "hustler_weapons" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerWeapons(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerWeaponIDs(ids...)
+}
+
+// AddHustlerClotheIDs adds the "hustler_clothes" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerClotheIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerClotheIDs(ids...)
+	return iuo
+}
+
+// AddHustlerClothes adds the "hustler_clothes" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerClothes(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerClotheIDs(ids...)
+}
+
+// AddHustlerVehicleIDs adds the "hustler_vehicles" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerVehicleIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerVehicleIDs(ids...)
+	return iuo
+}
+
+// AddHustlerVehicles adds the "hustler_vehicles" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerVehicles(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerVehicleIDs(ids...)
+}
+
+// AddHustlerWaistIDs adds the "hustler_waists" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerWaistIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerWaistIDs(ids...)
+	return iuo
+}
+
+// AddHustlerWaists adds the "hustler_waists" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerWaists(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerWaistIDs(ids...)
+}
+
+// AddHustlerFeetIDs adds the "hustler_feet" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerFeetIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerFeetIDs(ids...)
+	return iuo
+}
+
+// AddHustlerFeet adds the "hustler_feet" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerFeet(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerFeetIDs(ids...)
+}
+
+// AddHustlerHandIDs adds the "hustler_hands" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerHandIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerHandIDs(ids...)
+	return iuo
+}
+
+// AddHustlerHands adds the "hustler_hands" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerHands(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerHandIDs(ids...)
+}
+
+// AddHustlerDrugIDs adds the "hustler_drugs" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerDrugIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerDrugIDs(ids...)
+	return iuo
+}
+
+// AddHustlerDrugs adds the "hustler_drugs" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerDrugs(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerDrugIDs(ids...)
+}
+
+// AddHustlerNeckIDs adds the "hustler_necks" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerNeckIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerNeckIDs(ids...)
+	return iuo
+}
+
+// AddHustlerNecks adds the "hustler_necks" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerNecks(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerNeckIDs(ids...)
+}
+
+// AddHustlerRingIDs adds the "hustler_rings" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerRingIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerRingIDs(ids...)
+	return iuo
+}
+
+// AddHustlerRings adds the "hustler_rings" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerRings(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerRingIDs(ids...)
+}
+
+// AddHustlerAccessoryIDs adds the "hustler_accessories" edge to the Hustler entity by IDs.
+func (iuo *ItemUpdateOne) AddHustlerAccessoryIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.AddHustlerAccessoryIDs(ids...)
+	return iuo
+}
+
+// AddHustlerAccessories adds the "hustler_accessories" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) AddHustlerAccessories(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.AddHustlerAccessoryIDs(ids...)
 }
 
 // SetBaseID sets the "base" edge to the Item entity by ID.
@@ -756,12 +1727,6 @@ func (iuo *ItemUpdateOne) RemoveWallets(w ...*WalletItems) *ItemUpdateOne {
 	return iuo.RemoveWalletIDs(ids...)
 }
 
-// ClearHustler clears the "hustler" edge to the Hustler entity.
-func (iuo *ItemUpdateOne) ClearHustler() *ItemUpdateOne {
-	iuo.mutation.ClearHustler()
-	return iuo
-}
-
 // ClearDopes clears all "dopes" edges to the Dope entity.
 func (iuo *ItemUpdateOne) ClearDopes() *ItemUpdateOne {
 	iuo.mutation.ClearDopes()
@@ -781,6 +1746,216 @@ func (iuo *ItemUpdateOne) RemoveDopes(d ...*Dope) *ItemUpdateOne {
 		ids[i] = d[i].ID
 	}
 	return iuo.RemoveDopeIDs(ids...)
+}
+
+// ClearHustlerWeapons clears all "hustler_weapons" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerWeapons() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerWeapons()
+	return iuo
+}
+
+// RemoveHustlerWeaponIDs removes the "hustler_weapons" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerWeaponIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerWeaponIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerWeapons removes "hustler_weapons" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerWeapons(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerWeaponIDs(ids...)
+}
+
+// ClearHustlerClothes clears all "hustler_clothes" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerClothes() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerClothes()
+	return iuo
+}
+
+// RemoveHustlerClotheIDs removes the "hustler_clothes" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerClotheIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerClotheIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerClothes removes "hustler_clothes" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerClothes(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerClotheIDs(ids...)
+}
+
+// ClearHustlerVehicles clears all "hustler_vehicles" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerVehicles() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerVehicles()
+	return iuo
+}
+
+// RemoveHustlerVehicleIDs removes the "hustler_vehicles" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerVehicleIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerVehicleIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerVehicles removes "hustler_vehicles" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerVehicles(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerVehicleIDs(ids...)
+}
+
+// ClearHustlerWaists clears all "hustler_waists" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerWaists() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerWaists()
+	return iuo
+}
+
+// RemoveHustlerWaistIDs removes the "hustler_waists" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerWaistIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerWaistIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerWaists removes "hustler_waists" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerWaists(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerWaistIDs(ids...)
+}
+
+// ClearHustlerFeet clears all "hustler_feet" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerFeet() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerFeet()
+	return iuo
+}
+
+// RemoveHustlerFeetIDs removes the "hustler_feet" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerFeetIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerFeetIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerFeet removes "hustler_feet" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerFeet(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerFeetIDs(ids...)
+}
+
+// ClearHustlerHands clears all "hustler_hands" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerHands() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerHands()
+	return iuo
+}
+
+// RemoveHustlerHandIDs removes the "hustler_hands" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerHandIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerHandIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerHands removes "hustler_hands" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerHands(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerHandIDs(ids...)
+}
+
+// ClearHustlerDrugs clears all "hustler_drugs" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerDrugs() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerDrugs()
+	return iuo
+}
+
+// RemoveHustlerDrugIDs removes the "hustler_drugs" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerDrugIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerDrugIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerDrugs removes "hustler_drugs" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerDrugs(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerDrugIDs(ids...)
+}
+
+// ClearHustlerNecks clears all "hustler_necks" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerNecks() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerNecks()
+	return iuo
+}
+
+// RemoveHustlerNeckIDs removes the "hustler_necks" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerNeckIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerNeckIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerNecks removes "hustler_necks" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerNecks(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerNeckIDs(ids...)
+}
+
+// ClearHustlerRings clears all "hustler_rings" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerRings() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerRings()
+	return iuo
+}
+
+// RemoveHustlerRingIDs removes the "hustler_rings" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerRingIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerRingIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerRings removes "hustler_rings" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerRings(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerRingIDs(ids...)
+}
+
+// ClearHustlerAccessories clears all "hustler_accessories" edges to the Hustler entity.
+func (iuo *ItemUpdateOne) ClearHustlerAccessories() *ItemUpdateOne {
+	iuo.mutation.ClearHustlerAccessories()
+	return iuo
+}
+
+// RemoveHustlerAccessoryIDs removes the "hustler_accessories" edge to Hustler entities by IDs.
+func (iuo *ItemUpdateOne) RemoveHustlerAccessoryIDs(ids ...string) *ItemUpdateOne {
+	iuo.mutation.RemoveHustlerAccessoryIDs(ids...)
+	return iuo
+}
+
+// RemoveHustlerAccessories removes "hustler_accessories" edges to Hustler entities.
+func (iuo *ItemUpdateOne) RemoveHustlerAccessories(h ...*Hustler) *ItemUpdateOne {
+	ids := make([]string, len(h))
+	for i := range h {
+		ids[i] = h[i].ID
+	}
+	return iuo.RemoveHustlerAccessoryIDs(ids...)
 }
 
 // ClearBase clears the "base" edge to the Item entity.
@@ -1010,41 +2185,6 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if iuo.mutation.HustlerCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   item.HustlerTable,
-			Columns: []string{item.HustlerColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := iuo.mutation.HustlerIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   item.HustlerTable,
-			Columns: []string{item.HustlerColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if iuo.mutation.DopesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -1091,6 +2231,546 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: dope.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerWeaponsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWeaponsTable,
+			Columns: []string{item.HustlerWeaponsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerWeaponsIDs(); len(nodes) > 0 && !iuo.mutation.HustlerWeaponsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWeaponsTable,
+			Columns: []string{item.HustlerWeaponsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerWeaponsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWeaponsTable,
+			Columns: []string{item.HustlerWeaponsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerClothesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerClothesTable,
+			Columns: []string{item.HustlerClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerClothesIDs(); len(nodes) > 0 && !iuo.mutation.HustlerClothesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerClothesTable,
+			Columns: []string{item.HustlerClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerClothesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerClothesTable,
+			Columns: []string{item.HustlerClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerVehiclesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerVehiclesTable,
+			Columns: []string{item.HustlerVehiclesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerVehiclesIDs(); len(nodes) > 0 && !iuo.mutation.HustlerVehiclesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerVehiclesTable,
+			Columns: []string{item.HustlerVehiclesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerVehiclesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerVehiclesTable,
+			Columns: []string{item.HustlerVehiclesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerWaistsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWaistsTable,
+			Columns: []string{item.HustlerWaistsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerWaistsIDs(); len(nodes) > 0 && !iuo.mutation.HustlerWaistsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWaistsTable,
+			Columns: []string{item.HustlerWaistsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerWaistsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerWaistsTable,
+			Columns: []string{item.HustlerWaistsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerFeetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerFeetTable,
+			Columns: []string{item.HustlerFeetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerFeetIDs(); len(nodes) > 0 && !iuo.mutation.HustlerFeetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerFeetTable,
+			Columns: []string{item.HustlerFeetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerFeetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerFeetTable,
+			Columns: []string{item.HustlerFeetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerHandsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerHandsTable,
+			Columns: []string{item.HustlerHandsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerHandsIDs(); len(nodes) > 0 && !iuo.mutation.HustlerHandsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerHandsTable,
+			Columns: []string{item.HustlerHandsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerHandsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerHandsTable,
+			Columns: []string{item.HustlerHandsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerDrugsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerDrugsTable,
+			Columns: []string{item.HustlerDrugsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerDrugsIDs(); len(nodes) > 0 && !iuo.mutation.HustlerDrugsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerDrugsTable,
+			Columns: []string{item.HustlerDrugsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerDrugsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerDrugsTable,
+			Columns: []string{item.HustlerDrugsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerNecksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerNecksTable,
+			Columns: []string{item.HustlerNecksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerNecksIDs(); len(nodes) > 0 && !iuo.mutation.HustlerNecksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerNecksTable,
+			Columns: []string{item.HustlerNecksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerNecksIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerNecksTable,
+			Columns: []string{item.HustlerNecksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerRingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerRingsTable,
+			Columns: []string{item.HustlerRingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerRingsIDs(); len(nodes) > 0 && !iuo.mutation.HustlerRingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerRingsTable,
+			Columns: []string{item.HustlerRingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerRingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerRingsTable,
+			Columns: []string{item.HustlerRingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.HustlerAccessoriesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerAccessoriesTable,
+			Columns: []string{item.HustlerAccessoriesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.RemovedHustlerAccessoriesIDs(); len(nodes) > 0 && !iuo.mutation.HustlerAccessoriesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerAccessoriesTable,
+			Columns: []string{item.HustlerAccessoriesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.HustlerAccessoriesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   item.HustlerAccessoriesTable,
+			Columns: []string{item.HustlerAccessoriesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: hustler.FieldID,
 				},
 			},
 		}

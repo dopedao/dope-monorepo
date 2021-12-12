@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -29,12 +28,21 @@ type HustlerQuery struct {
 	fields     []string
 	predicates []predicate.Hustler
 	// eager-loading edges.
-	withWallet *WalletQuery
-	withItems  *ItemQuery
-	withBody   *BodyPartQuery
-	withHair   *BodyPartQuery
-	withBeard  *BodyPartQuery
-	withFKs    bool
+	withWallet    *WalletQuery
+	withWeapon    *ItemQuery
+	withClothes   *ItemQuery
+	withVehicle   *ItemQuery
+	withWaist     *ItemQuery
+	withFoot      *ItemQuery
+	withHand      *ItemQuery
+	withDrug      *ItemQuery
+	withNeck      *ItemQuery
+	withRing      *ItemQuery
+	withAccessory *ItemQuery
+	withBody      *BodyPartQuery
+	withHair      *BodyPartQuery
+	withBeard     *BodyPartQuery
+	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -93,8 +101,8 @@ func (hq *HustlerQuery) QueryWallet() *WalletQuery {
 	return query
 }
 
-// QueryItems chains the current query on the "items" edge.
-func (hq *HustlerQuery) QueryItems() *ItemQuery {
+// QueryWeapon chains the current query on the "weapon" edge.
+func (hq *HustlerQuery) QueryWeapon() *ItemQuery {
 	query := &ItemQuery{config: hq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := hq.prepareQuery(ctx); err != nil {
@@ -107,7 +115,205 @@ func (hq *HustlerQuery) QueryItems() *ItemQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
 			sqlgraph.To(item.Table, item.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, hustler.ItemsTable, hustler.ItemsColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.WeaponTable, hustler.WeaponColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryClothes chains the current query on the "clothes" edge.
+func (hq *HustlerQuery) QueryClothes() *ItemQuery {
+	query := &ItemQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.ClothesTable, hustler.ClothesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryVehicle chains the current query on the "vehicle" edge.
+func (hq *HustlerQuery) QueryVehicle() *ItemQuery {
+	query := &ItemQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.VehicleTable, hustler.VehicleColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryWaist chains the current query on the "waist" edge.
+func (hq *HustlerQuery) QueryWaist() *ItemQuery {
+	query := &ItemQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.WaistTable, hustler.WaistColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryFoot chains the current query on the "foot" edge.
+func (hq *HustlerQuery) QueryFoot() *ItemQuery {
+	query := &ItemQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.FootTable, hustler.FootColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryHand chains the current query on the "hand" edge.
+func (hq *HustlerQuery) QueryHand() *ItemQuery {
+	query := &ItemQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.HandTable, hustler.HandColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDrug chains the current query on the "drug" edge.
+func (hq *HustlerQuery) QueryDrug() *ItemQuery {
+	query := &ItemQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.DrugTable, hustler.DrugColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryNeck chains the current query on the "neck" edge.
+func (hq *HustlerQuery) QueryNeck() *ItemQuery {
+	query := &ItemQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.NeckTable, hustler.NeckColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryRing chains the current query on the "ring" edge.
+func (hq *HustlerQuery) QueryRing() *ItemQuery {
+	query := &ItemQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.RingTable, hustler.RingColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAccessory chains the current query on the "accessory" edge.
+func (hq *HustlerQuery) QueryAccessory() *ItemQuery {
+	query := &ItemQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, hustler.AccessoryTable, hustler.AccessoryColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
 		return fromU, nil
@@ -357,16 +563,25 @@ func (hq *HustlerQuery) Clone() *HustlerQuery {
 		return nil
 	}
 	return &HustlerQuery{
-		config:     hq.config,
-		limit:      hq.limit,
-		offset:     hq.offset,
-		order:      append([]OrderFunc{}, hq.order...),
-		predicates: append([]predicate.Hustler{}, hq.predicates...),
-		withWallet: hq.withWallet.Clone(),
-		withItems:  hq.withItems.Clone(),
-		withBody:   hq.withBody.Clone(),
-		withHair:   hq.withHair.Clone(),
-		withBeard:  hq.withBeard.Clone(),
+		config:        hq.config,
+		limit:         hq.limit,
+		offset:        hq.offset,
+		order:         append([]OrderFunc{}, hq.order...),
+		predicates:    append([]predicate.Hustler{}, hq.predicates...),
+		withWallet:    hq.withWallet.Clone(),
+		withWeapon:    hq.withWeapon.Clone(),
+		withClothes:   hq.withClothes.Clone(),
+		withVehicle:   hq.withVehicle.Clone(),
+		withWaist:     hq.withWaist.Clone(),
+		withFoot:      hq.withFoot.Clone(),
+		withHand:      hq.withHand.Clone(),
+		withDrug:      hq.withDrug.Clone(),
+		withNeck:      hq.withNeck.Clone(),
+		withRing:      hq.withRing.Clone(),
+		withAccessory: hq.withAccessory.Clone(),
+		withBody:      hq.withBody.Clone(),
+		withHair:      hq.withHair.Clone(),
+		withBeard:     hq.withBeard.Clone(),
 		// clone intermediate query.
 		sql:  hq.sql.Clone(),
 		path: hq.path,
@@ -384,14 +599,113 @@ func (hq *HustlerQuery) WithWallet(opts ...func(*WalletQuery)) *HustlerQuery {
 	return hq
 }
 
-// WithItems tells the query-builder to eager-load the nodes that are connected to
-// the "items" edge. The optional arguments are used to configure the query builder of the edge.
-func (hq *HustlerQuery) WithItems(opts ...func(*ItemQuery)) *HustlerQuery {
+// WithWeapon tells the query-builder to eager-load the nodes that are connected to
+// the "weapon" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithWeapon(opts ...func(*ItemQuery)) *HustlerQuery {
 	query := &ItemQuery{config: hq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	hq.withItems = query
+	hq.withWeapon = query
+	return hq
+}
+
+// WithClothes tells the query-builder to eager-load the nodes that are connected to
+// the "clothes" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithClothes(opts ...func(*ItemQuery)) *HustlerQuery {
+	query := &ItemQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withClothes = query
+	return hq
+}
+
+// WithVehicle tells the query-builder to eager-load the nodes that are connected to
+// the "vehicle" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithVehicle(opts ...func(*ItemQuery)) *HustlerQuery {
+	query := &ItemQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withVehicle = query
+	return hq
+}
+
+// WithWaist tells the query-builder to eager-load the nodes that are connected to
+// the "waist" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithWaist(opts ...func(*ItemQuery)) *HustlerQuery {
+	query := &ItemQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withWaist = query
+	return hq
+}
+
+// WithFoot tells the query-builder to eager-load the nodes that are connected to
+// the "foot" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithFoot(opts ...func(*ItemQuery)) *HustlerQuery {
+	query := &ItemQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withFoot = query
+	return hq
+}
+
+// WithHand tells the query-builder to eager-load the nodes that are connected to
+// the "hand" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithHand(opts ...func(*ItemQuery)) *HustlerQuery {
+	query := &ItemQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withHand = query
+	return hq
+}
+
+// WithDrug tells the query-builder to eager-load the nodes that are connected to
+// the "drug" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithDrug(opts ...func(*ItemQuery)) *HustlerQuery {
+	query := &ItemQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withDrug = query
+	return hq
+}
+
+// WithNeck tells the query-builder to eager-load the nodes that are connected to
+// the "neck" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithNeck(opts ...func(*ItemQuery)) *HustlerQuery {
+	query := &ItemQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withNeck = query
+	return hq
+}
+
+// WithRing tells the query-builder to eager-load the nodes that are connected to
+// the "ring" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithRing(opts ...func(*ItemQuery)) *HustlerQuery {
+	query := &ItemQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withRing = query
+	return hq
+}
+
+// WithAccessory tells the query-builder to eager-load the nodes that are connected to
+// the "accessory" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithAccessory(opts ...func(*ItemQuery)) *HustlerQuery {
+	query := &ItemQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withAccessory = query
 	return hq
 }
 
@@ -494,15 +808,24 @@ func (hq *HustlerQuery) sqlAll(ctx context.Context) ([]*Hustler, error) {
 		nodes       = []*Hustler{}
 		withFKs     = hq.withFKs
 		_spec       = hq.querySpec()
-		loadedTypes = [5]bool{
+		loadedTypes = [14]bool{
 			hq.withWallet != nil,
-			hq.withItems != nil,
+			hq.withWeapon != nil,
+			hq.withClothes != nil,
+			hq.withVehicle != nil,
+			hq.withWaist != nil,
+			hq.withFoot != nil,
+			hq.withHand != nil,
+			hq.withDrug != nil,
+			hq.withNeck != nil,
+			hq.withRing != nil,
+			hq.withAccessory != nil,
 			hq.withBody != nil,
 			hq.withHair != nil,
 			hq.withBeard != nil,
 		}
 	)
-	if hq.withWallet != nil || hq.withBody != nil || hq.withHair != nil || hq.withBeard != nil {
+	if hq.withWallet != nil || hq.withWeapon != nil || hq.withClothes != nil || hq.withVehicle != nil || hq.withWaist != nil || hq.withFoot != nil || hq.withHand != nil || hq.withDrug != nil || hq.withNeck != nil || hq.withRing != nil || hq.withAccessory != nil || hq.withBody != nil || hq.withHair != nil || hq.withBeard != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -557,32 +880,293 @@ func (hq *HustlerQuery) sqlAll(ctx context.Context) ([]*Hustler, error) {
 		}
 	}
 
-	if query := hq.withItems; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[string]*Hustler)
+	if query := hq.withWeapon; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
 		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.Items = []*Item{}
+			if nodes[i].item_hustler_weapons == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_weapons
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
 		}
-		query.withFKs = true
-		query.Where(predicate.Item(func(s *sql.Selector) {
-			s.Where(sql.InValues(hustler.ItemsColumn, fks...))
-		}))
+		query.Where(item.IDIn(ids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.hustler_items
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "hustler_items" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
+			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "hustler_items" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_weapons" returned %v`, n.ID)
 			}
-			node.Edges.Items = append(node.Edges.Items, n)
+			for i := range nodes {
+				nodes[i].Edges.Weapon = n
+			}
+		}
+	}
+
+	if query := hq.withClothes; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].item_hustler_clothes == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_clothes
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_clothes" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Clothes = n
+			}
+		}
+	}
+
+	if query := hq.withVehicle; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].item_hustler_vehicles == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_vehicles
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_vehicles" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Vehicle = n
+			}
+		}
+	}
+
+	if query := hq.withWaist; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].item_hustler_waists == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_waists
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_waists" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Waist = n
+			}
+		}
+	}
+
+	if query := hq.withFoot; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].item_hustler_feet == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_feet
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_feet" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Foot = n
+			}
+		}
+	}
+
+	if query := hq.withHand; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].item_hustler_hands == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_hands
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_hands" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Hand = n
+			}
+		}
+	}
+
+	if query := hq.withDrug; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].item_hustler_drugs == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_drugs
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_drugs" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Drug = n
+			}
+		}
+	}
+
+	if query := hq.withNeck; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].item_hustler_necks == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_necks
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_necks" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Neck = n
+			}
+		}
+	}
+
+	if query := hq.withRing; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].item_hustler_rings == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_rings
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_rings" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Ring = n
+			}
+		}
+	}
+
+	if query := hq.withAccessory; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Hustler)
+		for i := range nodes {
+			if nodes[i].item_hustler_accessories == nil {
+				continue
+			}
+			fk := *nodes[i].item_hustler_accessories
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(item.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_hustler_accessories" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Accessory = n
+			}
 		}
 	}
 

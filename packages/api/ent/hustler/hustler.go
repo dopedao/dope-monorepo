@@ -35,8 +35,26 @@ const (
 	FieldSvg = "svg"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
 	EdgeWallet = "wallet"
-	// EdgeItems holds the string denoting the items edge name in mutations.
-	EdgeItems = "items"
+	// EdgeWeapon holds the string denoting the weapon edge name in mutations.
+	EdgeWeapon = "weapon"
+	// EdgeClothes holds the string denoting the clothes edge name in mutations.
+	EdgeClothes = "clothes"
+	// EdgeVehicle holds the string denoting the vehicle edge name in mutations.
+	EdgeVehicle = "vehicle"
+	// EdgeWaist holds the string denoting the waist edge name in mutations.
+	EdgeWaist = "waist"
+	// EdgeFoot holds the string denoting the foot edge name in mutations.
+	EdgeFoot = "foot"
+	// EdgeHand holds the string denoting the hand edge name in mutations.
+	EdgeHand = "hand"
+	// EdgeDrug holds the string denoting the drug edge name in mutations.
+	EdgeDrug = "drug"
+	// EdgeNeck holds the string denoting the neck edge name in mutations.
+	EdgeNeck = "neck"
+	// EdgeRing holds the string denoting the ring edge name in mutations.
+	EdgeRing = "ring"
+	// EdgeAccessory holds the string denoting the accessory edge name in mutations.
+	EdgeAccessory = "accessory"
 	// EdgeBody holds the string denoting the body edge name in mutations.
 	EdgeBody = "body"
 	// EdgeHair holds the string denoting the hair edge name in mutations.
@@ -52,13 +70,76 @@ const (
 	WalletInverseTable = "wallets"
 	// WalletColumn is the table column denoting the wallet relation/edge.
 	WalletColumn = "wallet_hustlers"
-	// ItemsTable is the table that holds the items relation/edge.
-	ItemsTable = "items"
-	// ItemsInverseTable is the table name for the Item entity.
+	// WeaponTable is the table that holds the weapon relation/edge.
+	WeaponTable = "hustlers"
+	// WeaponInverseTable is the table name for the Item entity.
 	// It exists in this package in order to avoid circular dependency with the "item" package.
-	ItemsInverseTable = "items"
-	// ItemsColumn is the table column denoting the items relation/edge.
-	ItemsColumn = "hustler_items"
+	WeaponInverseTable = "items"
+	// WeaponColumn is the table column denoting the weapon relation/edge.
+	WeaponColumn = "item_hustler_weapons"
+	// ClothesTable is the table that holds the clothes relation/edge.
+	ClothesTable = "hustlers"
+	// ClothesInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	ClothesInverseTable = "items"
+	// ClothesColumn is the table column denoting the clothes relation/edge.
+	ClothesColumn = "item_hustler_clothes"
+	// VehicleTable is the table that holds the vehicle relation/edge.
+	VehicleTable = "hustlers"
+	// VehicleInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	VehicleInverseTable = "items"
+	// VehicleColumn is the table column denoting the vehicle relation/edge.
+	VehicleColumn = "item_hustler_vehicles"
+	// WaistTable is the table that holds the waist relation/edge.
+	WaistTable = "hustlers"
+	// WaistInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	WaistInverseTable = "items"
+	// WaistColumn is the table column denoting the waist relation/edge.
+	WaistColumn = "item_hustler_waists"
+	// FootTable is the table that holds the foot relation/edge.
+	FootTable = "hustlers"
+	// FootInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	FootInverseTable = "items"
+	// FootColumn is the table column denoting the foot relation/edge.
+	FootColumn = "item_hustler_feet"
+	// HandTable is the table that holds the hand relation/edge.
+	HandTable = "hustlers"
+	// HandInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	HandInverseTable = "items"
+	// HandColumn is the table column denoting the hand relation/edge.
+	HandColumn = "item_hustler_hands"
+	// DrugTable is the table that holds the drug relation/edge.
+	DrugTable = "hustlers"
+	// DrugInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	DrugInverseTable = "items"
+	// DrugColumn is the table column denoting the drug relation/edge.
+	DrugColumn = "item_hustler_drugs"
+	// NeckTable is the table that holds the neck relation/edge.
+	NeckTable = "hustlers"
+	// NeckInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	NeckInverseTable = "items"
+	// NeckColumn is the table column denoting the neck relation/edge.
+	NeckColumn = "item_hustler_necks"
+	// RingTable is the table that holds the ring relation/edge.
+	RingTable = "hustlers"
+	// RingInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	RingInverseTable = "items"
+	// RingColumn is the table column denoting the ring relation/edge.
+	RingColumn = "item_hustler_rings"
+	// AccessoryTable is the table that holds the accessory relation/edge.
+	AccessoryTable = "hustlers"
+	// AccessoryInverseTable is the table name for the Item entity.
+	// It exists in this package in order to avoid circular dependency with the "item" package.
+	AccessoryInverseTable = "items"
+	// AccessoryColumn is the table column denoting the accessory relation/edge.
+	AccessoryColumn = "item_hustler_accessories"
 	// BodyTable is the table that holds the body relation/edge.
 	BodyTable = "hustlers"
 	// BodyInverseTable is the table name for the BodyPart entity.
@@ -103,6 +184,16 @@ var ForeignKeys = []string{
 	"body_part_hustler_bodies",
 	"body_part_hustler_hairs",
 	"body_part_hustler_beards",
+	"item_hustler_weapons",
+	"item_hustler_clothes",
+	"item_hustler_vehicles",
+	"item_hustler_waists",
+	"item_hustler_feet",
+	"item_hustler_hands",
+	"item_hustler_drugs",
+	"item_hustler_necks",
+	"item_hustler_rings",
+	"item_hustler_accessories",
 	"wallet_hustlers",
 }
 

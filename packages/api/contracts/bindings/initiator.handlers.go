@@ -20,6 +20,7 @@ type InitiatorProcessor interface {
 	Setup(address common.Address, eth interface {
 		ethereum.ChainReader
 		ethereum.ChainStateReader
+		ethereum.TransactionReader
 		bind.ContractBackend
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
@@ -38,6 +39,7 @@ type UnimplementedInitiatorProcessor struct {
 	Eth      interface {
 		ethereum.ChainReader
 		ethereum.ChainStateReader
+		ethereum.TransactionReader
 		bind.ContractBackend
 	}
 }
@@ -45,6 +47,7 @@ type UnimplementedInitiatorProcessor struct {
 func (h *UnimplementedInitiatorProcessor) Setup(address common.Address, eth interface {
 	ethereum.ChainReader
 	ethereum.ChainStateReader
+	ethereum.TransactionReader
 	bind.ContractBackend
 }) error {
 	contract, err := NewInitiator(address, eth)

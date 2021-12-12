@@ -158,19 +158,194 @@ func (hc *HustlerCreate) SetWallet(w *Wallet) *HustlerCreate {
 	return hc.SetWalletID(w.ID)
 }
 
-// AddItemIDs adds the "items" edge to the Item entity by IDs.
-func (hc *HustlerCreate) AddItemIDs(ids ...string) *HustlerCreate {
-	hc.mutation.AddItemIDs(ids...)
+// SetWeaponID sets the "weapon" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetWeaponID(id string) *HustlerCreate {
+	hc.mutation.SetWeaponID(id)
 	return hc
 }
 
-// AddItems adds the "items" edges to the Item entity.
-func (hc *HustlerCreate) AddItems(i ...*Item) *HustlerCreate {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+// SetNillableWeaponID sets the "weapon" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableWeaponID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetWeaponID(*id)
 	}
-	return hc.AddItemIDs(ids...)
+	return hc
+}
+
+// SetWeapon sets the "weapon" edge to the Item entity.
+func (hc *HustlerCreate) SetWeapon(i *Item) *HustlerCreate {
+	return hc.SetWeaponID(i.ID)
+}
+
+// SetClothesID sets the "clothes" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetClothesID(id string) *HustlerCreate {
+	hc.mutation.SetClothesID(id)
+	return hc
+}
+
+// SetNillableClothesID sets the "clothes" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableClothesID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetClothesID(*id)
+	}
+	return hc
+}
+
+// SetClothes sets the "clothes" edge to the Item entity.
+func (hc *HustlerCreate) SetClothes(i *Item) *HustlerCreate {
+	return hc.SetClothesID(i.ID)
+}
+
+// SetVehicleID sets the "vehicle" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetVehicleID(id string) *HustlerCreate {
+	hc.mutation.SetVehicleID(id)
+	return hc
+}
+
+// SetNillableVehicleID sets the "vehicle" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableVehicleID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetVehicleID(*id)
+	}
+	return hc
+}
+
+// SetVehicle sets the "vehicle" edge to the Item entity.
+func (hc *HustlerCreate) SetVehicle(i *Item) *HustlerCreate {
+	return hc.SetVehicleID(i.ID)
+}
+
+// SetWaistID sets the "waist" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetWaistID(id string) *HustlerCreate {
+	hc.mutation.SetWaistID(id)
+	return hc
+}
+
+// SetNillableWaistID sets the "waist" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableWaistID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetWaistID(*id)
+	}
+	return hc
+}
+
+// SetWaist sets the "waist" edge to the Item entity.
+func (hc *HustlerCreate) SetWaist(i *Item) *HustlerCreate {
+	return hc.SetWaistID(i.ID)
+}
+
+// SetFootID sets the "foot" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetFootID(id string) *HustlerCreate {
+	hc.mutation.SetFootID(id)
+	return hc
+}
+
+// SetNillableFootID sets the "foot" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableFootID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetFootID(*id)
+	}
+	return hc
+}
+
+// SetFoot sets the "foot" edge to the Item entity.
+func (hc *HustlerCreate) SetFoot(i *Item) *HustlerCreate {
+	return hc.SetFootID(i.ID)
+}
+
+// SetHandID sets the "hand" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetHandID(id string) *HustlerCreate {
+	hc.mutation.SetHandID(id)
+	return hc
+}
+
+// SetNillableHandID sets the "hand" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableHandID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetHandID(*id)
+	}
+	return hc
+}
+
+// SetHand sets the "hand" edge to the Item entity.
+func (hc *HustlerCreate) SetHand(i *Item) *HustlerCreate {
+	return hc.SetHandID(i.ID)
+}
+
+// SetDrugID sets the "drug" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetDrugID(id string) *HustlerCreate {
+	hc.mutation.SetDrugID(id)
+	return hc
+}
+
+// SetNillableDrugID sets the "drug" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableDrugID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetDrugID(*id)
+	}
+	return hc
+}
+
+// SetDrug sets the "drug" edge to the Item entity.
+func (hc *HustlerCreate) SetDrug(i *Item) *HustlerCreate {
+	return hc.SetDrugID(i.ID)
+}
+
+// SetNeckID sets the "neck" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetNeckID(id string) *HustlerCreate {
+	hc.mutation.SetNeckID(id)
+	return hc
+}
+
+// SetNillableNeckID sets the "neck" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableNeckID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetNeckID(*id)
+	}
+	return hc
+}
+
+// SetNeck sets the "neck" edge to the Item entity.
+func (hc *HustlerCreate) SetNeck(i *Item) *HustlerCreate {
+	return hc.SetNeckID(i.ID)
+}
+
+// SetRingID sets the "ring" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetRingID(id string) *HustlerCreate {
+	hc.mutation.SetRingID(id)
+	return hc
+}
+
+// SetNillableRingID sets the "ring" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableRingID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetRingID(*id)
+	}
+	return hc
+}
+
+// SetRing sets the "ring" edge to the Item entity.
+func (hc *HustlerCreate) SetRing(i *Item) *HustlerCreate {
+	return hc.SetRingID(i.ID)
+}
+
+// SetAccessoryID sets the "accessory" edge to the Item entity by ID.
+func (hc *HustlerCreate) SetAccessoryID(id string) *HustlerCreate {
+	hc.mutation.SetAccessoryID(id)
+	return hc
+}
+
+// SetNillableAccessoryID sets the "accessory" edge to the Item entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableAccessoryID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetAccessoryID(*id)
+	}
+	return hc
+}
+
+// SetAccessory sets the "accessory" edge to the Item entity.
+func (hc *HustlerCreate) SetAccessory(i *Item) *HustlerCreate {
+	return hc.SetAccessoryID(i.ID)
 }
 
 // SetBodyID sets the "body" edge to the BodyPart entity by ID.
@@ -479,12 +654,12 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 		_node.wallet_hustlers = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := hc.mutation.ItemsIDs(); len(nodes) > 0 {
+	if nodes := hc.mutation.WeaponIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   hustler.ItemsTable,
-			Columns: []string{hustler.ItemsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WeaponTable,
+			Columns: []string{hustler.WeaponColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -496,6 +671,187 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.item_hustler_weapons = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.ClothesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.ClothesTable,
+			Columns: []string{hustler.ClothesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_hustler_clothes = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.VehicleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.VehicleTable,
+			Columns: []string{hustler.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_hustler_vehicles = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.WaistIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.WaistTable,
+			Columns: []string{hustler.WaistColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_hustler_waists = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.FootIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.FootTable,
+			Columns: []string{hustler.FootColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_hustler_feet = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.HandIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.HandTable,
+			Columns: []string{hustler.HandColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_hustler_hands = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.DrugIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.DrugTable,
+			Columns: []string{hustler.DrugColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_hustler_drugs = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.NeckIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.NeckTable,
+			Columns: []string{hustler.NeckColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_hustler_necks = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.RingIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.RingTable,
+			Columns: []string{hustler.RingColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_hustler_rings = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.AccessoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   hustler.AccessoryTable,
+			Columns: []string{hustler.AccessoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.item_hustler_accessories = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := hc.mutation.BodyIDs(); len(nodes) > 0 {
