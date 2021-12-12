@@ -15,6 +15,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	solsha3 "github.com/miguelmota/go-solidity-sha3"
 )
@@ -27,8 +28,47 @@ const (
 	Beard      uint8 = 4
 )
 
+var (
+	componentsAddr = common.HexToAddress("0xe03C4eb2a0a797766a5DB708172e04f6A970DC7f")
+	hustlerAddr    = common.HexToAddress("0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E")
+
+	viewboxSlot   = big.NewInt(1)
+	bodySlot      = big.NewInt(2)
+	orderSlot     = big.NewInt(3)
+	weaponSlot    = big.NewInt(5)
+	clothesSlot   = big.NewInt(6)
+	vehicleSlot   = big.NewInt(7)
+	waistSlot     = big.NewInt(8)
+	footSlot      = big.NewInt(9)
+	handSlot      = big.NewInt(10)
+	drugSlot      = big.NewInt(11)
+	neckSlot      = big.NewInt(12)
+	ringSlot      = big.NewInt(13)
+	accessorySlot = big.NewInt(14)
+)
+
 type HustlerProcessor struct {
 	bindings.UnimplementedHustlerProcessor
+	components *bindings.Components
+}
+
+func (p *HustlerProcessor) Setup(address common.Address, eth interface {
+	ethereum.ChainReader
+	ethereum.ChainStateReader
+	ethereum.TransactionReader
+	bind.ContractBackend
+}) error {
+	if err := p.UnimplementedHustlerProcessor.Setup(address, eth); err != nil {
+		return err
+	}
+
+	var err error
+	p.components, err = bindings.NewComponents(componentsAddr, eth)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e *bindings.HustlerAddRles, tx *ent.Tx) error {
@@ -80,22 +120,6 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e *bindings.Hustl
 
 	return nil
 }
-
-var (
-	viewboxSlot   = big.NewInt(1)
-	bodySlot      = big.NewInt(2)
-	orderSlot     = big.NewInt(3)
-	weaponSlot    = big.NewInt(5)
-	clothesSlot   = big.NewInt(6)
-	vehicleSlot   = big.NewInt(7)
-	waistSlot     = big.NewInt(8)
-	footSlot      = big.NewInt(9)
-	handSlot      = big.NewInt(10)
-	drugSlot      = big.NewInt(11)
-	neckSlot      = big.NewInt(12)
-	ringSlot      = big.NewInt(13)
-	accessorySlot = big.NewInt(14)
-)
 
 func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *bindings.HustlerMetadataUpdate, tx *ent.Tx) error {
 	meta, err := p.Contract.Metadata(nil, e.Id)
@@ -162,25 +186,47 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *binding
 		return fmt.Errorf("getting body from storage: %w", err)
 	}
 
+	var beardID *string
 	sex := hustler.DefaultSex
 	if new(big.Int).SetBytes(bodyParts[31:32]).Uint64() == 1 {
 		sex = hustler.SexFemale
 	} else {
 		sex = hustler.SexMale
+		beardID_ := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBeard, new(big.Int).SetBytes(bodyParts[28:29]).Uint64())
+		beardID = &beardID_
 	}
 
 	bodyID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBody, new(big.Int).SetBytes(bodyParts[30:31]).Uint64())
 	hairID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeHair, new(big.Int).SetBytes(bodyParts[29:30]).Uint64())
-	beardID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBeard, new(big.Int).SetBytes(bodyParts[28:29]).Uint64())
 
-	tx.Hustler.UpdateOneID(e.Id.String()).
+	var title *string
+	typ := hustler.TypeRegular
+	if e.Id.Cmp(big.NewInt(500)) == -1 {
+		title_, err := p.components.Title(nil, e.Id)
+		if err != nil {
+			return fmt.Errorf("getting hustler title %s metadata: %w", e.Id.String(), err)
+		}
+		title = &title_
+		typ = hustler.TypeOriginalGangsta
+	}
+
+	block, err := p.Eth.BlockByNumber(ctx, new(big.Int).SetUint64(e.Raw.BlockNumber))
+	if err != nil {
+		return fmt.Errorf("updating hustler %s metadata: %w", e.Id.String(), err)
+	}
+
+	if err := tx.Hustler.Create().
+		SetID(e.Id.String()).
+		SetType(typ).
+		SetAge(block.Time()).
 		SetName(meta.Name).
 		SetBackground(hex.EncodeToString(meta.Background[:])).
 		SetColor(hex.EncodeToString(meta.Color[:])).
 		SetSex(sex).
 		SetBodyID(bodyID).
 		SetHairID(hairID).
-		SetBeardID(beardID).
+		SetNillableBeardID(beardID).
+		SetNillableTitle(title).
 		SetSvg(parsed.Image).
 		SetViewbox([]int{
 			int(new(big.Int).SetBytes(viewbox[31:32]).Int64()),
@@ -199,7 +245,12 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *binding
 			int(new(big.Int).SetBytes(order[24:25]).Int64()),
 			int(new(big.Int).SetBytes(order[23:24]).Int64()),
 			int(new(big.Int).SetBytes(order[22:23]).Int64()),
-		})
+		}).
+		OnConflictColumns(hustler.FieldID).
+		UpdateNewValues().
+		Exec(ctx); err != nil {
+		return fmt.Errorf("updating hustler %s metadata: %w", e.Id.String(), err)
+	}
 
 	return nil
 }
@@ -254,7 +305,19 @@ func (p *HustlerProcessor) ProcessTransferSingle(ctx context.Context, e *binding
 			typ = hustler.TypeOriginalGangsta
 		}
 
-		if err := tx.Hustler.Create().SetID(e.Id.String()).SetType(typ).SetAge(e.Raw.BlockNumber).Exec(ctx); err != nil {
+		block, err := p.Eth.BlockByNumber(ctx, new(big.Int).SetUint64(e.Raw.BlockNumber))
+		if err != nil {
+			return fmt.Errorf("updating hustler %s metadata: %w", e.Id.String(), err)
+		}
+
+		if err := tx.Hustler.
+			Create().
+			SetID(e.Id.String()).
+			SetType(typ).
+			SetAge(block.Time()).
+			OnConflictColumns(hustler.FieldID).
+			UpdateNewValues().
+			Exec(ctx); err != nil {
 			return fmt.Errorf("hustler: create hustler: %w", err)
 		}
 

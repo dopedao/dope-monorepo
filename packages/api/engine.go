@@ -19,7 +19,7 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-const blockLimit = 1000
+const blockLimit = 500
 
 type EthClient interface {
 	bind.ContractBackend

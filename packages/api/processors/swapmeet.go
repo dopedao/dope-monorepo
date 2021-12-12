@@ -28,8 +28,6 @@ type Metadata struct {
 	Image string `json:"image"`
 }
 
-var hustlerAddr = common.HexToAddress("0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E")
-
 func (p *SwapMeetProcessor) Setup(address common.Address, eth interface {
 	ethereum.ChainReader
 	ethereum.ChainStateReader
@@ -106,6 +104,35 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *binding
 				AddBalance(schema.BigInt{Int: e.Values[i]}).
 				Exec(ctx); err != nil {
 				return fmt.Errorf("swapmeet: upsert wallet items balance: %w", err)
+			}
+		}
+	}
+
+	// If it is not from the zero address and to the hustler contract, it is
+	// an equip to an existing hustler.
+	if e.From != (common.Address{}) && e.To == hustlerAddr {
+		hustlers, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.From.Hex())).All(ctx)
+		if err != nil {
+			return fmt.Errorf("getting user's hustlers: %w", err)
+		}
+
+		for _, h := range hustlers {
+			if err := refreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+				return err
+			}
+		}
+	}
+
+	// If from the hustler contract this is an unequip.
+	if e.From == hustlerAddr {
+		hustlers, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.To.Hex())).All(ctx)
+		if err != nil {
+			return fmt.Errorf("getting user's hustlers: %w", err)
+		}
+
+		for _, h := range hustlers {
+			if err := refreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+				return err
 			}
 		}
 	}
