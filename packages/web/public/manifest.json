@@ -1,0 +1,18 @@
+{
+    "assetRoot":"assets",
+    "totalSize":397000,
+    "assets": {
+        "image": {
+            "tiles": {
+                "file":"https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/tilesets/tuxmon-sample-32px-extruded.png",
+                "size":192000
+            }
+        },
+        "tilemapTiledJSON": {
+            "map": {
+                "file": "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/tilemaps/tuxemon-town.json",
+                "size": 205000
+            }
+        }
+    }
+}

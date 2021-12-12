@@ -20,6 +20,7 @@ type DesktopWindowProps = {
   loadingBalance?: boolean;
   children: ReactNode;
   onResize?: () => void;
+  onMoved?: (position: WindowPosition) => void;
 };
 
 const WindowWrapper = styled.div<{ width: number | string; height: number | string }>`
@@ -63,6 +64,7 @@ const DesktopWindow = ({
   titleChildren,
   children,
   onResize,
+  onMoved
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const { data, loading } = useWalletQuery({
@@ -88,6 +90,10 @@ const DesktopWindow = ({
     if (el && el.getAttribute('style')) {
       const transformValue = el.getAttribute('style') || '';
       windowPosition.updatePosition(transformValue);
+      
+      if (onMoved) {
+        onMoved(windowPosition);
+      }
     }
   };
 
