@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Boot from "game/scenes/boot";
 import GameScene from "game/scenes/game";
 import Preload from "game/scenes/preload";
