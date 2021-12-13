@@ -1,25 +1,30 @@
-# Maps a Time GraphQL scalar to a Go time.Time struct.
+"Maps a Time GraphQL scalar to a Go time.Time struct."
 scalar Time
-# Timestamp is a RFC3339 string.
+"Timestamp is a RFC3339 string."
 scalar Timestamp
-# Bytes32 is a 32 byte binary string, represented as 0x-prefixed hexadecimal.
+"Bytes32 is a 32 byte binary string, represented as 0x-prefixed hexadecimal."
 scalar Bytes32
-# Address is a 20 byte Ethereum address, represented as 0x-prefixed hexadecimal.
+"Address is a 20 byte Ethereum address, represented as 0x-prefixed hexadecimal."
 scalar Address
-# Bytes is an arbitrary length binary string, represented as 0x-prefixed hexadecimal.
-# An empty byte string is represented as '0x'. Byte strings must have an even number of hexadecimal nybbles.
+"""
+Bytes is an arbitrary length binary string, represented as 0x-prefixed hexadecimal.
+An empty byte string is represented as '0x'. Byte strings must have an even number of hexadecimal nybbles.
+"""
 scalar Bytes
-# BigInt is a large integer represented as a string.
+"BigInt is a large integer represented as a string."
 scalar BigInt
-# Long is a 64 bit unsigned integer.
+"Long is a 64 bit unsigned integer."
 scalar Long
-# AccountID is a CAIP-10 compliant account id.
+"AccountID is a CAIP-10 compliant account id."
 scalar AccountID
-# ChainID is a CAIP-2 compliant chain id.
+"ChainID is a CAIP-2 compliant chain id."
 scalar ChainID
-# AssetID is a CAIP-19 compliant asset id.
+"AssetID is a CAIP-19 compliant asset id."
 scalar AssetID
 
+"""
+ItemType represents the item slot the item belongs to.
+"""
 enum ItemType {
   WEAPON
   CLOTHES
@@ -43,6 +48,61 @@ type Item {
   augmented: Boolean
 }
 
+enum BodyPartSex {
+  MALE
+  FEMALE
+}
+
+enum BodyPartType {
+  BODY
+  HAIR
+  BEARD
+}
+
+type BodyPart {
+  id: ID!
+  type: BodyPartType!
+  sex: BodyPartSex!
+  rle: String!
+}
+
+enum HustlerType {
+  ORIGINAL_GANGSTA
+  REGULAR
+}
+
+enum HustlerSex {
+  MALE
+  FEMALE
+}
+
+type Hustler {
+  id: ID!
+  type: HustlerType!
+  name: String
+  title: String
+  color: String
+  background: String
+  age: Long!
+  sex: HustlerSex!
+  viewbox: [Int!]!
+  order: [Int!]!
+  svg: String
+  body: BodyPart
+  hair: BodyPart
+  beard: BodyPart
+  weapon: Item
+  clothes: Item
+  vehicle: Item
+  waist: Item
+  foot: Item
+  hand: Item
+  drug: Item
+  neck: Item
+  ring: Item
+  accessory: Item
+}
+
 type Dope {
   id: ID!
   items: [Item!]!
@@ -60,4 +120,5 @@ type Query {
   wallets: [Wallet!]
   dopes: [Dope!]
   items: [Item!]
+  hustlers: [Hustler!]
 }

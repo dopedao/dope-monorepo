@@ -2,5 +2,10 @@ runtime: go116
 
 main: ./packages/api/cmd
 
+instance_class: B2
+
+manual_scaling:
+  instances: 1
+
 env_variables:
   PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2

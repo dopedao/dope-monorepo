@@ -42,6 +42,18 @@ models:
   BigInt:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/schema.BigInt
+  BodyPartSex:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/bodypart.Sex
+  BodyPartType:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/bodypart.Type
   ItemType:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/item.Type
+  HustlerSex:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/hustler.Sex
+  HustlerType:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/hustler.Type

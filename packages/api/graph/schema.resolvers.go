@@ -22,6 +22,10 @@ func (r *queryResolver) Items(ctx context.Context) ([]*ent.Item, error) {
 	return r.client.Item.Query().All(ctx)
 }
 
+func (r *queryResolver) Hustlers(ctx context.Context) ([]*ent.Hustler, error) {
+	return r.client.Hustler.Query().All(ctx)
+}
+
 // Query returns generated1.QueryResolver implementation.
 func (r *Resolver) Query() generated1.QueryResolver { return &queryResolver{r} }
 
