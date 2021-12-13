@@ -1,9 +1,9 @@
 # DOPE NFT tokens with all necessary information to
 # fill our Swap Meet
 type DopeToken {
-  id: String!
-  claimed: Boolean
-  unbundled: Boolean
+  token_id: String!
+  items_unbundled: Boolean
+  paper_claimed: Boolean
   rank: Int
   open_sea_is_on_sale: Boolean
   open_sea_current_sale_price_eth: Float
