@@ -1,6 +1,6 @@
 import useHustler from 'features/hustlers/hooks/useHustler';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
-import ChevronRight from 'svg/ChevronRight';
+import ChevronRight from 'ui/svg/ChevronRight';
 import { Wrapper, Item, Button } from './styles';
 
 const STEPS = [

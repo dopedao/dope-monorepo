@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import { ReactNode } from 'react';
 
 const AppWindowNavBar = ({ children }: { children: ReactNode }) => {
@@ -42,7 +42,7 @@ const AppWindowNavBar = ({ children }: { children: ReactNode }) => {
         }
       `}
     >
-      { children }
+      {children}
     </div>
   );
 };

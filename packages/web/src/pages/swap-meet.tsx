@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useAllUnclaimedBagsQuery, useAllOpenedBagsQuery } from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';

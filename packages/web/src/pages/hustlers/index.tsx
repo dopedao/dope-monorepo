@@ -3,7 +3,7 @@ import { Button } from '@chakra-ui/react';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import { useHustlersWalletQuery } from 'generated/graphql';
 import { useOptimismClient } from 'components/EthereumApolloProvider';
 import AppWindow from 'components/AppWindow';

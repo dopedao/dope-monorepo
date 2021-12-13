@@ -1,5 +1,5 @@
 import { Button, HStack } from '@chakra-ui/react';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';

@@ -3,7 +3,7 @@ import { Alert, Button, Image, HStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import { getRandomNumber } from 'utils/utils';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import Head from 'components/Head';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 

@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import PanelContainer from 'components/PanelContainer';
-import Check from 'svg/Check';
+import Check from 'ui/svg/Check';
 
 type DopeTableProps = {
   className?: string;

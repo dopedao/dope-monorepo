@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { ChangeEvent, useEffect } from 'react';
 import { Input, Select } from '@chakra-ui/react';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import { useDebounce } from 'usehooks-ts';
 import { css } from '@emotion/react';
-import useQueryParam from 'utils/use-query-param';
 import styled from '@emotion/styled';
+import useQueryParam from 'utils/use-query-param';
 
 export const statusKeys = ['All', 'Has Unclaimed $PAPER', 'For Sale', 'Ready To Unpack'];
 

@@ -1,9 +1,8 @@
 import { css } from '@emotion/react';
 import { useRadioGroup } from '@chakra-ui/radio';
-import PanelBody from 'components/PanelBody';
-import PanelContainer from 'components/PanelContainer';
-import PanelTitleBar from 'components/PanelTitleBar';
 import PanelColorChipRadio from 'components/PanelColorChipRadio';
+import { Box } from '@chakra-ui/layout';
+import Accordion from 'ui/components/Accordion';
 
 interface ColorSelectorProps {
   changeCallback?(value: string): void;
@@ -29,9 +28,8 @@ const PanelColorSelector = ({
   const group = getRootProps();
 
   return (
-    <PanelContainer>
-      <PanelTitleBar>{title}</PanelTitleBar>
-      <PanelBody
+    <Accordion title={title}>
+      <Box
         css={css`
           display: flex;
           gap: 16px;
@@ -55,8 +53,8 @@ const PanelColorSelector = ({
               />
             );
           })}
-      </PanelBody>
-    </PanelContainer>
+      </Box>
+    </Accordion>
   );
 };
 
