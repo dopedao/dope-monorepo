@@ -9,8 +9,6 @@ import {
   NumberInputStepper,
 } from '@chakra-ui/react';
 import { HustlerInitConfig, MAX_HAIR, MAX_FACIAL_HAIR } from 'utils/HustlerConfig';
-import PanelBody from 'components/PanelBody';
-import PanelContainer from 'components/PanelContainer';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 import Accordion from 'ui/components/Accordion';
 

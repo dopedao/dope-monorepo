@@ -4,6 +4,7 @@ import { Input, HStack, FormControl, FormLabel, Checkbox, Stack } from '@chakra-
 import { FormErrorMessage } from '@chakra-ui/form-control';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 import Accordion from 'ui/components/Accordion';
+import { css } from '@emotion/react';
 
 const NAME_MAX_LENGTH = 20;
 const FIELD_SPACING = '16px';
@@ -41,7 +42,13 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
         <FormLabel htmlFor="name" color="#000" padding="0">
           Name
         </FormLabel>
-        <HStack display="flex" alignItems="center">
+        <HStack
+          display="flex"
+          alignItems="center"
+          css={css`
+            margin-top: unset !important;
+          `}
+        >
           <FormControl width="70%" mr="27px">
             <Input
               id="name"
@@ -76,7 +83,7 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
                   borderColor: '#000',
                 },
                 '[data-checked]': {
-                  borderColor: '#000',
+                  borderColor: '#000 !important',
                   borderRadius: 'unset',
                 },
               }}

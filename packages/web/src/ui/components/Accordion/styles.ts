@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
   border: 2px solid #000000;
-  margin-bottom: 16px;
+  margin-bottom: 16px !important;
+  margin-top: unset !important;
 `;
 
 export const Header = styled.div`
