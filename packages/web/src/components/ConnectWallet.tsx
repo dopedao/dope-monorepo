@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
 import { Button } from '@chakra-ui/button';
-import ConnectWalletSVG from 'svg/ConnectWallet';
+import ConnectWalletSVG from 'ui/svg/ConnectWallet';
 import Dialog from 'components/Dialog';
 import Head from './Head';
 import useWeb3Provider from 'hooks/web3';

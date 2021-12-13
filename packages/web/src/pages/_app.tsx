@@ -1,12 +1,12 @@
-import 'styles/reset.css';
+import 'ui/styles/reset.css';
 import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
 import DesktopIconList from 'components/DesktopIconList';
-import GlobalStyles from 'styles/GlobalStyles';
+import GlobalStyles from 'ui/styles/GlobalStyles';
 import PageLoadingIndicator from 'components/PageLoadingIndicator';
-import theme from 'styles/theme';
+import theme from 'ui/styles/theme';
 import EthereumApolloProvider from 'components/EthereumApolloProvider';
 
 // Error tracking and tracing from Sentry.io

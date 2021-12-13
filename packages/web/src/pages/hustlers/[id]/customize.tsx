@@ -12,7 +12,7 @@ import { CloseButton } from '@chakra-ui/close-button';
 import { css } from '@emotion/react';
 import { Maybe, useHustlerQuery, useWalletQuery } from 'generated/graphql';
 import { getRandomHustler, HustlerCustomization } from 'utils/HustlerConfig';
-import { media } from 'styles/mixins';
+import { media } from 'ui/styles/mixins';
 import { useFetchMetadata } from 'hooks/contracts';
 import { useSwitchOptimism } from 'hooks/web3';
 import { useOptimismClient } from 'components/EthereumApolloProvider';

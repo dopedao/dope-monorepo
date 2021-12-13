@@ -15,7 +15,7 @@ import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
-import Spinner from 'svg/Spinner';
+import Spinner from 'ui/svg/Spinner';
 import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
 
 export type ConfigureHustlerProps = {
@@ -122,9 +122,7 @@ const ConfigureHustler = ({
 
   return (
     <StackedResponsiveContainer>
-      <div>
-        <ConfigurationControls config={config} makeVarConfig={makeVarConfig} />
-      </div>
+      <ConfigurationControls config={config} makeVarConfig={makeVarConfig} />
       <PanelContainer
         css={css`
           min-height: 500px;
@@ -180,6 +178,7 @@ const ConfigureHustler = ({
             </Button>
             {isCustomize ? (
               <Button
+                type="button"
                 variant="primary"
                 onClick={customizeHustler}
                 isLoading={loading}
@@ -188,7 +187,7 @@ const ConfigureHustler = ({
                 {loading ? <Spinner /> : 'Save Configuration'}
               </Button>
             ) : (
-              <Button onClick={goBackToInitialStep} variant="primary">
+              <Button type="button" onClick={goBackToInitialStep} variant="primary">
                 Finish Configuration
               </Button>
             )}

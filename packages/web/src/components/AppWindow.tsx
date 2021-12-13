@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from '@emotion/styled';
-import { getBreakpointWidth } from 'styles/breakpoints';
+import { getBreakpointWidth } from 'ui/styles/breakpoints';
 import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from 'components/AppWindowFooter';
 import ConnectWallet from 'components/ConnectWallet';

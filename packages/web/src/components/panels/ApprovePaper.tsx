@@ -5,7 +5,7 @@ import { BigNumber, constants } from 'ethers';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
-import Spinner from 'svg/Spinner';
+import Spinner from 'ui/svg/Spinner';
 import { usePaper } from 'hooks/contracts';
 
 const ApprovePaper = ({

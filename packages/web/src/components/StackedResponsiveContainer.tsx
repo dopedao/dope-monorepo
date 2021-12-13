@@ -1,5 +1,5 @@
-import { media } from 'styles/mixins';
 import styled from '@emotion/styled';
+import { media } from 'ui/styles/mixins';
 
 // Contains side-by-side columns on desktop, stacked items on mobile.
 const StackedResponsiveContainer = styled.div`
