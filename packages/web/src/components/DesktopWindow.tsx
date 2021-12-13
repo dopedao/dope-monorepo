@@ -15,7 +15,7 @@ type DesktopWindowProps = {
   title: string | undefined;
   width?: number | string;
   height?: number | string;
-  fullscreenHandler?: () => void;
+  fullscreenHandler?: (fullscreen: boolean) => void;
   titleChildren?: ReactNode;
   balance?: string;
   loadingBalance?: boolean;
@@ -76,7 +76,7 @@ const DesktopWindow = ({
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const toggleFullScreen = () => (fullscreenHandler ? fullscreenHandler() : setIsFullScreen(!isFullScreen));
+  const toggleFullScreen = () => (fullscreenHandler ? fullscreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen));
   const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
