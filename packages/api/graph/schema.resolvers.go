@@ -10,6 +10,14 @@ import (
 	generated1 "github.com/dopedao/dope-monorepo/packages/api/graph/generated"
 )
 
+func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
+	return r.client.Noder(ctx, id)
+}
+
+func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, error) {
+	return r.client.Noders(ctx, ids)
+}
+
 func (r *queryResolver) Wallets(ctx context.Context) ([]*ent.Wallet, error) {
 	return r.client.Wallet.Query().All(ctx)
 }
@@ -22,8 +30,8 @@ func (r *queryResolver) Items(ctx context.Context) ([]*ent.Item, error) {
 	return r.client.Item.Query().All(ctx)
 }
 
-func (r *queryResolver) Hustlers(ctx context.Context) ([]*ent.Hustler, error) {
-	return r.client.Hustler.Query().All(ctx)
+func (r *queryResolver) Hustlers(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder) (*ent.HustlerConnection, error) {
+	return r.client.Hustler.Query().Paginate(ctx, after, first, before, last, ent.WithHustlerOrder(orderBy))
 }
 
 // Query returns generated1.QueryResolver implementation.

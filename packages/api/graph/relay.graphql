@@ -1,0 +1,40 @@
+# Define a Relay Cursor type:
+# https://relay.dev/graphql/connections.htm#sec-Cursor
+scalar Cursor
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: Cursor
+  endCursor: Cursor
+}
+
+type HustlerConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [HustlerEdge]
+}
+
+type HustlerEdge {
+  node: Hustler
+  cursor: Cursor!
+}
+
+# These enums match the entgql annotations in the ent/schema.
+enum HustlerOrderField {
+  TYPE
+  NAME
+  TITLE
+  AGE
+  SEX
+}
+
+enum OrderDirection {
+  ASC
+  DESC
+}
+
+input HustlerOrder {
+  direction: OrderDirection!
+  field: HustlerOrderField
+}

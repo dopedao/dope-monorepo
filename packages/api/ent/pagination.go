@@ -885,6 +885,105 @@ func (h *HustlerQuery) Paginate(
 	return conn, nil
 }
 
+var (
+	// HustlerOrderFieldType orders Hustler by type.
+	HustlerOrderFieldType = &HustlerOrderField{
+		field: hustler.FieldType,
+		toCursor: func(h *Hustler) Cursor {
+			return Cursor{
+				ID:    h.ID,
+				Value: h.Type,
+			}
+		},
+	}
+	// HustlerOrderFieldName orders Hustler by name.
+	HustlerOrderFieldName = &HustlerOrderField{
+		field: hustler.FieldName,
+		toCursor: func(h *Hustler) Cursor {
+			return Cursor{
+				ID:    h.ID,
+				Value: h.Name,
+			}
+		},
+	}
+	// HustlerOrderFieldTitle orders Hustler by title.
+	HustlerOrderFieldTitle = &HustlerOrderField{
+		field: hustler.FieldTitle,
+		toCursor: func(h *Hustler) Cursor {
+			return Cursor{
+				ID:    h.ID,
+				Value: h.Title,
+			}
+		},
+	}
+	// HustlerOrderFieldAge orders Hustler by age.
+	HustlerOrderFieldAge = &HustlerOrderField{
+		field: hustler.FieldAge,
+		toCursor: func(h *Hustler) Cursor {
+			return Cursor{
+				ID:    h.ID,
+				Value: h.Age,
+			}
+		},
+	}
+	// HustlerOrderFieldSex orders Hustler by sex.
+	HustlerOrderFieldSex = &HustlerOrderField{
+		field: hustler.FieldSex,
+		toCursor: func(h *Hustler) Cursor {
+			return Cursor{
+				ID:    h.ID,
+				Value: h.Sex,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f HustlerOrderField) String() string {
+	var str string
+	switch f.field {
+	case hustler.FieldType:
+		str = "TYPE"
+	case hustler.FieldName:
+		str = "NAME"
+	case hustler.FieldTitle:
+		str = "TITLE"
+	case hustler.FieldAge:
+		str = "AGE"
+	case hustler.FieldSex:
+		str = "SEX"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f HustlerOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *HustlerOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("HustlerOrderField %T must be a string", v)
+	}
+	switch str {
+	case "TYPE":
+		*f = *HustlerOrderFieldType
+	case "NAME":
+		*f = *HustlerOrderFieldName
+	case "TITLE":
+		*f = *HustlerOrderFieldTitle
+	case "AGE":
+		*f = *HustlerOrderFieldAge
+	case "SEX":
+		*f = *HustlerOrderFieldSex
+	default:
+		return fmt.Errorf("%s is not a valid HustlerOrderField", str)
+	}
+	return nil
+}
+
 // HustlerOrderField defines the ordering field of Hustler.
 type HustlerOrderField struct {
 	field    string

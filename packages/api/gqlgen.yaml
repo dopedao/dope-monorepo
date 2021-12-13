@@ -36,6 +36,9 @@ models:
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID
+  Node:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent.Noder
   Long:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/graph/model.Uint64
