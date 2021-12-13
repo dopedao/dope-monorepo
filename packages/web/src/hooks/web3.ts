@@ -238,14 +238,13 @@ const useswitchNetwork = async (
   account: string | null | undefined,
   nextChainId: 1 | 10 | 42 | 69,
   currentChainId: number | undefined,
-  forceOptimism = false,
 ) => {
   if (!account) {
-    return;
+    return null;
   }
 
-  if (currentChainId && forceOptimism && currentChainId === nextChainId) {
-    return;
+  if (currentChainId && currentChainId === nextChainId) {
+    return null;
   } else {
     if (typeof window !== 'undefined' && window.ethereum) {
       try {
@@ -271,11 +270,6 @@ const useswitchNetwork = async (
           } catch (addError) {}
         }
       }
-    } else {
-      if (typeof window !== 'undefined')
-        alert(
-          'MetaMask is not installed. Please consider installing it: https://metamask.io/download.html',
-        );
     }
   }
 };
@@ -313,7 +307,7 @@ export const useSwitchOptimism = (
   }
 
   return useMemo(
-    () => useswitchNetwork(account, optimismChainId, chainId, true),
+    () => useswitchNetwork(account, optimismChainId, chainId),
     [account, chainId, optimismChainId],
   );
 };
