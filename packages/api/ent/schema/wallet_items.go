@@ -31,7 +31,7 @@ func (WalletItems) Fields() []ent.Field {
 // Edges of the WalletItems.
 func (WalletItems) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("wallet", Wallet.Type).Ref("items").Unique(),
-		edge.From("item", Item.Type).Ref("wallets").Unique(),
+		edge.From("wallet", Wallet.Type).Ref("items").Unique().Annotations(entgql.Bind()),
+		edge.From("item", Item.Type).Ref("wallets").Unique().Annotations(entgql.Bind()),
 	}
 }

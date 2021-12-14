@@ -61,19 +61,19 @@ func (Item) Fields() []ent.Field {
 // Edges of the Item.
 func (Item) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("wallets", WalletItems.Type),
+		edge.To("wallets", WalletItems.Type).Annotations(entgql.Bind()),
 		edge.From("dopes", Dope.Type).
-			Ref("items"),
-		edge.To("hustler_weapons", Hustler.Type),
-		edge.To("hustler_clothes", Hustler.Type),
-		edge.To("hustler_vehicles", Hustler.Type),
-		edge.To("hustler_waists", Hustler.Type),
-		edge.To("hustler_feet", Hustler.Type),
-		edge.To("hustler_hands", Hustler.Type),
-		edge.To("hustler_drugs", Hustler.Type),
-		edge.To("hustler_necks", Hustler.Type),
-		edge.To("hustler_rings", Hustler.Type),
-		edge.To("hustler_accessories", Hustler.Type),
+			Ref("items").Annotations(entgql.Bind()),
+		edge.To("hustler_weapons", Hustler.Type).Annotations(entgql.Bind()),
+		edge.To("hustler_clothes", Hustler.Type).Annotations(entgql.Bind()),
+		edge.To("hustler_vehicles", Hustler.Type).Annotations(entgql.Bind()),
+		edge.To("hustler_waists", Hustler.Type).Annotations(entgql.Bind()),
+		edge.To("hustler_feet", Hustler.Type).Annotations(entgql.Bind()),
+		edge.To("hustler_hands", Hustler.Type).Annotations(entgql.Bind()),
+		edge.To("hustler_drugs", Hustler.Type).Annotations(entgql.Bind()),
+		edge.To("hustler_necks", Hustler.Type).Annotations(entgql.Bind()),
+		edge.To("hustler_rings", Hustler.Type).Annotations(entgql.Bind()),
+		edge.To("hustler_accessories", Hustler.Type).Annotations(entgql.Bind()),
 		edge.To("derivative", Item.Type).
 			From("base").
 			Unique(),
