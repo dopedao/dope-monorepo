@@ -3,7 +3,7 @@ module github.com/dopedao/dope-monorepo
 go 1.16
 
 require (
-	entgo.io/contrib v0.1.0
+	entgo.io/contrib v0.2.0
 	entgo.io/ent v0.9.2-0.20211202152557-7dba6969fad0
 	github.com/99designs/gqlgen v0.14.0
 	github.com/ethereum/go-ethereum v1.10.13
