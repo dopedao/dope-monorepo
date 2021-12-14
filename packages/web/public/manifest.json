@@ -1,0 +1,40 @@
+{
+    "assetRoot":"assets",
+    "totalSize":397000,
+    "assets": {
+        "spritesheet": {
+            "base_male_back": {
+                "file": "./images/game/character/male/base/animation_back_spritesheet.png",
+                "frameConfig": { "frameWidth": 25, "frameHeight": 60 },
+                "size": -1
+            },
+            "base_male_front": {
+                "file": "./images/game/character/male/base/animation_front_spritesheet.png",
+                "frameConfig": { "frameWidth": 27, "frameHeight": 60 },
+                "size": -1
+            },
+            "base_male_left": {
+                "file": "./images/game/character/male/base/animation_left_spritesheet.png",
+                "frameConfig": { "frameWidth": 31, "frameHeight": 60 },
+                "size": -1
+            },
+            "base_male_right": {
+                "file": "./images/game/character/male/base/animation_right_spritesheet.png",
+                "frameConfig": { "frameWidth": 34, "frameHeight": 60 },
+                "size": -1
+            }
+        },
+        "image": {
+            "tiles": {
+                "file":"https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/tilesets/tuxmon-sample-32px-extruded.png",
+                "size":192000
+            }
+        },
+        "tilemapTiledJSON": {
+            "map": {
+                "file": "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/tilemaps/tuxemon-town.json",
+                "size": 205000
+            }
+        }
+    }
+}
