@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 )
 
 const (
@@ -29,6 +30,8 @@ const (
 	FieldRles = "rles"
 	// FieldSvg holds the string denoting the svg field in the database.
 	FieldSvg = "svg"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
 	// EdgeWallets holds the string denoting the wallets edge name in mutations.
 	EdgeWallets = "wallets"
 	// EdgeDopes holds the string denoting the dopes edge name in mutations.
@@ -162,6 +165,7 @@ var Columns = []string{
 	FieldAugmented,
 	FieldRles,
 	FieldSvg,
+	FieldCreatedAt,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "items"
@@ -190,6 +194,11 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+)
 
 // Type defines the type for the "type" enum field.
 type Type string

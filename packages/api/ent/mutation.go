@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
@@ -731,6 +732,8 @@ type DopeMutation struct {
 	id            *string
 	claimed       *bool
 	opened        *bool
+	_order        *int
+	add_order     *int
 	clearedFields map[string]struct{}
 	wallet        *string
 	clearedwallet bool
@@ -918,6 +921,62 @@ func (m *DopeMutation) ResetOpened() {
 	m.opened = nil
 }
 
+// SetOrder sets the "order" field.
+func (m *DopeMutation) SetOrder(i int) {
+	m._order = &i
+	m.add_order = nil
+}
+
+// Order returns the value of the "order" field in the mutation.
+func (m *DopeMutation) Order() (r int, exists bool) {
+	v := m._order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrder returns the old "order" field's value of the Dope entity.
+// If the Dope object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DopeMutation) OldOrder(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrder: %w", err)
+	}
+	return oldValue.Order, nil
+}
+
+// AddOrder adds i to the "order" field.
+func (m *DopeMutation) AddOrder(i int) {
+	if m.add_order != nil {
+		*m.add_order += i
+	} else {
+		m.add_order = &i
+	}
+}
+
+// AddedOrder returns the value that was added to the "order" field in this mutation.
+func (m *DopeMutation) AddedOrder() (r int, exists bool) {
+	v := m.add_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetOrder resets all changes to the "order" field.
+func (m *DopeMutation) ResetOrder() {
+	m._order = nil
+	m.add_order = nil
+}
+
 // SetWalletID sets the "wallet" edge to the Wallet entity by id.
 func (m *DopeMutation) SetWalletID(id string) {
 	m.wallet = &id
@@ -1030,12 +1089,15 @@ func (m *DopeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DopeMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 3)
 	if m.claimed != nil {
 		fields = append(fields, dope.FieldClaimed)
 	}
 	if m.opened != nil {
 		fields = append(fields, dope.FieldOpened)
+	}
+	if m._order != nil {
+		fields = append(fields, dope.FieldOrder)
 	}
 	return fields
 }
@@ -1049,6 +1111,8 @@ func (m *DopeMutation) Field(name string) (ent.Value, bool) {
 		return m.Claimed()
 	case dope.FieldOpened:
 		return m.Opened()
+	case dope.FieldOrder:
+		return m.Order()
 	}
 	return nil, false
 }
@@ -1062,6 +1126,8 @@ func (m *DopeMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldClaimed(ctx)
 	case dope.FieldOpened:
 		return m.OldOpened(ctx)
+	case dope.FieldOrder:
+		return m.OldOrder(ctx)
 	}
 	return nil, fmt.Errorf("unknown Dope field %s", name)
 }
@@ -1085,6 +1151,13 @@ func (m *DopeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetOpened(v)
 		return nil
+	case dope.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrder(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Dope field %s", name)
 }
@@ -1092,13 +1165,21 @@ func (m *DopeMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *DopeMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.add_order != nil {
+		fields = append(fields, dope.FieldOrder)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *DopeMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case dope.FieldOrder:
+		return m.AddedOrder()
+	}
 	return nil, false
 }
 
@@ -1107,6 +1188,13 @@ func (m *DopeMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *DopeMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case dope.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOrder(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Dope numeric field %s", name)
 }
@@ -1139,6 +1227,9 @@ func (m *DopeMutation) ResetField(name string) error {
 		return nil
 	case dope.FieldOpened:
 		m.ResetOpened()
+		return nil
+	case dope.FieldOrder:
+		m.ResetOrder()
 		return nil
 	}
 	return fmt.Errorf("unknown Dope field %s", name)
@@ -1263,6 +1354,7 @@ type HustlerMutation struct {
 	viewbox          *[]int
 	_order           *[]int
 	svg              *string
+	created_at       *time.Time
 	clearedFields    map[string]struct{}
 	wallet           *string
 	clearedwallet    bool
@@ -1846,6 +1938,42 @@ func (m *HustlerMutation) ResetSvg() {
 	delete(m.clearedFields, hustler.FieldSvg)
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (m *HustlerMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *HustlerMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Hustler entity.
+// If the Hustler object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *HustlerMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *HustlerMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
 // SetWalletID sets the "wallet" edge to the Wallet entity by id.
 func (m *HustlerMutation) SetWalletID(id string) {
 	m.wallet = &id
@@ -2411,7 +2539,7 @@ func (m *HustlerMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *HustlerMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m._type != nil {
 		fields = append(fields, hustler.FieldType)
 	}
@@ -2442,6 +2570,9 @@ func (m *HustlerMutation) Fields() []string {
 	if m.svg != nil {
 		fields = append(fields, hustler.FieldSvg)
 	}
+	if m.created_at != nil {
+		fields = append(fields, hustler.FieldCreatedAt)
+	}
 	return fields
 }
 
@@ -2470,6 +2601,8 @@ func (m *HustlerMutation) Field(name string) (ent.Value, bool) {
 		return m.Order()
 	case hustler.FieldSvg:
 		return m.Svg()
+	case hustler.FieldCreatedAt:
+		return m.CreatedAt()
 	}
 	return nil, false
 }
@@ -2499,6 +2632,8 @@ func (m *HustlerMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldOrder(ctx)
 	case hustler.FieldSvg:
 		return m.OldSvg(ctx)
+	case hustler.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Hustler field %s", name)
 }
@@ -2577,6 +2712,13 @@ func (m *HustlerMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSvg(v)
+		return nil
+	case hustler.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Hustler field %s", name)
@@ -2704,6 +2846,9 @@ func (m *HustlerMutation) ResetField(name string) error {
 		return nil
 	case hustler.FieldSvg:
 		m.ResetSvg()
+		return nil
+	case hustler.FieldCreatedAt:
+		m.ResetCreatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Hustler field %s", name)
@@ -3033,6 +3178,7 @@ type ItemMutation struct {
 	augmented                  *bool
 	rles                       *schema.RLEs
 	svg                        *string
+	created_at                 *time.Time
 	clearedFields              map[string]struct{}
 	wallets                    map[string]struct{}
 	removedwallets             map[string]struct{}
@@ -3548,6 +3694,42 @@ func (m *ItemMutation) SvgCleared() bool {
 func (m *ItemMutation) ResetSvg() {
 	m.svg = nil
 	delete(m.clearedFields, item.FieldSvg)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ItemMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ItemMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ItemMutation) ResetCreatedAt() {
+	m.created_at = nil
 }
 
 // AddWalletIDs adds the "wallets" edge to the WalletItems entity by ids.
@@ -4310,7 +4492,7 @@ func (m *ItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ItemMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m._type != nil {
 		fields = append(fields, item.FieldType)
 	}
@@ -4334,6 +4516,9 @@ func (m *ItemMutation) Fields() []string {
 	}
 	if m.svg != nil {
 		fields = append(fields, item.FieldSvg)
+	}
+	if m.created_at != nil {
+		fields = append(fields, item.FieldCreatedAt)
 	}
 	return fields
 }
@@ -4359,6 +4544,8 @@ func (m *ItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Rles()
 	case item.FieldSvg:
 		return m.Svg()
+	case item.FieldCreatedAt:
+		return m.CreatedAt()
 	}
 	return nil, false
 }
@@ -4384,6 +4571,8 @@ func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldRles(ctx)
 	case item.FieldSvg:
 		return m.OldSvg(ctx)
+	case item.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Item field %s", name)
 }
@@ -4448,6 +4637,13 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSvg(v)
+		return nil
+	case item.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
@@ -4560,6 +4756,9 @@ func (m *ItemMutation) ResetField(name string) error {
 		return nil
 	case item.FieldSvg:
 		m.ResetSvg()
+		return nil
+	case item.FieldCreatedAt:
+		m.ResetCreatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
@@ -5340,6 +5539,7 @@ type WalletMutation struct {
 	id              *string
 	paper           *schema.BigInt
 	addpaper        *schema.BigInt
+	created_at      *time.Time
 	clearedFields   map[string]struct{}
 	dopes           map[string]struct{}
 	removeddopes    map[string]struct{}
@@ -5513,6 +5713,42 @@ func (m *WalletMutation) AddedPaper() (r schema.BigInt, exists bool) {
 func (m *WalletMutation) ResetPaper() {
 	m.paper = nil
 	m.addpaper = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *WalletMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *WalletMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Wallet entity.
+// If the Wallet object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WalletMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *WalletMutation) ResetCreatedAt() {
+	m.created_at = nil
 }
 
 // AddDopeIDs adds the "dopes" edge to the Dope entity by ids.
@@ -5696,9 +5932,12 @@ func (m *WalletMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *WalletMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 2)
 	if m.paper != nil {
 		fields = append(fields, wallet.FieldPaper)
+	}
+	if m.created_at != nil {
+		fields = append(fields, wallet.FieldCreatedAt)
 	}
 	return fields
 }
@@ -5710,6 +5949,8 @@ func (m *WalletMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case wallet.FieldPaper:
 		return m.Paper()
+	case wallet.FieldCreatedAt:
+		return m.CreatedAt()
 	}
 	return nil, false
 }
@@ -5721,6 +5962,8 @@ func (m *WalletMutation) OldField(ctx context.Context, name string) (ent.Value, 
 	switch name {
 	case wallet.FieldPaper:
 		return m.OldPaper(ctx)
+	case wallet.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Wallet field %s", name)
 }
@@ -5736,6 +5979,13 @@ func (m *WalletMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPaper(v)
+		return nil
+	case wallet.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Wallet field %s", name)
@@ -5803,6 +6053,9 @@ func (m *WalletMutation) ResetField(name string) error {
 	switch name {
 	case wallet.FieldPaper:
 		m.ResetPaper()
+		return nil
+	case wallet.FieldCreatedAt:
+		m.ResetCreatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Wallet field %s", name)

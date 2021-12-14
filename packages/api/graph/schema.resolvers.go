@@ -10,20 +10,29 @@ import (
 	generated1 "github.com/dopedao/dope-monorepo/packages/api/graph/generated"
 )
 
-func (r *queryResolver) Wallets(ctx context.Context) ([]*ent.Wallet, error) {
-	return r.client.Wallet.Query().All(ctx)
+func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
+	return r.client.Noder(ctx, id)
 }
 
-func (r *queryResolver) Dopes(ctx context.Context) ([]*ent.Dope, error) {
-	return r.client.Dope.Query().All(ctx)
+func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, error) {
+	return r.client.Noders(ctx, ids)
 }
 
-func (r *queryResolver) Items(ctx context.Context) ([]*ent.Item, error) {
-	return r.client.Item.Query().All(ctx)
+func (r *queryResolver) Wallets(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.WalletOrder) (*ent.WalletConnection, error) {
+	return r.client.Wallet.Query().Paginate(ctx, after, first, before, last, ent.WithWalletOrder(orderBy))
 }
 
-func (r *queryResolver) Hustlers(ctx context.Context) ([]*ent.Hustler, error) {
-	return r.client.Hustler.Query().All(ctx)
+func (r *queryResolver) Dopes(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.DopeOrder) (*ent.DopeConnection, error) {
+	orderBy.Field = ent.DopeOrderFieldOrder
+	return r.client.Dope.Query().Paginate(ctx, after, first, before, last, ent.WithDopeOrder(orderBy))
+}
+
+func (r *queryResolver) Items(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ItemOrder) (*ent.ItemConnection, error) {
+	return r.client.Item.Query().Paginate(ctx, after, first, before, last, ent.WithItemOrder(orderBy))
+}
+
+func (r *queryResolver) Hustlers(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder) (*ent.HustlerConnection, error) {
+	return r.client.Hustler.Query().Paginate(ctx, after, first, before, last, ent.WithHustlerOrder(orderBy))
 }
 
 // Query returns generated1.QueryResolver implementation.

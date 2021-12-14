@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -16,9 +17,20 @@ func (Dope) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.Bool("claimed").
-			Default(false),
+			Default(false).
+			Annotations(
+				entgql.OrderField("CLAIMED"),
+			),
 		field.Bool("opened").
-			Default(false),
+			Default(false).
+			Annotations(
+				entgql.OrderField("OPENED"),
+			),
+		field.Int("order").
+			Immutable().
+			Annotations(
+				entgql.OrderField("ORDER"),
+			),
 	}
 }
 
