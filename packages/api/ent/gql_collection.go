@@ -17,6 +17,22 @@ func (bp *BodyPartQuery) CollectFields(ctx context.Context, satisfies ...string)
 }
 
 func (bp *BodyPartQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *BodyPartQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "hustler_beards":
+			bp = bp.WithHustlerBeards(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_bodies":
+			bp = bp.WithHustlerBodies(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_hairs":
+			bp = bp.WithHustlerHairs(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
 	return bp
 }
 
@@ -29,6 +45,14 @@ func (d *DopeQuery) CollectFields(ctx context.Context, satisfies ...string) *Dop
 }
 
 func (d *DopeQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *DopeQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "items":
+			d = d.WithItems(func(query *ItemQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
 	return d
 }
 
@@ -53,6 +77,58 @@ func (i *ItemQuery) CollectFields(ctx context.Context, satisfies ...string) *Ite
 }
 
 func (i *ItemQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *ItemQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "dopes":
+			i = i.WithDopes(func(query *DopeQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_accessories":
+			i = i.WithHustlerAccessories(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_clothes":
+			i = i.WithHustlerClothes(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_drugs":
+			i = i.WithHustlerDrugs(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_feet":
+			i = i.WithHustlerFeet(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_hands":
+			i = i.WithHustlerHands(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_necks":
+			i = i.WithHustlerNecks(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_rings":
+			i = i.WithHustlerRings(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_vehicles":
+			i = i.WithHustlerVehicles(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_waists":
+			i = i.WithHustlerWaists(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler_weapons":
+			i = i.WithHustlerWeapons(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "wallets":
+			i = i.WithWallets(func(query *WalletItemsQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
 	return i
 }
 
@@ -77,6 +153,22 @@ func (w *WalletQuery) CollectFields(ctx context.Context, satisfies ...string) *W
 }
 
 func (w *WalletQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *WalletQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "dopes":
+			w = w.WithDopes(func(query *DopeQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustlers":
+			w = w.WithHustlers(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "items":
+			w = w.WithItems(func(query *WalletItemsQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
 	return w
 }
 
@@ -89,5 +181,17 @@ func (wi *WalletItemsQuery) CollectFields(ctx context.Context, satisfies ...stri
 }
 
 func (wi *WalletItemsQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *WalletItemsQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "item":
+			wi = wi.WithItem(func(query *ItemQuery) {
+				query.collectField(ctx, field)
+			})
+		case "wallet":
+			wi = wi.WithWallet(func(query *WalletQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
 	return wi
 }
