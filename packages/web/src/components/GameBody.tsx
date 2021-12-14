@@ -8,18 +8,13 @@ import Phaser from "phaser";
 
 
 export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConfig}) {
-    const fullscreenRef = useRef<HTMLDivElement>();
-    if (fullscreenRef.current) {
-        fullscreenRef.current.style.width = window.innerWidth.toString();
-        fullscreenRef.current.style.width = window.innerHeight.toString();
-    }
     const gameRef = useRef(null);
     
-    const [initialize, setInitialize] = useState(true)
+    const [initialize, setInitialize] = useState(true);
 
     useEffect(() => {
         return () => destroy();
-    })
+    });
 
     const destroy = () => {
         if (((gameRef.current as any).game.instance)) {
@@ -34,28 +29,21 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
             title="DOPE.GAME" 
             width={640} 
             height="90vh"
-            fullscreenHandler={(fullscreen) => {
+            fullScreenHandler={(fullscreen) => {
                 if (!gameRef.current)
                     return;
 
                 const instance: Phaser.Game = ((gameRef.current as any).game.instance as Phaser.Game);
-                
                 if (!instance)
                     return;
 
-                if (fullscreen)
-                {
-                    instance.scale.startFullscreen();
-                }
-                else
-                {
-                    instance.scale.stopFullscreen()
-                }
+                fullscreen ?
+                    instance.scale.startFullscreen :
+                        instance.scale.stopFullscreen();
             }}
             // dont mind this. library is confusing. 
             // the instance of the game is stored in game object the ref which is why we need to do this bit of sorcelery
             onMoved={() => ((gameRef.current as any).game.instance as Phaser.Game).scale.updateBounds()}
-            onResize={() => null}
             >
             <IonPhaser game={
                 {
@@ -65,8 +53,6 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
                         width: "100%",
                         height: "100%",
                         mode: Phaser.Scale.FIT,
-                        autoCenter: Phaser.Scale.CENTER_BOTH,
-                        fullscreenTarget: fullscreenRef.current
                     },
                     pixelArt: true,
                     scene: [Boot, Preload, GameScene]
