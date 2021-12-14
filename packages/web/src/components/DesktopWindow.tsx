@@ -15,11 +15,13 @@ type DesktopWindowProps = {
   title: string | undefined;
   width?: number | string;
   height?: number | string;
+  fullScreenHandler?: (fullScreen: boolean) => void;
   titleChildren?: ReactNode;
   balance?: string;
   loadingBalance?: boolean;
   children: ReactNode;
   onResize?: () => void;
+  onMoved?: (position: WindowPosition) => void;
 };
 
 const WindowWrapper = styled.div<{ width: number | string; height: number | string }>`
@@ -60,9 +62,11 @@ const DesktopWindow = ({
   // Smaller devices default to "full screen".
   width = 1024,
   height = 768,
+  fullScreenHandler,
   titleChildren,
   children,
   onResize,
+  onMoved
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const { data, loading } = useWalletQuery({
@@ -72,7 +76,7 @@ const DesktopWindow = ({
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const toggleFullScreen = () => setIsFullScreen(!isFullScreen);
+  const toggleFullScreen = () => (fullScreenHandler ? fullScreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen));
   const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
@@ -88,6 +92,10 @@ const DesktopWindow = ({
     if (el && el.getAttribute('style')) {
       const transformValue = el.getAttribute('style') || '';
       windowPosition.updatePosition(transformValue);
+      
+      if (onMoved) {
+        onMoved(windowPosition);
+      }
     }
   };
 
