@@ -85,7 +85,7 @@ func main() {
 				log.Fatalf("Getting items: %+v", err)
 			}
 
-			createDope := client.Dope.Create().SetID(strconv.Itoa(i))
+			createDope := client.Dope.Create().SetID(strconv.Itoa(i)).SetOrder(i)
 			itemIDs := []string{}
 
 			for j, item := range items {

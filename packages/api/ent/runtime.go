@@ -3,8 +3,11 @@
 package ent
 
 import (
+	"time"
+
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -34,12 +37,26 @@ func init() {
 	hustlerDescOrder := hustlerFields[9].Descriptor()
 	// hustler.DefaultOrder holds the default value on creation for the order field.
 	hustler.DefaultOrder = hustlerDescOrder.Default.([]int)
+	// hustlerDescCreatedAt is the schema descriptor for created_at field.
+	hustlerDescCreatedAt := hustlerFields[11].Descriptor()
+	// hustler.DefaultCreatedAt holds the default value on creation for the created_at field.
+	hustler.DefaultCreatedAt = hustlerDescCreatedAt.Default.(func() time.Time)
+	itemFields := schema.Item{}.Fields()
+	_ = itemFields
+	// itemDescCreatedAt is the schema descriptor for created_at field.
+	itemDescCreatedAt := itemFields[9].Descriptor()
+	// item.DefaultCreatedAt holds the default value on creation for the created_at field.
+	item.DefaultCreatedAt = itemDescCreatedAt.Default.(func() time.Time)
 	walletFields := schema.Wallet{}.Fields()
 	_ = walletFields
 	// walletDescPaper is the schema descriptor for paper field.
 	walletDescPaper := walletFields[1].Descriptor()
 	// wallet.DefaultPaper holds the default value on creation for the paper field.
 	wallet.DefaultPaper = walletDescPaper.Default.(func() schema.BigInt)
+	// walletDescCreatedAt is the schema descriptor for created_at field.
+	walletDescCreatedAt := walletFields[2].Descriptor()
+	// wallet.DefaultCreatedAt holds the default value on creation for the created_at field.
+	wallet.DefaultCreatedAt = walletDescCreatedAt.Default.(func() time.Time)
 	walletitemsFields := schema.WalletItems{}.Fields()
 	_ = walletitemsFields
 	// walletitemsDescBalance is the schema descriptor for balance field.

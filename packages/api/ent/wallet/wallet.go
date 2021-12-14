@@ -3,6 +3,8 @@
 package wallet
 
 import (
+	"time"
+
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
@@ -13,6 +15,8 @@ const (
 	FieldID = "id"
 	// FieldPaper holds the string denoting the paper field in the database.
 	FieldPaper = "paper"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
 	// EdgeDopes holds the string denoting the dopes edge name in mutations.
 	EdgeDopes = "dopes"
 	// EdgeItems holds the string denoting the items edge name in mutations.
@@ -48,6 +52,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldPaper,
+	FieldCreatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -63,4 +68,6 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultPaper holds the default value on creation for the "paper" field.
 	DefaultPaper func() schema.BigInt
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
 )

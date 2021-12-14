@@ -115,7 +115,7 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     d.ID,
 		Type:   "Dope",
-		Fields: make([]*Field, 2),
+		Fields: make([]*Field, 3),
 		Edges:  make([]*Edge, 2),
 	}
 	var buf []byte
@@ -133,6 +133,14 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[1] = &Field{
 		Type:  "bool",
 		Name:  "opened",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(d.Order); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "int",
+		Name:  "order",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{
@@ -162,7 +170,7 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     h.ID,
 		Type:   "Hustler",
-		Fields: make([]*Field, 10),
+		Fields: make([]*Field, 11),
 		Edges:  make([]*Edge, 14),
 	}
 	var buf []byte
@@ -244,6 +252,14 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[9] = &Field{
 		Type:  "string",
 		Name:  "svg",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(h.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[10] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{
@@ -393,7 +409,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     i.ID,
 		Type:   "Item",
-		Fields: make([]*Field, 8),
+		Fields: make([]*Field, 9),
 		Edges:  make([]*Edge, 14),
 	}
 	var buf []byte
@@ -459,6 +475,14 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[7] = &Field{
 		Type:  "string",
 		Name:  "svg",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(i.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[8] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{
@@ -627,7 +651,7 @@ func (w *Wallet) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     w.ID,
 		Type:   "Wallet",
-		Fields: make([]*Field, 1),
+		Fields: make([]*Field, 2),
 		Edges:  make([]*Edge, 3),
 	}
 	var buf []byte
@@ -637,6 +661,14 @@ func (w *Wallet) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[0] = &Field{
 		Type:  "schema.BigInt",
 		Name:  "paper",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(w.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{
