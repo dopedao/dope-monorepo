@@ -23,7 +23,10 @@ func (Wallet) Fields() []ent.Field {
 			SchemaType(BigIntSchemaType).
 			DefaultFunc(func() BigInt {
 				return NewBigInt(0)
-			}),
+			}).
+			Annotations(
+				entgql.Type("BigInt"),
+			),
 		field.Time("created_at").
 			Default(time.Now).
 			Immutable().
