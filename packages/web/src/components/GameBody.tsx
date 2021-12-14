@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import Boot from "game/scenes/boot";
-import GameScene from "game/scenes/game";
-import Preload from "game/scenes/preload";
+import Boot from "game/scenes/Boot";
+import GameScene from "game/scenes/Game";
+import Preload from "game/scenes/Preload";
 import { IonPhaser } from '@ion-phaser/react';
 import DesktopWindow from "components/DesktopWindow";
 import Phaser from "phaser";
@@ -37,9 +37,9 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
                 if (!instance)
                     return;
 
-                fullscreen ?
-                    instance.scale.startFullscreen :
-                        instance.scale.stopFullscreen();
+                console.log('yes');
+
+                instance.scale.toggleFullscreen();
             }}
             // dont mind this. library is confusing. 
             // the instance of the game is stored in game object the ref which is why we need to do this bit of sorcelery
@@ -52,7 +52,15 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
                     scale: {
                         width: "100%",
                         height: "100%",
+                        zoom: 2,
                         mode: Phaser.Scale.FIT,
+                    },
+                    physics: {
+                        default: 'arcade',
+                        arcade: {
+                            debug: true,
+                            gravity: { y: 0 }
+                        }
                     },
                     pixelArt: true,
                     scene: [Boot, Preload, GameScene]
