@@ -29,7 +29,10 @@ func (Hustler) Fields() []ent.Field {
 			Optional(),
 		field.String("background").
 			Optional(),
-		field.Uint64("age"),
+		field.Uint64("age").
+			Annotations(
+				entgql.Type("Long"),
+			),
 		field.Enum("sex").
 			Values("male", "female").
 			Default("male"),

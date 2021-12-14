@@ -123,6 +123,7 @@ type Query {
     before: Cursor
     last: Int
     orderBy: WalletOrder
+    where: WalletWhereInput
   ): WalletConnection!
   dopes(
     after: Cursor
@@ -130,6 +131,7 @@ type Query {
     before: Cursor
     last: Int
     orderBy: DopeOrder
+    where: DopeWhereInput
   ): DopeConnection!
   items(
     after: Cursor
@@ -137,6 +139,7 @@ type Query {
     before: Cursor
     last: Int
     orderBy: ItemOrder
+    where: ItemWhereInput
   ): ItemConnection!
   hustlers(
     after: Cursor
@@ -144,5 +147,6 @@ type Query {
     before: Cursor
     last: Int
     orderBy: HustlerOrder
+    where: HustlerWhereInput
   ): HustlerConnection!
 }
