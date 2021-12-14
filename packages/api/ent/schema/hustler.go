@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
@@ -18,40 +20,31 @@ func (Hustler) Fields() []ent.Field {
 		field.String("id"),
 		field.Enum("type").
 			Values("original_gangsta", "regular").
-			Immutable().
-			Annotations(
-				entgql.OrderField("TYPE"),
-			),
+			Immutable(),
 		field.String("name").
-			Optional().
-			Annotations(
-				entgql.OrderField("NAME"),
-			),
+			Optional(),
 		field.String("title").
-			Optional().
-			Annotations(
-				entgql.OrderField("TITLE"),
-			),
+			Optional(),
 		field.String("color").
 			Optional(),
 		field.String("background").
 			Optional(),
-		field.Uint64("age").
-			Annotations(
-				entgql.OrderField("AGE"),
-			),
+		field.Uint64("age"),
 		field.Enum("sex").
 			Values("male", "female").
-			Default("male").
-			Annotations(
-				entgql.OrderField("SEX"),
-			),
+			Default("male"),
 		field.Ints("viewbox").
 			Default([]int{0, 0, 0, 0}),
 		field.Ints("order").
 			Default([]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}),
 		field.String("svg").
 			Optional(),
+		field.Time("created_at").
+			Default(time.Now).
+			Immutable().
+			Annotations(
+				entgql.OrderField("CREATED_AT"),
+			),
 	}
 }
 

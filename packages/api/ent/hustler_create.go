@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -129,6 +130,20 @@ func (hc *HustlerCreate) SetSvg(s string) *HustlerCreate {
 func (hc *HustlerCreate) SetNillableSvg(s *string) *HustlerCreate {
 	if s != nil {
 		hc.SetSvg(*s)
+	}
+	return hc
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (hc *HustlerCreate) SetCreatedAt(t time.Time) *HustlerCreate {
+	hc.mutation.SetCreatedAt(t)
+	return hc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (hc *HustlerCreate) SetNillableCreatedAt(t *time.Time) *HustlerCreate {
+	if t != nil {
+		hc.SetCreatedAt(*t)
 	}
 	return hc
 }
@@ -488,6 +503,10 @@ func (hc *HustlerCreate) defaults() {
 		v := hustler.DefaultOrder
 		hc.mutation.SetOrder(v)
 	}
+	if _, ok := hc.mutation.CreatedAt(); !ok {
+		v := hustler.DefaultCreatedAt()
+		hc.mutation.SetCreatedAt(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -516,6 +535,9 @@ func (hc *HustlerCreate) check() error {
 	}
 	if _, ok := hc.mutation.Order(); !ok {
 		return &ValidationError{Name: "order", err: errors.New(`ent: missing required field "Hustler.order"`)}
+	}
+	if _, ok := hc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Hustler.created_at"`)}
 	}
 	return nil
 }
@@ -633,6 +655,14 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 			Column: hustler.FieldSvg,
 		})
 		_node.Svg = value
+	}
+	if value, ok := hc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: hustler.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
 	}
 	if nodes := hc.mutation.WalletIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1124,6 +1154,18 @@ func (u *HustlerUpsert) ClearSvg() *HustlerUpsert {
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *HustlerUpsert) SetCreatedAt(v time.Time) *HustlerUpsert {
+	u.Set(hustler.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *HustlerUpsert) UpdateCreatedAt() *HustlerUpsert {
+	u.SetExcluded(hustler.FieldCreatedAt)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -1144,6 +1186,9 @@ func (u *HustlerUpsertOne) UpdateNewValues() *HustlerUpsertOne {
 		}
 		if _, exists := u.create.mutation.GetType(); exists {
 			s.SetIgnore(hustler.FieldType)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(hustler.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -1359,6 +1404,20 @@ func (u *HustlerUpsertOne) ClearSvg() *HustlerUpsertOne {
 	})
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *HustlerUpsertOne) SetCreatedAt(v time.Time) *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *HustlerUpsertOne) UpdateCreatedAt() *HustlerUpsertOne {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
 // Exec executes the query.
 func (u *HustlerUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -1544,6 +1603,9 @@ func (u *HustlerUpsertBulk) UpdateNewValues() *HustlerUpsertBulk {
 			}
 			if _, exists := b.mutation.GetType(); exists {
 				s.SetIgnore(hustler.FieldType)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(hustler.FieldCreatedAt)
 			}
 		}
 	}))
@@ -1757,6 +1819,20 @@ func (u *HustlerUpsertBulk) UpdateSvg() *HustlerUpsertBulk {
 func (u *HustlerUpsertBulk) ClearSvg() *HustlerUpsertBulk {
 	return u.Update(func(s *HustlerUpsert) {
 		s.ClearSvg()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *HustlerUpsertBulk) SetCreatedAt(v time.Time) *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *HustlerUpsertBulk) UpdateCreatedAt() *HustlerUpsertBulk {
+	return u.Update(func(s *HustlerUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

@@ -11,6 +11,8 @@ const (
 	FieldClaimed = "claimed"
 	// FieldOpened holds the string denoting the opened field in the database.
 	FieldOpened = "opened"
+	// FieldOrder holds the string denoting the order field in the database.
+	FieldOrder = "order"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
 	EdgeWallet = "wallet"
 	// EdgeItems holds the string denoting the items edge name in mutations.
@@ -36,6 +38,7 @@ var Columns = []string{
 	FieldID,
 	FieldClaimed,
 	FieldOpened,
+	FieldOrder,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "dopes"

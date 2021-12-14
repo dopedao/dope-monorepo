@@ -117,9 +117,27 @@ type Wallet implements Node {
 type Query {
   node(id: ID!): Node
   nodes(ids: [ID!]!): [Node]!
-  wallets: [Wallet!]
-  dopes: [Dope!]
-  items: [Item!]
+  wallets(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: WalletOrder
+  ): WalletConnection!
+  dopes(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: DopeOrder
+  ): DopeConnection!
+  items(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: ItemOrder
+  ): ItemConnection!
   hustlers(
     after: Cursor
     first: Int

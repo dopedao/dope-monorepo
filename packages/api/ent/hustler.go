@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
@@ -39,6 +40,8 @@ type Hustler struct {
 	Order []int `json:"order,omitempty"`
 	// Svg holds the value of the "svg" field.
 	Svg string `json:"svg,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the HustlerQuery when eager-loading is set.
 	Edges                    HustlerEdges `json:"edges"`
@@ -300,6 +303,8 @@ func (*Hustler) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case hustler.FieldID, hustler.FieldType, hustler.FieldName, hustler.FieldTitle, hustler.FieldColor, hustler.FieldBackground, hustler.FieldSex, hustler.FieldSvg:
 			values[i] = new(sql.NullString)
+		case hustler.FieldCreatedAt:
+			values[i] = new(sql.NullTime)
 		case hustler.ForeignKeys[0]: // body_part_hustler_bodies
 			values[i] = new(sql.NullString)
 		case hustler.ForeignKeys[1]: // body_part_hustler_hairs
@@ -412,6 +417,12 @@ func (h *Hustler) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field svg", values[i])
 			} else if value.Valid {
 				h.Svg = value.String
+			}
+		case hustler.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				h.CreatedAt = value.Time
 			}
 		case hustler.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -629,6 +640,8 @@ func (h *Hustler) String() string {
 	builder.WriteString(fmt.Sprintf("%v", h.Order))
 	builder.WriteString(", svg=")
 	builder.WriteString(h.Svg)
+	builder.WriteString(", created_at=")
+	builder.WriteString(h.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

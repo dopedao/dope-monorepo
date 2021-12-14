@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
@@ -18,6 +19,8 @@ type Wallet struct {
 	ID string `json:"id,omitempty"`
 	// Paper holds the value of the "paper" field.
 	Paper schema.BigInt `json:"paper,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the WalletQuery when eager-loading is set.
 	Edges WalletEdges `json:"edges"`
@@ -72,6 +75,8 @@ func (*Wallet) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(schema.BigInt)
 		case wallet.FieldID:
 			values[i] = new(sql.NullString)
+		case wallet.FieldCreatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Wallet", columns[i])
 		}
@@ -98,6 +103,12 @@ func (w *Wallet) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field paper", values[i])
 			} else if value != nil {
 				w.Paper = *value
+			}
+		case wallet.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				w.CreatedAt = value.Time
 			}
 		}
 	}
@@ -144,6 +155,8 @@ func (w *Wallet) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", w.ID))
 	builder.WriteString(", paper=")
 	builder.WriteString(fmt.Sprintf("%v", w.Paper))
+	builder.WriteString(", created_at=")
+	builder.WriteString(w.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -9,6 +9,11 @@ type PageInfo {
   endCursor: Cursor
 }
 
+enum OrderDirection {
+  ASC
+  DESC
+}
+
 type HustlerConnection {
   totalCount: Int!
   pageInfo: PageInfo!
@@ -20,21 +25,51 @@ type HustlerEdge {
   cursor: Cursor!
 }
 
-# These enums match the entgql annotations in the ent/schema.
-enum HustlerOrderField {
-  TYPE
-  NAME
-  TITLE
-  AGE
-  SEX
-}
-
-enum OrderDirection {
-  ASC
-  DESC
-}
-
 input HustlerOrder {
   direction: OrderDirection!
-  field: HustlerOrderField
+}
+
+type ItemConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [ItemEdge]
+}
+
+type ItemEdge {
+  node: Item
+  cursor: Cursor!
+}
+
+input ItemOrder {
+  direction: OrderDirection!
+}
+
+type DopeConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [DopeEdge]
+}
+
+type DopeEdge {
+  node: Dope
+  cursor: Cursor!
+}
+
+input DopeOrder {
+  direction: OrderDirection!
+}
+
+type WalletConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [WalletEdge]
+}
+
+type WalletEdge {
+  node: Wallet
+  cursor: Cursor!
+}
+
+input WalletOrder {
+  direction: OrderDirection!
 }

@@ -52,6 +52,12 @@ func (dc *DopeCreate) SetNillableOpened(b *bool) *DopeCreate {
 	return dc
 }
 
+// SetOrder sets the "order" field.
+func (dc *DopeCreate) SetOrder(i int) *DopeCreate {
+	dc.mutation.SetOrder(i)
+	return dc
+}
+
 // SetID sets the "id" field.
 func (dc *DopeCreate) SetID(s string) *DopeCreate {
 	dc.mutation.SetID(s)
@@ -181,6 +187,9 @@ func (dc *DopeCreate) check() error {
 	if _, ok := dc.mutation.Opened(); !ok {
 		return &ValidationError{Name: "opened", err: errors.New(`ent: missing required field "Dope.opened"`)}
 	}
+	if _, ok := dc.mutation.Order(); !ok {
+		return &ValidationError{Name: "order", err: errors.New(`ent: missing required field "Dope.order"`)}
+	}
 	return nil
 }
 
@@ -233,6 +242,14 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 			Column: dope.FieldOpened,
 		})
 		_node.Opened = value
+	}
+	if value, ok := dc.mutation.Order(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: dope.FieldOrder,
+		})
+		_node.Order = value
 	}
 	if nodes := dc.mutation.WalletIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -351,6 +368,24 @@ func (u *DopeUpsert) UpdateOpened() *DopeUpsert {
 	return u
 }
 
+// SetOrder sets the "order" field.
+func (u *DopeUpsert) SetOrder(v int) *DopeUpsert {
+	u.Set(dope.FieldOrder, v)
+	return u
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateOrder() *DopeUpsert {
+	u.SetExcluded(dope.FieldOrder)
+	return u
+}
+
+// AddOrder adds v to the "order" field.
+func (u *DopeUpsert) AddOrder(v int) *DopeUpsert {
+	u.Add(dope.FieldOrder, v)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -368,6 +403,9 @@ func (u *DopeUpsertOne) UpdateNewValues() *DopeUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(dope.FieldID)
+		}
+		if _, exists := u.create.mutation.Order(); exists {
+			s.SetIgnore(dope.FieldOrder)
 		}
 	}))
 	return u
@@ -426,6 +464,27 @@ func (u *DopeUpsertOne) SetOpened(v bool) *DopeUpsertOne {
 func (u *DopeUpsertOne) UpdateOpened() *DopeUpsertOne {
 	return u.Update(func(s *DopeUpsert) {
 		s.UpdateOpened()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *DopeUpsertOne) SetOrder(v int) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// AddOrder adds v to the "order" field.
+func (u *DopeUpsertOne) AddOrder(v int) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.AddOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateOrder() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateOrder()
 	})
 }
 
@@ -612,6 +671,9 @@ func (u *DopeUpsertBulk) UpdateNewValues() *DopeUpsertBulk {
 				s.SetIgnore(dope.FieldID)
 				return
 			}
+			if _, exists := b.mutation.Order(); exists {
+				s.SetIgnore(dope.FieldOrder)
+			}
 		}
 	}))
 	return u
@@ -670,6 +732,27 @@ func (u *DopeUpsertBulk) SetOpened(v bool) *DopeUpsertBulk {
 func (u *DopeUpsertBulk) UpdateOpened() *DopeUpsertBulk {
 	return u.Update(func(s *DopeUpsert) {
 		s.UpdateOpened()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *DopeUpsertBulk) SetOrder(v int) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// AddOrder adds v to the "order" field.
+func (u *DopeUpsertBulk) AddOrder(v int) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.AddOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateOrder() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateOrder()
 	})
 }
 
