@@ -48,7 +48,7 @@ const ContentEmpty = (
   >
     <p>Hustlers are the in-game and in-ecosystem characters in the Dope Wars universe.</p>
     <p>
-      When you mint a Hustler, you receive a customizable profile pic in the form of a new NFT. This
+      When you Initiate a Hustler, you receive a customizable profile pic in the form of a new NFT. This
       image can be customized at any time, and all the artwork is stored on-chain.
     </p>
     <Link href="/dope" passHref>
