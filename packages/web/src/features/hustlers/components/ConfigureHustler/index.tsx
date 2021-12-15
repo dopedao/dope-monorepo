@@ -15,7 +15,6 @@ import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
-import Spinner from 'ui/svg/Spinner';
 import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
 
 export type ConfigureHustlerProps = {
@@ -106,18 +105,23 @@ const ConfigureHustler = ({
         .padStart(4, '0');
 
     if (hustlers) {
-      await hustlers.setMetadata(BigNumber.from(dopeId), {
-        name: setname,
-        color,
-        background,
-        options,
-        viewbox: zoomWindow,
-        body: bodyParts,
-        mask,
-        order: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      });
+      try {
+        const transaction = await hustlers.setMetadata(BigNumber.from(dopeId), {
+          name: setname,
+          color,
+          background,
+          options,
+          viewbox: zoomWindow,
+          body: bodyParts,
+          mask,
+          order: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        });
+        await transaction.wait();
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
     }
-    setLoading(false);
   };
 
   return (
@@ -183,12 +187,18 @@ const ConfigureHustler = ({
                 variant="primary"
                 onClick={customizeHustler}
                 isLoading={loading}
-                width="173.59px"
+                loadingText="Processing..."
               >
-                {loading ? <Spinner /> : 'Save Configuration'}
+                Save Configuration
               </Button>
             ) : (
-              <Button type="button" onClick={goBackToInitialStep} variant="primary">
+              <Button
+                type="button"
+                onClick={goBackToInitialStep}
+                variant="primary"
+                isLoading={loading}
+                loadingText="Processing..."
+              >
                 Finish Configuration
               </Button>
             )}
