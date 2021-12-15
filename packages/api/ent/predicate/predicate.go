@@ -12,6 +12,9 @@ type BodyPart func(*sql.Selector)
 // Dope is the predicate function for dope builders.
 type Dope func(*sql.Selector)
 
+// Event is the predicate function for event builders.
+type Event func(*sql.Selector)
+
 // Hustler is the predicate function for hustler builders.
 type Hustler func(*sql.Selector)
 

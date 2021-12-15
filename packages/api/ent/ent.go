@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
@@ -37,6 +38,7 @@ func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		bodypart.Table:    bodypart.ValidColumn,
 		dope.Table:        dope.ValidColumn,
+		event.Table:       event.ValidColumn,
 		hustler.Table:     hustler.ValidColumn,
 		item.Table:        item.ValidColumn,
 		syncstate.Table:   syncstate.ValidColumn,

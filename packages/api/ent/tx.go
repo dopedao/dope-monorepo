@@ -16,6 +16,8 @@ type Tx struct {
 	BodyPart *BodyPartClient
 	// Dope is the client for interacting with the Dope builders.
 	Dope *DopeClient
+	// Event is the client for interacting with the Event builders.
+	Event *EventClient
 	// Hustler is the client for interacting with the Hustler builders.
 	Hustler *HustlerClient
 	// Item is the client for interacting with the Item builders.
@@ -163,6 +165,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.BodyPart = NewBodyPartClient(tx.config)
 	tx.Dope = NewDopeClient(tx.config)
+	tx.Event = NewEventClient(tx.config)
 	tx.Hustler = NewHustlerClient(tx.config)
 	tx.Item = NewItemClient(tx.config)
 	tx.SyncState = NewSyncStateClient(tx.config)
