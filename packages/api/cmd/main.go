@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"os"
 
 	"entgo.io/ent/dialect/sql"
 
@@ -16,6 +18,7 @@ import (
 
 var listen = pflag.String("listen", "8080", "server listen port")
 var pgConnstring = common.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
+var index = os.Getenv("INDEX")
 
 func main() {
 	pgConnstringSecret, err := pgConnstring.Value()
@@ -28,7 +31,7 @@ func main() {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
 
-	srv, err := api.NewServer(db)
+	srv, err := api.NewServer(context.Background(), db, index == "true")
 	if err != nil {
 		log.Fatalf("Creating server: %+v", err) //nolint:gocritic
 	}

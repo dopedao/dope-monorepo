@@ -14,12 +14,14 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
 )
 
-func NewServer(db *sql.Driver) (http.Handler, error) {
+func NewServer(ctx context.Context, db *sql.Driver, index bool) (http.Handler, error) {
 	client := ent.NewClient(ent.Driver(db))
 
-	// Run the auto migration tool.
-	if err := client.Schema.Create(context.Background()); err != nil {
-		return nil, err
+	if index {
+		// Run the auto migration tool.
+		if err := client.Schema.Create(ctx); err != nil {
+			return nil, err
+		}
 	}
 
 	srv := handler.NewDefaultServer(graph.NewSchema(client))
@@ -32,21 +34,32 @@ func NewServer(db *sql.Driver) (http.Handler, error) {
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	r.HandleFunc("/_ah/start", func(w http.ResponseWriter, r *http.Request) {
-		for _, c := range configs {
-			engine := NewEngine(client, c)
-			go engine.Sync(ctx)
-		}
-		w.WriteHeader(200)
-		_, _ = w.Write([]byte(`{"success":true}`))
-	})
+	if index {
+		ctx, cancel := context.WithCancel(ctx)
 
-	r.HandleFunc("/_ah/stop", func(w http.ResponseWriter, r *http.Request) {
-		cancel()
-		w.WriteHeader(200)
-		_, _ = w.Write([]byte(`{"success":true}`))
-	})
+		started := false
+		r.HandleFunc("/_ah/start", func(w http.ResponseWriter, r *http.Request) {
+			if started {
+				w.WriteHeader(200)
+				_, _ = w.Write([]byte(`{"success":false}`))
+				return
+			}
+
+			started = true
+			for _, c := range configs {
+				engine := NewEngine(client, c)
+				go engine.Sync(ctx)
+			}
+			w.WriteHeader(200)
+			_, _ = w.Write([]byte(`{"success":true}`))
+		})
+
+		r.HandleFunc("/_ah/stop", func(w http.ResponseWriter, r *http.Request) {
+			cancel()
+			w.WriteHeader(200)
+			_, _ = w.Write([]byte(`{"success":true}`))
+		})
+	}
 
 	return cors.Default().Handler(r), nil
 }

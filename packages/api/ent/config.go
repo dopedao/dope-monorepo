@@ -26,6 +26,7 @@ type config struct {
 type hooks struct {
 	BodyPart    []ent.Hook
 	Dope        []ent.Hook
+	Event       []ent.Hook
 	Hustler     []ent.Hook
 	Item        []ent.Hook
 	SyncState   []ent.Hook

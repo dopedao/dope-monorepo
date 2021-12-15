@@ -43,6 +43,28 @@ var (
 			},
 		},
 	}
+	// EventsColumns holds the columns for the "events" table.
+	EventsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "address", Type: field.TypeBytes},
+		{Name: "index", Type: field.TypeUint64},
+		{Name: "hash", Type: field.TypeBytes},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// EventsTable holds the schema information for the "events" table.
+	EventsTable = &schema.Table{
+		Name:       "events",
+		Columns:    EventsColumns,
+		PrimaryKey: []*schema.Column{EventsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "event_hash_index",
+				Unique:  true,
+				Columns: []*schema.Column{EventsColumns[3], EventsColumns[2]},
+			},
+		},
+	}
 	// HustlersColumns holds the columns for the "hustlers" table.
 	HustlersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
@@ -271,6 +293,7 @@ var (
 	Tables = []*schema.Table{
 		BodyPartsTable,
 		DopesTable,
+		EventsTable,
 		HustlersTable,
 		ItemsTable,
 		SyncStatesTable,
