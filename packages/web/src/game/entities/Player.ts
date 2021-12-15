@@ -4,13 +4,15 @@ import PlayerModel from "game/gfx/models/PlayerModel";
 
 export default class Player extends Phaser.Physics.Arcade.Sprite
 {
-    model: PlayerModel;
-    cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+    public static readonly DEFAULT_VELOCITY: number = 85;
+
+    private _model: PlayerModel;
+    get model() { return this._model; }
 
     constructor(x: number, y: number, model: PlayerModel = new PlayerModel(Base.Male), scene: Phaser.Scene, frame?: number)
     {
         super(scene, x, y, spritesDict[model.base].front, frame);
-        this.model = model;
+        this._model = model;
 
         this.scale *= 1.8;
 
@@ -19,36 +21,31 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
 
         //this.setCollideWorldBounds(true);
         this.body.setSize(this.body.width * 0.35, this.body.height * 0.4);
-
-        this.cursors = this.scene.input.keyboard.createCursorKeys();
     }
 
-    update(): void
-    {
-        if (!this.cursors)
-            return;
-        
-        if (this.cursors.up.isDown)
+    update(mainCursors: Phaser.Types.Input.Keyboard.CursorKeys, eqCursors?: Phaser.Types.Input.Keyboard.CursorKeys): void
+    {   
+        if (mainCursors.up.isDown || eqCursors?.up.isDown)
         {
-            this.setVelocity(0, -75);
+            this.setVelocity(0, -Player.DEFAULT_VELOCITY);
             this.body.offset.x = 4;
             this.play(spritesDict[this.model.base].back, true);
         }
-        else if (this.cursors.down.isDown)
+        else if (mainCursors.down.isDown || eqCursors?.down.isDown)
         {
-            this.setVelocity(0, 75);
+            this.setVelocity(0, Player.DEFAULT_VELOCITY);
             this.body.offset.x = 6;
             this.play(spritesDict[this.model.base].front, true);
         }
-        else if (this.cursors.left.isDown)
+        else if (mainCursors.left.isDown || eqCursors?.left.isDown)
         {
-            this.setVelocity(-75, 0);
+            this.setVelocity(-Player.DEFAULT_VELOCITY, 0);
             this.body.offset.x = 8;
             this.play(spritesDict[this.model.base].right, true);
         }
-        else if (this.cursors.right.isDown)
+        else if (mainCursors.right.isDown || eqCursors?.right.isDown)
         {
-            this.setVelocity(75, 0);
+            this.setVelocity(Player.DEFAULT_VELOCITY, 0);
             this.body.offset.x = 6;
             this.play(spritesDict[this.model.base].left, true);
         }
