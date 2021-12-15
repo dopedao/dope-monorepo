@@ -1258,6 +1258,13 @@ export type BagsQueryVariables = Exact<{
 
 export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, opened: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
 
+export type HustlerQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type HustlerQuery = { __typename?: 'Query', hustler?: Maybe<{ __typename?: 'Hustler', id: string, data: string }> };
+
 export type HustlersWalletQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -1510,6 +1517,42 @@ export function useBagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BagsQ
 export type BagsQueryHookResult = ReturnType<typeof useBagsQuery>;
 export type BagsLazyQueryHookResult = ReturnType<typeof useBagsLazyQuery>;
 export type BagsQueryResult = Apollo.QueryResult<BagsQuery, BagsQueryVariables>;
+export const HustlerDocument = gql`
+    query Hustler($id: ID!) {
+  hustler(id: $id) {
+    id
+    data
+  }
+}
+    `;
+
+/**
+ * __useHustlerQuery__
+ *
+ * To run a query within a React component, call `useHustlerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHustlerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHustlerQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useHustlerQuery(baseOptions: Apollo.QueryHookOptions<HustlerQuery, HustlerQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<HustlerQuery, HustlerQueryVariables>(HustlerDocument, options);
+      }
+export function useHustlerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HustlerQuery, HustlerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HustlerQuery, HustlerQueryVariables>(HustlerDocument, options);
+        }
+export type HustlerQueryHookResult = ReturnType<typeof useHustlerQuery>;
+export type HustlerLazyQueryHookResult = ReturnType<typeof useHustlerLazyQuery>;
+export type HustlerQueryResult = Apollo.QueryResult<HustlerQuery, HustlerQueryVariables>;
 export const HustlersWalletDocument = gql`
     query HustlersWallet($id: ID!) {
   wallet(id: $id) {

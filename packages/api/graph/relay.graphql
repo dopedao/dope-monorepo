@@ -1,0 +1,75 @@
+# Define a Relay Cursor type:
+# https://relay.dev/graphql/connections.htm#sec-Cursor
+scalar Cursor
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: Cursor
+  endCursor: Cursor
+}
+
+enum OrderDirection {
+  ASC
+  DESC
+}
+
+type HustlerConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [HustlerEdge]
+}
+
+type HustlerEdge {
+  node: Hustler
+  cursor: Cursor!
+}
+
+input HustlerOrder {
+  direction: OrderDirection!
+}
+
+type ItemConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [ItemEdge]
+}
+
+type ItemEdge {
+  node: Item
+  cursor: Cursor!
+}
+
+input ItemOrder {
+  direction: OrderDirection!
+}
+
+type DopeConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [DopeEdge]
+}
+
+type DopeEdge {
+  node: Dope
+  cursor: Cursor!
+}
+
+input DopeOrder {
+  direction: OrderDirection!
+}
+
+type WalletConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [WalletEdge]
+}
+
+type WalletEdge {
+  node: Wallet
+  cursor: Cursor!
+}
+
+input WalletOrder {
+  direction: OrderDirection!
+}

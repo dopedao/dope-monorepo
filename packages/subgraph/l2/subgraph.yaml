@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: SwapMeet
-    network: optimism
+    network: optimism-kovan
     source:
-      address: "0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"
+      address: "0x7144893df7456fB9678875aa09800d514685850F"
       abi: SwapMeet
-      startBlock: 278375
+      startBlock: 106534
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -30,11 +30,11 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: Hustler
-    network: optimism
+    network: optimism-kovan
     source:
-      address: "0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
+      address: "0x5701ff301d67174d63b271cf321e3886d518370d"
       abi: Hustler
-      startBlock: 278746
+      startBlock: 106536
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

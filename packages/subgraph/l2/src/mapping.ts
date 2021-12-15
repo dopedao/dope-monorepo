@@ -31,6 +31,10 @@ import {
 	Bytes,
 	json,
 } from "@graphprotocol/graph-ts";
+import {
+	getOrCreateHustler,
+	updateHustlerFromUri
+} from "./utils/hustler"
 
 function upsertItem(swapmeet: SwapMeet, id: BigInt): void {
 	let item = Item.load(id.toString());
@@ -165,7 +169,7 @@ export function handleSwapMeetTransfer(event: TransferSingle): void {
 	toBalance.save();
 }
 
-export function handleHustlerBatchTransfer(event: HustlerTransferBatch): void {
+export function handleHustlerTransferBatch(event: HustlerTransferBatch): void {
 	let fromAddress = event.params.from;
 	let toAddress = event.params.to;
 	let fromId = fromAddress.toHex();
@@ -188,14 +192,13 @@ export function handleHustlerBatchTransfer(event: HustlerTransferBatch): void {
 
 	for (let j = 0; j < ids.length; j++) {
 		let id = ids[j];
-		let hustler = Hustler.load(id.toString());
-		if (!hustler) {
-			hustler = new Hustler(id.toString());
+		let hustler = getOrCreateHustler(id.toString())
+		if (!hustler.data) {
 			hustler.data = c.tokenURI(id);
 		}
-
 		hustler.owner = toId;
 		hustler.save();
+		updateHustlerFromUri(id.toString());
 	}
 }
 
@@ -219,25 +222,22 @@ export function handleHustlerTransfer(event: HustlerTransferSingle): void {
 
 	let c = HustlerContract.bind(event.address);
 	let id = event.params.id;
-	let hustler = Hustler.load(id.toString());
-	if (!hustler) {
-		hustler = new Hustler(id.toString());
+	let hustler = getOrCreateHustler(id.toString());
+	if (!hustler.data) {
 		hustler.data = c.tokenURI(id);
 	}
 	hustler.owner = toId;
 	hustler.save();
+	updateHustlerFromUri(id.toString());
 }
 
 export function handleHustlerMetadataUpdate(event: MetadataUpdate): void {
 	let id = event.params.id;
 	let c = HustlerContract.bind(event.address);
-	let hustler = Hustler.load(id.toString());
-	if (!hustler) {
-		hustler = new Hustler(id.toString());
-		hustler.owner = "0x0000000000000000000000000000000000000000";
-	}
+	let hustler = getOrCreateHustler(id.toString());
 	hustler.data = c.tokenURI(id);
 	hustler.save();
+	updateHustlerFromUri(id.toString());
 }
 
 export function handleHustlerAddRles(event: AddRles): void {

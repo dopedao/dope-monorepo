@@ -81,7 +81,7 @@ export interface InitiatorInterface extends ethers.utils.Interface {
         "isOpened(uint256)": FunctionFragment;
         "mintFromDopeTo(uint256,address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes,uint32)": FunctionFragment;
         "mintOGFromDopeTo(uint256,address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes,uint32)": FunctionFragment;
-        "open(uint256,address,bytes,uint32)": FunctionFragment;
+        "open(uint256,address,uint32)": FunctionFragment;
         "owner()": FunctionFragment;
         "release()": FunctionFragment;
         "renounceOwnership()": FunctionFragment;
@@ -93,7 +93,7 @@ export interface InitiatorInterface extends ethers.utils.Interface {
     encodeFunctionData(functionFragment: "isOpened", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "mintFromDopeTo", values: [BigNumberish, string, SetMetadataStruct, BytesLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "mintOGFromDopeTo", values: [BigNumberish, string, SetMetadataStruct, BytesLike, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "open", values: [BigNumberish, string, BytesLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "open", values: [BigNumberish, string, BigNumberish]): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
     encodeFunctionData(functionFragment: "release", values?: undefined): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
@@ -153,7 +153,7 @@ export interface Initiator extends BaseContract {
         mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: PayableOverrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
-        open(id: BigNumberish, to: string, data: BytesLike, gasLimit: BigNumberish, overrides?: Overrides & {
+        open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
         owner(overrides?: CallOverrides): Promise<[string]>;
@@ -179,7 +179,7 @@ export interface Initiator extends BaseContract {
     mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: PayableOverrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
-    open(id: BigNumberish, to: string, data: BytesLike, gasLimit: BigNumberish, overrides?: Overrides & {
+    open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
     owner(overrides?: CallOverrides): Promise<string>;
@@ -201,7 +201,7 @@ export interface Initiator extends BaseContract {
         isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
         mintFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: CallOverrides): Promise<void>;
         mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: CallOverrides): Promise<void>;
-        open(id: BigNumberish, to: string, data: BytesLike, gasLimit: BigNumberish, overrides?: CallOverrides): Promise<void>;
+        open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: CallOverrides): Promise<void>;
         owner(overrides?: CallOverrides): Promise<string>;
         release(overrides?: CallOverrides): Promise<BigNumber>;
         renounceOwnership(overrides?: CallOverrides): Promise<void>;
@@ -224,7 +224,7 @@ export interface Initiator extends BaseContract {
         mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: PayableOverrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
-        open(id: BigNumberish, to: string, data: BytesLike, gasLimit: BigNumberish, overrides?: Overrides & {
+        open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
         owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -251,7 +251,7 @@ export interface Initiator extends BaseContract {
         mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: PayableOverrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
-        open(id: BigNumberish, to: string, data: BytesLike, gasLimit: BigNumberish, overrides?: Overrides & {
+        open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
         owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;

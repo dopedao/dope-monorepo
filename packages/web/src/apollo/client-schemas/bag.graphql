@@ -1,0 +1,4 @@
+type Bag {
+  rank: Int!
+  open_sea_asset: OpenSeaAsset
+}
