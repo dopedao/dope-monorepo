@@ -88,7 +88,8 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *binding
 		for i, id := range e.Ids {
 			if err := tx.WalletItems.
 				UpdateOneID(fmt.Sprintf("%s-%s", e.From.Hex(), id.String())).
-				AddBalance(schema.BigInt{Int: new(big.Int).Neg(e.Values[i])}).Exec(ctx); err != nil {
+				AddBalance(schema.BigInt{Int: new(big.Int).Neg(e.Values[i])}).
+				Exec(ctx); err != nil {
 				return fmt.Errorf("swapmeet: update wallet items balance: %w", err)
 			}
 		}
@@ -100,6 +101,8 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *binding
 				Create().
 				SetID(fmt.Sprintf("%s-%s", e.To.Hex(), id.String())).
 				SetBalance(schema.BigInt{Int: e.Values[i]}).
+				SetWalletID(e.To.Hex()).
+				SetItemID(id.String()).
 				OnConflictColumns(walletitems.FieldID).
 				AddBalance(schema.BigInt{Int: e.Values[i]}).
 				Exec(ctx); err != nil {
@@ -142,19 +145,25 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *binding
 
 func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *bindings.SwapMeetTransferSingle, tx *ent.Tx) error {
 	if e.From != (common.Address{}) {
-		if err := tx.Wallet.UpdateOneID(e.From.Hex()).RemoveItemIDs(e.Id.String()).Exec(ctx); err != nil {
-			return fmt.Errorf("update from wallet: %w", err)
+		if err := tx.WalletItems.
+			UpdateOneID(fmt.Sprintf("%s-%s", e.From.Hex(), e.Id.String())).
+			AddBalance(schema.BigInt{Int: new(big.Int).Neg(e.Value)}).
+			Exec(ctx); err != nil {
+			return fmt.Errorf("swapmeet: update wallet item balance: %w", err)
 		}
 	}
 
 	if e.To != (common.Address{}) {
-		if err := tx.Wallet.Create().
-			SetID(e.To.Hex()).
-			AddItemIDs(e.Id.String()).
-			OnConflictColumns(wallet.FieldID).
-			UpdateNewValues().
+		if err := tx.WalletItems.
+			Create().
+			SetID(fmt.Sprintf("%s-%s", e.To.Hex(), e.Id.String())).
+			SetBalance(schema.BigInt{Int: e.Value}).
+			SetWalletID(e.To.Hex()).
+			SetItemID(e.Id.String()).
+			OnConflictColumns(walletitems.FieldID).
+			AddBalance(schema.BigInt{Int: e.Value}).
 			Exec(ctx); err != nil {
-			return fmt.Errorf("upsert to wallet: %w", err)
+			return fmt.Errorf("swapmeet: upsert wallet item balance: %w", err)
 		}
 	}
 
