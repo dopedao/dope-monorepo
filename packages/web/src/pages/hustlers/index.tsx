@@ -8,7 +8,7 @@ import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import { CloseButton } from '@chakra-ui/close-button';
 import { media } from 'ui/styles/mixins';
-import { useHustlersWalletQuery } from 'generated/graphql';
+import { useHustlersWalletQuery, useWalletQuery } from 'generated/graphql';
 import { useOptimismClient } from 'components/EthereumApolloProvider';
 import AppWindow from 'components/AppWindow';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
@@ -53,8 +53,8 @@ const ContentEmpty = (
   >
     <p>Hustlers are the in-game and in-ecosystem characters in the Dope Wars universe.</p>
     <p>
-      When you Initiate a Hustler, you receive a customizable profile pic in the form of a new NFT. This
-      image can be customized at any time, and all the artwork is stored on-chain.
+      When you Initiate a Hustler, you receive a customizable profile pic in the form of a new NFT.
+      This image can be customized at any time, and all the artwork is stored on-chain.
     </p>
     <Link href="/dope" passHref>
       <Button variant="primary">Initiate a Hustler</Button>
@@ -69,6 +69,10 @@ const Hustlers = () => {
   const client = useOptimismClient();
   const { data, loading } = useHustlersWalletQuery({
     client,
+    variables: { id: account?.toLowerCase() || '' },
+    skip: !account,
+  });
+  const { loading: walletLoading } = useWalletQuery({
     variables: { id: account?.toLowerCase() || '' },
     skip: !account,
   });
@@ -87,12 +91,19 @@ const Hustlers = () => {
             css={css`
               display: flex;
               align-items: center;
+              width: 560px;
             `}
           >
             <p
               css={css`
                 margin-right: 10px;
                 padding-bottom: unset;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2; /* number of lines to show */
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
               `}
             >
               {
@@ -103,8 +114,8 @@ const Hustlers = () => {
           </div>
         </StickyNote>
       )}
-      {loading && ContentLoading}
-      {!loading && data?.wallet?.hustlers && data?.wallet?.hustlers.length > 0 && (
+      {(loading || walletLoading) && ContentLoading}
+      {!loading && !walletLoading && data?.wallet?.hustlers && data?.wallet?.hustlers.length > 0 && (
         <Container>
           <div className="hustlerGrid">
             {data.wallet.hustlers.map(({ id, data }) => {
@@ -122,7 +133,10 @@ const Hustlers = () => {
           </div>
         </Container>
       )}
-      {!loading && (!data?.wallet?.hustlers || data?.wallet?.hustlers.length === 0) && ContentEmpty}
+      {!loading &&
+        !walletLoading &&
+        (!data?.wallet?.hustlers || data?.wallet?.hustlers.length === 0) &&
+        ContentEmpty}
     </AppWindow>
   );
 };
