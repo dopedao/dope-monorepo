@@ -130,7 +130,7 @@ func (e *Engine) Sync(ctx context.Context) {
 							}
 						}
 
-						if err := e.ent.SyncState.
+						if err := tx.SyncState.
 							Create().
 							SetID(c.Address.Hex()).
 							SetStartBlock(_from).
@@ -146,7 +146,7 @@ func (e *Engine) Sync(ctx context.Context) {
 					}
 
 					if _to == latest {
-						c.StartBlock = _to + 1
+						c.StartBlock = _from
 						break
 					}
 				}

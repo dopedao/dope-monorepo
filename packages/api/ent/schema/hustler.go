@@ -1,6 +1,9 @@
 package schema
 
 import (
+	"time"
+
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -26,7 +29,10 @@ func (Hustler) Fields() []ent.Field {
 			Optional(),
 		field.String("background").
 			Optional(),
-		field.Uint64("age"),
+		field.Uint64("age").
+			Annotations(
+				entgql.Type("Long"),
+			),
 		field.Enum("sex").
 			Values("male", "female").
 			Default("male"),
@@ -36,6 +42,12 @@ func (Hustler) Fields() []ent.Field {
 			Default([]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}),
 		field.String("svg").
 			Optional(),
+		field.Time("created_at").
+			Default(time.Now).
+			Immutable().
+			Annotations(
+				entgql.OrderField("CREATED_AT"),
+			),
 	}
 }
 

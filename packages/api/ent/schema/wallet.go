@@ -1,6 +1,9 @@
 package schema
 
 import (
+	"time"
+
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -20,15 +23,24 @@ func (Wallet) Fields() []ent.Field {
 			SchemaType(BigIntSchemaType).
 			DefaultFunc(func() BigInt {
 				return NewBigInt(0)
-			}),
+			}).
+			Annotations(
+				entgql.Type("BigInt"),
+			),
+		field.Time("created_at").
+			Default(time.Now).
+			Immutable().
+			Annotations(
+				entgql.OrderField("CREATED_AT"),
+			),
 	}
 }
 
 // Edges of the Wallet.
 func (Wallet) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("dopes", Dope.Type),
-		edge.To("items", WalletItems.Type),
-		edge.To("hustlers", Hustler.Type),
+		edge.To("dopes", Dope.Type).Annotations(entgql.Bind()),
+		edge.To("items", WalletItems.Type).Annotations(entgql.Bind()),
+		edge.To("hustlers", Hustler.Type).Annotations(entgql.Bind()),
 	}
 }

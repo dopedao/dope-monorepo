@@ -24,6 +24,7 @@ export interface HustlerRenderProps {
   textColor?: string;
   zoomWindow: ZoomWindow;
   ogTitle?: string;
+  dopeId?: string;
 }
 
 const RenderFromItemIds = ({
@@ -38,6 +39,7 @@ const RenderFromItemIds = ({
   textColor = '#000000',
   zoomWindow,
   ogTitle,
+  dopeId,
 }: HustlerRenderProps) => {
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
@@ -95,7 +97,7 @@ const RenderFromItemIds = ({
       const drugShadowHex = '0x00362f3729062b';
       hustlers
         .render(
-          renderName && ogTitle ? ogTitle : '', // title
+          renderName && ogTitle && Number(dopeId) < 500 ? ogTitle : '', // title
           renderName ? name : '', // subtitle – should this be "name" ?
           64,
           hexColorToBase16(bgColor),
@@ -122,6 +124,7 @@ const RenderFromItemIds = ({
     renderName,
     zoomWindow,
     ogTitle,
+    dopeId,
   ]);
 
   if (!hasRenderedFromChain) return <LoadingBlockSquareCentered />;

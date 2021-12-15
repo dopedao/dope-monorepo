@@ -105,6 +105,13 @@ func Opened(v bool) predicate.Dope {
 	})
 }
 
+// Order applies equality check predicate on the "order" field. It's identical to OrderEQ.
+func Order(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOrder), v))
+	})
+}
+
 // ClaimedEQ applies the EQ predicate on the "claimed" field.
 func ClaimedEQ(v bool) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
@@ -130,6 +137,82 @@ func OpenedEQ(v bool) predicate.Dope {
 func OpenedNEQ(v bool) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldOpened), v))
+	})
+}
+
+// OrderEQ applies the EQ predicate on the "order" field.
+func OrderEQ(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOrder), v))
+	})
+}
+
+// OrderNEQ applies the NEQ predicate on the "order" field.
+func OrderNEQ(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldOrder), v))
+	})
+}
+
+// OrderIn applies the In predicate on the "order" field.
+func OrderIn(vs ...int) predicate.Dope {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Dope(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldOrder), v...))
+	})
+}
+
+// OrderNotIn applies the NotIn predicate on the "order" field.
+func OrderNotIn(vs ...int) predicate.Dope {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Dope(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldOrder), v...))
+	})
+}
+
+// OrderGT applies the GT predicate on the "order" field.
+func OrderGT(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldOrder), v))
+	})
+}
+
+// OrderGTE applies the GTE predicate on the "order" field.
+func OrderGTE(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldOrder), v))
+	})
+}
+
+// OrderLT applies the LT predicate on the "order" field.
+func OrderLT(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldOrder), v))
+	})
+}
+
+// OrderLTE applies the LTE predicate on the "order" field.
+func OrderLTE(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldOrder), v))
 	})
 }
 

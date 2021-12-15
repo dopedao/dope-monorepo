@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 )
 
 const (
@@ -33,6 +34,8 @@ const (
 	FieldOrder = "order"
 	// FieldSvg holds the string denoting the svg field in the database.
 	FieldSvg = "svg"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
 	EdgeWallet = "wallet"
 	// EdgeWeapon holds the string denoting the weapon edge name in mutations.
@@ -176,6 +179,7 @@ var Columns = []string{
 	FieldViewbox,
 	FieldOrder,
 	FieldSvg,
+	FieldCreatedAt,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "hustlers"
@@ -217,6 +221,8 @@ var (
 	DefaultViewbox []int
 	// DefaultOrder holds the default value on creation for the "order" field.
 	DefaultOrder []int
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
 )
 
 // Type defines the type for the "type" enum field.

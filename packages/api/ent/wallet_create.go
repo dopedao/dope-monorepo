@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -36,6 +37,20 @@ func (wc *WalletCreate) SetPaper(si schema.BigInt) *WalletCreate {
 func (wc *WalletCreate) SetNillablePaper(si *schema.BigInt) *WalletCreate {
 	if si != nil {
 		wc.SetPaper(*si)
+	}
+	return wc
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (wc *WalletCreate) SetCreatedAt(t time.Time) *WalletCreate {
+	wc.mutation.SetCreatedAt(t)
+	return wc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (wc *WalletCreate) SetNillableCreatedAt(t *time.Time) *WalletCreate {
+	if t != nil {
+		wc.SetCreatedAt(*t)
 	}
 	return wc
 }
@@ -166,12 +181,19 @@ func (wc *WalletCreate) defaults() {
 		v := wallet.DefaultPaper()
 		wc.mutation.SetPaper(v)
 	}
+	if _, ok := wc.mutation.CreatedAt(); !ok {
+		v := wallet.DefaultCreatedAt()
+		wc.mutation.SetCreatedAt(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (wc *WalletCreate) check() error {
 	if _, ok := wc.mutation.Paper(); !ok {
 		return &ValidationError{Name: "paper", err: errors.New(`ent: missing required field "Wallet.paper"`)}
+	}
+	if _, ok := wc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Wallet.created_at"`)}
 	}
 	return nil
 }
@@ -217,6 +239,14 @@ func (wc *WalletCreate) createSpec() (*Wallet, *sqlgraph.CreateSpec) {
 			Column: wallet.FieldPaper,
 		})
 		_node.Paper = value
+	}
+	if value, ok := wc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: wallet.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
 	}
 	if nodes := wc.mutation.DopesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -347,6 +377,18 @@ func (u *WalletUpsert) AddPaper(v schema.BigInt) *WalletUpsert {
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *WalletUpsert) SetCreatedAt(v time.Time) *WalletUpsert {
+	u.Set(wallet.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *WalletUpsert) UpdateCreatedAt() *WalletUpsert {
+	u.SetExcluded(wallet.FieldCreatedAt)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -364,6 +406,9 @@ func (u *WalletUpsertOne) UpdateNewValues() *WalletUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(wallet.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(wallet.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -415,6 +460,20 @@ func (u *WalletUpsertOne) AddPaper(v schema.BigInt) *WalletUpsertOne {
 func (u *WalletUpsertOne) UpdatePaper() *WalletUpsertOne {
 	return u.Update(func(s *WalletUpsert) {
 		s.UpdatePaper()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *WalletUpsertOne) SetCreatedAt(v time.Time) *WalletUpsertOne {
+	return u.Update(func(s *WalletUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *WalletUpsertOne) UpdateCreatedAt() *WalletUpsertOne {
+	return u.Update(func(s *WalletUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -601,6 +660,9 @@ func (u *WalletUpsertBulk) UpdateNewValues() *WalletUpsertBulk {
 				s.SetIgnore(wallet.FieldID)
 				return
 			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(wallet.FieldCreatedAt)
+			}
 		}
 	}))
 	return u
@@ -652,6 +714,20 @@ func (u *WalletUpsertBulk) AddPaper(v schema.BigInt) *WalletUpsertBulk {
 func (u *WalletUpsertBulk) UpdatePaper() *WalletUpsertBulk {
 	return u.Update(func(s *WalletUpsert) {
 		s.UpdatePaper()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *WalletUpsertBulk) SetCreatedAt(v time.Time) *WalletUpsertBulk {
+	return u.Update(func(s *WalletUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *WalletUpsertBulk) UpdateCreatedAt() *WalletUpsertBulk {
+	return u.Update(func(s *WalletUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

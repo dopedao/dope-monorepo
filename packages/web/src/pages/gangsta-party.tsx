@@ -82,7 +82,7 @@ const GangstaParty = () => {
           <Button>Peep Your Squad</Button>
         </Link>
         <Link href="/dope" passHref>
-          <Button variant="primary">Mint a Hustler</Button>
+          <Button variant="primary">Initiate a Hustler</Button>
         </Link>
       </HStack>
     </>

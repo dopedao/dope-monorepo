@@ -67,6 +67,7 @@ const DesktopIconList = () => {
             }
           }}
         />
+        {/* <DesktopIcon icon="todo" label="GAME" clickAction={() => openLocalRoute('/game')} /> */}
         <DesktopIcon icon="tv" label="DOPE TV" clickAction={() => openLocalRoute('/dope-tv')} />
         <DesktopIcon icon="file" label="News" clickAction={() => openLocalRoute('/news')} />
         <DesktopIcon icon="winamp" label="DOPE AMP" clickAction={() => setShowWebAmp(true)} />

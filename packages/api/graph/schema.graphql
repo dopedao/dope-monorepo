@@ -15,12 +15,10 @@ scalar Bytes
 scalar BigInt
 "Long is a 64 bit unsigned integer."
 scalar Long
-"AccountID is a CAIP-10 compliant account id."
-scalar AccountID
-"ChainID is a CAIP-2 compliant chain id."
-scalar ChainID
-"AssetID is a CAIP-19 compliant asset id."
-scalar AssetID
+
+interface Node {
+  id: ID!
+}
 
 """
 ItemType represents the item slot the item belongs to.
@@ -38,7 +36,7 @@ enum ItemType {
   ACCESSORY
 }
 
-type Item {
+type Item implements Node {
   id: ID!
   type: ItemType!
   name: String!
@@ -46,6 +44,13 @@ type Item {
   nameSuffix: String
   suffix: String
   augmented: Boolean
+}
+
+type WalletItems implements Node {
+  id: ID!
+  balance: BigInt!
+  wallet: Wallet!
+  item: Item!
 }
 
 enum BodyPartSex {
@@ -59,7 +64,7 @@ enum BodyPartType {
   BEARD
 }
 
-type BodyPart {
+type BodyPart implements Node {
   id: ID!
   type: BodyPartType!
   sex: BodyPartSex!
@@ -76,7 +81,7 @@ enum HustlerSex {
   FEMALE
 }
 
-type Hustler {
+type Hustler implements Node {
   id: ID!
   type: HustlerType!
   name: String
@@ -103,22 +108,54 @@ type Hustler {
   accessory: Item
 }
 
-type Dope {
+type Dope implements Node {
   id: ID!
   items: [Item!]!
   claimed: Boolean!
   opened: Boolean!
 }
 
-type Wallet {
-  id: AccountID!
+type Wallet implements Node {
+  id: ID!
   dopes: [Dope!]!
+  hustlers: [Hustler!]!
+  items: [WalletItems!]!
   paper: BigInt!
 }
 
 type Query {
-  wallets: [Wallet!]
-  dopes: [Dope!]
-  items: [Item!]
-  hustlers: [Hustler!]
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
+  wallets(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: WalletOrder
+    where: WalletWhereInput
+  ): WalletConnection!
+  dopes(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: DopeOrder
+    where: DopeWhereInput
+  ): DopeConnection!
+  items(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: ItemOrder
+    where: ItemWhereInput
+  ): ItemConnection!
+  hustlers(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: HustlerOrder
+    where: HustlerWhereInput
+  ): HustlerConnection!
 }

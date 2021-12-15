@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -14,7 +15,10 @@ type SyncState struct {
 func (SyncState) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
-		field.Uint64("start_block"),
+		field.Uint64("start_block").
+			Annotations(
+				entgql.Type("Long"),
+			),
 	}
 }
 
