@@ -1,8 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
+import { useState } from 'react';
 import { Button } from '@chakra-ui/react';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
+import { css } from '@emotion/react';
+import { useRouter } from 'next/router';
+import { CloseButton } from '@chakra-ui/close-button';
 import { media } from 'ui/styles/mixins';
 import { useHustlersWalletQuery } from 'generated/graphql';
 import { useOptimismClient } from 'components/EthereumApolloProvider';
@@ -12,6 +16,7 @@ import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import Dialog from 'components/Dialog';
+import StickyNote from 'components/StickyNote';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 const streetBackground =
@@ -58,6 +63,8 @@ const ContentEmpty = (
 );
 
 const Hustlers = () => {
+  const [showSuccessAlert, setShowSuccessAlert] = useState(true);
+  const router = useRouter();
   const { account } = useWeb3React();
   const client = useOptimismClient();
   const { data, loading } = useHustlersWalletQuery({
@@ -66,9 +73,36 @@ const Hustlers = () => {
     skip: !account,
   });
 
+  const handleSuccessAlert = () => {
+    setShowSuccessAlert(false);
+    router.replace('/hustlers');
+  };
+
   return (
     <AppWindow padBody={false} navbar={<DopeWarsExeNav />}>
       <Head title="Your Hustler Squad" />
+      {account && router.query.c === 'true' && showSuccessAlert && (
+        <StickyNote>
+          <div
+            css={css`
+              display: flex;
+              align-items: center;
+            `}
+          >
+            <p
+              css={css`
+                margin-right: 10px;
+                padding-bottom: unset;
+              `}
+            >
+              {
+                "You've successfully customized your Hustler! It might take a minute for the changes to be reflected."
+              }
+            </p>{' '}
+            <CloseButton onClick={handleSuccessAlert} />
+          </div>
+        </StickyNote>
+      )}
       {loading && ContentLoading}
       {!loading && data?.wallet?.hustlers && data?.wallet?.hustlers.length > 0 && (
         <Container>

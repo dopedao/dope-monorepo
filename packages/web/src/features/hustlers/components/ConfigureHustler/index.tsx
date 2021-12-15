@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Button, HStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { useRouter } from 'next/router';
 import { ReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -33,6 +34,7 @@ const ConfigureHustler = ({
   itemIds,
   goBackToInitialStep,
 }: ConfigureHustlerProps & { isCustomize?: boolean }) => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { chainId } = useOptimism();
   const { library, chainId: web3ReactChainId } = useWeb3React();
@@ -118,6 +120,10 @@ const ConfigureHustler = ({
         });
         await transaction.wait();
         setLoading(false);
+        router.push({
+          pathname: '/hustlers',
+          search: `?c=true`,
+        });
       } catch (error) {
         setLoading(false);
       }
