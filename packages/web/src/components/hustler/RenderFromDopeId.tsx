@@ -49,6 +49,7 @@ const RenderFromDopeId = ({
         textColor={textColor}
         zoomWindow={zoomWindow}
         ogTitle={ogTitle}
+        dopeId={id}
       />
     );
   } else {

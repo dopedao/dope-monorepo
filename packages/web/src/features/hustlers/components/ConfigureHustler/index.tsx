@@ -145,6 +145,7 @@ const ConfigureHustler = ({
             textColor={config.textColor}
             zoomWindow={config.zoomWindow}
             ogTitle={ogTitle}
+            dopeId={config.dopeId}
           />
         ) : (
           <RenderFromDopeId
