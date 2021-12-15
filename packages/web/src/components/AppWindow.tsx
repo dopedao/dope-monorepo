@@ -54,7 +54,7 @@ export default function AppWindow({
       width={width}
       height={height}
     >
-      {requiresWalletConnection === true && !account ? (
+      {requiresWalletConnection && !account ? (
         <ConnectWallet />
       ) : (
         <AppWindowBody className="appWindowBody" scrollable={scrollable} padBody={padBody}>

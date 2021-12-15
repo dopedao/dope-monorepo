@@ -67,7 +67,7 @@ export default function DopeWindow() {
   };
 
   return (
-    <AppWindow requiresWalletConnection={true} navbar={<DopeWarsExeNav />}>
+    <AppWindow requiresWalletConnection navbar={<DopeWarsExeNav />}>
       <Head />
       {account && chainId !== 1 && chainId !== 42 && showNetworkAlert && (
         <StickyNote>
