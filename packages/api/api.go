@@ -32,10 +32,21 @@ func NewServer(db *sql.Driver) (http.Handler, error) {
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
-	for _, c := range configs {
-		engine := NewEngine(client, c)
-		go engine.Sync(context.Background())
-	}
+	ctx, cancel := context.WithCancel(context.Background())
+	r.HandleFunc("/_ah/start", func(w http.ResponseWriter, r *http.Request) {
+		for _, c := range configs {
+			engine := NewEngine(client, c)
+			go engine.Sync(ctx)
+		}
+		w.WriteHeader(200)
+		_, _ = w.Write([]byte(`{"success":true}`))
+	})
+
+	r.HandleFunc("/_ah/stop", func(w http.ResponseWriter, r *http.Request) {
+		cancel()
+		w.WriteHeader(200)
+		_, _ = w.Write([]byte(`{"success":true}`))
+	})
 
 	return cors.Default().Handler(r), nil
 }
