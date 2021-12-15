@@ -46,6 +46,13 @@ type Item implements Node {
   augmented: Boolean
 }
 
+type WalletItems implements Node {
+  id: ID!
+  balance: BigInt!
+  wallet: Wallet!
+  item: Item!
+}
+
 enum BodyPartSex {
   MALE
   FEMALE
@@ -111,6 +118,8 @@ type Dope implements Node {
 type Wallet implements Node {
   id: ID!
   dopes: [Dope!]!
+  hustlers: [Hustler!]!
+  items: [WalletItems!]!
   paper: BigInt!
 }
 
