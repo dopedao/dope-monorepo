@@ -6,10 +6,12 @@ import { Scene, Cameras, Tilemaps } from 'phaser';
 
 export default class GameScene extends Scene {
   private player!: Player;
-  private map: Phaser.Tilemaps.Tilemap | undefined;
-  private controls: Cameras.Controls.FixedKeyControl | undefined;
 
-  private hoveredTile: Phaser.Tilemaps.Tile | undefined;
+  private map!: Phaser.Tilemaps.Tilemap;
+  private hoveredTile?: Phaser.Tilemaps.Tile;
+
+  arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
+  wasd!: Phaser.Types.Input.Keyboard.CursorKeys;
 
   constructor() {
     super({
@@ -18,9 +20,19 @@ export default class GameScene extends Scene {
   }
 
   create(): void {
+    this.arrows = this.input.keyboard.createCursorKeys();
+    this.wasd = this.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W, 
+      down: Phaser.Input.Keyboard.KeyCodes.S, 
+      left: Phaser.Input.Keyboard.KeyCodes.A, 
+      right: Phaser.Input.Keyboard.KeyCodes.D 
+    }) as Phaser.Types.Input.Keyboard.CursorKeys;
+
     this.input.on('pointerdown', () => {
+      if (!this.hoveredTile)
+        return;
       // transition to spot
-      this.cameras.main.pan(this.input.activePointer.worldX, this.input.activePointer.worldY, 1000, 'Sine.easeInOut');
+      this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
     });
 
     this.map = this.make.tilemap({ key: "map" });
@@ -52,30 +64,40 @@ export default class GameScene extends Scene {
 
   update(time: number, delta: number): void {
     if (this.player)
-      this.player.update();
+      this.player.update(this.arrows, this.wasd);
 
-    // just basically loop over all of the available layers and their tiles and check if they intersect with the mouse
+    // loop over the world's layer tiles and check if they intersect with the mouse
     // not the best method but just for demonstration purposes
-    if (this.map)
-        this.map.layers.forEach(layer => {
-          for (let j = 0; j < layer.data.length; j++)
-          {
-            for (let k = 0; k < layer.data[j].length; k++)
-            {
-              const tile: Phaser.Tilemaps.Tile = layer.data[j][k];
+    const worldLayer = this.map.getLayer('Below Player');
+    for (let j = 0; j < worldLayer.data.length; j++)
+    {
+      for (let k = 0; k < worldLayer.data[j].length; k++)
+      {
+        const tile: Phaser.Tilemaps.Tile = worldLayer.data[j][k];
 
-              // pos in bounds, reduce tile's alpha
-              if (tile.getBounds() && (tile.getBounds() as Phaser.Geom.Rectangle).contains(this.input.activePointer.worldX, this.input.activePointer.worldY))
-              {
-                tile.alpha = 0.7;
-                this.hoveredTile = tile;
-              }
-              else if (tile.alpha !== 1.0)
-              {
-                tile.alpha = 1.0;
-              }
-            }
+        //console.log(this.map.getLayer('World').data[j][k]);
+
+        // pos in bounds, reduce tile's alpha
+        if (tile.getBounds() &&
+          (tile.getBounds() as Phaser.Geom.Rectangle).contains(this.input.activePointer.worldX, this.input.activePointer.worldY))
+        {
+          // check if there's nothing collideable on top of the tile
+          if (this.map.getLayer('World').data[j][k].collides)
+          {
+            this.hoveredTile = undefined;
           }
-        })
+          else 
+          {
+            tile.alpha = 0.7;
+            this.hoveredTile = tile;
+          }
+          
+        }
+        else if (tile.alpha !== 1.0)
+        {
+          tile.alpha = 1.0;
+        }
+      }
+    }
   }
 }

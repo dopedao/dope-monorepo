@@ -65,7 +65,8 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
                     pixelArt: true,
                     scene: [Boot, Preload, GameScene]
                 }
-            } initialize={initialize} ref={gameRef} />
+            } initialize={initialize} ref={gameRef}>
+            </IonPhaser>
         </DesktopWindow> 
     );
 }
