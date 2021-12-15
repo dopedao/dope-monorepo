@@ -3,6 +3,8 @@ import { useReactiveVar } from '@apollo/client';
 import Draggable from 'react-draggable';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
+import { graphql } from "react-relay";
+
 import { useWalletQuery } from 'generated/graphql';
 import { media } from 'ui/styles/mixins';
 import { returnBreakpoint } from 'ui/styles/breakpoints';
@@ -10,6 +12,21 @@ import { isTouchDevice } from 'utils/utils';
 import WindowPosition, { WindowPositionReactive } from 'utils/WindowPosition';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
+
+const Wallet = graphql`
+  query Wallet($id: ID!) {
+    wallet(id: $id) {
+      id
+      address
+      paper
+      bags(first: 200) {
+        claimed
+        id
+        opened
+      }
+    }
+  }
+`;
 
 type DesktopWindowProps = {
   title: string | undefined;
@@ -66,7 +83,7 @@ const DesktopWindow = ({
   titleChildren,
   children,
   onResize,
-  onMoved
+  onMoved,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const { data, loading } = useWalletQuery({
@@ -76,7 +93,8 @@ const DesktopWindow = ({
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const toggleFullScreen = () => (fullScreenHandler ? fullScreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen));
+  const toggleFullScreen = () =>
+    fullScreenHandler ? fullScreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen);
   const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
@@ -92,7 +110,7 @@ const DesktopWindow = ({
     if (el && el.getAttribute('style')) {
       const transformValue = el.getAttribute('style') || '';
       windowPosition.updatePosition(transformValue);
-      
+
       if (onMoved) {
         onMoved(windowPosition);
       }
