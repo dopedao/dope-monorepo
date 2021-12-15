@@ -83,7 +83,7 @@ const Hustlers = () => {
   };
 
   return (
-    <AppWindow padBody={false} navbar={<DopeWarsExeNav />}>
+    <AppWindow requiresWalletConnection={true} padBody={false} navbar={<DopeWarsExeNav />}>
       <Head title="Your Hustler Squad" />
       {account && router.query.c === 'true' && showSuccessAlert && (
         <StickyNote>
@@ -114,8 +114,11 @@ const Hustlers = () => {
           </div>
         </StickyNote>
       )}
-      {(loading || walletLoading) && ContentLoading}
-      {!loading && !walletLoading && data?.wallet?.hustlers && data?.wallet?.hustlers.length > 0 && (
+      {loading || walletLoading ? (
+        ContentLoading
+      ) : !data?.wallet?.hustlers || data?.wallet?.hustlers.length === 0 ? (
+        ContentEmpty
+      ) : (
         <Container>
           <div className="hustlerGrid">
             {data.wallet.hustlers.map(({ id, data }) => {
@@ -133,10 +136,6 @@ const Hustlers = () => {
           </div>
         </Container>
       )}
-      {!loading &&
-        !walletLoading &&
-        (!data?.wallet?.hustlers || data?.wallet?.hustlers.length === 0) &&
-        ContentEmpty}
     </AppWindow>
   );
 };
