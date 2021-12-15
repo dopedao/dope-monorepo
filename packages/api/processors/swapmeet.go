@@ -84,6 +84,14 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapM
 }
 
 func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *bindings.SwapMeetTransferBatch, tx *ent.Tx) error {
+	if err := tx.Wallet.Create().
+		SetID(e.To.Hex()).
+		OnConflictColumns(wallet.FieldID).
+		UpdateNewValues().
+		Exec(ctx); err != nil {
+		return fmt.Errorf("swapmeet: upsert to wallet: %w", err)
+	}
+
 	if e.From != (common.Address{}) {
 		for i, id := range e.Ids {
 			if err := tx.WalletItems.
@@ -144,6 +152,14 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *binding
 }
 
 func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *bindings.SwapMeetTransferSingle, tx *ent.Tx) error {
+	if err := tx.Wallet.Create().
+		SetID(e.To.Hex()).
+		OnConflictColumns(wallet.FieldID).
+		UpdateNewValues().
+		Exec(ctx); err != nil {
+		return fmt.Errorf("swapmeet: upsert to wallet: %w", err)
+	}
+
 	if e.From != (common.Address{}) {
 		if err := tx.WalletItems.
 			UpdateOneID(fmt.Sprintf("%s-%s", e.From.Hex(), e.Id.String())).

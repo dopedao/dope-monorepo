@@ -13,6 +13,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -255,6 +256,14 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *binding
 }
 
 func (p *HustlerProcessor) ProcessTransferBatch(ctx context.Context, e *bindings.HustlerTransferBatch, tx *ent.Tx) error {
+	if err := tx.Wallet.Create().
+		SetID(e.To.Hex()).
+		OnConflictColumns(wallet.FieldID).
+		UpdateNewValues().
+		Exec(ctx); err != nil {
+		return fmt.Errorf("hustler: upsert to wallet: %w", err)
+	}
+
 	var ids []string
 	for _, id := range e.Ids {
 		ids = append(ids, id.String())
@@ -272,6 +281,14 @@ func (p *HustlerProcessor) ProcessTransferBatch(ctx context.Context, e *bindings
 }
 
 func (p *HustlerProcessor) ProcessTransferSingle(ctx context.Context, e *bindings.HustlerTransferSingle, tx *ent.Tx) error {
+	if err := tx.Wallet.Create().
+		SetID(e.To.Hex()).
+		OnConflictColumns(wallet.FieldID).
+		UpdateNewValues().
+		Exec(ctx); err != nil {
+		return fmt.Errorf("hustler: upsert to wallet: %w", err)
+	}
+
 	if e.From == (common.Address{}) {
 		typ := hustler.TypeRegular
 		if e.Id.Cmp(big.NewInt(500)) == -1 {
@@ -300,12 +317,6 @@ func (p *HustlerProcessor) ProcessTransferSingle(ctx context.Context, e *binding
 	}
 
 	if e.To != (common.Address{}) {
-		if err := tx.Wallet.Create().
-			SetID(e.To.Hex()).
-			Exec(ctx); err != nil {
-			return fmt.Errorf("hustler: upsert to wallet: %w", err)
-		}
-
 		// TODO: reset age for non-og
 		if err := tx.Hustler.UpdateOneID(e.Id.String()).SetWalletID(e.To.Hex()).Exec(ctx); err != nil {
 			return fmt.Errorf("hustler: update hustler owner: %w", err)
