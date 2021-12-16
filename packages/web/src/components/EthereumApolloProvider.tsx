@@ -6,22 +6,11 @@ import {
   makeVar,
   useReactiveVar,
 } from '@apollo/client';
-<<<<<<< HEAD:packages/web/components/EthereumApolloProvider.tsx
-import { getRarityForDopeId } from 'src/dope_rarity_check';
-import { NETWORK } from 'src/constants';
-import { OpenSeaAsset } from 'src/OpenSeaAsset';
-import { ReactNode, useMemo } from 'react';
-import { useEffect } from 'react';
-import { useWeb3React } from '@web3-react/core';
-import DopeDatabase, { DopeDbCacheReactive } from 'src/DopeDatabase';
-import { valueFromCachedLoot } from 'src/DopeJsonParser';
-=======
 import { getRarityForDopeId } from 'utils/dope-rarity-check';
 import { NETWORK } from 'utils/constants';
 import { OpenSeaAsset } from 'utils/OpenSeaAsset';
 import DopeDatabase, { DopeDbCacheReactive } from 'utils/DopeDatabase';
 import { valueFromCachedDope } from 'utils/DopeJsonParser';
->>>>>>> origin/master:packages/web/src/components/EthereumApolloProvider.tsx
 import { useEthereum, useOptimism } from 'hooks/web3';
 
 /**

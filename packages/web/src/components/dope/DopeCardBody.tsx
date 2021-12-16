@@ -1,13 +1,8 @@
 import { css } from '@emotion/react';
 import { DopeLegendBackgroundColors } from 'components/dope/DopeLegend';
 import ItemRarities from 'dope-metrics/output/item-rarities.json';
-<<<<<<< HEAD:packages/web/components/loot/LootCardBody.tsx
-import { PickedBag } from 'src/PickedBag';
-import { NUM_DOPE_TOKENS } from 'src/constants';
-=======
-import { PickedBag } from 'utils/DopeDatabase';
+import { PickedBag } from 'PickedBag';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
->>>>>>> origin/master:packages/web/src/components/dope/DopeCardBody.tsx
 
 const itemBackgroundColors = Object.values(DopeLegendBackgroundColors);
 

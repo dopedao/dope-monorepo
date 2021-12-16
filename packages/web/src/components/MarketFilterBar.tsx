@@ -4,10 +4,6 @@ import { Input, Select } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import { useDebounce } from 'usehooks-ts';
 import { css } from '@emotion/react';
-<<<<<<< HEAD:packages/web/components/MarketFilterBar.tsx
-import useQueryParam from 'src/use_query_param';
-=======
->>>>>>> origin/master:packages/web/src/components/MarketFilterBar.tsx
 import styled from '@emotion/styled';
 import useQueryParam from 'utils/use-query-param';
 

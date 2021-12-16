@@ -1,5 +1,5 @@
-import { OpenSeaAsset } from 'src/OpenSeaAsset';
-import { PickedBag } from 'src/PickedBag';
+import { PickedBag } from 'PickedBag';
+import { OpenSeaAsset } from 'utils/OpenSeaAsset';
 
 const highImpossibleRank = 9999;
 

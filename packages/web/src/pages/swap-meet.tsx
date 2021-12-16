@@ -11,7 +11,6 @@ import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
 import DopeCard from 'components/dope/DopeCard';
 import MarketFilterBar from 'components/MarketFilterBar';
-import { PickedBag } from 'src/PickedBag';
 import DopeDatabase, {
   compareByHighestLastSale,
   compareByMostAffordable,
@@ -22,8 +21,8 @@ import DopeDatabase, {
   testForUnclaimedPaper,
   testForSale,
   testForNotOpened,
-  PickedBag,
 } from 'utils/DopeDatabase';
+import { PickedBag } from 'PickedBag';
 
 // To prevent all 8k items from showing at once and overloading
 // the DOM we fake loading more using infinite scroll.
@@ -173,15 +172,9 @@ const MarketList = () => {
             useWindow={false}
             className="dopeGrid"
           >
-<<<<<<< HEAD:packages/web/pages/swap-meet.tsx
-            {visibleItems.map((bag) => (
-              <LootCard
-                key={`loot-card_${bag.id}_${viewCompactCards}`}
-=======
             {visibleItems.map((bag: PickedBag) => (
               <DopeCard
                 key={`dope-card_${bag.id}_${viewCompactCards}`}
->>>>>>> origin/master:packages/web/src/pages/swap-meet.tsx
                 bag={bag}
                 footer="for-marketplace"
                 isExpanded={viewCompactCards ? false : true}

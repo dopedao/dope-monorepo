@@ -1,10 +1,10 @@
 import { Bag } from 'generated/graphql';
 import { makeVar } from '@apollo/client';
 import DopeJson from 'dope-metrics/output/loot.json';
-import { getRarityForDopeId } from './dope_rarity_check';
-import { PickedBag } from 'src/PickedBag';
-import { newEmptyBag } from 'src/EmptyBag';
 import { OpenSeaAsset } from './OpenSeaAsset';
+import { newEmptyBag } from 'EmptyBag';
+import { getRarityForDopeId } from 'dope_rarity_check';
+import { PickedBag } from 'PickedBag';
 
 const highImpossibleRank = 9999;
 

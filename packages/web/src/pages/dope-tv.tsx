@@ -1,11 +1,7 @@
 import styled from '@emotion/styled';
 import DesktopWindow from 'components/DesktopWindow';
 import Head from 'components/Head';
-<<<<<<< HEAD:packages/web/pages/dope-tv.tsx
-import Twitch from 'src/twitch_embed_v1';
-=======
 import Twitch from 'utils/twitch-embed-v1';
->>>>>>> origin/master:packages/web/src/pages/dope-tv.tsx
 
 const title = 'DOPE TV';
 

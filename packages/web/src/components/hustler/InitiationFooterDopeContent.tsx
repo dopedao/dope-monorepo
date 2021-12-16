@@ -6,21 +6,16 @@ import { Select } from '@chakra-ui/react';
 import { ReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
-<<<<<<< HEAD:packages/web/components/hustler/InitiationFooterDopeContent.tsx
-import { useWalletQuery, WalletQuery } from 'src/generated/graphql';
-import { HustlerInitConfig, isHustlerRandom, randomizeHustlerAttributes } from 'src/HustlerConfig';
-import { PickedBag } from 'src/PickedBag';
-=======
 import { useWalletQuery, WalletQuery } from 'generated/graphql';
 import {
   HustlerCustomization,
   isHustlerRandom,
   randomizeHustlerAttributes,
 } from 'utils/HustlerConfig';
-import { PickedBag } from 'utils/DopeDatabase';
->>>>>>> origin/master:packages/web/src/components/hustler/InitiationFooterDopeContent.tsx
+// import { PickedBag } from 'utils/DopeDatabase';
 import PanelFooter from 'components/PanelFooter';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
+import { PickedBag } from 'PickedBag';
 
 const NoDopeMessage = () => {
   const caution = (

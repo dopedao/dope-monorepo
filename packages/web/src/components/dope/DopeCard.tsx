@@ -1,19 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
 import { css } from '@emotion/react';
-<<<<<<< HEAD:packages/web/components/loot/LootCard.tsx
-import { PickedBag } from 'src/PickedBag';
-import LootCardBody from './LootCardBody';
-import LootCardFooterForMarket from './LootCardFooterForMarket';
-import LootCardFooterForOwner from './LootCardFooterForOwner';
-import LootLegend from './LootLegend';
-=======
-import { PickedBag } from 'utils/DopeDatabase';
+import { PickedBag } from 'PickedBag';
 import DopeCardBody from 'components/dope/DopeCardBody';
 import DopeCardFooterForMarket from 'components/dope/DopeCardFooterForMarket';
 import DopeCardFooterForOwner from 'components/dope/DopeCardFooterForOwner';
 import DopeLegend from 'components/dope/DopeLegend';
->>>>>>> origin/master:packages/web/src/components/dope/DopeCard.tsx
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
