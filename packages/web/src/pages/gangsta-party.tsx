@@ -50,8 +50,8 @@ const GangstaParty = () => {
   const client = useOptimismClient();
   const { data, loading } = useAllHustlersQuery({ client });
 
-  //Amount of hustlers to render
-  const PAGE_SIZE = 25;
+  //Amount of hustlers to render per page
+  const PAGE_SIZE = 75;
   let hustlersVisible = PAGE_SIZE;
 
   const hustlers = useMemo(() => {
