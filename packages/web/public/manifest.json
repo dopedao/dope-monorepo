@@ -3,24 +3,49 @@
     "totalSize":397000,
     "assets": {
         "spritesheet": {
-            "base_male_back": {
-                "file": "./images/game/character/male/base/animation_back_spritesheet.png",
-                "frameConfig": { "frameWidth": 25, "frameHeight": 60 },
+            "male_base": {
+                "file": "./images/game/character/male/base/male_base.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
                 "size": -1
             },
-            "base_male_front": {
-                "file": "./images/game/character/male/base/animation_front_spritesheet.png",
-                "frameConfig": { "frameWidth": 27, "frameHeight": 60 },
+            "male_base_shadow": {
+                "file": "./images/game/character/male/base/male_base_shadow.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
                 "size": -1
             },
-            "base_male_left": {
-                "file": "./images/game/character/male/base/animation_left_spritesheet.png",
-                "frameConfig": { "frameWidth": 31, "frameHeight": 60 },
+            "male_clothes_shirtless": {
+                "file": "./images/game/character/male/clothes/male_clothes_shirtless.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
                 "size": -1
             },
-            "base_male_right": {
-                "file": "./images/game/character/male/base/animation_right_spritesheet.png",
-                "frameConfig": { "frameWidth": 34, "frameHeight": 60 },
+            "male_feet_nikecortez": {
+                "file": "./images/game/character/male/feet/male_feet_nikecortez.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": -1
+            },
+            "male_hands_blackgloves": {
+                "file": "./images/game/character/male/hands/male_hands_blackgloves.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": -1
+            },
+            "male_mask_mrfax": {
+                "file": "./images/game/character/male/necklace/male_necklace_gold.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": -1
+            },
+            "male_ring_gold": {
+                "file": "./images/game/character/male/ring/male_ring_gold.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": -1
+            },
+            "male_waist_waistsuspenders": {
+                "file": "./images/game/character/male/waist/male_waist_waistsuspenders.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": -1
+            },
+            "male_weapons_ak47": {
+                "file": "./images/game/character/male/weapons/male_weapons_ak47.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
                 "size": -1
             }
         },

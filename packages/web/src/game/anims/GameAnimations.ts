@@ -1,5 +1,5 @@
-import { Base, spritesDict } from "game/constants/Sprites";
-import { createCharacterAnimations } from "./CharacterAnimations";
+import { Base, SpritesMap } from "game/constants/Sprites";
+import { createCharacterBaseAnimations } from "./CharacterAnimations";
 
 export default class GameAnimations
 {
@@ -12,6 +12,6 @@ export default class GameAnimations
 
     create(): void
     {
-        createCharacterAnimations(this.anims);
+        createCharacterBaseAnimations(this.anims);
     }
 }
