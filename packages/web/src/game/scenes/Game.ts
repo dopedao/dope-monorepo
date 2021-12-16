@@ -1,4 +1,4 @@
-import { Base, spritesDict } from 'game/constants/Sprites';
+import { Base, SpritesMap } from 'game/constants/Sprites';
 import Player from 'game/entities/Player';
 import PlayerModel from 'game/gfx/models/PlayerModel';
 import GameAnimations from 'game/anims/GameAnimations';
