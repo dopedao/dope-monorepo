@@ -125,9 +125,9 @@ func (e *Engine) Sync(ctx context.Context) {
 
 					if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
 						for _, l := range logs {
-							if err := tx.Event.Create().SetID(fmt.Sprintf("%s-%s", c.Address.Hex(), l.TxHash.Hex())).SetAddress(c.Address).SetHash(l.TxHash).SetIndex(uint64(l.Index)).Exec(ctx); err != nil {
+							if err := tx.Event.Create().SetID(fmt.Sprintf("%s-%s-%d", c.Address.Hex(), l.TxHash.Hex(), l.Index)).SetAddress(c.Address).SetHash(l.TxHash).SetIndex(uint64(l.Index)).Exec(ctx); err != nil {
 								if ent.IsConstraintError(err) {
-									log.Printf("duplicate event log: %s", l.TxHash.Hex())
+									log.Printf("duplicate event log %s: %+v", l.TxHash.Hex(), err)
 									continue
 								}
 
