@@ -28,6 +28,9 @@ export default class GameScene extends Scene {
       right: Phaser.Input.Keyboard.KeyCodes.D 
     }) as Phaser.Types.Input.Keyboard.CursorKeys;
 
+    // create all of the animations
+    new GameAnimations(this.anims).create();
+
     this.input.on('pointerdown', () => {
       if (!this.hoveredTile)
         return;
@@ -42,6 +45,12 @@ export default class GameScene extends Scene {
 
     this.map.createLayer("Below Player", tileset, 0, 0);
     const world = this.map.createLayer("World", tileset, 0, 0);
+
+    this.player = new Player(
+      500, 600, 
+      new PlayerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold), 
+      this);
+
     this.map.createLayer("Above Player", tileset, 0, 0);
 
     // set world as being collidable
@@ -49,14 +58,6 @@ export default class GameScene extends Scene {
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-
-    // create all of the animations
-    new GameAnimations(this.anims).create();
-
-    this.player = new Player(
-      500, 600, 
-      new PlayerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold, Weapons.AK47), 
-      this);
 
     // make the camera follow the player
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);

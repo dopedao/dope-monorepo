@@ -26,7 +26,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
 
         //this.setCollideWorldBounds(true);
         this.body.setSize(this.body.width * 0.35, this.body.height * 0.25);
-        this.body.offset.y = this.body.offset.y + 4;
+        this.body.offset.y += 7.5;
 
         // create sub sprites
         this._model.createSprites(this.scene, new Phaser.Math.Vector2(this.x, this.y), new Phaser.Math.Vector2(this.scaleX, this.scaleY));
