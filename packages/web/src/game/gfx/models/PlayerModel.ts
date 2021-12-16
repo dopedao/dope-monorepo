@@ -32,6 +32,10 @@ export default class PlayerModel
 
     createSprites(scene: Phaser.Scene, pos: Phaser.Math.Vector2, scale?: Phaser.Math.Vector2)
     {
+        // Shadow
+        this.sprites.push(scene.add.sprite(pos.x, pos.y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Shadow]));
+
+        // Accessories
         if (this.clothes)
             this.clothes?.forEach(c => this.sprites.push(scene.add.sprite(pos.x, pos.y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Clothes][c])));
         if (this.feet != undefined)
