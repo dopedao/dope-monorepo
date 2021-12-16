@@ -9,5 +9,5 @@ manual_scaling:
   instances: 1
 
 env_variables:
-  INDEX: true
+  INDEX: True
   PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2
