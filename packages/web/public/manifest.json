@@ -1,6 +1,6 @@
 {
     "assetRoot":"assets",
-    "totalSize":397000,
+    "totalSize":500000,
     "assets": {
         "spritesheet": {
             "male_base": {
@@ -29,6 +29,11 @@
                 "size": -1
             },
             "male_mask_mrfax": {
+                "file": "./images/game/character/male/mask/male_mask_mrfax.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": -1
+            },
+            "male_necklace_gold": {
                 "file": "./images/game/character/male/necklace/male_necklace_gold.png",
                 "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
                 "size": -1

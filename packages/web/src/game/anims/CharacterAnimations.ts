@@ -1,9 +1,9 @@
 import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
 
-const createCharacterBaseAnimations = (anims: Phaser.Animations.AnimationManager): void => {
+const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, key: string): void => {
     anims.create({
-        key: SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base] + "_right",
-        frames: anims.generateFrameNumbers(SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], {
+        key: key + "_right",
+        frames: anims.generateFrameNumbers(key, {
             start: 0,
             end: 7
         }),
@@ -12,8 +12,8 @@ const createCharacterBaseAnimations = (anims: Phaser.Animations.AnimationManager
     });
 
     anims.create({
-        key: SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base] + "_left",
-        frames: anims.generateFrameNumbers(SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], {
+        key: key + "_left",
+        frames: anims.generateFrameNumbers(key, {
             start: 8,
             end: 15
         }),
@@ -22,8 +22,8 @@ const createCharacterBaseAnimations = (anims: Phaser.Animations.AnimationManager
     });
 
     anims.create({
-        key: SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base] + "_front",
-        frames: anims.generateFrameNumbers(SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], {
+        key: key + "_front",
+        frames: anims.generateFrameNumbers(key, {
             start: 16,
             end: 23
         }),
@@ -32,8 +32,8 @@ const createCharacterBaseAnimations = (anims: Phaser.Animations.AnimationManager
     });
 
     anims.create({
-        key: SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base] + "_back",
-        frames: anims.generateFrameNumbers(SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], {
+        key: key + "_back",
+        frames: anims.generateFrameNumbers(key, {
             start: 24,
             end: 31
         }),
@@ -42,4 +42,4 @@ const createCharacterBaseAnimations = (anims: Phaser.Animations.AnimationManager
     });
 }
 
-export { createCharacterBaseAnimations }
+export { createCharacterAnimations }

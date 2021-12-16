@@ -1,5 +1,5 @@
-import { Base, SpritesMap } from "game/constants/Sprites";
-import { createCharacterBaseAnimations } from "./CharacterAnimations";
+import { Base, Categories, SpritesMap } from "game/constants/Sprites";
+import { createCharacterAnimations } from "./CharacterAnimations";
 
 export default class GameAnimations
 {
@@ -12,6 +12,13 @@ export default class GameAnimations
 
     create(): void
     {
-        createCharacterBaseAnimations(this.anims);
+        Object.values(SpritesMap[Categories.Character][Base.Male]).forEach(categories => {
+            if (typeof categories === "string")
+                createCharacterAnimations(this.anims, categories);
+            else
+                Object.values(categories).forEach(v => {
+                    createCharacterAnimations(this.anims, v);
+                });
+        });
     }
 }
