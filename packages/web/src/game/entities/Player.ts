@@ -15,9 +15,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         super(scene, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
         this._model = model;
 
-        // attach shadow
-        //this.addChild()
-
         this.scaleY *= 1.8;
         this.scaleX *= 1.6;
 
