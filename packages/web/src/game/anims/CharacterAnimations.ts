@@ -1,4 +1,5 @@
 import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
+import Player from "game/entities/Player";
 
 const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, key: string): void => {
     anims.create({
@@ -7,7 +8,7 @@ const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, ke
             start: 0,
             end: 7
         }),
-        frameRate: 15,
+        frameRate: Player.DEFAULT_VELOCITY / 6,
         repeat: -1
     });
 
@@ -17,7 +18,7 @@ const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, ke
             start: 8,
             end: 15
         }),
-        frameRate: 15,
+        frameRate: Player.DEFAULT_VELOCITY / 6,
         repeat: -1
     });
 
@@ -27,7 +28,7 @@ const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, ke
             start: 16,
             end: 23
         }),
-        frameRate: 15,
+        frameRate: Player.DEFAULT_VELOCITY / 6,
         repeat: -1
     });
 
@@ -37,7 +38,7 @@ const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, ke
             start: 24,
             end: 31
         }),
-        frameRate: 15,
+        frameRate: Player.DEFAULT_VELOCITY / 6,
         repeat: -1
     });
 }

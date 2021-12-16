@@ -65,8 +65,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         {
             this.setVelocity(0, 0);
             // reset to the first frame of the anim
-            // if (this.anims.currentAnim)
-            //     this.anims.setCurrentFrame(this.anims.currentAnim.frames[0]);
+            if (this.anims.currentAnim && this.anims.currentFrame.index != 0)
+                this.anims.setCurrentFrame(this.anims.currentAnim.frames[0]);
+            this._model.sprites.forEach(sprite => sprite.anims.currentAnim && sprite.anims.currentFrame.index != 0 ? 
+                sprite.anims.setCurrentFrame(sprite.anims.currentAnim.frames[0]) : null);
             this.stop();
         }
 

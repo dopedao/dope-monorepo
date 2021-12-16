@@ -58,7 +58,7 @@ export default class PlayerModel
     {
         if (direction === "")
         {
-            this.sprites.forEach(sprite => sprite.stop());
+            this.sprites.forEach(sprite => sprite.setPosition(pos.x, pos.y) && sprite.stop());
             return;
         }
 
