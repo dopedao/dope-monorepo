@@ -5,10 +5,13 @@ import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { useAllHustlersQuery } from 'generated/graphql';
 import Head from 'components/Head';
+import InfiniteScroll from 'react-infinite-scroller';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 import { useOptimismClient } from 'components/EthereumApolloProvider';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
+import { useEffect, useMemo, useState } from 'react';
+import LoadingBlock from 'components/LoadingBlock';
 
 const HustlerContainer = styled.div`
   position: absolute;
@@ -47,22 +50,51 @@ const GangstaParty = () => {
   const client = useOptimismClient();
   const { data, loading } = useAllHustlersQuery({ client });
 
+  //Amount of hustlers to render
+  const PAGE_SIZE = 25;
+  let hustlersVisible = PAGE_SIZE;
+
+  const hustlers = useMemo(() => {
+    const mappedHustlers = data?.hustlers.map(({ id, data }) => {
+      let meta = data.replace('data:application/json;base64,', '');
+      meta = Buffer.from(meta, 'base64').toString();
+      const decoded = JSON.parse(meta);
+      return <RenderFromChain data={decoded} id={id} key={id} />
+    });
+    return mappedHustlers ?? [];
+  }, [data]);
+
+  const [visibleHustlers, setVisibleHustlers] = useState(hustlers.slice(0, hustlersVisible));
+
+  const loadNextPage = (page: number) => {
+    hustlersVisible = (page + 1) * PAGE_SIZE;
+    console.log(`page: ${page}\nHustlersVisible: ${hustlersVisible}`)
+    setVisibleHustlers(hustlers.slice(0, hustlersVisible));
+  }
+
+  useEffect(() => {
+    hustlersVisible = PAGE_SIZE;
+    setVisibleHustlers(hustlers.slice(0, hustlersVisible));
+  }, [hustlers])
+
   return (
     <>
       <Head title="DOPE WARS GANGSTA PARTY" />
       <ScreenSaver>
-        <HustlerContainer>
-          {!loading && data?.hustlers && data?.hustlers.length > 0 && (
-            <div className="hustlerGrid">
-              {data.hustlers.map(({ id, data }) => {
-                let meta = data.replace('data:application/json;base64,', '');
-                meta = Buffer.from(meta, 'base64').toString();
-                const decoded = JSON.parse(meta);
-                return <RenderFromChain data={decoded} id={id} key={id} />;
-              })}
-            </div>
-          )}
-        </HustlerContainer>
+        {!loading && visibleHustlers.length > 0 && (
+          <HustlerContainer>
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={loadNextPage}
+              hasMore={hustlers.length > visibleHustlers.length}
+              loader={<LoadingBlock key={`loader_${hustlersVisible}`} />}
+              useWindow={false}
+              className='hustlerGrid'
+            >
+              {visibleHustlers}
+            </InfiniteScroll>
+          </HustlerContainer>
+        )}
         <WebAmpPlayer />
         <StickyNoteHustlerMint />
       </ScreenSaver>
