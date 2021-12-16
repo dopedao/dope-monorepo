@@ -1,4 +1,5 @@
-import { Base, Clothes, Feet, Hands, Mask, Necklace, Ring, Weapons } from "game/constants/Sprites";
+import { isThursday } from "date-fns";
+import { Base, Categories, CharacterCategories, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Weapons } from "game/constants/Sprites";
  
 export default class PlayerModel
 {
@@ -13,6 +14,9 @@ export default class PlayerModel
     public ring?: Ring;
     public weapon?: Weapons;
 
+    // sprites
+    public sprites: Array<Phaser.GameObjects.Sprite> = new Array();
+
     constructor(base: Base, clothes?: Array<Clothes>, feet?: Feet, hands?: Hands, necklace?: Necklace, ring?: Ring, weapon?: Weapons)
     {
         this.base = base;
@@ -23,5 +27,36 @@ export default class PlayerModel
         this.necklace = necklace;
         this.ring = ring;
         this.weapon = weapon;
+    }
+
+    createSprites(scene: Phaser.Scene, pos: Phaser.Math.Vector2, scale?: Phaser.Math.Vector2)
+    {
+        if (this.clothes)
+            this.clothes?.forEach(c => this.sprites.push(scene.add.sprite(pos.x, pos.y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Clothes][c])));
+        if (this.feet)
+            this.sprites.push(scene.add.sprite(pos.x, pos.y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Feet][this.feet]))
+        if (this.hands)
+            this.sprites.push(scene.add.sprite(pos.x, pos.y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Hands][this.hands]))
+        if (this.mask)
+            this.sprites.push(scene.add.sprite(pos.x, pos.y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Mask][this.mask]))
+        if (this.necklace)
+            this.sprites.push(scene.add.sprite(pos.x, pos.y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Necklace][this.necklace]))
+        if (this.ring)
+            this.sprites.push(scene.add.sprite(pos.x, pos.y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Ring][this.ring]))
+        if (this.weapon)
+            this.sprites.push(scene.add.sprite(pos.x, pos.y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Weapons][this.weapon]))
+
+        this.sprites.forEach(sprite => scale ? sprite.setScale(scale?.x, scale?.y) : null);
+    }
+
+    updateSpritesPosition(pos: Phaser.Math.Vector2, direction: string)
+    {
+        if (direction === "")
+        {
+            this.sprites.forEach(sprite => sprite.stop());
+            return;
+        }
+
+        this.sprites.forEach(sprite => sprite.setPosition(pos.x, pos.y) && sprite.play(sprite.texture.key + direction, true));
     }
 }
