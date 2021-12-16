@@ -1,4 +1,4 @@
-import { Base, Clothes, SpritesMap } from 'game/constants/Sprites';
+import { Base, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Weapons } from 'game/constants/Sprites';
 import Player from 'game/entities/Player';
 import PlayerModel from 'game/gfx/models/PlayerModel';
 import GameAnimations from 'game/anims/GameAnimations';
@@ -53,7 +53,7 @@ export default class GameScene extends Scene {
     // create all of the animations
     new GameAnimations(this.anims).create();
 
-    this.player = new Player(500, 600, new PlayerModel(Base.Male, [Clothes.Shirtless]), this);
+    this.player = new Player(500, 600, new PlayerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold), this);
 
     // make the camera follow the player
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
