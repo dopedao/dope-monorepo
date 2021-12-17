@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { CloseButton } from '@chakra-ui/close-button';
 import { media } from 'ui/styles/mixins';
 import { useHustlersWalletQuery, useWalletQuery } from 'generated/graphql';
-import { useOptimismClient } from 'components/EthereumApolloProvider';
+import { useEthereumClient, useOptimismClient } from 'components/EthereumApolloProvider';
 import AppWindow from 'components/AppWindow';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
@@ -66,16 +66,25 @@ const Hustlers = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(true);
   const router = useRouter();
   const { account } = useWeb3React();
-  const client = useOptimismClient();
-  const { data, loading } = useHustlersWalletQuery({
-    client,
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
-  const { loading: walletLoading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
+  const optimismURI = useOptimismClient();
+  const ethereumURI = useEthereumClient();
+  const { data, isFetching: loading } = useHustlersWalletQuery(
+    {
+      endpoint: optimismURI,
+    },
+    {
+      id: account?.toLowerCase() || '',
+    },
+  );
+
+  const { isFetching: walletLoading } = useWalletQuery(
+    {
+      endpoint: ethereumURI,
+    },
+    {
+      id: account?.toLowerCase() || '',
+    },
+  );
 
   const handleSuccessAlert = () => {
     setShowSuccessAlert(false);

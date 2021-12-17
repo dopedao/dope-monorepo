@@ -9,6 +9,7 @@ import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import Head from 'components/Head';
 import Container from 'components/Container';
 import LoadingBlock from 'components/LoadingBlock';
+import { useEthereumClient } from 'components/EthereumApolloProvider';
 
 const HustlerContainer = styled.div<{ bgColor: string }>`
   background-color: ${({ bgColor }) => bgColor};
@@ -28,10 +29,15 @@ const Dope = () => {
   const router = useRouter();
   const { id } = router.query;
   const { account } = useWeb3React();
-  const { data, loading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
+  const ethereumURI = useEthereumClient();
+  const { data, isFetching: loading } = useWalletQuery(
+    {
+      endpoint: ethereumURI,
+    },
+    {
+      id: account?.toLowerCase() || '',
+    },
+  );
 
   const title = `Hustler Preview: ${id}`;
 

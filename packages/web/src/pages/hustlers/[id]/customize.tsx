@@ -174,18 +174,24 @@ const Nav = () => (
 
 const Hustlers = () => {
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
-  const router = useRouter();
   const { account, chainId } = useWeb3React();
-  const { loading: walletLoading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
-  const client = useOptimismClient();
-  const { data, loading } = useHustlerQuery({
-    client,
-    variables: { id: String(router.query.id) },
-    skip: !router.query.id || !account,
-  });
+  const { isFetching: walletLoading } = useWalletQuery(
+    {
+      endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+    },
+    {
+      id: account?.toLowerCase() || '',
+    },
+  );
+  const optimismURI = useOptimismClient();
+  const { data, isFetching: loading } = useHustlerQuery(
+    {
+      endpoint: optimismURI,
+    },
+    {
+      id: account?.toLowerCase() || '',
+    },
+  );
   useSwitchOptimism(chainId, account);
 
   useEffect(() => {

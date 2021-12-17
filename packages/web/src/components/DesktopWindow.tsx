@@ -3,7 +3,6 @@ import { useReactiveVar } from '@apollo/client';
 import Draggable from 'react-draggable';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
-import { graphql } from "react-relay";
 
 import { useWalletQuery } from 'generated/graphql';
 import { media } from 'ui/styles/mixins';
@@ -12,21 +11,6 @@ import { isTouchDevice } from 'utils/utils';
 import WindowPosition, { WindowPositionReactive } from 'utils/WindowPosition';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
-
-const Wallet = graphql`
-  query Wallet($id: ID!) {
-    wallet(id: $id) {
-      id
-      address
-      paper
-      bags(first: 200) {
-        claimed
-        id
-        opened
-      }
-    }
-  }
-`;
 
 type DesktopWindowProps = {
   title: string | undefined;
@@ -86,10 +70,14 @@ const DesktopWindow = ({
   onMoved,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
-  const { data, loading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
+  const { data, isFetching: loading } = useWalletQuery(
+    {
+      endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+    },
+    {
+      id: account?.toLowerCase() || '',
+    },
+  );
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(false);

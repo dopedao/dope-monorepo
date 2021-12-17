@@ -1,7 +1,0 @@
-schema: https://api.dopewars.gg/query
-extensions:
-  codegen:
-    generates:
-      ./schema.graphql:
-        plugins:
-          - schema-ast

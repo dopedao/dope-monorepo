@@ -1,10 +1,29 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import { useQuery, UseQueryOptions } from 'react-query';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+
+function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
+  return async (): Promise<TData> => {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      ...requestInit,
+      body: JSON.stringify({ query, variables }),
+    });
+
+    const json = await res.json();
+
+    if (json.errors) {
+      const { message } = json.errors[0];
+
+      throw new Error(message);
+    }
+
+    return json.data;
+  }
+}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -16,6 +35,90 @@ export type Scalars = {
   BigInt: any;
   Bytes: any;
 };
+
+export type Attribute = {
+  __typename?: 'Attribute';
+  displayType: Scalars['String'];
+  hustler: Hustler;
+  id: Scalars['ID'];
+  traitType: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type Attribute_Filter = {
+  displayType?: InputMaybe<Scalars['String']>;
+  displayType_contains?: InputMaybe<Scalars['String']>;
+  displayType_ends_with?: InputMaybe<Scalars['String']>;
+  displayType_gt?: InputMaybe<Scalars['String']>;
+  displayType_gte?: InputMaybe<Scalars['String']>;
+  displayType_in?: InputMaybe<Array<Scalars['String']>>;
+  displayType_lt?: InputMaybe<Scalars['String']>;
+  displayType_lte?: InputMaybe<Scalars['String']>;
+  displayType_not?: InputMaybe<Scalars['String']>;
+  displayType_not_contains?: InputMaybe<Scalars['String']>;
+  displayType_not_ends_with?: InputMaybe<Scalars['String']>;
+  displayType_not_in?: InputMaybe<Array<Scalars['String']>>;
+  displayType_not_starts_with?: InputMaybe<Scalars['String']>;
+  displayType_starts_with?: InputMaybe<Scalars['String']>;
+  hustler?: InputMaybe<Scalars['String']>;
+  hustler_contains?: InputMaybe<Scalars['String']>;
+  hustler_ends_with?: InputMaybe<Scalars['String']>;
+  hustler_gt?: InputMaybe<Scalars['String']>;
+  hustler_gte?: InputMaybe<Scalars['String']>;
+  hustler_in?: InputMaybe<Array<Scalars['String']>>;
+  hustler_lt?: InputMaybe<Scalars['String']>;
+  hustler_lte?: InputMaybe<Scalars['String']>;
+  hustler_not?: InputMaybe<Scalars['String']>;
+  hustler_not_contains?: InputMaybe<Scalars['String']>;
+  hustler_not_ends_with?: InputMaybe<Scalars['String']>;
+  hustler_not_in?: InputMaybe<Array<Scalars['String']>>;
+  hustler_not_starts_with?: InputMaybe<Scalars['String']>;
+  hustler_starts_with?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  traitType?: InputMaybe<Scalars['String']>;
+  traitType_contains?: InputMaybe<Scalars['String']>;
+  traitType_ends_with?: InputMaybe<Scalars['String']>;
+  traitType_gt?: InputMaybe<Scalars['String']>;
+  traitType_gte?: InputMaybe<Scalars['String']>;
+  traitType_in?: InputMaybe<Array<Scalars['String']>>;
+  traitType_lt?: InputMaybe<Scalars['String']>;
+  traitType_lte?: InputMaybe<Scalars['String']>;
+  traitType_not?: InputMaybe<Scalars['String']>;
+  traitType_not_contains?: InputMaybe<Scalars['String']>;
+  traitType_not_ends_with?: InputMaybe<Scalars['String']>;
+  traitType_not_in?: InputMaybe<Array<Scalars['String']>>;
+  traitType_not_starts_with?: InputMaybe<Scalars['String']>;
+  traitType_starts_with?: InputMaybe<Scalars['String']>;
+  value?: InputMaybe<Scalars['String']>;
+  value_contains?: InputMaybe<Scalars['String']>;
+  value_ends_with?: InputMaybe<Scalars['String']>;
+  value_gt?: InputMaybe<Scalars['String']>;
+  value_gte?: InputMaybe<Scalars['String']>;
+  value_in?: InputMaybe<Array<Scalars['String']>>;
+  value_lt?: InputMaybe<Scalars['String']>;
+  value_lte?: InputMaybe<Scalars['String']>;
+  value_not?: InputMaybe<Scalars['String']>;
+  value_not_contains?: InputMaybe<Scalars['String']>;
+  value_not_ends_with?: InputMaybe<Scalars['String']>;
+  value_not_in?: InputMaybe<Array<Scalars['String']>>;
+  value_not_starts_with?: InputMaybe<Scalars['String']>;
+  value_starts_with?: InputMaybe<Scalars['String']>;
+};
+
+export enum Attribute_OrderBy {
+  DisplayType = 'displayType',
+  Hustler = 'hustler',
+  Id = 'id',
+  TraitType = 'traitType',
+  Value = 'value'
+}
 
 export type Bag = {
   __typename?: 'Bag';
@@ -30,7 +133,6 @@ export type Bag = {
   neck: Scalars['String'];
   open_sea_asset?: Maybe<OpenSeaAsset>;
   opened: Scalars['Boolean'];
-  rank: Scalars['Int'];
   ring: Scalars['String'];
   vehicle: Scalars['String'];
   waist: Scalars['String'];
@@ -38,170 +140,170 @@ export type Bag = {
 };
 
 export type Bag_Filter = {
-  claimed?: Maybe<Scalars['Boolean']>;
-  claimed_in?: Maybe<Array<Scalars['Boolean']>>;
-  claimed_not?: Maybe<Scalars['Boolean']>;
-  claimed_not_in?: Maybe<Array<Scalars['Boolean']>>;
-  clothes?: Maybe<Scalars['String']>;
-  clothes_contains?: Maybe<Scalars['String']>;
-  clothes_ends_with?: Maybe<Scalars['String']>;
-  clothes_gt?: Maybe<Scalars['String']>;
-  clothes_gte?: Maybe<Scalars['String']>;
-  clothes_in?: Maybe<Array<Scalars['String']>>;
-  clothes_lt?: Maybe<Scalars['String']>;
-  clothes_lte?: Maybe<Scalars['String']>;
-  clothes_not?: Maybe<Scalars['String']>;
-  clothes_not_contains?: Maybe<Scalars['String']>;
-  clothes_not_ends_with?: Maybe<Scalars['String']>;
-  clothes_not_in?: Maybe<Array<Scalars['String']>>;
-  clothes_not_starts_with?: Maybe<Scalars['String']>;
-  clothes_starts_with?: Maybe<Scalars['String']>;
-  currentOwner?: Maybe<Scalars['String']>;
-  currentOwner_contains?: Maybe<Scalars['String']>;
-  currentOwner_ends_with?: Maybe<Scalars['String']>;
-  currentOwner_gt?: Maybe<Scalars['String']>;
-  currentOwner_gte?: Maybe<Scalars['String']>;
-  currentOwner_in?: Maybe<Array<Scalars['String']>>;
-  currentOwner_lt?: Maybe<Scalars['String']>;
-  currentOwner_lte?: Maybe<Scalars['String']>;
-  currentOwner_not?: Maybe<Scalars['String']>;
-  currentOwner_not_contains?: Maybe<Scalars['String']>;
-  currentOwner_not_ends_with?: Maybe<Scalars['String']>;
-  currentOwner_not_in?: Maybe<Array<Scalars['String']>>;
-  currentOwner_not_starts_with?: Maybe<Scalars['String']>;
-  currentOwner_starts_with?: Maybe<Scalars['String']>;
-  drugs?: Maybe<Scalars['String']>;
-  drugs_contains?: Maybe<Scalars['String']>;
-  drugs_ends_with?: Maybe<Scalars['String']>;
-  drugs_gt?: Maybe<Scalars['String']>;
-  drugs_gte?: Maybe<Scalars['String']>;
-  drugs_in?: Maybe<Array<Scalars['String']>>;
-  drugs_lt?: Maybe<Scalars['String']>;
-  drugs_lte?: Maybe<Scalars['String']>;
-  drugs_not?: Maybe<Scalars['String']>;
-  drugs_not_contains?: Maybe<Scalars['String']>;
-  drugs_not_ends_with?: Maybe<Scalars['String']>;
-  drugs_not_in?: Maybe<Array<Scalars['String']>>;
-  drugs_not_starts_with?: Maybe<Scalars['String']>;
-  drugs_starts_with?: Maybe<Scalars['String']>;
-  foot?: Maybe<Scalars['String']>;
-  foot_contains?: Maybe<Scalars['String']>;
-  foot_ends_with?: Maybe<Scalars['String']>;
-  foot_gt?: Maybe<Scalars['String']>;
-  foot_gte?: Maybe<Scalars['String']>;
-  foot_in?: Maybe<Array<Scalars['String']>>;
-  foot_lt?: Maybe<Scalars['String']>;
-  foot_lte?: Maybe<Scalars['String']>;
-  foot_not?: Maybe<Scalars['String']>;
-  foot_not_contains?: Maybe<Scalars['String']>;
-  foot_not_ends_with?: Maybe<Scalars['String']>;
-  foot_not_in?: Maybe<Array<Scalars['String']>>;
-  foot_not_starts_with?: Maybe<Scalars['String']>;
-  foot_starts_with?: Maybe<Scalars['String']>;
-  hand?: Maybe<Scalars['String']>;
-  hand_contains?: Maybe<Scalars['String']>;
-  hand_ends_with?: Maybe<Scalars['String']>;
-  hand_gt?: Maybe<Scalars['String']>;
-  hand_gte?: Maybe<Scalars['String']>;
-  hand_in?: Maybe<Array<Scalars['String']>>;
-  hand_lt?: Maybe<Scalars['String']>;
-  hand_lte?: Maybe<Scalars['String']>;
-  hand_not?: Maybe<Scalars['String']>;
-  hand_not_contains?: Maybe<Scalars['String']>;
-  hand_not_ends_with?: Maybe<Scalars['String']>;
-  hand_not_in?: Maybe<Array<Scalars['String']>>;
-  hand_not_starts_with?: Maybe<Scalars['String']>;
-  hand_starts_with?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  minted?: Maybe<Scalars['BigInt']>;
-  minted_gt?: Maybe<Scalars['BigInt']>;
-  minted_gte?: Maybe<Scalars['BigInt']>;
-  minted_in?: Maybe<Array<Scalars['BigInt']>>;
-  minted_lt?: Maybe<Scalars['BigInt']>;
-  minted_lte?: Maybe<Scalars['BigInt']>;
-  minted_not?: Maybe<Scalars['BigInt']>;
-  minted_not_in?: Maybe<Array<Scalars['BigInt']>>;
-  neck?: Maybe<Scalars['String']>;
-  neck_contains?: Maybe<Scalars['String']>;
-  neck_ends_with?: Maybe<Scalars['String']>;
-  neck_gt?: Maybe<Scalars['String']>;
-  neck_gte?: Maybe<Scalars['String']>;
-  neck_in?: Maybe<Array<Scalars['String']>>;
-  neck_lt?: Maybe<Scalars['String']>;
-  neck_lte?: Maybe<Scalars['String']>;
-  neck_not?: Maybe<Scalars['String']>;
-  neck_not_contains?: Maybe<Scalars['String']>;
-  neck_not_ends_with?: Maybe<Scalars['String']>;
-  neck_not_in?: Maybe<Array<Scalars['String']>>;
-  neck_not_starts_with?: Maybe<Scalars['String']>;
-  neck_starts_with?: Maybe<Scalars['String']>;
-  opened?: Maybe<Scalars['Boolean']>;
-  opened_in?: Maybe<Array<Scalars['Boolean']>>;
-  opened_not?: Maybe<Scalars['Boolean']>;
-  opened_not_in?: Maybe<Array<Scalars['Boolean']>>;
-  ring?: Maybe<Scalars['String']>;
-  ring_contains?: Maybe<Scalars['String']>;
-  ring_ends_with?: Maybe<Scalars['String']>;
-  ring_gt?: Maybe<Scalars['String']>;
-  ring_gte?: Maybe<Scalars['String']>;
-  ring_in?: Maybe<Array<Scalars['String']>>;
-  ring_lt?: Maybe<Scalars['String']>;
-  ring_lte?: Maybe<Scalars['String']>;
-  ring_not?: Maybe<Scalars['String']>;
-  ring_not_contains?: Maybe<Scalars['String']>;
-  ring_not_ends_with?: Maybe<Scalars['String']>;
-  ring_not_in?: Maybe<Array<Scalars['String']>>;
-  ring_not_starts_with?: Maybe<Scalars['String']>;
-  ring_starts_with?: Maybe<Scalars['String']>;
-  vehicle?: Maybe<Scalars['String']>;
-  vehicle_contains?: Maybe<Scalars['String']>;
-  vehicle_ends_with?: Maybe<Scalars['String']>;
-  vehicle_gt?: Maybe<Scalars['String']>;
-  vehicle_gte?: Maybe<Scalars['String']>;
-  vehicle_in?: Maybe<Array<Scalars['String']>>;
-  vehicle_lt?: Maybe<Scalars['String']>;
-  vehicle_lte?: Maybe<Scalars['String']>;
-  vehicle_not?: Maybe<Scalars['String']>;
-  vehicle_not_contains?: Maybe<Scalars['String']>;
-  vehicle_not_ends_with?: Maybe<Scalars['String']>;
-  vehicle_not_in?: Maybe<Array<Scalars['String']>>;
-  vehicle_not_starts_with?: Maybe<Scalars['String']>;
-  vehicle_starts_with?: Maybe<Scalars['String']>;
-  waist?: Maybe<Scalars['String']>;
-  waist_contains?: Maybe<Scalars['String']>;
-  waist_ends_with?: Maybe<Scalars['String']>;
-  waist_gt?: Maybe<Scalars['String']>;
-  waist_gte?: Maybe<Scalars['String']>;
-  waist_in?: Maybe<Array<Scalars['String']>>;
-  waist_lt?: Maybe<Scalars['String']>;
-  waist_lte?: Maybe<Scalars['String']>;
-  waist_not?: Maybe<Scalars['String']>;
-  waist_not_contains?: Maybe<Scalars['String']>;
-  waist_not_ends_with?: Maybe<Scalars['String']>;
-  waist_not_in?: Maybe<Array<Scalars['String']>>;
-  waist_not_starts_with?: Maybe<Scalars['String']>;
-  waist_starts_with?: Maybe<Scalars['String']>;
-  weapon?: Maybe<Scalars['String']>;
-  weapon_contains?: Maybe<Scalars['String']>;
-  weapon_ends_with?: Maybe<Scalars['String']>;
-  weapon_gt?: Maybe<Scalars['String']>;
-  weapon_gte?: Maybe<Scalars['String']>;
-  weapon_in?: Maybe<Array<Scalars['String']>>;
-  weapon_lt?: Maybe<Scalars['String']>;
-  weapon_lte?: Maybe<Scalars['String']>;
-  weapon_not?: Maybe<Scalars['String']>;
-  weapon_not_contains?: Maybe<Scalars['String']>;
-  weapon_not_ends_with?: Maybe<Scalars['String']>;
-  weapon_not_in?: Maybe<Array<Scalars['String']>>;
-  weapon_not_starts_with?: Maybe<Scalars['String']>;
-  weapon_starts_with?: Maybe<Scalars['String']>;
+  claimed?: InputMaybe<Scalars['Boolean']>;
+  claimed_in?: InputMaybe<Array<Scalars['Boolean']>>;
+  claimed_not?: InputMaybe<Scalars['Boolean']>;
+  claimed_not_in?: InputMaybe<Array<Scalars['Boolean']>>;
+  clothes?: InputMaybe<Scalars['String']>;
+  clothes_contains?: InputMaybe<Scalars['String']>;
+  clothes_ends_with?: InputMaybe<Scalars['String']>;
+  clothes_gt?: InputMaybe<Scalars['String']>;
+  clothes_gte?: InputMaybe<Scalars['String']>;
+  clothes_in?: InputMaybe<Array<Scalars['String']>>;
+  clothes_lt?: InputMaybe<Scalars['String']>;
+  clothes_lte?: InputMaybe<Scalars['String']>;
+  clothes_not?: InputMaybe<Scalars['String']>;
+  clothes_not_contains?: InputMaybe<Scalars['String']>;
+  clothes_not_ends_with?: InputMaybe<Scalars['String']>;
+  clothes_not_in?: InputMaybe<Array<Scalars['String']>>;
+  clothes_not_starts_with?: InputMaybe<Scalars['String']>;
+  clothes_starts_with?: InputMaybe<Scalars['String']>;
+  currentOwner?: InputMaybe<Scalars['String']>;
+  currentOwner_contains?: InputMaybe<Scalars['String']>;
+  currentOwner_ends_with?: InputMaybe<Scalars['String']>;
+  currentOwner_gt?: InputMaybe<Scalars['String']>;
+  currentOwner_gte?: InputMaybe<Scalars['String']>;
+  currentOwner_in?: InputMaybe<Array<Scalars['String']>>;
+  currentOwner_lt?: InputMaybe<Scalars['String']>;
+  currentOwner_lte?: InputMaybe<Scalars['String']>;
+  currentOwner_not?: InputMaybe<Scalars['String']>;
+  currentOwner_not_contains?: InputMaybe<Scalars['String']>;
+  currentOwner_not_ends_with?: InputMaybe<Scalars['String']>;
+  currentOwner_not_in?: InputMaybe<Array<Scalars['String']>>;
+  currentOwner_not_starts_with?: InputMaybe<Scalars['String']>;
+  currentOwner_starts_with?: InputMaybe<Scalars['String']>;
+  drugs?: InputMaybe<Scalars['String']>;
+  drugs_contains?: InputMaybe<Scalars['String']>;
+  drugs_ends_with?: InputMaybe<Scalars['String']>;
+  drugs_gt?: InputMaybe<Scalars['String']>;
+  drugs_gte?: InputMaybe<Scalars['String']>;
+  drugs_in?: InputMaybe<Array<Scalars['String']>>;
+  drugs_lt?: InputMaybe<Scalars['String']>;
+  drugs_lte?: InputMaybe<Scalars['String']>;
+  drugs_not?: InputMaybe<Scalars['String']>;
+  drugs_not_contains?: InputMaybe<Scalars['String']>;
+  drugs_not_ends_with?: InputMaybe<Scalars['String']>;
+  drugs_not_in?: InputMaybe<Array<Scalars['String']>>;
+  drugs_not_starts_with?: InputMaybe<Scalars['String']>;
+  drugs_starts_with?: InputMaybe<Scalars['String']>;
+  foot?: InputMaybe<Scalars['String']>;
+  foot_contains?: InputMaybe<Scalars['String']>;
+  foot_ends_with?: InputMaybe<Scalars['String']>;
+  foot_gt?: InputMaybe<Scalars['String']>;
+  foot_gte?: InputMaybe<Scalars['String']>;
+  foot_in?: InputMaybe<Array<Scalars['String']>>;
+  foot_lt?: InputMaybe<Scalars['String']>;
+  foot_lte?: InputMaybe<Scalars['String']>;
+  foot_not?: InputMaybe<Scalars['String']>;
+  foot_not_contains?: InputMaybe<Scalars['String']>;
+  foot_not_ends_with?: InputMaybe<Scalars['String']>;
+  foot_not_in?: InputMaybe<Array<Scalars['String']>>;
+  foot_not_starts_with?: InputMaybe<Scalars['String']>;
+  foot_starts_with?: InputMaybe<Scalars['String']>;
+  hand?: InputMaybe<Scalars['String']>;
+  hand_contains?: InputMaybe<Scalars['String']>;
+  hand_ends_with?: InputMaybe<Scalars['String']>;
+  hand_gt?: InputMaybe<Scalars['String']>;
+  hand_gte?: InputMaybe<Scalars['String']>;
+  hand_in?: InputMaybe<Array<Scalars['String']>>;
+  hand_lt?: InputMaybe<Scalars['String']>;
+  hand_lte?: InputMaybe<Scalars['String']>;
+  hand_not?: InputMaybe<Scalars['String']>;
+  hand_not_contains?: InputMaybe<Scalars['String']>;
+  hand_not_ends_with?: InputMaybe<Scalars['String']>;
+  hand_not_in?: InputMaybe<Array<Scalars['String']>>;
+  hand_not_starts_with?: InputMaybe<Scalars['String']>;
+  hand_starts_with?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  minted?: InputMaybe<Scalars['BigInt']>;
+  minted_gt?: InputMaybe<Scalars['BigInt']>;
+  minted_gte?: InputMaybe<Scalars['BigInt']>;
+  minted_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  minted_lt?: InputMaybe<Scalars['BigInt']>;
+  minted_lte?: InputMaybe<Scalars['BigInt']>;
+  minted_not?: InputMaybe<Scalars['BigInt']>;
+  minted_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  neck?: InputMaybe<Scalars['String']>;
+  neck_contains?: InputMaybe<Scalars['String']>;
+  neck_ends_with?: InputMaybe<Scalars['String']>;
+  neck_gt?: InputMaybe<Scalars['String']>;
+  neck_gte?: InputMaybe<Scalars['String']>;
+  neck_in?: InputMaybe<Array<Scalars['String']>>;
+  neck_lt?: InputMaybe<Scalars['String']>;
+  neck_lte?: InputMaybe<Scalars['String']>;
+  neck_not?: InputMaybe<Scalars['String']>;
+  neck_not_contains?: InputMaybe<Scalars['String']>;
+  neck_not_ends_with?: InputMaybe<Scalars['String']>;
+  neck_not_in?: InputMaybe<Array<Scalars['String']>>;
+  neck_not_starts_with?: InputMaybe<Scalars['String']>;
+  neck_starts_with?: InputMaybe<Scalars['String']>;
+  opened?: InputMaybe<Scalars['Boolean']>;
+  opened_in?: InputMaybe<Array<Scalars['Boolean']>>;
+  opened_not?: InputMaybe<Scalars['Boolean']>;
+  opened_not_in?: InputMaybe<Array<Scalars['Boolean']>>;
+  ring?: InputMaybe<Scalars['String']>;
+  ring_contains?: InputMaybe<Scalars['String']>;
+  ring_ends_with?: InputMaybe<Scalars['String']>;
+  ring_gt?: InputMaybe<Scalars['String']>;
+  ring_gte?: InputMaybe<Scalars['String']>;
+  ring_in?: InputMaybe<Array<Scalars['String']>>;
+  ring_lt?: InputMaybe<Scalars['String']>;
+  ring_lte?: InputMaybe<Scalars['String']>;
+  ring_not?: InputMaybe<Scalars['String']>;
+  ring_not_contains?: InputMaybe<Scalars['String']>;
+  ring_not_ends_with?: InputMaybe<Scalars['String']>;
+  ring_not_in?: InputMaybe<Array<Scalars['String']>>;
+  ring_not_starts_with?: InputMaybe<Scalars['String']>;
+  ring_starts_with?: InputMaybe<Scalars['String']>;
+  vehicle?: InputMaybe<Scalars['String']>;
+  vehicle_contains?: InputMaybe<Scalars['String']>;
+  vehicle_ends_with?: InputMaybe<Scalars['String']>;
+  vehicle_gt?: InputMaybe<Scalars['String']>;
+  vehicle_gte?: InputMaybe<Scalars['String']>;
+  vehicle_in?: InputMaybe<Array<Scalars['String']>>;
+  vehicle_lt?: InputMaybe<Scalars['String']>;
+  vehicle_lte?: InputMaybe<Scalars['String']>;
+  vehicle_not?: InputMaybe<Scalars['String']>;
+  vehicle_not_contains?: InputMaybe<Scalars['String']>;
+  vehicle_not_ends_with?: InputMaybe<Scalars['String']>;
+  vehicle_not_in?: InputMaybe<Array<Scalars['String']>>;
+  vehicle_not_starts_with?: InputMaybe<Scalars['String']>;
+  vehicle_starts_with?: InputMaybe<Scalars['String']>;
+  waist?: InputMaybe<Scalars['String']>;
+  waist_contains?: InputMaybe<Scalars['String']>;
+  waist_ends_with?: InputMaybe<Scalars['String']>;
+  waist_gt?: InputMaybe<Scalars['String']>;
+  waist_gte?: InputMaybe<Scalars['String']>;
+  waist_in?: InputMaybe<Array<Scalars['String']>>;
+  waist_lt?: InputMaybe<Scalars['String']>;
+  waist_lte?: InputMaybe<Scalars['String']>;
+  waist_not?: InputMaybe<Scalars['String']>;
+  waist_not_contains?: InputMaybe<Scalars['String']>;
+  waist_not_ends_with?: InputMaybe<Scalars['String']>;
+  waist_not_in?: InputMaybe<Array<Scalars['String']>>;
+  waist_not_starts_with?: InputMaybe<Scalars['String']>;
+  waist_starts_with?: InputMaybe<Scalars['String']>;
+  weapon?: InputMaybe<Scalars['String']>;
+  weapon_contains?: InputMaybe<Scalars['String']>;
+  weapon_ends_with?: InputMaybe<Scalars['String']>;
+  weapon_gt?: InputMaybe<Scalars['String']>;
+  weapon_gte?: InputMaybe<Scalars['String']>;
+  weapon_in?: InputMaybe<Array<Scalars['String']>>;
+  weapon_lt?: InputMaybe<Scalars['String']>;
+  weapon_lte?: InputMaybe<Scalars['String']>;
+  weapon_not?: InputMaybe<Scalars['String']>;
+  weapon_not_contains?: InputMaybe<Scalars['String']>;
+  weapon_not_ends_with?: InputMaybe<Scalars['String']>;
+  weapon_not_in?: InputMaybe<Array<Scalars['String']>>;
+  weapon_not_starts_with?: InputMaybe<Scalars['String']>;
+  weapon_starts_with?: InputMaybe<Scalars['String']>;
 };
 
 export enum Bag_OrderBy {
@@ -228,20 +330,20 @@ export type Beard = {
 };
 
 export type Beard_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  rle?: InputMaybe<Scalars['Bytes']>;
+  rle_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  rle_not?: InputMaybe<Scalars['Bytes']>;
+  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
 };
 
 export enum Beard_OrderBy {
@@ -250,9 +352,9 @@ export enum Beard_OrderBy {
 }
 
 export type Block_Height = {
-  hash?: Maybe<Scalars['Bytes']>;
-  number?: Maybe<Scalars['Int']>;
-  number_gte?: Maybe<Scalars['Int']>;
+  hash?: InputMaybe<Scalars['Bytes']>;
+  number?: InputMaybe<Scalars['Int']>;
+  number_gte?: InputMaybe<Scalars['Int']>;
 };
 
 export type FemaleBody = {
@@ -262,20 +364,20 @@ export type FemaleBody = {
 };
 
 export type FemaleBody_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  rle?: InputMaybe<Scalars['Bytes']>;
+  rle_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  rle_not?: InputMaybe<Scalars['Bytes']>;
+  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
 };
 
 export enum FemaleBody_OrderBy {
@@ -290,20 +392,20 @@ export type FemaleHair = {
 };
 
 export type FemaleHair_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  rle?: InputMaybe<Scalars['Bytes']>;
+  rle_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  rle_not?: InputMaybe<Scalars['Bytes']>;
+  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
 };
 
 export enum FemaleHair_OrderBy {
@@ -313,53 +415,96 @@ export enum FemaleHair_OrderBy {
 
 export type Hustler = {
   __typename?: 'Hustler';
+  attributes: Array<Attribute>;
   data: Scalars['String'];
   id: Scalars['ID'];
+  image: Scalars['String'];
+  name: Scalars['String'];
   owner: Wallet;
 };
 
+
+export type HustlerAttributesArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Attribute_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Attribute_Filter>;
+};
+
 export type Hustler_Filter = {
-  data?: Maybe<Scalars['String']>;
-  data_contains?: Maybe<Scalars['String']>;
-  data_ends_with?: Maybe<Scalars['String']>;
-  data_gt?: Maybe<Scalars['String']>;
-  data_gte?: Maybe<Scalars['String']>;
-  data_in?: Maybe<Array<Scalars['String']>>;
-  data_lt?: Maybe<Scalars['String']>;
-  data_lte?: Maybe<Scalars['String']>;
-  data_not?: Maybe<Scalars['String']>;
-  data_not_contains?: Maybe<Scalars['String']>;
-  data_not_ends_with?: Maybe<Scalars['String']>;
-  data_not_in?: Maybe<Array<Scalars['String']>>;
-  data_not_starts_with?: Maybe<Scalars['String']>;
-  data_starts_with?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  owner?: Maybe<Scalars['String']>;
-  owner_contains?: Maybe<Scalars['String']>;
-  owner_ends_with?: Maybe<Scalars['String']>;
-  owner_gt?: Maybe<Scalars['String']>;
-  owner_gte?: Maybe<Scalars['String']>;
-  owner_in?: Maybe<Array<Scalars['String']>>;
-  owner_lt?: Maybe<Scalars['String']>;
-  owner_lte?: Maybe<Scalars['String']>;
-  owner_not?: Maybe<Scalars['String']>;
-  owner_not_contains?: Maybe<Scalars['String']>;
-  owner_not_ends_with?: Maybe<Scalars['String']>;
-  owner_not_in?: Maybe<Array<Scalars['String']>>;
-  owner_not_starts_with?: Maybe<Scalars['String']>;
-  owner_starts_with?: Maybe<Scalars['String']>;
+  data?: InputMaybe<Scalars['String']>;
+  data_contains?: InputMaybe<Scalars['String']>;
+  data_ends_with?: InputMaybe<Scalars['String']>;
+  data_gt?: InputMaybe<Scalars['String']>;
+  data_gte?: InputMaybe<Scalars['String']>;
+  data_in?: InputMaybe<Array<Scalars['String']>>;
+  data_lt?: InputMaybe<Scalars['String']>;
+  data_lte?: InputMaybe<Scalars['String']>;
+  data_not?: InputMaybe<Scalars['String']>;
+  data_not_contains?: InputMaybe<Scalars['String']>;
+  data_not_ends_with?: InputMaybe<Scalars['String']>;
+  data_not_in?: InputMaybe<Array<Scalars['String']>>;
+  data_not_starts_with?: InputMaybe<Scalars['String']>;
+  data_starts_with?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  image?: InputMaybe<Scalars['String']>;
+  image_contains?: InputMaybe<Scalars['String']>;
+  image_ends_with?: InputMaybe<Scalars['String']>;
+  image_gt?: InputMaybe<Scalars['String']>;
+  image_gte?: InputMaybe<Scalars['String']>;
+  image_in?: InputMaybe<Array<Scalars['String']>>;
+  image_lt?: InputMaybe<Scalars['String']>;
+  image_lte?: InputMaybe<Scalars['String']>;
+  image_not?: InputMaybe<Scalars['String']>;
+  image_not_contains?: InputMaybe<Scalars['String']>;
+  image_not_ends_with?: InputMaybe<Scalars['String']>;
+  image_not_in?: InputMaybe<Array<Scalars['String']>>;
+  image_not_starts_with?: InputMaybe<Scalars['String']>;
+  image_starts_with?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  name_contains?: InputMaybe<Scalars['String']>;
+  name_ends_with?: InputMaybe<Scalars['String']>;
+  name_gt?: InputMaybe<Scalars['String']>;
+  name_gte?: InputMaybe<Scalars['String']>;
+  name_in?: InputMaybe<Array<Scalars['String']>>;
+  name_lt?: InputMaybe<Scalars['String']>;
+  name_lte?: InputMaybe<Scalars['String']>;
+  name_not?: InputMaybe<Scalars['String']>;
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  name_not_ends_with?: InputMaybe<Scalars['String']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']>>;
+  name_not_starts_with?: InputMaybe<Scalars['String']>;
+  name_starts_with?: InputMaybe<Scalars['String']>;
+  owner?: InputMaybe<Scalars['String']>;
+  owner_contains?: InputMaybe<Scalars['String']>;
+  owner_ends_with?: InputMaybe<Scalars['String']>;
+  owner_gt?: InputMaybe<Scalars['String']>;
+  owner_gte?: InputMaybe<Scalars['String']>;
+  owner_in?: InputMaybe<Array<Scalars['String']>>;
+  owner_lt?: InputMaybe<Scalars['String']>;
+  owner_lte?: InputMaybe<Scalars['String']>;
+  owner_not?: InputMaybe<Scalars['String']>;
+  owner_not_contains?: InputMaybe<Scalars['String']>;
+  owner_not_ends_with?: InputMaybe<Scalars['String']>;
+  owner_not_in?: InputMaybe<Array<Scalars['String']>>;
+  owner_not_starts_with?: InputMaybe<Scalars['String']>;
+  owner_starts_with?: InputMaybe<Scalars['String']>;
 };
 
 export enum Hustler_OrderBy {
+  Attributes = 'attributes',
   Data = 'data',
   Id = 'id',
+  Image = 'image',
+  Name = 'name',
   Owner = 'owner'
 }
 
@@ -381,50 +526,50 @@ export type ItemBalances = {
 };
 
 export type ItemBalances_Filter = {
-  balance?: Maybe<Scalars['BigInt']>;
-  balance_gt?: Maybe<Scalars['BigInt']>;
-  balance_gte?: Maybe<Scalars['BigInt']>;
-  balance_in?: Maybe<Array<Scalars['BigInt']>>;
-  balance_lt?: Maybe<Scalars['BigInt']>;
-  balance_lte?: Maybe<Scalars['BigInt']>;
-  balance_not?: Maybe<Scalars['BigInt']>;
-  balance_not_in?: Maybe<Array<Scalars['BigInt']>>;
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  item?: Maybe<Scalars['String']>;
-  item_contains?: Maybe<Scalars['String']>;
-  item_ends_with?: Maybe<Scalars['String']>;
-  item_gt?: Maybe<Scalars['String']>;
-  item_gte?: Maybe<Scalars['String']>;
-  item_in?: Maybe<Array<Scalars['String']>>;
-  item_lt?: Maybe<Scalars['String']>;
-  item_lte?: Maybe<Scalars['String']>;
-  item_not?: Maybe<Scalars['String']>;
-  item_not_contains?: Maybe<Scalars['String']>;
-  item_not_ends_with?: Maybe<Scalars['String']>;
-  item_not_in?: Maybe<Array<Scalars['String']>>;
-  item_not_starts_with?: Maybe<Scalars['String']>;
-  item_starts_with?: Maybe<Scalars['String']>;
-  wallet?: Maybe<Scalars['String']>;
-  wallet_contains?: Maybe<Scalars['String']>;
-  wallet_ends_with?: Maybe<Scalars['String']>;
-  wallet_gt?: Maybe<Scalars['String']>;
-  wallet_gte?: Maybe<Scalars['String']>;
-  wallet_in?: Maybe<Array<Scalars['String']>>;
-  wallet_lt?: Maybe<Scalars['String']>;
-  wallet_lte?: Maybe<Scalars['String']>;
-  wallet_not?: Maybe<Scalars['String']>;
-  wallet_not_contains?: Maybe<Scalars['String']>;
-  wallet_not_ends_with?: Maybe<Scalars['String']>;
-  wallet_not_in?: Maybe<Array<Scalars['String']>>;
-  wallet_not_starts_with?: Maybe<Scalars['String']>;
-  wallet_starts_with?: Maybe<Scalars['String']>;
+  balance?: InputMaybe<Scalars['BigInt']>;
+  balance_gt?: InputMaybe<Scalars['BigInt']>;
+  balance_gte?: InputMaybe<Scalars['BigInt']>;
+  balance_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  balance_lt?: InputMaybe<Scalars['BigInt']>;
+  balance_lte?: InputMaybe<Scalars['BigInt']>;
+  balance_not?: InputMaybe<Scalars['BigInt']>;
+  balance_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  item?: InputMaybe<Scalars['String']>;
+  item_contains?: InputMaybe<Scalars['String']>;
+  item_ends_with?: InputMaybe<Scalars['String']>;
+  item_gt?: InputMaybe<Scalars['String']>;
+  item_gte?: InputMaybe<Scalars['String']>;
+  item_in?: InputMaybe<Array<Scalars['String']>>;
+  item_lt?: InputMaybe<Scalars['String']>;
+  item_lte?: InputMaybe<Scalars['String']>;
+  item_not?: InputMaybe<Scalars['String']>;
+  item_not_contains?: InputMaybe<Scalars['String']>;
+  item_not_ends_with?: InputMaybe<Scalars['String']>;
+  item_not_in?: InputMaybe<Array<Scalars['String']>>;
+  item_not_starts_with?: InputMaybe<Scalars['String']>;
+  item_starts_with?: InputMaybe<Scalars['String']>;
+  wallet?: InputMaybe<Scalars['String']>;
+  wallet_contains?: InputMaybe<Scalars['String']>;
+  wallet_ends_with?: InputMaybe<Scalars['String']>;
+  wallet_gt?: InputMaybe<Scalars['String']>;
+  wallet_gte?: InputMaybe<Scalars['String']>;
+  wallet_in?: InputMaybe<Array<Scalars['String']>>;
+  wallet_lt?: InputMaybe<Scalars['String']>;
+  wallet_lte?: InputMaybe<Scalars['String']>;
+  wallet_not?: InputMaybe<Scalars['String']>;
+  wallet_not_contains?: InputMaybe<Scalars['String']>;
+  wallet_not_ends_with?: InputMaybe<Scalars['String']>;
+  wallet_not_in?: InputMaybe<Array<Scalars['String']>>;
+  wallet_not_starts_with?: InputMaybe<Scalars['String']>;
+  wallet_starts_with?: InputMaybe<Scalars['String']>;
 };
 
 export enum ItemBalances_OrderBy {
@@ -435,54 +580,54 @@ export enum ItemBalances_OrderBy {
 }
 
 export type Item_Filter = {
-  data?: Maybe<Scalars['String']>;
-  data_contains?: Maybe<Scalars['String']>;
-  data_ends_with?: Maybe<Scalars['String']>;
-  data_gt?: Maybe<Scalars['String']>;
-  data_gte?: Maybe<Scalars['String']>;
-  data_in?: Maybe<Array<Scalars['String']>>;
-  data_lt?: Maybe<Scalars['String']>;
-  data_lte?: Maybe<Scalars['String']>;
-  data_not?: Maybe<Scalars['String']>;
-  data_not_contains?: Maybe<Scalars['String']>;
-  data_not_ends_with?: Maybe<Scalars['String']>;
-  data_not_in?: Maybe<Array<Scalars['String']>>;
-  data_not_starts_with?: Maybe<Scalars['String']>;
-  data_starts_with?: Maybe<Scalars['String']>;
-  femaleRle?: Maybe<Scalars['Bytes']>;
-  femaleRle_contains?: Maybe<Scalars['Bytes']>;
-  femaleRle_in?: Maybe<Array<Scalars['Bytes']>>;
-  femaleRle_not?: Maybe<Scalars['Bytes']>;
-  femaleRle_not_contains?: Maybe<Scalars['Bytes']>;
-  femaleRle_not_in?: Maybe<Array<Scalars['Bytes']>>;
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  maleRle?: Maybe<Scalars['Bytes']>;
-  maleRle_contains?: Maybe<Scalars['Bytes']>;
-  maleRle_in?: Maybe<Array<Scalars['Bytes']>>;
-  maleRle_not?: Maybe<Scalars['Bytes']>;
-  maleRle_not_contains?: Maybe<Scalars['Bytes']>;
-  maleRle_not_in?: Maybe<Array<Scalars['Bytes']>>;
-  name?: Maybe<Scalars['String']>;
-  name_contains?: Maybe<Scalars['String']>;
-  name_ends_with?: Maybe<Scalars['String']>;
-  name_gt?: Maybe<Scalars['String']>;
-  name_gte?: Maybe<Scalars['String']>;
-  name_in?: Maybe<Array<Scalars['String']>>;
-  name_lt?: Maybe<Scalars['String']>;
-  name_lte?: Maybe<Scalars['String']>;
-  name_not?: Maybe<Scalars['String']>;
-  name_not_contains?: Maybe<Scalars['String']>;
-  name_not_ends_with?: Maybe<Scalars['String']>;
-  name_not_in?: Maybe<Array<Scalars['String']>>;
-  name_not_starts_with?: Maybe<Scalars['String']>;
-  name_starts_with?: Maybe<Scalars['String']>;
+  data?: InputMaybe<Scalars['String']>;
+  data_contains?: InputMaybe<Scalars['String']>;
+  data_ends_with?: InputMaybe<Scalars['String']>;
+  data_gt?: InputMaybe<Scalars['String']>;
+  data_gte?: InputMaybe<Scalars['String']>;
+  data_in?: InputMaybe<Array<Scalars['String']>>;
+  data_lt?: InputMaybe<Scalars['String']>;
+  data_lte?: InputMaybe<Scalars['String']>;
+  data_not?: InputMaybe<Scalars['String']>;
+  data_not_contains?: InputMaybe<Scalars['String']>;
+  data_not_ends_with?: InputMaybe<Scalars['String']>;
+  data_not_in?: InputMaybe<Array<Scalars['String']>>;
+  data_not_starts_with?: InputMaybe<Scalars['String']>;
+  data_starts_with?: InputMaybe<Scalars['String']>;
+  femaleRle?: InputMaybe<Scalars['Bytes']>;
+  femaleRle_contains?: InputMaybe<Scalars['Bytes']>;
+  femaleRle_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  femaleRle_not?: InputMaybe<Scalars['Bytes']>;
+  femaleRle_not_contains?: InputMaybe<Scalars['Bytes']>;
+  femaleRle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  maleRle?: InputMaybe<Scalars['Bytes']>;
+  maleRle_contains?: InputMaybe<Scalars['Bytes']>;
+  maleRle_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  maleRle_not?: InputMaybe<Scalars['Bytes']>;
+  maleRle_not_contains?: InputMaybe<Scalars['Bytes']>;
+  maleRle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  name?: InputMaybe<Scalars['String']>;
+  name_contains?: InputMaybe<Scalars['String']>;
+  name_ends_with?: InputMaybe<Scalars['String']>;
+  name_gt?: InputMaybe<Scalars['String']>;
+  name_gte?: InputMaybe<Scalars['String']>;
+  name_in?: InputMaybe<Array<Scalars['String']>>;
+  name_lt?: InputMaybe<Scalars['String']>;
+  name_lte?: InputMaybe<Scalars['String']>;
+  name_not?: InputMaybe<Scalars['String']>;
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  name_not_ends_with?: InputMaybe<Scalars['String']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']>>;
+  name_not_starts_with?: InputMaybe<Scalars['String']>;
+  name_starts_with?: InputMaybe<Scalars['String']>;
 };
 
 export enum Item_OrderBy {
@@ -500,20 +645,20 @@ export type MaleBody = {
 };
 
 export type MaleBody_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  rle?: InputMaybe<Scalars['Bytes']>;
+  rle_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  rle_not?: InputMaybe<Scalars['Bytes']>;
+  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
 };
 
 export enum MaleBody_OrderBy {
@@ -528,20 +673,20 @@ export type MaleHair = {
 };
 
 export type MaleHair_Filter = {
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  rle?: Maybe<Scalars['Bytes']>;
-  rle_contains?: Maybe<Scalars['Bytes']>;
-  rle_in?: Maybe<Array<Scalars['Bytes']>>;
-  rle_not?: Maybe<Scalars['Bytes']>;
-  rle_not_contains?: Maybe<Scalars['Bytes']>;
-  rle_not_in?: Maybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  rle?: InputMaybe<Scalars['Bytes']>;
+  rle_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  rle_not?: InputMaybe<Scalars['Bytes']>;
+  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
+  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
 };
 
 export enum MaleHair_OrderBy {
@@ -565,6 +710,8 @@ export type Query = {
   __typename?: 'Query';
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
+  attribute?: Maybe<Attribute>;
+  attributes: Array<Attribute>;
   bag?: Maybe<Bag>;
   bags: Array<Bag>;
   beard?: Maybe<Beard>;
@@ -591,213 +738,233 @@ export type Query = {
 
 
 export type Query_MetaArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
+};
+
+
+export type QueryAttributeArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryAttributesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Attribute_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Attribute_Filter>;
 };
 
 
 export type QueryBagArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryBagsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Bag_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Bag_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Bag_Filter>;
+  where?: InputMaybe<Bag_Filter>;
 };
 
 
 export type QueryBeardArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryBeardsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Beard_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Beard_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Beard_Filter>;
+  where?: InputMaybe<Beard_Filter>;
 };
 
 
 export type QueryFemaleBodiesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<FemaleBody_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FemaleBody_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<FemaleBody_Filter>;
+  where?: InputMaybe<FemaleBody_Filter>;
 };
 
 
 export type QueryFemaleBodyArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryFemaleHairArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryFemaleHairsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<FemaleHair_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FemaleHair_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<FemaleHair_Filter>;
+  where?: InputMaybe<FemaleHair_Filter>;
 };
 
 
 export type QueryHustlerArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryHustlersArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Hustler_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Hustler_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Hustler_Filter>;
+  where?: InputMaybe<Hustler_Filter>;
 };
 
 
 export type QueryItemArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryItemBalancesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<ItemBalances_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ItemBalances_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<ItemBalances_Filter>;
+  where?: InputMaybe<ItemBalances_Filter>;
 };
 
 
 export type QueryItemsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Item_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Item_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Item_Filter>;
+  where?: InputMaybe<Item_Filter>;
 };
 
 
 export type QueryMaleBodiesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<MaleBody_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MaleBody_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<MaleBody_Filter>;
+  where?: InputMaybe<MaleBody_Filter>;
 };
 
 
 export type QueryMaleBodyArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryMaleHairArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryMaleHairsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<MaleHair_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MaleHair_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<MaleHair_Filter>;
+  where?: InputMaybe<MaleHair_Filter>;
 };
 
 
 export type QuerySearchArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   text: Scalars['String'];
 };
 
 
 export type QueryTransferArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryTransfersArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Transfer_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Transfer_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Transfer_Filter>;
+  where?: InputMaybe<Transfer_Filter>;
 };
 
 
 export type QueryWalletArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryWalletsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Wallet_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Wallet_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Wallet_Filter>;
+  where?: InputMaybe<Wallet_Filter>;
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
+  attribute?: Maybe<Attribute>;
+  attributes: Array<Attribute>;
   bag?: Maybe<Bag>;
   bags: Array<Bag>;
   beard?: Maybe<Beard>;
@@ -823,198 +990,216 @@ export type Subscription = {
 
 
 export type Subscription_MetaArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
+};
+
+
+export type SubscriptionAttributeArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionAttributesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Attribute_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Attribute_Filter>;
 };
 
 
 export type SubscriptionBagArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionBagsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Bag_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Bag_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Bag_Filter>;
+  where?: InputMaybe<Bag_Filter>;
 };
 
 
 export type SubscriptionBeardArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionBeardsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Beard_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Beard_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Beard_Filter>;
+  where?: InputMaybe<Beard_Filter>;
 };
 
 
 export type SubscriptionFemaleBodiesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<FemaleBody_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FemaleBody_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<FemaleBody_Filter>;
+  where?: InputMaybe<FemaleBody_Filter>;
 };
 
 
 export type SubscriptionFemaleBodyArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionFemaleHairArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionFemaleHairsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<FemaleHair_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FemaleHair_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<FemaleHair_Filter>;
+  where?: InputMaybe<FemaleHair_Filter>;
 };
 
 
 export type SubscriptionHustlerArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionHustlersArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Hustler_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Hustler_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Hustler_Filter>;
+  where?: InputMaybe<Hustler_Filter>;
 };
 
 
 export type SubscriptionItemArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionItemBalancesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<ItemBalances_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ItemBalances_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<ItemBalances_Filter>;
+  where?: InputMaybe<ItemBalances_Filter>;
 };
 
 
 export type SubscriptionItemsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Item_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Item_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Item_Filter>;
+  where?: InputMaybe<Item_Filter>;
 };
 
 
 export type SubscriptionMaleBodiesArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<MaleBody_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MaleBody_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<MaleBody_Filter>;
+  where?: InputMaybe<MaleBody_Filter>;
 };
 
 
 export type SubscriptionMaleBodyArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionMaleHairArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionMaleHairsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<MaleHair_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MaleHair_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<MaleHair_Filter>;
+  where?: InputMaybe<MaleHair_Filter>;
 };
 
 
 export type SubscriptionTransferArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionTransfersArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Transfer_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Transfer_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Transfer_Filter>;
+  where?: InputMaybe<Transfer_Filter>;
 };
 
 
 export type SubscriptionWalletArgs = {
-  block?: Maybe<Block_Height>;
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionWalletsArgs = {
-  block?: Maybe<Block_Height>;
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Wallet_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Wallet_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: Maybe<Wallet_Filter>;
+  where?: InputMaybe<Wallet_Filter>;
 };
 
 export type Transfer = {
@@ -1028,70 +1213,70 @@ export type Transfer = {
 };
 
 export type Transfer_Filter = {
-  bag?: Maybe<Scalars['String']>;
-  bag_contains?: Maybe<Scalars['String']>;
-  bag_ends_with?: Maybe<Scalars['String']>;
-  bag_gt?: Maybe<Scalars['String']>;
-  bag_gte?: Maybe<Scalars['String']>;
-  bag_in?: Maybe<Array<Scalars['String']>>;
-  bag_lt?: Maybe<Scalars['String']>;
-  bag_lte?: Maybe<Scalars['String']>;
-  bag_not?: Maybe<Scalars['String']>;
-  bag_not_contains?: Maybe<Scalars['String']>;
-  bag_not_ends_with?: Maybe<Scalars['String']>;
-  bag_not_in?: Maybe<Array<Scalars['String']>>;
-  bag_not_starts_with?: Maybe<Scalars['String']>;
-  bag_starts_with?: Maybe<Scalars['String']>;
-  from?: Maybe<Scalars['String']>;
-  from_contains?: Maybe<Scalars['String']>;
-  from_ends_with?: Maybe<Scalars['String']>;
-  from_gt?: Maybe<Scalars['String']>;
-  from_gte?: Maybe<Scalars['String']>;
-  from_in?: Maybe<Array<Scalars['String']>>;
-  from_lt?: Maybe<Scalars['String']>;
-  from_lte?: Maybe<Scalars['String']>;
-  from_not?: Maybe<Scalars['String']>;
-  from_not_contains?: Maybe<Scalars['String']>;
-  from_not_ends_with?: Maybe<Scalars['String']>;
-  from_not_in?: Maybe<Array<Scalars['String']>>;
-  from_not_starts_with?: Maybe<Scalars['String']>;
-  from_starts_with?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  timestamp?: Maybe<Scalars['BigInt']>;
-  timestamp_gt?: Maybe<Scalars['BigInt']>;
-  timestamp_gte?: Maybe<Scalars['BigInt']>;
-  timestamp_in?: Maybe<Array<Scalars['BigInt']>>;
-  timestamp_lt?: Maybe<Scalars['BigInt']>;
-  timestamp_lte?: Maybe<Scalars['BigInt']>;
-  timestamp_not?: Maybe<Scalars['BigInt']>;
-  timestamp_not_in?: Maybe<Array<Scalars['BigInt']>>;
-  to?: Maybe<Scalars['String']>;
-  to_contains?: Maybe<Scalars['String']>;
-  to_ends_with?: Maybe<Scalars['String']>;
-  to_gt?: Maybe<Scalars['String']>;
-  to_gte?: Maybe<Scalars['String']>;
-  to_in?: Maybe<Array<Scalars['String']>>;
-  to_lt?: Maybe<Scalars['String']>;
-  to_lte?: Maybe<Scalars['String']>;
-  to_not?: Maybe<Scalars['String']>;
-  to_not_contains?: Maybe<Scalars['String']>;
-  to_not_ends_with?: Maybe<Scalars['String']>;
-  to_not_in?: Maybe<Array<Scalars['String']>>;
-  to_not_starts_with?: Maybe<Scalars['String']>;
-  to_starts_with?: Maybe<Scalars['String']>;
-  txHash?: Maybe<Scalars['Bytes']>;
-  txHash_contains?: Maybe<Scalars['Bytes']>;
-  txHash_in?: Maybe<Array<Scalars['Bytes']>>;
-  txHash_not?: Maybe<Scalars['Bytes']>;
-  txHash_not_contains?: Maybe<Scalars['Bytes']>;
-  txHash_not_in?: Maybe<Array<Scalars['Bytes']>>;
+  bag?: InputMaybe<Scalars['String']>;
+  bag_contains?: InputMaybe<Scalars['String']>;
+  bag_ends_with?: InputMaybe<Scalars['String']>;
+  bag_gt?: InputMaybe<Scalars['String']>;
+  bag_gte?: InputMaybe<Scalars['String']>;
+  bag_in?: InputMaybe<Array<Scalars['String']>>;
+  bag_lt?: InputMaybe<Scalars['String']>;
+  bag_lte?: InputMaybe<Scalars['String']>;
+  bag_not?: InputMaybe<Scalars['String']>;
+  bag_not_contains?: InputMaybe<Scalars['String']>;
+  bag_not_ends_with?: InputMaybe<Scalars['String']>;
+  bag_not_in?: InputMaybe<Array<Scalars['String']>>;
+  bag_not_starts_with?: InputMaybe<Scalars['String']>;
+  bag_starts_with?: InputMaybe<Scalars['String']>;
+  from?: InputMaybe<Scalars['String']>;
+  from_contains?: InputMaybe<Scalars['String']>;
+  from_ends_with?: InputMaybe<Scalars['String']>;
+  from_gt?: InputMaybe<Scalars['String']>;
+  from_gte?: InputMaybe<Scalars['String']>;
+  from_in?: InputMaybe<Array<Scalars['String']>>;
+  from_lt?: InputMaybe<Scalars['String']>;
+  from_lte?: InputMaybe<Scalars['String']>;
+  from_not?: InputMaybe<Scalars['String']>;
+  from_not_contains?: InputMaybe<Scalars['String']>;
+  from_not_ends_with?: InputMaybe<Scalars['String']>;
+  from_not_in?: InputMaybe<Array<Scalars['String']>>;
+  from_not_starts_with?: InputMaybe<Scalars['String']>;
+  from_starts_with?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  timestamp?: InputMaybe<Scalars['BigInt']>;
+  timestamp_gt?: InputMaybe<Scalars['BigInt']>;
+  timestamp_gte?: InputMaybe<Scalars['BigInt']>;
+  timestamp_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  timestamp_lt?: InputMaybe<Scalars['BigInt']>;
+  timestamp_lte?: InputMaybe<Scalars['BigInt']>;
+  timestamp_not?: InputMaybe<Scalars['BigInt']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  to?: InputMaybe<Scalars['String']>;
+  to_contains?: InputMaybe<Scalars['String']>;
+  to_ends_with?: InputMaybe<Scalars['String']>;
+  to_gt?: InputMaybe<Scalars['String']>;
+  to_gte?: InputMaybe<Scalars['String']>;
+  to_in?: InputMaybe<Array<Scalars['String']>>;
+  to_lt?: InputMaybe<Scalars['String']>;
+  to_lte?: InputMaybe<Scalars['String']>;
+  to_not?: InputMaybe<Scalars['String']>;
+  to_not_contains?: InputMaybe<Scalars['String']>;
+  to_not_ends_with?: InputMaybe<Scalars['String']>;
+  to_not_in?: InputMaybe<Array<Scalars['String']>>;
+  to_not_starts_with?: InputMaybe<Scalars['String']>;
+  to_starts_with?: InputMaybe<Scalars['String']>;
+  txHash?: InputMaybe<Scalars['Bytes']>;
+  txHash_contains?: InputMaybe<Scalars['Bytes']>;
+  txHash_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  txHash_not?: InputMaybe<Scalars['Bytes']>;
+  txHash_not_contains?: InputMaybe<Scalars['Bytes']>;
+  txHash_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
 };
 
 export enum Transfer_OrderBy {
@@ -1117,70 +1302,70 @@ export type Wallet = {
 
 
 export type WalletBagsArgs = {
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Bag_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  where?: Maybe<Bag_Filter>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Bag_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Bag_Filter>;
 };
 
 
 export type WalletHustlersArgs = {
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Hustler_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  where?: Maybe<Hustler_Filter>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Hustler_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Hustler_Filter>;
 };
 
 
 export type WalletItemsArgs = {
-  first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<ItemBalances_OrderBy>;
-  orderDirection?: Maybe<OrderDirection>;
-  skip?: Maybe<Scalars['Int']>;
-  where?: Maybe<ItemBalances_Filter>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ItemBalances_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<ItemBalances_Filter>;
 };
 
 export type Wallet_Filter = {
-  address?: Maybe<Scalars['Bytes']>;
-  address_contains?: Maybe<Scalars['Bytes']>;
-  address_in?: Maybe<Array<Scalars['Bytes']>>;
-  address_not?: Maybe<Scalars['Bytes']>;
-  address_not_contains?: Maybe<Scalars['Bytes']>;
-  address_not_in?: Maybe<Array<Scalars['Bytes']>>;
-  bagsHeld?: Maybe<Scalars['BigInt']>;
-  bagsHeld_gt?: Maybe<Scalars['BigInt']>;
-  bagsHeld_gte?: Maybe<Scalars['BigInt']>;
-  bagsHeld_in?: Maybe<Array<Scalars['BigInt']>>;
-  bagsHeld_lt?: Maybe<Scalars['BigInt']>;
-  bagsHeld_lte?: Maybe<Scalars['BigInt']>;
-  bagsHeld_not?: Maybe<Scalars['BigInt']>;
-  bagsHeld_not_in?: Maybe<Array<Scalars['BigInt']>>;
-  id?: Maybe<Scalars['ID']>;
-  id_gt?: Maybe<Scalars['ID']>;
-  id_gte?: Maybe<Scalars['ID']>;
-  id_in?: Maybe<Array<Scalars['ID']>>;
-  id_lt?: Maybe<Scalars['ID']>;
-  id_lte?: Maybe<Scalars['ID']>;
-  id_not?: Maybe<Scalars['ID']>;
-  id_not_in?: Maybe<Array<Scalars['ID']>>;
-  joined?: Maybe<Scalars['BigInt']>;
-  joined_gt?: Maybe<Scalars['BigInt']>;
-  joined_gte?: Maybe<Scalars['BigInt']>;
-  joined_in?: Maybe<Array<Scalars['BigInt']>>;
-  joined_lt?: Maybe<Scalars['BigInt']>;
-  joined_lte?: Maybe<Scalars['BigInt']>;
-  joined_not?: Maybe<Scalars['BigInt']>;
-  joined_not_in?: Maybe<Array<Scalars['BigInt']>>;
-  paper?: Maybe<Scalars['BigInt']>;
-  paper_gt?: Maybe<Scalars['BigInt']>;
-  paper_gte?: Maybe<Scalars['BigInt']>;
-  paper_in?: Maybe<Array<Scalars['BigInt']>>;
-  paper_lt?: Maybe<Scalars['BigInt']>;
-  paper_lte?: Maybe<Scalars['BigInt']>;
-  paper_not?: Maybe<Scalars['BigInt']>;
-  paper_not_in?: Maybe<Array<Scalars['BigInt']>>;
+  address?: InputMaybe<Scalars['Bytes']>;
+  address_contains?: InputMaybe<Scalars['Bytes']>;
+  address_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  address_not?: InputMaybe<Scalars['Bytes']>;
+  address_not_contains?: InputMaybe<Scalars['Bytes']>;
+  address_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  bagsHeld?: InputMaybe<Scalars['BigInt']>;
+  bagsHeld_gt?: InputMaybe<Scalars['BigInt']>;
+  bagsHeld_gte?: InputMaybe<Scalars['BigInt']>;
+  bagsHeld_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  bagsHeld_lt?: InputMaybe<Scalars['BigInt']>;
+  bagsHeld_lte?: InputMaybe<Scalars['BigInt']>;
+  bagsHeld_not?: InputMaybe<Scalars['BigInt']>;
+  bagsHeld_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  joined?: InputMaybe<Scalars['BigInt']>;
+  joined_gt?: InputMaybe<Scalars['BigInt']>;
+  joined_gte?: InputMaybe<Scalars['BigInt']>;
+  joined_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  joined_lt?: InputMaybe<Scalars['BigInt']>;
+  joined_lte?: InputMaybe<Scalars['BigInt']>;
+  joined_not?: InputMaybe<Scalars['BigInt']>;
+  joined_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  paper?: InputMaybe<Scalars['BigInt']>;
+  paper_gt?: InputMaybe<Scalars['BigInt']>;
+  paper_gte?: InputMaybe<Scalars['BigInt']>;
+  paper_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  paper_lt?: InputMaybe<Scalars['BigInt']>;
+  paper_lte?: InputMaybe<Scalars['BigInt']>;
+  paper_not?: InputMaybe<Scalars['BigInt']>;
+  paper_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
 };
 
 export enum Wallet_OrderBy {
@@ -1200,8 +1385,6 @@ export type _Block_ = {
   hash?: Maybe<Scalars['Bytes']>;
   /** The block number */
   number: Scalars['Int'];
-  /** The minimum block number */
-  number_gte: Scalars['Int'];
 };
 
 /** The type for the top-level _meta field */
@@ -1248,34 +1431,34 @@ export type BagQueryVariables = Exact<{
 }>;
 
 
-export type BagQuery = { __typename?: 'Query', bag?: Maybe<{ __typename?: 'Bag', id: string, claimed: boolean, opened: boolean, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
+export type BagQuery = { __typename?: 'Query', bag?: { __typename?: 'Bag', id: string, claimed: boolean, opened: boolean, open_sea_asset?: { __typename?: 'OpenSeaAsset', is_on_sale?: boolean | null | undefined, current_sale_price?: number | null | undefined, last_sale_price?: number | null | undefined } | null | undefined } | null | undefined };
 
 export type BagsQueryVariables = Exact<{
-  first?: Maybe<Scalars['Int']>;
-  skip?: Maybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, opened: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number, open_sea_asset?: Maybe<{ __typename?: 'OpenSeaAsset', is_on_sale?: Maybe<boolean>, current_sale_price?: Maybe<number>, last_sale_price?: Maybe<number> }> }> };
+export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, opened: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, open_sea_asset?: { __typename?: 'OpenSeaAsset', is_on_sale?: boolean | null | undefined, current_sale_price?: number | null | undefined, last_sale_price?: number | null | undefined } | null | undefined }> };
 
 export type HustlerQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type HustlerQuery = { __typename?: 'Query', hustler?: Maybe<{ __typename?: 'Hustler', id: string, data: string }> };
+export type HustlerQuery = { __typename?: 'Query', hustler?: { __typename?: 'Hustler', id: string, data: string } | null | undefined };
 
 export type HustlersWalletQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type HustlersWalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, hustlers: Array<{ __typename?: 'Hustler', id: string, data: string }> }> };
+export type HustlersWalletQuery = { __typename?: 'Query', wallet?: { __typename?: 'Wallet', id: string, address: any, hustlers: Array<{ __typename?: 'Hustler', id: string, data: string }> } | null | undefined };
 
 export type SearchQueryVariables = Exact<{
   text: Scalars['String'];
-  first?: Maybe<Scalars['Int']>;
-  skip?: Maybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']>;
 }>;
 
 
@@ -1286,10 +1469,10 @@ export type WalletQueryVariables = Exact<{
 }>;
 
 
-export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, opened: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> }> };
+export type WalletQuery = { __typename?: 'Query', wallet?: { __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, opened: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string }> } | null | undefined };
 
 
-export const AllHustlersDocument = gql`
+export const AllHustlersDocument = `
     query AllHustlers {
   hustlers(first: 1000) {
     id
@@ -1297,34 +1480,20 @@ export const AllHustlersDocument = gql`
   }
 }
     `;
-
-/**
- * __useAllHustlersQuery__
- *
- * To run a query within a React component, call `useAllHustlersQuery` and pass it any options that fit your needs.
- * When your component renders, `useAllHustlersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAllHustlersQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAllHustlersQuery(baseOptions?: Apollo.QueryHookOptions<AllHustlersQuery, AllHustlersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, options);
-      }
-export function useAllHustlersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllHustlersQuery, AllHustlersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, options);
-        }
-export type AllHustlersQueryHookResult = ReturnType<typeof useAllHustlersQuery>;
-export type AllHustlersLazyQueryHookResult = ReturnType<typeof useAllHustlersLazyQuery>;
-export type AllHustlersQueryResult = Apollo.QueryResult<AllHustlersQuery, AllHustlersQueryVariables>;
-export const AllOpenedBagsDocument = gql`
+export const useAllHustlersQuery = <
+      TData = AllHustlersQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables?: AllHustlersQueryVariables,
+      options?: UseQueryOptions<AllHustlersQuery, TError, TData>
+    ) =>
+    useQuery<AllHustlersQuery, TError, TData>(
+      variables === undefined ? ['AllHustlers'] : ['AllHustlers', variables],
+      fetcher<AllHustlersQuery, AllHustlersQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, AllHustlersDocument, variables),
+      options
+    );
+export const AllOpenedBagsDocument = `
     query AllOpenedBags {
   page_1: bags(first: 1000, skip: 0, where: {opened: true}) {
     opened
@@ -1352,34 +1521,20 @@ export const AllOpenedBagsDocument = gql`
   }
 }
     `;
-
-/**
- * __useAllOpenedBagsQuery__
- *
- * To run a query within a React component, call `useAllOpenedBagsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAllOpenedBagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAllOpenedBagsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAllOpenedBagsQuery(baseOptions?: Apollo.QueryHookOptions<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>(AllOpenedBagsDocument, options);
-      }
-export function useAllOpenedBagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>(AllOpenedBagsDocument, options);
-        }
-export type AllOpenedBagsQueryHookResult = ReturnType<typeof useAllOpenedBagsQuery>;
-export type AllOpenedBagsLazyQueryHookResult = ReturnType<typeof useAllOpenedBagsLazyQuery>;
-export type AllOpenedBagsQueryResult = Apollo.QueryResult<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>;
-export const AllUnclaimedBagsDocument = gql`
+export const useAllOpenedBagsQuery = <
+      TData = AllOpenedBagsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables?: AllOpenedBagsQueryVariables,
+      options?: UseQueryOptions<AllOpenedBagsQuery, TError, TData>
+    ) =>
+    useQuery<AllOpenedBagsQuery, TError, TData>(
+      variables === undefined ? ['AllOpenedBags'] : ['AllOpenedBags', variables],
+      fetcher<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, AllOpenedBagsDocument, variables),
+      options
+    );
+export const AllUnclaimedBagsDocument = `
     query AllUnclaimedBags {
   page_1: bags(first: 1000, skip: 0, where: {claimed: false}) {
     claimed
@@ -1395,34 +1550,20 @@ export const AllUnclaimedBagsDocument = gql`
   }
 }
     `;
-
-/**
- * __useAllUnclaimedBagsQuery__
- *
- * To run a query within a React component, call `useAllUnclaimedBagsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAllUnclaimedBagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAllUnclaimedBagsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAllUnclaimedBagsQuery(baseOptions?: Apollo.QueryHookOptions<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(AllUnclaimedBagsDocument, options);
-      }
-export function useAllUnclaimedBagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(AllUnclaimedBagsDocument, options);
-        }
-export type AllUnclaimedBagsQueryHookResult = ReturnType<typeof useAllUnclaimedBagsQuery>;
-export type AllUnclaimedBagsLazyQueryHookResult = ReturnType<typeof useAllUnclaimedBagsLazyQuery>;
-export type AllUnclaimedBagsQueryResult = Apollo.QueryResult<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>;
-export const BagDocument = gql`
+export const useAllUnclaimedBagsQuery = <
+      TData = AllUnclaimedBagsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables?: AllUnclaimedBagsQueryVariables,
+      options?: UseQueryOptions<AllUnclaimedBagsQuery, TError, TData>
+    ) =>
+    useQuery<AllUnclaimedBagsQuery, TError, TData>(
+      variables === undefined ? ['AllUnclaimedBags'] : ['AllUnclaimedBags', variables],
+      fetcher<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, AllUnclaimedBagsDocument, variables),
+      options
+    );
+export const BagDocument = `
     query Bag($tokenId: ID!) {
   bag(id: $tokenId) {
     id
@@ -1436,35 +1577,20 @@ export const BagDocument = gql`
   }
 }
     `;
-
-/**
- * __useBagQuery__
- *
- * To run a query within a React component, call `useBagQuery` and pass it any options that fit your needs.
- * When your component renders, `useBagQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useBagQuery({
- *   variables: {
- *      tokenId: // value for 'tokenId'
- *   },
- * });
- */
-export function useBagQuery(baseOptions: Apollo.QueryHookOptions<BagQuery, BagQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BagQuery, BagQueryVariables>(BagDocument, options);
-      }
-export function useBagLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BagQuery, BagQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BagQuery, BagQueryVariables>(BagDocument, options);
-        }
-export type BagQueryHookResult = ReturnType<typeof useBagQuery>;
-export type BagLazyQueryHookResult = ReturnType<typeof useBagLazyQuery>;
-export type BagQueryResult = Apollo.QueryResult<BagQuery, BagQueryVariables>;
-export const BagsDocument = gql`
+export const useBagQuery = <
+      TData = BagQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: BagQueryVariables,
+      options?: UseQueryOptions<BagQuery, TError, TData>
+    ) =>
+    useQuery<BagQuery, TError, TData>(
+      ['Bag', variables],
+      fetcher<BagQuery, BagQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, BagDocument, variables),
+      options
+    );
+export const BagsDocument = `
     query Bags($first: Int, $skip: Int) {
   bags(first: $first, skip: $skip) {
     claimed
@@ -1479,7 +1605,6 @@ export const BagsDocument = gql`
     vehicle @client
     waist @client
     weapon @client
-    rank @client
     open_sea_asset @client {
       is_on_sale
       current_sale_price
@@ -1488,36 +1613,20 @@ export const BagsDocument = gql`
   }
 }
     `;
-
-/**
- * __useBagsQuery__
- *
- * To run a query within a React component, call `useBagsQuery` and pass it any options that fit your needs.
- * When your component renders, `useBagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useBagsQuery({
- *   variables: {
- *      first: // value for 'first'
- *      skip: // value for 'skip'
- *   },
- * });
- */
-export function useBagsQuery(baseOptions?: Apollo.QueryHookOptions<BagsQuery, BagsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
-      }
-export function useBagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BagsQuery, BagsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BagsQuery, BagsQueryVariables>(BagsDocument, options);
-        }
-export type BagsQueryHookResult = ReturnType<typeof useBagsQuery>;
-export type BagsLazyQueryHookResult = ReturnType<typeof useBagsLazyQuery>;
-export type BagsQueryResult = Apollo.QueryResult<BagsQuery, BagsQueryVariables>;
-export const HustlerDocument = gql`
+export const useBagsQuery = <
+      TData = BagsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables?: BagsQueryVariables,
+      options?: UseQueryOptions<BagsQuery, TError, TData>
+    ) =>
+    useQuery<BagsQuery, TError, TData>(
+      variables === undefined ? ['Bags'] : ['Bags', variables],
+      fetcher<BagsQuery, BagsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, BagsDocument, variables),
+      options
+    );
+export const HustlerDocument = `
     query Hustler($id: ID!) {
   hustler(id: $id) {
     id
@@ -1525,35 +1634,20 @@ export const HustlerDocument = gql`
   }
 }
     `;
-
-/**
- * __useHustlerQuery__
- *
- * To run a query within a React component, call `useHustlerQuery` and pass it any options that fit your needs.
- * When your component renders, `useHustlerQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHustlerQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useHustlerQuery(baseOptions: Apollo.QueryHookOptions<HustlerQuery, HustlerQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<HustlerQuery, HustlerQueryVariables>(HustlerDocument, options);
-      }
-export function useHustlerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HustlerQuery, HustlerQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<HustlerQuery, HustlerQueryVariables>(HustlerDocument, options);
-        }
-export type HustlerQueryHookResult = ReturnType<typeof useHustlerQuery>;
-export type HustlerLazyQueryHookResult = ReturnType<typeof useHustlerLazyQuery>;
-export type HustlerQueryResult = Apollo.QueryResult<HustlerQuery, HustlerQueryVariables>;
-export const HustlersWalletDocument = gql`
+export const useHustlerQuery = <
+      TData = HustlerQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: HustlerQueryVariables,
+      options?: UseQueryOptions<HustlerQuery, TError, TData>
+    ) =>
+    useQuery<HustlerQuery, TError, TData>(
+      ['Hustler', variables],
+      fetcher<HustlerQuery, HustlerQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, HustlerDocument, variables),
+      options
+    );
+export const HustlersWalletDocument = `
     query HustlersWallet($id: ID!) {
   wallet(id: $id) {
     id
@@ -1565,35 +1659,20 @@ export const HustlersWalletDocument = gql`
   }
 }
     `;
-
-/**
- * __useHustlersWalletQuery__
- *
- * To run a query within a React component, call `useHustlersWalletQuery` and pass it any options that fit your needs.
- * When your component renders, `useHustlersWalletQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHustlersWalletQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useHustlersWalletQuery(baseOptions: Apollo.QueryHookOptions<HustlersWalletQuery, HustlersWalletQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, options);
-      }
-export function useHustlersWalletLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HustlersWalletQuery, HustlersWalletQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, options);
-        }
-export type HustlersWalletQueryHookResult = ReturnType<typeof useHustlersWalletQuery>;
-export type HustlersWalletLazyQueryHookResult = ReturnType<typeof useHustlersWalletLazyQuery>;
-export type HustlersWalletQueryResult = Apollo.QueryResult<HustlersWalletQuery, HustlersWalletQueryVariables>;
-export const SearchDocument = gql`
+export const useHustlersWalletQuery = <
+      TData = HustlersWalletQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: HustlersWalletQueryVariables,
+      options?: UseQueryOptions<HustlersWalletQuery, TError, TData>
+    ) =>
+    useQuery<HustlersWalletQuery, TError, TData>(
+      ['HustlersWallet', variables],
+      fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, HustlersWalletDocument, variables),
+      options
+    );
+export const SearchDocument = `
     query Search($text: String!, $first: Int, $skip: Int) {
   search(text: $text, first: $first, skip: $skip) {
     id
@@ -1611,37 +1690,20 @@ export const SearchDocument = gql`
   }
 }
     `;
-
-/**
- * __useSearchQuery__
- *
- * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchQuery({
- *   variables: {
- *      text: // value for 'text'
- *      first: // value for 'first'
- *      skip: // value for 'skip'
- *   },
- * });
- */
-export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
-      }
-export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
-        }
-export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
-export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
-export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
-export const WalletDocument = gql`
+export const useSearchQuery = <
+      TData = SearchQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: SearchQueryVariables,
+      options?: UseQueryOptions<SearchQuery, TError, TData>
+    ) =>
+    useQuery<SearchQuery, TError, TData>(
+      ['Search', variables],
+      fetcher<SearchQuery, SearchQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, SearchDocument, variables),
+      options
+    );
+export const WalletDocument = `
     query Wallet($id: ID!) {
   wallet(id: $id) {
     id
@@ -1660,36 +1722,20 @@ export const WalletDocument = gql`
       vehicle @client
       waist @client
       weapon @client
-      rank @client
     }
   }
 }
     `;
-
-/**
- * __useWalletQuery__
- *
- * To run a query within a React component, call `useWalletQuery` and pass it any options that fit your needs.
- * When your component renders, `useWalletQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useWalletQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useWalletQuery(baseOptions: Apollo.QueryHookOptions<WalletQuery, WalletQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
-      }
-export function useWalletLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WalletQuery, WalletQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<WalletQuery, WalletQueryVariables>(WalletDocument, options);
-        }
-export type WalletQueryHookResult = ReturnType<typeof useWalletQuery>;
-export type WalletLazyQueryHookResult = ReturnType<typeof useWalletLazyQuery>;
-export type WalletQueryResult = Apollo.QueryResult<WalletQuery, WalletQueryVariables>;
+export const useWalletQuery = <
+      TData = WalletQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: WalletQueryVariables,
+      options?: UseQueryOptions<WalletQuery, TError, TData>
+    ) =>
+    useQuery<WalletQuery, TError, TData>(
+      ['Wallet', variables],
+      fetcher<WalletQuery, WalletQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, WalletDocument, variables),
+      options
+    );

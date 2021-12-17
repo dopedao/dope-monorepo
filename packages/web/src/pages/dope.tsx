@@ -47,10 +47,14 @@ export default function DopeWindow() {
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const [selected, setSelected] = useState(0);
   const { account, chainId } = useWeb3React();
-  const { data, loading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
+  const { data, isFetching: loading } = useWalletQuery(
+    {
+      endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+    },
+    {
+      id: account?.toLowerCase() || '',
+    },
+  );
   useSwitchEthereum(chainId, account);
 
   useEffect(() => {

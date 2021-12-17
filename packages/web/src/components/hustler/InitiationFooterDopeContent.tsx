@@ -91,22 +91,25 @@ const InitiationFooterDopeContent = ({
     return bundledDope;
   };
 
-  const { data, loading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-    // Set first item as selected when it comes back from
-    // the contract query.
-    onCompleted: data => {
-      const bundledDope = getBundledDopeFromData(data);
-      if (bundledDope.length > 0 && isHustlerRandom()) {
-        const firstDopeId = bundledDope[0].id;
-        console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
-        if (makeVarConfig) {
-          makeVarConfig({ ...hustlerConfig, dopeId: firstDopeId });
-        }
-      }
+  const { data, isFetching: loading } = useWalletQuery(
+    {
+      endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
     },
-  });
+    {
+      id: account?.toLowerCase() || '',
+    },
+  );
+
+  // onCompleted: data => {
+  //   const bundledDope = getBundledDopeFromData(data);
+  //   if (bundledDope.length > 0 && isHustlerRandom()) {
+  //     const firstDopeId = bundledDope[0].id;
+  //     console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
+  //     if (makeVarConfig) {
+  //       makeVarConfig({ ...hustlerConfig, dopeId: firstDopeId });
+  //     }
+  //   }
+  // },
 
   const goToNextStep = () => {
     dispatchHustler({

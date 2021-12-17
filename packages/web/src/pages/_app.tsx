@@ -1,18 +1,15 @@
 import 'ui/styles/reset.css';
-import { Suspense } from 'react';
 import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
-import { RelayEnvironmentProvider, loadQuery, usePreloadedQuery } from 'react-relay/hooks';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Hydrate } from 'react-query/hydration';
 
 import DesktopIconList from 'components/DesktopIconList';
 import GlobalStyles from 'ui/styles/GlobalStyles';
 import PageLoadingIndicator from 'components/PageLoadingIndicator';
 import theme from 'ui/styles/theme';
-import EthereumApolloProvider from 'components/EthereumApolloProvider';
-
-import RelayEnvironment from 'api/RelayEnvironment';
 
 // Error tracking and tracing from Sentry.io
 import * as Sentry from '@sentry/react';
@@ -33,24 +30,24 @@ function getLibrary(provider: any): Web3Provider {
   return library;
 }
 
+const queryClient = new QueryClient();
+
 export default function CreateDopeApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <GlobalStyles />
       <ChakraProvider theme={theme}>
-        <RelayEnvironmentProvider environment={RelayEnvironment}>
-          <Suspense fallback={'Loading...'}>
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={pageProps.dehydratedState}>
             <Web3ReactProvider getLibrary={getLibrary}>
-              <EthereumApolloProvider>
-                <main>
-                  <PageLoadingIndicator />
-                  <DesktopIconList />
-                  <Component {...pageProps} />
-                </main>
-              </EthereumApolloProvider>
+              <main>
+                <PageLoadingIndicator />
+                <DesktopIconList />
+                <Component {...pageProps} />
+              </main>
             </Web3ReactProvider>
-          </Suspense>
-        </RelayEnvironmentProvider>
+          </Hydrate>
+        </QueryClientProvider>
       </ChakraProvider>
     </>
   );

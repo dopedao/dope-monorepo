@@ -2,17 +2,15 @@ overwrite: true
 schema:
   - "https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars"
   - "https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-optimism"
-  - "apollo/client-schemas/bag.graphql"
-  - "apollo/client-schemas/open-sea-asset.graphql"
-documents: "src/apollo/queries/**/*.graphql"
+  - "src/graphql/client-schemas/bag.graphql"
+  - "src/graphql/client-schemas/open-sea-asset.graphql"
+documents: "src/graphql/queries/**/*.graphql"
 generates:
   src/generated/graphql.ts:
     plugins:
       - "typescript"
       - "typescript-operations"
-      - "typescript-react-apollo"
+      - "typescript-react-query"
   src/generated/introspection.ts:
     plugins:
       - fragment-matcher
-    config:
-      apolloClientVersion: 3

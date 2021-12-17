@@ -104,7 +104,9 @@ const MarketList = () => {
 
   // Loads unclaimed $paper status from The Graph,
   // then updates items in reactive var cache.
-  const { data: unclaimedBags } = useAllUnclaimedBagsQuery();
+  const { data: unclaimedBags } = useAllUnclaimedBagsQuery({
+    endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+  });
   const [hasUpdateDopeDbWithPaper, setHasUpdateDopeDbWithPaper] = useState(false);
   if (!hasUpdateDopeDbWithPaper && unclaimedBags && unclaimedBags.page_1) {
     dopeDb.updateHasPaperFromQuery(unclaimedBags);
@@ -115,7 +117,9 @@ const MarketList = () => {
 
   // Loads unbundled from The Graph,
   // then updates items in reactive var cache.
-  const { data: openedBags } = useAllOpenedBagsQuery();
+  const { data: openedBags } = useAllOpenedBagsQuery({
+    endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+  });
   const [hasUpdateDopeDbWithBundled, setHasUpdateDopeDbWithBundled] = useState(false);
   if (!hasUpdateDopeDbWithBundled && openedBags && openedBags.page_1) {
     dopeDb.updateOpenedBagsFromQuery(openedBags);

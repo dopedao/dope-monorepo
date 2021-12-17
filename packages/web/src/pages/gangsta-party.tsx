@@ -2,7 +2,6 @@ import { Button, HStack } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import Link from 'next/link';
 import styled from '@emotion/styled';
-import { useWeb3React } from '@web3-react/core';
 import { useAllHustlersQuery } from 'generated/graphql';
 import Head from 'components/Head';
 import WebAmpPlayer from 'components/WebAmpPlayer';
@@ -42,10 +41,10 @@ const ScreenSaver = styled.div`
 `;
 
 const GangstaParty = () => {
-  // @TODO: can we remove this?
-  const { account } = useWeb3React();
-  const client = useOptimismClient();
-  const { data, loading } = useAllHustlersQuery({ client });
+  const optimismURI = useOptimismClient();
+  const { data, isFetching: loading } = useAllHustlersQuery({
+    endpoint: optimismURI,
+  });
 
   return (
     <>
