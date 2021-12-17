@@ -8,7 +8,7 @@ import { client, q } from '../src/fauna_client';
 
 (async () => {
   try {
-    const assets = await getOpenSeaAssets();console.log(assets)
+    const assets = await getOpenSeaAssets();
     // Translate to our document store in Fauna
     const assetsWithTokenId = assets.map((asset: any) => [
       asset.token_id, 
