@@ -1,5 +1,5 @@
+import { getOpenSeaAssets } from '../src/utils/OpenSeaAsset';
 import { client, q } from '../src/fauna_client';
-import { getOpenSeaAssets } from '../src/OpenSeaAsset';
 
 /**
  * Polls OpenSea for DOPE Token sales information.
@@ -8,9 +8,9 @@ import { getOpenSeaAssets } from '../src/OpenSeaAsset';
 
 (async () => {
   try {
-    const assets = await getOpenSeaAssets();
+    const assets = await getOpenSeaAssets();console.log(assets)
     // Translate to our document store in Fauna
-    const assetsWithTokenId = assets.map(asset => [
+    const assetsWithTokenId = assets.map((asset: any) => [
       asset.token_id, 
       {
         open_sea_is_on_sale: asset.is_on_sale,
