@@ -77,7 +77,7 @@ export const create = async () => {
 };
 
 export const deleteAndCreate = async () => {
-    let deleted: any = await client.query(q.Delete(q.Function("get_swap_meet_page2")))
+    let deleted: any = await client.query(q.Delete(q.Function("get_swap_meet_page")))
     console.log(`Deleted function: ${deleted?.name}, recreating`);
     await create();
 };
