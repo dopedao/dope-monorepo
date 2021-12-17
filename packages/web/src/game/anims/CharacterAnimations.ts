@@ -2,45 +2,45 @@ import { Base, Categories, CharacterCategories, SpritesMap } from "game/constant
 import Player from "game/entities/Player";
 
 const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, key: string): void => {
-    const div = 4;
+    const scale = 6;
 
     anims.create({
         key: key + "_right",
         frames: anims.generateFrameNumbers(key, {
-            start: 0,
-            end: 7
+            start: 7,
+            end: 0,
         }),
-        frameRate: Player.DEFAULT_VELOCITY / div,
+        frameRate: Player.DEFAULT_VELOCITY / scale,
         repeat: -1
     });
 
     anims.create({
         key: key + "_left",
         frames: anims.generateFrameNumbers(key, {
-            start: 8,
-            end: 15
+            start: 15,
+            end: 8
         }),
-        frameRate: Player.DEFAULT_VELOCITY / div,
+        frameRate: Player.DEFAULT_VELOCITY / scale,
         repeat: -1
     });
 
     anims.create({
         key: key + "_front",
         frames: anims.generateFrameNumbers(key, {
-            start: 16,
-            end: 23
+            start: 23,
+            end: 16
         }),
-        frameRate: Player.DEFAULT_VELOCITY / div,
+        frameRate: Player.DEFAULT_VELOCITY / scale,
         repeat: -1
     });
 
     anims.create({
         key: key + "_back",
         frames: anims.generateFrameNumbers(key, {
-            start: 24,
-            end: 31
+            start: 31,
+            end: 24
         }),
-        frameRate: Player.DEFAULT_VELOCITY / div,
+        frameRate: Player.DEFAULT_VELOCITY / scale,
         repeat: -1
     });
 }

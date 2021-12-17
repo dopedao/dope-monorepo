@@ -35,31 +35,31 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
 
         if (mainCursors.up.isDown || eqCursors?.up.isDown)
         {
+            dir = "_back";
             this.setVelocity(0, -Player.DEFAULT_VELOCITY);
             this.body.offset.x = 6;
-            this.play(this.texture.key + "_back", true);
-            dir = "_back";
+            this.play(this.texture.key + dir, true);
         }
         else if (mainCursors.down.isDown || eqCursors?.down.isDown)
         {
+            dir = "_front";
             this.setVelocity(0, Player.DEFAULT_VELOCITY);
             this.body.offset.x = 6;
-            this.play(this.texture.key + "_front", true);
-            dir = "_front";
+            this.play(this.texture.key + dir, true);
         }
         else if (mainCursors.left.isDown || eqCursors?.left.isDown)
         {
+            dir = "_left";
             this.setVelocity(-Player.DEFAULT_VELOCITY, 0);
             this.body.offset.x = 8;
-            this.play(this.texture.key + "_left", true);
-            dir = "_left";
+            this.play(this.texture.key + dir, true);
         }
         else if (mainCursors.right.isDown || eqCursors?.right.isDown)
         {
+            dir = "_right";
             this.setVelocity(Player.DEFAULT_VELOCITY, 0);
             this.body.offset.x = 6;
-            this.play(this.texture.key + "_right", true);
-            dir = "_right";
+            this.play(this.texture.key + dir, true);
         }
         else 
         {
