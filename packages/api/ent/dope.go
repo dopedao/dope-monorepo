@@ -20,6 +20,10 @@ type Dope struct {
 	Claimed bool `json:"claimed,omitempty"`
 	// Opened holds the value of the "opened" field.
 	Opened bool `json:"opened,omitempty"`
+	// Score holds the value of the "score" field.
+	Score float64 `json:"score,omitempty"`
+	// Rank holds the value of the "rank" field.
+	Rank int `json:"rank,omitempty"`
 	// Order holds the value of the "order" field.
 	Order int `json:"order,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -69,7 +73,9 @@ func (*Dope) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case dope.FieldClaimed, dope.FieldOpened:
 			values[i] = new(sql.NullBool)
-		case dope.FieldOrder:
+		case dope.FieldScore:
+			values[i] = new(sql.NullFloat64)
+		case dope.FieldRank, dope.FieldOrder:
 			values[i] = new(sql.NullInt64)
 		case dope.FieldID:
 			values[i] = new(sql.NullString)
@@ -107,6 +113,18 @@ func (d *Dope) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field opened", values[i])
 			} else if value.Valid {
 				d.Opened = value.Bool
+			}
+		case dope.FieldScore:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field score", values[i])
+			} else if value.Valid {
+				d.Score = value.Float64
+			}
+		case dope.FieldRank:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field rank", values[i])
+			} else if value.Valid {
+				d.Rank = int(value.Int64)
 			}
 		case dope.FieldOrder:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -163,6 +181,10 @@ func (d *Dope) String() string {
 	builder.WriteString(fmt.Sprintf("%v", d.Claimed))
 	builder.WriteString(", opened=")
 	builder.WriteString(fmt.Sprintf("%v", d.Opened))
+	builder.WriteString(", score=")
+	builder.WriteString(fmt.Sprintf("%v", d.Score))
+	builder.WriteString(", rank=")
+	builder.WriteString(fmt.Sprintf("%v", d.Rank))
 	builder.WriteString(", order=")
 	builder.WriteString(fmt.Sprintf("%v", d.Order))
 	builder.WriteByte(')')

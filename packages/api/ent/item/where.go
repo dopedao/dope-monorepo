@@ -128,6 +128,20 @@ func Augmented(v bool) predicate.Item {
 	})
 }
 
+// Count applies equality check predicate on the "count" field. It's identical to CountEQ.
+func Count(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCount), v))
+	})
+}
+
+// Score applies equality check predicate on the "score" field. It's identical to ScoreEQ.
+func Score(v float64) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldScore), v))
+	})
+}
+
 // Svg applies equality check predicate on the "svg" field. It's identical to SvgEQ.
 func Svg(v string) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
@@ -701,6 +715,186 @@ func AugmentedIsNil() predicate.Item {
 func AugmentedNotNil() predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldAugmented)))
+	})
+}
+
+// CountEQ applies the EQ predicate on the "count" field.
+func CountEQ(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCount), v))
+	})
+}
+
+// CountNEQ applies the NEQ predicate on the "count" field.
+func CountNEQ(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCount), v))
+	})
+}
+
+// CountIn applies the In predicate on the "count" field.
+func CountIn(vs ...int) predicate.Item {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Item(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldCount), v...))
+	})
+}
+
+// CountNotIn applies the NotIn predicate on the "count" field.
+func CountNotIn(vs ...int) predicate.Item {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Item(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldCount), v...))
+	})
+}
+
+// CountGT applies the GT predicate on the "count" field.
+func CountGT(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCount), v))
+	})
+}
+
+// CountGTE applies the GTE predicate on the "count" field.
+func CountGTE(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCount), v))
+	})
+}
+
+// CountLT applies the LT predicate on the "count" field.
+func CountLT(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCount), v))
+	})
+}
+
+// CountLTE applies the LTE predicate on the "count" field.
+func CountLTE(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCount), v))
+	})
+}
+
+// CountIsNil applies the IsNil predicate on the "count" field.
+func CountIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldCount)))
+	})
+}
+
+// CountNotNil applies the NotNil predicate on the "count" field.
+func CountNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldCount)))
+	})
+}
+
+// ScoreEQ applies the EQ predicate on the "score" field.
+func ScoreEQ(v float64) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldScore), v))
+	})
+}
+
+// ScoreNEQ applies the NEQ predicate on the "score" field.
+func ScoreNEQ(v float64) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldScore), v))
+	})
+}
+
+// ScoreIn applies the In predicate on the "score" field.
+func ScoreIn(vs ...float64) predicate.Item {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Item(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldScore), v...))
+	})
+}
+
+// ScoreNotIn applies the NotIn predicate on the "score" field.
+func ScoreNotIn(vs ...float64) predicate.Item {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Item(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldScore), v...))
+	})
+}
+
+// ScoreGT applies the GT predicate on the "score" field.
+func ScoreGT(v float64) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldScore), v))
+	})
+}
+
+// ScoreGTE applies the GTE predicate on the "score" field.
+func ScoreGTE(v float64) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldScore), v))
+	})
+}
+
+// ScoreLT applies the LT predicate on the "score" field.
+func ScoreLT(v float64) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldScore), v))
+	})
+}
+
+// ScoreLTE applies the LTE predicate on the "score" field.
+func ScoreLTE(v float64) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldScore), v))
+	})
+}
+
+// ScoreIsNil applies the IsNil predicate on the "score" field.
+func ScoreIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldScore)))
+	})
+}
+
+// ScoreNotNil applies the NotNil predicate on the "score" field.
+func ScoreNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldScore)))
 	})
 }
 

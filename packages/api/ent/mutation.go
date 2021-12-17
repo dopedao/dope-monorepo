@@ -735,6 +735,10 @@ type DopeMutation struct {
 	id            *string
 	claimed       *bool
 	opened        *bool
+	score         *float64
+	addscore      *float64
+	rank          *int
+	addrank       *int
 	_order        *int
 	add_order     *int
 	clearedFields map[string]struct{}
@@ -924,6 +928,146 @@ func (m *DopeMutation) ResetOpened() {
 	m.opened = nil
 }
 
+// SetScore sets the "score" field.
+func (m *DopeMutation) SetScore(f float64) {
+	m.score = &f
+	m.addscore = nil
+}
+
+// Score returns the value of the "score" field in the mutation.
+func (m *DopeMutation) Score() (r float64, exists bool) {
+	v := m.score
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldScore returns the old "score" field's value of the Dope entity.
+// If the Dope object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DopeMutation) OldScore(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldScore is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldScore requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldScore: %w", err)
+	}
+	return oldValue.Score, nil
+}
+
+// AddScore adds f to the "score" field.
+func (m *DopeMutation) AddScore(f float64) {
+	if m.addscore != nil {
+		*m.addscore += f
+	} else {
+		m.addscore = &f
+	}
+}
+
+// AddedScore returns the value that was added to the "score" field in this mutation.
+func (m *DopeMutation) AddedScore() (r float64, exists bool) {
+	v := m.addscore
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearScore clears the value of the "score" field.
+func (m *DopeMutation) ClearScore() {
+	m.score = nil
+	m.addscore = nil
+	m.clearedFields[dope.FieldScore] = struct{}{}
+}
+
+// ScoreCleared returns if the "score" field was cleared in this mutation.
+func (m *DopeMutation) ScoreCleared() bool {
+	_, ok := m.clearedFields[dope.FieldScore]
+	return ok
+}
+
+// ResetScore resets all changes to the "score" field.
+func (m *DopeMutation) ResetScore() {
+	m.score = nil
+	m.addscore = nil
+	delete(m.clearedFields, dope.FieldScore)
+}
+
+// SetRank sets the "rank" field.
+func (m *DopeMutation) SetRank(i int) {
+	m.rank = &i
+	m.addrank = nil
+}
+
+// Rank returns the value of the "rank" field in the mutation.
+func (m *DopeMutation) Rank() (r int, exists bool) {
+	v := m.rank
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRank returns the old "rank" field's value of the Dope entity.
+// If the Dope object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DopeMutation) OldRank(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRank is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRank requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRank: %w", err)
+	}
+	return oldValue.Rank, nil
+}
+
+// AddRank adds i to the "rank" field.
+func (m *DopeMutation) AddRank(i int) {
+	if m.addrank != nil {
+		*m.addrank += i
+	} else {
+		m.addrank = &i
+	}
+}
+
+// AddedRank returns the value that was added to the "rank" field in this mutation.
+func (m *DopeMutation) AddedRank() (r int, exists bool) {
+	v := m.addrank
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearRank clears the value of the "rank" field.
+func (m *DopeMutation) ClearRank() {
+	m.rank = nil
+	m.addrank = nil
+	m.clearedFields[dope.FieldRank] = struct{}{}
+}
+
+// RankCleared returns if the "rank" field was cleared in this mutation.
+func (m *DopeMutation) RankCleared() bool {
+	_, ok := m.clearedFields[dope.FieldRank]
+	return ok
+}
+
+// ResetRank resets all changes to the "rank" field.
+func (m *DopeMutation) ResetRank() {
+	m.rank = nil
+	m.addrank = nil
+	delete(m.clearedFields, dope.FieldRank)
+}
+
 // SetOrder sets the "order" field.
 func (m *DopeMutation) SetOrder(i int) {
 	m._order = &i
@@ -1092,12 +1236,18 @@ func (m *DopeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DopeMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 5)
 	if m.claimed != nil {
 		fields = append(fields, dope.FieldClaimed)
 	}
 	if m.opened != nil {
 		fields = append(fields, dope.FieldOpened)
+	}
+	if m.score != nil {
+		fields = append(fields, dope.FieldScore)
+	}
+	if m.rank != nil {
+		fields = append(fields, dope.FieldRank)
 	}
 	if m._order != nil {
 		fields = append(fields, dope.FieldOrder)
@@ -1114,6 +1264,10 @@ func (m *DopeMutation) Field(name string) (ent.Value, bool) {
 		return m.Claimed()
 	case dope.FieldOpened:
 		return m.Opened()
+	case dope.FieldScore:
+		return m.Score()
+	case dope.FieldRank:
+		return m.Rank()
 	case dope.FieldOrder:
 		return m.Order()
 	}
@@ -1129,6 +1283,10 @@ func (m *DopeMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldClaimed(ctx)
 	case dope.FieldOpened:
 		return m.OldOpened(ctx)
+	case dope.FieldScore:
+		return m.OldScore(ctx)
+	case dope.FieldRank:
+		return m.OldRank(ctx)
 	case dope.FieldOrder:
 		return m.OldOrder(ctx)
 	}
@@ -1154,6 +1312,20 @@ func (m *DopeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetOpened(v)
 		return nil
+	case dope.FieldScore:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetScore(v)
+		return nil
+	case dope.FieldRank:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRank(v)
+		return nil
 	case dope.FieldOrder:
 		v, ok := value.(int)
 		if !ok {
@@ -1169,6 +1341,12 @@ func (m *DopeMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *DopeMutation) AddedFields() []string {
 	var fields []string
+	if m.addscore != nil {
+		fields = append(fields, dope.FieldScore)
+	}
+	if m.addrank != nil {
+		fields = append(fields, dope.FieldRank)
+	}
 	if m.add_order != nil {
 		fields = append(fields, dope.FieldOrder)
 	}
@@ -1180,6 +1358,10 @@ func (m *DopeMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *DopeMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case dope.FieldScore:
+		return m.AddedScore()
+	case dope.FieldRank:
+		return m.AddedRank()
 	case dope.FieldOrder:
 		return m.AddedOrder()
 	}
@@ -1191,6 +1373,20 @@ func (m *DopeMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *DopeMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case dope.FieldScore:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddScore(v)
+		return nil
+	case dope.FieldRank:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRank(v)
+		return nil
 	case dope.FieldOrder:
 		v, ok := value.(int)
 		if !ok {
@@ -1205,7 +1401,14 @@ func (m *DopeMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DopeMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(dope.FieldScore) {
+		fields = append(fields, dope.FieldScore)
+	}
+	if m.FieldCleared(dope.FieldRank) {
+		fields = append(fields, dope.FieldRank)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1218,6 +1421,14 @@ func (m *DopeMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DopeMutation) ClearField(name string) error {
+	switch name {
+	case dope.FieldScore:
+		m.ClearScore()
+		return nil
+	case dope.FieldRank:
+		m.ClearRank()
+		return nil
+	}
 	return fmt.Errorf("unknown Dope nullable field %s", name)
 }
 
@@ -1230,6 +1441,12 @@ func (m *DopeMutation) ResetField(name string) error {
 		return nil
 	case dope.FieldOpened:
 		m.ResetOpened()
+		return nil
+	case dope.FieldScore:
+		m.ResetScore()
+		return nil
+	case dope.FieldRank:
+		m.ResetRank()
 		return nil
 	case dope.FieldOrder:
 		m.ResetOrder()
@@ -3748,6 +3965,10 @@ type ItemMutation struct {
 	name                       *string
 	suffix                     *string
 	augmented                  *bool
+	count                      *int
+	addcount                   *int
+	score                      *float64
+	addscore                   *float64
 	rles                       *schema.RLEs
 	svg                        *string
 	created_at                 *time.Time
@@ -4168,6 +4389,146 @@ func (m *ItemMutation) AugmentedCleared() bool {
 func (m *ItemMutation) ResetAugmented() {
 	m.augmented = nil
 	delete(m.clearedFields, item.FieldAugmented)
+}
+
+// SetCount sets the "count" field.
+func (m *ItemMutation) SetCount(i int) {
+	m.count = &i
+	m.addcount = nil
+}
+
+// Count returns the value of the "count" field in the mutation.
+func (m *ItemMutation) Count() (r int, exists bool) {
+	v := m.count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCount returns the old "count" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldCount(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCount: %w", err)
+	}
+	return oldValue.Count, nil
+}
+
+// AddCount adds i to the "count" field.
+func (m *ItemMutation) AddCount(i int) {
+	if m.addcount != nil {
+		*m.addcount += i
+	} else {
+		m.addcount = &i
+	}
+}
+
+// AddedCount returns the value that was added to the "count" field in this mutation.
+func (m *ItemMutation) AddedCount() (r int, exists bool) {
+	v := m.addcount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCount clears the value of the "count" field.
+func (m *ItemMutation) ClearCount() {
+	m.count = nil
+	m.addcount = nil
+	m.clearedFields[item.FieldCount] = struct{}{}
+}
+
+// CountCleared returns if the "count" field was cleared in this mutation.
+func (m *ItemMutation) CountCleared() bool {
+	_, ok := m.clearedFields[item.FieldCount]
+	return ok
+}
+
+// ResetCount resets all changes to the "count" field.
+func (m *ItemMutation) ResetCount() {
+	m.count = nil
+	m.addcount = nil
+	delete(m.clearedFields, item.FieldCount)
+}
+
+// SetScore sets the "score" field.
+func (m *ItemMutation) SetScore(f float64) {
+	m.score = &f
+	m.addscore = nil
+}
+
+// Score returns the value of the "score" field in the mutation.
+func (m *ItemMutation) Score() (r float64, exists bool) {
+	v := m.score
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldScore returns the old "score" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldScore(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldScore is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldScore requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldScore: %w", err)
+	}
+	return oldValue.Score, nil
+}
+
+// AddScore adds f to the "score" field.
+func (m *ItemMutation) AddScore(f float64) {
+	if m.addscore != nil {
+		*m.addscore += f
+	} else {
+		m.addscore = &f
+	}
+}
+
+// AddedScore returns the value that was added to the "score" field in this mutation.
+func (m *ItemMutation) AddedScore() (r float64, exists bool) {
+	v := m.addscore
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearScore clears the value of the "score" field.
+func (m *ItemMutation) ClearScore() {
+	m.score = nil
+	m.addscore = nil
+	m.clearedFields[item.FieldScore] = struct{}{}
+}
+
+// ScoreCleared returns if the "score" field was cleared in this mutation.
+func (m *ItemMutation) ScoreCleared() bool {
+	_, ok := m.clearedFields[item.FieldScore]
+	return ok
+}
+
+// ResetScore resets all changes to the "score" field.
+func (m *ItemMutation) ResetScore() {
+	m.score = nil
+	m.addscore = nil
+	delete(m.clearedFields, item.FieldScore)
 }
 
 // SetRles sets the "rles" field.
@@ -5064,7 +5425,7 @@ func (m *ItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ItemMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 11)
 	if m._type != nil {
 		fields = append(fields, item.FieldType)
 	}
@@ -5082,6 +5443,12 @@ func (m *ItemMutation) Fields() []string {
 	}
 	if m.augmented != nil {
 		fields = append(fields, item.FieldAugmented)
+	}
+	if m.count != nil {
+		fields = append(fields, item.FieldCount)
+	}
+	if m.score != nil {
+		fields = append(fields, item.FieldScore)
 	}
 	if m.rles != nil {
 		fields = append(fields, item.FieldRles)
@@ -5112,6 +5479,10 @@ func (m *ItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Suffix()
 	case item.FieldAugmented:
 		return m.Augmented()
+	case item.FieldCount:
+		return m.Count()
+	case item.FieldScore:
+		return m.Score()
 	case item.FieldRles:
 		return m.Rles()
 	case item.FieldSvg:
@@ -5139,6 +5510,10 @@ func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSuffix(ctx)
 	case item.FieldAugmented:
 		return m.OldAugmented(ctx)
+	case item.FieldCount:
+		return m.OldCount(ctx)
+	case item.FieldScore:
+		return m.OldScore(ctx)
 	case item.FieldRles:
 		return m.OldRles(ctx)
 	case item.FieldSvg:
@@ -5196,6 +5571,20 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAugmented(v)
 		return nil
+	case item.FieldCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCount(v)
+		return nil
+	case item.FieldScore:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetScore(v)
+		return nil
 	case item.FieldRles:
 		v, ok := value.(schema.RLEs)
 		if !ok {
@@ -5224,13 +5613,26 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *ItemMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addcount != nil {
+		fields = append(fields, item.FieldCount)
+	}
+	if m.addscore != nil {
+		fields = append(fields, item.FieldScore)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *ItemMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case item.FieldCount:
+		return m.AddedCount()
+	case item.FieldScore:
+		return m.AddedScore()
+	}
 	return nil, false
 }
 
@@ -5239,6 +5641,20 @@ func (m *ItemMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *ItemMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case item.FieldCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCount(v)
+		return nil
+	case item.FieldScore:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddScore(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Item numeric field %s", name)
 }
@@ -5258,6 +5674,12 @@ func (m *ItemMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(item.FieldAugmented) {
 		fields = append(fields, item.FieldAugmented)
+	}
+	if m.FieldCleared(item.FieldCount) {
+		fields = append(fields, item.FieldCount)
+	}
+	if m.FieldCleared(item.FieldScore) {
+		fields = append(fields, item.FieldScore)
 	}
 	if m.FieldCleared(item.FieldRles) {
 		fields = append(fields, item.FieldRles)
@@ -5291,6 +5713,12 @@ func (m *ItemMutation) ClearField(name string) error {
 	case item.FieldAugmented:
 		m.ClearAugmented()
 		return nil
+	case item.FieldCount:
+		m.ClearCount()
+		return nil
+	case item.FieldScore:
+		m.ClearScore()
+		return nil
 	case item.FieldRles:
 		m.ClearRles()
 		return nil
@@ -5322,6 +5750,12 @@ func (m *ItemMutation) ResetField(name string) error {
 		return nil
 	case item.FieldAugmented:
 		m.ResetAugmented()
+		return nil
+	case item.FieldCount:
+		m.ResetCount()
+		return nil
+	case item.FieldScore:
+		m.ResetScore()
 		return nil
 	case item.FieldRles:
 		m.ResetRles()

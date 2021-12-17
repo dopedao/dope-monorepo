@@ -105,6 +105,20 @@ func Opened(v bool) predicate.Dope {
 	})
 }
 
+// Score applies equality check predicate on the "score" field. It's identical to ScoreEQ.
+func Score(v float64) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldScore), v))
+	})
+}
+
+// Rank applies equality check predicate on the "rank" field. It's identical to RankEQ.
+func Rank(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRank), v))
+	})
+}
+
 // Order applies equality check predicate on the "order" field. It's identical to OrderEQ.
 func Order(v int) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
@@ -137,6 +151,186 @@ func OpenedEQ(v bool) predicate.Dope {
 func OpenedNEQ(v bool) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldOpened), v))
+	})
+}
+
+// ScoreEQ applies the EQ predicate on the "score" field.
+func ScoreEQ(v float64) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldScore), v))
+	})
+}
+
+// ScoreNEQ applies the NEQ predicate on the "score" field.
+func ScoreNEQ(v float64) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldScore), v))
+	})
+}
+
+// ScoreIn applies the In predicate on the "score" field.
+func ScoreIn(vs ...float64) predicate.Dope {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Dope(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldScore), v...))
+	})
+}
+
+// ScoreNotIn applies the NotIn predicate on the "score" field.
+func ScoreNotIn(vs ...float64) predicate.Dope {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Dope(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldScore), v...))
+	})
+}
+
+// ScoreGT applies the GT predicate on the "score" field.
+func ScoreGT(v float64) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldScore), v))
+	})
+}
+
+// ScoreGTE applies the GTE predicate on the "score" field.
+func ScoreGTE(v float64) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldScore), v))
+	})
+}
+
+// ScoreLT applies the LT predicate on the "score" field.
+func ScoreLT(v float64) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldScore), v))
+	})
+}
+
+// ScoreLTE applies the LTE predicate on the "score" field.
+func ScoreLTE(v float64) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldScore), v))
+	})
+}
+
+// ScoreIsNil applies the IsNil predicate on the "score" field.
+func ScoreIsNil() predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldScore)))
+	})
+}
+
+// ScoreNotNil applies the NotNil predicate on the "score" field.
+func ScoreNotNil() predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldScore)))
+	})
+}
+
+// RankEQ applies the EQ predicate on the "rank" field.
+func RankEQ(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRank), v))
+	})
+}
+
+// RankNEQ applies the NEQ predicate on the "rank" field.
+func RankNEQ(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRank), v))
+	})
+}
+
+// RankIn applies the In predicate on the "rank" field.
+func RankIn(vs ...int) predicate.Dope {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Dope(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldRank), v...))
+	})
+}
+
+// RankNotIn applies the NotIn predicate on the "rank" field.
+func RankNotIn(vs ...int) predicate.Dope {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Dope(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldRank), v...))
+	})
+}
+
+// RankGT applies the GT predicate on the "rank" field.
+func RankGT(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRank), v))
+	})
+}
+
+// RankGTE applies the GTE predicate on the "rank" field.
+func RankGTE(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRank), v))
+	})
+}
+
+// RankLT applies the LT predicate on the "rank" field.
+func RankLT(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRank), v))
+	})
+}
+
+// RankLTE applies the LTE predicate on the "rank" field.
+func RankLTE(v int) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRank), v))
+	})
+}
+
+// RankIsNil applies the IsNil predicate on the "rank" field.
+func RankIsNil() predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRank)))
+	})
+}
+
+// RankNotNil applies the NotNil predicate on the "rank" field.
+func RankNotNil() predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRank)))
 	})
 }
 

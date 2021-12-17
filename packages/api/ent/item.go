@@ -30,6 +30,10 @@ type Item struct {
 	Suffix string `json:"suffix,omitempty"`
 	// Augmented holds the value of the "augmented" field.
 	Augmented bool `json:"augmented,omitempty"`
+	// Count holds the value of the "count" field.
+	Count int `json:"count,omitempty"`
+	// Score holds the value of the "score" field.
+	Score float64 `json:"score,omitempty"`
 	// Rles holds the value of the "rles" field.
 	Rles schema.RLEs `json:"rles,omitempty"`
 	// Svg holds the value of the "svg" field.
@@ -217,6 +221,10 @@ func (*Item) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new([]byte)
 		case item.FieldAugmented:
 			values[i] = new(sql.NullBool)
+		case item.FieldScore:
+			values[i] = new(sql.NullFloat64)
+		case item.FieldCount:
+			values[i] = new(sql.NullInt64)
 		case item.FieldID, item.FieldType, item.FieldNamePrefix, item.FieldNameSuffix, item.FieldName, item.FieldSuffix, item.FieldSvg:
 			values[i] = new(sql.NullString)
 		case item.FieldCreatedAt:
@@ -279,6 +287,18 @@ func (i *Item) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field augmented", values[j])
 			} else if value.Valid {
 				i.Augmented = value.Bool
+			}
+		case item.FieldCount:
+			if value, ok := values[j].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field count", values[j])
+			} else if value.Valid {
+				i.Count = int(value.Int64)
+			}
+		case item.FieldScore:
+			if value, ok := values[j].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field score", values[j])
+			} else if value.Valid {
+				i.Score = value.Float64
 			}
 		case item.FieldRles:
 			if value, ok := values[j].(*[]byte); !ok {
@@ -417,6 +437,10 @@ func (i *Item) String() string {
 	builder.WriteString(i.Suffix)
 	builder.WriteString(", augmented=")
 	builder.WriteString(fmt.Sprintf("%v", i.Augmented))
+	builder.WriteString(", count=")
+	builder.WriteString(fmt.Sprintf("%v", i.Count))
+	builder.WriteString(", score=")
+	builder.WriteString(fmt.Sprintf("%v", i.Score))
 	builder.WriteString(", rles=")
 	builder.WriteString(fmt.Sprintf("%v", i.Rles))
 	builder.WriteString(", svg=")

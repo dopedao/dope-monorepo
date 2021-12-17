@@ -57,6 +57,60 @@ func (du *DopeUpdate) SetNillableOpened(b *bool) *DopeUpdate {
 	return du
 }
 
+// SetScore sets the "score" field.
+func (du *DopeUpdate) SetScore(f float64) *DopeUpdate {
+	du.mutation.ResetScore()
+	du.mutation.SetScore(f)
+	return du
+}
+
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (du *DopeUpdate) SetNillableScore(f *float64) *DopeUpdate {
+	if f != nil {
+		du.SetScore(*f)
+	}
+	return du
+}
+
+// AddScore adds f to the "score" field.
+func (du *DopeUpdate) AddScore(f float64) *DopeUpdate {
+	du.mutation.AddScore(f)
+	return du
+}
+
+// ClearScore clears the value of the "score" field.
+func (du *DopeUpdate) ClearScore() *DopeUpdate {
+	du.mutation.ClearScore()
+	return du
+}
+
+// SetRank sets the "rank" field.
+func (du *DopeUpdate) SetRank(i int) *DopeUpdate {
+	du.mutation.ResetRank()
+	du.mutation.SetRank(i)
+	return du
+}
+
+// SetNillableRank sets the "rank" field if the given value is not nil.
+func (du *DopeUpdate) SetNillableRank(i *int) *DopeUpdate {
+	if i != nil {
+		du.SetRank(*i)
+	}
+	return du
+}
+
+// AddRank adds i to the "rank" field.
+func (du *DopeUpdate) AddRank(i int) *DopeUpdate {
+	du.mutation.AddRank(i)
+	return du
+}
+
+// ClearRank clears the value of the "rank" field.
+func (du *DopeUpdate) ClearRank() *DopeUpdate {
+	du.mutation.ClearRank()
+	return du
+}
+
 // SetWalletID sets the "wallet" edge to the Wallet entity by ID.
 func (du *DopeUpdate) SetWalletID(id string) *DopeUpdate {
 	du.mutation.SetWalletID(id)
@@ -209,6 +263,46 @@ func (du *DopeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: dope.FieldOpened,
 		})
 	}
+	if value, ok := du.mutation.Score(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: dope.FieldScore,
+		})
+	}
+	if value, ok := du.mutation.AddedScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: dope.FieldScore,
+		})
+	}
+	if du.mutation.ScoreCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Column: dope.FieldScore,
+		})
+	}
+	if value, ok := du.mutation.Rank(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: dope.FieldRank,
+		})
+	}
+	if value, ok := du.mutation.AddedRank(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: dope.FieldRank,
+		})
+	}
+	if du.mutation.RankCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: dope.FieldRank,
+		})
+	}
 	if du.mutation.WalletCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -342,6 +436,60 @@ func (duo *DopeUpdateOne) SetNillableOpened(b *bool) *DopeUpdateOne {
 	if b != nil {
 		duo.SetOpened(*b)
 	}
+	return duo
+}
+
+// SetScore sets the "score" field.
+func (duo *DopeUpdateOne) SetScore(f float64) *DopeUpdateOne {
+	duo.mutation.ResetScore()
+	duo.mutation.SetScore(f)
+	return duo
+}
+
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (duo *DopeUpdateOne) SetNillableScore(f *float64) *DopeUpdateOne {
+	if f != nil {
+		duo.SetScore(*f)
+	}
+	return duo
+}
+
+// AddScore adds f to the "score" field.
+func (duo *DopeUpdateOne) AddScore(f float64) *DopeUpdateOne {
+	duo.mutation.AddScore(f)
+	return duo
+}
+
+// ClearScore clears the value of the "score" field.
+func (duo *DopeUpdateOne) ClearScore() *DopeUpdateOne {
+	duo.mutation.ClearScore()
+	return duo
+}
+
+// SetRank sets the "rank" field.
+func (duo *DopeUpdateOne) SetRank(i int) *DopeUpdateOne {
+	duo.mutation.ResetRank()
+	duo.mutation.SetRank(i)
+	return duo
+}
+
+// SetNillableRank sets the "rank" field if the given value is not nil.
+func (duo *DopeUpdateOne) SetNillableRank(i *int) *DopeUpdateOne {
+	if i != nil {
+		duo.SetRank(*i)
+	}
+	return duo
+}
+
+// AddRank adds i to the "rank" field.
+func (duo *DopeUpdateOne) AddRank(i int) *DopeUpdateOne {
+	duo.mutation.AddRank(i)
+	return duo
+}
+
+// ClearRank clears the value of the "rank" field.
+func (duo *DopeUpdateOne) ClearRank() *DopeUpdateOne {
+	duo.mutation.ClearRank()
 	return duo
 }
 
@@ -519,6 +667,46 @@ func (duo *DopeUpdateOne) sqlSave(ctx context.Context) (_node *Dope, err error) 
 			Type:   field.TypeBool,
 			Value:  value,
 			Column: dope.FieldOpened,
+		})
+	}
+	if value, ok := duo.mutation.Score(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: dope.FieldScore,
+		})
+	}
+	if value, ok := duo.mutation.AddedScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: dope.FieldScore,
+		})
+	}
+	if duo.mutation.ScoreCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Column: dope.FieldScore,
+		})
+	}
+	if value, ok := duo.mutation.Rank(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: dope.FieldRank,
+		})
+	}
+	if value, ok := duo.mutation.AddedRank(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: dope.FieldRank,
+		})
+	}
+	if duo.mutation.RankCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: dope.FieldRank,
 		})
 	}
 	if duo.mutation.WalletCleared() {

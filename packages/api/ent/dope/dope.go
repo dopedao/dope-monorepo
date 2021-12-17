@@ -11,6 +11,10 @@ const (
 	FieldClaimed = "claimed"
 	// FieldOpened holds the string denoting the opened field in the database.
 	FieldOpened = "opened"
+	// FieldScore holds the string denoting the score field in the database.
+	FieldScore = "score"
+	// FieldRank holds the string denoting the rank field in the database.
+	FieldRank = "rank"
 	// FieldOrder holds the string denoting the order field in the database.
 	FieldOrder = "order"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
@@ -38,6 +42,8 @@ var Columns = []string{
 	FieldID,
 	FieldClaimed,
 	FieldOpened,
+	FieldScore,
+	FieldRank,
 	FieldOrder,
 }
 

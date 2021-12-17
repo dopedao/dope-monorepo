@@ -26,6 +26,10 @@ const (
 	FieldSuffix = "suffix"
 	// FieldAugmented holds the string denoting the augmented field in the database.
 	FieldAugmented = "augmented"
+	// FieldCount holds the string denoting the count field in the database.
+	FieldCount = "count"
+	// FieldScore holds the string denoting the score field in the database.
+	FieldScore = "score"
 	// FieldRles holds the string denoting the rles field in the database.
 	FieldRles = "rles"
 	// FieldSvg holds the string denoting the svg field in the database.
@@ -163,6 +167,8 @@ var Columns = []string{
 	FieldName,
 	FieldSuffix,
 	FieldAugmented,
+	FieldCount,
+	FieldScore,
 	FieldRles,
 	FieldSvg,
 	FieldCreatedAt,

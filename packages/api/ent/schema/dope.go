@@ -26,6 +26,10 @@ func (Dope) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("OPENED"),
 			),
+		field.Float("score").
+			Optional(),
+		field.Int("rank").
+			Optional(),
 		field.Int("order").
 			Immutable().
 			Annotations(
