@@ -1,5 +1,10 @@
 import fs from 'fs';
 
+const sleep = async () => {
+  console.log('Sleeping…');
+  await new Promise(resolve => setTimeout(resolve, 1000));
+}
+
 // Dynamically reads Index creation files in `../fauna/indexes` and creates each one.
 const createIndexes = async () => {
   const relativePath = '../fauna/indexes';
@@ -9,6 +14,7 @@ const createIndexes = async () => {
     console.log(`Creating ${importName}`);
     const index = await import(`${relativePath}/${importName}`);
     await index.create();
+    await sleep();
   };
 };
 
