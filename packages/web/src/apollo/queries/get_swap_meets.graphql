@@ -1,0 +1,53 @@
+query swapMeet(
+  $q: String,
+  $paper_claimed: Boolean,
+  $items_unbundled: Boolean,
+	$on_sale: Boolean,
+  $cursor: String
+) {
+	getSwapMeetPage(
+    q: $q,
+    hasUnclaimedPaper: $paper_claimed,
+    hasItemsUnbundled: $items_unbundled,
+    isForSale: $on_sale,
+    _cursor: $cursor
+  ) {
+    data {
+      _id
+      items_unbundled
+      paper_claimed
+      rank
+      open_sea_is_on_sale
+      open_sea_current_sale_price_eth
+      open_sea_last_sale_price_eth
+      clothes_count
+      clothes_rank
+      clothes
+      drugs_count
+      drugs_rank
+      drugs
+      foot_count
+      foot_rank
+      foot
+      hand_count
+      hand_rank
+      hand
+      neck_count
+      neck_rank
+      neck
+      ring_count
+      ring_rank
+      ring
+      vehicle_count
+      vehicle_rank
+      vehicle
+      waist_count
+      waist_rank
+      waist
+      weapon_count
+      weapon_rank
+      weapon
+    }
+    after before
+  }
+}

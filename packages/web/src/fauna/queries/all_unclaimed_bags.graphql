@@ -1,0 +1,6 @@
+query AllUnclaimedBags {
+  bags(first: 1000, skip: 0, where: {claimed: false}) {
+    claimed
+    id
+  }
+}

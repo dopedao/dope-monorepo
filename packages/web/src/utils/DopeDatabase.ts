@@ -1,28 +1,15 @@
 import { Bag } from 'generated/graphql';
 import { makeVar } from '@apollo/client';
 import DopeJson from 'dope-metrics/output/loot.json';
-import { getRarityForDopeId } from './dope-rarity-check';
+import { getRarityForDopeId } from '../dope_rarity_check';
+import { PickedBag } from '../PickedBag';
+import { newEmptyBag } from '../EmptyBag';
 import { OpenSeaAsset } from './OpenSeaAsset';
+import fetch from 'isomorphic-fetch';
+import { FAUNA_API_KEY, FAUNA_API_URL } from 'fauna_client';
 
 const highImpossibleRank = 9999;
 
-export type PickedBag = Pick<
-  Bag,
-  | 'id'
-  | 'opened'
-  | 'claimed'
-  | 'clothes'
-  | 'drugs'
-  | 'foot'
-  | 'hand'
-  | 'neck'
-  | 'rank'
-  | 'ring'
-  | 'vehicle'
-  | 'waist'
-  | 'weapon'
-  | 'open_sea_asset'
->;
 type BagClaimCheck = Pick<Bag, 'id' | 'claimed'>;
 // At the time of coding, there were less than 3k unclaimed DOPE tokens.
 type UnclaimedPaperPages = {
@@ -69,10 +56,40 @@ export const EmptyBagStruct: PickedBag = {
 // Use newEmptyBag() to use as template
 Object.freeze(EmptyBagStruct);
 
-export function newEmptyBag(): PickedBag {
-  const copy = {} as PickedBag;
-  return Object.assign(copy, EmptyBagStruct);
-}
+const SWAP_MEET_QUERY = `
+  query swapMeet(
+      $q: String,
+      $paper_claimed: Boolean,
+      $items_unbundled: Boolean,
+      $on_sale: Boolean,
+    ) {
+      getSwapMeetPage(
+        _size: 10000,
+        q: $q,
+        hasUnclaimedPaper: $paper_claimed,
+        hasItemsUnbundled: $items_unbundled,
+        isForSale: $on_sale
+      ) {
+        data { token_id
+                items_unbundled
+                paper_claimed
+                rank
+                open_sea_is_on_sale
+                open_sea_current_sale_price_eth
+                open_sea_last_sale_price_eth
+                clothes_rank
+                clothes
+                drugs
+                foot
+                hand
+                neck
+                ring
+                vehicle
+                waist
+                weapon
+        } after before
+      }
+  }`;
 
 /**
  * Responsible for populating, storing, and returning sorted/filtered
@@ -89,13 +106,48 @@ class DopeDatabase {
     if (items) this.items = items;
   }
 
+  async populateItems() {
+    const data = await this.getFauna();
+    const dopeData = data?.getSwapMeetPage?.data;
+    dopeData.map((x: any) => {
+      x.id = x.token_id, x.claimed = x.paper_claimed, x.opened = x.items_unbundled,
+      x.open_sea_asset = {
+        "is_on_sale": x.open_sea_is_on_sale,
+        "current_sale_price_eth": x?.open_sea_last_sale_price_eth
+      }
+    });
+    this.items = dopeData;
+    console.log(`data length: ${this.items.length}`)
+  }
+
+  // Fetch transformed output, loads it, refresh the Apollo Reactive var.
+  async getFauna() {
+    const variables = {}
+    
+    var postData = JSON.stringify({
+      query: SWAP_MEET_QUERY,
+      variables: variables
+    });
+
+    console.log(process.env.FAUNA_KEY)
+    const response = await fetch(FAUNA_API_URL, {
+      method: 'POST', 
+      headers: {
+        'Authorization': `Bearer ${FAUNA_API_KEY}`
+      },
+      body: postData
+    });
+    const assets = await response.json();
+    return assets?.data;
+  }
+  
   // Loads cached item data from json into the database
   // so we save network requests calling The Graph.
   populateFromJson() {
     console.log('Populating DopeDatabase');
     const dopeJsonEntries = Object.entries(DopeJson);
     const tempDB = [];
-    for (let i = 0; i < dopeJsonEntries.length; i++) {
+    for (let i = 0; i < 4; i++) { // dopeJsonEntries.length
       const dopeAsset = dopeJsonEntries[i][1];
       const tokenId = Object.keys(dopeAsset)[0];
       const values = Object.values(dopeAsset)[0];
@@ -153,7 +205,7 @@ class DopeDatabase {
       return bag.id === id.toString();
     }) as any;
     // console.log(theBag);
-    theBag[key] = value;
+    // theBag[key] = value;
   }
 }
 
@@ -167,20 +219,20 @@ export const compareByRank = (a: PickedBag, b: PickedBag) => {
 
 export const compareByMostAffordable = (a: PickedBag, b: PickedBag) => {
   const highImpossiblePrice = 9999999999999999;
-  const aPrice = a.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
-  const bPrice = b.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
+  const aPrice = a.open_sea_asset?.current_sale_price_eth ?? highImpossiblePrice;
+  const bPrice = b.open_sea_asset?.current_sale_price_eth ?? highImpossiblePrice;
   return aPrice - bPrice;
 };
 
 export const compareByMostExpensive = (a: PickedBag, b: PickedBag) => {
-  const aPrice = a.open_sea_asset?.current_sale_price ?? 0;
-  const bPrice = b.open_sea_asset?.current_sale_price ?? 0;
+  const aPrice = a.open_sea_asset?.current_sale_price_eth ?? 0;
+  const bPrice = b.open_sea_asset?.current_sale_price_eth ?? 0;
   return bPrice - aPrice;
 };
 
 export const compareByHighestLastSale = (a: PickedBag, b: PickedBag) => {
-  const aLastSalePrice = a.open_sea_asset?.last_sale_price ?? 0;
-  const bLastSalePrice = b.open_sea_asset?.last_sale_price ?? 0;
+  const aLastSalePrice = a.open_sea_asset?.last_sale_price_eth ?? 0;
+  const bLastSalePrice = b.open_sea_asset?.last_sale_price_eth ?? 0;
   return bLastSalePrice - aLastSalePrice;
 };
 
@@ -217,5 +269,6 @@ export const filterItemsBySearchString = (items: PickedBag[], searchString: stri
 export default DopeDatabase;
 
 const db = new DopeDatabase();
-db.populateFromJson();
+
+db.populateItems();
 export const DopeDbCacheReactive = makeVar(db);
