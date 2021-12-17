@@ -4511,10 +4511,24 @@ func (m *ItemMutation) AddedScore() (r float64, exists bool) {
 	return *v, true
 }
 
+// ClearScore clears the value of the "score" field.
+func (m *ItemMutation) ClearScore() {
+	m.score = nil
+	m.addscore = nil
+	m.clearedFields[item.FieldScore] = struct{}{}
+}
+
+// ScoreCleared returns if the "score" field was cleared in this mutation.
+func (m *ItemMutation) ScoreCleared() bool {
+	_, ok := m.clearedFields[item.FieldScore]
+	return ok
+}
+
 // ResetScore resets all changes to the "score" field.
 func (m *ItemMutation) ResetScore() {
 	m.score = nil
 	m.addscore = nil
+	delete(m.clearedFields, item.FieldScore)
 }
 
 // SetRles sets the "rles" field.
@@ -5664,6 +5678,9 @@ func (m *ItemMutation) ClearedFields() []string {
 	if m.FieldCleared(item.FieldCount) {
 		fields = append(fields, item.FieldCount)
 	}
+	if m.FieldCleared(item.FieldScore) {
+		fields = append(fields, item.FieldScore)
+	}
 	if m.FieldCleared(item.FieldRles) {
 		fields = append(fields, item.FieldRles)
 	}
@@ -5698,6 +5715,9 @@ func (m *ItemMutation) ClearField(name string) error {
 		return nil
 	case item.FieldCount:
 		m.ClearCount()
+		return nil
+	case item.FieldScore:
+		m.ClearScore()
 		return nil
 	case item.FieldRles:
 		m.ClearRles()

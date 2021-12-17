@@ -198,7 +198,7 @@ var (
 		{Name: "suffix", Type: field.TypeString, Nullable: true},
 		{Name: "augmented", Type: field.TypeBool, Nullable: true},
 		{Name: "count", Type: field.TypeInt, Nullable: true},
-		{Name: "score", Type: field.TypeFloat64},
+		{Name: "score", Type: field.TypeFloat64, Nullable: true},
 		{Name: "rles", Type: field.TypeJSON, Nullable: true},
 		{Name: "svg", Type: field.TypeString, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},

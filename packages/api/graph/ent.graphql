@@ -106,6 +106,8 @@ input ItemWhereInput {
   scoreGTE: Float
   scoreLT: Float
   scoreLTE: Float
+  scoreIsNil: Boolean
+  scoreNotNil: Boolean
   
   """svg field predicates"""
   svg: String
