@@ -69,7 +69,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
                 this.anims.setCurrentFrame(this.anims.currentAnim.frames[0]);
             this._model.sprites.forEach(sprite => sprite.anims.currentAnim && sprite.anims.currentFrame.index != 0 ? 
                 sprite.anims.setCurrentFrame(sprite.anims.currentAnim.frames[0]) : null);
-            this.stop();
+            this.stopAfterDelay(100);
         }
 
         this._model.updateSpritesPosition(new Phaser.Math.Vector2(this.x, this.y), dir);
