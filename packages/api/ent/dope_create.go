@@ -52,6 +52,34 @@ func (dc *DopeCreate) SetNillableOpened(b *bool) *DopeCreate {
 	return dc
 }
 
+// SetScore sets the "score" field.
+func (dc *DopeCreate) SetScore(f float64) *DopeCreate {
+	dc.mutation.SetScore(f)
+	return dc
+}
+
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (dc *DopeCreate) SetNillableScore(f *float64) *DopeCreate {
+	if f != nil {
+		dc.SetScore(*f)
+	}
+	return dc
+}
+
+// SetRank sets the "rank" field.
+func (dc *DopeCreate) SetRank(i int) *DopeCreate {
+	dc.mutation.SetRank(i)
+	return dc
+}
+
+// SetNillableRank sets the "rank" field if the given value is not nil.
+func (dc *DopeCreate) SetNillableRank(i *int) *DopeCreate {
+	if i != nil {
+		dc.SetRank(*i)
+	}
+	return dc
+}
+
 // SetOrder sets the "order" field.
 func (dc *DopeCreate) SetOrder(i int) *DopeCreate {
 	dc.mutation.SetOrder(i)
@@ -243,6 +271,22 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 		})
 		_node.Opened = value
 	}
+	if value, ok := dc.mutation.Score(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: dope.FieldScore,
+		})
+		_node.Score = value
+	}
+	if value, ok := dc.mutation.Rank(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: dope.FieldRank,
+		})
+		_node.Rank = value
+	}
 	if value, ok := dc.mutation.Order(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
@@ -368,6 +412,54 @@ func (u *DopeUpsert) UpdateOpened() *DopeUpsert {
 	return u
 }
 
+// SetScore sets the "score" field.
+func (u *DopeUpsert) SetScore(v float64) *DopeUpsert {
+	u.Set(dope.FieldScore, v)
+	return u
+}
+
+// UpdateScore sets the "score" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateScore() *DopeUpsert {
+	u.SetExcluded(dope.FieldScore)
+	return u
+}
+
+// AddScore adds v to the "score" field.
+func (u *DopeUpsert) AddScore(v float64) *DopeUpsert {
+	u.Add(dope.FieldScore, v)
+	return u
+}
+
+// ClearScore clears the value of the "score" field.
+func (u *DopeUpsert) ClearScore() *DopeUpsert {
+	u.SetNull(dope.FieldScore)
+	return u
+}
+
+// SetRank sets the "rank" field.
+func (u *DopeUpsert) SetRank(v int) *DopeUpsert {
+	u.Set(dope.FieldRank, v)
+	return u
+}
+
+// UpdateRank sets the "rank" field to the value that was provided on create.
+func (u *DopeUpsert) UpdateRank() *DopeUpsert {
+	u.SetExcluded(dope.FieldRank)
+	return u
+}
+
+// AddRank adds v to the "rank" field.
+func (u *DopeUpsert) AddRank(v int) *DopeUpsert {
+	u.Add(dope.FieldRank, v)
+	return u
+}
+
+// ClearRank clears the value of the "rank" field.
+func (u *DopeUpsert) ClearRank() *DopeUpsert {
+	u.SetNull(dope.FieldRank)
+	return u
+}
+
 // SetOrder sets the "order" field.
 func (u *DopeUpsert) SetOrder(v int) *DopeUpsert {
 	u.Set(dope.FieldOrder, v)
@@ -464,6 +556,62 @@ func (u *DopeUpsertOne) SetOpened(v bool) *DopeUpsertOne {
 func (u *DopeUpsertOne) UpdateOpened() *DopeUpsertOne {
 	return u.Update(func(s *DopeUpsert) {
 		s.UpdateOpened()
+	})
+}
+
+// SetScore sets the "score" field.
+func (u *DopeUpsertOne) SetScore(v float64) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetScore(v)
+	})
+}
+
+// AddScore adds v to the "score" field.
+func (u *DopeUpsertOne) AddScore(v float64) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.AddScore(v)
+	})
+}
+
+// UpdateScore sets the "score" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateScore() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateScore()
+	})
+}
+
+// ClearScore clears the value of the "score" field.
+func (u *DopeUpsertOne) ClearScore() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.ClearScore()
+	})
+}
+
+// SetRank sets the "rank" field.
+func (u *DopeUpsertOne) SetRank(v int) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetRank(v)
+	})
+}
+
+// AddRank adds v to the "rank" field.
+func (u *DopeUpsertOne) AddRank(v int) *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.AddRank(v)
+	})
+}
+
+// UpdateRank sets the "rank" field to the value that was provided on create.
+func (u *DopeUpsertOne) UpdateRank() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateRank()
+	})
+}
+
+// ClearRank clears the value of the "rank" field.
+func (u *DopeUpsertOne) ClearRank() *DopeUpsertOne {
+	return u.Update(func(s *DopeUpsert) {
+		s.ClearRank()
 	})
 }
 
@@ -732,6 +880,62 @@ func (u *DopeUpsertBulk) SetOpened(v bool) *DopeUpsertBulk {
 func (u *DopeUpsertBulk) UpdateOpened() *DopeUpsertBulk {
 	return u.Update(func(s *DopeUpsert) {
 		s.UpdateOpened()
+	})
+}
+
+// SetScore sets the "score" field.
+func (u *DopeUpsertBulk) SetScore(v float64) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetScore(v)
+	})
+}
+
+// AddScore adds v to the "score" field.
+func (u *DopeUpsertBulk) AddScore(v float64) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.AddScore(v)
+	})
+}
+
+// UpdateScore sets the "score" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateScore() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateScore()
+	})
+}
+
+// ClearScore clears the value of the "score" field.
+func (u *DopeUpsertBulk) ClearScore() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.ClearScore()
+	})
+}
+
+// SetRank sets the "rank" field.
+func (u *DopeUpsertBulk) SetRank(v int) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.SetRank(v)
+	})
+}
+
+// AddRank adds v to the "rank" field.
+func (u *DopeUpsertBulk) AddRank(v int) *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.AddRank(v)
+	})
+}
+
+// UpdateRank sets the "rank" field to the value that was provided on create.
+func (u *DopeUpsertBulk) UpdateRank() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.UpdateRank()
+	})
+}
+
+// ClearRank clears the value of the "rank" field.
+func (u *DopeUpsertBulk) ClearRank() *DopeUpsertBulk {
+	return u.Update(func(s *DopeUpsert) {
+		s.ClearRank()
 	})
 }
 

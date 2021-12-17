@@ -26,6 +26,8 @@ var (
 		{Name: "id", Type: field.TypeString},
 		{Name: "claimed", Type: field.TypeBool, Default: false},
 		{Name: "opened", Type: field.TypeBool, Default: false},
+		{Name: "score", Type: field.TypeFloat64, Nullable: true},
+		{Name: "rank", Type: field.TypeInt, Nullable: true},
 		{Name: "order", Type: field.TypeInt},
 		{Name: "wallet_dopes", Type: field.TypeString, Nullable: true},
 	}
@@ -37,7 +39,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "dopes_wallets_dopes",
-				Columns:    []*schema.Column{DopesColumns[4]},
+				Columns:    []*schema.Column{DopesColumns[6]},
 				RefColumns: []*schema.Column{WalletsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -195,6 +197,8 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "suffix", Type: field.TypeString, Nullable: true},
 		{Name: "augmented", Type: field.TypeBool, Nullable: true},
+		{Name: "count", Type: field.TypeInt, Nullable: true},
+		{Name: "score", Type: field.TypeFloat64, Nullable: true},
 		{Name: "rles", Type: field.TypeJSON, Nullable: true},
 		{Name: "svg", Type: field.TypeString, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
@@ -208,7 +212,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "items_items_derivative",
-				Columns:    []*schema.Column{ItemsColumns[10]},
+				Columns:    []*schema.Column{ItemsColumns[12]},
 				RefColumns: []*schema.Column{ItemsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

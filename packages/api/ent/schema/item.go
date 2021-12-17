@@ -45,6 +45,10 @@ func (Item) Fields() []ent.Field {
 		field.Bool("augmented").
 			Optional().
 			Immutable(),
+		field.Int("count").
+			Optional(),
+		field.Float("score").
+			Optional(),
 		field.JSON("rles", RLEs{}).
 			Optional(),
 		field.String("svg").

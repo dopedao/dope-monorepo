@@ -31,6 +31,60 @@ func (iu *ItemUpdate) Where(ps ...predicate.Item) *ItemUpdate {
 	return iu
 }
 
+// SetCount sets the "count" field.
+func (iu *ItemUpdate) SetCount(i int) *ItemUpdate {
+	iu.mutation.ResetCount()
+	iu.mutation.SetCount(i)
+	return iu
+}
+
+// SetNillableCount sets the "count" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableCount(i *int) *ItemUpdate {
+	if i != nil {
+		iu.SetCount(*i)
+	}
+	return iu
+}
+
+// AddCount adds i to the "count" field.
+func (iu *ItemUpdate) AddCount(i int) *ItemUpdate {
+	iu.mutation.AddCount(i)
+	return iu
+}
+
+// ClearCount clears the value of the "count" field.
+func (iu *ItemUpdate) ClearCount() *ItemUpdate {
+	iu.mutation.ClearCount()
+	return iu
+}
+
+// SetScore sets the "score" field.
+func (iu *ItemUpdate) SetScore(f float64) *ItemUpdate {
+	iu.mutation.ResetScore()
+	iu.mutation.SetScore(f)
+	return iu
+}
+
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableScore(f *float64) *ItemUpdate {
+	if f != nil {
+		iu.SetScore(*f)
+	}
+	return iu
+}
+
+// AddScore adds f to the "score" field.
+func (iu *ItemUpdate) AddScore(f float64) *ItemUpdate {
+	iu.mutation.AddScore(f)
+	return iu
+}
+
+// ClearScore clears the value of the "score" field.
+func (iu *ItemUpdate) ClearScore() *ItemUpdate {
+	iu.mutation.ClearScore()
+	return iu
+}
+
 // SetRles sets the "rles" field.
 func (iu *ItemUpdate) SetRles(se schema.RLEs) *ItemUpdate {
 	iu.mutation.SetRles(se)
@@ -663,6 +717,46 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Column: item.FieldAugmented,
+		})
+	}
+	if value, ok := iu.mutation.Count(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldCount,
+		})
+	}
+	if value, ok := iu.mutation.AddedCount(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldCount,
+		})
+	}
+	if iu.mutation.CountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: item.FieldCount,
+		})
+	}
+	if value, ok := iu.mutation.Score(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: item.FieldScore,
+		})
+	}
+	if value, ok := iu.mutation.AddedScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: item.FieldScore,
+		})
+	}
+	if iu.mutation.ScoreCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Column: item.FieldScore,
 		})
 	}
 	if value, ok := iu.mutation.Rles(); ok {
@@ -1447,6 +1541,60 @@ type ItemUpdateOne struct {
 	mutation *ItemMutation
 }
 
+// SetCount sets the "count" field.
+func (iuo *ItemUpdateOne) SetCount(i int) *ItemUpdateOne {
+	iuo.mutation.ResetCount()
+	iuo.mutation.SetCount(i)
+	return iuo
+}
+
+// SetNillableCount sets the "count" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableCount(i *int) *ItemUpdateOne {
+	if i != nil {
+		iuo.SetCount(*i)
+	}
+	return iuo
+}
+
+// AddCount adds i to the "count" field.
+func (iuo *ItemUpdateOne) AddCount(i int) *ItemUpdateOne {
+	iuo.mutation.AddCount(i)
+	return iuo
+}
+
+// ClearCount clears the value of the "count" field.
+func (iuo *ItemUpdateOne) ClearCount() *ItemUpdateOne {
+	iuo.mutation.ClearCount()
+	return iuo
+}
+
+// SetScore sets the "score" field.
+func (iuo *ItemUpdateOne) SetScore(f float64) *ItemUpdateOne {
+	iuo.mutation.ResetScore()
+	iuo.mutation.SetScore(f)
+	return iuo
+}
+
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableScore(f *float64) *ItemUpdateOne {
+	if f != nil {
+		iuo.SetScore(*f)
+	}
+	return iuo
+}
+
+// AddScore adds f to the "score" field.
+func (iuo *ItemUpdateOne) AddScore(f float64) *ItemUpdateOne {
+	iuo.mutation.AddScore(f)
+	return iuo
+}
+
+// ClearScore clears the value of the "score" field.
+func (iuo *ItemUpdateOne) ClearScore() *ItemUpdateOne {
+	iuo.mutation.ClearScore()
+	return iuo
+}
+
 // SetRles sets the "rles" field.
 func (iuo *ItemUpdateOne) SetRles(se schema.RLEs) *ItemUpdateOne {
 	iuo.mutation.SetRles(se)
@@ -2103,6 +2251,46 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Column: item.FieldAugmented,
+		})
+	}
+	if value, ok := iuo.mutation.Count(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldCount,
+		})
+	}
+	if value, ok := iuo.mutation.AddedCount(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldCount,
+		})
+	}
+	if iuo.mutation.CountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: item.FieldCount,
+		})
+	}
+	if value, ok := iuo.mutation.Score(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: item.FieldScore,
+		})
+	}
+	if value, ok := iuo.mutation.AddedScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: item.FieldScore,
+		})
+	}
+	if iuo.mutation.ScoreCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Column: item.FieldScore,
 		})
 	}
 	if value, ok := iuo.mutation.Rles(); ok {
