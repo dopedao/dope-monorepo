@@ -115,14 +115,6 @@ func (ic *ItemCreate) SetScore(f float64) *ItemCreate {
 	return ic
 }
 
-// SetNillableScore sets the "score" field if the given value is not nil.
-func (ic *ItemCreate) SetNillableScore(f *float64) *ItemCreate {
-	if f != nil {
-		ic.SetScore(*f)
-	}
-	return ic
-}
-
 // SetRles sets the "rles" field.
 func (ic *ItemCreate) SetRles(se schema.RLEs) *ItemCreate {
 	ic.mutation.SetRles(se)
@@ -474,6 +466,9 @@ func (ic *ItemCreate) check() error {
 	}
 	if _, ok := ic.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Item.name"`)}
+	}
+	if _, ok := ic.mutation.Score(); !ok {
+		return &ValidationError{Name: "score", err: errors.New(`ent: missing required field "Item.score"`)}
 	}
 	if _, ok := ic.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Item.created_at"`)}
@@ -1062,12 +1057,6 @@ func (u *ItemUpsert) AddScore(v float64) *ItemUpsert {
 	return u
 }
 
-// ClearScore clears the value of the "score" field.
-func (u *ItemUpsert) ClearScore() *ItemUpsert {
-	u.SetNull(item.FieldScore)
-	return u
-}
-
 // SetRles sets the "rles" field.
 func (u *ItemUpsert) SetRles(v schema.RLEs) *ItemUpsert {
 	u.Set(item.FieldRles, v)
@@ -1345,13 +1334,6 @@ func (u *ItemUpsertOne) AddScore(v float64) *ItemUpsertOne {
 func (u *ItemUpsertOne) UpdateScore() *ItemUpsertOne {
 	return u.Update(func(s *ItemUpsert) {
 		s.UpdateScore()
-	})
-}
-
-// ClearScore clears the value of the "score" field.
-func (u *ItemUpsertOne) ClearScore() *ItemUpsertOne {
-	return u.Update(func(s *ItemUpsert) {
-		s.ClearScore()
 	})
 }
 
@@ -1806,13 +1788,6 @@ func (u *ItemUpsertBulk) AddScore(v float64) *ItemUpsertBulk {
 func (u *ItemUpsertBulk) UpdateScore() *ItemUpsertBulk {
 	return u.Update(func(s *ItemUpsert) {
 		s.UpdateScore()
-	})
-}
-
-// ClearScore clears the value of the "score" field.
-func (u *ItemUpsertBulk) ClearScore() *ItemUpsertBulk {
-	return u.Update(func(s *ItemUpsert) {
-		s.ClearScore()
 	})
 }
 

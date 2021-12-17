@@ -660,23 +660,13 @@ func (d *DopeQuery) Paginate(
 }
 
 var (
-	// DopeOrderFieldClaimed orders Dope by claimed.
-	DopeOrderFieldClaimed = &DopeOrderField{
-		field: dope.FieldClaimed,
+	// DopeOrderFieldRank orders Dope by rank.
+	DopeOrderFieldRank = &DopeOrderField{
+		field: dope.FieldRank,
 		toCursor: func(d *Dope) Cursor {
 			return Cursor{
 				ID:    d.ID,
-				Value: d.Claimed,
-			}
-		},
-	}
-	// DopeOrderFieldOpened orders Dope by opened.
-	DopeOrderFieldOpened = &DopeOrderField{
-		field: dope.FieldOpened,
-		toCursor: func(d *Dope) Cursor {
-			return Cursor{
-				ID:    d.ID,
-				Value: d.Opened,
+				Value: d.Rank,
 			}
 		},
 	}
@@ -696,12 +686,10 @@ var (
 func (f DopeOrderField) String() string {
 	var str string
 	switch f.field {
-	case dope.FieldClaimed:
-		str = "CLAIMED"
-	case dope.FieldOpened:
-		str = "OPENED"
+	case dope.FieldRank:
+		str = "RANK"
 	case dope.FieldOrder:
-		str = "ORDER"
+		str = "ID"
 	}
 	return str
 }
@@ -718,11 +706,9 @@ func (f *DopeOrderField) UnmarshalGQL(v interface{}) error {
 		return fmt.Errorf("DopeOrderField %T must be a string", v)
 	}
 	switch str {
-	case "CLAIMED":
-		*f = *DopeOrderFieldClaimed
-	case "OPENED":
-		*f = *DopeOrderFieldOpened
-	case "ORDER":
+	case "RANK":
+		*f = *DopeOrderFieldRank
+	case "ID":
 		*f = *DopeOrderFieldOrder
 	default:
 		return fmt.Errorf("%s is not a valid DopeOrderField", str)
@@ -1455,6 +1441,16 @@ func (i *ItemQuery) Paginate(
 }
 
 var (
+	// ItemOrderFieldScore orders Item by score.
+	ItemOrderFieldScore = &ItemOrderField{
+		field: item.FieldScore,
+		toCursor: func(i *Item) Cursor {
+			return Cursor{
+				ID:    i.ID,
+				Value: i.Score,
+			}
+		},
+	}
 	// ItemOrderFieldCreatedAt orders Item by created_at.
 	ItemOrderFieldCreatedAt = &ItemOrderField{
 		field: item.FieldCreatedAt,
@@ -1471,6 +1467,8 @@ var (
 func (f ItemOrderField) String() string {
 	var str string
 	switch f.field {
+	case item.FieldScore:
+		str = "SCORE"
 	case item.FieldCreatedAt:
 		str = "CREATED_AT"
 	}
@@ -1489,6 +1487,8 @@ func (f *ItemOrderField) UnmarshalGQL(v interface{}) error {
 		return fmt.Errorf("ItemOrderField %T must be a string", v)
 	}
 	switch str {
+	case "SCORE":
+		*f = *ItemOrderFieldScore
 	case "CREATED_AT":
 		*f = *ItemOrderFieldCreatedAt
 	default:

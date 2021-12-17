@@ -17,23 +17,20 @@ func (Dope) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.Bool("claimed").
-			Default(false).
-			Annotations(
-				entgql.OrderField("CLAIMED"),
-			),
+			Default(false),
 		field.Bool("opened").
-			Default(false).
-			Annotations(
-				entgql.OrderField("OPENED"),
-			),
+			Default(false),
 		field.Float("score").
 			Optional(),
 		field.Int("rank").
-			Optional(),
+			Optional().
+			Annotations(
+				entgql.OrderField("RANK"),
+			),
 		field.Int("order").
 			Immutable().
 			Annotations(
-				entgql.OrderField("ORDER"),
+				entgql.OrderField("ID"),
 			),
 	}
 }
