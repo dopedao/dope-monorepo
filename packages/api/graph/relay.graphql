@@ -40,8 +40,14 @@ type ItemEdge {
   cursor: Cursor!
 }
 
+enum ItemOrderField {
+    SCORE
+    CREATED_AT
+}
+
 input ItemOrder {
   direction: OrderDirection!
+  field: ItemOrderField
 }
 
 type DopeConnection {
@@ -55,8 +61,14 @@ type DopeEdge {
   cursor: Cursor!
 }
 
+enum DopeOrderField {
+    ID
+    RANK
+}
+
 input DopeOrder {
   direction: OrderDirection!
+  field: DopeOrderField
 }
 
 type WalletConnection {

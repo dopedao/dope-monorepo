@@ -65,23 +65,9 @@ func (iu *ItemUpdate) SetScore(f float64) *ItemUpdate {
 	return iu
 }
 
-// SetNillableScore sets the "score" field if the given value is not nil.
-func (iu *ItemUpdate) SetNillableScore(f *float64) *ItemUpdate {
-	if f != nil {
-		iu.SetScore(*f)
-	}
-	return iu
-}
-
 // AddScore adds f to the "score" field.
 func (iu *ItemUpdate) AddScore(f float64) *ItemUpdate {
 	iu.mutation.AddScore(f)
-	return iu
-}
-
-// ClearScore clears the value of the "score" field.
-func (iu *ItemUpdate) ClearScore() *ItemUpdate {
-	iu.mutation.ClearScore()
 	return iu
 }
 
@@ -750,12 +736,6 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat64,
 			Value:  value,
-			Column: item.FieldScore,
-		})
-	}
-	if iu.mutation.ScoreCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
 			Column: item.FieldScore,
 		})
 	}
@@ -1575,23 +1555,9 @@ func (iuo *ItemUpdateOne) SetScore(f float64) *ItemUpdateOne {
 	return iuo
 }
 
-// SetNillableScore sets the "score" field if the given value is not nil.
-func (iuo *ItemUpdateOne) SetNillableScore(f *float64) *ItemUpdateOne {
-	if f != nil {
-		iuo.SetScore(*f)
-	}
-	return iuo
-}
-
 // AddScore adds f to the "score" field.
 func (iuo *ItemUpdateOne) AddScore(f float64) *ItemUpdateOne {
 	iuo.mutation.AddScore(f)
-	return iuo
-}
-
-// ClearScore clears the value of the "score" field.
-func (iuo *ItemUpdateOne) ClearScore() *ItemUpdateOne {
-	iuo.mutation.ClearScore()
 	return iuo
 }
 
@@ -2284,12 +2250,6 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat64,
 			Value:  value,
-			Column: item.FieldScore,
-		})
-	}
-	if iuo.mutation.ScoreCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
 			Column: item.FieldScore,
 		})
 	}

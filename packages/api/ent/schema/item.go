@@ -48,7 +48,9 @@ func (Item) Fields() []ent.Field {
 		field.Int("count").
 			Optional(),
 		field.Float("score").
-			Optional(),
+			Annotations(
+				entgql.OrderField("SCORE"),
+			),
 		field.JSON("rles", RLEs{}).
 			Optional(),
 		field.String("svg").
