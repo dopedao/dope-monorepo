@@ -5,8 +5,10 @@ import { OpenSeaAsset } from './OpenSeaAsset';
 import { newEmptyBag } from 'EmptyBag';
 import { getRarityForDopeId } from 'dope_rarity_check';
 import { PickedBag } from 'PickedBag';
+import { FAUNA_KEY, FAUNA_API_KEY, FAUNA_API_URL } from 'fauna_client';
 
 const highImpossibleRank = 9999;
+// const FAUNA_API_URL = 'https://graphql.us.fauna.com/graphql';
 
 type BagClaimCheck = Pick<Bag, 'id' | 'claimed'>;
 // At the time of coding, there were less than 3k unclaimed DOPE tokens.
@@ -54,6 +56,41 @@ export const EmptyBagStruct: PickedBag = {
 // Use newEmptyBag() to use as template
 Object.freeze(EmptyBagStruct);
 
+const SWAP_MEET_QUERY = `
+  query swapMeet(
+      $q: String,
+      $paper_claimed: Boolean,
+      $items_unbundled: Boolean,
+      $on_sale: Boolean,
+    ) {
+      getSwapMeetPage(
+        _size: 10000,
+        q: $q,
+        hasUnclaimedPaper: $paper_claimed,
+        hasItemsUnbundled: $items_unbundled,
+        isForSale: $on_sale
+      ) {
+        data { token_id
+                items_unbundled
+                paper_claimed
+                rank
+                open_sea_is_on_sale
+                open_sea_current_sale_price_eth
+                open_sea_last_sale_price_eth
+                clothes_rank
+                clothes
+                drugs
+                foot
+                hand
+                neck
+                ring
+                vehicle
+                waist
+                weapon
+        } after before
+      }
+  }`;
+
 
 /**
  * Responsible for populating, storing, and returning sorted/filtered
@@ -70,6 +107,41 @@ class DopeDatabase {
     if (items) this.items = items;
   }
 
+
+  async populateItems() {
+    const data = await this.getFauna();
+    const dopeData = data?.getSwapMeetPage?.data;
+    dopeData.map((x: any) => {
+      x.id = x.token_id, x.claimed = x.paper_claimed, x.opened = x.items_unbundled,
+      x.open_sea_asset = {
+        "is_on_sale": x.open_sea_is_on_sale,
+        "current_sale_price_eth": x?.open_sea_last_sale_price_eth
+      }
+    });
+    this.items = dopeData;
+    console.log(`data length: ${this.items.length}`)
+  }
+
+  // Get data from Fauna
+  async getFauna() {
+    const variables = {} // {"q": "sil", "items_unbundled": false}
+    
+    var postData = JSON.stringify({
+      query: SWAP_MEET_QUERY,
+      variables: variables
+    });
+
+    const response = await fetch(FAUNA_API_URL, {
+      method: 'POST', 
+      headers: {
+        'Authorization': `Bearer ${FAUNA_API_KEY}`
+      },
+      body: postData
+    });
+    const assets = await response.json();
+    return assets?.data;
+  }
+  
   // Loads cached item data from json into the database
   // so we save network requests calling The Graph.
   populateFromJson() {
@@ -134,7 +206,7 @@ class DopeDatabase {
       return bag.id === id.toString();
     }) as any;
     // console.log(theBag);
-    theBag[key] = value;
+    //   theBag[key] = value;
   }
 }
 
@@ -198,5 +270,5 @@ export const filterItemsBySearchString = (items: PickedBag[], searchString: stri
 export default DopeDatabase;
 
 const db = new DopeDatabase();
-db.populateFromJson();
+db.populateItems()
 export const DopeDbCacheReactive = makeVar(db);
