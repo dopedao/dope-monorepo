@@ -884,6 +884,20 @@ func ScoreLTE(v float64) predicate.Item {
 	})
 }
 
+// ScoreIsNil applies the IsNil predicate on the "score" field.
+func ScoreIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldScore)))
+	})
+}
+
+// ScoreNotNil applies the NotNil predicate on the "score" field.
+func ScoreNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldScore)))
+	})
+}
+
 // RlesIsNil applies the IsNil predicate on the "rles" field.
 func RlesIsNil() predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {

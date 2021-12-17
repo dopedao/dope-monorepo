@@ -1731,14 +1731,16 @@ type ItemWhereInput struct {
 	CountNotNil bool  `json:"countNotNil,omitempty"`
 
 	// "score" field predicates.
-	Score      *float64  `json:"score,omitempty"`
-	ScoreNEQ   *float64  `json:"scoreNEQ,omitempty"`
-	ScoreIn    []float64 `json:"scoreIn,omitempty"`
-	ScoreNotIn []float64 `json:"scoreNotIn,omitempty"`
-	ScoreGT    *float64  `json:"scoreGT,omitempty"`
-	ScoreGTE   *float64  `json:"scoreGTE,omitempty"`
-	ScoreLT    *float64  `json:"scoreLT,omitempty"`
-	ScoreLTE   *float64  `json:"scoreLTE,omitempty"`
+	Score       *float64  `json:"score,omitempty"`
+	ScoreNEQ    *float64  `json:"scoreNEQ,omitempty"`
+	ScoreIn     []float64 `json:"scoreIn,omitempty"`
+	ScoreNotIn  []float64 `json:"scoreNotIn,omitempty"`
+	ScoreGT     *float64  `json:"scoreGT,omitempty"`
+	ScoreGTE    *float64  `json:"scoreGTE,omitempty"`
+	ScoreLT     *float64  `json:"scoreLT,omitempty"`
+	ScoreLTE    *float64  `json:"scoreLTE,omitempty"`
+	ScoreIsNil  bool      `json:"scoreIsNil,omitempty"`
+	ScoreNotNil bool      `json:"scoreNotNil,omitempty"`
 
 	// "svg" field predicates.
 	Svg             *string  `json:"svg,omitempty"`
@@ -2158,6 +2160,12 @@ func (i *ItemWhereInput) P() (predicate.Item, error) {
 	}
 	if i.ScoreLTE != nil {
 		predicates = append(predicates, item.ScoreLTE(*i.ScoreLTE))
+	}
+	if i.ScoreIsNil {
+		predicates = append(predicates, item.ScoreIsNil())
+	}
+	if i.ScoreNotNil {
+		predicates = append(predicates, item.ScoreNotNil())
 	}
 	if i.Svg != nil {
 		predicates = append(predicates, item.SvgEQ(*i.Svg))
