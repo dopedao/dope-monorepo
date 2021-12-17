@@ -107,17 +107,10 @@ class DopeDatabase {
   }
 
   async populateItems() {
-    const data = await this.getFauna();
-    const dopeData = data?.getSwapMeetPage?.data;
-    dopeData.map((x: any) => {
-      x.id = x.token_id, x.claimed = x.paper_claimed, x.opened = x.items_unbundled,
-      x.open_sea_asset = {
-        "is_on_sale": x.open_sea_is_on_sale,
-        "current_sale_price_eth": x?.open_sea_last_sale_price_eth
-      }
-    });
+    console.log('Populating DopeDatabase');
+    const dopeData = await this.getFauna();
     this.items = dopeData;
-    console.log(`data length: ${this.items.length}`)
+    console.log(`Populated data length: ${this.items.length}`)
   }
 
   // Fetch transformed output, loads it, refresh the Apollo Reactive var.
@@ -129,7 +122,6 @@ class DopeDatabase {
       variables: variables
     });
 
-    console.log(process.env.FAUNA_KEY)
     const response = await fetch(FAUNA_API_URL, {
       method: 'POST', 
       headers: {
@@ -138,7 +130,15 @@ class DopeDatabase {
       body: postData
     });
     const assets = await response.json();
-    return assets?.data;
+    const swapMeetData = assets?.data?.getSwapMeetPage?.data;
+    swapMeetData.map((x: any) => {
+      x.id = x.token_id, x.claimed = x.paper_claimed, x.opened = x.items_unbundled,
+      x.open_sea_asset = {
+        "is_on_sale": x.open_sea_is_on_sale,
+        "current_sale_price_eth": x?.open_sea_last_sale_price_eth
+      }
+    });
+    return swapMeetData;
   }
   
   // Loads cached item data from json into the database
