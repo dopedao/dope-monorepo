@@ -54,14 +54,16 @@ export default class PlayerModel
         this.sprites.forEach(sprite => scale ? sprite.setScale(scale?.x, scale?.y) : null);
     }
 
-    updateSpritesPosition(pos: Phaser.Math.Vector2, direction: string)
+    // pos: sprites new position 
+    // direction: direction of the frame
+    // both nullable, if for eg. direction is null, only the positions of the sprites will get updated
+    updateSprites(pos?: Phaser.Math.Vector2, direction?: string)
     {
-        if (direction === "")
-        {
-            this.sprites.forEach(sprite => sprite.setPosition(pos.x, pos.y) && sprite.stopAfterDelay(100));
-            return;
-        }
-
-        this.sprites.forEach(sprite => sprite.setPosition(pos.x, pos.y) && sprite.play(sprite.texture.key + direction, true));
+        this.sprites.forEach(sprite => {
+            if (pos)
+                sprite.setPosition(pos.x, pos.y)
+            if (direction)
+                sprite.play(sprite.texture.key + direction, true)
+        });
     }
 }

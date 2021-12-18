@@ -2,7 +2,7 @@ import { Base, Categories, CharacterCategories, SpritesMap } from "game/constant
 import Player from "game/entities/Player";
 
 const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, key: string): void => {
-    const scale = 6;
+    const scale = 0.07;
 
     anims.create({
         key: key + "_right",

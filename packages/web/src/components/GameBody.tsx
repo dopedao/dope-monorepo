@@ -58,8 +58,8 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
                         fullscreenTarget: "gameElement"
                     },
                     physics: {
-                        default: 'arcade',
-                        arcade: {
+                        default: 'matter',
+                        matter: {
                             debug: true,
                             gravity: { y: 0 }
                         }
