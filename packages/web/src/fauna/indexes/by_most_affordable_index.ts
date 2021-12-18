@@ -1,4 +1,4 @@
-import { client, q } from '../../src/fauna_client';
+import { client, q } from '../../fauna_client';
 
 const sourceObj = {
   collection: q.Collection('DopeToken'),

@@ -106,41 +106,6 @@ class DopeDatabase {
     if (items) this.items = items;
   }
 
-  async populateItems() {
-    console.log('Populating DopeDatabase');
-    const dopeData = await this.getFauna();
-    this.items = dopeData;
-    console.log(`Populated data length: ${this.items.length}`)
-  }
-
-  // Fetch transformed output, loads it, refresh the Apollo Reactive var.
-  async getFauna() {
-    const variables = {}
-    
-    var postData = JSON.stringify({
-      query: SWAP_MEET_QUERY,
-      variables: variables
-    });
-
-    const response = await fetch(FAUNA_API_URL, {
-      method: 'POST', 
-      headers: {
-        'Authorization': `Bearer ${FAUNA_API_KEY}`
-      },
-      body: postData
-    });
-    const assets = await response.json();
-    const swapMeetData = assets?.data?.getSwapMeetPage?.data;
-    swapMeetData.map((x: any) => {
-      x.id = x.token_id, x.claimed = x.paper_claimed, x.opened = x.items_unbundled,
-      x.open_sea_asset = {
-        "is_on_sale": x.open_sea_is_on_sale,
-        "current_sale_price_eth": x?.open_sea_last_sale_price_eth
-      }
-    });
-    return swapMeetData;
-  }
-  
   // Loads cached item data from json into the database
   // so we save network requests calling The Graph.
   populateFromJson() {
@@ -157,7 +122,7 @@ class DopeDatabase {
       dope.rank = getRarityForDopeId(tokenId);
       tempDB[parseInt(tokenId)] = dope;
     }
-    this.items = tempDB;
+    // this.items = tempDB;
     console.log('…Populated');
   }
 
@@ -219,20 +184,20 @@ export const compareByRank = (a: PickedBag, b: PickedBag) => {
 
 export const compareByMostAffordable = (a: PickedBag, b: PickedBag) => {
   const highImpossiblePrice = 9999999999999999;
-  const aPrice = a.open_sea_asset?.current_sale_price_eth ?? highImpossiblePrice;
-  const bPrice = b.open_sea_asset?.current_sale_price_eth ?? highImpossiblePrice;
+  const aPrice = a.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
+  const bPrice = b.open_sea_asset?.current_sale_price ?? highImpossiblePrice;
   return aPrice - bPrice;
 };
 
 export const compareByMostExpensive = (a: PickedBag, b: PickedBag) => {
-  const aPrice = a.open_sea_asset?.current_sale_price_eth ?? 0;
-  const bPrice = b.open_sea_asset?.current_sale_price_eth ?? 0;
+  const aPrice = a.open_sea_asset?.current_sale_price ?? 0;
+  const bPrice = b.open_sea_asset?.current_sale_price ?? 0;
   return bPrice - aPrice;
 };
 
 export const compareByHighestLastSale = (a: PickedBag, b: PickedBag) => {
-  const aLastSalePrice = a.open_sea_asset?.last_sale_price_eth ?? 0;
-  const bLastSalePrice = b.open_sea_asset?.last_sale_price_eth ?? 0;
+  const aLastSalePrice = a.open_sea_asset?.last_sale_price ?? 0;
+  const bLastSalePrice = b.open_sea_asset?.last_sale_price ?? 0;
   return bLastSalePrice - aLastSalePrice;
 };
 
@@ -266,9 +231,45 @@ export const filterItemsBySearchString = (items: PickedBag[], searchString: stri
   );
 };
 
+const populateItems = async () => {
+  console.log('Populating DopeDatabase');
+  const dopeData = await getFauna();
+  const swapMeetData = dopeData?.data?.getSwapMeetPage?.data;
+  swapMeetData.map((x: any) => {
+    x.id = x.token_id, x.claimed = x.paper_claimed, x.opened = x.items_unbundled,
+    x.open_sea_asset = {
+      "is_on_sale": x.open_sea_is_on_sale,
+      "current_sale_price_eth": x?.open_sea_last_sale_price_eth
+    }
+  });
+  console.log(`Populated data length: ${swapMeetData.length}`);
+  return swapMeetData;
+};
+
+// Fetch transformed output, loads it, refresh the Apollo Reactive var.
+const getFauna = async () => {
+  const variables = {}
+  
+  var postData = JSON.stringify({
+    query: SWAP_MEET_QUERY,
+    variables: variables
+  });
+
+  const response = await fetch(FAUNA_API_URL, {
+    method: 'POST', 
+    headers: {
+      'Authorization': `Bearer ${FAUNA_API_KEY}`
+    },
+    body: postData
+  });
+  const assets = await response.json();
+  return assets;
+}
+
 export default DopeDatabase;
 
 const db = new DopeDatabase();
+// Get data from Fauna and add to DopeDatabase
+populateItems().then(data => db.items = data);
 
-db.populateItems();
 export const DopeDbCacheReactive = makeVar(db);

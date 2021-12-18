@@ -12,7 +12,7 @@ import {
   isHustlerRandom,
   randomizeHustlerAttributes,
 } from 'utils/HustlerConfig';
-import { PickedBag } from 'utils/DopeDatabase';
+import { PickedBag } from 'PickedBag';
 import PanelFooter from 'components/PanelFooter';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 

@@ -21,8 +21,8 @@ import DopeDatabase, {
   testForUnclaimedPaper,
   testForSale,
   testForNotOpened,
-  PickedBag,
 } from 'utils/DopeDatabase';
+import { PickedBag } from 'PickedBag';
 
 // To prevent all 8k items from showing at once and overloading
 // the DOM we fake loading more using infinite scroll.

@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
 import { css } from '@emotion/react';
-import { PickedBag } from 'utils/DopeDatabase';
 import DopeCardBody from 'components/dope/DopeCardBody';
 import DopeCardFooterForMarket from 'components/dope/DopeCardFooterForMarket';
 import DopeCardFooterForOwner from 'components/dope/DopeCardFooterForOwner';
@@ -9,6 +8,7 @@ import DopeLegend from 'components/dope/DopeLegend';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
+import { PickedBag } from 'PickedBag';
 
 interface Props {
   footer: 'for-marketplace' | 'for-owner';

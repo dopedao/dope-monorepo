@@ -1,4 +1,4 @@
-import { client, q } from '../../src/fauna_client';
+import { client, q } from '../../fauna_client';
 
 // Indexes if On Sale with OpenSea
 // https://docs.fauna.com/fauna/current/tutorials/indexes/search
