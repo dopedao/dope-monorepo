@@ -1,5 +1,5 @@
 import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
-import Player from "game/entities/Player";
+import Hustler from "game/entities/Hustler";
 
 const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, key: string): void => {
     const scale = 0.07;
@@ -10,7 +10,7 @@ const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, ke
             start: 7,
             end: 0,
         }),
-        frameRate: Player.DEFAULT_VELOCITY / scale,
+        frameRate: Hustler.DEFAULT_VELOCITY / scale,
         repeat: -1
     });
 
@@ -20,7 +20,7 @@ const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, ke
             start: 15,
             end: 8
         }),
-        frameRate: Player.DEFAULT_VELOCITY / scale,
+        frameRate: Hustler.DEFAULT_VELOCITY / scale,
         repeat: -1
     });
 
@@ -30,7 +30,7 @@ const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, ke
             start: 23,
             end: 16
         }),
-        frameRate: Player.DEFAULT_VELOCITY / scale,
+        frameRate: Hustler.DEFAULT_VELOCITY / scale,
         repeat: -1
     });
 
@@ -40,7 +40,7 @@ const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, ke
             start: 31,
             end: 24
         }),
-        frameRate: Player.DEFAULT_VELOCITY / scale,
+        frameRate: Hustler.DEFAULT_VELOCITY / scale,
         repeat: -1
     });
 }

@@ -1,11 +1,11 @@
 import { Base, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Weapons } from 'game/constants/Sprites';
-import Player from 'game/entities/Player';
-import PlayerModel from 'game/gfx/models/PlayerModel';
+import Hustler from 'game/entities/Hustler';
+import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
 
 export default class GameScene extends Scene {
-  private player!: Player;
+  private player!: Hustler;
 
   private map!: Phaser.Tilemaps.Tilemap;
   private hoveredTile?: Phaser.Tilemaps.Tile;
@@ -52,9 +52,9 @@ export default class GameScene extends Scene {
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
-    this.player = new Player(
+    this.player = new Hustler(
       500, 600, 
-      new PlayerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold), 
+      new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold), 
       matterWorld);
 
     this.map.createLayer("Above Player", tileset, 0, 0);
