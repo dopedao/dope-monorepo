@@ -29,7 +29,7 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
             title="DOPE.GAME" 
             width={640} 
             height="90vh"
-            fullScreenHandler={(fullscreen) => {
+            fullScreenHandler={() => {
                 if (!gameRef.current)
                     return;
 

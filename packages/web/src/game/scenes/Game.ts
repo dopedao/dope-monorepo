@@ -49,6 +49,7 @@ export default class GameScene extends Scene {
     // set world as being collidable
     world.setCollisionByProperty({ collides: true });
 
+    // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
     this.player = new Player(

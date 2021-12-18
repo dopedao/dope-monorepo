@@ -1,18 +1,16 @@
-import { throwServerError } from "@apollo/client";
 import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
-import PlayerModel from "game/gfx/models/PlayerModel";
-import { MaleBody_OrderBy } from "generated/graphql";
+import HustlerModel from "game/gfx/models/HustlerModel";
 
-export default class Player extends Phaser.Physics.Matter.Sprite
+export default class Hustler extends Phaser.Physics.Matter.Sprite
 {
     public static readonly DEFAULT_VELOCITY: number = 1.2;
     public static readonly DEFAULT_MASS: number = 70;
 
-    private _model: PlayerModel;
+    private _model: HustlerModel;
 
     get model() { return this._model; }
 
-    constructor(x: number, y: number, model: PlayerModel = new PlayerModel(Base.Male), world: Phaser.Physics.Matter.World, frame?: number)
+    constructor(x: number, y: number, model: HustlerModel = new HustlerModel(Base.Male), world: Phaser.Physics.Matter.World, frame?: number)
     {
         super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
         this._model = model;
@@ -39,7 +37,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite
         {
             dir = "_back";
             // this.setVelocity(0, -Player.DEFAULT_VELOCITY);
-            this.setVelocityY(-Player.DEFAULT_VELOCITY);
+            this.setVelocityY(-Hustler.DEFAULT_VELOCITY);
             this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
             //this.body.offset.x = 6;
         }
@@ -47,7 +45,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite
         {
             dir = "_front";
             // this.setVelocity(0, Player.DEFAULT_VELOCITY);
-            this.setVelocityY(Player.DEFAULT_VELOCITY);
+            this.setVelocityY(Hustler.DEFAULT_VELOCITY);
             this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
             //this.body.offset.x = 6;
         }
@@ -61,7 +59,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite
         {
             dir = "_left";
             // this.setVelocity(-Player.DEFAULT_VELOCITY, 0);
-            this.setVelocityX(-Player.DEFAULT_VELOCITY);
+            this.setVelocityX(-Hustler.DEFAULT_VELOCITY);
             this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
             //this.body.offset.x = 8;
         }
@@ -69,7 +67,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite
         {
             dir = "_right";
             // this.setVelocity(Player.DEFAULT_VELOCITY, 0);
-            this.setVelocityX(Player.DEFAULT_VELOCITY);
+            this.setVelocityX(Hustler.DEFAULT_VELOCITY);
             this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
             //this.body.offset.x = 6;
         }

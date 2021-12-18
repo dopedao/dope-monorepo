@@ -1,7 +1,6 @@
-import { isThursday } from "date-fns";
 import { Base, Categories, CharacterCategories, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Weapons } from "game/constants/Sprites";
  
-export default class PlayerModel
+export default class HustlerModel
 {
     // base skin
     public base: Base;
