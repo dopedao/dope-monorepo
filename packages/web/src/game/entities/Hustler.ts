@@ -18,11 +18,12 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this.scaleY *= 1.8;
         this.scaleX *= 1.6;
 
+        // add to the scene, to be drawn
         world.scene.add.existing(this);
 
         // give the character an ellipse like collider
         this.setCircle(20);
-        // prevent angular momentum
+        // prevent angular momentum from rotating our body
         this.setFixedRotation();
 
         // create sub sprites
@@ -91,7 +92,6 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             return;
         }
 
-        console.log(this.texture.key + dir);
         this.play(this.texture.key + dir, true);
         // pos is undefined so that only the animations of the sprites
         // get updated

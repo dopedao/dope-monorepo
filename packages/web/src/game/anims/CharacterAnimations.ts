@@ -1,4 +1,3 @@
-import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
 import Hustler from "game/entities/Hustler";
 
 const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, key: string): void => {
