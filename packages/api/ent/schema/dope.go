@@ -20,7 +20,7 @@ func (Dope) Fields() []ent.Field {
 			Default(false),
 		field.Bool("opened").
 			Default(false),
-		field.Float("score").
+		field.Int("score").
 			Optional(),
 		field.Int("rank").
 			Optional().

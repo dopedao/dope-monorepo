@@ -21,7 +21,7 @@ type Dope struct {
 	// Opened holds the value of the "opened" field.
 	Opened bool `json:"opened,omitempty"`
 	// Score holds the value of the "score" field.
-	Score float64 `json:"score,omitempty"`
+	Score int `json:"score,omitempty"`
 	// Rank holds the value of the "rank" field.
 	Rank int `json:"rank,omitempty"`
 	// Order holds the value of the "order" field.
@@ -73,9 +73,7 @@ func (*Dope) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case dope.FieldClaimed, dope.FieldOpened:
 			values[i] = new(sql.NullBool)
-		case dope.FieldScore:
-			values[i] = new(sql.NullFloat64)
-		case dope.FieldRank, dope.FieldOrder:
+		case dope.FieldScore, dope.FieldRank, dope.FieldOrder:
 			values[i] = new(sql.NullInt64)
 		case dope.FieldID:
 			values[i] = new(sql.NullString)
@@ -115,10 +113,10 @@ func (d *Dope) assignValues(columns []string, values []interface{}) error {
 				d.Opened = value.Bool
 			}
 		case dope.FieldScore:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field score", values[i])
 			} else if value.Valid {
-				d.Score = value.Float64
+				d.Score = int(value.Int64)
 			}
 		case dope.FieldRank:
 			if value, ok := values[i].(*sql.NullInt64); !ok {

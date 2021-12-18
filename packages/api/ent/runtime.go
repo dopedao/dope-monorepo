@@ -57,7 +57,7 @@ func init() {
 	itemFields := schema.Item{}.Fields()
 	_ = itemFields
 	// itemDescCreatedAt is the schema descriptor for created_at field.
-	itemDescCreatedAt := itemFields[11].Descriptor()
+	itemDescCreatedAt := itemFields[12].Descriptor()
 	// item.DefaultCreatedAt holds the default value on creation for the created_at field.
 	item.DefaultCreatedAt = itemDescCreatedAt.Default.(func() time.Time)
 	walletFields := schema.Wallet{}.Fields()

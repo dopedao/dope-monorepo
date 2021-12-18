@@ -26,7 +26,7 @@ var (
 		{Name: "id", Type: field.TypeString},
 		{Name: "claimed", Type: field.TypeBool, Default: false},
 		{Name: "opened", Type: field.TypeBool, Default: false},
-		{Name: "score", Type: field.TypeFloat64, Nullable: true},
+		{Name: "score", Type: field.TypeInt, Nullable: true},
 		{Name: "rank", Type: field.TypeInt, Nullable: true},
 		{Name: "order", Type: field.TypeInt},
 		{Name: "wallet_dopes", Type: field.TypeString, Nullable: true},
@@ -198,7 +198,8 @@ var (
 		{Name: "suffix", Type: field.TypeString, Nullable: true},
 		{Name: "augmented", Type: field.TypeBool, Nullable: true},
 		{Name: "count", Type: field.TypeInt, Nullable: true},
-		{Name: "score", Type: field.TypeFloat64, Nullable: true},
+		{Name: "tier", Type: field.TypeEnum, Nullable: true, Enums: []string{"common", "rare", "custom", "black_market"}},
+		{Name: "greatness", Type: field.TypeInt, Nullable: true},
 		{Name: "rles", Type: field.TypeJSON, Nullable: true},
 		{Name: "svg", Type: field.TypeString, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
@@ -212,7 +213,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "items_items_derivative",
-				Columns:    []*schema.Column{ItemsColumns[12]},
+				Columns:    []*schema.Column{ItemsColumns[13]},
 				RefColumns: []*schema.Column{ItemsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

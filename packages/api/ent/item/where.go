@@ -135,10 +135,10 @@ func Count(v int) predicate.Item {
 	})
 }
 
-// Score applies equality check predicate on the "score" field. It's identical to ScoreEQ.
-func Score(v float64) predicate.Item {
+// Greatness applies equality check predicate on the "greatness" field. It's identical to GreatnessEQ.
+func Greatness(v int) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldScore), v))
+		s.Where(sql.EQ(s.C(FieldGreatness), v))
 	})
 }
 
@@ -808,22 +808,22 @@ func CountNotNil() predicate.Item {
 	})
 }
 
-// ScoreEQ applies the EQ predicate on the "score" field.
-func ScoreEQ(v float64) predicate.Item {
+// TierEQ applies the EQ predicate on the "tier" field.
+func TierEQ(v Tier) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldScore), v))
+		s.Where(sql.EQ(s.C(FieldTier), v))
 	})
 }
 
-// ScoreNEQ applies the NEQ predicate on the "score" field.
-func ScoreNEQ(v float64) predicate.Item {
+// TierNEQ applies the NEQ predicate on the "tier" field.
+func TierNEQ(v Tier) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldScore), v))
+		s.Where(sql.NEQ(s.C(FieldTier), v))
 	})
 }
 
-// ScoreIn applies the In predicate on the "score" field.
-func ScoreIn(vs ...float64) predicate.Item {
+// TierIn applies the In predicate on the "tier" field.
+func TierIn(vs ...Tier) predicate.Item {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -835,12 +835,12 @@ func ScoreIn(vs ...float64) predicate.Item {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldScore), v...))
+		s.Where(sql.In(s.C(FieldTier), v...))
 	})
 }
 
-// ScoreNotIn applies the NotIn predicate on the "score" field.
-func ScoreNotIn(vs ...float64) predicate.Item {
+// TierNotIn applies the NotIn predicate on the "tier" field.
+func TierNotIn(vs ...Tier) predicate.Item {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -852,49 +852,111 @@ func ScoreNotIn(vs ...float64) predicate.Item {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldScore), v...))
+		s.Where(sql.NotIn(s.C(FieldTier), v...))
 	})
 }
 
-// ScoreGT applies the GT predicate on the "score" field.
-func ScoreGT(v float64) predicate.Item {
+// TierIsNil applies the IsNil predicate on the "tier" field.
+func TierIsNil() predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldScore), v))
+		s.Where(sql.IsNull(s.C(FieldTier)))
 	})
 }
 
-// ScoreGTE applies the GTE predicate on the "score" field.
-func ScoreGTE(v float64) predicate.Item {
+// TierNotNil applies the NotNil predicate on the "tier" field.
+func TierNotNil() predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldScore), v))
+		s.Where(sql.NotNull(s.C(FieldTier)))
 	})
 }
 
-// ScoreLT applies the LT predicate on the "score" field.
-func ScoreLT(v float64) predicate.Item {
+// GreatnessEQ applies the EQ predicate on the "greatness" field.
+func GreatnessEQ(v int) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldScore), v))
+		s.Where(sql.EQ(s.C(FieldGreatness), v))
 	})
 }
 
-// ScoreLTE applies the LTE predicate on the "score" field.
-func ScoreLTE(v float64) predicate.Item {
+// GreatnessNEQ applies the NEQ predicate on the "greatness" field.
+func GreatnessNEQ(v int) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldScore), v))
+		s.Where(sql.NEQ(s.C(FieldGreatness), v))
 	})
 }
 
-// ScoreIsNil applies the IsNil predicate on the "score" field.
-func ScoreIsNil() predicate.Item {
+// GreatnessIn applies the In predicate on the "greatness" field.
+func GreatnessIn(vs ...int) predicate.Item {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
 	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldScore)))
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldGreatness), v...))
 	})
 }
 
-// ScoreNotNil applies the NotNil predicate on the "score" field.
-func ScoreNotNil() predicate.Item {
+// GreatnessNotIn applies the NotIn predicate on the "greatness" field.
+func GreatnessNotIn(vs ...int) predicate.Item {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
 	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldScore)))
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldGreatness), v...))
+	})
+}
+
+// GreatnessGT applies the GT predicate on the "greatness" field.
+func GreatnessGT(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessGTE applies the GTE predicate on the "greatness" field.
+func GreatnessGTE(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessLT applies the LT predicate on the "greatness" field.
+func GreatnessLT(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessLTE applies the LTE predicate on the "greatness" field.
+func GreatnessLTE(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessIsNil applies the IsNil predicate on the "greatness" field.
+func GreatnessIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldGreatness)))
+	})
+}
+
+// GreatnessNotNil applies the NotNil predicate on the "greatness" field.
+func GreatnessNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldGreatness)))
 	})
 }
 

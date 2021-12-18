@@ -58,23 +58,23 @@ func (du *DopeUpdate) SetNillableOpened(b *bool) *DopeUpdate {
 }
 
 // SetScore sets the "score" field.
-func (du *DopeUpdate) SetScore(f float64) *DopeUpdate {
+func (du *DopeUpdate) SetScore(i int) *DopeUpdate {
 	du.mutation.ResetScore()
-	du.mutation.SetScore(f)
+	du.mutation.SetScore(i)
 	return du
 }
 
 // SetNillableScore sets the "score" field if the given value is not nil.
-func (du *DopeUpdate) SetNillableScore(f *float64) *DopeUpdate {
-	if f != nil {
-		du.SetScore(*f)
+func (du *DopeUpdate) SetNillableScore(i *int) *DopeUpdate {
+	if i != nil {
+		du.SetScore(*i)
 	}
 	return du
 }
 
-// AddScore adds f to the "score" field.
-func (du *DopeUpdate) AddScore(f float64) *DopeUpdate {
-	du.mutation.AddScore(f)
+// AddScore adds i to the "score" field.
+func (du *DopeUpdate) AddScore(i int) *DopeUpdate {
+	du.mutation.AddScore(i)
 	return du
 }
 
@@ -265,21 +265,21 @@ func (du *DopeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := du.mutation.Score(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: dope.FieldScore,
 		})
 	}
 	if value, ok := du.mutation.AddedScore(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: dope.FieldScore,
 		})
 	}
 	if du.mutation.ScoreCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Column: dope.FieldScore,
 		})
 	}
@@ -440,23 +440,23 @@ func (duo *DopeUpdateOne) SetNillableOpened(b *bool) *DopeUpdateOne {
 }
 
 // SetScore sets the "score" field.
-func (duo *DopeUpdateOne) SetScore(f float64) *DopeUpdateOne {
+func (duo *DopeUpdateOne) SetScore(i int) *DopeUpdateOne {
 	duo.mutation.ResetScore()
-	duo.mutation.SetScore(f)
+	duo.mutation.SetScore(i)
 	return duo
 }
 
 // SetNillableScore sets the "score" field if the given value is not nil.
-func (duo *DopeUpdateOne) SetNillableScore(f *float64) *DopeUpdateOne {
-	if f != nil {
-		duo.SetScore(*f)
+func (duo *DopeUpdateOne) SetNillableScore(i *int) *DopeUpdateOne {
+	if i != nil {
+		duo.SetScore(*i)
 	}
 	return duo
 }
 
-// AddScore adds f to the "score" field.
-func (duo *DopeUpdateOne) AddScore(f float64) *DopeUpdateOne {
-	duo.mutation.AddScore(f)
+// AddScore adds i to the "score" field.
+func (duo *DopeUpdateOne) AddScore(i int) *DopeUpdateOne {
+	duo.mutation.AddScore(i)
 	return duo
 }
 
@@ -671,21 +671,21 @@ func (duo *DopeUpdateOne) sqlSave(ctx context.Context) (_node *Dope, err error) 
 	}
 	if value, ok := duo.mutation.Score(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: dope.FieldScore,
 		})
 	}
 	if value, ok := duo.mutation.AddedScore(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: dope.FieldScore,
 		})
 	}
 	if duo.mutation.ScoreCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Column: dope.FieldScore,
 		})
 	}

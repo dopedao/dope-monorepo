@@ -54,6 +54,9 @@ models:
   ItemType:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/item.Type
+  ItemTier:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/item.Tier
   HustlerSex:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/hustler.Sex
