@@ -10,10 +10,11 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
     get model() { return this._model; }
 
-    constructor(x: number, y: number, model: HustlerModel = new HustlerModel(Base.Male), world: Phaser.Physics.Matter.World, frame?: number)
+    constructor(x: number, y: number, model: HustlerModel, world: Phaser.Physics.Matter.World, frame?: number)
     {
         super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
         this._model = model;
+        this._model.hustler = this;
 
         this.scaleY *= 1.8;
         this.scaleX *= 1.6;
@@ -27,7 +28,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this.setFixedRotation();
 
         // create sub sprites
-        this._model.createSprites(this.scene, new Phaser.Math.Vector2(this.x, this.y), new Phaser.Math.Vector2(this.scaleX, this.scaleY));
+        this._model.createSprites();
     }
 
     update(mainCursors: Phaser.Types.Input.Keyboard.CursorKeys, eqCursors?: Phaser.Types.Input.Keyboard.CursorKeys): void
@@ -39,7 +40,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             dir = "_back";
             // this.setVelocity(0, -Player.DEFAULT_VELOCITY);
             this.setVelocityY(-Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
+            this._model.updateSprites(true);
             //this.body.offset.x = 6;
         }
         else if (mainCursors.down.isDown || eqCursors?.down.isDown)
@@ -47,13 +48,12 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             dir = "_front";
             // this.setVelocity(0, Player.DEFAULT_VELOCITY);
             this.setVelocityY(Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
+            this._model.updateSprites(true);
             //this.body.offset.x = 6;
         }
         else
         {
             this.setVelocityY(0);
-            this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
         }
 
         if (mainCursors.left.isDown || eqCursors?.left.isDown)
@@ -61,7 +61,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             dir = "_left";
             // this.setVelocity(-Player.DEFAULT_VELOCITY, 0);
             this.setVelocityX(-Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
+            this._model.updateSprites(true);
             //this.body.offset.x = 8;
         }
         else if (mainCursors.right.isDown || eqCursors?.right.isDown)
@@ -69,32 +69,30 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             dir = "_right";
             // this.setVelocity(Player.DEFAULT_VELOCITY, 0);
             this.setVelocityX(Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
+            this._model.updateSprites(true);
             //this.body.offset.x = 6;
         }
         else
         {
             this.setVelocityX(0);
-            this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
         }
         
         if (dir === "")
         {
             this.setVelocity(0, 0);
-            this._model.updateSprites(new Phaser.Math.Vector2(this.x, this.y));
+            this.model.updateSprites(true);
             // reset to the first frame of the anim
             if (this.anims.currentAnim && !this.anims.currentFrame.isLast)
                 this.anims.setCurrentFrame(this.anims.currentAnim.getLastFrame());
-            this._model.sprites.forEach(sprite => sprite.anims.currentAnim && !sprite.anims.currentFrame.isLast ? 
-                sprite.anims.setCurrentFrame(sprite.anims.currentAnim.getLastFrame()) : null);
             this.stopAfterDelay(100);
-            this._model.sprites.forEach(sprite => sprite.stopAfterDelay(100));
+
+            this._model.stopSpritesAnim();
             return;
         }
 
         this.play(this.texture.key + dir, true);
         // pos is undefined so that only the animations of the sprites
         // get updated
-        this._model.updateSprites(undefined, dir);
+        this._model.updateSprites(true, dir);
     }
 }
