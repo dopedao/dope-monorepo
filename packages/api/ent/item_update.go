@@ -58,30 +58,50 @@ func (iu *ItemUpdate) ClearCount() *ItemUpdate {
 	return iu
 }
 
-// SetScore sets the "score" field.
-func (iu *ItemUpdate) SetScore(f float64) *ItemUpdate {
-	iu.mutation.ResetScore()
-	iu.mutation.SetScore(f)
+// SetTier sets the "tier" field.
+func (iu *ItemUpdate) SetTier(i item.Tier) *ItemUpdate {
+	iu.mutation.SetTier(i)
 	return iu
 }
 
-// SetNillableScore sets the "score" field if the given value is not nil.
-func (iu *ItemUpdate) SetNillableScore(f *float64) *ItemUpdate {
-	if f != nil {
-		iu.SetScore(*f)
+// SetNillableTier sets the "tier" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableTier(i *item.Tier) *ItemUpdate {
+	if i != nil {
+		iu.SetTier(*i)
 	}
 	return iu
 }
 
-// AddScore adds f to the "score" field.
-func (iu *ItemUpdate) AddScore(f float64) *ItemUpdate {
-	iu.mutation.AddScore(f)
+// ClearTier clears the value of the "tier" field.
+func (iu *ItemUpdate) ClearTier() *ItemUpdate {
+	iu.mutation.ClearTier()
 	return iu
 }
 
-// ClearScore clears the value of the "score" field.
-func (iu *ItemUpdate) ClearScore() *ItemUpdate {
-	iu.mutation.ClearScore()
+// SetGreatness sets the "greatness" field.
+func (iu *ItemUpdate) SetGreatness(i int) *ItemUpdate {
+	iu.mutation.ResetGreatness()
+	iu.mutation.SetGreatness(i)
+	return iu
+}
+
+// SetNillableGreatness sets the "greatness" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableGreatness(i *int) *ItemUpdate {
+	if i != nil {
+		iu.SetGreatness(*i)
+	}
+	return iu
+}
+
+// AddGreatness adds i to the "greatness" field.
+func (iu *ItemUpdate) AddGreatness(i int) *ItemUpdate {
+	iu.mutation.AddGreatness(i)
+	return iu
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (iu *ItemUpdate) ClearGreatness() *ItemUpdate {
+	iu.mutation.ClearGreatness()
 	return iu
 }
 
@@ -630,12 +650,18 @@ func (iu *ItemUpdate) Save(ctx context.Context) (int, error) {
 		affected int
 	)
 	if len(iu.hooks) == 0 {
+		if err = iu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = iu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ItemMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = iu.check(); err != nil {
+				return 0, err
 			}
 			iu.mutation = mutation
 			affected, err = iu.sqlSave(ctx)
@@ -675,6 +701,16 @@ func (iu *ItemUpdate) ExecX(ctx context.Context) {
 	if err := iu.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (iu *ItemUpdate) check() error {
+	if v, ok := iu.mutation.Tier(); ok {
+		if err := item.TierValidator(v); err != nil {
+			return &ValidationError{Name: "tier", err: fmt.Errorf(`ent: validator failed for field "Item.tier": %w`, err)}
+		}
+	}
+	return nil
 }
 
 func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
@@ -739,24 +775,37 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: item.FieldCount,
 		})
 	}
-	if value, ok := iu.mutation.Score(); ok {
+	if value, ok := iu.mutation.Tier(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeEnum,
 			Value:  value,
-			Column: item.FieldScore,
+			Column: item.FieldTier,
 		})
 	}
-	if value, ok := iu.mutation.AddedScore(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: item.FieldScore,
-		})
-	}
-	if iu.mutation.ScoreCleared() {
+	if iu.mutation.TierCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: item.FieldScore,
+			Type:   field.TypeEnum,
+			Column: item.FieldTier,
+		})
+	}
+	if value, ok := iu.mutation.Greatness(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldGreatness,
+		})
+	}
+	if value, ok := iu.mutation.AddedGreatness(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldGreatness,
+		})
+	}
+	if iu.mutation.GreatnessCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: item.FieldGreatness,
 		})
 	}
 	if value, ok := iu.mutation.Rles(); ok {
@@ -1568,30 +1617,50 @@ func (iuo *ItemUpdateOne) ClearCount() *ItemUpdateOne {
 	return iuo
 }
 
-// SetScore sets the "score" field.
-func (iuo *ItemUpdateOne) SetScore(f float64) *ItemUpdateOne {
-	iuo.mutation.ResetScore()
-	iuo.mutation.SetScore(f)
+// SetTier sets the "tier" field.
+func (iuo *ItemUpdateOne) SetTier(i item.Tier) *ItemUpdateOne {
+	iuo.mutation.SetTier(i)
 	return iuo
 }
 
-// SetNillableScore sets the "score" field if the given value is not nil.
-func (iuo *ItemUpdateOne) SetNillableScore(f *float64) *ItemUpdateOne {
-	if f != nil {
-		iuo.SetScore(*f)
+// SetNillableTier sets the "tier" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableTier(i *item.Tier) *ItemUpdateOne {
+	if i != nil {
+		iuo.SetTier(*i)
 	}
 	return iuo
 }
 
-// AddScore adds f to the "score" field.
-func (iuo *ItemUpdateOne) AddScore(f float64) *ItemUpdateOne {
-	iuo.mutation.AddScore(f)
+// ClearTier clears the value of the "tier" field.
+func (iuo *ItemUpdateOne) ClearTier() *ItemUpdateOne {
+	iuo.mutation.ClearTier()
 	return iuo
 }
 
-// ClearScore clears the value of the "score" field.
-func (iuo *ItemUpdateOne) ClearScore() *ItemUpdateOne {
-	iuo.mutation.ClearScore()
+// SetGreatness sets the "greatness" field.
+func (iuo *ItemUpdateOne) SetGreatness(i int) *ItemUpdateOne {
+	iuo.mutation.ResetGreatness()
+	iuo.mutation.SetGreatness(i)
+	return iuo
+}
+
+// SetNillableGreatness sets the "greatness" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableGreatness(i *int) *ItemUpdateOne {
+	if i != nil {
+		iuo.SetGreatness(*i)
+	}
+	return iuo
+}
+
+// AddGreatness adds i to the "greatness" field.
+func (iuo *ItemUpdateOne) AddGreatness(i int) *ItemUpdateOne {
+	iuo.mutation.AddGreatness(i)
+	return iuo
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (iuo *ItemUpdateOne) ClearGreatness() *ItemUpdateOne {
+	iuo.mutation.ClearGreatness()
 	return iuo
 }
 
@@ -2147,12 +2216,18 @@ func (iuo *ItemUpdateOne) Save(ctx context.Context) (*Item, error) {
 		node *Item
 	)
 	if len(iuo.hooks) == 0 {
+		if err = iuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = iuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ItemMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = iuo.check(); err != nil {
+				return nil, err
 			}
 			iuo.mutation = mutation
 			node, err = iuo.sqlSave(ctx)
@@ -2192,6 +2267,16 @@ func (iuo *ItemUpdateOne) ExecX(ctx context.Context) {
 	if err := iuo.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (iuo *ItemUpdateOne) check() error {
+	if v, ok := iuo.mutation.Tier(); ok {
+		if err := item.TierValidator(v); err != nil {
+			return &ValidationError{Name: "tier", err: fmt.Errorf(`ent: validator failed for field "Item.tier": %w`, err)}
+		}
+	}
+	return nil
 }
 
 func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) {
@@ -2273,24 +2358,37 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 			Column: item.FieldCount,
 		})
 	}
-	if value, ok := iuo.mutation.Score(); ok {
+	if value, ok := iuo.mutation.Tier(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeEnum,
 			Value:  value,
-			Column: item.FieldScore,
+			Column: item.FieldTier,
 		})
 	}
-	if value, ok := iuo.mutation.AddedScore(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: item.FieldScore,
-		})
-	}
-	if iuo.mutation.ScoreCleared() {
+	if iuo.mutation.TierCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: item.FieldScore,
+			Type:   field.TypeEnum,
+			Column: item.FieldTier,
+		})
+	}
+	if value, ok := iuo.mutation.Greatness(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldGreatness,
+		})
+	}
+	if value, ok := iuo.mutation.AddedGreatness(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldGreatness,
+		})
+	}
+	if iuo.mutation.GreatnessCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: item.FieldGreatness,
 		})
 	}
 	if value, ok := iuo.mutation.Rles(); ok {

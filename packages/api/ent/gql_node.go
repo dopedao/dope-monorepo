@@ -140,7 +140,7 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Fields[2] = &Field{
-		Type:  "float64",
+		Type:  "int",
 		Name:  "score",
 		Value: string(buf),
 	}
@@ -477,7 +477,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     i.ID,
 		Type:   "Item",
-		Fields: make([]*Field, 11),
+		Fields: make([]*Field, 12),
 		Edges:  make([]*Edge, 14),
 	}
 	var buf []byte
@@ -537,18 +537,26 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "count",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(i.Score); err != nil {
+	if buf, err = json.Marshal(i.Tier); err != nil {
 		return nil, err
 	}
 	node.Fields[7] = &Field{
-		Type:  "float64",
-		Name:  "score",
+		Type:  "item.Tier",
+		Name:  "tier",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(i.Greatness); err != nil {
+		return nil, err
+	}
+	node.Fields[8] = &Field{
+		Type:  "int",
+		Name:  "greatness",
 		Value: string(buf),
 	}
 	if buf, err = json.Marshal(i.Rles); err != nil {
 		return nil, err
 	}
-	node.Fields[8] = &Field{
+	node.Fields[9] = &Field{
 		Type:  "schema.RLEs",
 		Name:  "rles",
 		Value: string(buf),
@@ -556,7 +564,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(i.Svg); err != nil {
 		return nil, err
 	}
-	node.Fields[9] = &Field{
+	node.Fields[10] = &Field{
 		Type:  "string",
 		Name:  "svg",
 		Value: string(buf),
@@ -564,7 +572,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(i.CreatedAt); err != nil {
 		return nil, err
 	}
-	node.Fields[10] = &Field{
+	node.Fields[11] = &Field{
 		Type:  "time.Time",
 		Name:  "created_at",
 		Value: string(buf),

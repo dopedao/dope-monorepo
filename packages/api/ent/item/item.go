@@ -28,8 +28,10 @@ const (
 	FieldAugmented = "augmented"
 	// FieldCount holds the string denoting the count field in the database.
 	FieldCount = "count"
-	// FieldScore holds the string denoting the score field in the database.
-	FieldScore = "score"
+	// FieldTier holds the string denoting the tier field in the database.
+	FieldTier = "tier"
+	// FieldGreatness holds the string denoting the greatness field in the database.
+	FieldGreatness = "greatness"
 	// FieldRles holds the string denoting the rles field in the database.
 	FieldRles = "rles"
 	// FieldSvg holds the string denoting the svg field in the database.
@@ -168,7 +170,8 @@ var Columns = []string{
 	FieldSuffix,
 	FieldAugmented,
 	FieldCount,
-	FieldScore,
+	FieldTier,
+	FieldGreatness,
 	FieldRles,
 	FieldSvg,
 	FieldCreatedAt,
@@ -237,6 +240,31 @@ func TypeValidator(_type Type) error {
 	}
 }
 
+// Tier defines the type for the "tier" enum field.
+type Tier string
+
+// Tier values.
+const (
+	TierCommon      Tier = "common"
+	TierRare        Tier = "rare"
+	TierCustom      Tier = "custom"
+	TierBlackMarket Tier = "black_market"
+)
+
+func (t Tier) String() string {
+	return string(t)
+}
+
+// TierValidator is a validator for the "tier" field enum values. It is called by the builders before save.
+func TierValidator(t Tier) error {
+	switch t {
+	case TierCommon, TierRare, TierCustom, TierBlackMarket:
+		return nil
+	default:
+		return fmt.Errorf("item: invalid enum value for tier field: %q", t)
+	}
+}
+
 // MarshalGQL implements graphql.Marshaler interface.
 func (_type Type) MarshalGQL(w io.Writer) {
 	io.WriteString(w, strconv.Quote(_type.String()))
@@ -251,6 +279,24 @@ func (_type *Type) UnmarshalGQL(val interface{}) error {
 	*_type = Type(str)
 	if err := TypeValidator(*_type); err != nil {
 		return fmt.Errorf("%s is not a valid Type", str)
+	}
+	return nil
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (t Tier) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(t.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (t *Tier) UnmarshalGQL(val interface{}) error {
+	str, ok := val.(string)
+	if !ok {
+		return fmt.Errorf("enum %T must be a string", val)
+	}
+	*t = Tier(str)
+	if err := TierValidator(*t); err != nil {
+		return fmt.Errorf("%s is not a valid Tier", str)
 	}
 	return nil
 }

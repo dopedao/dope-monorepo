@@ -109,16 +109,30 @@ func (ic *ItemCreate) SetNillableCount(i *int) *ItemCreate {
 	return ic
 }
 
-// SetScore sets the "score" field.
-func (ic *ItemCreate) SetScore(f float64) *ItemCreate {
-	ic.mutation.SetScore(f)
+// SetTier sets the "tier" field.
+func (ic *ItemCreate) SetTier(i item.Tier) *ItemCreate {
+	ic.mutation.SetTier(i)
 	return ic
 }
 
-// SetNillableScore sets the "score" field if the given value is not nil.
-func (ic *ItemCreate) SetNillableScore(f *float64) *ItemCreate {
-	if f != nil {
-		ic.SetScore(*f)
+// SetNillableTier sets the "tier" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableTier(i *item.Tier) *ItemCreate {
+	if i != nil {
+		ic.SetTier(*i)
+	}
+	return ic
+}
+
+// SetGreatness sets the "greatness" field.
+func (ic *ItemCreate) SetGreatness(i int) *ItemCreate {
+	ic.mutation.SetGreatness(i)
+	return ic
+}
+
+// SetNillableGreatness sets the "greatness" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableGreatness(i *int) *ItemCreate {
+	if i != nil {
+		ic.SetGreatness(*i)
 	}
 	return ic
 }
@@ -475,6 +489,11 @@ func (ic *ItemCreate) check() error {
 	if _, ok := ic.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Item.name"`)}
 	}
+	if v, ok := ic.mutation.Tier(); ok {
+		if err := item.TierValidator(v); err != nil {
+			return &ValidationError{Name: "tier", err: fmt.Errorf(`ent: validator failed for field "Item.tier": %w`, err)}
+		}
+	}
 	if _, ok := ic.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Item.created_at"`)}
 	}
@@ -571,13 +590,21 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 		})
 		_node.Count = value
 	}
-	if value, ok := ic.mutation.Score(); ok {
+	if value, ok := ic.mutation.Tier(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeEnum,
 			Value:  value,
-			Column: item.FieldScore,
+			Column: item.FieldTier,
 		})
-		_node.Score = value
+		_node.Tier = value
+	}
+	if value, ok := ic.mutation.Greatness(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldGreatness,
+		})
+		_node.Greatness = value
 	}
 	if value, ok := ic.mutation.Rles(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -1044,27 +1071,45 @@ func (u *ItemUpsert) ClearCount() *ItemUpsert {
 	return u
 }
 
-// SetScore sets the "score" field.
-func (u *ItemUpsert) SetScore(v float64) *ItemUpsert {
-	u.Set(item.FieldScore, v)
+// SetTier sets the "tier" field.
+func (u *ItemUpsert) SetTier(v item.Tier) *ItemUpsert {
+	u.Set(item.FieldTier, v)
 	return u
 }
 
-// UpdateScore sets the "score" field to the value that was provided on create.
-func (u *ItemUpsert) UpdateScore() *ItemUpsert {
-	u.SetExcluded(item.FieldScore)
+// UpdateTier sets the "tier" field to the value that was provided on create.
+func (u *ItemUpsert) UpdateTier() *ItemUpsert {
+	u.SetExcluded(item.FieldTier)
 	return u
 }
 
-// AddScore adds v to the "score" field.
-func (u *ItemUpsert) AddScore(v float64) *ItemUpsert {
-	u.Add(item.FieldScore, v)
+// ClearTier clears the value of the "tier" field.
+func (u *ItemUpsert) ClearTier() *ItemUpsert {
+	u.SetNull(item.FieldTier)
 	return u
 }
 
-// ClearScore clears the value of the "score" field.
-func (u *ItemUpsert) ClearScore() *ItemUpsert {
-	u.SetNull(item.FieldScore)
+// SetGreatness sets the "greatness" field.
+func (u *ItemUpsert) SetGreatness(v int) *ItemUpsert {
+	u.Set(item.FieldGreatness, v)
+	return u
+}
+
+// UpdateGreatness sets the "greatness" field to the value that was provided on create.
+func (u *ItemUpsert) UpdateGreatness() *ItemUpsert {
+	u.SetExcluded(item.FieldGreatness)
+	return u
+}
+
+// AddGreatness adds v to the "greatness" field.
+func (u *ItemUpsert) AddGreatness(v int) *ItemUpsert {
+	u.Add(item.FieldGreatness, v)
+	return u
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (u *ItemUpsert) ClearGreatness() *ItemUpsert {
+	u.SetNull(item.FieldGreatness)
 	return u
 }
 
@@ -1327,31 +1372,52 @@ func (u *ItemUpsertOne) ClearCount() *ItemUpsertOne {
 	})
 }
 
-// SetScore sets the "score" field.
-func (u *ItemUpsertOne) SetScore(v float64) *ItemUpsertOne {
+// SetTier sets the "tier" field.
+func (u *ItemUpsertOne) SetTier(v item.Tier) *ItemUpsertOne {
 	return u.Update(func(s *ItemUpsert) {
-		s.SetScore(v)
+		s.SetTier(v)
 	})
 }
 
-// AddScore adds v to the "score" field.
-func (u *ItemUpsertOne) AddScore(v float64) *ItemUpsertOne {
+// UpdateTier sets the "tier" field to the value that was provided on create.
+func (u *ItemUpsertOne) UpdateTier() *ItemUpsertOne {
 	return u.Update(func(s *ItemUpsert) {
-		s.AddScore(v)
+		s.UpdateTier()
 	})
 }
 
-// UpdateScore sets the "score" field to the value that was provided on create.
-func (u *ItemUpsertOne) UpdateScore() *ItemUpsertOne {
+// ClearTier clears the value of the "tier" field.
+func (u *ItemUpsertOne) ClearTier() *ItemUpsertOne {
 	return u.Update(func(s *ItemUpsert) {
-		s.UpdateScore()
+		s.ClearTier()
 	})
 }
 
-// ClearScore clears the value of the "score" field.
-func (u *ItemUpsertOne) ClearScore() *ItemUpsertOne {
+// SetGreatness sets the "greatness" field.
+func (u *ItemUpsertOne) SetGreatness(v int) *ItemUpsertOne {
 	return u.Update(func(s *ItemUpsert) {
-		s.ClearScore()
+		s.SetGreatness(v)
+	})
+}
+
+// AddGreatness adds v to the "greatness" field.
+func (u *ItemUpsertOne) AddGreatness(v int) *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.AddGreatness(v)
+	})
+}
+
+// UpdateGreatness sets the "greatness" field to the value that was provided on create.
+func (u *ItemUpsertOne) UpdateGreatness() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateGreatness()
+	})
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (u *ItemUpsertOne) ClearGreatness() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearGreatness()
 	})
 }
 
@@ -1788,31 +1854,52 @@ func (u *ItemUpsertBulk) ClearCount() *ItemUpsertBulk {
 	})
 }
 
-// SetScore sets the "score" field.
-func (u *ItemUpsertBulk) SetScore(v float64) *ItemUpsertBulk {
+// SetTier sets the "tier" field.
+func (u *ItemUpsertBulk) SetTier(v item.Tier) *ItemUpsertBulk {
 	return u.Update(func(s *ItemUpsert) {
-		s.SetScore(v)
+		s.SetTier(v)
 	})
 }
 
-// AddScore adds v to the "score" field.
-func (u *ItemUpsertBulk) AddScore(v float64) *ItemUpsertBulk {
+// UpdateTier sets the "tier" field to the value that was provided on create.
+func (u *ItemUpsertBulk) UpdateTier() *ItemUpsertBulk {
 	return u.Update(func(s *ItemUpsert) {
-		s.AddScore(v)
+		s.UpdateTier()
 	})
 }
 
-// UpdateScore sets the "score" field to the value that was provided on create.
-func (u *ItemUpsertBulk) UpdateScore() *ItemUpsertBulk {
+// ClearTier clears the value of the "tier" field.
+func (u *ItemUpsertBulk) ClearTier() *ItemUpsertBulk {
 	return u.Update(func(s *ItemUpsert) {
-		s.UpdateScore()
+		s.ClearTier()
 	})
 }
 
-// ClearScore clears the value of the "score" field.
-func (u *ItemUpsertBulk) ClearScore() *ItemUpsertBulk {
+// SetGreatness sets the "greatness" field.
+func (u *ItemUpsertBulk) SetGreatness(v int) *ItemUpsertBulk {
 	return u.Update(func(s *ItemUpsert) {
-		s.ClearScore()
+		s.SetGreatness(v)
+	})
+}
+
+// AddGreatness adds v to the "greatness" field.
+func (u *ItemUpsertBulk) AddGreatness(v int) *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.AddGreatness(v)
+	})
+}
+
+// UpdateGreatness sets the "greatness" field to the value that was provided on create.
+func (u *ItemUpsertBulk) UpdateGreatness() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateGreatness()
+	})
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (u *ItemUpsertBulk) ClearGreatness() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearGreatness()
 	})
 }
 
