@@ -122,7 +122,7 @@ function firstSkipPagination<T = Reference>(
   };
 }
 
-export const hustlerPaginationClient = () => {
+export const useHustlerPaginationClient = () => {
   const { chainId } = useOptimism();
 
   const uri = useMemo(

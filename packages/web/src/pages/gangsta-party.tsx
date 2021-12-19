@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import Head from 'components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
 import WebAmpPlayer from 'components/WebAmpPlayer';
-import { hustlerPaginationClient } from 'components/EthereumApolloProvider';
+import { useHustlerPaginationClient } from 'components/EthereumApolloProvider';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import { useMemo } from 'react';
 import LoadingBlock from 'components/LoadingBlock';
@@ -48,7 +48,7 @@ const GangstaParty = () => {
   const PAGE_SIZE = 75;
   let hustlersVisible = PAGE_SIZE;
 
-  const client = hustlerPaginationClient();
+  const client = useHustlerPaginationClient();
   const { data, fetchMore } = useAllHustlersQuery({ variables: { first: PAGE_SIZE, skip: 0 }, client, notifyOnNetworkStatusChange: true });
 
   const hustlers = useMemo(() => {
