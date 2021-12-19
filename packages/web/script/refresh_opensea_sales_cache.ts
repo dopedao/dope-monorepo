@@ -3,7 +3,7 @@ dotenv.config({ path: __dirname + '/../../../.env' });
 
 import { getOpenSeaAssets } from '../src/utils/OpenSeaAsset';
 import S3 from 'aws-sdk/clients/s3';
-import { client, q } from '../src/fauna_client';
+import { client, q } from './fauna_client';
 
 const S3_ID = process.env.S3_ID;
 const S3_SECRET = process.env.S3_SECRET;

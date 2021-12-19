@@ -5,9 +5,9 @@ const sleep = async () => {
   await new Promise(resolve => setTimeout(resolve, 1000));
 }
 
-// Dynamically reads Index creation files in `../fauna/indexes` and creates each one.
+// Dynamically reads Index creation files and creates each one.
 const createIndexes = async () => {
-  const relativePath = '../fauna/indexes';
+  const relativePath = '../src/fauna/indexes';
   const indexFileNames = fs.readdirSync(`${__dirname}/${relativePath}`);
   for (const fileName of indexFileNames) {
     const importName = fileName.replace('.ts', '');

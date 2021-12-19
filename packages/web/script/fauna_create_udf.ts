@@ -1,8 +1,8 @@
 import fs from 'fs';
 
-// Dynamically reads Index creation files in `../fauna/indexes` and creates each one.
+// Dynamically reads Index creation files and creates each one.
 const createUdfs = async () => {
-  const relativePath = '../fauna/user_defined_functions';
+  const relativePath = '../src/fauna/user_defined_functions';
   const indexFileNames = fs.readdirSync(`${__dirname}/${relativePath}`);
   for (const fileName of indexFileNames) {
     if (!fileName.endsWith('.ts')) continue;

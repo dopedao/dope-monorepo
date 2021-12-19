@@ -1,5 +1,5 @@
 import { getOpenSeaAssets } from '../src/utils/OpenSeaAsset';
-import { client, q } from '../src/fauna_client';
+import { client, q } from './fauna_client';
 
 /**
  * Polls OpenSea for DOPE Token sales information.

@@ -1,4 +1,4 @@
-import { client, q } from '../src/fauna_client';
+import { client, q } from './fauna_client';
 import fetch from 'isomorphic-fetch';
 import fs from 'fs';
 import path from 'path';

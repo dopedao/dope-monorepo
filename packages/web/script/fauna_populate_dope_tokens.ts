@@ -1,4 +1,4 @@
-import { client, q } from '../src/fauna_client';
+import { client, q } from './fauna_client';
 import { getRarityForDopeId } from '../src/dope_rarity_check';
 import DopeJson from 'dope-metrics/output/loot.json';
 import chunkArray from '../src/chunk_array';

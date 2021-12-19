@@ -1,4 +1,4 @@
-import { client, q } from '../../fauna_client';
+import { client, q } from '../../../script/fauna_client';
 
 // Index creation using 'terms' which helps searching
 // https://docs.fauna.com/fauna/current/tutorials/indexes/search

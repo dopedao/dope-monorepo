@@ -1,4 +1,4 @@
-import { client, q } from '../../fauna_client';
+import { client, q } from '../../../script/fauna_client';
 
 // Indexes if $PAPER has been claimed from DOPE Token
 // https://docs.fauna.com/fauna/current/tutorials/indexes/search

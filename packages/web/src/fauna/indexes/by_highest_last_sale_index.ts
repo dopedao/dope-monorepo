@@ -1,4 +1,4 @@
-import { client, q } from '../../fauna_client';
+import { client, q } from '../../../script/fauna_client';
 
 // Index of highest last Eth sale on OpenSea
 //

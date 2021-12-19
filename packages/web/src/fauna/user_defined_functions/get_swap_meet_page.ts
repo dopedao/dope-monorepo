@@ -1,4 +1,4 @@
-import { client, q } from '../../fauna_client';
+import { client, q } from '../../../script/fauna_client';
 
 export const create = async () => {
   try {

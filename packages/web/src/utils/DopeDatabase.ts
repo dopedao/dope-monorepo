@@ -6,7 +6,7 @@ import { PickedBag } from '../PickedBag';
 import { newEmptyBag } from '../EmptyBag';
 import { OpenSeaAsset } from './OpenSeaAsset';
 import fetch from 'isomorphic-fetch';
-import { FAUNA_API_KEY, FAUNA_API_URL } from 'fauna_client';
+import { FAUNA_READ_KEY, FAUNA_API_URL } from 'utils/constants';
 
 const highImpossibleRank = 9999;
 
@@ -258,7 +258,7 @@ const getFauna = async () => {
   const response = await fetch(FAUNA_API_URL, {
     method: 'POST', 
     headers: {
-      'Authorization': `Bearer ${FAUNA_API_KEY}`
+      'Authorization': `Bearer ${FAUNA_READ_KEY}`
     },
     body: postData
   });

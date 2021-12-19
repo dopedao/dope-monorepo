@@ -1,4 +1,4 @@
-import { FAUNA_KEY } from '../src/fauna_client';
+import { FAUNA_WRITE_KEY } from './fauna_client';
 import fetch from 'isomorphic-fetch';
 import fs from 'fs';
 
@@ -8,7 +8,7 @@ import fs from 'fs';
 const initFromGraphQL = async () => {
   console.log('Initializing GraphQL schema Collections & Queries');
   const schema = fs.readFileSync(
-    __dirname + '/../fauna/dope_token_schema.graphql', 
+    __dirname + '/../src/fauna/dope_token_schema.graphql', 
     'utf8'
   );
   // Override deletes documents and replaces schema in place
@@ -17,7 +17,7 @@ const initFromGraphQL = async () => {
   await fetch(url, {
     method: 'POST', 
     headers: {
-      'Authorization': `Bearer ${FAUNA_KEY}`
+      'Authorization': `Bearer ${FAUNA_WRITE_KEY}`
     },
     body: schema
   });

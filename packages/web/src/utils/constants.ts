@@ -1,3 +1,6 @@
+export const FAUNA_READ_KEY = 'fnAEawb5e7AASWfXZvu7J_R2DLWxde0FGByGJqFg';
+export const FAUNA_API_URL = 'https://graphql.us.fauna.com/graphql';
+
 export const NUM_DOPE_TOKENS = 8000;
 export const NETWORK = {
   1: {
