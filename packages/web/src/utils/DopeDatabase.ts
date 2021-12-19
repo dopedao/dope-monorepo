@@ -106,6 +106,44 @@ class DopeDatabase {
     if (items) this.items = items;
   }
 
+  async populateItems() {
+    console.log('Populating DopeDatabase');
+    const swapMeetData = await this.getFauna();
+
+    if (swapMeetData) {
+      // const swapMeetData = assets?.data?.getSwapMeetPage?.data;
+      swapMeetData.map((x: any) => {
+        x.id = x.token_id, x.claimed = x.paper_claimed, x.opened = x.items_unbundled,
+        x.open_sea_asset = {
+          "is_on_sale": x.open_sea_is_on_sale,
+          "current_sale_price_eth": x?.open_sea_last_sale_price_eth
+        }
+      });
+      this.items = swapMeetData;
+    }
+    console.log(`Populated data length: ${this.items.length}`)
+  }
+
+  // Fetch transformed output, loads it, refresh the Apollo Reactive var.
+  async getFauna() {
+    const variables = {}
+    
+    var postData = JSON.stringify({
+      query: SWAP_MEET_QUERY,
+      variables: variables
+    });
+    const headers = {
+      'Authorization': `Bearer ${FAUNA_READ_KEY}`
+    }
+    const response = await fetch(FAUNA_API_URL, {
+      method: 'POST', 
+      headers: headers,
+      body: postData
+    });
+    const assets = await response.json();
+    return assets?.data?.getSwapMeetPage?.data;;
+  }
+
   // Loads cached item data from json into the database
   // so we save network requests calling The Graph.
   populateFromJson() {
@@ -231,45 +269,9 @@ export const filterItemsBySearchString = (items: PickedBag[], searchString: stri
   );
 };
 
-const populateItems = async () => {
-  console.log('Populating DopeDatabase');
-  const dopeData = await getFauna();
-  const swapMeetData = dopeData?.data?.getSwapMeetPage?.data;
-  swapMeetData.map((x: any) => {
-    x.id = x.token_id, x.claimed = x.paper_claimed, x.opened = x.items_unbundled,
-    x.open_sea_asset = {
-      "is_on_sale": x.open_sea_is_on_sale,
-      "current_sale_price_eth": x?.open_sea_last_sale_price_eth
-    }
-  });
-  console.log(`Populated data length: ${swapMeetData.length}`);
-  return swapMeetData;
-};
-
-// Fetch transformed output, loads it, refresh the Apollo Reactive var.
-const getFauna = async () => {
-  const variables = {}
-  
-  var postData = JSON.stringify({
-    query: SWAP_MEET_QUERY,
-    variables: variables
-  });
-
-  const response = await fetch(FAUNA_API_URL, {
-    method: 'POST', 
-    headers: {
-      'Authorization': `Bearer ${FAUNA_READ_KEY}`
-    },
-    body: postData
-  });
-  const assets = await response.json();
-  return assets;
-}
-
 export default DopeDatabase;
 
 const db = new DopeDatabase();
-// Get data from Fauna and add to DopeDatabase
-populateItems().then(data => db.items = data);
+db.populateItems()
 
 export const DopeDbCacheReactive = makeVar(db);
