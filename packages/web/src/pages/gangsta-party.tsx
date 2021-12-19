@@ -2,16 +2,15 @@ import { Button, HStack } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import Link from 'next/link';
 import styled from '@emotion/styled';
-import { useWeb3React } from '@web3-react/core';
-import { useAllHustlersQuery } from 'generated/graphql';
 import Head from 'components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
 import WebAmpPlayer from 'components/WebAmpPlayer';
-import { useOptimismClient } from 'components/EthereumApolloProvider';
+import { hustlerPaginationClient } from 'components/EthereumApolloProvider';
 import RenderFromChain from 'components/hustler/RenderFromChain';
-import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import LoadingBlock from 'components/LoadingBlock';
+import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
+import { useAllHustlersQuery } from 'generated/graphql';
 
 const HustlerContainer = styled.div`
   position: absolute;
@@ -45,60 +44,44 @@ const ScreenSaver = styled.div`
 `;
 
 const GangstaParty = () => {
-  // @TODO: can we remove this?
-  const { account } = useWeb3React();
-  const client = useOptimismClient();
-  const { data, loading } = useAllHustlersQuery({ client });
-
   //Amount of hustlers to render per page
   const PAGE_SIZE = 75;
   let hustlersVisible = PAGE_SIZE;
 
+  const client = hustlerPaginationClient();
+  const { data, fetchMore } = useAllHustlersQuery({ variables: { first: PAGE_SIZE, skip: 0 }, client, notifyOnNetworkStatusChange: true });
+
   const hustlers = useMemo(() => {
-    const mappedHustlers = data?.hustlers.map(({ id, data }) => {
-      let meta = data.replace('data:application/json;base64,', '');
-      meta = Buffer.from(meta, 'base64').toString();
-      const decoded = JSON.parse(meta);
-      return <RenderFromChain data={decoded} id={id} key={id} />
-    });
-    return mappedHustlers ?? [];
+      const mappedHustlers = data?.hustlers.map(({ id, data }) => {
+        let meta = data.replace('data:application/json;base64,', '');
+        meta = Buffer.from(meta, 'base64').toString();
+        const decoded = JSON.parse(meta);
+        return <RenderFromChain data={decoded} id={id} key={id} />
+      })
+      return mappedHustlers ?? [];
   }, [data]);
-
-  const [visibleHustlers, setVisibleHustlers] = useState(hustlers.slice(0, hustlersVisible));
-
-  const loadNextPage = (page: number) => {
-    hustlersVisible = (page + 1) * PAGE_SIZE;
-    console.log(`page: ${page}\nHustlersVisible: ${hustlersVisible}`)
-    setVisibleHustlers(hustlers.slice(0, hustlersVisible));
-  }
-
-  useEffect(() => {
-    hustlersVisible = PAGE_SIZE;
-    setVisibleHustlers(hustlers.slice(0, hustlersVisible));
-  }, [hustlers])
 
   return (
     <>
       <Head title="DOPE WARS GANGSTA PARTY" />
       <ScreenSaver>
-        {!loading && visibleHustlers.length > 0 && (
+        {data &&(
           <HustlerContainer>
             <InfiniteScroll
               pageStart={0}
-              loadMore={loadNextPage}
-              hasMore={hustlers.length > visibleHustlers.length}
+              hasMore={ 8000 > data.hustlers.length}
+              loadMore={() => { fetchMore({ variables: { skip: data.hustlers.length } })}}
               loader={<LoadingBlock key={`loader_${hustlersVisible}`} />}
               useWindow={false}
               className='hustlerGrid'
             >
-              {visibleHustlers}
+              {hustlers}
             </InfiniteScroll>
           </HustlerContainer>
         )}
         <WebAmpPlayer />
         <StickyNoteHustlerMint />
-      </ScreenSaver>
-      <HStack
+      </ScreenSaver><HStack
         m={4}
         gridGap={1}
         bottom={0}
