@@ -1228,10 +1228,11 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
-export type AllHustlersQueryVariables = Exact<{ [key: string]: never; }>;
 
+export type AllHustlersQueryVariables = Exact<{ first: Scalars['Int'], skip: Scalars['Int'] }>;
 
 export type AllHustlersQuery = { __typename?: 'Query', hustlers: Array<{ __typename?: 'Hustler', id: string, data: string }> };
+
 
 export type AllOpenedBagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1288,10 +1289,9 @@ export type WalletQueryVariables = Exact<{
 
 export type WalletQuery = { __typename?: 'Query', wallet?: Maybe<{ __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, opened: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> }> };
 
-
 export const AllHustlersDocument = gql`
-    query AllHustlers {
-  hustlers(first: 1000) {
+    query AllHustlers($first: Int, $skip: Int) {
+  hustlers(first: $first, skip: $skip) {
     id
     data
   }
