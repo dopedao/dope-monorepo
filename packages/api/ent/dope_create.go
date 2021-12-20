@@ -53,15 +53,15 @@ func (dc *DopeCreate) SetNillableOpened(b *bool) *DopeCreate {
 }
 
 // SetScore sets the "score" field.
-func (dc *DopeCreate) SetScore(f float64) *DopeCreate {
-	dc.mutation.SetScore(f)
+func (dc *DopeCreate) SetScore(i int) *DopeCreate {
+	dc.mutation.SetScore(i)
 	return dc
 }
 
 // SetNillableScore sets the "score" field if the given value is not nil.
-func (dc *DopeCreate) SetNillableScore(f *float64) *DopeCreate {
-	if f != nil {
-		dc.SetScore(*f)
+func (dc *DopeCreate) SetNillableScore(i *int) *DopeCreate {
+	if i != nil {
+		dc.SetScore(*i)
 	}
 	return dc
 }
@@ -273,7 +273,7 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := dc.mutation.Score(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: dope.FieldScore,
 		})
@@ -413,7 +413,7 @@ func (u *DopeUpsert) UpdateOpened() *DopeUpsert {
 }
 
 // SetScore sets the "score" field.
-func (u *DopeUpsert) SetScore(v float64) *DopeUpsert {
+func (u *DopeUpsert) SetScore(v int) *DopeUpsert {
 	u.Set(dope.FieldScore, v)
 	return u
 }
@@ -425,7 +425,7 @@ func (u *DopeUpsert) UpdateScore() *DopeUpsert {
 }
 
 // AddScore adds v to the "score" field.
-func (u *DopeUpsert) AddScore(v float64) *DopeUpsert {
+func (u *DopeUpsert) AddScore(v int) *DopeUpsert {
 	u.Add(dope.FieldScore, v)
 	return u
 }
@@ -560,14 +560,14 @@ func (u *DopeUpsertOne) UpdateOpened() *DopeUpsertOne {
 }
 
 // SetScore sets the "score" field.
-func (u *DopeUpsertOne) SetScore(v float64) *DopeUpsertOne {
+func (u *DopeUpsertOne) SetScore(v int) *DopeUpsertOne {
 	return u.Update(func(s *DopeUpsert) {
 		s.SetScore(v)
 	})
 }
 
 // AddScore adds v to the "score" field.
-func (u *DopeUpsertOne) AddScore(v float64) *DopeUpsertOne {
+func (u *DopeUpsertOne) AddScore(v int) *DopeUpsertOne {
 	return u.Update(func(s *DopeUpsert) {
 		s.AddScore(v)
 	})
@@ -884,14 +884,14 @@ func (u *DopeUpsertBulk) UpdateOpened() *DopeUpsertBulk {
 }
 
 // SetScore sets the "score" field.
-func (u *DopeUpsertBulk) SetScore(v float64) *DopeUpsertBulk {
+func (u *DopeUpsertBulk) SetScore(v int) *DopeUpsertBulk {
 	return u.Update(func(s *DopeUpsert) {
 		s.SetScore(v)
 	})
 }
 
 // AddScore adds v to the "score" field.
-func (u *DopeUpsertBulk) AddScore(v float64) *DopeUpsertBulk {
+func (u *DopeUpsertBulk) AddScore(v int) *DopeUpsertBulk {
 	return u.Update(func(s *DopeUpsert) {
 		s.AddScore(v)
 	})

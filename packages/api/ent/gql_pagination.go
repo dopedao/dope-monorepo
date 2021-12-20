@@ -1441,13 +1441,13 @@ func (i *ItemQuery) Paginate(
 }
 
 var (
-	// ItemOrderFieldScore orders Item by score.
-	ItemOrderFieldScore = &ItemOrderField{
-		field: item.FieldScore,
+	// ItemOrderFieldGreatness orders Item by greatness.
+	ItemOrderFieldGreatness = &ItemOrderField{
+		field: item.FieldGreatness,
 		toCursor: func(i *Item) Cursor {
 			return Cursor{
 				ID:    i.ID,
-				Value: i.Score,
+				Value: i.Greatness,
 			}
 		},
 	}
@@ -1467,8 +1467,8 @@ var (
 func (f ItemOrderField) String() string {
 	var str string
 	switch f.field {
-	case item.FieldScore:
-		str = "SCORE"
+	case item.FieldGreatness:
+		str = "GREATNESS"
 	case item.FieldCreatedAt:
 		str = "CREATED_AT"
 	}
@@ -1487,8 +1487,8 @@ func (f *ItemOrderField) UnmarshalGQL(v interface{}) error {
 		return fmt.Errorf("ItemOrderField %T must be a string", v)
 	}
 	switch str {
-	case "SCORE":
-		*f = *ItemOrderFieldScore
+	case "GREATNESS":
+		*f = *ItemOrderFieldGreatness
 	case "CREATED_AT":
 		*f = *ItemOrderFieldCreatedAt
 	default:

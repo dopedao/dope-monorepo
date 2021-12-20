@@ -47,10 +47,13 @@ func (Item) Fields() []ent.Field {
 			Immutable(),
 		field.Int("count").
 			Optional(),
-		field.Float("score").
+		field.Enum("tier").
+			Values("common", "rare", "custom", "black_market").
+			Optional(),
+		field.Int("greatness").
 			Optional().
 			Annotations(
-				entgql.OrderField("SCORE"),
+				entgql.OrderField("GREATNESS"),
 			),
 		field.JSON("rles", RLEs{}).
 			Optional(),

@@ -97,17 +97,25 @@ input ItemWhereInput {
   countIsNil: Boolean
   countNotNil: Boolean
   
-  """score field predicates"""
-  score: Float
-  scoreNEQ: Float
-  scoreIn: [Float!]
-  scoreNotIn: [Float!]
-  scoreGT: Float
-  scoreGTE: Float
-  scoreLT: Float
-  scoreLTE: Float
-  scoreIsNil: Boolean
-  scoreNotNil: Boolean
+  """tier field predicates"""
+  tier: ItemTier
+  tierNEQ: ItemTier
+  tierIn: [ItemTier!]
+  tierNotIn: [ItemTier!]
+  tierIsNil: Boolean
+  tierNotNil: Boolean
+  
+  """greatness field predicates"""
+  greatness: Int
+  greatnessNEQ: Int
+  greatnessIn: [Int!]
+  greatnessNotIn: [Int!]
+  greatnessGT: Int
+  greatnessGTE: Int
+  greatnessLT: Int
+  greatnessLTE: Int
+  greatnessIsNil: Boolean
+  greatnessNotNil: Boolean
   
   """svg field predicates"""
   svg: String
@@ -400,14 +408,14 @@ input DopeWhereInput {
   openedNEQ: Boolean
   
   """score field predicates"""
-  score: Float
-  scoreNEQ: Float
-  scoreIn: [Float!]
-  scoreNotIn: [Float!]
-  scoreGT: Float
-  scoreGTE: Float
-  scoreLT: Float
-  scoreLTE: Float
+  score: Int
+  scoreNEQ: Int
+  scoreIn: [Int!]
+  scoreNotIn: [Int!]
+  scoreGT: Int
+  scoreGTE: Int
+  scoreLT: Int
+  scoreLTE: Int
   scoreIsNil: Boolean
   scoreNotNil: Boolean
   

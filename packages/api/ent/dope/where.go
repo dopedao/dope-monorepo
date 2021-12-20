@@ -106,7 +106,7 @@ func Opened(v bool) predicate.Dope {
 }
 
 // Score applies equality check predicate on the "score" field. It's identical to ScoreEQ.
-func Score(v float64) predicate.Dope {
+func Score(v int) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldScore), v))
 	})
@@ -155,21 +155,21 @@ func OpenedNEQ(v bool) predicate.Dope {
 }
 
 // ScoreEQ applies the EQ predicate on the "score" field.
-func ScoreEQ(v float64) predicate.Dope {
+func ScoreEQ(v int) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldScore), v))
 	})
 }
 
 // ScoreNEQ applies the NEQ predicate on the "score" field.
-func ScoreNEQ(v float64) predicate.Dope {
+func ScoreNEQ(v int) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldScore), v))
 	})
 }
 
 // ScoreIn applies the In predicate on the "score" field.
-func ScoreIn(vs ...float64) predicate.Dope {
+func ScoreIn(vs ...int) predicate.Dope {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -186,7 +186,7 @@ func ScoreIn(vs ...float64) predicate.Dope {
 }
 
 // ScoreNotIn applies the NotIn predicate on the "score" field.
-func ScoreNotIn(vs ...float64) predicate.Dope {
+func ScoreNotIn(vs ...int) predicate.Dope {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -203,28 +203,28 @@ func ScoreNotIn(vs ...float64) predicate.Dope {
 }
 
 // ScoreGT applies the GT predicate on the "score" field.
-func ScoreGT(v float64) predicate.Dope {
+func ScoreGT(v int) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldScore), v))
 	})
 }
 
 // ScoreGTE applies the GTE predicate on the "score" field.
-func ScoreGTE(v float64) predicate.Dope {
+func ScoreGTE(v int) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldScore), v))
 	})
 }
 
 // ScoreLT applies the LT predicate on the "score" field.
-func ScoreLT(v float64) predicate.Dope {
+func ScoreLT(v int) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldScore), v))
 	})
 }
 
 // ScoreLTE applies the LTE predicate on the "score" field.
-func ScoreLTE(v float64) predicate.Dope {
+func ScoreLTE(v int) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldScore), v))
 	})

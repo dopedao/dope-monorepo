@@ -735,8 +735,8 @@ type DopeMutation struct {
 	id            *string
 	claimed       *bool
 	opened        *bool
-	score         *float64
-	addscore      *float64
+	score         *int
+	addscore      *int
 	rank          *int
 	addrank       *int
 	_order        *int
@@ -929,13 +929,13 @@ func (m *DopeMutation) ResetOpened() {
 }
 
 // SetScore sets the "score" field.
-func (m *DopeMutation) SetScore(f float64) {
-	m.score = &f
+func (m *DopeMutation) SetScore(i int) {
+	m.score = &i
 	m.addscore = nil
 }
 
 // Score returns the value of the "score" field in the mutation.
-func (m *DopeMutation) Score() (r float64, exists bool) {
+func (m *DopeMutation) Score() (r int, exists bool) {
 	v := m.score
 	if v == nil {
 		return
@@ -946,7 +946,7 @@ func (m *DopeMutation) Score() (r float64, exists bool) {
 // OldScore returns the old "score" field's value of the Dope entity.
 // If the Dope object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DopeMutation) OldScore(ctx context.Context) (v float64, err error) {
+func (m *DopeMutation) OldScore(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldScore is only allowed on UpdateOne operations")
 	}
@@ -960,17 +960,17 @@ func (m *DopeMutation) OldScore(ctx context.Context) (v float64, err error) {
 	return oldValue.Score, nil
 }
 
-// AddScore adds f to the "score" field.
-func (m *DopeMutation) AddScore(f float64) {
+// AddScore adds i to the "score" field.
+func (m *DopeMutation) AddScore(i int) {
 	if m.addscore != nil {
-		*m.addscore += f
+		*m.addscore += i
 	} else {
-		m.addscore = &f
+		m.addscore = &i
 	}
 }
 
 // AddedScore returns the value that was added to the "score" field in this mutation.
-func (m *DopeMutation) AddedScore() (r float64, exists bool) {
+func (m *DopeMutation) AddedScore() (r int, exists bool) {
 	v := m.addscore
 	if v == nil {
 		return
@@ -1313,7 +1313,7 @@ func (m *DopeMutation) SetField(name string, value ent.Value) error {
 		m.SetOpened(v)
 		return nil
 	case dope.FieldScore:
-		v, ok := value.(float64)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1374,7 +1374,7 @@ func (m *DopeMutation) AddedField(name string) (ent.Value, bool) {
 func (m *DopeMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case dope.FieldScore:
-		v, ok := value.(float64)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -3967,8 +3967,9 @@ type ItemMutation struct {
 	augmented                  *bool
 	count                      *int
 	addcount                   *int
-	score                      *float64
-	addscore                   *float64
+	tier                       *item.Tier
+	greatness                  *int
+	addgreatness               *int
 	rles                       *schema.RLEs
 	svg                        *string
 	created_at                 *time.Time
@@ -4461,74 +4462,123 @@ func (m *ItemMutation) ResetCount() {
 	delete(m.clearedFields, item.FieldCount)
 }
 
-// SetScore sets the "score" field.
-func (m *ItemMutation) SetScore(f float64) {
-	m.score = &f
-	m.addscore = nil
+// SetTier sets the "tier" field.
+func (m *ItemMutation) SetTier(i item.Tier) {
+	m.tier = &i
 }
 
-// Score returns the value of the "score" field in the mutation.
-func (m *ItemMutation) Score() (r float64, exists bool) {
-	v := m.score
+// Tier returns the value of the "tier" field in the mutation.
+func (m *ItemMutation) Tier() (r item.Tier, exists bool) {
+	v := m.tier
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldScore returns the old "score" field's value of the Item entity.
+// OldTier returns the old "tier" field's value of the Item entity.
 // If the Item object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ItemMutation) OldScore(ctx context.Context) (v float64, err error) {
+func (m *ItemMutation) OldTier(ctx context.Context) (v item.Tier, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldScore is only allowed on UpdateOne operations")
+		return v, errors.New("OldTier is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldScore requires an ID field in the mutation")
+		return v, errors.New("OldTier requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldScore: %w", err)
+		return v, fmt.Errorf("querying old value for OldTier: %w", err)
 	}
-	return oldValue.Score, nil
+	return oldValue.Tier, nil
 }
 
-// AddScore adds f to the "score" field.
-func (m *ItemMutation) AddScore(f float64) {
-	if m.addscore != nil {
-		*m.addscore += f
-	} else {
-		m.addscore = &f
-	}
+// ClearTier clears the value of the "tier" field.
+func (m *ItemMutation) ClearTier() {
+	m.tier = nil
+	m.clearedFields[item.FieldTier] = struct{}{}
 }
 
-// AddedScore returns the value that was added to the "score" field in this mutation.
-func (m *ItemMutation) AddedScore() (r float64, exists bool) {
-	v := m.addscore
+// TierCleared returns if the "tier" field was cleared in this mutation.
+func (m *ItemMutation) TierCleared() bool {
+	_, ok := m.clearedFields[item.FieldTier]
+	return ok
+}
+
+// ResetTier resets all changes to the "tier" field.
+func (m *ItemMutation) ResetTier() {
+	m.tier = nil
+	delete(m.clearedFields, item.FieldTier)
+}
+
+// SetGreatness sets the "greatness" field.
+func (m *ItemMutation) SetGreatness(i int) {
+	m.greatness = &i
+	m.addgreatness = nil
+}
+
+// Greatness returns the value of the "greatness" field in the mutation.
+func (m *ItemMutation) Greatness() (r int, exists bool) {
+	v := m.greatness
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearScore clears the value of the "score" field.
-func (m *ItemMutation) ClearScore() {
-	m.score = nil
-	m.addscore = nil
-	m.clearedFields[item.FieldScore] = struct{}{}
+// OldGreatness returns the old "greatness" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldGreatness(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGreatness is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGreatness requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGreatness: %w", err)
+	}
+	return oldValue.Greatness, nil
 }
 
-// ScoreCleared returns if the "score" field was cleared in this mutation.
-func (m *ItemMutation) ScoreCleared() bool {
-	_, ok := m.clearedFields[item.FieldScore]
+// AddGreatness adds i to the "greatness" field.
+func (m *ItemMutation) AddGreatness(i int) {
+	if m.addgreatness != nil {
+		*m.addgreatness += i
+	} else {
+		m.addgreatness = &i
+	}
+}
+
+// AddedGreatness returns the value that was added to the "greatness" field in this mutation.
+func (m *ItemMutation) AddedGreatness() (r int, exists bool) {
+	v := m.addgreatness
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (m *ItemMutation) ClearGreatness() {
+	m.greatness = nil
+	m.addgreatness = nil
+	m.clearedFields[item.FieldGreatness] = struct{}{}
+}
+
+// GreatnessCleared returns if the "greatness" field was cleared in this mutation.
+func (m *ItemMutation) GreatnessCleared() bool {
+	_, ok := m.clearedFields[item.FieldGreatness]
 	return ok
 }
 
-// ResetScore resets all changes to the "score" field.
-func (m *ItemMutation) ResetScore() {
-	m.score = nil
-	m.addscore = nil
-	delete(m.clearedFields, item.FieldScore)
+// ResetGreatness resets all changes to the "greatness" field.
+func (m *ItemMutation) ResetGreatness() {
+	m.greatness = nil
+	m.addgreatness = nil
+	delete(m.clearedFields, item.FieldGreatness)
 }
 
 // SetRles sets the "rles" field.
@@ -5425,7 +5475,7 @@ func (m *ItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ItemMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m._type != nil {
 		fields = append(fields, item.FieldType)
 	}
@@ -5447,8 +5497,11 @@ func (m *ItemMutation) Fields() []string {
 	if m.count != nil {
 		fields = append(fields, item.FieldCount)
 	}
-	if m.score != nil {
-		fields = append(fields, item.FieldScore)
+	if m.tier != nil {
+		fields = append(fields, item.FieldTier)
+	}
+	if m.greatness != nil {
+		fields = append(fields, item.FieldGreatness)
 	}
 	if m.rles != nil {
 		fields = append(fields, item.FieldRles)
@@ -5481,8 +5534,10 @@ func (m *ItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Augmented()
 	case item.FieldCount:
 		return m.Count()
-	case item.FieldScore:
-		return m.Score()
+	case item.FieldTier:
+		return m.Tier()
+	case item.FieldGreatness:
+		return m.Greatness()
 	case item.FieldRles:
 		return m.Rles()
 	case item.FieldSvg:
@@ -5512,8 +5567,10 @@ func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldAugmented(ctx)
 	case item.FieldCount:
 		return m.OldCount(ctx)
-	case item.FieldScore:
-		return m.OldScore(ctx)
+	case item.FieldTier:
+		return m.OldTier(ctx)
+	case item.FieldGreatness:
+		return m.OldGreatness(ctx)
 	case item.FieldRles:
 		return m.OldRles(ctx)
 	case item.FieldSvg:
@@ -5578,12 +5635,19 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCount(v)
 		return nil
-	case item.FieldScore:
-		v, ok := value.(float64)
+	case item.FieldTier:
+		v, ok := value.(item.Tier)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetScore(v)
+		m.SetTier(v)
+		return nil
+	case item.FieldGreatness:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGreatness(v)
 		return nil
 	case item.FieldRles:
 		v, ok := value.(schema.RLEs)
@@ -5617,8 +5681,8 @@ func (m *ItemMutation) AddedFields() []string {
 	if m.addcount != nil {
 		fields = append(fields, item.FieldCount)
 	}
-	if m.addscore != nil {
-		fields = append(fields, item.FieldScore)
+	if m.addgreatness != nil {
+		fields = append(fields, item.FieldGreatness)
 	}
 	return fields
 }
@@ -5630,8 +5694,8 @@ func (m *ItemMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case item.FieldCount:
 		return m.AddedCount()
-	case item.FieldScore:
-		return m.AddedScore()
+	case item.FieldGreatness:
+		return m.AddedGreatness()
 	}
 	return nil, false
 }
@@ -5648,12 +5712,12 @@ func (m *ItemMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddCount(v)
 		return nil
-	case item.FieldScore:
-		v, ok := value.(float64)
+	case item.FieldGreatness:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddScore(v)
+		m.AddGreatness(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Item numeric field %s", name)
@@ -5678,8 +5742,11 @@ func (m *ItemMutation) ClearedFields() []string {
 	if m.FieldCleared(item.FieldCount) {
 		fields = append(fields, item.FieldCount)
 	}
-	if m.FieldCleared(item.FieldScore) {
-		fields = append(fields, item.FieldScore)
+	if m.FieldCleared(item.FieldTier) {
+		fields = append(fields, item.FieldTier)
+	}
+	if m.FieldCleared(item.FieldGreatness) {
+		fields = append(fields, item.FieldGreatness)
 	}
 	if m.FieldCleared(item.FieldRles) {
 		fields = append(fields, item.FieldRles)
@@ -5716,8 +5783,11 @@ func (m *ItemMutation) ClearField(name string) error {
 	case item.FieldCount:
 		m.ClearCount()
 		return nil
-	case item.FieldScore:
-		m.ClearScore()
+	case item.FieldTier:
+		m.ClearTier()
+		return nil
+	case item.FieldGreatness:
+		m.ClearGreatness()
 		return nil
 	case item.FieldRles:
 		m.ClearRles()
@@ -5754,8 +5824,11 @@ func (m *ItemMutation) ResetField(name string) error {
 	case item.FieldCount:
 		m.ResetCount()
 		return nil
-	case item.FieldScore:
-		m.ResetScore()
+	case item.FieldTier:
+		m.ResetTier()
+		return nil
+	case item.FieldGreatness:
+		m.ResetGreatness()
 		return nil
 	case item.FieldRles:
 		m.ResetRles()
