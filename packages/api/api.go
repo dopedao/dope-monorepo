@@ -14,7 +14,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
 )
 
-func NewServer(ctx context.Context, db *sql.Driver, index bool) (http.Handler, error) {
+func NewServer(ctx context.Context, db *sql.Driver, index bool, network string) (http.Handler, error) {
 	client := ent.NewClient(ent.Driver(db))
 
 	if index {
@@ -46,7 +46,7 @@ func NewServer(ctx context.Context, db *sql.Driver, index bool) (http.Handler, e
 			}
 
 			started = true
-			for _, c := range configs {
+			for _, c := range configs[network] {
 				engine := NewEngine(client, c)
 				go engine.Sync(ctx)
 			}
