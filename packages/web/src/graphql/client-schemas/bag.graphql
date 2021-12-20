@@ -1,4 +1,4 @@
 type Bag {
-  # rank: Int!
+  rank: Int!
   open_sea_asset: OpenSeaAsset
 }

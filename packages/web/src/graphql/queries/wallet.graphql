@@ -16,7 +16,7 @@ query Wallet($id: ID!) {
       vehicle @client
       waist @client
       weapon @client
-      # rank @client
+      rank @client
     }
   }
 }

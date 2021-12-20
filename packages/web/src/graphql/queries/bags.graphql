@@ -12,7 +12,7 @@ query Bags($first: Int, $skip: Int) {
     vehicle @client
     waist @client
     weapon @client
-    # rank @client
+    rank @client
     open_sea_asset @client {
       is_on_sale
       current_sale_price

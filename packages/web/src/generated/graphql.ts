@@ -133,6 +133,7 @@ export type Bag = {
   neck: Scalars['String'];
   open_sea_asset?: Maybe<OpenSeaAsset>;
   opened: Scalars['Boolean'];
+  rank: Scalars['Int'];
   ring: Scalars['String'];
   vehicle: Scalars['String'];
   waist: Scalars['String'];
@@ -1439,7 +1440,7 @@ export type BagsQueryVariables = Exact<{
 }>;
 
 
-export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, opened: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, open_sea_asset?: { __typename?: 'OpenSeaAsset', is_on_sale?: boolean | null | undefined, current_sale_price?: number | null | undefined, last_sale_price?: number | null | undefined } | null | undefined }> };
+export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, opened: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number, open_sea_asset?: { __typename?: 'OpenSeaAsset', is_on_sale?: boolean | null | undefined, current_sale_price?: number | null | undefined, last_sale_price?: number | null | undefined } | null | undefined }> };
 
 export type HustlerQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -1469,7 +1470,7 @@ export type WalletQueryVariables = Exact<{
 }>;
 
 
-export type WalletQuery = { __typename?: 'Query', wallet?: { __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, opened: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string }> } | null | undefined };
+export type WalletQuery = { __typename?: 'Query', wallet?: { __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, opened: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> } | null | undefined };
 
 
 export const AllHustlersDocument = `
@@ -1605,6 +1606,7 @@ export const BagsDocument = `
     vehicle @client
     waist @client
     weapon @client
+    rank @client
     open_sea_asset @client {
       is_on_sale
       current_sale_price
@@ -1722,6 +1724,7 @@ export const WalletDocument = `
       vehicle @client
       waist @client
       weapon @client
+      rank @client
     }
   }
 }
