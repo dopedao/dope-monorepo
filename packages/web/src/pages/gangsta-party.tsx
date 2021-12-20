@@ -46,7 +46,6 @@ const ScreenSaver = styled.div`
 const GangstaParty = () => {
   //Amount of hustlers to render per page
   const PAGE_SIZE = 75;
-  let hustlersVisible = PAGE_SIZE;
 
   const client = useHustlerPaginationClient();
   const { data, fetchMore } = useAllHustlersQuery({ variables: { first: PAGE_SIZE, skip: 0 }, client, notifyOnNetworkStatusChange: true });
@@ -71,7 +70,7 @@ const GangstaParty = () => {
               pageStart={0}
               hasMore={ 8000 > data.hustlers.length}
               loadMore={() => { fetchMore({ variables: { skip: data.hustlers.length } })}}
-              loader={<LoadingBlock key={`loader_${hustlersVisible}`} />}
+              loader={<LoadingBlock key={`loader_${data.hustlers.length}`} />}
               useWindow={false}
               className='hustlerGrid'
             >
