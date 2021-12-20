@@ -116,7 +116,7 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     d.ID,
 		Type:   "Dope",
-		Fields: make([]*Field, 3),
+		Fields: make([]*Field, 5),
 		Edges:  make([]*Edge, 2),
 	}
 	var buf []byte
@@ -136,10 +136,26 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "opened",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(d.Order); err != nil {
+	if buf, err = json.Marshal(d.Score); err != nil {
 		return nil, err
 	}
 	node.Fields[2] = &Field{
+		Type:  "float64",
+		Name:  "score",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(d.Rank); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "int",
+		Name:  "rank",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(d.Order); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
 		Type:  "int",
 		Name:  "order",
 		Value: string(buf),
@@ -461,7 +477,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     i.ID,
 		Type:   "Item",
-		Fields: make([]*Field, 9),
+		Fields: make([]*Field, 11),
 		Edges:  make([]*Edge, 14),
 	}
 	var buf []byte
@@ -513,10 +529,26 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "augmented",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(i.Rles); err != nil {
+	if buf, err = json.Marshal(i.Count); err != nil {
 		return nil, err
 	}
 	node.Fields[6] = &Field{
+		Type:  "int",
+		Name:  "count",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(i.Score); err != nil {
+		return nil, err
+	}
+	node.Fields[7] = &Field{
+		Type:  "float64",
+		Name:  "score",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(i.Rles); err != nil {
+		return nil, err
+	}
+	node.Fields[8] = &Field{
 		Type:  "schema.RLEs",
 		Name:  "rles",
 		Value: string(buf),
@@ -524,7 +556,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(i.Svg); err != nil {
 		return nil, err
 	}
-	node.Fields[7] = &Field{
+	node.Fields[9] = &Field{
 		Type:  "string",
 		Name:  "svg",
 		Value: string(buf),
@@ -532,7 +564,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(i.CreatedAt); err != nil {
 		return nil, err
 	}
-	node.Fields[8] = &Field{
+	node.Fields[10] = &Field{
 		Type:  "time.Time",
 		Name:  "created_at",
 		Value: string(buf),

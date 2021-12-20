@@ -309,6 +309,30 @@ type DopeWhereInput struct {
 	Opened    *bool `json:"opened,omitempty"`
 	OpenedNEQ *bool `json:"openedNEQ,omitempty"`
 
+	// "score" field predicates.
+	Score       *float64  `json:"score,omitempty"`
+	ScoreNEQ    *float64  `json:"scoreNEQ,omitempty"`
+	ScoreIn     []float64 `json:"scoreIn,omitempty"`
+	ScoreNotIn  []float64 `json:"scoreNotIn,omitempty"`
+	ScoreGT     *float64  `json:"scoreGT,omitempty"`
+	ScoreGTE    *float64  `json:"scoreGTE,omitempty"`
+	ScoreLT     *float64  `json:"scoreLT,omitempty"`
+	ScoreLTE    *float64  `json:"scoreLTE,omitempty"`
+	ScoreIsNil  bool      `json:"scoreIsNil,omitempty"`
+	ScoreNotNil bool      `json:"scoreNotNil,omitempty"`
+
+	// "rank" field predicates.
+	Rank       *int  `json:"rank,omitempty"`
+	RankNEQ    *int  `json:"rankNEQ,omitempty"`
+	RankIn     []int `json:"rankIn,omitempty"`
+	RankNotIn  []int `json:"rankNotIn,omitempty"`
+	RankGT     *int  `json:"rankGT,omitempty"`
+	RankGTE    *int  `json:"rankGTE,omitempty"`
+	RankLT     *int  `json:"rankLT,omitempty"`
+	RankLTE    *int  `json:"rankLTE,omitempty"`
+	RankIsNil  bool  `json:"rankIsNil,omitempty"`
+	RankNotNil bool  `json:"rankNotNil,omitempty"`
+
 	// "order" field predicates.
 	Order      *int  `json:"order,omitempty"`
 	OrderNEQ   *int  `json:"orderNEQ,omitempty"`
@@ -422,6 +446,66 @@ func (i *DopeWhereInput) P() (predicate.Dope, error) {
 	}
 	if i.OpenedNEQ != nil {
 		predicates = append(predicates, dope.OpenedNEQ(*i.OpenedNEQ))
+	}
+	if i.Score != nil {
+		predicates = append(predicates, dope.ScoreEQ(*i.Score))
+	}
+	if i.ScoreNEQ != nil {
+		predicates = append(predicates, dope.ScoreNEQ(*i.ScoreNEQ))
+	}
+	if len(i.ScoreIn) > 0 {
+		predicates = append(predicates, dope.ScoreIn(i.ScoreIn...))
+	}
+	if len(i.ScoreNotIn) > 0 {
+		predicates = append(predicates, dope.ScoreNotIn(i.ScoreNotIn...))
+	}
+	if i.ScoreGT != nil {
+		predicates = append(predicates, dope.ScoreGT(*i.ScoreGT))
+	}
+	if i.ScoreGTE != nil {
+		predicates = append(predicates, dope.ScoreGTE(*i.ScoreGTE))
+	}
+	if i.ScoreLT != nil {
+		predicates = append(predicates, dope.ScoreLT(*i.ScoreLT))
+	}
+	if i.ScoreLTE != nil {
+		predicates = append(predicates, dope.ScoreLTE(*i.ScoreLTE))
+	}
+	if i.ScoreIsNil {
+		predicates = append(predicates, dope.ScoreIsNil())
+	}
+	if i.ScoreNotNil {
+		predicates = append(predicates, dope.ScoreNotNil())
+	}
+	if i.Rank != nil {
+		predicates = append(predicates, dope.RankEQ(*i.Rank))
+	}
+	if i.RankNEQ != nil {
+		predicates = append(predicates, dope.RankNEQ(*i.RankNEQ))
+	}
+	if len(i.RankIn) > 0 {
+		predicates = append(predicates, dope.RankIn(i.RankIn...))
+	}
+	if len(i.RankNotIn) > 0 {
+		predicates = append(predicates, dope.RankNotIn(i.RankNotIn...))
+	}
+	if i.RankGT != nil {
+		predicates = append(predicates, dope.RankGT(*i.RankGT))
+	}
+	if i.RankGTE != nil {
+		predicates = append(predicates, dope.RankGTE(*i.RankGTE))
+	}
+	if i.RankLT != nil {
+		predicates = append(predicates, dope.RankLT(*i.RankLT))
+	}
+	if i.RankLTE != nil {
+		predicates = append(predicates, dope.RankLTE(*i.RankLTE))
+	}
+	if i.RankIsNil {
+		predicates = append(predicates, dope.RankIsNil())
+	}
+	if i.RankNotNil {
+		predicates = append(predicates, dope.RankNotNil())
 	}
 	if i.Order != nil {
 		predicates = append(predicates, dope.OrderEQ(*i.Order))
@@ -1634,6 +1718,30 @@ type ItemWhereInput struct {
 	AugmentedIsNil  bool  `json:"augmentedIsNil,omitempty"`
 	AugmentedNotNil bool  `json:"augmentedNotNil,omitempty"`
 
+	// "count" field predicates.
+	Count       *int  `json:"count,omitempty"`
+	CountNEQ    *int  `json:"countNEQ,omitempty"`
+	CountIn     []int `json:"countIn,omitempty"`
+	CountNotIn  []int `json:"countNotIn,omitempty"`
+	CountGT     *int  `json:"countGT,omitempty"`
+	CountGTE    *int  `json:"countGTE,omitempty"`
+	CountLT     *int  `json:"countLT,omitempty"`
+	CountLTE    *int  `json:"countLTE,omitempty"`
+	CountIsNil  bool  `json:"countIsNil,omitempty"`
+	CountNotNil bool  `json:"countNotNil,omitempty"`
+
+	// "score" field predicates.
+	Score       *float64  `json:"score,omitempty"`
+	ScoreNEQ    *float64  `json:"scoreNEQ,omitempty"`
+	ScoreIn     []float64 `json:"scoreIn,omitempty"`
+	ScoreNotIn  []float64 `json:"scoreNotIn,omitempty"`
+	ScoreGT     *float64  `json:"scoreGT,omitempty"`
+	ScoreGTE    *float64  `json:"scoreGTE,omitempty"`
+	ScoreLT     *float64  `json:"scoreLT,omitempty"`
+	ScoreLTE    *float64  `json:"scoreLTE,omitempty"`
+	ScoreIsNil  bool      `json:"scoreIsNil,omitempty"`
+	ScoreNotNil bool      `json:"scoreNotNil,omitempty"`
+
 	// "svg" field predicates.
 	Svg             *string  `json:"svg,omitempty"`
 	SvgNEQ          *string  `json:"svgNEQ,omitempty"`
@@ -1998,6 +2106,66 @@ func (i *ItemWhereInput) P() (predicate.Item, error) {
 	}
 	if i.AugmentedNotNil {
 		predicates = append(predicates, item.AugmentedNotNil())
+	}
+	if i.Count != nil {
+		predicates = append(predicates, item.CountEQ(*i.Count))
+	}
+	if i.CountNEQ != nil {
+		predicates = append(predicates, item.CountNEQ(*i.CountNEQ))
+	}
+	if len(i.CountIn) > 0 {
+		predicates = append(predicates, item.CountIn(i.CountIn...))
+	}
+	if len(i.CountNotIn) > 0 {
+		predicates = append(predicates, item.CountNotIn(i.CountNotIn...))
+	}
+	if i.CountGT != nil {
+		predicates = append(predicates, item.CountGT(*i.CountGT))
+	}
+	if i.CountGTE != nil {
+		predicates = append(predicates, item.CountGTE(*i.CountGTE))
+	}
+	if i.CountLT != nil {
+		predicates = append(predicates, item.CountLT(*i.CountLT))
+	}
+	if i.CountLTE != nil {
+		predicates = append(predicates, item.CountLTE(*i.CountLTE))
+	}
+	if i.CountIsNil {
+		predicates = append(predicates, item.CountIsNil())
+	}
+	if i.CountNotNil {
+		predicates = append(predicates, item.CountNotNil())
+	}
+	if i.Score != nil {
+		predicates = append(predicates, item.ScoreEQ(*i.Score))
+	}
+	if i.ScoreNEQ != nil {
+		predicates = append(predicates, item.ScoreNEQ(*i.ScoreNEQ))
+	}
+	if len(i.ScoreIn) > 0 {
+		predicates = append(predicates, item.ScoreIn(i.ScoreIn...))
+	}
+	if len(i.ScoreNotIn) > 0 {
+		predicates = append(predicates, item.ScoreNotIn(i.ScoreNotIn...))
+	}
+	if i.ScoreGT != nil {
+		predicates = append(predicates, item.ScoreGT(*i.ScoreGT))
+	}
+	if i.ScoreGTE != nil {
+		predicates = append(predicates, item.ScoreGTE(*i.ScoreGTE))
+	}
+	if i.ScoreLT != nil {
+		predicates = append(predicates, item.ScoreLT(*i.ScoreLT))
+	}
+	if i.ScoreLTE != nil {
+		predicates = append(predicates, item.ScoreLTE(*i.ScoreLTE))
+	}
+	if i.ScoreIsNil {
+		predicates = append(predicates, item.ScoreIsNil())
+	}
+	if i.ScoreNotNil {
+		predicates = append(predicates, item.ScoreNotNil())
 	}
 	if i.Svg != nil {
 		predicates = append(predicates, item.SvgEQ(*i.Svg))

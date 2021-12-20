@@ -10,6 +10,7 @@ export default class GameAnimations
         this.anims = anims;
     }
 
+    // create all of the game animations
     create(): void
     {
         Object.values(SpritesMap[Categories.Character][Base.Male]).forEach(categories => {

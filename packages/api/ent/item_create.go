@@ -95,6 +95,34 @@ func (ic *ItemCreate) SetNillableAugmented(b *bool) *ItemCreate {
 	return ic
 }
 
+// SetCount sets the "count" field.
+func (ic *ItemCreate) SetCount(i int) *ItemCreate {
+	ic.mutation.SetCount(i)
+	return ic
+}
+
+// SetNillableCount sets the "count" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableCount(i *int) *ItemCreate {
+	if i != nil {
+		ic.SetCount(*i)
+	}
+	return ic
+}
+
+// SetScore sets the "score" field.
+func (ic *ItemCreate) SetScore(f float64) *ItemCreate {
+	ic.mutation.SetScore(f)
+	return ic
+}
+
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableScore(f *float64) *ItemCreate {
+	if f != nil {
+		ic.SetScore(*f)
+	}
+	return ic
+}
+
 // SetRles sets the "rles" field.
 func (ic *ItemCreate) SetRles(se schema.RLEs) *ItemCreate {
 	ic.mutation.SetRles(se)
@@ -534,6 +562,22 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 			Column: item.FieldAugmented,
 		})
 		_node.Augmented = value
+	}
+	if value, ok := ic.mutation.Count(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: item.FieldCount,
+		})
+		_node.Count = value
+	}
+	if value, ok := ic.mutation.Score(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: item.FieldScore,
+		})
+		_node.Score = value
 	}
 	if value, ok := ic.mutation.Rles(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -976,6 +1020,54 @@ func (u *ItemUpsert) ClearAugmented() *ItemUpsert {
 	return u
 }
 
+// SetCount sets the "count" field.
+func (u *ItemUpsert) SetCount(v int) *ItemUpsert {
+	u.Set(item.FieldCount, v)
+	return u
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *ItemUpsert) UpdateCount() *ItemUpsert {
+	u.SetExcluded(item.FieldCount)
+	return u
+}
+
+// AddCount adds v to the "count" field.
+func (u *ItemUpsert) AddCount(v int) *ItemUpsert {
+	u.Add(item.FieldCount, v)
+	return u
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *ItemUpsert) ClearCount() *ItemUpsert {
+	u.SetNull(item.FieldCount)
+	return u
+}
+
+// SetScore sets the "score" field.
+func (u *ItemUpsert) SetScore(v float64) *ItemUpsert {
+	u.Set(item.FieldScore, v)
+	return u
+}
+
+// UpdateScore sets the "score" field to the value that was provided on create.
+func (u *ItemUpsert) UpdateScore() *ItemUpsert {
+	u.SetExcluded(item.FieldScore)
+	return u
+}
+
+// AddScore adds v to the "score" field.
+func (u *ItemUpsert) AddScore(v float64) *ItemUpsert {
+	u.Add(item.FieldScore, v)
+	return u
+}
+
+// ClearScore clears the value of the "score" field.
+func (u *ItemUpsert) ClearScore() *ItemUpsert {
+	u.SetNull(item.FieldScore)
+	return u
+}
+
 // SetRles sets the "rles" field.
 func (u *ItemUpsert) SetRles(v schema.RLEs) *ItemUpsert {
 	u.Set(item.FieldRles, v)
@@ -1204,6 +1296,62 @@ func (u *ItemUpsertOne) UpdateAugmented() *ItemUpsertOne {
 func (u *ItemUpsertOne) ClearAugmented() *ItemUpsertOne {
 	return u.Update(func(s *ItemUpsert) {
 		s.ClearAugmented()
+	})
+}
+
+// SetCount sets the "count" field.
+func (u *ItemUpsertOne) SetCount(v int) *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetCount(v)
+	})
+}
+
+// AddCount adds v to the "count" field.
+func (u *ItemUpsertOne) AddCount(v int) *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.AddCount(v)
+	})
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *ItemUpsertOne) UpdateCount() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateCount()
+	})
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *ItemUpsertOne) ClearCount() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearCount()
+	})
+}
+
+// SetScore sets the "score" field.
+func (u *ItemUpsertOne) SetScore(v float64) *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetScore(v)
+	})
+}
+
+// AddScore adds v to the "score" field.
+func (u *ItemUpsertOne) AddScore(v float64) *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.AddScore(v)
+	})
+}
+
+// UpdateScore sets the "score" field to the value that was provided on create.
+func (u *ItemUpsertOne) UpdateScore() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateScore()
+	})
+}
+
+// ClearScore clears the value of the "score" field.
+func (u *ItemUpsertOne) ClearScore() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearScore()
 	})
 }
 
@@ -1609,6 +1757,62 @@ func (u *ItemUpsertBulk) UpdateAugmented() *ItemUpsertBulk {
 func (u *ItemUpsertBulk) ClearAugmented() *ItemUpsertBulk {
 	return u.Update(func(s *ItemUpsert) {
 		s.ClearAugmented()
+	})
+}
+
+// SetCount sets the "count" field.
+func (u *ItemUpsertBulk) SetCount(v int) *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetCount(v)
+	})
+}
+
+// AddCount adds v to the "count" field.
+func (u *ItemUpsertBulk) AddCount(v int) *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.AddCount(v)
+	})
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *ItemUpsertBulk) UpdateCount() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateCount()
+	})
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *ItemUpsertBulk) ClearCount() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearCount()
+	})
+}
+
+// SetScore sets the "score" field.
+func (u *ItemUpsertBulk) SetScore(v float64) *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetScore(v)
+	})
+}
+
+// AddScore adds v to the "score" field.
+func (u *ItemUpsertBulk) AddScore(v float64) *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.AddScore(v)
+	})
+}
+
+// UpdateScore sets the "score" field to the value that was provided on create.
+func (u *ItemUpsertBulk) UpdateScore() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateScore()
+	})
+}
+
+// ClearScore clears the value of the "score" field.
+func (u *ItemUpsertBulk) ClearScore() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearScore()
 	})
 }
 

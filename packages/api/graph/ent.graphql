@@ -85,6 +85,30 @@ input ItemWhereInput {
   augmentedIsNil: Boolean
   augmentedNotNil: Boolean
   
+  """count field predicates"""
+  count: Int
+  countNEQ: Int
+  countIn: [Int!]
+  countNotIn: [Int!]
+  countGT: Int
+  countGTE: Int
+  countLT: Int
+  countLTE: Int
+  countIsNil: Boolean
+  countNotNil: Boolean
+  
+  """score field predicates"""
+  score: Float
+  scoreNEQ: Float
+  scoreIn: [Float!]
+  scoreNotIn: [Float!]
+  scoreGT: Float
+  scoreGTE: Float
+  scoreLT: Float
+  scoreLTE: Float
+  scoreIsNil: Boolean
+  scoreNotNil: Boolean
+  
   """svg field predicates"""
   svg: String
   svgNEQ: String
@@ -374,6 +398,30 @@ input DopeWhereInput {
   """opened field predicates"""
   opened: Boolean
   openedNEQ: Boolean
+  
+  """score field predicates"""
+  score: Float
+  scoreNEQ: Float
+  scoreIn: [Float!]
+  scoreNotIn: [Float!]
+  scoreGT: Float
+  scoreGTE: Float
+  scoreLT: Float
+  scoreLTE: Float
+  scoreIsNil: Boolean
+  scoreNotNil: Boolean
+  
+  """rank field predicates"""
+  rank: Int
+  rankNEQ: Int
+  rankIn: [Int!]
+  rankNotIn: [Int!]
+  rankGT: Int
+  rankGTE: Int
+  rankLT: Int
+  rankLTE: Int
+  rankIsNil: Boolean
+  rankNotNil: Boolean
   
   """order field predicates"""
   order: Int

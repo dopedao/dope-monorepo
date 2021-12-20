@@ -44,6 +44,8 @@ type Item implements Node {
   nameSuffix: String
   suffix: String
   augmented: Boolean
+  score: Float!
+  count: Int!
 }
 
 type WalletItems implements Node {
@@ -113,6 +115,8 @@ type Dope implements Node {
   items: [Item!]!
   claimed: Boolean!
   opened: Boolean!
+  score: Float!
+  rank: Int!
 }
 
 type Wallet implements Node {
