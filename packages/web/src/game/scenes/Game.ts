@@ -1,11 +1,11 @@
 import { Base, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Weapons } from 'game/constants/Sprites';
-import Player from 'game/entities/Player';
-import PlayerModel from 'game/gfx/models/PlayerModel';
+import Hustler from 'game/entities/Hustler';
+import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
 
 export default class GameScene extends Scene {
-  private player!: Player;
+  private player!: Hustler;
 
   private map!: Phaser.Tilemaps.Tilemap;
   private hoveredTile?: Phaser.Tilemaps.Tile;
@@ -46,24 +46,24 @@ export default class GameScene extends Scene {
     this.map.createLayer("Below Player", tileset, 0, 0);
     const world = this.map.createLayer("World", tileset, 0, 0);
 
-    this.player = new Player(
-      500, 600, 
-      new PlayerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold), 
-      this);
-
-    this.map.createLayer("Above Player", tileset, 0, 0);
-
     // set world as being collidable
     world.setCollisionByProperty({ collides: true });
+
+    // transform world into a matter one
+    const matterWorld = this.matter.world.convertTilemapLayer(world);
+
+    this.player = new Hustler(
+      500, 600, 
+      new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold), 
+      matterWorld);
+
+    this.map.createLayer("Above Player", tileset, 0, 0);
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
     // make the camera follow the player
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
-
-    // set player and world collidable
-    this.physics.add.collider(this.player, world);
   }
 
   update(time: number, delta: number): void {
