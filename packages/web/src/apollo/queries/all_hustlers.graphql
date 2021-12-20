@@ -1,5 +1,5 @@
-query AllHustlers {
-  hustlers(first: 1000) {
+query AllHustlers($first: Int, $skip: Int) {
+  hustlers(first: $first, skip: $skip) {
     id
     data
   }

@@ -2,6 +2,7 @@ import { ReactNode, useMemo, useEffect } from 'react';
 import {
   ApolloClient,
   ApolloProvider,
+  FieldPolicy,
   InMemoryCache,
   makeVar,
   useReactiveVar,
@@ -12,6 +13,7 @@ import { OpenSeaAsset } from 'utils/OpenSeaAsset';
 import DopeDatabase, { DopeDbCacheReactive } from 'utils/DopeDatabase';
 import { valueFromCachedDope } from 'utils/DopeJsonParser';
 import { useEthereum, useOptimism } from 'hooks/web3';
+import { Reference } from '@apollo/client/utilities';
 
 /**
  * We use the below declaration to specify client-only field getters,
@@ -95,6 +97,55 @@ function getClient(uri: string) {
       },
     }),
   });
+}
+
+type KeyArgs = FieldPolicy<any>["keyArgs"];
+
+function firstSkipPagination<T = Reference>(
+  keyArgs: KeyArgs = false,
+): FieldPolicy<T[]> {
+  return {
+    keyArgs,
+    merge(existing, incoming, { args }) {
+      const merged = existing ? existing.slice(0) : [];
+      if (args) {
+        // Assume an offset of 0 if args.offset omitted.
+        const { skip = 0 } = args;
+        for (let i = 0; i < incoming.length; ++i) {
+          merged[skip + i] = incoming[i];
+        }
+      } else {
+        throw new Error('Missing arguments!');
+      }
+      return merged;
+    },
+  };
+}
+
+export const useHustlerPaginationClient = () => {
+  const { chainId } = useOptimism();
+
+  const uri = useMemo(
+    () => (chainId ? NETWORK[chainId as 10 | 69].subgraph : NETWORK[10].subgraph),
+    [chainId],
+  );
+
+  return useMemo(
+    () =>
+      new ApolloClient({
+        uri,
+        cache: new InMemoryCache({
+          typePolicies: {
+            Query: {
+              fields: {
+                hustlers: firstSkipPagination()
+              }
+            }
+          },
+        }),
+      }),
+    [uri]
+  );
 }
 
 export const useOptimismClient = () => {
