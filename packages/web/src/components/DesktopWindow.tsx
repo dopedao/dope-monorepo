@@ -11,6 +11,7 @@ import { isTouchDevice } from 'utils/utils';
 import WindowPosition, { WindowPositionReactive } from 'utils/WindowPosition';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
+import { useEthereumClient } from './EthereumApolloProvider';
 
 type DesktopWindowProps = {
   title: string | undefined;
@@ -70,9 +71,10 @@ const DesktopWindow = ({
   onMoved,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
+  const ethereumURI = useEthereumClient();
   const { data, isFetching: loading } = useWalletQuery(
     {
-      endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+      endpoint: ethereumURI,
     },
     {
       id: account?.toLowerCase() || '',

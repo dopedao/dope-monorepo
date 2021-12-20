@@ -6,6 +6,13 @@ schema:
   - "src/graphql/client-schemas/open-sea-asset.graphql"
 documents: "src/graphql/queries/**/*.graphql"
 generates:
+  src/generated/graphql2.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      apolloClientVersion: 3
   src/generated/graphql.ts:
     plugins:
       - "typescript"

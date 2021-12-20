@@ -14,6 +14,7 @@ import NoDopeCard from 'components/dope/NoDopeCard';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import { useSwitchEthereum } from 'hooks/web3';
 import StickyNote from 'components/StickyNote';
+import { useEthereumClient } from 'components/EthereumApolloProvider';
 
 const FlexFiftyContainer = styled.div`
   height: 100%;
@@ -47,9 +48,10 @@ export default function DopeWindow() {
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const [selected, setSelected] = useState(0);
   const { account, chainId } = useWeb3React();
+  const ethereumURI = useEthereumClient();
   const { data, isFetching: loading } = useWalletQuery(
     {
-      endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+      endpoint: ethereumURI,
     },
     {
       id: account?.toLowerCase() || '',

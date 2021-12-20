@@ -1794,7 +1794,6 @@ __metadata:
     "@web3-react/walletconnect-connector": ^6.2.4
     aws-sdk: ^2.999.0
     babel-plugin-module-resolver: ^4.1.0
-    babel-plugin-transform-runtime: ^6.23.0
     classnames: ^2.3.1
     date-fns: ^2.27.0
     dope-metrics: ^1.0.4
@@ -8590,15 +8589,6 @@ __metadata:
   dependencies:
     regenerator-transform: ^0.10.0
   checksum: 41a51d8f692bf4a5cbd705fa70f3cb6abebae66d9ba3dccfb5921da262f8c30f630e1fe9f7b132e29b96fe0d99385a801f6aa204278c5bd0af4284f7f93a665a
-  languageName: node
-  linkType: hard
-
-"babel-plugin-transform-runtime@npm:^6.23.0":
-  version: 6.23.0
-  resolution: "babel-plugin-transform-runtime@npm:6.23.0"
-  dependencies:
-    babel-runtime: ^6.22.0
-  checksum: e1739d9749287a6bd9f992042aa5e1b1282e7465b3ad1f5862a6a9124fb2b0dfc8ce8ab91935beda9158156a1c15224df05b90d3e716937886751a0f2f1ea64c
   languageName: node
   linkType: hard
 

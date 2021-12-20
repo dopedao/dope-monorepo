@@ -23,6 +23,7 @@ import DopeDatabase, {
   testForNotOpened,
   PickedBag,
 } from 'utils/DopeDatabase';
+import { useEthereumClient } from 'components/EthereumApolloProvider';
 
 // To prevent all 8k items from showing at once and overloading
 // the DOM we fake loading more using infinite scroll.
@@ -71,6 +72,7 @@ const MarketList = () => {
   const [statusKey, setStatusKey] = useState('');
   const [searchInputValue, setSearchValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const ethereumURI = useEthereumClient();
 
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
@@ -105,7 +107,7 @@ const MarketList = () => {
   // Loads unclaimed $paper status from The Graph,
   // then updates items in reactive var cache.
   const { data: unclaimedBags } = useAllUnclaimedBagsQuery({
-    endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+    endpoint: ethereumURI,
   });
   const [hasUpdateDopeDbWithPaper, setHasUpdateDopeDbWithPaper] = useState(false);
   if (!hasUpdateDopeDbWithPaper && unclaimedBags && unclaimedBags.page_1) {
@@ -118,7 +120,7 @@ const MarketList = () => {
   // Loads unbundled from The Graph,
   // then updates items in reactive var cache.
   const { data: openedBags } = useAllOpenedBagsQuery({
-    endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+    endpoint: ethereumURI,
   });
   const [hasUpdateDopeDbWithBundled, setHasUpdateDopeDbWithBundled] = useState(false);
   if (!hasUpdateDopeDbWithBundled && openedBags && openedBags.page_1) {

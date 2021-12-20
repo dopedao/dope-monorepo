@@ -15,6 +15,7 @@ import {
 import { PickedBag } from 'utils/DopeDatabase';
 import PanelFooter from 'components/PanelFooter';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
+import { useEthereumClient } from 'components/EthereumApolloProvider';
 
 const NoDopeMessage = () => {
   const caution = (
@@ -75,6 +76,7 @@ const InitiationFooterDopeContent = ({
 }: InitiationFooterDopeContentProps) => {
   const { account } = useWeb3React();
   const dispatchHustler = useDispatchHustler();
+  const ethereumURI = useEthereumClient();
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -93,7 +95,7 @@ const InitiationFooterDopeContent = ({
 
   const { data, isFetching: loading } = useWalletQuery(
     {
-      endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+      endpoint: ethereumURI,
     },
     {
       id: account?.toLowerCase() || '',

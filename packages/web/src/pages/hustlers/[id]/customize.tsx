@@ -15,7 +15,7 @@ import { getRandomHustler, HustlerCustomization } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
 import { useFetchMetadata } from 'hooks/contracts';
 import { useSwitchOptimism } from 'hooks/web3';
-import { useOptimismClient } from 'components/EthereumApolloProvider';
+import { useEthereumClient, useOptimismClient } from 'components/EthereumApolloProvider';
 import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
 import Head from 'components/Head';
@@ -175,9 +175,10 @@ const Nav = () => (
 const Hustlers = () => {
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const { account, chainId } = useWeb3React();
+  const ethereumURI = useEthereumClient();
   const { isFetching: walletLoading } = useWalletQuery(
     {
-      endpoint: 'https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars',
+      endpoint: ethereumURI,
     },
     {
       id: account?.toLowerCase() || '',
