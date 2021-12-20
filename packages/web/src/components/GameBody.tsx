@@ -49,20 +49,18 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
             fullScreen={true}
             // disable native fullscreen for now
             fullScreenHandler={undefined}
-            // dont mind this. library is confusing. 
-            // the instance of the game is stored in game object the ref which is why we need to do this bit of sorcelery
+            // update bounds when window gets moved around
             onMoved={() => game?.scale.updateBounds()}
+            // update scale when window ios resized
             onResize={() => {
-                if (game)
+                if (game && gameRef.current)
                 {
-                    console.log(gameRef.current?.clientWidth, gameRef.current?.clientHeight);
-                    gameRef.current?.appendChild(game.canvas);
+                    console.log(gameRef.current.clientWidth, gameRef.current?.clientHeight);
+                    gameRef.current.appendChild(game.canvas);
                     game.scale.parent = gameRef.current;
+                    game.scale.setParentSize(gameRef.current.clientWidth, gameRef.current.clientHeight);
+                    game.scale.setGameSize(gameRef.current.clientWidth, gameRef.current.clientHeight);
                     game.scale.updateBounds();
-                    // game.scale.updateBounds()
-                    // game.canvas.style.width = gameRef.current?.clientWidth + "px";
-                    // game.canvas.style.height = gameRef.current?.clientHeight + "px";
-                    // game.scale.updateBounds();
                 }
             }}
             >
