@@ -29,7 +29,7 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
             title="DOPE.GAME" 
             width={640} 
             height="90vh"
-            fullScreenHandler={(fullscreen) => {
+            fullScreenHandler={() => {
                 if (!gameRef.current)
                     return;
 
@@ -37,32 +37,36 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
                 if (!instance)
                     return;
 
-                console.log('yes');
-
                 instance.scale.toggleFullscreen();
             }}
             // dont mind this. library is confusing. 
             // the instance of the game is stored in game object the ref which is why we need to do this bit of sorcelery
             onMoved={() => ((gameRef.current as any).game.instance as Phaser.Game).scale.updateBounds()}
             >
-            <IonPhaser game={
+            <IonPhaser id="gameElement" game={
                 {
                     title: "proto",
                     type: Phaser.AUTO,
+                    parent: "gameElement",
+                    dom: {
+                        createContainer: true,
+                    },
                     scale: {
                         width: "100%",
                         height: "100%",
-                        zoom: 2,
                         mode: Phaser.Scale.FIT,
+                        fullscreenTarget: "gameElement"
                     },
                     physics: {
-                        default: 'arcade',
-                        arcade: {
+                        default: 'matter',
+                        matter: {
                             debug: true,
                             gravity: { y: 0 }
                         }
                     },
-                    pixelArt: true,
+                    render: {
+                        pixelArt: true,
+                    },
                     scene: [Boot, Preload, GameScene]
                 }
             } initialize={initialize} ref={gameRef}>
