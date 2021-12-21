@@ -15,19 +15,11 @@ export default class GameScene extends Scene {
 
   constructor() {
     super({
-      key: 'GameScene'
+      key: 'GameScene',
     });
   }
 
   create(): void {
-    this.arrows = this.input.keyboard.createCursorKeys();
-    this.wasd = this.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W, 
-      down: Phaser.Input.Keyboard.KeyCodes.S, 
-      left: Phaser.Input.Keyboard.KeyCodes.A, 
-      right: Phaser.Input.Keyboard.KeyCodes.D 
-    }) as Phaser.Types.Input.Keyboard.CursorKeys;
-
     // create all of the animations
     new GameAnimations(this.anims).create();
 
@@ -68,7 +60,7 @@ export default class GameScene extends Scene {
 
   update(time: number, delta: number): void {
     if (this.player)
-      this.player.update(this.arrows, this.wasd);
+      this.player.update();
 
     // loop over the world's layer tiles and check if they intersect with the mouse
     // not the best method but just for demonstration purposes
