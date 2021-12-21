@@ -72,14 +72,9 @@ function getClient(uri: string) {
               const tokenId = readField('id') as number;
               return valueFromCachedDope(tokenId, 'weapon');
             },
-            rank: {
-              keyArgs: false,
-              read(_, { readField }): number {
-                const tokenId = readField('id') as number;
-                const rarity = getRarityForDopeId(tokenId);
-                // console.log(`Rank for ${tokenId} - ${rarity}`);
-                return rarity;
-              },
+            rank(_, { readField }): string {
+              const tokenId = readField('id') as number;
+              return valueFromCachedDope(tokenId, 'rank');
             },
             open_sea_asset: {
               keyArgs: false,
