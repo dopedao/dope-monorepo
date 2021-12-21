@@ -8,6 +8,8 @@ type DopeToken {
   open_sea_is_on_sale: Boolean
   open_sea_current_sale_price_eth: Float
   open_sea_last_sale_price_eth: Float
+  open_sea_current_sale_price_gwei: Int
+  open_sea_last_sale_price_gwei: Int
   clothes_count: Int
   clothes_rank: Int
   clothes: String
