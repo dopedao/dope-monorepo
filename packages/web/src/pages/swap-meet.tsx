@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import styled from '@emotion/styled';
 import InfiniteScroll from 'react-infinite-scroller';
-import { useAllUnclaimedBagsQuery, useAllOpenedBagsQuery } from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
 import { media } from 'ui/styles/mixins';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
@@ -102,28 +101,6 @@ const MarketList = () => {
     }
   };
 
-  // Loads unclaimed $paper status from The Graph,
-  // then updates items in reactive var cache.
-  const { data: unclaimedBags } = useAllUnclaimedBagsQuery();
-  const [hasUpdateDopeDbWithPaper, setHasUpdateDopeDbWithPaper] = useState(false);
-  if (!hasUpdateDopeDbWithPaper && unclaimedBags && unclaimedBags.page_1) {
-    dopeDb.updateHasPaperFromQuery(unclaimedBags);
-    console.log('PAPER');
-    DopeDbCacheReactive(dopeDb);
-    setHasUpdateDopeDbWithPaper(true);
-  }
-
-  // Loads unbundled from The Graph,
-  // then updates items in reactive var cache.
-  const { data: openedBags } = useAllOpenedBagsQuery();
-  const [hasUpdateDopeDbWithBundled, setHasUpdateDopeDbWithBundled] = useState(false);
-  if (!hasUpdateDopeDbWithBundled && openedBags && openedBags.page_1) {
-    dopeDb.updateOpenedBagsFromQuery(openedBags);
-    console.log('BUNDLED');
-    DopeDbCacheReactive(dopeDb);
-    setHasUpdateDopeDbWithBundled(true);
-  }
-
   const filteredSortedItems = useMemo(() => {
     console.log('FILTERED ITEMS');
     console.log(`${statusKey} : ${sortByKey}`);
@@ -139,7 +116,7 @@ const MarketList = () => {
     itemsVisible = PAGE_SIZE;
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
     setIsTyping(false);
-  }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper, filteredSortedItems]);
+  }, [searchInputValue, sortByKey, statusKey, filteredSortedItems]);
 
   // Increasing itemsVisible simply increases the window size
   // into the cached data we render in window.
@@ -149,7 +126,7 @@ const MarketList = () => {
     setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
   };
 
-  const isLoading = isTyping || !hasUpdateDopeDbWithPaper;
+  const isLoading = isTyping;
 
   return (
     <>

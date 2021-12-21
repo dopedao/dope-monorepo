@@ -111,7 +111,6 @@ class DopeDatabase {
     const swapMeetData = await this.getFauna();
 
     if (swapMeetData) {
-      // const swapMeetData = assets?.data?.getSwapMeetPage?.data;
       swapMeetData.map((x: any) => {
         x.id = x.token_id, x.claimed = x.paper_claimed, x.opened = x.items_unbundled,
         x.open_sea_asset = {
@@ -127,7 +126,7 @@ class DopeDatabase {
   // Fetch transformed output, loads it, refresh the Apollo Reactive var.
   async getFauna() {
     const variables = {}
-    
+    console.log(SWAP_MEET_QUERY);
     var postData = JSON.stringify({
       query: SWAP_MEET_QUERY,
       variables: variables
@@ -141,6 +140,7 @@ class DopeDatabase {
       body: postData
     });
     const assets = await response.json();
+    console.log(assets);
     return assets?.data?.getSwapMeetPage?.data;;
   }
 
