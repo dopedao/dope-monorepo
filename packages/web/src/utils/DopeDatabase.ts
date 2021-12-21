@@ -1,9 +1,6 @@
 import { Bag } from 'generated/graphql';
 import { makeVar } from '@apollo/client';
-import DopeJson from 'dope-metrics/output/loot.json';
-import { getRarityForDopeId } from '../dope_rarity_check';
 import { PickedBag } from '../PickedBag';
-import { newEmptyBag } from '../EmptyBag';
 import { OpenSeaAsset } from './OpenSeaAsset';
 import fetch from 'isomorphic-fetch';
 import { FAUNA_READ_KEY, FAUNA_API_URL } from 'utils/constants';
@@ -145,26 +142,6 @@ class DopeDatabase {
     const assets = await response.json();
     console.log(assets);
     return assets?.data?.getSwapMeetPage?.data;;
-  }
-
-  // Loads cached item data from json into the database
-  // so we save network requests calling The Graph.
-  populateFromJson() {
-    console.log('Populating DopeDatabase');
-    const dopeJsonEntries = Object.entries(DopeJson);
-    const tempDB = [];
-    for (let i = 0; i < 4; i++) { // dopeJsonEntries.length
-      const dopeAsset = dopeJsonEntries[i][1];
-      const tokenId = Object.keys(dopeAsset)[0];
-      const values = Object.values(dopeAsset)[0];
-      const dope = newEmptyBag();
-      Object.assign(dope, values);
-      dope.id = tokenId;
-      dope.rank = getRarityForDopeId(tokenId);
-      tempDB[parseInt(tokenId)] = dope;
-    }
-    // this.items = tempDB;
-    console.log('…Populated');
   }
 
   updateHasPaperFromQuery(queryResultJson: UnclaimedPaperPages) {
