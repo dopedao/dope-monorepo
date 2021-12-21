@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
@@ -59,12 +57,6 @@ func (Item) Fields() []ent.Field {
 			Optional(),
 		field.String("svg").
 			Optional(),
-		field.Time("created_at").
-			Default(time.Now).
-			Immutable().
-			Annotations(
-				entgql.OrderField("CREATED_AT"),
-			),
 	}
 }
 

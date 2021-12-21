@@ -1767,16 +1767,6 @@ type ItemWhereInput struct {
 	SvgEqualFold    *string  `json:"svgEqualFold,omitempty"`
 	SvgContainsFold *string  `json:"svgContainsFold,omitempty"`
 
-	// "created_at" field predicates.
-	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
-	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
-	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
-	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
-	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
-	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
-	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
-	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
-
 	// "wallets" edge predicates.
 	HasWallets     *bool                    `json:"hasWallets,omitempty"`
 	HasWalletsWith []*WalletItemsWhereInput `json:"hasWalletsWith,omitempty"`
@@ -2237,30 +2227,6 @@ func (i *ItemWhereInput) P() (predicate.Item, error) {
 	}
 	if i.SvgContainsFold != nil {
 		predicates = append(predicates, item.SvgContainsFold(*i.SvgContainsFold))
-	}
-	if i.CreatedAt != nil {
-		predicates = append(predicates, item.CreatedAtEQ(*i.CreatedAt))
-	}
-	if i.CreatedAtNEQ != nil {
-		predicates = append(predicates, item.CreatedAtNEQ(*i.CreatedAtNEQ))
-	}
-	if len(i.CreatedAtIn) > 0 {
-		predicates = append(predicates, item.CreatedAtIn(i.CreatedAtIn...))
-	}
-	if len(i.CreatedAtNotIn) > 0 {
-		predicates = append(predicates, item.CreatedAtNotIn(i.CreatedAtNotIn...))
-	}
-	if i.CreatedAtGT != nil {
-		predicates = append(predicates, item.CreatedAtGT(*i.CreatedAtGT))
-	}
-	if i.CreatedAtGTE != nil {
-		predicates = append(predicates, item.CreatedAtGTE(*i.CreatedAtGTE))
-	}
-	if i.CreatedAtLT != nil {
-		predicates = append(predicates, item.CreatedAtLT(*i.CreatedAtLT))
-	}
-	if i.CreatedAtLTE != nil {
-		predicates = append(predicates, item.CreatedAtLTE(*i.CreatedAtLTE))
 	}
 
 	if i.HasWallets != nil {

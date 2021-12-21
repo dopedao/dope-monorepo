@@ -1,6 +1,14 @@
 runtime: go116
+service: indexer
 
 main: ./packages/api/cmd
 
+instance_class: B2
+
+manual_scaling:
+  instances: 1
+
 env_variables:
+  INDEX: True
   PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2
+  NETWORK: mainnet
