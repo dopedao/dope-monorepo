@@ -3,7 +3,7 @@ import HustlerModel from "game/gfx/models/HustlerModel";
 
 export default class Hustler extends Phaser.Physics.Matter.Sprite
 {
-    public static readonly DEFAULT_VELOCITY: number = 1.2;
+    public static readonly DEFAULT_VELOCITY: number = 1.7;
     public static readonly DEFAULT_MASS: number = 70;
 
     private _model: HustlerModel;
