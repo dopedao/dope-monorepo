@@ -3,6 +3,7 @@ import Hustler from 'game/entities/Hustler';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
+import CustomCharacter from "../ui/components/CustomCharacter";
 
 export default class GameScene extends Scene {
   private player!: Hustler;
@@ -36,6 +37,11 @@ export default class GameScene extends Scene {
         return;
       // transition to spot
       this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
+    });
+    this.input.keyboard.addCapture('F8');
+    this.input.keyboard.on('keydown-F8', () => {
+      const comp = this.add.reactDom(CustomCharacter, {gameWidth: this.scale.gameSize.width});
+      //comp.events.on()
     });
 
     this.map = this.make.tilemap({ key: "map" });
