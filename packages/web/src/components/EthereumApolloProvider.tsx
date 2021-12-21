@@ -6,7 +6,6 @@ import {
   makeVar,
   useReactiveVar,
 } from '@apollo/client';
-import { getRarityForDopeId } from 'utils/dope-rarity-check';
 import { NETWORK } from 'utils/constants';
 import { OpenSeaAsset } from 'utils/OpenSeaAsset';
 import DopeDatabase, { DopeDbCacheReactive } from 'utils/DopeDatabase';
