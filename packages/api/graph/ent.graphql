@@ -134,16 +134,6 @@ input ItemWhereInput {
   svgEqualFold: String
   svgContainsFold: String
   
-  """created_at field predicates"""
-  createdAt: Time
-  createdAtNEQ: Time
-  createdAtIn: [Time!]
-  createdAtNotIn: [Time!]
-  createdAtGT: Time
-  createdAtGTE: Time
-  createdAtLT: Time
-  createdAtLTE: Time
-  
   """id field predicates"""
   id: ID
   idNEQ: ID

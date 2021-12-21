@@ -202,7 +202,6 @@ var (
 		{Name: "greatness", Type: field.TypeInt, Nullable: true},
 		{Name: "rles", Type: field.TypeJSON, Nullable: true},
 		{Name: "svg", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
 		{Name: "item_derivative", Type: field.TypeString, Nullable: true},
 	}
 	// ItemsTable holds the schema information for the "items" table.
@@ -213,7 +212,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "items_items_derivative",
-				Columns:    []*schema.Column{ItemsColumns[13]},
+				Columns:    []*schema.Column{ItemsColumns[12]},
 				RefColumns: []*schema.Column{ItemsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

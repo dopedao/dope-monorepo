@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -161,20 +160,6 @@ func (ic *ItemCreate) SetSvg(s string) *ItemCreate {
 func (ic *ItemCreate) SetNillableSvg(s *string) *ItemCreate {
 	if s != nil {
 		ic.SetSvg(*s)
-	}
-	return ic
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (ic *ItemCreate) SetCreatedAt(t time.Time) *ItemCreate {
-	ic.mutation.SetCreatedAt(t)
-	return ic
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ic *ItemCreate) SetNillableCreatedAt(t *time.Time) *ItemCreate {
-	if t != nil {
-		ic.SetCreatedAt(*t)
 	}
 	return ic
 }
@@ -410,7 +395,6 @@ func (ic *ItemCreate) Save(ctx context.Context) (*Item, error) {
 		err  error
 		node *Item
 	)
-	ic.defaults()
 	if len(ic.hooks) == 0 {
 		if err = ic.check(); err != nil {
 			return nil, err
@@ -468,14 +452,6 @@ func (ic *ItemCreate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (ic *ItemCreate) defaults() {
-	if _, ok := ic.mutation.CreatedAt(); !ok {
-		v := item.DefaultCreatedAt()
-		ic.mutation.SetCreatedAt(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (ic *ItemCreate) check() error {
 	if _, ok := ic.mutation.GetType(); !ok {
@@ -493,9 +469,6 @@ func (ic *ItemCreate) check() error {
 		if err := item.TierValidator(v); err != nil {
 			return &ValidationError{Name: "tier", err: fmt.Errorf(`ent: validator failed for field "Item.tier": %w`, err)}
 		}
-	}
-	if _, ok := ic.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Item.created_at"`)}
 	}
 	return nil
 }
@@ -621,14 +594,6 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 			Column: item.FieldSvg,
 		})
 		_node.Svg = value
-	}
-	if value, ok := ic.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: item.FieldCreatedAt,
-		})
-		_node.CreatedAt = value
 	}
 	if nodes := ic.mutation.WalletsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1149,18 +1114,6 @@ func (u *ItemUpsert) ClearSvg() *ItemUpsert {
 	return u
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (u *ItemUpsert) SetCreatedAt(v time.Time) *ItemUpsert {
-	u.Set(item.FieldCreatedAt, v)
-	return u
-}
-
-// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
-func (u *ItemUpsert) UpdateCreatedAt() *ItemUpsert {
-	u.SetExcluded(item.FieldCreatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -1196,9 +1149,6 @@ func (u *ItemUpsertOne) UpdateNewValues() *ItemUpsertOne {
 		}
 		if _, exists := u.create.mutation.Augmented(); exists {
 			s.SetIgnore(item.FieldAugmented)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(item.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -1463,20 +1413,6 @@ func (u *ItemUpsertOne) ClearSvg() *ItemUpsertOne {
 	})
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (u *ItemUpsertOne) SetCreatedAt(v time.Time) *ItemUpsertOne {
-	return u.Update(func(s *ItemUpsert) {
-		s.SetCreatedAt(v)
-	})
-}
-
-// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
-func (u *ItemUpsertOne) UpdateCreatedAt() *ItemUpsertOne {
-	return u.Update(func(s *ItemUpsert) {
-		s.UpdateCreatedAt()
-	})
-}
-
 // Exec executes the query.
 func (u *ItemUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -1530,7 +1466,6 @@ func (icb *ItemCreateBulk) Save(ctx context.Context) ([]*Item, error) {
 	for i := range icb.builders {
 		func(i int, root context.Context) {
 			builder := icb.builders[i]
-			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ItemMutation)
 				if !ok {
@@ -1677,9 +1612,6 @@ func (u *ItemUpsertBulk) UpdateNewValues() *ItemUpsertBulk {
 			}
 			if _, exists := b.mutation.Augmented(); exists {
 				s.SetIgnore(item.FieldAugmented)
-			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(item.FieldCreatedAt)
 			}
 		}
 	}))
@@ -1942,20 +1874,6 @@ func (u *ItemUpsertBulk) UpdateSvg() *ItemUpsertBulk {
 func (u *ItemUpsertBulk) ClearSvg() *ItemUpsertBulk {
 	return u.Update(func(s *ItemUpsert) {
 		s.ClearSvg()
-	})
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (u *ItemUpsertBulk) SetCreatedAt(v time.Time) *ItemUpsertBulk {
-	return u.Update(func(s *ItemUpsert) {
-		s.SetCreatedAt(v)
-	})
-}
-
-// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
-func (u *ItemUpsertBulk) UpdateCreatedAt() *ItemUpsertBulk {
-	return u.Update(func(s *ItemUpsert) {
-		s.UpdateCreatedAt()
 	})
 }
 
