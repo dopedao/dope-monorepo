@@ -1,7 +1,6 @@
 node_modules
 .vscode
 .faunarc
-data/
 build/
 dist
 !packages/contracts/dist

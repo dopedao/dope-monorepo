@@ -477,7 +477,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     i.ID,
 		Type:   "Item",
-		Fields: make([]*Field, 12),
+		Fields: make([]*Field, 11),
 		Edges:  make([]*Edge, 14),
 	}
 	var buf []byte
@@ -567,14 +567,6 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[10] = &Field{
 		Type:  "string",
 		Name:  "svg",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(i.CreatedAt); err != nil {
-		return nil, err
-	}
-	node.Fields[11] = &Field{
-		Type:  "time.Time",
-		Name:  "created_at",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{
