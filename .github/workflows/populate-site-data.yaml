@@ -18,6 +18,6 @@ jobs:
       - name: Build
         run: yarn web build
       - name: Refresh
-        run: yarn web refresh-opensea-sales-cache
+        run: yarn db:refresh-opensea
       - name: Refresh metadata
-        run: yarn web refresh-token-metadata
+        run: yarn db:refresh-token-metadata
