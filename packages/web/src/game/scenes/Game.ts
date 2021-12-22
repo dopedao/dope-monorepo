@@ -16,19 +16,11 @@ export default class GameScene extends Scene {
 
   constructor() {
     super({
-      key: 'GameScene'
+      key: 'GameScene',
     });
   }
 
   create(): void {
-    this.arrows = this.input.keyboard.createCursorKeys();
-    this.wasd = this.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W, 
-      down: Phaser.Input.Keyboard.KeyCodes.S, 
-      left: Phaser.Input.Keyboard.KeyCodes.A, 
-      right: Phaser.Input.Keyboard.KeyCodes.D 
-    }) as Phaser.Types.Input.Keyboard.CursorKeys;
-
     // create all of the animations
     new GameAnimations(this.anims).create();
 
@@ -69,12 +61,13 @@ export default class GameScene extends Scene {
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
     // make the camera follow the player
+    camera.setZoom(1.5, 1.5);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
   }
 
   update(time: number, delta: number): void {
     if (this.player)
-      this.player.update(this.arrows, this.wasd);
+      this.player.update();
 
     // loop over the world's layer tiles and check if they intersect with the mouse
     // not the best method but just for demonstration purposes

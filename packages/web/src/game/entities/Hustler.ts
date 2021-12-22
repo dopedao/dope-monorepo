@@ -7,6 +7,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     public static readonly DEFAULT_MASS: number = 70;
 
     private _model: HustlerModel;
+    
+    private controlsArrows: Phaser.Types.Input.Keyboard.CursorKeys;
+    private controlsWasd: Phaser.Types.Input.Keyboard.CursorKeys;
 
     get model() { return this._model; }
 
@@ -29,13 +32,21 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // create sub sprites
         this._model.createSprites();
+
+        this.controlsArrows = this.scene.input.keyboard.createCursorKeys();
+        this.controlsWasd = this.scene.input.keyboard.addKeys({
+          up: Phaser.Input.Keyboard.KeyCodes.W, 
+          down: Phaser.Input.Keyboard.KeyCodes.S, 
+          left: Phaser.Input.Keyboard.KeyCodes.A, 
+          right: Phaser.Input.Keyboard.KeyCodes.D 
+        }) as Phaser.Types.Input.Keyboard.CursorKeys;
     }
 
-    update(mainCursors: Phaser.Types.Input.Keyboard.CursorKeys, eqCursors?: Phaser.Types.Input.Keyboard.CursorKeys): void
+    update(): void
     {
         let dir = "";
 
-        if (mainCursors.up.isDown || eqCursors?.up.isDown)
+        if (this.controlsWasd.up.isDown || this.controlsArrows?.up.isDown)
         {
             dir = "_back";
             // this.setVelocity(0, -Player.DEFAULT_VELOCITY);
@@ -43,7 +54,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             this._model.updateSprites(true);
             //this.body.offset.x = 6;
         }
-        else if (mainCursors.down.isDown || eqCursors?.down.isDown)
+        else if (this.controlsWasd.down.isDown || this.controlsArrows?.down.isDown)
         {
             dir = "_front";
             // this.setVelocity(0, Player.DEFAULT_VELOCITY);
@@ -56,7 +67,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             this.setVelocityY(0);
         }
 
-        if (mainCursors.left.isDown || eqCursors?.left.isDown)
+        if (this.controlsWasd.left.isDown || this.controlsArrows?.left.isDown)
         {
             dir = "_left";
             // this.setVelocity(-Player.DEFAULT_VELOCITY, 0);
@@ -64,7 +75,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             this._model.updateSprites(true);
             //this.body.offset.x = 8;
         }
-        else if (mainCursors.right.isDown || eqCursors?.right.isDown)
+        else if (this.controlsWasd.right.isDown || this.controlsArrows?.right.isDown)
         {
             dir = "_right";
             // this.setVelocity(Player.DEFAULT_VELOCITY, 0);
