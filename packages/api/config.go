@@ -3,17 +3,18 @@ package api
 import (
 	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/processors"
 	"github.com/ethereum/go-ethereum/common"
 )
 
-type Configs []Config
+type Configs []interface{}
 
 var configs = map[string]Configs{
-	"mainnet": {{
+	"mainnet": {engine.EthConfig{
 		RPC:      "https://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj",
 		Interval: time.Second * 5,
-		Contracts: []Contract{
+		Contracts: []engine.Contract{
 			// DOPE
 			{
 				Address:    common.HexToAddress("0x8707276df042e89669d69a177d3da7dc78bd8723"),
@@ -27,10 +28,10 @@ var configs = map[string]Configs{
 				Processor:  new(processors.PaperProcessor),
 			},
 		},
-	}, {
+	}, engine.EthConfig{
 		RPC:      "https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG",
 		Interval: time.Second * 5,
-		Contracts: []Contract{
+		Contracts: []engine.Contract{
 			// SwapMeet
 			{
 				Address:    common.HexToAddress("0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"),
@@ -45,10 +46,10 @@ var configs = map[string]Configs{
 			},
 		},
 	}},
-	"testnet": {{
+	"testnet": {engine.EthConfig{
 		RPC:      "https://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-",
 		Interval: time.Second * 5,
-		Contracts: []Contract{
+		Contracts: []engine.Contract{
 			// DOPE
 			{
 				Address:    common.HexToAddress("0xd2761Ee62d8772343070A5dE02C436F788EdF60a"),
@@ -62,10 +63,10 @@ var configs = map[string]Configs{
 				Processor:  new(processors.PaperProcessor),
 			},
 		},
-	}, {
+	}, engine.EthConfig{
 		RPC:      "https://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9",
 		Interval: time.Second * 5,
-		Contracts: []Contract{
+		Contracts: []engine.Contract{
 			// SwapMeet
 			{
 				Address:    common.HexToAddress("0x7144893df7456fB9678875aa09800d514685850F"),
