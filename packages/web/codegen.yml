@@ -15,6 +15,7 @@ generates:
       - "typescript-operations"
       - "typescript-react-query"
     config:
+          addInfiniteQuery: true
           fetcher:
             endpoint: ${DOPEWARS_API:https://testnet.api.dopewars.gg/query}
             fetchParams:

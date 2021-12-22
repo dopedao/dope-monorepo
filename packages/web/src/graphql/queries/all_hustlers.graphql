@@ -1,6 +1,28 @@
-query AllHustlers {
-  hustlers {
+query AllHustlers(
+  $after: Cursor
+  $first: Int
+  $before: Cursor
+  $last: Int
+  $orderBy: HustlerOrder
+  $where: HustlerWhereInput
+) {
+  hustlers(
+    after: $after
+    first: $first
+    before: $before
+    last: $last
+    orderBy: $orderBy
+    where: $where
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
     edges {
+      cursor
       node {
         id
         title

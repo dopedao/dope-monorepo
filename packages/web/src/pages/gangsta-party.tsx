@@ -2,13 +2,12 @@ import { Button, HStack } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import Link from 'next/link';
 import styled from '@emotion/styled';
-import { useAllHustlersQuery } from 'generated/graphql';
+import { useInfiniteAllHustlersQuery, OrderDirection } from 'generated/graphql';
 import Head from 'components/Head';
-// import InfiniteScroll from 'react-infinite-scroller';
+import InfiniteScroll from 'react-infinite-scroller';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 import RenderFromChain from 'components/hustler/RenderFromChain';
-// import { useMemo } from 'react';
-// import LoadingBlock from 'components/LoadingBlock';
+import LoadingBlock from 'components/LoadingBlock';
 import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
 
 const HustlerContainer = styled.div`
@@ -43,54 +42,61 @@ const ScreenSaver = styled.div`
 `;
 
 const GangstaParty = () => {
-  const { data, isFetching: loading } = useAllHustlersQuery();
-  //Amount of hustlers to render per page
-  // @TODO: re-implement pagination with React-query
-  // const PAGE_SIZE = 75;
-
-  // const client = useHustlerPaginationClient();
-  // const { data, fetchMore } = useAllHustlersQuery({ variables: { first: PAGE_SIZE, skip: 0 }, client, notifyOnNetworkStatusChange: true });
-
-  // const hustlers = useMemo(() => {
-  //     const mappedHustlers = data?.hustlers.map(({ id, data }) => {
-  //       let meta = data.replace('data:application/json;base64,', '');
-  //       meta = Buffer.from(meta, 'base64').toString();
-  //       const decoded = JSON.parse(meta);
-  //       return <RenderFromChain data={decoded} id={id} key={id} />
-  //     })
-  //     return mappedHustlers ?? [];
-  // }, [data]);
+  const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllHustlersQuery(
+    'first',
+    {
+      first: 100,
+    },
+    {
+      getNextPageParam: lastPage => {
+        if (lastPage.hustlers.pageInfo.hasNextPage) {
+          return lastPage.hustlers.pageInfo.endCursor;
+        }
+        return false;
+      },
+    },
+  );
 
   return (
     <>
       <Head title="DOPE WARS GANGSTA PARTY" />
       <ScreenSaver>
-        <HustlerContainer>
-          {!loading && data?.hustlers && data?.hustlers.edges!.length > 0 && (
-            <div className="hustlerGrid">
-              {data.hustlers.edges!.map(({ node: { svg, id } }: any) => {
-                let meta = svg.replace('data:application/json;base64,', '');
-                meta = Buffer.from(meta, 'base64').toString();
-                const decoded = JSON.parse(meta);
-                return <RenderFromChain data={decoded} id={id} key={id} />;
-              })}
-            </div>
-          )}
-        </HustlerContainer>
-        {/* {data &&(
+        {data && (
           <HustlerContainer>
             <InfiniteScroll
               pageStart={0}
-              hasMore={ 8000 > data.hustlers.length}
-              loadMore={() => { fetchMore({ variables: { skip: data.hustlers.length } })}}
-              loader={<LoadingBlock key={`loader_${data.hustlers.length}`} />}
+              loadMore={() =>
+                fetchNextPage({
+                  pageParam: {
+                    first: 100,
+                    after: data?.pages[data.pages.length - 1].hustlers.pageInfo.endCursor,
+                  },
+                })
+              }
+              hasMore={hasNextPage}
+              loader={<LoadingBlock />}
               useWindow={false}
-              className='hustlerGrid'
+              className="dopeGrid"
             >
-              {hustlers}
+              <div className="hustlerGrid">
+                {data?.pages.map(group =>
+                  group.hustlers.edges!.map(hustler => {
+                    if (!hustler || !hustler.node) {
+                      return null;
+                    }
+
+                    let meta = hustler.node.svg!.replace('data:application/json;base64,', '');
+                    meta = Buffer.from(meta, 'base64').toString();
+                    const decoded = JSON.parse(meta);
+                    return (
+                      <RenderFromChain data={decoded} id={hustler.node.id} key={hustler.node.id} />
+                    );
+                  }),
+                )}
+              </div>
             </InfiniteScroll>
           </HustlerContainer>
-        )} */}
+        )}
         <WebAmpPlayer />
         <StickyNoteHustlerMint />
       </ScreenSaver>
