@@ -18,9 +18,10 @@ import (
 
 var listen = pflag.String("listen", "8080", "server listen port")
 var pgConnstring = common.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
+var network = os.Getenv("NETWORK")
+var index = os.Getenv("INDEX")
 
 func main() {
-	var index = os.Getenv("INDEX")
 	log.Printf("config: is indexer: %v", index)
 
 	pgConnstringSecret, err := pgConnstring.Value()
@@ -33,7 +34,7 @@ func main() {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
 
-	srv, err := api.NewServer(context.Background(), db, index == "True")
+	srv, err := api.NewServer(context.Background(), db, index == "True", network)
 	if err != nil {
 		log.Fatalf("Creating server: %+v", err) //nolint:gocritic
 	}

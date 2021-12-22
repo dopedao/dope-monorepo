@@ -1451,16 +1451,6 @@ var (
 			}
 		},
 	}
-	// ItemOrderFieldCreatedAt orders Item by created_at.
-	ItemOrderFieldCreatedAt = &ItemOrderField{
-		field: item.FieldCreatedAt,
-		toCursor: func(i *Item) Cursor {
-			return Cursor{
-				ID:    i.ID,
-				Value: i.CreatedAt,
-			}
-		},
-	}
 )
 
 // String implement fmt.Stringer interface.
@@ -1469,8 +1459,6 @@ func (f ItemOrderField) String() string {
 	switch f.field {
 	case item.FieldGreatness:
 		str = "GREATNESS"
-	case item.FieldCreatedAt:
-		str = "CREATED_AT"
 	}
 	return str
 }
@@ -1489,8 +1477,6 @@ func (f *ItemOrderField) UnmarshalGQL(v interface{}) error {
 	switch str {
 	case "GREATNESS":
 		*f = *ItemOrderFieldGreatness
-	case "CREATED_AT":
-		*f = *ItemOrderFieldCreatedAt
 	default:
 		return fmt.Errorf("%s is not a valid ItemOrderField", str)
 	}

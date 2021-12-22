@@ -123,7 +123,7 @@ export default class HustlerModel
         if (this.clothes)
         {
             this.clothesSprites = this.clothes.map(c => 
-                this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Clothes][c])
+                this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Clothes][c], this.hustler.anims.currentFrame.index)
                 .setScale(this.hustler.scaleX, this.hustler.scaleY));
         }
             

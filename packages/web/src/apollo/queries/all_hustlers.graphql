@@ -1,0 +1,6 @@
+query AllHustlers($first: Int, $skip: Int) {
+  hustlers(first: $first, skip: $skip) {
+    id
+    data
+  }
+}

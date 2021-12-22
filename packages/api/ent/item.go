@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
@@ -40,8 +39,6 @@ type Item struct {
 	Rles schema.RLEs `json:"rles,omitempty"`
 	// Svg holds the value of the "svg" field.
 	Svg string `json:"svg,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ItemQuery when eager-loading is set.
 	Edges           ItemEdges `json:"edges"`
@@ -227,8 +224,6 @@ func (*Item) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case item.FieldID, item.FieldType, item.FieldNamePrefix, item.FieldNameSuffix, item.FieldName, item.FieldSuffix, item.FieldTier, item.FieldSvg:
 			values[i] = new(sql.NullString)
-		case item.FieldCreatedAt:
-			values[i] = new(sql.NullTime)
 		case item.ForeignKeys[0]: // item_derivative
 			values[i] = new(sql.NullString)
 		default:
@@ -319,12 +314,6 @@ func (i *Item) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field svg", values[j])
 			} else if value.Valid {
 				i.Svg = value.String
-			}
-		case item.FieldCreatedAt:
-			if value, ok := values[j].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[j])
-			} else if value.Valid {
-				i.CreatedAt = value.Time
 			}
 		case item.ForeignKeys[0]:
 			if value, ok := values[j].(*sql.NullString); !ok {
@@ -453,8 +442,6 @@ func (i *Item) String() string {
 	builder.WriteString(fmt.Sprintf("%v", i.Rles))
 	builder.WriteString(", svg=")
 	builder.WriteString(i.Svg)
-	builder.WriteString(", created_at=")
-	builder.WriteString(i.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }
