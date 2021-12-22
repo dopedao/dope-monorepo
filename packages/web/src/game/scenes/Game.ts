@@ -11,9 +11,6 @@ export default class GameScene extends Scene {
   private map!: Phaser.Tilemaps.Tilemap;
   private hoveredTile?: Phaser.Tilemaps.Tile;
 
-  arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
-  wasd!: Phaser.Types.Input.Keyboard.CursorKeys;
-
   constructor() {
     super({
       key: 'GameScene',
