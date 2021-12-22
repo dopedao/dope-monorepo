@@ -29,15 +29,15 @@ describe('getOpenSeaAssetPagesJson', () => {
   });
 });
 
-describe('getOpenSeaAssets', () => {
-  test('returns an array of OpenSeaAsset objects', async () => {
-    jest.spyOn(osa, 'getOpenSeaAssetPagesJson').mockReturnValue(dump);
-    const assets = await osa.getOpenSeaAssets();
-    const firstAsset = assets[0];
-    expect(firstAsset.token_id).toBe('1');
-    expect(typeof firstAsset.is_on_sale).toBe('boolean');
-  });
-});
+// describe('getOpenSeaAssets', () => {
+//   test('returns an array of OpenSeaAsset objects', async () => {
+//     jest.spyOn(osa, 'getOpenSeaAssetPagesJson').mockReturnValue(dump);
+//     const assets = await osa.getOpenSeaAssets();
+//     const firstAsset = assets[0];
+//     expect(firstAsset.token_id).toBe('1');
+//     expect(typeof firstAsset.is_on_sale).toBe('boolean');
+//   });
+// });
 
 describe('ethFromGwei', () => {
   test('calculates values properly', () => {
