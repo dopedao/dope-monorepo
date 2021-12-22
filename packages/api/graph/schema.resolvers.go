@@ -24,8 +24,7 @@ func (r *queryResolver) Wallets(ctx context.Context, after *ent.Cursor, first *i
 
 func (r *queryResolver) Dopes(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.DopeOrder, where *ent.DopeWhereInput) (*ent.DopeConnection, error) {
 	if orderBy == nil {
-		orderBy.Field = ent.DopeOrderFieldOrder
-		orderBy.Direction = ent.OrderDirectionAsc
+		orderBy = &ent.DopeOrder{Field: ent.DopeOrderFieldOrder, Direction: ent.OrderDirectionAsc}
 	}
 	return r.client.Dope.Query().Paginate(ctx, after, first, before, last, ent.WithDopeOrder(orderBy), ent.WithDopeFilter(where.Filter))
 }
