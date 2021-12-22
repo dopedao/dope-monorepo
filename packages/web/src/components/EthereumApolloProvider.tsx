@@ -8,7 +8,7 @@ import {
 } from '@apollo/client';
 import { getRarityForDopeId } from 'utils/dope-rarity-check';
 import { NETWORK } from 'utils/constants';
-import { OpenSeaAsset } from 'utils/OpenSeaAsset';
+// import { OpenSeaAsset } from 'utils/OpenSeaAsset';
 import DopeDatabase, { DopeDbCacheReactive } from 'utils/DopeDatabase';
 import { valueFromCachedDope } from 'utils/DopeJsonParser';
 import { useEthereum, useOptimism } from 'hooks/web3';
@@ -81,15 +81,15 @@ function getClient(uri: string) {
                 return rarity;
               },
             },
-            open_sea_asset: {
-              keyArgs: false,
-              read(_, { storage }) {
-                if (!storage.var) {
-                  storage.var = makeVar(new OpenSeaAsset());
-                }
-                return storage.var();
-              },
-            },
+            // open_sea_asset: {
+            //   keyArgs: false,
+            //   read(_, { storage }) {
+            //     if (!storage.var) {
+            //       storage.var = makeVar(new OpenSeaAsset());
+            //     }
+            //     return storage.var();
+            //   },
+            // },
           },
         },
       },
@@ -128,10 +128,10 @@ const EthereumApolloProvider = ({ children }: { children: ReactNode }) => {
   const client = getClient(uri);
   const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 
-  useEffect(() => {
-    console.log('Wrapped provider');
-    dopeDb.refreshOpenSeaAssets().then(() => DopeDbCacheReactive(dopeDb));
-  });
+  // useEffect(() => {
+  //   console.log('Wrapped provider');
+  //   dopeDb.refreshOpenSeaAssets().then(() => DopeDbCacheReactive(dopeDb));
+  // });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };

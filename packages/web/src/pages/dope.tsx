@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
@@ -14,7 +14,6 @@ import NoDopeCard from 'components/dope/NoDopeCard';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import { useSwitchEthereum } from 'hooks/web3';
 import StickyNote from 'components/StickyNote';
-import { useEthereumClient } from 'components/EthereumApolloProvider';
 
 const FlexFiftyContainer = styled.div`
   height: 100%;
@@ -48,15 +47,12 @@ export default function DopeWindow() {
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const [selected, setSelected] = useState(0);
   const { account, chainId } = useWeb3React();
-  const ethereumURI = useEthereumClient();
-  const { data, isFetching: loading } = useWalletQuery(
-    {
-      endpoint: ethereumURI,
+
+  const { data, isFetching: loading } = useWalletQuery({
+    where: {
+      id: account,
     },
-    {
-      id: account?.toLowerCase() || '',
-    },
-  );
+  });
   useSwitchEthereum(chainId, account);
 
   useEffect(() => {
@@ -95,17 +91,17 @@ export default function DopeWindow() {
           </div>
         </StickyNote>
       )}
-      {loading ? (
+      {loading || !data?.wallets.edges![0]?.node?.dopes ? (
         <FlexFiftyContainer>
           <LoadingBlock />
           <LoadingBlock />
         </FlexFiftyContainer>
-      ) : !data?.wallet?.bags || data.wallet.bags.length === 0 ? (
+      ) : data?.wallets.edges && data.wallets.edges[0]?.node?.dopes.length === 0 ? (
         <NoDopeCard />
       ) : (
         <FlexFiftyContainer>
           <DopeTable
-            data={data.wallet.bags.map(({ opened, claimed, id, rank }) => ({
+            data={data.wallets.edges[0].node.dopes.map(({ opened, claimed, id, rank }) => ({
               opened,
               claimed,
               id,
@@ -114,7 +110,7 @@ export default function DopeWindow() {
             selected={selected}
             onSelect={setSelected}
           />
-          <DopeCard bag={data.wallet.bags[selected]} footer="for-owner" />
+          <DopeCard dope={data.wallets.edges[0].node.dopes[selected]} footer="for-owner" />
         </FlexFiftyContainer>
       )}
     </AppWindow>

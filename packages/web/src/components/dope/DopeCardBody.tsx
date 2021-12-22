@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
 import { DopeLegendBackgroundColors } from 'components/dope/DopeLegend';
-import ItemRarities from 'dope-metrics/output/item-rarities.json';
-import { PickedBag } from 'utils/DopeDatabase';
+// import ItemRarities from 'dope-metrics/output/item-rarities.json';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
+import { DopeCardProps } from './DopeCard';
 
-const itemBackgroundColors = Object.values(DopeLegendBackgroundColors);
+// const itemBackgroundColors = Object.values(DopeLegendBackgroundColors);
 
 const betterItemName = (name = '') => {
   const quotedIndex = name.lastIndexOf('"');
@@ -77,11 +77,7 @@ const Row = ({ color = '#fff', slot, item }: { color?: string; slot: string; ite
   </div>
 );
 
-interface Props {
-  bag: PickedBag;
-}
-
-const DopeCardBody = ({ bag }: Props) => {
+const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
   return (
     <div
       className="dopeCardBody"
@@ -92,25 +88,25 @@ const DopeCardBody = ({ bag }: Props) => {
         overflow-y: auto;
       `}
     >
-      <Row key="rank" slot="Rank" item={`${bag.rank} / ${NUM_DOPE_TOKENS}`} />
+      <Row key="rank" slot="Rank" item={`${dope.rank} / ${NUM_DOPE_TOKENS}`} />
 
       {/* PAPER */}
-      {!bag.claimed && <Row key="paper" slot="$PAPER" item="✅ 125,000 Claimable ✅" />}
-      {bag.claimed && <Row key="paper" slot="$PAPER" item="🚫 Claimed 🚫" />}
+      {!dope.claimed && <Row key="paper" slot="$PAPER" item="✅ 125,000 Claimable ✅" />}
+      {dope.claimed && <Row key="paper" slot="$PAPER" item="🚫 Claimed 🚫" />}
 
-      {!bag.opened && <Row key="bundled" slot="Bundled" item="✅ Ready to Unpack ✅" />}
-      {bag.opened && <Row key="bundled" slot="Bundled" item="🚫 Unpacked 🚫" />}
+      {!dope.opened && <Row key="bundled" slot="Bundled" item="✅ Ready to Unpack ✅" />}
+      {dope.opened && <Row key="bundled" slot="Bundled" item="🚫 Unpacked 🚫" />}
 
-      {[
-        ['Weapon', bag.weapon],
-        ['Vehicle', bag.vehicle],
-        ['Drug', bag.drugs],
-        ['Neck', bag.neck],
-        ['Clothes', bag.clothes],
-        ['Hands', bag.hand],
-        ['Waist', bag.waist],
-        ['Feet', bag.foot],
-        ['Ring', bag.ring],
+      {/* {[
+        ['Weapon', dope.weapon],
+        ['Vehicle', dope.vehicle],
+        ['Drug', dope.drugs],
+        ['Neck', dope.neck],
+        ['Clothes', dope.clothes],
+        ['Hands', dope.hand],
+        ['Waist', dope.waist],
+        ['Feet', dope.foot],
+        ['Ring', dope.ring],
       ].map(slot => (
         <Row
           key={slot[0]}
@@ -118,7 +114,7 @@ const DopeCardBody = ({ bag }: Props) => {
           slot={slot[0]}
           item={slot[1]}
         />
-      ))}
+      ))} */}
     </div>
   );
 };

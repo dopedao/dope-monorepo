@@ -19,7 +19,13 @@ yarn web dev
 
 ## Develop
 
-First, run the development server:
+First, create an `.env` file and paste in the following env variable:
+
+```bash
+DOPEWARS_API=https://testnet.api.dopewars.gg/query
+```
+
+Second, run the development server:
 
 ```bash
 yarn dev

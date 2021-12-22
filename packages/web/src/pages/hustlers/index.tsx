@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import { CloseButton } from '@chakra-ui/close-button';
 import { media } from 'ui/styles/mixins';
 import { useHustlersWalletQuery, useWalletQuery } from 'generated/graphql';
-import { useEthereumClient, useOptimismClient } from 'components/EthereumApolloProvider';
 import AppWindow from 'components/AppWindow';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
@@ -66,25 +65,18 @@ const Hustlers = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(true);
   const router = useRouter();
   const { account } = useWeb3React();
-  const optimismURI = useOptimismClient();
-  const ethereumURI = useEthereumClient();
-  const { data, isFetching: loading } = useHustlersWalletQuery(
-    {
-      endpoint: optimismURI,
-    },
-    {
-      id: account?.toLowerCase() || '',
-    },
-  );
 
-  const { isFetching: walletLoading } = useWalletQuery(
-    {
-      endpoint: ethereumURI,
+  const { data, isFetching: loading } = useHustlersWalletQuery({
+    where: {
+      id: account,
     },
-    {
-      id: account?.toLowerCase() || '',
+  });
+
+  const { isFetching: walletLoading } = useWalletQuery({
+    where: {
+      id: account,
     },
-  );
+  });
 
   const handleSuccessAlert = () => {
     setShowSuccessAlert(false);
@@ -125,23 +117,28 @@ const Hustlers = () => {
       )}
       {loading || walletLoading ? (
         ContentLoading
-      ) : !data?.wallet?.hustlers || data?.wallet?.hustlers.length === 0 ? (
+      ) : data?.wallets.edges && data.wallets.edges[0]?.node?.hustlers.length === 0 ? (
         ContentEmpty
       ) : (
         <Container>
           <div className="hustlerGrid">
-            {data.wallet.hustlers.map(({ id, data }) => {
-              let meta = data.replace('data:application/json;base64,', '');
-              meta = Buffer.from(meta, 'base64').toString();
-              const decoded = JSON.parse(meta);
-              return (
-                <Link key={id} href={`/hustlers/${id}/customize`}>
-                  <a>
-                    <RenderFromChain data={decoded} id={id} />
-                  </a>
-                </Link>
-              );
-            })}
+            {data?.wallets.edges &&
+              data.wallets.edges[0]?.node?.hustlers.map(({ id, svg }) => {
+                let meta = svg?.replace('data:application/json;base64,', '');
+                if (meta) {
+                  meta = Buffer.from(meta, 'base64').toString();
+                  const decoded = JSON.parse(meta);
+                  return (
+                    <Link key={id} href={`/hustlers/${id}/customize`}>
+                      <a>
+                        <RenderFromChain data={decoded} id={id} />
+                      </a>
+                    </Link>
+                  );
+                } else {
+                  return <span>Something went wrong</span>;
+                }
+              })}
           </div>
         </Container>
       )}

@@ -1,0 +1,39 @@
+query Dopes(
+  $after: Cursor
+  $first: Int
+  $before: Cursor
+  $last: Int
+  $orderBy: DopeOrder
+  $where: DopeWhereInput
+) {
+  dopes(
+    after: $after
+    first: $first
+    before: $before
+    last: $last
+    orderBy: $orderBy
+    where: $where
+  ) {
+    edges {
+      node {
+        id
+        claimed
+        opened
+        score
+        rank
+        items {
+          id
+          type
+          name
+          namePrefix
+          nameSuffix
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+      }
+    }
+  }
+}

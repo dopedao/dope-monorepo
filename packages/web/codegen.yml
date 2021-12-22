@@ -1,9 +1,5 @@
 overwrite: true
-schema:
-  - "https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars"
-  - "https://api.thegraph.com/subgraphs/name/tarrencev/dope-wars-optimism"
-  - "src/graphql/client-schemas/bag.graphql"
-  - "src/graphql/client-schemas/open-sea-asset.graphql"
+schema: ${DOPEWARS_API:https://testnet.api.dopewars.gg/query}
 documents: "src/graphql/queries/**/*.graphql"
 generates:
   src/generated/graphql2.ts:
@@ -18,6 +14,12 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-query"
+    config:
+          fetcher:
+            endpoint: ${DOPEWARS_API:https://testnet.api.dopewars.gg/query}
+            fetchParams:
+              headers:
+                'Content-Type': 'application/json'
   src/generated/introspection.ts:
     plugins:
       - fragment-matcher

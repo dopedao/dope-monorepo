@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { useAllHustlersQuery } from 'generated/graphql';
 import Head from 'components/Head';
 import WebAmpPlayer from 'components/WebAmpPlayer';
-import { useOptimismClient } from 'components/EthereumApolloProvider';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
 
@@ -41,20 +40,17 @@ const ScreenSaver = styled.div`
 `;
 
 const GangstaParty = () => {
-  const optimismURI = useOptimismClient();
-  const { data, isFetching: loading } = useAllHustlersQuery({
-    endpoint: optimismURI,
-  });
+  const { data, isFetching: loading } = useAllHustlersQuery();
 
   return (
     <>
       <Head title="DOPE WARS GANGSTA PARTY" />
       <ScreenSaver>
         <HustlerContainer>
-          {!loading && data?.hustlers && data?.hustlers.length > 0 && (
+          {!loading && data?.hustlers && data?.hustlers.edges!.length > 0 && (
             <div className="hustlerGrid">
-              {data.hustlers.map(({ id, data }) => {
-                let meta = data.replace('data:application/json;base64,', '');
+              {data.hustlers.edges!.map(({ node: { svg, id } }: any) => {
+                let meta = svg.replace('data:application/json;base64,', '');
                 meta = Buffer.from(meta, 'base64').toString();
                 const decoded = JSON.parse(meta);
                 return <RenderFromChain data={decoded} id={id} key={id} />;

@@ -1,0 +1,50 @@
+query AllOpenedDopes {
+  page_1: dopes(first: 1000, before: 0, where: { opened: true }) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
+  }
+  page_2: dopes(first: 1000, before: 1000, where: { opened: true }) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
+  }
+  page_3: dopes(first: 1000, before: 2000, where: { opened: true }) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
+  }
+  page_4: dopes(first: 1000, before: 3000, where: { opened: true }) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
+  }
+  page_5: dopes(first: 1000, before: 4000, where: { opened: true }) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
+  }
+  page_6: dopes(first: 1000, before: 5000, where: { opened: true }) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
+  }
+}

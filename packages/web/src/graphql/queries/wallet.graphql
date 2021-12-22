@@ -1,22 +1,30 @@
-query Wallet($id: ID!) {
-  wallet(id: $id) {
-    id
-    address
-    paper
-    bags(first: 200) {
-      claimed
-      id
-      opened
-      clothes @client
-      foot @client
-      hand @client
-      drugs @client
-      neck @client
-      ring @client
-      vehicle @client
-      waist @client
-      weapon @client
-      rank @client
+query Wallet($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        id
+        paper
+        hustlers {
+          id
+          title
+          name
+        }
+        items {
+          id
+          balance
+          item {
+            id
+            name
+          }
+        }
+        dopes {
+          id
+          claimed
+          opened
+          score
+          rank
+        }
+      }
     }
   }
 }

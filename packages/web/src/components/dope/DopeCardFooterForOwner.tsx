@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
-import { Bag } from 'generated/graphql';
+import { Dope } from 'generated/graphql';
 import { useInitiator, usePaper } from 'hooks/contracts';
 
 type DopeCardFooterForOwnerProps = {
-  bag: Pick<Bag, 'id' | 'claimed'>;
+  dope: Pick<Dope, 'id' | 'claimed'>;
   toggleVisibility(): void;
 };
 
-const DopeCardFooterForOwner = ({ bag, toggleVisibility }: DopeCardFooterForOwnerProps) => {
+const DopeCardFooterForOwner = ({ dope, toggleVisibility }: DopeCardFooterForOwnerProps) => {
   const { chainId, account } = useWeb3React();
 
   const paper = usePaper();
@@ -22,17 +22,17 @@ const DopeCardFooterForOwner = ({ bag, toggleVisibility }: DopeCardFooterForOwne
 
   return (
     <div>
-      <Link href={`/hustlers/${bag.id}/initiate`} passHref>
+      <Link href={`/hustlers/${dope.id}/initiate`} passHref>
         <Button variant="primary">Initiate Hustler</Button>
       </Link>
       {initiator && paper && account && chainId === 42 && (
-        <Button onClick={() => router.push(`/dope/${bag.id}/unbundle`)}>Unbundle</Button>
+        <Button onClick={() => router.push(`/dope/${dope.id}/unbundle`)}>Unbundle</Button>
       )}
       {paper && (
         <Button
-          disabled={bag.claimed}
+          disabled={dope.claimed}
           onClick={async () => {
-            await paper.claimById(bag.id);
+            await paper.claimById(dope.id);
           }}
         >
           Claim Paper

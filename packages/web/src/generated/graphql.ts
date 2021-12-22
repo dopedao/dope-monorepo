@@ -5,11 +5,11 @@ export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K]
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 
-function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
+function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      ...requestInit,
+    const res = await fetch("https://testnet.api.dopewars.gg/query", {
+    method: "POST",
+    ...({"headers":{"Content-Type":"application/json"}}),
       body: JSON.stringify({ query, variables }),
     });
 
@@ -31,1453 +31,1098 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  BigDecimal: any;
+  /** Address is a 20 byte Ethereum address, represented as 0x-prefixed hexadecimal. */
+  Address: any;
+  /** BigInt is a large integer represented as a string. */
   BigInt: any;
+  /**
+   * Bytes is an arbitrary length binary string, represented as 0x-prefixed hexadecimal.
+   * An empty byte string is represented as '0x'. Byte strings must have an even number of hexadecimal nybbles.
+   */
   Bytes: any;
+  /** Bytes32 is a 32 byte binary string, represented as 0x-prefixed hexadecimal. */
+  Bytes32: any;
+  Cursor: any;
+  /** Long is a 64 bit unsigned integer. */
+  Long: any;
+  /** Maps a Time GraphQL scalar to a Go time.Time struct. */
+  Time: any;
+  /** Timestamp is a RFC3339 string. */
+  Timestamp: any;
 };
 
-export type Attribute = {
-  __typename?: 'Attribute';
-  displayType: Scalars['String'];
-  hustler: Hustler;
+export type BodyPart = Node & {
+  __typename?: 'BodyPart';
   id: Scalars['ID'];
-  traitType: Scalars['String'];
-  value: Scalars['String'];
+  rle: Scalars['String'];
+  sex: BodyPartSex;
+  type: BodyPartType;
 };
 
-export type Attribute_Filter = {
-  displayType?: InputMaybe<Scalars['String']>;
-  displayType_contains?: InputMaybe<Scalars['String']>;
-  displayType_ends_with?: InputMaybe<Scalars['String']>;
-  displayType_gt?: InputMaybe<Scalars['String']>;
-  displayType_gte?: InputMaybe<Scalars['String']>;
-  displayType_in?: InputMaybe<Array<Scalars['String']>>;
-  displayType_lt?: InputMaybe<Scalars['String']>;
-  displayType_lte?: InputMaybe<Scalars['String']>;
-  displayType_not?: InputMaybe<Scalars['String']>;
-  displayType_not_contains?: InputMaybe<Scalars['String']>;
-  displayType_not_ends_with?: InputMaybe<Scalars['String']>;
-  displayType_not_in?: InputMaybe<Array<Scalars['String']>>;
-  displayType_not_starts_with?: InputMaybe<Scalars['String']>;
-  displayType_starts_with?: InputMaybe<Scalars['String']>;
-  hustler?: InputMaybe<Scalars['String']>;
-  hustler_contains?: InputMaybe<Scalars['String']>;
-  hustler_ends_with?: InputMaybe<Scalars['String']>;
-  hustler_gt?: InputMaybe<Scalars['String']>;
-  hustler_gte?: InputMaybe<Scalars['String']>;
-  hustler_in?: InputMaybe<Array<Scalars['String']>>;
-  hustler_lt?: InputMaybe<Scalars['String']>;
-  hustler_lte?: InputMaybe<Scalars['String']>;
-  hustler_not?: InputMaybe<Scalars['String']>;
-  hustler_not_contains?: InputMaybe<Scalars['String']>;
-  hustler_not_ends_with?: InputMaybe<Scalars['String']>;
-  hustler_not_in?: InputMaybe<Array<Scalars['String']>>;
-  hustler_not_starts_with?: InputMaybe<Scalars['String']>;
-  hustler_starts_with?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  traitType?: InputMaybe<Scalars['String']>;
-  traitType_contains?: InputMaybe<Scalars['String']>;
-  traitType_ends_with?: InputMaybe<Scalars['String']>;
-  traitType_gt?: InputMaybe<Scalars['String']>;
-  traitType_gte?: InputMaybe<Scalars['String']>;
-  traitType_in?: InputMaybe<Array<Scalars['String']>>;
-  traitType_lt?: InputMaybe<Scalars['String']>;
-  traitType_lte?: InputMaybe<Scalars['String']>;
-  traitType_not?: InputMaybe<Scalars['String']>;
-  traitType_not_contains?: InputMaybe<Scalars['String']>;
-  traitType_not_ends_with?: InputMaybe<Scalars['String']>;
-  traitType_not_in?: InputMaybe<Array<Scalars['String']>>;
-  traitType_not_starts_with?: InputMaybe<Scalars['String']>;
-  traitType_starts_with?: InputMaybe<Scalars['String']>;
-  value?: InputMaybe<Scalars['String']>;
-  value_contains?: InputMaybe<Scalars['String']>;
-  value_ends_with?: InputMaybe<Scalars['String']>;
-  value_gt?: InputMaybe<Scalars['String']>;
-  value_gte?: InputMaybe<Scalars['String']>;
-  value_in?: InputMaybe<Array<Scalars['String']>>;
-  value_lt?: InputMaybe<Scalars['String']>;
-  value_lte?: InputMaybe<Scalars['String']>;
-  value_not?: InputMaybe<Scalars['String']>;
-  value_not_contains?: InputMaybe<Scalars['String']>;
-  value_not_ends_with?: InputMaybe<Scalars['String']>;
-  value_not_in?: InputMaybe<Array<Scalars['String']>>;
-  value_not_starts_with?: InputMaybe<Scalars['String']>;
-  value_starts_with?: InputMaybe<Scalars['String']>;
-};
-
-export enum Attribute_OrderBy {
-  DisplayType = 'displayType',
-  Hustler = 'hustler',
-  Id = 'id',
-  TraitType = 'traitType',
-  Value = 'value'
+export enum BodyPartSex {
+  Female = 'FEMALE',
+  Male = 'MALE'
 }
 
-export type Bag = {
-  __typename?: 'Bag';
+export enum BodyPartType {
+  Beard = 'BEARD',
+  Body = 'BODY',
+  Hair = 'HAIR'
+}
+
+/**
+ * BodyPartWhereInput is used for filtering BodyPart objects.
+ * Input was generated by ent.
+ */
+export type BodyPartWhereInput = {
+  and?: InputMaybe<Array<BodyPartWhereInput>>;
+  /** hustler_beards edge predicates */
+  hasHustlerBeards?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerBeardsWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_bodies edge predicates */
+  hasHustlerBodies?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerBodiesWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_hairs edge predicates */
+  hasHustlerHairs?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerHairsWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** id field predicates */
+  id?: InputMaybe<Scalars['ID']>;
+  idGT?: InputMaybe<Scalars['ID']>;
+  idGTE?: InputMaybe<Scalars['ID']>;
+  idIn?: InputMaybe<Array<Scalars['ID']>>;
+  idLT?: InputMaybe<Scalars['ID']>;
+  idLTE?: InputMaybe<Scalars['ID']>;
+  idNEQ?: InputMaybe<Scalars['ID']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']>>;
+  not?: InputMaybe<BodyPartWhereInput>;
+  or?: InputMaybe<Array<BodyPartWhereInput>>;
+  /** rle field predicates */
+  rle?: InputMaybe<Scalars['String']>;
+  rleContains?: InputMaybe<Scalars['String']>;
+  rleContainsFold?: InputMaybe<Scalars['String']>;
+  rleEqualFold?: InputMaybe<Scalars['String']>;
+  rleGT?: InputMaybe<Scalars['String']>;
+  rleGTE?: InputMaybe<Scalars['String']>;
+  rleHasPrefix?: InputMaybe<Scalars['String']>;
+  rleHasSuffix?: InputMaybe<Scalars['String']>;
+  rleIn?: InputMaybe<Array<Scalars['String']>>;
+  rleLT?: InputMaybe<Scalars['String']>;
+  rleLTE?: InputMaybe<Scalars['String']>;
+  rleNEQ?: InputMaybe<Scalars['String']>;
+  rleNotIn?: InputMaybe<Array<Scalars['String']>>;
+  /** sex field predicates */
+  sex?: InputMaybe<BodyPartSex>;
+  sexIn?: InputMaybe<Array<BodyPartSex>>;
+  sexNEQ?: InputMaybe<BodyPartSex>;
+  sexNotIn?: InputMaybe<Array<BodyPartSex>>;
+  /** type field predicates */
+  type?: InputMaybe<BodyPartType>;
+  typeIn?: InputMaybe<Array<BodyPartType>>;
+  typeNEQ?: InputMaybe<BodyPartType>;
+  typeNotIn?: InputMaybe<Array<BodyPartType>>;
+};
+
+export type Dope = Node & {
+  __typename?: 'Dope';
   claimed: Scalars['Boolean'];
-  clothes: Scalars['String'];
-  currentOwner: Wallet;
-  drugs: Scalars['String'];
-  foot: Scalars['String'];
-  hand: Scalars['String'];
   id: Scalars['ID'];
-  minted: Scalars['BigInt'];
-  neck: Scalars['String'];
-  open_sea_asset?: Maybe<OpenSeaAsset>;
+  items: Array<Item>;
   opened: Scalars['Boolean'];
   rank: Scalars['Int'];
-  ring: Scalars['String'];
-  vehicle: Scalars['String'];
-  waist: Scalars['String'];
-  weapon: Scalars['String'];
+  score: Scalars['Int'];
 };
 
-export type Bag_Filter = {
+export type DopeConnection = {
+  __typename?: 'DopeConnection';
+  edges?: Maybe<Array<Maybe<DopeEdge>>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type DopeEdge = {
+  __typename?: 'DopeEdge';
+  cursor: Scalars['Cursor'];
+  node?: Maybe<Dope>;
+};
+
+export type DopeOrder = {
+  direction: OrderDirection;
+  field?: InputMaybe<DopeOrderField>;
+};
+
+export enum DopeOrderField {
+  Id = 'ID',
+  Rank = 'RANK'
+}
+
+/**
+ * DopeWhereInput is used for filtering Dope objects.
+ * Input was generated by ent.
+ */
+export type DopeWhereInput = {
+  and?: InputMaybe<Array<DopeWhereInput>>;
+  /** claimed field predicates */
   claimed?: InputMaybe<Scalars['Boolean']>;
-  claimed_in?: InputMaybe<Array<Scalars['Boolean']>>;
-  claimed_not?: InputMaybe<Scalars['Boolean']>;
-  claimed_not_in?: InputMaybe<Array<Scalars['Boolean']>>;
-  clothes?: InputMaybe<Scalars['String']>;
-  clothes_contains?: InputMaybe<Scalars['String']>;
-  clothes_ends_with?: InputMaybe<Scalars['String']>;
-  clothes_gt?: InputMaybe<Scalars['String']>;
-  clothes_gte?: InputMaybe<Scalars['String']>;
-  clothes_in?: InputMaybe<Array<Scalars['String']>>;
-  clothes_lt?: InputMaybe<Scalars['String']>;
-  clothes_lte?: InputMaybe<Scalars['String']>;
-  clothes_not?: InputMaybe<Scalars['String']>;
-  clothes_not_contains?: InputMaybe<Scalars['String']>;
-  clothes_not_ends_with?: InputMaybe<Scalars['String']>;
-  clothes_not_in?: InputMaybe<Array<Scalars['String']>>;
-  clothes_not_starts_with?: InputMaybe<Scalars['String']>;
-  clothes_starts_with?: InputMaybe<Scalars['String']>;
-  currentOwner?: InputMaybe<Scalars['String']>;
-  currentOwner_contains?: InputMaybe<Scalars['String']>;
-  currentOwner_ends_with?: InputMaybe<Scalars['String']>;
-  currentOwner_gt?: InputMaybe<Scalars['String']>;
-  currentOwner_gte?: InputMaybe<Scalars['String']>;
-  currentOwner_in?: InputMaybe<Array<Scalars['String']>>;
-  currentOwner_lt?: InputMaybe<Scalars['String']>;
-  currentOwner_lte?: InputMaybe<Scalars['String']>;
-  currentOwner_not?: InputMaybe<Scalars['String']>;
-  currentOwner_not_contains?: InputMaybe<Scalars['String']>;
-  currentOwner_not_ends_with?: InputMaybe<Scalars['String']>;
-  currentOwner_not_in?: InputMaybe<Array<Scalars['String']>>;
-  currentOwner_not_starts_with?: InputMaybe<Scalars['String']>;
-  currentOwner_starts_with?: InputMaybe<Scalars['String']>;
-  drugs?: InputMaybe<Scalars['String']>;
-  drugs_contains?: InputMaybe<Scalars['String']>;
-  drugs_ends_with?: InputMaybe<Scalars['String']>;
-  drugs_gt?: InputMaybe<Scalars['String']>;
-  drugs_gte?: InputMaybe<Scalars['String']>;
-  drugs_in?: InputMaybe<Array<Scalars['String']>>;
-  drugs_lt?: InputMaybe<Scalars['String']>;
-  drugs_lte?: InputMaybe<Scalars['String']>;
-  drugs_not?: InputMaybe<Scalars['String']>;
-  drugs_not_contains?: InputMaybe<Scalars['String']>;
-  drugs_not_ends_with?: InputMaybe<Scalars['String']>;
-  drugs_not_in?: InputMaybe<Array<Scalars['String']>>;
-  drugs_not_starts_with?: InputMaybe<Scalars['String']>;
-  drugs_starts_with?: InputMaybe<Scalars['String']>;
-  foot?: InputMaybe<Scalars['String']>;
-  foot_contains?: InputMaybe<Scalars['String']>;
-  foot_ends_with?: InputMaybe<Scalars['String']>;
-  foot_gt?: InputMaybe<Scalars['String']>;
-  foot_gte?: InputMaybe<Scalars['String']>;
-  foot_in?: InputMaybe<Array<Scalars['String']>>;
-  foot_lt?: InputMaybe<Scalars['String']>;
-  foot_lte?: InputMaybe<Scalars['String']>;
-  foot_not?: InputMaybe<Scalars['String']>;
-  foot_not_contains?: InputMaybe<Scalars['String']>;
-  foot_not_ends_with?: InputMaybe<Scalars['String']>;
-  foot_not_in?: InputMaybe<Array<Scalars['String']>>;
-  foot_not_starts_with?: InputMaybe<Scalars['String']>;
-  foot_starts_with?: InputMaybe<Scalars['String']>;
-  hand?: InputMaybe<Scalars['String']>;
-  hand_contains?: InputMaybe<Scalars['String']>;
-  hand_ends_with?: InputMaybe<Scalars['String']>;
-  hand_gt?: InputMaybe<Scalars['String']>;
-  hand_gte?: InputMaybe<Scalars['String']>;
-  hand_in?: InputMaybe<Array<Scalars['String']>>;
-  hand_lt?: InputMaybe<Scalars['String']>;
-  hand_lte?: InputMaybe<Scalars['String']>;
-  hand_not?: InputMaybe<Scalars['String']>;
-  hand_not_contains?: InputMaybe<Scalars['String']>;
-  hand_not_ends_with?: InputMaybe<Scalars['String']>;
-  hand_not_in?: InputMaybe<Array<Scalars['String']>>;
-  hand_not_starts_with?: InputMaybe<Scalars['String']>;
-  hand_starts_with?: InputMaybe<Scalars['String']>;
+  claimedNEQ?: InputMaybe<Scalars['Boolean']>;
+  /** items edge predicates */
+  hasItems?: InputMaybe<Scalars['Boolean']>;
+  hasItemsWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** wallet edge predicates */
+  hasWallet?: InputMaybe<Scalars['Boolean']>;
+  hasWalletWith?: InputMaybe<Array<WalletWhereInput>>;
+  /** id field predicates */
   id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  minted?: InputMaybe<Scalars['BigInt']>;
-  minted_gt?: InputMaybe<Scalars['BigInt']>;
-  minted_gte?: InputMaybe<Scalars['BigInt']>;
-  minted_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  minted_lt?: InputMaybe<Scalars['BigInt']>;
-  minted_lte?: InputMaybe<Scalars['BigInt']>;
-  minted_not?: InputMaybe<Scalars['BigInt']>;
-  minted_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  neck?: InputMaybe<Scalars['String']>;
-  neck_contains?: InputMaybe<Scalars['String']>;
-  neck_ends_with?: InputMaybe<Scalars['String']>;
-  neck_gt?: InputMaybe<Scalars['String']>;
-  neck_gte?: InputMaybe<Scalars['String']>;
-  neck_in?: InputMaybe<Array<Scalars['String']>>;
-  neck_lt?: InputMaybe<Scalars['String']>;
-  neck_lte?: InputMaybe<Scalars['String']>;
-  neck_not?: InputMaybe<Scalars['String']>;
-  neck_not_contains?: InputMaybe<Scalars['String']>;
-  neck_not_ends_with?: InputMaybe<Scalars['String']>;
-  neck_not_in?: InputMaybe<Array<Scalars['String']>>;
-  neck_not_starts_with?: InputMaybe<Scalars['String']>;
-  neck_starts_with?: InputMaybe<Scalars['String']>;
+  idGT?: InputMaybe<Scalars['ID']>;
+  idGTE?: InputMaybe<Scalars['ID']>;
+  idIn?: InputMaybe<Array<Scalars['ID']>>;
+  idLT?: InputMaybe<Scalars['ID']>;
+  idLTE?: InputMaybe<Scalars['ID']>;
+  idNEQ?: InputMaybe<Scalars['ID']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']>>;
+  not?: InputMaybe<DopeWhereInput>;
+  /** opened field predicates */
   opened?: InputMaybe<Scalars['Boolean']>;
-  opened_in?: InputMaybe<Array<Scalars['Boolean']>>;
-  opened_not?: InputMaybe<Scalars['Boolean']>;
-  opened_not_in?: InputMaybe<Array<Scalars['Boolean']>>;
-  ring?: InputMaybe<Scalars['String']>;
-  ring_contains?: InputMaybe<Scalars['String']>;
-  ring_ends_with?: InputMaybe<Scalars['String']>;
-  ring_gt?: InputMaybe<Scalars['String']>;
-  ring_gte?: InputMaybe<Scalars['String']>;
-  ring_in?: InputMaybe<Array<Scalars['String']>>;
-  ring_lt?: InputMaybe<Scalars['String']>;
-  ring_lte?: InputMaybe<Scalars['String']>;
-  ring_not?: InputMaybe<Scalars['String']>;
-  ring_not_contains?: InputMaybe<Scalars['String']>;
-  ring_not_ends_with?: InputMaybe<Scalars['String']>;
-  ring_not_in?: InputMaybe<Array<Scalars['String']>>;
-  ring_not_starts_with?: InputMaybe<Scalars['String']>;
-  ring_starts_with?: InputMaybe<Scalars['String']>;
-  vehicle?: InputMaybe<Scalars['String']>;
-  vehicle_contains?: InputMaybe<Scalars['String']>;
-  vehicle_ends_with?: InputMaybe<Scalars['String']>;
-  vehicle_gt?: InputMaybe<Scalars['String']>;
-  vehicle_gte?: InputMaybe<Scalars['String']>;
-  vehicle_in?: InputMaybe<Array<Scalars['String']>>;
-  vehicle_lt?: InputMaybe<Scalars['String']>;
-  vehicle_lte?: InputMaybe<Scalars['String']>;
-  vehicle_not?: InputMaybe<Scalars['String']>;
-  vehicle_not_contains?: InputMaybe<Scalars['String']>;
-  vehicle_not_ends_with?: InputMaybe<Scalars['String']>;
-  vehicle_not_in?: InputMaybe<Array<Scalars['String']>>;
-  vehicle_not_starts_with?: InputMaybe<Scalars['String']>;
-  vehicle_starts_with?: InputMaybe<Scalars['String']>;
-  waist?: InputMaybe<Scalars['String']>;
-  waist_contains?: InputMaybe<Scalars['String']>;
-  waist_ends_with?: InputMaybe<Scalars['String']>;
-  waist_gt?: InputMaybe<Scalars['String']>;
-  waist_gte?: InputMaybe<Scalars['String']>;
-  waist_in?: InputMaybe<Array<Scalars['String']>>;
-  waist_lt?: InputMaybe<Scalars['String']>;
-  waist_lte?: InputMaybe<Scalars['String']>;
-  waist_not?: InputMaybe<Scalars['String']>;
-  waist_not_contains?: InputMaybe<Scalars['String']>;
-  waist_not_ends_with?: InputMaybe<Scalars['String']>;
-  waist_not_in?: InputMaybe<Array<Scalars['String']>>;
-  waist_not_starts_with?: InputMaybe<Scalars['String']>;
-  waist_starts_with?: InputMaybe<Scalars['String']>;
-  weapon?: InputMaybe<Scalars['String']>;
-  weapon_contains?: InputMaybe<Scalars['String']>;
-  weapon_ends_with?: InputMaybe<Scalars['String']>;
-  weapon_gt?: InputMaybe<Scalars['String']>;
-  weapon_gte?: InputMaybe<Scalars['String']>;
-  weapon_in?: InputMaybe<Array<Scalars['String']>>;
-  weapon_lt?: InputMaybe<Scalars['String']>;
-  weapon_lte?: InputMaybe<Scalars['String']>;
-  weapon_not?: InputMaybe<Scalars['String']>;
-  weapon_not_contains?: InputMaybe<Scalars['String']>;
-  weapon_not_ends_with?: InputMaybe<Scalars['String']>;
-  weapon_not_in?: InputMaybe<Array<Scalars['String']>>;
-  weapon_not_starts_with?: InputMaybe<Scalars['String']>;
-  weapon_starts_with?: InputMaybe<Scalars['String']>;
+  openedNEQ?: InputMaybe<Scalars['Boolean']>;
+  or?: InputMaybe<Array<DopeWhereInput>>;
+  /** order field predicates */
+  order?: InputMaybe<Scalars['Int']>;
+  orderGT?: InputMaybe<Scalars['Int']>;
+  orderGTE?: InputMaybe<Scalars['Int']>;
+  orderIn?: InputMaybe<Array<Scalars['Int']>>;
+  orderLT?: InputMaybe<Scalars['Int']>;
+  orderLTE?: InputMaybe<Scalars['Int']>;
+  orderNEQ?: InputMaybe<Scalars['Int']>;
+  orderNotIn?: InputMaybe<Array<Scalars['Int']>>;
+  /** rank field predicates */
+  rank?: InputMaybe<Scalars['Int']>;
+  rankGT?: InputMaybe<Scalars['Int']>;
+  rankGTE?: InputMaybe<Scalars['Int']>;
+  rankIn?: InputMaybe<Array<Scalars['Int']>>;
+  rankIsNil?: InputMaybe<Scalars['Boolean']>;
+  rankLT?: InputMaybe<Scalars['Int']>;
+  rankLTE?: InputMaybe<Scalars['Int']>;
+  rankNEQ?: InputMaybe<Scalars['Int']>;
+  rankNotIn?: InputMaybe<Array<Scalars['Int']>>;
+  rankNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** score field predicates */
+  score?: InputMaybe<Scalars['Int']>;
+  scoreGT?: InputMaybe<Scalars['Int']>;
+  scoreGTE?: InputMaybe<Scalars['Int']>;
+  scoreIn?: InputMaybe<Array<Scalars['Int']>>;
+  scoreIsNil?: InputMaybe<Scalars['Boolean']>;
+  scoreLT?: InputMaybe<Scalars['Int']>;
+  scoreLTE?: InputMaybe<Scalars['Int']>;
+  scoreNEQ?: InputMaybe<Scalars['Int']>;
+  scoreNotIn?: InputMaybe<Array<Scalars['Int']>>;
+  scoreNotNil?: InputMaybe<Scalars['Boolean']>;
 };
 
-export enum Bag_OrderBy {
-  Claimed = 'claimed',
-  Clothes = 'clothes',
-  CurrentOwner = 'currentOwner',
-  Drugs = 'drugs',
-  Foot = 'foot',
-  Hand = 'hand',
-  Id = 'id',
-  Minted = 'minted',
-  Neck = 'neck',
-  Opened = 'opened',
-  Ring = 'ring',
-  Vehicle = 'vehicle',
-  Waist = 'waist',
-  Weapon = 'weapon'
-}
-
-export type Beard = {
-  __typename?: 'Beard';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type Beard_Filter = {
+/**
+ * EventWhereInput is used for filtering Event objects.
+ * Input was generated by ent.
+ */
+export type EventWhereInput = {
+  and?: InputMaybe<Array<EventWhereInput>>;
+  /** created_at field predicates */
+  createdAt?: InputMaybe<Scalars['Time']>;
+  createdAtGT?: InputMaybe<Scalars['Time']>;
+  createdAtGTE?: InputMaybe<Scalars['Time']>;
+  createdAtIn?: InputMaybe<Array<Scalars['Time']>>;
+  createdAtLT?: InputMaybe<Scalars['Time']>;
+  createdAtLTE?: InputMaybe<Scalars['Time']>;
+  createdAtNEQ?: InputMaybe<Scalars['Time']>;
+  createdAtNotIn?: InputMaybe<Array<Scalars['Time']>>;
+  /** id field predicates */
   id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  rle?: InputMaybe<Scalars['Bytes']>;
-  rle_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  rle_not?: InputMaybe<Scalars['Bytes']>;
-  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  idGT?: InputMaybe<Scalars['ID']>;
+  idGTE?: InputMaybe<Scalars['ID']>;
+  idIn?: InputMaybe<Array<Scalars['ID']>>;
+  idLT?: InputMaybe<Scalars['ID']>;
+  idLTE?: InputMaybe<Scalars['ID']>;
+  idNEQ?: InputMaybe<Scalars['ID']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']>>;
+  /** index field predicates */
+  index?: InputMaybe<Scalars['Long']>;
+  indexGT?: InputMaybe<Scalars['Long']>;
+  indexGTE?: InputMaybe<Scalars['Long']>;
+  indexIn?: InputMaybe<Array<Scalars['Long']>>;
+  indexLT?: InputMaybe<Scalars['Long']>;
+  indexLTE?: InputMaybe<Scalars['Long']>;
+  indexNEQ?: InputMaybe<Scalars['Long']>;
+  indexNotIn?: InputMaybe<Array<Scalars['Long']>>;
+  not?: InputMaybe<EventWhereInput>;
+  or?: InputMaybe<Array<EventWhereInput>>;
+  /** updated_at field predicates */
+  updatedAt?: InputMaybe<Scalars['Time']>;
+  updatedAtGT?: InputMaybe<Scalars['Time']>;
+  updatedAtGTE?: InputMaybe<Scalars['Time']>;
+  updatedAtIn?: InputMaybe<Array<Scalars['Time']>>;
+  updatedAtLT?: InputMaybe<Scalars['Time']>;
+  updatedAtLTE?: InputMaybe<Scalars['Time']>;
+  updatedAtNEQ?: InputMaybe<Scalars['Time']>;
+  updatedAtNotIn?: InputMaybe<Array<Scalars['Time']>>;
 };
 
-export enum Beard_OrderBy {
-  Id = 'id',
-  Rle = 'rle'
-}
-
-export type Block_Height = {
-  hash?: InputMaybe<Scalars['Bytes']>;
-  number?: InputMaybe<Scalars['Int']>;
-  number_gte?: InputMaybe<Scalars['Int']>;
-};
-
-export type FemaleBody = {
-  __typename?: 'FemaleBody';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type FemaleBody_Filter = {
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  rle?: InputMaybe<Scalars['Bytes']>;
-  rle_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  rle_not?: InputMaybe<Scalars['Bytes']>;
-  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-};
-
-export enum FemaleBody_OrderBy {
-  Id = 'id',
-  Rle = 'rle'
-}
-
-export type FemaleHair = {
-  __typename?: 'FemaleHair';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type FemaleHair_Filter = {
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  rle?: InputMaybe<Scalars['Bytes']>;
-  rle_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  rle_not?: InputMaybe<Scalars['Bytes']>;
-  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-};
-
-export enum FemaleHair_OrderBy {
-  Id = 'id',
-  Rle = 'rle'
-}
-
-export type Hustler = {
+export type Hustler = Node & {
   __typename?: 'Hustler';
-  attributes: Array<Attribute>;
-  data: Scalars['String'];
+  accessory?: Maybe<Item>;
+  age: Scalars['Long'];
+  background?: Maybe<Scalars['String']>;
+  beard?: Maybe<BodyPart>;
+  body?: Maybe<BodyPart>;
+  clothes?: Maybe<Item>;
+  color?: Maybe<Scalars['String']>;
+  drug?: Maybe<Item>;
+  foot?: Maybe<Item>;
+  hair?: Maybe<BodyPart>;
+  hand?: Maybe<Item>;
   id: Scalars['ID'];
-  image: Scalars['String'];
-  name: Scalars['String'];
-  owner: Wallet;
+  name?: Maybe<Scalars['String']>;
+  neck?: Maybe<Item>;
+  order: Array<Scalars['Int']>;
+  ring?: Maybe<Item>;
+  sex: HustlerSex;
+  svg?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  type: HustlerType;
+  vehicle?: Maybe<Item>;
+  viewbox: Array<Scalars['Int']>;
+  waist?: Maybe<Item>;
+  weapon?: Maybe<Item>;
 };
 
-
-export type HustlerAttributesArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Attribute_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  where?: InputMaybe<Attribute_Filter>;
+export type HustlerConnection = {
+  __typename?: 'HustlerConnection';
+  edges?: Maybe<Array<Maybe<HustlerEdge>>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
 };
 
-export type Hustler_Filter = {
-  data?: InputMaybe<Scalars['String']>;
-  data_contains?: InputMaybe<Scalars['String']>;
-  data_ends_with?: InputMaybe<Scalars['String']>;
-  data_gt?: InputMaybe<Scalars['String']>;
-  data_gte?: InputMaybe<Scalars['String']>;
-  data_in?: InputMaybe<Array<Scalars['String']>>;
-  data_lt?: InputMaybe<Scalars['String']>;
-  data_lte?: InputMaybe<Scalars['String']>;
-  data_not?: InputMaybe<Scalars['String']>;
-  data_not_contains?: InputMaybe<Scalars['String']>;
-  data_not_ends_with?: InputMaybe<Scalars['String']>;
-  data_not_in?: InputMaybe<Array<Scalars['String']>>;
-  data_not_starts_with?: InputMaybe<Scalars['String']>;
-  data_starts_with?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  image?: InputMaybe<Scalars['String']>;
-  image_contains?: InputMaybe<Scalars['String']>;
-  image_ends_with?: InputMaybe<Scalars['String']>;
-  image_gt?: InputMaybe<Scalars['String']>;
-  image_gte?: InputMaybe<Scalars['String']>;
-  image_in?: InputMaybe<Array<Scalars['String']>>;
-  image_lt?: InputMaybe<Scalars['String']>;
-  image_lte?: InputMaybe<Scalars['String']>;
-  image_not?: InputMaybe<Scalars['String']>;
-  image_not_contains?: InputMaybe<Scalars['String']>;
-  image_not_ends_with?: InputMaybe<Scalars['String']>;
-  image_not_in?: InputMaybe<Array<Scalars['String']>>;
-  image_not_starts_with?: InputMaybe<Scalars['String']>;
-  image_starts_with?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_ends_with?: InputMaybe<Scalars['String']>;
-  name_gt?: InputMaybe<Scalars['String']>;
-  name_gte?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_lt?: InputMaybe<Scalars['String']>;
-  name_lte?: InputMaybe<Scalars['String']>;
-  name_not?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_ends_with?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not_starts_with?: InputMaybe<Scalars['String']>;
-  name_starts_with?: InputMaybe<Scalars['String']>;
-  owner?: InputMaybe<Scalars['String']>;
-  owner_contains?: InputMaybe<Scalars['String']>;
-  owner_ends_with?: InputMaybe<Scalars['String']>;
-  owner_gt?: InputMaybe<Scalars['String']>;
-  owner_gte?: InputMaybe<Scalars['String']>;
-  owner_in?: InputMaybe<Array<Scalars['String']>>;
-  owner_lt?: InputMaybe<Scalars['String']>;
-  owner_lte?: InputMaybe<Scalars['String']>;
-  owner_not?: InputMaybe<Scalars['String']>;
-  owner_not_contains?: InputMaybe<Scalars['String']>;
-  owner_not_ends_with?: InputMaybe<Scalars['String']>;
-  owner_not_in?: InputMaybe<Array<Scalars['String']>>;
-  owner_not_starts_with?: InputMaybe<Scalars['String']>;
-  owner_starts_with?: InputMaybe<Scalars['String']>;
+export type HustlerEdge = {
+  __typename?: 'HustlerEdge';
+  cursor: Scalars['Cursor'];
+  node?: Maybe<Hustler>;
 };
 
-export enum Hustler_OrderBy {
-  Attributes = 'attributes',
-  Data = 'data',
-  Id = 'id',
-  Image = 'image',
-  Name = 'name',
-  Owner = 'owner'
+export type HustlerOrder = {
+  direction: OrderDirection;
+};
+
+export enum HustlerSex {
+  Female = 'FEMALE',
+  Male = 'MALE'
 }
 
-export type Item = {
-  __typename?: 'Item';
-  data: Scalars['String'];
-  femaleRle: Scalars['Bytes'];
-  id: Scalars['ID'];
-  maleRle: Scalars['Bytes'];
-  name: Scalars['String'];
+export enum HustlerType {
+  OriginalGangsta = 'ORIGINAL_GANGSTA',
+  Regular = 'REGULAR'
+}
+
+/**
+ * HustlerWhereInput is used for filtering Hustler objects.
+ * Input was generated by ent.
+ */
+export type HustlerWhereInput = {
+  /** age field predicates */
+  age?: InputMaybe<Scalars['Long']>;
+  ageGT?: InputMaybe<Scalars['Long']>;
+  ageGTE?: InputMaybe<Scalars['Long']>;
+  ageIn?: InputMaybe<Array<Scalars['Long']>>;
+  ageLT?: InputMaybe<Scalars['Long']>;
+  ageLTE?: InputMaybe<Scalars['Long']>;
+  ageNEQ?: InputMaybe<Scalars['Long']>;
+  ageNotIn?: InputMaybe<Array<Scalars['Long']>>;
+  and?: InputMaybe<Array<HustlerWhereInput>>;
+  /** background field predicates */
+  background?: InputMaybe<Scalars['String']>;
+  backgroundContains?: InputMaybe<Scalars['String']>;
+  backgroundContainsFold?: InputMaybe<Scalars['String']>;
+  backgroundEqualFold?: InputMaybe<Scalars['String']>;
+  backgroundGT?: InputMaybe<Scalars['String']>;
+  backgroundGTE?: InputMaybe<Scalars['String']>;
+  backgroundHasPrefix?: InputMaybe<Scalars['String']>;
+  backgroundHasSuffix?: InputMaybe<Scalars['String']>;
+  backgroundIn?: InputMaybe<Array<Scalars['String']>>;
+  backgroundIsNil?: InputMaybe<Scalars['Boolean']>;
+  backgroundLT?: InputMaybe<Scalars['String']>;
+  backgroundLTE?: InputMaybe<Scalars['String']>;
+  backgroundNEQ?: InputMaybe<Scalars['String']>;
+  backgroundNotIn?: InputMaybe<Array<Scalars['String']>>;
+  backgroundNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** color field predicates */
+  color?: InputMaybe<Scalars['String']>;
+  colorContains?: InputMaybe<Scalars['String']>;
+  colorContainsFold?: InputMaybe<Scalars['String']>;
+  colorEqualFold?: InputMaybe<Scalars['String']>;
+  colorGT?: InputMaybe<Scalars['String']>;
+  colorGTE?: InputMaybe<Scalars['String']>;
+  colorHasPrefix?: InputMaybe<Scalars['String']>;
+  colorHasSuffix?: InputMaybe<Scalars['String']>;
+  colorIn?: InputMaybe<Array<Scalars['String']>>;
+  colorIsNil?: InputMaybe<Scalars['Boolean']>;
+  colorLT?: InputMaybe<Scalars['String']>;
+  colorLTE?: InputMaybe<Scalars['String']>;
+  colorNEQ?: InputMaybe<Scalars['String']>;
+  colorNotIn?: InputMaybe<Array<Scalars['String']>>;
+  colorNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** created_at field predicates */
+  createdAt?: InputMaybe<Scalars['Time']>;
+  createdAtGT?: InputMaybe<Scalars['Time']>;
+  createdAtGTE?: InputMaybe<Scalars['Time']>;
+  createdAtIn?: InputMaybe<Array<Scalars['Time']>>;
+  createdAtLT?: InputMaybe<Scalars['Time']>;
+  createdAtLTE?: InputMaybe<Scalars['Time']>;
+  createdAtNEQ?: InputMaybe<Scalars['Time']>;
+  createdAtNotIn?: InputMaybe<Array<Scalars['Time']>>;
+  /** accessory edge predicates */
+  hasAccessory?: InputMaybe<Scalars['Boolean']>;
+  hasAccessoryWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** beard edge predicates */
+  hasBeard?: InputMaybe<Scalars['Boolean']>;
+  hasBeardWith?: InputMaybe<Array<BodyPartWhereInput>>;
+  /** body edge predicates */
+  hasBody?: InputMaybe<Scalars['Boolean']>;
+  hasBodyWith?: InputMaybe<Array<BodyPartWhereInput>>;
+  /** clothes edge predicates */
+  hasClothes?: InputMaybe<Scalars['Boolean']>;
+  hasClothesWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** drug edge predicates */
+  hasDrug?: InputMaybe<Scalars['Boolean']>;
+  hasDrugWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** foot edge predicates */
+  hasFoot?: InputMaybe<Scalars['Boolean']>;
+  hasFootWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** hair edge predicates */
+  hasHair?: InputMaybe<Scalars['Boolean']>;
+  hasHairWith?: InputMaybe<Array<BodyPartWhereInput>>;
+  /** hand edge predicates */
+  hasHand?: InputMaybe<Scalars['Boolean']>;
+  hasHandWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** neck edge predicates */
+  hasNeck?: InputMaybe<Scalars['Boolean']>;
+  hasNeckWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** ring edge predicates */
+  hasRing?: InputMaybe<Scalars['Boolean']>;
+  hasRingWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** vehicle edge predicates */
+  hasVehicle?: InputMaybe<Scalars['Boolean']>;
+  hasVehicleWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** waist edge predicates */
+  hasWaist?: InputMaybe<Scalars['Boolean']>;
+  hasWaistWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** wallet edge predicates */
+  hasWallet?: InputMaybe<Scalars['Boolean']>;
+  hasWalletWith?: InputMaybe<Array<WalletWhereInput>>;
+  /** weapon edge predicates */
+  hasWeapon?: InputMaybe<Scalars['Boolean']>;
+  hasWeaponWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** id field predicates */
+  id?: InputMaybe<Scalars['ID']>;
+  idGT?: InputMaybe<Scalars['ID']>;
+  idGTE?: InputMaybe<Scalars['ID']>;
+  idIn?: InputMaybe<Array<Scalars['ID']>>;
+  idLT?: InputMaybe<Scalars['ID']>;
+  idLTE?: InputMaybe<Scalars['ID']>;
+  idNEQ?: InputMaybe<Scalars['ID']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']>>;
+  /** name field predicates */
+  name?: InputMaybe<Scalars['String']>;
+  nameContains?: InputMaybe<Scalars['String']>;
+  nameContainsFold?: InputMaybe<Scalars['String']>;
+  nameEqualFold?: InputMaybe<Scalars['String']>;
+  nameGT?: InputMaybe<Scalars['String']>;
+  nameGTE?: InputMaybe<Scalars['String']>;
+  nameHasPrefix?: InputMaybe<Scalars['String']>;
+  nameHasSuffix?: InputMaybe<Scalars['String']>;
+  nameIn?: InputMaybe<Array<Scalars['String']>>;
+  nameIsNil?: InputMaybe<Scalars['Boolean']>;
+  nameLT?: InputMaybe<Scalars['String']>;
+  nameLTE?: InputMaybe<Scalars['String']>;
+  nameNEQ?: InputMaybe<Scalars['String']>;
+  nameNotIn?: InputMaybe<Array<Scalars['String']>>;
+  nameNotNil?: InputMaybe<Scalars['Boolean']>;
+  not?: InputMaybe<HustlerWhereInput>;
+  or?: InputMaybe<Array<HustlerWhereInput>>;
+  /** sex field predicates */
+  sex?: InputMaybe<HustlerSex>;
+  sexIn?: InputMaybe<Array<HustlerSex>>;
+  sexNEQ?: InputMaybe<HustlerSex>;
+  sexNotIn?: InputMaybe<Array<HustlerSex>>;
+  /** svg field predicates */
+  svg?: InputMaybe<Scalars['String']>;
+  svgContains?: InputMaybe<Scalars['String']>;
+  svgContainsFold?: InputMaybe<Scalars['String']>;
+  svgEqualFold?: InputMaybe<Scalars['String']>;
+  svgGT?: InputMaybe<Scalars['String']>;
+  svgGTE?: InputMaybe<Scalars['String']>;
+  svgHasPrefix?: InputMaybe<Scalars['String']>;
+  svgHasSuffix?: InputMaybe<Scalars['String']>;
+  svgIn?: InputMaybe<Array<Scalars['String']>>;
+  svgIsNil?: InputMaybe<Scalars['Boolean']>;
+  svgLT?: InputMaybe<Scalars['String']>;
+  svgLTE?: InputMaybe<Scalars['String']>;
+  svgNEQ?: InputMaybe<Scalars['String']>;
+  svgNotIn?: InputMaybe<Array<Scalars['String']>>;
+  svgNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** title field predicates */
+  title?: InputMaybe<Scalars['String']>;
+  titleContains?: InputMaybe<Scalars['String']>;
+  titleContainsFold?: InputMaybe<Scalars['String']>;
+  titleEqualFold?: InputMaybe<Scalars['String']>;
+  titleGT?: InputMaybe<Scalars['String']>;
+  titleGTE?: InputMaybe<Scalars['String']>;
+  titleHasPrefix?: InputMaybe<Scalars['String']>;
+  titleHasSuffix?: InputMaybe<Scalars['String']>;
+  titleIn?: InputMaybe<Array<Scalars['String']>>;
+  titleIsNil?: InputMaybe<Scalars['Boolean']>;
+  titleLT?: InputMaybe<Scalars['String']>;
+  titleLTE?: InputMaybe<Scalars['String']>;
+  titleNEQ?: InputMaybe<Scalars['String']>;
+  titleNotIn?: InputMaybe<Array<Scalars['String']>>;
+  titleNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** type field predicates */
+  type?: InputMaybe<HustlerType>;
+  typeIn?: InputMaybe<Array<HustlerType>>;
+  typeNEQ?: InputMaybe<HustlerType>;
+  typeNotIn?: InputMaybe<Array<HustlerType>>;
 };
 
-export type ItemBalances = {
-  __typename?: 'ItemBalances';
+export type Item = Node & {
+  __typename?: 'Item';
+  augmented?: Maybe<Scalars['Boolean']>;
+  count: Scalars['Int'];
+  greatness: Scalars['Int'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  namePrefix?: Maybe<Scalars['String']>;
+  nameSuffix?: Maybe<Scalars['String']>;
+  suffix?: Maybe<Scalars['String']>;
+  tier: ItemTier;
+  type: ItemType;
+};
+
+export type ItemConnection = {
+  __typename?: 'ItemConnection';
+  edges?: Maybe<Array<Maybe<ItemEdge>>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type ItemEdge = {
+  __typename?: 'ItemEdge';
+  cursor: Scalars['Cursor'];
+  node?: Maybe<Item>;
+};
+
+export type ItemOrder = {
+  direction: OrderDirection;
+  field?: InputMaybe<ItemOrderField>;
+};
+
+export enum ItemOrderField {
+  Greatness = 'GREATNESS'
+}
+
+/** ItemTier represents the tier of an item. */
+export enum ItemTier {
+  BlackMarket = 'BLACK_MARKET',
+  Common = 'COMMON',
+  Custom = 'CUSTOM',
+  Rare = 'RARE'
+}
+
+/** ItemType represents the item slot the item belongs to. */
+export enum ItemType {
+  Accessory = 'ACCESSORY',
+  Clothes = 'CLOTHES',
+  Drugs = 'DRUGS',
+  Foot = 'FOOT',
+  Hand = 'HAND',
+  Neck = 'NECK',
+  Ring = 'RING',
+  Vehcile = 'VEHCILE',
+  Waist = 'WAIST',
+  Weapon = 'WEAPON'
+}
+
+/**
+ * ItemWhereInput is used for filtering Item objects.
+ * Input was generated by ent.
+ */
+export type ItemWhereInput = {
+  and?: InputMaybe<Array<ItemWhereInput>>;
+  /** augmented field predicates */
+  augmented?: InputMaybe<Scalars['Boolean']>;
+  augmentedIsNil?: InputMaybe<Scalars['Boolean']>;
+  augmentedNEQ?: InputMaybe<Scalars['Boolean']>;
+  augmentedNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** count field predicates */
+  count?: InputMaybe<Scalars['Int']>;
+  countGT?: InputMaybe<Scalars['Int']>;
+  countGTE?: InputMaybe<Scalars['Int']>;
+  countIn?: InputMaybe<Array<Scalars['Int']>>;
+  countIsNil?: InputMaybe<Scalars['Boolean']>;
+  countLT?: InputMaybe<Scalars['Int']>;
+  countLTE?: InputMaybe<Scalars['Int']>;
+  countNEQ?: InputMaybe<Scalars['Int']>;
+  countNotIn?: InputMaybe<Array<Scalars['Int']>>;
+  countNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** greatness field predicates */
+  greatness?: InputMaybe<Scalars['Int']>;
+  greatnessGT?: InputMaybe<Scalars['Int']>;
+  greatnessGTE?: InputMaybe<Scalars['Int']>;
+  greatnessIn?: InputMaybe<Array<Scalars['Int']>>;
+  greatnessIsNil?: InputMaybe<Scalars['Boolean']>;
+  greatnessLT?: InputMaybe<Scalars['Int']>;
+  greatnessLTE?: InputMaybe<Scalars['Int']>;
+  greatnessNEQ?: InputMaybe<Scalars['Int']>;
+  greatnessNotIn?: InputMaybe<Array<Scalars['Int']>>;
+  greatnessNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** base edge predicates */
+  hasBase?: InputMaybe<Scalars['Boolean']>;
+  hasBaseWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** derivative edge predicates */
+  hasDerivative?: InputMaybe<Scalars['Boolean']>;
+  hasDerivativeWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** dopes edge predicates */
+  hasDopes?: InputMaybe<Scalars['Boolean']>;
+  hasDopesWith?: InputMaybe<Array<DopeWhereInput>>;
+  /** hustler_accessories edge predicates */
+  hasHustlerAccessories?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerAccessoriesWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_clothes edge predicates */
+  hasHustlerClothes?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerClothesWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_drugs edge predicates */
+  hasHustlerDrugs?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerDrugsWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_feet edge predicates */
+  hasHustlerFeet?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerFeetWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_hands edge predicates */
+  hasHustlerHands?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerHandsWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_necks edge predicates */
+  hasHustlerNecks?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerNecksWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_rings edge predicates */
+  hasHustlerRings?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerRingsWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_vehicles edge predicates */
+  hasHustlerVehicles?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerVehiclesWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_waists edge predicates */
+  hasHustlerWaists?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerWaistsWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** hustler_weapons edge predicates */
+  hasHustlerWeapons?: InputMaybe<Scalars['Boolean']>;
+  hasHustlerWeaponsWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** wallets edge predicates */
+  hasWallets?: InputMaybe<Scalars['Boolean']>;
+  hasWalletsWith?: InputMaybe<Array<WalletItemsWhereInput>>;
+  /** id field predicates */
+  id?: InputMaybe<Scalars['ID']>;
+  idGT?: InputMaybe<Scalars['ID']>;
+  idGTE?: InputMaybe<Scalars['ID']>;
+  idIn?: InputMaybe<Array<Scalars['ID']>>;
+  idLT?: InputMaybe<Scalars['ID']>;
+  idLTE?: InputMaybe<Scalars['ID']>;
+  idNEQ?: InputMaybe<Scalars['ID']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']>>;
+  /** name field predicates */
+  name?: InputMaybe<Scalars['String']>;
+  nameContains?: InputMaybe<Scalars['String']>;
+  nameContainsFold?: InputMaybe<Scalars['String']>;
+  nameEqualFold?: InputMaybe<Scalars['String']>;
+  nameGT?: InputMaybe<Scalars['String']>;
+  nameGTE?: InputMaybe<Scalars['String']>;
+  nameHasPrefix?: InputMaybe<Scalars['String']>;
+  nameHasSuffix?: InputMaybe<Scalars['String']>;
+  nameIn?: InputMaybe<Array<Scalars['String']>>;
+  nameLT?: InputMaybe<Scalars['String']>;
+  nameLTE?: InputMaybe<Scalars['String']>;
+  nameNEQ?: InputMaybe<Scalars['String']>;
+  nameNotIn?: InputMaybe<Array<Scalars['String']>>;
+  /** name_prefix field predicates */
+  namePrefix?: InputMaybe<Scalars['String']>;
+  namePrefixContains?: InputMaybe<Scalars['String']>;
+  namePrefixContainsFold?: InputMaybe<Scalars['String']>;
+  namePrefixEqualFold?: InputMaybe<Scalars['String']>;
+  namePrefixGT?: InputMaybe<Scalars['String']>;
+  namePrefixGTE?: InputMaybe<Scalars['String']>;
+  namePrefixHasPrefix?: InputMaybe<Scalars['String']>;
+  namePrefixHasSuffix?: InputMaybe<Scalars['String']>;
+  namePrefixIn?: InputMaybe<Array<Scalars['String']>>;
+  namePrefixIsNil?: InputMaybe<Scalars['Boolean']>;
+  namePrefixLT?: InputMaybe<Scalars['String']>;
+  namePrefixLTE?: InputMaybe<Scalars['String']>;
+  namePrefixNEQ?: InputMaybe<Scalars['String']>;
+  namePrefixNotIn?: InputMaybe<Array<Scalars['String']>>;
+  namePrefixNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** name_suffix field predicates */
+  nameSuffix?: InputMaybe<Scalars['String']>;
+  nameSuffixContains?: InputMaybe<Scalars['String']>;
+  nameSuffixContainsFold?: InputMaybe<Scalars['String']>;
+  nameSuffixEqualFold?: InputMaybe<Scalars['String']>;
+  nameSuffixGT?: InputMaybe<Scalars['String']>;
+  nameSuffixGTE?: InputMaybe<Scalars['String']>;
+  nameSuffixHasPrefix?: InputMaybe<Scalars['String']>;
+  nameSuffixHasSuffix?: InputMaybe<Scalars['String']>;
+  nameSuffixIn?: InputMaybe<Array<Scalars['String']>>;
+  nameSuffixIsNil?: InputMaybe<Scalars['Boolean']>;
+  nameSuffixLT?: InputMaybe<Scalars['String']>;
+  nameSuffixLTE?: InputMaybe<Scalars['String']>;
+  nameSuffixNEQ?: InputMaybe<Scalars['String']>;
+  nameSuffixNotIn?: InputMaybe<Array<Scalars['String']>>;
+  nameSuffixNotNil?: InputMaybe<Scalars['Boolean']>;
+  not?: InputMaybe<ItemWhereInput>;
+  or?: InputMaybe<Array<ItemWhereInput>>;
+  /** suffix field predicates */
+  suffix?: InputMaybe<Scalars['String']>;
+  suffixContains?: InputMaybe<Scalars['String']>;
+  suffixContainsFold?: InputMaybe<Scalars['String']>;
+  suffixEqualFold?: InputMaybe<Scalars['String']>;
+  suffixGT?: InputMaybe<Scalars['String']>;
+  suffixGTE?: InputMaybe<Scalars['String']>;
+  suffixHasPrefix?: InputMaybe<Scalars['String']>;
+  suffixHasSuffix?: InputMaybe<Scalars['String']>;
+  suffixIn?: InputMaybe<Array<Scalars['String']>>;
+  suffixIsNil?: InputMaybe<Scalars['Boolean']>;
+  suffixLT?: InputMaybe<Scalars['String']>;
+  suffixLTE?: InputMaybe<Scalars['String']>;
+  suffixNEQ?: InputMaybe<Scalars['String']>;
+  suffixNotIn?: InputMaybe<Array<Scalars['String']>>;
+  suffixNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** svg field predicates */
+  svg?: InputMaybe<Scalars['String']>;
+  svgContains?: InputMaybe<Scalars['String']>;
+  svgContainsFold?: InputMaybe<Scalars['String']>;
+  svgEqualFold?: InputMaybe<Scalars['String']>;
+  svgGT?: InputMaybe<Scalars['String']>;
+  svgGTE?: InputMaybe<Scalars['String']>;
+  svgHasPrefix?: InputMaybe<Scalars['String']>;
+  svgHasSuffix?: InputMaybe<Scalars['String']>;
+  svgIn?: InputMaybe<Array<Scalars['String']>>;
+  svgIsNil?: InputMaybe<Scalars['Boolean']>;
+  svgLT?: InputMaybe<Scalars['String']>;
+  svgLTE?: InputMaybe<Scalars['String']>;
+  svgNEQ?: InputMaybe<Scalars['String']>;
+  svgNotIn?: InputMaybe<Array<Scalars['String']>>;
+  svgNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** tier field predicates */
+  tier?: InputMaybe<ItemTier>;
+  tierIn?: InputMaybe<Array<ItemTier>>;
+  tierIsNil?: InputMaybe<Scalars['Boolean']>;
+  tierNEQ?: InputMaybe<ItemTier>;
+  tierNotIn?: InputMaybe<Array<ItemTier>>;
+  tierNotNil?: InputMaybe<Scalars['Boolean']>;
+  /** type field predicates */
+  type?: InputMaybe<ItemType>;
+  typeIn?: InputMaybe<Array<ItemType>>;
+  typeNEQ?: InputMaybe<ItemType>;
+  typeNotIn?: InputMaybe<Array<ItemType>>;
+};
+
+export type Node = {
+  id: Scalars['ID'];
+};
+
+export enum OrderDirection {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endCursor?: Maybe<Scalars['Cursor']>;
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['Cursor']>;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  dopes: DopeConnection;
+  hustlers: HustlerConnection;
+  items: ItemConnection;
+  node?: Maybe<Node>;
+  nodes: Array<Maybe<Node>>;
+  wallets: WalletConnection;
+};
+
+
+export type QueryDopesArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<DopeOrder>;
+  where?: InputMaybe<DopeWhereInput>;
+};
+
+
+export type QueryHustlersArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<HustlerOrder>;
+  where?: InputMaybe<HustlerWhereInput>;
+};
+
+
+export type QueryItemsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ItemOrder>;
+  where?: InputMaybe<ItemWhereInput>;
+};
+
+
+export type QueryNodeArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryNodesArgs = {
+  ids: Array<Scalars['ID']>;
+};
+
+
+export type QueryWalletsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WalletOrder>;
+  where?: InputMaybe<WalletWhereInput>;
+};
+
+/**
+ * SyncStateWhereInput is used for filtering SyncState objects.
+ * Input was generated by ent.
+ */
+export type SyncStateWhereInput = {
+  and?: InputMaybe<Array<SyncStateWhereInput>>;
+  /** id field predicates */
+  id?: InputMaybe<Scalars['ID']>;
+  idGT?: InputMaybe<Scalars['ID']>;
+  idGTE?: InputMaybe<Scalars['ID']>;
+  idIn?: InputMaybe<Array<Scalars['ID']>>;
+  idLT?: InputMaybe<Scalars['ID']>;
+  idLTE?: InputMaybe<Scalars['ID']>;
+  idNEQ?: InputMaybe<Scalars['ID']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']>>;
+  not?: InputMaybe<SyncStateWhereInput>;
+  or?: InputMaybe<Array<SyncStateWhereInput>>;
+  /** start_block field predicates */
+  startBlock?: InputMaybe<Scalars['Long']>;
+  startBlockGT?: InputMaybe<Scalars['Long']>;
+  startBlockGTE?: InputMaybe<Scalars['Long']>;
+  startBlockIn?: InputMaybe<Array<Scalars['Long']>>;
+  startBlockLT?: InputMaybe<Scalars['Long']>;
+  startBlockLTE?: InputMaybe<Scalars['Long']>;
+  startBlockNEQ?: InputMaybe<Scalars['Long']>;
+  startBlockNotIn?: InputMaybe<Array<Scalars['Long']>>;
+};
+
+export type Wallet = Node & {
+  __typename?: 'Wallet';
+  dopes: Array<Dope>;
+  hustlers: Array<Hustler>;
+  id: Scalars['ID'];
+  items: Array<WalletItems>;
+  paper: Scalars['BigInt'];
+};
+
+export type WalletConnection = {
+  __typename?: 'WalletConnection';
+  edges?: Maybe<Array<Maybe<WalletEdge>>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type WalletEdge = {
+  __typename?: 'WalletEdge';
+  cursor: Scalars['Cursor'];
+  node?: Maybe<Wallet>;
+};
+
+export type WalletItems = Node & {
+  __typename?: 'WalletItems';
   balance: Scalars['BigInt'];
   id: Scalars['ID'];
   item: Item;
   wallet: Wallet;
 };
 
-export type ItemBalances_Filter = {
+/**
+ * WalletItemsWhereInput is used for filtering WalletItems objects.
+ * Input was generated by ent.
+ */
+export type WalletItemsWhereInput = {
+  and?: InputMaybe<Array<WalletItemsWhereInput>>;
+  /** balance field predicates */
   balance?: InputMaybe<Scalars['BigInt']>;
-  balance_gt?: InputMaybe<Scalars['BigInt']>;
-  balance_gte?: InputMaybe<Scalars['BigInt']>;
-  balance_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  balance_lt?: InputMaybe<Scalars['BigInt']>;
-  balance_lte?: InputMaybe<Scalars['BigInt']>;
-  balance_not?: InputMaybe<Scalars['BigInt']>;
-  balance_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  balanceGT?: InputMaybe<Scalars['BigInt']>;
+  balanceGTE?: InputMaybe<Scalars['BigInt']>;
+  balanceIn?: InputMaybe<Array<Scalars['BigInt']>>;
+  balanceLT?: InputMaybe<Scalars['BigInt']>;
+  balanceLTE?: InputMaybe<Scalars['BigInt']>;
+  balanceNEQ?: InputMaybe<Scalars['BigInt']>;
+  balanceNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
+  /** item edge predicates */
+  hasItem?: InputMaybe<Scalars['Boolean']>;
+  hasItemWith?: InputMaybe<Array<ItemWhereInput>>;
+  /** wallet edge predicates */
+  hasWallet?: InputMaybe<Scalars['Boolean']>;
+  hasWalletWith?: InputMaybe<Array<WalletWhereInput>>;
+  /** id field predicates */
   id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  item?: InputMaybe<Scalars['String']>;
-  item_contains?: InputMaybe<Scalars['String']>;
-  item_ends_with?: InputMaybe<Scalars['String']>;
-  item_gt?: InputMaybe<Scalars['String']>;
-  item_gte?: InputMaybe<Scalars['String']>;
-  item_in?: InputMaybe<Array<Scalars['String']>>;
-  item_lt?: InputMaybe<Scalars['String']>;
-  item_lte?: InputMaybe<Scalars['String']>;
-  item_not?: InputMaybe<Scalars['String']>;
-  item_not_contains?: InputMaybe<Scalars['String']>;
-  item_not_ends_with?: InputMaybe<Scalars['String']>;
-  item_not_in?: InputMaybe<Array<Scalars['String']>>;
-  item_not_starts_with?: InputMaybe<Scalars['String']>;
-  item_starts_with?: InputMaybe<Scalars['String']>;
-  wallet?: InputMaybe<Scalars['String']>;
-  wallet_contains?: InputMaybe<Scalars['String']>;
-  wallet_ends_with?: InputMaybe<Scalars['String']>;
-  wallet_gt?: InputMaybe<Scalars['String']>;
-  wallet_gte?: InputMaybe<Scalars['String']>;
-  wallet_in?: InputMaybe<Array<Scalars['String']>>;
-  wallet_lt?: InputMaybe<Scalars['String']>;
-  wallet_lte?: InputMaybe<Scalars['String']>;
-  wallet_not?: InputMaybe<Scalars['String']>;
-  wallet_not_contains?: InputMaybe<Scalars['String']>;
-  wallet_not_ends_with?: InputMaybe<Scalars['String']>;
-  wallet_not_in?: InputMaybe<Array<Scalars['String']>>;
-  wallet_not_starts_with?: InputMaybe<Scalars['String']>;
-  wallet_starts_with?: InputMaybe<Scalars['String']>;
+  idGT?: InputMaybe<Scalars['ID']>;
+  idGTE?: InputMaybe<Scalars['ID']>;
+  idIn?: InputMaybe<Array<Scalars['ID']>>;
+  idLT?: InputMaybe<Scalars['ID']>;
+  idLTE?: InputMaybe<Scalars['ID']>;
+  idNEQ?: InputMaybe<Scalars['ID']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']>>;
+  not?: InputMaybe<WalletItemsWhereInput>;
+  or?: InputMaybe<Array<WalletItemsWhereInput>>;
 };
 
-export enum ItemBalances_OrderBy {
-  Balance = 'balance',
-  Id = 'id',
-  Item = 'item',
-  Wallet = 'wallet'
-}
+export type WalletOrder = {
+  direction: OrderDirection;
+};
 
-export type Item_Filter = {
-  data?: InputMaybe<Scalars['String']>;
-  data_contains?: InputMaybe<Scalars['String']>;
-  data_ends_with?: InputMaybe<Scalars['String']>;
-  data_gt?: InputMaybe<Scalars['String']>;
-  data_gte?: InputMaybe<Scalars['String']>;
-  data_in?: InputMaybe<Array<Scalars['String']>>;
-  data_lt?: InputMaybe<Scalars['String']>;
-  data_lte?: InputMaybe<Scalars['String']>;
-  data_not?: InputMaybe<Scalars['String']>;
-  data_not_contains?: InputMaybe<Scalars['String']>;
-  data_not_ends_with?: InputMaybe<Scalars['String']>;
-  data_not_in?: InputMaybe<Array<Scalars['String']>>;
-  data_not_starts_with?: InputMaybe<Scalars['String']>;
-  data_starts_with?: InputMaybe<Scalars['String']>;
-  femaleRle?: InputMaybe<Scalars['Bytes']>;
-  femaleRle_contains?: InputMaybe<Scalars['Bytes']>;
-  femaleRle_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  femaleRle_not?: InputMaybe<Scalars['Bytes']>;
-  femaleRle_not_contains?: InputMaybe<Scalars['Bytes']>;
-  femaleRle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+/**
+ * WalletWhereInput is used for filtering Wallet objects.
+ * Input was generated by ent.
+ */
+export type WalletWhereInput = {
+  and?: InputMaybe<Array<WalletWhereInput>>;
+  /** created_at field predicates */
+  createdAt?: InputMaybe<Scalars['Time']>;
+  createdAtGT?: InputMaybe<Scalars['Time']>;
+  createdAtGTE?: InputMaybe<Scalars['Time']>;
+  createdAtIn?: InputMaybe<Array<Scalars['Time']>>;
+  createdAtLT?: InputMaybe<Scalars['Time']>;
+  createdAtLTE?: InputMaybe<Scalars['Time']>;
+  createdAtNEQ?: InputMaybe<Scalars['Time']>;
+  createdAtNotIn?: InputMaybe<Array<Scalars['Time']>>;
+  /** dopes edge predicates */
+  hasDopes?: InputMaybe<Scalars['Boolean']>;
+  hasDopesWith?: InputMaybe<Array<DopeWhereInput>>;
+  /** hustlers edge predicates */
+  hasHustlers?: InputMaybe<Scalars['Boolean']>;
+  hasHustlersWith?: InputMaybe<Array<HustlerWhereInput>>;
+  /** items edge predicates */
+  hasItems?: InputMaybe<Scalars['Boolean']>;
+  hasItemsWith?: InputMaybe<Array<WalletItemsWhereInput>>;
+  /** id field predicates */
   id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  maleRle?: InputMaybe<Scalars['Bytes']>;
-  maleRle_contains?: InputMaybe<Scalars['Bytes']>;
-  maleRle_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  maleRle_not?: InputMaybe<Scalars['Bytes']>;
-  maleRle_not_contains?: InputMaybe<Scalars['Bytes']>;
-  maleRle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  name?: InputMaybe<Scalars['String']>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_ends_with?: InputMaybe<Scalars['String']>;
-  name_gt?: InputMaybe<Scalars['String']>;
-  name_gte?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_lt?: InputMaybe<Scalars['String']>;
-  name_lte?: InputMaybe<Scalars['String']>;
-  name_not?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_ends_with?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not_starts_with?: InputMaybe<Scalars['String']>;
-  name_starts_with?: InputMaybe<Scalars['String']>;
-};
-
-export enum Item_OrderBy {
-  Data = 'data',
-  FemaleRle = 'femaleRle',
-  Id = 'id',
-  MaleRle = 'maleRle',
-  Name = 'name'
-}
-
-export type MaleBody = {
-  __typename?: 'MaleBody';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type MaleBody_Filter = {
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  rle?: InputMaybe<Scalars['Bytes']>;
-  rle_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  rle_not?: InputMaybe<Scalars['Bytes']>;
-  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-};
-
-export enum MaleBody_OrderBy {
-  Id = 'id',
-  Rle = 'rle'
-}
-
-export type MaleHair = {
-  __typename?: 'MaleHair';
-  id: Scalars['ID'];
-  rle: Scalars['Bytes'];
-};
-
-export type MaleHair_Filter = {
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  rle?: InputMaybe<Scalars['Bytes']>;
-  rle_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  rle_not?: InputMaybe<Scalars['Bytes']>;
-  rle_not_contains?: InputMaybe<Scalars['Bytes']>;
-  rle_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-};
-
-export enum MaleHair_OrderBy {
-  Id = 'id',
-  Rle = 'rle'
-}
-
-export type OpenSeaAsset = {
-  __typename?: 'OpenSeaAsset';
-  current_sale_price?: Maybe<Scalars['Int']>;
-  is_on_sale?: Maybe<Scalars['Boolean']>;
-  last_sale_price?: Maybe<Scalars['Int']>;
-};
-
-export enum OrderDirection {
-  Asc = 'asc',
-  Desc = 'desc'
-}
-
-export type Query = {
-  __typename?: 'Query';
-  /** Access to subgraph metadata */
-  _meta?: Maybe<_Meta_>;
-  attribute?: Maybe<Attribute>;
-  attributes: Array<Attribute>;
-  bag?: Maybe<Bag>;
-  bags: Array<Bag>;
-  beard?: Maybe<Beard>;
-  beards: Array<Beard>;
-  femaleBodies: Array<FemaleBody>;
-  femaleBody?: Maybe<FemaleBody>;
-  femaleHair?: Maybe<FemaleHair>;
-  femaleHairs: Array<FemaleHair>;
-  hustler?: Maybe<Hustler>;
-  hustlers: Array<Hustler>;
-  item?: Maybe<Item>;
-  itemBalances: Array<ItemBalances>;
-  items: Array<Item>;
-  maleBodies: Array<MaleBody>;
-  maleBody?: Maybe<MaleBody>;
-  maleHair?: Maybe<MaleHair>;
-  maleHairs: Array<MaleHair>;
-  search: Array<Bag>;
-  transfer?: Maybe<Transfer>;
-  transfers: Array<Transfer>;
-  wallet?: Maybe<Wallet>;
-  wallets: Array<Wallet>;
-};
-
-
-export type Query_MetaArgs = {
-  block?: InputMaybe<Block_Height>;
-};
-
-
-export type QueryAttributeArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryAttributesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Attribute_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Attribute_Filter>;
-};
-
-
-export type QueryBagArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryBagsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Bag_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Bag_Filter>;
-};
-
-
-export type QueryBeardArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryBeardsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Beard_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Beard_Filter>;
-};
-
-
-export type QueryFemaleBodiesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<FemaleBody_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<FemaleBody_Filter>;
-};
-
-
-export type QueryFemaleBodyArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryFemaleHairArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryFemaleHairsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<FemaleHair_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<FemaleHair_Filter>;
-};
-
-
-export type QueryHustlerArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryHustlersArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Hustler_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Hustler_Filter>;
-};
-
-
-export type QueryItemArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryItemBalancesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<ItemBalances_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<ItemBalances_Filter>;
-};
-
-
-export type QueryItemsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Item_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Item_Filter>;
-};
-
-
-export type QueryMaleBodiesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<MaleBody_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<MaleBody_Filter>;
-};
-
-
-export type QueryMaleBodyArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryMaleHairArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryMaleHairsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<MaleHair_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<MaleHair_Filter>;
-};
-
-
-export type QuerySearchArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  text: Scalars['String'];
-};
-
-
-export type QueryTransferArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryTransfersArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Transfer_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Transfer_Filter>;
-};
-
-
-export type QueryWalletArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryWalletsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Wallet_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Wallet_Filter>;
-};
-
-export type Subscription = {
-  __typename?: 'Subscription';
-  /** Access to subgraph metadata */
-  _meta?: Maybe<_Meta_>;
-  attribute?: Maybe<Attribute>;
-  attributes: Array<Attribute>;
-  bag?: Maybe<Bag>;
-  bags: Array<Bag>;
-  beard?: Maybe<Beard>;
-  beards: Array<Beard>;
-  femaleBodies: Array<FemaleBody>;
-  femaleBody?: Maybe<FemaleBody>;
-  femaleHair?: Maybe<FemaleHair>;
-  femaleHairs: Array<FemaleHair>;
-  hustler?: Maybe<Hustler>;
-  hustlers: Array<Hustler>;
-  item?: Maybe<Item>;
-  itemBalances: Array<ItemBalances>;
-  items: Array<Item>;
-  maleBodies: Array<MaleBody>;
-  maleBody?: Maybe<MaleBody>;
-  maleHair?: Maybe<MaleHair>;
-  maleHairs: Array<MaleHair>;
-  transfer?: Maybe<Transfer>;
-  transfers: Array<Transfer>;
-  wallet?: Maybe<Wallet>;
-  wallets: Array<Wallet>;
-};
-
-
-export type Subscription_MetaArgs = {
-  block?: InputMaybe<Block_Height>;
-};
-
-
-export type SubscriptionAttributeArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionAttributesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Attribute_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Attribute_Filter>;
-};
-
-
-export type SubscriptionBagArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionBagsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Bag_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Bag_Filter>;
-};
-
-
-export type SubscriptionBeardArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionBeardsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Beard_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Beard_Filter>;
-};
-
-
-export type SubscriptionFemaleBodiesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<FemaleBody_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<FemaleBody_Filter>;
-};
-
-
-export type SubscriptionFemaleBodyArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionFemaleHairArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionFemaleHairsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<FemaleHair_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<FemaleHair_Filter>;
-};
-
-
-export type SubscriptionHustlerArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionHustlersArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Hustler_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Hustler_Filter>;
-};
-
-
-export type SubscriptionItemArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionItemBalancesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<ItemBalances_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<ItemBalances_Filter>;
-};
-
-
-export type SubscriptionItemsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Item_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Item_Filter>;
-};
-
-
-export type SubscriptionMaleBodiesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<MaleBody_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<MaleBody_Filter>;
-};
-
-
-export type SubscriptionMaleBodyArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionMaleHairArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionMaleHairsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<MaleHair_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<MaleHair_Filter>;
-};
-
-
-export type SubscriptionTransferArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionTransfersArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Transfer_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Transfer_Filter>;
-};
-
-
-export type SubscriptionWalletArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionWalletsArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Wallet_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Wallet_Filter>;
-};
-
-export type Transfer = {
-  __typename?: 'Transfer';
-  bag: Bag;
-  from: Wallet;
-  id: Scalars['ID'];
-  timestamp: Scalars['BigInt'];
-  to: Wallet;
-  txHash: Scalars['Bytes'];
-};
-
-export type Transfer_Filter = {
-  bag?: InputMaybe<Scalars['String']>;
-  bag_contains?: InputMaybe<Scalars['String']>;
-  bag_ends_with?: InputMaybe<Scalars['String']>;
-  bag_gt?: InputMaybe<Scalars['String']>;
-  bag_gte?: InputMaybe<Scalars['String']>;
-  bag_in?: InputMaybe<Array<Scalars['String']>>;
-  bag_lt?: InputMaybe<Scalars['String']>;
-  bag_lte?: InputMaybe<Scalars['String']>;
-  bag_not?: InputMaybe<Scalars['String']>;
-  bag_not_contains?: InputMaybe<Scalars['String']>;
-  bag_not_ends_with?: InputMaybe<Scalars['String']>;
-  bag_not_in?: InputMaybe<Array<Scalars['String']>>;
-  bag_not_starts_with?: InputMaybe<Scalars['String']>;
-  bag_starts_with?: InputMaybe<Scalars['String']>;
-  from?: InputMaybe<Scalars['String']>;
-  from_contains?: InputMaybe<Scalars['String']>;
-  from_ends_with?: InputMaybe<Scalars['String']>;
-  from_gt?: InputMaybe<Scalars['String']>;
-  from_gte?: InputMaybe<Scalars['String']>;
-  from_in?: InputMaybe<Array<Scalars['String']>>;
-  from_lt?: InputMaybe<Scalars['String']>;
-  from_lte?: InputMaybe<Scalars['String']>;
-  from_not?: InputMaybe<Scalars['String']>;
-  from_not_contains?: InputMaybe<Scalars['String']>;
-  from_not_ends_with?: InputMaybe<Scalars['String']>;
-  from_not_in?: InputMaybe<Array<Scalars['String']>>;
-  from_not_starts_with?: InputMaybe<Scalars['String']>;
-  from_starts_with?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  timestamp?: InputMaybe<Scalars['BigInt']>;
-  timestamp_gt?: InputMaybe<Scalars['BigInt']>;
-  timestamp_gte?: InputMaybe<Scalars['BigInt']>;
-  timestamp_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  timestamp_lt?: InputMaybe<Scalars['BigInt']>;
-  timestamp_lte?: InputMaybe<Scalars['BigInt']>;
-  timestamp_not?: InputMaybe<Scalars['BigInt']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  to?: InputMaybe<Scalars['String']>;
-  to_contains?: InputMaybe<Scalars['String']>;
-  to_ends_with?: InputMaybe<Scalars['String']>;
-  to_gt?: InputMaybe<Scalars['String']>;
-  to_gte?: InputMaybe<Scalars['String']>;
-  to_in?: InputMaybe<Array<Scalars['String']>>;
-  to_lt?: InputMaybe<Scalars['String']>;
-  to_lte?: InputMaybe<Scalars['String']>;
-  to_not?: InputMaybe<Scalars['String']>;
-  to_not_contains?: InputMaybe<Scalars['String']>;
-  to_not_ends_with?: InputMaybe<Scalars['String']>;
-  to_not_in?: InputMaybe<Array<Scalars['String']>>;
-  to_not_starts_with?: InputMaybe<Scalars['String']>;
-  to_starts_with?: InputMaybe<Scalars['String']>;
-  txHash?: InputMaybe<Scalars['Bytes']>;
-  txHash_contains?: InputMaybe<Scalars['Bytes']>;
-  txHash_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  txHash_not?: InputMaybe<Scalars['Bytes']>;
-  txHash_not_contains?: InputMaybe<Scalars['Bytes']>;
-  txHash_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-};
-
-export enum Transfer_OrderBy {
-  Bag = 'bag',
-  From = 'from',
-  Id = 'id',
-  Timestamp = 'timestamp',
-  To = 'to',
-  TxHash = 'txHash'
-}
-
-export type Wallet = {
-  __typename?: 'Wallet';
-  address: Scalars['Bytes'];
-  bags: Array<Bag>;
-  bagsHeld: Scalars['BigInt'];
-  hustlers: Array<Hustler>;
-  id: Scalars['ID'];
-  items: Array<ItemBalances>;
-  joined: Scalars['BigInt'];
-  paper: Scalars['BigInt'];
-};
-
-
-export type WalletBagsArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Bag_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  where?: InputMaybe<Bag_Filter>;
-};
-
-
-export type WalletHustlersArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Hustler_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  where?: InputMaybe<Hustler_Filter>;
-};
-
-
-export type WalletItemsArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<ItemBalances_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  where?: InputMaybe<ItemBalances_Filter>;
-};
-
-export type Wallet_Filter = {
-  address?: InputMaybe<Scalars['Bytes']>;
-  address_contains?: InputMaybe<Scalars['Bytes']>;
-  address_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  address_not?: InputMaybe<Scalars['Bytes']>;
-  address_not_contains?: InputMaybe<Scalars['Bytes']>;
-  address_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  bagsHeld?: InputMaybe<Scalars['BigInt']>;
-  bagsHeld_gt?: InputMaybe<Scalars['BigInt']>;
-  bagsHeld_gte?: InputMaybe<Scalars['BigInt']>;
-  bagsHeld_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  bagsHeld_lt?: InputMaybe<Scalars['BigInt']>;
-  bagsHeld_lte?: InputMaybe<Scalars['BigInt']>;
-  bagsHeld_not?: InputMaybe<Scalars['BigInt']>;
-  bagsHeld_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  joined?: InputMaybe<Scalars['BigInt']>;
-  joined_gt?: InputMaybe<Scalars['BigInt']>;
-  joined_gte?: InputMaybe<Scalars['BigInt']>;
-  joined_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  joined_lt?: InputMaybe<Scalars['BigInt']>;
-  joined_lte?: InputMaybe<Scalars['BigInt']>;
-  joined_not?: InputMaybe<Scalars['BigInt']>;
-  joined_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  idGT?: InputMaybe<Scalars['ID']>;
+  idGTE?: InputMaybe<Scalars['ID']>;
+  idIn?: InputMaybe<Array<Scalars['ID']>>;
+  idLT?: InputMaybe<Scalars['ID']>;
+  idLTE?: InputMaybe<Scalars['ID']>;
+  idNEQ?: InputMaybe<Scalars['ID']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']>>;
+  not?: InputMaybe<WalletWhereInput>;
+  or?: InputMaybe<Array<WalletWhereInput>>;
+  /** paper field predicates */
   paper?: InputMaybe<Scalars['BigInt']>;
-  paper_gt?: InputMaybe<Scalars['BigInt']>;
-  paper_gte?: InputMaybe<Scalars['BigInt']>;
-  paper_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  paper_lt?: InputMaybe<Scalars['BigInt']>;
-  paper_lte?: InputMaybe<Scalars['BigInt']>;
-  paper_not?: InputMaybe<Scalars['BigInt']>;
-  paper_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  paperGT?: InputMaybe<Scalars['BigInt']>;
+  paperGTE?: InputMaybe<Scalars['BigInt']>;
+  paperIn?: InputMaybe<Array<Scalars['BigInt']>>;
+  paperLT?: InputMaybe<Scalars['BigInt']>;
+  paperLTE?: InputMaybe<Scalars['BigInt']>;
+  paperNEQ?: InputMaybe<Scalars['BigInt']>;
+  paperNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
 };
-
-export enum Wallet_OrderBy {
-  Address = 'address',
-  Bags = 'bags',
-  BagsHeld = 'bagsHeld',
-  Hustlers = 'hustlers',
-  Id = 'id',
-  Items = 'items',
-  Joined = 'joined',
-  Paper = 'paper'
-}
-
-export type _Block_ = {
-  __typename?: '_Block_';
-  /** The hash of the block */
-  hash?: Maybe<Scalars['Bytes']>;
-  /** The block number */
-  number: Scalars['Int'];
-};
-
-/** The type for the top-level _meta field */
-export type _Meta_ = {
-  __typename?: '_Meta_';
-  /**
-   * Information about a specific subgraph block. The hash of the block
-   * will be null if the _meta field has a block constraint that asks for
-   * a block number. It will be filled if the _meta field has no block constraint
-   * and therefore asks for the latest  block
-   *
-   */
-  block: _Block_;
-  /** The deployment ID */
-  deployment: Scalars['String'];
-  /** If `true`, the subgraph encountered indexing errors at some past block */
-  hasIndexingErrors: Scalars['Boolean'];
-};
-
-export enum _SubgraphErrorPolicy_ {
-  /** Data will be returned even if the subgraph has indexing errors */
-  Allow = 'allow',
-  /** If the subgraph has indexing errors, data will be omitted. The default. */
-  Deny = 'deny'
-}
 
 export type AllHustlersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllHustlersQuery = { __typename?: 'Query', hustlers: Array<{ __typename?: 'Hustler', id: string, data: string }> };
+export type AllHustlersQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', edges?: Array<{ __typename?: 'HustlerEdge', node?: { __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
-export type AllOpenedBagsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllOpenedBagsQuery = { __typename?: 'Query', page_1: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_2: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_3: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_4: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_5: Array<{ __typename?: 'Bag', opened: boolean, id: string }>, page_6: Array<{ __typename?: 'Bag', opened: boolean, id: string }> };
-
-export type AllUnclaimedBagsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AllOpenedDopesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllUnclaimedBagsQuery = { __typename?: 'Query', page_1: Array<{ __typename?: 'Bag', claimed: boolean, id: string }>, page_2: Array<{ __typename?: 'Bag', claimed: boolean, id: string }>, page_3: Array<{ __typename?: 'Bag', claimed: boolean, id: string }> };
+export type AllOpenedDopesQuery = { __typename?: 'Query', page_1: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', opened: boolean, id: string } | null | undefined } | null | undefined> | null | undefined }, page_2: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', opened: boolean, id: string } | null | undefined } | null | undefined> | null | undefined }, page_3: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', opened: boolean, id: string } | null | undefined } | null | undefined> | null | undefined }, page_4: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', opened: boolean, id: string } | null | undefined } | null | undefined> | null | undefined }, page_5: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', opened: boolean, id: string } | null | undefined } | null | undefined> | null | undefined }, page_6: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', opened: boolean, id: string } | null | undefined } | null | undefined> | null | undefined } };
 
-export type BagQueryVariables = Exact<{
-  tokenId: Scalars['ID'];
-}>;
+export type AllUnclaimedDopesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type BagQuery = { __typename?: 'Query', bag?: { __typename?: 'Bag', id: string, claimed: boolean, opened: boolean, open_sea_asset?: { __typename?: 'OpenSeaAsset', is_on_sale?: boolean | null | undefined, current_sale_price?: number | null | undefined, last_sale_price?: number | null | undefined } | null | undefined } | null | undefined };
+export type AllUnclaimedDopesQuery = { __typename?: 'Query', page_1: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', claimed: boolean, id: string } | null | undefined } | null | undefined> | null | undefined }, page_2: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', claimed: boolean, id: string } | null | undefined } | null | undefined> | null | undefined }, page_3: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', claimed: boolean, id: string } | null | undefined } | null | undefined> | null | undefined } };
 
-export type BagsQueryVariables = Exact<{
+export type DopesQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<DopeOrder>;
+  where?: InputMaybe<DopeWhereInput>;
 }>;
 
 
-export type BagsQuery = { __typename?: 'Query', bags: Array<{ __typename?: 'Bag', claimed: boolean, opened: boolean, id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number, open_sea_asset?: { __typename?: 'OpenSeaAsset', is_on_sale?: boolean | null | undefined, current_sale_price?: number | null | undefined, last_sale_price?: number | null | undefined } | null | undefined }> };
+export type DopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, items: Array<{ __typename?: 'Item', id: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type HustlerQueryVariables = Exact<{
-  id: Scalars['ID'];
+  where?: InputMaybe<HustlerWhereInput>;
 }>;
 
 
-export type HustlerQuery = { __typename?: 'Query', hustler?: { __typename?: 'Hustler', id: string, data: string } | null | undefined };
+export type HustlerQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', edges?: Array<{ __typename?: 'HustlerEdge', node?: { __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type HustlersWalletQueryVariables = Exact<{
-  id: Scalars['ID'];
+  where?: InputMaybe<WalletWhereInput>;
 }>;
 
 
-export type HustlersWalletQuery = { __typename?: 'Query', wallet?: { __typename?: 'Wallet', id: string, address: any, hustlers: Array<{ __typename?: 'Hustler', id: string, data: string }> } | null | undefined };
-
-export type SearchQueryVariables = Exact<{
-  text: Scalars['String'];
-  first?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
-}>;
-
-
-export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Bag', id: string, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, claimed: boolean, opened: boolean }> };
+export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type WalletQueryVariables = Exact<{
-  id: Scalars['ID'];
+  where?: InputMaybe<WalletWhereInput>;
 }>;
 
 
-export type WalletQuery = { __typename?: 'Query', wallet?: { __typename?: 'Wallet', id: string, address: any, paper: any, bags: Array<{ __typename?: 'Bag', claimed: boolean, id: string, opened: boolean, clothes: string, foot: string, hand: string, drugs: string, neck: string, ring: string, vehicle: string, waist: string, weapon: string, rank: number }> } | null | undefined };
+export type WalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number }> } | null | undefined } | null | undefined> | null | undefined } };
 
 
 export const AllHustlersDocument = `
     query AllHustlers {
-  hustlers(first: 1000) {
-    id
-    data
+  hustlers {
+    edges {
+      node {
+        id
+        title
+        name
+        type
+        title
+        color
+        background
+        age
+        background
+        neck {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        sex
+        viewbox
+        order
+        ring {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        accessory {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        svg
+        body {
+          id
+          type
+          sex
+          rle
+        }
+        beard {
+          id
+          type
+          sex
+          rle
+        }
+        drug {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        hand {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        weapon {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        clothes {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        vehicle {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        waist {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        foot {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+      }
+    }
   }
 }
     `;
@@ -1485,154 +1130,296 @@ export const useAllHustlersQuery = <
       TData = AllHustlersQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
       variables?: AllHustlersQueryVariables,
       options?: UseQueryOptions<AllHustlersQuery, TError, TData>
     ) =>
     useQuery<AllHustlersQuery, TError, TData>(
       variables === undefined ? ['AllHustlers'] : ['AllHustlers', variables],
-      fetcher<AllHustlersQuery, AllHustlersQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, AllHustlersDocument, variables),
+      fetcher<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, variables),
       options
     );
-export const AllOpenedBagsDocument = `
-    query AllOpenedBags {
-  page_1: bags(first: 1000, skip: 0, where: {opened: true}) {
-    opened
-    id
+export const AllOpenedDopesDocument = `
+    query AllOpenedDopes {
+  page_1: dopes(first: 1000, before: 0, where: {opened: true}) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
   }
-  page_2: bags(first: 1000, skip: 1000, where: {opened: true}) {
-    opened
-    id
+  page_2: dopes(first: 1000, before: 1000, where: {opened: true}) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
   }
-  page_3: bags(first: 1000, skip: 2000, where: {opened: true}) {
-    opened
-    id
+  page_3: dopes(first: 1000, before: 2000, where: {opened: true}) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
   }
-  page_4: bags(first: 1000, skip: 3000, where: {opened: true}) {
-    opened
-    id
+  page_4: dopes(first: 1000, before: 3000, where: {opened: true}) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
   }
-  page_5: bags(first: 1000, skip: 4000, where: {opened: true}) {
-    opened
-    id
+  page_5: dopes(first: 1000, before: 4000, where: {opened: true}) {
+    edges {
+      node {
+        opened
+        id
+      }
+    }
   }
-  page_6: bags(first: 1000, skip: 5000, where: {opened: true}) {
-    opened
-    id
-  }
-}
-    `;
-export const useAllOpenedBagsQuery = <
-      TData = AllOpenedBagsQuery,
-      TError = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables?: AllOpenedBagsQueryVariables,
-      options?: UseQueryOptions<AllOpenedBagsQuery, TError, TData>
-    ) =>
-    useQuery<AllOpenedBagsQuery, TError, TData>(
-      variables === undefined ? ['AllOpenedBags'] : ['AllOpenedBags', variables],
-      fetcher<AllOpenedBagsQuery, AllOpenedBagsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, AllOpenedBagsDocument, variables),
-      options
-    );
-export const AllUnclaimedBagsDocument = `
-    query AllUnclaimedBags {
-  page_1: bags(first: 1000, skip: 0, where: {claimed: false}) {
-    claimed
-    id
-  }
-  page_2: bags(first: 1000, skip: 1000, where: {claimed: false}) {
-    claimed
-    id
-  }
-  page_3: bags(first: 1000, skip: 2000, where: {claimed: false}) {
-    claimed
-    id
-  }
-}
-    `;
-export const useAllUnclaimedBagsQuery = <
-      TData = AllUnclaimedBagsQuery,
-      TError = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables?: AllUnclaimedBagsQueryVariables,
-      options?: UseQueryOptions<AllUnclaimedBagsQuery, TError, TData>
-    ) =>
-    useQuery<AllUnclaimedBagsQuery, TError, TData>(
-      variables === undefined ? ['AllUnclaimedBags'] : ['AllUnclaimedBags', variables],
-      fetcher<AllUnclaimedBagsQuery, AllUnclaimedBagsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, AllUnclaimedBagsDocument, variables),
-      options
-    );
-export const BagDocument = `
-    query Bag($tokenId: ID!) {
-  bag(id: $tokenId) {
-    id
-    claimed
-    opened
-    open_sea_asset @client {
-      is_on_sale
-      current_sale_price
-      last_sale_price
+  page_6: dopes(first: 1000, before: 5000, where: {opened: true}) {
+    edges {
+      node {
+        opened
+        id
+      }
     }
   }
 }
     `;
-export const useBagQuery = <
-      TData = BagQuery,
+export const useAllOpenedDopesQuery = <
+      TData = AllOpenedDopesQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables: BagQueryVariables,
-      options?: UseQueryOptions<BagQuery, TError, TData>
+      variables?: AllOpenedDopesQueryVariables,
+      options?: UseQueryOptions<AllOpenedDopesQuery, TError, TData>
     ) =>
-    useQuery<BagQuery, TError, TData>(
-      ['Bag', variables],
-      fetcher<BagQuery, BagQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, BagDocument, variables),
+    useQuery<AllOpenedDopesQuery, TError, TData>(
+      variables === undefined ? ['AllOpenedDopes'] : ['AllOpenedDopes', variables],
+      fetcher<AllOpenedDopesQuery, AllOpenedDopesQueryVariables>(AllOpenedDopesDocument, variables),
       options
     );
-export const BagsDocument = `
-    query Bags($first: Int, $skip: Int) {
-  bags(first: $first, skip: $skip) {
-    claimed
-    opened
-    id
-    clothes @client
-    foot @client
-    hand @client
-    drugs @client
-    neck @client
-    ring @client
-    vehicle @client
-    waist @client
-    weapon @client
-    rank @client
-    open_sea_asset @client {
-      is_on_sale
-      current_sale_price
-      last_sale_price
+export const AllUnclaimedDopesDocument = `
+    query AllUnclaimedDopes {
+  page_1: dopes(first: 1000, before: 0, where: {claimed: false}) {
+    edges {
+      node {
+        claimed
+        id
+      }
+    }
+  }
+  page_2: dopes(first: 1000, before: 1000, where: {claimed: false}) {
+    edges {
+      node {
+        claimed
+        id
+      }
+    }
+  }
+  page_3: dopes(first: 1000, before: 2000, where: {claimed: false}) {
+    edges {
+      node {
+        claimed
+        id
+      }
     }
   }
 }
     `;
-export const useBagsQuery = <
-      TData = BagsQuery,
+export const useAllUnclaimedDopesQuery = <
+      TData = AllUnclaimedDopesQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables?: BagsQueryVariables,
-      options?: UseQueryOptions<BagsQuery, TError, TData>
+      variables?: AllUnclaimedDopesQueryVariables,
+      options?: UseQueryOptions<AllUnclaimedDopesQuery, TError, TData>
     ) =>
-    useQuery<BagsQuery, TError, TData>(
-      variables === undefined ? ['Bags'] : ['Bags', variables],
-      fetcher<BagsQuery, BagsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, BagsDocument, variables),
+    useQuery<AllUnclaimedDopesQuery, TError, TData>(
+      variables === undefined ? ['AllUnclaimedDopes'] : ['AllUnclaimedDopes', variables],
+      fetcher<AllUnclaimedDopesQuery, AllUnclaimedDopesQueryVariables>(AllUnclaimedDopesDocument, variables),
+      options
+    );
+export const DopesDocument = `
+    query Dopes($after: Cursor, $first: Int, $before: Cursor, $last: Int, $orderBy: DopeOrder, $where: DopeWhereInput) {
+  dopes(
+    after: $after
+    first: $first
+    before: $before
+    last: $last
+    orderBy: $orderBy
+    where: $where
+  ) {
+    edges {
+      node {
+        id
+        claimed
+        opened
+        score
+        rank
+        items {
+          id
+          type
+          name
+          namePrefix
+          nameSuffix
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+      }
+    }
+  }
+}
+    `;
+export const useDopesQuery = <
+      TData = DopesQuery,
+      TError = unknown
+    >(
+      variables?: DopesQueryVariables,
+      options?: UseQueryOptions<DopesQuery, TError, TData>
+    ) =>
+    useQuery<DopesQuery, TError, TData>(
+      variables === undefined ? ['Dopes'] : ['Dopes', variables],
+      fetcher<DopesQuery, DopesQueryVariables>(DopesDocument, variables),
       options
     );
 export const HustlerDocument = `
-    query Hustler($id: ID!) {
-  hustler(id: $id) {
-    id
-    data
+    query Hustler($where: HustlerWhereInput) {
+  hustlers(where: $where) {
+    edges {
+      node {
+        id
+        title
+        name
+        type
+        title
+        color
+        background
+        age
+        background
+        neck {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        sex
+        viewbox
+        order
+        ring {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        accessory {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        svg
+        body {
+          id
+          type
+          sex
+          rle
+        }
+        beard {
+          id
+          type
+          sex
+          rle
+        }
+        drug {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        hand {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        weapon {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        clothes {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        vehicle {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        waist {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        foot {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+      }
+    }
   }
 }
     `;
@@ -1640,23 +1427,162 @@ export const useHustlerQuery = <
       TData = HustlerQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables: HustlerQueryVariables,
+      variables?: HustlerQueryVariables,
       options?: UseQueryOptions<HustlerQuery, TError, TData>
     ) =>
     useQuery<HustlerQuery, TError, TData>(
-      ['Hustler', variables],
-      fetcher<HustlerQuery, HustlerQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, HustlerDocument, variables),
+      variables === undefined ? ['Hustler'] : ['Hustler', variables],
+      fetcher<HustlerQuery, HustlerQueryVariables>(HustlerDocument, variables),
       options
     );
 export const HustlersWalletDocument = `
-    query HustlersWallet($id: ID!) {
-  wallet(id: $id) {
-    id
-    address
-    hustlers(first: 50) {
-      id
-      data
+    query HustlersWallet($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        id
+        paper
+        hustlers {
+          id
+          title
+          name
+          type
+          title
+          color
+          background
+          age
+          background
+          neck {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+          sex
+          viewbox
+          order
+          ring {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+          accessory {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+          svg
+          body {
+            id
+            type
+            sex
+            rle
+          }
+          beard {
+            id
+            type
+            sex
+            rle
+          }
+          drug {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+          hand {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+          weapon {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+          clothes {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+          vehicle {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+          waist {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+          foot {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+        }
+        items {
+          id
+          balance
+          item {
+            id
+            name
+          }
+        }
+        dopes {
+          id
+          claimed
+          opened
+        }
+      }
     }
   }
 }
@@ -1665,66 +1591,42 @@ export const useHustlersWalletQuery = <
       TData = HustlersWalletQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables: HustlersWalletQueryVariables,
+      variables?: HustlersWalletQueryVariables,
       options?: UseQueryOptions<HustlersWalletQuery, TError, TData>
     ) =>
     useQuery<HustlersWalletQuery, TError, TData>(
-      ['HustlersWallet', variables],
-      fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, HustlersWalletDocument, variables),
-      options
-    );
-export const SearchDocument = `
-    query Search($text: String!, $first: Int, $skip: Int) {
-  search(text: $text, first: $first, skip: $skip) {
-    id
-    clothes
-    foot
-    hand
-    drugs
-    neck
-    ring
-    vehicle
-    waist
-    weapon
-    claimed
-    opened
-  }
-}
-    `;
-export const useSearchQuery = <
-      TData = SearchQuery,
-      TError = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables: SearchQueryVariables,
-      options?: UseQueryOptions<SearchQuery, TError, TData>
-    ) =>
-    useQuery<SearchQuery, TError, TData>(
-      ['Search', variables],
-      fetcher<SearchQuery, SearchQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, SearchDocument, variables),
+      variables === undefined ? ['HustlersWallet'] : ['HustlersWallet', variables],
+      fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, variables),
       options
     );
 export const WalletDocument = `
-    query Wallet($id: ID!) {
-  wallet(id: $id) {
-    id
-    address
-    paper
-    bags(first: 200) {
-      claimed
-      id
-      opened
-      clothes @client
-      foot @client
-      hand @client
-      drugs @client
-      neck @client
-      ring @client
-      vehicle @client
-      waist @client
-      weapon @client
-      rank @client
+    query Wallet($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        id
+        paper
+        hustlers {
+          id
+          title
+          name
+        }
+        items {
+          id
+          balance
+          item {
+            id
+            name
+          }
+        }
+        dopes {
+          id
+          claimed
+          opened
+          score
+          rank
+        }
+      }
     }
   }
 }
@@ -1733,12 +1635,11 @@ export const useWalletQuery = <
       TData = WalletQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables: WalletQueryVariables,
+      variables?: WalletQueryVariables,
       options?: UseQueryOptions<WalletQuery, TError, TData>
     ) =>
     useQuery<WalletQuery, TError, TData>(
-      ['Wallet', variables],
-      fetcher<WalletQuery, WalletQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, WalletDocument, variables),
+      variables === undefined ? ['Wallet'] : ['Wallet', variables],
+      fetcher<WalletQuery, WalletQueryVariables>(WalletDocument, variables),
       options
     );

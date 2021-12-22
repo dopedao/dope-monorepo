@@ -10,12 +10,11 @@ import { makeVar, useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { CloseButton } from '@chakra-ui/close-button';
 import { css } from '@emotion/react';
-import { Maybe, useHustlerQuery, useWalletQuery } from 'generated/graphql';
+import { Hustler, useHustlerQuery, useWalletQuery } from 'generated/graphql';
 import { getRandomHustler, HustlerCustomization } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
 import { useFetchMetadata } from 'hooks/contracts';
 import { useSwitchOptimism } from 'hooks/web3';
-import { useEthereumClient, useOptimismClient } from 'components/EthereumApolloProvider';
 import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
 import Head from 'components/Head';
@@ -49,13 +48,7 @@ const ContentLoading = () => (
 );
 
 type HustlerEditProps = {
-  hustler:
-    | Maybe<{
-        __typename?: 'Hustler' | undefined;
-        id: string;
-        data: string;
-      }>
-    | undefined;
+  hustler: Hustler;
 };
 
 const HustlerEdit = ({ hustler }: HustlerEditProps) => {
@@ -175,24 +168,17 @@ const Nav = () => (
 const Hustlers = () => {
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const { account, chainId } = useWeb3React();
-  const ethereumURI = useEthereumClient();
-  const { isFetching: walletLoading } = useWalletQuery(
-    {
-      endpoint: ethereumURI,
+
+  const { isFetching: walletLoading } = useWalletQuery({
+    where: {
+      id: account,
     },
-    {
-      id: account?.toLowerCase() || '',
+  });
+  const { data, isFetching: loading } = useHustlerQuery({
+    where: {
+      id: account,
     },
-  );
-  const optimismURI = useOptimismClient();
-  const { data, isFetching: loading } = useHustlerQuery(
-    {
-      endpoint: optimismURI,
-    },
-    {
-      id: account?.toLowerCase() || '',
-    },
-  );
+  });
   useSwitchOptimism(chainId, account);
 
   useEffect(() => {
@@ -231,10 +217,10 @@ const Hustlers = () => {
           </div>
         </StickyNote>
       )}
-      {walletLoading || loading || !data?.hustler?.data || !data?.hustler?.data.length ? (
+      {walletLoading || loading || !data?.hustlers.edges![0]?.node?.id ? (
         <ContentLoading />
       ) : (
-        <HustlerEdit hustler={data.hustler} />
+        <HustlerEdit hustler={data.hustlers.edges[0].node} />
       )}
     </AppWindow>
   );

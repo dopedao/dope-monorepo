@@ -11,7 +11,6 @@ import { isTouchDevice } from 'utils/utils';
 import WindowPosition, { WindowPositionReactive } from 'utils/WindowPosition';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
-import { useEthereumClient } from './EthereumApolloProvider';
 
 type DesktopWindowProps = {
   title: string | undefined;
@@ -73,15 +72,12 @@ const DesktopWindow = ({
   onMoved,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
-  const ethereumURI = useEthereumClient();
-  const { data, isFetching: loading } = useWalletQuery(
-    {
-      endpoint: ethereumURI,
+
+  const { data, isFetching: loading } = useWalletQuery({
+    where: {
+      id: account,
     },
-    {
-      id: account?.toLowerCase() || '',
-    },
-  );
+  });
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(fullScreen || false);
@@ -128,7 +124,7 @@ const DesktopWindow = ({
           isTouchDevice={isTouchDevice()}
           isFullScreen={isFullScreen}
           toggleFullScreen={toggleFullScreen}
-          balance={data?.wallet?.paper}
+          balance={data?.wallets?.edges![0]?.node?.paper}
           loadingBalance={loading}
         >
           {titleChildren}

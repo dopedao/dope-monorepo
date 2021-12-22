@@ -9,6 +9,7 @@
     "lint": "next lint",
     "format": "prettier --write ./**/*.{ts,tsx}",
     "gen": "graphql-codegen --config codegen.yml",
+    "gen-opensea": "graphql-codegen --config codegen-opensea.yml",
     "test": "jest",
     "test-watch": "jest --watch",
     "dump-opensea": "ts-node --script-mode script/dump-opensea-json.ts",

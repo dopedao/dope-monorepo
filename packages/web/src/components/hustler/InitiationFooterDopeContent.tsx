@@ -6,16 +6,10 @@ import { Select } from '@chakra-ui/react';
 import { ReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
-import { useWalletQuery, WalletQuery } from 'generated/graphql';
-import {
-  HustlerCustomization,
-  isHustlerRandom,
-  randomizeHustlerAttributes,
-} from 'utils/HustlerConfig';
-import { PickedBag } from 'utils/DopeDatabase';
+import { Dope, useWalletQuery, WalletQuery } from 'generated/graphql';
+import { HustlerCustomization, randomizeHustlerAttributes } from 'utils/HustlerConfig';
 import PanelFooter from 'components/PanelFooter';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
-import { useEthereumClient } from 'components/EthereumApolloProvider';
 
 const NoDopeMessage = () => {
   const caution = (
@@ -76,7 +70,6 @@ const InitiationFooterDopeContent = ({
 }: InitiationFooterDopeContentProps) => {
   const { account } = useWeb3React();
   const dispatchHustler = useDispatchHustler();
-  const ethereumURI = useEthereumClient();
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -86,21 +79,22 @@ const InitiationFooterDopeContent = ({
   };
 
   const getBundledDopeFromData = (data: WalletQuery) => {
-    let bundledDope = [] as PickedBag[];
-    if (data?.wallet?.bags && data.wallet.bags.length > 0) {
-      bundledDope = data.wallet.bags.filter((dopeNft: PickedBag) => !dopeNft.opened);
+    let bundledDope: Dope[] | [] = [];
+    if (
+      data?.wallets.edges &&
+      data.wallets.edges[0]?.node?.dopes &&
+      data.wallets.edges[0].node.dopes.length > 0
+    ) {
+      [...bundledDope, data.wallets.edges[0].node.dopes.filter(dopeNft => !dopeNft.opened)];
     }
     return bundledDope;
   };
 
-  const { data, isFetching: loading } = useWalletQuery(
-    {
-      endpoint: ethereumURI,
+  const { data, isFetching: loading } = useWalletQuery({
+    where: {
+      id: account,
     },
-    {
-      id: account?.toLowerCase() || '',
-    },
-  );
+  });
 
   // onCompleted: data => {
   //   const bundledDope = getBundledDopeFromData(data);
@@ -127,7 +121,7 @@ const InitiationFooterDopeContent = ({
 
   if (!account) return <NoDopeMessage />;
 
-  if (loading) {
+  if (loading || !data?.wallets.edges![0]?.node?.dopes) {
     return (
       <PanelFooter>
         <SpinnerContainer>
@@ -136,7 +130,7 @@ const InitiationFooterDopeContent = ({
         </SpinnerContainer>
       </PanelFooter>
     );
-  } else if (!data?.wallet?.bags || data.wallet.bags.length === 0) {
+  } else if (data.wallets.edges[0]!.node?.dopes.length === 0) {
     return <NoDopeMessage />;
   } else {
     // Prevent controls from showing if no qualified DOPE

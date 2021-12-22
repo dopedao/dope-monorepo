@@ -5,7 +5,16 @@
         }
       }
       const result: PossibleTypesResultData = {
-  "possibleTypes": {}
+  "possibleTypes": {
+    "Node": [
+      "BodyPart",
+      "Dope",
+      "Hustler",
+      "Item",
+      "Wallet",
+      "WalletItems"
+    ]
+  }
 };
       export default result;
     

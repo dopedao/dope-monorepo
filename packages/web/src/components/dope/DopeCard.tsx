@@ -1,28 +1,33 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
 import { css } from '@emotion/react';
-import { PickedBag } from 'utils/DopeDatabase';
 import DopeCardBody from 'components/dope/DopeCardBody';
-import DopeCardFooterForMarket from 'components/dope/DopeCardFooterForMarket';
+// import DopeCardFooterForMarket from 'components/dope/DopeCardFooterForMarket';
 import DopeCardFooterForOwner from 'components/dope/DopeCardFooterForOwner';
 import DopeLegend from 'components/dope/DopeLegend';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
 
-interface Props {
+export type DopeCardProps = {
   footer: 'for-marketplace' | 'for-owner';
-  bag: PickedBag;
+  dope: {
+    __typename?: 'Dope' | undefined;
+    id: string;
+    claimed: boolean;
+    opened: boolean;
+    rank: number;
+  };
   isExpanded?: boolean;
   showCollapse?: boolean;
-}
+};
 
 const DopeCard = ({
   footer,
-  bag,
+  dope,
   isExpanded: isExpandedProp = true,
   showCollapse = false,
-}: Props) => {
+}: DopeCardProps) => {
   const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(isExpandedProp);
 
@@ -53,11 +58,11 @@ const DopeCard = ({
   return (
     <>
       {isItemLegendVisible && (
-        <DopeLegend key={`dope-legend_${bag.id}`} toggleVisibility={toggleItemLegendVisibility} />
+        <DopeLegend key={`dope-legend_${dope.id}`} toggleVisibility={toggleItemLegendVisibility} />
       )}
       {!isItemLegendVisible && (
         <PanelContainer
-          key={`dope-card_${bag.id}`}
+          key={`dope-card_${dope.id}`}
           className={`dopeCard ${isExpanded ? '' : 'collapsed'}`}
           css={css`
             &.collapsed {
@@ -74,7 +79,7 @@ const DopeCard = ({
                 width: 32px;
               `}
             ></div>
-            <div>DOPE #{bag.id}</div>
+            <div>DOPE #{dope.id}</div>
             <div
               css={css`
                 width: 32px;
@@ -83,17 +88,17 @@ const DopeCard = ({
               {showCollapse && <ToggleButton />}
             </div>
           </PanelTitleBarFlex>
-          <DopeCardBody bag={bag} />
+          <DopeCardBody dope={dope} />
           {footer && footer === 'for-owner' && (
             <PanelFooter>
-              <DopeCardFooterForOwner bag={bag} toggleVisibility={toggleItemLegendVisibility} />
+              <DopeCardFooterForOwner dope={dope} toggleVisibility={toggleItemLegendVisibility} />
             </PanelFooter>
           )}
-          {footer && footer === 'for-marketplace' && (
+          {/* {footer && footer === 'for-marketplace' && (
             <PanelFooter>
-              <DopeCardFooterForMarket bag={bag} />
+              <DopeCardFooterForMarket dope={dope} />
             </PanelFooter>
-          )}
+          )} */}
         </PanelContainer>
       )}
     </>
