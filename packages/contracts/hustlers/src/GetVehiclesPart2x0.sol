@@ -1,7 +1,7 @@
 
 pragma solidity ^0.8.0;
 
-contract GetVehicles0 {
+contract GetVehiclesPart2x0 {
     function getRles() external returns (uint256[] memory, bytes[] memory) {
         uint256[] memory ids = new uint256[](2);
         uint256[2] memory _ids = [uint256(720898),uint256(851970)];
