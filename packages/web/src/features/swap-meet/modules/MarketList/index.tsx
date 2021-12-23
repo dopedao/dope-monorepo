@@ -1,7 +1,7 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { DopeOrderField, OrderDirection, useInfiniteDopesQuery } from 'generated/graphql';
-import { isTouchDevice } from 'utils/utils';
+// import { isTouchDevice } from 'utils/utils';
 import DopeCard from 'components/dope/DopeCard';
 // import MarketFilterBar from 'components/MarketFilterBar';
 // import DopeDatabase, {
@@ -19,6 +19,7 @@ import LoadingState from 'features/swap-meet/components/LoadingState';
 import EmptyState from 'features/swap-meet/components/EmptyState';
 import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
+import { fetchParams } from 'utils/constants';
 
 const MarketList = () => {
   // const [sortByKey, setSortByKey] = useState('');
@@ -87,6 +88,7 @@ const MarketList = () => {
     hasNextPage,
     status,
   } = useInfiniteDopesQuery(
+    fetchParams,
     'first',
     {
       first: 100,

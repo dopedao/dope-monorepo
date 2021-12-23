@@ -10,6 +10,7 @@ import { Dope, useWalletQuery, WalletQuery } from 'generated/graphql';
 import { HustlerCustomization, randomizeHustlerAttributes } from 'utils/HustlerConfig';
 import PanelFooter from 'components/PanelFooter';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
+import { fetchParams } from 'utils/constants';
 
 const NoDopeMessage = () => {
   const caution = (
@@ -90,7 +91,7 @@ const InitiationFooterDopeContent = ({
     return bundledDope;
   };
 
-  const { data, isFetching: loading } = useWalletQuery({
+  const { data, isFetching: loading } = useWalletQuery(fetchParams, {
     where: {
       id: account,
     },

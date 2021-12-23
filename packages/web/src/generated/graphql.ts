@@ -5,11 +5,11 @@ export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K]
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 
-function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
+function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
-    const res = await fetch(process.env.DOPEWARS_API as string, {
-    method: "POST",
-    ...({"headers":{"Content-Type":"application/json"}}),
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      ...requestInit,
       body: JSON.stringify({ query, variables }),
     });
 
@@ -1142,25 +1142,27 @@ export const useAllHustlersQuery = <
       TData = AllHustlersQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       variables?: AllHustlersQueryVariables,
       options?: UseQueryOptions<AllHustlersQuery, TError, TData>
     ) =>
     useQuery<AllHustlersQuery, TError, TData>(
       variables === undefined ? ['AllHustlers'] : ['AllHustlers', variables],
-      fetcher<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, variables),
+      fetcher<AllHustlersQuery, AllHustlersQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, AllHustlersDocument, variables),
       options
     );
 export const useInfiniteAllHustlersQuery = <
       TData = AllHustlersQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       pageParamKey: keyof AllHustlersQueryVariables,
       variables?: AllHustlersQueryVariables,
-      options?: UseInfiniteQueryOptions<AllHustlersQuery, TError, TData>
+      options?: UseQueryOptions<AllHustlersQuery, TError, TData>
     ) =>
     useInfiniteQuery<AllHustlersQuery, TError, TData>(
       variables === undefined ? ['AllHustlers.infinite'] : ['AllHustlers.infinite', variables],
-      (metaData) => fetcher<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => fetcher<AllHustlersQuery, AllHustlersQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, AllHustlersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 
@@ -1210,25 +1212,27 @@ export const useDopesQuery = <
       TData = DopesQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       variables?: DopesQueryVariables,
       options?: UseQueryOptions<DopesQuery, TError, TData>
     ) =>
     useQuery<DopesQuery, TError, TData>(
       variables === undefined ? ['Dopes'] : ['Dopes', variables],
-      fetcher<DopesQuery, DopesQueryVariables>(DopesDocument, variables),
+      fetcher<DopesQuery, DopesQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, DopesDocument, variables),
       options
     );
 export const useInfiniteDopesQuery = <
       TData = DopesQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       pageParamKey: keyof DopesQueryVariables,
       variables?: DopesQueryVariables,
-      options?: UseInfiniteQueryOptions<DopesQuery, TError, TData>
+      options?: UseQueryOptions<DopesQuery, TError, TData>
     ) =>
     useInfiniteQuery<DopesQuery, TError, TData>(
       variables === undefined ? ['Dopes.infinite'] : ['Dopes.infinite', variables],
-      (metaData) => fetcher<DopesQuery, DopesQueryVariables>(DopesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => fetcher<DopesQuery, DopesQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, DopesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 
@@ -1371,25 +1375,27 @@ export const useHustlerQuery = <
       TData = HustlerQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       variables?: HustlerQueryVariables,
       options?: UseQueryOptions<HustlerQuery, TError, TData>
     ) =>
     useQuery<HustlerQuery, TError, TData>(
       variables === undefined ? ['Hustler'] : ['Hustler', variables],
-      fetcher<HustlerQuery, HustlerQueryVariables>(HustlerDocument, variables),
+      fetcher<HustlerQuery, HustlerQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, HustlerDocument, variables),
       options
     );
 export const useInfiniteHustlerQuery = <
       TData = HustlerQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       pageParamKey: keyof HustlerQueryVariables,
       variables?: HustlerQueryVariables,
-      options?: UseInfiniteQueryOptions<HustlerQuery, TError, TData>
+      options?: UseQueryOptions<HustlerQuery, TError, TData>
     ) =>
     useInfiniteQuery<HustlerQuery, TError, TData>(
       variables === undefined ? ['Hustler.infinite'] : ['Hustler.infinite', variables],
-      (metaData) => fetcher<HustlerQuery, HustlerQueryVariables>(HustlerDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => fetcher<HustlerQuery, HustlerQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, HustlerDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 
@@ -1549,25 +1555,27 @@ export const useHustlersWalletQuery = <
       TData = HustlersWalletQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       variables?: HustlersWalletQueryVariables,
       options?: UseQueryOptions<HustlersWalletQuery, TError, TData>
     ) =>
     useQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet'] : ['HustlersWallet', variables],
-      fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, variables),
+      fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, HustlersWalletDocument, variables),
       options
     );
 export const useInfiniteHustlersWalletQuery = <
       TData = HustlersWalletQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       pageParamKey: keyof HustlersWalletQueryVariables,
       variables?: HustlersWalletQueryVariables,
-      options?: UseInfiniteQueryOptions<HustlersWalletQuery, TError, TData>
+      options?: UseQueryOptions<HustlersWalletQuery, TError, TData>
     ) =>
     useInfiniteQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet.infinite'] : ['HustlersWallet.infinite', variables],
-      (metaData) => fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, HustlersWalletDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 
@@ -1607,24 +1615,26 @@ export const useWalletQuery = <
       TData = WalletQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       variables?: WalletQueryVariables,
       options?: UseQueryOptions<WalletQuery, TError, TData>
     ) =>
     useQuery<WalletQuery, TError, TData>(
       variables === undefined ? ['Wallet'] : ['Wallet', variables],
-      fetcher<WalletQuery, WalletQueryVariables>(WalletDocument, variables),
+      fetcher<WalletQuery, WalletQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, WalletDocument, variables),
       options
     );
 export const useInfiniteWalletQuery = <
       TData = WalletQuery,
       TError = unknown
     >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
       pageParamKey: keyof WalletQueryVariables,
       variables?: WalletQueryVariables,
-      options?: UseInfiniteQueryOptions<WalletQuery, TError, TData>
+      options?: UseQueryOptions<WalletQuery, TError, TData>
     ) =>
     useInfiniteQuery<WalletQuery, TError, TData>(
       variables === undefined ? ['Wallet.infinite'] : ['Wallet.infinite', variables],
-      (metaData) => fetcher<WalletQuery, WalletQueryVariables>(WalletDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => fetcher<WalletQuery, WalletQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, WalletDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );

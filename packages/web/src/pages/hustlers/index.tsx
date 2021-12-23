@@ -16,6 +16,7 @@ import LoadingBlock from 'components/LoadingBlock';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import Dialog from 'components/Dialog';
 import StickyNote from 'components/StickyNote';
+import { fetchParams } from 'utils/constants';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 const streetBackground =
@@ -66,13 +67,13 @@ const Hustlers = () => {
   const router = useRouter();
   const { account } = useWeb3React();
 
-  const { data, isFetching: loading } = useHustlersWalletQuery({
+  const { data, isFetching: loading } = useHustlersWalletQuery(fetchParams, {
     where: {
       id: account,
     },
   });
 
-  const { isFetching: walletLoading } = useWalletQuery({
+  const { isFetching: walletLoading } = useWalletQuery(fetchParams, {
     where: {
       id: account,
     },

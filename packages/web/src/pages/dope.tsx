@@ -14,6 +14,7 @@ import NoDopeCard from 'components/dope/NoDopeCard';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import { useSwitchEthereum } from 'hooks/web3';
 import StickyNote from 'components/StickyNote';
+import { fetchParams } from 'utils/constants';
 
 const FlexFiftyContainer = styled.div`
   height: 100%;
@@ -48,7 +49,7 @@ export default function DopeWindow() {
   const [selected, setSelected] = useState(0);
   const { account, chainId } = useWeb3React();
 
-  const { data, isFetching: loading } = useWalletQuery({
+  const { data, isFetching: loading } = useWalletQuery(fetchParams, {
     where: {
       id: account,
     },

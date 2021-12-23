@@ -22,7 +22,7 @@ yarn web dev
 First, create an `.env` file and paste in the following env variable:
 
 ```bash
-DOPEWARS_API=https://testnet.api.dopewars.gg/query
+NEXT_PUBLIC_DOPEWARS_API=https://testnet.api.dopewars.gg/query
 ```
 
 Second, run the development server:

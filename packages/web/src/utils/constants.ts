@@ -79,3 +79,14 @@ export const NETWORK = {
     chainId: 69,
   },
 };
+
+export const API_URI = process.env.NEXT_PUBLIC_DOPEWARS_API as string;
+
+export const fetchParams = {
+  endpoint: API_URI,
+  fetchParams: {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  },
+};

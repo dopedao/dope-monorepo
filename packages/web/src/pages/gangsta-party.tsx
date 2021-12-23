@@ -2,13 +2,14 @@ import { Button, HStack } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import Link from 'next/link';
 import styled from '@emotion/styled';
-import { useInfiniteAllHustlersQuery, OrderDirection } from 'generated/graphql';
+import { useInfiniteAllHustlersQuery } from 'generated/graphql';
 import Head from 'components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import LoadingBlock from 'components/LoadingBlock';
 import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
+import { fetchParams } from 'utils/constants';
 
 const HustlerContainer = styled.div`
   position: absolute;
@@ -43,6 +44,7 @@ const ScreenSaver = styled.div`
 
 const GangstaParty = () => {
   const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllHustlersQuery(
+    fetchParams,
     'first',
     {
       first: 100,

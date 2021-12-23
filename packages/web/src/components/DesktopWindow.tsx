@@ -11,6 +11,7 @@ import { isTouchDevice } from 'utils/utils';
 import WindowPosition, { WindowPositionReactive } from 'utils/WindowPosition';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
+import { fetchParams } from 'utils/constants';
 
 type DesktopWindowProps = {
   title: string | undefined;
@@ -73,7 +74,7 @@ const DesktopWindow = ({
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
 
-  const { data, isFetching: loading } = useWalletQuery({
+  const { data, isFetching: loading } = useWalletQuery(fetchParams, {
     where: {
       id: account,
     },

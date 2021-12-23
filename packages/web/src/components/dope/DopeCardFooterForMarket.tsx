@@ -1,6 +1,6 @@
 // import { Button } from '@chakra-ui/button';
-import { css } from '@emotion/react';
-import { Dope } from 'generated/graphql';
+// import { css } from '@emotion/react';
+// import { Dope } from 'generated/graphql';
 import { DopeCardProps } from './DopeCard';
 
 // const viewOnOpenSea = (tokenId: string): void => {
