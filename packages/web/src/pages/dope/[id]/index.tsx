@@ -9,7 +9,6 @@ import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import Head from 'components/Head';
 import Container from 'components/Container';
 import LoadingBlock from 'components/LoadingBlock';
-import { fetchParams } from 'utils/constants';
 
 const HustlerContainer = styled.div<{ bgColor: string }>`
   background-color: ${({ bgColor }) => bgColor};
@@ -30,7 +29,7 @@ const Dope = () => {
   const { id } = router.query;
   const { account } = useWeb3React();
 
-  const { data, isFetching: loading } = useWalletQuery(fetchParams, {
+  const { data, isFetching: loading } = useWalletQuery({
     where: {
       id: account,
     },

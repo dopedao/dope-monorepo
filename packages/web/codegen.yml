@@ -15,7 +15,12 @@ generates:
       - "typescript-operations"
       - "typescript-react-query"
     config:
-          addInfiniteQuery: true
+      addInfiniteQuery: true
+      fetcher:
+        endpoint: process.env.DOPEWARS_API
+        fetchParams:
+          headers:
+            'Content-Type': 'application/json'
   src/generated/introspection.ts:
     plugins:
       - fragment-matcher

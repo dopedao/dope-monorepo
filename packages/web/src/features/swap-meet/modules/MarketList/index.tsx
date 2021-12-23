@@ -19,7 +19,6 @@ import LoadingState from 'features/swap-meet/components/LoadingState';
 import EmptyState from 'features/swap-meet/components/EmptyState';
 import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
-import { fetchParams } from 'utils/constants';
 
 const MarketList = () => {
   // const [sortByKey, setSortByKey] = useState('');
@@ -88,7 +87,6 @@ const MarketList = () => {
     hasNextPage,
     status,
   } = useInfiniteDopesQuery(
-    fetchParams,
     'first',
     {
       first: 100,

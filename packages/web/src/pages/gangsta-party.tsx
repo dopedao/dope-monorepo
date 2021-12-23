@@ -9,7 +9,6 @@ import WebAmpPlayer from 'components/WebAmpPlayer';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import LoadingBlock from 'components/LoadingBlock';
 import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
-import { fetchParams } from 'utils/constants';
 
 const HustlerContainer = styled.div`
   position: absolute;
@@ -44,7 +43,6 @@ const ScreenSaver = styled.div`
 
 const GangstaParty = () => {
   const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllHustlersQuery(
-    fetchParams,
     'first',
     {
       first: 100,
