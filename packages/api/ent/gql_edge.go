@@ -4,6 +4,14 @@ package ent
 
 import "context"
 
+func (a *Asset) PaymentToken(ctx context.Context) ([]*PaymentToken, error) {
+	result, err := a.Edges.PaymentTokenOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryPaymentToken().All(ctx)
+	}
+	return result, err
+}
+
 func (bp *BodyPart) HustlerBodies(ctx context.Context) ([]*Hustler, error) {
 	result, err := bp.Edges.HustlerBodiesOrErr()
 	if IsNotLoaded(err) {
@@ -34,6 +42,22 @@ func (d *Dope) Wallet(ctx context.Context) (*Wallet, error) {
 		result, err = d.QueryWallet().Only(ctx)
 	}
 	return result, MaskNotFound(err)
+}
+
+func (d *Dope) LastSale(ctx context.Context) (*Listing, error) {
+	result, err := d.Edges.LastSaleOrErr()
+	if IsNotLoaded(err) {
+		result, err = d.QueryLastSale().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (d *Dope) Listings(ctx context.Context) ([]*Listing, error) {
+	result, err := d.Edges.ListingsOrErr()
+	if IsNotLoaded(err) {
+		result, err = d.QueryListings().All(ctx)
+	}
+	return result, err
 }
 
 func (d *Dope) Items(ctx context.Context) ([]*Item, error) {
@@ -264,6 +288,46 @@ func (i *Item) Derivative(ctx context.Context) ([]*Item, error) {
 	result, err := i.Edges.DerivativeOrErr()
 	if IsNotLoaded(err) {
 		result, err = i.QueryDerivative().All(ctx)
+	}
+	return result, err
+}
+
+func (l *Listing) Dope(ctx context.Context) (*Dope, error) {
+	result, err := l.Edges.DopeOrErr()
+	if IsNotLoaded(err) {
+		result, err = l.QueryDope().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (l *Listing) DopeLastsales(ctx context.Context) ([]*Dope, error) {
+	result, err := l.Edges.DopeLastsalesOrErr()
+	if IsNotLoaded(err) {
+		result, err = l.QueryDopeLastsales().All(ctx)
+	}
+	return result, err
+}
+
+func (l *Listing) Inputs(ctx context.Context) ([]*Asset, error) {
+	result, err := l.Edges.InputsOrErr()
+	if IsNotLoaded(err) {
+		result, err = l.QueryInputs().All(ctx)
+	}
+	return result, err
+}
+
+func (l *Listing) Outputs(ctx context.Context) ([]*Asset, error) {
+	result, err := l.Edges.OutputsOrErr()
+	if IsNotLoaded(err) {
+		result, err = l.QueryOutputs().All(ctx)
+	}
+	return result, err
+}
+
+func (pt *PaymentToken) Asset(ctx context.Context) ([]*Asset, error) {
+	result, err := pt.Edges.AssetOrErr()
+	if IsNotLoaded(err) {
+		result, err = pt.QueryAsset().All(ctx)
 	}
 	return result, err
 }
