@@ -17,7 +17,7 @@ generates:
     config:
           addInfiniteQuery: true
           fetcher:
-            endpoint: ${DOPEWARS_API:https://testnet.api.dopewars.gg/query}
+            endpoint: process.env.DOPEWARS_API
             fetchParams:
               headers:
                 'Content-Type': 'application/json'
