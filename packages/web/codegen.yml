@@ -1,5 +1,5 @@
 overwrite: true
-schema: ${DOPEWARS_API:https://testnet.api.dopewars.gg/query}
+schema: ${NEXT_PUBLIC_DOPEWARS_API:https://testnet.api.dopewars.gg/query}
 documents: "src/graphql/queries/**/*.graphql"
 generates:
   src/generated/graphql2.ts:
@@ -17,7 +17,7 @@ generates:
     config:
       addInfiniteQuery: true
       fetcher:
-        endpoint: process.env.DOPEWARS_API
+        endpoint: process.env.NEXT_PUBLIC_DOPEWARS_API
         fetchParams:
           headers:
             'Content-Type': 'application/json'
