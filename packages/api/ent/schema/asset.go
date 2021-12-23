@@ -3,7 +3,6 @@ package schema
 import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
-	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -18,7 +17,7 @@ func (Asset) Fields() []ent.Field {
 		field.String("id"),
 		field.String("address"),
 		field.Enum("type").
-			Values("ETH", "EQUIPMENT", "HUSTLER", "TURF", "PAPER").
+			Values("DOPE", "ETH", "EQUIPMENT", "HUSTLER", "PAPER", "TURF").
 			Immutable(),
 		field.String("symbol"),
 		field.Int("amount").
@@ -30,7 +29,7 @@ func (Asset) Fields() []ent.Field {
 			Annotations(
 				entgql.Type("BigInt"),
 			),
-		field.Int("assetId").
+		field.Int("asset_id").
 			GoType(BigInt{}).
 			SchemaType(BigIntSchemaType).
 			DefaultFunc(func() BigInt {
@@ -39,13 +38,6 @@ func (Asset) Fields() []ent.Field {
 			Annotations(
 				entgql.Type("BigInt"),
 			),
-		field.Float("price"),
-	}
-}
-
-// Edges of the Asset.
-func (Asset) Edges() []ent.Edge {
-	return []ent.Edge{
-		edge.To("paymentToken", PaymentToken.Type).Annotations(entgql.Bind()),
+		field.Int("decimals"),
 	}
 }

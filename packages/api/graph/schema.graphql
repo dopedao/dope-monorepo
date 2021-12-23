@@ -121,14 +121,6 @@ type Hustler implements Node {
   accessory: Item
 }
 
-type PaymentToken implements Node {
-  id: ID!
-  address: String
-  type: String
-  symbol: String
-  price: Float
-}
-
 type Listing implements Node {
   id: ID!
   source: Source
@@ -138,6 +130,7 @@ type Listing implements Node {
 }
 
 enum AssetType {
+  DOPE
   ETH
   EQUIPMENT
   HUSTLER
@@ -157,8 +150,7 @@ type Asset implements Node {
   symbol: String
   amount: BigInt
   assetId: BigInt
-  price: Float
-  priceType: PaymentToken
+  decimals: Int
 }
 
 type Dope implements Node {
