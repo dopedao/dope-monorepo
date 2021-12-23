@@ -4,7 +4,6 @@ package asset
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
@@ -113,17 +112,17 @@ func Amount(v schema.BigInt) predicate.Asset {
 	})
 }
 
-// AssetId applies equality check predicate on the "assetId" field. It's identical to AssetIdEQ.
-func AssetId(v schema.BigInt) predicate.Asset {
+// AssetID applies equality check predicate on the "asset_id" field. It's identical to AssetIDEQ.
+func AssetID(v schema.BigInt) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAssetId), v))
+		s.Where(sql.EQ(s.C(FieldAssetID), v))
 	})
 }
 
-// Price applies equality check predicate on the "price" field. It's identical to PriceEQ.
-func Price(v float64) predicate.Asset {
+// Decimals applies equality check predicate on the "decimals" field. It's identical to DecimalsEQ.
+func Decimals(v int) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPrice), v))
+		s.Where(sql.EQ(s.C(FieldDecimals), v))
 	})
 }
 
@@ -473,22 +472,22 @@ func AmountLTE(v schema.BigInt) predicate.Asset {
 	})
 }
 
-// AssetIdEQ applies the EQ predicate on the "assetId" field.
-func AssetIdEQ(v schema.BigInt) predicate.Asset {
+// AssetIDEQ applies the EQ predicate on the "asset_id" field.
+func AssetIDEQ(v schema.BigInt) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAssetId), v))
+		s.Where(sql.EQ(s.C(FieldAssetID), v))
 	})
 }
 
-// AssetIdNEQ applies the NEQ predicate on the "assetId" field.
-func AssetIdNEQ(v schema.BigInt) predicate.Asset {
+// AssetIDNEQ applies the NEQ predicate on the "asset_id" field.
+func AssetIDNEQ(v schema.BigInt) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldAssetId), v))
+		s.Where(sql.NEQ(s.C(FieldAssetID), v))
 	})
 }
 
-// AssetIdIn applies the In predicate on the "assetId" field.
-func AssetIdIn(vs ...schema.BigInt) predicate.Asset {
+// AssetIDIn applies the In predicate on the "asset_id" field.
+func AssetIDIn(vs ...schema.BigInt) predicate.Asset {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -500,12 +499,12 @@ func AssetIdIn(vs ...schema.BigInt) predicate.Asset {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldAssetId), v...))
+		s.Where(sql.In(s.C(FieldAssetID), v...))
 	})
 }
 
-// AssetIdNotIn applies the NotIn predicate on the "assetId" field.
-func AssetIdNotIn(vs ...schema.BigInt) predicate.Asset {
+// AssetIDNotIn applies the NotIn predicate on the "asset_id" field.
+func AssetIDNotIn(vs ...schema.BigInt) predicate.Asset {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -517,54 +516,54 @@ func AssetIdNotIn(vs ...schema.BigInt) predicate.Asset {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldAssetId), v...))
+		s.Where(sql.NotIn(s.C(FieldAssetID), v...))
 	})
 }
 
-// AssetIdGT applies the GT predicate on the "assetId" field.
-func AssetIdGT(v schema.BigInt) predicate.Asset {
+// AssetIDGT applies the GT predicate on the "asset_id" field.
+func AssetIDGT(v schema.BigInt) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldAssetId), v))
+		s.Where(sql.GT(s.C(FieldAssetID), v))
 	})
 }
 
-// AssetIdGTE applies the GTE predicate on the "assetId" field.
-func AssetIdGTE(v schema.BigInt) predicate.Asset {
+// AssetIDGTE applies the GTE predicate on the "asset_id" field.
+func AssetIDGTE(v schema.BigInt) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldAssetId), v))
+		s.Where(sql.GTE(s.C(FieldAssetID), v))
 	})
 }
 
-// AssetIdLT applies the LT predicate on the "assetId" field.
-func AssetIdLT(v schema.BigInt) predicate.Asset {
+// AssetIDLT applies the LT predicate on the "asset_id" field.
+func AssetIDLT(v schema.BigInt) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldAssetId), v))
+		s.Where(sql.LT(s.C(FieldAssetID), v))
 	})
 }
 
-// AssetIdLTE applies the LTE predicate on the "assetId" field.
-func AssetIdLTE(v schema.BigInt) predicate.Asset {
+// AssetIDLTE applies the LTE predicate on the "asset_id" field.
+func AssetIDLTE(v schema.BigInt) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldAssetId), v))
+		s.Where(sql.LTE(s.C(FieldAssetID), v))
 	})
 }
 
-// PriceEQ applies the EQ predicate on the "price" field.
-func PriceEQ(v float64) predicate.Asset {
+// DecimalsEQ applies the EQ predicate on the "decimals" field.
+func DecimalsEQ(v int) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPrice), v))
+		s.Where(sql.EQ(s.C(FieldDecimals), v))
 	})
 }
 
-// PriceNEQ applies the NEQ predicate on the "price" field.
-func PriceNEQ(v float64) predicate.Asset {
+// DecimalsNEQ applies the NEQ predicate on the "decimals" field.
+func DecimalsNEQ(v int) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldPrice), v))
+		s.Where(sql.NEQ(s.C(FieldDecimals), v))
 	})
 }
 
-// PriceIn applies the In predicate on the "price" field.
-func PriceIn(vs ...float64) predicate.Asset {
+// DecimalsIn applies the In predicate on the "decimals" field.
+func DecimalsIn(vs ...int) predicate.Asset {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -576,12 +575,12 @@ func PriceIn(vs ...float64) predicate.Asset {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldPrice), v...))
+		s.Where(sql.In(s.C(FieldDecimals), v...))
 	})
 }
 
-// PriceNotIn applies the NotIn predicate on the "price" field.
-func PriceNotIn(vs ...float64) predicate.Asset {
+// DecimalsNotIn applies the NotIn predicate on the "decimals" field.
+func DecimalsNotIn(vs ...int) predicate.Asset {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -593,63 +592,35 @@ func PriceNotIn(vs ...float64) predicate.Asset {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldPrice), v...))
+		s.Where(sql.NotIn(s.C(FieldDecimals), v...))
 	})
 }
 
-// PriceGT applies the GT predicate on the "price" field.
-func PriceGT(v float64) predicate.Asset {
+// DecimalsGT applies the GT predicate on the "decimals" field.
+func DecimalsGT(v int) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldPrice), v))
+		s.Where(sql.GT(s.C(FieldDecimals), v))
 	})
 }
 
-// PriceGTE applies the GTE predicate on the "price" field.
-func PriceGTE(v float64) predicate.Asset {
+// DecimalsGTE applies the GTE predicate on the "decimals" field.
+func DecimalsGTE(v int) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldPrice), v))
+		s.Where(sql.GTE(s.C(FieldDecimals), v))
 	})
 }
 
-// PriceLT applies the LT predicate on the "price" field.
-func PriceLT(v float64) predicate.Asset {
+// DecimalsLT applies the LT predicate on the "decimals" field.
+func DecimalsLT(v int) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldPrice), v))
+		s.Where(sql.LT(s.C(FieldDecimals), v))
 	})
 }
 
-// PriceLTE applies the LTE predicate on the "price" field.
-func PriceLTE(v float64) predicate.Asset {
+// DecimalsLTE applies the LTE predicate on the "decimals" field.
+func DecimalsLTE(v int) predicate.Asset {
 	return predicate.Asset(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldPrice), v))
-	})
-}
-
-// HasPaymentToken applies the HasEdge predicate on the "paymentToken" edge.
-func HasPaymentToken() predicate.Asset {
-	return predicate.Asset(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(PaymentTokenTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, PaymentTokenTable, PaymentTokenPrimaryKey...),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasPaymentTokenWith applies the HasEdge predicate on the "paymentToken" edge with a given conditions (other predicates).
-func HasPaymentTokenWith(preds ...predicate.PaymentToken) predicate.Asset {
-	return predicate.Asset(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(PaymentTokenInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, PaymentTokenTable, PaymentTokenPrimaryKey...),
-		)
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
+		s.Where(sql.LTE(s.C(FieldDecimals), v))
 	})
 }
 

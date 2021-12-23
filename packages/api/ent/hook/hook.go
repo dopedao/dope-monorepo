@@ -100,19 +100,6 @@ func (f ListingFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return f(ctx, mv)
 }
 
-// The PaymentTokenFunc type is an adapter to allow the use of ordinary
-// function as PaymentToken mutator.
-type PaymentTokenFunc func(context.Context, *ent.PaymentTokenMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f PaymentTokenFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.PaymentTokenMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PaymentTokenMutation", m)
-	}
-	return f(ctx, mv)
-}
-
 // The SyncStateFunc type is an adapter to allow the use of ordinary
 // function as SyncState mutator.
 type SyncStateFunc func(context.Context, *ent.SyncStateMutation) (ent.Value, error)

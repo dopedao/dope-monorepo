@@ -16,7 +16,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/paymenttoken"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
@@ -36,41 +35,37 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAsset        = "Asset"
-	TypeBodyPart     = "BodyPart"
-	TypeDope         = "Dope"
-	TypeEvent        = "Event"
-	TypeHustler      = "Hustler"
-	TypeItem         = "Item"
-	TypeListing      = "Listing"
-	TypePaymentToken = "PaymentToken"
-	TypeSyncState    = "SyncState"
-	TypeWallet       = "Wallet"
-	TypeWalletItems  = "WalletItems"
+	TypeAsset       = "Asset"
+	TypeBodyPart    = "BodyPart"
+	TypeDope        = "Dope"
+	TypeEvent       = "Event"
+	TypeHustler     = "Hustler"
+	TypeItem        = "Item"
+	TypeListing     = "Listing"
+	TypeSyncState   = "SyncState"
+	TypeWallet      = "Wallet"
+	TypeWalletItems = "WalletItems"
 )
 
 // AssetMutation represents an operation that mutates the Asset nodes in the graph.
 type AssetMutation struct {
 	config
-	op                  Op
-	typ                 string
-	id                  *string
-	address             *string
-	_type               *asset.Type
-	symbol              *string
-	amount              *schema.BigInt
-	addamount           *schema.BigInt
-	assetId             *schema.BigInt
-	addassetId          *schema.BigInt
-	price               *float64
-	addprice            *float64
-	clearedFields       map[string]struct{}
-	paymentToken        map[string]struct{}
-	removedpaymentToken map[string]struct{}
-	clearedpaymentToken bool
-	done                bool
-	oldValue            func(context.Context) (*Asset, error)
-	predicates          []predicate.Asset
+	op            Op
+	typ           string
+	id            *string
+	address       *string
+	_type         *asset.Type
+	symbol        *string
+	amount        *schema.BigInt
+	addamount     *schema.BigInt
+	asset_id      *schema.BigInt
+	addasset_id   *schema.BigInt
+	decimals      *int
+	adddecimals   *int
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*Asset, error)
+	predicates    []predicate.Asset
 }
 
 var _ ent.Mutation = (*AssetMutation)(nil)
@@ -341,170 +336,116 @@ func (m *AssetMutation) ResetAmount() {
 	m.addamount = nil
 }
 
-// SetAssetId sets the "assetId" field.
-func (m *AssetMutation) SetAssetId(si schema.BigInt) {
-	m.assetId = &si
-	m.addassetId = nil
+// SetAssetID sets the "asset_id" field.
+func (m *AssetMutation) SetAssetID(si schema.BigInt) {
+	m.asset_id = &si
+	m.addasset_id = nil
 }
 
-// AssetId returns the value of the "assetId" field in the mutation.
-func (m *AssetMutation) AssetId() (r schema.BigInt, exists bool) {
-	v := m.assetId
+// AssetID returns the value of the "asset_id" field in the mutation.
+func (m *AssetMutation) AssetID() (r schema.BigInt, exists bool) {
+	v := m.asset_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAssetId returns the old "assetId" field's value of the Asset entity.
+// OldAssetID returns the old "asset_id" field's value of the Asset entity.
 // If the Asset object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AssetMutation) OldAssetId(ctx context.Context) (v schema.BigInt, err error) {
+func (m *AssetMutation) OldAssetID(ctx context.Context) (v schema.BigInt, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAssetId is only allowed on UpdateOne operations")
+		return v, errors.New("OldAssetID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAssetId requires an ID field in the mutation")
+		return v, errors.New("OldAssetID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAssetId: %w", err)
+		return v, fmt.Errorf("querying old value for OldAssetID: %w", err)
 	}
-	return oldValue.AssetId, nil
+	return oldValue.AssetID, nil
 }
 
-// AddAssetId adds si to the "assetId" field.
-func (m *AssetMutation) AddAssetId(si schema.BigInt) {
-	if m.addassetId != nil {
-		*m.addassetId = m.addassetId.Add(si)
+// AddAssetID adds si to the "asset_id" field.
+func (m *AssetMutation) AddAssetID(si schema.BigInt) {
+	if m.addasset_id != nil {
+		*m.addasset_id = m.addasset_id.Add(si)
 	} else {
-		m.addassetId = &si
+		m.addasset_id = &si
 	}
 }
 
-// AddedAssetId returns the value that was added to the "assetId" field in this mutation.
-func (m *AssetMutation) AddedAssetId() (r schema.BigInt, exists bool) {
-	v := m.addassetId
+// AddedAssetID returns the value that was added to the "asset_id" field in this mutation.
+func (m *AssetMutation) AddedAssetID() (r schema.BigInt, exists bool) {
+	v := m.addasset_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetAssetId resets all changes to the "assetId" field.
-func (m *AssetMutation) ResetAssetId() {
-	m.assetId = nil
-	m.addassetId = nil
+// ResetAssetID resets all changes to the "asset_id" field.
+func (m *AssetMutation) ResetAssetID() {
+	m.asset_id = nil
+	m.addasset_id = nil
 }
 
-// SetPrice sets the "price" field.
-func (m *AssetMutation) SetPrice(f float64) {
-	m.price = &f
-	m.addprice = nil
+// SetDecimals sets the "decimals" field.
+func (m *AssetMutation) SetDecimals(i int) {
+	m.decimals = &i
+	m.adddecimals = nil
 }
 
-// Price returns the value of the "price" field in the mutation.
-func (m *AssetMutation) Price() (r float64, exists bool) {
-	v := m.price
+// Decimals returns the value of the "decimals" field in the mutation.
+func (m *AssetMutation) Decimals() (r int, exists bool) {
+	v := m.decimals
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPrice returns the old "price" field's value of the Asset entity.
+// OldDecimals returns the old "decimals" field's value of the Asset entity.
 // If the Asset object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AssetMutation) OldPrice(ctx context.Context) (v float64, err error) {
+func (m *AssetMutation) OldDecimals(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPrice is only allowed on UpdateOne operations")
+		return v, errors.New("OldDecimals is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPrice requires an ID field in the mutation")
+		return v, errors.New("OldDecimals requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrice: %w", err)
+		return v, fmt.Errorf("querying old value for OldDecimals: %w", err)
 	}
-	return oldValue.Price, nil
+	return oldValue.Decimals, nil
 }
 
-// AddPrice adds f to the "price" field.
-func (m *AssetMutation) AddPrice(f float64) {
-	if m.addprice != nil {
-		*m.addprice += f
+// AddDecimals adds i to the "decimals" field.
+func (m *AssetMutation) AddDecimals(i int) {
+	if m.adddecimals != nil {
+		*m.adddecimals += i
 	} else {
-		m.addprice = &f
+		m.adddecimals = &i
 	}
 }
 
-// AddedPrice returns the value that was added to the "price" field in this mutation.
-func (m *AssetMutation) AddedPrice() (r float64, exists bool) {
-	v := m.addprice
+// AddedDecimals returns the value that was added to the "decimals" field in this mutation.
+func (m *AssetMutation) AddedDecimals() (r int, exists bool) {
+	v := m.adddecimals
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetPrice resets all changes to the "price" field.
-func (m *AssetMutation) ResetPrice() {
-	m.price = nil
-	m.addprice = nil
-}
-
-// AddPaymentTokenIDs adds the "paymentToken" edge to the PaymentToken entity by ids.
-func (m *AssetMutation) AddPaymentTokenIDs(ids ...string) {
-	if m.paymentToken == nil {
-		m.paymentToken = make(map[string]struct{})
-	}
-	for i := range ids {
-		m.paymentToken[ids[i]] = struct{}{}
-	}
-}
-
-// ClearPaymentToken clears the "paymentToken" edge to the PaymentToken entity.
-func (m *AssetMutation) ClearPaymentToken() {
-	m.clearedpaymentToken = true
-}
-
-// PaymentTokenCleared reports if the "paymentToken" edge to the PaymentToken entity was cleared.
-func (m *AssetMutation) PaymentTokenCleared() bool {
-	return m.clearedpaymentToken
-}
-
-// RemovePaymentTokenIDs removes the "paymentToken" edge to the PaymentToken entity by IDs.
-func (m *AssetMutation) RemovePaymentTokenIDs(ids ...string) {
-	if m.removedpaymentToken == nil {
-		m.removedpaymentToken = make(map[string]struct{})
-	}
-	for i := range ids {
-		delete(m.paymentToken, ids[i])
-		m.removedpaymentToken[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedPaymentToken returns the removed IDs of the "paymentToken" edge to the PaymentToken entity.
-func (m *AssetMutation) RemovedPaymentTokenIDs() (ids []string) {
-	for id := range m.removedpaymentToken {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// PaymentTokenIDs returns the "paymentToken" edge IDs in the mutation.
-func (m *AssetMutation) PaymentTokenIDs() (ids []string) {
-	for id := range m.paymentToken {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetPaymentToken resets all changes to the "paymentToken" edge.
-func (m *AssetMutation) ResetPaymentToken() {
-	m.paymentToken = nil
-	m.clearedpaymentToken = false
-	m.removedpaymentToken = nil
+// ResetDecimals resets all changes to the "decimals" field.
+func (m *AssetMutation) ResetDecimals() {
+	m.decimals = nil
+	m.adddecimals = nil
 }
 
 // Where appends a list predicates to the AssetMutation builder.
@@ -539,11 +480,11 @@ func (m *AssetMutation) Fields() []string {
 	if m.amount != nil {
 		fields = append(fields, asset.FieldAmount)
 	}
-	if m.assetId != nil {
-		fields = append(fields, asset.FieldAssetId)
+	if m.asset_id != nil {
+		fields = append(fields, asset.FieldAssetID)
 	}
-	if m.price != nil {
-		fields = append(fields, asset.FieldPrice)
+	if m.decimals != nil {
+		fields = append(fields, asset.FieldDecimals)
 	}
 	return fields
 }
@@ -561,10 +502,10 @@ func (m *AssetMutation) Field(name string) (ent.Value, bool) {
 		return m.Symbol()
 	case asset.FieldAmount:
 		return m.Amount()
-	case asset.FieldAssetId:
-		return m.AssetId()
-	case asset.FieldPrice:
-		return m.Price()
+	case asset.FieldAssetID:
+		return m.AssetID()
+	case asset.FieldDecimals:
+		return m.Decimals()
 	}
 	return nil, false
 }
@@ -582,10 +523,10 @@ func (m *AssetMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldSymbol(ctx)
 	case asset.FieldAmount:
 		return m.OldAmount(ctx)
-	case asset.FieldAssetId:
-		return m.OldAssetId(ctx)
-	case asset.FieldPrice:
-		return m.OldPrice(ctx)
+	case asset.FieldAssetID:
+		return m.OldAssetID(ctx)
+	case asset.FieldDecimals:
+		return m.OldDecimals(ctx)
 	}
 	return nil, fmt.Errorf("unknown Asset field %s", name)
 }
@@ -623,19 +564,19 @@ func (m *AssetMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAmount(v)
 		return nil
-	case asset.FieldAssetId:
+	case asset.FieldAssetID:
 		v, ok := value.(schema.BigInt)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAssetId(v)
+		m.SetAssetID(v)
 		return nil
-	case asset.FieldPrice:
-		v, ok := value.(float64)
+	case asset.FieldDecimals:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPrice(v)
+		m.SetDecimals(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Asset field %s", name)
@@ -648,11 +589,11 @@ func (m *AssetMutation) AddedFields() []string {
 	if m.addamount != nil {
 		fields = append(fields, asset.FieldAmount)
 	}
-	if m.addassetId != nil {
-		fields = append(fields, asset.FieldAssetId)
+	if m.addasset_id != nil {
+		fields = append(fields, asset.FieldAssetID)
 	}
-	if m.addprice != nil {
-		fields = append(fields, asset.FieldPrice)
+	if m.adddecimals != nil {
+		fields = append(fields, asset.FieldDecimals)
 	}
 	return fields
 }
@@ -664,10 +605,10 @@ func (m *AssetMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case asset.FieldAmount:
 		return m.AddedAmount()
-	case asset.FieldAssetId:
-		return m.AddedAssetId()
-	case asset.FieldPrice:
-		return m.AddedPrice()
+	case asset.FieldAssetID:
+		return m.AddedAssetID()
+	case asset.FieldDecimals:
+		return m.AddedDecimals()
 	}
 	return nil, false
 }
@@ -684,19 +625,19 @@ func (m *AssetMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddAmount(v)
 		return nil
-	case asset.FieldAssetId:
+	case asset.FieldAssetID:
 		v, ok := value.(schema.BigInt)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddAssetId(v)
+		m.AddAssetID(v)
 		return nil
-	case asset.FieldPrice:
-		v, ok := value.(float64)
+	case asset.FieldDecimals:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddPrice(v)
+		m.AddDecimals(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Asset numeric field %s", name)
@@ -737,11 +678,11 @@ func (m *AssetMutation) ResetField(name string) error {
 	case asset.FieldAmount:
 		m.ResetAmount()
 		return nil
-	case asset.FieldAssetId:
-		m.ResetAssetId()
+	case asset.FieldAssetID:
+		m.ResetAssetID()
 		return nil
-	case asset.FieldPrice:
-		m.ResetPrice()
+	case asset.FieldDecimals:
+		m.ResetDecimals()
 		return nil
 	}
 	return fmt.Errorf("unknown Asset field %s", name)
@@ -749,85 +690,49 @@ func (m *AssetMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AssetMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.paymentToken != nil {
-		edges = append(edges, asset.EdgePaymentToken)
-	}
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *AssetMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case asset.EdgePaymentToken:
-		ids := make([]ent.Value, 0, len(m.paymentToken))
-		for id := range m.paymentToken {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AssetMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedpaymentToken != nil {
-		edges = append(edges, asset.EdgePaymentToken)
-	}
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *AssetMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case asset.EdgePaymentToken:
-		ids := make([]ent.Value, 0, len(m.removedpaymentToken))
-		for id := range m.removedpaymentToken {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AssetMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedpaymentToken {
-		edges = append(edges, asset.EdgePaymentToken)
-	}
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *AssetMutation) EdgeCleared(name string) bool {
-	switch name {
-	case asset.EdgePaymentToken:
-		return m.clearedpaymentToken
-	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *AssetMutation) ClearEdge(name string) error {
-	switch name {
-	}
 	return fmt.Errorf("unknown Asset unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *AssetMutation) ResetEdge(name string) error {
-	switch name {
-	case asset.EdgePaymentToken:
-		m.ResetPaymentToken()
-		return nil
-	}
 	return fmt.Errorf("unknown Asset edge %s", name)
 }
 
@@ -7820,614 +7725,6 @@ func (m *ListingMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Listing edge %s", name)
-}
-
-// PaymentTokenMutation represents an operation that mutates the PaymentToken nodes in the graph.
-type PaymentTokenMutation struct {
-	config
-	op            Op
-	typ           string
-	id            *string
-	address       *string
-	_type         *string
-	symbol        *string
-	price         *float64
-	addprice      *float64
-	clearedFields map[string]struct{}
-	asset         map[string]struct{}
-	removedasset  map[string]struct{}
-	clearedasset  bool
-	done          bool
-	oldValue      func(context.Context) (*PaymentToken, error)
-	predicates    []predicate.PaymentToken
-}
-
-var _ ent.Mutation = (*PaymentTokenMutation)(nil)
-
-// paymenttokenOption allows management of the mutation configuration using functional options.
-type paymenttokenOption func(*PaymentTokenMutation)
-
-// newPaymentTokenMutation creates new mutation for the PaymentToken entity.
-func newPaymentTokenMutation(c config, op Op, opts ...paymenttokenOption) *PaymentTokenMutation {
-	m := &PaymentTokenMutation{
-		config:        c,
-		op:            op,
-		typ:           TypePaymentToken,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withPaymentTokenID sets the ID field of the mutation.
-func withPaymentTokenID(id string) paymenttokenOption {
-	return func(m *PaymentTokenMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *PaymentToken
-		)
-		m.oldValue = func(ctx context.Context) (*PaymentToken, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().PaymentToken.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withPaymentToken sets the old PaymentToken of the mutation.
-func withPaymentToken(node *PaymentToken) paymenttokenOption {
-	return func(m *PaymentTokenMutation) {
-		m.oldValue = func(context.Context) (*PaymentToken, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m PaymentTokenMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m PaymentTokenMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of PaymentToken entities.
-func (m *PaymentTokenMutation) SetID(id string) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *PaymentTokenMutation) ID() (id string, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *PaymentTokenMutation) IDs(ctx context.Context) ([]string, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []string{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().PaymentToken.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetAddress sets the "address" field.
-func (m *PaymentTokenMutation) SetAddress(s string) {
-	m.address = &s
-}
-
-// Address returns the value of the "address" field in the mutation.
-func (m *PaymentTokenMutation) Address() (r string, exists bool) {
-	v := m.address
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAddress returns the old "address" field's value of the PaymentToken entity.
-// If the PaymentToken object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PaymentTokenMutation) OldAddress(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAddress is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAddress requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAddress: %w", err)
-	}
-	return oldValue.Address, nil
-}
-
-// ResetAddress resets all changes to the "address" field.
-func (m *PaymentTokenMutation) ResetAddress() {
-	m.address = nil
-}
-
-// SetType sets the "type" field.
-func (m *PaymentTokenMutation) SetType(s string) {
-	m._type = &s
-}
-
-// GetType returns the value of the "type" field in the mutation.
-func (m *PaymentTokenMutation) GetType() (r string, exists bool) {
-	v := m._type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldType returns the old "type" field's value of the PaymentToken entity.
-// If the PaymentToken object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PaymentTokenMutation) OldType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldType: %w", err)
-	}
-	return oldValue.Type, nil
-}
-
-// ResetType resets all changes to the "type" field.
-func (m *PaymentTokenMutation) ResetType() {
-	m._type = nil
-}
-
-// SetSymbol sets the "symbol" field.
-func (m *PaymentTokenMutation) SetSymbol(s string) {
-	m.symbol = &s
-}
-
-// Symbol returns the value of the "symbol" field in the mutation.
-func (m *PaymentTokenMutation) Symbol() (r string, exists bool) {
-	v := m.symbol
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSymbol returns the old "symbol" field's value of the PaymentToken entity.
-// If the PaymentToken object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PaymentTokenMutation) OldSymbol(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSymbol is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSymbol requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSymbol: %w", err)
-	}
-	return oldValue.Symbol, nil
-}
-
-// ResetSymbol resets all changes to the "symbol" field.
-func (m *PaymentTokenMutation) ResetSymbol() {
-	m.symbol = nil
-}
-
-// SetPrice sets the "price" field.
-func (m *PaymentTokenMutation) SetPrice(f float64) {
-	m.price = &f
-	m.addprice = nil
-}
-
-// Price returns the value of the "price" field in the mutation.
-func (m *PaymentTokenMutation) Price() (r float64, exists bool) {
-	v := m.price
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPrice returns the old "price" field's value of the PaymentToken entity.
-// If the PaymentToken object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PaymentTokenMutation) OldPrice(ctx context.Context) (v float64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPrice is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPrice requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrice: %w", err)
-	}
-	return oldValue.Price, nil
-}
-
-// AddPrice adds f to the "price" field.
-func (m *PaymentTokenMutation) AddPrice(f float64) {
-	if m.addprice != nil {
-		*m.addprice += f
-	} else {
-		m.addprice = &f
-	}
-}
-
-// AddedPrice returns the value that was added to the "price" field in this mutation.
-func (m *PaymentTokenMutation) AddedPrice() (r float64, exists bool) {
-	v := m.addprice
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetPrice resets all changes to the "price" field.
-func (m *PaymentTokenMutation) ResetPrice() {
-	m.price = nil
-	m.addprice = nil
-}
-
-// AddAssetIDs adds the "asset" edge to the Asset entity by ids.
-func (m *PaymentTokenMutation) AddAssetIDs(ids ...string) {
-	if m.asset == nil {
-		m.asset = make(map[string]struct{})
-	}
-	for i := range ids {
-		m.asset[ids[i]] = struct{}{}
-	}
-}
-
-// ClearAsset clears the "asset" edge to the Asset entity.
-func (m *PaymentTokenMutation) ClearAsset() {
-	m.clearedasset = true
-}
-
-// AssetCleared reports if the "asset" edge to the Asset entity was cleared.
-func (m *PaymentTokenMutation) AssetCleared() bool {
-	return m.clearedasset
-}
-
-// RemoveAssetIDs removes the "asset" edge to the Asset entity by IDs.
-func (m *PaymentTokenMutation) RemoveAssetIDs(ids ...string) {
-	if m.removedasset == nil {
-		m.removedasset = make(map[string]struct{})
-	}
-	for i := range ids {
-		delete(m.asset, ids[i])
-		m.removedasset[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedAsset returns the removed IDs of the "asset" edge to the Asset entity.
-func (m *PaymentTokenMutation) RemovedAssetIDs() (ids []string) {
-	for id := range m.removedasset {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// AssetIDs returns the "asset" edge IDs in the mutation.
-func (m *PaymentTokenMutation) AssetIDs() (ids []string) {
-	for id := range m.asset {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetAsset resets all changes to the "asset" edge.
-func (m *PaymentTokenMutation) ResetAsset() {
-	m.asset = nil
-	m.clearedasset = false
-	m.removedasset = nil
-}
-
-// Where appends a list predicates to the PaymentTokenMutation builder.
-func (m *PaymentTokenMutation) Where(ps ...predicate.PaymentToken) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// Op returns the operation name.
-func (m *PaymentTokenMutation) Op() Op {
-	return m.op
-}
-
-// Type returns the node type of this mutation (PaymentToken).
-func (m *PaymentTokenMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *PaymentTokenMutation) Fields() []string {
-	fields := make([]string, 0, 4)
-	if m.address != nil {
-		fields = append(fields, paymenttoken.FieldAddress)
-	}
-	if m._type != nil {
-		fields = append(fields, paymenttoken.FieldType)
-	}
-	if m.symbol != nil {
-		fields = append(fields, paymenttoken.FieldSymbol)
-	}
-	if m.price != nil {
-		fields = append(fields, paymenttoken.FieldPrice)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *PaymentTokenMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case paymenttoken.FieldAddress:
-		return m.Address()
-	case paymenttoken.FieldType:
-		return m.GetType()
-	case paymenttoken.FieldSymbol:
-		return m.Symbol()
-	case paymenttoken.FieldPrice:
-		return m.Price()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *PaymentTokenMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case paymenttoken.FieldAddress:
-		return m.OldAddress(ctx)
-	case paymenttoken.FieldType:
-		return m.OldType(ctx)
-	case paymenttoken.FieldSymbol:
-		return m.OldSymbol(ctx)
-	case paymenttoken.FieldPrice:
-		return m.OldPrice(ctx)
-	}
-	return nil, fmt.Errorf("unknown PaymentToken field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *PaymentTokenMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case paymenttoken.FieldAddress:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAddress(v)
-		return nil
-	case paymenttoken.FieldType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetType(v)
-		return nil
-	case paymenttoken.FieldSymbol:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSymbol(v)
-		return nil
-	case paymenttoken.FieldPrice:
-		v, ok := value.(float64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPrice(v)
-		return nil
-	}
-	return fmt.Errorf("unknown PaymentToken field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *PaymentTokenMutation) AddedFields() []string {
-	var fields []string
-	if m.addprice != nil {
-		fields = append(fields, paymenttoken.FieldPrice)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *PaymentTokenMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case paymenttoken.FieldPrice:
-		return m.AddedPrice()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *PaymentTokenMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case paymenttoken.FieldPrice:
-		v, ok := value.(float64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddPrice(v)
-		return nil
-	}
-	return fmt.Errorf("unknown PaymentToken numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *PaymentTokenMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *PaymentTokenMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *PaymentTokenMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown PaymentToken nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *PaymentTokenMutation) ResetField(name string) error {
-	switch name {
-	case paymenttoken.FieldAddress:
-		m.ResetAddress()
-		return nil
-	case paymenttoken.FieldType:
-		m.ResetType()
-		return nil
-	case paymenttoken.FieldSymbol:
-		m.ResetSymbol()
-		return nil
-	case paymenttoken.FieldPrice:
-		m.ResetPrice()
-		return nil
-	}
-	return fmt.Errorf("unknown PaymentToken field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *PaymentTokenMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.asset != nil {
-		edges = append(edges, paymenttoken.EdgeAsset)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *PaymentTokenMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case paymenttoken.EdgeAsset:
-		ids := make([]ent.Value, 0, len(m.asset))
-		for id := range m.asset {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *PaymentTokenMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedasset != nil {
-		edges = append(edges, paymenttoken.EdgeAsset)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *PaymentTokenMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case paymenttoken.EdgeAsset:
-		ids := make([]ent.Value, 0, len(m.removedasset))
-		for id := range m.removedasset {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *PaymentTokenMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedasset {
-		edges = append(edges, paymenttoken.EdgeAsset)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *PaymentTokenMutation) EdgeCleared(name string) bool {
-	switch name {
-	case paymenttoken.EdgeAsset:
-		return m.clearedasset
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *PaymentTokenMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown PaymentToken unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *PaymentTokenMutation) ResetEdge(name string) error {
-	switch name {
-	case paymenttoken.EdgeAsset:
-		m.ResetAsset()
-		return nil
-	}
-	return fmt.Errorf("unknown PaymentToken edge %s", name)
 }
 
 // SyncStateMutation represents an operation that mutates the SyncState nodes in the graph.

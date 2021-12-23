@@ -13,7 +13,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/paymenttoken"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
@@ -83,29 +82,25 @@ type AssetWhereInput struct {
 	AmountLT    *schema.BigInt  `json:"amountLT,omitempty"`
 	AmountLTE   *schema.BigInt  `json:"amountLTE,omitempty"`
 
-	// "assetId" field predicates.
-	AssetId      *schema.BigInt  `json:"assetid,omitempty"`
-	AssetIdNEQ   *schema.BigInt  `json:"assetidNEQ,omitempty"`
-	AssetIdIn    []schema.BigInt `json:"assetidIn,omitempty"`
-	AssetIdNotIn []schema.BigInt `json:"assetidNotIn,omitempty"`
-	AssetIdGT    *schema.BigInt  `json:"assetidGT,omitempty"`
-	AssetIdGTE   *schema.BigInt  `json:"assetidGTE,omitempty"`
-	AssetIdLT    *schema.BigInt  `json:"assetidLT,omitempty"`
-	AssetIdLTE   *schema.BigInt  `json:"assetidLTE,omitempty"`
+	// "asset_id" field predicates.
+	AssetID      *schema.BigInt  `json:"assetID,omitempty"`
+	AssetIDNEQ   *schema.BigInt  `json:"assetIDNEQ,omitempty"`
+	AssetIDIn    []schema.BigInt `json:"assetIDIn,omitempty"`
+	AssetIDNotIn []schema.BigInt `json:"assetIDNotIn,omitempty"`
+	AssetIDGT    *schema.BigInt  `json:"assetIDGT,omitempty"`
+	AssetIDGTE   *schema.BigInt  `json:"assetIDGTE,omitempty"`
+	AssetIDLT    *schema.BigInt  `json:"assetIDLT,omitempty"`
+	AssetIDLTE   *schema.BigInt  `json:"assetIDLTE,omitempty"`
 
-	// "price" field predicates.
-	Price      *float64  `json:"price,omitempty"`
-	PriceNEQ   *float64  `json:"priceNEQ,omitempty"`
-	PriceIn    []float64 `json:"priceIn,omitempty"`
-	PriceNotIn []float64 `json:"priceNotIn,omitempty"`
-	PriceGT    *float64  `json:"priceGT,omitempty"`
-	PriceGTE   *float64  `json:"priceGTE,omitempty"`
-	PriceLT    *float64  `json:"priceLT,omitempty"`
-	PriceLTE   *float64  `json:"priceLTE,omitempty"`
-
-	// "paymentToken" edge predicates.
-	HasPaymentToken     *bool                     `json:"hasPaymentToken,omitempty"`
-	HasPaymentTokenWith []*PaymentTokenWhereInput `json:"hasPaymentTokenWith,omitempty"`
+	// "decimals" field predicates.
+	Decimals      *int  `json:"decimals,omitempty"`
+	DecimalsNEQ   *int  `json:"decimalsNEQ,omitempty"`
+	DecimalsIn    []int `json:"decimalsIn,omitempty"`
+	DecimalsNotIn []int `json:"decimalsNotIn,omitempty"`
+	DecimalsGT    *int  `json:"decimalsGT,omitempty"`
+	DecimalsGTE   *int  `json:"decimalsGTE,omitempty"`
+	DecimalsLT    *int  `json:"decimalsLT,omitempty"`
+	DecimalsLTE   *int  `json:"decimalsLTE,omitempty"`
 }
 
 // Filter applies the AssetWhereInput filter on the AssetQuery builder.
@@ -305,73 +300,55 @@ func (i *AssetWhereInput) P() (predicate.Asset, error) {
 	if i.AmountLTE != nil {
 		predicates = append(predicates, asset.AmountLTE(*i.AmountLTE))
 	}
-	if i.AssetId != nil {
-		predicates = append(predicates, asset.AssetIdEQ(*i.AssetId))
+	if i.AssetID != nil {
+		predicates = append(predicates, asset.AssetIDEQ(*i.AssetID))
 	}
-	if i.AssetIdNEQ != nil {
-		predicates = append(predicates, asset.AssetIdNEQ(*i.AssetIdNEQ))
+	if i.AssetIDNEQ != nil {
+		predicates = append(predicates, asset.AssetIDNEQ(*i.AssetIDNEQ))
 	}
-	if len(i.AssetIdIn) > 0 {
-		predicates = append(predicates, asset.AssetIdIn(i.AssetIdIn...))
+	if len(i.AssetIDIn) > 0 {
+		predicates = append(predicates, asset.AssetIDIn(i.AssetIDIn...))
 	}
-	if len(i.AssetIdNotIn) > 0 {
-		predicates = append(predicates, asset.AssetIdNotIn(i.AssetIdNotIn...))
+	if len(i.AssetIDNotIn) > 0 {
+		predicates = append(predicates, asset.AssetIDNotIn(i.AssetIDNotIn...))
 	}
-	if i.AssetIdGT != nil {
-		predicates = append(predicates, asset.AssetIdGT(*i.AssetIdGT))
+	if i.AssetIDGT != nil {
+		predicates = append(predicates, asset.AssetIDGT(*i.AssetIDGT))
 	}
-	if i.AssetIdGTE != nil {
-		predicates = append(predicates, asset.AssetIdGTE(*i.AssetIdGTE))
+	if i.AssetIDGTE != nil {
+		predicates = append(predicates, asset.AssetIDGTE(*i.AssetIDGTE))
 	}
-	if i.AssetIdLT != nil {
-		predicates = append(predicates, asset.AssetIdLT(*i.AssetIdLT))
+	if i.AssetIDLT != nil {
+		predicates = append(predicates, asset.AssetIDLT(*i.AssetIDLT))
 	}
-	if i.AssetIdLTE != nil {
-		predicates = append(predicates, asset.AssetIdLTE(*i.AssetIdLTE))
+	if i.AssetIDLTE != nil {
+		predicates = append(predicates, asset.AssetIDLTE(*i.AssetIDLTE))
 	}
-	if i.Price != nil {
-		predicates = append(predicates, asset.PriceEQ(*i.Price))
+	if i.Decimals != nil {
+		predicates = append(predicates, asset.DecimalsEQ(*i.Decimals))
 	}
-	if i.PriceNEQ != nil {
-		predicates = append(predicates, asset.PriceNEQ(*i.PriceNEQ))
+	if i.DecimalsNEQ != nil {
+		predicates = append(predicates, asset.DecimalsNEQ(*i.DecimalsNEQ))
 	}
-	if len(i.PriceIn) > 0 {
-		predicates = append(predicates, asset.PriceIn(i.PriceIn...))
+	if len(i.DecimalsIn) > 0 {
+		predicates = append(predicates, asset.DecimalsIn(i.DecimalsIn...))
 	}
-	if len(i.PriceNotIn) > 0 {
-		predicates = append(predicates, asset.PriceNotIn(i.PriceNotIn...))
+	if len(i.DecimalsNotIn) > 0 {
+		predicates = append(predicates, asset.DecimalsNotIn(i.DecimalsNotIn...))
 	}
-	if i.PriceGT != nil {
-		predicates = append(predicates, asset.PriceGT(*i.PriceGT))
+	if i.DecimalsGT != nil {
+		predicates = append(predicates, asset.DecimalsGT(*i.DecimalsGT))
 	}
-	if i.PriceGTE != nil {
-		predicates = append(predicates, asset.PriceGTE(*i.PriceGTE))
+	if i.DecimalsGTE != nil {
+		predicates = append(predicates, asset.DecimalsGTE(*i.DecimalsGTE))
 	}
-	if i.PriceLT != nil {
-		predicates = append(predicates, asset.PriceLT(*i.PriceLT))
+	if i.DecimalsLT != nil {
+		predicates = append(predicates, asset.DecimalsLT(*i.DecimalsLT))
 	}
-	if i.PriceLTE != nil {
-		predicates = append(predicates, asset.PriceLTE(*i.PriceLTE))
+	if i.DecimalsLTE != nil {
+		predicates = append(predicates, asset.DecimalsLTE(*i.DecimalsLTE))
 	}
 
-	if i.HasPaymentToken != nil {
-		p := asset.HasPaymentToken()
-		if !*i.HasPaymentToken {
-			p = asset.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasPaymentTokenWith) > 0 {
-		with := make([]predicate.PaymentToken, 0, len(i.HasPaymentTokenWith))
-		for _, w := range i.HasPaymentTokenWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, err
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, asset.HasPaymentTokenWith(with...))
-	}
 	switch len(predicates) {
 	case 0:
 		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate AssetWhereInput")
@@ -3123,335 +3100,6 @@ func (i *ListingWhereInput) P() (predicate.Listing, error) {
 		return predicates[0], nil
 	default:
 		return listing.And(predicates...), nil
-	}
-}
-
-// PaymentTokenWhereInput represents a where input for filtering PaymentToken queries.
-type PaymentTokenWhereInput struct {
-	Not *PaymentTokenWhereInput   `json:"not,omitempty"`
-	Or  []*PaymentTokenWhereInput `json:"or,omitempty"`
-	And []*PaymentTokenWhereInput `json:"and,omitempty"`
-
-	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
-
-	// "address" field predicates.
-	Address             *string  `json:"address,omitempty"`
-	AddressNEQ          *string  `json:"addressNEQ,omitempty"`
-	AddressIn           []string `json:"addressIn,omitempty"`
-	AddressNotIn        []string `json:"addressNotIn,omitempty"`
-	AddressGT           *string  `json:"addressGT,omitempty"`
-	AddressGTE          *string  `json:"addressGTE,omitempty"`
-	AddressLT           *string  `json:"addressLT,omitempty"`
-	AddressLTE          *string  `json:"addressLTE,omitempty"`
-	AddressContains     *string  `json:"addressContains,omitempty"`
-	AddressHasPrefix    *string  `json:"addressHasPrefix,omitempty"`
-	AddressHasSuffix    *string  `json:"addressHasSuffix,omitempty"`
-	AddressEqualFold    *string  `json:"addressEqualFold,omitempty"`
-	AddressContainsFold *string  `json:"addressContainsFold,omitempty"`
-
-	// "type" field predicates.
-	Type             *string  `json:"type,omitempty"`
-	TypeNEQ          *string  `json:"typeNEQ,omitempty"`
-	TypeIn           []string `json:"typeIn,omitempty"`
-	TypeNotIn        []string `json:"typeNotIn,omitempty"`
-	TypeGT           *string  `json:"typeGT,omitempty"`
-	TypeGTE          *string  `json:"typeGTE,omitempty"`
-	TypeLT           *string  `json:"typeLT,omitempty"`
-	TypeLTE          *string  `json:"typeLTE,omitempty"`
-	TypeContains     *string  `json:"typeContains,omitempty"`
-	TypeHasPrefix    *string  `json:"typeHasPrefix,omitempty"`
-	TypeHasSuffix    *string  `json:"typeHasSuffix,omitempty"`
-	TypeEqualFold    *string  `json:"typeEqualFold,omitempty"`
-	TypeContainsFold *string  `json:"typeContainsFold,omitempty"`
-
-	// "symbol" field predicates.
-	Symbol             *string  `json:"symbol,omitempty"`
-	SymbolNEQ          *string  `json:"symbolNEQ,omitempty"`
-	SymbolIn           []string `json:"symbolIn,omitempty"`
-	SymbolNotIn        []string `json:"symbolNotIn,omitempty"`
-	SymbolGT           *string  `json:"symbolGT,omitempty"`
-	SymbolGTE          *string  `json:"symbolGTE,omitempty"`
-	SymbolLT           *string  `json:"symbolLT,omitempty"`
-	SymbolLTE          *string  `json:"symbolLTE,omitempty"`
-	SymbolContains     *string  `json:"symbolContains,omitempty"`
-	SymbolHasPrefix    *string  `json:"symbolHasPrefix,omitempty"`
-	SymbolHasSuffix    *string  `json:"symbolHasSuffix,omitempty"`
-	SymbolEqualFold    *string  `json:"symbolEqualFold,omitempty"`
-	SymbolContainsFold *string  `json:"symbolContainsFold,omitempty"`
-
-	// "price" field predicates.
-	Price      *float64  `json:"price,omitempty"`
-	PriceNEQ   *float64  `json:"priceNEQ,omitempty"`
-	PriceIn    []float64 `json:"priceIn,omitempty"`
-	PriceNotIn []float64 `json:"priceNotIn,omitempty"`
-	PriceGT    *float64  `json:"priceGT,omitempty"`
-	PriceGTE   *float64  `json:"priceGTE,omitempty"`
-	PriceLT    *float64  `json:"priceLT,omitempty"`
-	PriceLTE   *float64  `json:"priceLTE,omitempty"`
-
-	// "asset" edge predicates.
-	HasAsset     *bool              `json:"hasAsset,omitempty"`
-	HasAssetWith []*AssetWhereInput `json:"hasAssetWith,omitempty"`
-}
-
-// Filter applies the PaymentTokenWhereInput filter on the PaymentTokenQuery builder.
-func (i *PaymentTokenWhereInput) Filter(q *PaymentTokenQuery) (*PaymentTokenQuery, error) {
-	if i == nil {
-		return q, nil
-	}
-	p, err := i.P()
-	if err != nil {
-		return nil, err
-	}
-	return q.Where(p), nil
-}
-
-// P returns a predicate for filtering paymenttokens.
-// An error is returned if the input is empty or invalid.
-func (i *PaymentTokenWhereInput) P() (predicate.PaymentToken, error) {
-	var predicates []predicate.PaymentToken
-	if i.Not != nil {
-		p, err := i.Not.P()
-		if err != nil {
-			return nil, err
-		}
-		predicates = append(predicates, paymenttoken.Not(p))
-	}
-	switch n := len(i.Or); {
-	case n == 1:
-		p, err := i.Or[0].P()
-		if err != nil {
-			return nil, err
-		}
-		predicates = append(predicates, p)
-	case n > 1:
-		or := make([]predicate.PaymentToken, 0, n)
-		for _, w := range i.Or {
-			p, err := w.P()
-			if err != nil {
-				return nil, err
-			}
-			or = append(or, p)
-		}
-		predicates = append(predicates, paymenttoken.Or(or...))
-	}
-	switch n := len(i.And); {
-	case n == 1:
-		p, err := i.And[0].P()
-		if err != nil {
-			return nil, err
-		}
-		predicates = append(predicates, p)
-	case n > 1:
-		and := make([]predicate.PaymentToken, 0, n)
-		for _, w := range i.And {
-			p, err := w.P()
-			if err != nil {
-				return nil, err
-			}
-			and = append(and, p)
-		}
-		predicates = append(predicates, paymenttoken.And(and...))
-	}
-	if i.ID != nil {
-		predicates = append(predicates, paymenttoken.IDEQ(*i.ID))
-	}
-	if i.IDNEQ != nil {
-		predicates = append(predicates, paymenttoken.IDNEQ(*i.IDNEQ))
-	}
-	if len(i.IDIn) > 0 {
-		predicates = append(predicates, paymenttoken.IDIn(i.IDIn...))
-	}
-	if len(i.IDNotIn) > 0 {
-		predicates = append(predicates, paymenttoken.IDNotIn(i.IDNotIn...))
-	}
-	if i.IDGT != nil {
-		predicates = append(predicates, paymenttoken.IDGT(*i.IDGT))
-	}
-	if i.IDGTE != nil {
-		predicates = append(predicates, paymenttoken.IDGTE(*i.IDGTE))
-	}
-	if i.IDLT != nil {
-		predicates = append(predicates, paymenttoken.IDLT(*i.IDLT))
-	}
-	if i.IDLTE != nil {
-		predicates = append(predicates, paymenttoken.IDLTE(*i.IDLTE))
-	}
-	if i.Address != nil {
-		predicates = append(predicates, paymenttoken.AddressEQ(*i.Address))
-	}
-	if i.AddressNEQ != nil {
-		predicates = append(predicates, paymenttoken.AddressNEQ(*i.AddressNEQ))
-	}
-	if len(i.AddressIn) > 0 {
-		predicates = append(predicates, paymenttoken.AddressIn(i.AddressIn...))
-	}
-	if len(i.AddressNotIn) > 0 {
-		predicates = append(predicates, paymenttoken.AddressNotIn(i.AddressNotIn...))
-	}
-	if i.AddressGT != nil {
-		predicates = append(predicates, paymenttoken.AddressGT(*i.AddressGT))
-	}
-	if i.AddressGTE != nil {
-		predicates = append(predicates, paymenttoken.AddressGTE(*i.AddressGTE))
-	}
-	if i.AddressLT != nil {
-		predicates = append(predicates, paymenttoken.AddressLT(*i.AddressLT))
-	}
-	if i.AddressLTE != nil {
-		predicates = append(predicates, paymenttoken.AddressLTE(*i.AddressLTE))
-	}
-	if i.AddressContains != nil {
-		predicates = append(predicates, paymenttoken.AddressContains(*i.AddressContains))
-	}
-	if i.AddressHasPrefix != nil {
-		predicates = append(predicates, paymenttoken.AddressHasPrefix(*i.AddressHasPrefix))
-	}
-	if i.AddressHasSuffix != nil {
-		predicates = append(predicates, paymenttoken.AddressHasSuffix(*i.AddressHasSuffix))
-	}
-	if i.AddressEqualFold != nil {
-		predicates = append(predicates, paymenttoken.AddressEqualFold(*i.AddressEqualFold))
-	}
-	if i.AddressContainsFold != nil {
-		predicates = append(predicates, paymenttoken.AddressContainsFold(*i.AddressContainsFold))
-	}
-	if i.Type != nil {
-		predicates = append(predicates, paymenttoken.TypeEQ(*i.Type))
-	}
-	if i.TypeNEQ != nil {
-		predicates = append(predicates, paymenttoken.TypeNEQ(*i.TypeNEQ))
-	}
-	if len(i.TypeIn) > 0 {
-		predicates = append(predicates, paymenttoken.TypeIn(i.TypeIn...))
-	}
-	if len(i.TypeNotIn) > 0 {
-		predicates = append(predicates, paymenttoken.TypeNotIn(i.TypeNotIn...))
-	}
-	if i.TypeGT != nil {
-		predicates = append(predicates, paymenttoken.TypeGT(*i.TypeGT))
-	}
-	if i.TypeGTE != nil {
-		predicates = append(predicates, paymenttoken.TypeGTE(*i.TypeGTE))
-	}
-	if i.TypeLT != nil {
-		predicates = append(predicates, paymenttoken.TypeLT(*i.TypeLT))
-	}
-	if i.TypeLTE != nil {
-		predicates = append(predicates, paymenttoken.TypeLTE(*i.TypeLTE))
-	}
-	if i.TypeContains != nil {
-		predicates = append(predicates, paymenttoken.TypeContains(*i.TypeContains))
-	}
-	if i.TypeHasPrefix != nil {
-		predicates = append(predicates, paymenttoken.TypeHasPrefix(*i.TypeHasPrefix))
-	}
-	if i.TypeHasSuffix != nil {
-		predicates = append(predicates, paymenttoken.TypeHasSuffix(*i.TypeHasSuffix))
-	}
-	if i.TypeEqualFold != nil {
-		predicates = append(predicates, paymenttoken.TypeEqualFold(*i.TypeEqualFold))
-	}
-	if i.TypeContainsFold != nil {
-		predicates = append(predicates, paymenttoken.TypeContainsFold(*i.TypeContainsFold))
-	}
-	if i.Symbol != nil {
-		predicates = append(predicates, paymenttoken.SymbolEQ(*i.Symbol))
-	}
-	if i.SymbolNEQ != nil {
-		predicates = append(predicates, paymenttoken.SymbolNEQ(*i.SymbolNEQ))
-	}
-	if len(i.SymbolIn) > 0 {
-		predicates = append(predicates, paymenttoken.SymbolIn(i.SymbolIn...))
-	}
-	if len(i.SymbolNotIn) > 0 {
-		predicates = append(predicates, paymenttoken.SymbolNotIn(i.SymbolNotIn...))
-	}
-	if i.SymbolGT != nil {
-		predicates = append(predicates, paymenttoken.SymbolGT(*i.SymbolGT))
-	}
-	if i.SymbolGTE != nil {
-		predicates = append(predicates, paymenttoken.SymbolGTE(*i.SymbolGTE))
-	}
-	if i.SymbolLT != nil {
-		predicates = append(predicates, paymenttoken.SymbolLT(*i.SymbolLT))
-	}
-	if i.SymbolLTE != nil {
-		predicates = append(predicates, paymenttoken.SymbolLTE(*i.SymbolLTE))
-	}
-	if i.SymbolContains != nil {
-		predicates = append(predicates, paymenttoken.SymbolContains(*i.SymbolContains))
-	}
-	if i.SymbolHasPrefix != nil {
-		predicates = append(predicates, paymenttoken.SymbolHasPrefix(*i.SymbolHasPrefix))
-	}
-	if i.SymbolHasSuffix != nil {
-		predicates = append(predicates, paymenttoken.SymbolHasSuffix(*i.SymbolHasSuffix))
-	}
-	if i.SymbolEqualFold != nil {
-		predicates = append(predicates, paymenttoken.SymbolEqualFold(*i.SymbolEqualFold))
-	}
-	if i.SymbolContainsFold != nil {
-		predicates = append(predicates, paymenttoken.SymbolContainsFold(*i.SymbolContainsFold))
-	}
-	if i.Price != nil {
-		predicates = append(predicates, paymenttoken.PriceEQ(*i.Price))
-	}
-	if i.PriceNEQ != nil {
-		predicates = append(predicates, paymenttoken.PriceNEQ(*i.PriceNEQ))
-	}
-	if len(i.PriceIn) > 0 {
-		predicates = append(predicates, paymenttoken.PriceIn(i.PriceIn...))
-	}
-	if len(i.PriceNotIn) > 0 {
-		predicates = append(predicates, paymenttoken.PriceNotIn(i.PriceNotIn...))
-	}
-	if i.PriceGT != nil {
-		predicates = append(predicates, paymenttoken.PriceGT(*i.PriceGT))
-	}
-	if i.PriceGTE != nil {
-		predicates = append(predicates, paymenttoken.PriceGTE(*i.PriceGTE))
-	}
-	if i.PriceLT != nil {
-		predicates = append(predicates, paymenttoken.PriceLT(*i.PriceLT))
-	}
-	if i.PriceLTE != nil {
-		predicates = append(predicates, paymenttoken.PriceLTE(*i.PriceLTE))
-	}
-
-	if i.HasAsset != nil {
-		p := paymenttoken.HasAsset()
-		if !*i.HasAsset {
-			p = paymenttoken.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasAssetWith) > 0 {
-		with := make([]predicate.Asset, 0, len(i.HasAssetWith))
-		for _, w := range i.HasAssetWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, err
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, paymenttoken.HasAssetWith(with...))
-	}
-	switch len(predicates) {
-	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate PaymentTokenWhereInput")
-	case 1:
-		return predicates[0], nil
-	default:
-		return paymenttoken.And(predicates...), nil
 	}
 }
 

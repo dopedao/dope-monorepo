@@ -63,3 +63,6 @@ models:
   HustlerType:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/hustler.Type
+  AssetType:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/asset.Type

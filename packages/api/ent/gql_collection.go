@@ -17,14 +17,6 @@ func (a *AssetQuery) CollectFields(ctx context.Context, satisfies ...string) *As
 }
 
 func (a *AssetQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *AssetQuery {
-	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
-		switch field.Name {
-		case "paymentToken":
-			a = a.WithPaymentToken(func(query *PaymentTokenQuery) {
-				query.collectField(ctx, field)
-			})
-		}
-	}
 	return a
 }
 
@@ -194,26 +186,6 @@ func (l *ListingQuery) collectField(ctx *graphql.OperationContext, field graphql
 		}
 	}
 	return l
-}
-
-// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (pt *PaymentTokenQuery) CollectFields(ctx context.Context, satisfies ...string) *PaymentTokenQuery {
-	if fc := graphql.GetFieldContext(ctx); fc != nil {
-		pt = pt.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
-	}
-	return pt
-}
-
-func (pt *PaymentTokenQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *PaymentTokenQuery {
-	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
-		switch field.Name {
-		case "asset":
-			pt = pt.WithAsset(func(query *AssetQuery) {
-				query.collectField(ctx, field)
-			})
-		}
-	}
-	return pt
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.

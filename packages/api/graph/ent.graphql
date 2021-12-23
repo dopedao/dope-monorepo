@@ -726,10 +726,10 @@ input AssetWhereInput {
   addressContainsFold: String
   
   """type field predicates"""
-  type: Type
-  typeNEQ: Type
-  typeIn: [Type!]
-  typeNotIn: [Type!]
+  type: AssetType
+  typeNEQ: AssetType
+  typeIn: [AssetType!]
+  typeNotIn: [AssetType!]
   
   """symbol field predicates"""
   symbol: String
@@ -756,25 +756,25 @@ input AssetWhereInput {
   amountLT: BigInt
   amountLTE: BigInt
   
-  """assetId field predicates"""
-  assetid: BigInt
-  assetidNEQ: BigInt
-  assetidIn: [BigInt!]
-  assetidNotIn: [BigInt!]
-  assetidGT: BigInt
-  assetidGTE: BigInt
-  assetidLT: BigInt
-  assetidLTE: BigInt
+  """asset_id field predicates"""
+  assetID: BigInt
+  assetIDNEQ: BigInt
+  assetIDIn: [BigInt!]
+  assetIDNotIn: [BigInt!]
+  assetIDGT: BigInt
+  assetIDGTE: BigInt
+  assetIDLT: BigInt
+  assetIDLTE: BigInt
   
-  """price field predicates"""
-  price: Float
-  priceNEQ: Float
-  priceIn: [Float!]
-  priceNotIn: [Float!]
-  priceGT: Float
-  priceGTE: Float
-  priceLT: Float
-  priceLTE: Float
+  """decimals field predicates"""
+  decimals: Int
+  decimalsNEQ: Int
+  decimalsIn: [Int!]
+  decimalsNotIn: [Int!]
+  decimalsGT: Int
+  decimalsGTE: Int
+  decimalsLT: Int
+  decimalsLTE: Int
   
   """id field predicates"""
   id: ID
@@ -785,10 +785,6 @@ input AssetWhereInput {
   idGTE: ID
   idLT: ID
   idLTE: ID
-  
-  """paymentToken edge predicates"""
-  hasPaymentToken: Boolean
-  hasPaymentTokenWith: [PaymentTokenWhereInput!]
 }
 
 """

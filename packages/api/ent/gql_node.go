@@ -16,7 +16,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/paymenttoken"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -55,7 +54,7 @@ func (a *Asset) Node(ctx context.Context) (node *Node, err error) {
 		ID:     a.ID,
 		Type:   "Asset",
 		Fields: make([]*Field, 6),
-		Edges:  make([]*Edge, 1),
+		Edges:  make([]*Edge, 0),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(a.Address); err != nil {
@@ -90,31 +89,21 @@ func (a *Asset) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "amount",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(a.AssetId); err != nil {
+	if buf, err = json.Marshal(a.AssetID); err != nil {
 		return nil, err
 	}
 	node.Fields[4] = &Field{
 		Type:  "schema.BigInt",
-		Name:  "assetId",
+		Name:  "asset_id",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(a.Price); err != nil {
+	if buf, err = json.Marshal(a.Decimals); err != nil {
 		return nil, err
 	}
 	node.Fields[5] = &Field{
-		Type:  "float64",
-		Name:  "price",
+		Type:  "int",
+		Name:  "decimals",
 		Value: string(buf),
-	}
-	node.Edges[0] = &Edge{
-		Type: "PaymentToken",
-		Name: "paymentToken",
-	}
-	err = a.QueryPaymentToken().
-		Select(paymenttoken.FieldID).
-		Scan(ctx, &node.Edges[0].IDs)
-	if err != nil {
-		return nil, err
 	}
 	return node, nil
 }
@@ -871,59 +860,6 @@ func (l *Listing) Node(ctx context.Context) (node *Node, err error) {
 	return node, nil
 }
 
-func (pt *PaymentToken) Node(ctx context.Context) (node *Node, err error) {
-	node = &Node{
-		ID:     pt.ID,
-		Type:   "PaymentToken",
-		Fields: make([]*Field, 4),
-		Edges:  make([]*Edge, 1),
-	}
-	var buf []byte
-	if buf, err = json.Marshal(pt.Address); err != nil {
-		return nil, err
-	}
-	node.Fields[0] = &Field{
-		Type:  "string",
-		Name:  "address",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(pt.Type); err != nil {
-		return nil, err
-	}
-	node.Fields[1] = &Field{
-		Type:  "string",
-		Name:  "type",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(pt.Symbol); err != nil {
-		return nil, err
-	}
-	node.Fields[2] = &Field{
-		Type:  "string",
-		Name:  "symbol",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(pt.Price); err != nil {
-		return nil, err
-	}
-	node.Fields[3] = &Field{
-		Type:  "float64",
-		Name:  "price",
-		Value: string(buf),
-	}
-	node.Edges[0] = &Edge{
-		Type: "Asset",
-		Name: "asset",
-	}
-	err = pt.QueryAsset().
-		Select(asset.FieldID).
-		Scan(ctx, &node.Edges[0].IDs)
-	if err != nil {
-		return nil, err
-	}
-	return node, nil
-}
-
 func (ss *SyncState) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     ss.ID,
@@ -1169,15 +1105,6 @@ func (c *Client) noder(ctx context.Context, table string, id string) (Noder, err
 			return nil, err
 		}
 		return n, nil
-	case paymenttoken.Table:
-		n, err := c.PaymentToken.Query().
-			Where(paymenttoken.ID(id)).
-			CollectFields(ctx, "PaymentToken").
-			Only(ctx)
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
 	case syncstate.Table:
 		n, err := c.SyncState.Query().
 			Where(syncstate.ID(id)).
@@ -1360,19 +1287,6 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		nodes, err := c.Listing.Query().
 			Where(listing.IDIn(ids...)).
 			CollectFields(ctx, "Listing").
-			All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case paymenttoken.Table:
-		nodes, err := c.PaymentToken.Query().
-			Where(paymenttoken.IDIn(ids...)).
-			CollectFields(ctx, "PaymentToken").
 			All(ctx)
 		if err != nil {
 			return nil, err

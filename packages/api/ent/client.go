@@ -16,7 +16,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/paymenttoken"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -45,8 +44,6 @@ type Client struct {
 	Item *ItemClient
 	// Listing is the client for interacting with the Listing builders.
 	Listing *ListingClient
-	// PaymentToken is the client for interacting with the PaymentToken builders.
-	PaymentToken *PaymentTokenClient
 	// SyncState is the client for interacting with the SyncState builders.
 	SyncState *SyncStateClient
 	// Wallet is the client for interacting with the Wallet builders.
@@ -73,7 +70,6 @@ func (c *Client) init() {
 	c.Hustler = NewHustlerClient(c.config)
 	c.Item = NewItemClient(c.config)
 	c.Listing = NewListingClient(c.config)
-	c.PaymentToken = NewPaymentTokenClient(c.config)
 	c.SyncState = NewSyncStateClient(c.config)
 	c.Wallet = NewWalletClient(c.config)
 	c.WalletItems = NewWalletItemsClient(c.config)
@@ -108,19 +104,18 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		Asset:        NewAssetClient(cfg),
-		BodyPart:     NewBodyPartClient(cfg),
-		Dope:         NewDopeClient(cfg),
-		Event:        NewEventClient(cfg),
-		Hustler:      NewHustlerClient(cfg),
-		Item:         NewItemClient(cfg),
-		Listing:      NewListingClient(cfg),
-		PaymentToken: NewPaymentTokenClient(cfg),
-		SyncState:    NewSyncStateClient(cfg),
-		Wallet:       NewWalletClient(cfg),
-		WalletItems:  NewWalletItemsClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		Asset:       NewAssetClient(cfg),
+		BodyPart:    NewBodyPartClient(cfg),
+		Dope:        NewDopeClient(cfg),
+		Event:       NewEventClient(cfg),
+		Hustler:     NewHustlerClient(cfg),
+		Item:        NewItemClient(cfg),
+		Listing:     NewListingClient(cfg),
+		SyncState:   NewSyncStateClient(cfg),
+		Wallet:      NewWalletClient(cfg),
+		WalletItems: NewWalletItemsClient(cfg),
 	}, nil
 }
 
@@ -138,18 +133,17 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		config:       cfg,
-		Asset:        NewAssetClient(cfg),
-		BodyPart:     NewBodyPartClient(cfg),
-		Dope:         NewDopeClient(cfg),
-		Event:        NewEventClient(cfg),
-		Hustler:      NewHustlerClient(cfg),
-		Item:         NewItemClient(cfg),
-		Listing:      NewListingClient(cfg),
-		PaymentToken: NewPaymentTokenClient(cfg),
-		SyncState:    NewSyncStateClient(cfg),
-		Wallet:       NewWalletClient(cfg),
-		WalletItems:  NewWalletItemsClient(cfg),
+		config:      cfg,
+		Asset:       NewAssetClient(cfg),
+		BodyPart:    NewBodyPartClient(cfg),
+		Dope:        NewDopeClient(cfg),
+		Event:       NewEventClient(cfg),
+		Hustler:     NewHustlerClient(cfg),
+		Item:        NewItemClient(cfg),
+		Listing:     NewListingClient(cfg),
+		SyncState:   NewSyncStateClient(cfg),
+		Wallet:      NewWalletClient(cfg),
+		WalletItems: NewWalletItemsClient(cfg),
 	}, nil
 }
 
@@ -186,7 +180,6 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Hustler.Use(hooks...)
 	c.Item.Use(hooks...)
 	c.Listing.Use(hooks...)
-	c.PaymentToken.Use(hooks...)
 	c.SyncState.Use(hooks...)
 	c.Wallet.Use(hooks...)
 	c.WalletItems.Use(hooks...)
@@ -275,22 +268,6 @@ func (c *AssetClient) GetX(ctx context.Context, id string) *Asset {
 		panic(err)
 	}
 	return obj
-}
-
-// QueryPaymentToken queries the paymentToken edge of a Asset.
-func (c *AssetClient) QueryPaymentToken(a *Asset) *PaymentTokenQuery {
-	query := &PaymentTokenQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := a.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(asset.Table, asset.FieldID, id),
-			sqlgraph.To(paymenttoken.Table, paymenttoken.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, asset.PaymentTokenTable, asset.PaymentTokenPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
 }
 
 // Hooks returns the client hooks.
@@ -1460,112 +1437,6 @@ func (c *ListingClient) QueryOutputs(l *Listing) *AssetQuery {
 // Hooks returns the client hooks.
 func (c *ListingClient) Hooks() []Hook {
 	return c.hooks.Listing
-}
-
-// PaymentTokenClient is a client for the PaymentToken schema.
-type PaymentTokenClient struct {
-	config
-}
-
-// NewPaymentTokenClient returns a client for the PaymentToken from the given config.
-func NewPaymentTokenClient(c config) *PaymentTokenClient {
-	return &PaymentTokenClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `paymenttoken.Hooks(f(g(h())))`.
-func (c *PaymentTokenClient) Use(hooks ...Hook) {
-	c.hooks.PaymentToken = append(c.hooks.PaymentToken, hooks...)
-}
-
-// Create returns a create builder for PaymentToken.
-func (c *PaymentTokenClient) Create() *PaymentTokenCreate {
-	mutation := newPaymentTokenMutation(c.config, OpCreate)
-	return &PaymentTokenCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of PaymentToken entities.
-func (c *PaymentTokenClient) CreateBulk(builders ...*PaymentTokenCreate) *PaymentTokenCreateBulk {
-	return &PaymentTokenCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for PaymentToken.
-func (c *PaymentTokenClient) Update() *PaymentTokenUpdate {
-	mutation := newPaymentTokenMutation(c.config, OpUpdate)
-	return &PaymentTokenUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *PaymentTokenClient) UpdateOne(pt *PaymentToken) *PaymentTokenUpdateOne {
-	mutation := newPaymentTokenMutation(c.config, OpUpdateOne, withPaymentToken(pt))
-	return &PaymentTokenUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *PaymentTokenClient) UpdateOneID(id string) *PaymentTokenUpdateOne {
-	mutation := newPaymentTokenMutation(c.config, OpUpdateOne, withPaymentTokenID(id))
-	return &PaymentTokenUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for PaymentToken.
-func (c *PaymentTokenClient) Delete() *PaymentTokenDelete {
-	mutation := newPaymentTokenMutation(c.config, OpDelete)
-	return &PaymentTokenDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *PaymentTokenClient) DeleteOne(pt *PaymentToken) *PaymentTokenDeleteOne {
-	return c.DeleteOneID(pt.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *PaymentTokenClient) DeleteOneID(id string) *PaymentTokenDeleteOne {
-	builder := c.Delete().Where(paymenttoken.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &PaymentTokenDeleteOne{builder}
-}
-
-// Query returns a query builder for PaymentToken.
-func (c *PaymentTokenClient) Query() *PaymentTokenQuery {
-	return &PaymentTokenQuery{
-		config: c.config,
-	}
-}
-
-// Get returns a PaymentToken entity by its id.
-func (c *PaymentTokenClient) Get(ctx context.Context, id string) (*PaymentToken, error) {
-	return c.Query().Where(paymenttoken.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *PaymentTokenClient) GetX(ctx context.Context, id string) *PaymentToken {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryAsset queries the asset edge of a PaymentToken.
-func (c *PaymentTokenClient) QueryAsset(pt *PaymentToken) *AssetQuery {
-	query := &AssetQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := pt.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(paymenttoken.Table, paymenttoken.FieldID, id),
-			sqlgraph.To(asset.Table, asset.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, paymenttoken.AssetTable, paymenttoken.AssetPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(pt.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *PaymentTokenClient) Hooks() []Hook {
-	return c.hooks.PaymentToken
 }
 
 // SyncStateClient is a client for the SyncState schema.

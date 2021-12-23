@@ -27,9 +27,6 @@ type Item func(*sql.Selector)
 // Listing is the predicate function for listing builders.
 type Listing func(*sql.Selector)
 
-// PaymentToken is the predicate function for paymenttoken builders.
-type PaymentToken func(*sql.Selector)
-
 // SyncState is the predicate function for syncstate builders.
 type SyncState func(*sql.Selector)
 

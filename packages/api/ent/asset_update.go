@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/paymenttoken"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
@@ -62,79 +61,43 @@ func (au *AssetUpdate) AddAmount(si schema.BigInt) *AssetUpdate {
 	return au
 }
 
-// SetAssetId sets the "assetId" field.
-func (au *AssetUpdate) SetAssetId(si schema.BigInt) *AssetUpdate {
-	au.mutation.ResetAssetId()
-	au.mutation.SetAssetId(si)
+// SetAssetID sets the "asset_id" field.
+func (au *AssetUpdate) SetAssetID(si schema.BigInt) *AssetUpdate {
+	au.mutation.ResetAssetID()
+	au.mutation.SetAssetID(si)
 	return au
 }
 
-// SetNillableAssetId sets the "assetId" field if the given value is not nil.
-func (au *AssetUpdate) SetNillableAssetId(si *schema.BigInt) *AssetUpdate {
+// SetNillableAssetID sets the "asset_id" field if the given value is not nil.
+func (au *AssetUpdate) SetNillableAssetID(si *schema.BigInt) *AssetUpdate {
 	if si != nil {
-		au.SetAssetId(*si)
+		au.SetAssetID(*si)
 	}
 	return au
 }
 
-// AddAssetId adds si to the "assetId" field.
-func (au *AssetUpdate) AddAssetId(si schema.BigInt) *AssetUpdate {
-	au.mutation.AddAssetId(si)
+// AddAssetID adds si to the "asset_id" field.
+func (au *AssetUpdate) AddAssetID(si schema.BigInt) *AssetUpdate {
+	au.mutation.AddAssetID(si)
 	return au
 }
 
-// SetPrice sets the "price" field.
-func (au *AssetUpdate) SetPrice(f float64) *AssetUpdate {
-	au.mutation.ResetPrice()
-	au.mutation.SetPrice(f)
+// SetDecimals sets the "decimals" field.
+func (au *AssetUpdate) SetDecimals(i int) *AssetUpdate {
+	au.mutation.ResetDecimals()
+	au.mutation.SetDecimals(i)
 	return au
 }
 
-// AddPrice adds f to the "price" field.
-func (au *AssetUpdate) AddPrice(f float64) *AssetUpdate {
-	au.mutation.AddPrice(f)
+// AddDecimals adds i to the "decimals" field.
+func (au *AssetUpdate) AddDecimals(i int) *AssetUpdate {
+	au.mutation.AddDecimals(i)
 	return au
-}
-
-// AddPaymentTokenIDs adds the "paymentToken" edge to the PaymentToken entity by IDs.
-func (au *AssetUpdate) AddPaymentTokenIDs(ids ...string) *AssetUpdate {
-	au.mutation.AddPaymentTokenIDs(ids...)
-	return au
-}
-
-// AddPaymentToken adds the "paymentToken" edges to the PaymentToken entity.
-func (au *AssetUpdate) AddPaymentToken(p ...*PaymentToken) *AssetUpdate {
-	ids := make([]string, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return au.AddPaymentTokenIDs(ids...)
 }
 
 // Mutation returns the AssetMutation object of the builder.
 func (au *AssetUpdate) Mutation() *AssetMutation {
 	return au.mutation
-}
-
-// ClearPaymentToken clears all "paymentToken" edges to the PaymentToken entity.
-func (au *AssetUpdate) ClearPaymentToken() *AssetUpdate {
-	au.mutation.ClearPaymentToken()
-	return au
-}
-
-// RemovePaymentTokenIDs removes the "paymentToken" edge to PaymentToken entities by IDs.
-func (au *AssetUpdate) RemovePaymentTokenIDs(ids ...string) *AssetUpdate {
-	au.mutation.RemovePaymentTokenIDs(ids...)
-	return au
-}
-
-// RemovePaymentToken removes "paymentToken" edges to PaymentToken entities.
-func (au *AssetUpdate) RemovePaymentToken(p ...*PaymentToken) *AssetUpdate {
-	ids := make([]string, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return au.RemovePaymentTokenIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -237,87 +200,33 @@ func (au *AssetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: asset.FieldAmount,
 		})
 	}
-	if value, ok := au.mutation.AssetId(); ok {
+	if value, ok := au.mutation.AssetID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAssetId,
+			Column: asset.FieldAssetID,
 		})
 	}
-	if value, ok := au.mutation.AddedAssetId(); ok {
+	if value, ok := au.mutation.AddedAssetID(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAssetId,
+			Column: asset.FieldAssetID,
 		})
 	}
-	if value, ok := au.mutation.Price(); ok {
+	if value, ok := au.mutation.Decimals(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldPrice,
+			Column: asset.FieldDecimals,
 		})
 	}
-	if value, ok := au.mutation.AddedPrice(); ok {
+	if value, ok := au.mutation.AddedDecimals(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldPrice,
+			Column: asset.FieldDecimals,
 		})
-	}
-	if au.mutation.PaymentTokenCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   asset.PaymentTokenTable,
-			Columns: asset.PaymentTokenPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: paymenttoken.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := au.mutation.RemovedPaymentTokenIDs(); len(nodes) > 0 && !au.mutation.PaymentTokenCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   asset.PaymentTokenTable,
-			Columns: asset.PaymentTokenPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: paymenttoken.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := au.mutation.PaymentTokenIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   asset.PaymentTokenTable,
-			Columns: asset.PaymentTokenPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: paymenttoken.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -371,79 +280,43 @@ func (auo *AssetUpdateOne) AddAmount(si schema.BigInt) *AssetUpdateOne {
 	return auo
 }
 
-// SetAssetId sets the "assetId" field.
-func (auo *AssetUpdateOne) SetAssetId(si schema.BigInt) *AssetUpdateOne {
-	auo.mutation.ResetAssetId()
-	auo.mutation.SetAssetId(si)
+// SetAssetID sets the "asset_id" field.
+func (auo *AssetUpdateOne) SetAssetID(si schema.BigInt) *AssetUpdateOne {
+	auo.mutation.ResetAssetID()
+	auo.mutation.SetAssetID(si)
 	return auo
 }
 
-// SetNillableAssetId sets the "assetId" field if the given value is not nil.
-func (auo *AssetUpdateOne) SetNillableAssetId(si *schema.BigInt) *AssetUpdateOne {
+// SetNillableAssetID sets the "asset_id" field if the given value is not nil.
+func (auo *AssetUpdateOne) SetNillableAssetID(si *schema.BigInt) *AssetUpdateOne {
 	if si != nil {
-		auo.SetAssetId(*si)
+		auo.SetAssetID(*si)
 	}
 	return auo
 }
 
-// AddAssetId adds si to the "assetId" field.
-func (auo *AssetUpdateOne) AddAssetId(si schema.BigInt) *AssetUpdateOne {
-	auo.mutation.AddAssetId(si)
+// AddAssetID adds si to the "asset_id" field.
+func (auo *AssetUpdateOne) AddAssetID(si schema.BigInt) *AssetUpdateOne {
+	auo.mutation.AddAssetID(si)
 	return auo
 }
 
-// SetPrice sets the "price" field.
-func (auo *AssetUpdateOne) SetPrice(f float64) *AssetUpdateOne {
-	auo.mutation.ResetPrice()
-	auo.mutation.SetPrice(f)
+// SetDecimals sets the "decimals" field.
+func (auo *AssetUpdateOne) SetDecimals(i int) *AssetUpdateOne {
+	auo.mutation.ResetDecimals()
+	auo.mutation.SetDecimals(i)
 	return auo
 }
 
-// AddPrice adds f to the "price" field.
-func (auo *AssetUpdateOne) AddPrice(f float64) *AssetUpdateOne {
-	auo.mutation.AddPrice(f)
+// AddDecimals adds i to the "decimals" field.
+func (auo *AssetUpdateOne) AddDecimals(i int) *AssetUpdateOne {
+	auo.mutation.AddDecimals(i)
 	return auo
-}
-
-// AddPaymentTokenIDs adds the "paymentToken" edge to the PaymentToken entity by IDs.
-func (auo *AssetUpdateOne) AddPaymentTokenIDs(ids ...string) *AssetUpdateOne {
-	auo.mutation.AddPaymentTokenIDs(ids...)
-	return auo
-}
-
-// AddPaymentToken adds the "paymentToken" edges to the PaymentToken entity.
-func (auo *AssetUpdateOne) AddPaymentToken(p ...*PaymentToken) *AssetUpdateOne {
-	ids := make([]string, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return auo.AddPaymentTokenIDs(ids...)
 }
 
 // Mutation returns the AssetMutation object of the builder.
 func (auo *AssetUpdateOne) Mutation() *AssetMutation {
 	return auo.mutation
-}
-
-// ClearPaymentToken clears all "paymentToken" edges to the PaymentToken entity.
-func (auo *AssetUpdateOne) ClearPaymentToken() *AssetUpdateOne {
-	auo.mutation.ClearPaymentToken()
-	return auo
-}
-
-// RemovePaymentTokenIDs removes the "paymentToken" edge to PaymentToken entities by IDs.
-func (auo *AssetUpdateOne) RemovePaymentTokenIDs(ids ...string) *AssetUpdateOne {
-	auo.mutation.RemovePaymentTokenIDs(ids...)
-	return auo
-}
-
-// RemovePaymentToken removes "paymentToken" edges to PaymentToken entities.
-func (auo *AssetUpdateOne) RemovePaymentToken(p ...*PaymentToken) *AssetUpdateOne {
-	ids := make([]string, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return auo.RemovePaymentTokenIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -570,87 +443,33 @@ func (auo *AssetUpdateOne) sqlSave(ctx context.Context) (_node *Asset, err error
 			Column: asset.FieldAmount,
 		})
 	}
-	if value, ok := auo.mutation.AssetId(); ok {
+	if value, ok := auo.mutation.AssetID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAssetId,
+			Column: asset.FieldAssetID,
 		})
 	}
-	if value, ok := auo.mutation.AddedAssetId(); ok {
+	if value, ok := auo.mutation.AddedAssetID(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAssetId,
+			Column: asset.FieldAssetID,
 		})
 	}
-	if value, ok := auo.mutation.Price(); ok {
+	if value, ok := auo.mutation.Decimals(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldPrice,
+			Column: asset.FieldDecimals,
 		})
 	}
-	if value, ok := auo.mutation.AddedPrice(); ok {
+	if value, ok := auo.mutation.AddedDecimals(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldPrice,
+			Column: asset.FieldDecimals,
 		})
-	}
-	if auo.mutation.PaymentTokenCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   asset.PaymentTokenTable,
-			Columns: asset.PaymentTokenPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: paymenttoken.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := auo.mutation.RemovedPaymentTokenIDs(); len(nodes) > 0 && !auo.mutation.PaymentTokenCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   asset.PaymentTokenTable,
-			Columns: asset.PaymentTokenPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: paymenttoken.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := auo.mutation.PaymentTokenIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   asset.PaymentTokenTable,
-			Columns: asset.PaymentTokenPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: paymenttoken.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Asset{config: auo.config}
 	_spec.Assign = _node.assignValues

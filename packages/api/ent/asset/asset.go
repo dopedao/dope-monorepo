@@ -23,19 +23,12 @@ const (
 	FieldSymbol = "symbol"
 	// FieldAmount holds the string denoting the amount field in the database.
 	FieldAmount = "amount"
-	// FieldAssetId holds the string denoting the assetid field in the database.
-	FieldAssetId = "asset_id"
-	// FieldPrice holds the string denoting the price field in the database.
-	FieldPrice = "price"
-	// EdgePaymentToken holds the string denoting the paymenttoken edge name in mutations.
-	EdgePaymentToken = "paymentToken"
+	// FieldAssetID holds the string denoting the asset_id field in the database.
+	FieldAssetID = "asset_id"
+	// FieldDecimals holds the string denoting the decimals field in the database.
+	FieldDecimals = "decimals"
 	// Table holds the table name of the asset in the database.
 	Table = "assets"
-	// PaymentTokenTable is the table that holds the paymentToken relation/edge. The primary key declared below.
-	PaymentTokenTable = "asset_paymentToken"
-	// PaymentTokenInverseTable is the table name for the PaymentToken entity.
-	// It exists in this package in order to avoid circular dependency with the "paymenttoken" package.
-	PaymentTokenInverseTable = "payment_tokens"
 )
 
 // Columns holds all SQL columns for asset fields.
@@ -45,8 +38,8 @@ var Columns = []string{
 	FieldType,
 	FieldSymbol,
 	FieldAmount,
-	FieldAssetId,
-	FieldPrice,
+	FieldAssetID,
+	FieldDecimals,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "assets"
@@ -55,12 +48,6 @@ var ForeignKeys = []string{
 	"listing_inputs",
 	"listing_outputs",
 }
-
-var (
-	// PaymentTokenPrimaryKey and PaymentTokenColumn2 are the table columns denoting the
-	// primary key for the paymentToken relation (M2M).
-	PaymentTokenPrimaryKey = []string{"asset_id", "payment_token_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -80,8 +67,8 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultAmount holds the default value on creation for the "amount" field.
 	DefaultAmount func() schema.BigInt
-	// DefaultAssetId holds the default value on creation for the "assetId" field.
-	DefaultAssetId func() schema.BigInt
+	// DefaultAssetID holds the default value on creation for the "asset_id" field.
+	DefaultAssetID func() schema.BigInt
 )
 
 // Type defines the type for the "type" enum field.
@@ -89,11 +76,12 @@ type Type string
 
 // Type values.
 const (
+	TypeDOPE      Type = "DOPE"
 	TypeETH       Type = "ETH"
 	TypeEQUIPMENT Type = "EQUIPMENT"
 	TypeHUSTLER   Type = "HUSTLER"
-	TypeTURF      Type = "TURF"
 	TypePAPER     Type = "PAPER"
+	TypeTURF      Type = "TURF"
 )
 
 func (_type Type) String() string {
@@ -103,7 +91,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeETH, TypeEQUIPMENT, TypeHUSTLER, TypeTURF, TypePAPER:
+	case TypeDOPE, TypeETH, TypeEQUIPMENT, TypeHUSTLER, TypePAPER, TypeTURF:
 		return nil
 	default:
 		return fmt.Errorf("asset: invalid enum value for type field: %q", _type)

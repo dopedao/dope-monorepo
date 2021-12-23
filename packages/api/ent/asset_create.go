@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/paymenttoken"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
@@ -56,23 +55,23 @@ func (ac *AssetCreate) SetNillableAmount(si *schema.BigInt) *AssetCreate {
 	return ac
 }
 
-// SetAssetId sets the "assetId" field.
-func (ac *AssetCreate) SetAssetId(si schema.BigInt) *AssetCreate {
-	ac.mutation.SetAssetId(si)
+// SetAssetID sets the "asset_id" field.
+func (ac *AssetCreate) SetAssetID(si schema.BigInt) *AssetCreate {
+	ac.mutation.SetAssetID(si)
 	return ac
 }
 
-// SetNillableAssetId sets the "assetId" field if the given value is not nil.
-func (ac *AssetCreate) SetNillableAssetId(si *schema.BigInt) *AssetCreate {
+// SetNillableAssetID sets the "asset_id" field if the given value is not nil.
+func (ac *AssetCreate) SetNillableAssetID(si *schema.BigInt) *AssetCreate {
 	if si != nil {
-		ac.SetAssetId(*si)
+		ac.SetAssetID(*si)
 	}
 	return ac
 }
 
-// SetPrice sets the "price" field.
-func (ac *AssetCreate) SetPrice(f float64) *AssetCreate {
-	ac.mutation.SetPrice(f)
+// SetDecimals sets the "decimals" field.
+func (ac *AssetCreate) SetDecimals(i int) *AssetCreate {
+	ac.mutation.SetDecimals(i)
 	return ac
 }
 
@@ -80,21 +79,6 @@ func (ac *AssetCreate) SetPrice(f float64) *AssetCreate {
 func (ac *AssetCreate) SetID(s string) *AssetCreate {
 	ac.mutation.SetID(s)
 	return ac
-}
-
-// AddPaymentTokenIDs adds the "paymentToken" edge to the PaymentToken entity by IDs.
-func (ac *AssetCreate) AddPaymentTokenIDs(ids ...string) *AssetCreate {
-	ac.mutation.AddPaymentTokenIDs(ids...)
-	return ac
-}
-
-// AddPaymentToken adds the "paymentToken" edges to the PaymentToken entity.
-func (ac *AssetCreate) AddPaymentToken(p ...*PaymentToken) *AssetCreate {
-	ids := make([]string, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return ac.AddPaymentTokenIDs(ids...)
 }
 
 // Mutation returns the AssetMutation object of the builder.
@@ -172,9 +156,9 @@ func (ac *AssetCreate) defaults() {
 		v := asset.DefaultAmount()
 		ac.mutation.SetAmount(v)
 	}
-	if _, ok := ac.mutation.AssetId(); !ok {
-		v := asset.DefaultAssetId()
-		ac.mutation.SetAssetId(v)
+	if _, ok := ac.mutation.AssetID(); !ok {
+		v := asset.DefaultAssetID()
+		ac.mutation.SetAssetID(v)
 	}
 }
 
@@ -197,11 +181,11 @@ func (ac *AssetCreate) check() error {
 	if _, ok := ac.mutation.Amount(); !ok {
 		return &ValidationError{Name: "amount", err: errors.New(`ent: missing required field "Asset.amount"`)}
 	}
-	if _, ok := ac.mutation.AssetId(); !ok {
-		return &ValidationError{Name: "assetId", err: errors.New(`ent: missing required field "Asset.assetId"`)}
+	if _, ok := ac.mutation.AssetID(); !ok {
+		return &ValidationError{Name: "asset_id", err: errors.New(`ent: missing required field "Asset.asset_id"`)}
 	}
-	if _, ok := ac.mutation.Price(); !ok {
-		return &ValidationError{Name: "price", err: errors.New(`ent: missing required field "Asset.price"`)}
+	if _, ok := ac.mutation.Decimals(); !ok {
+		return &ValidationError{Name: "decimals", err: errors.New(`ent: missing required field "Asset.decimals"`)}
 	}
 	return nil
 }
@@ -272,40 +256,21 @@ func (ac *AssetCreate) createSpec() (*Asset, *sqlgraph.CreateSpec) {
 		})
 		_node.Amount = value
 	}
-	if value, ok := ac.mutation.AssetId(); ok {
+	if value, ok := ac.mutation.AssetID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAssetId,
+			Column: asset.FieldAssetID,
 		})
-		_node.AssetId = value
+		_node.AssetID = value
 	}
-	if value, ok := ac.mutation.Price(); ok {
+	if value, ok := ac.mutation.Decimals(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldPrice,
+			Column: asset.FieldDecimals,
 		})
-		_node.Price = value
-	}
-	if nodes := ac.mutation.PaymentTokenIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   asset.PaymentTokenTable,
-			Columns: asset.PaymentTokenPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: paymenttoken.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
+		_node.Decimals = value
 	}
 	return _node, _spec
 }
@@ -415,39 +380,39 @@ func (u *AssetUpsert) AddAmount(v schema.BigInt) *AssetUpsert {
 	return u
 }
 
-// SetAssetId sets the "assetId" field.
-func (u *AssetUpsert) SetAssetId(v schema.BigInt) *AssetUpsert {
-	u.Set(asset.FieldAssetId, v)
+// SetAssetID sets the "asset_id" field.
+func (u *AssetUpsert) SetAssetID(v schema.BigInt) *AssetUpsert {
+	u.Set(asset.FieldAssetID, v)
 	return u
 }
 
-// UpdateAssetId sets the "assetId" field to the value that was provided on create.
-func (u *AssetUpsert) UpdateAssetId() *AssetUpsert {
-	u.SetExcluded(asset.FieldAssetId)
+// UpdateAssetID sets the "asset_id" field to the value that was provided on create.
+func (u *AssetUpsert) UpdateAssetID() *AssetUpsert {
+	u.SetExcluded(asset.FieldAssetID)
 	return u
 }
 
-// AddAssetId adds v to the "assetId" field.
-func (u *AssetUpsert) AddAssetId(v schema.BigInt) *AssetUpsert {
-	u.Add(asset.FieldAssetId, v)
+// AddAssetID adds v to the "asset_id" field.
+func (u *AssetUpsert) AddAssetID(v schema.BigInt) *AssetUpsert {
+	u.Add(asset.FieldAssetID, v)
 	return u
 }
 
-// SetPrice sets the "price" field.
-func (u *AssetUpsert) SetPrice(v float64) *AssetUpsert {
-	u.Set(asset.FieldPrice, v)
+// SetDecimals sets the "decimals" field.
+func (u *AssetUpsert) SetDecimals(v int) *AssetUpsert {
+	u.Set(asset.FieldDecimals, v)
 	return u
 }
 
-// UpdatePrice sets the "price" field to the value that was provided on create.
-func (u *AssetUpsert) UpdatePrice() *AssetUpsert {
-	u.SetExcluded(asset.FieldPrice)
+// UpdateDecimals sets the "decimals" field to the value that was provided on create.
+func (u *AssetUpsert) UpdateDecimals() *AssetUpsert {
+	u.SetExcluded(asset.FieldDecimals)
 	return u
 }
 
-// AddPrice adds v to the "price" field.
-func (u *AssetUpsert) AddPrice(v float64) *AssetUpsert {
-	u.Add(asset.FieldPrice, v)
+// AddDecimals adds v to the "decimals" field.
+func (u *AssetUpsert) AddDecimals(v int) *AssetUpsert {
+	u.Add(asset.FieldDecimals, v)
 	return u
 }
 
@@ -567,45 +532,45 @@ func (u *AssetUpsertOne) UpdateAmount() *AssetUpsertOne {
 	})
 }
 
-// SetAssetId sets the "assetId" field.
-func (u *AssetUpsertOne) SetAssetId(v schema.BigInt) *AssetUpsertOne {
+// SetAssetID sets the "asset_id" field.
+func (u *AssetUpsertOne) SetAssetID(v schema.BigInt) *AssetUpsertOne {
 	return u.Update(func(s *AssetUpsert) {
-		s.SetAssetId(v)
+		s.SetAssetID(v)
 	})
 }
 
-// AddAssetId adds v to the "assetId" field.
-func (u *AssetUpsertOne) AddAssetId(v schema.BigInt) *AssetUpsertOne {
+// AddAssetID adds v to the "asset_id" field.
+func (u *AssetUpsertOne) AddAssetID(v schema.BigInt) *AssetUpsertOne {
 	return u.Update(func(s *AssetUpsert) {
-		s.AddAssetId(v)
+		s.AddAssetID(v)
 	})
 }
 
-// UpdateAssetId sets the "assetId" field to the value that was provided on create.
-func (u *AssetUpsertOne) UpdateAssetId() *AssetUpsertOne {
+// UpdateAssetID sets the "asset_id" field to the value that was provided on create.
+func (u *AssetUpsertOne) UpdateAssetID() *AssetUpsertOne {
 	return u.Update(func(s *AssetUpsert) {
-		s.UpdateAssetId()
+		s.UpdateAssetID()
 	})
 }
 
-// SetPrice sets the "price" field.
-func (u *AssetUpsertOne) SetPrice(v float64) *AssetUpsertOne {
+// SetDecimals sets the "decimals" field.
+func (u *AssetUpsertOne) SetDecimals(v int) *AssetUpsertOne {
 	return u.Update(func(s *AssetUpsert) {
-		s.SetPrice(v)
+		s.SetDecimals(v)
 	})
 }
 
-// AddPrice adds v to the "price" field.
-func (u *AssetUpsertOne) AddPrice(v float64) *AssetUpsertOne {
+// AddDecimals adds v to the "decimals" field.
+func (u *AssetUpsertOne) AddDecimals(v int) *AssetUpsertOne {
 	return u.Update(func(s *AssetUpsert) {
-		s.AddPrice(v)
+		s.AddDecimals(v)
 	})
 }
 
-// UpdatePrice sets the "price" field to the value that was provided on create.
-func (u *AssetUpsertOne) UpdatePrice() *AssetUpsertOne {
+// UpdateDecimals sets the "decimals" field to the value that was provided on create.
+func (u *AssetUpsertOne) UpdateDecimals() *AssetUpsertOne {
 	return u.Update(func(s *AssetUpsert) {
-		s.UpdatePrice()
+		s.UpdateDecimals()
 	})
 }
 
@@ -891,45 +856,45 @@ func (u *AssetUpsertBulk) UpdateAmount() *AssetUpsertBulk {
 	})
 }
 
-// SetAssetId sets the "assetId" field.
-func (u *AssetUpsertBulk) SetAssetId(v schema.BigInt) *AssetUpsertBulk {
+// SetAssetID sets the "asset_id" field.
+func (u *AssetUpsertBulk) SetAssetID(v schema.BigInt) *AssetUpsertBulk {
 	return u.Update(func(s *AssetUpsert) {
-		s.SetAssetId(v)
+		s.SetAssetID(v)
 	})
 }
 
-// AddAssetId adds v to the "assetId" field.
-func (u *AssetUpsertBulk) AddAssetId(v schema.BigInt) *AssetUpsertBulk {
+// AddAssetID adds v to the "asset_id" field.
+func (u *AssetUpsertBulk) AddAssetID(v schema.BigInt) *AssetUpsertBulk {
 	return u.Update(func(s *AssetUpsert) {
-		s.AddAssetId(v)
+		s.AddAssetID(v)
 	})
 }
 
-// UpdateAssetId sets the "assetId" field to the value that was provided on create.
-func (u *AssetUpsertBulk) UpdateAssetId() *AssetUpsertBulk {
+// UpdateAssetID sets the "asset_id" field to the value that was provided on create.
+func (u *AssetUpsertBulk) UpdateAssetID() *AssetUpsertBulk {
 	return u.Update(func(s *AssetUpsert) {
-		s.UpdateAssetId()
+		s.UpdateAssetID()
 	})
 }
 
-// SetPrice sets the "price" field.
-func (u *AssetUpsertBulk) SetPrice(v float64) *AssetUpsertBulk {
+// SetDecimals sets the "decimals" field.
+func (u *AssetUpsertBulk) SetDecimals(v int) *AssetUpsertBulk {
 	return u.Update(func(s *AssetUpsert) {
-		s.SetPrice(v)
+		s.SetDecimals(v)
 	})
 }
 
-// AddPrice adds v to the "price" field.
-func (u *AssetUpsertBulk) AddPrice(v float64) *AssetUpsertBulk {
+// AddDecimals adds v to the "decimals" field.
+func (u *AssetUpsertBulk) AddDecimals(v int) *AssetUpsertBulk {
 	return u.Update(func(s *AssetUpsert) {
-		s.AddPrice(v)
+		s.AddDecimals(v)
 	})
 }
 
-// UpdatePrice sets the "price" field to the value that was provided on create.
-func (u *AssetUpsertBulk) UpdatePrice() *AssetUpsertBulk {
+// UpdateDecimals sets the "decimals" field to the value that was provided on create.
+func (u *AssetUpsertBulk) UpdateDecimals() *AssetUpsertBulk {
 	return u.Update(func(s *AssetUpsert) {
-		s.UpdatePrice()
+		s.UpdateDecimals()
 	})
 }
 

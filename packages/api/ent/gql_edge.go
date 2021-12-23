@@ -4,14 +4,6 @@ package ent
 
 import "context"
 
-func (a *Asset) PaymentToken(ctx context.Context) ([]*PaymentToken, error) {
-	result, err := a.Edges.PaymentTokenOrErr()
-	if IsNotLoaded(err) {
-		result, err = a.QueryPaymentToken().All(ctx)
-	}
-	return result, err
-}
-
 func (bp *BodyPart) HustlerBodies(ctx context.Context) ([]*Hustler, error) {
 	result, err := bp.Edges.HustlerBodiesOrErr()
 	if IsNotLoaded(err) {
@@ -320,14 +312,6 @@ func (l *Listing) Outputs(ctx context.Context) ([]*Asset, error) {
 	result, err := l.Edges.OutputsOrErr()
 	if IsNotLoaded(err) {
 		result, err = l.QueryOutputs().All(ctx)
-	}
-	return result, err
-}
-
-func (pt *PaymentToken) Asset(ctx context.Context) ([]*Asset, error) {
-	result, err := pt.Edges.AssetOrErr()
-	if IsNotLoaded(err) {
-		result, err = pt.QueryAsset().All(ctx)
 	}
 	return result, err
 }

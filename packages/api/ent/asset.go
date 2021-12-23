@@ -24,33 +24,12 @@ type Asset struct {
 	Symbol string `json:"symbol,omitempty"`
 	// Amount holds the value of the "amount" field.
 	Amount schema.BigInt `json:"amount,omitempty"`
-	// AssetId holds the value of the "assetId" field.
-	AssetId schema.BigInt `json:"assetId,omitempty"`
-	// Price holds the value of the "price" field.
-	Price float64 `json:"price,omitempty"`
-	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the AssetQuery when eager-loading is set.
-	Edges           AssetEdges `json:"edges"`
+	// AssetID holds the value of the "asset_id" field.
+	AssetID schema.BigInt `json:"asset_id,omitempty"`
+	// Decimals holds the value of the "decimals" field.
+	Decimals        int `json:"decimals,omitempty"`
 	listing_inputs  *string
 	listing_outputs *string
-}
-
-// AssetEdges holds the relations/edges for other nodes in the graph.
-type AssetEdges struct {
-	// PaymentToken holds the value of the paymentToken edge.
-	PaymentToken []*PaymentToken `json:"paymentToken,omitempty"`
-	// loadedTypes holds the information for reporting if a
-	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
-}
-
-// PaymentTokenOrErr returns the PaymentToken value or an error if the edge
-// was not loaded in eager-loading.
-func (e AssetEdges) PaymentTokenOrErr() ([]*PaymentToken, error) {
-	if e.loadedTypes[0] {
-		return e.PaymentToken, nil
-	}
-	return nil, &NotLoadedError{edge: "paymentToken"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -58,10 +37,10 @@ func (*Asset) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case asset.FieldAmount, asset.FieldAssetId:
+		case asset.FieldAmount, asset.FieldAssetID:
 			values[i] = new(schema.BigInt)
-		case asset.FieldPrice:
-			values[i] = new(sql.NullFloat64)
+		case asset.FieldDecimals:
+			values[i] = new(sql.NullInt64)
 		case asset.FieldID, asset.FieldAddress, asset.FieldType, asset.FieldSymbol:
 			values[i] = new(sql.NullString)
 		case asset.ForeignKeys[0]: // listing_inputs
@@ -113,17 +92,17 @@ func (a *Asset) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				a.Amount = *value
 			}
-		case asset.FieldAssetId:
+		case asset.FieldAssetID:
 			if value, ok := values[i].(*schema.BigInt); !ok {
-				return fmt.Errorf("unexpected type %T for field assetId", values[i])
+				return fmt.Errorf("unexpected type %T for field asset_id", values[i])
 			} else if value != nil {
-				a.AssetId = *value
+				a.AssetID = *value
 			}
-		case asset.FieldPrice:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
-				return fmt.Errorf("unexpected type %T for field price", values[i])
+		case asset.FieldDecimals:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field decimals", values[i])
 			} else if value.Valid {
-				a.Price = value.Float64
+				a.Decimals = int(value.Int64)
 			}
 		case asset.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -142,11 +121,6 @@ func (a *Asset) assignValues(columns []string, values []interface{}) error {
 		}
 	}
 	return nil
-}
-
-// QueryPaymentToken queries the "paymentToken" edge of the Asset entity.
-func (a *Asset) QueryPaymentToken() *PaymentTokenQuery {
-	return (&AssetClient{config: a.config}).QueryPaymentToken(a)
 }
 
 // Update returns a builder for updating this Asset.
@@ -180,10 +154,10 @@ func (a *Asset) String() string {
 	builder.WriteString(a.Symbol)
 	builder.WriteString(", amount=")
 	builder.WriteString(fmt.Sprintf("%v", a.Amount))
-	builder.WriteString(", assetId=")
-	builder.WriteString(fmt.Sprintf("%v", a.AssetId))
-	builder.WriteString(", price=")
-	builder.WriteString(fmt.Sprintf("%v", a.Price))
+	builder.WriteString(", asset_id=")
+	builder.WriteString(fmt.Sprintf("%v", a.AssetID))
+	builder.WriteString(", decimals=")
+	builder.WriteString(fmt.Sprintf("%v", a.Decimals))
 	builder.WriteByte(')')
 	return builder.String()
 }

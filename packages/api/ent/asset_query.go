@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -13,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/paymenttoken"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 )
 
@@ -26,9 +24,7 @@ type AssetQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.Asset
-	// eager-loading edges.
-	withPaymentToken *PaymentTokenQuery
-	withFKs          bool
+	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,28 +59,6 @@ func (aq *AssetQuery) Unique(unique bool) *AssetQuery {
 func (aq *AssetQuery) Order(o ...OrderFunc) *AssetQuery {
 	aq.order = append(aq.order, o...)
 	return aq
-}
-
-// QueryPaymentToken chains the current query on the "paymentToken" edge.
-func (aq *AssetQuery) QueryPaymentToken() *PaymentTokenQuery {
-	query := &PaymentTokenQuery{config: aq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := aq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(asset.Table, asset.FieldID, selector),
-			sqlgraph.To(paymenttoken.Table, paymenttoken.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, asset.PaymentTokenTable, asset.PaymentTokenPrimaryKey...),
-		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // First returns the first Asset entity from the query.
@@ -263,27 +237,15 @@ func (aq *AssetQuery) Clone() *AssetQuery {
 		return nil
 	}
 	return &AssetQuery{
-		config:           aq.config,
-		limit:            aq.limit,
-		offset:           aq.offset,
-		order:            append([]OrderFunc{}, aq.order...),
-		predicates:       append([]predicate.Asset{}, aq.predicates...),
-		withPaymentToken: aq.withPaymentToken.Clone(),
+		config:     aq.config,
+		limit:      aq.limit,
+		offset:     aq.offset,
+		order:      append([]OrderFunc{}, aq.order...),
+		predicates: append([]predicate.Asset{}, aq.predicates...),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
 	}
-}
-
-// WithPaymentToken tells the query-builder to eager-load the nodes that are connected to
-// the "paymentToken" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AssetQuery) WithPaymentToken(opts ...func(*PaymentTokenQuery)) *AssetQuery {
-	query := &PaymentTokenQuery{config: aq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	aq.withPaymentToken = query
-	return aq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -349,12 +311,9 @@ func (aq *AssetQuery) prepareQuery(ctx context.Context) error {
 
 func (aq *AssetQuery) sqlAll(ctx context.Context) ([]*Asset, error) {
 	var (
-		nodes       = []*Asset{}
-		withFKs     = aq.withFKs
-		_spec       = aq.querySpec()
-		loadedTypes = [1]bool{
-			aq.withPaymentToken != nil,
-		}
+		nodes   = []*Asset{}
+		withFKs = aq.withFKs
+		_spec   = aq.querySpec()
 	)
 	if withFKs {
 		_spec.Node.Columns = append(_spec.Node.Columns, asset.ForeignKeys...)
@@ -369,7 +328,6 @@ func (aq *AssetQuery) sqlAll(ctx context.Context) ([]*Asset, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
-		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, aq.driver, _spec); err != nil {
@@ -378,72 +336,6 @@ func (aq *AssetQuery) sqlAll(ctx context.Context) ([]*Asset, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-
-	if query := aq.withPaymentToken; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		ids := make(map[string]*Asset, len(nodes))
-		for _, node := range nodes {
-			ids[node.ID] = node
-			fks = append(fks, node.ID)
-			node.Edges.PaymentToken = []*PaymentToken{}
-		}
-		var (
-			edgeids []string
-			edges   = make(map[string][]*Asset)
-		)
-		_spec := &sqlgraph.EdgeQuerySpec{
-			Edge: &sqlgraph.EdgeSpec{
-				Inverse: false,
-				Table:   asset.PaymentTokenTable,
-				Columns: asset.PaymentTokenPrimaryKey,
-			},
-			Predicate: func(s *sql.Selector) {
-				s.Where(sql.InValues(asset.PaymentTokenPrimaryKey[0], fks...))
-			},
-			ScanValues: func() [2]interface{} {
-				return [2]interface{}{new(sql.NullString), new(sql.NullString)}
-			},
-			Assign: func(out, in interface{}) error {
-				eout, ok := out.(*sql.NullString)
-				if !ok || eout == nil {
-					return fmt.Errorf("unexpected id value for edge-out")
-				}
-				ein, ok := in.(*sql.NullString)
-				if !ok || ein == nil {
-					return fmt.Errorf("unexpected id value for edge-in")
-				}
-				outValue := eout.String
-				inValue := ein.String
-				node, ok := ids[outValue]
-				if !ok {
-					return fmt.Errorf("unexpected node id in edges: %v", outValue)
-				}
-				if _, ok := edges[inValue]; !ok {
-					edgeids = append(edgeids, inValue)
-				}
-				edges[inValue] = append(edges[inValue], node)
-				return nil
-			},
-		}
-		if err := sqlgraph.QueryEdges(ctx, aq.driver, _spec); err != nil {
-			return nil, fmt.Errorf(`query edges "paymentToken": %w`, err)
-		}
-		query.Where(paymenttoken.IDIn(edgeids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := edges[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected "paymentToken" node returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.PaymentToken = append(nodes[i].Edges.PaymentToken, n)
-			}
-		}
-	}
-
 	return nodes, nil
 }
 

@@ -24,10 +24,10 @@ func init() {
 	assetDescAmount := assetFields[4].Descriptor()
 	// asset.DefaultAmount holds the default value on creation for the amount field.
 	asset.DefaultAmount = assetDescAmount.Default.(func() schema.BigInt)
-	// assetDescAssetId is the schema descriptor for assetId field.
-	assetDescAssetId := assetFields[5].Descriptor()
-	// asset.DefaultAssetId holds the default value on creation for the assetId field.
-	asset.DefaultAssetId = assetDescAssetId.Default.(func() schema.BigInt)
+	// assetDescAssetID is the schema descriptor for asset_id field.
+	assetDescAssetID := assetFields[5].Descriptor()
+	// asset.DefaultAssetID holds the default value on creation for the asset_id field.
+	asset.DefaultAssetID = assetDescAssetID.Default.(func() schema.BigInt)
 	dopeFields := schema.Dope{}.Fields()
 	_ = dopeFields
 	// dopeDescClaimed is the schema descriptor for claimed field.

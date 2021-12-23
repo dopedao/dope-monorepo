@@ -15,7 +15,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/paymenttoken"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -39,17 +38,16 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		asset.Table:        asset.ValidColumn,
-		bodypart.Table:     bodypart.ValidColumn,
-		dope.Table:         dope.ValidColumn,
-		event.Table:        event.ValidColumn,
-		hustler.Table:      hustler.ValidColumn,
-		item.Table:         item.ValidColumn,
-		listing.Table:      listing.ValidColumn,
-		paymenttoken.Table: paymenttoken.ValidColumn,
-		syncstate.Table:    syncstate.ValidColumn,
-		wallet.Table:       wallet.ValidColumn,
-		walletitems.Table:  walletitems.ValidColumn,
+		asset.Table:       asset.ValidColumn,
+		bodypart.Table:    bodypart.ValidColumn,
+		dope.Table:        dope.ValidColumn,
+		event.Table:       event.ValidColumn,
+		hustler.Table:     hustler.ValidColumn,
+		item.Table:        item.ValidColumn,
+		listing.Table:     listing.ValidColumn,
+		syncstate.Table:   syncstate.ValidColumn,
+		wallet.Table:      wallet.ValidColumn,
+		walletitems.Table: walletitems.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

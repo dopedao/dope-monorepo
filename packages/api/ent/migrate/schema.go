@@ -12,11 +12,11 @@ var (
 	AssetsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
 		{Name: "address", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"ETH", "EQUIPMENT", "HUSTLER", "TURF", "PAPER"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"DOPE", "ETH", "EQUIPMENT", "HUSTLER", "PAPER", "TURF"}},
 		{Name: "symbol", Type: field.TypeString},
 		{Name: "amount", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
 		{Name: "asset_id", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
-		{Name: "price", Type: field.TypeFloat64},
+		{Name: "decimals", Type: field.TypeInt},
 		{Name: "listing_inputs", Type: field.TypeString, Nullable: true},
 		{Name: "listing_outputs", Type: field.TypeString, Nullable: true},
 	}
@@ -278,20 +278,6 @@ var (
 			},
 		},
 	}
-	// PaymentTokensColumns holds the columns for the "payment_tokens" table.
-	PaymentTokensColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
-		{Name: "address", Type: field.TypeString},
-		{Name: "type", Type: field.TypeString},
-		{Name: "symbol", Type: field.TypeString},
-		{Name: "price", Type: field.TypeFloat64},
-	}
-	// PaymentTokensTable holds the schema information for the "payment_tokens" table.
-	PaymentTokensTable = &schema.Table{
-		Name:       "payment_tokens",
-		Columns:    PaymentTokensColumns,
-		PrimaryKey: []*schema.Column{PaymentTokensColumns[0]},
-	}
 	// SyncStatesColumns holds the columns for the "sync_states" table.
 	SyncStatesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
@@ -342,31 +328,6 @@ var (
 			},
 		},
 	}
-	// AssetPaymentTokenColumns holds the columns for the "asset_paymentToken" table.
-	AssetPaymentTokenColumns = []*schema.Column{
-		{Name: "asset_id", Type: field.TypeString},
-		{Name: "payment_token_id", Type: field.TypeString},
-	}
-	// AssetPaymentTokenTable holds the schema information for the "asset_paymentToken" table.
-	AssetPaymentTokenTable = &schema.Table{
-		Name:       "asset_paymentToken",
-		Columns:    AssetPaymentTokenColumns,
-		PrimaryKey: []*schema.Column{AssetPaymentTokenColumns[0], AssetPaymentTokenColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "asset_paymentToken_asset_id",
-				Columns:    []*schema.Column{AssetPaymentTokenColumns[0]},
-				RefColumns: []*schema.Column{AssetsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "asset_paymentToken_payment_token_id",
-				Columns:    []*schema.Column{AssetPaymentTokenColumns[1]},
-				RefColumns: []*schema.Column{PaymentTokensColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// DopeItemsColumns holds the columns for the "dope_items" table.
 	DopeItemsColumns = []*schema.Column{
 		{Name: "dope_id", Type: field.TypeString},
@@ -401,11 +362,9 @@ var (
 		HustlersTable,
 		ItemsTable,
 		ListingsTable,
-		PaymentTokensTable,
 		SyncStatesTable,
 		WalletsTable,
 		WalletItemsTable,
-		AssetPaymentTokenTable,
 		DopeItemsTable,
 	}
 )
@@ -433,8 +392,6 @@ func init() {
 	ListingsTable.ForeignKeys[0].RefTable = DopesTable
 	WalletItemsTable.ForeignKeys[0].RefTable = ItemsTable
 	WalletItemsTable.ForeignKeys[1].RefTable = WalletsTable
-	AssetPaymentTokenTable.ForeignKeys[0].RefTable = AssetsTable
-	AssetPaymentTokenTable.ForeignKeys[1].RefTable = PaymentTokensTable
 	DopeItemsTable.ForeignKeys[0].RefTable = DopesTable
 	DopeItemsTable.ForeignKeys[1].RefTable = ItemsTable
 }
