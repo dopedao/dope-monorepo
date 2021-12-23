@@ -1,4 +1,4 @@
-package api
+package engine
 
 import (
 	"context"
@@ -34,13 +34,13 @@ type Contract struct {
 	Processor  processors.Processor
 }
 
-type Config struct {
+type EthConfig struct {
 	RPC       string
 	Interval  time.Duration
 	Contracts []Contract
 }
 
-type Engine struct {
+type Ethereum struct {
 	sync.Mutex
 	latest    uint64
 	ent       *ent.Client
@@ -49,7 +49,7 @@ type Engine struct {
 	contracts []*Contract
 }
 
-func NewEngine(client *ent.Client, config Config) *Engine {
+func NewEthereum(client *ent.Client, config EthConfig) *Ethereum {
 	retryableHTTPClient := retryablehttp.NewClient()
 	retryableHTTPClient.Logger = nil
 	c, err := rpc.DialHTTPWithClient(config.RPC, retryableHTTPClient.StandardClient())
@@ -59,7 +59,7 @@ func NewEngine(client *ent.Client, config Config) *Engine {
 
 	eth := ethclient.NewClient(c)
 
-	e := &Engine{
+	e := &Ethereum{
 		ent:    client,
 		eth:    eth,
 		ticker: time.NewTicker(config.Interval),
@@ -85,7 +85,7 @@ func NewEngine(client *ent.Client, config Config) *Engine {
 	return e
 }
 
-func (e *Engine) Sync(ctx context.Context) {
+func (e *Ethereum) Sync(ctx context.Context) {
 	defer e.ticker.Stop()
 
 	for {

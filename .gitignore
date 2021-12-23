@@ -21,5 +21,6 @@ dist
 !.yarn/versions
 build
 generated
+!packages/api/graph/generated
 .DS_Store
 pgdata
