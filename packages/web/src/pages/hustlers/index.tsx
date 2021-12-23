@@ -123,21 +123,21 @@ const Hustlers = () => {
         <Container>
           <div className="hustlerGrid">
             {data?.wallets.edges &&
-              data.wallets.edges[0]?.node?.hustlers.map(({ id, svg }) => {
-                let meta = svg?.replace('data:application/json;base64,', '');
-                if (meta) {
-                  meta = Buffer.from(meta, 'base64').toString();
-                  const decoded = JSON.parse(meta);
-                  return (
-                    <Link key={id} href={`/hustlers/${id}/customize`}>
-                      <a>
-                        <RenderFromChain data={decoded} id={id} />
-                      </a>
-                    </Link>
-                  );
-                } else {
-                  return <span>Something went wrong</span>;
-                }
+              data.wallets.edges[0]?.node?.hustlers.map(({ id, svg, name }) => {
+                if (!svg) return null;
+                return (
+                  <Link key={id} href={`/hustlers/${id}/customize`}>
+                    <a>
+                      <RenderFromChain
+                        data={{
+                          image: svg,
+                          name,
+                        }}
+                        id={id}
+                      />
+                    </a>
+                  </Link>
+                );
               })}
           </div>
         </Container>

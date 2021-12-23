@@ -81,15 +81,19 @@ const GangstaParty = () => {
               <div className="hustlerGrid">
                 {data?.pages.map(group =>
                   group.hustlers.edges!.map(hustler => {
-                    if (!hustler || !hustler.node) {
+                    if (!hustler?.node!.svg) {
                       return null;
                     }
 
-                    let meta = hustler.node.svg!.replace('data:application/json;base64,', '');
-                    meta = Buffer.from(meta, 'base64').toString();
-                    const decoded = JSON.parse(meta);
                     return (
-                      <RenderFromChain data={decoded} id={hustler.node.id} key={hustler.node.id} />
+                      <RenderFromChain
+                        data={{
+                          image: hustler.node.svg,
+                          name: hustler.node.name,
+                        }}
+                        id={hustler.node.id}
+                        key={hustler.node.id}
+                      />
                     );
                   }),
                 )}
