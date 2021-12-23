@@ -7,7 +7,7 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// Asset holds the schema definition for the Dope entity.
+// Asset holds the schema definition for the Asset entity.
 type Asset struct {
 	ent.Schema
 }

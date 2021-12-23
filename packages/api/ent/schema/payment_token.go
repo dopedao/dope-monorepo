@@ -7,11 +7,12 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// Asset holds the schema definition for the Dope entity.
+// PaymentToken holds the schema definition for the PaymentToken entity.
 type PaymentToken struct {
 	ent.Schema
 }
 
+// Fields of the PaymentToken.
 func (PaymentToken) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
@@ -22,7 +23,7 @@ func (PaymentToken) Fields() []ent.Field {
 	}
 }
 
-// Edges of the Asset.
+// Edges of the PaymentToken.
 func (PaymentToken) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("asset", Asset.Type).
