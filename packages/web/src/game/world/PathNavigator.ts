@@ -27,28 +27,26 @@ export default class PathNavigator
         const hustlerTile = map.worldToTileXY(this.hustler.x, this.hustler.y);
 
         // convert grid of tiles into PF grid
-        console.log((this.hustler.scene as GameScene).map.layers[1].data);
         let grid = new PF.Grid(
             map.layers[1].data
             .map(
                 tileArr => tileArr.map(tile => tile.collides ? 1 : 0)))
 
         this.path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, x, y, grid).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
-        const targetTile = this.path.shift()!;
-        this.target = targetTile;
+        const targetTilePos = this.path.shift()!;
+        const targetTile = map.getTileAt(targetTilePos.x, targetTilePos.y, true);
+        this.target = new Phaser.Math.Vector2(targetTile.getCenterX(), targetTile.getCenterY());
     }
 
     update()
     {
-        console.log(this.path);
-
         let dx = 0;
 	    let dy = 0;
 
 	    if (this.target)
 	    {
-	    	dx = this.target.x - (this.hustler.scene as GameScene).map.worldToTileX(this.hustler.x);
-	    	dy = this.target.y - (this.hustler.scene as GameScene).map.worldToTileX(this.hustler.y);
+	    	dx = this.target.x - this.hustler.x;
+	    	dy = this.target.y - this.hustler.y;
 
 	    	if (Math.abs(dx) < 1)
 	    	{
@@ -63,8 +61,9 @@ export default class PathNavigator
 	    	{
 	    		if (this.path.length > 0)
 	    		{
-                    const targetTile = this.path.shift()!;
-	    			this.target = targetTile;
+                    const targetTilePos = this.path.shift()!;
+                    const targetTile = (this.hustler.scene as GameScene).map.getTileAt(targetTilePos.x, targetTilePos.y, true);
+	    			this.target = new Phaser.Math.Vector2(targetTile.getCenterX(), targetTile.getCenterY());
 	    			return;
 	    		}
             

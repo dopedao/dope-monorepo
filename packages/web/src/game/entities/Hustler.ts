@@ -40,8 +40,6 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         world.scene.add.existing(this);
 
         // give the character an ellipse like collider
-        this.body.position.y = this.y - 15;
-        this.body.position.x = this.x - 15;
         this.setCircle(5);
         // prevent angular momentum from rotating our body
         this.setFixedRotation();
@@ -56,9 +54,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
     update()
     {
+        // update animation frames
         this.animator.update();
+        // path finding
         this.navigator.update();
-        // path finding algorithm implemented by default on hustler instances
-        // for npcs, player...
     }
 }
