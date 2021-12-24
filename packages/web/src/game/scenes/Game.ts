@@ -3,15 +3,16 @@ import Hustler from 'game/entities/Hustler';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
+import Player from 'game/entities/Player';
 
 export default class GameScene extends Scene {
-  private player!: Hustler;
+  private player!: Player;
 
-  private map!: Phaser.Tilemaps.Tilemap;
-  private hoveredTile?: Phaser.Tilemaps.Tile;
+  private _map!: Phaser.Tilemaps.Tilemap;
+  private _hoveredTile?: Phaser.Tilemaps.Tile;
 
-  arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
-  wasd!: Phaser.Types.Input.Keyboard.CursorKeys;
+  get map() { return this._map; }
+  get hoveredTile() { return this._hoveredTile; }
 
   constructor() {
     super({
@@ -20,14 +21,6 @@ export default class GameScene extends Scene {
   }
 
   create(): void {
-    this.arrows = this.input.keyboard.createCursorKeys();
-    this.wasd = this.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W, 
-      down: Phaser.Input.Keyboard.KeyCodes.S, 
-      left: Phaser.Input.Keyboard.KeyCodes.A, 
-      right: Phaser.Input.Keyboard.KeyCodes.D 
-    }) as Phaser.Types.Input.Keyboard.CursorKeys;
-
     // create all of the animations
     new GameAnimations(this.anims).create();
 
@@ -35,10 +28,11 @@ export default class GameScene extends Scene {
       if (!this.hoveredTile)
         return;
       // transition to spot
-      this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
+      //this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
+      this.player.navigator.moveTo(this.hoveredTile.x, this.hoveredTile.y);
     });
 
-    this.map = this.make.tilemap({ key: "map" });
+    this._map = this.make.tilemap({ key: "map" });
 
     // not my assets, used only for demonstration purposes
     const tileset = this.map.addTilesetImage("tuxmon-sample-32px-extruded", "tiles");
@@ -52,7 +46,7 @@ export default class GameScene extends Scene {
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
-    this.player = new Hustler(
+    this.player = new Player(
       500, 600, 
       new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold), 
       matterWorld);
@@ -68,7 +62,7 @@ export default class GameScene extends Scene {
 
   update(time: number, delta: number): void {
     if (this.player)
-      this.player.update(this.arrows, this.wasd);
+      this.player.update();
 
     // loop over the world's layer tiles and check if they intersect with the mouse
     // not the best method but just for demonstration purposes
@@ -88,12 +82,12 @@ export default class GameScene extends Scene {
           // check if there's nothing collideable on top of the tile
           if (this.map.getLayer('World').data[j][k].collides)
           {
-            this.hoveredTile = undefined;
+            this._hoveredTile = undefined;
           }
           else 
           {
             tile.alpha = 0.7;
-            this.hoveredTile = tile;
+            this._hoveredTile = tile;
           }
           
         }

@@ -1,14 +1,31 @@
+import HustlerAnimator from "game/anims/HustlerAnimator";
 import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
 import HustlerModel from "game/gfx/models/HustlerModel";
+import PathNavigator from "game/world/PathNavigator";
+import Pathfinding from "pathfinding";
+
+export enum Direction
+{
+    North = "_back",
+    South = "_front",
+    West = "_left",
+    East = "_right",
+    None = ""
+}
 
 export default class Hustler extends Phaser.Physics.Matter.Sprite
 {
     public static readonly DEFAULT_VELOCITY: number = 1.7;
     public static readonly DEFAULT_MASS: number = 70;
 
+    public direction: Direction = Direction.None;
+
     private _model: HustlerModel;
+    public animator: HustlerAnimator;
+    private _navigator: PathNavigator;
 
     get model() { return this._model; }
+    get navigator() { return this._navigator; }
 
     constructor(x: number, y: number, model: HustlerModel, world: Phaser.Physics.Matter.World, frame?: number)
     {
@@ -23,76 +40,25 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         world.scene.add.existing(this);
 
         // give the character an ellipse like collider
-        this.setCircle(20);
+        this.body.position.y = this.y - 15;
+        this.body.position.x = this.x - 15;
+        this.setCircle(5);
         // prevent angular momentum from rotating our body
         this.setFixedRotation();
 
         // create sub sprites
         this._model.createSprites();
+
+        // create navigator
+        this._navigator = new PathNavigator(this, new Pathfinding.BreadthFirstFinder({diagonalMovement: Pathfinding.DiagonalMovement.Always}));
+        this.animator = new HustlerAnimator(this);
     }
 
-    update(mainCursors: Phaser.Types.Input.Keyboard.CursorKeys, eqCursors?: Phaser.Types.Input.Keyboard.CursorKeys): void
+    update()
     {
-        let dir = "";
-
-        if (mainCursors.up.isDown || eqCursors?.up.isDown)
-        {
-            dir = "_back";
-            // this.setVelocity(0, -Player.DEFAULT_VELOCITY);
-            this.setVelocityY(-Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(true);
-            //this.body.offset.x = 6;
-        }
-        else if (mainCursors.down.isDown || eqCursors?.down.isDown)
-        {
-            dir = "_front";
-            // this.setVelocity(0, Player.DEFAULT_VELOCITY);
-            this.setVelocityY(Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(true);
-            //this.body.offset.x = 6;
-        }
-        else
-        {
-            this.setVelocityY(0);
-        }
-
-        if (mainCursors.left.isDown || eqCursors?.left.isDown)
-        {
-            dir = "_left";
-            // this.setVelocity(-Player.DEFAULT_VELOCITY, 0);
-            this.setVelocityX(-Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(true);
-            //this.body.offset.x = 8;
-        }
-        else if (mainCursors.right.isDown || eqCursors?.right.isDown)
-        {
-            dir = "_right";
-            // this.setVelocity(Player.DEFAULT_VELOCITY, 0);
-            this.setVelocityX(Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(true);
-            //this.body.offset.x = 6;
-        }
-        else
-        {
-            this.setVelocityX(0);
-        }
-        
-        if (dir === "")
-        {
-            this.setVelocity(0, 0);
-            this.model.updateSprites(true);
-            // reset to the first frame of the anim
-            if (this.anims.currentAnim && !this.anims.currentFrame.isLast)
-                this.anims.setCurrentFrame(this.anims.currentAnim.getLastFrame());
-            this.stopAfterDelay(100);
-
-            this._model.stopSpritesAnim();
-            return;
-        }
-
-        this.play(this.texture.key + dir, true);
-        // pos is undefined so that only the animations of the sprites
-        // get updated
-        this._model.updateSprites(true, dir);
+        this.animator.update();
+        this.navigator.update();
+        // path finding algorithm implemented by default on hustler instances
+        // for npcs, player...
     }
 }
