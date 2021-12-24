@@ -1,10 +1,11 @@
 import Hustler from "game/entities/Hustler";
+import EventHandler from "game/handlers/EventHandler";
 
 export default class Zone
 {
     private body: MatterJS.BodyType;
     private scene: Phaser.Scene;
-    private object: Phaser.GameObjects.GameObject;
+    private objects: Array<Phaser.GameObjects.GameObject>;
 
     private inside: boolean = false;
 
@@ -12,11 +13,11 @@ export default class Zone
     private onEnter: () => void;
     private onExit: () => void;
 
-    constructor(body: MatterJS.BodyType, scene: Phaser.Scene, object: Phaser.GameObjects.GameObject, onEnter: () => void, onExit: () => void)
+    constructor(body: MatterJS.BodyType, scene: Phaser.Scene, objects: Array<Phaser.GameObjects.GameObject>, onEnter: () => void, onExit: () => void)
     {
         this.body = body;
         this.scene = scene;
-        this.object = object;
+        this.objects = objects;
 
         this.onEnter = onEnter;
         this.onExit = onExit;
@@ -27,12 +28,12 @@ export default class Zone
 
     update()
     {
-        if (!this.inside && this.scene.matter.overlap(this.body, [this.object]))
+        if (!this.inside && this.scene.matter.overlap(this.body, this.objects))
         {
             this.onEnter();
             this.inside = true;
         }
-        else if (this.inside && !this.scene.matter.overlap(this.body, [this.object]))
+        else if (this.inside && !this.scene.matter.overlap(this.body, this.objects))
         {
             this.onExit();
             this.inside = false;
