@@ -19,6 +19,10 @@ const (
 	FieldOrder = "order"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
 	EdgeWallet = "wallet"
+	// EdgeLastSale holds the string denoting the lastsale edge name in mutations.
+	EdgeLastSale = "lastSale"
+	// EdgeListings holds the string denoting the listings edge name in mutations.
+	EdgeListings = "listings"
 	// EdgeItems holds the string denoting the items edge name in mutations.
 	EdgeItems = "items"
 	// Table holds the table name of the dope in the database.
@@ -30,6 +34,20 @@ const (
 	WalletInverseTable = "wallets"
 	// WalletColumn is the table column denoting the wallet relation/edge.
 	WalletColumn = "wallet_dopes"
+	// LastSaleTable is the table that holds the lastSale relation/edge.
+	LastSaleTable = "dopes"
+	// LastSaleInverseTable is the table name for the Listing entity.
+	// It exists in this package in order to avoid circular dependency with the "listing" package.
+	LastSaleInverseTable = "listings"
+	// LastSaleColumn is the table column denoting the lastSale relation/edge.
+	LastSaleColumn = "listing_dope_lastsales"
+	// ListingsTable is the table that holds the listings relation/edge.
+	ListingsTable = "listings"
+	// ListingsInverseTable is the table name for the Listing entity.
+	// It exists in this package in order to avoid circular dependency with the "listing" package.
+	ListingsInverseTable = "listings"
+	// ListingsColumn is the table column denoting the listings relation/edge.
+	ListingsColumn = "dope_listings"
 	// ItemsTable is the table that holds the items relation/edge. The primary key declared below.
 	ItemsTable = "dope_items"
 	// ItemsInverseTable is the table name for the Item entity.
@@ -50,6 +68,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "dopes"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
+	"listing_dope_lastsales",
 	"wallet_dopes",
 }
 

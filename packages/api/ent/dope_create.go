@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -109,6 +110,40 @@ func (dc *DopeCreate) SetNillableWalletID(id *string) *DopeCreate {
 // SetWallet sets the "wallet" edge to the Wallet entity.
 func (dc *DopeCreate) SetWallet(w *Wallet) *DopeCreate {
 	return dc.SetWalletID(w.ID)
+}
+
+// SetLastSaleID sets the "lastSale" edge to the Listing entity by ID.
+func (dc *DopeCreate) SetLastSaleID(id string) *DopeCreate {
+	dc.mutation.SetLastSaleID(id)
+	return dc
+}
+
+// SetNillableLastSaleID sets the "lastSale" edge to the Listing entity by ID if the given value is not nil.
+func (dc *DopeCreate) SetNillableLastSaleID(id *string) *DopeCreate {
+	if id != nil {
+		dc = dc.SetLastSaleID(*id)
+	}
+	return dc
+}
+
+// SetLastSale sets the "lastSale" edge to the Listing entity.
+func (dc *DopeCreate) SetLastSale(l *Listing) *DopeCreate {
+	return dc.SetLastSaleID(l.ID)
+}
+
+// AddListingIDs adds the "listings" edge to the Listing entity by IDs.
+func (dc *DopeCreate) AddListingIDs(ids ...string) *DopeCreate {
+	dc.mutation.AddListingIDs(ids...)
+	return dc
+}
+
+// AddListings adds the "listings" edges to the Listing entity.
+func (dc *DopeCreate) AddListings(l ...*Listing) *DopeCreate {
+	ids := make([]string, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return dc.AddListingIDs(ids...)
 }
 
 // AddItemIDs adds the "items" edge to the Item entity by IDs.
@@ -313,6 +348,45 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.wallet_dopes = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := dc.mutation.LastSaleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   dope.LastSaleTable,
+			Columns: []string{dope.LastSaleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.listing_dope_lastsales = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := dc.mutation.ListingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dope.ListingsTable,
+			Columns: []string{dope.ListingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := dc.mutation.ItemsIDs(); len(nodes) > 0 {

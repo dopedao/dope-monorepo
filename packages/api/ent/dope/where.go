@@ -438,6 +438,62 @@ func HasWalletWith(preds ...predicate.Wallet) predicate.Dope {
 	})
 }
 
+// HasLastSale applies the HasEdge predicate on the "lastSale" edge.
+func HasLastSale() predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(LastSaleTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, LastSaleTable, LastSaleColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasLastSaleWith applies the HasEdge predicate on the "lastSale" edge with a given conditions (other predicates).
+func HasLastSaleWith(preds ...predicate.Listing) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(LastSaleInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, LastSaleTable, LastSaleColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasListings applies the HasEdge predicate on the "listings" edge.
+func HasListings() predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ListingsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ListingsTable, ListingsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasListingsWith applies the HasEdge predicate on the "listings" edge with a given conditions (other predicates).
+func HasListingsWith(preds ...predicate.Listing) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ListingsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ListingsTable, ListingsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasItems applies the HasEdge predicate on the "items" edge.
 func HasItems() predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
