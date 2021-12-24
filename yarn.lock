@@ -12120,7 +12120,6 @@ __metadata:
     pinst: ^2.1.6
     ts-node: ^10.0.0
     typescript: ^4.3.2
-    web: ^0.0.2
   languageName: unknown
   linkType: soft
 
@@ -29585,13 +29584,6 @@ typescript@^4.5.4:
     web3-shh: 1.6.1
     web3-utils: 1.6.1
   checksum: 7801651d5a830faac3d985a27767b0c53145bea17db8c0d60f180119808aaec61df980674adb78fc3b87fac9311d43d62efefb6462f432b95509c2cb226fb0e5
-  languageName: node
-  linkType: hard
-
-"web@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "web@npm:0.0.2"
-  checksum: 60f809b4d059be148099e71a2f6b5a535b5b2903335cc2675b3800650c41e8fa6febc964edb06a2f0a5f684f907cb90bd49c9b65821143ca5a65c6359f90accf
   languageName: node
   linkType: hard
 
