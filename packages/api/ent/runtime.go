@@ -5,6 +5,7 @@ package ent
 import (
 	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
@@ -17,6 +18,16 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	assetFields := schema.Asset{}.Fields()
+	_ = assetFields
+	// assetDescAmount is the schema descriptor for amount field.
+	assetDescAmount := assetFields[4].Descriptor()
+	// asset.DefaultAmount holds the default value on creation for the amount field.
+	asset.DefaultAmount = assetDescAmount.Default.(func() schema.BigInt)
+	// assetDescAssetID is the schema descriptor for asset_id field.
+	assetDescAssetID := assetFields[5].Descriptor()
+	// asset.DefaultAssetID holds the default value on creation for the asset_id field.
+	asset.DefaultAssetID = assetDescAssetID.Default.(func() schema.BigInt)
 	dopeFields := schema.Dope{}.Fields()
 	_ = dopeFields
 	// dopeDescClaimed is the schema descriptor for claimed field.
