@@ -157,9 +157,8 @@ export default class HustlerModel
         Object.values(this.sprites).forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY));
     }
 
-    // pos: sprites new position 
-    // direction: direction of the frame
-    // both nullable, if for eg. direction is null, only the positions of the sprites will get updated
+    // pos: boolean, if pos is true, the position of the sprites will get updated
+    // if the direction is not null, the sprite animation will get updated
     updateSprites(position: boolean, direction?: string)
     {
         const update = (sprite: Phaser.GameObjects.Sprite) => {
