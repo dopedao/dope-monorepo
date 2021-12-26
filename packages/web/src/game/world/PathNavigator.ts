@@ -27,12 +27,14 @@ export default class PathNavigator
         const hustlerTile = map.worldToTileXY(this.hustler.x, this.hustler.y);
 
         // convert grid of tiles into PF grid
-        let grid = new PF.Grid(
+        const grid = new PF.Grid(
             map.layers[1].data
             .map(
                 tileArr => tileArr.map(tile => tile.collides ? 1 : 0)))
 
-        this.path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, x, y, grid).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
+        // find path, smoothen it and map it to Vec2s
+        this.path = PF.Util.expandPath(this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, x, y, grid)).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
+
         const targetTilePos = this.path.shift()!;
         const targetTile = map.getTileAt(targetTilePos.x, targetTilePos.y, true);
         this.target = new Phaser.Math.Vector2(targetTile.getCenterX(), targetTile.getCenterY());

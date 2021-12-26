@@ -48,7 +48,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this._model.createSprites();
 
         // create navigator
-        this._navigator = new PathNavigator(this, new Pathfinding.BreadthFirstFinder({diagonalMovement: Pathfinding.DiagonalMovement.Always}));
+        this._navigator = new PathNavigator(this, new Pathfinding.BreadthFirstFinder({
+            diagonalMovement: Pathfinding.DiagonalMovement.Always,
+        }));
         this.animator = new HustlerAnimator(this);
     }
 
