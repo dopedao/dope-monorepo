@@ -30,6 +30,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     constructor(x: number, y: number, model: HustlerModel, world: Phaser.Physics.Matter.World, frame?: number)
     {
         super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
+
         this._model = model;
         this._model.hustler = this;
 
@@ -39,8 +40,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         // add to the scene, to be drawn
         world.scene.add.existing(this);
 
-        // give the character an ellipse like collider
-        this.setCircle(5);
+        // circle body
+        this.setCircle(15);
+
         // prevent angular momentum from rotating our body
         this.setFixedRotation();
 

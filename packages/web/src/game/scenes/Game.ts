@@ -4,6 +4,7 @@ import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
 import Player from 'game/entities/Player';
+import Citizen from 'game/entities/Citizen';
 
 export default class GameScene extends Scene {
   private player!: Player;

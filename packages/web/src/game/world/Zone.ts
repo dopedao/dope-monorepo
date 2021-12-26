@@ -16,14 +16,15 @@ export default class Zone
     constructor(body: MatterJS.BodyType, scene: Phaser.Scene, objects: Array<Phaser.GameObjects.GameObject>, onEnter: () => void, onExit: () => void)
     {
         this.body = body;
+
+        // set the body as being a sensor so that it doesn't collide with anything
+        this.body.isSensor = true;
+
         this.scene = scene;
         this.objects = objects;
 
         this.onEnter = onEnter;
         this.onExit = onExit;
-
-        // disable collision
-        this.body.collisionFilter.mask = 0;
     }
 
     update()
