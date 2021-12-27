@@ -1,4 +1,5 @@
 import HustlerModel from "game/gfx/models/HustlerModel";
+import Inventory from "game/inventory/Inventory";
 import Hustler, { Direction } from "./Hustler";
 
 export default class Player extends Hustler
@@ -6,10 +7,17 @@ export default class Player extends Hustler
     private arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
     private wasd!: Phaser.Types.Input.Keyboard.CursorKeys;
 
-    constructor(x: number, y: number, model: HustlerModel, world: Phaser.Physics.Matter.World, frame?: number)
+    private inventory: Inventory;
+
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, inventory: Inventory, model: HustlerModel, frame?: number)
     {
-        super(x, y, model, world, frame);
+        super(world, x, y, model, frame);
         
+        if (inventory)
+            this.inventory = inventory;
+        else
+            this.inventory = new Inventory();
+
         this.arrows = this.scene.input.keyboard.createCursorKeys();
         this.wasd = this.scene.input.keyboard.addKeys({
           up: Phaser.Input.Keyboard.KeyCodes.W, 

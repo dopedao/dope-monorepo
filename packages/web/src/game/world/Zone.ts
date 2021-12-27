@@ -10,10 +10,10 @@ export default class Zone
     private inside: boolean = false;
 
     // callbacks
-    private onEnter: () => void;
-    private onExit: () => void;
+    private onEnter?: () => void;
+    private onExit?: () => void;
 
-    constructor(body: MatterJS.BodyType, scene: Phaser.Scene, objects: Array<Phaser.GameObjects.GameObject>, onEnter: () => void, onExit: () => void)
+    constructor(body: MatterJS.BodyType, scene: Phaser.Scene, objects: Array<Phaser.GameObjects.GameObject>, onEnter?: () => void, onExit?: () => void)
     {
         this.body = body;
 
@@ -31,12 +31,14 @@ export default class Zone
     {
         if (!this.inside && this.scene.matter.overlap(this.body, this.objects))
         {
-            this.onEnter();
+            if (this.onEnter)
+                this.onEnter();
             this.inside = true;
         }
         else if (this.inside && !this.scene.matter.overlap(this.body, this.objects))
         {
-            this.onExit();
+            if (this.onExit)
+                this.onExit();
             this.inside = false;
         }
     }

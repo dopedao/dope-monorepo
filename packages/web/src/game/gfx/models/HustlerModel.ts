@@ -172,6 +172,7 @@ export default class HustlerModel
         Object.values(this.sprites).forEach(sprite => update(sprite));
     }
 
+    // cancel sprites animation
     stopSpritesAnim()
     {
         const stop = (sprite: Phaser.GameObjects.Sprite) => {

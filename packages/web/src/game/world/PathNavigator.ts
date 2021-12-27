@@ -35,9 +35,12 @@ export default class PathNavigator
         // find path, smoothen it and map it to Vec2s
         this.path = PF.Util.expandPath(this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, x, y, grid)).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
 
-        const targetTilePos = this.path.shift()!;
-        const targetTile = map.getTileAt(targetTilePos.x, targetTilePos.y, true);
-        this.target = new Phaser.Math.Vector2(targetTile.getCenterX(), targetTile.getCenterY());
+        const targetTilePos = this.path.shift();
+        if (targetTilePos)
+        {
+            const targetTile = map.getTileAt(targetTilePos.x, targetTilePos.y, true);
+            this.target = new Phaser.Math.Vector2(targetTile.getCenterX(), targetTile.getCenterY());
+        }
     }
 
     update()

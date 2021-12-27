@@ -5,9 +5,11 @@ import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
 import Player from 'game/entities/Player';
 import Citizen from 'game/entities/Citizen';
+import Zone from 'game/world/Zone';
 
 export default class GameScene extends Scene {
   private player!: Player;
+  private zone!: Zone;
 
   private _map!: Phaser.Tilemaps.Tilemap;
   private _hoveredTile?: Phaser.Tilemaps.Tile;
@@ -48,9 +50,8 @@ export default class GameScene extends Scene {
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
     this.player = new Player(
-      500, 600, 
-      new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold), 
-      matterWorld);
+      matterWorld, 500, 600,
+      new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold));
 
     this.map.createLayer("Above Player", tileset, 0, 0);
 
