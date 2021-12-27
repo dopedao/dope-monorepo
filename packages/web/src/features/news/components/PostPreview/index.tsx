@@ -14,6 +14,7 @@ const PostPreview = ({ title, coverImage, date, author, slug, excerpt }: PostPre
     bg={useColorModeValue('white', 'gray.900')}
     boxShadow="2xl"
     rounded="md"
+    marginBottom="4"
     p={6}
     overflow="hidden"
   >
