@@ -104,7 +104,7 @@ export default class Player extends Hustler
         }
 
         // normalize and scale the velocity so that sprite can't move faster along a diagonal
-        const newVel = (this.body.velocity as Phaser.Math.Vector2).normalize().scale(Hustler.DEFAULT_VELOCITY);
+        const newVel = new Phaser.Math.Vector2((this.body as MatterJS.BodyType).velocity).normalize().scale(Hustler.DEFAULT_VELOCITY);
         this.setVelocity(newVel.x, newVel.y);
 
         // cancel pathfinding if player moved
