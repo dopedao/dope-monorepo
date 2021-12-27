@@ -31,9 +31,39 @@ export default class Player extends Hustler
         }) as Phaser.Types.Input.Keyboard.CursorKeys;
     }
 
+    updateSensorPosition()
+    {
+        // update sensor position
+        if (this.anims.currentAnim)
+        {
+            if (this.anims.currentAnim.key.includes("_front"))
+            {
+                this.interactSensor.position.x = this.x;
+                this.interactSensor.position.y = this.y + 50;
+            }
+            else if (this.anims.currentAnim.key.includes("_back"))
+            {
+                this.interactSensor.position.x = this.x;
+                this.interactSensor.position.y = this.y - 50;
+            }
+            else if (this.anims.currentAnim.key.includes("_left"))
+            {
+                this.interactSensor.position.x = this.x - 50;
+                this.interactSensor.position.y = this.y - 20;
+            }
+            else if (this.anims.currentAnim.key.includes("_right"))
+            {
+                this.interactSensor.position.x = this.x + 50;
+                this.interactSensor.position.y = this.y - 20;
+            }
+        }
+    }
+
     update(): void
     {
         super.update();
+
+        this.updateSensorPosition();
 
         let willMoveFlag = false;
         if (this.wasd.up.isDown || this.arrows.up.isDown)
@@ -42,9 +72,6 @@ export default class Player extends Hustler
             this.setVelocityY(-Hustler.DEFAULT_VELOCITY);
             this.model.updateSprites(true);
 
-            // set interact sensor on top of player
-            this.interactSensor.position = { x: this.x, y: this.y - 80 };
-
             willMoveFlag = true;
         }
         else if (this.wasd.down.isDown || this.arrows.down.isDown)
@@ -52,9 +79,6 @@ export default class Player extends Hustler
             this.direction = Direction.South;
             this.setVelocityY(Hustler.DEFAULT_VELOCITY);
             this.model.updateSprites(true);
-
-            // set interact sensor under player
-            this.interactSensor.position = { x: this.x, y: this.y + 80 };
 
             willMoveFlag = true;
         }
@@ -69,9 +93,6 @@ export default class Player extends Hustler
             this.setVelocityX(-Hustler.DEFAULT_VELOCITY);
             this.model.updateSprites(true);
 
-            // set interact sensor to the left of the player
-            this.interactSensor.position = { x: this.x - 50, y: this.y - 20 };
-
             willMoveFlag = true;
         }
         else if (this.wasd.right.isDown || this.arrows.right.isDown)
@@ -79,9 +100,6 @@ export default class Player extends Hustler
             this.direction = Direction.East;
             this.setVelocityX(Hustler.DEFAULT_VELOCITY);
             this.model.updateSprites(true);
-
-            // set interact sensor to the right of the player
-            this.interactSensor.position = { x: this.x + 50, y: this.y - 20 };
 
             willMoveFlag = true;
         }
