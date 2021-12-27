@@ -7,15 +7,17 @@ export default class PathNavigator
     private hustler: Hustler;
     private pathFinder: PF.Finder; 
 
+    private grid!: PF.Grid;
+
     public path: Phaser.Math.Vector2[] = [];
     public target?: Phaser.Math.Vector2;
+
+    private previousPosition?: Phaser.Math.Vector2;
 
     constructor(hustler: Hustler, pathFinder: PF.Finder)
     {
         this.hustler = hustler;
         this.pathFinder = pathFinder;
-
-        this.pathFinder
     }
 
     moveTo(x: number, y: number)
@@ -27,13 +29,13 @@ export default class PathNavigator
         const hustlerTile = map.worldToTileXY(this.hustler.x, this.hustler.y);
 
         // convert grid of tiles into PF grid
-        const grid = new PF.Grid(
+        this.grid = new PF.Grid(
             map.layers[1].data
             .map(
                 tileArr => tileArr.map(tile => tile.collides ? 1 : 0)))
 
         // find path, smoothen it and map it to Vec2s
-        this.path = PF.Util.expandPath(this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, x, y, grid)).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
+        this.path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, x, y, this.grid).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
 
         const targetTilePos = this.path.shift();
         if (targetTilePos)
@@ -53,11 +55,11 @@ export default class PathNavigator
 	    	dx = this.target.x - this.hustler.x;
 	    	dy = this.target.y - this.hustler.y;
 
-	    	if (Math.abs(dx) < 1)
+	    	if (Math.abs(dx) < 20)
 	    	{
 	    		dx = 0;
 	    	}
-	    	if (Math.abs(dy) < 1)
+	    	if (Math.abs(dy) < 20)
 	    	{
 	    		dy = 0;
 	    	}
@@ -97,10 +99,6 @@ export default class PathNavigator
             this.hustler.model.updateSprites(true);
             willMoveFlag = true;
         }
-        else if (this.target)
-        {
-            this.hustler.setVelocityY(0);
-        }
         
         if (left)
         {
@@ -116,10 +114,50 @@ export default class PathNavigator
             this.hustler.model.updateSprites(true);
             willMoveFlag = true;
         }
-        else if (this.target)
-        {
-            this.hustler.setVelocityX(0);
-        }
+
+        // if stuck in a corner, move in the direction of the other corner
+        // if (willMoveFlag)
+        // {
+        //     if (this.previousPosition)
+        //     {
+        //         if (this.previousPosition.x === this.hustler.x && this.previousPosition.y === this.hustler.y)
+        //         {
+        //             if (this.hustler.direction === Direction.North)
+        //             {
+        //                 this.hustler.direction = Direction.South;
+        //                 this.hustler.setVelocityY(Hustler.DEFAULT_VELOCITY);
+        //                 this.hustler.model.updateSprites(true);
+        //             }
+        //             else if (this.hustler.direction === Direction.South)
+        //             {
+        //                 this.hustler.direction = Direction.North;
+        //                 this.hustler.setVelocityY(-Hustler.DEFAULT_VELOCITY);
+        //                 this.hustler.model.updateSprites(true);
+        //             }
+        //             else if (this.hustler.direction === Direction.West)
+        //             {
+        //                 this.hustler.direction = Direction.East;
+        //                 this.hustler.setVelocityX(Hustler.DEFAULT_VELOCITY);
+        //                 this.hustler.model.updateSprites(true);
+        //             }
+        //             else if (this.hustler.direction === Direction.East)
+        //             {
+        //                 this.hustler.direction = Direction.West;
+        //                 this.hustler.setVelocityX(-Hustler.DEFAULT_VELOCITY);
+        //                 this.hustler.model.updateSprites(true);
+        //             }
+        //         }
+        //     }
+        // }
+
+        // pathfinder stuck
+        // if (willMoveFlag && this.previousPosition && new Phaser.Math.Vector2(this.hustler.x, this.hustler.y).fuzzyEquals(this.previousPosition))
+        // {
+            
+        // }
+
+
+        this.previousPosition = new Phaser.Math.Vector2(this.hustler.x, this.hustler.y);
         
         
         // if (dir === "")

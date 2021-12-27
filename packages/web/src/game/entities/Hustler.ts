@@ -39,12 +39,13 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         world.scene.add.existing(this);
 
         // create main body
-        const mainBody = this.scene.matter.add.rectangle(x, y, this.width * 0.5, this.height * 0.4, {
+        const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
+        const mainBody = Bodies.rectangle(x, y, this.width * 0.5, this.height * 0.4, {
             chamfer: { radius: 8 },
-            //render: { "sprite.yOffset": 0.1 },
+            render: { sprite: { xOffset: 0, yOffset: 0.15 } }
         });
         this.setExistingBody(mainBody);
-
+        
         this.setScale(2);
 
         // prevent angular momentum from rotating our body
@@ -55,7 +56,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // create navigator
         this._navigator = new PathNavigator(this, new Pathfinding.BreadthFirstFinder({
-            diagonalMovement: Pathfinding.DiagonalMovement.Always,
+            diagonalMovement: Pathfinding.DiagonalMovement.Never,
         }));
         // handle animations
         this.animator = new HustlerAnimator(this);

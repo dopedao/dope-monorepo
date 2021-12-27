@@ -13,10 +13,22 @@ export default class Player extends Hustler
     {
         super(world, x, y, model);
         
-        if (inventory)
-            this.inventory = inventory;
-        else
-            this.inventory = new Inventory();
+        this.inventory = inventory ?? new Inventory();
+
+        // set up sensor bodies
+        // const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
+        // const compound = Body.create({
+        //     parts: [
+        //         this.body as MatterJS.BodyType,
+        //         // front player sensor
+        //         Bodies.rectangle(0 + 20, 0, 2, this.height * 0.5, { isSensor: true })
+        //     ],
+        //     render: { sprite: { xOffset: 0.5, yOffset: 0.5 } }
+        // } as MatterJS.BodyType);
+
+        // this.setExistingBody(compound);
+
+        // this.setPosition(x, y);
 
         this.arrows = this.scene.input.keyboard.createCursorKeys();
         this.wasd = this.scene.input.keyboard.addKeys({
