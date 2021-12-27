@@ -1766,6 +1766,7 @@ __metadata:
     "@sentry/tracing": ^6.13.2
     "@types/jest": ^27.0.2
     "@types/node": ^16.10.2
+    "@types/pathfinding": ^0.0.5
     "@types/react": 17.0.9
     "@types/react-infinite-scroller": ^1.2.2
     "@web3-react/core": ^6.1.9
@@ -1789,6 +1790,7 @@ __metadata:
     jest: ^27.2.5
     next: ^11.1.2
     parse-data-url: ^4.0.1
+    pathfinding: ^0.4.18
     phaser: ^3.55.2
     prettier: ^2.4.1
     raw-loader: ^4.0.2
@@ -6027,6 +6029,13 @@ __metadata:
   version: 4.0.0
   resolution: "@types/parse-json@npm:4.0.0"
   checksum: fd6bce2b674b6efc3db4c7c3d336bd70c90838e8439de639b909ce22f3720d21344f52427f1d9e57b265fcb7f6c018699b99e5e0c208a1a4823014269a6bf35b
+  languageName: node
+  linkType: hard
+
+"@types/pathfinding@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "@types/pathfinding@npm:0.0.5"
+  checksum: a62c2d3fddeff736e9d9080fb3858ec8814fbe378130aed56ac737a55f0cb80ce196d1f6133ff844ae7484445ea9bb19e889e7f44ff5ff56fd733f7f57c6bcfa
   languageName: node
   linkType: hard
 
@@ -15621,6 +15630,13 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
+"heap@npm:0.2.5":
+  version: 0.2.5
+  resolution: "heap@npm:0.2.5"
+  checksum: 1f178a62cef3a29c1dc19783b2a478f4b8f1b85bd2ceb70fa535cf368fdd8fee141f08af0af5c55cd32e1b8a6b1ed200d8d18cd33fa4700ba97476d9c27162d3
+  languageName: node
+  linkType: hard
+
 "heap@npm:0.2.6":
   version: 0.2.6
   resolution: "heap@npm:0.2.6"
@@ -22697,6 +22713,15 @@ fsevents@~2.1.1:
     process: ^0.11.1
     util: ^0.10.3
   checksum: 5dedb71e78fc008fcba797defc0b4e1cf06c1f18e0a631e03ba5bb505136f587ff017afc14f9a3d481cbe77aeedff7dc0c1d2ce4d820c1ebf3c4281ca49423a1
+  languageName: node
+  linkType: hard
+
+"pathfinding@npm:^0.4.18":
+  version: 0.4.18
+  resolution: "pathfinding@npm:0.4.18"
+  dependencies:
+    heap: 0.2.5
+  checksum: 2d08ee0b28a337d7daa4c5b4fafb2add203d868372a928dd7b81db1ce69de427267bdb12863c9285ac0c92b901350cd407b4dfa943784fe6a0f28279c1aefb43
   languageName: node
   linkType: hard
 

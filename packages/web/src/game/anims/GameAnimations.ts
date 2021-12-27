@@ -1,5 +1,5 @@
 import { Base, Categories, SpritesMap } from "game/constants/Sprites";
-import { createCharacterAnimations } from "./CharacterAnimations";
+import { createHustlerAnimations } from "./HustlerAnimations";
 
 export default class GameAnimations
 {
@@ -15,10 +15,10 @@ export default class GameAnimations
     {
         Object.values(SpritesMap[Categories.Character][Base.Male]).forEach(categories => {
             if (typeof categories === "string")
-                createCharacterAnimations(this.anims, categories);
+                createHustlerAnimations(this.anims, categories);
             else
                 Object.values(categories).forEach(v => {
-                    createCharacterAnimations(this.anims, v);
+                    createHustlerAnimations(this.anims, v);
                 });
         });
     }

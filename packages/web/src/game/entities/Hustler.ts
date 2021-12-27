@@ -1,98 +1,93 @@
+import HustlerAnimator from "game/anims/HustlerAnimator";
 import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
 import HustlerModel from "game/gfx/models/HustlerModel";
+import PathNavigator from "game/world/PathNavigator";
+import { BodyType } from "matter";
+import Pathfinding from "pathfinding";
+
+export enum Direction
+{
+    North = "_back",
+    South = "_front",
+    West = "_left",
+    East = "_right",
+    None = ""
+}
 
 export default class Hustler extends Phaser.Physics.Matter.Sprite
 {
     public static readonly DEFAULT_VELOCITY: number = 1.7;
     public static readonly DEFAULT_MASS: number = 70;
 
+    // the direction the player is currently moving in
+    // Direction.None if not moving
+    private _moveDirection: Direction = Direction.None;
+    // the last direction of the player
+    // cant be None
+    private _lastDirection: Direction = Direction.None;
+
     private _model: HustlerModel;
 
-    get model() { return this._model; }
+    private _animator: HustlerAnimator;
+    private _navigator: PathNavigator;
 
-    constructor(x: number, y: number, model: HustlerModel, world: Phaser.Physics.Matter.World, frame?: number)
+    get model() { return this._model; }
+    get animator() { return this._animator; }
+    get navigator() { return this._navigator; }
+
+    get lastDirection() { return this._lastDirection; }
+
+    get moveDirection() { return this._moveDirection; }
+    set moveDirection(dir: Direction)
+    {
+        this._moveDirection = dir;
+
+        if (dir === Direction.None)
+            return;
+        this._lastDirection = dir;
+    }
+
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, frame?: number)
     {
         super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
+
         this._model = model;
         this._model.hustler = this;
-
-        this.scaleY *= 1.8;
-        this.scaleX *= 1.6;
 
         // add to the scene, to be drawn
         world.scene.add.existing(this);
 
-        // give the character an ellipse like collider
-        this.setCircle(20);
+        // create main body
+        const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
+        const mainBody = Bodies.rectangle(x, y, this.width * 0.5, this.height * 0.4, {
+            chamfer: { radius: 9 },
+        });
+        this.setExistingBody(mainBody);
+
+        // offset the hustler texture from the body
+        this.setOrigin(0.5, 0.58);
+        // make it a bit bigger
+        this.setScale(2);
+
         // prevent angular momentum from rotating our body
         this.setFixedRotation();
 
         // create sub sprites
         this._model.createSprites();
+
+        // create navigator
+        this._navigator = new PathNavigator(this, new Pathfinding.BreadthFirstFinder({
+            diagonalMovement: Pathfinding.DiagonalMovement.Always,
+        }));
+        // handle animations
+        this._animator = new HustlerAnimator(this);
     }
 
-    update(mainCursors: Phaser.Types.Input.Keyboard.CursorKeys, eqCursors?: Phaser.Types.Input.Keyboard.CursorKeys): void
+    update()
     {
-        let dir = "";
-
-        if (mainCursors.up.isDown || eqCursors?.up.isDown)
-        {
-            dir = "_back";
-            // this.setVelocity(0, -Player.DEFAULT_VELOCITY);
-            this.setVelocityY(-Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(true);
-            //this.body.offset.x = 6;
-        }
-        else if (mainCursors.down.isDown || eqCursors?.down.isDown)
-        {
-            dir = "_front";
-            // this.setVelocity(0, Player.DEFAULT_VELOCITY);
-            this.setVelocityY(Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(true);
-            //this.body.offset.x = 6;
-        }
-        else
-        {
-            this.setVelocityY(0);
-        }
-
-        if (mainCursors.left.isDown || eqCursors?.left.isDown)
-        {
-            dir = "_left";
-            // this.setVelocity(-Player.DEFAULT_VELOCITY, 0);
-            this.setVelocityX(-Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(true);
-            //this.body.offset.x = 8;
-        }
-        else if (mainCursors.right.isDown || eqCursors?.right.isDown)
-        {
-            dir = "_right";
-            // this.setVelocity(Player.DEFAULT_VELOCITY, 0);
-            this.setVelocityX(Hustler.DEFAULT_VELOCITY);
-            this._model.updateSprites(true);
-            //this.body.offset.x = 6;
-        }
-        else
-        {
-            this.setVelocityX(0);
-        }
-        
-        if (dir === "")
-        {
-            this.setVelocity(0, 0);
-            this.model.updateSprites(true);
-            // reset to the first frame of the anim
-            if (this.anims.currentAnim && !this.anims.currentFrame.isLast)
-                this.anims.setCurrentFrame(this.anims.currentAnim.getLastFrame());
-            this.stopAfterDelay(100);
-
-            this._model.stopSpritesAnim();
-            return;
-        }
-
-        this.play(this.texture.key + dir, true);
-        // pos is undefined so that only the animations of the sprites
-        // get updated
-        this._model.updateSprites(true, dir);
+        // update animation frames
+        this.animator.update();
+        // path finding
+        this.navigator.update();
     }
 }
