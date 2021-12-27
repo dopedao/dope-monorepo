@@ -9,6 +9,18 @@ import (
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (a *AssetQuery) CollectFields(ctx context.Context, satisfies ...string) *AssetQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		a = a.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return a
+}
+
+func (a *AssetQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *AssetQuery {
+	return a
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (bp *BodyPartQuery) CollectFields(ctx context.Context, satisfies ...string) *BodyPartQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		bp = bp.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
@@ -49,6 +61,10 @@ func (d *DopeQuery) collectField(ctx *graphql.OperationContext, field graphql.Co
 		switch field.Name {
 		case "items":
 			d = d.WithItems(func(query *ItemQuery) {
+				query.collectField(ctx, field)
+			})
+		case "listings":
+			d = d.WithListings(func(query *ListingQuery) {
 				query.collectField(ctx, field)
 			})
 		}
@@ -142,6 +158,34 @@ func (i *ItemQuery) collectField(ctx *graphql.OperationContext, field graphql.Co
 		}
 	}
 	return i
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (l *ListingQuery) CollectFields(ctx context.Context, satisfies ...string) *ListingQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		l = l.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return l
+}
+
+func (l *ListingQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *ListingQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "dope_lastsales":
+			l = l.WithDopeLastsales(func(query *DopeQuery) {
+				query.collectField(ctx, field)
+			})
+		case "inputs":
+			l = l.WithInputs(func(query *AssetQuery) {
+				query.collectField(ctx, field)
+			})
+		case "outputs":
+			l = l.WithOutputs(func(query *AssetQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
+	return l
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
