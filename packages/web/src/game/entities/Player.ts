@@ -9,9 +9,9 @@ export default class Player extends Hustler
 
     private inventory: Inventory;
 
-    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, inventory: Inventory, model: HustlerModel, frame?: number)
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, inventory?: Inventory)
     {
-        super(world, x, y, model, frame);
+        super(world, x, y, model);
         
         if (inventory)
             this.inventory = inventory;

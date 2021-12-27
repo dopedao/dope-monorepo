@@ -5,8 +5,8 @@ export default class Citizen extends Hustler
 {
 
 
-    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, frame?: number)
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel)
     {
-        super(world, x, y, model, frame);
+        super(world, x, y, model);
     }
 }
