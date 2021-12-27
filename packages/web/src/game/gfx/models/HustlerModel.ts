@@ -108,6 +108,12 @@ export default class HustlerModel
         this.updateClothesSprites();
     }
 
+    updateOrigin(x: number, y: number)
+    {
+        this.clothesSprites.forEach(sprite => sprite.setOrigin(x, y));
+        Object.values(this.sprites).forEach(sprite => sprite.setOrigin(x, y));
+    }
+
     updateSprite(category: CharacterCategories, type: number)
     {
         const sprite = this.sprites[category];
