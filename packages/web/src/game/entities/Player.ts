@@ -68,7 +68,7 @@ export default class Player extends Hustler
         let willMoveFlag = false;
         if (this.wasd.up.isDown || this.arrows.up.isDown)
         {
-            this.direction = Direction.North;
+            this.moveDirection = Direction.North;
             this.setVelocityY(-Hustler.DEFAULT_VELOCITY);
             this.model.updateSprites(true);
 
@@ -76,7 +76,7 @@ export default class Player extends Hustler
         }
         else if (this.wasd.down.isDown || this.arrows.down.isDown)
         {
-            this.direction = Direction.South;
+            this.moveDirection = Direction.South;
             this.setVelocityY(Hustler.DEFAULT_VELOCITY);
             this.model.updateSprites(true);
 
@@ -89,7 +89,7 @@ export default class Player extends Hustler
 
         if (this.wasd.left.isDown || this.arrows.left.isDown)
         {
-            this.direction = Direction.West;
+            this.moveDirection = Direction.West;
             this.setVelocityX(-Hustler.DEFAULT_VELOCITY);
             this.model.updateSprites(true);
 
@@ -97,7 +97,7 @@ export default class Player extends Hustler
         }
         else if (this.wasd.right.isDown || this.arrows.right.isDown)
         {
-            this.direction = Direction.East;
+            this.moveDirection = Direction.East;
             this.setVelocityX(Hustler.DEFAULT_VELOCITY);
             this.model.updateSprites(true);
 
@@ -119,7 +119,7 @@ export default class Player extends Hustler
         // if the player did not move + there is no target, then maintain velocity at 0
         if (!willMoveFlag && !this.navigator.target)
         {
-            this.direction = Direction.None;
+            this.moveDirection = Direction.None;
 
             this.setVelocity(0, 0);
             this.model.updateSprites(true);        

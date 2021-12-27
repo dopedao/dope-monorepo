@@ -11,7 +11,7 @@ export default class HustlerAnimator
 
     update()
     {
-        if (this.hustler.direction === Direction.None)
+        if (this.hustler.moveDirection === Direction.None)
         {
             // reset to the first frame of the anim
             if (this.hustler.anims.currentAnim && !this.hustler.anims.currentFrame.isLast)
@@ -22,7 +22,7 @@ export default class HustlerAnimator
             return;
         }
 
-        this.hustler.play(this.hustler.texture.key + this.hustler.direction, true);
-        this.hustler.model.updateSprites(false, this.hustler.direction);
+        this.hustler.play(this.hustler.texture.key + this.hustler.moveDirection, true);
+        this.hustler.model.updateSprites(false, this.hustler.moveDirection);
     }
 }

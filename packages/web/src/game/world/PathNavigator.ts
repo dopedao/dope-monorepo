@@ -87,14 +87,14 @@ export default class PathNavigator
 
         if (up)
         {
-            this.hustler.direction = Direction.North;
+            this.hustler.moveDirection = Direction.North;
             this.hustler.setVelocityY(-Hustler.DEFAULT_VELOCITY);
             this.hustler.model.updateSprites(true);
             willMoveFlag = true;
         }
         else if (down)
         {
-            this.hustler.direction = Direction.South;
+            this.hustler.moveDirection = Direction.South;
             this.hustler.setVelocityY(Hustler.DEFAULT_VELOCITY);
             this.hustler.model.updateSprites(true);
             willMoveFlag = true;
@@ -102,14 +102,14 @@ export default class PathNavigator
         
         if (left)
         {
-            this.hustler.direction = Direction.West;
+            this.hustler.moveDirection = Direction.West;
             this.hustler.setVelocityX(-Hustler.DEFAULT_VELOCITY);
             this.hustler.model.updateSprites(true);
             willMoveFlag = true;
         }
         else if (right)
         {
-            this.hustler.direction = Direction.East;
+            this.hustler.moveDirection = Direction.East;
             this.hustler.setVelocityX(Hustler.DEFAULT_VELOCITY);
             this.hustler.model.updateSprites(true);
             willMoveFlag = true;
