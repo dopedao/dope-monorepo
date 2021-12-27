@@ -65,6 +65,10 @@ export default class Player extends Hustler
 
         this.updateSensorPosition();
 
+        // get rid of previous velocity if pathfinder is not active
+        if (!this.navigator.target)
+            this.setVelocity(0);
+
         let willMoveFlag = false;
         if (this.wasd.up.isDown || this.arrows.up.isDown)
         {
@@ -82,11 +86,6 @@ export default class Player extends Hustler
 
             willMoveFlag = true;
         }
-        else if (!this.navigator.target)
-        {
-            this.setVelocityY(0);
-        }
-
         if (this.wasd.left.isDown || this.arrows.left.isDown)
         {
             this.moveDirection = Direction.West;
@@ -103,10 +102,10 @@ export default class Player extends Hustler
 
             willMoveFlag = true;
         }
-        else if (!this.navigator.target)
-        {
-            this.setVelocityX(0);
-        }
+
+        // normalize and scale the velocity so that sprite can't move faster along a diagonal
+        const newVel = (this.body.velocity as Phaser.Math.Vector2).normalize().scale(Hustler.DEFAULT_VELOCITY);
+        this.setVelocity(newVel.x, newVel.y);
 
         // cancel pathfinding if player moved
         if (this.navigator.target && willMoveFlag)
