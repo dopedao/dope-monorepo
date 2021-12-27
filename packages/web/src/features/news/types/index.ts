@@ -37,6 +37,7 @@ export type DopePostType = {
   textMiddle2: string;
   imageText: string;
 
+  slug: string;
   author?: Author;
   excerpt?: string;
   ogImage?: {

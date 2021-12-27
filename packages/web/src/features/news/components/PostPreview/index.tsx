@@ -5,7 +5,7 @@ import DateFormatter from 'features/news/components/DateFormatter';
 import { PostType } from 'features/news/types';
 import { css } from '@emotion/react';
 
-type PostPreviewProps = Omit<PostType, 'ogImage' | 'content'>;
+type PostPreviewProps = Omit<PostType, 'ogImage' | 'content' | 'template'>;
 
 const PostPreview = ({ title, coverImage, date, author, slug, excerpt }: PostPreviewProps) => (
   <Box
