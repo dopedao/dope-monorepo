@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
@@ -130,6 +131,40 @@ func (du *DopeUpdate) SetWallet(w *Wallet) *DopeUpdate {
 	return du.SetWalletID(w.ID)
 }
 
+// SetLastSaleID sets the "lastSale" edge to the Listing entity by ID.
+func (du *DopeUpdate) SetLastSaleID(id string) *DopeUpdate {
+	du.mutation.SetLastSaleID(id)
+	return du
+}
+
+// SetNillableLastSaleID sets the "lastSale" edge to the Listing entity by ID if the given value is not nil.
+func (du *DopeUpdate) SetNillableLastSaleID(id *string) *DopeUpdate {
+	if id != nil {
+		du = du.SetLastSaleID(*id)
+	}
+	return du
+}
+
+// SetLastSale sets the "lastSale" edge to the Listing entity.
+func (du *DopeUpdate) SetLastSale(l *Listing) *DopeUpdate {
+	return du.SetLastSaleID(l.ID)
+}
+
+// AddListingIDs adds the "listings" edge to the Listing entity by IDs.
+func (du *DopeUpdate) AddListingIDs(ids ...string) *DopeUpdate {
+	du.mutation.AddListingIDs(ids...)
+	return du
+}
+
+// AddListings adds the "listings" edges to the Listing entity.
+func (du *DopeUpdate) AddListings(l ...*Listing) *DopeUpdate {
+	ids := make([]string, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return du.AddListingIDs(ids...)
+}
+
 // AddItemIDs adds the "items" edge to the Item entity by IDs.
 func (du *DopeUpdate) AddItemIDs(ids ...string) *DopeUpdate {
 	du.mutation.AddItemIDs(ids...)
@@ -154,6 +189,33 @@ func (du *DopeUpdate) Mutation() *DopeMutation {
 func (du *DopeUpdate) ClearWallet() *DopeUpdate {
 	du.mutation.ClearWallet()
 	return du
+}
+
+// ClearLastSale clears the "lastSale" edge to the Listing entity.
+func (du *DopeUpdate) ClearLastSale() *DopeUpdate {
+	du.mutation.ClearLastSale()
+	return du
+}
+
+// ClearListings clears all "listings" edges to the Listing entity.
+func (du *DopeUpdate) ClearListings() *DopeUpdate {
+	du.mutation.ClearListings()
+	return du
+}
+
+// RemoveListingIDs removes the "listings" edge to Listing entities by IDs.
+func (du *DopeUpdate) RemoveListingIDs(ids ...string) *DopeUpdate {
+	du.mutation.RemoveListingIDs(ids...)
+	return du
+}
+
+// RemoveListings removes "listings" edges to Listing entities.
+func (du *DopeUpdate) RemoveListings(l ...*Listing) *DopeUpdate {
+	ids := make([]string, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return du.RemoveListingIDs(ids...)
 }
 
 // ClearItems clears all "items" edges to the Item entity.
@@ -338,6 +400,95 @@ func (du *DopeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if du.mutation.LastSaleCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   dope.LastSaleTable,
+			Columns: []string{dope.LastSaleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.LastSaleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   dope.LastSaleTable,
+			Columns: []string{dope.LastSaleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if du.mutation.ListingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dope.ListingsTable,
+			Columns: []string{dope.ListingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.RemovedListingsIDs(); len(nodes) > 0 && !du.mutation.ListingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dope.ListingsTable,
+			Columns: []string{dope.ListingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.ListingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dope.ListingsTable,
+			Columns: []string{dope.ListingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if du.mutation.ItemsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -512,6 +663,40 @@ func (duo *DopeUpdateOne) SetWallet(w *Wallet) *DopeUpdateOne {
 	return duo.SetWalletID(w.ID)
 }
 
+// SetLastSaleID sets the "lastSale" edge to the Listing entity by ID.
+func (duo *DopeUpdateOne) SetLastSaleID(id string) *DopeUpdateOne {
+	duo.mutation.SetLastSaleID(id)
+	return duo
+}
+
+// SetNillableLastSaleID sets the "lastSale" edge to the Listing entity by ID if the given value is not nil.
+func (duo *DopeUpdateOne) SetNillableLastSaleID(id *string) *DopeUpdateOne {
+	if id != nil {
+		duo = duo.SetLastSaleID(*id)
+	}
+	return duo
+}
+
+// SetLastSale sets the "lastSale" edge to the Listing entity.
+func (duo *DopeUpdateOne) SetLastSale(l *Listing) *DopeUpdateOne {
+	return duo.SetLastSaleID(l.ID)
+}
+
+// AddListingIDs adds the "listings" edge to the Listing entity by IDs.
+func (duo *DopeUpdateOne) AddListingIDs(ids ...string) *DopeUpdateOne {
+	duo.mutation.AddListingIDs(ids...)
+	return duo
+}
+
+// AddListings adds the "listings" edges to the Listing entity.
+func (duo *DopeUpdateOne) AddListings(l ...*Listing) *DopeUpdateOne {
+	ids := make([]string, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return duo.AddListingIDs(ids...)
+}
+
 // AddItemIDs adds the "items" edge to the Item entity by IDs.
 func (duo *DopeUpdateOne) AddItemIDs(ids ...string) *DopeUpdateOne {
 	duo.mutation.AddItemIDs(ids...)
@@ -536,6 +721,33 @@ func (duo *DopeUpdateOne) Mutation() *DopeMutation {
 func (duo *DopeUpdateOne) ClearWallet() *DopeUpdateOne {
 	duo.mutation.ClearWallet()
 	return duo
+}
+
+// ClearLastSale clears the "lastSale" edge to the Listing entity.
+func (duo *DopeUpdateOne) ClearLastSale() *DopeUpdateOne {
+	duo.mutation.ClearLastSale()
+	return duo
+}
+
+// ClearListings clears all "listings" edges to the Listing entity.
+func (duo *DopeUpdateOne) ClearListings() *DopeUpdateOne {
+	duo.mutation.ClearListings()
+	return duo
+}
+
+// RemoveListingIDs removes the "listings" edge to Listing entities by IDs.
+func (duo *DopeUpdateOne) RemoveListingIDs(ids ...string) *DopeUpdateOne {
+	duo.mutation.RemoveListingIDs(ids...)
+	return duo
+}
+
+// RemoveListings removes "listings" edges to Listing entities.
+func (duo *DopeUpdateOne) RemoveListings(l ...*Listing) *DopeUpdateOne {
+	ids := make([]string, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return duo.RemoveListingIDs(ids...)
 }
 
 // ClearItems clears all "items" edges to the Item entity.
@@ -736,6 +948,95 @@ func (duo *DopeUpdateOne) sqlSave(ctx context.Context) (_node *Dope, err error) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: wallet.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if duo.mutation.LastSaleCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   dope.LastSaleTable,
+			Columns: []string{dope.LastSaleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.LastSaleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   dope.LastSaleTable,
+			Columns: []string{dope.LastSaleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if duo.mutation.ListingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dope.ListingsTable,
+			Columns: []string{dope.ListingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.RemovedListingsIDs(); len(nodes) > 0 && !duo.mutation.ListingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dope.ListingsTable,
+			Columns: []string{dope.ListingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.ListingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dope.ListingsTable,
+			Columns: []string{dope.ListingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
 				},
 			},
 		}
