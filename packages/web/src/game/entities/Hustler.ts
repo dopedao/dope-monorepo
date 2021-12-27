@@ -19,15 +19,33 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     public static readonly DEFAULT_VELOCITY: number = 1.7;
     public static readonly DEFAULT_MASS: number = 70;
 
-    public moveDirection: Direction = Direction.None;
+    // the direction the player is currently moving in
+    // Direction.None if not moving
+    private _moveDirection: Direction = Direction.None;
+    // the last direction of the player
+    // cant be None
+    private _lastDirection: Direction = Direction.None;
 
     private _model: HustlerModel;
-    
-    public animator: HustlerAnimator;
+
+    private _animator: HustlerAnimator;
     private _navigator: PathNavigator;
 
     get model() { return this._model; }
+    get animator() { return this._animator; }
     get navigator() { return this._navigator; }
+
+    get lastDirection() { return this._lastDirection; }
+
+    get moveDirection() { return this._moveDirection; }
+    set moveDirection(dir: Direction)
+    {
+        this._moveDirection = dir;
+
+        if (dir === Direction.None)
+            return;
+        this._lastDirection = dir;
+    }
 
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, frame?: number)
     {
@@ -46,8 +64,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         });
         this.setExistingBody(mainBody);
 
+        // offset the hustler texture from the body
         this.setOrigin(0.5, 0.58);
-        
+        // make it a bit bigger
         this.setScale(2);
 
         // prevent angular momentum from rotating our body
@@ -61,7 +80,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             diagonalMovement: Pathfinding.DiagonalMovement.Always,
         }));
         // handle animations
-        this.animator = new HustlerAnimator(this);
+        this._animator = new HustlerAnimator(this);
     }
 
     update()

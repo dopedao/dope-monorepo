@@ -36,22 +36,22 @@ export default class Player extends Hustler
         // update sensor position
         if (this.anims.currentAnim)
         {
-            if (this.anims.currentAnim.key.includes("_front"))
+            if (this.lastDirection === Direction.South)
             {
                 this.interactSensor.position.x = this.x;
                 this.interactSensor.position.y = this.y + 50;
             }
-            else if (this.anims.currentAnim.key.includes("_back"))
+            else if (this.lastDirection === Direction.North)
             {
                 this.interactSensor.position.x = this.x;
                 this.interactSensor.position.y = this.y - 50;
             }
-            else if (this.anims.currentAnim.key.includes("_left"))
+            else if (this.lastDirection === Direction.West)
             {
                 this.interactSensor.position.x = this.x - 50;
                 this.interactSensor.position.y = this.y - 20;
             }
-            else if (this.anims.currentAnim.key.includes("_right"))
+            else if (this.lastDirection === Direction.East)
             {
                 this.interactSensor.position.x = this.x + 50;
                 this.interactSensor.position.y = this.y - 20;
