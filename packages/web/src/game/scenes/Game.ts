@@ -3,13 +3,20 @@ import Hustler from 'game/entities/Hustler';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
-import CustomCharacter from "../ui/components/CustomCharacter";
+import Player from 'game/entities/Player';
+import Citizen from 'game/entities/Citizen';
+import Zone from 'game/world/Zone';
+import CustomCharacter from 'game/ui/components/CustomCharacter';
 
 export default class GameScene extends Scene {
-  private player!: Hustler;
+  private player!: Player;
+  private zone!: Zone;
 
-  private map!: Phaser.Tilemaps.Tilemap;
-  private hoveredTile?: Phaser.Tilemaps.Tile;
+  private _map!: Phaser.Tilemaps.Tilemap;
+  private _hoveredTile?: Phaser.Tilemaps.Tile;
+
+  get map() { return this._map; }
+  get hoveredTile() { return this._hoveredTile; }
 
   constructor() {
     super({
@@ -25,7 +32,8 @@ export default class GameScene extends Scene {
       if (!this.hoveredTile)
         return;
       // transition to spot
-      this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
+      //this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
+      this.player.navigator.moveTo(this.hoveredTile.x, this.hoveredTile.y);
     });
     this.input.keyboard.addCapture('F8');
     this.input.keyboard.on('keydown-F8', () => {
@@ -33,7 +41,7 @@ export default class GameScene extends Scene {
       //comp.events.on()
     });
 
-    this.map = this.make.tilemap({ key: "map" });
+    this._map = this.make.tilemap({ key: "map" });
 
     // not my assets, used only for demonstration purposes
     const tileset = this.map.addTilesetImage("tuxmon-sample-32px-extruded", "tiles");
@@ -47,10 +55,9 @@ export default class GameScene extends Scene {
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
-    this.player = new Hustler(
-      500, 600, 
-      new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold), 
-      matterWorld);
+    this.player = new Player(
+      matterWorld, 500, 600,
+      new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold));
 
     this.map.createLayer("Above Player", tileset, 0, 0);
 
@@ -84,12 +91,12 @@ export default class GameScene extends Scene {
           // check if there's nothing collideable on top of the tile
           if (this.map.getLayer('World').data[j][k].collides)
           {
-            this.hoveredTile = undefined;
+            this._hoveredTile = undefined;
           }
           else 
           {
             tile.alpha = 0.7;
-            this.hoveredTile = tile;
+            this._hoveredTile = tile;
           }
           
         }

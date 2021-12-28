@@ -10,6 +10,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/rs/cors"
 
+	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
 )
@@ -47,8 +48,11 @@ func NewServer(ctx context.Context, db *sql.Driver, index bool, network string) 
 
 			started = true
 			for _, c := range configs[network] {
-				engine := NewEngine(client, c)
-				go engine.Sync(ctx)
+				switch c := c.(type) {
+				case engine.EthConfig:
+					engine := engine.NewEthereum(client, c)
+					go engine.Sync(ctx)
+				}
 			}
 			w.WriteHeader(200)
 			_, _ = w.Write([]byte(`{"success":true}`))

@@ -9,11 +9,13 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent/migrate"
 
+	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -28,6 +30,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Asset is the client for interacting with the Asset builders.
+	Asset *AssetClient
 	// BodyPart is the client for interacting with the BodyPart builders.
 	BodyPart *BodyPartClient
 	// Dope is the client for interacting with the Dope builders.
@@ -38,6 +42,8 @@ type Client struct {
 	Hustler *HustlerClient
 	// Item is the client for interacting with the Item builders.
 	Item *ItemClient
+	// Listing is the client for interacting with the Listing builders.
+	Listing *ListingClient
 	// SyncState is the client for interacting with the SyncState builders.
 	SyncState *SyncStateClient
 	// Wallet is the client for interacting with the Wallet builders.
@@ -57,11 +63,13 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Asset = NewAssetClient(c.config)
 	c.BodyPart = NewBodyPartClient(c.config)
 	c.Dope = NewDopeClient(c.config)
 	c.Event = NewEventClient(c.config)
 	c.Hustler = NewHustlerClient(c.config)
 	c.Item = NewItemClient(c.config)
+	c.Listing = NewListingClient(c.config)
 	c.SyncState = NewSyncStateClient(c.config)
 	c.Wallet = NewWalletClient(c.config)
 	c.WalletItems = NewWalletItemsClient(c.config)
@@ -98,11 +106,13 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:         ctx,
 		config:      cfg,
+		Asset:       NewAssetClient(cfg),
 		BodyPart:    NewBodyPartClient(cfg),
 		Dope:        NewDopeClient(cfg),
 		Event:       NewEventClient(cfg),
 		Hustler:     NewHustlerClient(cfg),
 		Item:        NewItemClient(cfg),
+		Listing:     NewListingClient(cfg),
 		SyncState:   NewSyncStateClient(cfg),
 		Wallet:      NewWalletClient(cfg),
 		WalletItems: NewWalletItemsClient(cfg),
@@ -124,11 +134,13 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
 		config:      cfg,
+		Asset:       NewAssetClient(cfg),
 		BodyPart:    NewBodyPartClient(cfg),
 		Dope:        NewDopeClient(cfg),
 		Event:       NewEventClient(cfg),
 		Hustler:     NewHustlerClient(cfg),
 		Item:        NewItemClient(cfg),
+		Listing:     NewListingClient(cfg),
 		SyncState:   NewSyncStateClient(cfg),
 		Wallet:      NewWalletClient(cfg),
 		WalletItems: NewWalletItemsClient(cfg),
@@ -138,7 +150,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		BodyPart.
+//		Asset.
 //		Query().
 //		Count(ctx)
 //
@@ -161,14 +173,106 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.Asset.Use(hooks...)
 	c.BodyPart.Use(hooks...)
 	c.Dope.Use(hooks...)
 	c.Event.Use(hooks...)
 	c.Hustler.Use(hooks...)
 	c.Item.Use(hooks...)
+	c.Listing.Use(hooks...)
 	c.SyncState.Use(hooks...)
 	c.Wallet.Use(hooks...)
 	c.WalletItems.Use(hooks...)
+}
+
+// AssetClient is a client for the Asset schema.
+type AssetClient struct {
+	config
+}
+
+// NewAssetClient returns a client for the Asset from the given config.
+func NewAssetClient(c config) *AssetClient {
+	return &AssetClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `asset.Hooks(f(g(h())))`.
+func (c *AssetClient) Use(hooks ...Hook) {
+	c.hooks.Asset = append(c.hooks.Asset, hooks...)
+}
+
+// Create returns a create builder for Asset.
+func (c *AssetClient) Create() *AssetCreate {
+	mutation := newAssetMutation(c.config, OpCreate)
+	return &AssetCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Asset entities.
+func (c *AssetClient) CreateBulk(builders ...*AssetCreate) *AssetCreateBulk {
+	return &AssetCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Asset.
+func (c *AssetClient) Update() *AssetUpdate {
+	mutation := newAssetMutation(c.config, OpUpdate)
+	return &AssetUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AssetClient) UpdateOne(a *Asset) *AssetUpdateOne {
+	mutation := newAssetMutation(c.config, OpUpdateOne, withAsset(a))
+	return &AssetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AssetClient) UpdateOneID(id string) *AssetUpdateOne {
+	mutation := newAssetMutation(c.config, OpUpdateOne, withAssetID(id))
+	return &AssetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Asset.
+func (c *AssetClient) Delete() *AssetDelete {
+	mutation := newAssetMutation(c.config, OpDelete)
+	return &AssetDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *AssetClient) DeleteOne(a *Asset) *AssetDeleteOne {
+	return c.DeleteOneID(a.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *AssetClient) DeleteOneID(id string) *AssetDeleteOne {
+	builder := c.Delete().Where(asset.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AssetDeleteOne{builder}
+}
+
+// Query returns a query builder for Asset.
+func (c *AssetClient) Query() *AssetQuery {
+	return &AssetQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Asset entity by its id.
+func (c *AssetClient) Get(ctx context.Context, id string) (*Asset, error) {
+	return c.Query().Where(asset.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AssetClient) GetX(ctx context.Context, id string) *Asset {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AssetClient) Hooks() []Hook {
+	return c.hooks.Asset
 }
 
 // BodyPartClient is a client for the BodyPart schema.
@@ -403,6 +507,38 @@ func (c *DopeClient) QueryWallet(d *Dope) *WalletQuery {
 			sqlgraph.From(dope.Table, dope.FieldID, id),
 			sqlgraph.To(wallet.Table, wallet.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, dope.WalletTable, dope.WalletColumn),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLastSale queries the lastSale edge of a Dope.
+func (c *DopeClient) QueryLastSale(d *Dope) *ListingQuery {
+	query := &ListingQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dope.Table, dope.FieldID, id),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, dope.LastSaleTable, dope.LastSaleColumn),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryListings queries the listings edge of a Dope.
+func (c *DopeClient) QueryListings(d *Dope) *ListingQuery {
+	query := &ListingQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dope.Table, dope.FieldID, id),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, dope.ListingsTable, dope.ListingsColumn),
 		)
 		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
 		return fromV, nil
@@ -1147,6 +1283,160 @@ func (c *ItemClient) QueryDerivative(i *Item) *ItemQuery {
 // Hooks returns the client hooks.
 func (c *ItemClient) Hooks() []Hook {
 	return c.hooks.Item
+}
+
+// ListingClient is a client for the Listing schema.
+type ListingClient struct {
+	config
+}
+
+// NewListingClient returns a client for the Listing from the given config.
+func NewListingClient(c config) *ListingClient {
+	return &ListingClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `listing.Hooks(f(g(h())))`.
+func (c *ListingClient) Use(hooks ...Hook) {
+	c.hooks.Listing = append(c.hooks.Listing, hooks...)
+}
+
+// Create returns a create builder for Listing.
+func (c *ListingClient) Create() *ListingCreate {
+	mutation := newListingMutation(c.config, OpCreate)
+	return &ListingCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Listing entities.
+func (c *ListingClient) CreateBulk(builders ...*ListingCreate) *ListingCreateBulk {
+	return &ListingCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Listing.
+func (c *ListingClient) Update() *ListingUpdate {
+	mutation := newListingMutation(c.config, OpUpdate)
+	return &ListingUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ListingClient) UpdateOne(l *Listing) *ListingUpdateOne {
+	mutation := newListingMutation(c.config, OpUpdateOne, withListing(l))
+	return &ListingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ListingClient) UpdateOneID(id string) *ListingUpdateOne {
+	mutation := newListingMutation(c.config, OpUpdateOne, withListingID(id))
+	return &ListingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Listing.
+func (c *ListingClient) Delete() *ListingDelete {
+	mutation := newListingMutation(c.config, OpDelete)
+	return &ListingDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *ListingClient) DeleteOne(l *Listing) *ListingDeleteOne {
+	return c.DeleteOneID(l.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *ListingClient) DeleteOneID(id string) *ListingDeleteOne {
+	builder := c.Delete().Where(listing.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ListingDeleteOne{builder}
+}
+
+// Query returns a query builder for Listing.
+func (c *ListingClient) Query() *ListingQuery {
+	return &ListingQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Listing entity by its id.
+func (c *ListingClient) Get(ctx context.Context, id string) (*Listing, error) {
+	return c.Query().Where(listing.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ListingClient) GetX(ctx context.Context, id string) *Listing {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryDope queries the dope edge of a Listing.
+func (c *ListingClient) QueryDope(l *Listing) *DopeQuery {
+	query := &DopeQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := l.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(listing.Table, listing.FieldID, id),
+			sqlgraph.To(dope.Table, dope.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, listing.DopeTable, listing.DopeColumn),
+		)
+		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDopeLastsales queries the dope_lastsales edge of a Listing.
+func (c *ListingClient) QueryDopeLastsales(l *Listing) *DopeQuery {
+	query := &DopeQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := l.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(listing.Table, listing.FieldID, id),
+			sqlgraph.To(dope.Table, dope.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, listing.DopeLastsalesTable, listing.DopeLastsalesColumn),
+		)
+		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryInputs queries the inputs edge of a Listing.
+func (c *ListingClient) QueryInputs(l *Listing) *AssetQuery {
+	query := &AssetQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := l.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(listing.Table, listing.FieldID, id),
+			sqlgraph.To(asset.Table, asset.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, listing.InputsTable, listing.InputsColumn),
+		)
+		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOutputs queries the outputs edge of a Listing.
+func (c *ListingClient) QueryOutputs(l *Listing) *AssetQuery {
+	query := &AssetQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := l.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(listing.Table, listing.FieldID, id),
+			sqlgraph.To(asset.Table, asset.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, listing.OutputsTable, listing.OutputsColumn),
+		)
+		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ListingClient) Hooks() []Hook {
+	return c.hooks.Listing
 }
 
 // SyncStateClient is a client for the SyncState schema.

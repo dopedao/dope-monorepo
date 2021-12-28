@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
@@ -28,9 +29,11 @@ type DopeQuery struct {
 	fields     []string
 	predicates []predicate.Dope
 	// eager-loading edges.
-	withWallet *WalletQuery
-	withItems  *ItemQuery
-	withFKs    bool
+	withWallet   *WalletQuery
+	withLastSale *ListingQuery
+	withListings *ListingQuery
+	withItems    *ItemQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -82,6 +85,50 @@ func (dq *DopeQuery) QueryWallet() *WalletQuery {
 			sqlgraph.From(dope.Table, dope.FieldID, selector),
 			sqlgraph.To(wallet.Table, wallet.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, dope.WalletTable, dope.WalletColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(dq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryLastSale chains the current query on the "lastSale" edge.
+func (dq *DopeQuery) QueryLastSale() *ListingQuery {
+	query := &ListingQuery{config: dq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := dq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := dq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dope.Table, dope.FieldID, selector),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, dope.LastSaleTable, dope.LastSaleColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(dq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryListings chains the current query on the "listings" edge.
+func (dq *DopeQuery) QueryListings() *ListingQuery {
+	query := &ListingQuery{config: dq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := dq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := dq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dope.Table, dope.FieldID, selector),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, dope.ListingsTable, dope.ListingsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(dq.driver.Dialect(), step)
 		return fromU, nil
@@ -287,13 +334,15 @@ func (dq *DopeQuery) Clone() *DopeQuery {
 		return nil
 	}
 	return &DopeQuery{
-		config:     dq.config,
-		limit:      dq.limit,
-		offset:     dq.offset,
-		order:      append([]OrderFunc{}, dq.order...),
-		predicates: append([]predicate.Dope{}, dq.predicates...),
-		withWallet: dq.withWallet.Clone(),
-		withItems:  dq.withItems.Clone(),
+		config:       dq.config,
+		limit:        dq.limit,
+		offset:       dq.offset,
+		order:        append([]OrderFunc{}, dq.order...),
+		predicates:   append([]predicate.Dope{}, dq.predicates...),
+		withWallet:   dq.withWallet.Clone(),
+		withLastSale: dq.withLastSale.Clone(),
+		withListings: dq.withListings.Clone(),
+		withItems:    dq.withItems.Clone(),
 		// clone intermediate query.
 		sql:  dq.sql.Clone(),
 		path: dq.path,
@@ -308,6 +357,28 @@ func (dq *DopeQuery) WithWallet(opts ...func(*WalletQuery)) *DopeQuery {
 		opt(query)
 	}
 	dq.withWallet = query
+	return dq
+}
+
+// WithLastSale tells the query-builder to eager-load the nodes that are connected to
+// the "lastSale" edge. The optional arguments are used to configure the query builder of the edge.
+func (dq *DopeQuery) WithLastSale(opts ...func(*ListingQuery)) *DopeQuery {
+	query := &ListingQuery{config: dq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	dq.withLastSale = query
+	return dq
+}
+
+// WithListings tells the query-builder to eager-load the nodes that are connected to
+// the "listings" edge. The optional arguments are used to configure the query builder of the edge.
+func (dq *DopeQuery) WithListings(opts ...func(*ListingQuery)) *DopeQuery {
+	query := &ListingQuery{config: dq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	dq.withListings = query
 	return dq
 }
 
@@ -388,12 +459,14 @@ func (dq *DopeQuery) sqlAll(ctx context.Context) ([]*Dope, error) {
 		nodes       = []*Dope{}
 		withFKs     = dq.withFKs
 		_spec       = dq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [4]bool{
 			dq.withWallet != nil,
+			dq.withLastSale != nil,
+			dq.withListings != nil,
 			dq.withItems != nil,
 		}
 	)
-	if dq.withWallet != nil {
+	if dq.withWallet != nil || dq.withLastSale != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -445,6 +518,64 @@ func (dq *DopeQuery) sqlAll(ctx context.Context) ([]*Dope, error) {
 			for i := range nodes {
 				nodes[i].Edges.Wallet = n
 			}
+		}
+	}
+
+	if query := dq.withLastSale; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Dope)
+		for i := range nodes {
+			if nodes[i].listing_dope_lastsales == nil {
+				continue
+			}
+			fk := *nodes[i].listing_dope_lastsales
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(listing.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "listing_dope_lastsales" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.LastSale = n
+			}
+		}
+	}
+
+	if query := dq.withListings; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*Dope)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Listings = []*Listing{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Listing(func(s *sql.Selector) {
+			s.Where(sql.InValues(dope.ListingsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.dope_listings
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "dope_listings" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "dope_listings" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Listings = append(node.Edges.Listings, n)
 		}
 	}
 

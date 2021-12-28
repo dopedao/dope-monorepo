@@ -24,11 +24,13 @@ type config struct {
 
 // hooks per client, for fast access.
 type hooks struct {
+	Asset       []ent.Hook
 	BodyPart    []ent.Hook
 	Dope        []ent.Hook
 	Event       []ent.Hook
 	Hustler     []ent.Hook
 	Item        []ent.Hook
+	Listing     []ent.Hook
 	SyncState   []ent.Hook
 	Wallet      []ent.Hook
 	WalletItems []ent.Hook

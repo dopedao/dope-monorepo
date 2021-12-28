@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -28,19 +29,24 @@ type Dope struct {
 	Order int `json:"order,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DopeQuery when eager-loading is set.
-	Edges        DopeEdges `json:"edges"`
-	wallet_dopes *string
+	Edges                  DopeEdges `json:"edges"`
+	listing_dope_lastsales *string
+	wallet_dopes           *string
 }
 
 // DopeEdges holds the relations/edges for other nodes in the graph.
 type DopeEdges struct {
 	// Wallet holds the value of the wallet edge.
 	Wallet *Wallet `json:"wallet,omitempty"`
+	// LastSale holds the value of the lastSale edge.
+	LastSale *Listing `json:"lastSale,omitempty"`
+	// Listings holds the value of the listings edge.
+	Listings []*Listing `json:"listings,omitempty"`
 	// Items holds the value of the items edge.
 	Items []*Item `json:"items,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [4]bool
 }
 
 // WalletOrErr returns the Wallet value or an error if the edge
@@ -57,10 +63,33 @@ func (e DopeEdges) WalletOrErr() (*Wallet, error) {
 	return nil, &NotLoadedError{edge: "wallet"}
 }
 
+// LastSaleOrErr returns the LastSale value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DopeEdges) LastSaleOrErr() (*Listing, error) {
+	if e.loadedTypes[1] {
+		if e.LastSale == nil {
+			// The edge lastSale was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: listing.Label}
+		}
+		return e.LastSale, nil
+	}
+	return nil, &NotLoadedError{edge: "lastSale"}
+}
+
+// ListingsOrErr returns the Listings value or an error if the edge
+// was not loaded in eager-loading.
+func (e DopeEdges) ListingsOrErr() ([]*Listing, error) {
+	if e.loadedTypes[2] {
+		return e.Listings, nil
+	}
+	return nil, &NotLoadedError{edge: "listings"}
+}
+
 // ItemsOrErr returns the Items value or an error if the edge
 // was not loaded in eager-loading.
 func (e DopeEdges) ItemsOrErr() ([]*Item, error) {
-	if e.loadedTypes[1] {
+	if e.loadedTypes[3] {
 		return e.Items, nil
 	}
 	return nil, &NotLoadedError{edge: "items"}
@@ -77,7 +106,9 @@ func (*Dope) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case dope.FieldID:
 			values[i] = new(sql.NullString)
-		case dope.ForeignKeys[0]: // wallet_dopes
+		case dope.ForeignKeys[0]: // listing_dope_lastsales
+			values[i] = new(sql.NullString)
+		case dope.ForeignKeys[1]: // wallet_dopes
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Dope", columns[i])
@@ -132,6 +163,13 @@ func (d *Dope) assignValues(columns []string, values []interface{}) error {
 			}
 		case dope.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field listing_dope_lastsales", values[i])
+			} else if value.Valid {
+				d.listing_dope_lastsales = new(string)
+				*d.listing_dope_lastsales = value.String
+			}
+		case dope.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field wallet_dopes", values[i])
 			} else if value.Valid {
 				d.wallet_dopes = new(string)
@@ -145,6 +183,16 @@ func (d *Dope) assignValues(columns []string, values []interface{}) error {
 // QueryWallet queries the "wallet" edge of the Dope entity.
 func (d *Dope) QueryWallet() *WalletQuery {
 	return (&DopeClient{config: d.config}).QueryWallet(d)
+}
+
+// QueryLastSale queries the "lastSale" edge of the Dope entity.
+func (d *Dope) QueryLastSale() *ListingQuery {
+	return (&DopeClient{config: d.config}).QueryLastSale(d)
+}
+
+// QueryListings queries the "listings" edge of the Dope entity.
+func (d *Dope) QueryListings() *ListingQuery {
+	return (&DopeClient{config: d.config}).QueryListings(d)
 }
 
 // QueryItems queries the "items" edge of the Dope entity.

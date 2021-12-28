@@ -121,6 +121,38 @@ type Hustler implements Node {
   accessory: Item
 }
 
+type Listing implements Node {
+  id: ID!
+  source: Source
+  active: Boolean!
+  inputs: [Asset]!
+  outputs: [Asset]!
+}
+
+enum AssetType {
+  DOPE
+  ETH
+  EQUIPMENT
+  HUSTLER
+  TURF
+  PAPER
+}
+
+enum Source {
+  OPENSEA
+  SWAPMEET
+}
+
+type Asset implements Node {
+  id: ID!
+  address: Address
+  type: AssetType
+  symbol: String
+  amount: BigInt
+  assetId: BigInt
+  decimals: Int
+}
+
 type Dope implements Node {
   id: ID!
   items: [Item!]!
@@ -128,6 +160,8 @@ type Dope implements Node {
   opened: Boolean!
   score: Int!
   rank: Int!
+  listings: [Listing]
+  lastSale: Listing
 }
 
 type Wallet implements Node {
