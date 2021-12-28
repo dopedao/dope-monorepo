@@ -24,20 +24,22 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
             fullScreenHandler={undefined}
             // update bounds when window gets moved around
             onMoved={() => game?.scale.updateBounds()}
-            // update scale when window ios resized
+            // update scale when window is resized
             onResize={() => {
                 if (game && gameRef.current)
                 {
-                    console.log(gameRef.current.clientWidth, gameRef.current?.clientHeight);
+                    // inject canvas into div                    
                     gameRef.current.appendChild(game.canvas);
                     game.scale.parent = gameRef.current;
+
+                    // update scale accordingly
                     game.scale.setParentSize(gameRef.current.clientWidth, gameRef.current.clientHeight);
                     game.scale.setGameSize(gameRef.current.clientWidth, gameRef.current.clientHeight);
                     game.scale.updateBounds();
                 }
             }}
             >
-            <div id="gameElement" style={{overflow: "hidden", width: "100%", height: "100%"}} ref={gameRef}></div>
+            <div id="game-parent" style={{overflow: "hidden", width: "100%", height: "100%"}} ref={gameRef}></div>
         </DesktopWindow> 
     );
 }

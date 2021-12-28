@@ -1794,6 +1794,7 @@ __metadata:
     pathfinding: ^0.4.18
     phaser: ^3.55.2
     phaser3-react: ^1.2.6
+    phaser3-rex-plugins: ^1.1.65
     prettier: ^2.4.1
     raw-loader: ^4.0.2
     react: 17.0.2
@@ -13526,7 +13527,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:^3.1.0":
+"eventemitter3@npm:^3.1.0, eventemitter3@npm:^3.1.2":
   version: 3.1.2
   resolution: "eventemitter3@npm:3.1.2"
   checksum: 81e4e82b8418f5cfd986d2b4a2fa5397ac4eb8134e09bcb47005545e22fdf8e9e61d5c053d34651112245aae411bdfe6d0ad5511da0400743fef5fc38bfcfbe3
@@ -22358,6 +22359,13 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
+"papaparse@npm:^5.3.1":
+  version: 5.3.1
+  resolution: "papaparse@npm:5.3.1"
+  checksum: 3431917bb46f8952e49ca64ecc9107ddf05291573ef666c8fac4e172b57780d131f1af925b47841039bd5ae0ceadc2eafbcb8183c092307442f85eed11f82b69
+  languageName: node
+  linkType: hard
+
 "parallel-transform@npm:^1.1.0":
   version: 1.2.0
   resolution: "parallel-transform@npm:1.2.0"
@@ -22831,6 +22839,17 @@ fsevents@~2.1.1:
     react: ^16.13.1
     react-dom: ^16.13.1
   checksum: bbb3b643dcd230f713dd743f4c15482b132012862cff464254473a82113d9af453733a76dde53f713b6a721420fc0abbb02dd042089f9a8a1037272939a45b09
+  languageName: node
+  linkType: hard
+
+"phaser3-rex-plugins@npm:^1.1.65":
+  version: 1.1.65
+  resolution: "phaser3-rex-plugins@npm:1.1.65"
+  dependencies:
+    eventemitter3: ^3.1.2
+    papaparse: ^5.3.1
+    webfontloader: ^1.6.28
+  checksum: 352e56587384e06018df081858fbee3ef3dc8022c29e2f117255090651e4b75cda6de1483d026a3ea8a2e73ff30ca11e0861dc533613cae466dac21310b199e6
   languageName: node
   linkType: hard
 
@@ -29331,6 +29350,13 @@ resolve@^2.0.0-next.3:
     web3-shh: 1.6.1
     web3-utils: 1.6.1
   checksum: 7801651d5a830faac3d985a27767b0c53145bea17db8c0d60f180119808aaec61df980674adb78fc3b87fac9311d43d62efefb6462f432b95509c2cb226fb0e5
+  languageName: node
+  linkType: hard
+
+"webfontloader@npm:^1.6.28":
+  version: 1.6.28
+  resolution: "webfontloader@npm:1.6.28"
+  checksum: cbebbe593cb0d27dbb4d418f7f96bd9893024f1f2062e858af76209b6524e25d766964b6e2a724f3b694fadef661dd3a01065455a96df05337b3281ca09ab656
   languageName: node
   linkType: hard
 

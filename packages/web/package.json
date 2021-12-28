@@ -43,6 +43,7 @@
     "pathfinding": "^0.4.18",
     "phaser": "^3.55.2",
     "phaser3-react": "^1.2.6",
+    "phaser3-rex-plugins": "^1.1.65",
     "react": "17.0.2",
     "react-countdown": "^2.3.2",
     "react-dom": "^17.0.2",
