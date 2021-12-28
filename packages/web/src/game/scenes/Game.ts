@@ -6,7 +6,10 @@ import { Scene, Cameras, Tilemaps } from 'phaser';
 import Player from 'game/entities/Player';
 import Citizen from 'game/entities/Citizen';
 import Zone from 'game/world/Zone';
-import CustomCharacter from 'game/ui/components/CustomCharacter';
+import CustomCharacter from 'game/ui/react/components/CustomCharacter';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
+import { createTextBox } from '../ui/rex/TextBox';
+import EventHandler, { Events } from 'game/handlers/EventHandler';
 
 export default class GameScene extends Scene {
   private player!: Player;
@@ -14,6 +17,9 @@ export default class GameScene extends Scene {
 
   private _map!: Phaser.Tilemaps.Tilemap;
   private _hoveredTile?: Phaser.Tilemaps.Tile;
+
+  public rexUI!: RexUIPlugin;
+  public eventHandler: EventHandler = new EventHandler();
 
   get map() { return this._map; }
   get hoveredTile() { return this._hoveredTile; }
@@ -37,8 +43,8 @@ export default class GameScene extends Scene {
     });
     this.input.keyboard.addCapture('F8');
     this.input.keyboard.on('keydown-F8', () => {
-      const comp = this.add.reactDom(CustomCharacter, {gameWidth: this.scale.gameSize.width});
-      //comp.events.on()
+      //const comp = this.add.reactDom(CustomCharacter, {gameWidth: this.scale.gameSize.width});
+      this.eventHandler.emitter.emit(Events.PLAYER_INTERACT_NPC, "kek");
     });
 
     this._map = this.make.tilemap({ key: "map" });
@@ -67,11 +73,12 @@ export default class GameScene extends Scene {
     // make the camera follow the player
     camera.setZoom(1.5, 1.5);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
+
+    this.scene.launch('UIScene', { player: this.player, eventHandler: this.eventHandler });
   }
 
   update(time: number, delta: number): void {
-    if (this.player)
-      this.player.update();
+    this.player.update();
 
     // loop over the world's layer tiles and check if they intersect with the mouse
     // not the best method but just for demonstration purposes
