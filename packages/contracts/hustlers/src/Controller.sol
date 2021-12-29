@@ -70,7 +70,11 @@ contract Controller is IController, ERC1155Holder {
 
     /** MAINTAINER ACTIONS */
 
-    function addAccessory(string calldata component) external onlyMaintainer {
+    function addAccessory(string calldata component)
+        external
+        override
+        onlyMaintainer
+    {
         components.addComponent(0x9, component);
     }
 
@@ -79,12 +83,13 @@ contract Controller is IController, ERC1155Holder {
         uint8[5] memory components_,
         uint256 amount,
         bytes memory data
-    ) external onlyMaintainer {
+    ) external override onlyMaintainer {
         swapmeet.mint(to, components_, 0x9, amount, data);
     }
 
     function addBodyRles(uint8 part, bytes[] calldata _rles)
         external
+        override
         onlyMaintainer
     {
         hustler.addRles(part, _rles);
@@ -92,6 +97,7 @@ contract Controller is IController, ERC1155Holder {
 
     function setPalette(uint8 id, bytes4[] memory palette)
         external
+        override
         onlyMaintainer
     {
         swapmeet.setPalette(id, palette);
@@ -101,12 +107,13 @@ contract Controller is IController, ERC1155Holder {
         uint256 id,
         bytes memory male,
         bytes memory female
-    ) external onlyMaintainer {
+    ) external override onlyMaintainer {
         swapmeet.setRle(id, male, female);
     }
 
     function batchSetItemRle(uint256[] calldata ids, bytes[] calldata rles)
         external
+        override
         onlyMaintainer
     {
         swapmeet.batchSetRle(ids, rles);
