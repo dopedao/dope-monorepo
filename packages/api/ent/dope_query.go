@@ -92,7 +92,7 @@ func (dq *DopeQuery) QueryWallet() *WalletQuery {
 	return query
 }
 
-// QueryLastSale chains the current query on the "lastSale" edge.
+// QueryLastSale chains the current query on the "last_sale" edge.
 func (dq *DopeQuery) QueryLastSale() *ListingQuery {
 	query := &ListingQuery{config: dq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
@@ -361,7 +361,7 @@ func (dq *DopeQuery) WithWallet(opts ...func(*WalletQuery)) *DopeQuery {
 }
 
 // WithLastSale tells the query-builder to eager-load the nodes that are connected to
-// the "lastSale" edge. The optional arguments are used to configure the query builder of the edge.
+// the "last_sale" edge. The optional arguments are used to configure the query builder of the edge.
 func (dq *DopeQuery) WithLastSale(opts ...func(*ListingQuery)) *DopeQuery {
 	query := &ListingQuery{config: dq.config}
 	for _, opt := range opts {

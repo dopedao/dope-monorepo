@@ -131,13 +131,13 @@ func (du *DopeUpdate) SetWallet(w *Wallet) *DopeUpdate {
 	return du.SetWalletID(w.ID)
 }
 
-// SetLastSaleID sets the "lastSale" edge to the Listing entity by ID.
+// SetLastSaleID sets the "last_sale" edge to the Listing entity by ID.
 func (du *DopeUpdate) SetLastSaleID(id string) *DopeUpdate {
 	du.mutation.SetLastSaleID(id)
 	return du
 }
 
-// SetNillableLastSaleID sets the "lastSale" edge to the Listing entity by ID if the given value is not nil.
+// SetNillableLastSaleID sets the "last_sale" edge to the Listing entity by ID if the given value is not nil.
 func (du *DopeUpdate) SetNillableLastSaleID(id *string) *DopeUpdate {
 	if id != nil {
 		du = du.SetLastSaleID(*id)
@@ -145,7 +145,7 @@ func (du *DopeUpdate) SetNillableLastSaleID(id *string) *DopeUpdate {
 	return du
 }
 
-// SetLastSale sets the "lastSale" edge to the Listing entity.
+// SetLastSale sets the "last_sale" edge to the Listing entity.
 func (du *DopeUpdate) SetLastSale(l *Listing) *DopeUpdate {
 	return du.SetLastSaleID(l.ID)
 }
@@ -191,7 +191,7 @@ func (du *DopeUpdate) ClearWallet() *DopeUpdate {
 	return du
 }
 
-// ClearLastSale clears the "lastSale" edge to the Listing entity.
+// ClearLastSale clears the "last_sale" edge to the Listing entity.
 func (du *DopeUpdate) ClearLastSale() *DopeUpdate {
 	du.mutation.ClearLastSale()
 	return du
@@ -663,13 +663,13 @@ func (duo *DopeUpdateOne) SetWallet(w *Wallet) *DopeUpdateOne {
 	return duo.SetWalletID(w.ID)
 }
 
-// SetLastSaleID sets the "lastSale" edge to the Listing entity by ID.
+// SetLastSaleID sets the "last_sale" edge to the Listing entity by ID.
 func (duo *DopeUpdateOne) SetLastSaleID(id string) *DopeUpdateOne {
 	duo.mutation.SetLastSaleID(id)
 	return duo
 }
 
-// SetNillableLastSaleID sets the "lastSale" edge to the Listing entity by ID if the given value is not nil.
+// SetNillableLastSaleID sets the "last_sale" edge to the Listing entity by ID if the given value is not nil.
 func (duo *DopeUpdateOne) SetNillableLastSaleID(id *string) *DopeUpdateOne {
 	if id != nil {
 		duo = duo.SetLastSaleID(*id)
@@ -677,7 +677,7 @@ func (duo *DopeUpdateOne) SetNillableLastSaleID(id *string) *DopeUpdateOne {
 	return duo
 }
 
-// SetLastSale sets the "lastSale" edge to the Listing entity.
+// SetLastSale sets the "last_sale" edge to the Listing entity.
 func (duo *DopeUpdateOne) SetLastSale(l *Listing) *DopeUpdateOne {
 	return duo.SetLastSaleID(l.ID)
 }
@@ -723,7 +723,7 @@ func (duo *DopeUpdateOne) ClearWallet() *DopeUpdateOne {
 	return duo
 }
 
-// ClearLastSale clears the "lastSale" edge to the Listing entity.
+// ClearLastSale clears the "last_sale" edge to the Listing entity.
 func (duo *DopeUpdateOne) ClearLastSale() *DopeUpdateOne {
 	duo.mutation.ClearLastSale()
 	return duo

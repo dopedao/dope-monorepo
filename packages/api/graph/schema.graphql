@@ -49,6 +49,7 @@ enum ItemTier {
 type Item implements Node {
   id: ID!
   type: ItemType!
+  fullname: String!
   name: String!
   namePrefix: String
   nameSuffix: String
