@@ -4,12 +4,13 @@ import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
 import Player from 'game/entities/Player';
-import Citizen from 'game/entities/Citizen';
+import Citizen from 'game/entities/citizen/Citizen';
 import Zone from 'game/world/Zone';
 import CustomCharacter from 'game/ui/react/components/CustomCharacter';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import { createTextBox } from '../ui/rex/TextBox';
 import EventHandler, { Events } from 'game/handlers/EventHandler';
+import Conversation from 'game/entities/citizen/Conversation';
 
 export default class GameScene extends Scene {
   private player!: Player;
@@ -40,11 +41,6 @@ export default class GameScene extends Scene {
       // transition to spot
       //this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
       this.player.navigator.moveTo(this.hoveredTile.x, this.hoveredTile.y);
-    });
-    this.input.keyboard.addCapture('F8');
-    this.input.keyboard.on('keydown-F8', () => {
-      //const comp = this.add.reactDom(CustomCharacter, {gameWidth: this.scale.gameSize.width});
-      this.eventHandler.emitter.emit(Events.PLAYER_INTERACT_NPC, "kek");
     });
 
     this._map = this.make.tilemap({ key: "map" });

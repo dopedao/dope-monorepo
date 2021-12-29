@@ -1,4 +1,5 @@
-import Citizen from "game/entities/Citizen";
+import Citizen from "game/entities/citizen/Citizen";
+import Conversation from "game/entities/citizen/Conversation";
 import Player from "game/entities/Player";
 import EventHandler, { Events } from "game/handlers/EventHandler";
 import { createTextBox } from "game/ui/rex/TextBox";
@@ -21,11 +22,9 @@ export default class UIScene extends Scene {
     {
         this.player = data.player;
         this.eventHandler = data.eventHandler;
-        console.log("UIScene init");
     }
   
     create(): void {
-        console.log('haha');
         this._handleEvents();
     }
 
@@ -33,13 +32,26 @@ export default class UIScene extends Scene {
     {
         this.eventHandler.emitter.on(Events.PLAYER_INTERACT_NPC, (npc: Citizen) => {
             // open textbox
-            createTextBox(this, {
-                wrapWidth: 500,
-                fixedWidth: 500,
-                fixedHeight: 65,
-            }).start(`I don't know what to write so I'm just typing what goes through my head to show you how the dialog text boxes look 
-Also did you know that I can talk in french too so lets do that
-Bon à partir de maintenant je vais parler en français car je n'ai aucune idée de quoi écrire`, 50);
+            const conv: Conversation | undefined = npc.conversations.shift();
+            
+            if (conv)
+            {
+                // disable inputs
+                this.player.scene.input.enabled = false;
+                createTextBox(this, {
+                    wrapWidth: 500,
+                    fixedWidth: 500,
+                    fixedHeight: 65,
+                }).start(conv.text, 50).on('complete', () => {
+                    // re-enable inputs
+                    this.player.scene.input.enabled = true;
+                    this.eventHandler.emitter.emit(Events.PLAYER_INTERACT_NPC_COMPLETE, npc);
+
+                    // call conversation oncomplete
+                    if (conv.onComplete)
+                        conv.onComplete();
+                });
+            }
         });
     }
 }
