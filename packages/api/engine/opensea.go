@@ -5,9 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"math/big"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
 const assetPath = "/api/v1/assets"
@@ -16,6 +21,7 @@ const assetPath = "/api/v1/assets"
 type Opensea struct {
 	sync.Mutex
 	URL      string
+	ent      *ent.Client
 	APIKey   string
 	Contract string
 	ticker   *time.Ticker
@@ -38,9 +44,10 @@ type OpenseaConfig struct {
 }
 
 // NewOpensea creates an opensea API client on maassetet
-func NewOpensea(config OpenseaConfig) *Opensea {
+func NewOpensea(client *ent.Client, config OpenseaConfig) *Opensea {
 	o := &Opensea{
 		URL:      config.URL,
+		ent:      client,
 		Contract: config.Contract,
 		ticker:   time.NewTicker(config.Interval),
 	}
@@ -59,19 +66,47 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 			ret, _ := o.GetAssetCollection(ctx, o.Contract)
 
-			fmt.Println(len(ret.Assets))
+			fmt.Printf("Total assets: %d\n", len(ret.Assets))
 
-			for _, asset := range ret.Assets {
-				// Implement save to current Asset and Listing model.
-				fmt.Printf("tokenid below")
-				fmt.Println(asset.TokenID)
-				fmt.Printf("Getting current price")
-				fmt.Println(asset.SellOrders)
-				if asset.LastSale != nil {
-					fmt.Printf("Get last sale price from here")
-					fmt.Println(asset.LastSale.TotalPrice)
+			if err := ent.WithTx(ctx, o.ent, func(tx *ent.Tx) error {
+
+				for _, asset := range ret.Assets {
+					var amount *big.Int
+					if asset.SellOrders != nil {
+						amount = asset.SellOrders[0].CurrentPrice.Big()
+						fmt.Println(asset.SellOrders[0].CurrentPrice)
+					} else {
+						amount = big.NewInt(0)
+					}
+
+					if err := tx.Asset.
+						Create().
+						SetID(fmt.Sprintf("%s", asset.ID)).
+						SetAddress(string(asset.AssetContract.Address)).
+						SetSymbol(asset.AssetContract.Symbol).SetType("ETH").
+						SetAmount(schema.BigInt{Int: amount}).
+						OnConflictColumns("id").
+						Update(func(a *ent.AssetUpsert) {
+							a.AddAmount(schema.BigInt{Int: amount})
+						}).
+						Exec(ctx); err != nil {
+						fmt.Errorf("Error upserting to asset: %w", err)
+					}
+
+					// if err := tx.Commit(); err != nil {
+					// 	return fmt.Errorf("committing transaction: %v", err)
+					// }
+
+					// Save to listings with asset record
+					// if asset.LastSale != nil {
+					// 	fmt.Printf("Get last sale price from here")
+					// 	fmt.Println(asset.LastSale.TotalPrice)
+					// }
+
 				}
-
+				return nil
+			}); err != nil {
+				log.Fatalf("Error with opensea collection %+v", err)
 			}
 			o.Unlock()
 		case <-ctx.Done():
@@ -82,6 +117,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 // GetAssetCollection for Opensa
 func (o Opensea) GetAssetCollection(ctx context.Context, assetContractAddress string) (*Assets, error) {
+	// TODO: paginate collection 50 at a time to get all 8k
 	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d", assetPath, assetContractAddress, 2)
 	b, err := o.getPath(ctx, path)
 	if err != nil {

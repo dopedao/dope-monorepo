@@ -53,7 +53,7 @@ func NewServer(ctx context.Context, db *sql.Driver, index bool, network string) 
 					engine := engine.NewEthereum(client, c)
 					go engine.Sync(ctx)
 				case engine.OpenseaConfig:
-					opensea := engine.NewOpensea(c)
+					opensea := engine.NewOpensea(client, c)
 					go opensea.Sync(ctx)
 				}
 			}
