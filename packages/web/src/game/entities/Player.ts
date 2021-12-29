@@ -1,5 +1,7 @@
 import HustlerModel from "game/gfx/models/HustlerModel";
+import EventHandler, { Events } from "game/handlers/EventHandler";
 import Inventory from "game/inventory/Inventory";
+import Citizen from "./citizen/Citizen";
 import Hustler, { Direction } from "./Hustler";
 
 export default class Player extends Hustler
@@ -10,6 +12,9 @@ export default class Player extends Hustler
     private interactSensor: MatterJS.BodyType;
 
     private inventory: Inventory;
+    private _busy: boolean = false;
+
+    get busy() { return this._busy; }
 
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, inventory?: Inventory)
     {
@@ -29,6 +34,32 @@ export default class Player extends Hustler
           left: Phaser.Input.Keyboard.KeyCodes.A, 
           right: Phaser.Input.Keyboard.KeyCodes.D 
         }) as Phaser.Types.Input.Keyboard.CursorKeys;
+
+        this.handleEvents();
+    }
+
+    handleEvents()
+    {
+        // EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, () => {
+        //     console.log('Set busy to true');
+        //     this._busy = true;
+        // });
+        // EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_COMPLETE, () => {
+        //     console.log('Set busy to false');
+        //     this._busy = false;
+        // });
+    }
+
+    tryInteraction()
+    {
+        this.scene.matter.overlap(this.interactSensor, undefined, (player: MatterJS.Body, other: MatterJS.Body) => {
+            const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType).gameObject;
+            if (otherGameObject instanceof Citizen)
+            {
+                console.log('Emit event interact with citizen from player');
+                EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, otherGameObject);
+            }
+        });
     }
 
     updateSensorPosition()
@@ -62,8 +93,13 @@ export default class Player extends Hustler
     update(): void
     {
         super.update();
-
         this.updateSensorPosition();
+
+        if (Phaser.Input.Keyboard.JustUp(this.arrows.space))
+        {
+            // check interact sensor
+            this.tryInteraction();
+        }
 
         // get rid of previous velocity if pathfinder is not active
         if (!this.navigator.target)

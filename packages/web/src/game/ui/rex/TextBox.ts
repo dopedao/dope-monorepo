@@ -11,7 +11,7 @@ interface TextBoxConfig
 }
 
 const GetValue = Phaser.Utils.Objects.GetValue;
-export const createTextBox = (scene: UIScene, config: TextBoxConfig) => {
+export const createTextBox = (scene: UIScene, config: TextBoxConfig, icon?: Phaser.GameObjects.GameObject) => {
     var wrapWidth = GetValue(config, 'wrapWidth', 0);
     var fixedWidth = GetValue(config, 'fixedWidth', 0);
     var fixedHeight = GetValue(config, 'fixedHeight', 0);
@@ -24,7 +24,7 @@ export const createTextBox = (scene: UIScene, config: TextBoxConfig) => {
             background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 5, Palette.COLOR_PRIMARY)
                 .setStrokeStyle(5, Palette.COLOR_LIGHT),
 
-            icon: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, Palette.COLOR_DARK),
+            icon: icon ?? scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, Palette.COLOR_DARK),
 
             // text: getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight),
             text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
@@ -84,6 +84,8 @@ export const createTextBox = (scene: UIScene, config: TextBoxConfig) => {
 
 var getBuiltInText = (scene: UIScene, wrapWidth: number, fixedWidth: number, fixedHeight: number) => {
     return scene.add.text(0, 0, '', {
+            font: 'Dope',
+
             fontSize: '20px',
             wordWrap: {
                 width: wrapWidth
@@ -95,6 +97,8 @@ var getBuiltInText = (scene: UIScene, wrapWidth: number, fixedWidth: number, fix
 
 var getBBcodeText = (scene: UIScene, wrapWidth: number, fixedWidth: number, fixedHeight: number) => {
     return scene.rexUI.add.BBCodeText(0, 0, '', {
+        fontFamily: 'Dope',
+
         fixedWidth: fixedWidth,
         fixedHeight: fixedHeight,
 

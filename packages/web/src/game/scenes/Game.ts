@@ -14,13 +14,12 @@ import Conversation from 'game/entities/citizen/Conversation';
 
 export default class GameScene extends Scene {
   private player!: Player;
-  private zone!: Zone;
+  private citizens: Citizen[] = new Array();
 
   private _map!: Phaser.Tilemaps.Tilemap;
   private _hoveredTile?: Phaser.Tilemaps.Tile;
 
   public rexUI!: RexUIPlugin;
-  public eventHandler: EventHandler = new EventHandler();
 
   get map() { return this._map; }
   get hoveredTile() { return this._hoveredTile; }
@@ -51,17 +50,34 @@ export default class GameScene extends Scene {
     this.map.createLayer("Below Player", tileset, 0, 0);
     const world = this.map.createLayer("World", tileset, 0, 0);
 
+    // render above hustlers
+    world.setDepth(0);
     // set world as being collidable
     world.setCollisionByProperty({ collides: true });
 
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
+    this.citizens.push(
+      new Citizen(
+      'Patrick', 
+      'Patrick is evil', 
+      [new Conversation('Hello', () => console.log('Conversation complete callback from Conversation: Hello')), new Conversation('Hello again!', () => console.log('Conversation complete callback from Conversation: Hello again!'))], matterWorld, 400, 400, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves)),
+      new Citizen(
+        'Michel', 
+        'Patrick is not evil', 
+        [new Conversation('Give me some clothes please', () => console.log('Conversation complete callback from Conversation: Give me some clothes please'))], matterWorld, 600, 350, new HustlerModel(Base.Male, [], Feet.NikeCortez, Hands.BlackGloves, undefined, Necklace.Gold))
+    );
+  
+
     this.player = new Player(
       matterWorld, 500, 600,
       new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold));
 
-    this.map.createLayer("Above Player", tileset, 0, 0);
+    const above = this.map.createLayer("Above Player", tileset, 0, 0);
+    
+    // above world
+    above.setDepth(2);
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -70,7 +86,7 @@ export default class GameScene extends Scene {
     camera.setZoom(1.5, 1.5);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
-    this.scene.launch('UIScene', { player: this.player, eventHandler: this.eventHandler });
+    this.scene.launch('UIScene', { player: this.player });
   }
 
   update(time: number, delta: number): void {

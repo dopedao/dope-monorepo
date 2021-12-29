@@ -8,8 +8,6 @@ export default class Citizen extends Hustler
     readonly description: string;
     conversations: Conversation[] = new Array();
 
-    
-
     constructor(name: string, description: string, conversations: Conversation[], world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel)
     {
         super(world, x, y, model);

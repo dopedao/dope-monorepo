@@ -9,17 +9,25 @@ export enum Events
 
 export default class EventHandler
 {
-    emitter: Phaser.Events.EventEmitter;
+    private static _emitter: Phaser.Events.EventEmitter;
 
     constructor()
     {
-        this.emitter = new Phaser.Events.EventEmitter();
+        EventHandler._emitter = new Phaser.Events.EventEmitter();
         
         // handle events
-        this.emitter.on(Events.PLAYER_ENTER_ZONE, () => console.log('Entered zone'));
-        this.emitter.on(Events.PLAYER_LEAVE_ZONE, () => console.log('Left zone'));
-        this.emitter.on(Events.PLAYER_INTERACT_NPC, () => console.log('Started interaction with NPC'));
-        this.emitter.on(Events.PLAYER_INTERACT_NPC_COMPLETE, () => console.log('Completed interaction with NPC'));
+        EventHandler._emitter.on(Events.PLAYER_ENTER_ZONE, () => console.log('Entered zone'));
+        EventHandler._emitter.on(Events.PLAYER_LEAVE_ZONE, () => console.log('Left zone'));
+        EventHandler._emitter.on(Events.PLAYER_INTERACT_NPC, () => console.log('Started interaction with NPC'));
+        EventHandler._emitter.on(Events.PLAYER_INTERACT_NPC_COMPLETE, () => console.log('Completed interaction with NPC'));
+    }
+
+    static emitter()
+    {
+        if (!EventHandler._emitter)
+            new EventHandler();
+
+        return EventHandler._emitter;
     }
 
 }
