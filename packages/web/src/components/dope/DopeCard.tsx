@@ -8,15 +8,30 @@ import DopeLegend from 'components/dope/DopeLegend';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
+import { ItemTier, ItemType } from 'generated/graphql';
 
 export type DopeCardProps = {
   footer: 'for-marketplace' | 'for-owner';
   dope: {
-    __typename?: 'Dope' | undefined;
+    __typename?: 'Dope';
     id: string;
     claimed: boolean;
     opened: boolean;
+    score: number;
     rank: number;
+    items?: {
+      __typename?: 'Item';
+      id: string;
+      type: ItemType;
+      name: string;
+      namePrefix?: string | null | undefined;
+      nameSuffix?: string | null | undefined;
+      suffix?: string | null | undefined;
+      augmented?: boolean | null | undefined;
+      tier: ItemTier;
+      greatness: number;
+      count: number;
+    }[];
   };
   isExpanded?: boolean;
   showCollapse?: boolean;

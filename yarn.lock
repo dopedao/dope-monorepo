@@ -6194,16 +6194,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-relay@npm:^11.0.3":
-  version: 11.0.3
-  resolution: "@types/react-relay@npm:11.0.3"
-  dependencies:
-    "@types/react": "*"
-    "@types/relay-runtime": "*"
-  checksum: 334691eea36f11dffd20a0a521afcb039671decd1607b70034e6f87827677c613f6e731e4cfd98ac6a40a460a00a40b9bb57c8dc35b2742c905e4616147e5607
-  languageName: node
-  linkType: hard
-
 "@types/react@npm:*":
   version: 17.0.37
   resolution: "@types/react@npm:17.0.37"
@@ -6223,13 +6213,6 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: c626e3ca42b6173b0617102af6c1c8c6068f69fafeba51f5d614962cabaf98a5706295081941ece93da04117268cb0aad471be87e76dde7e0d5f79a46280c586
-  languageName: node
-  linkType: hard
-
-"@types/relay-runtime@npm:*, @types/relay-runtime@npm:^12.0.1":
-  version: 12.0.1
-  resolution: "@types/relay-runtime@npm:12.0.1"
-  checksum: 99d1805ea9664b114af64aa54a52536b73f8e8a436346cff5f5bb67a363cebf1f504a021d26cd7bbb61c3488f8b12740888b4ecd21b988e34e7b18c228c66609
   languageName: node
   linkType: hard
 
@@ -8128,17 +8111,6 @@ __metadata:
     reselect: ^4.0.0
     resolve: ^1.13.1
   checksum: 3907fba21ca3c66a081e01fbd16bb09c84781749db16aa57805becc376bb5ee8dc373d4b209613e1453d30ea6c836d13073e9e7b6d239ff1806dd1763a9ab18f
-  languageName: node
-  linkType: hard
-
-"babel-plugin-relay@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "babel-plugin-relay@npm:12.0.0"
-  dependencies:
-    babel-plugin-macros: ^2.0.0
-  peerDependencies:
-    graphql: ^15.0.0
-  checksum: adea54da7743576b49a3f5fd674e6bdde535439035d97270220944cc1a4d32f0095a98c22a787ab622c8952a3bc737ba2db6badf5dea35fc55549a3414f4f28b
   languageName: node
   linkType: hard
 
@@ -12111,9 +12083,6 @@ __metadata:
     "@types/isomorphic-fetch": ^0.0.35
     "@types/mocha": ^8.2.2
     "@types/node": ^14.14.34
-    "@types/react-relay": ^11.0.3
-    "@types/relay-runtime": ^12.0.1
-    babel-plugin-relay: ^12.0.0
     isomorphic-fetch: ^3.0.0
     lerna: ^3.22.1
     mocha: ^8.4.0

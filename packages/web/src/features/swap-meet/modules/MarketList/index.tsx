@@ -1,7 +1,7 @@
-// import { useState } from 'react';
+import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { DopeOrderField, OrderDirection, useInfiniteDopesQuery } from 'generated/graphql';
-// import { isTouchDevice } from 'utils/utils';
+import { isTouchDevice } from 'utils/utils';
 import DopeCard from 'components/dope/DopeCard';
 // import MarketFilterBar from 'components/MarketFilterBar';
 // import DopeDatabase, {
@@ -26,7 +26,7 @@ const MarketList = () => {
   // const [searchInputValue, setSearchValue] = useState('');
   // const [isTyping, setIsTyping] = useState(false);
 
-  // const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
+  const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
   // const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
 
   // const getItemComparisonFunction = (key: string) => {
@@ -91,7 +91,7 @@ const MarketList = () => {
     {
       first: 100,
       orderBy: {
-        field: DopeOrderField.Id,
+        field: DopeOrderField.Rank,
         direction: OrderDirection.Asc,
       },
       where: {
@@ -192,8 +192,8 @@ const MarketList = () => {
                     key={dope.node.id}
                     dope={dope.node}
                     footer="for-marketplace"
-                    // isExpanded={viewCompactCards ? false : true}
-                    showCollapse={false}
+                    isExpanded={viewCompactCards ? false : true}
+                    showCollapse
                   />
                 );
               }),
