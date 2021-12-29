@@ -38,8 +38,8 @@ type Dope struct {
 type DopeEdges struct {
 	// Wallet holds the value of the wallet edge.
 	Wallet *Wallet `json:"wallet,omitempty"`
-	// LastSale holds the value of the lastSale edge.
-	LastSale *Listing `json:"lastSale,omitempty"`
+	// LastSale holds the value of the last_sale edge.
+	LastSale *Listing `json:"last_sale,omitempty"`
 	// Listings holds the value of the listings edge.
 	Listings []*Listing `json:"listings,omitempty"`
 	// Items holds the value of the items edge.
@@ -68,13 +68,13 @@ func (e DopeEdges) WalletOrErr() (*Wallet, error) {
 func (e DopeEdges) LastSaleOrErr() (*Listing, error) {
 	if e.loadedTypes[1] {
 		if e.LastSale == nil {
-			// The edge lastSale was loaded in eager-loading,
+			// The edge last_sale was loaded in eager-loading,
 			// but was not found.
 			return nil, &NotFoundError{label: listing.Label}
 		}
 		return e.LastSale, nil
 	}
-	return nil, &NotLoadedError{edge: "lastSale"}
+	return nil, &NotLoadedError{edge: "last_sale"}
 }
 
 // ListingsOrErr returns the Listings value or an error if the edge
@@ -185,7 +185,7 @@ func (d *Dope) QueryWallet() *WalletQuery {
 	return (&DopeClient{config: d.config}).QueryWallet(d)
 }
 
-// QueryLastSale queries the "lastSale" edge of the Dope entity.
+// QueryLastSale queries the "last_sale" edge of the Dope entity.
 func (d *Dope) QueryLastSale() *ListingQuery {
 	return (&DopeClient{config: d.config}).QueryLastSale(d)
 }

@@ -514,7 +514,7 @@ func (c *DopeClient) QueryWallet(d *Dope) *WalletQuery {
 	return query
 }
 
-// QueryLastSale queries the lastSale edge of a Dope.
+// QueryLastSale queries the last_sale edge of a Dope.
 func (c *DopeClient) QueryLastSale(d *Dope) *ListingQuery {
 	query := &ListingQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
