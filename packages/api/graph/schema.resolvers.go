@@ -5,10 +5,33 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	generated1 "github.com/dopedao/dope-monorepo/packages/api/graph/generated"
 )
+
+func (r *itemResolver) Fullname(ctx context.Context, obj *ent.Item) (string, error) {
+	fullname := obj.Name
+
+	if obj.NameSuffix != "" {
+		fullname = fmt.Sprintf("%s %s", obj.NameSuffix, fullname)
+	}
+
+	if obj.NamePrefix != "" {
+		fullname = fmt.Sprintf("%s %s", obj.NamePrefix, fullname)
+	}
+
+	if obj.Suffix != "" {
+		fullname = fmt.Sprintf("%s %s", fullname, obj.Suffix)
+	}
+
+	if obj.Augmented {
+		fullname = fmt.Sprintf("%s +1", fullname)
+	}
+
+	return fullname, nil
+}
 
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
 	return r.client.Noder(ctx, id)
@@ -37,7 +60,11 @@ func (r *queryResolver) Hustlers(ctx context.Context, after *ent.Cursor, first *
 	return r.client.Hustler.Query().Paginate(ctx, after, first, before, last, ent.WithHustlerOrder(orderBy), ent.WithHustlerFilter(where.Filter))
 }
 
+// Item returns generated1.ItemResolver implementation.
+func (r *Resolver) Item() generated1.ItemResolver { return &itemResolver{r} }
+
 // Query returns generated1.QueryResolver implementation.
 func (r *Resolver) Query() generated1.QueryResolver { return &queryResolver{r} }
 
+type itemResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
