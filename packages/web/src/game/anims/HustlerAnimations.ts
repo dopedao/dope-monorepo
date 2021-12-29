@@ -1,6 +1,6 @@
 import Hustler from "game/entities/Hustler";
 
-const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, key: string): void => {
+export const createHustlerAnimations = (anims: Phaser.Animations.AnimationManager, key: string): void => {
     const scale = 0.07;
 
     anims.create({
@@ -43,5 +43,3 @@ const createCharacterAnimations = (anims: Phaser.Animations.AnimationManager, ke
         repeat: -1
     });
 }
-
-export { createCharacterAnimations }

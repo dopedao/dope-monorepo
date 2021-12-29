@@ -9,11 +9,13 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -45,6 +47,65 @@ type Edge struct {
 	Type string   `json:"type,omitempty"` // edge type.
 	Name string   `json:"name,omitempty"` // edge name.
 	IDs  []string `json:"ids,omitempty"`  // node ids (where this edge point to).
+}
+
+func (a *Asset) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     a.ID,
+		Type:   "Asset",
+		Fields: make([]*Field, 6),
+		Edges:  make([]*Edge, 0),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(a.Address); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "string",
+		Name:  "address",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(a.Type); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "asset.Type",
+		Name:  "type",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(a.Symbol); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "string",
+		Name:  "symbol",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(a.Amount); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "schema.BigInt",
+		Name:  "amount",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(a.AssetID); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
+		Type:  "schema.BigInt",
+		Name:  "asset_id",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(a.Decimals); err != nil {
+		return nil, err
+	}
+	node.Fields[5] = &Field{
+		Type:  "int",
+		Name:  "decimals",
+		Value: string(buf),
+	}
+	return node, nil
 }
 
 func (bp *BodyPart) Node(ctx context.Context) (node *Node, err error) {
@@ -117,7 +178,7 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 		ID:     d.ID,
 		Type:   "Dope",
 		Fields: make([]*Field, 5),
-		Edges:  make([]*Edge, 2),
+		Edges:  make([]*Edge, 4),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(d.Claimed); err != nil {
@@ -171,12 +232,32 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Edges[1] = &Edge{
+		Type: "Listing",
+		Name: "lastSale",
+	}
+	err = d.QueryLastSale().
+		Select(listing.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[2] = &Edge{
+		Type: "Listing",
+		Name: "listings",
+	}
+	err = d.QueryListings().
+		Select(listing.FieldID).
+		Scan(ctx, &node.Edges[2].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[3] = &Edge{
 		Type: "Item",
 		Name: "items",
 	}
 	err = d.QueryItems().
 		Select(item.FieldID).
-		Scan(ctx, &node.Edges[1].IDs)
+		Scan(ctx, &node.Edges[3].IDs)
 	if err != nil {
 		return nil, err
 	}
@@ -712,6 +793,73 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	return node, nil
 }
 
+func (l *Listing) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     l.ID,
+		Type:   "Listing",
+		Fields: make([]*Field, 2),
+		Edges:  make([]*Edge, 4),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(l.Active); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "bool",
+		Name:  "active",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(l.Source); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "listing.Source",
+		Name:  "source",
+		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "Dope",
+		Name: "dope",
+	}
+	err = l.QueryDope().
+		Select(dope.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[1] = &Edge{
+		Type: "Dope",
+		Name: "dope_lastsales",
+	}
+	err = l.QueryDopeLastsales().
+		Select(dope.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[2] = &Edge{
+		Type: "Asset",
+		Name: "inputs",
+	}
+	err = l.QueryInputs().
+		Select(asset.FieldID).
+		Scan(ctx, &node.Edges[2].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[3] = &Edge{
+		Type: "Asset",
+		Name: "outputs",
+	}
+	err = l.QueryOutputs().
+		Select(asset.FieldID).
+		Scan(ctx, &node.Edges[3].IDs)
+	if err != nil {
+		return nil, err
+	}
+	return node, nil
+}
+
 func (ss *SyncState) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     ss.ID,
@@ -894,6 +1042,15 @@ func (c *Client) Noder(ctx context.Context, id string, opts ...NodeOption) (_ No
 
 func (c *Client) noder(ctx context.Context, table string, id string) (Noder, error) {
 	switch table {
+	case asset.Table:
+		n, err := c.Asset.Query().
+			Where(asset.ID(id)).
+			CollectFields(ctx, "Asset").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
 	case bodypart.Table:
 		n, err := c.BodyPart.Query().
 			Where(bodypart.ID(id)).
@@ -934,6 +1091,15 @@ func (c *Client) noder(ctx context.Context, table string, id string) (Noder, err
 		n, err := c.Item.Query().
 			Where(item.ID(id)).
 			CollectFields(ctx, "Item").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case listing.Table:
+		n, err := c.Listing.Query().
+			Where(listing.ID(id)).
+			CollectFields(ctx, "Listing").
 			Only(ctx)
 		if err != nil {
 			return nil, err
@@ -1039,6 +1205,19 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
+	case asset.Table:
+		nodes, err := c.Asset.Query().
+			Where(asset.IDIn(ids...)).
+			CollectFields(ctx, "Asset").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case bodypart.Table:
 		nodes, err := c.BodyPart.Query().
 			Where(bodypart.IDIn(ids...)).
@@ -1095,6 +1274,19 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		nodes, err := c.Item.Query().
 			Where(item.IDIn(ids...)).
 			CollectFields(ctx, "Item").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case listing.Table:
+		nodes, err := c.Listing.Query().
+			Where(listing.IDIn(ids...)).
+			CollectFields(ctx, "Listing").
 			All(ctx)
 		if err != nil {
 			return nil, err
