@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text, Button } from '@chakra-ui/react';
 import { PostType } from 'features/news/types';
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/image';
 import Link from 'next/link';
 import { splitPosts } from 'utils/split-news-posts';
 import { media } from 'ui/styles/mixins';
+import { truncate } from 'utils/truncateString';
+import { useRouter } from 'next/router';
+import useCurrentPageNumber from 'features/news/hooks/useCurrentPageNumber';
 
 const MiddlePosts = styled.div`
   flex: 5;
@@ -54,14 +57,22 @@ const Body = styled.div`
   }
 `;
 
-type DopePostBodyProps = { posts: PostType[] };
+type DopePostBodyProps = { posts: PostType[]; hasMore: boolean };
 
-const truncate = (str: string, maxLength: number = 250) =>
-  str.length > maxLength ? `${str.substring(0, maxLength - 3)}...` : str.substring(0, maxLength);
-
-const DopePostBody = ({ posts }: DopePostBodyProps) => {
+const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
+  const router = useRouter();
+  const page = useCurrentPageNumber();
   const heroPost = posts[0];
   const { leftPosts, middlePosts, rightPosts } = splitPosts(posts.slice(1));
+
+  if (!heroPost)
+    return (
+      <Body>
+        <Text fontSize="xl" textAlign="center" textTransform="uppercase" paddingTop="6">
+          no posts found
+        </Text>
+      </Body>
+    );
 
   return (
     <Body>
@@ -199,6 +210,25 @@ const DopePostBody = ({ posts }: DopePostBodyProps) => {
             );
           })}
         </RightPosts>
+      </Flex>
+      <Flex justifyContent="flex-end">
+        <Button
+          width="full"
+          maxW="100px"
+          marginRight="10px"
+          isDisabled={page - 1 <= 0}
+          onClick={() => router.push({ pathname: '/news', query: { page: page - 1 } })}
+        >
+          {'< previous'}
+        </Button>
+        <Button
+          width="full"
+          maxW="100px"
+          isDisabled={!hasMore}
+          onClick={() => router.push({ pathname: '/news', query: { page: page + 1 } })}
+        >
+          {'next >'}
+        </Button>
       </Flex>
     </Body>
   );
