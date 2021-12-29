@@ -108,6 +108,12 @@ export default class HustlerModel
         this.updateClothesSprites();
     }
 
+    updateOrigin(x: number, y: number)
+    {
+        this.clothesSprites.forEach(sprite => sprite.setOrigin(x, y));
+        Object.values(this.sprites).forEach(sprite => sprite.setOrigin(x, y));
+    }
+
     updateSprite(category: CharacterCategories, type: number)
     {
         const sprite = this.sprites[category];
@@ -153,13 +159,12 @@ export default class HustlerModel
         if (this.weapon != undefined)
             this.sprites[CharacterCategories.Weapons] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Weapons][this.weapon]);
 
-        this.clothesSprites.forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY));
-        Object.values(this.sprites).forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY));
+        this.clothesSprites.forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY));
+        Object.values(this.sprites).forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY));
     }
 
-    // pos: sprites new position 
-    // direction: direction of the frame
-    // both nullable, if for eg. direction is null, only the positions of the sprites will get updated
+    // pos: boolean, if pos is true, the position of the sprites will get updated
+    // if the direction is not null, the sprite animation will get updated
     updateSprites(position: boolean, direction?: string)
     {
         const update = (sprite: Phaser.GameObjects.Sprite) => {
@@ -173,6 +178,7 @@ export default class HustlerModel
         Object.values(this.sprites).forEach(sprite => update(sprite));
     }
 
+    // cancel sprites animation
     stopSpritesAnim()
     {
         const stop = (sprite: Phaser.GameObjects.Sprite) => {
