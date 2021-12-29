@@ -10,6 +10,7 @@ import { media } from 'ui/styles/mixins';
 const MiddlePosts = styled.div`
   flex: 5;
   order: -1;
+  text-align: center;
 
   ${media.tablet`
 	padding: 0 5px;
@@ -19,6 +20,7 @@ const MiddlePosts = styled.div`
   `}
 
   ${media.phone`
+    text-align: unset;
   `}
 `;
 

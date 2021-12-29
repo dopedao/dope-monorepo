@@ -47,7 +47,7 @@ const Post = ({ post }: PostProps) => {
     return <ErrorPage statusCode={404} />;
   }
   return (
-    <AppWindow padBody={false} navbar={<Nav />}>
+    <AppWindow padBody={false} navbar={<Nav />} fullScreen>
       {post.ogImage && <Head ogImage={post.ogImage.url} title={post.title} />}
       <Container>
         {router.isFallback ? (
