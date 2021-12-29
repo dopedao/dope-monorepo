@@ -12,9 +12,10 @@ const Container = styled.div`
 const Article = styled.div`
   margin: 0 auto;
   max-width: var(--content-width-md);
-  padding: 20px;
-  ${media.phone`
-    padding: 12px;
+  padding: 12px;
+
+  ${media.tablet`
+   padding: 20px;
   `}
 `;
 

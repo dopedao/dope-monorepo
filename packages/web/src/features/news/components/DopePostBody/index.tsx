@@ -5,22 +5,41 @@ import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/image';
 import Link from 'next/link';
 import { splitPosts } from 'utils/split-news-posts';
+import { media } from 'ui/styles/mixins';
 
 const MiddlePosts = styled.div`
   flex: 5;
-  padding: 0 5px;
-  border-right: 1px solid black;
-  border-left: 1px solid black;
+  order: -1;
+
+  ${media.tablet`
+	padding: 0 5px;
+  	order: 1; 
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+  `}
+
+  ${media.phone`
+  `}
 `;
 
 const LeftPosts = styled.div`
+  order: 0;
   flex: 3;
-  padding: 0 10px;
+
+  padding: 0 5px;
+  ${media.tablet`
+    padding: 0 10px;
+  `}
 `;
 
 const RightPosts = styled.div`
+  order: 2;
   flex: 3;
-  padding: 0 10px;
+
+  padding: 0 5px;
+  ${media.tablet`
+    padding: 0 10px;
+  `}
 `;
 
 const Body = styled.div`
@@ -44,7 +63,7 @@ const DopePostBody = ({ posts }: DopePostBodyProps) => {
 
   return (
     <Body>
-      <Flex width="full" justifyContent="space-between">
+      <Flex width="full" flexWrap="wrap" justifyContent="space-between">
         <LeftPosts>
           {leftPosts.map((post, index) => {
             const isFirst = index == 0;
