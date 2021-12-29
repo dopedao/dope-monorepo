@@ -1,11 +1,8 @@
 import { css } from '@emotion/react';
 import { DopeLegendBackgroundColors } from 'components/dope/DopeLegend';
-import ItemRarities from 'dope-metrics/output/item-rarities.json';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
 import { DopeCardProps } from './DopeCard';
 import Row from 'components/dope/Row';
-
-const itemBackgroundColors = Object.values(DopeLegendBackgroundColors);
 
 const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
   return (
@@ -24,13 +21,9 @@ const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
       {dope.claimed && <Row title="$PAPER" value="🚫 Claimed 🚫" />}
       {!dope.opened && <Row title="Bundled" value="✅ Ready to Unpack ✅" />}
       {dope.opened && <Row title="Bundled" value="🚫 Unpacked 🚫" />}
-      {dope.items!.map(({ id, name, type }) => (
-        <Row
-          key={id}
-          title={type}
-          value={name}
-          color={itemBackgroundColors[(ItemRarities as { [name: string]: any })[name]] as string}
-        />
+      {dope.items!.map(({ id, name, type, tier }) => (
+        // @ts-ignore
+        <Row key={id} title={type} value={name} color={DopeLegendBackgroundColors[tier]} />
       ))}
     </div>
   );

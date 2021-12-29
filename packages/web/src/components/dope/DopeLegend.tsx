@@ -3,13 +3,13 @@ import { Button } from '@chakra-ui/button';
 import styled from '@emotion/styled';
 
 export const DopeLegendBackgroundColors = {
-  Standard: '#fff',
-  Basic: '#fff',
-  Rare: 'rgba(18,171,23,0.15)',
-  Foreign: 'rgba(46,130,255,0.15)',
-  Custom: 'rgba(254,101,33,0.15)',
-  Vintage: 'rgba(249,40,255,0.25)',
-  'Black Market': 'rgba(255,252,63,0.5)',
+  // Basic: '#fff',
+  // Foreign: '',
+  // Vintage: 'rgba(249,40,255,0.25)',
+  black_market: 'rgba(255,252,63,0.5)',
+  common: 'rgba(18,171,23,0.15)',
+  custom: 'rgba(254,101,33,0.15)',
+  rare: 'rgba(46,130,255,0.15)',
 };
 
 const DopeLegendContainer = styled.div`
