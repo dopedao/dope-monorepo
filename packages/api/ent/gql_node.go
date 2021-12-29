@@ -233,7 +233,7 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 	}
 	node.Edges[1] = &Edge{
 		Type: "Listing",
-		Name: "lastSale",
+		Name: "last_sale",
 	}
 	err = d.QueryLastSale().
 		Select(listing.FieldID).

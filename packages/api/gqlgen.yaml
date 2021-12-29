@@ -66,3 +66,6 @@ models:
   AssetType:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/asset.Type
+  Source:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/listing.Source
