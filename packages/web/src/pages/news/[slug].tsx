@@ -6,13 +6,12 @@ import { Image } from '@chakra-ui/image';
 import ErrorPage from 'next/error';
 import { getPostBySlug, getAllPosts, markdownToHtml } from 'utils/lib';
 import Head from 'components/Head';
-import { PostType, DopePostType } from 'features/news/types';
+import { PostType } from 'features/news/types';
 import PostHeader from 'features/news/components/PostHeader';
 import PostBody from 'features/news/components/PostBody';
 import { media } from 'ui/styles/mixins';
 import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
-import DopePost from 'features/news/components/DopePost';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -28,7 +27,7 @@ const Container = styled.div`
 `;
 
 type PostProps = {
-  post: PostType | DopePostType;
+  post: PostType;
 };
 
 const Nav = () => (
@@ -55,19 +54,15 @@ const Post = ({ post }: PostProps) => {
           <h4>Loading…</h4>
         ) : (
           <>
-            {post.template == 'dope-news' ? (
-              <DopePost post={post} />
-            ) : (
-              <article>
-                <PostHeader
-                  title={post.title}
-                  coverImage={post.coverImage}
-                  date={post.date}
-                  author={post.author}
-                />
-                <PostBody content={post.content} />
-              </article>
-            )}
+            <article>
+              <PostHeader
+                title={post.title}
+                coverImage={post.coverImage}
+                date={post.date}
+                author={post.author}
+              />
+              <PostBody content={post.content} />
+            </article>
           </>
         )}
       </Container>
@@ -98,7 +93,6 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }: Params) => {
   const post = getPostBySlug(params.slug, [
-    'template',
     'date',
     'slug',
     'author',
@@ -106,19 +100,6 @@ export const getStaticProps = async ({ params }: Params) => {
     'ogImage',
     'coverImage',
     'title',
-    'location',
-    'edition',
-    'description',
-    'subTitleLeft1',
-    'subTitleLeft2',
-    'textLeft1',
-    'textLeft2',
-    'subTitleRight',
-    'textRight1',
-    'textRight2',
-    'textMiddle1',
-    'textMiddle2',
-    'imageText',
   ]);
   const content = await markdownToHtml(post.content || '');
 

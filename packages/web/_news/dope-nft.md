@@ -1,7 +1,8 @@
 ---
-title: 'DOPE Makes Its Grand Debut. Is the World Ready?'
-date: '2021-08-30T23:00:00.000Z'
-excerpt: 'Using the NounsDAO token standard, the DOPE ERC-721 token was deployed on Ethereum Mainnet, with an initial supply of 8000. Those in the know say this could be the start of something big.'
+title: 'First DOPE NFT Royalties Sail in via OpenSea'
+date: '2021-10-11T23:00:00.000Z'
+
+excerpt: 'This is a huge day, as payment for Perama and Mr Fax’s work has come through via the OpenSea NFT platform. At this point, project contract deployments can be arranged as well.'
 coverImage: '/images/news/dope-post.png'
 coverImageText: 'john dope - dope wiki archive'
 author:

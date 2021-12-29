@@ -1,11 +1,10 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import DesktopWindow from 'components/DesktopWindow';
 import Head from 'components/Head';
-import PostPreview from 'features/news/components/PostPreview';
 import { PostType } from 'features/news/types';
 import { media } from 'ui/styles/mixins';
 import { getAllPosts } from 'utils/lib';
+import DopeNewsCast from 'features/news/components/DopeNewsCast';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -41,63 +40,27 @@ type NewsProps = {
   allPosts: PostType[];
 };
 
-const News = ({ allPosts }: NewsProps) => {
-  const heroPost = allPosts[0];
-  const morePosts = allPosts.slice(1);
-
-  return (
-    <DesktopWindow title={TITLE}>
-      <Head title={TITLE} />
-      <Container>
-        <h1
-          css={css`
-            color: #fff;
-          `}
-        >
-          News
-        </h1>
-        {heroPost && (
-          <PostPreview
-            title={heroPost.title}
-            coverImage={heroPost.coverImage}
-            date={heroPost.date}
-            author={heroPost.author}
-            slug={heroPost.slug}
-            excerpt={heroPost.excerpt}
-          />
-        )}
-        {morePosts.length > 0 && (
-          <section>
-            <h4
-              css={css`
-                color: #fff;
-                margin: 20px 0;
-              `}
-            >
-              All News
-            </h4>
-            <div className="newsGrid">
-              {morePosts.map(post => (
-                <PostPreview
-                  key={post.slug}
-                  title={post.title}
-                  coverImage={post.coverImage}
-                  date={post.date}
-                  author={post.author}
-                  slug={post.slug}
-                  excerpt={post.excerpt}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-      </Container>
-    </DesktopWindow>
-  );
-};
+const News = ({ allPosts }: NewsProps) => (
+  <DesktopWindow title={TITLE}>
+    <Head title={TITLE} />
+    <Container>
+      <DopeNewsCast posts={allPosts} />
+    </Container>
+  </DesktopWindow>
+);
 
 export const getStaticProps = async () => {
-  const allPosts = getAllPosts(['title', 'date', 'slug', 'author', 'coverImage', 'excerpt']);
+  const allPosts = getAllPosts([
+    'title',
+    'date',
+    'slug',
+    'author',
+    'coverImage',
+    'coverImageText',
+    'excerpt',
+    'location',
+    'description',
+  ]);
 
   return {
     props: { allPosts },

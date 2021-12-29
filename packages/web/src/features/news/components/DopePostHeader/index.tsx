@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { DopePostType } from 'features/news/types';
 import { Text, Box, Flex, Spacer } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
@@ -13,9 +12,19 @@ const Wrapper = styled.div`
   }
 `;
 
-type DopePostHeaderProps = Pick<DopePostType, 'location' | 'date' | '$paper' | 'description'>;
+type DopePostHeaderProps = {
+  location?: string;
+  date?: string;
+  $paper?: number;
+  description?: string;
+};
 
-const DopePostHeader = ({ $paper = 0.5, description, location, date }: DopePostHeaderProps) => (
+const DopePostHeader = ({
+  $paper = 0.5,
+  description = 'The truth and something else',
+  location = 'DOPECITY',
+  date,
+}: DopePostHeaderProps) => (
   <Wrapper>
     <Flex padding="12px 0">
       <Box border="1px solid black" textAlign="center" padding="8px 20px">
