@@ -9,6 +9,19 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 )
 
+// The AssetFunc type is an adapter to allow the use of ordinary
+// function as Asset mutator.
+type AssetFunc func(context.Context, *ent.AssetMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AssetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AssetMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AssetMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The BodyPartFunc type is an adapter to allow the use of ordinary
 // function as BodyPart mutator.
 type BodyPartFunc func(context.Context, *ent.BodyPartMutation) (ent.Value, error)
@@ -70,6 +83,19 @@ func (f ItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	mv, ok := m.(*ent.ItemMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ItemMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The ListingFunc type is an adapter to allow the use of ordinary
+// function as Listing mutator.
+type ListingFunc func(context.Context, *ent.ListingMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ListingFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ListingMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ListingMutation", m)
 	}
 	return f(ctx, mv)
 }
