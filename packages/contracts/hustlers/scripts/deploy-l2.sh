@@ -34,11 +34,11 @@ HustlerAddr="0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
 # log "Hustler deployed at:" $HustlerAddr
 
 # Optimism Kovan
-# 0xe7e8f3b0502Fc1357B5504C8262541Da1472f6De
+ControllerAddr="0x99A89AF659d5AF027b3d94BB0B169873b46d6351"
 # Optimism
-# 0xd48055cbd433d93F1Aa000dfCd6EC36F39C0FDB6
-ControllerAddr=$(deploy Controller $ComponentsAddr $SwapMeetAddr $HustlerAddr)
-log "Controller deployed at:" $ControllerAddr
+# 0x124760902088dDBFEb8F27210D3B0C645a5c0A8B
+# ControllerAddr=$(deploy Controller $ComponentsAddr $SwapMeetAddr $HustlerAddr)
+# log "Controller deployed at:" $ControllerAddr
 
 # GetPalettesAddr=$(deploy GetPalettes)
 # log "GetPalettes deployed at:" $GetPalettesAddr
@@ -106,5 +106,53 @@ log "Controller deployed at:" $ControllerAddr
 # GetMenBeardsAddr=$(deploy GetMenBeards)
 # log "GetMenBeards deployed at:" $GetMenBeardsAddr
 
-SetAllAddr=$(deploy SetAll $HustlerAddr $SwapMeetAddr)
-log "SetAll deployed at:" $SetAllAddr
+# SetAllAddr=$(deploy SetAll $HustlerAddr $SwapMeetAddr)
+# log "SetAll deployed at:" $SetAllAddr
+
+# Kovan: 0xC1Ee03237699f94483002058B041882992473533
+MaintainerAddr=$(deploy Maintainer $ControllerAddr)
+log "Maintainer deployed at:" $MaintainerAddr
+
+# # Kovan: 0x7649e4fA685cfc1643c7D483bE68D3aCa15453Dc
+# GetPalettes1Addr=$(deploy GetPalettes1)
+# log "GetPalettes1 deployed at:" $GetPalettes1Addr
+
+# # Kovan: 0xeB781c5a2a7e94f4b99F458E9De7341Fa4A34715
+# GetPalettes2Addr=$(deploy GetPalettes2)
+# log "GetPalettes2 deployed at:" $GetPalettes2Addr
+
+# # Kovan: 0x359681DAC5277525a7cCFf4aF8c51593B65461aF
+# GetPalettes3Addr=$(deploy GetPalettes3)
+# log "GetPalettes3 deployed at:" $GetPalettes3Addr
+
+# # Kovan: 0x7Ffb6aDBbeC07f35dcCCCFbaE80D1298640eC8DD
+# GetVehiclesPart1x0Addr=$(deploy GetVehiclesPart1x0)
+# log "GetVehiclesPart1x0 deployed at:" $GetVehiclesPart1x0Addr
+
+# # Kovan: 0xeD8a255773B0Ef376a1Ad62828c7E2709c3A4010
+# GetVehiclesPart1x1Addr=$(deploy GetVehiclesPart1x1)
+# log "GetVehiclesPart1x1 deployed at:" $GetVehiclesPart1x1Addr
+
+# # Kovan: 0x02eB4064B5c83A4Dd4F69e19150adD9780743554
+# GetVehiclesPart1x2Addr=$(deploy GetVehiclesPart1x2)
+# log "GetVehiclesPart1x2 deployed at:" $GetVehiclesPart1x2Addr
+
+# # Kovan: 0x991607f2f44062C95362ce131D2Cc76801adA7Cf
+# GetVehiclesPart1x3Addr=$(deploy GetVehiclesPart1x3)
+# log "GetVehiclesPart1x3 deployed at:" $GetVehiclesPart1x3Addr
+
+# # Kovan: 0x2c5B60848cA55e59802d6E65A85970Bf14BEaeC8
+# GetVehiclesPart2x0Addr=$(deploy GetVehiclesPart2x0)
+# log "GetVehiclesPart2x0 deployed at:" $GetVehiclesPart2x0Addr
+
+# # Kovan: 0xaF0CE7557Cd9350aDC40EB94D8b1533d7861FfD8
+# GetVehiclesPart2x1Addr=$(deploy GetVehiclesPart2x1)
+# log "GetVehiclesPart2x1 deployed at:" $GetVehiclesPart2x1Addr
+
+# Kovan: 0xDeb567dCaB95376EfE325f8B66eD95A24dFE2924
+# GetVehiclesPart3x0Addr=$(deploy GetVehiclesPart3x0)
+# log "GetVehiclesPart3x0 deployed at:" $GetVehiclesPart3x0Addr
+
+# Kovan: 0xB12f4aa9d0391EC03E7784D74A5f86dEA3f4dD2b
+# GetVehiclesPart3x1Addr=$(deploy GetVehiclesPart3x1)
+# log "GetVehiclesPart3x1 deployed at:" $GetVehiclesPart3x1Addr
