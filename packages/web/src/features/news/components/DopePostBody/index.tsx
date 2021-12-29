@@ -211,7 +211,7 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
           })}
         </RightPosts>
       </Flex>
-      <Flex justifyContent="flex-end">
+      <Flex justifyContent="center">
         <Button
           width="full"
           maxW="100px"
