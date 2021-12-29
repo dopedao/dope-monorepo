@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Text, Box, Flex, Spacer } from '@chakra-ui/react';
 import { format } from 'date-fns';
+import { media } from 'ui/styles/mixins';
 
 const Wrapper = styled.div`
   h1 {
@@ -9,6 +10,23 @@ const Wrapper = styled.div`
 
   p {
     font-family: Dope !important;
+  }
+`;
+
+const Description = styled.div`
+  border: 1px solid black;
+  text-align: center;
+  padding: 4px;
+
+  ${media.tablet`
+    padding: 8px 20px;
+  `}
+`;
+
+const TitleWrapper = styled.div`
+  text-align: center;
+  > h1 {
+    margin: 13.5px 0;
   }
 `;
 
@@ -27,8 +45,8 @@ const DopePostHeader = ({
 }: DopePostHeaderProps) => (
   <Wrapper>
     <Flex padding="12px 0">
-      <Box border="1px solid black" textAlign="center" padding="8px 20px">
-        <Flex align="center" justify="center" height="100%">
+      <Description>
+        <Flex align="center" justify="center" height="full">
           <Text
             fontSize="xs"
             textTransform="uppercase"
@@ -37,11 +55,11 @@ const DopePostHeader = ({
             padding={0}
           >{`"${description}"`}</Text>
         </Flex>
-      </Box>
+      </Description>
 
       <Spacer />
 
-      <Box textAlign="right">
+      <TitleWrapper>
         <Text
           color="#000"
           fontWeight="normal"
@@ -52,7 +70,7 @@ const DopePostHeader = ({
         >
           The Daily Dope
         </Text>
-      </Box>
+      </TitleWrapper>
 
       <Spacer />
 
