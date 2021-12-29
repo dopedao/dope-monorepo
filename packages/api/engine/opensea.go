@@ -5,18 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"sync"
 	"time"
 )
 
+const assetPath = "/api/v1/assets"
+
 // Opensea is an opensea client
 type Opensea struct {
 	sync.Mutex
-	API      string
+	URL      string
 	APIKey   string
-	contract string
+	Contract string
 	ticker   *time.Ticker
 }
 
@@ -31,16 +32,16 @@ func (e errorResponse) Error() string {
 // OpenseaConfig config
 type OpenseaConfig struct {
 	URL      string
+	Contract string
 	Interval time.Duration
 	APIKey   string
-	contract string
 }
 
 // NewOpensea creates an opensea API client on maassetet
 func NewOpensea(config OpenseaConfig) *Opensea {
 	o := &Opensea{
-		API:      config.URL,
-		contract: config.contract,
+		URL:      config.URL,
+		Contract: config.Contract,
 		ticker:   time.NewTicker(config.Interval),
 	}
 	return o
@@ -49,14 +50,15 @@ func NewOpensea(config OpenseaConfig) *Opensea {
 // Sync implemented for Opensa
 func (o *Opensea) Sync(ctx context.Context) {
 	defer o.ticker.Stop()
-	fmt.Printf("Opensea API is %s", o.API)
+	fmt.Printf("Opensea API is %s", o.URL)
 	for {
 		select {
 		case <-o.ticker.C:
-			fmt.Printf("in for API is %s", o.API)
+			fmt.Printf("in for API is %s", o.URL)
 			o.Lock()
 
-			ret, _ := o.GetAssetCollection(o.contract)
+			ret, _ := o.GetAssetCollection(ctx, o.Contract)
+
 			fmt.Println(len(ret.Assets))
 
 			for _, asset := range ret.Assets {
@@ -79,14 +81,8 @@ func (o *Opensea) Sync(ctx context.Context) {
 }
 
 // GetAssetCollection for Opensa
-func (o Opensea) GetAssetCollection(assetContractAddress string) (*Assets, error) {
-	ctx := context.TODO()
-	return o.GetAssetCollectionWithContext(ctx, assetContractAddress)
-}
-
-// GetAssetCollectionWithContext for Opensa
-func (o Opensea) GetAssetCollectionWithContext(ctx context.Context, assetContractAddress string) (*Assets, error) {
-	path := fmt.Sprintf("/api/v1/assets?asset_contract_address=%s&order_direction=asc&limit=%v", assetContractAddress, 10)
+func (o Opensea) GetAssetCollection(ctx context.Context, assetContractAddress string) (*Assets, error) {
+	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d", assetPath, assetContractAddress, 2)
 	b, err := o.getPath(ctx, path)
 	if err != nil {
 		return nil, err
@@ -96,14 +92,15 @@ func (o Opensea) GetAssetCollectionWithContext(ctx context.Context, assetContrac
 }
 
 func (o Opensea) getPath(ctx context.Context, path string) ([]byte, error) {
-	return o.getURL(ctx, o.API+path)
+	return o.getURL(ctx, o.URL+path)
 }
 
 func (o Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
 	client := httpClient()
-	// fmt.Println(url)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	req.Header.Add("X-API-KEY", o.APIKey)
+	if o.APIKey != "" {
+		req.Header.Add("X-API-KEY", o.APIKey)
+	}
 	req.Header.Add("Accept", "application/json")
 	resp, err := client.Do(req)
 	fmt.Println(url)
@@ -136,20 +133,10 @@ func (o Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
 func httpClient() *http.Client {
 	client := new(http.Client)
 	var transport http.RoundTripper = &http.Transport{
-		Proxy:              http.ProxyFromEnvironment,
-		DisableKeepAlives:  false,
-		DisableCompression: false,
-		DialContext: (&net.Dialer{
-			Timeout:   30 * time.Second,
-			KeepAlive: 300 * time.Second,
-			DualStack: true,
-		}).DialContext,
-		ForceAttemptHTTP2:     true,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       90 * time.Second,
-		TLSHandshakeTimeout:   5 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
+		MaxIdleConns:    100,
+		IdleConnTimeout: 90 * time.Second,
 	}
 	client.Transport = transport
+	client.Timeout = 10 * time.Second
 	return client
 }

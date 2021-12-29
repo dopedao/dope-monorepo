@@ -47,7 +47,7 @@ var configs = map[string]Configs{
 		},
 	}, engine.OpenseaConfig{
 		URL:      "https://api.opensea.io",
-		contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
+		Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
 		Interval: time.Hour * 1, // time.Second * 5,
 	}},
 	"testnet": {engine.EthConfig{
@@ -85,8 +85,8 @@ var configs = map[string]Configs{
 			},
 		},
 	}, engine.OpenseaConfig{
-		URL:      "https://rinkeby-api.opensea.io", // "https://rinkeby-api.opensea.io",
-		contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
+		URL:      "https://api.opensea.io", // "https://rinkeby-api.opensea.io",
+		Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
 		Interval: time.Hour * 1, // time.Second * 5,
 	}},
 }

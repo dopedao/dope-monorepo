@@ -498,24 +498,8 @@ const (
 	SplitFee
 )
 
-// type Metadata struct {
-// 	Asset  MetadataAsset `json:"asset"`
-// 	Schema string        `json:"schema"`
-// }
-
-// type MetadataAsset struct {
-// 	ID      string `json:"id"`
-// 	Address string `json:"address"`
-// }
-
-// GetOrders fetches the orders
-func (o Opensea) GetOrders(assetContractAddress string, listedAfter int64) ([]*Order, error) {
-	ctx := context.TODO()
-	return o.GetOrdersWithContext(ctx, assetContractAddress, listedAfter)
-}
-
-// GetOrdersWithContext fetches the orders with context
-func (o Opensea) GetOrdersWithContext(ctx context.Context, assetContractAddress string, listedAfter int64) (orders []*Order, err error) {
+// GetOrders fetches the orders with context
+func (o Opensea) GetOrders(ctx context.Context, assetContractAddress string, listedAfter int64) (orders []*Order, err error) {
 	offset := 0
 	limit := 100
 
@@ -541,8 +525,7 @@ func (o Opensea) GetOrdersWithContext(ctx context.Context, assetContractAddress 
 			Orders []*Order `json:"orders"`
 		}{}
 
-		err = json.Unmarshal(b, out)
-		if err != nil {
+		if err := json.Unmarshal(b, out); err != nil {
 			return nil, err
 		}
 		orders = append(orders, out.Orders...)
