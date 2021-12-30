@@ -117,28 +117,27 @@ const Hustlers = () => {
       )}
       {loading || walletLoading ? (
         ContentLoading
-      ) : data?.wallets.edges && data.wallets.edges[0]?.node?.hustlers.length === 0 ? (
+      ) : !data?.wallets.edges![0]?.node?.hustlers ? (
         ContentEmpty
       ) : (
         <Container>
           <div className="hustlerGrid">
-            {data?.wallets.edges &&
-              data.wallets.edges[0]?.node?.hustlers.map(({ id, svg, name }) => {
-                if (!svg) return null;
-                return (
-                  <Link key={id} href={`/hustlers/${id}/customize`}>
-                    <a>
-                      <RenderFromChain
-                        data={{
-                          image: svg,
-                          name,
-                        }}
-                        id={id}
-                      />
-                    </a>
-                  </Link>
-                );
-              })}
+            {data.wallets.edges[0].node.hustlers.map(({ id, svg, name }) => {
+              if (!svg) return null;
+              return (
+                <Link key={id} href={`/hustlers/${id}/customize`}>
+                  <a>
+                    <RenderFromChain
+                      data={{
+                        image: svg,
+                        name,
+                      }}
+                      id={id}
+                    />
+                  </a>
+                </Link>
+              );
+            })}
           </div>
         </Container>
       )}

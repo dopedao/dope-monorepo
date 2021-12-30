@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Stack } from '@chakra-ui/react';
 import {
-  HustlerInitConfig,
   DEFAULT_BG_COLORS,
   DEFAULT_TEXT_COLORS,
   SKIN_TONE_COLORS,
@@ -13,7 +12,7 @@ import SexSelector from 'components/hustler/SexSelector';
 import PanelColorSelector from 'components/PanelColorSelector';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 
-const ConfigurationControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
+const ConfigurationControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
   const [showTextColor, setShowTextColor] = useState(false);
   const [showNameControls, setShowNameControls] = useState(false);
 
@@ -26,45 +25,35 @@ const ConfigurationControls = ({ config, makeVarConfig }: ConfigureHustlerProps)
     <div>
       <Stack spacing={4}>
         {/* Title controls only make sense when zoomed out fully */}
-        {showNameControls && <NameControls config={config} makeVarConfig={makeVarConfig} />}
+        {showNameControls && <NameControls config={config} setHustlerConfig={setHustlerConfig} />}
         {showTextColor && (
           <PanelColorSelector
             title="Text Color"
             colors={DEFAULT_TEXT_COLORS}
             value={config.textColor}
-            changeCallback={color => {
-              makeVarConfig
-                ? makeVarConfig({ ...config, textColor: color })
-                : HustlerInitConfig({ ...config, textColor: color });
-            }}
+            changeCallback={color => setHustlerConfig({ ...config, textColor: color })}
           />
         )}
         <PanelColorSelector
           title="Background"
           colors={DEFAULT_BG_COLORS}
           value={config.bgColor}
-          changeCallback={color => {
-            makeVarConfig
-              ? makeVarConfig({ ...config, bgColor: color })
-              : HustlerInitConfig({ ...config, bgColor: color });
-          }}
+          changeCallback={color => setHustlerConfig({ ...config, bgColor: color })}
         />
         <PanelColorSelector
           title="Skin Tone"
           colors={SKIN_TONE_COLORS}
           value={SKIN_TONE_COLORS[config.body]}
           dopeId={config.dopeId}
-          changeCallback={color => {
-            makeVarConfig
-              ? makeVarConfig({ ...config, body: SKIN_TONE_COLORS.findIndex(el => el == color) })
-              : HustlerInitConfig({
-                  ...config,
-                  body: SKIN_TONE_COLORS.findIndex(el => el == color),
-                });
-          }}
+          changeCallback={color =>
+            setHustlerConfig({
+              ...config,
+              body: SKIN_TONE_COLORS.findIndex(el => el == color),
+            })
+          }
         />
-        <SexSelector config={config} makeVarConfig={makeVarConfig} />
-        <HairSelector config={config} makeVarConfig={makeVarConfig} />
+        <SexSelector config={config} setHustlerConfig={setHustlerConfig} />
+        <HairSelector config={config} setHustlerConfig={setHustlerConfig} />
       </Stack>
     </div>
   );

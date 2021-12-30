@@ -1,5 +1,4 @@
 import { Dope } from 'generated/graphql';
-import { makeVar } from '@apollo/client';
 import DopeJson from 'dope-metrics/output/loot.json';
 import { getRarityForDopeId } from './dope-rarity-check';
 // import { OpenSeaAsset } from './OpenSeaAsset';
@@ -218,4 +217,4 @@ export default DopeDatabase;
 
 const db = new DopeDatabase();
 db.populateFromJson();
-export const DopeDbCacheReactive = makeVar(db);
+export const DopeDbCacheReactive = db;

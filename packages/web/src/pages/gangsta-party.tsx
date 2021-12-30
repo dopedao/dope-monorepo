@@ -9,6 +9,7 @@ import WebAmpPlayer from 'components/WebAmpPlayer';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import LoadingBlock from 'components/LoadingBlock';
 import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
+import LoadingState from 'features/swap-meet/components/LoadingState';
 
 const HustlerContainer = styled.div`
   position: absolute;
@@ -47,6 +48,7 @@ const GangstaParty = () => {
     {
       first: 100,
     },
+
     {
       getNextPageParam: lastPage => {
         if (lastPage.hustlers.pageInfo.hasNextPage) {
@@ -57,49 +59,55 @@ const GangstaParty = () => {
     },
   );
 
+  const isLoading = status === 'loading';
+
   return (
     <>
       <Head title="DOPE WARS GANGSTA PARTY" />
       <ScreenSaver>
-        {data && (
-          <HustlerContainer>
-            <InfiniteScroll
-              pageStart={0}
-              loadMore={() =>
-                fetchNextPage({
-                  pageParam: {
-                    first: 100,
-                    after: data?.pages[data.pages.length - 1].hustlers.pageInfo.endCursor,
-                  },
-                })
-              }
-              hasMore={hasNextPage}
-              loader={<LoadingBlock />}
-              useWindow={false}
-              className="dopeGrid"
-            >
-              <div className="hustlerGrid">
-                {data?.pages.map(group =>
-                  group.hustlers.edges!.map(hustler => {
-                    if (!hustler?.node!.svg) {
-                      return null;
-                    }
+        {isLoading ? (
+          <LoadingState />
+        ) : (
+          data && (
+            <HustlerContainer>
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={() =>
+                  fetchNextPage({
+                    pageParam: {
+                      first: 100,
+                      after: data?.pages[data.pages.length - 1].hustlers.pageInfo.endCursor,
+                    },
+                  })
+                }
+                hasMore={hasNextPage}
+                loader={<LoadingBlock key="loading-block-2" />}
+                useWindow={false}
+                className="dopeGrid"
+              >
+                <div className="hustlerGrid">
+                  {data?.pages.map(group =>
+                    group.hustlers.edges!.map(hustler => {
+                      if (!hustler?.node!.svg) {
+                        return null;
+                      }
 
-                    return (
-                      <RenderFromChain
-                        data={{
-                          image: hustler.node.svg,
-                          name: hustler.node.name,
-                        }}
-                        id={hustler.node.id}
-                        key={hustler.node.id}
-                      />
-                    );
-                  }),
-                )}
-              </div>
-            </InfiniteScroll>
-          </HustlerContainer>
+                      return (
+                        <RenderFromChain
+                          data={{
+                            image: hustler.node.svg,
+                            name: hustler.node.name,
+                          }}
+                          id={hustler.node.id}
+                          key={hustler.node.id}
+                        />
+                      );
+                    }),
+                  )}
+                </div>
+              </InfiniteScroll>
+            </HustlerContainer>
+          )
         )}
         <WebAmpPlayer />
         <StickyNoteHustlerMint />

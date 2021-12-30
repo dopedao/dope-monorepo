@@ -10,7 +10,6 @@ import DesktopIconList from 'components/DesktopIconList';
 import GlobalStyles from 'ui/styles/GlobalStyles';
 import PageLoadingIndicator from 'components/PageLoadingIndicator';
 import theme from 'ui/styles/theme';
-import EthereumApolloProvider from 'components/EthereumApolloProvider';
 
 // Error tracking and tracing from Sentry.io
 import * as Sentry from '@sentry/react';
@@ -45,19 +44,17 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
     <>
       <GlobalStyles />
       <ChakraProvider theme={theme}>
-        <EthereumApolloProvider>
-          <QueryClientProvider client={queryClient}>
-            <Hydrate state={pageProps.dehydratedState}>
-              <Web3ReactProvider getLibrary={getLibrary}>
-                <main>
-                  <PageLoadingIndicator />
-                  <DesktopIconList />
-                  <Component {...pageProps} />
-                </main>
-              </Web3ReactProvider>
-            </Hydrate>
-          </QueryClientProvider>
-        </EthereumApolloProvider>
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <Web3ReactProvider getLibrary={getLibrary}>
+              <main>
+                <PageLoadingIndicator />
+                <DesktopIconList />
+                <Component {...pageProps} />
+              </main>
+            </Web3ReactProvider>
+          </Hydrate>
+        </QueryClientProvider>
       </ChakraProvider>
     </>
   );
