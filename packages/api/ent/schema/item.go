@@ -12,11 +12,6 @@ type RLEs struct {
 	Male   string
 }
 
-type SVGs struct {
-	Female string
-	Male   string
-}
-
 // Item holds the schema definition for the Item entity.
 type Item struct {
 	ent.Schema
