@@ -74,6 +74,8 @@ export default class PathNavigator
 	    			return;
 	    		}
             
+                this.hustler.model.updateSprites(true);
+                this.hustler.moveDirection = Direction.None;
 	    		this.target = undefined;
 	    	}
 	    }
@@ -84,6 +86,9 @@ export default class PathNavigator
 	    const down = dy > 0;
 
         let willMoveFlag = false;
+
+        // clear previous frame velocity
+        this.hustler.setVelocity(0);
 
         if (up)
         {

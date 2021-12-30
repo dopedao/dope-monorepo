@@ -90,7 +90,13 @@ export default class HustlerModel
         this.updateClothesSprites();
     }
 
-    updateOrigin(x: number, y: number)
+    setDepth(value: number)
+    {
+        this.clothesSprites.forEach(sprite => sprite.setDepth(value));
+        Object.values(this.sprites).forEach(sprite => sprite.setDepth(value));
+    }
+
+    setOrigin(x: number, y: number)
     {
         this.clothesSprites.forEach(sprite => sprite.setOrigin(x, y));
         Object.values(this.sprites).forEach(sprite => sprite.setOrigin(x, y));
@@ -143,7 +149,7 @@ export default class HustlerModel
     createSprites()
     {
         // Shadow
-        this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Shadow]);
+        //this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Shadow]);
 
         // Clothes
         if (this.clothes)
@@ -163,8 +169,8 @@ export default class HustlerModel
         if (this.weapon != undefined)
             this.sprites[CharacterCategories.Weapons] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Weapons][this.weapon]);
 
-        this.clothesSprites.forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY));
-        Object.values(this.sprites).forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY));
+        this.clothesSprites.forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY) && sprite.setDepth(this.hustler.depth));
+        Object.values(this.sprites).forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY) && sprite.setDepth(this.hustler.depth));
     }
 
     // pos: boolean, if pos is true, the position of the sprites will get updated

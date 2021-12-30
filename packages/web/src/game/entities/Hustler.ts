@@ -67,7 +67,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         } as MatterJS.BodyType);
         this.setExistingBody(mainBody);
         
-        this.setDepth(0);
+        this.setDepth(1);
 
         // offset the hustler texture from the body
         this.setOrigin(0.5, 0.66);
@@ -86,6 +86,13 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         }));
         // handle animations
         this._animator = new HustlerAnimator(this);
+    }
+
+    setDepth(value: number)
+    {
+        super.setDepth(value);
+        this._model.setDepth(value);
+        return this;
     }
 
     update()

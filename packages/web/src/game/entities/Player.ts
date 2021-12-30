@@ -90,9 +90,26 @@ export default class Player extends Hustler
         }
     }
 
+    updateDepth(player: MatterJS.Body, other: MatterJS.Body)
+    {
+        const playerBodyType: MatterJS.BodyType = (player as MatterJS.BodyType)
+        const otherBodyType: MatterJS.BodyType = (other as MatterJS.BodyType);
+
+        console.log(otherBodyType.position.y - playerBodyType.position.y);
+
+        if ((otherBodyType.position.y - playerBodyType.position.y) > 20)
+            playerBodyType.gameObject.setDepth(0);
+        else if ((otherBodyType.position.y - playerBodyType.position.y) < -15)
+            playerBodyType.gameObject.setDepth(2);
+    }
+
     update(): void
     {
         super.update();
+
+        // update depth depending other bodies
+        this.scene.matter.overlap(this, undefined, this.updateDepth);
+
         this.updateSensorPosition();
 
         if (Phaser.Input.Keyboard.JustUp(this.arrows.space))
