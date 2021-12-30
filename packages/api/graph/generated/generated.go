@@ -138,7 +138,9 @@ type ComplexityRoot struct {
 		Name       func(childComplexity int) int
 		NamePrefix func(childComplexity int) int
 		NameSuffix func(childComplexity int) int
+		Rles       func(childComplexity int) int
 		Suffix     func(childComplexity int) int
+		Svg        func(childComplexity int) int
 		Tier       func(childComplexity int) int
 		Type       func(childComplexity int) int
 	}
@@ -176,6 +178,11 @@ type ComplexityRoot struct {
 		Node     func(childComplexity int, id string) int
 		Nodes    func(childComplexity int, ids []string) int
 		Wallets  func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.WalletOrder, where *ent.WalletWhereInput) int
+	}
+
+	RLEs struct {
+		Female func(childComplexity int) int
+		Male   func(childComplexity int) int
 	}
 
 	Wallet struct {
@@ -659,12 +666,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Item.NameSuffix(childComplexity), true
 
+	case "Item.rles":
+		if e.complexity.Item.Rles == nil {
+			break
+		}
+
+		return e.complexity.Item.Rles(childComplexity), true
+
 	case "Item.suffix":
 		if e.complexity.Item.Suffix == nil {
 			break
 		}
 
 		return e.complexity.Item.Suffix(childComplexity), true
+
+	case "Item.svg":
+		if e.complexity.Item.Svg == nil {
+			break
+		}
+
+		return e.complexity.Item.Svg(childComplexity), true
 
 	case "Item.tier":
 		if e.complexity.Item.Tier == nil {
@@ -849,6 +870,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Wallets(childComplexity, args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.WalletOrder), args["where"].(*ent.WalletWhereInput)), true
+
+	case "RLEs.female":
+		if e.complexity.RLEs.Female == nil {
+			break
+		}
+
+		return e.complexity.RLEs.Female(childComplexity), true
+
+	case "RLEs.male":
+		if e.complexity.RLEs.Male == nil {
+			break
+		}
+
+		return e.complexity.RLEs.Male(childComplexity), true
 
 	case "Wallet.dopes":
 		if e.complexity.Wallet.Dopes == nil {
@@ -2047,6 +2082,11 @@ enum ItemTier {
   BLACK_MARKET
 }
 
+type RLEs {
+  female: String!
+  male: String!
+}
+
 type Item implements Node {
   id: ID!
   type: ItemType!
@@ -2059,6 +2099,8 @@ type Item implements Node {
   tier: ItemTier!
   greatness: Int!
   count: Int!
+  rles: RLEs
+  svg: String
 }
 
 type WalletItems implements Node {
@@ -4679,6 +4721,70 @@ func (ec *executionContext) _Item_count(ctx context.Context, field graphql.Colle
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Item_rles(ctx context.Context, field graphql.CollectedField, obj *ent.Item) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Item",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Rles, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(schema.RLEs)
+	fc.Result = res
+	return ec.marshalORLEs2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐRLEs(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Item_svg(ctx context.Context, field graphql.CollectedField, obj *ent.Item) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Item",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Svg, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _ItemConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.ItemConnection) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -5472,6 +5578,76 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	res := resTmp.(*introspection.Schema)
 	fc.Result = res
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RLEs_female(ctx context.Context, field graphql.CollectedField, obj *schema.RLEs) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "RLEs",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Female, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RLEs_male(ctx context.Context, field graphql.CollectedField, obj *schema.RLEs) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "RLEs",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Male, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Wallet_id(ctx context.Context, field graphql.CollectedField, obj *ent.Wallet) (ret graphql.Marshaler) {
@@ -13032,6 +13208,10 @@ func (ec *executionContext) _Item(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "rles":
+			out.Values[i] = ec._Item_rles(ctx, field, obj)
+		case "svg":
+			out.Values[i] = ec._Item_svg(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -13304,6 +13484,38 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var rLEsImplementors = []string{"RLEs"}
+
+func (ec *executionContext) _RLEs(ctx context.Context, sel ast.SelectionSet, obj *schema.RLEs) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, rLEsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RLEs")
+		case "female":
+			out.Values[i] = ec._RLEs_female(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "male":
+			out.Values[i] = ec._RLEs_male(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -16240,6 +16452,10 @@ func (ec *executionContext) unmarshalOPaymentTokenWhereInput2ᚖgithubᚗcomᚋd
 	}
 	res, err := ec.unmarshalInputPaymentTokenWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalORLEs2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐRLEs(ctx context.Context, sel ast.SelectionSet, v schema.RLEs) graphql.Marshaler {
+	return ec._RLEs(ctx, sel, &v)
 }
 
 func (ec *executionContext) unmarshalOSource2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋlistingᚐSource(ctx context.Context, v interface{}) (listing.Source, error) {
