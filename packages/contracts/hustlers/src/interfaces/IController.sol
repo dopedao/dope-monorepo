@@ -50,4 +50,28 @@ interface IController {
     function setMaintainer(address) external;
 
     function setDAO(address) external;
+
+    /** MAINTAINER ACTIONS */
+
+    function addAccessory(string calldata component) external;
+
+    function mintAccessory(
+        address to,
+        uint8[5] memory components_,
+        uint256 amount,
+        bytes memory data
+    ) external;
+
+    function addBodyRles(uint8 part, bytes[] calldata _rles) external;
+
+    function setPalette(uint8 id, bytes4[] memory palette) external;
+
+    function setItemRle(
+        uint256 id,
+        bytes memory male,
+        bytes memory female
+    ) external;
+
+    function batchSetItemRle(uint256[] calldata ids, bytes[] calldata rles)
+        external;
 }

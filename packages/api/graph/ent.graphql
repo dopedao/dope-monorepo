@@ -445,7 +445,7 @@ input DopeWhereInput {
   hasWallet: Boolean
   hasWalletWith: [WalletWhereInput!]
   
-  """lastSale edge predicates"""
+  """last_sale edge predicates"""
   hasLastSale: Boolean
   hasLastSaleWith: [ListingWhereInput!]
   

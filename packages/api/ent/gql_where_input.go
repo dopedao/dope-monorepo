@@ -688,7 +688,7 @@ type DopeWhereInput struct {
 	HasWallet     *bool               `json:"hasWallet,omitempty"`
 	HasWalletWith []*WalletWhereInput `json:"hasWalletWith,omitempty"`
 
-	// "lastSale" edge predicates.
+	// "last_sale" edge predicates.
 	HasLastSale     *bool                `json:"hasLastSale,omitempty"`
 	HasLastSaleWith []*ListingWhereInput `json:"hasLastSaleWith,omitempty"`
 
