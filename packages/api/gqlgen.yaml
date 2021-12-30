@@ -66,6 +66,9 @@ models:
   AssetType:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/asset.Type
+  RLEs:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/schema.RLEs
   Source:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/listing.Source
