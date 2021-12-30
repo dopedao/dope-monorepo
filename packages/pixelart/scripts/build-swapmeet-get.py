@@ -2,15 +2,15 @@ import json
 from web3 import Web3
 
 types = {
-    "weapons": 0,
-    "clothes": 1,
+    # "weapons": 0,
+    # "clothes": 1,
     "vehicles": 2,
-    "waist": 3,
-    "shoes": 4,
-    "hands": 5,
-    "drugs": 6,
-    "neck": 7,
-    "rings": 8,
+    # "waist": 3,
+    # "shoes": 4,
+    # "hands": 5,
+    # "drugs": 6,
+    # "neck": 7,
+    # "rings": 8,
 }
 
 abi = [
@@ -41,63 +41,72 @@ abi = [
 ]
 
 w3 = Web3(Web3.HTTPProvider(
-    'https://billowing-still-silence.rinkeby.quiknode.pro/fb30368520858753f903e38877e948f8a400e7dd/'))
+    'https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG'))
 
-with open('/Users/tarrence/Library/Ethereum/keystore/UTC--2021-10-27T23-02-33.257981000Z--35754fd45136f2a9996a75cf2955315c9cd35054') as keyfile:
-    encrypted_key = keyfile.read()
-    private_key = w3.eth.account.decrypt(encrypted_key, "")
-
-swapmeet_addr = "0x52aA7619E1eCEEbCBFF7d26C749488d6AD888516"
+swapmeet_addr = "0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"
 SwapMeet = w3.eth.contract(
     swapmeet_addr, abi=abi)
 
-f = open("../outputs/ITEMS/output.json", "r")
-meta = json.load(f)
+f = open("../outputs/ITEMS/output-vehicles-part1.json", "r")
+meta1 = json.load(f)
 
-f = open("../outputs/BODY_PARTS/output.json", "r")
-bodymeta = json.load(f)
+f = open("../outputs/ITEMS/output-vehicles-part2.json", "r")
+meta2 = json.load(f)
 
-hustler_palette = "[bytes4(hex'')"
-for i, color in enumerate(bodymeta['partcolors']):
+f = open("../outputs/ITEMS/output-vehicles-part3.json", "r")
+meta3 = json.load(f)
+
+meta1_palette = "[bytes4(hex'')"
+for i, color in enumerate(meta1['partcolors']):
     if i == 0:
         continue
-    hustler_palette += (",hex'" + color[2:] + "'")
-hustler_palette += "]"
+    meta1_palette += (",hex'" + color[2:] + "'")
+meta1_palette += "]"
 
-swapmeet_palette = "[bytes4(hex'')"
-for i, color in enumerate(meta['partcolors']):
+meta2_palette = "[bytes4(hex'')"
+for i, color in enumerate(meta2['partcolors']):
     if i == 0:
         continue
-    swapmeet_palette += (",hex'" + color[2:] + "'")
-swapmeet_palette += "]"
+    meta2_palette += (",hex'" + color[2:] + "'")
+meta2_palette += "]"
+
+meta3_palette = "[bytes4(hex'')"
+for i, color in enumerate(meta3['partcolors']):
+    if i == 0:
+        continue
+    meta3_palette += (",hex'" + color[2:] + "'")
+meta3_palette += "]"
 
 set_palette = """
 pragma solidity ^0.8.0;
 
 contract GetPalettes {{
-    function getPalletes() external returns (bytes4[] memory, bytes4[] memory) {{
-        bytes4[] memory hPalette = new bytes4[](83);
-        bytes4[83] memory _hPalette = {hustler_palette};
-        for (uint256 i = 0; i < hPalette.length; i++) {{
-            hPalette[i] = _hPalette[i];
+    function getPalletes() external returns (bytes4[] memory) {{
+        bytes4[] memory palette = new bytes4[]({n});
+        bytes4[{n}] memory _palette = {palette};
+        for (uint256 i = 0; i < palette.length; i++) {{
+            palette[i] = _palette[i];
         }}
 
-        bytes4[] memory smPalette = new bytes4[](207);
-        bytes4[207] memory _smPalette = {swapmeet_palette};
-        for (uint256 i = 0; i < smPalette.length; i++) {{
-            smPalette[i] = _smPalette[i];
-        }}
-
-        return (hPalette, smPalette);
+        return palette;
     }}
 }}
-""".format(hustler_palette=hustler_palette, swapmeet_palette=swapmeet_palette)
+"""
 
-f = open("../../contracts/src/GetPalettes.sol", "w")
-f.write(set_palette)
+p = set_palette.format(palette=meta1_palette, n=len(meta1['partcolors']))
+f = open("../../contracts/hustlers/src/GetPalettes1.sol", "w")
+f.write(p)
+
+p = set_palette.format(palette=meta2_palette, n=len(meta2['partcolors']))
+f = open("../../contracts/hustlers/src/GetPalettes2.sol", "w")
+f.write(p)
+
+p = set_palette.format(palette=meta3_palette, n=len(meta3['partcolors']))
+f = open("../../contracts/hustlers/src/GetPalettes3.sol", "w")
+f.write(p)
 
 components = {}
-for parts in meta["parts"]:
+for parts in meta1["parts"]:
     part = parts[0]
     gender = part["gender"]
     category = part["category"]
@@ -139,7 +148,7 @@ contract Get{name} {{
 def write_contract(name, ids, rles, ids_len, rles_len):
     c = item_setter.format(
         name=name, ids=ids, rles=rles, ids_len=ids_len, rles_len=rles_len)
-    f = open("../../contracts/src/Get"+name+".sol", "w")
+    f = open("../../contracts/hustlers/src/Get"+name+".sol", "w")
     f.write(c)
 
 
@@ -153,6 +162,7 @@ for category, idxs in components.items():
 
     contract_idx = 0
     for idx, genders in idxs.items():
+        print(category)
         if category in types:
             id = SwapMeet.functions.toId(
                 [int(idx), 0, 0, 0, 0], types[category]).call()
@@ -176,15 +186,15 @@ for category, idxs in components.items():
             ids_len += 1
             rles_len += 2
 
-        if weight > 10000:
-            write_contract("%s%d" %
-                           (category.capitalize(), contract_idx), ids, rles, ids_len, rles_len)
-            contract_idx += 1
-            weight = 0
-            ids = ""
-            rles = ""
-            ids_len = 0
-            rles_len = 0
+    #     if weight > 10000:
+    #         write_contract("%sPart1x%d" %
+    #                        (category.capitalize(), contract_idx), ids, rles, ids_len, rles_len)
+    #         contract_idx += 1
+    #         weight = 0
+    #         ids = ""
+    #         rles = ""
+    #         ids_len = 0
+    #         rles_len = 0
 
-    write_contract("%s%d" % (category.capitalize(), contract_idx),
-                   ids, rles, ids_len, rles_len)
+    # write_contract("%sPart1x%d" % (category.capitalize(), contract_idx),
+    #                ids, rles, ids_len, rles_len)

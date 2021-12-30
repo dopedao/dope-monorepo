@@ -19,8 +19,8 @@ const (
 	FieldOrder = "order"
 	// EdgeWallet holds the string denoting the wallet edge name in mutations.
 	EdgeWallet = "wallet"
-	// EdgeLastSale holds the string denoting the lastsale edge name in mutations.
-	EdgeLastSale = "lastSale"
+	// EdgeLastSale holds the string denoting the last_sale edge name in mutations.
+	EdgeLastSale = "last_sale"
 	// EdgeListings holds the string denoting the listings edge name in mutations.
 	EdgeListings = "listings"
 	// EdgeItems holds the string denoting the items edge name in mutations.
@@ -34,12 +34,12 @@ const (
 	WalletInverseTable = "wallets"
 	// WalletColumn is the table column denoting the wallet relation/edge.
 	WalletColumn = "wallet_dopes"
-	// LastSaleTable is the table that holds the lastSale relation/edge.
+	// LastSaleTable is the table that holds the last_sale relation/edge.
 	LastSaleTable = "dopes"
 	// LastSaleInverseTable is the table name for the Listing entity.
 	// It exists in this package in order to avoid circular dependency with the "listing" package.
 	LastSaleInverseTable = "listings"
-	// LastSaleColumn is the table column denoting the lastSale relation/edge.
+	// LastSaleColumn is the table column denoting the last_sale relation/edge.
 	LastSaleColumn = "listing_dope_lastsales"
 	// ListingsTable is the table that holds the listings relation/edge.
 	ListingsTable = "listings"

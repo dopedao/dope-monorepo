@@ -112,13 +112,13 @@ func (dc *DopeCreate) SetWallet(w *Wallet) *DopeCreate {
 	return dc.SetWalletID(w.ID)
 }
 
-// SetLastSaleID sets the "lastSale" edge to the Listing entity by ID.
+// SetLastSaleID sets the "last_sale" edge to the Listing entity by ID.
 func (dc *DopeCreate) SetLastSaleID(id string) *DopeCreate {
 	dc.mutation.SetLastSaleID(id)
 	return dc
 }
 
-// SetNillableLastSaleID sets the "lastSale" edge to the Listing entity by ID if the given value is not nil.
+// SetNillableLastSaleID sets the "last_sale" edge to the Listing entity by ID if the given value is not nil.
 func (dc *DopeCreate) SetNillableLastSaleID(id *string) *DopeCreate {
 	if id != nil {
 		dc = dc.SetLastSaleID(*id)
@@ -126,7 +126,7 @@ func (dc *DopeCreate) SetNillableLastSaleID(id *string) *DopeCreate {
 	return dc
 }
 
-// SetLastSale sets the "lastSale" edge to the Listing entity.
+// SetLastSale sets the "last_sale" edge to the Listing entity.
 func (dc *DopeCreate) SetLastSale(l *Listing) *DopeCreate {
 	return dc.SetLastSaleID(l.ID)
 }
