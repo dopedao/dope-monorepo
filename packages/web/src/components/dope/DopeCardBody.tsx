@@ -21,10 +21,11 @@ const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
       {dope.claimed && <Row title="$PAPER" value="🚫 Claimed 🚫" />}
       {!dope.opened && <Row title="Bundled" value="✅ Ready to Unpack ✅" />}
       {dope.opened && <Row title="Bundled" value="🚫 Unpacked 🚫" />}
-      {dope.items!.map(({ id, name, type, tier }) => (
-        // @ts-ignore
-        <Row key={id} title={type} value={name} color={DopeLegendBackgroundColors[tier]} />
-      ))}
+      {dope.items &&
+        dope.items.map(({ id, name, type, tier }) => (
+          // @ts-ignore
+          <Row key={id} title={type} value={name} color={DopeLegendBackgroundColors[tier]} />
+        ))}
     </div>
   );
 };
