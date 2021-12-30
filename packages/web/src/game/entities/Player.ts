@@ -108,15 +108,18 @@ export default class Player extends Hustler
         super.update();
 
         // update depth depending other bodies
-        this.scene.matter.overlap(this, undefined, this.updateDepth);
+        const overlapped = this.scene.matter.overlap(this, undefined, this.updateDepth);
+        // reset depth if not overlapped
+        if (this.depth !== 2 && !overlapped)
+        {
+            this.setDepth(2);
+        }
 
         this.updateSensorPosition();
 
         if (Phaser.Input.Keyboard.JustUp(this.arrows.space))
-        {
             // check interact sensor
             this.tryInteraction();
-        }
 
         // get rid of previous velocity if pathfinder is not active
         if (!this.navigator.target)
