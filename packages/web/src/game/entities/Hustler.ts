@@ -61,9 +61,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
         const mainBody = Bodies.rectangle(x, y, this.width * 0.5, this.height * 0.4, {
             collisionFilter: {
-                group: -0x69
+                group: -69
             },
-            chamfer: { radius: 9 },
+            chamfer: { radius: 8.5 },
         } as MatterJS.BodyType);
         this.setExistingBody(mainBody);
         

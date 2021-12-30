@@ -8,7 +8,7 @@ import Citizen from 'game/entities/citizen/Citizen';
 import Zone from 'game/world/Zone';
 import CustomCharacter from 'game/ui/react/components/CustomCharacter';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
-import { createTextBox } from '../ui/rex/TextBox';
+import { createTextBox } from '../ui/rex/RexUtils';
 import EventHandler, { Events } from 'game/handlers/EventHandler';
 import Conversation from 'game/entities/citizen/Conversation';
 
@@ -19,6 +19,7 @@ export default class GameScene extends Scene {
   private _map!: Phaser.Tilemaps.Tilemap;
   private _hoveredTile?: Phaser.Tilemaps.Tile;
 
+  public canUseMouse: boolean = true;
   public rexUI!: RexUIPlugin;
 
   get map() { return this._map; }
@@ -35,7 +36,7 @@ export default class GameScene extends Scene {
     new GameAnimations(this.anims).create();
 
     this.input.on('pointerdown', () => {
-      if (!this.hoveredTile)
+      if (!this.canUseMouse || !this.hoveredTile)
         return;
       // transition to spot
       //this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
