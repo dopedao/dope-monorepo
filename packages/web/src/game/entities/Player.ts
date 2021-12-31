@@ -23,7 +23,7 @@ export default class Player extends Hustler
         this.inventory = inventory ?? new Inventory();
 
         // create interact sensor
-        this.interactSensor = this.scene.matter.add.rectangle(x + 50, y - 20, 40, 30, {
+        this.interactSensor = this.scene.matter.add.rectangle(x + 30, y - 40, 40, this.height, {
             isSensor: true,
         });
 
@@ -69,23 +69,19 @@ export default class Player extends Hustler
         {
             if (this.lastDirection === Direction.South)
             {
-                this.interactSensor.position.x = this.x;
-                this.interactSensor.position.y = this.y + 50;
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this.interactSensor, { x: this.x, y: this.y + 60 });
             }
             else if (this.lastDirection === Direction.North)
             {
-                this.interactSensor.position.x = this.x;
-                this.interactSensor.position.y = this.y - 50;
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this.interactSensor, { x: this.x, y: this.y - 55});
             }
             else if (this.lastDirection === Direction.West)
             {
-                this.interactSensor.position.x = this.x - 50;
-                this.interactSensor.position.y = this.y - 20;
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this.interactSensor, { x: this.x - 40, y: this.y - 40 });
             }
             else if (this.lastDirection === Direction.East)
             {
-                this.interactSensor.position.x = this.x + 50;
-                this.interactSensor.position.y = this.y - 20;
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this.interactSensor, { x: this.x + 40, y: this.y - 40 });
             }
         }
     }
@@ -106,6 +102,7 @@ export default class Player extends Hustler
     update(): void
     {
         super.update();
+        this.updateSensorPosition();
 
         // update depth depending other bodies
         const overlapped = this.scene.matter.overlap(this, undefined, this.updateDepth);
@@ -114,8 +111,6 @@ export default class Player extends Hustler
         {
             this.setDepth(2);
         }
-
-        this.updateSensorPosition();
 
         if (Phaser.Input.Keyboard.JustUp(this.arrows.space))
             // check interact sensor
@@ -159,9 +154,12 @@ export default class Player extends Hustler
             willMoveFlag = true;
         }
 
-        // normalize and scale the velocity so that sprite can't move faster along a diagonal
-        const newVel = new Phaser.Math.Vector2((this.body as MatterJS.BodyType).velocity).normalize().scale(Hustler.DEFAULT_VELOCITY);
-        this.setVelocity(newVel.x, newVel.y);
+        if (willMoveFlag)
+        {
+            // normalize and scale the velocity so that sprite can't move faster along a diagonal
+            const newVel = new Phaser.Math.Vector2((this.body as MatterJS.BodyType).velocity).normalize().scale(Hustler.DEFAULT_VELOCITY);
+            this.setVelocity(newVel.x, newVel.y);
+        }
 
         // cancel pathfinding if player moved
         if (this.navigator.target && willMoveFlag)
