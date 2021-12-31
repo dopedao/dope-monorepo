@@ -20,6 +20,7 @@ type DesktopWindowProps = {
   width?: number | string;
   height?: number | string;
   fullScreen?: boolean;
+  fullPage?: boolean;
   fullScreenHandler?: (fullScreen: boolean) => void;
   titleChildren?: ReactNode;
   balance?: string;
@@ -68,6 +69,7 @@ const DesktopWindow = ({
   width = 1024,
   height = 768,
   fullScreen,
+  fullPage,
   fullScreenHandler,
   titleChildren,
   children,
@@ -134,16 +136,18 @@ const DesktopWindow = ({
       )}
     >
       <WindowWrapper className={isFullScreen ? '' : 'floating'} height={height} width={width}>
-        <DesktopWindowTitleBar
-          title={title}
-          isTouchDevice={isTouchDevice()}
-          isFullScreen={isFullScreen}
-          toggleFullScreen={toggleFullScreen}
-          balance={data?.wallets?.edges![0]?.node?.paper}
-          loadingBalance={loading}
-        >
-          {titleChildren}
-        </DesktopWindowTitleBar>
+        {!fullPage && (
+          <DesktopWindowTitleBar
+            title={title}
+            isTouchDevice={isTouchDevice()}
+            isFullScreen={isFullScreen}
+            toggleFullScreen={toggleFullScreen}
+            balance={data?.wallets?.edges![0]?.node?.paper}
+            loadingBalance={loading}
+          >
+            {titleChildren}
+          </DesktopWindowTitleBar>
+        )}
         {children}
       </WindowWrapper>
     </ConditionalWrapper>

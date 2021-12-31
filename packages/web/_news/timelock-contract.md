@@ -1,11 +1,13 @@
 ---
-title: 'Hello world'
-excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus.'
-coverImage: '/images/news/post1.png'
-date: '2021-12-12T05:35:07.322Z'
+title: 'Timelock Contract Admin Received Under Control of DOPE DAO Governance'
+date: '2021-09-23T23:00:00.000Z'
+
+excerpt: 'Initial milestone copy: *Dope DAO receives admin for Timelock Contract - Treasury funds for development and other project efforts under the control of DAO governance.'
+coverImage: '/images/news/dope-post.png'
+coverImageText: 'john dope - dope wiki archive'
 author:
-  name: Smakosh
-  picture: '/images/authors/smakosh.jpg'
+  name: vmod
+  picture: '/images/authors/author0.webp'
 ogImage:
   url: '/images/news/post1.png'
 ---
