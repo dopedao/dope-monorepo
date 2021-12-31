@@ -53,7 +53,7 @@ export default class GameScene extends Scene {
     const world = this.map.createLayer("World", tileset, 0, 0);
 
     // render above hustlers
-    world.setDepth(1);
+    world.setDepth(0);
     // set world as being collidable
     world.setCollisionByProperty({ collides: true });
 

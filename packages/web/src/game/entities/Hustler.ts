@@ -63,14 +63,14 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             collisionFilter: {
                 group: -69
             },
-            chamfer: { radius: 8.5 },
+            chamfer: { radius: 7.2 },
         } as MatterJS.BodyType);
         this.setExistingBody(mainBody);
         
         this.setDepth(1);
 
         // offset the hustler texture from the body
-        this.setOrigin(0.5, 0.6);
+        this.setOrigin(0.5, 0.67);
         // make it a bit bigger
         this.setScale(2);
 

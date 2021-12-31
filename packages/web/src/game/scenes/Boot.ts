@@ -1,4 +1,3 @@
-import { isThursday } from 'date-fns';
 import { Scene } from 'phaser';
 
 export default class Boot extends Scene {

@@ -73,7 +73,8 @@ export default class PathNavigator
 	    			this.target = new Phaser.Math.Vector2(targetTile.getCenterX(), targetTile.getCenterY());
 	    			return;
 	    		}
-            
+
+                // set as not moving
                 this.hustler.model.updateSprites(true);
                 this.hustler.moveDirection = Direction.None;
 	    		this.target = undefined;
