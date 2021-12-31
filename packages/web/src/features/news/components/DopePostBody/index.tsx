@@ -28,7 +28,6 @@ type DopePostBodyProps = { posts: PostType[]; hasMore: boolean };
 const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
   const router = useRouter();
   const isTabletOrMobile = useBreakpointValue({ base: true, md: false });
-  console.log({ isTabletOrMobile });
   const page = useCurrentPageNumber();
   const heroPost = posts[0];
   const { leftPosts, middlePosts, rightPosts } = splitPosts(posts.slice(1), isTabletOrMobile);
