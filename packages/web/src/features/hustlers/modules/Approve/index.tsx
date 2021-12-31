@@ -187,7 +187,7 @@ const Approve = ({ hustlerConfig, makeVarConfig }: StepsProps) => {
               `}
             >
               <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
-                ✨ Initiate Hustler ✨
+                ✨ Mint Hustler ✨
               </Button>
             </PanelFooter>
           }

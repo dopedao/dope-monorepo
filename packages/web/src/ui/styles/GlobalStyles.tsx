@@ -14,6 +14,18 @@ export default function GlobalStyles() {
           }
 
           @font-face {
+            font-family: 'Dope-Display';
+            src: url('/fonts/Dope-Display.ttf');
+            font-style: normal;
+          }
+
+          @font-face {
+            font-family: 'Dope-Condensed';
+            src: url('/fonts/Dope-Condensed.ttf');
+            font-style: normal;
+          }
+
+          @font-face {
             font-family: 'Dope';
             src: url('/fonts/Dope-Regular.ttf');
             font-style: normal;
