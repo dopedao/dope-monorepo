@@ -16,6 +16,7 @@ type DesktopWindowProps = {
   width?: number | string;
   height?: number | string;
   fullScreen?: boolean;
+  fullPage?: boolean;
   fullScreenHandler?: (fullScreen: boolean) => void;
   titleChildren?: ReactNode;
   balance?: string;
@@ -64,11 +65,12 @@ const DesktopWindow = ({
   width = 1024,
   height = 768,
   fullScreen,
+  fullPage,
   fullScreenHandler,
   titleChildren,
   children,
   onResize,
-  onMoved
+  onMoved,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const { data, loading } = useWalletQuery({
@@ -77,8 +79,9 @@ const DesktopWindow = ({
   });
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
-  const [isFullScreen, setIsFullScreen] = useState(fullScreen || false);
-  const toggleFullScreen = () => (fullScreenHandler ? fullScreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen));
+  const [isFullScreen, setIsFullScreen] = useState(fullPage || fullScreen || false);
+  const toggleFullScreen = () =>
+    fullScreenHandler ? fullScreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen);
   const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
 
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
@@ -94,7 +97,7 @@ const DesktopWindow = ({
     if (el && el.getAttribute('style')) {
       const transformValue = el.getAttribute('style') || '';
       windowPosition.updatePosition(transformValue);
-      
+
       if (onMoved) {
         onMoved(windowPosition);
       }
@@ -115,16 +118,18 @@ const DesktopWindow = ({
       )}
     >
       <WindowWrapper className={isFullScreen ? '' : 'floating'} height={height} width={width}>
-        <DesktopWindowTitleBar
-          title={title}
-          isTouchDevice={isTouchDevice()}
-          isFullScreen={isFullScreen}
-          toggleFullScreen={toggleFullScreen}
-          balance={data?.wallet?.paper}
-          loadingBalance={loading}
-        >
-          {titleChildren}
-        </DesktopWindowTitleBar>
+        {!fullPage && (
+          <DesktopWindowTitleBar
+            title={title}
+            isTouchDevice={isTouchDevice()}
+            isFullScreen={isFullScreen}
+            toggleFullScreen={toggleFullScreen}
+            balance={data?.wallet?.paper}
+            loadingBalance={loading}
+          >
+            {titleChildren}
+          </DesktopWindowTitleBar>
+        )}
         {children}
       </WindowWrapper>
     </ConditionalWrapper>
