@@ -47,8 +47,8 @@ const Post = ({ post }: PostProps) => {
     return <ErrorPage statusCode={404} />;
   }
   return (
-    <AppWindow padBody={false} navbar={<Nav />}>
-      <Head ogImage={post.ogImage.url} title={post.title} />
+    <AppWindow padBody={false} navbar={<Nav />} fullScreen>
+      {post.ogImage && <Head ogImage={post.ogImage.url} title={post.title} />}
       <Container>
         {router.isFallback ? (
           <h4>Loading…</h4>
@@ -93,13 +93,13 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }: Params) => {
   const post = getPostBySlug(params.slug, [
-    'title',
     'date',
     'slug',
     'author',
     'content',
     'ogImage',
     'coverImage',
+    'title',
   ]);
   const content = await markdownToHtml(post.content || '');
 
