@@ -1,51 +1,17 @@
 import styled from '@emotion/styled';
-import { Box, Flex, Text, Button } from '@chakra-ui/react';
+import { Box, Flex, Text, Button, useBreakpointValue } from '@chakra-ui/react';
 import { PostType } from 'features/news/types';
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/image';
 import Link from 'next/link';
 import { splitPosts } from 'utils/split-news-posts';
-import { media } from 'ui/styles/mixins';
 import { truncate } from 'utils/truncateString';
 import { useRouter } from 'next/router';
 import useCurrentPageNumber from 'features/news/hooks/useCurrentPageNumber';
 
-const MiddlePosts = styled.div`
-  flex: 5;
-  order: -1;
-  text-align: center;
-
-  ${media.tablet`
-	padding: 0 5px;
-  	order: 1; 
-    border-right: 1px solid black;
-    border-left: 1px solid black;
-  `}
-
-  ${media.phone`
-    text-align: unset;
-  `}
-`;
-
-const LeftPosts = styled.div`
-  order: 0;
-  flex: 3;
-
-  padding: 0 5px;
-  ${media.tablet`
-    padding: 0 10px;
-  `}
-`;
-
-const RightPosts = styled.div`
-  order: 2;
-  flex: 3;
-
-  padding: 0 5px;
-  ${media.tablet`
-    padding: 0 10px;
-  `}
-`;
+const MiddlePosts = Box,
+  LeftPosts = Box,
+  RightPosts = Box;
 
 const Body = styled.div`
   padding-top: 8px;
@@ -61,9 +27,11 @@ type DopePostBodyProps = { posts: PostType[]; hasMore: boolean };
 
 const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
   const router = useRouter();
+  const isTabletOrMobile = useBreakpointValue({ base: true, md: false });
+  console.log({ isTabletOrMobile });
   const page = useCurrentPageNumber();
   const heroPost = posts[0];
-  const { leftPosts, middlePosts, rightPosts } = splitPosts(posts.slice(1));
+  const { leftPosts, middlePosts, rightPosts } = splitPosts(posts.slice(1), isTabletOrMobile);
 
   if (!heroPost)
     return (
@@ -77,40 +45,48 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
   return (
     <Body>
       <Flex width="full" flexWrap="wrap" justifyContent="space-between">
-        <LeftPosts>
-          {leftPosts.map((post, index) => {
-            const isFirst = index == 0;
-            return (
-              <>
-                <Box
-                  borderTop={isFirst ? undefined : '1px solid black'}
-                  borderBottom={isFirst ? undefined : '1px solid black'}
-                  padding={isFirst ? '20px 0px' : '10px 0px'}
-                  marginBottom={isFirst ? '0' : '2'}
-                >
-                  <Link href={`/news/${post.slug}`} passHref>
-                    <Text
-                      as="a"
-                      css={css`
-                        max-width: 600px;
-                      `}
-                      padding={isFirst ? '20px 0px' : '10px 0px'}
-                      color="#000"
-                      fontWeight="normal"
-                      textTransform="uppercase"
-                      lineHeight="30px"
-                      fontSize={isFirst ? '3xl' : '2xl'}
-                    >
-                      {post.title}
-                    </Text>
-                  </Link>
-                </Box>
-                <Text fontSize="md">{truncate(post.excerpt)}</Text>
-              </>
-            );
-          })}
-        </LeftPosts>
-        <MiddlePosts>
+        {Boolean(leftPosts.length) && (
+          <LeftPosts flex={3} padding="0 10px">
+            {leftPosts.map((post, index) => {
+              const isLargerTitle = index == 0;
+              return (
+                <>
+                  <Box
+                    borderTop={isLargerTitle ? undefined : '1px solid black'}
+                    borderBottom={isLargerTitle ? undefined : '1px solid black'}
+                    padding={isLargerTitle ? '20px 0px' : '10px 0px'}
+                    marginBottom={isLargerTitle ? '0' : '2'}
+                  >
+                    <Link href={`/news/${post.slug}`} passHref>
+                      <Text
+                        as="a"
+                        css={css`
+                          max-width: 600px;
+                        `}
+                        padding={isLargerTitle ? '20px 0px' : '10px 0px'}
+                        color="#000"
+                        fontWeight="normal"
+                        textTransform="uppercase"
+                        lineHeight="30px"
+                        fontSize={isLargerTitle ? '3xl' : '2xl'}
+                      >
+                        {post.title}
+                      </Text>
+                    </Link>
+                  </Box>
+                  <Text fontSize="md">{truncate(post.excerpt)}</Text>
+                </>
+              );
+            })}
+          </LeftPosts>
+        )}
+        <MiddlePosts
+          flex={{ base: 1, md: 5 }}
+          textAlign={{ base: 'center', md: 'unset' }}
+          padding="0 5px"
+          borderRight={{ md: '1px solid black' }}
+          borderLeft={{ md: '1px solid black' }}
+        >
           <Box padding="20px">
             <Link href={`/news/${heroPost.slug}`} passHref>
               <Text
@@ -177,17 +153,17 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
             </Box>
           ))}
         </MiddlePosts>
-        <RightPosts>
+        <RightPosts flex={{ base: 1, md: 3 }} padding={{ base: '0 5px', md: '0 10px' }}>
           {rightPosts.map((post, index) => {
-            const isFirst = index == 0;
+            const isLargerTitle = index == 0 && !isTabletOrMobile;
 
             return (
               <>
                 <Box
-                  borderTop={isFirst ? undefined : '1px solid black'}
-                  borderBottom={isFirst ? undefined : '1px solid black'}
-                  padding={isFirst ? '20px 0px' : '10px 0px'}
-                  marginBottom={isFirst ? '0' : '2'}
+                  borderTop={isLargerTitle ? undefined : '1px solid black'}
+                  borderBottom={isLargerTitle ? undefined : '1px solid black'}
+                  padding={isLargerTitle ? '20px 0px' : '10px 0px'}
+                  marginBottom={isLargerTitle ? '0' : '2'}
                 >
                   <Link href={`/news/${post.slug}`} passHref>
                     <Text
@@ -199,7 +175,7 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
                       fontWeight="normal"
                       textTransform="uppercase"
                       lineHeight="30px"
-                      fontSize={isFirst ? '3xl' : '2xl'}
+                      fontSize={isLargerTitle ? '3xl' : '2xl'}
                     >
                       {post.title}
                     </Text>
