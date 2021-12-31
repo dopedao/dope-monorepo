@@ -72,38 +72,74 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 				for _, asset := range ret.Assets {
 					var amount *big.Int
+					onSale := false
 					if asset.SellOrders != nil {
 						amount = asset.SellOrders[0].CurrentPrice.Big()
 						fmt.Println(asset.SellOrders[0].CurrentPrice)
+						onSale = true
 					} else {
 						amount = big.NewInt(0)
 					}
 
 					if err := tx.Asset.
 						Create().
-						SetID(fmt.Sprintf("%s", asset.ID)).
+						SetID(fmt.Sprintf("%d", asset.ID)).
 						SetAddress(string(asset.AssetContract.Address)).
 						SetSymbol(asset.AssetContract.Symbol).SetType("ETH").
 						SetAmount(schema.BigInt{Int: amount}).
+						SetDecimals(18).
 						OnConflictColumns("id").
-						Update(func(a *ent.AssetUpsert) {
-							a.AddAmount(schema.BigInt{Int: amount})
-						}).
+						UpdateNewValues().
 						Exec(ctx); err != nil {
 						fmt.Errorf("Error upserting to asset: %w", err)
+						return err
 					}
 
-					// if err := tx.Commit(); err != nil {
-					// 	return fmt.Errorf("committing transaction: %v", err)
-					// }
-
-					// Save to listings with asset record
+					for _, listing := range asset.SellOrders {
+						fmt.Println("Iterating over: %s", fmt.Sprintf("%d", asset.ID))
+						fmt.Println("order hash is: %s", fmt.Sprintf("%d", listing.OrderHash))
+						// TODO: Query for this listing ID, only update if listing amount has changed
+						// err := tx.Listing.
+						// 	Query().
+						// 	Where(listing.Has)
+						if err := tx.Listing.
+							Create().
+							SetID(listing.OrderHash).
+							SetSource("OPENSEA").
+							SetActive(onSale).
+							SetDopeID(asset.TokenID).
+							AddOutputIDs(fmt.Sprintf("%d", asset.ID)). // output for sale
+							// AddInputIDs(fmt.Sprintf("%d", asset.ID)).
+							OnConflictColumns("id").
+							Update(func(o *ent.ListingUpsert) {
+								o.SetActive(onSale)
+							}).
+							// UpdateNewValues().
+							Exec(ctx); err != nil {
+							fmt.Println("Error upserting to asset: %w", err)
+							return err
+						}
+						fmt.Println("Saved: %s", fmt.Sprintf("%d", asset.ID))
+					}
+					// // Save to listings with asset record
 					// if asset.LastSale != nil {
-					// 	fmt.Printf("Get last sale price from here")
-					// 	fmt.Println(asset.LastSale.TotalPrice)
-					// }
+					// 	if err := tx.Listing.
+					// 		Create().
+					// 		SetID(asset.LastSale.Transaction.BlockHash).
+					// 		SetSource("OPENSEA").
+					// 		SetActive(false).
+					// 		SetDopeID(asset.TokenID).
+					// 		AddDopeLastsaleIDs(fmt.Sprintf("%d", asset.ID)).
+					// 		// AddInputIDs(fmt.Sprintf("%d", asset.ID)).
+					// 		OnConflictColumns("id").
+					// 		UpdateNewValues().
+					// 		Exec(ctx); err != nil {
+					// 		fmt.Errorf("Error upserting to asset: %w", err)
+					// 		return err
+					// 	}
 
 				}
+				fmt.Printf("Finished total assets: %d\n", len(ret.Assets))
 				return nil
 			}); err != nil {
 				log.Fatalf("Error with opensea collection %+v", err)
