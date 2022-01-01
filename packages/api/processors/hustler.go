@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/big"
+	"os"
 	"strings"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
@@ -46,6 +47,17 @@ var (
 	ringSlot      = big.NewInt(13)
 	accessorySlot = big.NewInt(14)
 )
+
+// HACK: Update addresses for testnet contracts. Stop gap until processors support dependency injection.
+func init() {
+	if os.Getenv("NETWORK") == "testnet" {
+		componentsAddr = common.HexToAddress("0xA9d6Ef18457c4d87Ba77d5c22569c93a41b8f326")
+	}
+
+	if os.Getenv("NETWORK") == "testnet" {
+		hustlerAddr = common.HexToAddress("0x5701ff301d67174d63B271cf321e3886d518370d")
+	}
+}
 
 type HustlerProcessor struct {
 	bindings.UnimplementedHustlerProcessor

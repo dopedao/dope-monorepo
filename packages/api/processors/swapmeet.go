@@ -50,17 +50,17 @@ func (p *SwapMeetProcessor) Setup(address common.Address, eth interface {
 func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapMeetSetRle, tx *ent.Tx) error {
 	male, err := p.Contract.TokenRle(nil, e.Id, 0)
 	if err != nil {
-		return fmt.Errorf("getting male item rle: %w", err)
+		return fmt.Errorf("getting item %s male rle: %w", e.Id.String(), err)
 	}
 
 	female, err := p.Contract.TokenRle(nil, e.Id, 1)
 	if err != nil {
-		return fmt.Errorf("getting female item rle: %w", err)
+		return fmt.Errorf("getting item %s female rle: %w", e.Id.String(), err)
 	}
 
 	metadata, err := p.Contract.TokenURI(nil, e.Id)
 	if err != nil {
-		return fmt.Errorf("getting metadata item rle: %w", err)
+		return fmt.Errorf("getting item %s metadata: %w", e.Id.String(), err)
 	}
 
 	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
