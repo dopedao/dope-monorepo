@@ -173,8 +173,7 @@ export default class Player extends Hustler
         // cancel pathfinding if player moved
         if (this.navigator.target && willMoveFlag)
         {
-            this.navigator.path = [];
-            this.navigator.target = undefined;
+            this.navigator.cancel();
             return;
         }
 
