@@ -1801,6 +1801,7 @@ __metadata:
     react-countdown: ^2.3.2
     react-dom: ^17.0.2
     react-draggable: ^4.4.4
+    react-hot-toast: ^2.1.1
     react-infinite-scroller: ^1.2.4
     react-markdown: ^7.0.1
     react-table: ^7.7.0
@@ -15176,6 +15177,15 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
+"goober@npm:^2.0.35":
+  version: 2.1.1
+  resolution: "goober@npm:2.1.1"
+  peerDependencies:
+    csstype: ^2.6.2
+  checksum: 19a6622aea23b915bbf48c50389e9a1755b80cd3735dad1e22a1fe5c343f9d22b69269cc1dd37fc0548671c9c7de062d4ad56e5342c598cbc4467e1ce92bc133
+  languageName: node
+  linkType: hard
+
 "got@npm:9.6.0, got@npm:^9.6.0":
   version: 9.6.0
   resolution: "got@npm:9.6.0"
@@ -23867,6 +23877,18 @@ fsevents@~2.1.1:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0
   checksum: 520b12a4496be21b3228bbf938657f6c33f868e486a0cd355d8bec918129d2c1bf7aabecb20aecdb446a1fbdb61b16f680b5d15b998f544f1b5c0dc5c8914c40
+  languageName: node
+  linkType: hard
+
+"react-hot-toast@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "react-hot-toast@npm:2.1.1"
+  dependencies:
+    goober: ^2.0.35
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 029d375d50a937143d21d71c11d4ad00dbb58a6ca12a50378a7bd80fe294821def6f7a5b9a53404d31230d1fed5246453a73b9f90bc85811036e53b802ad790f
   languageName: node
   linkType: hard
 
