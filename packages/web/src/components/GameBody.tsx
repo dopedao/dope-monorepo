@@ -3,12 +3,12 @@ import { IonPhaser } from '@ion-phaser/react';
 import DesktopWindow from "components/DesktopWindow";
 import Phaser from "phaser";
 import { useGame } from "hooks/useGame";
-import { gameConfig } from "game/constants/GameConfig";
+import { defaultGameConfig } from "game/constants/GameConfig";
 
 export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConfig}) {
     const gameRef = useRef<HTMLDivElement>(null);
     
-    const game = useGame(gameConfig, gameRef);
+    const game = useGame(props.gameConfig ?? defaultGameConfig, gameRef);
 
     const nativeFullscreen = () => {
         game?.scale.toggleFullscreen();
