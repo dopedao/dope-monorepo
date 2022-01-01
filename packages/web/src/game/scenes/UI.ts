@@ -43,7 +43,6 @@ export default class UIScene extends Scene {
   
     create(): void {
         this.toaster = this.add.reactDom(Toaster);
-        this.scale.on(Phaser.Scale.Events.RESIZE, () => this.toaster.setState({}));
         this._handleEvents();
     }
 

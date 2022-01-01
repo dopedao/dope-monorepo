@@ -28,9 +28,14 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
             onResize={() => {
                 if (game && gameRef.current)
                 {
+                    // NOTE: Must be inject before game canvas!
+                    // inject domcontainer for gameobjects that use it
+                    gameRef.current.appendChild(game.domContainer);
                     // inject canvas into div                    
                     gameRef.current.appendChild(game.canvas);
+                    // update parent
                     game.scale.parent = gameRef.current;
+                    
 
                     // update scale accordingly
                     game.scale.setParentSize(gameRef.current.clientWidth, gameRef.current.clientHeight);
