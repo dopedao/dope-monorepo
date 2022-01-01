@@ -1,5 +1,3 @@
-import TextBox from 'phaser3-rex-plugins/templates/ui/textbox/textbox';
-import GameScene from '../../scenes/Game';
 import Palette from 'game/constants/Palette';
 import UIScene from 'game/scenes/UI';
 

@@ -4,8 +4,6 @@ import Player from "game/entities/Player";
 import EventHandler, { Events } from "game/handlers/EventHandler";
 import Quest from "game/quests/Quest";
 import DialogueTextBox from "game/ui/rex/DialogueTextBox";
-import { createTextBox } from "game/ui/rex/RexUtils";
-import SpeechBubbleTextBox from "game/ui/rex/SpeechBubbleTextBox";
 import { Scene } from "phaser";
 import { ComponentManager } from "phaser3-react/src/manager";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
@@ -112,7 +110,7 @@ export default class UIScene extends Scene {
         const icon: string = '👾';
         // handle quest events
         EventHandler.emitter().on(Events.PLAYER_NEW_QUEST, (quest: Quest) => {
-            
+
             // TODO: Add line break and quest description when escape sequences are supported
             toast(`New quest: ${quest.name}`, { ...toastStyle, icon: icon });
         })

@@ -2,8 +2,6 @@ import UIScene from "game/scenes/UI";
 import TextBox from "phaser3-rex-plugins/templates/ui/textbox/TextBox";
 import { CreateSpeechBubbleShape, getBBcodeText } from "game/ui/rex/RexUtils";
 import Palette from "game/constants/Palette";
-import Click from "phaser3-rex-plugins/templates/ui/click/Click";
-import CustomShapes from "phaser3-rex-plugins/plugins/customshapes";
 
 interface TextBoxConfig
 {
