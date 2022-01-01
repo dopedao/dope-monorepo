@@ -44,6 +44,7 @@ export default class Player extends Hustler
     addQuest(quest: Quest)
     {
         this._quests.push(quest);
+        EventHandler.emitter().emit(Events.PLAYER_NEW_QUEST, quest);
     }
 
     handleEvents()

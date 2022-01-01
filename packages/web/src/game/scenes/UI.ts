@@ -1,21 +1,34 @@
-import { isThisMonth } from "date-fns";
 import Citizen from "game/entities/citizen/Citizen";
 import Conversation from "game/entities/citizen/Conversation";
 import Player from "game/entities/Player";
 import EventHandler, { Events } from "game/handlers/EventHandler";
 import Quest from "game/quests/Quest";
-import ToastManager from "game/ui/react/components/ToastManager";
 import DialogueTextBox from "game/ui/rex/DialogueTextBox";
 import { createTextBox } from "game/ui/rex/RexUtils";
 import SpeechBubbleTextBox from "game/ui/rex/SpeechBubbleTextBox";
 import { Scene } from "phaser";
 import { ComponentManager } from "phaser3-react/src/manager";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
+import toast, { Toaster } from "react-hot-toast";
+import { ToastOptions } from "react-hot-toast/dist/core/types";
 import GameScene from "./Game";
+
+const toastStyle: ToastOptions = {
+    duration: 5000,
+    icon: 'ℹ️',
+    position: 'top-right',
+    style: {
+      borderRadius: '5px',
+      backdropFilter: 'blur(8px)',
+      background: 'transparent',
+      color: '#fff',
+    },
+};
 
 export default class UIScene extends Scene {
     public rexUI!: RexUIPlugin;
-    public toastComponent!: ComponentManager;;
+
+    public toaster!: ComponentManager;
 
     public player!: Player;
 
@@ -31,8 +44,15 @@ export default class UIScene extends Scene {
     }
   
     create(): void {
-        this.toastComponent = this.add.reactDom(ToastManager);
+        this.toaster = this.add.reactDom(Toaster);
+        this.scale.on(Phaser.Scale.Events.RESIZE, () => this.toaster.setState({}));
         this._handleEvents();
+    }
+
+    private _handleEvents()
+    {
+        this._handleInteractions();
+        this.handleQuests();
     }
 
     private _handleInteractions()
@@ -89,18 +109,16 @@ export default class UIScene extends Scene {
 
     private handleQuests()
     {
+        const icon: string = '👾';
         // handle quest events
         EventHandler.emitter().on(Events.PLAYER_NEW_QUEST, (quest: Quest) => {
             
+            // TODO: Add line break and quest description when escape sequences are supported
+            toast(`New quest: ${quest.name}`, { ...toastStyle, icon: icon });
         })
         EventHandler.emitter().on(Events.PLAYER_COMPLETE_QUEST, (quest: Quest) => {
-            
+            toast(`Completed quest: ${quest.name}`, { ...toastStyle, icon: icon });
         });
-    }
-
-    private _handleEvents()
-    {
-        this._handleInteractions();
     }
 }
   

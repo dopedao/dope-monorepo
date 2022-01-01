@@ -12,6 +12,7 @@ import { createTextBox } from '../ui/rex/RexUtils';
 import EventHandler, { Events } from 'game/handlers/EventHandler';
 import Conversation from 'game/entities/citizen/Conversation';
 import { TypeKind } from 'graphql';
+import Quest from 'game/quests/Quest';
 
 export default class GameScene extends Scene {
   private player!: Player;
@@ -60,10 +61,20 @@ export default class GameScene extends Scene {
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
-    let points: Phaser.Math.Vector2[] = [ new Phaser.Math.Vector2(200, 400), new Phaser.Math.Vector2(700, 400), new Phaser.Math.Vector2(700, 350) ];
+    let points: Phaser.Math.Vector2[] = [ new Phaser.Math.Vector2(200, 400), new Phaser.Math.Vector2(700, 400) ];
     points = points.map(point => world.worldToTileXY(point.x, point.y));
 
     this.citizens.push(
+      new Citizen(
+        'Michel', 
+        'Patrick is not evil', 
+        [new Conversation('Give me some clothes please', () => {
+          console.log('Conversation complete callback from Conversation: Give me some clothes please');
+          this.player.addQuest(new Quest("Mr.Crackhead", "Get him some clothes ASAP"));
+        })], 
+        points, false,
+        matterWorld, 600, 350, new HustlerModel(Base.Male, [], Feet.NikeCortez, Hands.BlackGloves, undefined, Necklace.Gold)),
+
       new Citizen(
       'Patrick', 
       'Patrick is evil', 
@@ -71,13 +82,6 @@ export default class GameScene extends Scene {
       new Conversation('Hello again!', () => console.log('Conversation complete callback from Conversation: Hello again!'))], 
       points, false,
       matterWorld, 400, 400, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves)),
-      
-      new Citizen(
-      'Michel', 
-      'Patrick is not evil', 
-      [new Conversation('Give me some clothes please', () => console.log('Conversation complete callback from Conversation: Give me some clothes please'))], 
-      points, false,
-      matterWorld, 600, 350, new HustlerModel(Base.Male, [], Feet.NikeCortez, Hands.BlackGloves, undefined, Necklace.Gold))
     );
   
 
