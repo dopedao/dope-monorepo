@@ -1,6 +1,7 @@
 import HustlerModel from "game/gfx/models/HustlerModel";
 import EventHandler, { Events } from "game/handlers/EventHandler";
 import Inventory from "game/inventory/Inventory";
+import Quest from "game/quests/Quest";
 import Citizen from "./citizen/Citizen";
 import Hustler, { Direction } from "./Hustler";
 
@@ -12,15 +13,17 @@ export default class Player extends Hustler
     private interactSensor: MatterJS.BodyType;
 
     private inventory: Inventory;
-    private _busy: boolean = false;
+    private _quests: Array<Quest> = new Array();
 
-    get busy() { return this._busy; }
+    get quests() { return this._quests; }
 
-    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, inventory?: Inventory)
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, inventory?: Inventory, quests?: Array<Quest>)
     {
         super(world, x, y, model);
         
         this.inventory = inventory ?? new Inventory();
+        if (quests)
+            this._quests = quests;
 
         // create interact sensor
         this.interactSensor = this.scene.matter.add.rectangle(x + 30, y - 40, 40, this.height, {
@@ -36,6 +39,11 @@ export default class Player extends Hustler
         }) as Phaser.Types.Input.Keyboard.CursorKeys;
 
         this.handleEvents();
+    }
+
+    addQuest(quest: Quest)
+    {
+        this._quests.push(quest);
     }
 
     handleEvents()
