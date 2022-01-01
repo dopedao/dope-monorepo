@@ -64,24 +64,27 @@ export default class GameScene extends Scene {
     let points: Phaser.Math.Vector2[] = [ new Phaser.Math.Vector2(200, 400), new Phaser.Math.Vector2(700, 400) ];
     points = points.map(point => world.worldToTileXY(point.x, point.y));
 
+    let points2: Phaser.Math.Vector2[] = [ new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600) ];
+    points2 = points.map(point => world.worldToTileXY(point.x, point.y));
+
     this.citizens.push(
       new Citizen(
+        matterWorld, 600, 350, new HustlerModel(Base.Male, [], Feet.NikeCortez, Hands.BlackGloves, undefined, Necklace.Gold),
         'Michel', 
         'Patrick is not evil', 
         [new Conversation('Give me some clothes please', () => {
-          console.log('Conversation complete callback from Conversation: Give me some clothes please');
           this.player.addQuest(new Quest("Mr.Crackhead", "Get him some clothes ASAP"));
+          return false;
         })], 
-        points, false,
-        matterWorld, 600, 350, new HustlerModel(Base.Male, [], Feet.NikeCortez, Hands.BlackGloves, undefined, Necklace.Gold)),
+        points, true,),
 
       new Citizen(
+      matterWorld, 500, 600, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves),
       'Patrick', 
       'Patrick is evil', 
-      [new Conversation('Hello', () => console.log('Conversation complete callback from Conversation: Hello')), 
-      new Conversation('Hello again!', () => console.log('Conversation complete callback from Conversation: Hello again!'))], 
-      points, false,
-      matterWorld, 400, 400, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves)),
+      [new Conversation('Hello', () => false), 
+      new Conversation('Hello again!', () => true)], 
+      points2, true,),
     );
   
 

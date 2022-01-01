@@ -18,7 +18,7 @@ const toastStyle: ToastOptions = {
     style: {
       borderRadius: '5px',
       backdropFilter: 'blur(8px)',
-      background: 'transparent',
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
       color: '#fff',
     },
 };
@@ -56,52 +56,46 @@ export default class UIScene extends Scene {
     private _handleInteractions()
     {
         EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, (npc: Citizen) => {
-            // open textbox
-            const conv: Conversation | undefined = npc.conversations.shift();
-            
-            if (conv)
-            {
-                // disable inputs
-                (this.player.scene as GameScene).canUseMouse = false;
-                this.player.scene.input.keyboard.enabled = false;
-                new DialogueTextBox(this, 500, 500, 65,)
-                    .start(conv.text, 50)
-                    .on('destroy', () => {
-                        // re-enable inputs
-                        (this.player.scene as GameScene).canUseMouse = true;
-                        this.player.scene.input.keyboard.enabled = true;
+            if (npc.conversations.length === 0) return;
 
-                        // TODO: Move somewhere else, maybe in the Citizen class?
-                        EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_COMPLETE, npc);
+            // get upcoming conversation
+            const conv: Conversation = npc.conversations[0];
 
-                        // call conversation oncomplete
-                        if (conv.onComplete)
-                            conv.onComplete();
-                    });
+            // disable inputs
+            (this.player.scene as GameScene).canUseMouse = false;
+            this.player.scene.input.keyboard.enabled = false;
+            new DialogueTextBox(this, 500, 500, 65,)
+                .start(conv.text, 50)
+                .on('destroy', () => {
+                    // re-enable inputs
+                    (this.player.scene as GameScene).canUseMouse = true;
+                    this.player.scene.input.keyboard.enabled = true;
+                    // TODO: Move somewhere else, maybe in the Citizen class?
+                    EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_COMPLETE, npc);
 
-
-
-                // Chat bubbles
-                // let pos = new Phaser.Math.Vector2(npc.x, npc.y - (npc.height / 1.2));
-                // pos = this.cameras.main.worl
-
-                // npc.x
-                // new SpeechBubbleTextBox(this, pos.x, pos.y)
-                //     .setScale(1)
-                //     .start(conv.text, 50)
-                //     .on('destroy', () => {
-                //         // re-enable inputs
-                //         (this.player.scene as GameScene).canUseMouse = true;
-                //         this.player.scene.input.keyboard.enabled = true;
-
-                //         // TODO: Move somewhere else, maybe in the Citizen class?
-                //         EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_COMPLETE, npc);
-
-                //         // call conversation oncomplete
-                //         if (conv.onComplete)
-                //             conv.onComplete();
-                //     });
-            }
+                    // if the conversation is not marked as complete, push it to the array again
+                    if (conv.onFinish)
+                        if (conv.onFinish())
+                            npc.conversations.shift();
+                });
+                
+            // Chat bubbles
+            // let pos = new Phaser.Math.Vector2(npc.x, npc.y - (npc.height / 1.2));
+            // pos = this.cameras.main.worl
+            // npc.x
+            // new SpeechBubbleTextBox(this, pos.x, pos.y)
+            //     .setScale(1)
+            //     .start(conv.text, 50)
+            //     .on('destroy', () => {
+            //         // re-enable inputs
+            //         (this.player.scene as GameScene).canUseMouse = true;
+            //         this.player.scene.input.keyboard.enabled = true;
+            //         // TODO: Move somewhere else, maybe in the Citizen class?
+            //         EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_COMPLETE, npc);
+            //         // call conversation oncomplete
+            //         if (conv.onComplete)
+            //             conv.onComplete();
+            //     });
         });
     }
 

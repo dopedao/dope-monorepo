@@ -2,11 +2,12 @@ export default class Conversation
 {
     text: string;
 
-    onComplete?: () => void;
+    // return true if the conversation is completed
+    onFinish?: () => boolean;
 
-    constructor(text: string, onComplete?: () => void)
+    constructor(text: string, onFinish?: () => boolean)
     {
         this.text = text;
-        this.onComplete = onComplete;
+        this.onFinish = onFinish;
     }
 }

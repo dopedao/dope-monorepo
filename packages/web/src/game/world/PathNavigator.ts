@@ -9,7 +9,7 @@ export default class PathNavigator
 
     private grid!: PF.Grid;
 
-    public path: Phaser.Math.Vector2[] = [];
+    public path: Phaser.Math.Vector2[] = new Array();
     public target?: Phaser.Math.Vector2;
 
     private previousPosition?: Phaser.Math.Vector2;

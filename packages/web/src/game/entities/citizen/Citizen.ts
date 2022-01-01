@@ -6,22 +6,28 @@ export default class Citizen extends Hustler
 {
     readonly name: string;
     readonly description: string;
-    conversations: Conversation[];
+    conversations: Conversation[] = new Array();
 
     // all of the points that the citizen will walk through
-    path: Phaser.Math.Vector2[];
+    path: Phaser.Math.Vector2[] = new Array();
     // repeat path
-    repeatPath: boolean;
+    repeatPath: boolean = false;
 
-    constructor(name: string, description: string, conversations: Conversation[] = new Array(), path: Phaser.Math.Vector2[] = new Array(), repeatPath: boolean = true, world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel)
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, name: string, description: string, conversations?: Conversation[], path?: Phaser.Math.Vector2[], repeatPath?: boolean)
     {
         super(world, x, y, model);
     
         this.name = name;
         this.description = description;
-        this.conversations = conversations;
-        this.path = path;
-        this.repeatPath = repeatPath;
+
+        if (conversations)
+            this.conversations = conversations;
+        
+        if (path)
+            this.path = path;
+        
+        if (repeatPath)
+            this.repeatPath = repeatPath;
     }
 
     update()
