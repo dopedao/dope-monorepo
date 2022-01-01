@@ -8,12 +8,17 @@ export default class Citizen extends Hustler
     readonly description: string;
     conversations: Conversation[] = new Array();
 
-    // all of the points that the citizen will walk through
-    path: Phaser.Math.Vector2[] = new Array();
+    // the path that the citizen is currently following
+    // Vector2 is used for tile coordinates,
+    // and number is used for the number of seconds that the citizen has to wait before going to the 
+    // next point
+    path: (Phaser.Math.Vector2 | number)[] = new Array();
     // repeat path
     repeatPath: boolean = false;
 
-    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, name: string, description: string, conversations?: Conversation[], path?: Phaser.Math.Vector2[], repeatPath?: boolean)
+    lastPointTimestamp: number = 0;
+
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, name: string, description: string, conversations?: Conversation[], path?: (Phaser.Math.Vector2 | number)[], repeatPath?: boolean)
     {
         super(world, x, y, model);
     
@@ -38,8 +43,18 @@ export default class Citizen extends Hustler
         {
             const nextPoint = this.path.shift();
             if (nextPoint)
-            {    
-                this.navigator.moveTo(nextPoint.x, nextPoint.y);
+            {
+                if (typeof nextPoint === "number" && new Date().getTime() - this.lastPointTimestamp < nextPoint * 1000)
+                {
+                    // NOTE: this is a hack to make the citizen wait for a certain amount of time before going to the next point
+                    // wait there's really an unshift method??? 
+                    this.path.unshift(nextPoint);
+                    return;
+                }
+                else if (typeof nextPoint === "number")
+                    this.lastPointTimestamp = new Date().getTime();
+                else
+                    this.navigator.moveTo(nextPoint.x, nextPoint.y);
 
                 // if repeatpath is enabled, we push our shifted point (first point in this case) back to the end of the path
                 if (this.repeatPath)
