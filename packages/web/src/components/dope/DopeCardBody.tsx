@@ -22,9 +22,9 @@ const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
       {!dope.opened && <Row title="Bundled" value="✅ Ready to Unpack ✅" />}
       {dope.opened && <Row title="Bundled" value="🚫 Unpacked 🚫" />}
       {dope.items &&
-        dope.items.map(({ id, name, type, tier }) => (
+        dope.items.map(({ id, fullname, type, tier }) => (
           // @ts-ignore
-          <Row key={id} title={type} value={name} color={DopeLegendBackgroundColors[tier]} />
+          <Row key={id} title={type} value={fullname} color={DopeLegendBackgroundColors[tier]} />
         ))}
     </div>
   );

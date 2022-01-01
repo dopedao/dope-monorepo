@@ -31,6 +31,7 @@ export type DopeCardProps = {
       tier: ItemTier;
       greatness: number;
       count: number;
+      fullname: string;
     }[];
   };
   isExpanded?: boolean;

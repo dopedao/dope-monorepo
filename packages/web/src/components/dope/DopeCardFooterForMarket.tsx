@@ -9,7 +9,7 @@ import { DopeCardProps } from './DopeCard';
 //   window.open(url, 'dopeWarsList')?.focus();
 // };
 
-// const ContextSensitiveButton = ({ bag }: FooterForMarketProps) => {
+// const ContextSensitiveButton = ({ dope }: DopeCardFooterForMarketProps) => {
 //   const isOnSale = bag.open_sea_asset?.is_on_sale;
 //   const price = bag.open_sea_asset?.current_sale_price;
 //   return (
@@ -25,7 +25,7 @@ import { DopeCardProps } from './DopeCard';
 //   );
 // };
 
-// const LastSaleOrNever = ({ bag }: FooterForMarketProps) => {
+// const LastSaleOrNever = ({ dope }: DopeCardFooterForMarketProps) => {
 //   const lastSalePrice = bag.open_sea_asset?.last_sale_price;
 //   if (lastSalePrice)
 //     return (
@@ -40,7 +40,9 @@ import { DopeCardProps } from './DopeCard';
 //   return <></>;
 // };
 
-const DopeCardFooterForMarket = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
+type DopeCardFooterForMarketProps = Pick<DopeCardProps, 'dope'>;
+
+const DopeCardFooterForMarket = ({ dope }: DopeCardFooterForMarketProps) => {
   return (
     <>
       {/* <div
@@ -48,10 +50,10 @@ const DopeCardFooterForMarket = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
           text-align: center;
         `}
       >
-        <LastSaleOrNever bag={bag} />
-      </div> */}
-      {/* <div>
-        <ContextSensitiveButton bag={bag} />
+        <LastSaleOrNever dope={dope} />
+      </div>
+      <div>
+        <ContextSensitiveButton dope={dope} />
       </div> */}
     </>
   );
