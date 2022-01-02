@@ -59,7 +59,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // create main body
         const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
-        const mainBody = Bodies.rectangle(x, y, this.width * 0.5, this.height * 0.4, {
+        const mainBody = Bodies.rectangle(x, y, this.width * 0.48, this.height * 0.35, {
             collisionFilter: {
                 group: -69
             },
@@ -70,7 +70,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this.setDepth(1);
 
         // offset the hustler texture from the body
-        this.setOrigin(0.5, 0.67);
+        this.setOrigin(0.5, 0.70);
         // make it a bit bigger
         this.setScale(2);
 
