@@ -54,9 +54,12 @@ export default class UIScene extends Scene {
     }
 
     update(time: number, delta: number): void {
-        if (this.currentInteraction)
+        // if the player moves too far away from the "owner" of the current interaction
+        // cancel it. 
+        if (this.currentInteraction?.textBox instanceof DialogueTextBox)
         {
             const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
+            const citizen = this.currentInteraction.citizen;
             const citizenPos = new Phaser.Math.Vector2(this.currentInteraction.citizen.x, this.currentInteraction.citizen.y);
 
             if (playerPos.distance(citizenPos) > this.currentInteraction.maxDistance)
@@ -65,6 +68,17 @@ export default class UIScene extends Scene {
                 this.currentInteraction.citizen.onInteractionFinish();
                 this.currentInteraction.textBox.destroy();
                 this.currentInteraction = undefined;
+
+                EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_CANCEL, citizen);
+
+                toast("You ran away from the conversation!", {
+                    ...toastStyle,
+                    icon: '🚫',
+                    style: {
+                        ...toastStyle.style,
+                        backgroundColor: 'rgba(255, 0, 0, 0.6)',
+                    }
+                });
             }
         }
     }
@@ -85,6 +99,8 @@ export default class UIScene extends Scene {
 
             const textBox = new DialogueTextBox(this, 500, 500, 65,)
                 .start(conv.text, 50)
+                // called only when the interaction is COMPLETE
+                // will not be called if the gameobject is destroyed in any way
                 .on('complete', () => {
                     textBox.destroy();
                     this.currentInteraction = undefined;
