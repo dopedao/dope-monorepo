@@ -70,15 +70,6 @@ export default class UIScene extends Scene {
                 this.currentInteraction = undefined;
 
                 EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_CANCEL, citizen);
-
-                toast("You ran away from the conversation!", {
-                    ...toastStyle,
-                    icon: '🚫',
-                    style: {
-                        ...toastStyle.style,
-                        backgroundColor: 'rgba(255, 0, 0, 0.6)',
-                    }
-                });
             }
         }
     }
@@ -91,6 +82,17 @@ export default class UIScene extends Scene {
 
     private _handleInteractions()
     {
+        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_CANCEL, (citizen: Citizen) => {
+            toast("You ran away from the conversation!", {
+                ...toastStyle,
+                icon: '🚫',
+                style: {
+                    ...toastStyle.style,
+                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
+                }
+            });
+        });
+
         EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, (citizen: Citizen) => {
             if (citizen.conversations.length === 0) return;
 
