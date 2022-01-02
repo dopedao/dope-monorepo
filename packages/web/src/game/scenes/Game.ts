@@ -61,7 +61,7 @@ export default class GameScene extends Scene {
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
-    let points = [ new Phaser.Math.Vector2(200, 400), 5, new Phaser.Math.Vector2(700, 400) ];
+    let points = [ new Phaser.Math.Vector2(200, 400), 1, new Phaser.Math.Vector2(700, 400) ];
     points = points.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
 
     let points2 = [ new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600) ];
@@ -78,13 +78,13 @@ export default class GameScene extends Scene {
         })], 
         points, true,),
 
-      new Citizen(
-      matterWorld, 500, 600, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves),
-      'Patrick', 
-      'Patrick is evil', 
-      [new Conversation('Hello', () => false), 
-      new Conversation('Hello again!', () => true)], 
-      points2, true,),
+      // new Citizen(
+      // matterWorld, 500, 600, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves),
+      // 'Patrick', 
+      // 'Patrick is evil', 
+      // [new Conversation('Hello', () => false), 
+      // new Conversation('Hello again!', () => true)], 
+      // points2, true,),
     );
   
 

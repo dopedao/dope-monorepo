@@ -16,7 +16,7 @@ export default class Citizen extends Hustler
     // repeat path
     repeatPath: boolean = false;
 
-    lastPointTimestamp: number = 0;
+    lastPointTimestamp?: number;
 
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, name: string, description: string, conversations?: Conversation[], path?: (Phaser.Math.Vector2 | number)[], repeatPath?: boolean)
     {
@@ -39,22 +39,32 @@ export default class Citizen extends Hustler
     {
         super.update();
 
-        if (!this.navigator.target)
+        // if the citizen has no target currently, check if he has a next point and move to it
+        // or, if lastPointTimestamp is set, check if the time has passed and move to the next point
+        if (!this.navigator.target || this.lastPointTimestamp)
         {
             const nextPoint = this.path.shift();
+
             if (nextPoint)
             {
-                if (typeof nextPoint === "number" && new Date().getTime() - this.lastPointTimestamp < nextPoint * 1000)
-                {
-                    // NOTE: this is a hack to make the citizen wait for a certain amount of time before going to the next point
-                    // wait there's really an unshift method??? 
-                    this.path.unshift(nextPoint);
-                    return;
-                }
-                else if (typeof nextPoint === "number")
-                    this.lastPointTimestamp = new Date().getTime();
-                else
+                if (nextPoint instanceof Phaser.Math.Vector2)
                     this.navigator.moveTo(nextPoint.x, nextPoint.y);
+                else if (!this.lastPointTimestamp)
+                    this.lastPointTimestamp = Date.now();
+                else
+                {
+                    
+                    const timeSinceLastPoint = Date.now() - this.lastPointTimestamp;
+                    if (timeSinceLastPoint < nextPoint * 1000)
+                    {
+                        // NOTE: this is a hack to make the citizen wait for a certain amount of time before going to the next point
+                        // wait there's really an unshift method??? 
+                        this.path.unshift(nextPoint);
+                        return;
+                    }
+
+                    this.lastPointTimestamp = undefined;
+                }                
 
                 // if repeatpath is enabled, we push our shifted point (first point in this case) back to the end of the path
                 if (this.repeatPath)
