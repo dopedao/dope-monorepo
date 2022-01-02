@@ -16,9 +16,13 @@ export default class Citizen extends Hustler
     // repeat path
     repeatPath: boolean = false;
 
+    // should continue following the path
+    // if false, the citizen will not follow its path and move until its true
+    shouldFollowPath: boolean = true;
+
     lastPointTimestamp?: number;
 
-    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, name: string, description: string, conversations?: Conversation[], path?: (Phaser.Math.Vector2 | number)[], repeatPath?: boolean)
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, name: string, description: string, conversations?: Conversation[], path?: (Phaser.Math.Vector2 | number)[], repeatPath?: boolean, shouldFollowPath?: boolean)
     {
         super(world, x, y, model);
     
@@ -27,12 +31,30 @@ export default class Citizen extends Hustler
 
         if (conversations)
             this.conversations = conversations;
-        
         if (path)
             this.path = path;
-        
         if (repeatPath)
             this.repeatPath = repeatPath;
+        if (shouldFollowPath)
+            this.shouldFollowPath = shouldFollowPath;
+        
+    }
+
+    // called when npc enters in an interaction
+    onInteraction()
+    {
+        this.shouldFollowPath = false;
+        this.navigator.cancel();
+    }
+
+    // called when the interaction is over
+    onInteractionFinish()
+    {
+        // delay before npc starts following his path again
+        const delay = 5000;
+        setTimeout(() => {
+            this.shouldFollowPath = true;
+        }, delay);
     }
 
     update()
@@ -41,7 +63,7 @@ export default class Citizen extends Hustler
 
         // if the citizen has no target currently, check if he has a next point and move to it
         // or, if lastPointTimestamp is set, check if the time has passed and move to the next point
-        if (!this.navigator.target || this.lastPointTimestamp)
+        if (this.shouldFollowPath && (!this.navigator.target || this.lastPointTimestamp))
         {
             const nextPoint = this.path.shift();
 

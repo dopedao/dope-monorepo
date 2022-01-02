@@ -3,7 +3,7 @@ import Hustler from 'game/entities/Hustler';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
-import Player from 'game/entities/Player';
+import Player from 'game/entities/player/Player';
 import Citizen from 'game/entities/citizen/Citizen';
 import Zone from 'game/world/Zone';
 import CustomCharacter from 'game/ui/react/components/CustomCharacter';
@@ -111,6 +111,9 @@ export default class GameScene extends Scene {
     this.player.update();
     this.citizens.forEach(citizen => citizen.update());
 
+    // if cant use the mouse, no need to check for hovering
+    if (!this.canUseMouse)
+      return;
     // loop over the world's layer tiles and check if they intersect with the mouse
     // not the best method but just for demonstration purposes
     const worldLayer = this.map.getLayer('Below Player');

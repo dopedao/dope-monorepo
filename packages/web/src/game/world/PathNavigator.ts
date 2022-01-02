@@ -8,6 +8,8 @@ export default class PathNavigator
     private hustler: Hustler;
     private pathFinder: PF.Finder; 
 
+    private onMoved?: () => void;
+
     private grid!: PF.Grid;
 
     public path: Phaser.Math.Vector2[] = new Array();
@@ -15,10 +17,12 @@ export default class PathNavigator
 
     private previousPosition?: Phaser.Math.Vector2;
 
-    constructor(hustler: Hustler, pathFinder: PF.Finder)
+    constructor(hustler: Hustler, pathFinder: PF.Finder, onMoved?: () => void)
     {
         this.hustler = hustler;
         this.pathFinder = pathFinder;
+
+        this.onMoved = onMoved;
     }
 
     moveTo(x: number, y: number)
@@ -94,6 +98,8 @@ export default class PathNavigator
 
                 // stop pathfinding
                 this.stop();
+                if (this.onMoved)
+                    this.onMoved();
 	    	}
 	    }
 

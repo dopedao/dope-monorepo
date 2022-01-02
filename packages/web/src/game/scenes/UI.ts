@@ -1,6 +1,6 @@
 import Citizen from "game/entities/citizen/Citizen";
 import Conversation from "game/entities/citizen/Conversation";
-import Player from "game/entities/Player";
+import Player from "game/entities/player/Player";
 import EventHandler, { Events } from "game/handlers/EventHandler";
 import Quest from "game/quests/Quest";
 import DialogueTextBox from "game/ui/rex/DialogueTextBox";
@@ -62,18 +62,19 @@ export default class UIScene extends Scene {
 
             // disable inputs
             (this.player.scene as GameScene).canUseMouse = false;
-            this.player.scene.input.keyboard.enabled = false;
+            //his.player.scene.input.keyboard.enabled = false;
 
             // prevent sticky keys bug
             this.player.scene.input.keyboard.resetKeys();
 
-            new DialogueTextBox(this, 500, 500, 65,)
+            const dialogTextBox = new DialogueTextBox(this, 500, 500, 65,)
                 .start(conv.text, 50)
                 .on('destroy', () => {
                     // re-enable inputs
                     (this.player.scene as GameScene).canUseMouse = true;
                     this.player.scene.input.keyboard.enabled = true;
                     // TODO: Move somewhere else, maybe in the Citizen class?
+                    npc.onInteractionFinish();
                     EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_COMPLETE, npc);
 
                     // if the conversation is not marked as complete, push it to the array again
@@ -81,6 +82,11 @@ export default class UIScene extends Scene {
                         if (conv.onFinish())
                             npc.conversations.shift();
                 });
+            
+            this.player.scene.input.keyboard.on(Phaser.Input.Keyboard.Events.KEY_DOWN, (event: Phaser.Input.Keyboard.Key) => {
+                // skip dialog
+                dialogTextBox.emit('pointerdown');
+            });
                 
             // Chat bubbles
             // let pos = new Phaser.Math.Vector2(npc.x, npc.y - (npc.height / 1.2));

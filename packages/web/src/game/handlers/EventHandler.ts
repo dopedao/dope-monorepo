@@ -1,6 +1,8 @@
 export enum Events
 {
     // add events
+    PLAYER_OPEN_INVENTORY = 'player_open_inventory',
+
     PLAYER_ENTER_ZONE = 'player_enter_zone',
     PLAYER_LEAVE_ZONE = 'player_leave_zone',
     PLAYER_INTERACT_NPC = 'player_interact_npc',
@@ -18,10 +20,14 @@ export default class EventHandler
         EventHandler._emitter = new Phaser.Events.EventEmitter();
         
         // handle events
+        EventHandler._emitter.on(Events.PLAYER_OPEN_INVENTORY, () => console.log('Opened inventory'));
+
         EventHandler._emitter.on(Events.PLAYER_ENTER_ZONE, () => console.log('Entered zone'));
         EventHandler._emitter.on(Events.PLAYER_LEAVE_ZONE, () => console.log('Left zone'));
+        
         EventHandler._emitter.on(Events.PLAYER_INTERACT_NPC, () => console.log('Started interaction with NPC'));
         EventHandler._emitter.on(Events.PLAYER_INTERACT_NPC_COMPLETE, () => console.log('Completed interaction with NPC'));
+        
         EventHandler._emitter.on(Events.PLAYER_NEW_QUEST, () => console.log('New quest'));
         EventHandler._emitter.on(Events.PLAYER_COMPLETE_QUEST, () => console.log('Completed quest'));
     }
