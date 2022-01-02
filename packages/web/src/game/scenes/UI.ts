@@ -11,6 +11,13 @@ import toast, { Toaster } from "react-hot-toast";
 import { ToastOptions } from "react-hot-toast/dist/core/types";
 import GameScene from "./Game";
 
+interface Interaction
+{
+    citizen: Citizen;
+    textBox: DialogueTextBox;
+    maxDistance: number;
+}
+
 const toastStyle: ToastOptions = {
     duration: 5000,
     icon: 'ℹ️',
@@ -25,10 +32,10 @@ const toastStyle: ToastOptions = {
 
 export default class UIScene extends Scene {
     public rexUI!: RexUIPlugin;
-
     public toaster!: ComponentManager;
 
     public player!: Player;
+    public currentInteraction?: Interaction;
 
     constructor() {
       super({
@@ -46,47 +53,53 @@ export default class UIScene extends Scene {
         this._handleEvents();
     }
 
+    update(time: number, delta: number): void {
+        if (this.currentInteraction)
+        {
+            const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
+            const citizenPos = new Phaser.Math.Vector2(this.currentInteraction.citizen.x, this.currentInteraction.citizen.y);
+
+            if (playerPos.distance(citizenPos) > this.currentInteraction.maxDistance)
+            {
+                // onInteractionFinish!!! not complete.
+                this.currentInteraction.citizen.onInteractionFinish();
+                this.currentInteraction.textBox.destroy();
+                this.currentInteraction = undefined;
+            }
+        }
+    }
+
     private _handleEvents()
     {
         this._handleInteractions();
-        this.handleQuests();
+        this._handleQuests();
     }
 
     private _handleInteractions()
     {
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, (npc: Citizen) => {
-            if (npc.conversations.length === 0) return;
+        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, (citizen: Citizen) => {
+            if (citizen.conversations.length === 0) return;
 
             // get upcoming conversation
-            const conv: Conversation = npc.conversations[0];
+            const conv: Conversation = citizen.conversations[0];
 
-            // disable inputs
-            (this.player.scene as GameScene).canUseMouse = false;
-            //his.player.scene.input.keyboard.enabled = false;
-
-            // prevent sticky keys bug
-            this.player.scene.input.keyboard.resetKeys();
-
-            const dialogTextBox = new DialogueTextBox(this, 500, 500, 65,)
+            const textBox = new DialogueTextBox(this, 500, 500, 65,)
                 .start(conv.text, 50)
-                .on('destroy', () => {
-                    // re-enable inputs
-                    (this.player.scene as GameScene).canUseMouse = true;
-                    this.player.scene.input.keyboard.enabled = true;
+                .on('complete', () => {
+                    textBox.destroy();
+                    this.currentInteraction = undefined;
+
                     // TODO: Move somewhere else, maybe in the Citizen class?
-                    npc.onInteractionFinish();
-                    EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_COMPLETE, npc);
+                    citizen.onInteractionFinish();
+                    EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_COMPLETE, citizen);
 
                     // if the conversation is not marked as complete, push it to the array again
                     if (conv.onFinish)
                         if (conv.onFinish())
-                            npc.conversations.shift();
+                            citizen.conversations.shift();
                 });
+            this.currentInteraction = { citizen, textBox, maxDistance: 100 };
             
-            this.player.scene.input.keyboard.on(Phaser.Input.Keyboard.Events.KEY_DOWN, (event: Phaser.Input.Keyboard.Key) => {
-                // skip dialog
-                dialogTextBox.emit('pointerdown');
-            });
                 
             // Chat bubbles
             // let pos = new Phaser.Math.Vector2(npc.x, npc.y - (npc.height / 1.2));
@@ -108,7 +121,7 @@ export default class UIScene extends Scene {
         });
     }
 
-    private handleQuests()
+    private _handleQuests()
     {
         const icon: string = '👾';
         // handle quest events
