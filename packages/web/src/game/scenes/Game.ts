@@ -78,13 +78,13 @@ export default class GameScene extends Scene {
         })], 
         points, true,),
 
-      // new Citizen(
-      // matterWorld, 500, 600, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves),
-      // 'Patrick', 
-      // 'Patrick is evil', 
-      // [new Conversation('Hello', () => false), 
-      // new Conversation('Hello again!', () => true)], 
-      // points2, true,),
+      new Citizen(
+      matterWorld, 500, 600, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves),
+      'Patrick', 
+      'Patrick is evil', 
+      [new Conversation('Hello', () => false), 
+      new Conversation('Hello again!', () => true)], 
+      points2, true,),
     );
   
 

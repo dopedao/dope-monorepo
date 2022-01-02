@@ -2,8 +2,7 @@ import HustlerAnimator from "game/anims/HustlerAnimator";
 import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
 import HustlerModel from "game/gfx/models/HustlerModel";
 import PathNavigator from "game/world/PathNavigator";
-import { BodyType } from "matter";
-import Pathfinding from "pathfinding";
+import PF from "pathfinding";
 
 export enum Direction
 {
@@ -16,7 +15,7 @@ export enum Direction
 
 export default class Hustler extends Phaser.Physics.Matter.Sprite
 {
-    public static readonly DEFAULT_VELOCITY: number = 1.7;
+    public static readonly DEFAULT_VELOCITY: number = 1.3;
     public static readonly DEFAULT_MASS: number = 70;
 
     // the direction the player is currently moving in
@@ -81,9 +80,11 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this._model.createSprites();
 
         // create navigator
-        this._navigator = new PathNavigator(this, new Pathfinding.BreadthFirstFinder({
-            diagonalMovement: Pathfinding.DiagonalMovement.Always,
-        }));
+        this._navigator = new PathNavigator(this, new PF.AStarFinder({
+            // heuristic: PF.Heuristic.chebyshev,
+            allowDiagonal: true,
+            dontCrossCorners: true,
+        } as any));
         // handle animations
         this._animator = new HustlerAnimator(this);
     }

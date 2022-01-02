@@ -6,7 +6,7 @@ import phaserReact from "phaser3-react";
 import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin"
 import UIScene from "game/scenes/UI";
 
-export const gameConfig: Phaser.Types.Core.GameConfig = {
+export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
     title: "proto",
     type: Phaser.AUTO,
     parent: "game-parent",

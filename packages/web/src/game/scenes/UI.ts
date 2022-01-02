@@ -43,7 +43,6 @@ export default class UIScene extends Scene {
   
     create(): void {
         this.toaster = this.add.reactDom(Toaster);
-        this.scale.on(Phaser.Scale.Events.RESIZE, () => this.toaster.setState({}));
         this._handleEvents();
     }
 
@@ -64,6 +63,10 @@ export default class UIScene extends Scene {
             // disable inputs
             (this.player.scene as GameScene).canUseMouse = false;
             this.player.scene.input.keyboard.enabled = false;
+
+            // prevent sticky keys bug
+            this.player.scene.input.keyboard.resetKeys();
+
             new DialogueTextBox(this, 500, 500, 65,)
                 .start(conv.text, 50)
                 .on('destroy', () => {

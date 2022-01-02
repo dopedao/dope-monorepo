@@ -100,8 +100,6 @@ export default class Player extends Hustler
         const playerBodyType: MatterJS.BodyType = (player as MatterJS.BodyType)
         const otherBodyType: MatterJS.BodyType = (other as MatterJS.BodyType);
 
-        console.log(otherBodyType.position.y - playerBodyType.position.y);
-
         if ((otherBodyType.position.y - playerBodyType.position.y) > 20)
             playerBodyType.gameObject.setDepth(0);
         else if ((otherBodyType.position.y - playerBodyType.position.y) < -15)
@@ -173,8 +171,7 @@ export default class Player extends Hustler
         // cancel pathfinding if player moved
         if (this.navigator.target && willMoveFlag)
         {
-            this.navigator.path = [];
-            this.navigator.target = undefined;
+            this.navigator.cancel();
             return;
         }
 

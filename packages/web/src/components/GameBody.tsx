@@ -3,12 +3,12 @@ import { IonPhaser } from '@ion-phaser/react';
 import DesktopWindow from "components/DesktopWindow";
 import Phaser from "phaser";
 import { useGame } from "hooks/useGame";
-import { gameConfig } from "game/constants/GameConfig";
+import { defaultGameConfig } from "game/constants/GameConfig";
 
 export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConfig}) {
     const gameRef = useRef<HTMLDivElement>(null);
     
-    const game = useGame(gameConfig, gameRef);
+    const game = useGame(props.gameConfig ?? defaultGameConfig, gameRef);
 
     const nativeFullscreen = () => {
         game?.scale.toggleFullscreen();
@@ -28,8 +28,12 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
             onResize={() => {
                 if (game && gameRef.current)
                 {
+                    // NOTE: Must be inject before game canvas!
+                    // inject domcontainer for gameobjects that use it
+                    gameRef.current.appendChild(game.domContainer);
                     // inject canvas into div                    
                     gameRef.current.appendChild(game.canvas);
+                    // update parent
                     game.scale.parent = gameRef.current;
 
                     // update scale accordingly
