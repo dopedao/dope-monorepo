@@ -1768,6 +1768,7 @@ __metadata:
     "@types/node": ^16.10.2
     "@types/pathfinding": ^0.0.5
     "@types/react": 17.0.9
+    "@types/react-dom": ^17.0.11
     "@types/react-infinite-scroller": ^1.2.2
     "@web3-react/core": ^6.1.9
     "@web3-react/injected-connector": ^6.0.7
@@ -1792,12 +1793,15 @@ __metadata:
     parse-data-url: ^4.0.1
     pathfinding: ^0.4.18
     phaser: ^3.55.2
+    phaser3-react: ^1.2.6
+    phaser3-rex-plugins: ^1.1.65
     prettier: ^2.4.1
     raw-loader: ^4.0.2
     react: 17.0.2
     react-countdown: ^2.3.2
-    react-dom: 17.0.2
+    react-dom: ^17.0.2
     react-draggable: ^4.4.4
+    react-hot-toast: ^2.1.1
     react-infinite-scroller: ^1.2.4
     react-markdown: ^7.0.1
     react-table: ^7.7.0
@@ -6076,6 +6080,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:^17.0.11":
+  version: 17.0.11
+  resolution: "@types/react-dom@npm:17.0.11"
+  dependencies:
+    "@types/react": "*"
+  checksum: 4d5730dffbef86c887cecad7e3cecda424ce6a64d0b5441c63b5b015d48219868660a2bb1aa15e897e565ad8867fa6b885d4358b04e1c4e589ba4c07c3fda55c
+  languageName: node
+  linkType: hard
+
 "@types/react-infinite-scroller@npm:^1.2.2":
   version: 1.2.2
   resolution: "@types/react-infinite-scroller@npm:1.2.2"
@@ -6104,6 +6117,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: c626e3ca42b6173b0617102af6c1c8c6068f69fafeba51f5d614962cabaf98a5706295081941ece93da04117268cb0aad471be87e76dde7e0d5f79a46280c586
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^16.9.31":
+  version: 16.14.21
+  resolution: "@types/react@npm:16.14.21"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 9660ea0a2c7ad364295c1e5abd6b98a05fd372a0f06f97850f60fcc254bcec766d19b101c0acc382746a4e0b71848d88097a1db7124e3fd441c0472fb6b3f849
   languageName: node
   linkType: hard
 
@@ -13504,7 +13528,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:^3.1.0":
+"eventemitter3@npm:^3.1.0, eventemitter3@npm:^3.1.2":
   version: 3.1.2
   resolution: "eventemitter3@npm:3.1.2"
   checksum: 81e4e82b8418f5cfd986d2b4a2fa5397ac4eb8134e09bcb47005545e22fdf8e9e61d5c053d34651112245aae411bdfe6d0ad5511da0400743fef5fc38bfcfbe3
@@ -15150,6 +15174,15 @@ fsevents@~2.1.1:
   bin:
     gluegun: bin/gluegun
   checksum: a74b3522c706c7a409089c55d0a296b720cd0d6d5132250c9154eb5db3696fe3b3bdf2a4f9d91a5932afc4f4281fad92d66b9f2e8f5e63d9d8450757ff19e8cd
+  languageName: node
+  linkType: hard
+
+"goober@npm:^2.0.35":
+  version: 2.1.1
+  resolution: "goober@npm:2.1.1"
+  peerDependencies:
+    csstype: ^2.6.2
+  checksum: 19a6622aea23b915bbf48c50389e9a1755b80cd3735dad1e22a1fe5c343f9d22b69269cc1dd37fc0548671c9c7de062d4ad56e5342c598cbc4467e1ce92bc133
   languageName: node
   linkType: hard
 
@@ -22336,6 +22369,13 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
+"papaparse@npm:^5.3.1":
+  version: 5.3.1
+  resolution: "papaparse@npm:5.3.1"
+  checksum: 3431917bb46f8952e49ca64ecc9107ddf05291573ef666c8fac4e172b57780d131f1af925b47841039bd5ae0ceadc2eafbcb8183c092307442f85eed11f82b69
+  languageName: node
+  linkType: hard
+
 "parallel-transform@npm:^1.1.0":
   version: 1.2.0
   resolution: "parallel-transform@npm:1.2.0"
@@ -22795,6 +22835,31 @@ fsevents@~2.1.1:
   version: 2.1.0
   resolution: "performance-now@npm:2.1.0"
   checksum: 534e641aa8f7cba160f0afec0599b6cecefbb516a2e837b512be0adbe6c1da5550e89c78059c7fabc5c9ffdf6627edabe23eb7c518c4500067a898fa65c2b550
+  languageName: node
+  linkType: hard
+
+"phaser3-react@npm:^1.2.6":
+  version: 1.2.6
+  resolution: "phaser3-react@npm:1.2.6"
+  dependencies:
+    "@types/react": ^16.9.31
+    eventemitter3: ^4.0.0
+  peerDependencies:
+    phaser: ^3.22.0
+    react: ^16.13.1
+    react-dom: ^16.13.1
+  checksum: bbb3b643dcd230f713dd743f4c15482b132012862cff464254473a82113d9af453733a76dde53f713b6a721420fc0abbb02dd042089f9a8a1037272939a45b09
+  languageName: node
+  linkType: hard
+
+"phaser3-rex-plugins@npm:^1.1.65":
+  version: 1.1.65
+  resolution: "phaser3-rex-plugins@npm:1.1.65"
+  dependencies:
+    eventemitter3: ^3.1.2
+    papaparse: ^5.3.1
+    webfontloader: ^1.6.28
+  checksum: 352e56587384e06018df081858fbee3ef3dc8022c29e2f117255090651e4b75cda6de1483d026a3ea8a2e73ff30ca11e0861dc533613cae466dac21310b199e6
   languageName: node
   linkType: hard
 
@@ -23759,7 +23824,7 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
-"react-dom@npm:17.0.2":
+"react-dom@npm:^17.0.2":
   version: 17.0.2
   resolution: "react-dom@npm:17.0.2"
   dependencies:
@@ -23812,6 +23877,18 @@ fsevents@~2.1.1:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0
   checksum: 520b12a4496be21b3228bbf938657f6c33f868e486a0cd355d8bec918129d2c1bf7aabecb20aecdb446a1fbdb61b16f680b5d15b998f544f1b5c0dc5c8914c40
+  languageName: node
+  linkType: hard
+
+"react-hot-toast@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "react-hot-toast@npm:2.1.1"
+  dependencies:
+    goober: ^2.0.35
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 029d375d50a937143d21d71c11d4ad00dbb58a6ca12a50378a7bd80fe294821def6f7a5b9a53404d31230d1fed5246453a73b9f90bc85811036e53b802ad790f
   languageName: node
   linkType: hard
 
@@ -29295,6 +29372,13 @@ resolve@^2.0.0-next.3:
     web3-shh: 1.6.1
     web3-utils: 1.6.1
   checksum: 7801651d5a830faac3d985a27767b0c53145bea17db8c0d60f180119808aaec61df980674adb78fc3b87fac9311d43d62efefb6462f432b95509c2cb226fb0e5
+  languageName: node
+  linkType: hard
+
+"webfontloader@npm:^1.6.28":
+  version: 1.6.28
+  resolution: "webfontloader@npm:1.6.28"
+  checksum: cbebbe593cb0d27dbb4d418f7f96bd9893024f1f2062e858af76209b6524e25d766964b6e2a724f3b694fadef661dd3a01065455a96df05337b3281ca09ab656
   languageName: node
   linkType: hard
 

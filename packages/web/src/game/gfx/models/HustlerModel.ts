@@ -63,64 +63,74 @@ export default class HustlerModel
 
     public set weapon(value: Weapons | undefined) {
         this._weapon = value;
-        if (this.sprites[CharacterCategories.Weapons])
-            this.weapon != undefined ?
-                this.updateSprite(CharacterCategories.Weapons, this.weapon as number) :
-                this.sprites[CharacterCategories.Weapons].setVisible(false);
+        this.updateSprite(CharacterCategories.Weapons, 'weapon');
     }
     public set ring(value: Ring | undefined) {
         this._ring = value;
-        if (this.sprites[CharacterCategories.Ring])
-            this.ring != undefined ?
-                this.updateSprite(CharacterCategories.Ring, this.ring as number) :
-                this.sprites[CharacterCategories.Ring].setVisible(false);
+        this.updateSprite(CharacterCategories.Ring, 'ring');
     }
     public set necklace(value: Necklace | undefined) {
         this._necklace = value;
-        if (this.sprites[CharacterCategories.Necklace])
-            this.necklace != undefined ?
-                this.updateSprite(CharacterCategories.Necklace, this.necklace as number) :
-                this.sprites[CharacterCategories.Necklace].setVisible(false);
+        this.updateSprite(CharacterCategories.Necklace, 'necklace');
     }
     public set mask(value: Mask | undefined) {
         this._mask = value;
-        if (this.sprites[CharacterCategories.Mask])
-            this.mask != undefined ?
-                this.updateSprite(CharacterCategories.Mask, this.mask as number) :
-                this.sprites[CharacterCategories.Mask].setVisible(false);
+        this.updateSprite(CharacterCategories.Mask, 'mask');
     }
     public set hands(value: Hands | undefined) {
         this._hands = value;
-        if (this.sprites[CharacterCategories.Hands])
-            this.hands != undefined ?
-                this.updateSprite(CharacterCategories.Hands, this.hands as number) :
-                this.sprites[CharacterCategories.Hands].setVisible(false);
+        this.updateSprite(CharacterCategories.Hands, 'hands');
     }
     public set feet(value: Feet | undefined) {
         this._feet = value;
-        if (this.sprites[CharacterCategories.Feet])
-            this.feet != undefined ?
-                this.updateSprite(CharacterCategories.Feet, this.feet as number) :
-                this.sprites[CharacterCategories.Feet].setVisible(false);
+        this.updateSprite(CharacterCategories.Feet, 'feet');
     }
     public set clothes(value: Array<Clothes> | undefined) {
         this._clothes = value;
         this.updateClothesSprites();
     }
 
-    updateOrigin(x: number, y: number)
+    setDepth(value: number)
+    {
+        this.clothesSprites.forEach(sprite => sprite.setDepth(value));
+        Object.values(this.sprites).forEach(sprite => sprite.setDepth(value));
+    }
+
+    setOrigin(x: number, y: number)
     {
         this.clothesSprites.forEach(sprite => sprite.setOrigin(x, y));
         Object.values(this.sprites).forEach(sprite => sprite.setOrigin(x, y));
     }
 
-    updateSprite(category: CharacterCategories, type: number)
+    // field is the identifier of a field in the class, for eg.
+    // this.feet = this['feet'], feet is the field
+    updateSprite(category: CharacterCategories, field: string)
     {
-        const sprite = this.sprites[category];
-        if (!sprite.visible)
-            sprite.setVisible(true);
+        // we dont need to recreate the sprite gameobject every time
+        // if it already exists then just replace its texture, else, 
+        // instantiate a new gameobject
+        if (this.sprites[category])
+        {
+            const sprite = this.sprites[category];
+            if ((this as any)[field] != undefined)
+            {
+                if (!sprite.visible)
+                    sprite.setVisible(true);
 
-        sprite.setTexture((this.BASE_MAP[category] as {[key: number]: string})[type]);
+                sprite.setTexture((this.BASE_MAP[category] as {[key: number]: string})[(this as any)[field]], this.hustler.anims.currentFrame.index);
+            }
+            // if the sprite type is undefined, then just set the gameobjects visibility to false
+            else {
+                sprite.setVisible(false);
+            }   
+        }
+        else
+        {
+            this.sprites[category] = this.hustler.scene.add.sprite(
+                this.hustler.x, this.hustler.y, 
+                (this.BASE_MAP[category] as {[key: number]: string})[(this as any)[field]], 
+                this.hustler.anims.currentFrame.index).setScale(this.hustler.scaleX, this.hustler.scaleY)
+        }
     }
 
     updateClothesSprites()
@@ -139,7 +149,7 @@ export default class HustlerModel
     createSprites()
     {
         // Shadow
-        this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Shadow]);
+        //this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Shadow]);
 
         // Clothes
         if (this.clothes)
@@ -159,8 +169,8 @@ export default class HustlerModel
         if (this.weapon != undefined)
             this.sprites[CharacterCategories.Weapons] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Weapons][this.weapon]);
 
-        this.clothesSprites.forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY));
-        Object.values(this.sprites).forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY));
+        this.clothesSprites.forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY) && sprite.setDepth(this.hustler.depth));
+        Object.values(this.sprites).forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY) && sprite.setDepth(this.hustler.depth));
     }
 
     // pos: boolean, if pos is true, the position of the sprites will get updated

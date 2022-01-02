@@ -1,6 +1,7 @@
 import Hustler, { Direction } from "game/entities/Hustler";
 import GameScene from "game/scenes/Game";
 import PF from "pathfinding";
+import { runInThisContext } from "vm";
 
 export default class PathNavigator
 {
@@ -9,7 +10,7 @@ export default class PathNavigator
 
     private grid!: PF.Grid;
 
-    public path: Phaser.Math.Vector2[] = [];
+    public path: Phaser.Math.Vector2[] = new Array();
     public target?: Phaser.Math.Vector2;
 
     private previousPosition?: Phaser.Math.Vector2;
@@ -45,6 +46,23 @@ export default class PathNavigator
         }
     }
 
+    cancel()
+    {
+        this.path = [];
+        this.stop();
+    }
+
+    stop()
+    {
+        if (this.target)
+        {
+            // set as not moving
+            this.hustler.model.updateSprites(true);
+            this.hustler.moveDirection = Direction.None;
+            this.target = undefined;
+        }
+    }
+
     update()
     {
         let dx = 0;
@@ -55,11 +73,11 @@ export default class PathNavigator
 	    	dx = this.target.x - this.hustler.x;
 	    	dy = this.target.y - this.hustler.y;
 
-	    	if (Math.abs(dx) < 20)
+	    	if (Math.abs(dx) < 7)
 	    	{
 	    		dx = 0;
 	    	}
-	    	if (Math.abs(dy) < 20)
+	    	if (Math.abs(dy) < 7)
 	    	{
 	    		dy = 0;
 	    	}
@@ -73,8 +91,9 @@ export default class PathNavigator
 	    			this.target = new Phaser.Math.Vector2(targetTile.getCenterX(), targetTile.getCenterY());
 	    			return;
 	    		}
-            
-	    		this.target = undefined;
+
+                // stop pathfinding
+                this.stop();
 	    	}
 	    }
 
@@ -84,6 +103,9 @@ export default class PathNavigator
 	    const down = dy > 0;
 
         let willMoveFlag = false;
+
+        // clear previous frame velocity
+        this.hustler.setVelocity(0);
 
         if (up)
         {
@@ -113,6 +135,13 @@ export default class PathNavigator
             this.hustler.setVelocityX(Hustler.DEFAULT_VELOCITY);
             this.hustler.model.updateSprites(true);
             willMoveFlag = true;
+        }
+
+        if (willMoveFlag)
+        {
+            // normalize and scale the velocity so that sprite can't move faster along a diagonal
+            const newVel = new Phaser.Math.Vector2((this.hustler.body as MatterJS.BodyType).velocity).normalize().scale(Hustler.DEFAULT_VELOCITY);
+            this.hustler.setVelocity(newVel.x, newVel.y);
         }
 
         // if stuck in a corner, move in the direction of the other corner

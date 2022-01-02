@@ -5,7 +5,7 @@ export default class Zone
 {
     private body: MatterJS.BodyType;
     private scene: Phaser.Scene;
-    private objects: Array<Phaser.GameObjects.GameObject>;
+    private objects?: Array<Phaser.GameObjects.GameObject>;
 
     private inside: boolean = false;
 
@@ -13,7 +13,7 @@ export default class Zone
     private onEnter?: () => void;
     private onExit?: () => void;
 
-    constructor(body: MatterJS.BodyType, scene: Phaser.Scene, objects: Array<Phaser.GameObjects.GameObject>, onEnter?: () => void, onExit?: () => void)
+    constructor(body: MatterJS.BodyType, scene: Phaser.Scene, objects?: Array<Phaser.GameObjects.GameObject>, onEnter?: () => void, onExit?: () => void)
     {
         this.body = body;
 
