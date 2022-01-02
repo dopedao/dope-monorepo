@@ -62,6 +62,10 @@ export default class Player extends Hustler
             const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType).gameObject;
             if (otherGameObject instanceof Citizen)
             {
+                // prevent setTimeout in onInteractionFinish
+                // from setting shouldFollowPath back to true again when in interaction
+                if (!(otherGameObject as Citizen).shouldFollowPath)
+                    return;
                 // call onInteraction method of citizen
                 otherGameObject.onInteraction();
                 EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, otherGameObject);
