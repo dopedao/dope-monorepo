@@ -1,41 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import Boot from "game/scenes/Boot";
-import GameScene from "game/scenes/Game";
-import Preload from "game/scenes/Preload";
 import { IonPhaser } from '@ion-phaser/react';
 import DesktopWindow from "components/DesktopWindow";
 import Phaser from "phaser";
 import { useGame } from "hooks/useGame";
-import { getAccountPath } from "@ethersproject/hdnode";
+import { defaultGameConfig } from "game/constants/GameConfig";
 
 export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConfig}) {
     const gameRef = useRef<HTMLDivElement>(null);
     
-    const game = useGame({
-        title: "proto",
-        type: Phaser.AUTO,
-        parent: "gameElement",
-        dom: {
-            createContainer: true,
-        },
-        scale: {
-            width: "100%",
-            height: "100%",
-            mode: Phaser.Scale.FIT,
-            fullscreenTarget: "gameElement"
-        },
-        physics: {
-            default: 'matter',
-            matter: {
-                debug: true,
-                gravity: { y: 0 }
-            }
-        },
-        render: {
-            pixelArt: true,
-        },
-        scene: [Boot, Preload, GameScene]
-    }, gameRef);
+    const game = useGame(props.gameConfig ?? defaultGameConfig, gameRef);
 
     const nativeFullscreen = () => {
         game?.scale.toggleFullscreen();
@@ -51,20 +24,27 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
             fullScreenHandler={undefined}
             // update bounds when window gets moved around
             onMoved={() => game?.scale.updateBounds()}
-            // update scale when window ios resized
+            // update scale when window is resized
             onResize={() => {
                 if (game && gameRef.current)
                 {
-                    console.log(gameRef.current.clientWidth, gameRef.current?.clientHeight);
+                    // NOTE: Must be inject before game canvas!
+                    // inject domcontainer for gameobjects that use it
+                    gameRef.current.appendChild(game.domContainer);
+                    // inject canvas into div                    
                     gameRef.current.appendChild(game.canvas);
+                    // update parent
                     game.scale.parent = gameRef.current;
+                    
+
+                    // update scale accordingly
                     game.scale.setParentSize(gameRef.current.clientWidth, gameRef.current.clientHeight);
                     game.scale.setGameSize(gameRef.current.clientWidth, gameRef.current.clientHeight);
                     game.scale.updateBounds();
                 }
             }}
             >
-            <div id="gameElement" style={{overflow: "hidden", width: "100%", height: "100%"}} ref={gameRef}></div>
+            <div id="game-parent" style={{overflow: "hidden", width: "100%", height: "100%"}} ref={gameRef}></div>
         </DesktopWindow> 
     );
 }
