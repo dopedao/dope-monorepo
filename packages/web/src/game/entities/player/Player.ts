@@ -15,9 +15,14 @@ export default class Player extends Hustler
     private _inventory: Inventory;
     private _quests: Array<Quest> = new Array();
 
+    private _busy: boolean = false;
+
     get interactSensor() { return this._interactSensor; }
+    
     get inventory() { return this._inventory; }
     get quests() { return this._quests; }
+
+    get busy() { return this._busy; }
 
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, inventory?: Inventory, quests?: Array<Quest>)
     {
@@ -34,6 +39,7 @@ export default class Player extends Hustler
 
         // create controller
         this.controller = new PlayerController(this);
+        this._handleEvents();
     }
 
     addQuest(quest: Quest)
@@ -49,6 +55,9 @@ export default class Player extends Hustler
 
     tryInteraction()
     {
+        if (this.busy)
+            return;
+
         this.scene.matter.overlap(this._interactSensor, undefined, (player: MatterJS.Body, other: MatterJS.Body) => {
             const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType).gameObject;
             if (otherGameObject instanceof Citizen)
@@ -93,6 +102,19 @@ export default class Player extends Hustler
             playerBodyType.gameObject.setDepth(0);
         else if ((otherBodyType.position.y - playerBodyType.position.y) < -15)
             playerBodyType.gameObject.setDepth(2);
+    }
+
+    private _handleEvents()
+    {
+        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, (npc: Phaser.GameObjects.GameObject) => {
+            this._busy = true;
+        });
+        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_CANCEL, (npc: Phaser.GameObjects.GameObject) => {
+            this._busy = false;
+        });
+        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_COMPLETE, (npc: Phaser.GameObjects.GameObject) => {
+            this._busy = false;
+        });
     }
 
     update(): void

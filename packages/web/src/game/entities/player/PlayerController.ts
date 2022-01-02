@@ -26,18 +26,6 @@ export default class PlayerController
         }) as Phaser.Types.Input.Keyboard.CursorKeys;
     }
 
-    tryInteraction()
-    {
-        this.player.scene.matter.overlap(this.player, undefined, (player: MatterJS.Body, other: MatterJS.Body) => {
-            const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType).gameObject;
-            if (otherGameObject instanceof Citizen)
-            {
-                console.log('Emit event interact with citizen from player');
-                EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, otherGameObject);
-            }
-        });
-    }
-
     update()
     {
         if (Phaser.Input.Keyboard.JustUp(this.arrows.space))
