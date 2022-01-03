@@ -165,15 +165,8 @@ const Nav = () => (
   </AppWindowNavBar>
 );
 
-type Router = {
-  query: {
-    id: string;
-  };
-};
-
 const Hustlers = () => {
-  const router = useRouter() as unknown as Router;
-  const { id } = router.query;
+  const router = useRouter();
 
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const { account, chainId } = useWeb3React();
@@ -183,11 +176,16 @@ const Hustlers = () => {
       id: account,
     },
   });
-  const { data, isFetching: loading } = useHustlerQuery({
-    where: {
-      id,
+  const { data, isFetching: loading } = useHustlerQuery(
+    {
+      where: {
+        id: String(router.query.id),
+      },
     },
-  });
+    {
+      enabled: Boolean(router.query.id),
+    },
+  );
   useSwitchOptimism(chainId, account);
 
   useEffect(() => {
@@ -226,7 +224,7 @@ const Hustlers = () => {
           </div>
         </StickyNote>
       )}
-      {walletLoading || loading || !data?.hustlers.edges![0]?.node?.id ? (
+      {walletLoading || loading || !data?.hustlers.edges?.[0]?.node?.id ? (
         <ContentLoading />
       ) : (
         <HustlerEdit hustler={data.hustlers.edges[0].node} />
