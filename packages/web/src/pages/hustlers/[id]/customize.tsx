@@ -165,7 +165,16 @@ const Nav = () => (
   </AppWindowNavBar>
 );
 
+type Router = {
+  query: {
+    id: string;
+  };
+};
+
 const Hustlers = () => {
+  const router = useRouter() as unknown as Router;
+  const { id } = router.query;
+
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const { account, chainId } = useWeb3React();
 
@@ -176,7 +185,7 @@ const Hustlers = () => {
   });
   const { data, isFetching: loading } = useHustlerQuery({
     where: {
-      id: account,
+      id,
     },
   });
   useSwitchOptimism(chainId, account);
