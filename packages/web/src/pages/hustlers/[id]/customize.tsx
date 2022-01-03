@@ -212,7 +212,7 @@ const Hustlers = () => {
           </div>
         </StickyNote>
       )}
-      {walletLoading || loading || !data?.hustlers.edges![0]?.node?.id ? (
+      {walletLoading || loading || !data?.hustlers.edges?.[0]?.node?.id ? (
         <ContentLoading />
       ) : (
         <HustlerEdit hustler={data.hustlers.edges[0].node} />
