@@ -405,9 +405,9 @@ type Order struct {
 	CreatedDate *TimeNano `json:"created_date"`
 	ClosingDate *TimeNano `json:"closing_date"`
 	// ClosingExtendable bool      `json:"closing_extendable"`
-	ExpirationTime int64 `json:"expiration_time"`
-	ListingTime    int64 `json:"listing_time"`
-	// OrderHash            string               `json:"order_hash"`
+	ExpirationTime int64  `json:"expiration_time"`
+	ListingTime    int64  `json:"listing_time"`
+	OrderHash      string `json:"order_hash"`
 	// Metadata Metadata `json:"metadata"`
 	Exchange     Address `json:"exchange"`
 	Maker        Account `json:"maker"`
