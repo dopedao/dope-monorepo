@@ -17,16 +17,16 @@ export default class PathNavigator
 
     private previousPosition?: Phaser.Math.Vector2;
 
-    constructor(hustler: Hustler, pathFinder: PF.Finder, onMoved?: () => void)
+    constructor(hustler: Hustler, pathFinder: PF.Finder)
     {
         this.hustler = hustler;
         this.pathFinder = pathFinder;
-
-        this.onMoved = onMoved;
     }
 
-    moveTo(x: number, y: number)
+    moveTo(x: number, y: number, onMoved?: () => void)
     {
+        this.onMoved = onMoved;
+
         // the game scene used map
         const map = (this.hustler.scene as GameScene).map;
 
@@ -99,7 +99,11 @@ export default class PathNavigator
                 // stop pathfinding
                 this.stop();
                 if (this.onMoved)
+                {
                     this.onMoved();
+                    // set callback to undefined, so that it does not called again
+                    this.onMoved = undefined;
+                }
 	    	}
 	    }
 

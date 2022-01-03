@@ -19,13 +19,11 @@ export default class GameScene extends Scene {
   private citizens: Citizen[] = new Array();
 
   private _map!: Phaser.Tilemaps.Tilemap;
-  private _hoveredTile?: Phaser.Tilemaps.Tile;
 
   public canUseMouse: boolean = true;
   public rexUI!: RexUIPlugin;
 
   get map() { return this._map; }
-  get hoveredTile() { return this._hoveredTile; }
 
   constructor() {
     super({
@@ -37,12 +35,26 @@ export default class GameScene extends Scene {
     // create all of the animations
     new GameAnimations(this.anims).create();
 
-    this.input.on('pointerdown', () => {
-      if (!this.canUseMouse || !this.hoveredTile)
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (!this.canUseMouse)
         return;
-      // transition to spot
-      //this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
-      this.player.navigator.moveTo(this.hoveredTile.x, this.hoveredTile.y);
+
+      
+      setTimeout(() => {
+        const citizenToTalkTo = this.citizens.find(citizen => citizen.getBounds().contains(pointer.worldX, pointer.worldY));
+
+        this.player.navigator.moveTo(
+          this.map.worldToTileX(pointer.worldX), this.map.worldToTileY(pointer.worldY), 
+          () => {
+            if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
+            {
+              citizenToTalkTo?.onInteraction();
+              EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, citizenToTalkTo);
+            }
+          });
+      });
+
+      
     });
 
     this._map = this.make.tilemap({ key: "map" });
@@ -110,42 +122,5 @@ export default class GameScene extends Scene {
   update(time: number, delta: number): void {
     this.player.update();
     this.citizens.forEach(citizen => citizen.update());
-
-    // if cant use the mouse, no need to check for hovering
-    if (!this.canUseMouse)
-      return;
-    // loop over the world's layer tiles and check if they intersect with the mouse
-    // not the best method but just for demonstration purposes
-    const worldLayer = this.map.getLayer('Below Player');
-    for (let j = 0; j < worldLayer.data.length; j++)
-    {
-      for (let k = 0; k < worldLayer.data[j].length; k++)
-      {
-        const tile: Phaser.Tilemaps.Tile = worldLayer.data[j][k];
-
-        //console.log(this.map.getLayer('World').data[j][k]);
-
-        // pos in bounds, reduce tile's alpha
-        if (tile.getBounds() &&
-          (tile.getBounds() as Phaser.Geom.Rectangle).contains(this.input.activePointer.worldX, this.input.activePointer.worldY))
-        {
-          // check if there's nothing collideable on top of the tile
-          if (this.map.getLayer('World').data[j][k].collides)
-          {
-            this._hoveredTile = undefined;
-          }
-          else 
-          {
-            tile.alpha = 0.7;
-            this._hoveredTile = tile;
-          }
-          
-        }
-        else if (tile.alpha !== 1.0)
-        {
-          tile.alpha = 1.0;
-        }
-      }
-    }
   }
 }
