@@ -438,7 +438,7 @@ func HasWalletWith(preds ...predicate.Wallet) predicate.Dope {
 	})
 }
 
-// HasLastSale applies the HasEdge predicate on the "lastSale" edge.
+// HasLastSale applies the HasEdge predicate on the "last_sale" edge.
 func HasLastSale() predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
@@ -450,7 +450,7 @@ func HasLastSale() predicate.Dope {
 	})
 }
 
-// HasLastSaleWith applies the HasEdge predicate on the "lastSale" edge with a given conditions (other predicates).
+// HasLastSaleWith applies the HasEdge predicate on the "last_sale" edge with a given conditions (other predicates).
 func HasLastSaleWith(preds ...predicate.Listing) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(

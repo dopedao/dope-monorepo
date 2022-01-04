@@ -8,6 +8,7 @@ export type PostType = {
   title: string;
   date: string;
   coverImage: string;
+  coverImageText?: string;
   author: Author;
   excerpt: string;
   ogImage: {

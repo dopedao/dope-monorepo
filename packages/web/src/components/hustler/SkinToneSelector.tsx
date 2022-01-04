@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import { css } from '@emotion/react';
-import { HustlerInitConfig } from 'utils/HustlerConfig';
+import { getRandomHustler } from 'utils/HustlerConfig';
 import { useRadioGroup } from '@chakra-ui/radio';
-import { useReactiveVar } from '@apollo/client';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
@@ -19,12 +19,12 @@ const SKIN_TONE_COLORS = [
 ];
 
 const SkinToneSelector = () => {
-  const hustlerConfig = useReactiveVar(HustlerInitConfig);
+  const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'skintone',
     defaultValue: 0,
-    onChange: value => HustlerInitConfig({ ...hustlerConfig, body: parseInt(value) }),
+    onChange: value => setHustlerConfig({ ...hustlerConfig, body: parseInt(value) }),
     value: hustlerConfig.body,
   });
   const group = getRootProps();

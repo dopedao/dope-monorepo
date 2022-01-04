@@ -8,11 +8,11 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from '@chakra-ui/react';
-import { HustlerInitConfig, MAX_HAIR, MAX_FACIAL_HAIR } from 'utils/HustlerConfig';
+import { MAX_HAIR, MAX_FACIAL_HAIR } from 'utils/HustlerConfig';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 import Accordion from 'ui/components/Accordion';
 
-const HairSelector = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
+const HairSelector = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
   const isMale = config.sex == 'male';
 
   return (
@@ -27,11 +27,7 @@ const HairSelector = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
             defaultValue={0}
             min={0}
             max={MAX_HAIR}
-            onChange={value =>
-              makeVarConfig
-                ? makeVarConfig({ ...config, hair: parseInt(value) })
-                : HustlerInitConfig({ ...config, hair: parseInt(value) })
-            }
+            onChange={value => setHustlerConfig({ ...config, hair: parseInt(value) })}
             value={config.hair}
             color="blackAlpha.900"
           >
@@ -53,11 +49,7 @@ const HairSelector = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
               defaultValue={0}
               min={0}
               max={MAX_FACIAL_HAIR}
-              onChange={value =>
-                makeVarConfig
-                  ? makeVarConfig({ ...config, facialHair: parseInt(value) })
-                  : HustlerInitConfig({ ...config, facialHair: parseInt(value) })
-              }
+              onChange={value => setHustlerConfig({ ...config, facialHair: parseInt(value) })}
               value={config.facialHair}
               color="blackAlpha.900"
             >

@@ -1423,31 +1423,31 @@ func (m *BodyPartMutation) ResetEdge(name string) error {
 // DopeMutation represents an operation that mutates the Dope nodes in the graph.
 type DopeMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *string
-	claimed         *bool
-	opened          *bool
-	score           *int
-	addscore        *int
-	rank            *int
-	addrank         *int
-	_order          *int
-	add_order       *int
-	clearedFields   map[string]struct{}
-	wallet          *string
-	clearedwallet   bool
-	lastSale        *string
-	clearedlastSale bool
-	listings        map[string]struct{}
-	removedlistings map[string]struct{}
-	clearedlistings bool
-	items           map[string]struct{}
-	removeditems    map[string]struct{}
-	cleareditems    bool
-	done            bool
-	oldValue        func(context.Context) (*Dope, error)
-	predicates      []predicate.Dope
+	op               Op
+	typ              string
+	id               *string
+	claimed          *bool
+	opened           *bool
+	score            *int
+	addscore         *int
+	rank             *int
+	addrank          *int
+	_order           *int
+	add_order        *int
+	clearedFields    map[string]struct{}
+	wallet           *string
+	clearedwallet    bool
+	last_sale        *string
+	clearedlast_sale bool
+	listings         map[string]struct{}
+	removedlistings  map[string]struct{}
+	clearedlistings  bool
+	items            map[string]struct{}
+	removeditems     map[string]struct{}
+	cleareditems     bool
+	done             bool
+	oldValue         func(context.Context) (*Dope, error)
+	predicates       []predicate.Dope
 }
 
 var _ ent.Mutation = (*DopeMutation)(nil)
@@ -1861,43 +1861,43 @@ func (m *DopeMutation) ResetWallet() {
 	m.clearedwallet = false
 }
 
-// SetLastSaleID sets the "lastSale" edge to the Listing entity by id.
+// SetLastSaleID sets the "last_sale" edge to the Listing entity by id.
 func (m *DopeMutation) SetLastSaleID(id string) {
-	m.lastSale = &id
+	m.last_sale = &id
 }
 
-// ClearLastSale clears the "lastSale" edge to the Listing entity.
+// ClearLastSale clears the "last_sale" edge to the Listing entity.
 func (m *DopeMutation) ClearLastSale() {
-	m.clearedlastSale = true
+	m.clearedlast_sale = true
 }
 
-// LastSaleCleared reports if the "lastSale" edge to the Listing entity was cleared.
+// LastSaleCleared reports if the "last_sale" edge to the Listing entity was cleared.
 func (m *DopeMutation) LastSaleCleared() bool {
-	return m.clearedlastSale
+	return m.clearedlast_sale
 }
 
-// LastSaleID returns the "lastSale" edge ID in the mutation.
+// LastSaleID returns the "last_sale" edge ID in the mutation.
 func (m *DopeMutation) LastSaleID() (id string, exists bool) {
-	if m.lastSale != nil {
-		return *m.lastSale, true
+	if m.last_sale != nil {
+		return *m.last_sale, true
 	}
 	return
 }
 
-// LastSaleIDs returns the "lastSale" edge IDs in the mutation.
+// LastSaleIDs returns the "last_sale" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // LastSaleID instead. It exists only for internal usage by the builders.
 func (m *DopeMutation) LastSaleIDs() (ids []string) {
-	if id := m.lastSale; id != nil {
+	if id := m.last_sale; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetLastSale resets all changes to the "lastSale" edge.
+// ResetLastSale resets all changes to the "last_sale" edge.
 func (m *DopeMutation) ResetLastSale() {
-	m.lastSale = nil
-	m.clearedlastSale = false
+	m.last_sale = nil
+	m.clearedlast_sale = false
 }
 
 // AddListingIDs adds the "listings" edge to the Listing entity by ids.
@@ -2252,7 +2252,7 @@ func (m *DopeMutation) AddedEdges() []string {
 	if m.wallet != nil {
 		edges = append(edges, dope.EdgeWallet)
 	}
-	if m.lastSale != nil {
+	if m.last_sale != nil {
 		edges = append(edges, dope.EdgeLastSale)
 	}
 	if m.listings != nil {
@@ -2273,7 +2273,7 @@ func (m *DopeMutation) AddedIDs(name string) []ent.Value {
 			return []ent.Value{*id}
 		}
 	case dope.EdgeLastSale:
-		if id := m.lastSale; id != nil {
+		if id := m.last_sale; id != nil {
 			return []ent.Value{*id}
 		}
 	case dope.EdgeListings:
@@ -2330,7 +2330,7 @@ func (m *DopeMutation) ClearedEdges() []string {
 	if m.clearedwallet {
 		edges = append(edges, dope.EdgeWallet)
 	}
-	if m.clearedlastSale {
+	if m.clearedlast_sale {
 		edges = append(edges, dope.EdgeLastSale)
 	}
 	if m.clearedlistings {
@@ -2349,7 +2349,7 @@ func (m *DopeMutation) EdgeCleared(name string) bool {
 	case dope.EdgeWallet:
 		return m.clearedwallet
 	case dope.EdgeLastSale:
-		return m.clearedlastSale
+		return m.clearedlast_sale
 	case dope.EdgeListings:
 		return m.clearedlistings
 	case dope.EdgeItems:

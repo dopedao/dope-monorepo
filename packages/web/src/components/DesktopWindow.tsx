@@ -1,5 +1,4 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { useReactiveVar } from '@apollo/client';
 import Draggable from 'react-draggable';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
@@ -8,22 +7,27 @@ import { useWalletQuery } from 'generated/graphql';
 import { media } from 'ui/styles/mixins';
 import { returnBreakpoint } from 'ui/styles/breakpoints';
 import { isTouchDevice } from 'utils/utils';
-import WindowPosition, { WindowPositionReactive } from 'utils/WindowPosition';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
+
+type Position = {
+  x: number;
+  y: number;
+};
 
 type DesktopWindowProps = {
   title: string | undefined;
   width?: number | string;
   height?: number | string;
   fullScreen?: boolean;
+  fullPage?: boolean;
   fullScreenHandler?: (fullScreen: boolean) => void;
   titleChildren?: ReactNode;
   balance?: string;
   loadingBalance?: boolean;
   children: ReactNode;
   onResize?: () => void;
-  onMoved?: (position: WindowPosition) => void;
+  onMoved?: (position: any) => void;
 };
 
 const WindowWrapper = styled.div<{ width: number | string; height: number | string }>`
@@ -65,6 +69,7 @@ const DesktopWindow = ({
   width = 1024,
   height = 768,
   fullScreen,
+  fullPage,
   fullScreenHandler,
   titleChildren,
   children,
@@ -83,7 +88,23 @@ const DesktopWindow = ({
   const [isFullScreen, setIsFullScreen] = useState(fullScreen || false);
   const toggleFullScreen = () =>
     fullScreenHandler ? fullScreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen);
-  const windowPosition = useReactiveVar(WindowPositionReactive) as WindowPosition;
+  const [windowPosition, setWindowPosition] = useState<Position>({
+    x: 0,
+    y: 0,
+  });
+
+  const updatePosition = (transformStyle: string) => {
+    // pull the current DesktopWindow location from the CSS style on the DOM object
+    const transformArr = transformStyle.match(
+      /translate\((-?\d+(?:\.\d*)?)px, (-?\d+(?:\.\d*)?)px\)/,
+    );
+    if (transformArr && transformArr.length === 3) {
+      setWindowPosition({
+        x: parseFloat(transformArr[1]),
+        y: parseFloat(transformArr[2]),
+      });
+    }
+  };
 
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
 
@@ -97,7 +118,7 @@ const DesktopWindow = ({
     const el = document.querySelector('.floating');
     if (el && el.getAttribute('style')) {
       const transformValue = el.getAttribute('style') || '';
-      windowPosition.updatePosition(transformValue);
+      updatePosition(transformValue);
 
       if (onMoved) {
         onMoved(windowPosition);
@@ -109,26 +130,24 @@ const DesktopWindow = ({
     <ConditionalWrapper
       condition={shouldBeDraggable}
       wrap={children => (
-        <Draggable
-          onStop={handleStop}
-          defaultPosition={windowPosition.position}
-          handle=".windowTitleBar"
-        >
+        <Draggable onStop={handleStop} defaultPosition={windowPosition} handle=".windowTitleBar">
           {children}
         </Draggable>
       )}
     >
       <WindowWrapper className={isFullScreen ? '' : 'floating'} height={height} width={width}>
-        <DesktopWindowTitleBar
-          title={title}
-          isTouchDevice={isTouchDevice()}
-          isFullScreen={isFullScreen}
-          toggleFullScreen={toggleFullScreen}
-          balance={data?.wallets?.edges![0]?.node?.paper}
-          loadingBalance={loading}
-        >
-          {titleChildren}
-        </DesktopWindowTitleBar>
+        {!fullPage && (
+          <DesktopWindowTitleBar
+            title={title}
+            isTouchDevice={isTouchDevice()}
+            isFullScreen={isFullScreen}
+            toggleFullScreen={toggleFullScreen}
+            balance={data?.wallets?.edges![0]?.node?.paper}
+            loadingBalance={loading}
+          >
+            {titleChildren}
+          </DesktopWindowTitleBar>
+        )}
         {children}
       </WindowWrapper>
     </ConditionalWrapper>

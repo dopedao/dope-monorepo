@@ -8,7 +8,7 @@ import sys
 
 typ = sys.argv[1]
 
-f = open("../outputs/"+typ+"/output.json", "r")
+f = open("../outputs/"+typ+"/output-vehicles-part3.json", "r")
 meta = json.load(f)
 
 colors = OrderedDict()
@@ -18,7 +18,9 @@ if 'partcolors' in meta:
 else:
     colors[""] = True
 
-for file in glob.glob("../imgs/"+typ+"/**/*.png"):
+# for file in glob.glob("../imgs/"+typ+"/NONE_VEHICLES/[0-9]-*.png") + glob.glob("../imgs/"+typ+"/NONE_VEHICLES/[0-9][0]-*.png"):
+# for file in glob.glob("../imgs/"+typ+"/NONE_VEHICLES/1[1-3]-*.png"):
+for file in glob.glob("../imgs/"+typ+"/NONE_VEHICLES/1[4-9]-*.png"):
     img = image.imread(file)
     a = np.where(img[:, :, 3] != 0)
 
@@ -37,5 +39,5 @@ for file in glob.glob("../imgs/"+typ+"/**/*.png"):
                 colors[c] = True
 
 meta["partcolors"] = list(colors.keys())
-f = open("../outputs/"+typ+"/output.json", "w")
+f = open("../outputs/"+typ+"/output-vehicles-part3.json", "w")
 json.dump(meta, f, indent=4)

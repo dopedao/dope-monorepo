@@ -16,6 +16,8 @@ interface AppWindowProps {
   scrollable?: boolean;
   title?: string | undefined;
   width?: number | string;
+  fullPage?: boolean;
+  fullScreen?: boolean;
 }
 
 const getBodyPadding = () => {
@@ -29,7 +31,7 @@ const getBodyPadding = () => {
 const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean }>`
   position: relative;
   height: 100%;
-  overflow: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
+  overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
   background-color: #a8a9ae;
   padding: ${({ padBody }) => (padBody ? getBodyPadding() : '0px')};
 `;
@@ -44,6 +46,8 @@ export default function AppWindow({
   children,
   navbar,
   footer,
+  fullPage,
+  fullScreen,
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
@@ -53,6 +57,8 @@ export default function AppWindow({
       titleChildren={navbar}
       width={width}
       height={height}
+      fullPage={fullPage}
+      fullScreen={fullScreen}
     >
       {requiresWalletConnection && !account ? (
         <ConnectWallet />

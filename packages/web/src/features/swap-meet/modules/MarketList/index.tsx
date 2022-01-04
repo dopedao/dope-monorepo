@@ -178,7 +178,7 @@ const MarketList = () => {
               })
             }
             hasMore={hasNextPage}
-            loader={<LoadingBlock />}
+            loader={<LoadingBlock key="loading-block" />}
             useWindow={false}
             className="dopeGrid"
           >

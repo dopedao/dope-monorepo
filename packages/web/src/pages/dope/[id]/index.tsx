@@ -1,9 +1,9 @@
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
-import { useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { useWalletQuery } from 'generated/graphql';
-import { HustlerInitConfig } from 'utils/HustlerConfig';
+import { getRandomHustler } from 'utils/HustlerConfig';
 import DesktopWindow from 'components/DesktopWindow';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import Head from 'components/Head';
@@ -24,7 +24,7 @@ const HustlerContainer = styled.div<{ bgColor: string }>`
 `;
 
 const Dope = () => {
-  const hustlerConfig = useReactiveVar(HustlerInitConfig);
+  const [hustlerConfig, _setHustlerConfig] = useState(getRandomHustler({}));
   const router = useRouter();
   const { id } = router.query;
   const { account } = useWeb3React();

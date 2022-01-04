@@ -20,6 +20,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
         sex
         viewbox
@@ -33,6 +34,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
         accessory {
           id
@@ -43,6 +45,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
         svg
         body {
@@ -66,6 +69,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
         hand {
           id
@@ -76,6 +80,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
         weapon {
           id
@@ -86,6 +91,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
         clothes {
           id
@@ -96,6 +102,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
         vehicle {
           id
@@ -106,6 +113,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
         waist {
           id
@@ -116,6 +124,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
         foot {
           id
@@ -126,6 +135,7 @@ query Hustler($where: HustlerWhereInput) {
           tier
           greatness
           count
+          fullname
         }
       }
     }

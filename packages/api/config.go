@@ -27,6 +27,12 @@ var configs = map[string]Configs{
 				StartBlock: 13162150,
 				Processor:  new(processors.PaperProcessor),
 			},
+			// Initiator
+			{
+				Address:    common.HexToAddress("0x7aa8e897d712CFB9C7cb6B37634A1C4d21181c8B"),
+				StartBlock: 13650250,
+				Processor:  new(processors.InitiatorProcessor),
+			},
 		},
 	}, engine.EthConfig{
 		RPC:      "https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG",
@@ -61,6 +67,12 @@ var configs = map[string]Configs{
 				Address:    common.HexToAddress("0x781B575CA559263eb232B854195D6dC0AB720105"),
 				StartBlock: 28278725,
 				Processor:  new(processors.PaperProcessor),
+			},
+			// Initiator
+			{
+				Address:    common.HexToAddress("0x812D76C65bc80599cb778Ba3AecEf1a4AC197ae3"),
+				StartBlock: 28457043,
+				Processor:  new(processors.InitiatorProcessor),
 			},
 		},
 	}, engine.EthConfig{

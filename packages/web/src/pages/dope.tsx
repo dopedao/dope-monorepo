@@ -91,12 +91,12 @@ export default function DopeWindow() {
           </div>
         </StickyNote>
       )}
-      {loading || !data?.wallets.edges![0]?.node?.dopes ? (
+      {loading ? (
         <FlexFiftyContainer>
           <LoadingBlock />
           <LoadingBlock />
         </FlexFiftyContainer>
-      ) : data?.wallets.edges && data.wallets.edges[0]?.node?.dopes.length === 0 ? (
+      ) : !data?.wallets.edges![0]?.node?.dopes ? (
         <NoDopeCard />
       ) : (
         <FlexFiftyContainer>
