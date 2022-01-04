@@ -37,7 +37,7 @@ export default class PlayerController
             this.player.setVelocity(0);
 
         let willMoveFlag = false;
-        if (this.mainKeys.up.isDown || this.mainKeys.up.isDown)
+        if (this.mainKeys.up.isDown || this.arrows.up.isDown)
         {
             this.player.moveDirection = Direction.North;
             this.player.setVelocityY(-Hustler.DEFAULT_VELOCITY);
