@@ -138,7 +138,9 @@ type ComplexityRoot struct {
 		Name       func(childComplexity int) int
 		NamePrefix func(childComplexity int) int
 		NameSuffix func(childComplexity int) int
+		Rles       func(childComplexity int) int
 		Suffix     func(childComplexity int) int
+		Svg        func(childComplexity int) int
 		Tier       func(childComplexity int) int
 		Type       func(childComplexity int) int
 	}
@@ -175,7 +177,13 @@ type ComplexityRoot struct {
 		Items    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ItemOrder, where *ent.ItemWhereInput) int
 		Node     func(childComplexity int, id string) int
 		Nodes    func(childComplexity int, ids []string) int
+		Search   func(childComplexity int, query string, orderBy *model.SearchOrder, where *model.SearchWhereInput) int
 		Wallets  func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.WalletOrder, where *ent.WalletWhereInput) int
+	}
+
+	RLEs struct {
+		Female func(childComplexity int) int
+		Male   func(childComplexity int) int
 	}
 
 	Wallet struct {
@@ -215,6 +223,7 @@ type QueryResolver interface {
 	Dopes(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.DopeOrder, where *ent.DopeWhereInput) (*ent.DopeConnection, error)
 	Items(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ItemOrder, where *ent.ItemWhereInput) (*ent.ItemConnection, error)
 	Hustlers(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder, where *ent.HustlerWhereInput) (*ent.HustlerConnection, error)
+	Search(ctx context.Context, query string, orderBy *model.SearchOrder, where *model.SearchWhereInput) ([]model.SearchResult, error)
 }
 
 type executableSchema struct {
@@ -659,12 +668,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Item.NameSuffix(childComplexity), true
 
+	case "Item.rles":
+		if e.complexity.Item.Rles == nil {
+			break
+		}
+
+		return e.complexity.Item.Rles(childComplexity), true
+
 	case "Item.suffix":
 		if e.complexity.Item.Suffix == nil {
 			break
 		}
 
 		return e.complexity.Item.Suffix(childComplexity), true
+
+	case "Item.svg":
+		if e.complexity.Item.Svg == nil {
+			break
+		}
+
+		return e.complexity.Item.Svg(childComplexity), true
 
 	case "Item.tier":
 		if e.complexity.Item.Tier == nil {
@@ -838,6 +861,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Nodes(childComplexity, args["ids"].([]string)), true
 
+	case "Query.search":
+		if e.complexity.Query.Search == nil {
+			break
+		}
+
+		args, err := ec.field_Query_search_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Search(childComplexity, args["query"].(string), args["orderBy"].(*model.SearchOrder), args["where"].(*model.SearchWhereInput)), true
+
 	case "Query.wallets":
 		if e.complexity.Query.Wallets == nil {
 			break
@@ -849,6 +884,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Wallets(childComplexity, args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.WalletOrder), args["where"].(*ent.WalletWhereInput)), true
+
+	case "RLEs.female":
+		if e.complexity.RLEs.Female == nil {
+			break
+		}
+
+		return e.complexity.RLEs.Female(childComplexity), true
+
+	case "RLEs.male":
+		if e.complexity.RLEs.Male == nil {
+			break
+		}
+
+		return e.complexity.RLEs.Male(childComplexity), true
 
 	case "Wallet.dopes":
 		if e.complexity.Wallet.Dopes == nil {
@@ -2047,6 +2096,11 @@ enum ItemTier {
   BLACK_MARKET
 }
 
+type RLEs {
+  female: String!
+  male: String!
+}
+
 type Item implements Node {
   id: ID!
   type: ItemType!
@@ -2059,6 +2113,8 @@ type Item implements Node {
   tier: ItemTier!
   greatness: Int!
   count: Int!
+  rles: RLEs
+  svg: String
 }
 
 type WalletItems implements Node {
@@ -2174,6 +2230,29 @@ type Wallet implements Node {
   paper: BigInt!
 }
 
+union SearchResult = Dope | Item | Hustler
+
+input SearchWhereInput {
+  not: SearchWhereInput
+  and: [SearchWhereInput!]
+  or: [SearchWhereInput!]
+
+  paperClaimed: Boolean
+  forSale: Boolean
+  dopeOpened: Boolean
+}
+
+enum SearchOrderField {
+  RANK
+  AFFORDABLE
+  LAST_SALE_AMOUNT
+}
+
+input SearchOrder {
+  direction: OrderDirection
+  field: SearchOrderField
+}
+
 type Query {
   node(id: ID!): Node
   nodes(ids: [ID!]!): [Node]!
@@ -2209,6 +2288,11 @@ type Query {
     orderBy: HustlerOrder
     where: HustlerWhereInput
   ): HustlerConnection!
+  search(
+    query: String!
+    orderBy: SearchOrder
+    where: SearchWhereInput
+  ): [SearchResult]!
 }
 `, BuiltIn: false},
 }
@@ -2440,6 +2524,39 @@ func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs 
 		}
 	}
 	args["ids"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_search_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["query"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("query"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["query"] = arg0
+	var arg1 *model.SearchOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg1, err = ec.unmarshalOSearchOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg1
+	var arg2 *model.SearchWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg2, err = ec.unmarshalOSearchWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg2
 	return args, nil
 }
 
@@ -4679,6 +4796,70 @@ func (ec *executionContext) _Item_count(ctx context.Context, field graphql.Colle
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Item_rles(ctx context.Context, field graphql.CollectedField, obj *ent.Item) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Item",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Rles, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(schema.RLEs)
+	fc.Result = res
+	return ec.marshalORLEs2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐRLEs(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Item_svg(ctx context.Context, field graphql.CollectedField, obj *ent.Item) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Item",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Svg, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _ItemConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.ItemConnection) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -5403,6 +5584,48 @@ func (ec *executionContext) _Query_hustlers(ctx context.Context, field graphql.C
 	return ec.marshalNHustlerConnection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐHustlerConnection(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_search(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_search_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Search(rctx, args["query"].(string), args["orderBy"].(*model.SearchOrder), args["where"].(*model.SearchWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]model.SearchResult)
+	fc.Result = res
+	return ec.marshalNSearchResult2ᚕgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchResult(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -5472,6 +5695,76 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	res := resTmp.(*introspection.Schema)
 	fc.Result = res
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RLEs_female(ctx context.Context, field graphql.CollectedField, obj *schema.RLEs) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "RLEs",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Female, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RLEs_male(ctx context.Context, field graphql.CollectedField, obj *schema.RLEs) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "RLEs",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Male, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Wallet_id(ctx context.Context, field graphql.CollectedField, obj *ent.Wallet) (ret graphql.Marshaler) {
@@ -11749,6 +12042,100 @@ func (ec *executionContext) unmarshalInputPaymentTokenWhereInput(ctx context.Con
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputSearchOrder(ctx context.Context, obj interface{}) (model.SearchOrder, error) {
+	var it model.SearchOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			it.Direction, err = ec.unmarshalOOrderDirection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			it.Field, err = ec.unmarshalOSearchOrderField2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputSearchWhereInput(ctx context.Context, obj interface{}) (model.SearchWhereInput, error) {
+	var it model.SearchWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			it.Not, err = ec.unmarshalOSearchWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			it.And, err = ec.unmarshalOSearchWhereInput2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			it.Or, err = ec.unmarshalOSearchWhereInput2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "paperClaimed":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("paperClaimed"))
+			it.PaperClaimed, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "forSale":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("forSale"))
+			it.ForSale, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "dopeOpened":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dopeOpened"))
+			it.DopeOpened, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputSyncStateWhereInput(ctx context.Context, obj interface{}) (ent.SyncStateWhereInput, error) {
 	var it ent.SyncStateWhereInput
 	asMap := map[string]interface{}{}
@@ -12470,6 +12857,30 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 	}
 }
 
+func (ec *executionContext) _SearchResult(ctx context.Context, sel ast.SelectionSet, obj model.SearchResult) graphql.Marshaler {
+	switch obj := (obj).(type) {
+	case nil:
+		return graphql.Null
+	case *ent.Dope:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._Dope(ctx, sel, obj)
+	case *ent.Item:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._Item(ctx, sel, obj)
+	case *ent.Hustler:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._Hustler(ctx, sel, obj)
+	default:
+		panic(fmt.Errorf("unexpected type %T", obj))
+	}
+}
+
 // endregion ************************** interface.gotpl ***************************
 
 // region    **************************** object.gotpl ****************************
@@ -12555,7 +12966,7 @@ func (ec *executionContext) _BodyPart(ctx context.Context, sel ast.SelectionSet,
 	return out
 }
 
-var dopeImplementors = []string{"Dope", "Node"}
+var dopeImplementors = []string{"Dope", "Node", "SearchResult"}
 
 func (ec *executionContext) _Dope(ctx context.Context, sel ast.SelectionSet, obj *ent.Dope) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, dopeImplementors)
@@ -12701,7 +13112,7 @@ func (ec *executionContext) _DopeEdge(ctx context.Context, sel ast.SelectionSet,
 	return out
 }
 
-var hustlerImplementors = []string{"Hustler", "Node"}
+var hustlerImplementors = []string{"Hustler", "Node", "SearchResult"}
 
 func (ec *executionContext) _Hustler(ctx context.Context, sel ast.SelectionSet, obj *ent.Hustler) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, hustlerImplementors)
@@ -12969,7 +13380,7 @@ func (ec *executionContext) _HustlerEdge(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
-var itemImplementors = []string{"Item", "Node"}
+var itemImplementors = []string{"Item", "Node", "SearchResult"}
 
 func (ec *executionContext) _Item(ctx context.Context, sel ast.SelectionSet, obj *ent.Item) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, itemImplementors)
@@ -13032,6 +13443,10 @@ func (ec *executionContext) _Item(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "rles":
+			out.Values[i] = ec._Item_rles(ctx, field, obj)
+		case "svg":
+			out.Values[i] = ec._Item_svg(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -13300,10 +13715,56 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "search":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_search(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var rLEsImplementors = []string{"RLEs"}
+
+func (ec *executionContext) _RLEs(ctx context.Context, sel ast.SelectionSet, obj *schema.RLEs) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, rLEsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RLEs")
+		case "female":
+			out.Values[i] = ec._RLEs_female(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "male":
+			out.Values[i] = ec._RLEs_male(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -14330,6 +14791,49 @@ func (ec *executionContext) marshalNPageInfo2githubᚗcomᚋdopedaoᚋdopeᚑmon
 
 func (ec *executionContext) unmarshalNPaymentTokenWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐPaymentTokenWhereInput(ctx context.Context, v interface{}) (*model.PaymentTokenWhereInput, error) {
 	res, err := ec.unmarshalInputPaymentTokenWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNSearchResult2ᚕgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchResult(ctx context.Context, sel ast.SelectionSet, v []model.SearchResult) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOSearchResult2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchResult(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalNSearchWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchWhereInput(ctx context.Context, v interface{}) (*model.SearchWhereInput, error) {
+	res, err := ec.unmarshalInputSearchWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -16210,6 +16714,22 @@ func (ec *executionContext) marshalONode2githubᚗcomᚋdopedaoᚋdopeᚑmonorep
 	return ec._Node(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalOOrderDirection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐOrderDirection(ctx context.Context, v interface{}) (*ent.OrderDirection, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(ent.OrderDirection)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOOrderDirection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐOrderDirection(ctx context.Context, sel ast.SelectionSet, v *ent.OrderDirection) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOPaymentTokenWhereInput2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐPaymentTokenWhereInputᚄ(ctx context.Context, v interface{}) ([]*model.PaymentTokenWhereInput, error) {
 	if v == nil {
 		return nil, nil
@@ -16239,6 +16759,73 @@ func (ec *executionContext) unmarshalOPaymentTokenWhereInput2ᚖgithubᚗcomᚋd
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputPaymentTokenWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalORLEs2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐRLEs(ctx context.Context, sel ast.SelectionSet, v schema.RLEs) graphql.Marshaler {
+	return ec._RLEs(ctx, sel, &v)
+}
+
+func (ec *executionContext) unmarshalOSearchOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchOrder(ctx context.Context, v interface{}) (*model.SearchOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputSearchOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOSearchOrderField2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchOrderField(ctx context.Context, v interface{}) (*model.SearchOrderField, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.SearchOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOSearchOrderField2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchOrderField(ctx context.Context, sel ast.SelectionSet, v *model.SearchOrderField) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalOSearchResult2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchResult(ctx context.Context, sel ast.SelectionSet, v model.SearchResult) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SearchResult(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOSearchWhereInput2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchWhereInputᚄ(ctx context.Context, v interface{}) ([]*model.SearchWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*model.SearchWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNSearchWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOSearchWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchWhereInput(ctx context.Context, v interface{}) (*model.SearchWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputSearchWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

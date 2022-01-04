@@ -46,6 +46,11 @@ enum ItemTier {
   BLACK_MARKET
 }
 
+type RLEs {
+  female: String!
+  male: String!
+}
+
 type Item implements Node {
   id: ID!
   type: ItemType!
@@ -58,6 +63,8 @@ type Item implements Node {
   tier: ItemTier!
   greatness: Int!
   count: Int!
+  rles: RLEs
+  svg: String
 }
 
 type WalletItems implements Node {
@@ -173,6 +180,29 @@ type Wallet implements Node {
   paper: BigInt!
 }
 
+union SearchResult = Dope | Item | Hustler
+
+input SearchWhereInput {
+  not: SearchWhereInput
+  and: [SearchWhereInput!]
+  or: [SearchWhereInput!]
+
+  paperClaimed: Boolean
+  forSale: Boolean
+  dopeOpened: Boolean
+}
+
+enum SearchOrderField {
+  RANK
+  AFFORDABLE
+  LAST_SALE_AMOUNT
+}
+
+input SearchOrder {
+  direction: OrderDirection
+  field: SearchOrderField
+}
+
 type Query {
   node(id: ID!): Node
   nodes(ids: [ID!]!): [Node]!
@@ -208,4 +238,9 @@ type Query {
     orderBy: HustlerOrder
     where: HustlerWhereInput
   ): HustlerConnection!
+  search(
+    query: String!
+    orderBy: SearchOrder
+    where: SearchWhereInput
+  ): [SearchResult]!
 }

@@ -13,6 +13,24 @@ export default function GlobalStyles() {
             font-style: normal;
           }
 
+          @font-face {
+            font-family: 'Dope-Display';
+            src: url('/fonts/Dope-Display.ttf');
+            font-style: normal;
+          }
+
+          @font-face {
+            font-family: 'Dope-Condensed';
+            src: url('/fonts/Dope-Condensed.ttf');
+            font-style: normal;
+          }
+
+          @font-face {
+            font-family: 'Dope';
+            src: url('/fonts/Dope-Regular.ttf');
+            font-style: normal;
+          }
+
           /* COLORS */
           --black: #000;
           --white: #fff;
@@ -26,7 +44,7 @@ export default function GlobalStyles() {
           --border-light: 1px solid #dbdbdb;
 
           /* FONTS */
-          --font-a: ChicagoFLF, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+          --font-a: ChicagoFLF, Dope, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
             Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
           --font-b: Courier, monospace;
 

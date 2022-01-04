@@ -6,9 +6,12 @@ package graph
 import (
 	"context"
 	"fmt"
+	"strings"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	generated1 "github.com/dopedao/dope-monorepo/packages/api/graph/generated"
+	"github.com/dopedao/dope-monorepo/packages/api/graph/model"
 )
 
 func (r *itemResolver) Fullname(ctx context.Context, obj *ent.Item) (string, error) {
@@ -58,6 +61,41 @@ func (r *queryResolver) Items(ctx context.Context, after *ent.Cursor, first *int
 
 func (r *queryResolver) Hustlers(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder, where *ent.HustlerWhereInput) (*ent.HustlerConnection, error) {
 	return r.client.Hustler.Query().Paginate(ctx, after, first, before, last, ent.WithHustlerOrder(orderBy), ent.WithHustlerFilter(where.Filter))
+}
+
+func (r *queryResolver) Search(ctx context.Context, query string, orderBy *model.SearchOrder, where *model.SearchWhereInput) ([]model.SearchResult, error) {
+	var tsquery string
+
+	parts := strings.Split(query, " ")
+	for i, part := range parts {
+		tsquery += part + ":*"
+
+		if i != len(parts)-1 {
+			tsquery += " & "
+		}
+	}
+
+	items, err := r.client.Item.Query().Where(func(s *sql.Selector) {
+		s.Where(sql.P(func(b *sql.Builder) {
+			b.WriteString(fmt.Sprintf("ts @@ to_tsquery('english', '%s')", tsquery))
+		}))
+	}).WithDopes().All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var results []model.SearchResult
+	seen := make(map[string]bool)
+	for _, item := range items {
+		for _, dope := range item.Edges.Dopes {
+			if !seen[dope.ID] {
+				results = append(results, dope)
+			}
+			seen[dope.ID] = true
+		}
+	}
+
+	return results, nil
 }
 
 // Item returns generated1.ItemResolver implementation.

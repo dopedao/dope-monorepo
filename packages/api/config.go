@@ -27,9 +27,15 @@ var configs = map[string]Configs{
 				StartBlock: 13162150,
 				Processor:  new(processors.PaperProcessor),
 			},
+			// Initiator
+			{
+				Address:    common.HexToAddress("0x7aa8e897d712CFB9C7cb6B37634A1C4d21181c8B"),
+				StartBlock: 13650250,
+				Processor:  new(processors.InitiatorProcessor),
+			},
 		},
 	}, engine.EthConfig{
-		RPC:      "https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG",
+		RPC:      "https://mainnet.optimism.io",
 		Interval: time.Second * 5,
 		Contracts: []engine.Contract{
 			// SwapMeet
@@ -66,9 +72,15 @@ var configs = map[string]Configs{
 				StartBlock: 28278725,
 				Processor:  new(processors.PaperProcessor),
 			},
+			// Initiator
+			{
+				Address:    common.HexToAddress("0x812D76C65bc80599cb778Ba3AecEf1a4AC197ae3"),
+				StartBlock: 28457043,
+				Processor:  new(processors.InitiatorProcessor),
+			},
 		},
 	}, engine.EthConfig{
-		RPC:      "https://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9",
+		RPC:      "https://kovan.optimism.io",
 		Interval: time.Second * 5,
 		Contracts: []engine.Contract{
 			// SwapMeet
