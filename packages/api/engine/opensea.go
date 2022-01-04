@@ -11,6 +11,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+
 	"entgo.io/ent/dialect/sql"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
@@ -77,31 +80,30 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 				if err := ent.WithTx(ctx, o.ent, func(tx *ent.Tx) error {
 
-					for _, asset := range ret.Assets {
+					for _, oasset := range ret.Assets {
 						amount := big.NewInt(0)
 						order := ""
 						onSale := false
-						fmt.Printf("Updating Opensea record for asset.ID: %s\n\n", asset.ID)
 
 						// Getting `amount` 1 DOPE for the payment
 						outputs, err := tx.Asset.
 							Create().
-							SetID(fmt.Sprintf("%d/%s", asset.ID, asset.TokenID)).
-							SetAddress(string(asset.AssetContract.Address)).
-							SetSymbol(asset.AssetContract.Symbol).
-							SetType("DOPE").
+							SetID(fmt.Sprintf("%d/%s", oasset.ID, oasset.TokenID)).
+							SetAddress(string(oasset.AssetContract.Address)).
+							SetSymbol(oasset.AssetContract.Symbol).
+							SetType(asset.TypeETH).
 							SetAmount(schema.BigInt{Int: big.NewInt(1)}).
 							SetDecimals(18).
 							OnConflictColumns("id").
 							UpdateNewValues().ID(ctx)
 						if err != nil {
-							return fmt.Errorf("Error upserting to asset: %w", err)
+							return fmt.Errorf("upserting to asset: %w", err)
 						}
 
 						// If SellOrders then asset on sale
-						if asset.SellOrders != nil {
-							amount = asset.SellOrders[0].CurrentPrice.Big()
-							order = asset.SellOrders[0].OrderHash
+						if oasset.SellOrders != nil {
+							amount = oasset.SellOrders[0].CurrentPrice.Big()
+							order = oasset.SellOrders[0].OrderHash
 							onSale = true
 						}
 
@@ -110,17 +112,17 @@ func (o *Opensea) Sync(ctx context.Context) {
 						})
 
 						// If listing_inputs aren't in assets
-						if a == nil && asset.SellOrders != nil {
+						if a == nil && oasset.SellOrders != nil {
 							// paying `amount` for this
 							inputs, err := tx.Asset.
 								Create().
-								SetID(fmt.Sprintf("%d", asset.ID)).
+								SetID(fmt.Sprintf("%d", oasset.ID)).
 								SetAddress(order).
-								SetSymbol(asset.AssetContract.Symbol).
-								SetType("ETH").
+								SetSymbol(oasset.AssetContract.Symbol).
+								SetType(asset.TypeETH).
 								SetAmount(schema.BigInt{Int: amount}).
 								SetDecimals(18).
-								OnConflictColumns("id").
+								OnConflictColumns(asset.FieldID).
 								UpdateNewValues().ID(ctx)
 
 							if err != nil {
@@ -130,76 +132,89 @@ func (o *Opensea) Sync(ctx context.Context) {
 							if err := tx.Listing.
 								Create().
 								SetID(order).
-								SetSource("OPENSEA").
+								SetSource(listing.SourceOPENSEA).
 								SetActive(onSale).
-								SetDopeID(asset.TokenID).
+								SetDopeID(oasset.TokenID).
 								AddInputIDs(inputs).
 								AddOutputIDs(outputs).
-								OnConflictColumns("id").
+								OnConflictColumns(listing.FieldID).
 								Update(func(o *ent.ListingUpsert) {
 									o.SetActive(onSale)
 								}).
 								Exec(ctx); err != nil {
-								fmt.Println("Error upserting to asset: %w", err)
+								fmt.Println("upserting to asset: %w", err)
 								return err
 							}
 
 						}
 
 						dlst, err := QueryListings(ctx, tx, func(s *sql.Selector) {
-							s.Where(sql.EQ("dope_listings", asset.TokenID))
+							s.Where(sql.EQ("dope_listings", oasset.TokenID))
 						})
 						// If sell orders were removed in Opensea
-						if asset.SellOrders == nil && dlst != nil {
+						if oasset.SellOrders == nil && dlst != nil {
 							// Update Active = false and clear listing input outputs
-							lstupdt, _ := tx.Listing.UpdateOneID(dlst.ID).SetActive(false).ClearInputs().ClearOutputs().Save(ctx)
-							fmt.Printf("Listing ID %v to active: %v \n", lstupdt.ID, lstupdt.Active)
+							_, err := tx.Listing.UpdateOneID(dlst.ID).SetActive(false).ClearInputs().ClearOutputs().Save(ctx)
+							if err != nil {
+								return fmt.Errorf("clearing listing inputs and outputs: %w", err)
+							}
+
 						}
 						// Save to listings with asset record
-						if asset.LastSale != nil {
+						if oasset.LastSale != nil {
 							// paying `amount` for this
 							sold, err := tx.Asset.
 								Create().
-								SetID(fmt.Sprintf("%d", asset.LastSale.Transaction.ID)).
+								SetID(fmt.Sprintf("%d", oasset.LastSale.Transaction.ID)).
 								SetAddress(order).
-								SetSymbol(asset.AssetContract.Symbol).SetType("ETH").
-								SetAmount(schema.BigInt{Int: asset.LastSale.TotalPrice.Big()}).
+								SetSymbol(oasset.AssetContract.Symbol).SetType("ETH").
+								SetAmount(schema.BigInt{Int: oasset.LastSale.TotalPrice.Big()}).
 								SetDecimals(18).
 								OnConflictColumns("id").
-								UpdateNewValues().ID(ctx) // Exec(ctx)
+								UpdateNewValues().ID(ctx)
 							if err != nil {
-								return fmt.Errorf("Error upserting to last sale asset: %w", err)
+								return fmt.Errorf("upserting to last sale asset: %w", err)
 							}
 							fmt.Printf("sold ID is: %s\n", sold)
 
 							a, err := QueryAssets(ctx, tx, func(s *sql.Selector) {
-								s.Where(sql.EQ("listing_inputs", asset.LastSale.Transaction.TransactionHash))
+								s.Where(sql.EQ("listing_inputs", oasset.LastSale.Transaction.TransactionHash))
 							})
+							if err != nil {
+								fmt.Errorf("getting assets by listing inputs: %w", err)
+							}
 							lastsales, err := QueryDopes(ctx, tx, func(s *sql.Selector) {
-								s.Where(sql.EQ("id", asset.TokenID))
+								s.Where(sql.EQ("id", oasset.TokenID))
 							})
-							dopeLastsale, _ := lastsales.QueryLastSale().First(ctx)
+							if err != nil {
+								fmt.Errorf("getting dopes by id: %w", err)
+							}
 
 							// If listing_inputs aren't as assets
 							if a == nil {
+								dopeLastsale, err := lastsales.QueryLastSale().First(ctx)
+								if err != nil {
+									fmt.Errorf("getting dope last sales: %w", err)
+								}
 								// if dope has last_sale and there was a new sale, clear dope last sales
-								if dopeLastsale != nil && dopeLastsale.ID != asset.LastSale.Transaction.TransactionHash {
-									updated, _ := tx.Listing.UpdateOneID(dopeLastsale.ID).ClearDopeLastsales().Save(ctx)
-									fmt.Printf("updated dopeLastsale id is %s", updated)
+								if dopeLastsale != nil && dopeLastsale.ID != oasset.LastSale.Transaction.TransactionHash {
+									_, err := tx.Listing.UpdateOneID(dopeLastsale.ID).ClearDopeLastsales().Save(ctx)
+									if err != nil {
+										return fmt.Errorf("clearing dope lastsales: %w", err)
+									}
 								}
 
 								if err := tx.Listing.
 									Create().
-									SetID(asset.LastSale.Transaction.TransactionHash).
+									SetID(oasset.LastSale.Transaction.TransactionHash).
 									SetSource("OPENSEA").
 									SetActive(false).
 									AddInputIDs(sold).
-									SetDopeLastsalesID(asset.TokenID).
+									SetDopeLastsalesID(oasset.TokenID).
 									OnConflictColumns("id").
 									UpdateNewValues().
 									Exec(ctx); err != nil {
-									fmt.Println("Error upserting to listing lastsale: %w", err)
-									return err
+									return fmt.Errorf("upserting to listing lastsale: %w", err)
 								}
 
 							}
@@ -226,7 +241,7 @@ func QueryListings(ctx context.Context, tx *ent.Tx, ps predicate.Listing) (*ent.
 		Query().
 		Where(ps).WithInputs().WithOutputs().WithDopeLastsales().First(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("retrieving listing %s", err)
+		return nil, fmt.Errorf("retrieving listing %v+: %w", ps, err)
 	}
 	return dlst, err
 }
@@ -237,7 +252,7 @@ func QueryAssets(ctx context.Context, tx *ent.Tx, ps predicate.Asset) (*ent.Asse
 		Query().
 		Where(ps).First(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("retrieving asset %w", ps)
+		return nil, fmt.Errorf("retrieving asset %v+: %w", ps, err)
 	}
 
 	// fmt.Printf("asset for this tokenid is %s \n", ast)
