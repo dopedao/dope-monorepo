@@ -78,7 +78,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 				if err := ent.WithTx(ctx, o.ent, func(tx *ent.Tx) error {
 
 					for _, asset := range ret.Assets {
-						var amount *big.Int
+						amount := big.NewInt(0)
 						order := ""
 						onSale := false
 						fmt.Printf("Updating Opensea record for asset.ID: %s\n\n", asset.ID)
@@ -95,8 +95,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 							OnConflictColumns("id").
 							UpdateNewValues().ID(ctx)
 						if err != nil {
-							fmt.Errorf("Error upserting to asset: %w", err)
-							return err
+							return fmt.Errorf("Error upserting to asset: %w", err)
 						}
 
 						// If SellOrders then asset on sale
@@ -122,11 +121,10 @@ func (o *Opensea) Sync(ctx context.Context) {
 								SetAmount(schema.BigInt{Int: amount}).
 								SetDecimals(18).
 								OnConflictColumns("id").
-								UpdateNewValues().ID(ctx) // Exec(ctx)
+								UpdateNewValues().ID(ctx)
 
 							if err != nil {
-								fmt.Printf("Error upserting to asset: %w\n", err)
-								return err
+								return fmt.Errorf("upserting to asset: %w", err)
 							}
 
 							if err := tx.Listing.
@@ -170,8 +168,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 								OnConflictColumns("id").
 								UpdateNewValues().ID(ctx) // Exec(ctx)
 							if err != nil {
-								fmt.Errorf("Error upserting to last sale asset: %w", err)
-								return err
+								return fmt.Errorf("Error upserting to last sale asset: %w", err)
 							}
 							fmt.Printf("sold ID is: %s\n", sold)
 
@@ -229,8 +226,7 @@ func QueryListings(ctx context.Context, tx *ent.Tx, ps predicate.Listing) (*ent.
 		Query().
 		Where(ps).WithInputs().WithOutputs().WithDopeLastsales().First(ctx)
 	if err != nil {
-		fmt.Printf("Error retrieving listing for ps %s \n", err)
-		return nil, err
+		return nil, fmt.Errorf("retrieving listing %s", err)
 	}
 	return dlst, err
 }
@@ -241,8 +237,7 @@ func QueryAssets(ctx context.Context, tx *ent.Tx, ps predicate.Asset) (*ent.Asse
 		Query().
 		Where(ps).First(ctx)
 	if err != nil {
-		fmt.Printf("Error retrieving asset for ps %w \n", ps)
-		return nil, err
+		return nil, fmt.Errorf("retrieving asset %w", ps)
 	}
 
 	// fmt.Printf("asset for this tokenid is %s \n", ast)
@@ -255,8 +250,7 @@ func QueryDopes(ctx context.Context, tx *ent.Tx, ps predicate.Dope) (*ent.Dope, 
 		Query().
 		Where(ps).First(ctx)
 	if err != nil {
-		fmt.Printf("Error retrieving asset for ps %w \n", ps)
-		return nil, err
+		return nil, fmt.Errorf("retrieving asset %w", err)
 	}
 
 	return dope, err
@@ -268,8 +262,7 @@ func (o Opensea) GetAssetCollection(ctx context.Context, contract string, page i
 	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d&offset=%d", assetPath, contract, page, offset)
 	b, err := o.getPath(ctx, path)
 	if err != nil {
-		log.Fatalf("error retrieving opensea assets %w", err)
-		return nil, err
+		return nil, fmt.Errorf("retrieving opensea assets %w", err)
 	}
 	ret := &Assets{Assets: []Asset{}}
 	return ret, json.Unmarshal(b, ret)
