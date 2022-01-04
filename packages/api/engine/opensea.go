@@ -107,12 +107,32 @@ func (o *Opensea) Sync(ctx context.Context) {
 							onSale = true
 						}
 
-						a, err := QueryAssets(ctx, tx, func(s *sql.Selector) {
+						assetByOrder, err := QueryAssets(ctx, tx, func(s *sql.Selector) {
 							s.Where(sql.EQ("listing_inputs", order))
 						})
 
+						dlst, err := QueryListings(ctx, tx, func(s *sql.Selector) {
+							s.Where(sql.EQ("dope_listings", oasset.TokenID))
+						})
+
+						// If sell orders were removed in Opensea
+						if oasset.SellOrders == nil && dlst != nil {
+							if err := ClearListings(ctx, tx, dlst.ID); err != nil {
+								return fmt.Errorf("clearing listing inputs and outputs: %w", err)
+							}
+
+						}
+
 						// If listing_inputs aren't in assets
-						if a == nil && oasset.SellOrders != nil {
+						if assetByOrder == nil && oasset.SellOrders != nil {
+
+							// User changed listing amount and assetByOrder doesn't match order hash
+							if dlst != nil {
+								if err := ClearListings(ctx, tx, dlst.ID); err != nil {
+									return fmt.Errorf("clearing listing inputs and outputs: %w", err)
+								}
+							}
+
 							// paying `amount` for this
 							inputs, err := tx.Asset.
 								Create().
@@ -142,21 +162,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 									o.SetActive(onSale)
 								}).
 								Exec(ctx); err != nil {
-								fmt.Println("upserting to asset: %w", err)
-								return err
-							}
-
-						}
-
-						dlst, err := QueryListings(ctx, tx, func(s *sql.Selector) {
-							s.Where(sql.EQ("dope_listings", oasset.TokenID))
-						})
-						// If sell orders were removed in Opensea
-						if oasset.SellOrders == nil && dlst != nil {
-							// Update Active = false and clear listing input outputs
-							_, err := tx.Listing.UpdateOneID(dlst.ID).SetActive(false).ClearInputs().ClearOutputs().Save(ctx)
-							if err != nil {
-								return fmt.Errorf("clearing listing inputs and outputs: %w", err)
+								return fmt.Errorf("upserting to listing: %w", err)
 							}
 
 						}
@@ -233,6 +239,16 @@ func (o *Opensea) Sync(ctx context.Context) {
 			return
 		}
 	}
+}
+
+// ClearListings clears inputs and outputs
+func ClearListings(ctx context.Context, tx *ent.Tx, id string) error {
+	// Update Active = false and clear listing input outputs
+	_, err := tx.Listing.UpdateOneID(id).SetActive(false).ClearInputs().ClearOutputs().Save(ctx)
+	if err != nil {
+		return fmt.Errorf("clearing listing inputs and outputs: %w", err)
+	}
+	return nil
 }
 
 // QueryListings filter by dope_listings
