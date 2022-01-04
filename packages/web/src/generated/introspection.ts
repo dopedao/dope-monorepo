@@ -15,6 +15,11 @@
       "Listing",
       "Wallet",
       "WalletItems"
+    ],
+    "SearchResult": [
+      "Dope",
+      "Hustler",
+      "Item"
     ]
   }
 };

@@ -151,6 +151,7 @@ const Nav = () => (
 
 const Hustlers = () => {
   const router = useRouter();
+
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const { account, chainId } = useWeb3React();
 
@@ -161,7 +162,7 @@ const Hustlers = () => {
       },
     },
     {
-      enabled: !account,
+      enabled: Boolean(account),
     },
   );
   const { data, isFetching: loading } = useHustlerQuery(
@@ -171,7 +172,7 @@ const Hustlers = () => {
       },
     },
     {
-      enabled: !account || !router.isReady,
+      enabled: Boolean(account && router.isReady && router.query.id),
     },
   );
   useSwitchOptimism(chainId, account);
@@ -212,7 +213,7 @@ const Hustlers = () => {
           </div>
         </StickyNote>
       )}
-      {walletLoading || loading || !data?.hustlers.edges![0]?.node?.id ? (
+      {walletLoading || loading || !data?.hustlers.edges?.[0]?.node?.id ? (
         <ContentLoading />
       ) : (
         <HustlerEdit hustler={data.hustlers.edges[0].node} />
