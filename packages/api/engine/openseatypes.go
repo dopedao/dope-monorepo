@@ -499,7 +499,7 @@ const (
 )
 
 // GetOrders fetches the orders with context
-func (o Opensea) GetOrders(ctx context.Context, assetContractAddress string, listedAfter int64) (orders []*Order, err error) {
+func (o *Opensea) GetOrders(ctx context.Context, assetContractAddress string, listedAfter int64) (orders []*Order, err error) {
 	offset := 0
 	limit := 100
 

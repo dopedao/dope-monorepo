@@ -72,7 +72,12 @@ func (o *Opensea) Sync(ctx context.Context) {
 			const assetsPerPage = 50
 			assetsCompleted := 0
 			for offset := 0; offset <= maxTokens; offset += assetsPerPage {
-				ret, _ := o.GetAssetCollection(ctx, o.Contract, assetsPerPage, offset)
+				ret, err := o.getAssetCollection(ctx, o.Contract, assetsPerPage, offset)
+				if err != nil {
+					fmt.Printf("error getting asset collection: %v+", err)
+					break
+				}
+
 				if ret == nil {
 					fmt.Printf("received nil from Opensea, breaking")
 					break
@@ -107,17 +112,23 @@ func (o *Opensea) Sync(ctx context.Context) {
 							onSale = true
 						}
 
-						assetByOrder, err := QueryAssets(ctx, tx, func(s *sql.Selector) {
+						assetByOrder, err := queryAssets(ctx, tx, func(s *sql.Selector) {
 							s.Where(sql.EQ("listing_inputs", order))
 						})
+						if err != nil {
+							return err
+						}
 
-						dlst, err := QueryListings(ctx, tx, func(s *sql.Selector) {
+						dlst, err := queryListings(ctx, tx, func(s *sql.Selector) {
 							s.Where(sql.EQ("dope_listings", oasset.TokenID))
 						})
+						if err != nil {
+							return err
+						}
 
 						// If sell orders were removed in Opensea
 						if oasset.SellOrders == nil && dlst != nil {
-							if err := ClearListings(ctx, tx, dlst.ID); err != nil {
+							if err := clearListings(ctx, tx, dlst.ID); err != nil {
 								return fmt.Errorf("clearing listing inputs and outputs: %w", err)
 							}
 
@@ -128,7 +139,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 							// User changed listing amount and assetByOrder doesn't match order hash
 							if dlst != nil {
-								if err := ClearListings(ctx, tx, dlst.ID); err != nil {
+								if err := clearListings(ctx, tx, dlst.ID); err != nil {
 									return fmt.Errorf("clearing listing inputs and outputs: %w", err)
 								}
 							}
@@ -144,7 +155,6 @@ func (o *Opensea) Sync(ctx context.Context) {
 								SetDecimals(18).
 								OnConflictColumns(asset.FieldID).
 								UpdateNewValues().ID(ctx)
-
 							if err != nil {
 								return fmt.Errorf("upserting to asset: %w", err)
 							}
@@ -181,31 +191,31 @@ func (o *Opensea) Sync(ctx context.Context) {
 							if err != nil {
 								return fmt.Errorf("upserting to last sale asset: %w", err)
 							}
-							fmt.Printf("sold ID is: %s\n", sold)
 
-							a, err := QueryAssets(ctx, tx, func(s *sql.Selector) {
+							a, err := queryAssets(ctx, tx, func(s *sql.Selector) {
 								s.Where(sql.EQ("listing_inputs", oasset.LastSale.Transaction.TransactionHash))
 							})
 							if err != nil {
-								fmt.Errorf("getting assets by listing inputs: %w", err)
+								return fmt.Errorf("getting assets by listing inputs: %w", err)
 							}
-							lastsales, err := QueryDopes(ctx, tx, func(s *sql.Selector) {
+
+							lastsales, err := queryDopes(ctx, tx, func(s *sql.Selector) {
 								s.Where(sql.EQ("id", oasset.TokenID))
 							})
 							if err != nil {
-								fmt.Errorf("getting dopes by id: %w", err)
+								return fmt.Errorf("getting dopes by id: %w", err)
 							}
 
 							// If listing_inputs aren't as assets
 							if a == nil {
 								dopeLastsale, err := lastsales.QueryLastSale().First(ctx)
 								if err != nil {
-									fmt.Errorf("getting dope last sales: %w", err)
+									return fmt.Errorf("getting dope last sales: %w", err)
 								}
+
 								// if dope has last_sale and there was a new sale, clear dope last sales
 								if dopeLastsale != nil && dopeLastsale.ID != oasset.LastSale.Transaction.TransactionHash {
-									_, err := tx.Listing.UpdateOneID(dopeLastsale.ID).ClearDopeLastsales().Save(ctx)
-									if err != nil {
+									if _, err := tx.Listing.UpdateOneID(dopeLastsale.ID).ClearDopeLastsales().Save(ctx); err != nil {
 										return fmt.Errorf("clearing dope lastsales: %w", err)
 									}
 								}
@@ -231,7 +241,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 					fmt.Printf("Finished total assets: %d, current offset: %d\n", assetsCompleted, offset)
 					return nil
 				}); err != nil {
-					log.Fatalf("Error with opensea collection %+v", err)
+					log.Printf("Error indexing opensea collection: %+v", err)
 				}
 			}
 			o.Unlock()
@@ -241,18 +251,17 @@ func (o *Opensea) Sync(ctx context.Context) {
 	}
 }
 
-// ClearListings clears inputs and outputs
-func ClearListings(ctx context.Context, tx *ent.Tx, id string) error {
+// clearListings clears inputs and outputs
+func clearListings(ctx context.Context, tx *ent.Tx, id string) error {
 	// Update Active = false and clear listing input outputs
-	_, err := tx.Listing.UpdateOneID(id).SetActive(false).ClearInputs().ClearOutputs().Save(ctx)
-	if err != nil {
+	if _, err := tx.Listing.UpdateOneID(id).SetActive(false).ClearInputs().ClearOutputs().Save(ctx); err != nil {
 		return fmt.Errorf("clearing listing inputs and outputs: %w", err)
 	}
 	return nil
 }
 
-// QueryListings filter by dope_listings
-func QueryListings(ctx context.Context, tx *ent.Tx, ps predicate.Listing) (*ent.Listing, error) {
+// queryListings filter by dope_listings
+func queryListings(ctx context.Context, tx *ent.Tx, ps predicate.Listing) (*ent.Listing, error) {
 	dlst, err := tx.Listing.
 		Query().
 		Where(ps).WithInputs().WithOutputs().WithDopeLastsales().First(ctx)
@@ -262,8 +271,8 @@ func QueryListings(ctx context.Context, tx *ent.Tx, ps predicate.Listing) (*ent.
 	return dlst, err
 }
 
-// QueryAssets filter by dope_listings
-func QueryAssets(ctx context.Context, tx *ent.Tx, ps predicate.Asset) (*ent.Asset, error) {
+// queryAssets filter by dope_listings
+func queryAssets(ctx context.Context, tx *ent.Tx, ps predicate.Asset) (*ent.Asset, error) {
 	ast, err := tx.Asset.
 		Query().
 		Where(ps).First(ctx)
@@ -271,24 +280,23 @@ func QueryAssets(ctx context.Context, tx *ent.Tx, ps predicate.Asset) (*ent.Asse
 		return nil, fmt.Errorf("retrieving asset %v+: %w", ps, err)
 	}
 
-	// fmt.Printf("asset for this tokenid is %s \n", ast)
 	return ast, err
 }
 
-// QueryDopes filter by dope_listings
-func QueryDopes(ctx context.Context, tx *ent.Tx, ps predicate.Dope) (*ent.Dope, error) {
+// queryDopes filter by dope_listings
+func queryDopes(ctx context.Context, tx *ent.Tx, ps predicate.Dope) (*ent.Dope, error) {
 	dope, err := tx.Dope.
 		Query().
 		Where(ps).First(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("retrieving asset %w", err)
+		return nil, fmt.Errorf("retrieving dopes: %w", err)
 	}
 
 	return dope, err
 }
 
-// GetAssetCollection for Opensea
-func (o Opensea) GetAssetCollection(ctx context.Context, contract string, page int, offset int) (*Assets, error) {
+// getAssetCollection for Opensea
+func (o *Opensea) getAssetCollection(ctx context.Context, contract string, page int, offset int) (*Assets, error) {
 	const assetsPerPage = 50
 	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d&offset=%d", assetPath, contract, page, offset)
 	b, err := o.getPath(ctx, path)
@@ -299,11 +307,11 @@ func (o Opensea) GetAssetCollection(ctx context.Context, contract string, page i
 	return ret, json.Unmarshal(b, ret)
 }
 
-func (o Opensea) getPath(ctx context.Context, path string) ([]byte, error) {
+func (o *Opensea) getPath(ctx context.Context, path string) ([]byte, error) {
 	return o.getURL(ctx, o.URL+path)
 }
 
-func (o Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
+func (o *Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
 	client := httpClient()
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if o.APIKey != "" {
@@ -332,7 +340,7 @@ func (o Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
 			return nil, e
 		}
 
-		return nil, fmt.Errorf("Backend returns status %d msg: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("backend returns status %d msg: %s", resp.StatusCode, string(body))
 	}
 
 	return body, nil
