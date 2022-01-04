@@ -7049,8 +7049,7 @@ type ListingMutation struct {
 	clearedFields         map[string]struct{}
 	dope                  *string
 	cleareddope           bool
-	dope_lastsales        map[string]struct{}
-	removeddope_lastsales map[string]struct{}
+	dope_lastsales        *string
 	cleareddope_lastsales bool
 	inputs                map[string]struct{}
 	removedinputs         map[string]struct{}
@@ -7278,14 +7277,9 @@ func (m *ListingMutation) ResetDope() {
 	m.cleareddope = false
 }
 
-// AddDopeLastsaleIDs adds the "dope_lastsales" edge to the Dope entity by ids.
-func (m *ListingMutation) AddDopeLastsaleIDs(ids ...string) {
-	if m.dope_lastsales == nil {
-		m.dope_lastsales = make(map[string]struct{})
-	}
-	for i := range ids {
-		m.dope_lastsales[ids[i]] = struct{}{}
-	}
+// SetDopeLastsalesID sets the "dope_lastsales" edge to the Dope entity by id.
+func (m *ListingMutation) SetDopeLastsalesID(id string) {
+	m.dope_lastsales = &id
 }
 
 // ClearDopeLastsales clears the "dope_lastsales" edge to the Dope entity.
@@ -7298,29 +7292,20 @@ func (m *ListingMutation) DopeLastsalesCleared() bool {
 	return m.cleareddope_lastsales
 }
 
-// RemoveDopeLastsaleIDs removes the "dope_lastsales" edge to the Dope entity by IDs.
-func (m *ListingMutation) RemoveDopeLastsaleIDs(ids ...string) {
-	if m.removeddope_lastsales == nil {
-		m.removeddope_lastsales = make(map[string]struct{})
-	}
-	for i := range ids {
-		delete(m.dope_lastsales, ids[i])
-		m.removeddope_lastsales[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedDopeLastsales returns the removed IDs of the "dope_lastsales" edge to the Dope entity.
-func (m *ListingMutation) RemovedDopeLastsalesIDs() (ids []string) {
-	for id := range m.removeddope_lastsales {
-		ids = append(ids, id)
+// DopeLastsalesID returns the "dope_lastsales" edge ID in the mutation.
+func (m *ListingMutation) DopeLastsalesID() (id string, exists bool) {
+	if m.dope_lastsales != nil {
+		return *m.dope_lastsales, true
 	}
 	return
 }
 
 // DopeLastsalesIDs returns the "dope_lastsales" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DopeLastsalesID instead. It exists only for internal usage by the builders.
 func (m *ListingMutation) DopeLastsalesIDs() (ids []string) {
-	for id := range m.dope_lastsales {
-		ids = append(ids, id)
+	if id := m.dope_lastsales; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -7329,7 +7314,6 @@ func (m *ListingMutation) DopeLastsalesIDs() (ids []string) {
 func (m *ListingMutation) ResetDopeLastsales() {
 	m.dope_lastsales = nil
 	m.cleareddope_lastsales = false
-	m.removeddope_lastsales = nil
 }
 
 // AddInputIDs adds the "inputs" edge to the Asset entity by ids.
@@ -7600,11 +7584,9 @@ func (m *ListingMutation) AddedIDs(name string) []ent.Value {
 			return []ent.Value{*id}
 		}
 	case listing.EdgeDopeLastsales:
-		ids := make([]ent.Value, 0, len(m.dope_lastsales))
-		for id := range m.dope_lastsales {
-			ids = append(ids, id)
+		if id := m.dope_lastsales; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case listing.EdgeInputs:
 		ids := make([]ent.Value, 0, len(m.inputs))
 		for id := range m.inputs {
@@ -7624,9 +7606,6 @@ func (m *ListingMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ListingMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 4)
-	if m.removeddope_lastsales != nil {
-		edges = append(edges, listing.EdgeDopeLastsales)
-	}
 	if m.removedinputs != nil {
 		edges = append(edges, listing.EdgeInputs)
 	}
@@ -7640,12 +7619,6 @@ func (m *ListingMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *ListingMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case listing.EdgeDopeLastsales:
-		ids := make([]ent.Value, 0, len(m.removeddope_lastsales))
-		for id := range m.removeddope_lastsales {
-			ids = append(ids, id)
-		}
-		return ids
 	case listing.EdgeInputs:
 		ids := make([]ent.Value, 0, len(m.removedinputs))
 		for id := range m.removedinputs {
@@ -7702,6 +7675,9 @@ func (m *ListingMutation) ClearEdge(name string) error {
 	switch name {
 	case listing.EdgeDope:
 		m.ClearDope()
+		return nil
+	case listing.EdgeDopeLastsales:
+		m.ClearDopeLastsales()
 		return nil
 	}
 	return fmt.Errorf("unknown Listing unique edge %s", name)

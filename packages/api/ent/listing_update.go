@@ -54,19 +54,23 @@ func (lu *ListingUpdate) SetDope(d *Dope) *ListingUpdate {
 	return lu.SetDopeID(d.ID)
 }
 
-// AddDopeLastsaleIDs adds the "dope_lastsales" edge to the Dope entity by IDs.
-func (lu *ListingUpdate) AddDopeLastsaleIDs(ids ...string) *ListingUpdate {
-	lu.mutation.AddDopeLastsaleIDs(ids...)
+// SetDopeLastsalesID sets the "dope_lastsales" edge to the Dope entity by ID.
+func (lu *ListingUpdate) SetDopeLastsalesID(id string) *ListingUpdate {
+	lu.mutation.SetDopeLastsalesID(id)
 	return lu
 }
 
-// AddDopeLastsales adds the "dope_lastsales" edges to the Dope entity.
-func (lu *ListingUpdate) AddDopeLastsales(d ...*Dope) *ListingUpdate {
-	ids := make([]string, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// SetNillableDopeLastsalesID sets the "dope_lastsales" edge to the Dope entity by ID if the given value is not nil.
+func (lu *ListingUpdate) SetNillableDopeLastsalesID(id *string) *ListingUpdate {
+	if id != nil {
+		lu = lu.SetDopeLastsalesID(*id)
 	}
-	return lu.AddDopeLastsaleIDs(ids...)
+	return lu
+}
+
+// SetDopeLastsales sets the "dope_lastsales" edge to the Dope entity.
+func (lu *ListingUpdate) SetDopeLastsales(d *Dope) *ListingUpdate {
+	return lu.SetDopeLastsalesID(d.ID)
 }
 
 // AddInputIDs adds the "inputs" edge to the Asset entity by IDs.
@@ -110,25 +114,10 @@ func (lu *ListingUpdate) ClearDope() *ListingUpdate {
 	return lu
 }
 
-// ClearDopeLastsales clears all "dope_lastsales" edges to the Dope entity.
+// ClearDopeLastsales clears the "dope_lastsales" edge to the Dope entity.
 func (lu *ListingUpdate) ClearDopeLastsales() *ListingUpdate {
 	lu.mutation.ClearDopeLastsales()
 	return lu
-}
-
-// RemoveDopeLastsaleIDs removes the "dope_lastsales" edge to Dope entities by IDs.
-func (lu *ListingUpdate) RemoveDopeLastsaleIDs(ids ...string) *ListingUpdate {
-	lu.mutation.RemoveDopeLastsaleIDs(ids...)
-	return lu
-}
-
-// RemoveDopeLastsales removes "dope_lastsales" edges to Dope entities.
-func (lu *ListingUpdate) RemoveDopeLastsales(d ...*Dope) *ListingUpdate {
-	ids := make([]string, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return lu.RemoveDopeLastsaleIDs(ids...)
 }
 
 // ClearInputs clears all "inputs" edges to the Asset entity.
@@ -289,7 +278,7 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if lu.mutation.DopeLastsalesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   listing.DopeLastsalesTable,
 			Columns: []string{listing.DopeLastsalesColumn},
@@ -300,31 +289,12 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 					Column: dope.FieldID,
 				},
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := lu.mutation.RemovedDopeLastsalesIDs(); len(nodes) > 0 && !lu.mutation.DopeLastsalesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   listing.DopeLastsalesTable,
-			Columns: []string{listing.DopeLastsalesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: dope.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := lu.mutation.DopeLastsalesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   listing.DopeLastsalesTable,
 			Columns: []string{listing.DopeLastsalesColumn},
@@ -493,19 +463,23 @@ func (luo *ListingUpdateOne) SetDope(d *Dope) *ListingUpdateOne {
 	return luo.SetDopeID(d.ID)
 }
 
-// AddDopeLastsaleIDs adds the "dope_lastsales" edge to the Dope entity by IDs.
-func (luo *ListingUpdateOne) AddDopeLastsaleIDs(ids ...string) *ListingUpdateOne {
-	luo.mutation.AddDopeLastsaleIDs(ids...)
+// SetDopeLastsalesID sets the "dope_lastsales" edge to the Dope entity by ID.
+func (luo *ListingUpdateOne) SetDopeLastsalesID(id string) *ListingUpdateOne {
+	luo.mutation.SetDopeLastsalesID(id)
 	return luo
 }
 
-// AddDopeLastsales adds the "dope_lastsales" edges to the Dope entity.
-func (luo *ListingUpdateOne) AddDopeLastsales(d ...*Dope) *ListingUpdateOne {
-	ids := make([]string, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// SetNillableDopeLastsalesID sets the "dope_lastsales" edge to the Dope entity by ID if the given value is not nil.
+func (luo *ListingUpdateOne) SetNillableDopeLastsalesID(id *string) *ListingUpdateOne {
+	if id != nil {
+		luo = luo.SetDopeLastsalesID(*id)
 	}
-	return luo.AddDopeLastsaleIDs(ids...)
+	return luo
+}
+
+// SetDopeLastsales sets the "dope_lastsales" edge to the Dope entity.
+func (luo *ListingUpdateOne) SetDopeLastsales(d *Dope) *ListingUpdateOne {
+	return luo.SetDopeLastsalesID(d.ID)
 }
 
 // AddInputIDs adds the "inputs" edge to the Asset entity by IDs.
@@ -549,25 +523,10 @@ func (luo *ListingUpdateOne) ClearDope() *ListingUpdateOne {
 	return luo
 }
 
-// ClearDopeLastsales clears all "dope_lastsales" edges to the Dope entity.
+// ClearDopeLastsales clears the "dope_lastsales" edge to the Dope entity.
 func (luo *ListingUpdateOne) ClearDopeLastsales() *ListingUpdateOne {
 	luo.mutation.ClearDopeLastsales()
 	return luo
-}
-
-// RemoveDopeLastsaleIDs removes the "dope_lastsales" edge to Dope entities by IDs.
-func (luo *ListingUpdateOne) RemoveDopeLastsaleIDs(ids ...string) *ListingUpdateOne {
-	luo.mutation.RemoveDopeLastsaleIDs(ids...)
-	return luo
-}
-
-// RemoveDopeLastsales removes "dope_lastsales" edges to Dope entities.
-func (luo *ListingUpdateOne) RemoveDopeLastsales(d ...*Dope) *ListingUpdateOne {
-	ids := make([]string, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return luo.RemoveDopeLastsaleIDs(ids...)
 }
 
 // ClearInputs clears all "inputs" edges to the Asset entity.
@@ -752,7 +711,7 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 	}
 	if luo.mutation.DopeLastsalesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   listing.DopeLastsalesTable,
 			Columns: []string{listing.DopeLastsalesColumn},
@@ -763,31 +722,12 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 					Column: dope.FieldID,
 				},
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := luo.mutation.RemovedDopeLastsalesIDs(); len(nodes) > 0 && !luo.mutation.DopeLastsalesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   listing.DopeLastsalesTable,
-			Columns: []string{listing.DopeLastsalesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: dope.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := luo.mutation.DopeLastsalesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   listing.DopeLastsalesTable,
 			Columns: []string{listing.DopeLastsalesColumn},

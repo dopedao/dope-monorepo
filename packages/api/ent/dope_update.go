@@ -402,7 +402,7 @@ func (du *DopeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if du.mutation.LastSaleCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dope.LastSaleTable,
 			Columns: []string{dope.LastSaleColumn},
@@ -418,7 +418,7 @@ func (du *DopeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := du.mutation.LastSaleIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dope.LastSaleTable,
 			Columns: []string{dope.LastSaleColumn},
@@ -958,7 +958,7 @@ func (duo *DopeUpdateOne) sqlSave(ctx context.Context) (_node *Dope, err error) 
 	}
 	if duo.mutation.LastSaleCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dope.LastSaleTable,
 			Columns: []string{dope.LastSaleColumn},
@@ -974,7 +974,7 @@ func (duo *DopeUpdateOne) sqlSave(ctx context.Context) (_node *Dope, err error) 
 	}
 	if nodes := duo.mutation.LastSaleIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dope.LastSaleTable,
 			Columns: []string{dope.LastSaleColumn},

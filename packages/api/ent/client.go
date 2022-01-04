@@ -522,7 +522,7 @@ func (c *DopeClient) QueryLastSale(d *Dope) *ListingQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(dope.Table, dope.FieldID, id),
 			sqlgraph.To(listing.Table, listing.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, dope.LastSaleTable, dope.LastSaleColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, dope.LastSaleTable, dope.LastSaleColumn),
 		)
 		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
 		return fromV, nil
@@ -1394,7 +1394,7 @@ func (c *ListingClient) QueryDopeLastsales(l *Listing) *DopeQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listing.Table, listing.FieldID, id),
 			sqlgraph.To(dope.Table, dope.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, listing.DopeLastsalesTable, listing.DopeLastsalesColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, listing.DopeLastsalesTable, listing.DopeLastsalesColumn),
 		)
 		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
 		return fromV, nil
