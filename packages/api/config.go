@@ -51,6 +51,10 @@ var configs = map[string]Configs{
 				Processor:  new(processors.HustlerProcessor),
 			},
 		},
+	}, engine.OpenseaConfig{
+		URL:      "https://api.opensea.io",
+		Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
+		Interval: time.Minute * 20,
 	}},
 	"testnet": {engine.EthConfig{
 		RPC:      "https://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-",
@@ -92,5 +96,9 @@ var configs = map[string]Configs{
 				Processor:  new(processors.HustlerProcessor),
 			},
 		},
+	}, engine.OpenseaConfig{
+		URL:      "https://api.opensea.io",
+		Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
+		Interval: time.Minute * 20,
 	}},
 }

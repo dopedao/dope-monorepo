@@ -352,7 +352,7 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 	}
 	if nodes := dc.mutation.LastSaleIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dope.LastSaleTable,
 			Columns: []string{dope.LastSaleColumn},

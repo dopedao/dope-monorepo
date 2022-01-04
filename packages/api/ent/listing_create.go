@@ -61,19 +61,23 @@ func (lc *ListingCreate) SetDope(d *Dope) *ListingCreate {
 	return lc.SetDopeID(d.ID)
 }
 
-// AddDopeLastsaleIDs adds the "dope_lastsales" edge to the Dope entity by IDs.
-func (lc *ListingCreate) AddDopeLastsaleIDs(ids ...string) *ListingCreate {
-	lc.mutation.AddDopeLastsaleIDs(ids...)
+// SetDopeLastsalesID sets the "dope_lastsales" edge to the Dope entity by ID.
+func (lc *ListingCreate) SetDopeLastsalesID(id string) *ListingCreate {
+	lc.mutation.SetDopeLastsalesID(id)
 	return lc
 }
 
-// AddDopeLastsales adds the "dope_lastsales" edges to the Dope entity.
-func (lc *ListingCreate) AddDopeLastsales(d ...*Dope) *ListingCreate {
-	ids := make([]string, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// SetNillableDopeLastsalesID sets the "dope_lastsales" edge to the Dope entity by ID if the given value is not nil.
+func (lc *ListingCreate) SetNillableDopeLastsalesID(id *string) *ListingCreate {
+	if id != nil {
+		lc = lc.SetDopeLastsalesID(*id)
 	}
-	return lc.AddDopeLastsaleIDs(ids...)
+	return lc
+}
+
+// SetDopeLastsales sets the "dope_lastsales" edge to the Dope entity.
+func (lc *ListingCreate) SetDopeLastsales(d *Dope) *ListingCreate {
+	return lc.SetDopeLastsalesID(d.ID)
 }
 
 // AddInputIDs adds the "inputs" edge to the Asset entity by IDs.
@@ -262,7 +266,7 @@ func (lc *ListingCreate) createSpec() (*Listing, *sqlgraph.CreateSpec) {
 	}
 	if nodes := lc.mutation.DopeLastsalesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   listing.DopeLastsalesTable,
 			Columns: []string{listing.DopeLastsalesColumn},
