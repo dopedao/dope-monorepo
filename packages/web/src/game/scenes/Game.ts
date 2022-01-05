@@ -13,6 +13,7 @@ import EventHandler, { Events } from 'game/handlers/EventHandler';
 import Conversation from 'game/entities/citizen/Conversation';
 import { TypeKind } from 'graphql';
 import Quest from 'game/quests/Quest';
+import PointQuest from 'game/quests/PointQuest';
 
 export default class GameScene extends Scene {
   private player!: Player;
@@ -22,6 +23,8 @@ export default class GameScene extends Scene {
 
   public canUseMouse: boolean = true;
   public rexUI!: RexUIPlugin;
+
+  private accumulator: number = 0;
 
   get map() { return this._map; }
 
@@ -79,13 +82,15 @@ export default class GameScene extends Scene {
     let points2 = [ new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600) ];
     points2 = points2.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
 
+    const crackHeadClothesZone = new Zone(this.matter.add.circle(300, 1200, 50), this);
+
     this.citizens.push(
       new Citizen(
         matterWorld, 600, 350, new HustlerModel(Base.Male, [], Feet.NikeCortez, Hands.BlackGloves, undefined, Necklace.Gold),
         'Michel', 
         'Patrick is not evil', 
         [new Conversation('Give me some clothes please', () => {
-          this.player.addQuest(new Quest("Mr.Crackhead", "Get him some clothes ASAP"));
+          this.player.questManager.addQuest(new PointQuest(crackHeadClothesZone, "Mr.Crackhead", "Get him some clothes ASAP"));
           return false;
         })], 
         points, true,),

@@ -1,6 +1,7 @@
 import HustlerModel from "game/gfx/models/HustlerModel";
 import EventHandler, { Events } from "game/handlers/EventHandler";
 import Inventory from "game/inventory/Inventory";
+import QuestManager from "game/managers/QuestManager";
 import Quest from "game/quests/Quest";
 import Citizen from "../citizen/Citizen";
 import Hustler, { Direction } from "../Hustler";
@@ -13,14 +14,14 @@ export default class Player extends Hustler
     private _interactSensor: MatterJS.BodyType;
 
     private _inventory: Inventory;
-    private _quests: Array<Quest> = new Array();
+    private _questManager: QuestManager;
 
     private _busy: boolean = false;
 
     get interactSensor() { return this._interactSensor; }
     
     get inventory() { return this._inventory; }
-    get quests() { return this._quests; }
+    get questManager() { return this._questManager; }
 
     get busy() { return this._busy; }
 
@@ -29,8 +30,7 @@ export default class Player extends Hustler
         super(world, x, y, model);
         
         this._inventory = inventory ?? new Inventory();
-        if (quests)
-            this._quests = quests;
+        this._questManager = new QuestManager(this, quests);
 
         // create interact sensor
         this._interactSensor = this.scene.matter.add.rectangle(x + 30, y - 40, 40, this.height, {
@@ -40,12 +40,6 @@ export default class Player extends Hustler
         // create controller
         this.controller = new PlayerController(this);
         this._handleEvents();
-    }
-
-    addQuest(quest: Quest)
-    {
-        this._quests.push(quest);
-        EventHandler.emitter().emit(Events.PLAYER_NEW_QUEST, quest);
     }
 
     openInventory()
@@ -125,6 +119,8 @@ export default class Player extends Hustler
     {
         super.update();
         this.updateSensorPosition();
+
+        this.questManager.update();
 
         // update depth depending other bodies
         const overlapped = this.scene.matter.overlap(this, undefined, this.updateDepth);

@@ -1,7 +1,7 @@
 import Hustler from "game/entities/Hustler";
 
 export const createHustlerAnimations = (anims: Phaser.Animations.AnimationManager, key: string): void => {
-    const scale = 0.07;
+    const scale = 0.15;
 
     anims.create({
         key: key + "_right",

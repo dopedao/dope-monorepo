@@ -15,7 +15,7 @@ export enum Direction
 
 export default class Hustler extends Phaser.Physics.Matter.Sprite
 {
-    public static readonly DEFAULT_VELOCITY: number = 1.3;
+    public static readonly DEFAULT_VELOCITY: number = 3;
     public static readonly DEFAULT_MASS: number = 70;
 
     // the direction the player is currently moving in
