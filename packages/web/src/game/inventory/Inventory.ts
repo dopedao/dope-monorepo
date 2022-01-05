@@ -1,3 +1,4 @@
+import EventHandler, { Events } from "game/handlers/EventHandler";
 import Item from "./Item";
 
 export default class Inventory 
@@ -6,6 +7,8 @@ export default class Inventory
     
     private _items: Array<Item | undefined> = new Array(Inventory.MAX_ITEMS);
     
+    get items(): Array<Item | undefined> { return this._items; }
+
     constructor(items?: Array<Item>)
     {
         if (items)
@@ -15,7 +18,7 @@ export default class Inventory
     // add item to inventory
     public addItem(item: Item)
     {
-        for (let i = 0; i < Inventory.MAX_ITEMS; i++)
+        for (let i = 0; i < this._items.length; i++)
         {
             if (!this._items[i])
             {
@@ -28,7 +31,7 @@ export default class Inventory
     // remove item by item type
     public removeItem(item: Item)
     {
-        for (let i = 0; i < Inventory.MAX_ITEMS; i++)
+        for (let i = 0; i < this._items.length; i++)
         {
             if (this._items[i] === item)
             {
