@@ -292,12 +292,12 @@ func (l *Listing) Dope(ctx context.Context) (*Dope, error) {
 	return result, MaskNotFound(err)
 }
 
-func (l *Listing) DopeLastsales(ctx context.Context) ([]*Dope, error) {
+func (l *Listing) DopeLastsales(ctx context.Context) (*Dope, error) {
 	result, err := l.Edges.DopeLastsalesOrErr()
 	if IsNotLoaded(err) {
-		result, err = l.QueryDopeLastsales().All(ctx)
+		result, err = l.QueryDopeLastsales().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (l *Listing) Inputs(ctx context.Context) ([]*Asset, error) {

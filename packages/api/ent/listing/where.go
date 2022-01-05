@@ -194,7 +194,7 @@ func HasDopeLastsales() predicate.Listing {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(DopeLastsalesTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, DopeLastsalesTable, DopeLastsalesColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, DopeLastsalesTable, DopeLastsalesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -206,7 +206,7 @@ func HasDopeLastsalesWith(preds ...predicate.Dope) predicate.Listing {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(DopeLastsalesInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, DopeLastsalesTable, DopeLastsalesColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, DopeLastsalesTable, DopeLastsalesColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
