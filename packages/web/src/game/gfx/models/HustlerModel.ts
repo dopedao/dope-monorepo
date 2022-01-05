@@ -189,12 +189,16 @@ export default class HustlerModel
     }
 
     // cancel sprites animation
-    stopSpritesAnim()
+    stopSpritesAnim(delay: boolean = true)
     {
         const stop = (sprite: Phaser.GameObjects.Sprite) => {
             sprite.anims.currentAnim && !sprite.anims.currentFrame.isLast ? 
                 sprite.anims.setCurrentFrame(sprite.anims.currentAnim.getLastFrame()) : null
-            sprite.stopAfterDelay(100);
+            
+            if (delay)
+                sprite.stopAfterDelay(100);
+            else
+                sprite.stop();
         };
 
         Object.values(this.sprites).forEach(sprite => stop(sprite));

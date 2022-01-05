@@ -4,8 +4,10 @@ export default class Quest
     readonly description: string;
     readonly onStart?: () => void;
     readonly onComplete?: () => void;
-    readonly isComplete: boolean = false;
-    readonly isActive: boolean = true;
+    private _isActive: boolean = true;
+
+    get isActive() { return this._isActive; }
+    set isActive(value: boolean) { this._isActive = value; this.onStart ? this.onStart() : {}; }
 
     constructor(name: string, description: string, start?: () => void, complete?: () => void, isActive?: boolean)
     {

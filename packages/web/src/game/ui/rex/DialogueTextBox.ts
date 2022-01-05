@@ -85,7 +85,7 @@ export default class DialogueTextBox extends TextBox
         } else {
             if (this.isLastPage)
             {
-                this.destroy();
+                this.emit('complete');
                 return;
             }
             this.typeNextPage();
