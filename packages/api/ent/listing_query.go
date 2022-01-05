@@ -105,7 +105,7 @@ func (lq *ListingQuery) QueryDopeLastsales() *DopeQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listing.Table, listing.FieldID, selector),
 			sqlgraph.To(dope.Table, dope.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, listing.DopeLastsalesTable, listing.DopeLastsalesColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, listing.DopeLastsalesTable, listing.DopeLastsalesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(lq.driver.Dialect(), step)
 		return fromU, nil
@@ -526,7 +526,6 @@ func (lq *ListingQuery) sqlAll(ctx context.Context) ([]*Listing, error) {
 		for i := range nodes {
 			fks = append(fks, nodes[i].ID)
 			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.DopeLastsales = []*Dope{}
 		}
 		query.withFKs = true
 		query.Where(predicate.Dope(func(s *sql.Selector) {
@@ -545,7 +544,7 @@ func (lq *ListingQuery) sqlAll(ctx context.Context) ([]*Listing, error) {
 			if !ok {
 				return nil, fmt.Errorf(`unexpected foreign-key "listing_dope_lastsales" returned %v for node %v`, *fk, n.ID)
 			}
-			node.Edges.DopeLastsales = append(node.Edges.DopeLastsales, n)
+			node.Edges.DopeLastsales = n
 		}
 	}
 

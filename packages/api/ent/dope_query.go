@@ -106,7 +106,7 @@ func (dq *DopeQuery) QueryLastSale() *ListingQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(dope.Table, dope.FieldID, selector),
 			sqlgraph.To(listing.Table, listing.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, dope.LastSaleTable, dope.LastSaleColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, dope.LastSaleTable, dope.LastSaleColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(dq.driver.Dialect(), step)
 		return fromU, nil

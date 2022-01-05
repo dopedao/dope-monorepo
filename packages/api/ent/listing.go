@@ -31,7 +31,7 @@ type ListingEdges struct {
 	// Dope holds the value of the dope edge.
 	Dope *Dope `json:"dope,omitempty"`
 	// DopeLastsales holds the value of the dope_lastsales edge.
-	DopeLastsales []*Dope `json:"dope_lastsales,omitempty"`
+	DopeLastsales *Dope `json:"dope_lastsales,omitempty"`
 	// Inputs holds the value of the inputs edge.
 	Inputs []*Asset `json:"inputs,omitempty"`
 	// Outputs holds the value of the outputs edge.
@@ -56,9 +56,14 @@ func (e ListingEdges) DopeOrErr() (*Dope, error) {
 }
 
 // DopeLastsalesOrErr returns the DopeLastsales value or an error if the edge
-// was not loaded in eager-loading.
-func (e ListingEdges) DopeLastsalesOrErr() ([]*Dope, error) {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ListingEdges) DopeLastsalesOrErr() (*Dope, error) {
 	if e.loadedTypes[1] {
+		if e.DopeLastsales == nil {
+			// The edge dope_lastsales was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: dope.Label}
+		}
 		return e.DopeLastsales, nil
 	}
 	return nil, &NotLoadedError{edge: "dope_lastsales"}

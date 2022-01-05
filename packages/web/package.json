@@ -12,7 +12,9 @@
     "test": "jest",
     "test-watch": "jest --watch",
     "dump-opensea": "ts-node --script-mode script/dump-opensea-json.ts",
-    "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh-opensea-sales-cache.ts"
+    "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh-opensea-sales-cache.ts",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@apollo/client": "^3.4.11",
@@ -55,6 +57,7 @@
     "swr": "^0.5.6"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.7",
     "@emotion/babel-plugin": "^11.3.0",
     "@graphql-codegen/cli": "^2.2.0",
     "@graphql-codegen/fragment-matcher": "^3.1.0",
@@ -62,11 +65,18 @@
     "@graphql-codegen/typescript": "^2.2.2",
     "@graphql-codegen/typescript-operations": "^2.1.4",
     "@graphql-codegen/typescript-react-apollo": "^3.1.4",
+    "@mdx-js/react": "^1.6.22",
     "@sentry/react": "^6.13.2",
     "@sentry/tracing": "^6.13.2",
+    "@storybook/addon-actions": "^6.4.9",
+    "@storybook/addon-docs": "^6.4.9",
+    "@storybook/addon-essentials": "^6.4.9",
+    "@storybook/addon-links": "^6.4.9",
+    "@storybook/react": "^6.4.9",
     "@types/jest": "^27.0.2",
     "@types/react": "17.0.9",
     "@types/react-infinite-scroller": "^1.2.2",
+    "babel-loader": "^8.2.3",
     "babel-plugin-module-resolver": "^4.1.0",
     "eslint": "7.32.0",
     "eslint-config-next": "^12.0.3",
