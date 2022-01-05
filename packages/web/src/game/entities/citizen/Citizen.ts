@@ -1,5 +1,6 @@
 import HustlerModel from "game/gfx/models/HustlerModel";
 import Hustler from "../Hustler";
+import Player from "../player/Player";
 import Conversation from "./Conversation";
 
 export default class Citizen extends Hustler
@@ -41,10 +42,11 @@ export default class Citizen extends Hustler
     }
 
     // called when npc enters in an interaction
-    onInteraction()
+    onInteraction(player: Player)
     {
         this.shouldFollowPath = false;
         this.navigator.cancel();
+        this.lookAt(player.x, player.y);
     }
 
     // called when the interaction is over
@@ -67,8 +69,6 @@ export default class Citizen extends Hustler
         {
             const nextPoint = this.path.shift();
             
-            console.log(this.path);
-
             if (nextPoint)
             {
                 if (nextPoint instanceof Phaser.Math.Vector2)

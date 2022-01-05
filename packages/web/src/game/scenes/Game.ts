@@ -54,7 +54,7 @@ export default class GameScene extends Scene {
           () => {
             if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
             {
-              citizenToTalkTo?.onInteraction();
+              citizenToTalkTo?.onInteraction(this.player);
               EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, citizenToTalkTo);
             }
           });
@@ -77,7 +77,7 @@ export default class GameScene extends Scene {
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
-    let points = [ new Phaser.Math.Vector2(200, 400), 1, new Phaser.Math.Vector2(700, 400), new Phaser.Math.Vector2(600, 600), 5, new Phaser.Math.Vector2(300, 1000) ];
+    let points = [ new Phaser.Math.Vector2(200, 400), 120, new Phaser.Math.Vector2(700, 400), new Phaser.Math.Vector2(600, 600), 5, new Phaser.Math.Vector2(300, 1000) ];
     points = points.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
 
     let points2 = [ new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600) ];
@@ -104,7 +104,6 @@ export default class GameScene extends Scene {
       // new Conversation('Hello again!', () => true)], 
       // points2, true,),
     );
-  
 
     this.player = new Player(
       matterWorld, 500, 600,

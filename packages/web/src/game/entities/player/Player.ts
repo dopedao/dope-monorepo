@@ -61,7 +61,7 @@ export default class Player extends Hustler
                 if (!(otherGameObject as Citizen).shouldFollowPath)
                     return;
                 // call onInteraction method of citizen
-                otherGameObject.onInteraction();
+                otherGameObject.onInteraction(this);
                 EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, otherGameObject);
             }
         });

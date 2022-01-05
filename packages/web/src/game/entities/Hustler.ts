@@ -89,6 +89,40 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this._animator = new HustlerAnimator(this);
     }
 
+    // sets correct sprite facing towards point
+    lookAt(x: number, y: number)
+    {
+        const angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
+
+        // east
+        if (angle >= -Phaser.Math.TAU && angle <= Phaser.Math.TAU)
+        {
+            this._lastDirection = Direction.East;
+        }
+        // south
+        else if (angle >= 0 && angle <= Math.PI)
+        {
+            this._lastDirection = Direction.South;
+        }
+        // north
+        else if (angle <= 0 && angle >= -Math.PI)
+        {
+            this._lastDirection = Direction.North;            
+        }
+        // west
+        if (angle <= -Phaser.Math.TAU || angle >= Phaser.Math.PI2)
+        {
+            this._lastDirection  = Direction.West;
+        }
+        
+
+        this.play(this.texture.key + this._lastDirection);
+        this.model.updateSprites(false, this._lastDirection);
+        
+        this.model.stopSpritesAnim(false);
+        this.stop();
+    }
+
     setDepth(value: number)
     {
         super.setDepth(value);
