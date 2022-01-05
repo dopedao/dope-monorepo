@@ -3,19 +3,23 @@ import EventHandler from "game/handlers/EventHandler";
 
 export default class Zone
 {
-    private body: MatterJS.BodyType;
+    private _body: MatterJS.BodyType;
+    
     private scene: Phaser.Scene;
     private objects?: Array<Phaser.GameObjects.GameObject>;
 
-    private inside: boolean = false;
+    private _inside: boolean = false;
 
     // callbacks
     private onEnter?: () => void;
     private onExit?: () => void;
 
+    get body() { return this._body; }
+    get inside() { return this._inside; }
+
     constructor(body: MatterJS.BodyType, scene: Phaser.Scene, objects?: Array<Phaser.GameObjects.GameObject>, onEnter?: () => void, onExit?: () => void)
     {
-        this.body = body;
+        this._body = body;
 
         // set the body as being a sensor so that it doesn't collide with anything
         this.body.isSensor = true;
@@ -27,19 +31,27 @@ export default class Zone
         this.onExit = onExit;
     }
 
+    overlap(other: Array<MatterJS.BodyType>)
+    {
+        return this.scene.matter.overlap(this.body, other);
+    }
+
     update()
     {
+        if (!this.objects)
+            return;
+
         if (!this.inside && this.scene.matter.overlap(this.body, this.objects))
         {
             if (this.onEnter)
                 this.onEnter();
-            this.inside = true;
+            this._inside = true;
         }
         else if (this.inside && !this.scene.matter.overlap(this.body, this.objects))
         {
             if (this.onExit)
                 this.onExit();
-            this.inside = false;
+            this._inside = false;
         }
     }
 }

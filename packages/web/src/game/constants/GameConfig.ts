@@ -9,6 +9,10 @@ import UIScene from "game/scenes/UI";
 export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
     title: "proto",
     type: Phaser.AUTO,
+    fps: {
+        target: 60,
+        forceSetTimeOut: true
+    },
     parent: "game-parent",
     backgroundColor: 0x383838,
     dom: {

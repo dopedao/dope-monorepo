@@ -15,7 +15,7 @@ export enum Direction
 
 export default class Hustler extends Phaser.Physics.Matter.Sprite
 {
-    public static readonly DEFAULT_VELOCITY: number = 1.3;
+    public static readonly DEFAULT_VELOCITY: number = 3;
     public static readonly DEFAULT_MASS: number = 70;
 
     // the direction the player is currently moving in
@@ -58,11 +58,10 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // create main body
         const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
-        const mainBody = Bodies.rectangle(x, y, this.width * 0.45, this.height * 0.3, {
+        const mainBody = Bodies.rectangle(x, y, this.width * 0.48, this.height * 0.35, {
             collisionFilter: {
                 group: -69
             },
-            // isSensor: true,
             chamfer: { radius: 7.2 },
         } as MatterJS.BodyType);
         this.setExistingBody(mainBody);
@@ -70,7 +69,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this.setDepth(1);
 
         // offset the hustler texture from the body
-        this.setOrigin(0.5, 0.67);
+        this.setOrigin(0.5, 0.70);
         // make it a bit bigger
         this.setScale(2);
 
@@ -88,6 +87,40 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         } as any));
         // handle animations
         this._animator = new HustlerAnimator(this);
+    }
+
+    // sets correct sprite facing towards point
+    lookAt(x: number, y: number)
+    {
+        const angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
+
+        // east
+        if (angle >= -Phaser.Math.TAU && angle <= Phaser.Math.TAU)
+        {
+            this._lastDirection = Direction.East;
+        }
+        // south
+        else if (angle >= 0 && angle <= Math.PI)
+        {
+            this._lastDirection = Direction.South;
+        }
+        // north
+        else if (angle <= 0 && angle >= -Math.PI)
+        {
+            this._lastDirection = Direction.North;            
+        }
+        // west
+        if (angle <= -Phaser.Math.TAU || angle >= Phaser.Math.PI2)
+        {
+            this._lastDirection  = Direction.West;
+        }
+        
+
+        this.play(this.texture.key + this._lastDirection);
+        this.model.updateSprites(false, this._lastDirection);
+        
+        this.model.stopSpritesAnim(false);
+        this.stop();
     }
 
     setDepth(value: number)

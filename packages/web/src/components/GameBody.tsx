@@ -8,7 +8,10 @@ import { defaultGameConfig } from "game/constants/GameConfig";
 export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConfig}) {
     const gameRef = useRef<HTMLDivElement>(null);
     
-    const game = useGame(props.gameConfig ?? defaultGameConfig, gameRef);
+    const game = useGame({
+        ...(props.gameConfig ?? defaultGameConfig),
+        type: navigator.userAgent.indexOf('AppleWebKit') != -1 ? Phaser.CANVAS : Phaser.AUTO
+    }, gameRef);
 
     const nativeFullscreen = () => {
         game?.scale.toggleFullscreen();
@@ -35,7 +38,6 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
                     gameRef.current.appendChild(game.canvas);
                     // update parent
                     game.scale.parent = gameRef.current;
-                    
 
                     // update scale accordingly
                     game.scale.setParentSize(gameRef.current.clientWidth, gameRef.current.clientHeight);
