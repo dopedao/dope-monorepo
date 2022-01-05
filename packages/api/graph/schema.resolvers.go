@@ -63,6 +63,10 @@ func (r *queryResolver) Hustlers(ctx context.Context, after *ent.Cursor, first *
 	return r.client.Hustler.Query().Paginate(ctx, after, first, before, last, ent.WithHustlerOrder(orderBy), ent.WithHustlerFilter(where.Filter))
 }
 
+func (r *queryResolver) Listings(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ListingOrder, where *ent.ListingWhereInput) (*ent.ListingConnection, error) {
+	return r.client.Listing.Query().Paginate(ctx, after, first, before, last, ent.WithListingOrder(orderBy), ent.WithListingFilter(where.Filter))
+}
+
 func (r *queryResolver) Search(ctx context.Context, query string, orderBy *model.SearchOrder, where *model.SearchWhereInput) ([]model.SearchResult, error) {
 	var tsquery string
 

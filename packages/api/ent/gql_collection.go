@@ -171,6 +171,10 @@ func (l *ListingQuery) CollectFields(ctx context.Context, satisfies ...string) *
 func (l *ListingQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *ListingQuery {
 	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
 		switch field.Name {
+		case "dope":
+			l = l.WithDope(func(query *DopeQuery) {
+				query.collectField(ctx, field)
+			})
 		case "dope_lastsales":
 			l = l.WithDopeLastsales(func(query *DopeQuery) {
 				query.collectField(ctx, field)

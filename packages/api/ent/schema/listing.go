@@ -26,7 +26,7 @@ func (Listing) Fields() []ent.Field {
 // Edges of the Listing.
 func (Listing) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("dope", Dope.Type).Ref("listings").Unique(),
+		edge.From("dope", Dope.Type).Ref("listings").Unique().Annotations(entgql.Bind()),
 		edge.To("dope_lastsales", Dope.Type).Unique().Annotations(entgql.Bind()),
 		edge.To("inputs", Asset.Type).Annotations(entgql.Bind()),
 		edge.To("outputs", Asset.Type).Annotations(entgql.Bind()),
