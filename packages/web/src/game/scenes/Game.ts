@@ -3,7 +3,7 @@ import Hustler from 'game/entities/Hustler';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
-import Player from 'game/entities/Player';
+import Player from 'game/entities/player/Player';
 import Citizen from 'game/entities/citizen/Citizen';
 import Zone from 'game/world/Zone';
 import CustomCharacter from 'game/ui/react/components/CustomCharacter';
@@ -13,19 +13,20 @@ import EventHandler, { Events } from 'game/handlers/EventHandler';
 import Conversation from 'game/entities/citizen/Conversation';
 import { TypeKind } from 'graphql';
 import Quest from 'game/quests/Quest';
+import PointQuest from 'game/quests/PointQuest';
 
 export default class GameScene extends Scene {
   private player!: Player;
   private citizens: Citizen[] = new Array();
 
   private _map!: Phaser.Tilemaps.Tilemap;
-  private _hoveredTile?: Phaser.Tilemaps.Tile;
 
   public canUseMouse: boolean = true;
   public rexUI!: RexUIPlugin;
 
+  private accumulator: number = 0;
+
   get map() { return this._map; }
-  get hoveredTile() { return this._hoveredTile; }
 
   constructor() {
     super({
@@ -37,12 +38,27 @@ export default class GameScene extends Scene {
     // create all of the animations
     new GameAnimations(this.anims).create();
 
-    this.input.on('pointerdown', () => {
-      if (!this.canUseMouse || !this.hoveredTile)
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (!this.canUseMouse)
         return;
-      // transition to spot
-      //this.cameras.main.pan(this.hoveredTile.getCenterX(), this.hoveredTile.getCenterY(), 1000, 'Sine.easeInOut');
-      this.player.navigator.moveTo(this.hoveredTile.x, this.hoveredTile.y);
+
+      if (this.player.busy)
+        return;
+      
+      // run asynchronously
+      setTimeout(() => {
+        const citizenToTalkTo = this.citizens.find(citizen => citizen.shouldFollowPath && citizen.getBounds().contains(pointer.worldX, pointer.worldY));
+
+        this.player.navigator.moveTo(
+          this.map.worldToTileX(pointer.worldX), this.map.worldToTileY(pointer.worldY), 
+          () => {
+            if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
+            {
+              citizenToTalkTo?.onInteraction(this.player);
+              EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, citizenToTalkTo);
+            }
+          });
+      });
     });
 
     this._map = this.make.tilemap({ key: "map" });
@@ -61,11 +77,13 @@ export default class GameScene extends Scene {
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
-    let points: Phaser.Math.Vector2[] = [ new Phaser.Math.Vector2(200, 400), new Phaser.Math.Vector2(700, 400) ];
-    points = points.map(point => world.worldToTileXY(point.x, point.y));
+    let points = [ new Phaser.Math.Vector2(200, 400), 120, new Phaser.Math.Vector2(700, 400), new Phaser.Math.Vector2(600, 600), 5, new Phaser.Math.Vector2(300, 1000) ];
+    points = points.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
 
-    let points2: Phaser.Math.Vector2[] = [ new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600) ];
-    points2 = points.map(point => world.worldToTileXY(point.x, point.y));
+    let points2 = [ new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600) ];
+    points2 = points2.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
+
+    const crackHeadClothesZone = new Zone(this.matter.add.circle(300, 1200, 50), this);
 
     this.citizens.push(
       new Citizen(
@@ -73,20 +91,19 @@ export default class GameScene extends Scene {
         'Michel', 
         'Patrick is not evil', 
         [new Conversation('Give me some clothes please', () => {
-          this.player.addQuest(new Quest("Mr.Crackhead", "Get him some clothes ASAP"));
+          this.player.questManager.addQuest(new PointQuest(crackHeadClothesZone, "Mr.Crackhead", "Get him some clothes ASAP"));
           return false;
         })], 
         points, true,),
 
-      new Citizen(
-      matterWorld, 500, 600, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves),
-      'Patrick', 
-      'Patrick is evil', 
-      [new Conversation('Hello', () => false), 
-      new Conversation('Hello again!', () => true)], 
-      points2, true,),
+      // new Citizen(
+      // matterWorld, 500, 600, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves),
+      // 'Patrick', 
+      // 'Patrick is evil', 
+      // [new Conversation('Hello', () => false), 
+      // new Conversation('Hello again!', () => true)], 
+      // points2, true,),
     );
-  
 
     this.player = new Player(
       matterWorld, 500, 600,
@@ -110,39 +127,5 @@ export default class GameScene extends Scene {
   update(time: number, delta: number): void {
     this.player.update();
     this.citizens.forEach(citizen => citizen.update());
-
-    // loop over the world's layer tiles and check if they intersect with the mouse
-    // not the best method but just for demonstration purposes
-    const worldLayer = this.map.getLayer('Below Player');
-    for (let j = 0; j < worldLayer.data.length; j++)
-    {
-      for (let k = 0; k < worldLayer.data[j].length; k++)
-      {
-        const tile: Phaser.Tilemaps.Tile = worldLayer.data[j][k];
-
-        //console.log(this.map.getLayer('World').data[j][k]);
-
-        // pos in bounds, reduce tile's alpha
-        if (tile.getBounds() &&
-          (tile.getBounds() as Phaser.Geom.Rectangle).contains(this.input.activePointer.worldX, this.input.activePointer.worldY))
-        {
-          // check if there's nothing collideable on top of the tile
-          if (this.map.getLayer('World').data[j][k].collides)
-          {
-            this._hoveredTile = undefined;
-          }
-          else 
-          {
-            tile.alpha = 0.7;
-            this._hoveredTile = tile;
-          }
-          
-        }
-        else if (tile.alpha !== 1.0)
-        {
-          tile.alpha = 1.0;
-        }
-      }
-    }
   }
 }
