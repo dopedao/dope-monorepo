@@ -17,6 +17,9 @@ export default class QuestManager {
     }
 
     addQuest(quest: Quest) {
+        // if there's already a quest with the same name, cancel add quest
+        if (this._quests.find(q => q.name === quest.name)) return;
+
         this._quests.push(quest);
         if (quest.isActive && quest.onStart)
             quest.onStart();
