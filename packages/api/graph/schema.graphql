@@ -238,6 +238,14 @@ type Query {
     orderBy: HustlerOrder
     where: HustlerWhereInput
   ): HustlerConnection!
+  listings(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: ListingOrder
+    where: ListingWhereInput
+  ): ListingConnection!
   search(
     query: String!
     orderBy: SearchOrder
