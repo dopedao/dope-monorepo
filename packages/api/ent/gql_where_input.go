@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
@@ -20,11 +20,11 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
 
-// AssetWhereInput represents a where input for filtering Asset queries.
-type AssetWhereInput struct {
-	Not *AssetWhereInput   `json:"not,omitempty"`
-	Or  []*AssetWhereInput `json:"or,omitempty"`
-	And []*AssetWhereInput `json:"and,omitempty"`
+// AmountWhereInput represents a where input for filtering Amount queries.
+type AmountWhereInput struct {
+	Not *AmountWhereInput   `json:"not,omitempty"`
+	Or  []*AmountWhereInput `json:"or,omitempty"`
+	And []*AmountWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
 	ID      *string  `json:"id,omitempty"`
@@ -36,41 +36,11 @@ type AssetWhereInput struct {
 	IDLT    *string  `json:"idLT,omitempty"`
 	IDLTE   *string  `json:"idLTE,omitempty"`
 
-	// "address" field predicates.
-	Address             *string  `json:"address,omitempty"`
-	AddressNEQ          *string  `json:"addressNEQ,omitempty"`
-	AddressIn           []string `json:"addressIn,omitempty"`
-	AddressNotIn        []string `json:"addressNotIn,omitempty"`
-	AddressGT           *string  `json:"addressGT,omitempty"`
-	AddressGTE          *string  `json:"addressGTE,omitempty"`
-	AddressLT           *string  `json:"addressLT,omitempty"`
-	AddressLTE          *string  `json:"addressLTE,omitempty"`
-	AddressContains     *string  `json:"addressContains,omitempty"`
-	AddressHasPrefix    *string  `json:"addressHasPrefix,omitempty"`
-	AddressHasSuffix    *string  `json:"addressHasSuffix,omitempty"`
-	AddressEqualFold    *string  `json:"addressEqualFold,omitempty"`
-	AddressContainsFold *string  `json:"addressContainsFold,omitempty"`
-
 	// "type" field predicates.
-	Type      *asset.Type  `json:"type,omitempty"`
-	TypeNEQ   *asset.Type  `json:"typeNEQ,omitempty"`
-	TypeIn    []asset.Type `json:"typeIn,omitempty"`
-	TypeNotIn []asset.Type `json:"typeNotIn,omitempty"`
-
-	// "symbol" field predicates.
-	Symbol             *string  `json:"symbol,omitempty"`
-	SymbolNEQ          *string  `json:"symbolNEQ,omitempty"`
-	SymbolIn           []string `json:"symbolIn,omitempty"`
-	SymbolNotIn        []string `json:"symbolNotIn,omitempty"`
-	SymbolGT           *string  `json:"symbolGT,omitempty"`
-	SymbolGTE          *string  `json:"symbolGTE,omitempty"`
-	SymbolLT           *string  `json:"symbolLT,omitempty"`
-	SymbolLTE          *string  `json:"symbolLTE,omitempty"`
-	SymbolContains     *string  `json:"symbolContains,omitempty"`
-	SymbolHasPrefix    *string  `json:"symbolHasPrefix,omitempty"`
-	SymbolHasSuffix    *string  `json:"symbolHasSuffix,omitempty"`
-	SymbolEqualFold    *string  `json:"symbolEqualFold,omitempty"`
-	SymbolContainsFold *string  `json:"symbolContainsFold,omitempty"`
+	Type      *amount.Type  `json:"type,omitempty"`
+	TypeNEQ   *amount.Type  `json:"typeNEQ,omitempty"`
+	TypeIn    []amount.Type `json:"typeIn,omitempty"`
+	TypeNotIn []amount.Type `json:"typeNotIn,omitempty"`
 
 	// "amount" field predicates.
 	Amount      *schema.BigInt  `json:"amount,omitempty"`
@@ -91,20 +61,10 @@ type AssetWhereInput struct {
 	AssetIDGTE   *schema.BigInt  `json:"assetIDGTE,omitempty"`
 	AssetIDLT    *schema.BigInt  `json:"assetIDLT,omitempty"`
 	AssetIDLTE   *schema.BigInt  `json:"assetIDLTE,omitempty"`
-
-	// "decimals" field predicates.
-	Decimals      *int  `json:"decimals,omitempty"`
-	DecimalsNEQ   *int  `json:"decimalsNEQ,omitempty"`
-	DecimalsIn    []int `json:"decimalsIn,omitempty"`
-	DecimalsNotIn []int `json:"decimalsNotIn,omitempty"`
-	DecimalsGT    *int  `json:"decimalsGT,omitempty"`
-	DecimalsGTE   *int  `json:"decimalsGTE,omitempty"`
-	DecimalsLT    *int  `json:"decimalsLT,omitempty"`
-	DecimalsLTE   *int  `json:"decimalsLTE,omitempty"`
 }
 
-// Filter applies the AssetWhereInput filter on the AssetQuery builder.
-func (i *AssetWhereInput) Filter(q *AssetQuery) (*AssetQuery, error) {
+// Filter applies the AmountWhereInput filter on the AmountQuery builder.
+func (i *AmountWhereInput) Filter(q *AmountQuery) (*AmountQuery, error) {
 	if i == nil {
 		return q, nil
 	}
@@ -115,16 +75,16 @@ func (i *AssetWhereInput) Filter(q *AssetQuery) (*AssetQuery, error) {
 	return q.Where(p), nil
 }
 
-// P returns a predicate for filtering assets.
+// P returns a predicate for filtering amounts.
 // An error is returned if the input is empty or invalid.
-func (i *AssetWhereInput) P() (predicate.Asset, error) {
-	var predicates []predicate.Asset
+func (i *AmountWhereInput) P() (predicate.Amount, error) {
+	var predicates []predicate.Amount
 	if i.Not != nil {
 		p, err := i.Not.P()
 		if err != nil {
 			return nil, err
 		}
-		predicates = append(predicates, asset.Not(p))
+		predicates = append(predicates, amount.Not(p))
 	}
 	switch n := len(i.Or); {
 	case n == 1:
@@ -134,7 +94,7 @@ func (i *AssetWhereInput) P() (predicate.Asset, error) {
 		}
 		predicates = append(predicates, p)
 	case n > 1:
-		or := make([]predicate.Asset, 0, n)
+		or := make([]predicate.Amount, 0, n)
 		for _, w := range i.Or {
 			p, err := w.P()
 			if err != nil {
@@ -142,7 +102,7 @@ func (i *AssetWhereInput) P() (predicate.Asset, error) {
 			}
 			or = append(or, p)
 		}
-		predicates = append(predicates, asset.Or(or...))
+		predicates = append(predicates, amount.Or(or...))
 	}
 	switch n := len(i.And); {
 	case n == 1:
@@ -152,7 +112,7 @@ func (i *AssetWhereInput) P() (predicate.Asset, error) {
 		}
 		predicates = append(predicates, p)
 	case n > 1:
-		and := make([]predicate.Asset, 0, n)
+		and := make([]predicate.Amount, 0, n)
 		for _, w := range i.And {
 			p, err := w.P()
 			if err != nil {
@@ -160,202 +120,100 @@ func (i *AssetWhereInput) P() (predicate.Asset, error) {
 			}
 			and = append(and, p)
 		}
-		predicates = append(predicates, asset.And(and...))
+		predicates = append(predicates, amount.And(and...))
 	}
 	if i.ID != nil {
-		predicates = append(predicates, asset.IDEQ(*i.ID))
+		predicates = append(predicates, amount.IDEQ(*i.ID))
 	}
 	if i.IDNEQ != nil {
-		predicates = append(predicates, asset.IDNEQ(*i.IDNEQ))
+		predicates = append(predicates, amount.IDNEQ(*i.IDNEQ))
 	}
 	if len(i.IDIn) > 0 {
-		predicates = append(predicates, asset.IDIn(i.IDIn...))
+		predicates = append(predicates, amount.IDIn(i.IDIn...))
 	}
 	if len(i.IDNotIn) > 0 {
-		predicates = append(predicates, asset.IDNotIn(i.IDNotIn...))
+		predicates = append(predicates, amount.IDNotIn(i.IDNotIn...))
 	}
 	if i.IDGT != nil {
-		predicates = append(predicates, asset.IDGT(*i.IDGT))
+		predicates = append(predicates, amount.IDGT(*i.IDGT))
 	}
 	if i.IDGTE != nil {
-		predicates = append(predicates, asset.IDGTE(*i.IDGTE))
+		predicates = append(predicates, amount.IDGTE(*i.IDGTE))
 	}
 	if i.IDLT != nil {
-		predicates = append(predicates, asset.IDLT(*i.IDLT))
+		predicates = append(predicates, amount.IDLT(*i.IDLT))
 	}
 	if i.IDLTE != nil {
-		predicates = append(predicates, asset.IDLTE(*i.IDLTE))
-	}
-	if i.Address != nil {
-		predicates = append(predicates, asset.AddressEQ(*i.Address))
-	}
-	if i.AddressNEQ != nil {
-		predicates = append(predicates, asset.AddressNEQ(*i.AddressNEQ))
-	}
-	if len(i.AddressIn) > 0 {
-		predicates = append(predicates, asset.AddressIn(i.AddressIn...))
-	}
-	if len(i.AddressNotIn) > 0 {
-		predicates = append(predicates, asset.AddressNotIn(i.AddressNotIn...))
-	}
-	if i.AddressGT != nil {
-		predicates = append(predicates, asset.AddressGT(*i.AddressGT))
-	}
-	if i.AddressGTE != nil {
-		predicates = append(predicates, asset.AddressGTE(*i.AddressGTE))
-	}
-	if i.AddressLT != nil {
-		predicates = append(predicates, asset.AddressLT(*i.AddressLT))
-	}
-	if i.AddressLTE != nil {
-		predicates = append(predicates, asset.AddressLTE(*i.AddressLTE))
-	}
-	if i.AddressContains != nil {
-		predicates = append(predicates, asset.AddressContains(*i.AddressContains))
-	}
-	if i.AddressHasPrefix != nil {
-		predicates = append(predicates, asset.AddressHasPrefix(*i.AddressHasPrefix))
-	}
-	if i.AddressHasSuffix != nil {
-		predicates = append(predicates, asset.AddressHasSuffix(*i.AddressHasSuffix))
-	}
-	if i.AddressEqualFold != nil {
-		predicates = append(predicates, asset.AddressEqualFold(*i.AddressEqualFold))
-	}
-	if i.AddressContainsFold != nil {
-		predicates = append(predicates, asset.AddressContainsFold(*i.AddressContainsFold))
+		predicates = append(predicates, amount.IDLTE(*i.IDLTE))
 	}
 	if i.Type != nil {
-		predicates = append(predicates, asset.TypeEQ(*i.Type))
+		predicates = append(predicates, amount.TypeEQ(*i.Type))
 	}
 	if i.TypeNEQ != nil {
-		predicates = append(predicates, asset.TypeNEQ(*i.TypeNEQ))
+		predicates = append(predicates, amount.TypeNEQ(*i.TypeNEQ))
 	}
 	if len(i.TypeIn) > 0 {
-		predicates = append(predicates, asset.TypeIn(i.TypeIn...))
+		predicates = append(predicates, amount.TypeIn(i.TypeIn...))
 	}
 	if len(i.TypeNotIn) > 0 {
-		predicates = append(predicates, asset.TypeNotIn(i.TypeNotIn...))
-	}
-	if i.Symbol != nil {
-		predicates = append(predicates, asset.SymbolEQ(*i.Symbol))
-	}
-	if i.SymbolNEQ != nil {
-		predicates = append(predicates, asset.SymbolNEQ(*i.SymbolNEQ))
-	}
-	if len(i.SymbolIn) > 0 {
-		predicates = append(predicates, asset.SymbolIn(i.SymbolIn...))
-	}
-	if len(i.SymbolNotIn) > 0 {
-		predicates = append(predicates, asset.SymbolNotIn(i.SymbolNotIn...))
-	}
-	if i.SymbolGT != nil {
-		predicates = append(predicates, asset.SymbolGT(*i.SymbolGT))
-	}
-	if i.SymbolGTE != nil {
-		predicates = append(predicates, asset.SymbolGTE(*i.SymbolGTE))
-	}
-	if i.SymbolLT != nil {
-		predicates = append(predicates, asset.SymbolLT(*i.SymbolLT))
-	}
-	if i.SymbolLTE != nil {
-		predicates = append(predicates, asset.SymbolLTE(*i.SymbolLTE))
-	}
-	if i.SymbolContains != nil {
-		predicates = append(predicates, asset.SymbolContains(*i.SymbolContains))
-	}
-	if i.SymbolHasPrefix != nil {
-		predicates = append(predicates, asset.SymbolHasPrefix(*i.SymbolHasPrefix))
-	}
-	if i.SymbolHasSuffix != nil {
-		predicates = append(predicates, asset.SymbolHasSuffix(*i.SymbolHasSuffix))
-	}
-	if i.SymbolEqualFold != nil {
-		predicates = append(predicates, asset.SymbolEqualFold(*i.SymbolEqualFold))
-	}
-	if i.SymbolContainsFold != nil {
-		predicates = append(predicates, asset.SymbolContainsFold(*i.SymbolContainsFold))
+		predicates = append(predicates, amount.TypeNotIn(i.TypeNotIn...))
 	}
 	if i.Amount != nil {
-		predicates = append(predicates, asset.AmountEQ(*i.Amount))
+		predicates = append(predicates, amount.AmountEQ(*i.Amount))
 	}
 	if i.AmountNEQ != nil {
-		predicates = append(predicates, asset.AmountNEQ(*i.AmountNEQ))
+		predicates = append(predicates, amount.AmountNEQ(*i.AmountNEQ))
 	}
 	if len(i.AmountIn) > 0 {
-		predicates = append(predicates, asset.AmountIn(i.AmountIn...))
+		predicates = append(predicates, amount.AmountIn(i.AmountIn...))
 	}
 	if len(i.AmountNotIn) > 0 {
-		predicates = append(predicates, asset.AmountNotIn(i.AmountNotIn...))
+		predicates = append(predicates, amount.AmountNotIn(i.AmountNotIn...))
 	}
 	if i.AmountGT != nil {
-		predicates = append(predicates, asset.AmountGT(*i.AmountGT))
+		predicates = append(predicates, amount.AmountGT(*i.AmountGT))
 	}
 	if i.AmountGTE != nil {
-		predicates = append(predicates, asset.AmountGTE(*i.AmountGTE))
+		predicates = append(predicates, amount.AmountGTE(*i.AmountGTE))
 	}
 	if i.AmountLT != nil {
-		predicates = append(predicates, asset.AmountLT(*i.AmountLT))
+		predicates = append(predicates, amount.AmountLT(*i.AmountLT))
 	}
 	if i.AmountLTE != nil {
-		predicates = append(predicates, asset.AmountLTE(*i.AmountLTE))
+		predicates = append(predicates, amount.AmountLTE(*i.AmountLTE))
 	}
 	if i.AssetID != nil {
-		predicates = append(predicates, asset.AssetIDEQ(*i.AssetID))
+		predicates = append(predicates, amount.AssetIDEQ(*i.AssetID))
 	}
 	if i.AssetIDNEQ != nil {
-		predicates = append(predicates, asset.AssetIDNEQ(*i.AssetIDNEQ))
+		predicates = append(predicates, amount.AssetIDNEQ(*i.AssetIDNEQ))
 	}
 	if len(i.AssetIDIn) > 0 {
-		predicates = append(predicates, asset.AssetIDIn(i.AssetIDIn...))
+		predicates = append(predicates, amount.AssetIDIn(i.AssetIDIn...))
 	}
 	if len(i.AssetIDNotIn) > 0 {
-		predicates = append(predicates, asset.AssetIDNotIn(i.AssetIDNotIn...))
+		predicates = append(predicates, amount.AssetIDNotIn(i.AssetIDNotIn...))
 	}
 	if i.AssetIDGT != nil {
-		predicates = append(predicates, asset.AssetIDGT(*i.AssetIDGT))
+		predicates = append(predicates, amount.AssetIDGT(*i.AssetIDGT))
 	}
 	if i.AssetIDGTE != nil {
-		predicates = append(predicates, asset.AssetIDGTE(*i.AssetIDGTE))
+		predicates = append(predicates, amount.AssetIDGTE(*i.AssetIDGTE))
 	}
 	if i.AssetIDLT != nil {
-		predicates = append(predicates, asset.AssetIDLT(*i.AssetIDLT))
+		predicates = append(predicates, amount.AssetIDLT(*i.AssetIDLT))
 	}
 	if i.AssetIDLTE != nil {
-		predicates = append(predicates, asset.AssetIDLTE(*i.AssetIDLTE))
-	}
-	if i.Decimals != nil {
-		predicates = append(predicates, asset.DecimalsEQ(*i.Decimals))
-	}
-	if i.DecimalsNEQ != nil {
-		predicates = append(predicates, asset.DecimalsNEQ(*i.DecimalsNEQ))
-	}
-	if len(i.DecimalsIn) > 0 {
-		predicates = append(predicates, asset.DecimalsIn(i.DecimalsIn...))
-	}
-	if len(i.DecimalsNotIn) > 0 {
-		predicates = append(predicates, asset.DecimalsNotIn(i.DecimalsNotIn...))
-	}
-	if i.DecimalsGT != nil {
-		predicates = append(predicates, asset.DecimalsGT(*i.DecimalsGT))
-	}
-	if i.DecimalsGTE != nil {
-		predicates = append(predicates, asset.DecimalsGTE(*i.DecimalsGTE))
-	}
-	if i.DecimalsLT != nil {
-		predicates = append(predicates, asset.DecimalsLT(*i.DecimalsLT))
-	}
-	if i.DecimalsLTE != nil {
-		predicates = append(predicates, asset.DecimalsLTE(*i.DecimalsLTE))
+		predicates = append(predicates, amount.AssetIDLTE(*i.AssetIDLTE))
 	}
 
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate AssetWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate AmountWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
-		return asset.And(predicates...), nil
+		return amount.And(predicates...), nil
 	}
 }
 
@@ -2911,12 +2769,12 @@ type ListingWhereInput struct {
 	HasDopeLastsalesWith []*DopeWhereInput `json:"hasDopeLastsalesWith,omitempty"`
 
 	// "inputs" edge predicates.
-	HasInputs     *bool              `json:"hasInputs,omitempty"`
-	HasInputsWith []*AssetWhereInput `json:"hasInputsWith,omitempty"`
+	HasInputs     *bool               `json:"hasInputs,omitempty"`
+	HasInputsWith []*AmountWhereInput `json:"hasInputsWith,omitempty"`
 
 	// "outputs" edge predicates.
-	HasOutputs     *bool              `json:"hasOutputs,omitempty"`
-	HasOutputsWith []*AssetWhereInput `json:"hasOutputsWith,omitempty"`
+	HasOutputs     *bool               `json:"hasOutputs,omitempty"`
+	HasOutputsWith []*AmountWhereInput `json:"hasOutputsWith,omitempty"`
 }
 
 // Filter applies the ListingWhereInput filter on the ListingQuery builder.
@@ -3065,7 +2923,7 @@ func (i *ListingWhereInput) P() (predicate.Listing, error) {
 		predicates = append(predicates, p)
 	}
 	if len(i.HasInputsWith) > 0 {
-		with := make([]predicate.Asset, 0, len(i.HasInputsWith))
+		with := make([]predicate.Amount, 0, len(i.HasInputsWith))
 		for _, w := range i.HasInputsWith {
 			p, err := w.P()
 			if err != nil {
@@ -3083,7 +2941,7 @@ func (i *ListingWhereInput) P() (predicate.Listing, error) {
 		predicates = append(predicates, p)
 	}
 	if len(i.HasOutputsWith) > 0 {
-		with := make([]predicate.Asset, 0, len(i.HasOutputsWith))
+		with := make([]predicate.Amount, 0, len(i.HasOutputsWith))
 		for _, w := range i.HasOutputsWith {
 			p, err := w.P()
 			if err != nil {

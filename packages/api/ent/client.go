@@ -9,7 +9,7 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent/migrate"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
@@ -30,8 +30,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Asset is the client for interacting with the Asset builders.
-	Asset *AssetClient
+	// Amount is the client for interacting with the Amount builders.
+	Amount *AmountClient
 	// BodyPart is the client for interacting with the BodyPart builders.
 	BodyPart *BodyPartClient
 	// Dope is the client for interacting with the Dope builders.
@@ -63,7 +63,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Asset = NewAssetClient(c.config)
+	c.Amount = NewAmountClient(c.config)
 	c.BodyPart = NewBodyPartClient(c.config)
 	c.Dope = NewDopeClient(c.config)
 	c.Event = NewEventClient(c.config)
@@ -106,7 +106,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:         ctx,
 		config:      cfg,
-		Asset:       NewAssetClient(cfg),
+		Amount:      NewAmountClient(cfg),
 		BodyPart:    NewBodyPartClient(cfg),
 		Dope:        NewDopeClient(cfg),
 		Event:       NewEventClient(cfg),
@@ -134,7 +134,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
 		config:      cfg,
-		Asset:       NewAssetClient(cfg),
+		Amount:      NewAmountClient(cfg),
 		BodyPart:    NewBodyPartClient(cfg),
 		Dope:        NewDopeClient(cfg),
 		Event:       NewEventClient(cfg),
@@ -150,7 +150,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Asset.
+//		Amount.
 //		Query().
 //		Count(ctx)
 //
@@ -173,7 +173,7 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Asset.Use(hooks...)
+	c.Amount.Use(hooks...)
 	c.BodyPart.Use(hooks...)
 	c.Dope.Use(hooks...)
 	c.Event.Use(hooks...)
@@ -185,84 +185,84 @@ func (c *Client) Use(hooks ...Hook) {
 	c.WalletItems.Use(hooks...)
 }
 
-// AssetClient is a client for the Asset schema.
-type AssetClient struct {
+// AmountClient is a client for the Amount schema.
+type AmountClient struct {
 	config
 }
 
-// NewAssetClient returns a client for the Asset from the given config.
-func NewAssetClient(c config) *AssetClient {
-	return &AssetClient{config: c}
+// NewAmountClient returns a client for the Amount from the given config.
+func NewAmountClient(c config) *AmountClient {
+	return &AmountClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `asset.Hooks(f(g(h())))`.
-func (c *AssetClient) Use(hooks ...Hook) {
-	c.hooks.Asset = append(c.hooks.Asset, hooks...)
+// A call to `Use(f, g, h)` equals to `amount.Hooks(f(g(h())))`.
+func (c *AmountClient) Use(hooks ...Hook) {
+	c.hooks.Amount = append(c.hooks.Amount, hooks...)
 }
 
-// Create returns a create builder for Asset.
-func (c *AssetClient) Create() *AssetCreate {
-	mutation := newAssetMutation(c.config, OpCreate)
-	return &AssetCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for Amount.
+func (c *AmountClient) Create() *AmountCreate {
+	mutation := newAmountMutation(c.config, OpCreate)
+	return &AmountCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Asset entities.
-func (c *AssetClient) CreateBulk(builders ...*AssetCreate) *AssetCreateBulk {
-	return &AssetCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Amount entities.
+func (c *AmountClient) CreateBulk(builders ...*AmountCreate) *AmountCreateBulk {
+	return &AmountCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Asset.
-func (c *AssetClient) Update() *AssetUpdate {
-	mutation := newAssetMutation(c.config, OpUpdate)
-	return &AssetUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Amount.
+func (c *AmountClient) Update() *AmountUpdate {
+	mutation := newAmountMutation(c.config, OpUpdate)
+	return &AmountUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *AssetClient) UpdateOne(a *Asset) *AssetUpdateOne {
-	mutation := newAssetMutation(c.config, OpUpdateOne, withAsset(a))
-	return &AssetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AmountClient) UpdateOne(a *Amount) *AmountUpdateOne {
+	mutation := newAmountMutation(c.config, OpUpdateOne, withAmount(a))
+	return &AmountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AssetClient) UpdateOneID(id string) *AssetUpdateOne {
-	mutation := newAssetMutation(c.config, OpUpdateOne, withAssetID(id))
-	return &AssetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AmountClient) UpdateOneID(id string) *AmountUpdateOne {
+	mutation := newAmountMutation(c.config, OpUpdateOne, withAmountID(id))
+	return &AmountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Asset.
-func (c *AssetClient) Delete() *AssetDelete {
-	mutation := newAssetMutation(c.config, OpDelete)
-	return &AssetDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Amount.
+func (c *AmountClient) Delete() *AmountDelete {
+	mutation := newAmountMutation(c.config, OpDelete)
+	return &AmountDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *AssetClient) DeleteOne(a *Asset) *AssetDeleteOne {
+func (c *AmountClient) DeleteOne(a *Amount) *AmountDeleteOne {
 	return c.DeleteOneID(a.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *AssetClient) DeleteOneID(id string) *AssetDeleteOne {
-	builder := c.Delete().Where(asset.ID(id))
+func (c *AmountClient) DeleteOneID(id string) *AmountDeleteOne {
+	builder := c.Delete().Where(amount.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &AssetDeleteOne{builder}
+	return &AmountDeleteOne{builder}
 }
 
-// Query returns a query builder for Asset.
-func (c *AssetClient) Query() *AssetQuery {
-	return &AssetQuery{
+// Query returns a query builder for Amount.
+func (c *AmountClient) Query() *AmountQuery {
+	return &AmountQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Asset entity by its id.
-func (c *AssetClient) Get(ctx context.Context, id string) (*Asset, error) {
-	return c.Query().Where(asset.ID(id)).Only(ctx)
+// Get returns a Amount entity by its id.
+func (c *AmountClient) Get(ctx context.Context, id string) (*Amount, error) {
+	return c.Query().Where(amount.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AssetClient) GetX(ctx context.Context, id string) *Asset {
+func (c *AmountClient) GetX(ctx context.Context, id string) *Amount {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -271,8 +271,8 @@ func (c *AssetClient) GetX(ctx context.Context, id string) *Asset {
 }
 
 // Hooks returns the client hooks.
-func (c *AssetClient) Hooks() []Hook {
-	return c.hooks.Asset
+func (c *AmountClient) Hooks() []Hook {
+	return c.hooks.Amount
 }
 
 // BodyPartClient is a client for the BodyPart schema.
@@ -1403,13 +1403,13 @@ func (c *ListingClient) QueryDopeLastsales(l *Listing) *DopeQuery {
 }
 
 // QueryInputs queries the inputs edge of a Listing.
-func (c *ListingClient) QueryInputs(l *Listing) *AssetQuery {
-	query := &AssetQuery{config: c.config}
+func (c *ListingClient) QueryInputs(l *Listing) *AmountQuery {
+	query := &AmountQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := l.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listing.Table, listing.FieldID, id),
-			sqlgraph.To(asset.Table, asset.FieldID),
+			sqlgraph.To(amount.Table, amount.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, listing.InputsTable, listing.InputsColumn),
 		)
 		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
@@ -1419,13 +1419,13 @@ func (c *ListingClient) QueryInputs(l *Listing) *AssetQuery {
 }
 
 // QueryOutputs queries the outputs edge of a Listing.
-func (c *ListingClient) QueryOutputs(l *Listing) *AssetQuery {
-	query := &AssetQuery{config: c.config}
+func (c *ListingClient) QueryOutputs(l *Listing) *AmountQuery {
+	query := &AmountQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := l.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listing.Table, listing.FieldID, id),
-			sqlgraph.To(asset.Table, asset.FieldID),
+			sqlgraph.To(amount.Table, amount.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, listing.OutputsTable, listing.OutputsColumn),
 		)
 		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)

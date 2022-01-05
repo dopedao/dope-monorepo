@@ -300,7 +300,7 @@ func (l *Listing) DopeLastsales(ctx context.Context) (*Dope, error) {
 	return result, MaskNotFound(err)
 }
 
-func (l *Listing) Inputs(ctx context.Context) ([]*Asset, error) {
+func (l *Listing) Inputs(ctx context.Context) ([]*Amount, error) {
 	result, err := l.Edges.InputsOrErr()
 	if IsNotLoaded(err) {
 		result, err = l.QueryInputs().All(ctx)
@@ -308,7 +308,7 @@ func (l *Listing) Inputs(ctx context.Context) ([]*Asset, error) {
 	return result, err
 }
 
-func (l *Listing) Outputs(ctx context.Context) ([]*Asset, error) {
+func (l *Listing) Outputs(ctx context.Context) ([]*Amount, error) {
 	result, err := l.Edges.OutputsOrErr()
 	if IsNotLoaded(err) {
 		result, err = l.QueryOutputs().All(ctx)

@@ -12,8 +12,8 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// Asset is the client for interacting with the Asset builders.
-	Asset *AssetClient
+	// Amount is the client for interacting with the Amount builders.
+	Amount *AmountClient
 	// BodyPart is the client for interacting with the BodyPart builders.
 	BodyPart *BodyPartClient
 	// Dope is the client for interacting with the Dope builders.
@@ -167,7 +167,7 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.Asset = NewAssetClient(tx.config)
+	tx.Amount = NewAmountClient(tx.config)
 	tx.BodyPart = NewBodyPartClient(tx.config)
 	tx.Dope = NewDopeClient(tx.config)
 	tx.Event = NewEventClient(tx.config)
@@ -186,7 +186,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Asset.QueryXXX(), the query will be executed
+// applies a query, for example: Amount.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

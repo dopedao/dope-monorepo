@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 
 	"entgo.io/ent/dialect/sql"
@@ -82,19 +82,16 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 			if err := ent.WithTx(ctx, o.ent, func(tx *ent.Tx) error {
 				for _, oasset := range ret.Assets {
-					amount := big.NewInt(0)
+					price := big.NewInt(0)
 					order := ""
 					onSale := false
 
 					// Getting `amount` 1 DOPE for the payment
-					outputs, err := tx.Asset.
+					outputs, err := tx.Amount.
 						Create().
 						SetID(fmt.Sprintf("%d/%s", oasset.ID, oasset.TokenID)).
-						SetAddress(oasset.AssetContract.Address.Hex()).
-						SetSymbol(oasset.AssetContract.Symbol).
-						SetType(asset.TypeETH).
+						SetType(amount.TypeETH).
 						SetAmount(schema.BigInt{Int: big.NewInt(1)}).
-						SetDecimals(18).
 						OnConflictColumns("id").
 						UpdateNewValues().ID(ctx)
 					if err != nil {
@@ -103,12 +100,12 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 					// If SellOrders then asset on sale
 					if oasset.SellOrders != nil {
-						amount = oasset.SellOrders[0].CurrentPrice.Big()
+						price = oasset.SellOrders[0].CurrentPrice.Big()
 						order = oasset.SellOrders[0].OrderHash
 						onSale = true
 					}
 
-					assetByOrder, err := tx.Asset.
+					assetByOrder, err := tx.Amount.
 						Query().
 						Where(func(s *sql.Selector) {
 							s.Where(sql.EQ("listing_inputs", order))
@@ -143,15 +140,12 @@ func (o *Opensea) Sync(ctx context.Context) {
 						}
 
 						// paying `amount` for this
-						inputs, err := tx.Asset.
+						inputs, err := tx.Amount.
 							Create().
 							SetID(fmt.Sprintf("%d", oasset.ID)).
-							SetAddress(order).
-							SetSymbol(oasset.AssetContract.Symbol).
-							SetType(asset.TypeETH).
-							SetAmount(schema.BigInt{Int: amount}).
-							SetDecimals(18).
-							OnConflictColumns(asset.FieldID).
+							SetAmount(schema.BigInt{Int: price}).
+							SetType(amount.TypeETH).
+							OnConflictColumns(amount.FieldID).
 							UpdateNewValues().ID(ctx)
 						if err != nil {
 							return fmt.Errorf("upserting to asset: %w", err)
@@ -177,20 +171,18 @@ func (o *Opensea) Sync(ctx context.Context) {
 					// Save to listings with asset record
 					if oasset.LastSale != nil {
 						// paying `amount` for this
-						sold, err := tx.Asset.
+						sold, err := tx.Amount.
 							Create().
 							SetID(fmt.Sprintf("%d", oasset.LastSale.Transaction.ID)).
-							SetAddress(order).
-							SetSymbol(oasset.AssetContract.Symbol).SetType("ETH").
 							SetAmount(schema.BigInt{Int: oasset.LastSale.TotalPrice.Big()}).
-							SetDecimals(18).
+							SetType(amount.TypeETH).
 							OnConflictColumns("id").
 							UpdateNewValues().ID(ctx)
 						if err != nil {
 							return fmt.Errorf("upserting to last sale asset: %w", err)
 						}
 
-						a, err := tx.Asset.
+						a, err := tx.Amount.
 							Query().
 							Where(func(s *sql.Selector) {
 								s.Where(sql.EQ("listing_inputs", oasset.LastSale.Transaction.TransactionHash))
