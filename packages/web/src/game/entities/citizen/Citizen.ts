@@ -63,30 +63,41 @@ export default class Citizen extends Hustler
 
         // if the citizen has no target currently, check if he has a next point and move to it
         // or, if lastPointTimestamp is set, check if the time has passed and move to the next point
-        if (this.shouldFollowPath && (!this.navigator.target || this.lastPointTimestamp))
+        if (this.shouldFollowPath && (!this.navigator.target || (this.lastPointTimestamp && !this.navigator.target)))
         {
             const nextPoint = this.path.shift();
+            
+            console.log(this.path);
 
             if (nextPoint)
             {
                 if (nextPoint instanceof Phaser.Math.Vector2)
                     this.navigator.moveTo(nextPoint.x, nextPoint.y);
-                else if (!this.lastPointTimestamp)
-                    this.lastPointTimestamp = Date.now();
-                else
+                else if (typeof nextPoint === "number")
                 {
-                    
-                    const timeSinceLastPoint = Date.now() - this.lastPointTimestamp;
-                    if (timeSinceLastPoint < nextPoint * 1000)
+                    if (!this.lastPointTimestamp)
                     {
-                        // NOTE: this is a hack to make the citizen wait for a certain amount of time before going to the next point
-                        // wait there's really an unshift method??? 
+                        this.lastPointTimestamp = Date.now();
+
+                        // put back time to array, so that we know how much to wait before going
+                        // to the next point
                         this.path.unshift(nextPoint);
                         return;
                     }
+                    else
+                    {
+                        const timePassed = Date.now() - this.lastPointTimestamp;
+                        if (timePassed < nextPoint * 1000)
+                        {
+                            // NOTE: this is a hack to make the citizen wait for a certain amount of time before going to the next point
+                            // wait there's really an unshift method??? 
+                            this.path.unshift(nextPoint);
+                            return;
+                        }
 
-                    this.lastPointTimestamp = undefined;
-                }                
+                        this.lastPointTimestamp = undefined;
+                    }   
+                }               
 
                 // if repeatpath is enabled, we push our shifted point (first point in this case) back to the end of the path
                 if (this.repeatPath)
