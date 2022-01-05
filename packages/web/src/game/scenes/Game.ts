@@ -42,9 +42,12 @@ export default class GameScene extends Scene {
       if (!this.canUseMouse)
         return;
 
+      if (this.player.busy)
+        return;
       
+      // run asynchronously
       setTimeout(() => {
-        const citizenToTalkTo = this.citizens.find(citizen => citizen.getBounds().contains(pointer.worldX, pointer.worldY));
+        const citizenToTalkTo = this.citizens.find(citizen => citizen.shouldFollowPath && citizen.getBounds().contains(pointer.worldX, pointer.worldY));
 
         this.player.navigator.moveTo(
           this.map.worldToTileX(pointer.worldX), this.map.worldToTileY(pointer.worldY), 
@@ -56,8 +59,6 @@ export default class GameScene extends Scene {
             }
           });
       });
-
-      
     });
 
     this._map = this.make.tilemap({ key: "map" });
