@@ -164,6 +164,17 @@ type ComplexityRoot struct {
 		Source  func(childComplexity int) int
 	}
 
+	ListingConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ListingEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	PageInfo struct {
 		EndCursor       func(childComplexity int) int
 		HasNextPage     func(childComplexity int) int
@@ -175,6 +186,7 @@ type ComplexityRoot struct {
 		Dopes    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.DopeOrder, where *ent.DopeWhereInput) int
 		Hustlers func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder, where *ent.HustlerWhereInput) int
 		Items    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ItemOrder, where *ent.ItemWhereInput) int
+		Listings func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ListingOrder, where *ent.ListingWhereInput) int
 		Node     func(childComplexity int, id string) int
 		Nodes    func(childComplexity int, ids []string) int
 		Search   func(childComplexity int, query string, orderBy *model.SearchOrder, where *model.SearchWhereInput) int
@@ -223,6 +235,7 @@ type QueryResolver interface {
 	Dopes(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.DopeOrder, where *ent.DopeWhereInput) (*ent.DopeConnection, error)
 	Items(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ItemOrder, where *ent.ItemWhereInput) (*ent.ItemConnection, error)
 	Hustlers(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder, where *ent.HustlerWhereInput) (*ent.HustlerConnection, error)
+	Listings(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ListingOrder, where *ent.ListingWhereInput) (*ent.ListingConnection, error)
 	Search(ctx context.Context, query string, orderBy *model.SearchOrder, where *model.SearchWhereInput) ([]model.SearchResult, error)
 }
 
@@ -773,6 +786,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Listing.Source(childComplexity), true
 
+	case "ListingConnection.edges":
+		if e.complexity.ListingConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ListingConnection.Edges(childComplexity), true
+
+	case "ListingConnection.pageInfo":
+		if e.complexity.ListingConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ListingConnection.PageInfo(childComplexity), true
+
+	case "ListingConnection.totalCount":
+		if e.complexity.ListingConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ListingConnection.TotalCount(childComplexity), true
+
+	case "ListingEdge.cursor":
+		if e.complexity.ListingEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ListingEdge.Cursor(childComplexity), true
+
+	case "ListingEdge.node":
+		if e.complexity.ListingEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ListingEdge.Node(childComplexity), true
+
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
 			break
@@ -836,6 +884,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Items(childComplexity, args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.ItemOrder), args["where"].(*ent.ItemWhereInput)), true
+
+	case "Query.listings":
+		if e.complexity.Query.Listings == nil {
+			break
+		}
+
+		args, err := ec.field_Query_listings_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Listings(childComplexity, args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.ListingOrder), args["where"].(*ent.ListingWhereInput)), true
 
 	case "Query.node":
 		if e.complexity.Query.Node == nil {
@@ -2004,7 +2064,7 @@ type ItemEdge {
 }
 
 enum ItemOrderField {
-    GREATNESS
+  GREATNESS
 }
 
 input ItemOrder {
@@ -2024,8 +2084,8 @@ type DopeEdge {
 }
 
 enum DopeOrderField {
-    ID
-    RANK
+  ID
+  RANK
 }
 
 input DopeOrder {
@@ -2045,6 +2105,21 @@ type WalletEdge {
 }
 
 input WalletOrder {
+  direction: OrderDirection!
+}
+
+type ListingConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [ListingEdge]
+}
+
+type ListingEdge {
+  node: Listing
+  cursor: Cursor!
+}
+
+input ListingOrder {
   direction: OrderDirection!
 }
 `, BuiltIn: false},
@@ -2288,6 +2363,14 @@ type Query {
     orderBy: HustlerOrder
     where: HustlerWhereInput
   ): HustlerConnection!
+  listings(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: ListingOrder
+    where: ListingWhereInput
+  ): ListingConnection!
   search(
     query: String!
     orderBy: SearchOrder
@@ -2489,6 +2572,66 @@ func (ec *executionContext) field_Query_items_args(ctx context.Context, rawArgs 
 	if tmp, ok := rawArgs["where"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
 		arg5, err = ec.unmarshalOItemWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐItemWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_listings_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *ent.Cursor
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *ent.Cursor
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *ent.ListingOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOListingOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *ent.ListingWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOListingWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingWhereInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5201,6 +5344,175 @@ func (ec *executionContext) _Listing_outputs(ctx context.Context, field graphql.
 	return ec.marshalNAsset2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐAsset(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _ListingConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.ListingConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "ListingConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ListingConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *ent.ListingConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "ListingConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(ent.PageInfo)
+	fc.Result = res
+	return ec.marshalNPageInfo2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ListingConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.ListingConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "ListingConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.ListingEdge)
+	fc.Result = res
+	return ec.marshalOListingEdge2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ListingEdge_node(ctx context.Context, field graphql.CollectedField, obj *ent.ListingEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "ListingEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Listing)
+	fc.Result = res
+	return ec.marshalOListing2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListing(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ListingEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *ent.ListingEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "ListingEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(ent.Cursor)
+	fc.Result = res
+	return ec.marshalNCursor2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐCursor(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *ent.PageInfo) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -5582,6 +5894,48 @@ func (ec *executionContext) _Query_hustlers(ctx context.Context, field graphql.C
 	res := resTmp.(*ent.HustlerConnection)
 	fc.Result = res
 	return ec.marshalNHustlerConnection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐHustlerConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_listings(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_listings_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Listings(rctx, args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.ListingOrder), args["where"].(*ent.ListingWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.ListingConnection)
+	fc.Result = res
+	return ec.marshalNListingConnection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_search(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -11332,6 +11686,29 @@ func (ec *executionContext) unmarshalInputItemWhereInput(ctx context.Context, ob
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputListingOrder(ctx context.Context, obj interface{}) (ent.ListingOrder, error) {
+	var it ent.ListingOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputListingWhereInput(ctx context.Context, obj interface{}) (ent.ListingWhereInput, error) {
 	var it ent.ListingWhereInput
 	asMap := map[string]interface{}{}
@@ -13583,6 +13960,69 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var listingConnectionImplementors = []string{"ListingConnection"}
+
+func (ec *executionContext) _ListingConnection(ctx context.Context, sel ast.SelectionSet, obj *ent.ListingConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, listingConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ListingConnection")
+		case "totalCount":
+			out.Values[i] = ec._ListingConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "pageInfo":
+			out.Values[i] = ec._ListingConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "edges":
+			out.Values[i] = ec._ListingConnection_edges(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var listingEdgeImplementors = []string{"ListingEdge"}
+
+func (ec *executionContext) _ListingEdge(ctx context.Context, sel ast.SelectionSet, obj *ent.ListingEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, listingEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ListingEdge")
+		case "node":
+			out.Values[i] = ec._ListingEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ListingEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var pageInfoImplementors = []string{"PageInfo"}
 
 func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *ent.PageInfo) graphql.Marshaler {
@@ -13710,6 +14150,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_hustlers(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "listings":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_listings(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -14715,6 +15169,20 @@ func (ec *executionContext) marshalNItemType2githubᚗcomᚋdopedaoᚋdopeᚑmon
 func (ec *executionContext) unmarshalNItemWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐItemWhereInput(ctx context.Context, v interface{}) (*ent.ItemWhereInput, error) {
 	res, err := ec.unmarshalInputItemWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNListingConnection2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingConnection(ctx context.Context, sel ast.SelectionSet, v ent.ListingConnection) graphql.Marshaler {
+	return ec._ListingConnection(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNListingConnection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingConnection(ctx context.Context, sel ast.SelectionSet, v *ent.ListingConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._ListingConnection(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNListingWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingWhereInput(ctx context.Context, v interface{}) (*ent.ListingWhereInput, error) {
@@ -16616,6 +17084,62 @@ func (ec *executionContext) marshalOListing2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑm
 		return graphql.Null
 	}
 	return ec._Listing(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOListingEdge2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingEdge(ctx context.Context, sel ast.SelectionSet, v []*ent.ListingEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOListingEdge2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOListingEdge2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingEdge(ctx context.Context, sel ast.SelectionSet, v *ent.ListingEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ListingEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOListingOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingOrder(ctx context.Context, v interface{}) (*ent.ListingOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputListingOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOListingWhereInput2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.ListingWhereInput, error) {
