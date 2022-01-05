@@ -1,0 +1,24 @@
+query SearchDope($query: String!) {
+  search(query: $query) {
+    ... on Dope {
+      id
+      claimed
+      opened
+      score
+      rank
+      items {
+        id
+        fullname
+        type
+        name
+        namePrefix
+        nameSuffix
+        suffix
+        augmented
+        tier
+        greatness
+        count
+      }
+    }
+  }
+}

@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { DopeOrderField, OrderDirection, useInfiniteDopesQuery } from 'generated/graphql';
+import {
+  DopeOrderField,
+  OrderDirection,
+  useInfiniteDopesQuery,
+  useSearchDopeQuery,
+} from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
 import DopeCard from 'components/dope/DopeCard';
-// import MarketFilterBar from 'components/MarketFilterBar';
+import MarketFilterBar from 'components/MarketFilterBar';
 // import DopeDatabase, {
 //   compareByHighestLastSale,
 //   compareByMostAffordable,
@@ -23,8 +28,8 @@ import LoadingBlock from 'components/LoadingBlock';
 const MarketList = () => {
   // const [sortByKey, setSortByKey] = useState('');
   // const [statusKey, setStatusKey] = useState('');
-  // const [searchInputValue, setSearchValue] = useState('');
-  // const [isTyping, setIsTyping] = useState(false);
+  const [searchInputValue, setSearchValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
 
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
   // const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
@@ -107,6 +112,18 @@ const MarketList = () => {
       },
     },
   );
+  const {
+    data: searchResult,
+    isFetching: isSearchFetching,
+    refetch,
+  } = useSearchDopeQuery(
+    {
+      query: searchInputValue,
+    },
+    {
+      enabled: !!searchInputValue,
+    },
+  );
   // const [hasUpdateDopeDbWithBundled, setHasUpdateDopeDbWithBundled] = useState(false);
   // if (!hasUpdateDopeDbWithBundled && openedDopes && openedDopes.page_1) {
   //   // dopeDb.updateOpenedDopesFromQuery(openedDopes);
@@ -126,11 +143,16 @@ const MarketList = () => {
   // const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
 
   // Search, sort, status change…
-  // useEffect(() => {
-  //   itemsVisible = PAGE_SIZE;
-  //   setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
-  //   setIsTyping(false);
-  // }, [searchInputValue, sortByKey, statusKey, hasUpdateDopeDbWithPaper, filteredSortedItems]);
+  useEffect(() => {
+    const searchFetch = async () => {
+      if (searchInputValue) {
+        await refetch();
+        setIsTyping(false);
+      }
+    };
+
+    searchFetch();
+  }, [searchInputValue, refetch]);
 
   // Increasing itemsVisible simply increases the window size
   // into the cached data we render in window.
@@ -140,21 +162,41 @@ const MarketList = () => {
   //   setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
   // };
 
-  const isLoading = status === 'loading'; // || !hasUpdateDopeDbWithPaper;
+  const isLoading = status === 'loading' || isSearchFetching; // || !hasUpdateDopeDbWithPaper;
+
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+  };
 
   return (
     <>
       {/* @TODO: Re-enable when the fields are available from the API */}
-      {/* <MarketFilterBar
-        searchCallback={(value: string) => setSearchValue(value)}
-        sortByCallback={(key: string) => setSortByKey(key)}
-        statusCallback={(key: string) => setStatusKey(key)}
+      <MarketFilterBar
+        searchCallback={(value: string) => handleSearch(value)}
+        // sortByCallback={(key: string) => setSortByKey(key)}
+        // statusCallback={(key: string) => setStatusKey(key)}
         compactViewCallback={(toggle: boolean) => setViewCompactCards(toggle)}
         compactSwitchOn={viewCompactCards}
         searchIsTypingCallback={() => setIsTyping(true)}
-      /> */}
+      />
       {isLoading ? (
         <LoadingState />
+      ) : searchResult ? (
+        searchResult.search.length <= 0 ? (
+          <EmptyState />
+        ) : (
+          <Container>
+            {searchResult.search.map((dope: any) => (
+              <DopeCard
+                key={dope.id}
+                dope={dope}
+                footer="for-marketplace"
+                isExpanded={viewCompactCards ? false : true}
+                showCollapse
+              />
+            ))}
+          </Container>
+        )
       ) : unclaimedDopes?.pages && unclaimedDopes.pages.length <= 0 ? (
         <EmptyState />
       ) : (

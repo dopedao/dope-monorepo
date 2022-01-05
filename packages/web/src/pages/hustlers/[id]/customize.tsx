@@ -10,7 +10,7 @@ import { useWeb3React } from '@web3-react/core';
 import { CloseButton } from '@chakra-ui/close-button';
 import { css } from '@emotion/react';
 import { Hustler, useHustlerQuery, useWalletQuery } from 'generated/graphql';
-import { getRandomHustler, HustlerCustomization } from 'utils/HustlerConfig';
+import { getRandomHustler } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
 import { useFetchMetadata } from 'hooks/contracts';
 import { useSwitchOptimism } from 'hooks/web3';
@@ -54,18 +54,12 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
   const router = useRouter();
   const [isLoading, setLoading] = useState(true);
   const [itemIds, setItemIds] = useState<BigNumber[]>();
-  const [fetchedHustlerConfig, setFetchedHustlerConfig] = useState<
-    Partial<HustlerCustomization> & { ogTitle?: string }
-  >({});
+  const [ogTitle, setOgTitle] = useState('');
+  const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
 
   const fetchMetadata = useFetchMetadata();
 
   useEffect(() => {
-    if (!hustler) {
-      setLoading(false);
-      return;
-    }
-
     const fetch = async () => {
       try {
         const metadata = await fetchMetadata(BigNumber.from(hustler.id));
@@ -75,17 +69,20 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
           return;
         }
 
-        setFetchedHustlerConfig({
-          ogTitle: metadata.ogTitle,
-          name: metadata.name,
-          dopeId: hustler.id,
-          sex: metadata.body[0].eq(0) ? 'male' : 'female',
-          textColor: `#${metadata.color.slice(2, -2)}`,
-          bgColor: `#${metadata.background.slice(2, -2).toUpperCase()}`,
-          body: metadata.body[1],
-          hair: metadata.body[2],
-          facialHair: metadata.body[3],
-        });
+        setHustlerConfig(
+          getRandomHustler({
+            renderName: Boolean(hustler.name && hustler.name.length > 0),
+            name: metadata.name,
+            dopeId: hustler.id,
+            sex: metadata.body[0].eq(0) ? 'male' : 'female',
+            textColor: `#${metadata.color.slice(2, -2)}`,
+            bgColor: `#${metadata.background.slice(2, -2).toUpperCase()}`,
+            body: metadata.body[1],
+            hair: metadata.body[2],
+            facialHair: metadata.body[3],
+          }),
+        );
+        setOgTitle(hustler.title || metadata.ogTitle);
 
         const fetchedItemIds = [
           metadata.weapon,
@@ -109,20 +106,6 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hustler]);
 
-  const [hustlerConfig, setHustlerConfig] = useState(
-    getRandomHustler({
-      renderName: Boolean(fetchedHustlerConfig.name && fetchedHustlerConfig.name.length > 0),
-      dopeId: fetchedHustlerConfig.dopeId,
-      sex: fetchedHustlerConfig.sex,
-      name: fetchedHustlerConfig.name,
-      textColor: fetchedHustlerConfig.textColor,
-      bgColor: fetchedHustlerConfig.bgColor,
-      facialHair: fetchedHustlerConfig.facialHair,
-      hair: fetchedHustlerConfig.hair,
-      body: fetchedHustlerConfig.body,
-    }),
-  );
-
   return isLoading ? (
     <ContentLoading />
   ) : (
@@ -130,7 +113,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
       <ConfigureHustler
         config={hustlerConfig}
         setHustlerConfig={setHustlerConfig}
-        ogTitle={fetchedHustlerConfig.ogTitle}
+        ogTitle={ogTitle}
         itemIds={itemIds}
         isCustomize
       />
@@ -162,7 +145,7 @@ const Hustlers = () => {
       },
     },
     {
-      enabled: Boolean(account),
+      enabled: !!account,
     },
   );
   const { data, isFetching: loading } = useHustlerQuery(
@@ -172,7 +155,7 @@ const Hustlers = () => {
       },
     },
     {
-      enabled: Boolean(account && router.isReady && router.query.id),
+      enabled: !!account && router.isReady && !!String(router.query.id),
     },
   );
   useSwitchOptimism(chainId, account);
@@ -213,7 +196,7 @@ const Hustlers = () => {
           </div>
         </StickyNote>
       )}
-      {walletLoading || loading || !data?.hustlers.edges?.[0]?.node?.id ? (
+      {walletLoading || loading || !data?.hustlers.edges?.[0]?.node || !router.isReady ? (
         <ContentLoading />
       ) : (
         <HustlerEdit hustler={data.hustlers.edges[0].node} />

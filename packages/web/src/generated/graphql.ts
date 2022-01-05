@@ -1252,6 +1252,13 @@ export type HustlersWalletQueryVariables = Exact<{
 
 export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean }> } | null | undefined } | null | undefined> | null | undefined } };
 
+export type SearchDopeQueryVariables = Exact<{
+  query: Scalars['String'];
+}>;
+
+
+export type SearchDopeQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined> };
+
 export type WalletQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
 }>;
@@ -1851,6 +1858,58 @@ export const useInfiniteHustlersWalletQuery = <
     useInfiniteQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet.infinite'] : ['HustlersWallet.infinite', variables],
       (metaData) => fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      options
+    );
+
+export const SearchDopeDocument = `
+    query SearchDope($query: String!) {
+  search(query: $query) {
+    ... on Dope {
+      id
+      claimed
+      opened
+      score
+      rank
+      items {
+        id
+        fullname
+        type
+        name
+        namePrefix
+        nameSuffix
+        suffix
+        augmented
+        tier
+        greatness
+        count
+      }
+    }
+  }
+}
+    `;
+export const useSearchDopeQuery = <
+      TData = SearchDopeQuery,
+      TError = unknown
+    >(
+      variables: SearchDopeQueryVariables,
+      options?: UseQueryOptions<SearchDopeQuery, TError, TData>
+    ) =>
+    useQuery<SearchDopeQuery, TError, TData>(
+      ['SearchDope', variables],
+      fetcher<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument, variables),
+      options
+    );
+export const useInfiniteSearchDopeQuery = <
+      TData = SearchDopeQuery,
+      TError = unknown
+    >(
+      pageParamKey: keyof SearchDopeQueryVariables,
+      variables: SearchDopeQueryVariables,
+      options?: UseInfiniteQueryOptions<SearchDopeQuery, TError, TData>
+    ) =>
+    useInfiniteQuery<SearchDopeQuery, TError, TData>(
+      ['SearchDope.infinite', variables],
+      (metaData) => fetcher<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 

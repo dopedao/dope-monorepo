@@ -66,17 +66,27 @@ const Hustlers = () => {
   const router = useRouter();
   const { account } = useWeb3React();
 
-  const { data, isFetching: loading } = useHustlersWalletQuery({
-    where: {
-      id: account,
+  const { data, isFetching: loading } = useHustlersWalletQuery(
+    {
+      where: {
+        id: account,
+      },
     },
-  });
+    {
+      enabled: !!account,
+    },
+  );
 
-  const { isFetching: walletLoading } = useWalletQuery({
-    where: {
-      id: account,
+  const { isFetching: walletLoading } = useWalletQuery(
+    {
+      where: {
+        id: account,
+      },
     },
-  });
+    {
+      enabled: !!account,
+    },
+  );
 
   const handleSuccessAlert = () => {
     setShowSuccessAlert(false);

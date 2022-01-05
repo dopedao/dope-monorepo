@@ -51,25 +51,25 @@ const Container = styled.div`
   }
 `;
 
-interface Props {
+type MarketFilterBarProps = {
   compactViewCallback(toggle: boolean): void;
   searchCallback(value: string): void;
   searchIsTypingCallback(): void;
-  sortByCallback(value: string): void;
-  statusCallback(value: string): void;
+  // sortByCallback(value: string): void;
+  // statusCallback(value: string): void;
   compactSwitchOn: boolean;
-}
+};
 
 const MarketFilterBar = ({
   compactViewCallback,
   searchCallback,
   searchIsTypingCallback,
   compactSwitchOn,
-  sortByCallback,
-  statusCallback,
-}: Props) => {
-  const [sortBy, setSortBy] = useQueryParam('sort_by', sortKeys[0]);
-  const [status, setStatus] = useQueryParam('status', statusKeys[0]);
+}: // sortByCallback,
+// statusCallback,
+MarketFilterBarProps) => {
+  // const [sortBy, setSortBy] = useQueryParam('sort_by', sortKeys[0]);
+  // const [status, setStatus] = useQueryParam('status', statusKeys[0]);
   const [searchValue, setSearchValue] = useQueryParam('q', '');
 
   // Debounce hook lets us fill search string on type, but not do anything
@@ -80,11 +80,11 @@ const MarketFilterBar = ({
     searchCallback(debouncedSearchValue);
   }, [debouncedSearchValue, searchCallback]);
 
-  useEffect(() => {
-    console.log('Setting initial states on Swap Meet from query params');
-    statusCallback(status);
-    sortByCallback(sortBy);
-  }, [sortBy, sortByCallback, status, statusCallback]);
+  // useEffect(() => {
+  //   console.log('Setting initial states on Swap Meet from query params');
+  //   statusCallback(status);
+  //   sortByCallback(sortBy);
+  // }, [sortBy, sortByCallback, status, statusCallback]);
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -92,17 +92,17 @@ const MarketFilterBar = ({
     searchIsTypingCallback();
   };
 
-  const handleStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setStatus(value);
-    statusCallback(value);
-  };
+  // const handleStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
+  //   const value = event.target.value;
+  //   setStatus(value);
+  //   statusCallback(value);
+  // };
 
-  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setSortBy(value);
-    sortByCallback(value);
-  };
+  // const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
+  //   const value = event.target.value;
+  //   setSortBy(value);
+  //   sortByCallback(value);
+  // };
 
   const ToggleButton = () => {
     const iconPath = '/images/icon';
@@ -141,7 +141,7 @@ const MarketFilterBar = ({
           value={searchValue}
         />
       </div>
-      <div>
+      {/* <div>
         <Select size="sm" variant="filterBar" onChange={handleStatusChange} value={status}>
           <option disabled>Status…</option>
           {statusKeys.map((value, index) => (
@@ -156,7 +156,7 @@ const MarketFilterBar = ({
             <option key={`${value}-${index}`}>{value}</option>
           ))}
         </Select>
-      </div>
+      </div> */}
       <ToggleButton />
     </Container>
   );

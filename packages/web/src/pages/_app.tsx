@@ -4,6 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { Hydrate } from 'react-query/hydration';
 
 import DesktopIconList from 'components/DesktopIconList';
@@ -53,6 +54,7 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
                 <Component {...pageProps} />
               </main>
             </Web3ReactProvider>
+            {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
           </Hydrate>
         </QueryClientProvider>
       </ChakraProvider>
