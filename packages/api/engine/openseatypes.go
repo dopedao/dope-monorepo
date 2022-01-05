@@ -3,13 +3,15 @@ package engine
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"math/big"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
 // Assets is a list of assets
@@ -51,28 +53,28 @@ type Asset struct {
 
 // AssetContract is the contract of an asset
 type AssetContract struct {
-	Address                     Address     `json:"address"`
-	AssetContractType           string      `json:"asset_contract_type"`
-	CreatedDate                 string      `json:"created_date"`
-	Name                        string      `json:"name"`
-	NftVersion                  string      `json:"nft_version"`
-	OpenseaVersion              interface{} `json:"opensea_version"`
-	Owner                       int64       `json:"owner"`
-	SchemaName                  string      `json:"schema_name"`
-	Symbol                      string      `json:"symbol"`
-	TotalSupply                 interface{} `json:"total_supply"`
-	Description                 string      `json:"description"`
-	ExternalLink                string      `json:"external_link"`
-	ImageURL                    string      `json:"image_url"`
-	DefaultToFiat               bool        `json:"default_to_fiat"`
-	DevBuyerFeeBasisPoints      int64       `json:"dev_buyer_fee_basis_points"`
-	DevSellerFeeBasisPoints     int64       `json:"dev_seller_fee_basis_points"`
-	OnlyProxiedTransfers        bool        `json:"only_proxied_transfers"`
-	OpenseaBuyerFeeBasisPoints  int64       `json:"opensea_buyer_fee_basis_points"`
-	OpenseaSellerFeeBasisPoints int64       `json:"opensea_seller_fee_basis_points"`
-	BuyerFeeBasisPoints         int64       `json:"buyer_fee_basis_points"`
-	SellerFeeBasisPoints        int64       `json:"seller_fee_basis_points"`
-	PayoutAddress               *Address    `json:"payout_address"`
+	Address                     common.Address  `json:"address"`
+	AssetContractType           string          `json:"asset_contract_type"`
+	CreatedDate                 string          `json:"created_date"`
+	Name                        string          `json:"name"`
+	NftVersion                  string          `json:"nft_version"`
+	OpenseaVersion              interface{}     `json:"opensea_version"`
+	Owner                       int64           `json:"owner"`
+	SchemaName                  string          `json:"schema_name"`
+	Symbol                      string          `json:"symbol"`
+	TotalSupply                 interface{}     `json:"total_supply"`
+	Description                 string          `json:"description"`
+	ExternalLink                string          `json:"external_link"`
+	ImageURL                    string          `json:"image_url"`
+	DefaultToFiat               bool            `json:"default_to_fiat"`
+	DevBuyerFeeBasisPoints      int64           `json:"dev_buyer_fee_basis_points"`
+	DevSellerFeeBasisPoints     int64           `json:"dev_seller_fee_basis_points"`
+	OnlyProxiedTransfers        bool            `json:"only_proxied_transfers"`
+	OpenseaBuyerFeeBasisPoints  int64           `json:"opensea_buyer_fee_basis_points"`
+	OpenseaSellerFeeBasisPoints int64           `json:"opensea_seller_fee_basis_points"`
+	BuyerFeeBasisPoints         int64           `json:"buyer_fee_basis_points"`
+	SellerFeeBasisPoints        int64           `json:"seller_fee_basis_points"`
+	PayoutAddress               *common.Address `json:"payout_address"`
 }
 
 // DisplayData is the style displaying a collection
@@ -82,36 +84,36 @@ type DisplayData struct {
 
 // Collection is a collection
 type Collection struct {
-	BannerImageURL              string       `json:"banner_image_url"`
-	ChatURL                     string       `json:"chat_url"`
-	CreatedDate                 string       `json:"created_date"`
-	DefaultToFiat               bool         `json:"default_to_fiat"`
-	Description                 string       `json:"description"`
-	DevBuyerFeeBasisPoints      string       `json:"dev_buyer_fee_basis_points"`
-	DevSellerFeeBasisPoints     string       `json:"dev_seller_fee_basis_points"`
-	DiscordURL                  string       `json:"discord_url"`
-	DisplayData                 *DisplayData `json:"display_data"`
-	ExternalURL                 string       `json:"external_url"`
-	Featured                    bool         `json:"featured"`
-	FeaturedImageURL            string       `json:"featured_image_url"`
-	Hidden                      bool         `json:"hidden"`
-	SafelistRequestStatus       string       `json:"safelist_request_status"`
-	ImageURL                    string       `json:"image_url"`
-	IsSubjectToWhitelist        bool         `json:"is_subject_to_whitelist"`
-	LargeImageURL               string       `json:"large_image_url"`
-	MediumUsername              interface{}  `json:"medium_username"`
-	Name                        string       `json:"name"`
-	OnlyProxiedTransfers        bool         `json:"only_proxied_transfers"`
-	OpenseaBuyerFeeBasisPoints  string       `json:"opensea_buyer_fee_basis_points"`
-	OpenseaSellerFeeBasisPoints string       `json:"opensea_seller_fee_basis_points"`
-	PayoutAddress               *Address     `json:"payout_address"`
-	RequireEmail                bool         `json:"require_email"`
-	ShortDescription            string       `json:"short_description"`
-	Slug                        string       `json:"slug"`
-	TelegramURL                 string       `json:"telegram_url"`
-	TwitterUsername             string       `json:"twitter_username"`
-	InstagramUsername           string       `json:"instagram_username"`
-	WikiURL                     string       `json:"wiki_url"`
+	BannerImageURL              string          `json:"banner_image_url"`
+	ChatURL                     string          `json:"chat_url"`
+	CreatedDate                 string          `json:"created_date"`
+	DefaultToFiat               bool            `json:"default_to_fiat"`
+	Description                 string          `json:"description"`
+	DevBuyerFeeBasisPoints      string          `json:"dev_buyer_fee_basis_points"`
+	DevSellerFeeBasisPoints     string          `json:"dev_seller_fee_basis_points"`
+	DiscordURL                  string          `json:"discord_url"`
+	DisplayData                 *DisplayData    `json:"display_data"`
+	ExternalURL                 string          `json:"external_url"`
+	Featured                    bool            `json:"featured"`
+	FeaturedImageURL            string          `json:"featured_image_url"`
+	Hidden                      bool            `json:"hidden"`
+	SafelistRequestStatus       string          `json:"safelist_request_status"`
+	ImageURL                    string          `json:"image_url"`
+	IsSubjectToWhitelist        bool            `json:"is_subject_to_whitelist"`
+	LargeImageURL               string          `json:"large_image_url"`
+	MediumUsername              interface{}     `json:"medium_username"`
+	Name                        string          `json:"name"`
+	OnlyProxiedTransfers        bool            `json:"only_proxied_transfers"`
+	OpenseaBuyerFeeBasisPoints  string          `json:"opensea_buyer_fee_basis_points"`
+	OpenseaSellerFeeBasisPoints string          `json:"opensea_seller_fee_basis_points"`
+	PayoutAddress               *common.Address `json:"payout_address"`
+	RequireEmail                bool            `json:"require_email"`
+	ShortDescription            string          `json:"short_description"`
+	Slug                        string          `json:"slug"`
+	TelegramURL                 string          `json:"telegram_url"`
+	TwitterUsername             string          `json:"twitter_username"`
+	InstagramUsername           string          `json:"instagram_username"`
+	WikiURL                     string          `json:"wiki_url"`
 }
 
 // Event is an event
@@ -131,7 +133,7 @@ type Event struct {
 	CollectionSlug      string               `json:"collection_slug"`
 	CreatedDate         TimeNano             `json:"created_date"`
 	ModifiedDate        TimeNano             `json:"modified_date"`
-	ContractAddress     Address              `json:"contract_address"`
+	ContractAddress     common.Address       `json:"contract_address"`
 	LogIndex            interface{}          `json:"log_index"`
 	EventType           EventType            `json:"event_type"`
 	AuctionType         string               `json:"auction_type"`
@@ -162,13 +164,13 @@ func (e Event) IsBundle() bool {
 
 // PaymentToken is the token used for a payment
 type PaymentToken struct {
-	Symbol   string  `json:"symbol"`
-	Address  Address `json:"address"`
-	ImageURL string  `json:"image_url"`
-	Name     string  `json:"name"`
-	Decimals int64   `json:"decimals"`
-	EthPrice string  `json:"eth_price"`
-	UsdPrice string  `json:"usd_price"`
+	Symbol   string         `json:"symbol"`
+	Address  common.Address `json:"address"`
+	ImageURL string         `json:"image_url"`
+	Name     string         `json:"name"`
+	Decimals int64          `json:"decimals"`
+	EthPrice string         `json:"eth_price"`
+	UsdPrice string         `json:"usd_price"`
 }
 
 // Transaction is a transaction
@@ -267,82 +269,6 @@ func (n Number) Big() *big.Int {
 	return r
 }
 
-// Address is an address
-type Address string
-
-// NullAddress is the null address
-const NullAddress Address = "0x0000000000000000000000000000000000000000"
-
-// IsHexAddress returns true if a string is a hex address
-func IsHexAddress(s string) bool {
-	if s == "0x0" {
-		return true
-	}
-	if s[0:2] != "0x" {
-		return false
-	}
-	addressLength := 2 + 40
-	if len(s) != addressLength {
-		return false
-	}
-	if !isHex(s[2:]) {
-		return false
-	}
-	return true
-}
-
-// ParseAddress parses an address
-func ParseAddress(address string) (Address, error) {
-	if !IsHexAddress(address) {
-		return "", errors.New("Invalid address: " + address)
-	}
-	return Address(strings.ToLower(address)), nil
-}
-
-// String converts an address to string
-func (a Address) String() string {
-	return string(a)
-}
-
-// IsNullAddress returns true if the address is the null addrress
-func (a Address) IsNullAddress() bool {
-	if a.String() == NullAddress.String() {
-		return true
-	}
-	return false
-}
-
-// UnmarshalJSON unmarshals an address
-func (a *Address) UnmarshalJSON(b []byte) error {
-	s, err := strconv.Unquote(string(b))
-	if err != nil {
-		return err
-	}
-	*a, err = ParseAddress(s)
-	return err
-}
-
-// isHexCharacter returns bool of c being a valid hexadecimal.
-func isHexCharacter(c byte) bool {
-	return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F')
-}
-
-// isHex validates whether each byte is valid hexadecimal string.
-func isHex(str string) bool {
-	if len(str)%2 != 0 {
-		return false
-	}
-	for _, c := range []byte(str) {
-		if !isHexCharacter(c) {
-			return false
-		}
-	}
-	return true
-}
-
-// Bytes represents bytes with some aux methods
-type Bytes []byte
-
 // TimeNano is the time in nanoseconds
 type TimeNano time.Time
 
@@ -358,22 +284,36 @@ func (t TimeNano) MarshalJSON() ([]byte, error) {
 	return []byte(s), nil
 }
 
+func (t *TimeNano) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	tt := time.Time{}
+	tt, err = time.Parse("2006-01-02T15:04:05.999999", s)
+	if err != nil {
+		return err
+	}
+	*t = TimeNano(tt)
+	return nil
+}
+
 // Account is an account
 type Account struct {
-	User          int64   `json:"user"`
-	ProfileImgURL string  `json:"profile_img_url"`
-	Address       Address `json:"address"`
-	Config        string  `json:"config"`
-	DiscordID     string  `json:"discord_id"`
+	User          int64          `json:"user"`
+	ProfileImgURL string         `json:"profile_img_url"`
+	Address       common.Address `json:"address"`
+	Config        string         `json:"config"`
+	DiscordID     string         `json:"discord_id"`
 }
 
 // AccountWithUsername is an account with a username
 type AccountWithUsername struct {
-	User          User    `json:"user"`
-	ProfileImgURL string  `json:"profile_img_url"`
-	Address       Address `json:"address"`
-	Config        string  `json:"config"`
-	DiscordID     string  `json:"discord_id"`
+	User          User           `json:"user"`
+	ProfileImgURL string         `json:"profile_img_url"`
+	Address       common.Address `json:"address"`
+	Config        string         `json:"config"`
+	DiscordID     string         `json:"discord_id"`
 }
 
 // User is a user
@@ -409,49 +349,46 @@ type Order struct {
 	ListingTime    int64  `json:"listing_time"`
 	OrderHash      string `json:"order_hash"`
 	// Metadata Metadata `json:"metadata"`
-	Exchange     Address `json:"exchange"`
-	Maker        Account `json:"maker"`
-	Taker        Account `json:"taker"`
-	CurrentPrice Number  `json:"current_price"`
+	Exchange     common.Address `json:"exchange"`
+	Maker        Account        `json:"maker"`
+	Taker        Account        `json:"taker"`
+	CurrentPrice Number         `json:"current_price"`
 	// CurrentBounty        string               `json:"current_bounty"`
 	// BountyMultiple       string               `json:"bounty_multiple"`
-	MakerRelayerFee    Number    `json:"maker_relayer_fee"`
-	TakerRelayerFee    Number    `json:"taker_relayer_fee"`
-	MakerProtocolFee   Number    `json:"maker_protocol_fee"`
-	TakerProtocolFee   Number    `json:"taker_protocol_fee"`
-	MakerReferrerFee   Number    `json:"maker_referrer_fee"`
-	FeeRecipient       Account   `json:"fee_recipient"`
-	FeeMethod          FeeMethod `json:"fee_method"`
-	Side               Side      `json:"side"` // 0 for buy orders and 1 for sell orders.
-	SaleKind           SaleKind  `json:"sale_kind"`
-	Target             Address   `json:"target"`
-	HowToCall          HowToCall `json:"how_to_call"`
-	Calldata           Bytes     `json:"calldata"`
-	ReplacementPattern Bytes     `json:"replacement_pattern"`
-	StaticTarget       Address   `json:"static_target"`
-	StaticExtradata    Bytes     `json:"static_extradata"`
-	PaymentToken       Address   `json:"payment_token"`
+	MakerRelayerFee    Number         `json:"maker_relayer_fee"`
+	TakerRelayerFee    Number         `json:"taker_relayer_fee"`
+	MakerProtocolFee   Number         `json:"maker_protocol_fee"`
+	TakerProtocolFee   Number         `json:"taker_protocol_fee"`
+	MakerReferrerFee   Number         `json:"maker_referrer_fee"`
+	FeeRecipient       Account        `json:"fee_recipient"`
+	FeeMethod          FeeMethod      `json:"fee_method"`
+	Side               Side           `json:"side"` // 0 for buy orders and 1 for sell orders.
+	SaleKind           SaleKind       `json:"sale_kind"`
+	Target             common.Address `json:"target"`
+	HowToCall          HowToCall      `json:"how_to_call"`
+	Calldata           hexutil.Bytes  `json:"calldata"`
+	ReplacementPattern hexutil.Bytes  `json:"replacement_pattern"`
+	StaticTarget       common.Address `json:"static_target"`
+	StaticExtradata    hexutil.Bytes  `json:"static_extradata"`
+	PaymentToken       common.Address `json:"payment_token"`
 	// PaymentTokenContract PaymentTokenContract `json:"payment_token_contract"`
-	BasePrice       Number `json:"base_price"`
-	Extra           Number `json:"extra"`
-	Quantity        string `json:"quantity"`
-	Salt            Number `json:"salt"`
-	V               *uint8 `json:"v"`
-	R               *Bytes `json:"r"`
-	S               *Bytes `json:"s"`
-	ApprovedOnChain bool   `json:"approved_on_chain"`
-	Cancelled       bool   `json:"cancelled"`
-	Finalized       bool   `json:"finalized"`
-	MarkedInvalid   bool   `json:"marked_invalid"`
+	BasePrice       Number         `json:"base_price"`
+	Extra           Number         `json:"extra"`
+	Quantity        string         `json:"quantity"`
+	Salt            Number         `json:"salt"`
+	V               *uint8         `json:"v"`
+	R               *hexutil.Bytes `json:"r"`
+	S               *hexutil.Bytes `json:"s"`
+	ApprovedOnChain bool           `json:"approved_on_chain"`
+	Cancelled       bool           `json:"cancelled"`
+	Finalized       bool           `json:"finalized"`
+	MarkedInvalid   bool           `json:"marked_invalid"`
 	// PrefixedHash         string               `json:"prefixed_hash"`
 }
 
 // IsPrivate returns true if the order is private
 func (o Order) IsPrivate() bool {
-	if o.Taker.Address != NullAddress {
-		return true
-	}
-	return false
+	return o.Taker.Address != (common.Address{})
 }
 
 // Side is the direction of an order
@@ -512,10 +449,10 @@ func (o *Opensea) GetOrders(ctx context.Context, assetContractAddress string, li
 
 	orders = []*Order{}
 
-	for true {
+	for {
 		q.Set("offset", fmt.Sprintf("%d", offset))
 		path := "/wyvern/v1/orders?" + q.Encode()
-		b, err := o.getPath(ctx, path)
+		b, err := o.getURL(ctx, o.URL+path)
 		if err != nil {
 			return nil, err
 		}
