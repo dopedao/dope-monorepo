@@ -41,7 +41,7 @@ type ItemEdge {
 }
 
 enum ItemOrderField {
-    GREATNESS
+  GREATNESS
 }
 
 input ItemOrder {
@@ -61,8 +61,8 @@ type DopeEdge {
 }
 
 enum DopeOrderField {
-    ID
-    RANK
+  ID
+  RANK
 }
 
 input DopeOrder {
@@ -82,5 +82,20 @@ type WalletEdge {
 }
 
 input WalletOrder {
+  direction: OrderDirection!
+}
+
+type ListingConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [ListingEdge]
+}
+
+type ListingEdge {
+  node: Listing
+  cursor: Cursor!
+}
+
+input ListingOrder {
   direction: OrderDirection!
 }
