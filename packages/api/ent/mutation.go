@@ -7694,6 +7694,8 @@ type SearchMutation struct {
 	typ            string
 	id             *string
 	_type          *search.Type
+	greatness      *int
+	addgreatness   *int
 	clearedFields  map[string]struct{}
 	dope           *string
 	cleareddope    bool
@@ -7846,6 +7848,76 @@ func (m *SearchMutation) ResetType() {
 	m._type = nil
 }
 
+// SetGreatness sets the "greatness" field.
+func (m *SearchMutation) SetGreatness(i int) {
+	m.greatness = &i
+	m.addgreatness = nil
+}
+
+// Greatness returns the value of the "greatness" field in the mutation.
+func (m *SearchMutation) Greatness() (r int, exists bool) {
+	v := m.greatness
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGreatness returns the old "greatness" field's value of the Search entity.
+// If the Search object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SearchMutation) OldGreatness(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGreatness is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGreatness requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGreatness: %w", err)
+	}
+	return oldValue.Greatness, nil
+}
+
+// AddGreatness adds i to the "greatness" field.
+func (m *SearchMutation) AddGreatness(i int) {
+	if m.addgreatness != nil {
+		*m.addgreatness += i
+	} else {
+		m.addgreatness = &i
+	}
+}
+
+// AddedGreatness returns the value that was added to the "greatness" field in this mutation.
+func (m *SearchMutation) AddedGreatness() (r int, exists bool) {
+	v := m.addgreatness
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (m *SearchMutation) ClearGreatness() {
+	m.greatness = nil
+	m.addgreatness = nil
+	m.clearedFields[search.FieldGreatness] = struct{}{}
+}
+
+// GreatnessCleared returns if the "greatness" field was cleared in this mutation.
+func (m *SearchMutation) GreatnessCleared() bool {
+	_, ok := m.clearedFields[search.FieldGreatness]
+	return ok
+}
+
+// ResetGreatness resets all changes to the "greatness" field.
+func (m *SearchMutation) ResetGreatness() {
+	m.greatness = nil
+	m.addgreatness = nil
+	delete(m.clearedFields, search.FieldGreatness)
+}
+
 // SetDopeID sets the "dope" edge to the Dope entity by id.
 func (m *SearchMutation) SetDopeID(id string) {
 	m.dope = &id
@@ -7982,9 +8054,12 @@ func (m *SearchMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SearchMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 2)
 	if m._type != nil {
 		fields = append(fields, search.FieldType)
+	}
+	if m.greatness != nil {
+		fields = append(fields, search.FieldGreatness)
 	}
 	return fields
 }
@@ -7996,6 +8071,8 @@ func (m *SearchMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case search.FieldType:
 		return m.GetType()
+	case search.FieldGreatness:
+		return m.Greatness()
 	}
 	return nil, false
 }
@@ -8007,6 +8084,8 @@ func (m *SearchMutation) OldField(ctx context.Context, name string) (ent.Value, 
 	switch name {
 	case search.FieldType:
 		return m.OldType(ctx)
+	case search.FieldGreatness:
+		return m.OldGreatness(ctx)
 	}
 	return nil, fmt.Errorf("unknown Search field %s", name)
 }
@@ -8023,6 +8102,13 @@ func (m *SearchMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetType(v)
 		return nil
+	case search.FieldGreatness:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGreatness(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Search field %s", name)
 }
@@ -8030,13 +8116,21 @@ func (m *SearchMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *SearchMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addgreatness != nil {
+		fields = append(fields, search.FieldGreatness)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *SearchMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case search.FieldGreatness:
+		return m.AddedGreatness()
+	}
 	return nil, false
 }
 
@@ -8045,6 +8139,13 @@ func (m *SearchMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *SearchMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case search.FieldGreatness:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddGreatness(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Search numeric field %s", name)
 }
@@ -8052,7 +8153,11 @@ func (m *SearchMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *SearchMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(search.FieldGreatness) {
+		fields = append(fields, search.FieldGreatness)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -8065,6 +8170,11 @@ func (m *SearchMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *SearchMutation) ClearField(name string) error {
+	switch name {
+	case search.FieldGreatness:
+		m.ClearGreatness()
+		return nil
+	}
 	return fmt.Errorf("unknown Search nullable field %s", name)
 }
 
@@ -8074,6 +8184,9 @@ func (m *SearchMutation) ResetField(name string) error {
 	switch name {
 	case search.FieldType:
 		m.ResetType()
+		return nil
+	case search.FieldGreatness:
+		m.ResetGreatness()
 		return nil
 	}
 	return fmt.Errorf("unknown Search field %s", name)

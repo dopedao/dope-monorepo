@@ -280,6 +280,7 @@ var (
 	SearchIndexColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"dope", "item", "hustler"}},
+		{Name: "greatness", Type: field.TypeInt, Nullable: true},
 		{Name: "dope_index", Type: field.TypeString, Unique: true, Nullable: true},
 		{Name: "hustler_index", Type: field.TypeString, Unique: true, Nullable: true},
 		{Name: "item_index", Type: field.TypeString, Unique: true, Nullable: true},
@@ -292,19 +293,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "search_index_dopes_index",
-				Columns:    []*schema.Column{SearchIndexColumns[2]},
+				Columns:    []*schema.Column{SearchIndexColumns[3]},
 				RefColumns: []*schema.Column{DopesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "search_index_hustlers_index",
-				Columns:    []*schema.Column{SearchIndexColumns[3]},
+				Columns:    []*schema.Column{SearchIndexColumns[4]},
 				RefColumns: []*schema.Column{HustlersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "search_index_items_index",
-				Columns:    []*schema.Column{SearchIndexColumns[4]},
+				Columns:    []*schema.Column{SearchIndexColumns[5]},
 				RefColumns: []*schema.Column{ItemsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

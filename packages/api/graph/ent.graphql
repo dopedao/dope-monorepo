@@ -884,6 +884,18 @@ input SearchWhereInput {
   typeIn: [SearchType!]
   typeNotIn: [SearchType!]
   
+  """greatness field predicates"""
+  greatness: Int
+  greatnessNEQ: Int
+  greatnessIn: [Int!]
+  greatnessNotIn: [Int!]
+  greatnessGT: Int
+  greatnessGTE: Int
+  greatnessLT: Int
+  greatnessLTE: Int
+  greatnessIsNil: Boolean
+  greatnessNotNil: Boolean
+  
   """id field predicates"""
   id: ID
   idNEQ: ID

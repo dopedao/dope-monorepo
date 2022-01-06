@@ -15,6 +15,8 @@ const (
 	FieldID = "id"
 	// FieldType holds the string denoting the type field in the database.
 	FieldType = "type"
+	// FieldGreatness holds the string denoting the greatness field in the database.
+	FieldGreatness = "greatness"
 	// EdgeDope holds the string denoting the dope edge name in mutations.
 	EdgeDope = "dope"
 	// EdgeItem holds the string denoting the item edge name in mutations.
@@ -50,6 +52,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldType,
+	FieldGreatness,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "search_index"

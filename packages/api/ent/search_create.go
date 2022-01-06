@@ -31,6 +31,20 @@ func (sc *SearchCreate) SetType(s search.Type) *SearchCreate {
 	return sc
 }
 
+// SetGreatness sets the "greatness" field.
+func (sc *SearchCreate) SetGreatness(i int) *SearchCreate {
+	sc.mutation.SetGreatness(i)
+	return sc
+}
+
+// SetNillableGreatness sets the "greatness" field if the given value is not nil.
+func (sc *SearchCreate) SetNillableGreatness(i *int) *SearchCreate {
+	if i != nil {
+		sc.SetGreatness(*i)
+	}
+	return sc
+}
+
 // SetID sets the "id" field.
 func (sc *SearchCreate) SetID(s string) *SearchCreate {
 	sc.mutation.SetID(s)
@@ -217,6 +231,14 @@ func (sc *SearchCreate) createSpec() (*Search, *sqlgraph.CreateSpec) {
 		})
 		_node.Type = value
 	}
+	if value, ok := sc.mutation.Greatness(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldGreatness,
+		})
+		_node.Greatness = value
+	}
 	if nodes := sc.mutation.DopeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -343,6 +365,30 @@ func (u *SearchUpsert) UpdateType() *SearchUpsert {
 	return u
 }
 
+// SetGreatness sets the "greatness" field.
+func (u *SearchUpsert) SetGreatness(v int) *SearchUpsert {
+	u.Set(search.FieldGreatness, v)
+	return u
+}
+
+// UpdateGreatness sets the "greatness" field to the value that was provided on create.
+func (u *SearchUpsert) UpdateGreatness() *SearchUpsert {
+	u.SetExcluded(search.FieldGreatness)
+	return u
+}
+
+// AddGreatness adds v to the "greatness" field.
+func (u *SearchUpsert) AddGreatness(v int) *SearchUpsert {
+	u.Add(search.FieldGreatness, v)
+	return u
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (u *SearchUpsert) ClearGreatness() *SearchUpsert {
+	u.SetNull(search.FieldGreatness)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -407,6 +453,34 @@ func (u *SearchUpsertOne) SetType(v search.Type) *SearchUpsertOne {
 func (u *SearchUpsertOne) UpdateType() *SearchUpsertOne {
 	return u.Update(func(s *SearchUpsert) {
 		s.UpdateType()
+	})
+}
+
+// SetGreatness sets the "greatness" field.
+func (u *SearchUpsertOne) SetGreatness(v int) *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetGreatness(v)
+	})
+}
+
+// AddGreatness adds v to the "greatness" field.
+func (u *SearchUpsertOne) AddGreatness(v int) *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.AddGreatness(v)
+	})
+}
+
+// UpdateGreatness sets the "greatness" field to the value that was provided on create.
+func (u *SearchUpsertOne) UpdateGreatness() *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateGreatness()
+	})
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (u *SearchUpsertOne) ClearGreatness() *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.ClearGreatness()
 	})
 }
 
@@ -639,6 +713,34 @@ func (u *SearchUpsertBulk) SetType(v search.Type) *SearchUpsertBulk {
 func (u *SearchUpsertBulk) UpdateType() *SearchUpsertBulk {
 	return u.Update(func(s *SearchUpsert) {
 		s.UpdateType()
+	})
+}
+
+// SetGreatness sets the "greatness" field.
+func (u *SearchUpsertBulk) SetGreatness(v int) *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetGreatness(v)
+	})
+}
+
+// AddGreatness adds v to the "greatness" field.
+func (u *SearchUpsertBulk) AddGreatness(v int) *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.AddGreatness(v)
+	})
+}
+
+// UpdateGreatness sets the "greatness" field to the value that was provided on create.
+func (u *SearchUpsertBulk) UpdateGreatness() *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateGreatness()
+	})
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (u *SearchUpsertBulk) ClearGreatness() *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.ClearGreatness()
 	})
 }
 

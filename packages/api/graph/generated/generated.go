@@ -2024,6 +2024,18 @@ input SearchWhereInput {
   typeIn: [SearchType!]
   typeNotIn: [SearchType!]
   
+  """greatness field predicates"""
+  greatness: Int
+  greatnessNEQ: Int
+  greatnessIn: [Int!]
+  greatnessNotIn: [Int!]
+  greatnessGT: Int
+  greatnessGTE: Int
+  greatnessLT: Int
+  greatnessLTE: Int
+  greatnessIsNil: Boolean
+  greatnessNotNil: Boolean
+  
   """id field predicates"""
   id: ID
   idNEQ: ID
@@ -2149,15 +2161,15 @@ input ListingOrder {
   direction: OrderDirection!
 }
 
-# enum SearchOrderField {
-#   RANK
-#   AFFORDABLE
-#   LAST_SALE_AMOUNT
-# }
+enum SearchOrderField {
+  GREATNESS
+  # AFFORDABLE
+  # LAST_SALE_AMOUNT
+}
 
 input SearchOrder {
   direction: OrderDirection
-  # field: SearchOrderField
+  field: SearchOrderField
 }
 
 type SearchConnection {
@@ -12019,6 +12031,14 @@ func (ec *executionContext) unmarshalInputSearchOrder(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			it.Field, err = ec.unmarshalOSearchOrderField2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐSearchOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -12238,6 +12258,86 @@ func (ec *executionContext) unmarshalInputSearchWhereInput(ctx context.Context, 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeNotIn"))
 			it.TypeNotIn, err = ec.unmarshalOSearchType2ᚕgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋsearchᚐTypeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatness":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatness"))
+			it.Greatness, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatnessNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessNEQ"))
+			it.GreatnessNEQ, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatnessIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessIn"))
+			it.GreatnessIn, err = ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatnessNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessNotIn"))
+			it.GreatnessNotIn, err = ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatnessGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessGT"))
+			it.GreatnessGT, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatnessGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessGTE"))
+			it.GreatnessGTE, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatnessLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessLT"))
+			it.GreatnessLT, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatnessLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessLTE"))
+			it.GreatnessLTE, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatnessIsNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessIsNil"))
+			it.GreatnessIsNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "greatnessNotNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessNotNil"))
+			it.GreatnessNotNil, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -17170,6 +17270,22 @@ func (ec *executionContext) unmarshalOSearchOrder2ᚖgithubᚗcomᚋdopedaoᚋdo
 	}
 	res, err := ec.unmarshalInputSearchOrder(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOSearchOrderField2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐSearchOrderField(ctx context.Context, v interface{}) (*ent.SearchOrderField, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(ent.SearchOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOSearchOrderField2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐSearchOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.SearchOrderField) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) marshalOSearchResult2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋgraphᚋmodelᚐSearchResult(ctx context.Context, sel ast.SelectionSet, v model.SearchResult) graphql.Marshaler {
