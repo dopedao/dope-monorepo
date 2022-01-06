@@ -133,8 +133,8 @@ type Listing implements Node {
   id: ID!
   source: Source
   active: Boolean!
-  # inputs: [Amount]!
-  # outputs: [Amount]!
+  inputs: [Amount]!
+  outputs: [Amount]!
 }
 
 enum Source {

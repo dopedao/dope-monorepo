@@ -155,9 +155,11 @@ type ComplexityRoot struct {
 	}
 
 	Listing struct {
-		Active func(childComplexity int) int
-		ID     func(childComplexity int) int
-		Source func(childComplexity int) int
+		Active  func(childComplexity int) int
+		ID      func(childComplexity int) int
+		Inputs  func(childComplexity int) int
+		Outputs func(childComplexity int) int
+		Source  func(childComplexity int) int
 	}
 
 	ListingConnection struct {
@@ -742,6 +744,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Listing.ID(childComplexity), true
+
+	case "Listing.inputs":
+		if e.complexity.Listing.Inputs == nil {
+			break
+		}
+
+		return e.complexity.Listing.Inputs(childComplexity), true
+
+	case "Listing.outputs":
+		if e.complexity.Listing.Outputs == nil {
+			break
+		}
+
+		return e.complexity.Listing.Outputs(childComplexity), true
 
 	case "Listing.source":
 		if e.complexity.Listing.Source == nil {
@@ -2103,8 +2119,8 @@ type Listing implements Node {
   id: ID!
   source: Source
   active: Boolean!
-  # inputs: [Amount]!
-  # outputs: [Amount]!
+  inputs: [Amount]!
+  outputs: [Amount]!
 }
 
 enum Source {
@@ -5026,6 +5042,76 @@ func (ec *executionContext) _Listing_active(ctx context.Context, field graphql.C
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Listing_inputs(ctx context.Context, field graphql.CollectedField, obj *ent.Listing) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Listing",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Inputs(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Amount)
+	fc.Result = res
+	return ec.marshalNAmount2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐAmount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Listing_outputs(ctx context.Context, field graphql.CollectedField, obj *ent.Listing) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Listing",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Outputs(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Amount)
+	fc.Result = res
+	return ec.marshalNAmount2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐAmount(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ListingConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.ListingConnection) (ret graphql.Marshaler) {
@@ -12862,15 +12948,43 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 		case "id":
 			out.Values[i] = ec._Listing_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "source":
 			out.Values[i] = ec._Listing_source(ctx, field, obj)
 		case "active":
 			out.Values[i] = ec._Listing_active(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
+		case "inputs":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Listing_inputs(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "outputs":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Listing_outputs(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -13598,6 +13712,44 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
+
+func (ec *executionContext) marshalNAmount2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐAmount(ctx context.Context, sel ast.SelectionSet, v []*ent.Amount) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOAmount2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐAmount(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
 
 func (ec *executionContext) unmarshalNAmountType2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋamountᚐType(ctx context.Context, v interface{}) (amount.Type, error) {
 	var res amount.Type
@@ -14557,6 +14709,13 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalOAmount2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐAmount(ctx context.Context, sel ast.SelectionSet, v *ent.Amount) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Amount(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOAmountType2ᚕgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋamountᚐTypeᚄ(ctx context.Context, v interface{}) ([]amount.Type, error) {
