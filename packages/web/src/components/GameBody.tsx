@@ -10,7 +10,9 @@ export default function GameBody(props: {gameConfig?: Phaser.Types.Core.GameConf
     
     const game = useGame({
         ...(props.gameConfig ?? defaultGameConfig),
-        type: navigator.userAgent.indexOf('AppleWebKit') != -1 ? Phaser.CANVAS : Phaser.AUTO
+        // sets rendering mode to canvas to prevent antialiasing on webkit devices
+        // temporary fix
+        type: typeof (window as any).webkitConvertPointFromNodeToPage === 'function' ? Phaser.CANVAS : Phaser.AUTO
     }, gameRef);
 
     const nativeFullscreen = () => {
