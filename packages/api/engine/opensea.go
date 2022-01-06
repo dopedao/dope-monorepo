@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math/big"
 	"net/http"
 	"sync"
 	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 
@@ -63,6 +63,8 @@ func NewOpensea(client *ent.Client, config OpenseaConfig) *Opensea {
 
 // Sync implemented for Opensa
 func (o *Opensea) Sync(ctx context.Context) {
+	ctx, log := base.LogFor(ctx)
+
 	defer o.ticker.Stop()
 
 	for {
@@ -70,12 +72,12 @@ func (o *Opensea) Sync(ctx context.Context) {
 		for offset := 0; offset <= maxTokens; offset += assetsPerPage {
 			ret, err := o.getAssetCollection(ctx, o.Contract, assetsPerPage, offset)
 			if err != nil {
-				fmt.Printf("error getting asset collection: %v+", err)
+				log.Err(err).Msg("Getting asset collection")
 				break
 			}
 
 			if ret == nil {
-				fmt.Printf("received nil from Opensea, breaking")
+				log.Debug().Msg("Received nil from Opensea, breaking")
 				break
 			}
 
@@ -220,12 +222,12 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 					return nil
 				}); err != nil {
-					log.Printf("Error indexing opensea collection: %+v", err)
+					log.Err(err).Msg("Indexing opensea collection.")
 				}
 			}
 
 			assetsCompleted += len(ret.Assets)
-			fmt.Printf("Syncing opensea: finished total assets: %d, current offset: %d\n", assetsCompleted, offset)
+			log.Info().Msgf("Syncing opensea: finished total assets: %d, current offset: %d\n", assetsCompleted, offset)
 		}
 
 		select {
