@@ -3,11 +3,11 @@ package engine
 import (
 	"context"
 	"fmt"
-	"log"
 	"math/big"
 	"sync"
 	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/processors"
@@ -50,11 +50,13 @@ type Ethereum struct {
 }
 
 func NewEthereum(client *ent.Client, config EthConfig) *Ethereum {
+	ctx, log := base.LogFor(context.Background())
+
 	retryableHTTPClient := retryablehttp.NewClient()
 	retryableHTTPClient.Logger = nil
 	c, err := rpc.DialHTTPWithClient(config.RPC, retryableHTTPClient.StandardClient())
 	if err != nil {
-		log.Fatal("Dialing ethereum rpc.") //nolint:gocritic
+		log.Fatal().Msg("Dialing ethereum rpc.") //nolint:gocritic
 	}
 
 	eth := ethclient.NewClient(c)
@@ -65,18 +67,17 @@ func NewEthereum(client *ent.Client, config EthConfig) *Ethereum {
 		ticker: time.NewTicker(config.Interval),
 	}
 
-	ctx := context.Background()
 	for _, c := range config.Contracts {
 		c := c
 		s, err := client.SyncState.Get(ctx, c.Address.Hex())
 		if err != nil && !ent.IsNotFound(err) {
-			log.Fatalf("Fetching sync state: %+v.", err)
+			log.Fatal().Err(err).Msg("Fetching sync state.")
 		} else if err == nil {
 			c.StartBlock = s.StartBlock
 		}
 
 		if err := c.Processor.Setup(c.Address, eth); err != nil {
-			log.Fatal("Setting up processor.")
+			log.Fatal().Msg("Setting up processor.")
 		}
 
 		e.contracts = append(e.contracts, &c)
@@ -86,6 +87,8 @@ func NewEthereum(client *ent.Client, config EthConfig) *Ethereum {
 }
 
 func (e *Ethereum) Sync(ctx context.Context) {
+	ctx, log := base.LogFor(ctx)
+
 	defer e.ticker.Stop()
 
 	for {
@@ -93,7 +96,7 @@ func (e *Ethereum) Sync(ctx context.Context) {
 		case <-e.ticker.C:
 			latest, err := e.eth.BlockNumber(ctx)
 			if err != nil {
-				log.Printf("Getting latest block number: %v", err)
+				log.Err(err).Msg("Getting latest block number.")
 				continue
 			}
 
@@ -110,7 +113,7 @@ func (e *Ethereum) Sync(ctx context.Context) {
 						break
 					}
 
-					log.Printf("Syncing %s from %d to %d.", c.Address.Hex(), _from, _to)
+					log.Info().Msgf("Syncing %s from %d to %d.", c.Address.Hex(), _from, _to)
 
 					logs, err := e.eth.FilterLogs(ctx, ethereum.FilterQuery{
 						FromBlock: new(big.Int).SetUint64(_from),
@@ -118,7 +121,7 @@ func (e *Ethereum) Sync(ctx context.Context) {
 						Addresses: []common.Address{c.Address},
 					})
 					if err != nil {
-						log.Fatalf("Filtering logs: %+v.", err)
+						log.Fatal().Err(err).Msg("Filtering logs.")
 					}
 
 					_from = _to + 1
@@ -127,7 +130,7 @@ func (e *Ethereum) Sync(ctx context.Context) {
 						for _, l := range logs {
 							if err := tx.Event.Create().SetID(fmt.Sprintf("%s-%s-%d", c.Address.Hex(), l.TxHash.Hex(), l.Index)).SetAddress(c.Address).SetHash(l.TxHash).SetIndex(uint64(l.Index)).Exec(ctx); err != nil {
 								if ent.IsConstraintError(err) {
-									log.Printf("duplicate event log %s: %+v", l.TxHash.Hex(), err)
+									log.Warn().Msgf("duplicate event log %s: %+v", l.TxHash.Hex(), err)
 									continue
 								}
 
@@ -151,7 +154,7 @@ func (e *Ethereum) Sync(ctx context.Context) {
 
 						return nil
 					}); err != nil {
-						log.Fatalf("Syncing contract: %+v.", err)
+						log.Fatal().Err(err).Msg("Syncing contract.")
 					}
 
 					if _to == latest {
