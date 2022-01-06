@@ -44,7 +44,11 @@ export default class Player extends Hustler
 
     openInventory()
     {
-        this.scene.events.emit(Events.PLAYER_OPEN_INVENTORY);
+        if (this.busy)
+            return;
+        
+        EventHandler.emitter().emit(Events.PLAYER_OPEN_INVENTORY);
+        this._busy = true;        
     }
 
     tryInteraction()

@@ -3,6 +3,7 @@ import Conversation from "game/entities/citizen/Conversation";
 import Player from "game/entities/player/Player";
 import EventHandler, { Events } from "game/handlers/EventHandler";
 import Quest from "game/quests/Quest";
+import InventoryComponent from "game/ui/react/components/InventoryComponent";
 import DialogueTextBox from "game/ui/rex/DialogueTextBox";
 import { Scene } from "phaser";
 import { ComponentManager } from "phaser3-react/src/manager";
@@ -81,6 +82,16 @@ export default class UIScene extends Scene {
     }
 
     private _handleInteractions()
+    {
+        // handle player inventory open
+        EventHandler.emitter().on(Events.PLAYER_OPEN_INVENTORY, () => {
+            this.add.reactDom(InventoryComponent, { inventory: this.player.inventory, quests: this.player.questManager.quests });
+        });
+
+        this._handleNpcInteractions();
+    }
+
+    private _handleNpcInteractions()
     {
         EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_CANCEL, (citizen: Citizen) => {
             toast("You ran away from the conversation!", {
