@@ -63,9 +63,9 @@ models:
   HustlerType:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/hustler.Type
-  AssetType:
+  AmountType:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/asset.Type
+      - github.com/dopedao/dope-monorepo/packages/api/ent/amount.Type
   RLEs:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/schema.RLEs

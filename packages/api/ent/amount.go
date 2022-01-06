@@ -7,111 +7,85 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
-// Asset is the model entity for the Asset schema.
-type Asset struct {
+// Amount is the model entity for the Amount schema.
+type Amount struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
-	// Address holds the value of the "address" field.
-	Address string `json:"address,omitempty"`
 	// Type holds the value of the "type" field.
-	Type asset.Type `json:"type,omitempty"`
-	// Symbol holds the value of the "symbol" field.
-	Symbol string `json:"symbol,omitempty"`
+	Type amount.Type `json:"type,omitempty"`
 	// Amount holds the value of the "amount" field.
 	Amount schema.BigInt `json:"amount,omitempty"`
 	// AssetID holds the value of the "asset_id" field.
-	AssetID schema.BigInt `json:"asset_id,omitempty"`
-	// Decimals holds the value of the "decimals" field.
-	Decimals        int `json:"decimals,omitempty"`
+	AssetID         schema.BigInt `json:"asset_id,omitempty"`
 	listing_inputs  *string
 	listing_outputs *string
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Asset) scanValues(columns []string) ([]interface{}, error) {
+func (*Amount) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case asset.FieldAmount, asset.FieldAssetID:
+		case amount.FieldAmount, amount.FieldAssetID:
 			values[i] = new(schema.BigInt)
-		case asset.FieldDecimals:
-			values[i] = new(sql.NullInt64)
-		case asset.FieldID, asset.FieldAddress, asset.FieldType, asset.FieldSymbol:
+		case amount.FieldID, amount.FieldType:
 			values[i] = new(sql.NullString)
-		case asset.ForeignKeys[0]: // listing_inputs
+		case amount.ForeignKeys[0]: // listing_inputs
 			values[i] = new(sql.NullString)
-		case asset.ForeignKeys[1]: // listing_outputs
+		case amount.ForeignKeys[1]: // listing_outputs
 			values[i] = new(sql.NullString)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type Asset", columns[i])
+			return nil, fmt.Errorf("unexpected column %q for type Amount", columns[i])
 		}
 	}
 	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Asset fields.
-func (a *Asset) assignValues(columns []string, values []interface{}) error {
+// to the Amount fields.
+func (a *Amount) assignValues(columns []string, values []interface{}) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case asset.FieldID:
+		case amount.FieldID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				a.ID = value.String
 			}
-		case asset.FieldAddress:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field address", values[i])
-			} else if value.Valid {
-				a.Address = value.String
-			}
-		case asset.FieldType:
+		case amount.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				a.Type = asset.Type(value.String)
+				a.Type = amount.Type(value.String)
 			}
-		case asset.FieldSymbol:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field symbol", values[i])
-			} else if value.Valid {
-				a.Symbol = value.String
-			}
-		case asset.FieldAmount:
+		case amount.FieldAmount:
 			if value, ok := values[i].(*schema.BigInt); !ok {
 				return fmt.Errorf("unexpected type %T for field amount", values[i])
 			} else if value != nil {
 				a.Amount = *value
 			}
-		case asset.FieldAssetID:
+		case amount.FieldAssetID:
 			if value, ok := values[i].(*schema.BigInt); !ok {
 				return fmt.Errorf("unexpected type %T for field asset_id", values[i])
 			} else if value != nil {
 				a.AssetID = *value
 			}
-		case asset.FieldDecimals:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field decimals", values[i])
-			} else if value.Valid {
-				a.Decimals = int(value.Int64)
-			}
-		case asset.ForeignKeys[0]:
+		case amount.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field listing_inputs", values[i])
 			} else if value.Valid {
 				a.listing_inputs = new(string)
 				*a.listing_inputs = value.String
 			}
-		case asset.ForeignKeys[1]:
+		case amount.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field listing_outputs", values[i])
 			} else if value.Valid {
@@ -123,49 +97,43 @@ func (a *Asset) assignValues(columns []string, values []interface{}) error {
 	return nil
 }
 
-// Update returns a builder for updating this Asset.
-// Note that you need to call Asset.Unwrap() before calling this method if this Asset
+// Update returns a builder for updating this Amount.
+// Note that you need to call Amount.Unwrap() before calling this method if this Amount
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (a *Asset) Update() *AssetUpdateOne {
-	return (&AssetClient{config: a.config}).UpdateOne(a)
+func (a *Amount) Update() *AmountUpdateOne {
+	return (&AmountClient{config: a.config}).UpdateOne(a)
 }
 
-// Unwrap unwraps the Asset entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Amount entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (a *Asset) Unwrap() *Asset {
+func (a *Amount) Unwrap() *Amount {
 	tx, ok := a.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Asset is not a transactional entity")
+		panic("ent: Amount is not a transactional entity")
 	}
 	a.config.driver = tx.drv
 	return a
 }
 
 // String implements the fmt.Stringer.
-func (a *Asset) String() string {
+func (a *Amount) String() string {
 	var builder strings.Builder
-	builder.WriteString("Asset(")
+	builder.WriteString("Amount(")
 	builder.WriteString(fmt.Sprintf("id=%v", a.ID))
-	builder.WriteString(", address=")
-	builder.WriteString(a.Address)
 	builder.WriteString(", type=")
 	builder.WriteString(fmt.Sprintf("%v", a.Type))
-	builder.WriteString(", symbol=")
-	builder.WriteString(a.Symbol)
 	builder.WriteString(", amount=")
 	builder.WriteString(fmt.Sprintf("%v", a.Amount))
 	builder.WriteString(", asset_id=")
 	builder.WriteString(fmt.Sprintf("%v", a.AssetID))
-	builder.WriteString(", decimals=")
-	builder.WriteString(fmt.Sprintf("%v", a.Decimals))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// Assets is a parsable slice of Asset.
-type Assets []*Asset
+// Amounts is a parsable slice of Amount.
+type Amounts []*Amount
 
-func (a Assets) config(cfg config) {
+func (a Amounts) config(cfg config) {
 	for _i := range a {
 		a[_i].config = cfg
 	}

@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
@@ -73,14 +73,14 @@ func (lu *ListingUpdate) SetDopeLastsales(d *Dope) *ListingUpdate {
 	return lu.SetDopeLastsalesID(d.ID)
 }
 
-// AddInputIDs adds the "inputs" edge to the Asset entity by IDs.
+// AddInputIDs adds the "inputs" edge to the Amount entity by IDs.
 func (lu *ListingUpdate) AddInputIDs(ids ...string) *ListingUpdate {
 	lu.mutation.AddInputIDs(ids...)
 	return lu
 }
 
-// AddInputs adds the "inputs" edges to the Asset entity.
-func (lu *ListingUpdate) AddInputs(a ...*Asset) *ListingUpdate {
+// AddInputs adds the "inputs" edges to the Amount entity.
+func (lu *ListingUpdate) AddInputs(a ...*Amount) *ListingUpdate {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -88,14 +88,14 @@ func (lu *ListingUpdate) AddInputs(a ...*Asset) *ListingUpdate {
 	return lu.AddInputIDs(ids...)
 }
 
-// AddOutputIDs adds the "outputs" edge to the Asset entity by IDs.
+// AddOutputIDs adds the "outputs" edge to the Amount entity by IDs.
 func (lu *ListingUpdate) AddOutputIDs(ids ...string) *ListingUpdate {
 	lu.mutation.AddOutputIDs(ids...)
 	return lu
 }
 
-// AddOutputs adds the "outputs" edges to the Asset entity.
-func (lu *ListingUpdate) AddOutputs(a ...*Asset) *ListingUpdate {
+// AddOutputs adds the "outputs" edges to the Amount entity.
+func (lu *ListingUpdate) AddOutputs(a ...*Amount) *ListingUpdate {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -120,20 +120,20 @@ func (lu *ListingUpdate) ClearDopeLastsales() *ListingUpdate {
 	return lu
 }
 
-// ClearInputs clears all "inputs" edges to the Asset entity.
+// ClearInputs clears all "inputs" edges to the Amount entity.
 func (lu *ListingUpdate) ClearInputs() *ListingUpdate {
 	lu.mutation.ClearInputs()
 	return lu
 }
 
-// RemoveInputIDs removes the "inputs" edge to Asset entities by IDs.
+// RemoveInputIDs removes the "inputs" edge to Amount entities by IDs.
 func (lu *ListingUpdate) RemoveInputIDs(ids ...string) *ListingUpdate {
 	lu.mutation.RemoveInputIDs(ids...)
 	return lu
 }
 
-// RemoveInputs removes "inputs" edges to Asset entities.
-func (lu *ListingUpdate) RemoveInputs(a ...*Asset) *ListingUpdate {
+// RemoveInputs removes "inputs" edges to Amount entities.
+func (lu *ListingUpdate) RemoveInputs(a ...*Amount) *ListingUpdate {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -141,20 +141,20 @@ func (lu *ListingUpdate) RemoveInputs(a ...*Asset) *ListingUpdate {
 	return lu.RemoveInputIDs(ids...)
 }
 
-// ClearOutputs clears all "outputs" edges to the Asset entity.
+// ClearOutputs clears all "outputs" edges to the Amount entity.
 func (lu *ListingUpdate) ClearOutputs() *ListingUpdate {
 	lu.mutation.ClearOutputs()
 	return lu
 }
 
-// RemoveOutputIDs removes the "outputs" edge to Asset entities by IDs.
+// RemoveOutputIDs removes the "outputs" edge to Amount entities by IDs.
 func (lu *ListingUpdate) RemoveOutputIDs(ids ...string) *ListingUpdate {
 	lu.mutation.RemoveOutputIDs(ids...)
 	return lu
 }
 
-// RemoveOutputs removes "outputs" edges to Asset entities.
-func (lu *ListingUpdate) RemoveOutputs(a ...*Asset) *ListingUpdate {
+// RemoveOutputs removes "outputs" edges to Amount entities.
+func (lu *ListingUpdate) RemoveOutputs(a ...*Amount) *ListingUpdate {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -321,7 +321,7 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -337,7 +337,7 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -356,7 +356,7 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -375,7 +375,7 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -391,7 +391,7 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -410,7 +410,7 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -482,14 +482,14 @@ func (luo *ListingUpdateOne) SetDopeLastsales(d *Dope) *ListingUpdateOne {
 	return luo.SetDopeLastsalesID(d.ID)
 }
 
-// AddInputIDs adds the "inputs" edge to the Asset entity by IDs.
+// AddInputIDs adds the "inputs" edge to the Amount entity by IDs.
 func (luo *ListingUpdateOne) AddInputIDs(ids ...string) *ListingUpdateOne {
 	luo.mutation.AddInputIDs(ids...)
 	return luo
 }
 
-// AddInputs adds the "inputs" edges to the Asset entity.
-func (luo *ListingUpdateOne) AddInputs(a ...*Asset) *ListingUpdateOne {
+// AddInputs adds the "inputs" edges to the Amount entity.
+func (luo *ListingUpdateOne) AddInputs(a ...*Amount) *ListingUpdateOne {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -497,14 +497,14 @@ func (luo *ListingUpdateOne) AddInputs(a ...*Asset) *ListingUpdateOne {
 	return luo.AddInputIDs(ids...)
 }
 
-// AddOutputIDs adds the "outputs" edge to the Asset entity by IDs.
+// AddOutputIDs adds the "outputs" edge to the Amount entity by IDs.
 func (luo *ListingUpdateOne) AddOutputIDs(ids ...string) *ListingUpdateOne {
 	luo.mutation.AddOutputIDs(ids...)
 	return luo
 }
 
-// AddOutputs adds the "outputs" edges to the Asset entity.
-func (luo *ListingUpdateOne) AddOutputs(a ...*Asset) *ListingUpdateOne {
+// AddOutputs adds the "outputs" edges to the Amount entity.
+func (luo *ListingUpdateOne) AddOutputs(a ...*Amount) *ListingUpdateOne {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -529,20 +529,20 @@ func (luo *ListingUpdateOne) ClearDopeLastsales() *ListingUpdateOne {
 	return luo
 }
 
-// ClearInputs clears all "inputs" edges to the Asset entity.
+// ClearInputs clears all "inputs" edges to the Amount entity.
 func (luo *ListingUpdateOne) ClearInputs() *ListingUpdateOne {
 	luo.mutation.ClearInputs()
 	return luo
 }
 
-// RemoveInputIDs removes the "inputs" edge to Asset entities by IDs.
+// RemoveInputIDs removes the "inputs" edge to Amount entities by IDs.
 func (luo *ListingUpdateOne) RemoveInputIDs(ids ...string) *ListingUpdateOne {
 	luo.mutation.RemoveInputIDs(ids...)
 	return luo
 }
 
-// RemoveInputs removes "inputs" edges to Asset entities.
-func (luo *ListingUpdateOne) RemoveInputs(a ...*Asset) *ListingUpdateOne {
+// RemoveInputs removes "inputs" edges to Amount entities.
+func (luo *ListingUpdateOne) RemoveInputs(a ...*Amount) *ListingUpdateOne {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -550,20 +550,20 @@ func (luo *ListingUpdateOne) RemoveInputs(a ...*Asset) *ListingUpdateOne {
 	return luo.RemoveInputIDs(ids...)
 }
 
-// ClearOutputs clears all "outputs" edges to the Asset entity.
+// ClearOutputs clears all "outputs" edges to the Amount entity.
 func (luo *ListingUpdateOne) ClearOutputs() *ListingUpdateOne {
 	luo.mutation.ClearOutputs()
 	return luo
 }
 
-// RemoveOutputIDs removes the "outputs" edge to Asset entities by IDs.
+// RemoveOutputIDs removes the "outputs" edge to Amount entities by IDs.
 func (luo *ListingUpdateOne) RemoveOutputIDs(ids ...string) *ListingUpdateOne {
 	luo.mutation.RemoveOutputIDs(ids...)
 	return luo
 }
 
-// RemoveOutputs removes "outputs" edges to Asset entities.
-func (luo *ListingUpdateOne) RemoveOutputs(a ...*Asset) *ListingUpdateOne {
+// RemoveOutputs removes "outputs" edges to Amount entities.
+func (luo *ListingUpdateOne) RemoveOutputs(a ...*Amount) *ListingUpdateOne {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -754,7 +754,7 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -770,7 +770,7 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -789,7 +789,7 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -808,7 +808,7 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -824,7 +824,7 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -843,7 +843,7 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}

@@ -8,33 +8,30 @@ import (
 )
 
 var (
-	// AssetsColumns holds the columns for the "assets" table.
-	AssetsColumns = []*schema.Column{
+	// AmountsColumns holds the columns for the "amounts" table.
+	AmountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "address", Type: field.TypeString},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"DOPE", "ETH", "EQUIPMENT", "HUSTLER", "PAPER", "TURF"}},
-		{Name: "symbol", Type: field.TypeString},
 		{Name: "amount", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
 		{Name: "asset_id", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
-		{Name: "decimals", Type: field.TypeInt},
 		{Name: "listing_inputs", Type: field.TypeString, Nullable: true},
 		{Name: "listing_outputs", Type: field.TypeString, Nullable: true},
 	}
-	// AssetsTable holds the schema information for the "assets" table.
-	AssetsTable = &schema.Table{
-		Name:       "assets",
-		Columns:    AssetsColumns,
-		PrimaryKey: []*schema.Column{AssetsColumns[0]},
+	// AmountsTable holds the schema information for the "amounts" table.
+	AmountsTable = &schema.Table{
+		Name:       "amounts",
+		Columns:    AmountsColumns,
+		PrimaryKey: []*schema.Column{AmountsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "assets_listings_inputs",
-				Columns:    []*schema.Column{AssetsColumns[7]},
+				Symbol:     "amounts_listings_inputs",
+				Columns:    []*schema.Column{AmountsColumns[4]},
 				RefColumns: []*schema.Column{ListingsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:     "assets_listings_outputs",
-				Columns:    []*schema.Column{AssetsColumns[8]},
+				Symbol:     "amounts_listings_outputs",
+				Columns:    []*schema.Column{AmountsColumns[5]},
 				RefColumns: []*schema.Column{ListingsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -355,7 +352,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		AssetsTable,
+		AmountsTable,
 		BodyPartsTable,
 		DopesTable,
 		EventsTable,
@@ -370,8 +367,8 @@ var (
 )
 
 func init() {
-	AssetsTable.ForeignKeys[0].RefTable = ListingsTable
-	AssetsTable.ForeignKeys[1].RefTable = ListingsTable
+	AmountsTable.ForeignKeys[0].RefTable = ListingsTable
+	AmountsTable.ForeignKeys[1].RefTable = ListingsTable
 	DopesTable.ForeignKeys[0].RefTable = ListingsTable
 	DopesTable.ForeignKeys[1].RefTable = WalletsTable
 	HustlersTable.ForeignKeys[0].RefTable = BodyPartsTable

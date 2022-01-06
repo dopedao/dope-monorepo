@@ -42,17 +42,17 @@ const (
 	// DopeLastsalesColumn is the table column denoting the dope_lastsales relation/edge.
 	DopeLastsalesColumn = "listing_dope_lastsales"
 	// InputsTable is the table that holds the inputs relation/edge.
-	InputsTable = "assets"
-	// InputsInverseTable is the table name for the Asset entity.
-	// It exists in this package in order to avoid circular dependency with the "asset" package.
-	InputsInverseTable = "assets"
+	InputsTable = "amounts"
+	// InputsInverseTable is the table name for the Amount entity.
+	// It exists in this package in order to avoid circular dependency with the "amount" package.
+	InputsInverseTable = "amounts"
 	// InputsColumn is the table column denoting the inputs relation/edge.
 	InputsColumn = "listing_inputs"
 	// OutputsTable is the table that holds the outputs relation/edge.
-	OutputsTable = "assets"
-	// OutputsInverseTable is the table name for the Asset entity.
-	// It exists in this package in order to avoid circular dependency with the "asset" package.
-	OutputsInverseTable = "assets"
+	OutputsTable = "amounts"
+	// OutputsInverseTable is the table name for the Amount entity.
+	// It exists in this package in order to avoid circular dependency with the "amount" package.
+	OutputsInverseTable = "amounts"
 	// OutputsColumn is the table column denoting the outputs relation/edge.
 	OutputsColumn = "listing_outputs"
 )

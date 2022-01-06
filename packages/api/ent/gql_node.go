@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
@@ -49,42 +49,26 @@ type Edge struct {
 	IDs  []string `json:"ids,omitempty"`  // node ids (where this edge point to).
 }
 
-func (a *Asset) Node(ctx context.Context) (node *Node, err error) {
+func (a *Amount) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     a.ID,
-		Type:   "Asset",
-		Fields: make([]*Field, 6),
+		Type:   "Amount",
+		Fields: make([]*Field, 3),
 		Edges:  make([]*Edge, 0),
 	}
 	var buf []byte
-	if buf, err = json.Marshal(a.Address); err != nil {
-		return nil, err
-	}
-	node.Fields[0] = &Field{
-		Type:  "string",
-		Name:  "address",
-		Value: string(buf),
-	}
 	if buf, err = json.Marshal(a.Type); err != nil {
 		return nil, err
 	}
-	node.Fields[1] = &Field{
-		Type:  "asset.Type",
+	node.Fields[0] = &Field{
+		Type:  "amount.Type",
 		Name:  "type",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(a.Symbol); err != nil {
-		return nil, err
-	}
-	node.Fields[2] = &Field{
-		Type:  "string",
-		Name:  "symbol",
 		Value: string(buf),
 	}
 	if buf, err = json.Marshal(a.Amount); err != nil {
 		return nil, err
 	}
-	node.Fields[3] = &Field{
+	node.Fields[1] = &Field{
 		Type:  "schema.BigInt",
 		Name:  "amount",
 		Value: string(buf),
@@ -92,17 +76,9 @@ func (a *Asset) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(a.AssetID); err != nil {
 		return nil, err
 	}
-	node.Fields[4] = &Field{
+	node.Fields[2] = &Field{
 		Type:  "schema.BigInt",
 		Name:  "asset_id",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(a.Decimals); err != nil {
-		return nil, err
-	}
-	node.Fields[5] = &Field{
-		Type:  "int",
-		Name:  "decimals",
 		Value: string(buf),
 	}
 	return node, nil
@@ -838,21 +814,21 @@ func (l *Listing) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Edges[2] = &Edge{
-		Type: "Asset",
+		Type: "Amount",
 		Name: "inputs",
 	}
 	err = l.QueryInputs().
-		Select(asset.FieldID).
+		Select(amount.FieldID).
 		Scan(ctx, &node.Edges[2].IDs)
 	if err != nil {
 		return nil, err
 	}
 	node.Edges[3] = &Edge{
-		Type: "Asset",
+		Type: "Amount",
 		Name: "outputs",
 	}
 	err = l.QueryOutputs().
-		Select(asset.FieldID).
+		Select(amount.FieldID).
 		Scan(ctx, &node.Edges[3].IDs)
 	if err != nil {
 		return nil, err
@@ -1042,10 +1018,10 @@ func (c *Client) Noder(ctx context.Context, id string, opts ...NodeOption) (_ No
 
 func (c *Client) noder(ctx context.Context, table string, id string) (Noder, error) {
 	switch table {
-	case asset.Table:
-		n, err := c.Asset.Query().
-			Where(asset.ID(id)).
-			CollectFields(ctx, "Asset").
+	case amount.Table:
+		n, err := c.Amount.Query().
+			Where(amount.ID(id)).
+			CollectFields(ctx, "Amount").
 			Only(ctx)
 		if err != nil {
 			return nil, err
@@ -1205,10 +1181,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
-	case asset.Table:
-		nodes, err := c.Asset.Query().
-			Where(asset.IDIn(ids...)).
-			CollectFields(ctx, "Asset").
+	case amount.Table:
+		nodes, err := c.Amount.Query().
+			Where(amount.IDIn(ids...)).
+			CollectFields(ctx, "Amount").
 			All(ctx)
 		if err != nil {
 			return nil, err
