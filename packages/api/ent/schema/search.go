@@ -21,6 +21,11 @@ func (Search) Fields() []ent.Field {
 		field.Enum("type").
 			Values("dope", "item", "hustler").
 			Immutable(),
+		field.Int("greatness").
+			Optional().
+			Annotations(
+				entgql.OrderField("GREATNESS"),
+			),
 	}
 }
 

@@ -3050,6 +3050,18 @@ type SearchWhereInput struct {
 	TypeIn    []search.Type `json:"typeIn,omitempty"`
 	TypeNotIn []search.Type `json:"typeNotIn,omitempty"`
 
+	// "greatness" field predicates.
+	Greatness       *int  `json:"greatness,omitempty"`
+	GreatnessNEQ    *int  `json:"greatnessNEQ,omitempty"`
+	GreatnessIn     []int `json:"greatnessIn,omitempty"`
+	GreatnessNotIn  []int `json:"greatnessNotIn,omitempty"`
+	GreatnessGT     *int  `json:"greatnessGT,omitempty"`
+	GreatnessGTE    *int  `json:"greatnessGTE,omitempty"`
+	GreatnessLT     *int  `json:"greatnessLT,omitempty"`
+	GreatnessLTE    *int  `json:"greatnessLTE,omitempty"`
+	GreatnessIsNil  bool  `json:"greatnessIsNil,omitempty"`
+	GreatnessNotNil bool  `json:"greatnessNotNil,omitempty"`
+
 	// "dope" edge predicates.
 	HasDope     *bool             `json:"hasDope,omitempty"`
 	HasDopeWith []*DopeWhereInput `json:"hasDopeWith,omitempty"`
@@ -3157,6 +3169,36 @@ func (i *SearchWhereInput) P() (predicate.Search, error) {
 	}
 	if len(i.TypeNotIn) > 0 {
 		predicates = append(predicates, search.TypeNotIn(i.TypeNotIn...))
+	}
+	if i.Greatness != nil {
+		predicates = append(predicates, search.GreatnessEQ(*i.Greatness))
+	}
+	if i.GreatnessNEQ != nil {
+		predicates = append(predicates, search.GreatnessNEQ(*i.GreatnessNEQ))
+	}
+	if len(i.GreatnessIn) > 0 {
+		predicates = append(predicates, search.GreatnessIn(i.GreatnessIn...))
+	}
+	if len(i.GreatnessNotIn) > 0 {
+		predicates = append(predicates, search.GreatnessNotIn(i.GreatnessNotIn...))
+	}
+	if i.GreatnessGT != nil {
+		predicates = append(predicates, search.GreatnessGT(*i.GreatnessGT))
+	}
+	if i.GreatnessGTE != nil {
+		predicates = append(predicates, search.GreatnessGTE(*i.GreatnessGTE))
+	}
+	if i.GreatnessLT != nil {
+		predicates = append(predicates, search.GreatnessLT(*i.GreatnessLT))
+	}
+	if i.GreatnessLTE != nil {
+		predicates = append(predicates, search.GreatnessLTE(*i.GreatnessLTE))
+	}
+	if i.GreatnessIsNil {
+		predicates = append(predicates, search.GreatnessIsNil())
+	}
+	if i.GreatnessNotNil {
+		predicates = append(predicates, search.GreatnessNotNil())
 	}
 
 	if i.HasDope != nil {

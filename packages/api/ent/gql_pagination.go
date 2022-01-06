@@ -2167,6 +2167,49 @@ func (s *SearchQuery) Paginate(
 	return conn, nil
 }
 
+var (
+	// SearchOrderFieldGreatness orders Search by greatness.
+	SearchOrderFieldGreatness = &SearchOrderField{
+		field: search.FieldGreatness,
+		toCursor: func(s *Search) Cursor {
+			return Cursor{
+				ID:    s.ID,
+				Value: s.Greatness,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f SearchOrderField) String() string {
+	var str string
+	switch f.field {
+	case search.FieldGreatness:
+		str = "GREATNESS"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f SearchOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *SearchOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("SearchOrderField %T must be a string", v)
+	}
+	switch str {
+	case "GREATNESS":
+		*f = *SearchOrderFieldGreatness
+	default:
+		return fmt.Errorf("%s is not a valid SearchOrderField", str)
+	}
+	return nil
+}
+
 // SearchOrderField defines the ordering field of Search.
 type SearchOrderField struct {
 	field    string
