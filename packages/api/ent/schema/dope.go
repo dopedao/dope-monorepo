@@ -42,5 +42,6 @@ func (Dope) Edges() []ent.Edge {
 		edge.From("last_sale", Listing.Type).Ref("dope_lastsales").Unique(),
 		edge.To("listings", Listing.Type).Annotations(entgql.Bind()),
 		edge.To("items", Item.Type).Annotations(entgql.Bind()),
+		edge.To("index", Search.Type).Unique().Annotations(entgql.Bind()),
 	}
 }

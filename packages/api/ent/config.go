@@ -31,6 +31,7 @@ type hooks struct {
 	Hustler     []ent.Hook
 	Item        []ent.Hook
 	Listing     []ent.Hook
+	Search      []ent.Hook
 	SyncState   []ent.Hook
 	Wallet      []ent.Hook
 	WalletItems []ent.Hook

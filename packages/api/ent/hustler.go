@@ -12,6 +12,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -91,9 +92,11 @@ type HustlerEdges struct {
 	Hair *BodyPart `json:"hair,omitempty"`
 	// Beard holds the value of the beard edge.
 	Beard *BodyPart `json:"beard,omitempty"`
+	// Index holds the value of the index edge.
+	Index *Search `json:"index,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [14]bool
+	loadedTypes [15]bool
 }
 
 // WalletOrErr returns the Wallet value or an error if the edge
@@ -290,6 +293,20 @@ func (e HustlerEdges) BeardOrErr() (*BodyPart, error) {
 		return e.Beard, nil
 	}
 	return nil, &NotLoadedError{edge: "beard"}
+}
+
+// IndexOrErr returns the Index value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e HustlerEdges) IndexOrErr() (*Search, error) {
+	if e.loadedTypes[14] {
+		if e.Index == nil {
+			// The edge index was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: search.Label}
+		}
+		return e.Index, nil
+	}
+	return nil, &NotLoadedError{edge: "index"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -595,6 +612,11 @@ func (h *Hustler) QueryHair() *BodyPartQuery {
 // QueryBeard queries the "beard" edge of the Hustler entity.
 func (h *Hustler) QueryBeard() *BodyPartQuery {
 	return (&HustlerClient{config: h.config}).QueryBeard(h)
+}
+
+// QueryIndex queries the "index" edge of the Hustler entity.
+func (h *Hustler) QueryIndex() *SearchQuery {
+	return (&HustlerClient{config: h.config}).QueryIndex(h)
 }
 
 // Update returns a builder for updating this Hustler.

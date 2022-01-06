@@ -99,3 +99,25 @@ type ListingEdge {
 input ListingOrder {
   direction: OrderDirection!
 }
+
+# enum SearchOrderField {
+#   RANK
+#   AFFORDABLE
+#   LAST_SALE_AMOUNT
+# }
+
+input SearchOrder {
+  direction: OrderDirection
+  # field: SearchOrderField
+}
+
+type SearchConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [SearchEdge]
+}
+
+type SearchEdge {
+  node: SearchResult
+  cursor: Cursor!
+}

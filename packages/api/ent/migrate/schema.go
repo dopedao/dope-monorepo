@@ -3,6 +3,7 @@
 package migrate
 
 import (
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/dialect/sql/schema"
 	"entgo.io/ent/schema/field"
 )
@@ -275,6 +276,40 @@ var (
 			},
 		},
 	}
+	// SearchIndexColumns holds the columns for the "search_index" table.
+	SearchIndexColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"dope", "item", "hustler"}},
+		{Name: "dope_index", Type: field.TypeString, Unique: true, Nullable: true},
+		{Name: "hustler_index", Type: field.TypeString, Unique: true, Nullable: true},
+		{Name: "item_index", Type: field.TypeString, Unique: true, Nullable: true},
+	}
+	// SearchIndexTable holds the schema information for the "search_index" table.
+	SearchIndexTable = &schema.Table{
+		Name:       "search_index",
+		Columns:    SearchIndexColumns,
+		PrimaryKey: []*schema.Column{SearchIndexColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "search_index_dopes_index",
+				Columns:    []*schema.Column{SearchIndexColumns[2]},
+				RefColumns: []*schema.Column{DopesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "search_index_hustlers_index",
+				Columns:    []*schema.Column{SearchIndexColumns[3]},
+				RefColumns: []*schema.Column{HustlersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "search_index_items_index",
+				Columns:    []*schema.Column{SearchIndexColumns[4]},
+				RefColumns: []*schema.Column{ItemsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// SyncStatesColumns holds the columns for the "sync_states" table.
 	SyncStatesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
@@ -359,6 +394,7 @@ var (
 		HustlersTable,
 		ItemsTable,
 		ListingsTable,
+		SearchIndexTable,
 		SyncStatesTable,
 		WalletsTable,
 		WalletItemsTable,
@@ -387,6 +423,12 @@ func init() {
 	HustlersTable.ForeignKeys[13].RefTable = WalletsTable
 	ItemsTable.ForeignKeys[0].RefTable = ItemsTable
 	ListingsTable.ForeignKeys[0].RefTable = DopesTable
+	SearchIndexTable.ForeignKeys[0].RefTable = DopesTable
+	SearchIndexTable.ForeignKeys[1].RefTable = HustlersTable
+	SearchIndexTable.ForeignKeys[2].RefTable = ItemsTable
+	SearchIndexTable.Annotation = &entsql.Annotation{
+		Table: "search_index",
+	}
 	WalletItemsTable.ForeignKeys[0].RefTable = ItemsTable
 	WalletItemsTable.ForeignKeys[1].RefTable = WalletsTable
 	DopeItemsTable.ForeignKeys[0].RefTable = DopesTable

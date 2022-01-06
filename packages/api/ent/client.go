@@ -16,6 +16,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -44,6 +45,8 @@ type Client struct {
 	Item *ItemClient
 	// Listing is the client for interacting with the Listing builders.
 	Listing *ListingClient
+	// Search is the client for interacting with the Search builders.
+	Search *SearchClient
 	// SyncState is the client for interacting with the SyncState builders.
 	SyncState *SyncStateClient
 	// Wallet is the client for interacting with the Wallet builders.
@@ -70,6 +73,7 @@ func (c *Client) init() {
 	c.Hustler = NewHustlerClient(c.config)
 	c.Item = NewItemClient(c.config)
 	c.Listing = NewListingClient(c.config)
+	c.Search = NewSearchClient(c.config)
 	c.SyncState = NewSyncStateClient(c.config)
 	c.Wallet = NewWalletClient(c.config)
 	c.WalletItems = NewWalletItemsClient(c.config)
@@ -113,6 +117,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Hustler:     NewHustlerClient(cfg),
 		Item:        NewItemClient(cfg),
 		Listing:     NewListingClient(cfg),
+		Search:      NewSearchClient(cfg),
 		SyncState:   NewSyncStateClient(cfg),
 		Wallet:      NewWalletClient(cfg),
 		WalletItems: NewWalletItemsClient(cfg),
@@ -141,6 +146,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Hustler:     NewHustlerClient(cfg),
 		Item:        NewItemClient(cfg),
 		Listing:     NewListingClient(cfg),
+		Search:      NewSearchClient(cfg),
 		SyncState:   NewSyncStateClient(cfg),
 		Wallet:      NewWalletClient(cfg),
 		WalletItems: NewWalletItemsClient(cfg),
@@ -180,6 +186,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Hustler.Use(hooks...)
 	c.Item.Use(hooks...)
 	c.Listing.Use(hooks...)
+	c.Search.Use(hooks...)
 	c.SyncState.Use(hooks...)
 	c.Wallet.Use(hooks...)
 	c.WalletItems.Use(hooks...)
@@ -555,6 +562,22 @@ func (c *DopeClient) QueryItems(d *Dope) *ItemQuery {
 			sqlgraph.From(dope.Table, dope.FieldID, id),
 			sqlgraph.To(item.Table, item.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, dope.ItemsTable, dope.ItemsPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryIndex queries the index edge of a Dope.
+func (c *DopeClient) QueryIndex(d *Dope) *SearchQuery {
+	query := &SearchQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dope.Table, dope.FieldID, id),
+			sqlgraph.To(search.Table, search.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, dope.IndexTable, dope.IndexColumn),
 		)
 		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
 		return fromV, nil
@@ -966,6 +989,22 @@ func (c *HustlerClient) QueryBeard(h *Hustler) *BodyPartQuery {
 	return query
 }
 
+// QueryIndex queries the index edge of a Hustler.
+func (c *HustlerClient) QueryIndex(h *Hustler) *SearchQuery {
+	query := &SearchQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(search.Table, search.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, hustler.IndexTable, hustler.IndexColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *HustlerClient) Hooks() []Hook {
 	return c.hooks.Hustler
@@ -1280,6 +1319,22 @@ func (c *ItemClient) QueryDerivative(i *Item) *ItemQuery {
 	return query
 }
 
+// QueryIndex queries the index edge of a Item.
+func (c *ItemClient) QueryIndex(i *Item) *SearchQuery {
+	query := &SearchQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(search.Table, search.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, item.IndexTable, item.IndexColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ItemClient) Hooks() []Hook {
 	return c.hooks.Item
@@ -1437,6 +1492,144 @@ func (c *ListingClient) QueryOutputs(l *Listing) *AmountQuery {
 // Hooks returns the client hooks.
 func (c *ListingClient) Hooks() []Hook {
 	return c.hooks.Listing
+}
+
+// SearchClient is a client for the Search schema.
+type SearchClient struct {
+	config
+}
+
+// NewSearchClient returns a client for the Search from the given config.
+func NewSearchClient(c config) *SearchClient {
+	return &SearchClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `search.Hooks(f(g(h())))`.
+func (c *SearchClient) Use(hooks ...Hook) {
+	c.hooks.Search = append(c.hooks.Search, hooks...)
+}
+
+// Create returns a create builder for Search.
+func (c *SearchClient) Create() *SearchCreate {
+	mutation := newSearchMutation(c.config, OpCreate)
+	return &SearchCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Search entities.
+func (c *SearchClient) CreateBulk(builders ...*SearchCreate) *SearchCreateBulk {
+	return &SearchCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Search.
+func (c *SearchClient) Update() *SearchUpdate {
+	mutation := newSearchMutation(c.config, OpUpdate)
+	return &SearchUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SearchClient) UpdateOne(s *Search) *SearchUpdateOne {
+	mutation := newSearchMutation(c.config, OpUpdateOne, withSearch(s))
+	return &SearchUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SearchClient) UpdateOneID(id string) *SearchUpdateOne {
+	mutation := newSearchMutation(c.config, OpUpdateOne, withSearchID(id))
+	return &SearchUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Search.
+func (c *SearchClient) Delete() *SearchDelete {
+	mutation := newSearchMutation(c.config, OpDelete)
+	return &SearchDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *SearchClient) DeleteOne(s *Search) *SearchDeleteOne {
+	return c.DeleteOneID(s.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *SearchClient) DeleteOneID(id string) *SearchDeleteOne {
+	builder := c.Delete().Where(search.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SearchDeleteOne{builder}
+}
+
+// Query returns a query builder for Search.
+func (c *SearchClient) Query() *SearchQuery {
+	return &SearchQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Search entity by its id.
+func (c *SearchClient) Get(ctx context.Context, id string) (*Search, error) {
+	return c.Query().Where(search.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SearchClient) GetX(ctx context.Context, id string) *Search {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryDope queries the dope edge of a Search.
+func (c *SearchClient) QueryDope(s *Search) *DopeQuery {
+	query := &DopeQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(search.Table, search.FieldID, id),
+			sqlgraph.To(dope.Table, dope.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, search.DopeTable, search.DopeColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryItem queries the item edge of a Search.
+func (c *SearchClient) QueryItem(s *Search) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(search.Table, search.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, search.ItemTable, search.ItemColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustler queries the hustler edge of a Search.
+func (c *SearchClient) QueryHustler(s *Search) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(search.Table, search.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, search.HustlerTable, search.HustlerColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *SearchClient) Hooks() []Hook {
+	return c.hooks.Search
 }
 
 // SyncStateClient is a client for the SyncState schema.
