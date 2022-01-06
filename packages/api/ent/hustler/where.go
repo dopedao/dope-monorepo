@@ -1407,6 +1407,34 @@ func HasBeardWith(preds ...predicate.BodyPart) predicate.Hustler {
 	})
 }
 
+// HasIndex applies the HasEdge predicate on the "index" edge.
+func HasIndex() predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(IndexTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, IndexTable, IndexColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasIndexWith applies the HasEdge predicate on the "index" edge with a given conditions (other predicates).
+func HasIndexWith(preds ...predicate.Search) predicate.Hustler {
+	return predicate.Hustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(IndexInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, IndexTable, IndexColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Hustler) predicate.Hustler {
 	return predicate.Hustler(func(s *sql.Selector) {

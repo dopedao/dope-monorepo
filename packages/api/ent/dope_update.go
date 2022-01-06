@@ -14,6 +14,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -180,6 +181,25 @@ func (du *DopeUpdate) AddItems(i ...*Item) *DopeUpdate {
 	return du.AddItemIDs(ids...)
 }
 
+// SetIndexID sets the "index" edge to the Search entity by ID.
+func (du *DopeUpdate) SetIndexID(id string) *DopeUpdate {
+	du.mutation.SetIndexID(id)
+	return du
+}
+
+// SetNillableIndexID sets the "index" edge to the Search entity by ID if the given value is not nil.
+func (du *DopeUpdate) SetNillableIndexID(id *string) *DopeUpdate {
+	if id != nil {
+		du = du.SetIndexID(*id)
+	}
+	return du
+}
+
+// SetIndex sets the "index" edge to the Search entity.
+func (du *DopeUpdate) SetIndex(s *Search) *DopeUpdate {
+	return du.SetIndexID(s.ID)
+}
+
 // Mutation returns the DopeMutation object of the builder.
 func (du *DopeUpdate) Mutation() *DopeMutation {
 	return du.mutation
@@ -237,6 +257,12 @@ func (du *DopeUpdate) RemoveItems(i ...*Item) *DopeUpdate {
 		ids[j] = i[j].ID
 	}
 	return du.RemoveItemIDs(ids...)
+}
+
+// ClearIndex clears the "index" edge to the Search entity.
+func (du *DopeUpdate) ClearIndex() *DopeUpdate {
+	du.mutation.ClearIndex()
+	return du
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -543,6 +569,41 @@ func (du *DopeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if du.mutation.IndexCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   dope.IndexTable,
+			Columns: []string{dope.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.IndexIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   dope.IndexTable,
+			Columns: []string{dope.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, du.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{dope.Label}
@@ -712,6 +773,25 @@ func (duo *DopeUpdateOne) AddItems(i ...*Item) *DopeUpdateOne {
 	return duo.AddItemIDs(ids...)
 }
 
+// SetIndexID sets the "index" edge to the Search entity by ID.
+func (duo *DopeUpdateOne) SetIndexID(id string) *DopeUpdateOne {
+	duo.mutation.SetIndexID(id)
+	return duo
+}
+
+// SetNillableIndexID sets the "index" edge to the Search entity by ID if the given value is not nil.
+func (duo *DopeUpdateOne) SetNillableIndexID(id *string) *DopeUpdateOne {
+	if id != nil {
+		duo = duo.SetIndexID(*id)
+	}
+	return duo
+}
+
+// SetIndex sets the "index" edge to the Search entity.
+func (duo *DopeUpdateOne) SetIndex(s *Search) *DopeUpdateOne {
+	return duo.SetIndexID(s.ID)
+}
+
 // Mutation returns the DopeMutation object of the builder.
 func (duo *DopeUpdateOne) Mutation() *DopeMutation {
 	return duo.mutation
@@ -769,6 +849,12 @@ func (duo *DopeUpdateOne) RemoveItems(i ...*Item) *DopeUpdateOne {
 		ids[j] = i[j].ID
 	}
 	return duo.RemoveItemIDs(ids...)
+}
+
+// ClearIndex clears the "index" edge to the Search entity.
+func (duo *DopeUpdateOne) ClearIndex() *DopeUpdateOne {
+	duo.mutation.ClearIndex()
+	return duo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -1091,6 +1177,41 @@ func (duo *DopeUpdateOne) sqlSave(ctx context.Context) (_node *Dope, err error) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if duo.mutation.IndexCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   dope.IndexTable,
+			Columns: []string{dope.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.IndexIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   dope.IndexTable,
+			Columns: []string{dope.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
 				},
 			},
 		}

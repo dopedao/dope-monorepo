@@ -72,3 +72,6 @@ models:
   Source:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/listing.Source
+  SearchType:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/ent/search.Type

@@ -21,6 +21,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -1970,6 +1971,233 @@ func (l *Listing) ToEdge(order *ListingOrder) *ListingEdge {
 	return &ListingEdge{
 		Node:   l,
 		Cursor: order.Field.toCursor(l),
+	}
+}
+
+// SearchEdge is the edge representation of Search.
+type SearchEdge struct {
+	Node   *Search `json:"node"`
+	Cursor Cursor  `json:"cursor"`
+}
+
+// SearchConnection is the connection containing edges to Search.
+type SearchConnection struct {
+	Edges      []*SearchEdge `json:"edges"`
+	PageInfo   PageInfo      `json:"pageInfo"`
+	TotalCount int           `json:"totalCount"`
+}
+
+// SearchPaginateOption enables pagination customization.
+type SearchPaginateOption func(*searchPager) error
+
+// WithSearchOrder configures pagination ordering.
+func WithSearchOrder(order *SearchOrder) SearchPaginateOption {
+	if order == nil {
+		order = DefaultSearchOrder
+	}
+	o := *order
+	return func(pager *searchPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultSearchOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithSearchFilter configures pagination filter.
+func WithSearchFilter(filter func(*SearchQuery) (*SearchQuery, error)) SearchPaginateOption {
+	return func(pager *searchPager) error {
+		if filter == nil {
+			return errors.New("SearchQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type searchPager struct {
+	order  *SearchOrder
+	filter func(*SearchQuery) (*SearchQuery, error)
+}
+
+func newSearchPager(opts []SearchPaginateOption) (*searchPager, error) {
+	pager := &searchPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultSearchOrder
+	}
+	return pager, nil
+}
+
+func (p *searchPager) applyFilter(query *SearchQuery) (*SearchQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *searchPager) toCursor(s *Search) Cursor {
+	return p.order.Field.toCursor(s)
+}
+
+func (p *searchPager) applyCursors(query *SearchQuery, after, before *Cursor) *SearchQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultSearchOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *searchPager) applyOrder(query *SearchQuery, reverse bool) *SearchQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultSearchOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultSearchOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Search.
+func (s *SearchQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...SearchPaginateOption,
+) (*SearchConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newSearchPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if s, err = pager.applyFilter(s); err != nil {
+		return nil, err
+	}
+
+	conn := &SearchConnection{Edges: []*SearchEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := s.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := s.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	s = pager.applyCursors(s, after, before)
+	s = pager.applyOrder(s, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		s = s.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		s = s.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := s.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *Search
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Search {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Search {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*SearchEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &SearchEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+// SearchOrderField defines the ordering field of Search.
+type SearchOrderField struct {
+	field    string
+	toCursor func(*Search) Cursor
+}
+
+// SearchOrder defines the ordering of Search.
+type SearchOrder struct {
+	Direction OrderDirection    `json:"direction"`
+	Field     *SearchOrderField `json:"field"`
+}
+
+// DefaultSearchOrder is the default ordering of Search.
+var DefaultSearchOrder = &SearchOrder{
+	Direction: OrderDirectionAsc,
+	Field: &SearchOrderField{
+		field: search.FieldID,
+		toCursor: func(s *Search) Cursor {
+			return Cursor{ID: s.ID}
+		},
+	},
+}
+
+// ToEdge converts Search into SearchEdge.
+func (s *Search) ToEdge(order *SearchOrder) *SearchEdge {
+	if order == nil {
+		order = DefaultSearchOrder
+	}
+	return &SearchEdge{
+		Node:   s,
+		Cursor: order.Field.toCursor(s),
 	}
 }
 
