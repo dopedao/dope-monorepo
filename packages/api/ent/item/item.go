@@ -63,6 +63,8 @@ const (
 	EdgeBase = "base"
 	// EdgeDerivative holds the string denoting the derivative edge name in mutations.
 	EdgeDerivative = "derivative"
+	// EdgeIndex holds the string denoting the index edge name in mutations.
+	EdgeIndex = "index"
 	// Table holds the table name of the item in the database.
 	Table = "items"
 	// WalletsTable is the table that holds the wallets relation/edge.
@@ -155,6 +157,13 @@ const (
 	DerivativeTable = "items"
 	// DerivativeColumn is the table column denoting the derivative relation/edge.
 	DerivativeColumn = "item_derivative"
+	// IndexTable is the table that holds the index relation/edge.
+	IndexTable = "search_index"
+	// IndexInverseTable is the table name for the Search entity.
+	// It exists in this package in order to avoid circular dependency with the "search" package.
+	IndexInverseTable = "search_index"
+	// IndexColumn is the table column denoting the index relation/edge.
+	IndexColumn = "item_index"
 )
 
 // Columns holds all SQL columns for item fields.

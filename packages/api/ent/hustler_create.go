@@ -15,6 +15,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -418,6 +419,25 @@ func (hc *HustlerCreate) SetNillableBeardID(id *string) *HustlerCreate {
 // SetBeard sets the "beard" edge to the BodyPart entity.
 func (hc *HustlerCreate) SetBeard(b *BodyPart) *HustlerCreate {
 	return hc.SetBeardID(b.ID)
+}
+
+// SetIndexID sets the "index" edge to the Search entity by ID.
+func (hc *HustlerCreate) SetIndexID(id string) *HustlerCreate {
+	hc.mutation.SetIndexID(id)
+	return hc
+}
+
+// SetNillableIndexID sets the "index" edge to the Search entity by ID if the given value is not nil.
+func (hc *HustlerCreate) SetNillableIndexID(id *string) *HustlerCreate {
+	if id != nil {
+		hc = hc.SetIndexID(*id)
+	}
+	return hc
+}
+
+// SetIndex sets the "index" edge to the Search entity.
+func (hc *HustlerCreate) SetIndex(s *Search) *HustlerCreate {
+	return hc.SetIndexID(s.ID)
 }
 
 // Mutation returns the HustlerMutation object of the builder.
@@ -942,6 +962,25 @@ func (hc *HustlerCreate) createSpec() (*Hustler, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.body_part_hustler_beards = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := hc.mutation.IndexIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   hustler.IndexTable,
+			Columns: []string{hustler.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

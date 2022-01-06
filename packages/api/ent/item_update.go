@@ -15,6 +15,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
 
@@ -359,6 +360,25 @@ func (iu *ItemUpdate) AddDerivative(i ...*Item) *ItemUpdate {
 	return iu.AddDerivativeIDs(ids...)
 }
 
+// SetIndexID sets the "index" edge to the Search entity by ID.
+func (iu *ItemUpdate) SetIndexID(id string) *ItemUpdate {
+	iu.mutation.SetIndexID(id)
+	return iu
+}
+
+// SetNillableIndexID sets the "index" edge to the Search entity by ID if the given value is not nil.
+func (iu *ItemUpdate) SetNillableIndexID(id *string) *ItemUpdate {
+	if id != nil {
+		iu = iu.SetIndexID(*id)
+	}
+	return iu
+}
+
+// SetIndex sets the "index" edge to the Search entity.
+func (iu *ItemUpdate) SetIndex(s *Search) *ItemUpdate {
+	return iu.SetIndexID(s.ID)
+}
+
 // Mutation returns the ItemMutation object of the builder.
 func (iu *ItemUpdate) Mutation() *ItemMutation {
 	return iu.mutation
@@ -641,6 +661,12 @@ func (iu *ItemUpdate) RemoveDerivative(i ...*Item) *ItemUpdate {
 		ids[j] = i[j].ID
 	}
 	return iu.RemoveDerivativeIDs(ids...)
+}
+
+// ClearIndex clears the "index" edge to the Search entity.
+func (iu *ItemUpdate) ClearIndex() *ItemUpdate {
+	iu.mutation.ClearIndex()
+	return iu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -1571,6 +1597,41 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if iu.mutation.IndexCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   item.IndexTable,
+			Columns: []string{item.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.IndexIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   item.IndexTable,
+			Columns: []string{item.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, iu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{item.Label}
@@ -1918,6 +1979,25 @@ func (iuo *ItemUpdateOne) AddDerivative(i ...*Item) *ItemUpdateOne {
 	return iuo.AddDerivativeIDs(ids...)
 }
 
+// SetIndexID sets the "index" edge to the Search entity by ID.
+func (iuo *ItemUpdateOne) SetIndexID(id string) *ItemUpdateOne {
+	iuo.mutation.SetIndexID(id)
+	return iuo
+}
+
+// SetNillableIndexID sets the "index" edge to the Search entity by ID if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableIndexID(id *string) *ItemUpdateOne {
+	if id != nil {
+		iuo = iuo.SetIndexID(*id)
+	}
+	return iuo
+}
+
+// SetIndex sets the "index" edge to the Search entity.
+func (iuo *ItemUpdateOne) SetIndex(s *Search) *ItemUpdateOne {
+	return iuo.SetIndexID(s.ID)
+}
+
 // Mutation returns the ItemMutation object of the builder.
 func (iuo *ItemUpdateOne) Mutation() *ItemMutation {
 	return iuo.mutation
@@ -2200,6 +2280,12 @@ func (iuo *ItemUpdateOne) RemoveDerivative(i ...*Item) *ItemUpdateOne {
 		ids[j] = i[j].ID
 	}
 	return iuo.RemoveDerivativeIDs(ids...)
+}
+
+// ClearIndex clears the "index" edge to the Search entity.
+func (iuo *ItemUpdateOne) ClearIndex() *ItemUpdateOne {
+	iuo.mutation.ClearIndex()
+	return iuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -3146,6 +3232,41 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.IndexCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   item.IndexTable,
+			Columns: []string{item.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.IndexIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   item.IndexTable,
+			Columns: []string{item.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
 				},
 			},
 		}

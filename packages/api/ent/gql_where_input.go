@@ -15,6 +15,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -557,6 +558,10 @@ type DopeWhereInput struct {
 	// "items" edge predicates.
 	HasItems     *bool             `json:"hasItems,omitempty"`
 	HasItemsWith []*ItemWhereInput `json:"hasItemsWith,omitempty"`
+
+	// "index" edge predicates.
+	HasIndex     *bool               `json:"hasIndex,omitempty"`
+	HasIndexWith []*SearchWhereInput `json:"hasIndexWith,omitempty"`
 }
 
 // Filter applies the DopeWhereInput filter on the DopeQuery builder.
@@ -810,6 +815,24 @@ func (i *DopeWhereInput) P() (predicate.Dope, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, dope.HasItemsWith(with...))
+	}
+	if i.HasIndex != nil {
+		p := dope.HasIndex()
+		if !*i.HasIndex {
+			p = dope.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasIndexWith) > 0 {
+		with := make([]predicate.Search, 0, len(i.HasIndexWith))
+		for _, w := range i.HasIndexWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, dope.HasIndexWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -1222,6 +1245,10 @@ type HustlerWhereInput struct {
 	// "beard" edge predicates.
 	HasBeard     *bool                 `json:"hasBeard,omitempty"`
 	HasBeardWith []*BodyPartWhereInput `json:"hasBeardWith,omitempty"`
+
+	// "index" edge predicates.
+	HasIndex     *bool               `json:"hasIndex,omitempty"`
+	HasIndexWith []*SearchWhereInput `json:"hasIndexWith,omitempty"`
 }
 
 // Filter applies the HustlerWhereInput filter on the HustlerQuery builder.
@@ -1857,6 +1884,24 @@ func (i *HustlerWhereInput) P() (predicate.Hustler, error) {
 		}
 		predicates = append(predicates, hustler.HasBeardWith(with...))
 	}
+	if i.HasIndex != nil {
+		p := hustler.HasIndex()
+		if !*i.HasIndex {
+			p = hustler.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasIndexWith) > 0 {
+		with := make([]predicate.Search, 0, len(i.HasIndexWith))
+		for _, w := range i.HasIndexWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, hustler.HasIndexWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate HustlerWhereInput")
@@ -2065,6 +2110,10 @@ type ItemWhereInput struct {
 	// "derivative" edge predicates.
 	HasDerivative     *bool             `json:"hasDerivative,omitempty"`
 	HasDerivativeWith []*ItemWhereInput `json:"hasDerivativeWith,omitempty"`
+
+	// "index" edge predicates.
+	HasIndex     *bool               `json:"hasIndex,omitempty"`
+	HasIndexWith []*SearchWhereInput `json:"hasIndexWith,omitempty"`
 }
 
 // Filter applies the ItemWhereInput filter on the ItemQuery builder.
@@ -2724,6 +2773,24 @@ func (i *ItemWhereInput) P() (predicate.Item, error) {
 		}
 		predicates = append(predicates, item.HasDerivativeWith(with...))
 	}
+	if i.HasIndex != nil {
+		p := item.HasIndex()
+		if !*i.HasIndex {
+			p = item.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasIndexWith) > 0 {
+		with := make([]predicate.Search, 0, len(i.HasIndexWith))
+		for _, w := range i.HasIndexWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, item.HasIndexWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate ItemWhereInput")
@@ -2958,6 +3025,201 @@ func (i *ListingWhereInput) P() (predicate.Listing, error) {
 		return predicates[0], nil
 	default:
 		return listing.And(predicates...), nil
+	}
+}
+
+// SearchWhereInput represents a where input for filtering Search queries.
+type SearchWhereInput struct {
+	Not *SearchWhereInput   `json:"not,omitempty"`
+	Or  []*SearchWhereInput `json:"or,omitempty"`
+	And []*SearchWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *string  `json:"id,omitempty"`
+	IDNEQ   *string  `json:"idNEQ,omitempty"`
+	IDIn    []string `json:"idIn,omitempty"`
+	IDNotIn []string `json:"idNotIn,omitempty"`
+	IDGT    *string  `json:"idGT,omitempty"`
+	IDGTE   *string  `json:"idGTE,omitempty"`
+	IDLT    *string  `json:"idLT,omitempty"`
+	IDLTE   *string  `json:"idLTE,omitempty"`
+
+	// "type" field predicates.
+	Type      *search.Type  `json:"type,omitempty"`
+	TypeNEQ   *search.Type  `json:"typeNEQ,omitempty"`
+	TypeIn    []search.Type `json:"typeIn,omitempty"`
+	TypeNotIn []search.Type `json:"typeNotIn,omitempty"`
+
+	// "dope" edge predicates.
+	HasDope     *bool             `json:"hasDope,omitempty"`
+	HasDopeWith []*DopeWhereInput `json:"hasDopeWith,omitempty"`
+
+	// "item" edge predicates.
+	HasItem     *bool             `json:"hasItem,omitempty"`
+	HasItemWith []*ItemWhereInput `json:"hasItemWith,omitempty"`
+
+	// "hustler" edge predicates.
+	HasHustler     *bool                `json:"hasHustler,omitempty"`
+	HasHustlerWith []*HustlerWhereInput `json:"hasHustlerWith,omitempty"`
+}
+
+// Filter applies the SearchWhereInput filter on the SearchQuery builder.
+func (i *SearchWhereInput) Filter(q *SearchQuery) (*SearchQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// P returns a predicate for filtering searches.
+// An error is returned if the input is empty or invalid.
+func (i *SearchWhereInput) P() (predicate.Search, error) {
+	var predicates []predicate.Search
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, search.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.Search, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, search.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.Search, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, search.And(and...))
+	}
+	if i.ID != nil {
+		predicates = append(predicates, search.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, search.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, search.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, search.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, search.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, search.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, search.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, search.IDLTE(*i.IDLTE))
+	}
+	if i.Type != nil {
+		predicates = append(predicates, search.TypeEQ(*i.Type))
+	}
+	if i.TypeNEQ != nil {
+		predicates = append(predicates, search.TypeNEQ(*i.TypeNEQ))
+	}
+	if len(i.TypeIn) > 0 {
+		predicates = append(predicates, search.TypeIn(i.TypeIn...))
+	}
+	if len(i.TypeNotIn) > 0 {
+		predicates = append(predicates, search.TypeNotIn(i.TypeNotIn...))
+	}
+
+	if i.HasDope != nil {
+		p := search.HasDope()
+		if !*i.HasDope {
+			p = search.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasDopeWith) > 0 {
+		with := make([]predicate.Dope, 0, len(i.HasDopeWith))
+		for _, w := range i.HasDopeWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, search.HasDopeWith(with...))
+	}
+	if i.HasItem != nil {
+		p := search.HasItem()
+		if !*i.HasItem {
+			p = search.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasItemWith) > 0 {
+		with := make([]predicate.Item, 0, len(i.HasItemWith))
+		for _, w := range i.HasItemWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, search.HasItemWith(with...))
+	}
+	if i.HasHustler != nil {
+		p := search.HasHustler()
+		if !*i.HasHustler {
+			p = search.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasHustlerWith) > 0 {
+		with := make([]predicate.Hustler, 0, len(i.HasHustlerWith))
+		for _, w := range i.HasHustlerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, search.HasHustlerWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate SearchWhereInput")
+	case 1:
+		return predicates[0], nil
+	default:
+		return search.And(predicates...), nil
 	}
 }
 

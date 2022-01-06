@@ -100,6 +100,19 @@ func (f ListingFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return f(ctx, mv)
 }
 
+// The SearchFunc type is an adapter to allow the use of ordinary
+// function as Search mutator.
+type SearchFunc func(context.Context, *ent.SearchMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SearchFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SearchMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SearchMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The SyncStateFunc type is an adapter to allow the use of ordinary
 // function as SyncState mutator.
 type SyncStateFunc func(context.Context, *ent.SyncStateMutation) (ent.Value, error)

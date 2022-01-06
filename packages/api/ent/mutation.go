@@ -18,6 +18,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -42,6 +43,7 @@ const (
 	TypeHustler     = "Hustler"
 	TypeItem        = "Item"
 	TypeListing     = "Listing"
+	TypeSearch      = "Search"
 	TypeSyncState   = "SyncState"
 	TypeWallet      = "Wallet"
 	TypeWalletItems = "WalletItems"
@@ -1250,6 +1252,8 @@ type DopeMutation struct {
 	items            map[string]struct{}
 	removeditems     map[string]struct{}
 	cleareditems     bool
+	index            *string
+	clearedindex     bool
 	done             bool
 	oldValue         func(context.Context) (*Dope, error)
 	predicates       []predicate.Dope
@@ -1813,6 +1817,45 @@ func (m *DopeMutation) ResetItems() {
 	m.removeditems = nil
 }
 
+// SetIndexID sets the "index" edge to the Search entity by id.
+func (m *DopeMutation) SetIndexID(id string) {
+	m.index = &id
+}
+
+// ClearIndex clears the "index" edge to the Search entity.
+func (m *DopeMutation) ClearIndex() {
+	m.clearedindex = true
+}
+
+// IndexCleared reports if the "index" edge to the Search entity was cleared.
+func (m *DopeMutation) IndexCleared() bool {
+	return m.clearedindex
+}
+
+// IndexID returns the "index" edge ID in the mutation.
+func (m *DopeMutation) IndexID() (id string, exists bool) {
+	if m.index != nil {
+		return *m.index, true
+	}
+	return
+}
+
+// IndexIDs returns the "index" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// IndexID instead. It exists only for internal usage by the builders.
+func (m *DopeMutation) IndexIDs() (ids []string) {
+	if id := m.index; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetIndex resets all changes to the "index" edge.
+func (m *DopeMutation) ResetIndex() {
+	m.index = nil
+	m.clearedindex = false
+}
+
 // Where appends a list predicates to the DopeMutation builder.
 func (m *DopeMutation) Where(ps ...predicate.Dope) {
 	m.predicates = append(m.predicates, ps...)
@@ -2053,7 +2096,7 @@ func (m *DopeMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DopeMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.wallet != nil {
 		edges = append(edges, dope.EdgeWallet)
 	}
@@ -2065,6 +2108,9 @@ func (m *DopeMutation) AddedEdges() []string {
 	}
 	if m.items != nil {
 		edges = append(edges, dope.EdgeItems)
+	}
+	if m.index != nil {
+		edges = append(edges, dope.EdgeIndex)
 	}
 	return edges
 }
@@ -2093,13 +2139,17 @@ func (m *DopeMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case dope.EdgeIndex:
+		if id := m.index; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DopeMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.removedlistings != nil {
 		edges = append(edges, dope.EdgeListings)
 	}
@@ -2131,7 +2181,7 @@ func (m *DopeMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DopeMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.clearedwallet {
 		edges = append(edges, dope.EdgeWallet)
 	}
@@ -2143,6 +2193,9 @@ func (m *DopeMutation) ClearedEdges() []string {
 	}
 	if m.cleareditems {
 		edges = append(edges, dope.EdgeItems)
+	}
+	if m.clearedindex {
+		edges = append(edges, dope.EdgeIndex)
 	}
 	return edges
 }
@@ -2159,6 +2212,8 @@ func (m *DopeMutation) EdgeCleared(name string) bool {
 		return m.clearedlistings
 	case dope.EdgeItems:
 		return m.cleareditems
+	case dope.EdgeIndex:
+		return m.clearedindex
 	}
 	return false
 }
@@ -2172,6 +2227,9 @@ func (m *DopeMutation) ClearEdge(name string) error {
 		return nil
 	case dope.EdgeLastSale:
 		m.ClearLastSale()
+		return nil
+	case dope.EdgeIndex:
+		m.ClearIndex()
 		return nil
 	}
 	return fmt.Errorf("unknown Dope unique edge %s", name)
@@ -2192,6 +2250,9 @@ func (m *DopeMutation) ResetEdge(name string) error {
 		return nil
 	case dope.EdgeItems:
 		m.ResetItems()
+		return nil
+	case dope.EdgeIndex:
+		m.ResetIndex()
 		return nil
 	}
 	return fmt.Errorf("unknown Dope edge %s", name)
@@ -2813,6 +2874,8 @@ type HustlerMutation struct {
 	clearedhair      bool
 	beard            *string
 	clearedbeard     bool
+	index            *string
+	clearedindex     bool
 	done             bool
 	oldValue         func(context.Context) (*Hustler, error)
 	predicates       []predicate.Hustler
@@ -3949,6 +4012,45 @@ func (m *HustlerMutation) ResetBeard() {
 	m.clearedbeard = false
 }
 
+// SetIndexID sets the "index" edge to the Search entity by id.
+func (m *HustlerMutation) SetIndexID(id string) {
+	m.index = &id
+}
+
+// ClearIndex clears the "index" edge to the Search entity.
+func (m *HustlerMutation) ClearIndex() {
+	m.clearedindex = true
+}
+
+// IndexCleared reports if the "index" edge to the Search entity was cleared.
+func (m *HustlerMutation) IndexCleared() bool {
+	return m.clearedindex
+}
+
+// IndexID returns the "index" edge ID in the mutation.
+func (m *HustlerMutation) IndexID() (id string, exists bool) {
+	if m.index != nil {
+		return *m.index, true
+	}
+	return
+}
+
+// IndexIDs returns the "index" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// IndexID instead. It exists only for internal usage by the builders.
+func (m *HustlerMutation) IndexIDs() (ids []string) {
+	if id := m.index; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetIndex resets all changes to the "index" edge.
+func (m *HustlerMutation) ResetIndex() {
+	m.index = nil
+	m.clearedindex = false
+}
+
 // Where appends a list predicates to the HustlerMutation builder.
 func (m *HustlerMutation) Where(ps ...predicate.Hustler) {
 	m.predicates = append(m.predicates, ps...)
@@ -4285,7 +4387,7 @@ func (m *HustlerMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *HustlerMutation) AddedEdges() []string {
-	edges := make([]string, 0, 14)
+	edges := make([]string, 0, 15)
 	if m.wallet != nil {
 		edges = append(edges, hustler.EdgeWallet)
 	}
@@ -4327,6 +4429,9 @@ func (m *HustlerMutation) AddedEdges() []string {
 	}
 	if m.beard != nil {
 		edges = append(edges, hustler.EdgeBeard)
+	}
+	if m.index != nil {
+		edges = append(edges, hustler.EdgeIndex)
 	}
 	return edges
 }
@@ -4391,13 +4496,17 @@ func (m *HustlerMutation) AddedIDs(name string) []ent.Value {
 		if id := m.beard; id != nil {
 			return []ent.Value{*id}
 		}
+	case hustler.EdgeIndex:
+		if id := m.index; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *HustlerMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 14)
+	edges := make([]string, 0, 15)
 	return edges
 }
 
@@ -4411,7 +4520,7 @@ func (m *HustlerMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *HustlerMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 14)
+	edges := make([]string, 0, 15)
 	if m.clearedwallet {
 		edges = append(edges, hustler.EdgeWallet)
 	}
@@ -4454,6 +4563,9 @@ func (m *HustlerMutation) ClearedEdges() []string {
 	if m.clearedbeard {
 		edges = append(edges, hustler.EdgeBeard)
 	}
+	if m.clearedindex {
+		edges = append(edges, hustler.EdgeIndex)
+	}
 	return edges
 }
 
@@ -4489,6 +4601,8 @@ func (m *HustlerMutation) EdgeCleared(name string) bool {
 		return m.clearedhair
 	case hustler.EdgeBeard:
 		return m.clearedbeard
+	case hustler.EdgeIndex:
+		return m.clearedindex
 	}
 	return false
 }
@@ -4539,6 +4653,9 @@ func (m *HustlerMutation) ClearEdge(name string) error {
 	case hustler.EdgeBeard:
 		m.ClearBeard()
 		return nil
+	case hustler.EdgeIndex:
+		m.ClearIndex()
+		return nil
 	}
 	return fmt.Errorf("unknown Hustler unique edge %s", name)
 }
@@ -4588,6 +4705,9 @@ func (m *HustlerMutation) ResetEdge(name string) error {
 		return nil
 	case hustler.EdgeBeard:
 		m.ResetBeard()
+		return nil
+	case hustler.EdgeIndex:
+		m.ResetIndex()
 		return nil
 	}
 	return fmt.Errorf("unknown Hustler edge %s", name)
@@ -4654,6 +4774,8 @@ type ItemMutation struct {
 	derivative                 map[string]struct{}
 	removedderivative          map[string]struct{}
 	clearedderivative          bool
+	index                      *string
+	clearedindex               bool
 	done                       bool
 	oldValue                   func(context.Context) (*Item, error)
 	predicates                 []predicate.Item
@@ -6059,6 +6181,45 @@ func (m *ItemMutation) ResetDerivative() {
 	m.removedderivative = nil
 }
 
+// SetIndexID sets the "index" edge to the Search entity by id.
+func (m *ItemMutation) SetIndexID(id string) {
+	m.index = &id
+}
+
+// ClearIndex clears the "index" edge to the Search entity.
+func (m *ItemMutation) ClearIndex() {
+	m.clearedindex = true
+}
+
+// IndexCleared reports if the "index" edge to the Search entity was cleared.
+func (m *ItemMutation) IndexCleared() bool {
+	return m.clearedindex
+}
+
+// IndexID returns the "index" edge ID in the mutation.
+func (m *ItemMutation) IndexID() (id string, exists bool) {
+	if m.index != nil {
+		return *m.index, true
+	}
+	return
+}
+
+// IndexIDs returns the "index" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// IndexID instead. It exists only for internal usage by the builders.
+func (m *ItemMutation) IndexIDs() (ids []string) {
+	if id := m.index; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetIndex resets all changes to the "index" edge.
+func (m *ItemMutation) ResetIndex() {
+	m.index = nil
+	m.clearedindex = false
+}
+
 // Where appends a list predicates to the ItemMutation builder.
 func (m *ItemMutation) Where(ps ...predicate.Item) {
 	m.predicates = append(m.predicates, ps...)
@@ -6431,7 +6592,7 @@ func (m *ItemMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ItemMutation) AddedEdges() []string {
-	edges := make([]string, 0, 14)
+	edges := make([]string, 0, 15)
 	if m.wallets != nil {
 		edges = append(edges, item.EdgeWallets)
 	}
@@ -6473,6 +6634,9 @@ func (m *ItemMutation) AddedEdges() []string {
 	}
 	if m.derivative != nil {
 		edges = append(edges, item.EdgeDerivative)
+	}
+	if m.index != nil {
+		edges = append(edges, item.EdgeIndex)
 	}
 	return edges
 }
@@ -6563,13 +6727,17 @@ func (m *ItemMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case item.EdgeIndex:
+		if id := m.index; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ItemMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 14)
+	edges := make([]string, 0, 15)
 	if m.removedwallets != nil {
 		edges = append(edges, item.EdgeWallets)
 	}
@@ -6700,7 +6868,7 @@ func (m *ItemMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ItemMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 14)
+	edges := make([]string, 0, 15)
 	if m.clearedwallets {
 		edges = append(edges, item.EdgeWallets)
 	}
@@ -6743,6 +6911,9 @@ func (m *ItemMutation) ClearedEdges() []string {
 	if m.clearedderivative {
 		edges = append(edges, item.EdgeDerivative)
 	}
+	if m.clearedindex {
+		edges = append(edges, item.EdgeIndex)
+	}
 	return edges
 }
 
@@ -6778,6 +6949,8 @@ func (m *ItemMutation) EdgeCleared(name string) bool {
 		return m.clearedbase
 	case item.EdgeDerivative:
 		return m.clearedderivative
+	case item.EdgeIndex:
+		return m.clearedindex
 	}
 	return false
 }
@@ -6788,6 +6961,9 @@ func (m *ItemMutation) ClearEdge(name string) error {
 	switch name {
 	case item.EdgeBase:
 		m.ClearBase()
+		return nil
+	case item.EdgeIndex:
+		m.ClearIndex()
 		return nil
 	}
 	return fmt.Errorf("unknown Item unique edge %s", name)
@@ -6838,6 +7014,9 @@ func (m *ItemMutation) ResetEdge(name string) error {
 		return nil
 	case item.EdgeDerivative:
 		m.ResetDerivative()
+		return nil
+	case item.EdgeIndex:
+		m.ResetIndex()
 		return nil
 	}
 	return fmt.Errorf("unknown Item edge %s", name)
@@ -7506,6 +7685,510 @@ func (m *ListingMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Listing edge %s", name)
+}
+
+// SearchMutation represents an operation that mutates the Search nodes in the graph.
+type SearchMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *string
+	_type          *search.Type
+	clearedFields  map[string]struct{}
+	dope           *string
+	cleareddope    bool
+	item           *string
+	cleareditem    bool
+	hustler        *string
+	clearedhustler bool
+	done           bool
+	oldValue       func(context.Context) (*Search, error)
+	predicates     []predicate.Search
+}
+
+var _ ent.Mutation = (*SearchMutation)(nil)
+
+// searchOption allows management of the mutation configuration using functional options.
+type searchOption func(*SearchMutation)
+
+// newSearchMutation creates new mutation for the Search entity.
+func newSearchMutation(c config, op Op, opts ...searchOption) *SearchMutation {
+	m := &SearchMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeSearch,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withSearchID sets the ID field of the mutation.
+func withSearchID(id string) searchOption {
+	return func(m *SearchMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Search
+		)
+		m.oldValue = func(ctx context.Context) (*Search, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Search.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withSearch sets the old Search of the mutation.
+func withSearch(node *Search) searchOption {
+	return func(m *SearchMutation) {
+		m.oldValue = func(context.Context) (*Search, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m SearchMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m SearchMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Search entities.
+func (m *SearchMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *SearchMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *SearchMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Search.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetType sets the "type" field.
+func (m *SearchMutation) SetType(s search.Type) {
+	m._type = &s
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *SearchMutation) GetType() (r search.Type, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the Search entity.
+// If the Search object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SearchMutation) OldType(ctx context.Context) (v search.Type, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *SearchMutation) ResetType() {
+	m._type = nil
+}
+
+// SetDopeID sets the "dope" edge to the Dope entity by id.
+func (m *SearchMutation) SetDopeID(id string) {
+	m.dope = &id
+}
+
+// ClearDope clears the "dope" edge to the Dope entity.
+func (m *SearchMutation) ClearDope() {
+	m.cleareddope = true
+}
+
+// DopeCleared reports if the "dope" edge to the Dope entity was cleared.
+func (m *SearchMutation) DopeCleared() bool {
+	return m.cleareddope
+}
+
+// DopeID returns the "dope" edge ID in the mutation.
+func (m *SearchMutation) DopeID() (id string, exists bool) {
+	if m.dope != nil {
+		return *m.dope, true
+	}
+	return
+}
+
+// DopeIDs returns the "dope" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DopeID instead. It exists only for internal usage by the builders.
+func (m *SearchMutation) DopeIDs() (ids []string) {
+	if id := m.dope; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetDope resets all changes to the "dope" edge.
+func (m *SearchMutation) ResetDope() {
+	m.dope = nil
+	m.cleareddope = false
+}
+
+// SetItemID sets the "item" edge to the Item entity by id.
+func (m *SearchMutation) SetItemID(id string) {
+	m.item = &id
+}
+
+// ClearItem clears the "item" edge to the Item entity.
+func (m *SearchMutation) ClearItem() {
+	m.cleareditem = true
+}
+
+// ItemCleared reports if the "item" edge to the Item entity was cleared.
+func (m *SearchMutation) ItemCleared() bool {
+	return m.cleareditem
+}
+
+// ItemID returns the "item" edge ID in the mutation.
+func (m *SearchMutation) ItemID() (id string, exists bool) {
+	if m.item != nil {
+		return *m.item, true
+	}
+	return
+}
+
+// ItemIDs returns the "item" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ItemID instead. It exists only for internal usage by the builders.
+func (m *SearchMutation) ItemIDs() (ids []string) {
+	if id := m.item; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetItem resets all changes to the "item" edge.
+func (m *SearchMutation) ResetItem() {
+	m.item = nil
+	m.cleareditem = false
+}
+
+// SetHustlerID sets the "hustler" edge to the Hustler entity by id.
+func (m *SearchMutation) SetHustlerID(id string) {
+	m.hustler = &id
+}
+
+// ClearHustler clears the "hustler" edge to the Hustler entity.
+func (m *SearchMutation) ClearHustler() {
+	m.clearedhustler = true
+}
+
+// HustlerCleared reports if the "hustler" edge to the Hustler entity was cleared.
+func (m *SearchMutation) HustlerCleared() bool {
+	return m.clearedhustler
+}
+
+// HustlerID returns the "hustler" edge ID in the mutation.
+func (m *SearchMutation) HustlerID() (id string, exists bool) {
+	if m.hustler != nil {
+		return *m.hustler, true
+	}
+	return
+}
+
+// HustlerIDs returns the "hustler" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// HustlerID instead. It exists only for internal usage by the builders.
+func (m *SearchMutation) HustlerIDs() (ids []string) {
+	if id := m.hustler; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetHustler resets all changes to the "hustler" edge.
+func (m *SearchMutation) ResetHustler() {
+	m.hustler = nil
+	m.clearedhustler = false
+}
+
+// Where appends a list predicates to the SearchMutation builder.
+func (m *SearchMutation) Where(ps ...predicate.Search) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *SearchMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Search).
+func (m *SearchMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *SearchMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m._type != nil {
+		fields = append(fields, search.FieldType)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *SearchMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case search.FieldType:
+		return m.GetType()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *SearchMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case search.FieldType:
+		return m.OldType(ctx)
+	}
+	return nil, fmt.Errorf("unknown Search field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SearchMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case search.FieldType:
+		v, ok := value.(search.Type)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Search field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *SearchMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *SearchMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SearchMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Search numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *SearchMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *SearchMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *SearchMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Search nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *SearchMutation) ResetField(name string) error {
+	switch name {
+	case search.FieldType:
+		m.ResetType()
+		return nil
+	}
+	return fmt.Errorf("unknown Search field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *SearchMutation) AddedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.dope != nil {
+		edges = append(edges, search.EdgeDope)
+	}
+	if m.item != nil {
+		edges = append(edges, search.EdgeItem)
+	}
+	if m.hustler != nil {
+		edges = append(edges, search.EdgeHustler)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *SearchMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case search.EdgeDope:
+		if id := m.dope; id != nil {
+			return []ent.Value{*id}
+		}
+	case search.EdgeItem:
+		if id := m.item; id != nil {
+			return []ent.Value{*id}
+		}
+	case search.EdgeHustler:
+		if id := m.hustler; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *SearchMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 3)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *SearchMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *SearchMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.cleareddope {
+		edges = append(edges, search.EdgeDope)
+	}
+	if m.cleareditem {
+		edges = append(edges, search.EdgeItem)
+	}
+	if m.clearedhustler {
+		edges = append(edges, search.EdgeHustler)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *SearchMutation) EdgeCleared(name string) bool {
+	switch name {
+	case search.EdgeDope:
+		return m.cleareddope
+	case search.EdgeItem:
+		return m.cleareditem
+	case search.EdgeHustler:
+		return m.clearedhustler
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *SearchMutation) ClearEdge(name string) error {
+	switch name {
+	case search.EdgeDope:
+		m.ClearDope()
+		return nil
+	case search.EdgeItem:
+		m.ClearItem()
+		return nil
+	case search.EdgeHustler:
+		m.ClearHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown Search unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *SearchMutation) ResetEdge(name string) error {
+	switch name {
+	case search.EdgeDope:
+		m.ResetDope()
+		return nil
+	case search.EdgeItem:
+		m.ResetItem()
+		return nil
+	case search.EdgeHustler:
+		m.ResetHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown Search edge %s", name)
 }
 
 // SyncStateMutation represents an operation that mutates the SyncState nodes in the graph.

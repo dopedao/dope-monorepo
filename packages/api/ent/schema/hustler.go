@@ -68,5 +68,6 @@ func (Hustler) Edges() []ent.Edge {
 		edge.From("body", BodyPart.Type).Ref("hustler_bodies").Unique(),
 		edge.From("hair", BodyPart.Type).Ref("hustler_hairs").Unique(),
 		edge.From("beard", BodyPart.Type).Ref("hustler_beards").Unique(),
+		edge.To("index", Search.Type).Unique().Annotations(entgql.Bind()),
 	}
 }

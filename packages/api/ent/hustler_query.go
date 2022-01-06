@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -15,6 +16,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -42,6 +44,7 @@ type HustlerQuery struct {
 	withBody      *BodyPartQuery
 	withHair      *BodyPartQuery
 	withBeard     *BodyPartQuery
+	withIndex     *SearchQuery
 	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -387,6 +390,28 @@ func (hq *HustlerQuery) QueryBeard() *BodyPartQuery {
 	return query
 }
 
+// QueryIndex chains the current query on the "index" edge.
+func (hq *HustlerQuery) QueryIndex() *SearchQuery {
+	query := &SearchQuery{config: hq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := hq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := hq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, selector),
+			sqlgraph.To(search.Table, search.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, hustler.IndexTable, hustler.IndexColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(hq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first Hustler entity from the query.
 // Returns a *NotFoundError when no Hustler was found.
 func (hq *HustlerQuery) First(ctx context.Context) (*Hustler, error) {
@@ -582,6 +607,7 @@ func (hq *HustlerQuery) Clone() *HustlerQuery {
 		withBody:      hq.withBody.Clone(),
 		withHair:      hq.withHair.Clone(),
 		withBeard:     hq.withBeard.Clone(),
+		withIndex:     hq.withIndex.Clone(),
 		// clone intermediate query.
 		sql:  hq.sql.Clone(),
 		path: hq.path,
@@ -742,6 +768,17 @@ func (hq *HustlerQuery) WithBeard(opts ...func(*BodyPartQuery)) *HustlerQuery {
 	return hq
 }
 
+// WithIndex tells the query-builder to eager-load the nodes that are connected to
+// the "index" edge. The optional arguments are used to configure the query builder of the edge.
+func (hq *HustlerQuery) WithIndex(opts ...func(*SearchQuery)) *HustlerQuery {
+	query := &SearchQuery{config: hq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	hq.withIndex = query
+	return hq
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -808,7 +845,7 @@ func (hq *HustlerQuery) sqlAll(ctx context.Context) ([]*Hustler, error) {
 		nodes       = []*Hustler{}
 		withFKs     = hq.withFKs
 		_spec       = hq.querySpec()
-		loadedTypes = [14]bool{
+		loadedTypes = [15]bool{
 			hq.withWallet != nil,
 			hq.withWeapon != nil,
 			hq.withClothes != nil,
@@ -823,6 +860,7 @@ func (hq *HustlerQuery) sqlAll(ctx context.Context) ([]*Hustler, error) {
 			hq.withBody != nil,
 			hq.withHair != nil,
 			hq.withBeard != nil,
+			hq.withIndex != nil,
 		}
 	)
 	if hq.withWallet != nil || hq.withWeapon != nil || hq.withClothes != nil || hq.withVehicle != nil || hq.withWaist != nil || hq.withFoot != nil || hq.withHand != nil || hq.withDrug != nil || hq.withNeck != nil || hq.withRing != nil || hq.withAccessory != nil || hq.withBody != nil || hq.withHair != nil || hq.withBeard != nil {
@@ -1254,6 +1292,34 @@ func (hq *HustlerQuery) sqlAll(ctx context.Context) ([]*Hustler, error) {
 			for i := range nodes {
 				nodes[i].Edges.Beard = n
 			}
+		}
+	}
+
+	if query := hq.withIndex; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*Hustler)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Search(func(s *sql.Selector) {
+			s.Where(sql.InValues(hustler.IndexColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.hustler_index
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "hustler_index" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "hustler_index" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Index = n
 		}
 	}
 

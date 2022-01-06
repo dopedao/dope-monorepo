@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 )
 
 // Item is the model entity for the Item schema.
@@ -75,9 +76,11 @@ type ItemEdges struct {
 	Base *Item `json:"base,omitempty"`
 	// Derivative holds the value of the derivative edge.
 	Derivative []*Item `json:"derivative,omitempty"`
+	// Index holds the value of the index edge.
+	Index *Search `json:"index,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [14]bool
+	loadedTypes [15]bool
 }
 
 // WalletsOrErr returns the Wallets value or an error if the edge
@@ -209,6 +212,20 @@ func (e ItemEdges) DerivativeOrErr() ([]*Item, error) {
 		return e.Derivative, nil
 	}
 	return nil, &NotLoadedError{edge: "derivative"}
+}
+
+// IndexOrErr returns the Index value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ItemEdges) IndexOrErr() (*Search, error) {
+	if e.loadedTypes[14] {
+		if e.Index == nil {
+			// The edge index was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: search.Label}
+		}
+		return e.Index, nil
+	}
+	return nil, &NotLoadedError{edge: "index"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -395,6 +412,11 @@ func (i *Item) QueryBase() *ItemQuery {
 // QueryDerivative queries the "derivative" edge of the Item entity.
 func (i *Item) QueryDerivative() *ItemQuery {
 	return (&ItemClient{config: i.config}).QueryDerivative(i)
+}
+
+// QueryIndex queries the "index" edge of the Item entity.
+func (i *Item) QueryIndex() *SearchQuery {
+	return (&ItemClient{config: i.config}).QueryIndex(i)
 }
 
 // Update returns a builder for updating this Item.
