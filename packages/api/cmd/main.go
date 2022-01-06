@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"os"
 
@@ -11,7 +10,9 @@ import (
 	"entgo.io/ent/dialect"
 	"github.com/dopedao/dope-monorepo/packages/api"
 	"github.com/dopedao/dope-monorepo/packages/api/common"
+	"github.com/rs/zerolog"
 	"github.com/spf13/pflag"
+	"github.com/yfuruyama/crzerolog"
 
 	_ "github.com/lib/pq"
 )
@@ -22,27 +23,31 @@ var network = os.Getenv("NETWORK")
 var index = os.Getenv("INDEX")
 
 func main() {
-	log.Printf("config: is indexer: %v", index)
+	log := zerolog.New(os.Stdout)
+
+	log.Debug().Msgf("config: is indexer: %v", index)
 
 	pgConnstringSecret, err := pgConnstring.Value()
 	if err != nil {
-		log.Fatalf("Getting postgres connection string: %+v.", err) //nolint:gocritic
+		log.Fatal().Err(err).Msgf("Getting postgres connection string.") //nolint:gocritic
 	}
 
 	db, err := sql.Open(dialect.Postgres, pgConnstringSecret)
 	if err != nil {
-		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
+		log.Fatal().Err(err).Msgf("Connecting to db.") //nolint:gocritic
 	}
 
 	srv, err := api.NewServer(context.Background(), db, index == "True", network)
 	if err != nil {
-		log.Fatalf("Creating server: %+v", err) //nolint:gocritic
+		log.Fatal().Err(err).Msgf("Creating server.") //nolint:gocritic
 	}
 
-	server := &http.Server{Addr: ":" + *listen, Handler: srv}
+	middleware := crzerolog.InjectLogger(&log)
 
-	log.Println("listening on :" + *listen)
+	server := &http.Server{Addr: ":" + *listen, Handler: middleware(srv)}
+
+	log.Info().Msg("listening on :" + *listen)
 	if err := server.ListenAndServe(); err != nil {
-		log.Fatal("http server terminated", err)
+		log.Fatal().Err(err).Msgf("Server terminated.")
 	}
 }
