@@ -9,15 +9,15 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 )
 
-// The AssetFunc type is an adapter to allow the use of ordinary
-// function as Asset mutator.
-type AssetFunc func(context.Context, *ent.AssetMutation) (ent.Value, error)
+// The AmountFunc type is an adapter to allow the use of ordinary
+// function as Amount mutator.
+type AmountFunc func(context.Context, *ent.AmountMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f AssetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.AssetMutation)
+func (f AmountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AmountMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AssetMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AmountMutation", m)
 	}
 	return f(ctx, mv)
 }

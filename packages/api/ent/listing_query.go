@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
@@ -30,8 +30,8 @@ type ListingQuery struct {
 	// eager-loading edges.
 	withDope          *DopeQuery
 	withDopeLastsales *DopeQuery
-	withInputs        *AssetQuery
-	withOutputs       *AssetQuery
+	withInputs        *AmountQuery
+	withOutputs       *AmountQuery
 	withFKs           bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -114,8 +114,8 @@ func (lq *ListingQuery) QueryDopeLastsales() *DopeQuery {
 }
 
 // QueryInputs chains the current query on the "inputs" edge.
-func (lq *ListingQuery) QueryInputs() *AssetQuery {
-	query := &AssetQuery{config: lq.config}
+func (lq *ListingQuery) QueryInputs() *AmountQuery {
+	query := &AmountQuery{config: lq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := lq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -126,7 +126,7 @@ func (lq *ListingQuery) QueryInputs() *AssetQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listing.Table, listing.FieldID, selector),
-			sqlgraph.To(asset.Table, asset.FieldID),
+			sqlgraph.To(amount.Table, amount.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, listing.InputsTable, listing.InputsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(lq.driver.Dialect(), step)
@@ -136,8 +136,8 @@ func (lq *ListingQuery) QueryInputs() *AssetQuery {
 }
 
 // QueryOutputs chains the current query on the "outputs" edge.
-func (lq *ListingQuery) QueryOutputs() *AssetQuery {
-	query := &AssetQuery{config: lq.config}
+func (lq *ListingQuery) QueryOutputs() *AmountQuery {
+	query := &AmountQuery{config: lq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := lq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -148,7 +148,7 @@ func (lq *ListingQuery) QueryOutputs() *AssetQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listing.Table, listing.FieldID, selector),
-			sqlgraph.To(asset.Table, asset.FieldID),
+			sqlgraph.To(amount.Table, amount.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, listing.OutputsTable, listing.OutputsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(lq.driver.Dialect(), step)
@@ -372,8 +372,8 @@ func (lq *ListingQuery) WithDopeLastsales(opts ...func(*DopeQuery)) *ListingQuer
 
 // WithInputs tells the query-builder to eager-load the nodes that are connected to
 // the "inputs" edge. The optional arguments are used to configure the query builder of the edge.
-func (lq *ListingQuery) WithInputs(opts ...func(*AssetQuery)) *ListingQuery {
-	query := &AssetQuery{config: lq.config}
+func (lq *ListingQuery) WithInputs(opts ...func(*AmountQuery)) *ListingQuery {
+	query := &AmountQuery{config: lq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -383,8 +383,8 @@ func (lq *ListingQuery) WithInputs(opts ...func(*AssetQuery)) *ListingQuery {
 
 // WithOutputs tells the query-builder to eager-load the nodes that are connected to
 // the "outputs" edge. The optional arguments are used to configure the query builder of the edge.
-func (lq *ListingQuery) WithOutputs(opts ...func(*AssetQuery)) *ListingQuery {
-	query := &AssetQuery{config: lq.config}
+func (lq *ListingQuery) WithOutputs(opts ...func(*AmountQuery)) *ListingQuery {
+	query := &AmountQuery{config: lq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -554,10 +554,10 @@ func (lq *ListingQuery) sqlAll(ctx context.Context) ([]*Listing, error) {
 		for i := range nodes {
 			fks = append(fks, nodes[i].ID)
 			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.Inputs = []*Asset{}
+			nodes[i].Edges.Inputs = []*Amount{}
 		}
 		query.withFKs = true
-		query.Where(predicate.Asset(func(s *sql.Selector) {
+		query.Where(predicate.Amount(func(s *sql.Selector) {
 			s.Where(sql.InValues(listing.InputsColumn, fks...))
 		}))
 		neighbors, err := query.All(ctx)
@@ -583,10 +583,10 @@ func (lq *ListingQuery) sqlAll(ctx context.Context) ([]*Listing, error) {
 		for i := range nodes {
 			fks = append(fks, nodes[i].ID)
 			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.Outputs = []*Asset{}
+			nodes[i].Edges.Outputs = []*Amount{}
 		}
 		query.withFKs = true
-		query.Where(predicate.Asset(func(s *sql.Selector) {
+		query.Where(predicate.Amount(func(s *sql.Selector) {
 			s.Where(sql.InValues(listing.OutputsColumn, fks...))
 		}))
 		neighbors, err := query.All(ctx)

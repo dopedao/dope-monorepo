@@ -9,14 +9,14 @@ import (
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (a *AssetQuery) CollectFields(ctx context.Context, satisfies ...string) *AssetQuery {
+func (a *AmountQuery) CollectFields(ctx context.Context, satisfies ...string) *AmountQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		a = a.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
 	}
 	return a
 }
 
-func (a *AssetQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *AssetQuery {
+func (a *AmountQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *AmountQuery {
 	return a
 }
 
@@ -180,11 +180,11 @@ func (l *ListingQuery) collectField(ctx *graphql.OperationContext, field graphql
 				query.collectField(ctx, field)
 			})
 		case "inputs":
-			l = l.WithInputs(func(query *AssetQuery) {
+			l = l.WithInputs(func(query *AmountQuery) {
 				query.collectField(ctx, field)
 			})
 		case "outputs":
-			l = l.WithOutputs(func(query *AssetQuery) {
+			l = l.WithOutputs(func(query *AmountQuery) {
 				query.collectField(ctx, field)
 			})
 		}

@@ -133,17 +133,8 @@ type Listing implements Node {
   id: ID!
   source: Source
   active: Boolean!
-  inputs: [Asset]!
-  outputs: [Asset]!
-}
-
-enum AssetType {
-  DOPE
-  ETH
-  EQUIPMENT
-  HUSTLER
-  TURF
-  PAPER
+  inputs: [Amount]!
+  outputs: [Amount]!
 }
 
 enum Source {
@@ -151,14 +142,22 @@ enum Source {
   SWAPMEET
 }
 
-type Asset implements Node {
+enum AmountType {
+  DOPE
+  ETH
+  EQUIPMENT
+  HUSTLER
+  PAPER
+  TURF
+}
+
+union Token = Dope | Item | Hustler
+
+type Amount implements Node {
   id: ID!
-  address: Address
-  type: AssetType
-  symbol: String
-  amount: BigInt
-  assetId: BigInt
-  decimals: Int
+  type: AmountType!
+  token: Token
+  amount: BigInt!
 }
 
 type Dope implements Node {

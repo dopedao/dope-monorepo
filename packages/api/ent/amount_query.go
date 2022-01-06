@@ -11,71 +11,71 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 )
 
-// AssetQuery is the builder for querying Asset entities.
-type AssetQuery struct {
+// AmountQuery is the builder for querying Amount entities.
+type AmountQuery struct {
 	config
 	limit      *int
 	offset     *int
 	unique     *bool
 	order      []OrderFunc
 	fields     []string
-	predicates []predicate.Asset
+	predicates []predicate.Amount
 	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the AssetQuery builder.
-func (aq *AssetQuery) Where(ps ...predicate.Asset) *AssetQuery {
+// Where adds a new predicate for the AmountQuery builder.
+func (aq *AmountQuery) Where(ps ...predicate.Amount) *AmountQuery {
 	aq.predicates = append(aq.predicates, ps...)
 	return aq
 }
 
 // Limit adds a limit step to the query.
-func (aq *AssetQuery) Limit(limit int) *AssetQuery {
+func (aq *AmountQuery) Limit(limit int) *AmountQuery {
 	aq.limit = &limit
 	return aq
 }
 
 // Offset adds an offset step to the query.
-func (aq *AssetQuery) Offset(offset int) *AssetQuery {
+func (aq *AmountQuery) Offset(offset int) *AmountQuery {
 	aq.offset = &offset
 	return aq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (aq *AssetQuery) Unique(unique bool) *AssetQuery {
+func (aq *AmountQuery) Unique(unique bool) *AmountQuery {
 	aq.unique = &unique
 	return aq
 }
 
 // Order adds an order step to the query.
-func (aq *AssetQuery) Order(o ...OrderFunc) *AssetQuery {
+func (aq *AmountQuery) Order(o ...OrderFunc) *AmountQuery {
 	aq.order = append(aq.order, o...)
 	return aq
 }
 
-// First returns the first Asset entity from the query.
-// Returns a *NotFoundError when no Asset was found.
-func (aq *AssetQuery) First(ctx context.Context) (*Asset, error) {
+// First returns the first Amount entity from the query.
+// Returns a *NotFoundError when no Amount was found.
+func (aq *AmountQuery) First(ctx context.Context) (*Amount, error) {
 	nodes, err := aq.Limit(1).All(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{asset.Label}
+		return nil, &NotFoundError{amount.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (aq *AssetQuery) FirstX(ctx context.Context) *Asset {
+func (aq *AmountQuery) FirstX(ctx context.Context) *Amount {
 	node, err := aq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -83,22 +83,22 @@ func (aq *AssetQuery) FirstX(ctx context.Context) *Asset {
 	return node
 }
 
-// FirstID returns the first Asset ID from the query.
-// Returns a *NotFoundError when no Asset ID was found.
-func (aq *AssetQuery) FirstID(ctx context.Context) (id string, err error) {
+// FirstID returns the first Amount ID from the query.
+// Returns a *NotFoundError when no Amount ID was found.
+func (aq *AmountQuery) FirstID(ctx context.Context) (id string, err error) {
 	var ids []string
 	if ids, err = aq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aq *AssetQuery) FirstIDX(ctx context.Context) string {
+func (aq *AmountQuery) FirstIDX(ctx context.Context) string {
 	id, err := aq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -106,10 +106,10 @@ func (aq *AssetQuery) FirstIDX(ctx context.Context) string {
 	return id
 }
 
-// Only returns a single Asset entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Asset entity is not found.
-// Returns a *NotFoundError when no Asset entities are found.
-func (aq *AssetQuery) Only(ctx context.Context) (*Asset, error) {
+// Only returns a single Amount entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when exactly one Amount entity is not found.
+// Returns a *NotFoundError when no Amount entities are found.
+func (aq *AmountQuery) Only(ctx context.Context) (*Amount, error) {
 	nodes, err := aq.Limit(2).All(ctx)
 	if err != nil {
 		return nil, err
@@ -118,14 +118,14 @@ func (aq *AssetQuery) Only(ctx context.Context) (*Asset, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{asset.Label}
+		return nil, &NotFoundError{amount.Label}
 	default:
-		return nil, &NotSingularError{asset.Label}
+		return nil, &NotSingularError{amount.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (aq *AssetQuery) OnlyX(ctx context.Context) *Asset {
+func (aq *AmountQuery) OnlyX(ctx context.Context) *Amount {
 	node, err := aq.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -133,10 +133,10 @@ func (aq *AssetQuery) OnlyX(ctx context.Context) *Asset {
 	return node
 }
 
-// OnlyID is like Only, but returns the only Asset ID in the query.
-// Returns a *NotSingularError when exactly one Asset ID is not found.
+// OnlyID is like Only, but returns the only Amount ID in the query.
+// Returns a *NotSingularError when exactly one Amount ID is not found.
 // Returns a *NotFoundError when no entities are found.
-func (aq *AssetQuery) OnlyID(ctx context.Context) (id string, err error) {
+func (aq *AmountQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
 	if ids, err = aq.Limit(2).IDs(ctx); err != nil {
 		return
@@ -145,15 +145,15 @@ func (aq *AssetQuery) OnlyID(ctx context.Context) (id string, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 	default:
-		err = &NotSingularError{asset.Label}
+		err = &NotSingularError{amount.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aq *AssetQuery) OnlyIDX(ctx context.Context) string {
+func (aq *AmountQuery) OnlyIDX(ctx context.Context) string {
 	id, err := aq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -161,8 +161,8 @@ func (aq *AssetQuery) OnlyIDX(ctx context.Context) string {
 	return id
 }
 
-// All executes the query and returns a list of Assets.
-func (aq *AssetQuery) All(ctx context.Context) ([]*Asset, error) {
+// All executes the query and returns a list of Amounts.
+func (aq *AmountQuery) All(ctx context.Context) ([]*Amount, error) {
 	if err := aq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func (aq *AssetQuery) All(ctx context.Context) ([]*Asset, error) {
 }
 
 // AllX is like All, but panics if an error occurs.
-func (aq *AssetQuery) AllX(ctx context.Context) []*Asset {
+func (aq *AmountQuery) AllX(ctx context.Context) []*Amount {
 	nodes, err := aq.All(ctx)
 	if err != nil {
 		panic(err)
@@ -178,17 +178,17 @@ func (aq *AssetQuery) AllX(ctx context.Context) []*Asset {
 	return nodes
 }
 
-// IDs executes the query and returns a list of Asset IDs.
-func (aq *AssetQuery) IDs(ctx context.Context) ([]string, error) {
+// IDs executes the query and returns a list of Amount IDs.
+func (aq *AmountQuery) IDs(ctx context.Context) ([]string, error) {
 	var ids []string
-	if err := aq.Select(asset.FieldID).Scan(ctx, &ids); err != nil {
+	if err := aq.Select(amount.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aq *AssetQuery) IDsX(ctx context.Context) []string {
+func (aq *AmountQuery) IDsX(ctx context.Context) []string {
 	ids, err := aq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -197,7 +197,7 @@ func (aq *AssetQuery) IDsX(ctx context.Context) []string {
 }
 
 // Count returns the count of the given query.
-func (aq *AssetQuery) Count(ctx context.Context) (int, error) {
+func (aq *AmountQuery) Count(ctx context.Context) (int, error) {
 	if err := aq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -205,7 +205,7 @@ func (aq *AssetQuery) Count(ctx context.Context) (int, error) {
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (aq *AssetQuery) CountX(ctx context.Context) int {
+func (aq *AmountQuery) CountX(ctx context.Context) int {
 	count, err := aq.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -214,7 +214,7 @@ func (aq *AssetQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (aq *AssetQuery) Exist(ctx context.Context) (bool, error) {
+func (aq *AmountQuery) Exist(ctx context.Context) (bool, error) {
 	if err := aq.prepareQuery(ctx); err != nil {
 		return false, err
 	}
@@ -222,7 +222,7 @@ func (aq *AssetQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (aq *AssetQuery) ExistX(ctx context.Context) bool {
+func (aq *AmountQuery) ExistX(ctx context.Context) bool {
 	exist, err := aq.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -230,18 +230,18 @@ func (aq *AssetQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the AssetQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the AmountQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (aq *AssetQuery) Clone() *AssetQuery {
+func (aq *AmountQuery) Clone() *AmountQuery {
 	if aq == nil {
 		return nil
 	}
-	return &AssetQuery{
+	return &AmountQuery{
 		config:     aq.config,
 		limit:      aq.limit,
 		offset:     aq.offset,
 		order:      append([]OrderFunc{}, aq.order...),
-		predicates: append([]predicate.Asset{}, aq.predicates...),
+		predicates: append([]predicate.Amount{}, aq.predicates...),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
@@ -254,17 +254,17 @@ func (aq *AssetQuery) Clone() *AssetQuery {
 // Example:
 //
 //	var v []struct {
-//		Address string `json:"address,omitempty"`
+//		Type amount.Type `json:"type,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.Asset.Query().
-//		GroupBy(asset.FieldAddress).
+//	client.Amount.Query().
+//		GroupBy(amount.FieldType).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
-func (aq *AssetQuery) GroupBy(field string, fields ...string) *AssetGroupBy {
-	group := &AssetGroupBy{config: aq.config}
+func (aq *AmountQuery) GroupBy(field string, fields ...string) *AmountGroupBy {
+	group := &AmountGroupBy{config: aq.config}
 	group.fields = append([]string{field}, fields...)
 	group.path = func(ctx context.Context) (prev *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
@@ -281,21 +281,21 @@ func (aq *AssetQuery) GroupBy(field string, fields ...string) *AssetGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Address string `json:"address,omitempty"`
+//		Type amount.Type `json:"type,omitempty"`
 //	}
 //
-//	client.Asset.Query().
-//		Select(asset.FieldAddress).
+//	client.Amount.Query().
+//		Select(amount.FieldType).
 //		Scan(ctx, &v)
 //
-func (aq *AssetQuery) Select(fields ...string) *AssetSelect {
+func (aq *AmountQuery) Select(fields ...string) *AmountSelect {
 	aq.fields = append(aq.fields, fields...)
-	return &AssetSelect{AssetQuery: aq}
+	return &AmountSelect{AmountQuery: aq}
 }
 
-func (aq *AssetQuery) prepareQuery(ctx context.Context) error {
+func (aq *AmountQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range aq.fields {
-		if !asset.ValidColumn(f) {
+		if !amount.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -309,17 +309,17 @@ func (aq *AssetQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (aq *AssetQuery) sqlAll(ctx context.Context) ([]*Asset, error) {
+func (aq *AmountQuery) sqlAll(ctx context.Context) ([]*Amount, error) {
 	var (
-		nodes   = []*Asset{}
+		nodes   = []*Amount{}
 		withFKs = aq.withFKs
 		_spec   = aq.querySpec()
 	)
 	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, asset.ForeignKeys...)
+		_spec.Node.Columns = append(_spec.Node.Columns, amount.ForeignKeys...)
 	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
-		node := &Asset{config: aq.config}
+		node := &Amount{config: aq.config}
 		nodes = append(nodes, node)
 		return node.scanValues(columns)
 	}
@@ -339,7 +339,7 @@ func (aq *AssetQuery) sqlAll(ctx context.Context) ([]*Asset, error) {
 	return nodes, nil
 }
 
-func (aq *AssetQuery) sqlCount(ctx context.Context) (int, error) {
+func (aq *AmountQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := aq.querySpec()
 	_spec.Node.Columns = aq.fields
 	if len(aq.fields) > 0 {
@@ -348,7 +348,7 @@ func (aq *AssetQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, aq.driver, _spec)
 }
 
-func (aq *AssetQuery) sqlExist(ctx context.Context) (bool, error) {
+func (aq *AmountQuery) sqlExist(ctx context.Context) (bool, error) {
 	n, err := aq.sqlCount(ctx)
 	if err != nil {
 		return false, fmt.Errorf("ent: check existence: %w", err)
@@ -356,14 +356,14 @@ func (aq *AssetQuery) sqlExist(ctx context.Context) (bool, error) {
 	return n > 0, nil
 }
 
-func (aq *AssetQuery) querySpec() *sqlgraph.QuerySpec {
+func (aq *AmountQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := &sqlgraph.QuerySpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   asset.Table,
-			Columns: asset.Columns,
+			Table:   amount.Table,
+			Columns: amount.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeString,
-				Column: asset.FieldID,
+				Column: amount.FieldID,
 			},
 		},
 		From:   aq.sql,
@@ -374,9 +374,9 @@ func (aq *AssetQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := aq.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, asset.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, amount.FieldID)
 		for i := range fields {
-			if fields[i] != asset.FieldID {
+			if fields[i] != amount.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -404,12 +404,12 @@ func (aq *AssetQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (aq *AssetQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (aq *AmountQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(aq.driver.Dialect())
-	t1 := builder.Table(asset.Table)
+	t1 := builder.Table(amount.Table)
 	columns := aq.fields
 	if len(columns) == 0 {
-		columns = asset.Columns
+		columns = amount.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if aq.sql != nil {
@@ -436,8 +436,8 @@ func (aq *AssetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// AssetGroupBy is the group-by builder for Asset entities.
-type AssetGroupBy struct {
+// AmountGroupBy is the group-by builder for Amount entities.
+type AmountGroupBy struct {
 	config
 	fields []string
 	fns    []AggregateFunc
@@ -447,13 +447,13 @@ type AssetGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (agb *AssetGroupBy) Aggregate(fns ...AggregateFunc) *AssetGroupBy {
+func (agb *AmountGroupBy) Aggregate(fns ...AggregateFunc) *AmountGroupBy {
 	agb.fns = append(agb.fns, fns...)
 	return agb
 }
 
 // Scan applies the group-by query and scans the result into the given value.
-func (agb *AssetGroupBy) Scan(ctx context.Context, v interface{}) error {
+func (agb *AmountGroupBy) Scan(ctx context.Context, v interface{}) error {
 	query, err := agb.path(ctx)
 	if err != nil {
 		return err
@@ -463,7 +463,7 @@ func (agb *AssetGroupBy) Scan(ctx context.Context, v interface{}) error {
 }
 
 // ScanX is like Scan, but panics if an error occurs.
-func (agb *AssetGroupBy) ScanX(ctx context.Context, v interface{}) {
+func (agb *AmountGroupBy) ScanX(ctx context.Context, v interface{}) {
 	if err := agb.Scan(ctx, v); err != nil {
 		panic(err)
 	}
@@ -471,9 +471,9 @@ func (agb *AssetGroupBy) ScanX(ctx context.Context, v interface{}) {
 
 // Strings returns list of strings from group-by.
 // It is only allowed when executing a group-by query with one field.
-func (agb *AssetGroupBy) Strings(ctx context.Context) ([]string, error) {
+func (agb *AmountGroupBy) Strings(ctx context.Context) ([]string, error) {
 	if len(agb.fields) > 1 {
-		return nil, errors.New("ent: AssetGroupBy.Strings is not achievable when grouping more than 1 field")
+		return nil, errors.New("ent: AmountGroupBy.Strings is not achievable when grouping more than 1 field")
 	}
 	var v []string
 	if err := agb.Scan(ctx, &v); err != nil {
@@ -483,7 +483,7 @@ func (agb *AssetGroupBy) Strings(ctx context.Context) ([]string, error) {
 }
 
 // StringsX is like Strings, but panics if an error occurs.
-func (agb *AssetGroupBy) StringsX(ctx context.Context) []string {
+func (agb *AmountGroupBy) StringsX(ctx context.Context) []string {
 	v, err := agb.Strings(ctx)
 	if err != nil {
 		panic(err)
@@ -493,7 +493,7 @@ func (agb *AssetGroupBy) StringsX(ctx context.Context) []string {
 
 // String returns a single string from a group-by query.
 // It is only allowed when executing a group-by query with one field.
-func (agb *AssetGroupBy) String(ctx context.Context) (_ string, err error) {
+func (agb *AmountGroupBy) String(ctx context.Context) (_ string, err error) {
 	var v []string
 	if v, err = agb.Strings(ctx); err != nil {
 		return
@@ -502,15 +502,15 @@ func (agb *AssetGroupBy) String(ctx context.Context) (_ string, err error) {
 	case 1:
 		return v[0], nil
 	case 0:
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 	default:
-		err = fmt.Errorf("ent: AssetGroupBy.Strings returned %d results when one was expected", len(v))
+		err = fmt.Errorf("ent: AmountGroupBy.Strings returned %d results when one was expected", len(v))
 	}
 	return
 }
 
 // StringX is like String, but panics if an error occurs.
-func (agb *AssetGroupBy) StringX(ctx context.Context) string {
+func (agb *AmountGroupBy) StringX(ctx context.Context) string {
 	v, err := agb.String(ctx)
 	if err != nil {
 		panic(err)
@@ -520,9 +520,9 @@ func (agb *AssetGroupBy) StringX(ctx context.Context) string {
 
 // Ints returns list of ints from group-by.
 // It is only allowed when executing a group-by query with one field.
-func (agb *AssetGroupBy) Ints(ctx context.Context) ([]int, error) {
+func (agb *AmountGroupBy) Ints(ctx context.Context) ([]int, error) {
 	if len(agb.fields) > 1 {
-		return nil, errors.New("ent: AssetGroupBy.Ints is not achievable when grouping more than 1 field")
+		return nil, errors.New("ent: AmountGroupBy.Ints is not achievable when grouping more than 1 field")
 	}
 	var v []int
 	if err := agb.Scan(ctx, &v); err != nil {
@@ -532,7 +532,7 @@ func (agb *AssetGroupBy) Ints(ctx context.Context) ([]int, error) {
 }
 
 // IntsX is like Ints, but panics if an error occurs.
-func (agb *AssetGroupBy) IntsX(ctx context.Context) []int {
+func (agb *AmountGroupBy) IntsX(ctx context.Context) []int {
 	v, err := agb.Ints(ctx)
 	if err != nil {
 		panic(err)
@@ -542,7 +542,7 @@ func (agb *AssetGroupBy) IntsX(ctx context.Context) []int {
 
 // Int returns a single int from a group-by query.
 // It is only allowed when executing a group-by query with one field.
-func (agb *AssetGroupBy) Int(ctx context.Context) (_ int, err error) {
+func (agb *AmountGroupBy) Int(ctx context.Context) (_ int, err error) {
 	var v []int
 	if v, err = agb.Ints(ctx); err != nil {
 		return
@@ -551,15 +551,15 @@ func (agb *AssetGroupBy) Int(ctx context.Context) (_ int, err error) {
 	case 1:
 		return v[0], nil
 	case 0:
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 	default:
-		err = fmt.Errorf("ent: AssetGroupBy.Ints returned %d results when one was expected", len(v))
+		err = fmt.Errorf("ent: AmountGroupBy.Ints returned %d results when one was expected", len(v))
 	}
 	return
 }
 
 // IntX is like Int, but panics if an error occurs.
-func (agb *AssetGroupBy) IntX(ctx context.Context) int {
+func (agb *AmountGroupBy) IntX(ctx context.Context) int {
 	v, err := agb.Int(ctx)
 	if err != nil {
 		panic(err)
@@ -569,9 +569,9 @@ func (agb *AssetGroupBy) IntX(ctx context.Context) int {
 
 // Float64s returns list of float64s from group-by.
 // It is only allowed when executing a group-by query with one field.
-func (agb *AssetGroupBy) Float64s(ctx context.Context) ([]float64, error) {
+func (agb *AmountGroupBy) Float64s(ctx context.Context) ([]float64, error) {
 	if len(agb.fields) > 1 {
-		return nil, errors.New("ent: AssetGroupBy.Float64s is not achievable when grouping more than 1 field")
+		return nil, errors.New("ent: AmountGroupBy.Float64s is not achievable when grouping more than 1 field")
 	}
 	var v []float64
 	if err := agb.Scan(ctx, &v); err != nil {
@@ -581,7 +581,7 @@ func (agb *AssetGroupBy) Float64s(ctx context.Context) ([]float64, error) {
 }
 
 // Float64sX is like Float64s, but panics if an error occurs.
-func (agb *AssetGroupBy) Float64sX(ctx context.Context) []float64 {
+func (agb *AmountGroupBy) Float64sX(ctx context.Context) []float64 {
 	v, err := agb.Float64s(ctx)
 	if err != nil {
 		panic(err)
@@ -591,7 +591,7 @@ func (agb *AssetGroupBy) Float64sX(ctx context.Context) []float64 {
 
 // Float64 returns a single float64 from a group-by query.
 // It is only allowed when executing a group-by query with one field.
-func (agb *AssetGroupBy) Float64(ctx context.Context) (_ float64, err error) {
+func (agb *AmountGroupBy) Float64(ctx context.Context) (_ float64, err error) {
 	var v []float64
 	if v, err = agb.Float64s(ctx); err != nil {
 		return
@@ -600,15 +600,15 @@ func (agb *AssetGroupBy) Float64(ctx context.Context) (_ float64, err error) {
 	case 1:
 		return v[0], nil
 	case 0:
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 	default:
-		err = fmt.Errorf("ent: AssetGroupBy.Float64s returned %d results when one was expected", len(v))
+		err = fmt.Errorf("ent: AmountGroupBy.Float64s returned %d results when one was expected", len(v))
 	}
 	return
 }
 
 // Float64X is like Float64, but panics if an error occurs.
-func (agb *AssetGroupBy) Float64X(ctx context.Context) float64 {
+func (agb *AmountGroupBy) Float64X(ctx context.Context) float64 {
 	v, err := agb.Float64(ctx)
 	if err != nil {
 		panic(err)
@@ -618,9 +618,9 @@ func (agb *AssetGroupBy) Float64X(ctx context.Context) float64 {
 
 // Bools returns list of bools from group-by.
 // It is only allowed when executing a group-by query with one field.
-func (agb *AssetGroupBy) Bools(ctx context.Context) ([]bool, error) {
+func (agb *AmountGroupBy) Bools(ctx context.Context) ([]bool, error) {
 	if len(agb.fields) > 1 {
-		return nil, errors.New("ent: AssetGroupBy.Bools is not achievable when grouping more than 1 field")
+		return nil, errors.New("ent: AmountGroupBy.Bools is not achievable when grouping more than 1 field")
 	}
 	var v []bool
 	if err := agb.Scan(ctx, &v); err != nil {
@@ -630,7 +630,7 @@ func (agb *AssetGroupBy) Bools(ctx context.Context) ([]bool, error) {
 }
 
 // BoolsX is like Bools, but panics if an error occurs.
-func (agb *AssetGroupBy) BoolsX(ctx context.Context) []bool {
+func (agb *AmountGroupBy) BoolsX(ctx context.Context) []bool {
 	v, err := agb.Bools(ctx)
 	if err != nil {
 		panic(err)
@@ -640,7 +640,7 @@ func (agb *AssetGroupBy) BoolsX(ctx context.Context) []bool {
 
 // Bool returns a single bool from a group-by query.
 // It is only allowed when executing a group-by query with one field.
-func (agb *AssetGroupBy) Bool(ctx context.Context) (_ bool, err error) {
+func (agb *AmountGroupBy) Bool(ctx context.Context) (_ bool, err error) {
 	var v []bool
 	if v, err = agb.Bools(ctx); err != nil {
 		return
@@ -649,15 +649,15 @@ func (agb *AssetGroupBy) Bool(ctx context.Context) (_ bool, err error) {
 	case 1:
 		return v[0], nil
 	case 0:
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 	default:
-		err = fmt.Errorf("ent: AssetGroupBy.Bools returned %d results when one was expected", len(v))
+		err = fmt.Errorf("ent: AmountGroupBy.Bools returned %d results when one was expected", len(v))
 	}
 	return
 }
 
 // BoolX is like Bool, but panics if an error occurs.
-func (agb *AssetGroupBy) BoolX(ctx context.Context) bool {
+func (agb *AmountGroupBy) BoolX(ctx context.Context) bool {
 	v, err := agb.Bool(ctx)
 	if err != nil {
 		panic(err)
@@ -665,9 +665,9 @@ func (agb *AssetGroupBy) BoolX(ctx context.Context) bool {
 	return v
 }
 
-func (agb *AssetGroupBy) sqlScan(ctx context.Context, v interface{}) error {
+func (agb *AmountGroupBy) sqlScan(ctx context.Context, v interface{}) error {
 	for _, f := range agb.fields {
-		if !asset.ValidColumn(f) {
+		if !amount.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("invalid field %q for group-by", f)}
 		}
 	}
@@ -684,7 +684,7 @@ func (agb *AssetGroupBy) sqlScan(ctx context.Context, v interface{}) error {
 	return sql.ScanSlice(rows, v)
 }
 
-func (agb *AssetGroupBy) sqlQuery() *sql.Selector {
+func (agb *AmountGroupBy) sqlQuery() *sql.Selector {
 	selector := agb.sql.Select()
 	aggregation := make([]string, 0, len(agb.fns))
 	for _, fn := range agb.fns {
@@ -703,33 +703,33 @@ func (agb *AssetGroupBy) sqlQuery() *sql.Selector {
 	return selector.GroupBy(selector.Columns(agb.fields...)...)
 }
 
-// AssetSelect is the builder for selecting fields of Asset entities.
-type AssetSelect struct {
-	*AssetQuery
+// AmountSelect is the builder for selecting fields of Amount entities.
+type AmountSelect struct {
+	*AmountQuery
 	// intermediate query (i.e. traversal path).
 	sql *sql.Selector
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (as *AssetSelect) Scan(ctx context.Context, v interface{}) error {
+func (as *AmountSelect) Scan(ctx context.Context, v interface{}) error {
 	if err := as.prepareQuery(ctx); err != nil {
 		return err
 	}
-	as.sql = as.AssetQuery.sqlQuery(ctx)
+	as.sql = as.AmountQuery.sqlQuery(ctx)
 	return as.sqlScan(ctx, v)
 }
 
 // ScanX is like Scan, but panics if an error occurs.
-func (as *AssetSelect) ScanX(ctx context.Context, v interface{}) {
+func (as *AmountSelect) ScanX(ctx context.Context, v interface{}) {
 	if err := as.Scan(ctx, v); err != nil {
 		panic(err)
 	}
 }
 
 // Strings returns list of strings from a selector. It is only allowed when selecting one field.
-func (as *AssetSelect) Strings(ctx context.Context) ([]string, error) {
+func (as *AmountSelect) Strings(ctx context.Context) ([]string, error) {
 	if len(as.fields) > 1 {
-		return nil, errors.New("ent: AssetSelect.Strings is not achievable when selecting more than 1 field")
+		return nil, errors.New("ent: AmountSelect.Strings is not achievable when selecting more than 1 field")
 	}
 	var v []string
 	if err := as.Scan(ctx, &v); err != nil {
@@ -739,7 +739,7 @@ func (as *AssetSelect) Strings(ctx context.Context) ([]string, error) {
 }
 
 // StringsX is like Strings, but panics if an error occurs.
-func (as *AssetSelect) StringsX(ctx context.Context) []string {
+func (as *AmountSelect) StringsX(ctx context.Context) []string {
 	v, err := as.Strings(ctx)
 	if err != nil {
 		panic(err)
@@ -748,7 +748,7 @@ func (as *AssetSelect) StringsX(ctx context.Context) []string {
 }
 
 // String returns a single string from a selector. It is only allowed when selecting one field.
-func (as *AssetSelect) String(ctx context.Context) (_ string, err error) {
+func (as *AmountSelect) String(ctx context.Context) (_ string, err error) {
 	var v []string
 	if v, err = as.Strings(ctx); err != nil {
 		return
@@ -757,15 +757,15 @@ func (as *AssetSelect) String(ctx context.Context) (_ string, err error) {
 	case 1:
 		return v[0], nil
 	case 0:
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 	default:
-		err = fmt.Errorf("ent: AssetSelect.Strings returned %d results when one was expected", len(v))
+		err = fmt.Errorf("ent: AmountSelect.Strings returned %d results when one was expected", len(v))
 	}
 	return
 }
 
 // StringX is like String, but panics if an error occurs.
-func (as *AssetSelect) StringX(ctx context.Context) string {
+func (as *AmountSelect) StringX(ctx context.Context) string {
 	v, err := as.String(ctx)
 	if err != nil {
 		panic(err)
@@ -774,9 +774,9 @@ func (as *AssetSelect) StringX(ctx context.Context) string {
 }
 
 // Ints returns list of ints from a selector. It is only allowed when selecting one field.
-func (as *AssetSelect) Ints(ctx context.Context) ([]int, error) {
+func (as *AmountSelect) Ints(ctx context.Context) ([]int, error) {
 	if len(as.fields) > 1 {
-		return nil, errors.New("ent: AssetSelect.Ints is not achievable when selecting more than 1 field")
+		return nil, errors.New("ent: AmountSelect.Ints is not achievable when selecting more than 1 field")
 	}
 	var v []int
 	if err := as.Scan(ctx, &v); err != nil {
@@ -786,7 +786,7 @@ func (as *AssetSelect) Ints(ctx context.Context) ([]int, error) {
 }
 
 // IntsX is like Ints, but panics if an error occurs.
-func (as *AssetSelect) IntsX(ctx context.Context) []int {
+func (as *AmountSelect) IntsX(ctx context.Context) []int {
 	v, err := as.Ints(ctx)
 	if err != nil {
 		panic(err)
@@ -795,7 +795,7 @@ func (as *AssetSelect) IntsX(ctx context.Context) []int {
 }
 
 // Int returns a single int from a selector. It is only allowed when selecting one field.
-func (as *AssetSelect) Int(ctx context.Context) (_ int, err error) {
+func (as *AmountSelect) Int(ctx context.Context) (_ int, err error) {
 	var v []int
 	if v, err = as.Ints(ctx); err != nil {
 		return
@@ -804,15 +804,15 @@ func (as *AssetSelect) Int(ctx context.Context) (_ int, err error) {
 	case 1:
 		return v[0], nil
 	case 0:
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 	default:
-		err = fmt.Errorf("ent: AssetSelect.Ints returned %d results when one was expected", len(v))
+		err = fmt.Errorf("ent: AmountSelect.Ints returned %d results when one was expected", len(v))
 	}
 	return
 }
 
 // IntX is like Int, but panics if an error occurs.
-func (as *AssetSelect) IntX(ctx context.Context) int {
+func (as *AmountSelect) IntX(ctx context.Context) int {
 	v, err := as.Int(ctx)
 	if err != nil {
 		panic(err)
@@ -821,9 +821,9 @@ func (as *AssetSelect) IntX(ctx context.Context) int {
 }
 
 // Float64s returns list of float64s from a selector. It is only allowed when selecting one field.
-func (as *AssetSelect) Float64s(ctx context.Context) ([]float64, error) {
+func (as *AmountSelect) Float64s(ctx context.Context) ([]float64, error) {
 	if len(as.fields) > 1 {
-		return nil, errors.New("ent: AssetSelect.Float64s is not achievable when selecting more than 1 field")
+		return nil, errors.New("ent: AmountSelect.Float64s is not achievable when selecting more than 1 field")
 	}
 	var v []float64
 	if err := as.Scan(ctx, &v); err != nil {
@@ -833,7 +833,7 @@ func (as *AssetSelect) Float64s(ctx context.Context) ([]float64, error) {
 }
 
 // Float64sX is like Float64s, but panics if an error occurs.
-func (as *AssetSelect) Float64sX(ctx context.Context) []float64 {
+func (as *AmountSelect) Float64sX(ctx context.Context) []float64 {
 	v, err := as.Float64s(ctx)
 	if err != nil {
 		panic(err)
@@ -842,7 +842,7 @@ func (as *AssetSelect) Float64sX(ctx context.Context) []float64 {
 }
 
 // Float64 returns a single float64 from a selector. It is only allowed when selecting one field.
-func (as *AssetSelect) Float64(ctx context.Context) (_ float64, err error) {
+func (as *AmountSelect) Float64(ctx context.Context) (_ float64, err error) {
 	var v []float64
 	if v, err = as.Float64s(ctx); err != nil {
 		return
@@ -851,15 +851,15 @@ func (as *AssetSelect) Float64(ctx context.Context) (_ float64, err error) {
 	case 1:
 		return v[0], nil
 	case 0:
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 	default:
-		err = fmt.Errorf("ent: AssetSelect.Float64s returned %d results when one was expected", len(v))
+		err = fmt.Errorf("ent: AmountSelect.Float64s returned %d results when one was expected", len(v))
 	}
 	return
 }
 
 // Float64X is like Float64, but panics if an error occurs.
-func (as *AssetSelect) Float64X(ctx context.Context) float64 {
+func (as *AmountSelect) Float64X(ctx context.Context) float64 {
 	v, err := as.Float64(ctx)
 	if err != nil {
 		panic(err)
@@ -868,9 +868,9 @@ func (as *AssetSelect) Float64X(ctx context.Context) float64 {
 }
 
 // Bools returns list of bools from a selector. It is only allowed when selecting one field.
-func (as *AssetSelect) Bools(ctx context.Context) ([]bool, error) {
+func (as *AmountSelect) Bools(ctx context.Context) ([]bool, error) {
 	if len(as.fields) > 1 {
-		return nil, errors.New("ent: AssetSelect.Bools is not achievable when selecting more than 1 field")
+		return nil, errors.New("ent: AmountSelect.Bools is not achievable when selecting more than 1 field")
 	}
 	var v []bool
 	if err := as.Scan(ctx, &v); err != nil {
@@ -880,7 +880,7 @@ func (as *AssetSelect) Bools(ctx context.Context) ([]bool, error) {
 }
 
 // BoolsX is like Bools, but panics if an error occurs.
-func (as *AssetSelect) BoolsX(ctx context.Context) []bool {
+func (as *AmountSelect) BoolsX(ctx context.Context) []bool {
 	v, err := as.Bools(ctx)
 	if err != nil {
 		panic(err)
@@ -889,7 +889,7 @@ func (as *AssetSelect) BoolsX(ctx context.Context) []bool {
 }
 
 // Bool returns a single bool from a selector. It is only allowed when selecting one field.
-func (as *AssetSelect) Bool(ctx context.Context) (_ bool, err error) {
+func (as *AmountSelect) Bool(ctx context.Context) (_ bool, err error) {
 	var v []bool
 	if v, err = as.Bools(ctx); err != nil {
 		return
@@ -898,15 +898,15 @@ func (as *AssetSelect) Bool(ctx context.Context) (_ bool, err error) {
 	case 1:
 		return v[0], nil
 	case 0:
-		err = &NotFoundError{asset.Label}
+		err = &NotFoundError{amount.Label}
 	default:
-		err = fmt.Errorf("ent: AssetSelect.Bools returned %d results when one was expected", len(v))
+		err = fmt.Errorf("ent: AmountSelect.Bools returned %d results when one was expected", len(v))
 	}
 	return
 }
 
 // BoolX is like Bool, but panics if an error occurs.
-func (as *AssetSelect) BoolX(ctx context.Context) bool {
+func (as *AmountSelect) BoolX(ctx context.Context) bool {
 	v, err := as.Bool(ctx)
 	if err != nil {
 		panic(err)
@@ -914,7 +914,7 @@ func (as *AssetSelect) BoolX(ctx context.Context) bool {
 	return v
 }
 
-func (as *AssetSelect) sqlScan(ctx context.Context, v interface{}) error {
+func (as *AmountSelect) sqlScan(ctx context.Context, v interface{}) error {
 	rows := &sql.Rows{}
 	query, args := as.sql.Query()
 	if err := as.driver.Query(ctx, query, args, rows); err != nil {

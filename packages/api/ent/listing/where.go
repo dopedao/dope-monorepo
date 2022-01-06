@@ -229,7 +229,7 @@ func HasInputs() predicate.Listing {
 }
 
 // HasInputsWith applies the HasEdge predicate on the "inputs" edge with a given conditions (other predicates).
-func HasInputsWith(preds ...predicate.Asset) predicate.Listing {
+func HasInputsWith(preds ...predicate.Amount) predicate.Listing {
 	return predicate.Listing(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
@@ -257,7 +257,7 @@ func HasOutputs() predicate.Listing {
 }
 
 // HasOutputsWith applies the HasEdge predicate on the "outputs" edge with a given conditions (other predicates).
-func HasOutputsWith(preds ...predicate.Asset) predicate.Listing {
+func HasOutputsWith(preds ...predicate.Amount) predicate.Listing {
 	return predicate.Listing(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),

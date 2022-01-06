@@ -9,25 +9,25 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 )
 
-// AssetDelete is the builder for deleting a Asset entity.
-type AssetDelete struct {
+// AmountDelete is the builder for deleting a Amount entity.
+type AmountDelete struct {
 	config
 	hooks    []Hook
-	mutation *AssetMutation
+	mutation *AmountMutation
 }
 
-// Where appends a list predicates to the AssetDelete builder.
-func (ad *AssetDelete) Where(ps ...predicate.Asset) *AssetDelete {
+// Where appends a list predicates to the AmountDelete builder.
+func (ad *AmountDelete) Where(ps ...predicate.Amount) *AmountDelete {
 	ad.mutation.Where(ps...)
 	return ad
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (ad *AssetDelete) Exec(ctx context.Context) (int, error) {
+func (ad *AmountDelete) Exec(ctx context.Context) (int, error) {
 	var (
 		err      error
 		affected int
@@ -36,7 +36,7 @@ func (ad *AssetDelete) Exec(ctx context.Context) (int, error) {
 		affected, err = ad.sqlExec(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*AssetMutation)
+			mutation, ok := m.(*AmountMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
@@ -59,7 +59,7 @@ func (ad *AssetDelete) Exec(ctx context.Context) (int, error) {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ad *AssetDelete) ExecX(ctx context.Context) int {
+func (ad *AmountDelete) ExecX(ctx context.Context) int {
 	n, err := ad.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -67,13 +67,13 @@ func (ad *AssetDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (ad *AssetDelete) sqlExec(ctx context.Context) (int, error) {
+func (ad *AmountDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table: asset.Table,
+			Table: amount.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeString,
-				Column: asset.FieldID,
+				Column: amount.FieldID,
 			},
 		},
 	}
@@ -87,25 +87,25 @@ func (ad *AssetDelete) sqlExec(ctx context.Context) (int, error) {
 	return sqlgraph.DeleteNodes(ctx, ad.driver, _spec)
 }
 
-// AssetDeleteOne is the builder for deleting a single Asset entity.
-type AssetDeleteOne struct {
-	ad *AssetDelete
+// AmountDeleteOne is the builder for deleting a single Amount entity.
+type AmountDeleteOne struct {
+	ad *AmountDelete
 }
 
 // Exec executes the deletion query.
-func (ado *AssetDeleteOne) Exec(ctx context.Context) error {
+func (ado *AmountDeleteOne) Exec(ctx context.Context) error {
 	n, err := ado.ad.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{asset.Label}
+		return &NotFoundError{amount.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ado *AssetDeleteOne) ExecX(ctx context.Context) {
+func (ado *AmountDeleteOne) ExecX(ctx context.Context) {
 	ado.ad.ExecX(ctx)
 }
