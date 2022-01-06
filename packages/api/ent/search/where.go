@@ -91,6 +91,13 @@ func IDLTE(id string) predicate.Search {
 	})
 }
 
+// Greatness applies equality check predicate on the "greatness" field. It's identical to GreatnessEQ.
+func Greatness(v int) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldGreatness), v))
+	})
+}
+
 // TypeEQ applies the EQ predicate on the "type" field.
 func TypeEQ(v Type) predicate.Search {
 	return predicate.Search(func(s *sql.Selector) {
@@ -136,6 +143,96 @@ func TypeNotIn(vs ...Type) predicate.Search {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldType), v...))
+	})
+}
+
+// GreatnessEQ applies the EQ predicate on the "greatness" field.
+func GreatnessEQ(v int) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessNEQ applies the NEQ predicate on the "greatness" field.
+func GreatnessNEQ(v int) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessIn applies the In predicate on the "greatness" field.
+func GreatnessIn(vs ...int) predicate.Search {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Search(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldGreatness), v...))
+	})
+}
+
+// GreatnessNotIn applies the NotIn predicate on the "greatness" field.
+func GreatnessNotIn(vs ...int) predicate.Search {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Search(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldGreatness), v...))
+	})
+}
+
+// GreatnessGT applies the GT predicate on the "greatness" field.
+func GreatnessGT(v int) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessGTE applies the GTE predicate on the "greatness" field.
+func GreatnessGTE(v int) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessLT applies the LT predicate on the "greatness" field.
+func GreatnessLT(v int) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessLTE applies the LTE predicate on the "greatness" field.
+func GreatnessLTE(v int) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldGreatness), v))
+	})
+}
+
+// GreatnessIsNil applies the IsNil predicate on the "greatness" field.
+func GreatnessIsNil() predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldGreatness)))
+	})
+}
+
+// GreatnessNotNil applies the NotNil predicate on the "greatness" field.
+func GreatnessNotNil() predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldGreatness)))
 	})
 }
 

@@ -871,7 +871,7 @@ func (s *Search) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     s.ID,
 		Type:   "Search",
-		Fields: make([]*Field, 1),
+		Fields: make([]*Field, 2),
 		Edges:  make([]*Edge, 3),
 	}
 	var buf []byte
@@ -881,6 +881,14 @@ func (s *Search) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[0] = &Field{
 		Type:  "search.Type",
 		Name:  "type",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(s.Greatness); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "int",
+		Name:  "greatness",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{
