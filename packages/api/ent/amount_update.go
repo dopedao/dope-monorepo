@@ -10,45 +10,33 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
-// AssetUpdate is the builder for updating Asset entities.
-type AssetUpdate struct {
+// AmountUpdate is the builder for updating Amount entities.
+type AmountUpdate struct {
 	config
 	hooks    []Hook
-	mutation *AssetMutation
+	mutation *AmountMutation
 }
 
-// Where appends a list predicates to the AssetUpdate builder.
-func (au *AssetUpdate) Where(ps ...predicate.Asset) *AssetUpdate {
+// Where appends a list predicates to the AmountUpdate builder.
+func (au *AmountUpdate) Where(ps ...predicate.Amount) *AmountUpdate {
 	au.mutation.Where(ps...)
 	return au
 }
 
-// SetAddress sets the "address" field.
-func (au *AssetUpdate) SetAddress(s string) *AssetUpdate {
-	au.mutation.SetAddress(s)
-	return au
-}
-
-// SetSymbol sets the "symbol" field.
-func (au *AssetUpdate) SetSymbol(s string) *AssetUpdate {
-	au.mutation.SetSymbol(s)
-	return au
-}
-
 // SetAmount sets the "amount" field.
-func (au *AssetUpdate) SetAmount(si schema.BigInt) *AssetUpdate {
+func (au *AmountUpdate) SetAmount(si schema.BigInt) *AmountUpdate {
 	au.mutation.ResetAmount()
 	au.mutation.SetAmount(si)
 	return au
 }
 
 // SetNillableAmount sets the "amount" field if the given value is not nil.
-func (au *AssetUpdate) SetNillableAmount(si *schema.BigInt) *AssetUpdate {
+func (au *AmountUpdate) SetNillableAmount(si *schema.BigInt) *AmountUpdate {
 	if si != nil {
 		au.SetAmount(*si)
 	}
@@ -56,20 +44,20 @@ func (au *AssetUpdate) SetNillableAmount(si *schema.BigInt) *AssetUpdate {
 }
 
 // AddAmount adds si to the "amount" field.
-func (au *AssetUpdate) AddAmount(si schema.BigInt) *AssetUpdate {
+func (au *AmountUpdate) AddAmount(si schema.BigInt) *AmountUpdate {
 	au.mutation.AddAmount(si)
 	return au
 }
 
 // SetAssetID sets the "asset_id" field.
-func (au *AssetUpdate) SetAssetID(si schema.BigInt) *AssetUpdate {
+func (au *AmountUpdate) SetAssetID(si schema.BigInt) *AmountUpdate {
 	au.mutation.ResetAssetID()
 	au.mutation.SetAssetID(si)
 	return au
 }
 
 // SetNillableAssetID sets the "asset_id" field if the given value is not nil.
-func (au *AssetUpdate) SetNillableAssetID(si *schema.BigInt) *AssetUpdate {
+func (au *AmountUpdate) SetNillableAssetID(si *schema.BigInt) *AmountUpdate {
 	if si != nil {
 		au.SetAssetID(*si)
 	}
@@ -77,31 +65,18 @@ func (au *AssetUpdate) SetNillableAssetID(si *schema.BigInt) *AssetUpdate {
 }
 
 // AddAssetID adds si to the "asset_id" field.
-func (au *AssetUpdate) AddAssetID(si schema.BigInt) *AssetUpdate {
+func (au *AmountUpdate) AddAssetID(si schema.BigInt) *AmountUpdate {
 	au.mutation.AddAssetID(si)
 	return au
 }
 
-// SetDecimals sets the "decimals" field.
-func (au *AssetUpdate) SetDecimals(i int) *AssetUpdate {
-	au.mutation.ResetDecimals()
-	au.mutation.SetDecimals(i)
-	return au
-}
-
-// AddDecimals adds i to the "decimals" field.
-func (au *AssetUpdate) AddDecimals(i int) *AssetUpdate {
-	au.mutation.AddDecimals(i)
-	return au
-}
-
-// Mutation returns the AssetMutation object of the builder.
-func (au *AssetUpdate) Mutation() *AssetMutation {
+// Mutation returns the AmountMutation object of the builder.
+func (au *AmountUpdate) Mutation() *AmountMutation {
 	return au.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (au *AssetUpdate) Save(ctx context.Context) (int, error) {
+func (au *AmountUpdate) Save(ctx context.Context) (int, error) {
 	var (
 		err      error
 		affected int
@@ -110,7 +85,7 @@ func (au *AssetUpdate) Save(ctx context.Context) (int, error) {
 		affected, err = au.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*AssetMutation)
+			mutation, ok := m.(*AmountMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
@@ -133,7 +108,7 @@ func (au *AssetUpdate) Save(ctx context.Context) (int, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (au *AssetUpdate) SaveX(ctx context.Context) int {
+func (au *AmountUpdate) SaveX(ctx context.Context) int {
 	affected, err := au.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -142,26 +117,26 @@ func (au *AssetUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (au *AssetUpdate) Exec(ctx context.Context) error {
+func (au *AmountUpdate) Exec(ctx context.Context) error {
 	_, err := au.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (au *AssetUpdate) ExecX(ctx context.Context) {
+func (au *AmountUpdate) ExecX(ctx context.Context) {
 	if err := au.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (au *AssetUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (au *AmountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   asset.Table,
-			Columns: asset.Columns,
+			Table:   amount.Table,
+			Columns: amount.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeString,
-				Column: asset.FieldID,
+				Column: amount.FieldID,
 			},
 		},
 	}
@@ -172,65 +147,37 @@ func (au *AssetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := au.mutation.Address(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: asset.FieldAddress,
-		})
-	}
-	if value, ok := au.mutation.Symbol(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: asset.FieldSymbol,
-		})
-	}
 	if value, ok := au.mutation.Amount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAmount,
+			Column: amount.FieldAmount,
 		})
 	}
 	if value, ok := au.mutation.AddedAmount(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAmount,
+			Column: amount.FieldAmount,
 		})
 	}
 	if value, ok := au.mutation.AssetID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAssetID,
+			Column: amount.FieldAssetID,
 		})
 	}
 	if value, ok := au.mutation.AddedAssetID(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAssetID,
-		})
-	}
-	if value, ok := au.mutation.Decimals(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: asset.FieldDecimals,
-		})
-	}
-	if value, ok := au.mutation.AddedDecimals(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: asset.FieldDecimals,
+			Column: amount.FieldAssetID,
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{asset.Label}
+			err = &NotFoundError{amount.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{err.Error(), err}
 		}
@@ -239,35 +186,23 @@ func (au *AssetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	return n, nil
 }
 
-// AssetUpdateOne is the builder for updating a single Asset entity.
-type AssetUpdateOne struct {
+// AmountUpdateOne is the builder for updating a single Amount entity.
+type AmountUpdateOne struct {
 	config
 	fields   []string
 	hooks    []Hook
-	mutation *AssetMutation
-}
-
-// SetAddress sets the "address" field.
-func (auo *AssetUpdateOne) SetAddress(s string) *AssetUpdateOne {
-	auo.mutation.SetAddress(s)
-	return auo
-}
-
-// SetSymbol sets the "symbol" field.
-func (auo *AssetUpdateOne) SetSymbol(s string) *AssetUpdateOne {
-	auo.mutation.SetSymbol(s)
-	return auo
+	mutation *AmountMutation
 }
 
 // SetAmount sets the "amount" field.
-func (auo *AssetUpdateOne) SetAmount(si schema.BigInt) *AssetUpdateOne {
+func (auo *AmountUpdateOne) SetAmount(si schema.BigInt) *AmountUpdateOne {
 	auo.mutation.ResetAmount()
 	auo.mutation.SetAmount(si)
 	return auo
 }
 
 // SetNillableAmount sets the "amount" field if the given value is not nil.
-func (auo *AssetUpdateOne) SetNillableAmount(si *schema.BigInt) *AssetUpdateOne {
+func (auo *AmountUpdateOne) SetNillableAmount(si *schema.BigInt) *AmountUpdateOne {
 	if si != nil {
 		auo.SetAmount(*si)
 	}
@@ -275,20 +210,20 @@ func (auo *AssetUpdateOne) SetNillableAmount(si *schema.BigInt) *AssetUpdateOne 
 }
 
 // AddAmount adds si to the "amount" field.
-func (auo *AssetUpdateOne) AddAmount(si schema.BigInt) *AssetUpdateOne {
+func (auo *AmountUpdateOne) AddAmount(si schema.BigInt) *AmountUpdateOne {
 	auo.mutation.AddAmount(si)
 	return auo
 }
 
 // SetAssetID sets the "asset_id" field.
-func (auo *AssetUpdateOne) SetAssetID(si schema.BigInt) *AssetUpdateOne {
+func (auo *AmountUpdateOne) SetAssetID(si schema.BigInt) *AmountUpdateOne {
 	auo.mutation.ResetAssetID()
 	auo.mutation.SetAssetID(si)
 	return auo
 }
 
 // SetNillableAssetID sets the "asset_id" field if the given value is not nil.
-func (auo *AssetUpdateOne) SetNillableAssetID(si *schema.BigInt) *AssetUpdateOne {
+func (auo *AmountUpdateOne) SetNillableAssetID(si *schema.BigInt) *AmountUpdateOne {
 	if si != nil {
 		auo.SetAssetID(*si)
 	}
@@ -296,47 +231,34 @@ func (auo *AssetUpdateOne) SetNillableAssetID(si *schema.BigInt) *AssetUpdateOne
 }
 
 // AddAssetID adds si to the "asset_id" field.
-func (auo *AssetUpdateOne) AddAssetID(si schema.BigInt) *AssetUpdateOne {
+func (auo *AmountUpdateOne) AddAssetID(si schema.BigInt) *AmountUpdateOne {
 	auo.mutation.AddAssetID(si)
 	return auo
 }
 
-// SetDecimals sets the "decimals" field.
-func (auo *AssetUpdateOne) SetDecimals(i int) *AssetUpdateOne {
-	auo.mutation.ResetDecimals()
-	auo.mutation.SetDecimals(i)
-	return auo
-}
-
-// AddDecimals adds i to the "decimals" field.
-func (auo *AssetUpdateOne) AddDecimals(i int) *AssetUpdateOne {
-	auo.mutation.AddDecimals(i)
-	return auo
-}
-
-// Mutation returns the AssetMutation object of the builder.
-func (auo *AssetUpdateOne) Mutation() *AssetMutation {
+// Mutation returns the AmountMutation object of the builder.
+func (auo *AmountUpdateOne) Mutation() *AmountMutation {
 	return auo.mutation
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (auo *AssetUpdateOne) Select(field string, fields ...string) *AssetUpdateOne {
+func (auo *AmountUpdateOne) Select(field string, fields ...string) *AmountUpdateOne {
 	auo.fields = append([]string{field}, fields...)
 	return auo
 }
 
-// Save executes the query and returns the updated Asset entity.
-func (auo *AssetUpdateOne) Save(ctx context.Context) (*Asset, error) {
+// Save executes the query and returns the updated Amount entity.
+func (auo *AmountUpdateOne) Save(ctx context.Context) (*Amount, error) {
 	var (
 		err  error
-		node *Asset
+		node *Amount
 	)
 	if len(auo.hooks) == 0 {
 		node, err = auo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*AssetMutation)
+			mutation, ok := m.(*AmountMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
@@ -359,7 +281,7 @@ func (auo *AssetUpdateOne) Save(ctx context.Context) (*Asset, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (auo *AssetUpdateOne) SaveX(ctx context.Context) *Asset {
+func (auo *AmountUpdateOne) SaveX(ctx context.Context) *Amount {
 	node, err := auo.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -368,42 +290,42 @@ func (auo *AssetUpdateOne) SaveX(ctx context.Context) *Asset {
 }
 
 // Exec executes the query on the entity.
-func (auo *AssetUpdateOne) Exec(ctx context.Context) error {
+func (auo *AmountUpdateOne) Exec(ctx context.Context) error {
 	_, err := auo.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (auo *AssetUpdateOne) ExecX(ctx context.Context) {
+func (auo *AmountUpdateOne) ExecX(ctx context.Context) {
 	if err := auo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (auo *AssetUpdateOne) sqlSave(ctx context.Context) (_node *Asset, err error) {
+func (auo *AmountUpdateOne) sqlSave(ctx context.Context) (_node *Amount, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   asset.Table,
-			Columns: asset.Columns,
+			Table:   amount.Table,
+			Columns: amount.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeString,
-				Column: asset.FieldID,
+				Column: amount.FieldID,
 			},
 		},
 	}
 	id, ok := auo.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Asset.id" for update`)}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Amount.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := auo.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, asset.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, amount.FieldID)
 		for _, f := range fields {
-			if !asset.ValidColumn(f) {
+			if !amount.ValidColumn(f) {
 				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 			}
-			if f != asset.FieldID {
+			if f != amount.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)
 			}
 		}
@@ -415,68 +337,40 @@ func (auo *AssetUpdateOne) sqlSave(ctx context.Context) (_node *Asset, err error
 			}
 		}
 	}
-	if value, ok := auo.mutation.Address(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: asset.FieldAddress,
-		})
-	}
-	if value, ok := auo.mutation.Symbol(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: asset.FieldSymbol,
-		})
-	}
 	if value, ok := auo.mutation.Amount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAmount,
+			Column: amount.FieldAmount,
 		})
 	}
 	if value, ok := auo.mutation.AddedAmount(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAmount,
+			Column: amount.FieldAmount,
 		})
 	}
 	if value, ok := auo.mutation.AssetID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAssetID,
+			Column: amount.FieldAssetID,
 		})
 	}
 	if value, ok := auo.mutation.AddedAssetID(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: asset.FieldAssetID,
+			Column: amount.FieldAssetID,
 		})
 	}
-	if value, ok := auo.mutation.Decimals(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: asset.FieldDecimals,
-		})
-	}
-	if value, ok := auo.mutation.AddedDecimals(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: asset.FieldDecimals,
-		})
-	}
-	_node = &Asset{config: auo.config}
+	_node = &Amount{config: auo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, auo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{asset.Label}
+			err = &NotFoundError{amount.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{err.Error(), err}
 		}

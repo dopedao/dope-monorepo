@@ -10,9 +10,18 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	generated1 "github.com/dopedao/dope-monorepo/packages/api/graph/generated"
 	"github.com/dopedao/dope-monorepo/packages/api/graph/model"
 )
+
+func (r *amountResolver) Token(ctx context.Context, obj *ent.Amount) (model.Token, error) {
+	switch obj.Type {
+	case amount.TypeDOPE:
+		return r.client.Dope.Get(ctx, obj.AssetID.String())
+	}
+	return nil, nil
+}
 
 func (r *itemResolver) Fullname(ctx context.Context, obj *ent.Item) (string, error) {
 	fullname := obj.Name
@@ -102,11 +111,15 @@ func (r *queryResolver) Search(ctx context.Context, query string, orderBy *model
 	return results, nil
 }
 
+// Amount returns generated1.AmountResolver implementation.
+func (r *Resolver) Amount() generated1.AmountResolver { return &amountResolver{r} }
+
 // Item returns generated1.ItemResolver implementation.
 func (r *Resolver) Item() generated1.ItemResolver { return &itemResolver{r} }
 
 // Query returns generated1.QueryResolver implementation.
 func (r *Resolver) Query() generated1.QueryResolver { return &queryResolver{r} }
 
+type amountResolver struct{ *Resolver }
 type itemResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

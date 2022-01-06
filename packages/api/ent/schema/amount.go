@@ -6,20 +6,18 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// Asset holds the schema definition for the Asset entity.
-type Asset struct {
+// Amount holds the schema definition for the Amount entity.
+type Amount struct {
 	ent.Schema
 }
 
-// Fields of the Asset.
-func (Asset) Fields() []ent.Field {
+// Fields of the Amount.
+func (Amount) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
-		field.String("address"),
 		field.Enum("type").
 			Values("DOPE", "ETH", "EQUIPMENT", "HUSTLER", "PAPER", "TURF").
 			Immutable(),
-		field.String("symbol"),
 		field.Int("amount").
 			GoType(BigInt{}).
 			SchemaType(BigIntSchemaType).
@@ -38,6 +36,5 @@ func (Asset) Fields() []ent.Field {
 			Annotations(
 				entgql.Type("BigInt"),
 			),
-		field.Int("decimals"),
 	}
 }

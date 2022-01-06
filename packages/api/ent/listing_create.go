@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 )
@@ -80,14 +80,14 @@ func (lc *ListingCreate) SetDopeLastsales(d *Dope) *ListingCreate {
 	return lc.SetDopeLastsalesID(d.ID)
 }
 
-// AddInputIDs adds the "inputs" edge to the Asset entity by IDs.
+// AddInputIDs adds the "inputs" edge to the Amount entity by IDs.
 func (lc *ListingCreate) AddInputIDs(ids ...string) *ListingCreate {
 	lc.mutation.AddInputIDs(ids...)
 	return lc
 }
 
-// AddInputs adds the "inputs" edges to the Asset entity.
-func (lc *ListingCreate) AddInputs(a ...*Asset) *ListingCreate {
+// AddInputs adds the "inputs" edges to the Amount entity.
+func (lc *ListingCreate) AddInputs(a ...*Amount) *ListingCreate {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -95,14 +95,14 @@ func (lc *ListingCreate) AddInputs(a ...*Asset) *ListingCreate {
 	return lc.AddInputIDs(ids...)
 }
 
-// AddOutputIDs adds the "outputs" edge to the Asset entity by IDs.
+// AddOutputIDs adds the "outputs" edge to the Amount entity by IDs.
 func (lc *ListingCreate) AddOutputIDs(ids ...string) *ListingCreate {
 	lc.mutation.AddOutputIDs(ids...)
 	return lc
 }
 
-// AddOutputs adds the "outputs" edges to the Asset entity.
-func (lc *ListingCreate) AddOutputs(a ...*Asset) *ListingCreate {
+// AddOutputs adds the "outputs" edges to the Amount entity.
+func (lc *ListingCreate) AddOutputs(a ...*Amount) *ListingCreate {
 	ids := make([]string, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -293,7 +293,7 @@ func (lc *ListingCreate) createSpec() (*Listing, *sqlgraph.CreateSpec) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}
@@ -312,7 +312,7 @@ func (lc *ListingCreate) createSpec() (*Listing, *sqlgraph.CreateSpec) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
-					Column: asset.FieldID,
+					Column: amount.FieldID,
 				},
 			},
 		}

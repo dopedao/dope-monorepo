@@ -6,8 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Asset is the predicate function for asset builders.
-type Asset func(*sql.Selector)
+// Amount is the predicate function for amount builders.
+type Amount func(*sql.Selector)
 
 // BodyPart is the predicate function for bodypart builders.
 type BodyPart func(*sql.Selector)
