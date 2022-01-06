@@ -20,25 +20,175 @@ import (
 
 const ts_migation = `
 CREATE MATERIALIZED VIEW search_index AS (
-	with dope_names as (
-		select df.id, array_agg(distinct(df.fullname)) as fullnames from (
-			select d.dope_id as id, coalesce((trim(both ' ' from (
-			     ' ' || coalesce(i.name_prefix, '') ||
-			     ' ' || coalesce(i.name_suffix, '') ||
-			     ' ' || coalesce(i.name, '') ||
-			     ' ' || coalesce(i.suffix, '') ||
-			     ' ' || coalesce(case when i."augmented" then '+1' end, ''))
-			    )), '') as fullname from dope_items d INNER join items i on d.item_id = i.id
-		 ) df group by df.id
-	) select concat('dope_', id) AS id, id as dope_index, null as item_index, null as hustler_index, 'DOPE' as type, (to_tsvector('english', coalesce(fullnames[0], '')) || to_tsvector('english', coalesce(fullnames[1], '')) || to_tsvector('english', coalesce(fullnames[2], '')) || to_tsvector('english', coalesce(fullnames[3], '')) || to_tsvector('english', coalesce(fullnames[4], '')) || to_tsvector('english', coalesce(fullnames[5], '')) || to_tsvector('english', coalesce(fullnames[6], '')) || to_tsvector('english', coalesce(fullnames[7], ''))) as tsv_document from dope_names
-	union 
-	select concat('item_', id) AS id, null as dope_index, id as item_index, null as hustler_index, 'ITEM' as type, (to_tsvector('english', coalesce((trim(both ' ' from (
-	     ' ' || coalesce(name_prefix, '') ||
-	     ' ' || coalesce(name_suffix, '') ||
-	     ' ' || coalesce(name, '') ||
-	     ' ' || coalesce(suffix, '') ||
-	     ' ' || coalesce(case when "augmented" then '+1' end, ''))
-	    )), ''))) as tsv_document from items
+	WITH dope_agg AS (
+		SELECT
+			df.id,
+			array_agg(DISTINCT (df.fullname)) AS fullnames,
+			sum(
+				CASE WHEN df.greatness = 20 THEN
+					4
+				WHEN df.greatness = 19 THEN
+					3
+				WHEN df.greatness > 14 THEN
+					2
+				ELSE
+					1
+				END) AS greatness
+		FROM (
+			SELECT
+				d.dope_id AS id,
+				coalesce((trim(BOTH ' ' FROM (' ' || coalesce(i.name_prefix,
+								'') || ' ' || coalesce(i.name_suffix,
+								'') || ' ' || coalesce(i.name,
+								'') || ' ' || coalesce(i.suffix,
+								'') || ' ' || coalesce(
+								CASE WHEN i. "augmented" THEN
+									'+1'
+								END,
+								'')))),
+				'') AS fullname,
+				greatness
+			FROM
+				dope_items d
+				INNER JOIN items i ON d.item_id = i.id) df
+		GROUP BY
+			df.id
+)
+	SELECT
+		concat('dope_',
+			id) AS id,
+		greatness,
+		id AS dope_index,
+		NULL AS item_index,
+		NULL AS hustler_index,
+		(to_tsvector('english',
+				coalesce(fullnames [0],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [1],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [2],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [3],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [4],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [5],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [6],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [7],
+					''))) AS tsv_document
+	FROM
+		dope_agg
+	UNION
+	SELECT
+		concat('item_',
+			id) AS id,
+		CASE WHEN greatness = 20 THEN
+			4
+		WHEN greatness = 19 THEN
+			3
+		WHEN greatness > 14 THEN
+			2
+		ELSE
+			1
+		END AS greatness,
+		NULL AS dope_index,
+		id AS item_index,
+		NULL AS hustler_index,
+		(to_tsvector('english',
+				coalesce((trim(BOTH ' ' FROM (' ' || coalesce(name_prefix,
+								'') || ' ' || coalesce(name_suffix,
+								'') || ' ' || coalesce(name,
+								'') || ' ' || coalesce(suffix,
+								'') || ' ' || coalesce(
+								CASE WHEN "augmented" THEN
+									'+1'
+								END,
+								'')))),
+				''))) AS tsv_document
+	FROM
+		items
+)
+UNION (WITH hustler_agg AS (
+		SELECT
+			df.id,
+			array_agg(df.fullname) AS fullnames,
+			df.title,
+			df.name,
+			sum(
+				CASE WHEN df.greatness = 20 THEN
+					4
+				WHEN df.greatness = 19 THEN
+					3
+				WHEN df.greatness > 14 THEN
+					2
+				ELSE
+					1
+				END) AS greatness
+		FROM (
+			SELECT
+				h.id AS id,
+				coalesce((trim(BOTH ' ' FROM (' ' || coalesce(i.name_prefix,
+								'') || ' ' || coalesce(i.name_suffix,
+								'') || ' ' || coalesce(i.name,
+								'') || ' ' || coalesce(i.suffix,
+								'') || ' ' || coalesce(
+								CASE WHEN i. "augmented" THEN
+									'+1'
+								END,
+								'')))),
+				'') AS fullname,
+				greatness,
+				h.name,
+				h.title AS title
+			FROM
+				hustlers h
+			LEFT JOIN items i ON h.item_hustler_feet = i.id
+				OR h.item_hustler_drugs = i.id
+				OR h.item_hustler_hands = i.id
+				OR h.item_hustler_necks = i.id
+				OR h.item_hustler_rings = i.id
+				OR h.item_hustler_waists = i.id
+				OR h.item_hustler_clothes = i.id
+				OR h.item_hustler_weapons = i.id
+				OR h.item_hustler_vehicles = i.id
+				OR h.item_hustler_accessories = i.id) df
+		GROUP BY
+			df.id,
+			title,
+			df.name
+)
+	SELECT
+		concat('hustler_',
+			id) AS id,
+		greatness,
+		NULL AS dope_index,
+		NULL AS item_index,
+		id AS hustler_index,
+		(to_tsvector('english',
+				coalesce(fullnames [0],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [1],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [2],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [3],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [4],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [5],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [6],
+					'')) || to_tsvector('english',
+				coalesce(fullnames [7],
+					'')) || to_tsvector('english',
+				coalesce(name,
+					'')) || to_tsvector('english',
+				coalesce(title,
+					''))) AS tsv_document
+	FROM
+		hustler_agg
 );
 
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);

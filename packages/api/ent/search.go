@@ -20,6 +20,8 @@ type Search struct {
 	ID string `json:"id,omitempty"`
 	// Type holds the value of the "type" field.
 	Type search.Type `json:"type,omitempty"`
+	// Greatness holds the value of the "greatness" field.
+	Greatness int `json:"greatness,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SearchQuery when eager-loading is set.
 	Edges         SearchEdges `json:"edges"`
@@ -88,6 +90,8 @@ func (*Search) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case search.FieldGreatness:
+			values[i] = new(sql.NullInt64)
 		case search.FieldID, search.FieldType:
 			values[i] = new(sql.NullString)
 		case search.ForeignKeys[0]: // dope_index
@@ -122,6 +126,12 @@ func (s *Search) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
 				s.Type = search.Type(value.String)
+			}
+		case search.FieldGreatness:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field greatness", values[i])
+			} else if value.Valid {
+				s.Greatness = int(value.Int64)
 			}
 		case search.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -189,6 +199,8 @@ func (s *Search) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", s.ID))
 	builder.WriteString(", type=")
 	builder.WriteString(fmt.Sprintf("%v", s.Type))
+	builder.WriteString(", greatness=")
+	builder.WriteString(fmt.Sprintf("%v", s.Greatness))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -30,6 +30,33 @@ func (su *SearchUpdate) Where(ps ...predicate.Search) *SearchUpdate {
 	return su
 }
 
+// SetGreatness sets the "greatness" field.
+func (su *SearchUpdate) SetGreatness(i int) *SearchUpdate {
+	su.mutation.ResetGreatness()
+	su.mutation.SetGreatness(i)
+	return su
+}
+
+// SetNillableGreatness sets the "greatness" field if the given value is not nil.
+func (su *SearchUpdate) SetNillableGreatness(i *int) *SearchUpdate {
+	if i != nil {
+		su.SetGreatness(*i)
+	}
+	return su
+}
+
+// AddGreatness adds i to the "greatness" field.
+func (su *SearchUpdate) AddGreatness(i int) *SearchUpdate {
+	su.mutation.AddGreatness(i)
+	return su
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (su *SearchUpdate) ClearGreatness() *SearchUpdate {
+	su.mutation.ClearGreatness()
+	return su
+}
+
 // SetDopeID sets the "dope" edge to the Dope entity by ID.
 func (su *SearchUpdate) SetDopeID(id string) *SearchUpdate {
 	su.mutation.SetDopeID(id)
@@ -182,6 +209,26 @@ func (su *SearchUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := su.mutation.Greatness(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldGreatness,
+		})
+	}
+	if value, ok := su.mutation.AddedGreatness(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldGreatness,
+		})
+	}
+	if su.mutation.GreatnessCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: search.FieldGreatness,
+		})
+	}
 	if su.mutation.DopeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -304,6 +351,33 @@ type SearchUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SearchMutation
+}
+
+// SetGreatness sets the "greatness" field.
+func (suo *SearchUpdateOne) SetGreatness(i int) *SearchUpdateOne {
+	suo.mutation.ResetGreatness()
+	suo.mutation.SetGreatness(i)
+	return suo
+}
+
+// SetNillableGreatness sets the "greatness" field if the given value is not nil.
+func (suo *SearchUpdateOne) SetNillableGreatness(i *int) *SearchUpdateOne {
+	if i != nil {
+		suo.SetGreatness(*i)
+	}
+	return suo
+}
+
+// AddGreatness adds i to the "greatness" field.
+func (suo *SearchUpdateOne) AddGreatness(i int) *SearchUpdateOne {
+	suo.mutation.AddGreatness(i)
+	return suo
+}
+
+// ClearGreatness clears the value of the "greatness" field.
+func (suo *SearchUpdateOne) ClearGreatness() *SearchUpdateOne {
+	suo.mutation.ClearGreatness()
+	return suo
 }
 
 // SetDopeID sets the "dope" edge to the Dope entity by ID.
@@ -481,6 +555,26 @@ func (suo *SearchUpdateOne) sqlSave(ctx context.Context) (_node *Search, err err
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := suo.mutation.Greatness(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldGreatness,
+		})
+	}
+	if value, ok := suo.mutation.AddedGreatness(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldGreatness,
+		})
+	}
+	if suo.mutation.GreatnessCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: search.FieldGreatness,
+		})
 	}
 	if suo.mutation.DopeCleared() {
 		edge := &sqlgraph.EdgeSpec{
