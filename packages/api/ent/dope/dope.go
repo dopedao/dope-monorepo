@@ -25,6 +25,8 @@ const (
 	EdgeListings = "listings"
 	// EdgeItems holds the string denoting the items edge name in mutations.
 	EdgeItems = "items"
+	// EdgeIndex holds the string denoting the index edge name in mutations.
+	EdgeIndex = "index"
 	// Table holds the table name of the dope in the database.
 	Table = "dopes"
 	// WalletTable is the table that holds the wallet relation/edge.
@@ -53,6 +55,13 @@ const (
 	// ItemsInverseTable is the table name for the Item entity.
 	// It exists in this package in order to avoid circular dependency with the "item" package.
 	ItemsInverseTable = "items"
+	// IndexTable is the table that holds the index relation/edge.
+	IndexTable = "search_index"
+	// IndexInverseTable is the table name for the Search entity.
+	// It exists in this package in order to avoid circular dependency with the "search" package.
+	IndexInverseTable = "search_index"
+	// IndexColumn is the table column denoting the index relation/edge.
+	IndexColumn = "dope_index"
 )
 
 // Columns holds all SQL columns for dope fields.

@@ -522,6 +522,34 @@ func HasItemsWith(preds ...predicate.Item) predicate.Dope {
 	})
 }
 
+// HasIndex applies the HasEdge predicate on the "index" edge.
+func HasIndex() predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(IndexTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, IndexTable, IndexColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasIndexWith applies the HasEdge predicate on the "index" edge with a given conditions (other predicates).
+func HasIndexWith(preds ...predicate.Search) predicate.Dope {
+	return predicate.Dope(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(IndexInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, IndexTable, IndexColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Dope) predicate.Dope {
 	return predicate.Dope(func(s *sql.Selector) {

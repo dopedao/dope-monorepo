@@ -74,5 +74,6 @@ func (Item) Edges() []ent.Edge {
 		edge.To("derivative", Item.Type).
 			From("base").
 			Unique(),
+		edge.To("index", Search.Type).Unique().Annotations(entgql.Bind()),
 	}
 }

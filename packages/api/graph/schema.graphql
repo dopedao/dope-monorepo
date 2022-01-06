@@ -181,25 +181,10 @@ type Wallet implements Node {
 
 union SearchResult = Dope | Item | Hustler
 
-input SearchWhereInput {
-  not: SearchWhereInput
-  and: [SearchWhereInput!]
-  or: [SearchWhereInput!]
-
-  paperClaimed: Boolean
-  forSale: Boolean
-  dopeOpened: Boolean
-}
-
-enum SearchOrderField {
-  RANK
-  AFFORDABLE
-  LAST_SALE_AMOUNT
-}
-
-input SearchOrder {
-  direction: OrderDirection
-  field: SearchOrderField
+enum SearchType {
+  DOPE
+  ITEM
+  HUSTLER
 }
 
 type Query {
@@ -247,7 +232,11 @@ type Query {
   ): ListingConnection!
   search(
     query: String!
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
     orderBy: SearchOrder
     where: SearchWhereInput
-  ): [SearchResult]!
+  ): SearchConnection!
 }

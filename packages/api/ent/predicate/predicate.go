@@ -27,6 +27,9 @@ type Item func(*sql.Selector)
 // Listing is the predicate function for listing builders.
 type Listing func(*sql.Selector)
 
+// Search is the predicate function for search builders.
+type Search func(*sql.Selector)
+
 // SyncState is the predicate function for syncstate builders.
 type SyncState func(*sql.Selector)
 

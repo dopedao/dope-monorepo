@@ -15,6 +15,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -45,6 +46,7 @@ func columnChecker(table string) func(string) error {
 		hustler.Table:     hustler.ValidColumn,
 		item.Table:        item.ValidColumn,
 		listing.Table:     listing.ValidColumn,
+		search.Table:      search.ValidColumn,
 		syncstate.Table:   syncstate.ValidColumn,
 		wallet.Table:      wallet.ValidColumn,
 		walletitems.Table: walletitems.ValidColumn,

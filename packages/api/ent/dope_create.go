@@ -14,6 +14,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -159,6 +160,25 @@ func (dc *DopeCreate) AddItems(i ...*Item) *DopeCreate {
 		ids[j] = i[j].ID
 	}
 	return dc.AddItemIDs(ids...)
+}
+
+// SetIndexID sets the "index" edge to the Search entity by ID.
+func (dc *DopeCreate) SetIndexID(id string) *DopeCreate {
+	dc.mutation.SetIndexID(id)
+	return dc
+}
+
+// SetNillableIndexID sets the "index" edge to the Search entity by ID if the given value is not nil.
+func (dc *DopeCreate) SetNillableIndexID(id *string) *DopeCreate {
+	if id != nil {
+		dc = dc.SetIndexID(*id)
+	}
+	return dc
+}
+
+// SetIndex sets the "index" edge to the Search entity.
+func (dc *DopeCreate) SetIndex(s *Search) *DopeCreate {
+	return dc.SetIndexID(s.ID)
 }
 
 // Mutation returns the DopeMutation object of the builder.
@@ -400,6 +420,25 @@ func (dc *DopeCreate) createSpec() (*Dope, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: item.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := dc.mutation.IndexIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   dope.IndexTable,
+			Columns: []string{dope.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
 				},
 			},
 		}

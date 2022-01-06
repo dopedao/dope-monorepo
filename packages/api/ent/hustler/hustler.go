@@ -64,6 +64,8 @@ const (
 	EdgeHair = "hair"
 	// EdgeBeard holds the string denoting the beard edge name in mutations.
 	EdgeBeard = "beard"
+	// EdgeIndex holds the string denoting the index edge name in mutations.
+	EdgeIndex = "index"
 	// Table holds the table name of the hustler in the database.
 	Table = "hustlers"
 	// WalletTable is the table that holds the wallet relation/edge.
@@ -164,6 +166,13 @@ const (
 	BeardInverseTable = "body_parts"
 	// BeardColumn is the table column denoting the beard relation/edge.
 	BeardColumn = "body_part_hustler_beards"
+	// IndexTable is the table that holds the index relation/edge.
+	IndexTable = "search_index"
+	// IndexInverseTable is the table name for the Search entity.
+	// It exists in this package in order to avoid circular dependency with the "search" package.
+	IndexInverseTable = "search_index"
+	// IndexColumn is the table column denoting the index relation/edge.
+	IndexColumn = "hustler_index"
 )
 
 // Columns holds all SQL columns for hustler fields.

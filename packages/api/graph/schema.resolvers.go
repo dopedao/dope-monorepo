@@ -76,7 +76,7 @@ func (r *queryResolver) Listings(ctx context.Context, after *ent.Cursor, first *
 	return r.client.Listing.Query().Paginate(ctx, after, first, before, last, ent.WithListingOrder(orderBy), ent.WithListingFilter(where.Filter))
 }
 
-func (r *queryResolver) Search(ctx context.Context, query string, orderBy *model.SearchOrder, where *model.SearchWhereInput) ([]model.SearchResult, error) {
+func (r *queryResolver) Search(ctx context.Context, query string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SearchOrder, where *ent.SearchWhereInput) (*ent.SearchConnection, error) {
 	var tsquery string
 
 	parts := strings.Split(query, " ")
@@ -88,27 +88,12 @@ func (r *queryResolver) Search(ctx context.Context, query string, orderBy *model
 		}
 	}
 
-	items, err := r.client.Item.Query().Where(func(s *sql.Selector) {
+	return r.client.Search.Query().Where(func(s *sql.Selector) {
+		s.From(sql.Table("search_index"))
 		s.Where(sql.P(func(b *sql.Builder) {
-			b.WriteString(fmt.Sprintf("ts @@ to_tsquery('english', '%s')", tsquery))
+			b.WriteString(fmt.Sprintf("tsv_document @@ to_tsquery('english', '%s')", tsquery))
 		}))
-	}).WithDopes().All(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	var results []model.SearchResult
-	seen := make(map[string]bool)
-	for _, item := range items {
-		for _, dope := range item.Edges.Dopes {
-			if !seen[dope.ID] {
-				results = append(results, dope)
-			}
-			seen[dope.ID] = true
-		}
-	}
-
-	return results, nil
+	}).WithDope().WithItem().WithHustler().Paginate(ctx, after, first, before, last, ent.WithSearchOrder(orderBy), ent.WithSearchFilter(where.Filter))
 }
 
 // Amount returns generated1.AmountResolver implementation.
