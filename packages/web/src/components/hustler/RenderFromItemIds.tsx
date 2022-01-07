@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
-import { hexColorToBase16 } from 'utils/utils';
 import { HustlerSex, DEFAULT_BG_COLORS, ZoomWindow } from 'utils/HustlerConfig';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import { useHustler, useSwapMeet } from 'hooks/contracts';
+import { buildSVG } from 'utils/svg-builder';
 
 type Metadata = {
   image: string;
@@ -41,16 +41,13 @@ const RenderFromItemIds = ({
   ogTitle,
   dopeId,
 }: HustlerRenderProps) => {
-  const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
   const [bodyRles, setBodyRles] = useState<string[]>([]);
-  const [hasRenderedFromChain, setHasRenderedFromChain] = useState(false);
 
   const swapmeet = useSwapMeet();
   const hustlers = useHustler();
 
   useEffect(() => {
-    setHasRenderedFromChain(false);
     const sexIndex = sex && sex == 'female' ? 1 : 0;
     Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(setItemRles);
   }, [itemIds, sex, swapmeet]);
@@ -72,7 +69,6 @@ const RenderFromItemIds = ({
     const facialHairParams: [number, number] = [4, facialHair ?? 0];
 
     if (!hustlers) return;
-    setHasRenderedFromChain(false);
     // DEBUG INFO for when contract call fails.
     // Was tracking down bug that happens on Rinkeby.
     // console.log('body');
@@ -90,44 +86,25 @@ const RenderFromItemIds = ({
     Promise.all(promises).then(setBodyRles);
   }, [hustlers, sex, body, hair, facialHair]);
 
-  useEffect(() => {
-    if (hustlers && bodyRles.length > 0 && itemRles.length > 0) {
-      setHasRenderedFromChain(false);
+  const svg = useMemo(() => {
+    if (bodyRles.length > 0 && itemRles.length > 0) {
       const hustlerShadowHex = '0x0036283818022b01000d2b0500092b0200';
       const drugShadowHex = '0x00362f3729062b';
-      hustlers
-        .render(
-          renderName && ogTitle && Number(dopeId) < 500 ? ogTitle : '', // title
-          renderName ? name : '', // subtitle – should this be "name" ?
-          64,
-          hexColorToBase16(bgColor),
-          hexColorToBase16(textColor),
-          zoomWindow,
-          [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles],
-        )
-        .then(meta => {
-          meta = meta.replace('data:application/json;base64,', '');
-          meta = Buffer.from(meta, 'base64').toString();
-          const decoded = JSON.parse(meta);
-          setJson(decoded as Metadata);
-          setHasRenderedFromChain(true);
-        });
-    }
-  }, [
-    swapmeet,
-    hustlers,
-    itemRles,
-    bodyRles,
-    name,
-    textColor,
-    bgColor,
-    renderName,
-    zoomWindow,
-    ogTitle,
-    dopeId,
-  ]);
 
-  if (!hasRenderedFromChain) return <LoadingBlockSquareCentered />;
+      const title = renderName && ogTitle && Number(dopeId) < 500 ? ogTitle : '';
+      const subtitle = renderName ? name : '';
+      return buildSVG(
+        [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles],
+        bgColor,
+        textColor,
+        title,
+        subtitle,
+        zoomWindow,
+      );
+    }
+  }, [itemRles, bodyRles, name, textColor, bgColor, renderName, zoomWindow, ogTitle, dopeId]);
+
+  if (!svg) return <LoadingBlockSquareCentered />;
 
   return (
     // Need to set overflow hidden so whole container doesn't scroll
@@ -138,7 +115,7 @@ const RenderFromItemIds = ({
         overflow: hidden;
       `}
     >
-      {json && <img src={json.image} alt="" />}
+      {svg && <div dangerouslySetInnerHTML={{ __html: svg }} />}
     </AspectRatio>
   );
 };
