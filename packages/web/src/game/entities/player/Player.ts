@@ -140,9 +140,9 @@ export default class Player extends Hustler
 
         console.log(otherBodyType.position.y - playerBodyType.position.y);
 
-        if ((otherBodyType.position.y - playerBodyType.position.y) > 20)
+        if ((otherBodyType.position.y - playerBodyType.position.y) < 30)
             playerBodyType.gameObject.setDepth(2);
-        else if ((otherBodyType.position.y - playerBodyType.position.y) < -15)
+        else
             playerBodyType.gameObject.setDepth(0);
     }
 
