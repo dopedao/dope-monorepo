@@ -145,7 +145,7 @@ export default class Player extends Hustler
         this.questManager.update();
 
         // update depth depending other bodies
-        const overlapped = this.scene.matter.overlap(this, undefined, this.updateDepth);
+        const overlapped = this.scene.matter.overlap((this.body as MatterJS.BodyType).parts[1], undefined, this.updateDepth);
         // reset depth if not overlapped
         if (this.depth !== 2 && !overlapped)
         {

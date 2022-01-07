@@ -58,18 +58,29 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // create main body
         const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
-        const mainBody = Bodies.rectangle(x, y, this.width * 0.48, this.height * 0.35, {
+        const colliderBody = Bodies.rectangle(0, 0, this.width * 0.48, this.height * 0.35, {
             collisionFilter: {
                 group: -69
             },
             chamfer: { radius: 7.2 },
         } as MatterJS.BodyType);
-        this.setExistingBody(mainBody);
+        const sensorHitBox = Bodies.rectangle(0, 0 - this.height / 4.5, this.width * 0.6, this.height * 0.8, {
+            isSensor: true,
+        } as MatterJS.BodyType);
+        this.setExistingBody(Body.create({
+            parts: [colliderBody, sensorHitBox],
+            collisionFilter: {
+                group: -69
+            },
+        } as MatterJS.BodyType));
+        // this.setExistingBody(colliderBody);
+        
+        this.setPosition(x, y);
         
         this.setDepth(1);
 
         // offset the hustler texture from the body
-        this.setOrigin(0.5, 0.70);
+        this.setOrigin(0.5, 0.52);
         // make it a bit bigger
         this.setScale(2);
 
@@ -78,6 +89,11 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // create sub sprites
         this._model.createSprites();
+
+        console.log("Position Body 0 : ");
+        console.log((this.body as MatterJS.BodyType).parts[0].position);
+        console.log("Position Body 1 : ");
+        console.log((this.body as MatterJS.BodyType).parts[1].position);
 
         // create navigator
         this._navigator = new PathNavigator(this, new PF.AStarFinder({
