@@ -2,6 +2,7 @@ import Citizen from "game/entities/citizen/Citizen";
 import Conversation from "game/entities/citizen/Conversation";
 import Player from "game/entities/player/Player";
 import EventHandler, { Events } from "game/handlers/EventHandler";
+import Item from "game/inventory/Item";
 import Quest from "game/quests/Quest";
 import InventoryComponent from "game/ui/react/components/InventoryComponent";
 import DialogueTextBox from "game/ui/rex/DialogueTextBox";
@@ -90,9 +91,33 @@ export default class UIScene extends Scene {
         });
         EventHandler.emitter().on(Events.PLAYER_CLOSE_INVENTORY, () => {
             this.inventoryComponent?.destroy();
+            this.inventoryComponent = undefined;
         });
 
         this._handleNpcInteractions();
+        this._handleItemInteractions();
+    }
+
+    private _handleItemInteractions()
+    {
+        // handle player add itme into inventory
+        EventHandler.emitter().on(Events.PLAYER_ADD_ITEM_INVENTORY, (item: Item) => {
+            toast(`You picked up ${item.name}`, {
+                ...toastStyle,
+                icon: '💠'
+            });
+        });
+        // handle player remove item from inventory
+        EventHandler.emitter().on(Events.PLAYER_REMOVE_ITEM_INVENTORY, (item: Item) => {
+            toast(`You dropped ${item.name}`, {
+                ...toastStyle,
+                icon: '💠',
+                style: {
+                    ...toastStyle.style,
+                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
+                }
+            });
+        });
     }
 
     private _handleNpcInteractions()
