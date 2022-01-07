@@ -14,6 +14,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 )
 
@@ -41,6 +42,40 @@ func (sc *SearchCreate) SetGreatness(i int) *SearchCreate {
 func (sc *SearchCreate) SetNillableGreatness(i *int) *SearchCreate {
 	if i != nil {
 		sc.SetGreatness(*i)
+	}
+	return sc
+}
+
+// SetSaleActive sets the "sale_active" field.
+func (sc *SearchCreate) SetSaleActive(b bool) *SearchCreate {
+	sc.mutation.SetSaleActive(b)
+	return sc
+}
+
+// SetSalePrice sets the "sale_price" field.
+func (sc *SearchCreate) SetSalePrice(si schema.BigInt) *SearchCreate {
+	sc.mutation.SetSalePrice(si)
+	return sc
+}
+
+// SetNillableSalePrice sets the "sale_price" field if the given value is not nil.
+func (sc *SearchCreate) SetNillableSalePrice(si *schema.BigInt) *SearchCreate {
+	if si != nil {
+		sc.SetSalePrice(*si)
+	}
+	return sc
+}
+
+// SetLastSalePrice sets the "last_sale_price" field.
+func (sc *SearchCreate) SetLastSalePrice(si schema.BigInt) *SearchCreate {
+	sc.mutation.SetLastSalePrice(si)
+	return sc
+}
+
+// SetNillableLastSalePrice sets the "last_sale_price" field if the given value is not nil.
+func (sc *SearchCreate) SetNillableLastSalePrice(si *schema.BigInt) *SearchCreate {
+	if si != nil {
+		sc.SetLastSalePrice(*si)
 	}
 	return sc
 }
@@ -119,6 +154,7 @@ func (sc *SearchCreate) Save(ctx context.Context) (*Search, error) {
 		err  error
 		node *Search
 	)
+	sc.defaults()
 	if len(sc.hooks) == 0 {
 		if err = sc.check(); err != nil {
 			return nil, err
@@ -176,6 +212,18 @@ func (sc *SearchCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (sc *SearchCreate) defaults() {
+	if _, ok := sc.mutation.SalePrice(); !ok {
+		v := search.DefaultSalePrice()
+		sc.mutation.SetSalePrice(v)
+	}
+	if _, ok := sc.mutation.LastSalePrice(); !ok {
+		v := search.DefaultLastSalePrice()
+		sc.mutation.SetLastSalePrice(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (sc *SearchCreate) check() error {
 	if _, ok := sc.mutation.GetType(); !ok {
@@ -185,6 +233,15 @@ func (sc *SearchCreate) check() error {
 		if err := search.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Search.type": %w`, err)}
 		}
+	}
+	if _, ok := sc.mutation.SaleActive(); !ok {
+		return &ValidationError{Name: "sale_active", err: errors.New(`ent: missing required field "Search.sale_active"`)}
+	}
+	if _, ok := sc.mutation.SalePrice(); !ok {
+		return &ValidationError{Name: "sale_price", err: errors.New(`ent: missing required field "Search.sale_price"`)}
+	}
+	if _, ok := sc.mutation.LastSalePrice(); !ok {
+		return &ValidationError{Name: "last_sale_price", err: errors.New(`ent: missing required field "Search.last_sale_price"`)}
 	}
 	return nil
 }
@@ -238,6 +295,30 @@ func (sc *SearchCreate) createSpec() (*Search, *sqlgraph.CreateSpec) {
 			Column: search.FieldGreatness,
 		})
 		_node.Greatness = value
+	}
+	if value, ok := sc.mutation.SaleActive(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: search.FieldSaleActive,
+		})
+		_node.SaleActive = value
+	}
+	if value, ok := sc.mutation.SalePrice(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldSalePrice,
+		})
+		_node.SalePrice = value
+	}
+	if value, ok := sc.mutation.LastSalePrice(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldLastSalePrice,
+		})
+		_node.LastSalePrice = value
 	}
 	if nodes := sc.mutation.DopeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -389,6 +470,54 @@ func (u *SearchUpsert) ClearGreatness() *SearchUpsert {
 	return u
 }
 
+// SetSaleActive sets the "sale_active" field.
+func (u *SearchUpsert) SetSaleActive(v bool) *SearchUpsert {
+	u.Set(search.FieldSaleActive, v)
+	return u
+}
+
+// UpdateSaleActive sets the "sale_active" field to the value that was provided on create.
+func (u *SearchUpsert) UpdateSaleActive() *SearchUpsert {
+	u.SetExcluded(search.FieldSaleActive)
+	return u
+}
+
+// SetSalePrice sets the "sale_price" field.
+func (u *SearchUpsert) SetSalePrice(v schema.BigInt) *SearchUpsert {
+	u.Set(search.FieldSalePrice, v)
+	return u
+}
+
+// UpdateSalePrice sets the "sale_price" field to the value that was provided on create.
+func (u *SearchUpsert) UpdateSalePrice() *SearchUpsert {
+	u.SetExcluded(search.FieldSalePrice)
+	return u
+}
+
+// AddSalePrice adds v to the "sale_price" field.
+func (u *SearchUpsert) AddSalePrice(v schema.BigInt) *SearchUpsert {
+	u.Add(search.FieldSalePrice, v)
+	return u
+}
+
+// SetLastSalePrice sets the "last_sale_price" field.
+func (u *SearchUpsert) SetLastSalePrice(v schema.BigInt) *SearchUpsert {
+	u.Set(search.FieldLastSalePrice, v)
+	return u
+}
+
+// UpdateLastSalePrice sets the "last_sale_price" field to the value that was provided on create.
+func (u *SearchUpsert) UpdateLastSalePrice() *SearchUpsert {
+	u.SetExcluded(search.FieldLastSalePrice)
+	return u
+}
+
+// AddLastSalePrice adds v to the "last_sale_price" field.
+func (u *SearchUpsert) AddLastSalePrice(v schema.BigInt) *SearchUpsert {
+	u.Add(search.FieldLastSalePrice, v)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -484,6 +613,62 @@ func (u *SearchUpsertOne) ClearGreatness() *SearchUpsertOne {
 	})
 }
 
+// SetSaleActive sets the "sale_active" field.
+func (u *SearchUpsertOne) SetSaleActive(v bool) *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetSaleActive(v)
+	})
+}
+
+// UpdateSaleActive sets the "sale_active" field to the value that was provided on create.
+func (u *SearchUpsertOne) UpdateSaleActive() *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateSaleActive()
+	})
+}
+
+// SetSalePrice sets the "sale_price" field.
+func (u *SearchUpsertOne) SetSalePrice(v schema.BigInt) *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetSalePrice(v)
+	})
+}
+
+// AddSalePrice adds v to the "sale_price" field.
+func (u *SearchUpsertOne) AddSalePrice(v schema.BigInt) *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.AddSalePrice(v)
+	})
+}
+
+// UpdateSalePrice sets the "sale_price" field to the value that was provided on create.
+func (u *SearchUpsertOne) UpdateSalePrice() *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateSalePrice()
+	})
+}
+
+// SetLastSalePrice sets the "last_sale_price" field.
+func (u *SearchUpsertOne) SetLastSalePrice(v schema.BigInt) *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetLastSalePrice(v)
+	})
+}
+
+// AddLastSalePrice adds v to the "last_sale_price" field.
+func (u *SearchUpsertOne) AddLastSalePrice(v schema.BigInt) *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.AddLastSalePrice(v)
+	})
+}
+
+// UpdateLastSalePrice sets the "last_sale_price" field to the value that was provided on create.
+func (u *SearchUpsertOne) UpdateLastSalePrice() *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateLastSalePrice()
+	})
+}
+
 // Exec executes the query.
 func (u *SearchUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -537,6 +722,7 @@ func (scb *SearchCreateBulk) Save(ctx context.Context) ([]*Search, error) {
 	for i := range scb.builders {
 		func(i int, root context.Context) {
 			builder := scb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SearchMutation)
 				if !ok {
@@ -741,6 +927,62 @@ func (u *SearchUpsertBulk) UpdateGreatness() *SearchUpsertBulk {
 func (u *SearchUpsertBulk) ClearGreatness() *SearchUpsertBulk {
 	return u.Update(func(s *SearchUpsert) {
 		s.ClearGreatness()
+	})
+}
+
+// SetSaleActive sets the "sale_active" field.
+func (u *SearchUpsertBulk) SetSaleActive(v bool) *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetSaleActive(v)
+	})
+}
+
+// UpdateSaleActive sets the "sale_active" field to the value that was provided on create.
+func (u *SearchUpsertBulk) UpdateSaleActive() *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateSaleActive()
+	})
+}
+
+// SetSalePrice sets the "sale_price" field.
+func (u *SearchUpsertBulk) SetSalePrice(v schema.BigInt) *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetSalePrice(v)
+	})
+}
+
+// AddSalePrice adds v to the "sale_price" field.
+func (u *SearchUpsertBulk) AddSalePrice(v schema.BigInt) *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.AddSalePrice(v)
+	})
+}
+
+// UpdateSalePrice sets the "sale_price" field to the value that was provided on create.
+func (u *SearchUpsertBulk) UpdateSalePrice() *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateSalePrice()
+	})
+}
+
+// SetLastSalePrice sets the "last_sale_price" field.
+func (u *SearchUpsertBulk) SetLastSalePrice(v schema.BigInt) *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetLastSalePrice(v)
+	})
+}
+
+// AddLastSalePrice adds v to the "last_sale_price" field.
+func (u *SearchUpsertBulk) AddLastSalePrice(v schema.BigInt) *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.AddLastSalePrice(v)
+	})
+}
+
+// UpdateLastSalePrice sets the "last_sale_price" field to the value that was provided on create.
+func (u *SearchUpsertBulk) UpdateLastSalePrice() *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateLastSalePrice()
 	})
 }
 

@@ -10,6 +10,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
@@ -64,6 +65,16 @@ func init() {
 	hustlerDescCreatedAt := hustlerFields[11].Descriptor()
 	// hustler.DefaultCreatedAt holds the default value on creation for the created_at field.
 	hustler.DefaultCreatedAt = hustlerDescCreatedAt.Default.(func() time.Time)
+	searchFields := schema.Search{}.Fields()
+	_ = searchFields
+	// searchDescSalePrice is the schema descriptor for sale_price field.
+	searchDescSalePrice := searchFields[4].Descriptor()
+	// search.DefaultSalePrice holds the default value on creation for the sale_price field.
+	search.DefaultSalePrice = searchDescSalePrice.Default.(func() schema.BigInt)
+	// searchDescLastSalePrice is the schema descriptor for last_sale_price field.
+	searchDescLastSalePrice := searchFields[5].Descriptor()
+	// search.DefaultLastSalePrice holds the default value on creation for the last_sale_price field.
+	search.DefaultLastSalePrice = searchDescLastSalePrice.Default.(func() schema.BigInt)
 	walletFields := schema.Wallet{}.Fields()
 	_ = walletFields
 	// walletDescPaper is the schema descriptor for paper field.

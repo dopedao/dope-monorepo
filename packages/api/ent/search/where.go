@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
 // ID filters vertices based on their ID field.
@@ -95,6 +96,27 @@ func IDLTE(id string) predicate.Search {
 func Greatness(v int) predicate.Search {
 	return predicate.Search(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldGreatness), v))
+	})
+}
+
+// SaleActive applies equality check predicate on the "sale_active" field. It's identical to SaleActiveEQ.
+func SaleActive(v bool) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSaleActive), v))
+	})
+}
+
+// SalePrice applies equality check predicate on the "sale_price" field. It's identical to SalePriceEQ.
+func SalePrice(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSalePrice), v))
+	})
+}
+
+// LastSalePrice applies equality check predicate on the "last_sale_price" field. It's identical to LastSalePriceEQ.
+func LastSalePrice(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLastSalePrice), v))
 	})
 }
 
@@ -233,6 +255,172 @@ func GreatnessIsNil() predicate.Search {
 func GreatnessNotNil() predicate.Search {
 	return predicate.Search(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldGreatness)))
+	})
+}
+
+// SaleActiveEQ applies the EQ predicate on the "sale_active" field.
+func SaleActiveEQ(v bool) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSaleActive), v))
+	})
+}
+
+// SaleActiveNEQ applies the NEQ predicate on the "sale_active" field.
+func SaleActiveNEQ(v bool) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSaleActive), v))
+	})
+}
+
+// SalePriceEQ applies the EQ predicate on the "sale_price" field.
+func SalePriceEQ(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSalePrice), v))
+	})
+}
+
+// SalePriceNEQ applies the NEQ predicate on the "sale_price" field.
+func SalePriceNEQ(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSalePrice), v))
+	})
+}
+
+// SalePriceIn applies the In predicate on the "sale_price" field.
+func SalePriceIn(vs ...schema.BigInt) predicate.Search {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Search(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldSalePrice), v...))
+	})
+}
+
+// SalePriceNotIn applies the NotIn predicate on the "sale_price" field.
+func SalePriceNotIn(vs ...schema.BigInt) predicate.Search {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Search(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldSalePrice), v...))
+	})
+}
+
+// SalePriceGT applies the GT predicate on the "sale_price" field.
+func SalePriceGT(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldSalePrice), v))
+	})
+}
+
+// SalePriceGTE applies the GTE predicate on the "sale_price" field.
+func SalePriceGTE(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldSalePrice), v))
+	})
+}
+
+// SalePriceLT applies the LT predicate on the "sale_price" field.
+func SalePriceLT(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldSalePrice), v))
+	})
+}
+
+// SalePriceLTE applies the LTE predicate on the "sale_price" field.
+func SalePriceLTE(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldSalePrice), v))
+	})
+}
+
+// LastSalePriceEQ applies the EQ predicate on the "last_sale_price" field.
+func LastSalePriceEQ(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLastSalePrice), v))
+	})
+}
+
+// LastSalePriceNEQ applies the NEQ predicate on the "last_sale_price" field.
+func LastSalePriceNEQ(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldLastSalePrice), v))
+	})
+}
+
+// LastSalePriceIn applies the In predicate on the "last_sale_price" field.
+func LastSalePriceIn(vs ...schema.BigInt) predicate.Search {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Search(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldLastSalePrice), v...))
+	})
+}
+
+// LastSalePriceNotIn applies the NotIn predicate on the "last_sale_price" field.
+func LastSalePriceNotIn(vs ...schema.BigInt) predicate.Search {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Search(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldLastSalePrice), v...))
+	})
+}
+
+// LastSalePriceGT applies the GT predicate on the "last_sale_price" field.
+func LastSalePriceGT(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldLastSalePrice), v))
+	})
+}
+
+// LastSalePriceGTE applies the GTE predicate on the "last_sale_price" field.
+func LastSalePriceGTE(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldLastSalePrice), v))
+	})
+}
+
+// LastSalePriceLT applies the LT predicate on the "last_sale_price" field.
+func LastSalePriceLT(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldLastSalePrice), v))
+	})
+}
+
+// LastSalePriceLTE applies the LTE predicate on the "last_sale_price" field.
+func LastSalePriceLTE(v schema.BigInt) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldLastSalePrice), v))
 	})
 }
 

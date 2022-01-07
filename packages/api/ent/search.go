@@ -10,6 +10,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 )
 
@@ -22,6 +23,12 @@ type Search struct {
 	Type search.Type `json:"type,omitempty"`
 	// Greatness holds the value of the "greatness" field.
 	Greatness int `json:"greatness,omitempty"`
+	// SaleActive holds the value of the "sale_active" field.
+	SaleActive bool `json:"sale_active,omitempty"`
+	// SalePrice holds the value of the "sale_price" field.
+	SalePrice schema.BigInt `json:"sale_price,omitempty"`
+	// LastSalePrice holds the value of the "last_sale_price" field.
+	LastSalePrice schema.BigInt `json:"last_sale_price,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SearchQuery when eager-loading is set.
 	Edges         SearchEdges `json:"edges"`
@@ -90,6 +97,10 @@ func (*Search) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case search.FieldSalePrice, search.FieldLastSalePrice:
+			values[i] = new(schema.BigInt)
+		case search.FieldSaleActive:
+			values[i] = new(sql.NullBool)
 		case search.FieldGreatness:
 			values[i] = new(sql.NullInt64)
 		case search.FieldID, search.FieldType:
@@ -132,6 +143,24 @@ func (s *Search) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field greatness", values[i])
 			} else if value.Valid {
 				s.Greatness = int(value.Int64)
+			}
+		case search.FieldSaleActive:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field sale_active", values[i])
+			} else if value.Valid {
+				s.SaleActive = value.Bool
+			}
+		case search.FieldSalePrice:
+			if value, ok := values[i].(*schema.BigInt); !ok {
+				return fmt.Errorf("unexpected type %T for field sale_price", values[i])
+			} else if value != nil {
+				s.SalePrice = *value
+			}
+		case search.FieldLastSalePrice:
+			if value, ok := values[i].(*schema.BigInt); !ok {
+				return fmt.Errorf("unexpected type %T for field last_sale_price", values[i])
+			} else if value != nil {
+				s.LastSalePrice = *value
 			}
 		case search.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -201,6 +230,12 @@ func (s *Search) String() string {
 	builder.WriteString(fmt.Sprintf("%v", s.Type))
 	builder.WriteString(", greatness=")
 	builder.WriteString(fmt.Sprintf("%v", s.Greatness))
+	builder.WriteString(", sale_active=")
+	builder.WriteString(fmt.Sprintf("%v", s.SaleActive))
+	builder.WriteString(", sale_price=")
+	builder.WriteString(fmt.Sprintf("%v", s.SalePrice))
+	builder.WriteString(", last_sale_price=")
+	builder.WriteString(fmt.Sprintf("%v", s.LastSalePrice))
 	builder.WriteByte(')')
 	return builder.String()
 }
