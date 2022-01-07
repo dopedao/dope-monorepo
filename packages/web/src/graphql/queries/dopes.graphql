@@ -29,6 +29,19 @@ query Dopes(
         opened
         score
         rank
+        listings {
+          id
+          outputs {
+            id
+            type
+            amount
+            token {
+              ... on Dope {
+                id
+              }
+            }
+          }
+        }
         items {
           id
           fullname

@@ -2,13 +2,13 @@
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import DopeCardBody from 'components/dope/DopeCardBody';
-// import DopeCardFooterForMarket from 'components/dope/DopeCardFooterForMarket';
+import DopeCardFooterForMarket from 'components/dope/DopeCardFooterForMarket';
 import DopeCardFooterForOwner from 'components/dope/DopeCardFooterForOwner';
 import DopeLegend from 'components/dope/DopeLegend';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
-import { ItemTier, ItemType } from 'generated/graphql';
+import { AmountType, ItemTier, ItemType } from 'generated/graphql';
 
 export type DopeCardProps = {
   footer: 'for-marketplace' | 'for-owner';
@@ -19,9 +19,37 @@ export type DopeCardProps = {
     opened: boolean;
     score: number;
     rank: number;
-    items?: {
+    listings?:
+      | Array<
+          | {
+              __typename?: 'Listing';
+              id: string;
+              outputs: Array<
+                | {
+                    __typename?: 'Amount';
+                    id: string;
+                    type: AmountType;
+                    amount: any;
+                    token?:
+                      | { __typename?: 'Dope'; id: string }
+                      | { __typename?: 'Hustler' }
+                      | { __typename?: 'Item' }
+                      | null
+                      | undefined;
+                  }
+                | null
+                | undefined
+              >;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+    items: Array<{
       __typename?: 'Item';
       id: string;
+      fullname: string;
       type: ItemType;
       name: string;
       namePrefix?: string | null | undefined;
@@ -31,9 +59,9 @@ export type DopeCardProps = {
       tier: ItemTier;
       greatness: number;
       count: number;
-      fullname: string;
-    }[];
+    }>;
   };
+
   isExpanded?: boolean;
   showCollapse?: boolean;
 };
@@ -110,11 +138,11 @@ const DopeCard = ({
               <DopeCardFooterForOwner dope={dope} toggleVisibility={toggleItemLegendVisibility} />
             </PanelFooter>
           )}
-          {/* {footer && footer === 'for-marketplace' && (
+          {footer && footer === 'for-marketplace' && (
             <PanelFooter>
               <DopeCardFooterForMarket dope={dope} />
             </PanelFooter>
-          )} */}
+          )}
         </PanelContainer>
       )}
     </>

@@ -4,6 +4,7 @@ import {
   DopeOrderField,
   OrderDirection,
   useInfiniteDopesQuery,
+  useInfiniteSearchDopeQuery,
   useSearchDopeQuery,
 } from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
@@ -26,66 +27,14 @@ import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
 
 const MarketList = () => {
-  // const [sortByKey, setSortByKey] = useState('');
-  // const [statusKey, setStatusKey] = useState('');
   const [searchInputValue, setSearchValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
-  // const dopeDb = useReactiveVar(DopeDbCacheReactive) as DopeDatabase;
-
-  // const getItemComparisonFunction = (key: string) => {
-  //   console.log(`Sorting: ${key}`);
-  //   switch (key) {
-  //     case 'Most Affordable':
-  //       return compareByMostAffordable;
-  //     case 'Most Expensive':
-  //       return compareByMostExpensive;
-  //     case 'Highest Last Sale':
-  //       return compareByHighestLastSale;
-  //     default:
-  //       return compareByRank;
-  //   }
-  // };
-  // const getStatusTestFunction = (key: string) => {
-  //   console.log(`Filter for: ${key}`);
-  //   switch (key) {
-  //     case 'Has Unclaimed $PAPER':
-  //       return testForUnclaimedPaper;
-  //     case 'For Sale':
-  //       return testForSale;
-  //     case 'Ready To Unpack':
-  //       return testForNotOpened;
-  //     default:
-  //       return () => true;
-  //   }
-  // };
-
-  // Loads unclaimed $paper status from The Graph,
-  // then updates items in reactive var cache.
-  // opened: true
-  // const { data: unclaimedDopes } = useDopesQuery({
-  //   first: 100,
-  //   orderBy: {
-  //     field: DopeOrderField.Rank,
-  //     direction: OrderDirection.Desc,
-  //   },
-  //   where: {
-  //     opened: true,
-  //   },
-  // });
-  // const [hasUpdateDopeDbWithPaper, setHasUpdateDopeDbWithPaper] = useState(false);
-  // if (!hasUpdateDopeDbWithPaper && unclaimedDopes && unclaimedDopes.page_1) {
-  //   dopeDb.updateHasPaperFromQuery(unclaimedDopes);
-  //   console.log('PAPER');
-  //   DopeDbCacheReactive(dopeDb);
-  //   setHasUpdateDopeDbWithPaper(true);
-  // }
 
   // Loads unbundled from The Graph,
   // then updates items in reactive var cache.
   // claimed: false
-  // const [currentCursor, setCurrentCursor] = useState('');
   const {
     data: unclaimedDopes,
     fetchNextPage,
@@ -116,33 +65,29 @@ const MarketList = () => {
     data: searchResult,
     isFetching: isSearchFetching,
     refetch,
-  } = useSearchDopeQuery(
+    fetchNextPage: searchFetchNextPage,
+    hasNextPage: searchHasNextPage,
+    status: searchStatus,
+  } = useInfiniteSearchDopeQuery(
+    'first',
     {
+      first: 100,
+      orderBy: {
+        direction: OrderDirection.Asc,
+      },
       query: searchInputValue,
     },
     {
+      getNextPageParam: lastPage => {
+        if (lastPage.search.pageInfo.hasNextPage) {
+          return lastPage.search.pageInfo.endCursor;
+        }
+        return false;
+      },
       enabled: !!searchInputValue,
     },
   );
-  // const [hasUpdateDopeDbWithBundled, setHasUpdateDopeDbWithBundled] = useState(false);
-  // if (!hasUpdateDopeDbWithBundled && openedDopes && openedDopes.page_1) {
-  //   // dopeDb.updateOpenedDopesFromQuery(openedDopes);
-  //   console.log('BUNDLED');
-  //   DopeDbCacheReactive(dopeDb);
-  //   setHasUpdateDopeDbWithBundled(true);
-  // }
 
-  // const filteredSortedItems = useMemo(() => {
-  //   console.log('FILTERED ITEMS');
-  //   console.log(`${statusKey} : ${sortByKey}`);
-  //   const sortedItems = dopeDb.items.sort(getItemComparisonFunction(sortByKey));
-  //   const filteredItems = sortedItems.filter(getStatusTestFunction(statusKey));
-  //   return filterItemsBySearchString(filteredItems, searchInputValue);
-  // }, [statusKey, sortByKey, dopeDb.items, searchInputValue]);
-
-  // const [visibleItems, setVisibleItems] = useState(filteredSortedItems.slice(0, itemsVisible));
-
-  // Search, sort, status change…
   useEffect(() => {
     const searchFetch = async () => {
       if (searchInputValue) {
@@ -154,17 +99,9 @@ const MarketList = () => {
     searchFetch();
   }, [searchInputValue, refetch]);
 
-  // Increasing itemsVisible simply increases the window size
-  // into the cached data we render in window.
-  // const loadNextPage = (page: number) => {
-  //   itemsVisible = (page + 1) * PAGE_SIZE;
-  //   console.log(`page: ${page}\nitemsVisible: ${itemsVisible}`);
-  //   setVisibleItems(filteredSortedItems.slice(0, itemsVisible));
-  // };
+  const isLoading = status === 'loading' || isSearchFetching || searchStatus === 'loading'; // || !hasUpdateDopeDbWithPaper;
 
-  const isLoading = status === 'loading' || isSearchFetching; // || !hasUpdateDopeDbWithPaper;
-
-  const handleSearch = (value: string) => {
+  const handleSearch = async (value: string) => {
     setSearchValue(value);
   };
 
@@ -181,20 +118,48 @@ const MarketList = () => {
       />
       {isLoading ? (
         <LoadingState />
-      ) : searchResult ? (
-        searchResult.search.length <= 0 ? (
+      ) : searchResult && searchInputValue.length >= 1 ? (
+        searchResult.pages.length <= 0 ? (
           <EmptyState />
         ) : (
           <Container>
-            {searchResult.search.map((dope: any) => (
-              <DopeCard
-                key={dope.id}
-                dope={dope}
-                footer="for-marketplace"
-                isExpanded={viewCompactCards ? false : true}
-                showCollapse
-              />
-            ))}
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={() =>
+                searchFetchNextPage({
+                  pageParam: {
+                    first: 100,
+                    after:
+                      searchResult?.pages[searchResult.pages.length - 1].search.pageInfo.endCursor,
+                    orderBy: {
+                      direction: OrderDirection.Asc,
+                    },
+                    query: searchInputValue,
+                  },
+                })
+              }
+              hasMore={searchHasNextPage}
+              loader={<LoadingBlock key="loading-block" />}
+              useWindow={false}
+              className="dopeGrid"
+            >
+              {searchResult?.pages.map(group =>
+                group.search.edges!.map((dope: any) => {
+                  if (!dope || !dope.node) {
+                    return null;
+                  }
+                  return (
+                    <DopeCard
+                      key={dope.node.id}
+                      dope={dope.node}
+                      footer="for-marketplace"
+                      isExpanded={viewCompactCards ? false : true}
+                      showCollapse
+                    />
+                  );
+                }),
+              )}
+            </InfiniteScroll>
           </Container>
         )
       ) : unclaimedDopes?.pages && unclaimedDopes.pages.length <= 0 ? (

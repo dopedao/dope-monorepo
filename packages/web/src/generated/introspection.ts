@@ -7,7 +7,7 @@
       const result: PossibleTypesResultData = {
   "possibleTypes": {
     "Node": [
-      "Asset",
+      "Amount",
       "BodyPart",
       "Dope",
       "Hustler",
@@ -17,6 +17,11 @@
       "WalletItems"
     ],
     "SearchResult": [
+      "Dope",
+      "Hustler",
+      "Item"
+    ],
+    "Token": [
       "Dope",
       "Hustler",
       "Item"
