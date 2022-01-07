@@ -79,21 +79,27 @@ func (r *queryResolver) Listings(ctx context.Context, after *ent.Cursor, first *
 func (r *queryResolver) Search(ctx context.Context, query string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SearchOrder, where *ent.SearchWhereInput) (*ent.SearchConnection, error) {
 	var tsquery string
 
-	parts := strings.Split(query, " ")
-	for i, part := range parts {
-		tsquery += part + ":*"
+	q := r.client.Search.Query()
 
-		if i != len(parts)-1 {
-			tsquery += " & "
+	if query != "" {
+		parts := strings.Split(query, " ")
+		for i, part := range parts {
+			tsquery += part + ":*"
+
+			if i != len(parts)-1 {
+				tsquery += " & "
+			}
 		}
+
+		q = q.Where(func(s *sql.Selector) {
+			s.From(sql.Table("search_index"))
+			s.Where(sql.P(func(b *sql.Builder) {
+				b.WriteString(fmt.Sprintf("tsv_document @@ to_tsquery('english', '%s')", tsquery))
+			}))
+		})
 	}
 
-	return r.client.Search.Query().Where(func(s *sql.Selector) {
-		s.From(sql.Table("search_index"))
-		s.Where(sql.P(func(b *sql.Builder) {
-			b.WriteString(fmt.Sprintf("tsv_document @@ to_tsquery('english', '%s')", tsquery))
-		}))
-	}).WithDope().WithItem().WithHustler().Paginate(ctx, after, first, before, last, ent.WithSearchOrder(orderBy), ent.WithSearchFilter(where.Filter))
+	return q.WithDope().WithItem().WithHustler().Paginate(ctx, after, first, before, last, ent.WithSearchOrder(orderBy), ent.WithSearchFilter(where.Filter))
 }
 
 // Amount returns generated1.AmountResolver implementation.
