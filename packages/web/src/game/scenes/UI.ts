@@ -36,6 +36,7 @@ export default class UIScene extends Scene {
     public toaster!: ComponentManager;
 
     public player!: Player;
+    public inventoryComponent?: ComponentManager;
     public currentInteraction?: Interaction;
 
     constructor() {
@@ -85,7 +86,10 @@ export default class UIScene extends Scene {
     {
         // handle player inventory open
         EventHandler.emitter().on(Events.PLAYER_OPEN_INVENTORY, () => {
-            this.add.reactDom(InventoryComponent, { inventory: this.player.inventory, quests: this.player.questManager.quests });
+            this.inventoryComponent = this.add.reactDom(InventoryComponent, { inventory: this.player.inventory, quests: this.player.questManager.quests });
+        });
+        EventHandler.emitter().on(Events.PLAYER_CLOSE_INVENTORY, () => {
+            this.inventoryComponent?.destroy();
         });
 
         this._handleNpcInteractions();

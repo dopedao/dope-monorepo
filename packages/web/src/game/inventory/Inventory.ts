@@ -34,15 +34,17 @@ export default class Inventory
             return;
 
         this._items[index] = item;
+        EventHandler.emitter().emit(Events.PLAYER_ADD_ITEM_INVENTORY, this._items[index]);
     }
 
     // remove item
-    remove(item: Item)
+    remove(item: Item | number)
     {
-        const index = this._items.indexOf(item);
-        if (index === -1)
+        const index = item instanceof Item ? this._items.indexOf(item) : item;
+        if (index === -1 || index >= this._items.length)
             return;
         
+        EventHandler.emitter().emit(Events.PLAYER_REMOVE_ITEM_INVENTORY, this._items[index]);
         this._items[index] = undefined;
     }
 
@@ -58,39 +60,7 @@ export default class Inventory
         return this._items.indexOf(undefined) === -1;
     }
 
-    // add item to inventory
-    public addItem(item: Item)
-    {
-        for (let i = 0; i < this._items.length; i++)
-        {
-            if (!this._items[i])
-            {
-                this._items[i] = item;
-                return;
-            }
-        }
-    }
-
-    // remove item by item type
-    public removeItem(item: Item)
-    {
-        for (let i = 0; i < this._items.length; i++)
-        {
-            if (this._items[i] === item)
-            {
-                this._items[i] = undefined;
-                return;
-            }
-        }
-    }
-
-    // remove item by index
-    public removeItemAt(index: number)
-    {
-        this._items[index] = undefined;
-    }
-
-    public size(): number
+    size(): number
     {
         return this._items.length;
     }

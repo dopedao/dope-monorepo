@@ -14,6 +14,8 @@ import Conversation from 'game/entities/citizen/Conversation';
 import { TypeKind } from 'graphql';
 import Quest from 'game/quests/Quest';
 import PointQuest from 'game/quests/PointQuest';
+import Item from 'game/inventory/Item';
+import ItemEntity from 'game/entities/ItemEntity';
 
 export default class GameScene extends Scene {
   private player!: Player;
@@ -34,10 +36,21 @@ export default class GameScene extends Scene {
     });
   }
 
+  handleItemEntities()
+  {
+    EventHandler.emitter().on(Events.PLAYER_REMOVE_ITEM_INVENTORY, (item: Item) => {
+      new ItemEntity(this.matter.world, this.player.x, this.player.y, 'item_' + item.name, item);
+    })
+  }
+
   create(): void {
+    // create item entities when need 
+    this.handleItemEntities();
+
     // create all of the animations
     new GameAnimations(this.anims).create();
 
+    // on click pathfinding
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (!this.canUseMouse)
         return;

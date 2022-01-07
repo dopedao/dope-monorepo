@@ -52,7 +52,6 @@ const questNameStyle: CSSProperties = {
 
 export default function InventoryComponent(props: InventoryProps)
 {
-    console.log("InventoryComponent");
 
     return (
         <ChakraProvider>

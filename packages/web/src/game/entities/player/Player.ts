@@ -5,6 +5,7 @@ import QuestManager from "game/managers/QuestManager";
 import Quest from "game/quests/Quest";
 import Citizen from "../citizen/Citizen";
 import Hustler, { Direction } from "../Hustler";
+import ItemEntity from "../ItemEntity";
 import PlayerController from "./PlayerController";
 
 export default class Player extends Hustler
@@ -16,12 +17,15 @@ export default class Player extends Hustler
     private _inventory: Inventory;
     private _questManager: QuestManager;
 
+    private _inventoryOpen: boolean = false;
     private _busy: boolean = false;
 
     get interactSensor() { return this._interactSensor; }
     
     get inventory() { return this._inventory; }
     get questManager() { return this._questManager; }
+
+    get inventoryOpen() { return this._inventoryOpen; }
 
     get busy() { return this._busy; }
 
@@ -42,13 +46,22 @@ export default class Player extends Hustler
         this._handleEvents();
     }
 
-    openInventory()
+    toggleInventory()
     {
-        if (this.busy)
-            return;
-        
-        EventHandler.emitter().emit(Events.PLAYER_OPEN_INVENTORY);
-        this._busy = true;        
+        if (!this.inventoryOpen)
+        {
+            EventHandler.emitter().emit(Events.PLAYER_OPEN_INVENTORY);
+
+            this._inventoryOpen = true;
+            this._busy = true;
+        }
+        else
+        {
+            EventHandler.emitter().emit(Events.PLAYER_CLOSE_INVENTORY);
+
+            this._inventoryOpen = false;
+            this._busy = false;
+        }
     }
 
     tryInteraction()
@@ -67,6 +80,11 @@ export default class Player extends Hustler
                 // call onInteraction method of citizen
                 otherGameObject.onInteraction(this);
                 EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, otherGameObject);
+            }
+            else if (otherGameObject instanceof ItemEntity)
+            {
+                this.inventory.add((otherGameObject as ItemEntity).item);
+                (otherGameObject as ItemEntity).onPickup();
             }
         });
     }

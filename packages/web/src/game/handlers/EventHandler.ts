@@ -2,6 +2,7 @@ export enum Events
 {
     // add events
     PLAYER_OPEN_INVENTORY = 'player_open_inventory',
+    PLAYER_CLOSE_INVENTORY = 'player_close_inventory',
     PLAYER_ADD_ITEM_INVENTORY = 'player_add_item_inventory',
     PLAYER_REMOVE_ITEM_INVENTORY = 'player_add_item_inventory',
 
@@ -24,6 +25,7 @@ export default class EventHandler
         
         // handle events
         EventHandler._emitter.on(Events.PLAYER_OPEN_INVENTORY, () => console.log('Opened inventory'));
+        EventHandler._emitter.on(Events.PLAYER_CLOSE_INVENTORY, () => console.log('Closed inventory'));
         EventHandler._emitter.on(Events.PLAYER_ADD_ITEM_INVENTORY, () => console.log('Added item to inventory'));
         EventHandler._emitter.on(Events.PLAYER_REMOVE_ITEM_INVENTORY, () => console.log('Removed item from inventory'));
 
