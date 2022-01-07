@@ -46,7 +46,7 @@ export type DopeCardProps = {
         >
       | null
       | undefined;
-    items: Array<{
+    items?: Array<{
       __typename?: 'Item';
       id: string;
       fullname: string;
