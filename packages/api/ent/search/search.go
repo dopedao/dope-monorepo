@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
 const (
@@ -17,6 +19,12 @@ const (
 	FieldType = "type"
 	// FieldGreatness holds the string denoting the greatness field in the database.
 	FieldGreatness = "greatness"
+	// FieldSaleActive holds the string denoting the sale_active field in the database.
+	FieldSaleActive = "sale_active"
+	// FieldSalePrice holds the string denoting the sale_price field in the database.
+	FieldSalePrice = "sale_price"
+	// FieldLastSalePrice holds the string denoting the last_sale_price field in the database.
+	FieldLastSalePrice = "last_sale_price"
 	// EdgeDope holds the string denoting the dope edge name in mutations.
 	EdgeDope = "dope"
 	// EdgeItem holds the string denoting the item edge name in mutations.
@@ -53,6 +61,9 @@ var Columns = []string{
 	FieldID,
 	FieldType,
 	FieldGreatness,
+	FieldSaleActive,
+	FieldSalePrice,
+	FieldLastSalePrice,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "search_index"
@@ -77,6 +88,13 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultSalePrice holds the default value on creation for the "sale_price" field.
+	DefaultSalePrice func() schema.BigInt
+	// DefaultLastSalePrice holds the default value on creation for the "last_sale_price" field.
+	DefaultLastSalePrice func() schema.BigInt
+)
 
 // Type defines the type for the "type" enum field.
 type Type string

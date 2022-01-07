@@ -2036,6 +2036,30 @@ input SearchWhereInput {
   greatnessIsNil: Boolean
   greatnessNotNil: Boolean
   
+  """sale_active field predicates"""
+  saleActive: Boolean
+  saleActiveNEQ: Boolean
+  
+  """sale_price field predicates"""
+  salePrice: BigInt
+  salePriceNEQ: BigInt
+  salePriceIn: [BigInt!]
+  salePriceNotIn: [BigInt!]
+  salePriceGT: BigInt
+  salePriceGTE: BigInt
+  salePriceLT: BigInt
+  salePriceLTE: BigInt
+  
+  """last_sale_price field predicates"""
+  lastSalePrice: BigInt
+  lastSalePriceNEQ: BigInt
+  lastSalePriceIn: [BigInt!]
+  lastSalePriceNotIn: [BigInt!]
+  lastSalePriceGT: BigInt
+  lastSalePriceGTE: BigInt
+  lastSalePriceLT: BigInt
+  lastSalePriceLTE: BigInt
+  
   """id field predicates"""
   id: ID
   idNEQ: ID
@@ -2103,6 +2127,8 @@ type ItemEdge {
 
 enum ItemOrderField {
   GREATNESS
+  SALE_PRICE
+  LAST_SALE_PRICE
 }
 
 input ItemOrder {
@@ -12338,6 +12364,150 @@ func (ec *executionContext) unmarshalInputSearchWhereInput(ctx context.Context, 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessNotNil"))
 			it.GreatnessNotNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "saleActive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saleActive"))
+			it.SaleActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "saleActiveNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saleActiveNEQ"))
+			it.SaleActiveNEQ, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "salePrice":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salePrice"))
+			it.SalePrice, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "salePriceNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salePriceNEQ"))
+			it.SalePriceNEQ, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "salePriceIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salePriceIn"))
+			it.SalePriceIn, err = ec.unmarshalOBigInt2ᚕgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigIntᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "salePriceNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salePriceNotIn"))
+			it.SalePriceNotIn, err = ec.unmarshalOBigInt2ᚕgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigIntᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "salePriceGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salePriceGT"))
+			it.SalePriceGT, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "salePriceGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salePriceGTE"))
+			it.SalePriceGTE, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "salePriceLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salePriceLT"))
+			it.SalePriceLT, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "salePriceLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salePriceLTE"))
+			it.SalePriceLTE, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastSalePrice":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastSalePrice"))
+			it.LastSalePrice, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastSalePriceNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastSalePriceNEQ"))
+			it.LastSalePriceNEQ, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastSalePriceIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastSalePriceIn"))
+			it.LastSalePriceIn, err = ec.unmarshalOBigInt2ᚕgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigIntᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastSalePriceNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastSalePriceNotIn"))
+			it.LastSalePriceNotIn, err = ec.unmarshalOBigInt2ᚕgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigIntᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastSalePriceGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastSalePriceGT"))
+			it.LastSalePriceGT, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastSalePriceGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastSalePriceGTE"))
+			it.LastSalePriceGTE, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastSalePriceLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastSalePriceLT"))
+			it.LastSalePriceLT, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastSalePriceLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastSalePriceLTE"))
+			it.LastSalePriceLTE, err = ec.unmarshalOBigInt2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚋschemaᚐBigInt(ctx, v)
 			if err != nil {
 				return it, err
 			}

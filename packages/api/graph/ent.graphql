@@ -896,6 +896,30 @@ input SearchWhereInput {
   greatnessIsNil: Boolean
   greatnessNotNil: Boolean
   
+  """sale_active field predicates"""
+  saleActive: Boolean
+  saleActiveNEQ: Boolean
+  
+  """sale_price field predicates"""
+  salePrice: BigInt
+  salePriceNEQ: BigInt
+  salePriceIn: [BigInt!]
+  salePriceNotIn: [BigInt!]
+  salePriceGT: BigInt
+  salePriceGTE: BigInt
+  salePriceLT: BigInt
+  salePriceLTE: BigInt
+  
+  """last_sale_price field predicates"""
+  lastSalePrice: BigInt
+  lastSalePriceNEQ: BigInt
+  lastSalePriceIn: [BigInt!]
+  lastSalePriceNotIn: [BigInt!]
+  lastSalePriceGT: BigInt
+  lastSalePriceGTE: BigInt
+  lastSalePriceLT: BigInt
+  lastSalePriceLTE: BigInt
+  
   """id field predicates"""
   id: ID
   idNEQ: ID
