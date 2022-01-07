@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import {
-  DopeOrderField,
-  OrderDirection,
-  useInfiniteDopesQuery,
-  useInfiniteSearchDopeQuery,
-  useSearchDopeQuery,
-} from 'generated/graphql';
+import { OrderDirection, useInfiniteSearchDopeQuery } from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
 import DopeCard from 'components/dope/DopeCard';
 import MarketFilterBar from 'components/MarketFilterBar';
@@ -34,33 +28,6 @@ const MarketList = () => {
 
   // Loads unbundled from The Graph,
   // then updates items in reactive var cache.
-  // claimed: false
-  const {
-    data: unclaimedDopes,
-    fetchNextPage,
-    hasNextPage,
-    status,
-  } = useInfiniteDopesQuery(
-    'first',
-    {
-      first: 100,
-      orderBy: {
-        field: DopeOrderField.Rank,
-        direction: OrderDirection.Asc,
-      },
-      where: {
-        claimed: false,
-      },
-    },
-    {
-      getNextPageParam: lastPage => {
-        if (lastPage.dopes.pageInfo.hasNextPage) {
-          return lastPage.dopes.pageInfo.endCursor;
-        }
-        return false;
-      },
-    },
-  );
   const {
     data: searchResult,
     isFetching: isSearchFetching,
@@ -84,7 +51,6 @@ const MarketList = () => {
         }
         return false;
       },
-      enabled: !!searchInputValue,
     },
   );
 
@@ -99,7 +65,7 @@ const MarketList = () => {
     searchFetch();
   }, [searchInputValue, refetch]);
 
-  const isLoading = status === 'loading' || isSearchFetching || searchStatus === 'loading'; // || !hasUpdateDopeDbWithPaper;
+  const isLoading = isSearchFetching || searchStatus === 'loading'; // || !hasUpdateDopeDbWithPaper;
 
   const handleSearch = async (value: string) => {
     setSearchValue(value);
@@ -118,79 +84,32 @@ const MarketList = () => {
       />
       {isLoading ? (
         <LoadingState />
-      ) : searchResult && searchInputValue.length >= 1 ? (
-        searchResult.pages.length <= 0 ? (
-          <EmptyState />
-        ) : (
-          <Container>
-            <InfiniteScroll
-              pageStart={0}
-              loadMore={() =>
-                searchFetchNextPage({
-                  pageParam: {
-                    first: 100,
-                    after:
-                      searchResult?.pages[searchResult.pages.length - 1].search.pageInfo.endCursor,
-                    orderBy: {
-                      direction: OrderDirection.Asc,
-                    },
-                    query: searchInputValue,
-                  },
-                })
-              }
-              hasMore={searchHasNextPage}
-              loader={<LoadingBlock key="loading-block" />}
-              useWindow={false}
-              className="dopeGrid"
-            >
-              {searchResult?.pages.map(group =>
-                group.search.edges!.map((dope: any) => {
-                  if (!dope || !dope.node) {
-                    return null;
-                  }
-                  return (
-                    <DopeCard
-                      key={dope.node.id}
-                      dope={dope.node}
-                      footer="for-marketplace"
-                      isExpanded={viewCompactCards ? false : true}
-                      showCollapse
-                    />
-                  );
-                }),
-              )}
-            </InfiniteScroll>
-          </Container>
-        )
-      ) : unclaimedDopes?.pages && unclaimedDopes.pages.length <= 0 ? (
+      ) : Boolean(!searchResult?.pages.length) ? (
         <EmptyState />
       ) : (
         <Container>
           <InfiniteScroll
             pageStart={0}
             loadMore={() =>
-              fetchNextPage({
+              searchFetchNextPage({
                 pageParam: {
                   first: 100,
                   after:
-                    unclaimedDopes?.pages[unclaimedDopes.pages.length - 1].dopes.pageInfo.endCursor,
+                    searchResult?.pages[searchResult.pages.length - 1].search.pageInfo.endCursor,
                   orderBy: {
-                    field: DopeOrderField.Id,
                     direction: OrderDirection.Asc,
                   },
-                  where: {
-                    claimed: false,
-                  },
+                  query: searchInputValue,
                 },
               })
             }
-            hasMore={hasNextPage}
+            hasMore={searchHasNextPage}
             loader={<LoadingBlock key="loading-block" />}
             useWindow={false}
             className="dopeGrid"
           >
-            {unclaimedDopes?.pages.map(group =>
-              group.dopes.edges!.map(dope => {
+            {searchResult?.pages.map(group =>
+              group.search.edges!.map((dope: any) => {
                 if (!dope || !dope.node) {
                   return null;
                 }
