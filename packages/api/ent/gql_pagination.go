@@ -2178,6 +2178,26 @@ var (
 			}
 		},
 	}
+	// SearchOrderFieldSalePrice orders Search by sale_price.
+	SearchOrderFieldSalePrice = &SearchOrderField{
+		field: search.FieldSalePrice,
+		toCursor: func(s *Search) Cursor {
+			return Cursor{
+				ID:    s.ID,
+				Value: s.SalePrice,
+			}
+		},
+	}
+	// SearchOrderFieldLastSalePrice orders Search by last_sale_price.
+	SearchOrderFieldLastSalePrice = &SearchOrderField{
+		field: search.FieldLastSalePrice,
+		toCursor: func(s *Search) Cursor {
+			return Cursor{
+				ID:    s.ID,
+				Value: s.LastSalePrice,
+			}
+		},
+	}
 )
 
 // String implement fmt.Stringer interface.
@@ -2186,6 +2206,10 @@ func (f SearchOrderField) String() string {
 	switch f.field {
 	case search.FieldGreatness:
 		str = "GREATNESS"
+	case search.FieldSalePrice:
+		str = "SALE_PRICE"
+	case search.FieldLastSalePrice:
+		str = "LAST_SALE_PRICE"
 	}
 	return str
 }
@@ -2204,6 +2228,10 @@ func (f *SearchOrderField) UnmarshalGQL(v interface{}) error {
 	switch str {
 	case "GREATNESS":
 		*f = *SearchOrderFieldGreatness
+	case "SALE_PRICE":
+		*f = *SearchOrderFieldSalePrice
+	case "LAST_SALE_PRICE":
+		*f = *SearchOrderFieldLastSalePrice
 	default:
 		return fmt.Errorf("%s is not a valid SearchOrderField", str)
 	}

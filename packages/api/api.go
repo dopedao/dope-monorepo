@@ -23,7 +23,7 @@ CREATE MATERIALIZED VIEW search_index AS (
 	WITH dope_agg AS (
 		SELECT
 			df.id,
-			array_agg(DISTINCT (df.fullname)) AS fullnames,
+			array_agg(df.fullname) AS fullnames,
 			sum(
 				CASE WHEN df.greatness = 20 THEN
 					4
@@ -33,7 +33,10 @@ CREATE MATERIALIZED VIEW search_index AS (
 					2
 				ELSE
 					1
-				END) AS greatness
+				END) AS greatness,
+			df.sale_active AS sale_active,
+			df.last_sale_price AS last_sale_price,
+			df.sale_price AS sale_price
 		FROM (
 			SELECT
 				d.dope_id AS id,
@@ -47,68 +50,94 @@ CREATE MATERIALIZED VIEW search_index AS (
 								END,
 								'')))),
 				'') AS fullname,
-				greatness
+				greatness,
+				l.active AS sale_active,
+				l.active_amount AS sale_price,
+				l.last_amount AS last_sale_price
 			FROM
 				dope_items d
-				INNER JOIN items i ON d.item_id = i.id) df
-		GROUP BY
-			df.id
+				INNER JOIN items i ON d.item_id = i.id
+				INNER JOIN (
+					SELECT
+						dope.id AS id,
+						ali.active,
+						a.amount AS last_amount,
+						alia.amount AS active_amount
+					FROM
+						dopes dope
+						LEFT JOIN listings li ON dope.listing_dope_lastsales = li.id
+						LEFT JOIN amounts a ON dope.listing_dope_lastsales = a.listing_inputs
+						LEFT JOIN listings ali ON dope.id = ali.dope_listings
+						LEFT JOIN amounts alia ON ali.id = alia.listing_inputs) l ON d.dope_id = l.id) df
+			GROUP BY
+				df.id,
+				df.sale_active,
+				df.sale_price,
+				df.last_sale_price
 )
-	SELECT
-		concat('dope_',
-			id) AS id,
-		greatness,
-		id AS dope_index,
-		NULL AS item_index,
-		NULL AS hustler_index,
-		(to_tsvector('english',
-				coalesce(fullnames [0],
-					'')) || to_tsvector('english',
-				coalesce(fullnames [1],
-					'')) || to_tsvector('english',
-				coalesce(fullnames [2],
-					'')) || to_tsvector('english',
-				coalesce(fullnames [3],
-					'')) || to_tsvector('english',
-				coalesce(fullnames [4],
-					'')) || to_tsvector('english',
-				coalesce(fullnames [5],
-					'')) || to_tsvector('english',
-				coalesce(fullnames [6],
-					'')) || to_tsvector('english',
-				coalesce(fullnames [7],
+		SELECT
+			concat('dope_',
+				id) AS id,
+			greatness,
+			sale_active AS sale_active,
+			sale_price AS sale_price,
+			last_sale_price AS last_sale_price,
+			TEXT 'dope' AS TYPE,
+			id AS dope_index,
+			NULL AS item_index,
+			NULL AS hustler_index,
+			(to_tsvector('english',
+					coalesce(fullnames [0],
+						'')) || to_tsvector('english',
+					coalesce(fullnames [1],
+						'')) || to_tsvector('english',
+					coalesce(fullnames [2],
+						'')) || to_tsvector('english',
+					coalesce(fullnames [3],
+						'')) || to_tsvector('english',
+					coalesce(fullnames [4],
+						'')) || to_tsvector('english',
+					coalesce(fullnames [5],
+						'')) || to_tsvector('english',
+					coalesce(fullnames [6],
+						'')) || to_tsvector('english',
+					coalesce(fullnames [7],
+						''))) AS tsv_document
+		FROM
+			dope_agg
+		UNION
+		SELECT
+			concat('item_',
+				id) AS id,
+			CASE WHEN greatness = 20 THEN
+				4
+			WHEN greatness = 19 THEN
+				3
+			WHEN greatness > 14 THEN
+				2
+			ELSE
+				1
+			END AS greatness,
+			FALSE AS sale_active,
+			NULL AS sale_price,
+			NULL AS last_sal_price,
+			'item' AS TYPE,
+			NULL AS dope_index,
+			id AS item_index,
+			NULL AS hustler_index,
+			(to_tsvector('english',
+					coalesce((trim(BOTH ' ' FROM (' ' || coalesce(name_prefix,
+									'') || ' ' || coalesce(name_suffix,
+									'') || ' ' || coalesce(name,
+									'') || ' ' || coalesce(suffix,
+									'') || ' ' || coalesce(
+									CASE WHEN "augmented" THEN
+										'+1'
+									END,
+									'')))),
 					''))) AS tsv_document
-	FROM
-		dope_agg
-	UNION
-	SELECT
-		concat('item_',
-			id) AS id,
-		CASE WHEN greatness = 20 THEN
-			4
-		WHEN greatness = 19 THEN
-			3
-		WHEN greatness > 14 THEN
-			2
-		ELSE
-			1
-		END AS greatness,
-		NULL AS dope_index,
-		id AS item_index,
-		NULL AS hustler_index,
-		(to_tsvector('english',
-				coalesce((trim(BOTH ' ' FROM (' ' || coalesce(name_prefix,
-								'') || ' ' || coalesce(name_suffix,
-								'') || ' ' || coalesce(name,
-								'') || ' ' || coalesce(suffix,
-								'') || ' ' || coalesce(
-								CASE WHEN "augmented" THEN
-									'+1'
-								END,
-								'')))),
-				''))) AS tsv_document
-	FROM
-		items
+		FROM
+			items
 )
 UNION (WITH hustler_agg AS (
 		SELECT
@@ -163,6 +192,10 @@ UNION (WITH hustler_agg AS (
 		concat('hustler_',
 			id) AS id,
 		greatness,
+		FALSE AS sale_active,
+		NULL AS sale_price,
+		NULL AS last_sal_price,
+		'hustler' AS TYPE,
 		NULL AS dope_index,
 		NULL AS item_index,
 		id AS hustler_index,
