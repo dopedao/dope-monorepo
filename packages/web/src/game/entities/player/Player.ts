@@ -116,7 +116,7 @@ export default class Player extends Hustler
         {
             if (this.lastDirection === Direction.South)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y + 65 });
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y + 75 });
             }
             else if (this.lastDirection === Direction.North)
             {
