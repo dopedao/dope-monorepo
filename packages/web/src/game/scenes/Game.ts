@@ -135,6 +135,9 @@ export default class GameScene extends Scene {
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
     this.scene.launch('UIScene', { player: this.player });
+
+    // test item entities
+    new ItemEntity(this.matter.world, 300, 650, 'item_' + 'anitem', new Item('Cool Item', 'This is a cool item'));
   }
 
   update(time: number, delta: number): void {

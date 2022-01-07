@@ -4,7 +4,7 @@ export enum Events
     PLAYER_OPEN_INVENTORY = 'player_open_inventory',
     PLAYER_CLOSE_INVENTORY = 'player_close_inventory',
     PLAYER_ADD_ITEM_INVENTORY = 'player_add_item_inventory',
-    PLAYER_REMOVE_ITEM_INVENTORY = 'player_add_item_inventory',
+    PLAYER_REMOVE_ITEM_INVENTORY = 'player_remove_item_inventory',
 
     PLAYER_ENTER_ZONE = 'player_enter_zone',
     PLAYER_LEAVE_ZONE = 'player_leave_zone',

@@ -69,7 +69,9 @@ export default class Player extends Hustler
         if (this.busy)
             return;
 
-        this.scene.matter.overlap(this._interactSensor, undefined, (player: MatterJS.Body, other: MatterJS.Body) => {
+        let flag = false;
+
+        const onOverlap = (interactSensor: MatterJS.Body, other: MatterJS.Body) => {
             const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType).gameObject;
             if (otherGameObject instanceof Citizen)
             {
@@ -79,14 +81,32 @@ export default class Player extends Hustler
                     return;
                 // call onInteraction method of citizen
                 otherGameObject.onInteraction(this);
+                // make player look at npc
+                this.lookAt(otherGameObject.x, otherGameObject.y);
+
                 EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, otherGameObject);
+
+                flag = true;
             }
             else if (otherGameObject instanceof ItemEntity)
             {
-                this.inventory.add((otherGameObject as ItemEntity).item);
-                (otherGameObject as ItemEntity).onPickup();
+                // if item succesfully picked up
+                if (this.inventory.add((otherGameObject as ItemEntity).item))
+                    (otherGameObject as ItemEntity).onPickup();
+                
+                flag = true;
             }
-        });
+        };
+
+        // check interact sensor
+        this.scene.matter.overlap(this._interactSensor, undefined, onOverlap);
+        
+        // prevent double interaction
+        if (flag)
+            return;
+
+        // check hitbox
+        this.scene.matter.overlap((this.body as MatterJS.BodyType).parts[0], undefined, onOverlap);
     }
 
     updateSensorPosition()
@@ -96,11 +116,11 @@ export default class Player extends Hustler
         {
             if (this.lastDirection === Direction.South)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y + 60 });
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y + 65 });
             }
             else if (this.lastDirection === Direction.North)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y - 55});
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y - 85});
             }
             else if (this.lastDirection === Direction.West)
             {
@@ -118,10 +138,12 @@ export default class Player extends Hustler
         const playerBodyType: MatterJS.BodyType = (player as MatterJS.BodyType)
         const otherBodyType: MatterJS.BodyType = (other as MatterJS.BodyType);
 
+        console.log(otherBodyType.position.y - playerBodyType.position.y);
+
         if ((otherBodyType.position.y - playerBodyType.position.y) > 20)
-            playerBodyType.gameObject.setDepth(0);
-        else if ((otherBodyType.position.y - playerBodyType.position.y) < -15)
             playerBodyType.gameObject.setDepth(2);
+        else if ((otherBodyType.position.y - playerBodyType.position.y) < -15)
+            playerBodyType.gameObject.setDepth(0);
     }
 
     private _handleEvents()
@@ -145,7 +167,7 @@ export default class Player extends Hustler
         this.questManager.update();
 
         // update depth depending other bodies
-        const overlapped = this.scene.matter.overlap((this.body as MatterJS.BodyType).parts[1], undefined, this.updateDepth);
+        const overlapped = this.scene.matter.overlap((this.body as MatterJS.BodyType).parts[0], undefined, this.updateDepth);
         // reset depth if not overlapped
         if (this.depth !== 2 && !overlapped)
         {

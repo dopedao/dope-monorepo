@@ -27,25 +27,30 @@ export default class Inventory
     }
 
     // add item
-    add(item: Item)
+    // return true if successful
+    add(item: Item): boolean
     {
-        const index = this._items.indexOf(undefined);
-        if (index === -1)
-            return;
-
-        this._items[index] = item;
-        EventHandler.emitter().emit(Events.PLAYER_ADD_ITEM_INVENTORY, this._items[index]);
+        for (let i = 0; i < Inventory.MAX_ITEMS; i++)
+            if (!this._items[i])
+            {
+                this._items[i] = item;
+                EventHandler.emitter().emit(Events.PLAYER_ADD_ITEM_INVENTORY, item);
+                return true;
+            }
+        return false;
     }
 
     // remove item
-    remove(item: Item | number)
+    // return true if successful
+    remove(item: Item | number): boolean
     {
         const index = item instanceof Item ? this._items.indexOf(item) : item;
         if (index === -1 || index >= this._items.length)
-            return;
+            return false;
         
         EventHandler.emitter().emit(Events.PLAYER_REMOVE_ITEM_INVENTORY, this._items[index]);
         this._items[index] = undefined;
+        return true;
     }
 
     // check if inventory contains item
