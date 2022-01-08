@@ -14,6 +14,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 )
 
@@ -54,6 +55,54 @@ func (su *SearchUpdate) AddGreatness(i int) *SearchUpdate {
 // ClearGreatness clears the value of the "greatness" field.
 func (su *SearchUpdate) ClearGreatness() *SearchUpdate {
 	su.mutation.ClearGreatness()
+	return su
+}
+
+// SetSaleActive sets the "sale_active" field.
+func (su *SearchUpdate) SetSaleActive(b bool) *SearchUpdate {
+	su.mutation.SetSaleActive(b)
+	return su
+}
+
+// SetSalePrice sets the "sale_price" field.
+func (su *SearchUpdate) SetSalePrice(si schema.BigInt) *SearchUpdate {
+	su.mutation.ResetSalePrice()
+	su.mutation.SetSalePrice(si)
+	return su
+}
+
+// SetNillableSalePrice sets the "sale_price" field if the given value is not nil.
+func (su *SearchUpdate) SetNillableSalePrice(si *schema.BigInt) *SearchUpdate {
+	if si != nil {
+		su.SetSalePrice(*si)
+	}
+	return su
+}
+
+// AddSalePrice adds si to the "sale_price" field.
+func (su *SearchUpdate) AddSalePrice(si schema.BigInt) *SearchUpdate {
+	su.mutation.AddSalePrice(si)
+	return su
+}
+
+// SetLastSalePrice sets the "last_sale_price" field.
+func (su *SearchUpdate) SetLastSalePrice(si schema.BigInt) *SearchUpdate {
+	su.mutation.ResetLastSalePrice()
+	su.mutation.SetLastSalePrice(si)
+	return su
+}
+
+// SetNillableLastSalePrice sets the "last_sale_price" field if the given value is not nil.
+func (su *SearchUpdate) SetNillableLastSalePrice(si *schema.BigInt) *SearchUpdate {
+	if si != nil {
+		su.SetLastSalePrice(*si)
+	}
+	return su
+}
+
+// AddLastSalePrice adds si to the "last_sale_price" field.
+func (su *SearchUpdate) AddLastSalePrice(si schema.BigInt) *SearchUpdate {
+	su.mutation.AddLastSalePrice(si)
 	return su
 }
 
@@ -229,6 +278,41 @@ func (su *SearchUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: search.FieldGreatness,
 		})
 	}
+	if value, ok := su.mutation.SaleActive(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: search.FieldSaleActive,
+		})
+	}
+	if value, ok := su.mutation.SalePrice(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldSalePrice,
+		})
+	}
+	if value, ok := su.mutation.AddedSalePrice(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldSalePrice,
+		})
+	}
+	if value, ok := su.mutation.LastSalePrice(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldLastSalePrice,
+		})
+	}
+	if value, ok := su.mutation.AddedLastSalePrice(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldLastSalePrice,
+		})
+	}
 	if su.mutation.DopeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -377,6 +461,54 @@ func (suo *SearchUpdateOne) AddGreatness(i int) *SearchUpdateOne {
 // ClearGreatness clears the value of the "greatness" field.
 func (suo *SearchUpdateOne) ClearGreatness() *SearchUpdateOne {
 	suo.mutation.ClearGreatness()
+	return suo
+}
+
+// SetSaleActive sets the "sale_active" field.
+func (suo *SearchUpdateOne) SetSaleActive(b bool) *SearchUpdateOne {
+	suo.mutation.SetSaleActive(b)
+	return suo
+}
+
+// SetSalePrice sets the "sale_price" field.
+func (suo *SearchUpdateOne) SetSalePrice(si schema.BigInt) *SearchUpdateOne {
+	suo.mutation.ResetSalePrice()
+	suo.mutation.SetSalePrice(si)
+	return suo
+}
+
+// SetNillableSalePrice sets the "sale_price" field if the given value is not nil.
+func (suo *SearchUpdateOne) SetNillableSalePrice(si *schema.BigInt) *SearchUpdateOne {
+	if si != nil {
+		suo.SetSalePrice(*si)
+	}
+	return suo
+}
+
+// AddSalePrice adds si to the "sale_price" field.
+func (suo *SearchUpdateOne) AddSalePrice(si schema.BigInt) *SearchUpdateOne {
+	suo.mutation.AddSalePrice(si)
+	return suo
+}
+
+// SetLastSalePrice sets the "last_sale_price" field.
+func (suo *SearchUpdateOne) SetLastSalePrice(si schema.BigInt) *SearchUpdateOne {
+	suo.mutation.ResetLastSalePrice()
+	suo.mutation.SetLastSalePrice(si)
+	return suo
+}
+
+// SetNillableLastSalePrice sets the "last_sale_price" field if the given value is not nil.
+func (suo *SearchUpdateOne) SetNillableLastSalePrice(si *schema.BigInt) *SearchUpdateOne {
+	if si != nil {
+		suo.SetLastSalePrice(*si)
+	}
+	return suo
+}
+
+// AddLastSalePrice adds si to the "last_sale_price" field.
+func (suo *SearchUpdateOne) AddLastSalePrice(si schema.BigInt) *SearchUpdateOne {
+	suo.mutation.AddLastSalePrice(si)
 	return suo
 }
 
@@ -574,6 +706,41 @@ func (suo *SearchUpdateOne) sqlSave(ctx context.Context) (_node *Search, err err
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Column: search.FieldGreatness,
+		})
+	}
+	if value, ok := suo.mutation.SaleActive(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: search.FieldSaleActive,
+		})
+	}
+	if value, ok := suo.mutation.SalePrice(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldSalePrice,
+		})
+	}
+	if value, ok := suo.mutation.AddedSalePrice(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldSalePrice,
+		})
+	}
+	if value, ok := suo.mutation.LastSalePrice(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldLastSalePrice,
+		})
+	}
+	if value, ok := suo.mutation.AddedLastSalePrice(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: search.FieldLastSalePrice,
 		})
 	}
 	if suo.mutation.DopeCleared() {

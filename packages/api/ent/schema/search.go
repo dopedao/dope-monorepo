@@ -26,6 +26,27 @@ func (Search) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("GREATNESS"),
 			),
+		field.Bool("sale_active"),
+		field.Int("sale_price").
+			GoType(BigInt{}).
+			SchemaType(BigIntSchemaType).
+			DefaultFunc(func() BigInt {
+				return NewBigInt(0)
+			}).
+			Annotations(
+				entgql.Type("BigInt"),
+				entgql.OrderField("SALE_PRICE"),
+			),
+		field.Int("last_sale_price").
+			GoType(BigInt{}).
+			SchemaType(BigIntSchemaType).
+			DefaultFunc(func() BigInt {
+				return NewBigInt(0)
+			}).
+			Annotations(
+				entgql.Type("BigInt"),
+				entgql.OrderField("LAST_SALE_PRICE"),
+			),
 	}
 }
 

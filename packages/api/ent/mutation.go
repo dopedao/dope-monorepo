@@ -7690,22 +7690,27 @@ func (m *ListingMutation) ResetEdge(name string) error {
 // SearchMutation represents an operation that mutates the Search nodes in the graph.
 type SearchMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *string
-	_type          *search.Type
-	greatness      *int
-	addgreatness   *int
-	clearedFields  map[string]struct{}
-	dope           *string
-	cleareddope    bool
-	item           *string
-	cleareditem    bool
-	hustler        *string
-	clearedhustler bool
-	done           bool
-	oldValue       func(context.Context) (*Search, error)
-	predicates     []predicate.Search
+	op                 Op
+	typ                string
+	id                 *string
+	_type              *search.Type
+	greatness          *int
+	addgreatness       *int
+	sale_active        *bool
+	sale_price         *schema.BigInt
+	addsale_price      *schema.BigInt
+	last_sale_price    *schema.BigInt
+	addlast_sale_price *schema.BigInt
+	clearedFields      map[string]struct{}
+	dope               *string
+	cleareddope        bool
+	item               *string
+	cleareditem        bool
+	hustler            *string
+	clearedhustler     bool
+	done               bool
+	oldValue           func(context.Context) (*Search, error)
+	predicates         []predicate.Search
 }
 
 var _ ent.Mutation = (*SearchMutation)(nil)
@@ -7918,6 +7923,154 @@ func (m *SearchMutation) ResetGreatness() {
 	delete(m.clearedFields, search.FieldGreatness)
 }
 
+// SetSaleActive sets the "sale_active" field.
+func (m *SearchMutation) SetSaleActive(b bool) {
+	m.sale_active = &b
+}
+
+// SaleActive returns the value of the "sale_active" field in the mutation.
+func (m *SearchMutation) SaleActive() (r bool, exists bool) {
+	v := m.sale_active
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSaleActive returns the old "sale_active" field's value of the Search entity.
+// If the Search object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SearchMutation) OldSaleActive(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSaleActive is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSaleActive requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSaleActive: %w", err)
+	}
+	return oldValue.SaleActive, nil
+}
+
+// ResetSaleActive resets all changes to the "sale_active" field.
+func (m *SearchMutation) ResetSaleActive() {
+	m.sale_active = nil
+}
+
+// SetSalePrice sets the "sale_price" field.
+func (m *SearchMutation) SetSalePrice(si schema.BigInt) {
+	m.sale_price = &si
+	m.addsale_price = nil
+}
+
+// SalePrice returns the value of the "sale_price" field in the mutation.
+func (m *SearchMutation) SalePrice() (r schema.BigInt, exists bool) {
+	v := m.sale_price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSalePrice returns the old "sale_price" field's value of the Search entity.
+// If the Search object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SearchMutation) OldSalePrice(ctx context.Context) (v schema.BigInt, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSalePrice is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSalePrice requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSalePrice: %w", err)
+	}
+	return oldValue.SalePrice, nil
+}
+
+// AddSalePrice adds si to the "sale_price" field.
+func (m *SearchMutation) AddSalePrice(si schema.BigInt) {
+	if m.addsale_price != nil {
+		*m.addsale_price = m.addsale_price.Add(si)
+	} else {
+		m.addsale_price = &si
+	}
+}
+
+// AddedSalePrice returns the value that was added to the "sale_price" field in this mutation.
+func (m *SearchMutation) AddedSalePrice() (r schema.BigInt, exists bool) {
+	v := m.addsale_price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSalePrice resets all changes to the "sale_price" field.
+func (m *SearchMutation) ResetSalePrice() {
+	m.sale_price = nil
+	m.addsale_price = nil
+}
+
+// SetLastSalePrice sets the "last_sale_price" field.
+func (m *SearchMutation) SetLastSalePrice(si schema.BigInt) {
+	m.last_sale_price = &si
+	m.addlast_sale_price = nil
+}
+
+// LastSalePrice returns the value of the "last_sale_price" field in the mutation.
+func (m *SearchMutation) LastSalePrice() (r schema.BigInt, exists bool) {
+	v := m.last_sale_price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastSalePrice returns the old "last_sale_price" field's value of the Search entity.
+// If the Search object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SearchMutation) OldLastSalePrice(ctx context.Context) (v schema.BigInt, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastSalePrice is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastSalePrice requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastSalePrice: %w", err)
+	}
+	return oldValue.LastSalePrice, nil
+}
+
+// AddLastSalePrice adds si to the "last_sale_price" field.
+func (m *SearchMutation) AddLastSalePrice(si schema.BigInt) {
+	if m.addlast_sale_price != nil {
+		*m.addlast_sale_price = m.addlast_sale_price.Add(si)
+	} else {
+		m.addlast_sale_price = &si
+	}
+}
+
+// AddedLastSalePrice returns the value that was added to the "last_sale_price" field in this mutation.
+func (m *SearchMutation) AddedLastSalePrice() (r schema.BigInt, exists bool) {
+	v := m.addlast_sale_price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastSalePrice resets all changes to the "last_sale_price" field.
+func (m *SearchMutation) ResetLastSalePrice() {
+	m.last_sale_price = nil
+	m.addlast_sale_price = nil
+}
+
 // SetDopeID sets the "dope" edge to the Dope entity by id.
 func (m *SearchMutation) SetDopeID(id string) {
 	m.dope = &id
@@ -8054,12 +8207,21 @@ func (m *SearchMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SearchMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 5)
 	if m._type != nil {
 		fields = append(fields, search.FieldType)
 	}
 	if m.greatness != nil {
 		fields = append(fields, search.FieldGreatness)
+	}
+	if m.sale_active != nil {
+		fields = append(fields, search.FieldSaleActive)
+	}
+	if m.sale_price != nil {
+		fields = append(fields, search.FieldSalePrice)
+	}
+	if m.last_sale_price != nil {
+		fields = append(fields, search.FieldLastSalePrice)
 	}
 	return fields
 }
@@ -8073,6 +8235,12 @@ func (m *SearchMutation) Field(name string) (ent.Value, bool) {
 		return m.GetType()
 	case search.FieldGreatness:
 		return m.Greatness()
+	case search.FieldSaleActive:
+		return m.SaleActive()
+	case search.FieldSalePrice:
+		return m.SalePrice()
+	case search.FieldLastSalePrice:
+		return m.LastSalePrice()
 	}
 	return nil, false
 }
@@ -8086,6 +8254,12 @@ func (m *SearchMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldType(ctx)
 	case search.FieldGreatness:
 		return m.OldGreatness(ctx)
+	case search.FieldSaleActive:
+		return m.OldSaleActive(ctx)
+	case search.FieldSalePrice:
+		return m.OldSalePrice(ctx)
+	case search.FieldLastSalePrice:
+		return m.OldLastSalePrice(ctx)
 	}
 	return nil, fmt.Errorf("unknown Search field %s", name)
 }
@@ -8109,6 +8283,27 @@ func (m *SearchMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetGreatness(v)
 		return nil
+	case search.FieldSaleActive:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSaleActive(v)
+		return nil
+	case search.FieldSalePrice:
+		v, ok := value.(schema.BigInt)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSalePrice(v)
+		return nil
+	case search.FieldLastSalePrice:
+		v, ok := value.(schema.BigInt)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastSalePrice(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Search field %s", name)
 }
@@ -8120,6 +8315,12 @@ func (m *SearchMutation) AddedFields() []string {
 	if m.addgreatness != nil {
 		fields = append(fields, search.FieldGreatness)
 	}
+	if m.addsale_price != nil {
+		fields = append(fields, search.FieldSalePrice)
+	}
+	if m.addlast_sale_price != nil {
+		fields = append(fields, search.FieldLastSalePrice)
+	}
 	return fields
 }
 
@@ -8130,6 +8331,10 @@ func (m *SearchMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case search.FieldGreatness:
 		return m.AddedGreatness()
+	case search.FieldSalePrice:
+		return m.AddedSalePrice()
+	case search.FieldLastSalePrice:
+		return m.AddedLastSalePrice()
 	}
 	return nil, false
 }
@@ -8145,6 +8350,20 @@ func (m *SearchMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddGreatness(v)
+		return nil
+	case search.FieldSalePrice:
+		v, ok := value.(schema.BigInt)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSalePrice(v)
+		return nil
+	case search.FieldLastSalePrice:
+		v, ok := value.(schema.BigInt)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastSalePrice(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Search numeric field %s", name)
@@ -8187,6 +8406,15 @@ func (m *SearchMutation) ResetField(name string) error {
 		return nil
 	case search.FieldGreatness:
 		m.ResetGreatness()
+		return nil
+	case search.FieldSaleActive:
+		m.ResetSaleActive()
+		return nil
+	case search.FieldSalePrice:
+		m.ResetSalePrice()
+		return nil
+	case search.FieldLastSalePrice:
+		m.ResetLastSalePrice()
 		return nil
 	}
 	return fmt.Errorf("unknown Search field %s", name)

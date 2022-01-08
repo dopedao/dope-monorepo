@@ -3062,6 +3062,30 @@ type SearchWhereInput struct {
 	GreatnessIsNil  bool  `json:"greatnessIsNil,omitempty"`
 	GreatnessNotNil bool  `json:"greatnessNotNil,omitempty"`
 
+	// "sale_active" field predicates.
+	SaleActive    *bool `json:"saleActive,omitempty"`
+	SaleActiveNEQ *bool `json:"saleActiveNEQ,omitempty"`
+
+	// "sale_price" field predicates.
+	SalePrice      *schema.BigInt  `json:"salePrice,omitempty"`
+	SalePriceNEQ   *schema.BigInt  `json:"salePriceNEQ,omitempty"`
+	SalePriceIn    []schema.BigInt `json:"salePriceIn,omitempty"`
+	SalePriceNotIn []schema.BigInt `json:"salePriceNotIn,omitempty"`
+	SalePriceGT    *schema.BigInt  `json:"salePriceGT,omitempty"`
+	SalePriceGTE   *schema.BigInt  `json:"salePriceGTE,omitempty"`
+	SalePriceLT    *schema.BigInt  `json:"salePriceLT,omitempty"`
+	SalePriceLTE   *schema.BigInt  `json:"salePriceLTE,omitempty"`
+
+	// "last_sale_price" field predicates.
+	LastSalePrice      *schema.BigInt  `json:"lastSalePrice,omitempty"`
+	LastSalePriceNEQ   *schema.BigInt  `json:"lastSalePriceNEQ,omitempty"`
+	LastSalePriceIn    []schema.BigInt `json:"lastSalePriceIn,omitempty"`
+	LastSalePriceNotIn []schema.BigInt `json:"lastSalePriceNotIn,omitempty"`
+	LastSalePriceGT    *schema.BigInt  `json:"lastSalePriceGT,omitempty"`
+	LastSalePriceGTE   *schema.BigInt  `json:"lastSalePriceGTE,omitempty"`
+	LastSalePriceLT    *schema.BigInt  `json:"lastSalePriceLT,omitempty"`
+	LastSalePriceLTE   *schema.BigInt  `json:"lastSalePriceLTE,omitempty"`
+
 	// "dope" edge predicates.
 	HasDope     *bool             `json:"hasDope,omitempty"`
 	HasDopeWith []*DopeWhereInput `json:"hasDopeWith,omitempty"`
@@ -3199,6 +3223,60 @@ func (i *SearchWhereInput) P() (predicate.Search, error) {
 	}
 	if i.GreatnessNotNil {
 		predicates = append(predicates, search.GreatnessNotNil())
+	}
+	if i.SaleActive != nil {
+		predicates = append(predicates, search.SaleActiveEQ(*i.SaleActive))
+	}
+	if i.SaleActiveNEQ != nil {
+		predicates = append(predicates, search.SaleActiveNEQ(*i.SaleActiveNEQ))
+	}
+	if i.SalePrice != nil {
+		predicates = append(predicates, search.SalePriceEQ(*i.SalePrice))
+	}
+	if i.SalePriceNEQ != nil {
+		predicates = append(predicates, search.SalePriceNEQ(*i.SalePriceNEQ))
+	}
+	if len(i.SalePriceIn) > 0 {
+		predicates = append(predicates, search.SalePriceIn(i.SalePriceIn...))
+	}
+	if len(i.SalePriceNotIn) > 0 {
+		predicates = append(predicates, search.SalePriceNotIn(i.SalePriceNotIn...))
+	}
+	if i.SalePriceGT != nil {
+		predicates = append(predicates, search.SalePriceGT(*i.SalePriceGT))
+	}
+	if i.SalePriceGTE != nil {
+		predicates = append(predicates, search.SalePriceGTE(*i.SalePriceGTE))
+	}
+	if i.SalePriceLT != nil {
+		predicates = append(predicates, search.SalePriceLT(*i.SalePriceLT))
+	}
+	if i.SalePriceLTE != nil {
+		predicates = append(predicates, search.SalePriceLTE(*i.SalePriceLTE))
+	}
+	if i.LastSalePrice != nil {
+		predicates = append(predicates, search.LastSalePriceEQ(*i.LastSalePrice))
+	}
+	if i.LastSalePriceNEQ != nil {
+		predicates = append(predicates, search.LastSalePriceNEQ(*i.LastSalePriceNEQ))
+	}
+	if len(i.LastSalePriceIn) > 0 {
+		predicates = append(predicates, search.LastSalePriceIn(i.LastSalePriceIn...))
+	}
+	if len(i.LastSalePriceNotIn) > 0 {
+		predicates = append(predicates, search.LastSalePriceNotIn(i.LastSalePriceNotIn...))
+	}
+	if i.LastSalePriceGT != nil {
+		predicates = append(predicates, search.LastSalePriceGT(*i.LastSalePriceGT))
+	}
+	if i.LastSalePriceGTE != nil {
+		predicates = append(predicates, search.LastSalePriceGTE(*i.LastSalePriceGTE))
+	}
+	if i.LastSalePriceLT != nil {
+		predicates = append(predicates, search.LastSalePriceLT(*i.LastSalePriceLT))
+	}
+	if i.LastSalePriceLTE != nil {
+		predicates = append(predicates, search.LastSalePriceLTE(*i.LastSalePriceLTE))
 	}
 
 	if i.HasDope != nil {
