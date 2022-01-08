@@ -106,7 +106,7 @@ export default class Player extends Hustler
             return;
 
         // check hitbox
-        this.scene.matter.overlap((this.body as MatterJS.BodyType).parts[0], undefined, onOverlap);
+        this.scene.matter.overlap(this.hitboxSensor, undefined, onOverlap);
     }
 
     updateSensorPosition()
@@ -136,11 +136,13 @@ export default class Player extends Hustler
     updateDepth(player: MatterJS.Body, other: MatterJS.Body)
     {
         const playerBodyType: MatterJS.BodyType = (player as MatterJS.BodyType)
-        const otherBodyType: MatterJS.BodyType = (other as MatterJS.BodyType);
+        let otherBodyType: MatterJS.BodyType = (other as MatterJS.BodyType);
 
-        console.log(otherBodyType.position.y - playerBodyType.position.y);
-
-        if ((otherBodyType.position.y - playerBodyType.position.y) < 30)
+        // if the overlapped has a parent body, use it instead for calculating delta Y
+        if (otherBodyType.parent)
+            otherBodyType = otherBodyType.parent;
+        
+        if ((otherBodyType.position.y - playerBodyType.position.y) < 0)
             playerBodyType.gameObject.setDepth(2);
         else
             playerBodyType.gameObject.setDepth(0);
@@ -167,7 +169,7 @@ export default class Player extends Hustler
         this.questManager.update();
 
         // update depth depending other bodies
-        const overlapped = this.scene.matter.overlap((this.body as MatterJS.BodyType).parts[0], undefined, this.updateDepth);
+        const overlapped = this.scene.matter.overlap((this.body as MatterJS.BodyType), undefined, this.updateDepth);
         // reset depth if not overlapped
         if (this.depth !== 2 && !overlapped)
         {

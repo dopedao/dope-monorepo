@@ -46,6 +46,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this._lastDirection = dir;
     }
 
+    get collider() { return (this.body as MatterJS.BodyType).parts[1]; }
+    get hitboxSensor() { return (this.body as MatterJS.BodyType).parts[2]; }
+
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, frame?: number)
     {
         super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
@@ -59,12 +62,14 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         // create main body
         const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
         const colliderBody = Bodies.rectangle(0, 0, this.width * 0.48, this.height * 0.35, {
+            label: "collider",
             collisionFilter: {
                 group: -69
             },
             chamfer: { radius: 7.2 },
         } as MatterJS.BodyType);
         const sensorHitBox = Bodies.rectangle(0, 0 - this.height / 4.5, this.width * 0.6, this.height * 0.8, {
+            label: "hitboxSensor",
             isSensor: true,
         } as MatterJS.BodyType);
         this.setExistingBody(Body.create({
@@ -73,7 +78,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
                 group: -69
             },
         } as MatterJS.BodyType));
-        // this.setExistingBody(colliderBody);
+        // parts[0] = mainBody
+        // parts[1] = collider
+        // parts[2] = hitboxSensor
         
         this.setPosition(x, y);
         
@@ -89,11 +96,6 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // create sub sprites
         this._model.createSprites();
-
-        console.log("Position Body 0 : ");
-        console.log((this.body as MatterJS.BodyType).parts[0].position);
-        console.log("Position Body 1 : ");
-        console.log((this.body as MatterJS.BodyType).parts[1].position);
 
         // create navigator
         this._navigator = new PathNavigator(this, new PF.AStarFinder({
