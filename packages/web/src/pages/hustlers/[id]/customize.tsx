@@ -96,6 +96,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
         });
 
         const fetchedItemIds = [
+          metadata.vehicle,
           metadata.weapon,
           metadata.clothes,
           metadata.waist,
