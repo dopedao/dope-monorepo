@@ -3,7 +3,8 @@ import Boot from "../scenes/Boot";
 import GameScene from "../scenes/Game";
 import Preload from "../scenes/Preload";
 import phaserReact from "phaser3-react";
-import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin"
+import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
+import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
 import UIScene from "game/scenes/UI";
 
 export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
@@ -41,7 +42,12 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
                 key: 'phaser-react',
                 plugin: phaserReact,
                 start: true
-            }
+            },
+            {
+                key: 'rexPixelationPipeline',
+                plugin: PixelationPipelinePlugin,
+                start: true
+            },
         ],
         scene: [
             // ig ui

@@ -37,7 +37,7 @@ export default class Player extends Hustler
         this._questManager = new QuestManager(this, quests);
 
         // create interact sensor
-        this._interactSensor = this.scene.matter.add.rectangle(x + 30, y - 40, 40, this.height, {
+        this._interactSensor = this.scene.matter.add.rectangle(x + 40, y - 40, 40, this.height, {
             isSensor: true,
         });
 
