@@ -7,7 +7,7 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite
 {
     private _item: Item;
 
-    public onPickupCallback?: (item: Item) => void;
+    private onPickupCallback?: (item: Item) => void;
 
     get item(): Item { return this._item; }
 
@@ -16,7 +16,7 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite
         super(world, x, y, texture);
 
         this._item = item;
-        this.onPickupCallback = this.onPickupCallback;
+        this.onPickupCallback = onPickupCallback;
 
         this.setBody({
             type: 'rectangle',
@@ -26,6 +26,8 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite
             isStatic: true,
             isSensor: true
         });
+
+        this.setDepth(0);
     }
 
     onPickup()
