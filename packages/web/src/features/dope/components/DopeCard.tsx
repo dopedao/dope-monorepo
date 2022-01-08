@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
 import { css } from '@emotion/react';
-import DopeCardBody from 'components/dope/DopeCardBody';
-import DopeCardFooterForMarket from 'components/dope/DopeCardFooterForMarket';
-import DopeCardFooterForOwner from 'components/dope/DopeCardFooterForOwner';
-import DopeLegend from 'components/dope/DopeLegend';
+import DopeCardBody from 'features/dope/components/DopeCardBody';
+import DopeCardFooterForMarket from 'features/dope/components/DopeCardFooterForMarket';
+import DopeCardFooterForOwner from 'features/dope/components/DopeCardFooterForOwner';
+import DopeLegend from 'features/dope/components/DopeLegend';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
@@ -19,6 +19,15 @@ export type DopeCardProps = {
     opened: boolean;
     score: number;
     rank: number;
+    lastSale?:
+      | {
+          __typename?: 'Listing';
+          inputs: Array<
+            { __typename?: 'Amount'; amount: any; id: string; type: AmountType } | null | undefined
+          >;
+        }
+      | null
+      | undefined;
     listings?:
       | Array<
           | {

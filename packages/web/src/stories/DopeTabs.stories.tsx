@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DopeTabs, { DopeTabType } from '../ui/components/DopeTabs';
+import DopeTabs, { DopeTabType } from '../ui/features/dope/componentsTabs';
 
 export default {
   title: 'DopeTabs',

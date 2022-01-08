@@ -1,33 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { OrderDirection, useInfiniteSearchDopeQuery } from 'generated/graphql';
+import { OrderDirection, SearchOrderField, useInfiniteSearchDopeQuery } from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
-import DopeCard from 'components/dope/DopeCard';
-import MarketFilterBar from 'components/MarketFilterBar';
-// import DopeDatabase, {
-//   compareByHighestLastSale,
-//   compareByMostAffordable,
-//   compareByMostExpensive,
-//   compareByRank,
-//   DopeDbCacheReactive,
-//   filterItemsBySearchString,
-//   testForUnclaimedPaper,
-//   testForSale,
-//   testForNotOpened,
-// } from 'utils/DopeDatabase';
+import DopeCard from 'features/dope/components/DopeCard';
+import MarketFilterBar from 'features/swap-meet/components/MarketFilterBar';
 import LoadingState from 'features/swap-meet/components/LoadingState';
 import EmptyState from 'features/swap-meet/components/EmptyState';
 import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
+import { useDebounce } from 'usehooks-ts';
 
 const MarketList = () => {
-  const [searchInputValue, setSearchValue] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const debouncedValue = useDebounce<string>(searchValue, 500);
+  const [orderBy, setOrderBy] = useState<SearchOrderField>(SearchOrderField.Greatness);
 
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
 
-  // Loads unbundled from The Graph,
-  // then updates items in reactive var cache.
   const {
     data: searchResult,
     isFetching: isSearchFetching,
@@ -38,11 +27,15 @@ const MarketList = () => {
   } = useInfiniteSearchDopeQuery(
     'first',
     {
-      first: 100,
+      first: 50,
       orderBy: {
+        field: orderBy,
         direction: OrderDirection.Asc,
       },
-      query: searchInputValue,
+      where: {
+        saleActive: true,
+      },
+      query: searchValue,
     },
     {
       getNextPageParam: lastPage => {
@@ -54,33 +47,25 @@ const MarketList = () => {
     },
   );
 
-  useEffect(() => {
-    const searchFetch = async () => {
-      if (searchInputValue) {
-        await refetch();
-        setIsTyping(false);
-      }
-    };
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
 
-    searchFetch();
-  }, [searchInputValue, refetch]);
+  useEffect(() => {
+    refetch();
+  }, [debouncedValue]);
 
   const isLoading = isSearchFetching || searchStatus === 'loading'; // || !hasUpdateDopeDbWithPaper;
 
-  const handleSearch = async (value: string) => {
-    setSearchValue(value);
-  };
-
   return (
     <>
-      {/* @TODO: Re-enable when the fields are available from the API */}
       <MarketFilterBar
-        searchCallback={(value: string) => handleSearch(value)}
-        // sortByCallback={(key: string) => setSortByKey(key)}
-        // statusCallback={(key: string) => setStatusKey(key)}
+        handleChange={handleChange}
+        searchValue={searchValue}
+        orderBy={orderBy}
+        setOrderBy={setOrderBy}
         compactViewCallback={(toggle: boolean) => setViewCompactCards(toggle)}
         compactSwitchOn={viewCompactCards}
-        searchIsTypingCallback={() => setIsTyping(true)}
       />
       {isLoading ? (
         <LoadingState />
@@ -99,7 +84,7 @@ const MarketList = () => {
                   orderBy: {
                     direction: OrderDirection.Asc,
                   },
-                  query: searchInputValue,
+                  query: searchValue,
                 },
               })
             }

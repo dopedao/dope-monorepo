@@ -596,7 +596,9 @@ export type ItemOrder = {
 };
 
 export enum ItemOrderField {
-  Greatness = 'GREATNESS'
+  Greatness = 'GREATNESS',
+  LastSalePrice = 'LAST_SALE_PRICE',
+  SalePrice = 'SALE_PRICE'
 }
 
 /** ItemTier represents the tier of an item. */
@@ -1016,7 +1018,12 @@ export type SearchIndexWhereInput = {
 
 export type SearchOrder = {
   direction?: InputMaybe<OrderDirection>;
+  field?: InputMaybe<SearchOrderField>;
 };
+
+export enum SearchOrderField {
+  Greatness = 'GREATNESS'
+}
 
 export type SearchResult = Dope | Hustler | Item;
 
@@ -1060,6 +1067,17 @@ export enum SearchType {
  */
 export type SearchWhereInput = {
   and?: InputMaybe<Array<SearchWhereInput>>;
+  /** greatness field predicates */
+  greatness?: InputMaybe<Scalars['Int']>;
+  greatnessGT?: InputMaybe<Scalars['Int']>;
+  greatnessGTE?: InputMaybe<Scalars['Int']>;
+  greatnessIn?: InputMaybe<Array<Scalars['Int']>>;
+  greatnessIsNil?: InputMaybe<Scalars['Boolean']>;
+  greatnessLT?: InputMaybe<Scalars['Int']>;
+  greatnessLTE?: InputMaybe<Scalars['Int']>;
+  greatnessNEQ?: InputMaybe<Scalars['Int']>;
+  greatnessNotIn?: InputMaybe<Array<Scalars['Int']>>;
+  greatnessNotNil?: InputMaybe<Scalars['Boolean']>;
   /** dope edge predicates */
   hasDope?: InputMaybe<Scalars['Boolean']>;
   hasDopeWith?: InputMaybe<Array<DopeWhereInput>>;
@@ -1078,8 +1096,29 @@ export type SearchWhereInput = {
   idLTE?: InputMaybe<Scalars['ID']>;
   idNEQ?: InputMaybe<Scalars['ID']>;
   idNotIn?: InputMaybe<Array<Scalars['ID']>>;
+  /** last_sale_price field predicates */
+  lastSalePrice?: InputMaybe<Scalars['BigInt']>;
+  lastSalePriceGT?: InputMaybe<Scalars['BigInt']>;
+  lastSalePriceGTE?: InputMaybe<Scalars['BigInt']>;
+  lastSalePriceIn?: InputMaybe<Array<Scalars['BigInt']>>;
+  lastSalePriceLT?: InputMaybe<Scalars['BigInt']>;
+  lastSalePriceLTE?: InputMaybe<Scalars['BigInt']>;
+  lastSalePriceNEQ?: InputMaybe<Scalars['BigInt']>;
+  lastSalePriceNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
   not?: InputMaybe<SearchWhereInput>;
   or?: InputMaybe<Array<SearchWhereInput>>;
+  /** sale_active field predicates */
+  saleActive?: InputMaybe<Scalars['Boolean']>;
+  saleActiveNEQ?: InputMaybe<Scalars['Boolean']>;
+  /** sale_price field predicates */
+  salePrice?: InputMaybe<Scalars['BigInt']>;
+  salePriceGT?: InputMaybe<Scalars['BigInt']>;
+  salePriceGTE?: InputMaybe<Scalars['BigInt']>;
+  salePriceIn?: InputMaybe<Array<Scalars['BigInt']>>;
+  salePriceLT?: InputMaybe<Scalars['BigInt']>;
+  salePriceLTE?: InputMaybe<Scalars['BigInt']>;
+  salePriceNEQ?: InputMaybe<Scalars['BigInt']>;
+  salePriceNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
   /** type field predicates */
   type?: InputMaybe<SearchType>;
   typeIn?: InputMaybe<Array<SearchType>>;
@@ -1258,7 +1297,7 @@ export type DopesQueryVariables = Exact<{
 }>;
 
 
-export type DopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, listings?: Array<{ __typename?: 'Listing', id: string, outputs: Array<{ __typename?: 'Amount', id: string, type: AmountType, amount: any, token?: { __typename?: 'Dope', id: string } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> } | null | undefined> | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | null | undefined } | null | undefined> | null | undefined } };
+export type DopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, lastSale?: { __typename?: 'Listing', inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined, listings?: Array<{ __typename?: 'Listing', id: string, outputs: Array<{ __typename?: 'Amount', id: string, type: AmountType, amount: any, token?: { __typename?: 'Dope', id: string } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> } | null | undefined> | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type HustlerQueryVariables = Exact<{
   where?: InputMaybe<HustlerWhereInput>;
@@ -1285,7 +1324,7 @@ export type SearchDopeQueryVariables = Exact<{
 }>;
 
 
-export type SearchDopeQuery = { __typename?: 'Query', search: { __typename?: 'SearchConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'SearchEdge', node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> | null | undefined } };
+export type SearchDopeQuery = { __typename?: 'Query', search: { __typename?: 'SearchConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'SearchEdge', node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, lastSale?: { __typename?: 'Listing', inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> | null | undefined } };
 
 export type WalletQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
@@ -1496,6 +1535,13 @@ export const DopesDocument = `
         opened
         score
         rank
+        lastSale {
+          inputs {
+            amount
+            id
+            type
+          }
+        }
         listings {
           id
           outputs {
@@ -1928,6 +1974,13 @@ export const SearchDopeDocument = `
           opened
           score
           rank
+          lastSale {
+            inputs {
+              amount
+              id
+              type
+            }
+          }
           items {
             id
             fullname

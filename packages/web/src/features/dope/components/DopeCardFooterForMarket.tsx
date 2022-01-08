@@ -26,8 +26,8 @@ const ContextSensitiveButton = ({ dope }: DopeCardFooterForMarketProps) => {
 };
 
 const LastSaleOrNever = ({ dope }: DopeCardFooterForMarketProps) => {
-  const lastSalePrice = dope.listings?.[0]?.outputs?.[0]?.amount;
-  const unit = dope.listings?.[0]?.outputs[0]?.type;
+  const lastSalePrice = dope.lastSale?.inputs?.[0]?.amount;
+  const unit = dope.lastSale?.inputs?.[0]?.type;
   if (lastSalePrice)
     return (
       <span

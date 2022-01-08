@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
-import { DopeLegendBackgroundColors } from 'components/dope/DopeLegend';
+import { DopeLegendBackgroundColors } from 'features/dope/components/DopeLegend';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
 import { DopeCardProps } from './DopeCard';
-import Row from 'components/dope/Row';
+import Row from 'features/dope/components/Row';
 
 const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
   return (
