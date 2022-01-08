@@ -2127,8 +2127,6 @@ type ItemEdge {
 
 enum ItemOrderField {
   GREATNESS
-  SALE_PRICE
-  LAST_SALE_PRICE
 }
 
 input ItemOrder {
@@ -2189,8 +2187,8 @@ input ListingOrder {
 
 enum SearchOrderField {
   GREATNESS
-  # AFFORDABLE
-  # LAST_SALE_AMOUNT
+  SALE_PRICE
+  LAST_SALE_PRICE
 }
 
 input SearchOrder {
