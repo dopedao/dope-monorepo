@@ -4,6 +4,22 @@ package ent
 
 import "context"
 
+func (a *Amount) ListingInput(ctx context.Context) (*Listing, error) {
+	result, err := a.Edges.ListingInputOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryListingInput().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (a *Amount) ListingOutput(ctx context.Context) (*Listing, error) {
+	result, err := a.Edges.ListingOutputOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryListingOutput().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (bp *BodyPart) HustlerBodies(ctx context.Context) ([]*Hustler, error) {
 	result, err := bp.Edges.HustlerBodiesOrErr()
 	if IsNotLoaded(err) {

@@ -55,7 +55,7 @@ func (a *Amount) Node(ctx context.Context) (node *Node, err error) {
 		ID:     a.ID,
 		Type:   "Amount",
 		Fields: make([]*Field, 3),
-		Edges:  make([]*Edge, 0),
+		Edges:  make([]*Edge, 2),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(a.Type); err != nil {
@@ -81,6 +81,26 @@ func (a *Amount) Node(ctx context.Context) (node *Node, err error) {
 		Type:  "schema.BigInt",
 		Name:  "asset_id",
 		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "Listing",
+		Name: "listing_input",
+	}
+	err = a.QueryListingInput().
+		Select(listing.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[1] = &Edge{
+		Type: "Listing",
+		Name: "listing_output",
+	}
+	err = a.QueryListingOutput().
+		Select(listing.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
 	}
 	return node, nil
 }

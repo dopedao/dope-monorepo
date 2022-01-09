@@ -4,6 +4,7 @@ package amount
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
@@ -302,6 +303,62 @@ func AssetIDLT(v schema.BigInt) predicate.Amount {
 func AssetIDLTE(v schema.BigInt) predicate.Amount {
 	return predicate.Amount(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldAssetID), v))
+	})
+}
+
+// HasListingInput applies the HasEdge predicate on the "listing_input" edge.
+func HasListingInput() predicate.Amount {
+	return predicate.Amount(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ListingInputTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ListingInputTable, ListingInputColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasListingInputWith applies the HasEdge predicate on the "listing_input" edge with a given conditions (other predicates).
+func HasListingInputWith(preds ...predicate.Listing) predicate.Amount {
+	return predicate.Amount(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ListingInputInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ListingInputTable, ListingInputColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasListingOutput applies the HasEdge predicate on the "listing_output" edge.
+func HasListingOutput() predicate.Amount {
+	return predicate.Amount(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ListingOutputTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ListingOutputTable, ListingOutputColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasListingOutputWith applies the HasEdge predicate on the "listing_output" edge with a given conditions (other predicates).
+func HasListingOutputWith(preds ...predicate.Listing) predicate.Amount {
+	return predicate.Amount(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ListingOutputInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ListingOutputTable, ListingOutputColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 
