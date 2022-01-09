@@ -1,3 +1,4 @@
+import Citizen from "game/entities/citizen/Citizen";
 import EventHandler, { Events } from "game/handlers/EventHandler";
 import QuestManager from "game/managers/QuestManager";
 
@@ -8,6 +9,7 @@ export default class Quest
     readonly name: string;
     readonly description: string;
     protected _isActive: boolean = true;
+    protected questReferer: Citizen;
 
     private startCallback?: () => void;
     private completeCallback?: () => void;
@@ -15,9 +17,10 @@ export default class Quest
     get isActive() { return this._isActive; }
     set isActive(value: boolean) { this._isActive = value; this.onStart ? this.onStart() : {}; }
 
-    constructor(questManager: QuestManager, name: string, description: string, start?: () => void, complete?: () => void, isActive?: boolean)
+    constructor(questManager: QuestManager, questReferer: Citizen, name: string, description: string, start?: () => void, complete?: () => void, isActive?: boolean)
     {
         this.questManager = questManager;
+        this.questReferer = questReferer;
 
         this.name = name;
         this.description = description;

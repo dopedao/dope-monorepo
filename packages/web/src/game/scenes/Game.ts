@@ -17,6 +17,7 @@ import PointQuest from 'game/quests/PointQuest';
 import Item from 'game/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';
 import ItemQuest from 'game/quests/ItemQuest';
+import BringItemQuest from 'game/quests/BringItemQuest';
 
 export default class GameScene extends Scene {
   private player!: Player;
@@ -106,9 +107,11 @@ export default class GameScene extends Scene {
         'Michel', 
         'Patrick is not evil', 
         [new Conversation('Give me some clothes please', () => {
-          this.player.questManager.addQuest(new ItemQuest(this.player.questManager, item, "Mr.Crackhead", "Get him some clothes ASAP"));
+          this.player.questManager.addQuest(new BringItemQuest(this.player.questManager, this.citizens[0], item, "Mr.Crackhead", "Get him some clothes ASAP"));
           return false;
-        })], 
+        }),
+        new Conversation('Thanks for bringing me my clothes!', () => true)
+      ], 
         points, true,),
 
       // new Citizen(
