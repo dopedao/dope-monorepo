@@ -5,6 +5,9 @@ import ItemQuest from "./ItemQuest";
 
 export default class BringItemQuest extends ItemQuest
 {
+    // if picked up item during quest "lifetime"
+    // will not be true if the player has the item
+    // before the quest's start
     private _hasItem: boolean = false;
 
     get hasItem() { return this._hasItem; }
@@ -26,7 +29,9 @@ export default class BringItemQuest extends ItemQuest
         if (citizen !== this.questReferer)
             return;
         
-        this.onComplete();
+        // if has picked up item during quest "lifetime"
+        if (this.hasItem)
+            this.onComplete();
     }
 
     onStart()

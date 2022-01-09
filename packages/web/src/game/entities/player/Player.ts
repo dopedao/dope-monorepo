@@ -75,6 +75,9 @@ export default class Player extends Hustler
             const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType).gameObject;
             if (otherGameObject instanceof Citizen)
             {
+                // if has no conversations, dont emit interaction
+                if ((otherGameObject as Citizen).conversations.length === 0)
+                    return;
                 // prevent setTimeout in onInteractionFinish
                 // from setting shouldFollowPath back to true again when in interaction
                 if (!(otherGameObject as Citizen).shouldFollowPath)
@@ -151,8 +154,7 @@ export default class Player extends Hustler
     private _handleEvents()
     {
         EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
-            if (citizen.conversations.length > 0)
-                this._busy = true;
+            this._busy = true;
         });
         EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (citizen: Citizen) => {
             this._busy = false;
