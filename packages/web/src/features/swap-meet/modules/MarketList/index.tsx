@@ -20,14 +20,13 @@ const MarketList = () => {
   const {
     data: searchResult,
     isFetching: isSearchFetching,
-    refetch,
     fetchNextPage: searchFetchNextPage,
     hasNextPage: searchHasNextPage,
     status: searchStatus,
   } = useInfiniteSearchDopeQuery(
     'first',
     {
-      first: 50,
+      first: 25,
       orderBy: {
         field: orderBy,
         direction:
@@ -36,7 +35,7 @@ const MarketList = () => {
       where: {
         saleActive: true,
       },
-      query: searchValue,
+      query: debouncedValue,
     },
     {
       getNextPageParam: lastPage => {
@@ -51,10 +50,6 @@ const MarketList = () => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
   };
-
-  useEffect(() => {
-    refetch();
-  }, [debouncedValue]);
 
   const isLoading = isSearchFetching || searchStatus === 'loading'; // || !hasUpdateDopeDbWithPaper;
 
@@ -79,7 +74,7 @@ const MarketList = () => {
             loadMore={() =>
               searchFetchNextPage({
                 pageParam: {
-                  first: 100,
+                  first: 25,
                   after:
                     searchResult?.pages[searchResult.pages.length - 1].search.pageInfo.endCursor,
                   orderBy: {

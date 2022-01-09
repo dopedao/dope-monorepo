@@ -1324,7 +1324,7 @@ export type SearchDopeQueryVariables = Exact<{
 }>;
 
 
-export type SearchDopeQuery = { __typename?: 'Query', search: { __typename?: 'SearchConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'SearchEdge', node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, lastSale?: { __typename?: 'Listing', inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> | null | undefined } };
+export type SearchDopeQuery = { __typename?: 'Query', search: { __typename?: 'SearchConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'SearchEdge', node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, lastSale?: { __typename?: 'Listing', inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined, listings?: Array<{ __typename?: 'Listing', inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined> | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> | null | undefined } };
 
 export type WalletQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
@@ -1975,6 +1975,13 @@ export const SearchDopeDocument = `
           score
           rank
           lastSale {
+            inputs {
+              amount
+              id
+              type
+            }
+          }
+          listings {
             inputs {
               amount
               id

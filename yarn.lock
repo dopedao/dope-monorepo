@@ -2611,7 +2611,7 @@ __metadata:
     "@ensdomains/ensjs": ^2.0.1
     "@ensdomains/react-ens-address": ^0.0.30
     "@graphql-cli/codegen": ^2.1.5
-    "@graphql-codegen/cli": ^2.2.0
+    "@graphql-codegen/cli": ^2.3.1
     "@graphql-codegen/fragment-matcher": ^3.1.0
     "@graphql-codegen/introspection": ^2.1.0
     "@graphql-codegen/schema-ast": ^2.4.0
@@ -4016,7 +4016,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/cli@npm:2.3.1, @graphql-codegen/cli@npm:^2.2.0":
+"@graphql-codegen/cli@npm:2.3.1, @graphql-codegen/cli@npm:^2.3.1":
   version: 2.3.1
   resolution: "@graphql-codegen/cli@npm:2.3.1"
   dependencies:

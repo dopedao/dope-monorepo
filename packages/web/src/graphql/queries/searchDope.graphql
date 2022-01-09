@@ -38,6 +38,13 @@ query SearchDope(
               type
             }
           }
+          listings {
+            inputs {
+              amount
+              id
+              type
+            }
+          }
           items {
             id
             fullname

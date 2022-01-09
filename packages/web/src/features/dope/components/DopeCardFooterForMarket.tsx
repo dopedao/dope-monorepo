@@ -1,5 +1,7 @@
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
+import { ethers } from 'ethers';
+
 import { DopeCardProps } from './DopeCard';
 
 const viewOnOpenSea = (tokenId: string): void => {
@@ -9,9 +11,9 @@ const viewOnOpenSea = (tokenId: string): void => {
 };
 
 const ContextSensitiveButton = ({ dope }: DopeCardFooterForMarketProps) => {
-  const isOnSale = !!dope.listings?.[0]?.outputs?.[0]?.amount;
-  const price = dope.listings?.[0]?.outputs?.[0]?.amount;
-  const unit = dope.listings?.[0]?.outputs[0]?.type;
+  const isOnSale = !!dope.listings?.[0]?.inputs?.[0]?.amount;
+  const price = dope.listings?.[0]?.inputs?.[0]?.amount;
+  const unit = dope.listings?.[0]?.inputs[0]?.type;
   return (
     <Button
       onClick={() => viewOnOpenSea(dope.id)}
@@ -20,7 +22,7 @@ const ContextSensitiveButton = ({ dope }: DopeCardFooterForMarketProps) => {
       `}
       variant={isOnSale ? 'primary' : 'solid'}
     >
-      {isOnSale ? `Buy for ${price} ${unit}` : 'View'}
+      {isOnSale ? `Buy for ${ethers.utils.formatEther(price)} ${unit}` : 'View'}
     </Button>
   );
 };
@@ -35,7 +37,7 @@ const LastSaleOrNever = ({ dope }: DopeCardFooterForMarketProps) => {
           white-space: nowrap;
         `}
       >
-        Last {lastSalePrice} {unit}
+        Last {ethers.utils.formatEther(lastSalePrice)} {unit}
       </span>
     );
   return <></>;
