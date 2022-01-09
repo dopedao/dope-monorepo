@@ -596,9 +596,7 @@ export type ItemOrder = {
 };
 
 export enum ItemOrderField {
-  Greatness = 'GREATNESS',
-  LastSalePrice = 'LAST_SALE_PRICE',
-  SalePrice = 'SALE_PRICE'
+  Greatness = 'GREATNESS'
 }
 
 /** ItemTier represents the tier of an item. */
@@ -1022,7 +1020,9 @@ export type SearchOrder = {
 };
 
 export enum SearchOrderField {
-  Greatness = 'GREATNESS'
+  Greatness = 'GREATNESS',
+  LastSalePrice = 'LAST_SALE_PRICE',
+  SalePrice = 'SALE_PRICE'
 }
 
 export type SearchResult = Dope | Hustler | Item;

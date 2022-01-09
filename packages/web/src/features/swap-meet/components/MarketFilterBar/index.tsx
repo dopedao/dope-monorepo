@@ -7,7 +7,20 @@ import { Container } from './styles';
 
 // const statusKeys = ['All', 'Has Unclaimed $PAPER', 'For Sale', 'Ready To Unpack'];
 
-// const sortKeys = ['Top Rank', 'Most Affordable', 'Highest Last Sale'];
+const sortKeys = [
+  {
+    label: 'Top Rank',
+    value: SearchOrderField.Greatness,
+  },
+  {
+    label: 'Most Affordable',
+    value: SearchOrderField.SalePrice,
+  },
+  {
+    label: 'Highest Last Sale',
+    value: SearchOrderField.LastSalePrice,
+  },
+];
 
 type MarketFilterBarProps = {
   compactViewCallback(toggle: boolean): void;
@@ -56,8 +69,10 @@ const MarketFilterBar = ({
       <div>
         <Select size="sm" variant="filterBar" onChange={handleSortChange} value={orderBy}>
           <option disabled>Sort By…</option>
-          {Object.values(SearchOrderField).map((value, index) => (
-            <option key={`${value}-${index}`}>{value}</option>
+          {sortKeys.map(({ label, value }, index) => (
+            <option key={`${value}-${index}`} value={value}>
+              {label}
+            </option>
           ))}
         </Select>
       </div>

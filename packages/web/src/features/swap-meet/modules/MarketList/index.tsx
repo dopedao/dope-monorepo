@@ -30,7 +30,8 @@ const MarketList = () => {
       first: 50,
       orderBy: {
         field: orderBy,
-        direction: OrderDirection.Asc,
+        direction:
+          orderBy === SearchOrderField.SalePrice ? OrderDirection.Asc : OrderDirection.Desc,
       },
       where: {
         saleActive: true,
@@ -82,7 +83,10 @@ const MarketList = () => {
                   after:
                     searchResult?.pages[searchResult.pages.length - 1].search.pageInfo.endCursor,
                   orderBy: {
-                    direction: OrderDirection.Asc,
+                    direction:
+                      orderBy === SearchOrderField.SalePrice
+                        ? OrderDirection.Asc
+                        : OrderDirection.Desc,
                   },
                   query: searchValue,
                 },
