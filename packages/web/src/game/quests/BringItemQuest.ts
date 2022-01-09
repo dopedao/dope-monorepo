@@ -31,7 +31,11 @@ export default class BringItemQuest extends ItemQuest
         
         // if has picked up item during quest "lifetime"
         if (this.hasItem)
-            this.onComplete();
+        {
+            // remove item from player inventory
+            if (this.questManager.player.inventory.remove(this.item))
+                this.onComplete();
+        }
     }
 
     onStart()

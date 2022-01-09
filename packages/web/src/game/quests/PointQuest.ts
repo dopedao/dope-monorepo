@@ -1,3 +1,4 @@
+import Citizen from "game/entities/citizen/Citizen";
 import Player from "game/entities/player/Player";
 import QuestManager from "game/managers/QuestManager";
 import Zone from "game/world/Zone";
@@ -9,8 +10,8 @@ export default class PointQuest extends Quest {
 
     get zone() { return this._zone; }
 
-    constructor(questManager: QuestManager, zone: Zone, name: string, description: string, start?: () => void, complete?: () => void, isActive?: boolean) {
-        super(questManager, name, description, start, complete, isActive);
+    constructor(questManager: QuestManager, questReferer: Citizen, zone: Zone, name: string, description: string, start?: () => void, complete?: () => void, isActive?: boolean) {
+        super(questManager, questReferer, name, description, start, complete, isActive);
 
         this._zone = zone;
     }

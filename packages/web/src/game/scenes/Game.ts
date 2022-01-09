@@ -40,8 +40,9 @@ export default class GameScene extends Scene {
 
   handleItemEntities()
   {
-    EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item) => {
-      new ItemEntity(this.matter.world, this.player.x, this.player.y, 'item_' + item.name, item);
+    EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop: boolean) => {
+      if (drop)
+        new ItemEntity(this.matter.world, this.player.x, this.player.y, 'item_' + item.name, item);
     })
   }
 

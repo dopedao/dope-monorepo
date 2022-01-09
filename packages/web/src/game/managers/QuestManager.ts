@@ -25,6 +25,7 @@ export default class QuestManager {
 
         EventHandler.emitter().emit(Events.PLAYER_QUEST_NEW, quest);
 
+        // if quest is set as active by default, fire up the onstart event of the quest
         if (quest.isActive)
             quest.onStart();
     }
@@ -36,6 +37,8 @@ export default class QuestManager {
         this._quests.splice(this._quests.indexOf(quest), 1);
     }
 
+    // will call the quest oncomplete method (will fire up the quest complete event)
+    // and remove the quest from the quests array
     completeQuest(quest: Quest) {
         quest.onComplete();
 

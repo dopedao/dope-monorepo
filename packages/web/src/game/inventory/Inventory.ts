@@ -28,13 +28,15 @@ export default class Inventory
 
     // add item
     // return true if successful
-    add(item: Item): boolean
+    // if pickup true, means that the item has been added to inventory
+    // via pickup
+    add(item: Item, pickup?: boolean): boolean
     {
         for (let i = 0; i < Inventory.MAX_ITEMS; i++)
             if (!this._items[i])
             {
                 this._items[i] = item;
-                EventHandler.emitter().emit(Events.PLAYER_INVENTORY_ADD_ITEM, item);
+                EventHandler.emitter().emit(Events.PLAYER_INVENTORY_ADD_ITEM, item, pickup);
                 return true;
             }
         return false;
@@ -42,13 +44,14 @@ export default class Inventory
 
     // remove item
     // return true if successful
-    remove(item: Item | number): boolean
+    // if drop true, spawn the item gameobject in the world
+    remove(item: Item | number, drop?: boolean): boolean
     {
         const index = item instanceof Item ? this._items.indexOf(item) : item;
         if (index === -1 || index >= this._items.length)
             return false;
         
-        EventHandler.emitter().emit(Events.PLAYER_INVENTORY_REMOVE_ITEM, this._items[index]);
+        EventHandler.emitter().emit(Events.PLAYER_INVENTORY_REMOVE_ITEM, this._items[index], drop);
         this._items[index] = undefined;
         return true;
     }

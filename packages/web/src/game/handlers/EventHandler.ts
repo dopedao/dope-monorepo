@@ -33,8 +33,10 @@ export default class EventHandler
         // handle events
         EventHandler._emitter.on(Events.PLAYER_INVENTORY_OPEN, () => this._log('Opened inventory'));
         EventHandler._emitter.on(Events.PLAYER_INVENTORY_CLOSE, () => this._log('Closed inventory'));
-        EventHandler._emitter.on(Events.PLAYER_INVENTORY_ADD_ITEM, (item: Item) => this._log(`Added item to inventory: ${item.name}`));
-        EventHandler._emitter.on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item) => this._log(`Removed item from inventory: ${item.name}`));
+        EventHandler._emitter.on(Events.PLAYER_INVENTORY_ADD_ITEM, (item: Item, pickup?: boolean) => this._log(`Added item to inventory: ${item.name}
+            picked up?: ${pickup ?? false}`));
+        EventHandler._emitter.on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop?: boolean) => this._log(`Removed item from inventory: ${item.name}
+            dropped?: ${drop ?? false}`));
 
         EventHandler._emitter.on(Events.PLAYER_ZONE_ENTER, () => this._log('Entered zone'));
         EventHandler._emitter.on(Events.PLAYER_ZONE_LEAVE, () => this._log('Left zone'));

@@ -94,7 +94,7 @@ export default class Player extends Hustler
             else if (otherGameObject instanceof ItemEntity)
             {
                 // if item succesfully picked up
-                if (this.inventory.add((otherGameObject as ItemEntity).item))
+                if (this.inventory.add((otherGameObject as ItemEntity).item, true))
                     (otherGameObject as ItemEntity).onPickup();
                 
                 flag = true;

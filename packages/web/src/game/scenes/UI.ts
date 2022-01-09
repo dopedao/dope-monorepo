@@ -101,15 +101,15 @@ export default class UIScene extends Scene {
     private _handleItemInteractions()
     {
         // handle player add itme into inventory
-        EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, (item: Item) => {
-            toast(`You picked up ${item.name}`, {
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, (item: Item, pickup?: boolean) => {
+            toast(pickup ? `You picked up ${item.name}` : `${item.name} has been added to your inventory`, {
                 ...toastStyle,
                 icon: '💠'
             });
         });
         // handle player remove item from inventory
-        EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item) => {
-            toast(`You dropped ${item.name}`, {
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop?: boolean) => {
+            toast(drop ? `You dropped ${item.name}` : `${item.name} was removed from your inventory`, {
                 ...toastStyle,
                 icon: '💠',
                 style: {
