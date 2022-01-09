@@ -19,8 +19,15 @@ export interface DecodedImage {
  * Decode the RLE image data into a format that's easier to consume in `buildSVG`.
  * @param image The RLE image data
  */
-const decodeImage = (image: string): DecodedImage => {
-  const data = image.replace(/^0x/, '');
+const decodeImage = (image: string, offset?: string): DecodedImage => {
+  let data = image.replace(/^0x/, '');
+
+  if (offset) {
+    data =
+      (parseInt(data.substring(0, 10), 16) + parseInt(offset, 16)).toString(16).padStart(10, '0') +
+      data.substring(10);
+  }
+
   const paletteIndex = parseInt(data.substring(0, 2), 16);
   const bounds = {
     top: parseInt(data.substring(2, 4), 16),
@@ -57,9 +64,13 @@ export const buildSVG = (
   resolution: number = 64,
 ): string => {
   const step = 320 / resolution;
-  const svgWithoutEndTag = parts.reduce((result, part) => {
+  const svgWithoutEndTag = parts.reduce((result, part, i) => {
+    let offset = undefined;
+    if (resolution === 160 && i != 0) {
+      offset = '00331D331D';
+    }
     const svgRects: string[] = [];
-    const { bounds, rects, paletteIndex } = decodeImage(part);
+    const { bounds, rects, paletteIndex } = decodeImage(part, offset);
 
     let currentX = bounds.left;
     let currentY = bounds.top;

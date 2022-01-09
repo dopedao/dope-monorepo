@@ -8,10 +8,6 @@ import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import { useHustler, useSwapMeet } from 'hooks/contracts';
 import { buildSVG } from 'utils/svg-builder';
 
-type Metadata = {
-  image: string;
-};
-
 export interface HustlerRenderProps {
   bgColor?: string;
   body?: number;
@@ -25,6 +21,7 @@ export interface HustlerRenderProps {
   zoomWindow: ZoomWindow;
   ogTitle?: string;
   dopeId?: string;
+  resolution?: number;
 }
 
 const RenderFromItemIds = ({
@@ -40,8 +37,10 @@ const RenderFromItemIds = ({
   zoomWindow,
   ogTitle,
   dopeId,
+  resolution = 64,
 }: HustlerRenderProps) => {
   const [itemRles, setItemRles] = useState<string[]>([]);
+  const [vehicleRle, setVehicleRle] = useState<string>();
   const [bodyRles, setBodyRles] = useState<string[]>([]);
 
   const swapmeet = useSwapMeet();
@@ -49,7 +48,10 @@ const RenderFromItemIds = ({
 
   useEffect(() => {
     const sexIndex = sex && sex == 'female' ? 1 : 0;
-    Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(setItemRles);
+    Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(rles => {
+      setVehicleRle(rles[0]);
+      setItemRles(rles.slice(1));
+    });
   }, [itemIds, sex, swapmeet]);
 
   useEffect(() => {
@@ -93,16 +95,28 @@ const RenderFromItemIds = ({
 
       const title = renderName && ogTitle && Number(dopeId) < 500 ? ogTitle : '';
       const subtitle = renderName ? name : '';
-      return buildSVG(
-        [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles],
-        bgColor,
-        textColor,
-        title,
-        subtitle,
-        zoomWindow,
-      );
+
+      const rles = [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles];
+
+      if (resolution === 160 && vehicleRle) {
+        rles.unshift(vehicleRle);
+      }
+
+      return buildSVG(rles, bgColor, textColor, title, subtitle, zoomWindow, resolution);
     }
-  }, [itemRles, bodyRles, name, textColor, bgColor, renderName, zoomWindow, ogTitle, dopeId]);
+  }, [
+    itemRles,
+    vehicleRle,
+    bodyRles,
+    name,
+    textColor,
+    bgColor,
+    renderName,
+    zoomWindow,
+    ogTitle,
+    dopeId,
+    resolution,
+  ]);
 
   if (!svg) return <LoadingBlockSquareCentered />;
 
@@ -113,6 +127,11 @@ const RenderFromItemIds = ({
       ratio={1}
       css={css`
         overflow: hidden;
+
+        svg {
+          width: 100%;
+          height: auto;
+        }
       `}
     >
       {svg && <div dangerouslySetInnerHTML={{ __html: svg }} />}
