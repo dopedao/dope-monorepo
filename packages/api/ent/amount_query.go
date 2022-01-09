@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 )
 
@@ -24,7 +25,10 @@ type AmountQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.Amount
-	withFKs    bool
+	// eager-loading edges.
+	withListingInput  *ListingQuery
+	withListingOutput *ListingQuery
+	withFKs           bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -59,6 +63,50 @@ func (aq *AmountQuery) Unique(unique bool) *AmountQuery {
 func (aq *AmountQuery) Order(o ...OrderFunc) *AmountQuery {
 	aq.order = append(aq.order, o...)
 	return aq
+}
+
+// QueryListingInput chains the current query on the "listing_input" edge.
+func (aq *AmountQuery) QueryListingInput() *ListingQuery {
+	query := &ListingQuery{config: aq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(amount.Table, amount.FieldID, selector),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, amount.ListingInputTable, amount.ListingInputColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryListingOutput chains the current query on the "listing_output" edge.
+func (aq *AmountQuery) QueryListingOutput() *ListingQuery {
+	query := &ListingQuery{config: aq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(amount.Table, amount.FieldID, selector),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, amount.ListingOutputTable, amount.ListingOutputColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Amount entity from the query.
@@ -237,15 +285,39 @@ func (aq *AmountQuery) Clone() *AmountQuery {
 		return nil
 	}
 	return &AmountQuery{
-		config:     aq.config,
-		limit:      aq.limit,
-		offset:     aq.offset,
-		order:      append([]OrderFunc{}, aq.order...),
-		predicates: append([]predicate.Amount{}, aq.predicates...),
+		config:            aq.config,
+		limit:             aq.limit,
+		offset:            aq.offset,
+		order:             append([]OrderFunc{}, aq.order...),
+		predicates:        append([]predicate.Amount{}, aq.predicates...),
+		withListingInput:  aq.withListingInput.Clone(),
+		withListingOutput: aq.withListingOutput.Clone(),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
 	}
+}
+
+// WithListingInput tells the query-builder to eager-load the nodes that are connected to
+// the "listing_input" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AmountQuery) WithListingInput(opts ...func(*ListingQuery)) *AmountQuery {
+	query := &ListingQuery{config: aq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withListingInput = query
+	return aq
+}
+
+// WithListingOutput tells the query-builder to eager-load the nodes that are connected to
+// the "listing_output" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AmountQuery) WithListingOutput(opts ...func(*ListingQuery)) *AmountQuery {
+	query := &ListingQuery{config: aq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withListingOutput = query
+	return aq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -311,10 +383,17 @@ func (aq *AmountQuery) prepareQuery(ctx context.Context) error {
 
 func (aq *AmountQuery) sqlAll(ctx context.Context) ([]*Amount, error) {
 	var (
-		nodes   = []*Amount{}
-		withFKs = aq.withFKs
-		_spec   = aq.querySpec()
+		nodes       = []*Amount{}
+		withFKs     = aq.withFKs
+		_spec       = aq.querySpec()
+		loadedTypes = [2]bool{
+			aq.withListingInput != nil,
+			aq.withListingOutput != nil,
+		}
 	)
+	if aq.withListingInput != nil || aq.withListingOutput != nil {
+		withFKs = true
+	}
 	if withFKs {
 		_spec.Node.Columns = append(_spec.Node.Columns, amount.ForeignKeys...)
 	}
@@ -328,6 +407,7 @@ func (aq *AmountQuery) sqlAll(ctx context.Context) ([]*Amount, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, aq.driver, _spec); err != nil {
@@ -336,6 +416,65 @@ func (aq *AmountQuery) sqlAll(ctx context.Context) ([]*Amount, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := aq.withListingInput; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Amount)
+		for i := range nodes {
+			if nodes[i].listing_inputs == nil {
+				continue
+			}
+			fk := *nodes[i].listing_inputs
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(listing.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "listing_inputs" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.ListingInput = n
+			}
+		}
+	}
+
+	if query := aq.withListingOutput; query != nil {
+		ids := make([]string, 0, len(nodes))
+		nodeids := make(map[string][]*Amount)
+		for i := range nodes {
+			if nodes[i].listing_outputs == nil {
+				continue
+			}
+			fk := *nodes[i].listing_outputs
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(listing.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "listing_outputs" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.ListingOutput = n
+			}
+		}
+	}
+
 	return nodes, nil
 }
 

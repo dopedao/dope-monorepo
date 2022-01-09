@@ -38,8 +38,8 @@ func (Dope) Fields() []ent.Field {
 // Edges of the Dope.
 func (Dope) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("wallet", Wallet.Type).Ref("dopes").Unique(),
-		edge.From("last_sale", Listing.Type).Ref("dope_lastsales").Unique(),
+		edge.From("wallet", Wallet.Type).Ref("dopes").Unique().Annotations(entgql.Bind()),
+		edge.From("last_sale", Listing.Type).Ref("dope_lastsales").Unique().Annotations(entgql.Bind()),
 		edge.To("listings", Listing.Type).Annotations(entgql.Bind()),
 		edge.To("items", Item.Type).Annotations(entgql.Bind()),
 		edge.To("index", Search.Type).Unique().Annotations(entgql.Bind()),

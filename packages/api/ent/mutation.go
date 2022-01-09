@@ -52,18 +52,22 @@ const (
 // AmountMutation represents an operation that mutates the Amount nodes in the graph.
 type AmountMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *string
-	_type         *amount.Type
-	amount        *schema.BigInt
-	addamount     *schema.BigInt
-	asset_id      *schema.BigInt
-	addasset_id   *schema.BigInt
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Amount, error)
-	predicates    []predicate.Amount
+	op                    Op
+	typ                   string
+	id                    *string
+	_type                 *amount.Type
+	amount                *schema.BigInt
+	addamount             *schema.BigInt
+	asset_id              *schema.BigInt
+	addasset_id           *schema.BigInt
+	clearedFields         map[string]struct{}
+	listing_input         *string
+	clearedlisting_input  bool
+	listing_output        *string
+	clearedlisting_output bool
+	done                  bool
+	oldValue              func(context.Context) (*Amount, error)
+	predicates            []predicate.Amount
 }
 
 var _ ent.Mutation = (*AmountMutation)(nil)
@@ -318,6 +322,84 @@ func (m *AmountMutation) ResetAssetID() {
 	m.addasset_id = nil
 }
 
+// SetListingInputID sets the "listing_input" edge to the Listing entity by id.
+func (m *AmountMutation) SetListingInputID(id string) {
+	m.listing_input = &id
+}
+
+// ClearListingInput clears the "listing_input" edge to the Listing entity.
+func (m *AmountMutation) ClearListingInput() {
+	m.clearedlisting_input = true
+}
+
+// ListingInputCleared reports if the "listing_input" edge to the Listing entity was cleared.
+func (m *AmountMutation) ListingInputCleared() bool {
+	return m.clearedlisting_input
+}
+
+// ListingInputID returns the "listing_input" edge ID in the mutation.
+func (m *AmountMutation) ListingInputID() (id string, exists bool) {
+	if m.listing_input != nil {
+		return *m.listing_input, true
+	}
+	return
+}
+
+// ListingInputIDs returns the "listing_input" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ListingInputID instead. It exists only for internal usage by the builders.
+func (m *AmountMutation) ListingInputIDs() (ids []string) {
+	if id := m.listing_input; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetListingInput resets all changes to the "listing_input" edge.
+func (m *AmountMutation) ResetListingInput() {
+	m.listing_input = nil
+	m.clearedlisting_input = false
+}
+
+// SetListingOutputID sets the "listing_output" edge to the Listing entity by id.
+func (m *AmountMutation) SetListingOutputID(id string) {
+	m.listing_output = &id
+}
+
+// ClearListingOutput clears the "listing_output" edge to the Listing entity.
+func (m *AmountMutation) ClearListingOutput() {
+	m.clearedlisting_output = true
+}
+
+// ListingOutputCleared reports if the "listing_output" edge to the Listing entity was cleared.
+func (m *AmountMutation) ListingOutputCleared() bool {
+	return m.clearedlisting_output
+}
+
+// ListingOutputID returns the "listing_output" edge ID in the mutation.
+func (m *AmountMutation) ListingOutputID() (id string, exists bool) {
+	if m.listing_output != nil {
+		return *m.listing_output, true
+	}
+	return
+}
+
+// ListingOutputIDs returns the "listing_output" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ListingOutputID instead. It exists only for internal usage by the builders.
+func (m *AmountMutation) ListingOutputIDs() (ids []string) {
+	if id := m.listing_output; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetListingOutput resets all changes to the "listing_output" edge.
+func (m *AmountMutation) ResetListingOutput() {
+	m.listing_output = nil
+	m.clearedlisting_output = false
+}
+
 // Where appends a list predicates to the AmountMutation builder.
 func (m *AmountMutation) Where(ps ...predicate.Amount) {
 	m.predicates = append(m.predicates, ps...)
@@ -497,49 +579,95 @@ func (m *AmountMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AmountMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.listing_input != nil {
+		edges = append(edges, amount.EdgeListingInput)
+	}
+	if m.listing_output != nil {
+		edges = append(edges, amount.EdgeListingOutput)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *AmountMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case amount.EdgeListingInput:
+		if id := m.listing_input; id != nil {
+			return []ent.Value{*id}
+		}
+	case amount.EdgeListingOutput:
+		if id := m.listing_output; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AmountMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *AmountMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AmountMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedlisting_input {
+		edges = append(edges, amount.EdgeListingInput)
+	}
+	if m.clearedlisting_output {
+		edges = append(edges, amount.EdgeListingOutput)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *AmountMutation) EdgeCleared(name string) bool {
+	switch name {
+	case amount.EdgeListingInput:
+		return m.clearedlisting_input
+	case amount.EdgeListingOutput:
+		return m.clearedlisting_output
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *AmountMutation) ClearEdge(name string) error {
+	switch name {
+	case amount.EdgeListingInput:
+		m.ClearListingInput()
+		return nil
+	case amount.EdgeListingOutput:
+		m.ClearListingOutput()
+		return nil
+	}
 	return fmt.Errorf("unknown Amount unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *AmountMutation) ResetEdge(name string) error {
+	switch name {
+	case amount.EdgeListingInput:
+		m.ResetListingInput()
+		return nil
+	case amount.EdgeListingOutput:
+		m.ResetListingOutput()
+		return nil
+	}
 	return fmt.Errorf("unknown Amount edge %s", name)
 }
 

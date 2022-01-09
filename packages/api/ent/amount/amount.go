@@ -21,8 +21,26 @@ const (
 	FieldAmount = "amount"
 	// FieldAssetID holds the string denoting the asset_id field in the database.
 	FieldAssetID = "asset_id"
+	// EdgeListingInput holds the string denoting the listing_input edge name in mutations.
+	EdgeListingInput = "listing_input"
+	// EdgeListingOutput holds the string denoting the listing_output edge name in mutations.
+	EdgeListingOutput = "listing_output"
 	// Table holds the table name of the amount in the database.
 	Table = "amounts"
+	// ListingInputTable is the table that holds the listing_input relation/edge.
+	ListingInputTable = "amounts"
+	// ListingInputInverseTable is the table name for the Listing entity.
+	// It exists in this package in order to avoid circular dependency with the "listing" package.
+	ListingInputInverseTable = "listings"
+	// ListingInputColumn is the table column denoting the listing_input relation/edge.
+	ListingInputColumn = "listing_inputs"
+	// ListingOutputTable is the table that holds the listing_output relation/edge.
+	ListingOutputTable = "amounts"
+	// ListingOutputInverseTable is the table name for the Listing entity.
+	// It exists in this package in order to avoid circular dependency with the "listing" package.
+	ListingOutputInverseTable = "listings"
+	// ListingOutputColumn is the table column denoting the listing_output relation/edge.
+	ListingOutputColumn = "listing_outputs"
 )
 
 // Columns holds all SQL columns for amount fields.

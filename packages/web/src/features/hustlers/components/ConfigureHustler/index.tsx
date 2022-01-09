@@ -155,6 +155,7 @@ const ConfigureHustler = ({
             zoomWindow={config.zoomWindow}
             ogTitle={ogTitle}
             dopeId={config.dopeId}
+            resolution={64}
           />
         ) : (
           <RenderFromDopeId
@@ -169,6 +170,7 @@ const ConfigureHustler = ({
             textColor={config.textColor}
             zoomWindow={config.zoomWindow}
             ogTitle={ogTitle}
+            resolution={64}
           />
         )}
         <PanelFooter

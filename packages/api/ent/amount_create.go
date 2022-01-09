@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
@@ -61,6 +62,44 @@ func (ac *AmountCreate) SetNillableAssetID(si *schema.BigInt) *AmountCreate {
 func (ac *AmountCreate) SetID(s string) *AmountCreate {
 	ac.mutation.SetID(s)
 	return ac
+}
+
+// SetListingInputID sets the "listing_input" edge to the Listing entity by ID.
+func (ac *AmountCreate) SetListingInputID(id string) *AmountCreate {
+	ac.mutation.SetListingInputID(id)
+	return ac
+}
+
+// SetNillableListingInputID sets the "listing_input" edge to the Listing entity by ID if the given value is not nil.
+func (ac *AmountCreate) SetNillableListingInputID(id *string) *AmountCreate {
+	if id != nil {
+		ac = ac.SetListingInputID(*id)
+	}
+	return ac
+}
+
+// SetListingInput sets the "listing_input" edge to the Listing entity.
+func (ac *AmountCreate) SetListingInput(l *Listing) *AmountCreate {
+	return ac.SetListingInputID(l.ID)
+}
+
+// SetListingOutputID sets the "listing_output" edge to the Listing entity by ID.
+func (ac *AmountCreate) SetListingOutputID(id string) *AmountCreate {
+	ac.mutation.SetListingOutputID(id)
+	return ac
+}
+
+// SetNillableListingOutputID sets the "listing_output" edge to the Listing entity by ID if the given value is not nil.
+func (ac *AmountCreate) SetNillableListingOutputID(id *string) *AmountCreate {
+	if id != nil {
+		ac = ac.SetListingOutputID(*id)
+	}
+	return ac
+}
+
+// SetListingOutput sets the "listing_output" edge to the Listing entity.
+func (ac *AmountCreate) SetListingOutput(l *Listing) *AmountCreate {
+	return ac.SetListingOutputID(l.ID)
 }
 
 // Mutation returns the AmountMutation object of the builder.
@@ -220,6 +259,46 @@ func (ac *AmountCreate) createSpec() (*Amount, *sqlgraph.CreateSpec) {
 			Column: amount.FieldAssetID,
 		})
 		_node.AssetID = value
+	}
+	if nodes := ac.mutation.ListingInputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingInputTable,
+			Columns: []string{amount.ListingInputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.listing_inputs = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.ListingOutputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingOutputTable,
+			Columns: []string{amount.ListingOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.listing_outputs = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

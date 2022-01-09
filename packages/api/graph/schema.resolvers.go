@@ -99,7 +99,14 @@ func (r *queryResolver) Search(ctx context.Context, query string, after *ent.Cur
 		})
 	}
 
-	return q.WithDope().WithItem().WithHustler().Paginate(ctx, after, first, before, last, ent.WithSearchOrder(orderBy), ent.WithSearchFilter(where.Filter))
+	return q.WithDope(func(d *ent.DopeQuery) {
+		d.WithLastSale(func(l *ent.ListingQuery) {
+			l.WithInputs()
+		})
+		d.WithListings(func(l *ent.ListingQuery) {
+			l.WithInputs()
+		})
+	}).WithItem().WithHustler().Paginate(ctx, after, first, before, last, ent.WithSearchOrder(orderBy), ent.WithSearchFilter(where.Filter))
 }
 
 // Amount returns generated1.AmountResolver implementation.

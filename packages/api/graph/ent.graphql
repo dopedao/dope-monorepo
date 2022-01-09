@@ -803,6 +803,14 @@ input AmountWhereInput {
   idGTE: ID
   idLT: ID
   idLTE: ID
+  
+  """listing_input edge predicates"""
+  hasListingInput: Boolean
+  hasListingInputWith: [ListingWhereInput!]
+  
+  """listing_output edge predicates"""
+  hasListingOutput: Boolean
+  hasListingOutputWith: [ListingWhereInput!]
 }
 
 """

@@ -85,6 +85,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
         setOgTitle(hustler.title || metadata.ogTitle);
 
         const fetchedItemIds = [
+          metadata.vehicle,
           metadata.weapon,
           metadata.clothes,
           metadata.waist,
