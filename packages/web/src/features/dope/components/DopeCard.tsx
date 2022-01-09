@@ -33,19 +33,8 @@ export type DopeCardProps = {
           | {
               __typename?: 'Listing';
               id: string;
-              outputs: Array<
-                | {
-                    __typename?: 'Amount';
-                    id: string;
-                    type: AmountType;
-                    amount: any;
-                    token?:
-                      | { __typename?: 'Dope'; id: string }
-                      | { __typename?: 'Hustler' }
-                      | { __typename?: 'Item' }
-                      | null
-                      | undefined;
-                  }
+              inputs: Array<
+                | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
                 | null
                 | undefined
               >;
