@@ -150,13 +150,14 @@ export default class Player extends Hustler
 
     private _handleEvents()
     {
-        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (npc: Phaser.GameObjects.GameObject) => {
-            this._busy = true;
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
+            if (citizen.conversations.length > 0)
+                this._busy = true;
         });
-        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (npc: Phaser.GameObjects.GameObject) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (citizen: Citizen) => {
             this._busy = false;
         });
-        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, (npc: Phaser.GameObjects.GameObject) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, (citizen: Citizen) => {
             this._busy = false;
         });
     }

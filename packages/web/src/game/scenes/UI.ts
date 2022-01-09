@@ -135,7 +135,6 @@ export default class UIScene extends Scene {
 
         EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
             if (citizen.conversations.length === 0) return;
-            console.log(citizen.conversations);
 
             // get upcoming conversation
             const conv: Conversation = citizen.conversations[0];
