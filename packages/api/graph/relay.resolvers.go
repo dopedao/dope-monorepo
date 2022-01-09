@@ -14,6 +14,9 @@ import (
 func (r *searchEdgeResolver) Node(ctx context.Context, obj *ent.SearchEdge) (model.SearchResult, error) {
 	switch {
 	case obj.Node.Edges.Dope != nil:
+		if _, err := obj.Node.Edges.Dope.Edges.ListingsOrErr(); err != nil {
+			println(err.Error())
+		}
 		return obj.Node.Edges.Dope, nil
 	case obj.Node.Edges.Item != nil:
 		return obj.Node.Edges.Item, nil

@@ -1943,6 +1943,14 @@ input AmountWhereInput {
   idGTE: ID
   idLT: ID
   idLTE: ID
+  
+  """listing_input edge predicates"""
+  hasListingInput: Boolean
+  hasListingInputWith: [ListingWhereInput!]
+  
+  """listing_output edge predicates"""
+  hasListingOutput: Boolean
+  hasListingOutputWith: [ListingWhereInput!]
 }
 
 """
@@ -8168,6 +8176,38 @@ func (ec *executionContext) unmarshalInputAmountWhereInput(ctx context.Context, 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
 			it.IDLTE, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "hasListingInput":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasListingInput"))
+			it.HasListingInput, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "hasListingInputWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasListingInputWith"))
+			it.HasListingInputWith, err = ec.unmarshalOListingWhereInput2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "hasListingOutput":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasListingOutput"))
+			it.HasListingOutput, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "hasListingOutputWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasListingOutputWith"))
+			it.HasListingOutputWith, err = ec.unmarshalOListingWhereInput2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐListingWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}

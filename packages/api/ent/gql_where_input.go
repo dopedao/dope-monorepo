@@ -62,6 +62,14 @@ type AmountWhereInput struct {
 	AssetIDGTE   *schema.BigInt  `json:"assetIDGTE,omitempty"`
 	AssetIDLT    *schema.BigInt  `json:"assetIDLT,omitempty"`
 	AssetIDLTE   *schema.BigInt  `json:"assetIDLTE,omitempty"`
+
+	// "listing_input" edge predicates.
+	HasListingInput     *bool                `json:"hasListingInput,omitempty"`
+	HasListingInputWith []*ListingWhereInput `json:"hasListingInputWith,omitempty"`
+
+	// "listing_output" edge predicates.
+	HasListingOutput     *bool                `json:"hasListingOutput,omitempty"`
+	HasListingOutputWith []*ListingWhereInput `json:"hasListingOutputWith,omitempty"`
 }
 
 // Filter applies the AmountWhereInput filter on the AmountQuery builder.
@@ -208,6 +216,42 @@ func (i *AmountWhereInput) P() (predicate.Amount, error) {
 		predicates = append(predicates, amount.AssetIDLTE(*i.AssetIDLTE))
 	}
 
+	if i.HasListingInput != nil {
+		p := amount.HasListingInput()
+		if !*i.HasListingInput {
+			p = amount.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasListingInputWith) > 0 {
+		with := make([]predicate.Listing, 0, len(i.HasListingInputWith))
+		for _, w := range i.HasListingInputWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, amount.HasListingInputWith(with...))
+	}
+	if i.HasListingOutput != nil {
+		p := amount.HasListingOutput()
+		if !*i.HasListingOutput {
+			p = amount.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasListingOutputWith) > 0 {
+		with := make([]predicate.Listing, 0, len(i.HasListingOutputWith))
+		for _, w := range i.HasListingOutputWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, amount.HasListingOutputWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate AmountWhereInput")

@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
@@ -70,9 +71,59 @@ func (au *AmountUpdate) AddAssetID(si schema.BigInt) *AmountUpdate {
 	return au
 }
 
+// SetListingInputID sets the "listing_input" edge to the Listing entity by ID.
+func (au *AmountUpdate) SetListingInputID(id string) *AmountUpdate {
+	au.mutation.SetListingInputID(id)
+	return au
+}
+
+// SetNillableListingInputID sets the "listing_input" edge to the Listing entity by ID if the given value is not nil.
+func (au *AmountUpdate) SetNillableListingInputID(id *string) *AmountUpdate {
+	if id != nil {
+		au = au.SetListingInputID(*id)
+	}
+	return au
+}
+
+// SetListingInput sets the "listing_input" edge to the Listing entity.
+func (au *AmountUpdate) SetListingInput(l *Listing) *AmountUpdate {
+	return au.SetListingInputID(l.ID)
+}
+
+// SetListingOutputID sets the "listing_output" edge to the Listing entity by ID.
+func (au *AmountUpdate) SetListingOutputID(id string) *AmountUpdate {
+	au.mutation.SetListingOutputID(id)
+	return au
+}
+
+// SetNillableListingOutputID sets the "listing_output" edge to the Listing entity by ID if the given value is not nil.
+func (au *AmountUpdate) SetNillableListingOutputID(id *string) *AmountUpdate {
+	if id != nil {
+		au = au.SetListingOutputID(*id)
+	}
+	return au
+}
+
+// SetListingOutput sets the "listing_output" edge to the Listing entity.
+func (au *AmountUpdate) SetListingOutput(l *Listing) *AmountUpdate {
+	return au.SetListingOutputID(l.ID)
+}
+
 // Mutation returns the AmountMutation object of the builder.
 func (au *AmountUpdate) Mutation() *AmountMutation {
 	return au.mutation
+}
+
+// ClearListingInput clears the "listing_input" edge to the Listing entity.
+func (au *AmountUpdate) ClearListingInput() *AmountUpdate {
+	au.mutation.ClearListingInput()
+	return au
+}
+
+// ClearListingOutput clears the "listing_output" edge to the Listing entity.
+func (au *AmountUpdate) ClearListingOutput() *AmountUpdate {
+	au.mutation.ClearListingOutput()
+	return au
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -175,6 +226,76 @@ func (au *AmountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: amount.FieldAssetID,
 		})
 	}
+	if au.mutation.ListingInputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingInputTable,
+			Columns: []string{amount.ListingInputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.ListingInputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingInputTable,
+			Columns: []string{amount.ListingInputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if au.mutation.ListingOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingOutputTable,
+			Columns: []string{amount.ListingOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.ListingOutputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingOutputTable,
+			Columns: []string{amount.ListingOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{amount.Label}
@@ -236,9 +357,59 @@ func (auo *AmountUpdateOne) AddAssetID(si schema.BigInt) *AmountUpdateOne {
 	return auo
 }
 
+// SetListingInputID sets the "listing_input" edge to the Listing entity by ID.
+func (auo *AmountUpdateOne) SetListingInputID(id string) *AmountUpdateOne {
+	auo.mutation.SetListingInputID(id)
+	return auo
+}
+
+// SetNillableListingInputID sets the "listing_input" edge to the Listing entity by ID if the given value is not nil.
+func (auo *AmountUpdateOne) SetNillableListingInputID(id *string) *AmountUpdateOne {
+	if id != nil {
+		auo = auo.SetListingInputID(*id)
+	}
+	return auo
+}
+
+// SetListingInput sets the "listing_input" edge to the Listing entity.
+func (auo *AmountUpdateOne) SetListingInput(l *Listing) *AmountUpdateOne {
+	return auo.SetListingInputID(l.ID)
+}
+
+// SetListingOutputID sets the "listing_output" edge to the Listing entity by ID.
+func (auo *AmountUpdateOne) SetListingOutputID(id string) *AmountUpdateOne {
+	auo.mutation.SetListingOutputID(id)
+	return auo
+}
+
+// SetNillableListingOutputID sets the "listing_output" edge to the Listing entity by ID if the given value is not nil.
+func (auo *AmountUpdateOne) SetNillableListingOutputID(id *string) *AmountUpdateOne {
+	if id != nil {
+		auo = auo.SetListingOutputID(*id)
+	}
+	return auo
+}
+
+// SetListingOutput sets the "listing_output" edge to the Listing entity.
+func (auo *AmountUpdateOne) SetListingOutput(l *Listing) *AmountUpdateOne {
+	return auo.SetListingOutputID(l.ID)
+}
+
 // Mutation returns the AmountMutation object of the builder.
 func (auo *AmountUpdateOne) Mutation() *AmountMutation {
 	return auo.mutation
+}
+
+// ClearListingInput clears the "listing_input" edge to the Listing entity.
+func (auo *AmountUpdateOne) ClearListingInput() *AmountUpdateOne {
+	auo.mutation.ClearListingInput()
+	return auo
+}
+
+// ClearListingOutput clears the "listing_output" edge to the Listing entity.
+func (auo *AmountUpdateOne) ClearListingOutput() *AmountUpdateOne {
+	auo.mutation.ClearListingOutput()
+	return auo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -364,6 +535,76 @@ func (auo *AmountUpdateOne) sqlSave(ctx context.Context) (_node *Amount, err err
 			Value:  value,
 			Column: amount.FieldAssetID,
 		})
+	}
+	if auo.mutation.ListingInputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingInputTable,
+			Columns: []string{amount.ListingInputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.ListingInputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingInputTable,
+			Columns: []string{amount.ListingInputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.ListingOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingOutputTable,
+			Columns: []string{amount.ListingOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.ListingOutputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   amount.ListingOutputTable,
+			Columns: []string{amount.ListingOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: listing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Amount{config: auo.config}
 	_spec.Assign = _node.assignValues

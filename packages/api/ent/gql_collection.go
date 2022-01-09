@@ -17,6 +17,18 @@ func (a *AmountQuery) CollectFields(ctx context.Context, satisfies ...string) *A
 }
 
 func (a *AmountQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *AmountQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "listing_input":
+			a = a.WithListingInput(func(query *ListingQuery) {
+				query.collectField(ctx, field)
+			})
+		case "listing_output":
+			a = a.WithListingOutput(func(query *ListingQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
 	return a
 }
 
@@ -67,8 +79,16 @@ func (d *DopeQuery) collectField(ctx *graphql.OperationContext, field graphql.Co
 			d = d.WithItems(func(query *ItemQuery) {
 				query.collectField(ctx, field)
 			})
+		case "last_sale":
+			d = d.WithLastSale(func(query *ListingQuery) {
+				query.collectField(ctx, field)
+			})
 		case "listings":
 			d = d.WithListings(func(query *ListingQuery) {
+				query.collectField(ctx, field)
+			})
+		case "wallet":
+			d = d.WithWallet(func(query *WalletQuery) {
 				query.collectField(ctx, field)
 			})
 		}
