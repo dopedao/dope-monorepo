@@ -34,7 +34,7 @@ export default class Inventory
             if (!this._items[i])
             {
                 this._items[i] = item;
-                EventHandler.emitter().emit(Events.PLAYER_ADD_ITEM_INVENTORY, item);
+                EventHandler.emitter().emit(Events.PLAYER_INVENTORY_ADD_ITEM, item);
                 return true;
             }
         return false;
@@ -48,7 +48,7 @@ export default class Inventory
         if (index === -1 || index >= this._items.length)
             return false;
         
-        EventHandler.emitter().emit(Events.PLAYER_REMOVE_ITEM_INVENTORY, this._items[index]);
+        EventHandler.emitter().emit(Events.PLAYER_INVENTORY_REMOVE_ITEM, this._items[index]);
         this._items[index] = undefined;
         return true;
     }

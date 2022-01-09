@@ -72,7 +72,7 @@ export default class UIScene extends Scene {
                 this.currentInteraction.textBox.destroy();
                 this.currentInteraction = undefined;
 
-                EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_CANCEL, citizen);
+                EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_CANCEL, citizen);
             }
         }
     }
@@ -86,10 +86,10 @@ export default class UIScene extends Scene {
     private _handleInteractions()
     {
         // handle player inventory open
-        EventHandler.emitter().on(Events.PLAYER_OPEN_INVENTORY, () => {
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_OPEN, () => {
             this.inventoryComponent = this.add.reactDom(InventoryComponent, { inventory: this.player.inventory, quests: this.player.questManager.quests });
         });
-        EventHandler.emitter().on(Events.PLAYER_CLOSE_INVENTORY, () => {
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_CLOSE, () => {
             this.inventoryComponent?.destroy();
             this.inventoryComponent = undefined;
         });
@@ -101,14 +101,14 @@ export default class UIScene extends Scene {
     private _handleItemInteractions()
     {
         // handle player add itme into inventory
-        EventHandler.emitter().on(Events.PLAYER_ADD_ITEM_INVENTORY, (item: Item) => {
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, (item: Item) => {
             toast(`You picked up ${item.name}`, {
                 ...toastStyle,
                 icon: '💠'
             });
         });
         // handle player remove item from inventory
-        EventHandler.emitter().on(Events.PLAYER_REMOVE_ITEM_INVENTORY, (item: Item) => {
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item) => {
             toast(`You dropped ${item.name}`, {
                 ...toastStyle,
                 icon: '💠',
@@ -122,7 +122,7 @@ export default class UIScene extends Scene {
 
     private _handleNpcInteractions()
     {
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_CANCEL, (citizen: Citizen) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (citizen: Citizen) => {
             toast("You ran away from the conversation!", {
                 ...toastStyle,
                 icon: '🚫',
@@ -133,7 +133,7 @@ export default class UIScene extends Scene {
             });
         });
 
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, (citizen: Citizen) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
             if (citizen.conversations.length === 0) return;
 
             // get upcoming conversation
@@ -149,7 +149,7 @@ export default class UIScene extends Scene {
 
                     // TODO: Move somewhere else, maybe in the Citizen class?
                     citizen.onInteractionFinish();
-                    EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_COMPLETE, citizen);
+                    EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, citizen);
 
                     // if the conversation is not marked as complete, push it to the array again
                     if (conv.onFinish)
@@ -183,12 +183,12 @@ export default class UIScene extends Scene {
     {
         const icon: string = '👾';
         // handle quest events
-        EventHandler.emitter().on(Events.PLAYER_NEW_QUEST, (quest: Quest) => {
+        EventHandler.emitter().on(Events.PLAYER_QUEST_NEW, (quest: Quest) => {
 
             // TODO: Add line break and quest description when escape sequences are supported
             toast(`New quest: ${quest.name}`, { ...toastStyle, icon: icon });
         })
-        EventHandler.emitter().on(Events.PLAYER_COMPLETE_QUEST, (quest: Quest) => {
+        EventHandler.emitter().on(Events.PLAYER_QUEST_COMPLETE, (quest: Quest) => {
             toast(`Completed quest: ${quest.name}`, { ...toastStyle, icon: icon });
         });
     }

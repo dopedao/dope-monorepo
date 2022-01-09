@@ -50,14 +50,14 @@ export default class Player extends Hustler
     {
         if (!this.inventoryOpen)
         {
-            EventHandler.emitter().emit(Events.PLAYER_OPEN_INVENTORY);
+            EventHandler.emitter().emit(Events.PLAYER_INVENTORY_OPEN);
 
             this._inventoryOpen = true;
             this._busy = true;
         }
         else
         {
-            EventHandler.emitter().emit(Events.PLAYER_CLOSE_INVENTORY);
+            EventHandler.emitter().emit(Events.PLAYER_INVENTORY_CLOSE);
 
             this._inventoryOpen = false;
             this._busy = false;
@@ -84,7 +84,7 @@ export default class Player extends Hustler
                 // make player look at npc
                 this.lookAt(otherGameObject.x, otherGameObject.y);
 
-                EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, otherGameObject);
+                EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, otherGameObject);
 
                 flag = true;
             }
@@ -150,13 +150,13 @@ export default class Player extends Hustler
 
     private _handleEvents()
     {
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, (npc: Phaser.GameObjects.GameObject) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (npc: Phaser.GameObjects.GameObject) => {
             this._busy = true;
         });
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_CANCEL, (npc: Phaser.GameObjects.GameObject) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (npc: Phaser.GameObjects.GameObject) => {
             this._busy = false;
         });
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_COMPLETE, (npc: Phaser.GameObjects.GameObject) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, (npc: Phaser.GameObjects.GameObject) => {
             this._busy = false;
         });
     }
@@ -166,7 +166,7 @@ export default class Player extends Hustler
         super.update();
         this.updateSensorPosition();
 
-        this.questManager.update();
+        // this.questManager.update();
 
         // update depth depending other bodies
         const overlapped = this.scene.matter.overlap((this.body as MatterJS.BodyType), undefined, this.updateDepth);

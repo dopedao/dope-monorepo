@@ -16,6 +16,7 @@ import Quest from 'game/quests/Quest';
 import PointQuest from 'game/quests/PointQuest';
 import Item from 'game/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';
+import ItemQuest from 'game/quests/ItemQuest';
 
 export default class GameScene extends Scene {
   private player!: Player;
@@ -38,7 +39,7 @@ export default class GameScene extends Scene {
 
   handleItemEntities()
   {
-    EventHandler.emitter().on(Events.PLAYER_REMOVE_ITEM_INVENTORY, (item: Item) => {
+    EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item) => {
       new ItemEntity(this.matter.world, this.player.x, this.player.y, 'item_' + item.name, item);
     })
   }
@@ -68,7 +69,7 @@ export default class GameScene extends Scene {
             if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
             {
               citizenToTalkTo?.onInteraction(this.player);
-              EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, citizenToTalkTo);
+              EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
             }
           });
       });
@@ -97,6 +98,7 @@ export default class GameScene extends Scene {
     points2 = points2.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
 
     const crackHeadClothesZone = new Zone(this.matter.add.circle(300, 1200, 50), this);
+    const item = new Item('Cool Item', 'This is a cool item');
 
     this.citizens.push(
       new Citizen(
@@ -104,7 +106,7 @@ export default class GameScene extends Scene {
         'Michel', 
         'Patrick is not evil', 
         [new Conversation('Give me some clothes please', () => {
-          this.player.questManager.addQuest(new PointQuest(crackHeadClothesZone, "Mr.Crackhead", "Get him some clothes ASAP"));
+          this.player.questManager.addQuest(new ItemQuest(this.player.questManager, item, "Mr.Crackhead", "Get him some clothes ASAP"));
           return false;
         })], 
         points, true,),
@@ -137,7 +139,7 @@ export default class GameScene extends Scene {
     this.scene.launch('UIScene', { player: this.player });
 
     // test item entities
-    new ItemEntity(this.matter.world, 300, 650, 'item_' + 'anitem', new Item('Cool Item', 'This is a cool item'));
+    new ItemEntity(this.matter.world, 300, 650, 'item_' + 'anitem', item);
   }
 
   update(time: number, delta: number): void {
