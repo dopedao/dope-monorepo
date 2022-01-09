@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
@@ -21,9 +22,51 @@ type Amount struct {
 	// Amount holds the value of the "amount" field.
 	Amount schema.BigInt `json:"amount,omitempty"`
 	// AssetID holds the value of the "asset_id" field.
-	AssetID         schema.BigInt `json:"asset_id,omitempty"`
+	AssetID schema.BigInt `json:"asset_id,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the AmountQuery when eager-loading is set.
+	Edges           AmountEdges `json:"edges"`
 	listing_inputs  *string
 	listing_outputs *string
+}
+
+// AmountEdges holds the relations/edges for other nodes in the graph.
+type AmountEdges struct {
+	// ListingInput holds the value of the listing_input edge.
+	ListingInput *Listing `json:"listing_input,omitempty"`
+	// ListingOutput holds the value of the listing_output edge.
+	ListingOutput *Listing `json:"listing_output,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// ListingInputOrErr returns the ListingInput value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AmountEdges) ListingInputOrErr() (*Listing, error) {
+	if e.loadedTypes[0] {
+		if e.ListingInput == nil {
+			// The edge listing_input was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: listing.Label}
+		}
+		return e.ListingInput, nil
+	}
+	return nil, &NotLoadedError{edge: "listing_input"}
+}
+
+// ListingOutputOrErr returns the ListingOutput value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AmountEdges) ListingOutputOrErr() (*Listing, error) {
+	if e.loadedTypes[1] {
+		if e.ListingOutput == nil {
+			// The edge listing_output was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: listing.Label}
+		}
+		return e.ListingOutput, nil
+	}
+	return nil, &NotLoadedError{edge: "listing_output"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -95,6 +138,16 @@ func (a *Amount) assignValues(columns []string, values []interface{}) error {
 		}
 	}
 	return nil
+}
+
+// QueryListingInput queries the "listing_input" edge of the Amount entity.
+func (a *Amount) QueryListingInput() *ListingQuery {
+	return (&AmountClient{config: a.config}).QueryListingInput(a)
+}
+
+// QueryListingOutput queries the "listing_output" edge of the Amount entity.
+func (a *Amount) QueryListingOutput() *ListingQuery {
+	return (&AmountClient{config: a.config}).QueryListingOutput(a)
 }
 
 // Update returns a builder for updating this Amount.

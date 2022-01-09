@@ -277,6 +277,38 @@ func (c *AmountClient) GetX(ctx context.Context, id string) *Amount {
 	return obj
 }
 
+// QueryListingInput queries the listing_input edge of a Amount.
+func (c *AmountClient) QueryListingInput(a *Amount) *ListingQuery {
+	query := &ListingQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(amount.Table, amount.FieldID, id),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, amount.ListingInputTable, amount.ListingInputColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryListingOutput queries the listing_output edge of a Amount.
+func (c *AmountClient) QueryListingOutput(a *Amount) *ListingQuery {
+	query := &ListingQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(amount.Table, amount.FieldID, id),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, amount.ListingOutputTable, amount.ListingOutputColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *AmountClient) Hooks() []Hook {
 	return c.hooks.Amount
