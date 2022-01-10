@@ -23,6 +23,19 @@ query Wallet($where: WalletWhereInput) {
           opened
           score
           rank
+          items {
+            id
+            fullname
+            type
+            name
+            namePrefix
+            nameSuffix
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
         }
       }
     }

@@ -92,6 +92,12 @@ export type AmountWhereInput = {
   assetIDLTE?: InputMaybe<Scalars['BigInt']>;
   assetIDNEQ?: InputMaybe<Scalars['BigInt']>;
   assetIDNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
+  /** listing_input edge predicates */
+  hasListingInput?: InputMaybe<Scalars['Boolean']>;
+  hasListingInputWith?: InputMaybe<Array<ListingWhereInput>>;
+  /** listing_output edge predicates */
+  hasListingOutput?: InputMaybe<Scalars['Boolean']>;
+  hasListingOutputWith?: InputMaybe<Array<ListingWhereInput>>;
   /** id field predicates */
   id?: InputMaybe<Scalars['ID']>;
   idGT?: InputMaybe<Scalars['ID']>;
@@ -1331,7 +1337,7 @@ export type WalletQueryVariables = Exact<{
 }>;
 
 
-export type WalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number }> } | null | undefined } | null | undefined> | null | undefined } };
+export type WalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> }> } | null | undefined } | null | undefined> | null | undefined } };
 
 
 export const AllHustlersDocument = `
@@ -2059,6 +2065,19 @@ export const WalletDocument = `
           opened
           score
           rank
+          items {
+            id
+            fullname
+            type
+            name
+            namePrefix
+            nameSuffix
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
         }
       }
     }
