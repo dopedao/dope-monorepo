@@ -279,7 +279,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 			for _, c := range configs[network] {
 				switch c := c.(type) {
 				case engine.EthConfig:
-					engine := engine.NewEthereum(client, c)
+					engine := engine.NewEthereum(ctx, client, c)
 					go engine.Sync(ctx)
 				case engine.OpenseaConfig:
 					opensea := engine.NewOpensea(client, c)
