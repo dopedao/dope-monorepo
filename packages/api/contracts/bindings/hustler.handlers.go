@@ -25,24 +25,24 @@ type HustlerProcessor interface {
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessAddRles(ctx context.Context, e *HustlerAddRles, tx *ent.Tx) error
+	ProcessAddRles(ctx context.Context, e *HustlerAddRles) (func(tx *ent.Tx) error, error)
 
-	ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll, tx *ent.Tx) error
+	ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll) (func(tx *ent.Tx) error, error)
 
-	ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate, tx *ent.Tx) error
+	ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate) (func(tx *ent.Tx) error, error)
 
-	ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred, tx *ent.Tx) error
+	ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred) (func(tx *ent.Tx) error, error)
 
-	ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch, tx *ent.Tx) error
+	ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch) (func(tx *ent.Tx) error, error)
 
-	ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle, tx *ent.Tx) error
+	ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle) (func(tx *ent.Tx) error, error)
 
-	ProcessURI(ctx context.Context, e *HustlerURI, tx *ent.Tx) error
+	ProcessURI(ctx context.Context, e *HustlerURI) (func(tx *ent.Tx) error, error)
 
-	mustEmbedUnimplementedHustlerProcessor()
+	mustEmbedBaseHustlerProcessor()
 }
 
-type UnimplementedHustlerProcessor struct {
+type BaseHustlerProcessor struct {
 	Address  common.Address
 	ABI      abi.ABI
 	Contract *Hustler
@@ -54,7 +54,7 @@ type UnimplementedHustlerProcessor struct {
 	}
 }
 
-func (h *UnimplementedHustlerProcessor) Setup(address common.Address, eth interface {
+func (h *BaseHustlerProcessor) Setup(address common.Address, eth interface {
 	ethereum.ChainReader
 	ethereum.ChainStateReader
 	ethereum.TransactionReader
@@ -77,93 +77,114 @@ func (h *UnimplementedHustlerProcessor) Setup(address common.Address, eth interf
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, *ent.Tx) error {
-	return func(ctx context.Context, vLog types.Log, tx *ent.Tx) error {
+func (h *BaseHustlerProcessor) ProcessElement(p interface{}) func(context.Context, types.Log) (func(*ent.Tx) error, error) {
+	return func(ctx context.Context, vLog types.Log) (func(*ent.Tx) error, error) {
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["AddRles"].ID.Hex():
 			e := new(HustlerAddRles)
 			if err := h.UnpackLog(e, "AddRles", vLog); err != nil {
-				return fmt.Errorf("unpacking AddRles: %w", err)
+				return nil, fmt.Errorf("unpacking AddRles: %w", err)
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessAddRles(ctx, e, tx); err != nil {
-				return fmt.Errorf("processing AddRles: %w", err)
+			cb, err := p.(HustlerProcessor).ProcessAddRles(ctx, e)
+			if err != nil {
+				return nil, fmt.Errorf("processing AddRles: %w", err)
 			}
+
+			return cb, nil
 
 		case h.ABI.Events["ApprovalForAll"].ID.Hex():
 			e := new(HustlerApprovalForAll)
 			if err := h.UnpackLog(e, "ApprovalForAll", vLog); err != nil {
-				return fmt.Errorf("unpacking ApprovalForAll: %w", err)
+				return nil, fmt.Errorf("unpacking ApprovalForAll: %w", err)
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessApprovalForAll(ctx, e, tx); err != nil {
-				return fmt.Errorf("processing ApprovalForAll: %w", err)
+			cb, err := p.(HustlerProcessor).ProcessApprovalForAll(ctx, e)
+			if err != nil {
+				return nil, fmt.Errorf("processing ApprovalForAll: %w", err)
 			}
+
+			return cb, nil
 
 		case h.ABI.Events["MetadataUpdate"].ID.Hex():
 			e := new(HustlerMetadataUpdate)
 			if err := h.UnpackLog(e, "MetadataUpdate", vLog); err != nil {
-				return fmt.Errorf("unpacking MetadataUpdate: %w", err)
+				return nil, fmt.Errorf("unpacking MetadataUpdate: %w", err)
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessMetadataUpdate(ctx, e, tx); err != nil {
-				return fmt.Errorf("processing MetadataUpdate: %w", err)
+			cb, err := p.(HustlerProcessor).ProcessMetadataUpdate(ctx, e)
+			if err != nil {
+				return nil, fmt.Errorf("processing MetadataUpdate: %w", err)
 			}
+
+			return cb, nil
 
 		case h.ABI.Events["OwnershipTransferred"].ID.Hex():
 			e := new(HustlerOwnershipTransferred)
 			if err := h.UnpackLog(e, "OwnershipTransferred", vLog); err != nil {
-				return fmt.Errorf("unpacking OwnershipTransferred: %w", err)
+				return nil, fmt.Errorf("unpacking OwnershipTransferred: %w", err)
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessOwnershipTransferred(ctx, e, tx); err != nil {
-				return fmt.Errorf("processing OwnershipTransferred: %w", err)
+			cb, err := p.(HustlerProcessor).ProcessOwnershipTransferred(ctx, e)
+			if err != nil {
+				return nil, fmt.Errorf("processing OwnershipTransferred: %w", err)
 			}
+
+			return cb, nil
 
 		case h.ABI.Events["TransferBatch"].ID.Hex():
 			e := new(HustlerTransferBatch)
 			if err := h.UnpackLog(e, "TransferBatch", vLog); err != nil {
-				return fmt.Errorf("unpacking TransferBatch: %w", err)
+				return nil, fmt.Errorf("unpacking TransferBatch: %w", err)
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessTransferBatch(ctx, e, tx); err != nil {
-				return fmt.Errorf("processing TransferBatch: %w", err)
+			cb, err := p.(HustlerProcessor).ProcessTransferBatch(ctx, e)
+			if err != nil {
+				return nil, fmt.Errorf("processing TransferBatch: %w", err)
 			}
+
+			return cb, nil
 
 		case h.ABI.Events["TransferSingle"].ID.Hex():
 			e := new(HustlerTransferSingle)
 			if err := h.UnpackLog(e, "TransferSingle", vLog); err != nil {
-				return fmt.Errorf("unpacking TransferSingle: %w", err)
+				return nil, fmt.Errorf("unpacking TransferSingle: %w", err)
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessTransferSingle(ctx, e, tx); err != nil {
-				return fmt.Errorf("processing TransferSingle: %w", err)
+			cb, err := p.(HustlerProcessor).ProcessTransferSingle(ctx, e)
+			if err != nil {
+				return nil, fmt.Errorf("processing TransferSingle: %w", err)
 			}
+
+			return cb, nil
 
 		case h.ABI.Events["URI"].ID.Hex():
 			e := new(HustlerURI)
 			if err := h.UnpackLog(e, "URI", vLog); err != nil {
-				return fmt.Errorf("unpacking URI: %w", err)
+				return nil, fmt.Errorf("unpacking URI: %w", err)
 			}
 
 			e.Raw = vLog
-			if err := p.(HustlerProcessor).ProcessURI(ctx, e, tx); err != nil {
-				return fmt.Errorf("processing URI: %w", err)
+			cb, err := p.(HustlerProcessor).ProcessURI(ctx, e)
+			if err != nil {
+				return nil, fmt.Errorf("processing URI: %w", err)
 			}
 
+			return cb, nil
+
 		}
-		return nil
+		return nil, nil
 	}
 }
 
-func (h *UnimplementedHustlerProcessor) UnpackLog(out interface{}, event string, log types.Log) error {
+func (h *BaseHustlerProcessor) UnpackLog(out interface{}, event string, log types.Log) error {
 	if len(log.Data) > 0 {
 		if err := h.ABI.UnpackIntoInterface(out, event, log.Data); err != nil {
 			return err
@@ -178,36 +199,36 @@ func (h *UnimplementedHustlerProcessor) UnpackLog(out interface{}, event string,
 	return abi.ParseTopics(out, indexed, log.Topics[1:])
 }
 
-func (h *UnimplementedHustlerProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
+func (h *BaseHustlerProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessAddRles(ctx context.Context, e *HustlerAddRles, tx *ent.Tx) error {
-	return nil
+func (h *BaseHustlerProcessor) ProcessAddRles(ctx context.Context, e *HustlerAddRles) (func(tx *ent.Tx) error, error) {
+	return nil, nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll, tx *ent.Tx) error {
-	return nil
+func (h *BaseHustlerProcessor) ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll) (func(tx *ent.Tx) error, error) {
+	return nil, nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate, tx *ent.Tx) error {
-	return nil
+func (h *BaseHustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate) (func(tx *ent.Tx) error, error) {
+	return nil, nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred, tx *ent.Tx) error {
-	return nil
+func (h *BaseHustlerProcessor) ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred) (func(tx *ent.Tx) error, error) {
+	return nil, nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch, tx *ent.Tx) error {
-	return nil
+func (h *BaseHustlerProcessor) ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch) (func(tx *ent.Tx) error, error) {
+	return nil, nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle, tx *ent.Tx) error {
-	return nil
+func (h *BaseHustlerProcessor) ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle) (func(tx *ent.Tx) error, error) {
+	return nil, nil
 }
 
-func (h *UnimplementedHustlerProcessor) ProcessURI(ctx context.Context, e *HustlerURI, tx *ent.Tx) error {
-	return nil
+func (h *BaseHustlerProcessor) ProcessURI(ctx context.Context, e *HustlerURI) (func(tx *ent.Tx) error, error) {
+	return nil, nil
 }
 
-func (h *UnimplementedHustlerProcessor) mustEmbedUnimplementedHustlerProcessor() {}
+func (h *BaseHustlerProcessor) mustEmbedBaseHustlerProcessor() {}

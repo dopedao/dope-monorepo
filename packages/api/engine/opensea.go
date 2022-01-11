@@ -227,7 +227,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 			}
 
 			assetsCompleted += len(ret.Assets)
-			log.Info().Msgf("Syncing opensea: finished total assets: %d, current offset: %d\n", assetsCompleted, offset)
+			log.Info().Msgf("Syncing opensea: finished total assets: %d, current offset: %d", assetsCompleted, offset)
 		}
 
 		select {

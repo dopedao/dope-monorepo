@@ -17,5 +17,5 @@ type Processor interface {
 		ethereum.TransactionReader
 		bind.ContractBackend
 	}) error
-	ProcessElement(interface{}) func(context.Context, types.Log, *ent.Tx) error
+	ProcessElement(interface{}) func(context.Context, types.Log) (func(*ent.Tx) error, error)
 }
