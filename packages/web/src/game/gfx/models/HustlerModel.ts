@@ -1,6 +1,9 @@
 import { Base, Categories, CharacterCategories, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Weapons } from "game/constants/Sprites";
 import Hustler from "game/entities/Hustler";
- 
+import PixelationPipelinePlugin from "phaser3-rex-plugins/plugins/pixelationpipeline-plugin";
+import PixelationPostFx from 'phaser3-rex-plugins/plugins/pixelationpipeline.js';
+
+
 export default class HustlerModel
 {
     public readonly BASE_MAP;
@@ -20,6 +23,7 @@ export default class HustlerModel
     
     // sprites
     // key = texture name
+    public shadowSprite!: Phaser.GameObjects.Ellipse;
     public clothesSprites: Array<Phaser.GameObjects.Sprite> = new Array();
     public sprites: { [key: number]: Phaser.GameObjects.Sprite } = {};
 
@@ -149,7 +153,14 @@ export default class HustlerModel
     createSprites()
     {
         // Shadow
+        this.shadowSprite = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y + (this.hustler.height / 1.5), this.hustler.width, this.hustler.height / 5, 0x565a73, 0.5);
+        (this.shadowSprite.scene.plugins.get('rexPixelationPipeline') as PixelationPipelinePlugin).add(this.shadowSprite, {
+            pixelWidth: 2,
+            pixelHeight: 2
+        })
+        this.shadowSprite.setDepth(0);
         //this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Shadow]);
+        //this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y, this.hustler.width, this.hustler.height / 3);
 
         // Clothes
         if (this.clothes)
@@ -184,6 +195,7 @@ export default class HustlerModel
                 sprite.play(sprite.texture.key + direction, true);
         };
 
+        this.shadowSprite.setPosition(this.hustler.x, this.hustler.y + (this.hustler.height / 1.5));
         this.clothesSprites.forEach(sprite => update(sprite));
         Object.values(this.sprites).forEach(sprite => update(sprite));
     }

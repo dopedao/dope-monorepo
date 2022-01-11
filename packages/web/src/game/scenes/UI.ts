@@ -2,7 +2,9 @@ import Citizen from "game/entities/citizen/Citizen";
 import Conversation from "game/entities/citizen/Conversation";
 import Player from "game/entities/player/Player";
 import EventHandler, { Events } from "game/handlers/EventHandler";
+import Item from "game/inventory/Item";
 import Quest from "game/quests/Quest";
+import InventoryComponent from "game/ui/react/components/InventoryComponent";
 import DialogueTextBox from "game/ui/rex/DialogueTextBox";
 import { Scene } from "phaser";
 import { ComponentManager } from "phaser3-react/src/manager";
@@ -35,6 +37,7 @@ export default class UIScene extends Scene {
     public toaster!: ComponentManager;
 
     public player!: Player;
+    public inventoryComponent?: ComponentManager;
     public currentInteraction?: Interaction;
 
     constructor() {
@@ -69,7 +72,7 @@ export default class UIScene extends Scene {
                 this.currentInteraction.textBox.destroy();
                 this.currentInteraction = undefined;
 
-                EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_CANCEL, citizen);
+                EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_CANCEL, citizen);
             }
         }
     }
@@ -82,7 +85,44 @@ export default class UIScene extends Scene {
 
     private _handleInteractions()
     {
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_CANCEL, (citizen: Citizen) => {
+        // handle player inventory open
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_OPEN, () => {
+            this.inventoryComponent = this.add.reactDom(InventoryComponent, { inventory: this.player.inventory, quests: this.player.questManager.quests });
+        });
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_CLOSE, () => {
+            this.inventoryComponent?.destroy();
+            this.inventoryComponent = undefined;
+        });
+
+        this._handleNpcInteractions();
+        this._handleItemInteractions();
+    }
+
+    private _handleItemInteractions()
+    {
+        // handle player add itme into inventory
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, (item: Item, pickup?: boolean) => {
+            toast(pickup ? `You picked up ${item.name}` : `${item.name} has been added to your inventory`, {
+                ...toastStyle,
+                icon: '💠'
+            });
+        });
+        // handle player remove item from inventory
+        EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop?: boolean) => {
+            toast(drop ? `You dropped ${item.name}` : `${item.name} was removed from your inventory`, {
+                ...toastStyle,
+                icon: '💠',
+                style: {
+                    ...toastStyle.style,
+                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
+                }
+            });
+        });
+    }
+
+    private _handleNpcInteractions()
+    {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (citizen: Citizen) => {
             toast("You ran away from the conversation!", {
                 ...toastStyle,
                 icon: '🚫',
@@ -93,7 +133,7 @@ export default class UIScene extends Scene {
             });
         });
 
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, (citizen: Citizen) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
             if (citizen.conversations.length === 0) return;
 
             // get upcoming conversation
@@ -109,14 +149,14 @@ export default class UIScene extends Scene {
 
                     // TODO: Move somewhere else, maybe in the Citizen class?
                     citizen.onInteractionFinish();
-                    EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC_COMPLETE, citizen);
+                    EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, citizen);
 
                     // if the conversation is not marked as complete, push it to the array again
                     if (conv.onFinish)
                         if (conv.onFinish())
                             citizen.conversations.shift();
                 });
-            this.currentInteraction = { citizen, textBox, maxDistance: 100 };
+            this.currentInteraction = { citizen, textBox, maxDistance: 200 };
             
                 
             // Chat bubbles
@@ -143,12 +183,12 @@ export default class UIScene extends Scene {
     {
         const icon: string = '👾';
         // handle quest events
-        EventHandler.emitter().on(Events.PLAYER_NEW_QUEST, (quest: Quest) => {
+        EventHandler.emitter().on(Events.PLAYER_QUEST_NEW, (quest: Quest) => {
 
             // TODO: Add line break and quest description when escape sequences are supported
             toast(`New quest: ${quest.name}`, { ...toastStyle, icon: icon });
         })
-        EventHandler.emitter().on(Events.PLAYER_COMPLETE_QUEST, (quest: Quest) => {
+        EventHandler.emitter().on(Events.PLAYER_QUEST_COMPLETE, (quest: Quest) => {
             toast(`Completed quest: ${quest.name}`, { ...toastStyle, icon: icon });
         });
     }

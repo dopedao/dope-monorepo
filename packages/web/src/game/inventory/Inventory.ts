@@ -27,23 +27,33 @@ export default class Inventory
     }
 
     // add item
-    add(item: Item)
+    // return true if successful
+    // if pickup true, means that the item has been added to inventory
+    // via pickup
+    add(item: Item, pickup?: boolean): boolean
     {
-        const index = this._items.indexOf(undefined);
-        if (index === -1)
-            return;
-
-        this._items[index] = item;
+        for (let i = 0; i < Inventory.MAX_ITEMS; i++)
+            if (!this._items[i])
+            {
+                this._items[i] = item;
+                EventHandler.emitter().emit(Events.PLAYER_INVENTORY_ADD_ITEM, item, pickup);
+                return true;
+            }
+        return false;
     }
 
     // remove item
-    remove(item: Item)
+    // return true if successful
+    // if drop true, spawn the item gameobject in the world
+    remove(item: Item | number, drop?: boolean): boolean
     {
-        const index = this._items.indexOf(item);
-        if (index === -1)
-            return;
+        const index = item instanceof Item ? this._items.indexOf(item) : item;
+        if (index === -1 || index >= this._items.length)
+            return false;
         
+        EventHandler.emitter().emit(Events.PLAYER_INVENTORY_REMOVE_ITEM, this._items[index], drop);
         this._items[index] = undefined;
+        return true;
     }
 
     // check if inventory contains item
@@ -58,39 +68,7 @@ export default class Inventory
         return this._items.indexOf(undefined) === -1;
     }
 
-    // add item to inventory
-    public addItem(item: Item)
-    {
-        for (let i = 0; i < this._items.length; i++)
-        {
-            if (!this._items[i])
-            {
-                this._items[i] = item;
-                return;
-            }
-        }
-    }
-
-    // remove item by item type
-    public removeItem(item: Item)
-    {
-        for (let i = 0; i < this._items.length; i++)
-        {
-            if (this._items[i] === item)
-            {
-                this._items[i] = undefined;
-                return;
-            }
-        }
-    }
-
-    // remove item by index
-    public removeItemAt(index: number)
-    {
-        this._items[index] = undefined;
-    }
-
-    public size(): number
+    size(): number
     {
         return this._items.length;
     }
