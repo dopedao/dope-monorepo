@@ -46,6 +46,18 @@ func (sc *SearchCreate) SetNillableGreatness(i *int) *SearchCreate {
 	return sc
 }
 
+// SetClaimed sets the "claimed" field.
+func (sc *SearchCreate) SetClaimed(b bool) *SearchCreate {
+	sc.mutation.SetClaimed(b)
+	return sc
+}
+
+// SetOpened sets the "opened" field.
+func (sc *SearchCreate) SetOpened(b bool) *SearchCreate {
+	sc.mutation.SetOpened(b)
+	return sc
+}
+
 // SetSaleActive sets the "sale_active" field.
 func (sc *SearchCreate) SetSaleActive(b bool) *SearchCreate {
 	sc.mutation.SetSaleActive(b)
@@ -234,6 +246,12 @@ func (sc *SearchCreate) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Search.type": %w`, err)}
 		}
 	}
+	if _, ok := sc.mutation.Claimed(); !ok {
+		return &ValidationError{Name: "claimed", err: errors.New(`ent: missing required field "Search.claimed"`)}
+	}
+	if _, ok := sc.mutation.Opened(); !ok {
+		return &ValidationError{Name: "opened", err: errors.New(`ent: missing required field "Search.opened"`)}
+	}
 	if _, ok := sc.mutation.SaleActive(); !ok {
 		return &ValidationError{Name: "sale_active", err: errors.New(`ent: missing required field "Search.sale_active"`)}
 	}
@@ -295,6 +313,22 @@ func (sc *SearchCreate) createSpec() (*Search, *sqlgraph.CreateSpec) {
 			Column: search.FieldGreatness,
 		})
 		_node.Greatness = value
+	}
+	if value, ok := sc.mutation.Claimed(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: search.FieldClaimed,
+		})
+		_node.Claimed = value
+	}
+	if value, ok := sc.mutation.Opened(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: search.FieldOpened,
+		})
+		_node.Opened = value
 	}
 	if value, ok := sc.mutation.SaleActive(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -470,6 +504,30 @@ func (u *SearchUpsert) ClearGreatness() *SearchUpsert {
 	return u
 }
 
+// SetClaimed sets the "claimed" field.
+func (u *SearchUpsert) SetClaimed(v bool) *SearchUpsert {
+	u.Set(search.FieldClaimed, v)
+	return u
+}
+
+// UpdateClaimed sets the "claimed" field to the value that was provided on create.
+func (u *SearchUpsert) UpdateClaimed() *SearchUpsert {
+	u.SetExcluded(search.FieldClaimed)
+	return u
+}
+
+// SetOpened sets the "opened" field.
+func (u *SearchUpsert) SetOpened(v bool) *SearchUpsert {
+	u.Set(search.FieldOpened, v)
+	return u
+}
+
+// UpdateOpened sets the "opened" field to the value that was provided on create.
+func (u *SearchUpsert) UpdateOpened() *SearchUpsert {
+	u.SetExcluded(search.FieldOpened)
+	return u
+}
+
 // SetSaleActive sets the "sale_active" field.
 func (u *SearchUpsert) SetSaleActive(v bool) *SearchUpsert {
 	u.Set(search.FieldSaleActive, v)
@@ -610,6 +668,34 @@ func (u *SearchUpsertOne) UpdateGreatness() *SearchUpsertOne {
 func (u *SearchUpsertOne) ClearGreatness() *SearchUpsertOne {
 	return u.Update(func(s *SearchUpsert) {
 		s.ClearGreatness()
+	})
+}
+
+// SetClaimed sets the "claimed" field.
+func (u *SearchUpsertOne) SetClaimed(v bool) *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetClaimed(v)
+	})
+}
+
+// UpdateClaimed sets the "claimed" field to the value that was provided on create.
+func (u *SearchUpsertOne) UpdateClaimed() *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateClaimed()
+	})
+}
+
+// SetOpened sets the "opened" field.
+func (u *SearchUpsertOne) SetOpened(v bool) *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetOpened(v)
+	})
+}
+
+// UpdateOpened sets the "opened" field to the value that was provided on create.
+func (u *SearchUpsertOne) UpdateOpened() *SearchUpsertOne {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateOpened()
 	})
 }
 
@@ -927,6 +1013,34 @@ func (u *SearchUpsertBulk) UpdateGreatness() *SearchUpsertBulk {
 func (u *SearchUpsertBulk) ClearGreatness() *SearchUpsertBulk {
 	return u.Update(func(s *SearchUpsert) {
 		s.ClearGreatness()
+	})
+}
+
+// SetClaimed sets the "claimed" field.
+func (u *SearchUpsertBulk) SetClaimed(v bool) *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetClaimed(v)
+	})
+}
+
+// UpdateClaimed sets the "claimed" field to the value that was provided on create.
+func (u *SearchUpsertBulk) UpdateClaimed() *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateClaimed()
+	})
+}
+
+// SetOpened sets the "opened" field.
+func (u *SearchUpsertBulk) SetOpened(v bool) *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.SetOpened(v)
+	})
+}
+
+// UpdateOpened sets the "opened" field to the value that was provided on create.
+func (u *SearchUpsertBulk) UpdateOpened() *SearchUpsertBulk {
+	return u.Update(func(s *SearchUpsert) {
+		s.UpdateOpened()
 	})
 }
 

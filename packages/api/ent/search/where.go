@@ -99,6 +99,20 @@ func Greatness(v int) predicate.Search {
 	})
 }
 
+// Claimed applies equality check predicate on the "claimed" field. It's identical to ClaimedEQ.
+func Claimed(v bool) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldClaimed), v))
+	})
+}
+
+// Opened applies equality check predicate on the "opened" field. It's identical to OpenedEQ.
+func Opened(v bool) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOpened), v))
+	})
+}
+
 // SaleActive applies equality check predicate on the "sale_active" field. It's identical to SaleActiveEQ.
 func SaleActive(v bool) predicate.Search {
 	return predicate.Search(func(s *sql.Selector) {
@@ -255,6 +269,34 @@ func GreatnessIsNil() predicate.Search {
 func GreatnessNotNil() predicate.Search {
 	return predicate.Search(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldGreatness)))
+	})
+}
+
+// ClaimedEQ applies the EQ predicate on the "claimed" field.
+func ClaimedEQ(v bool) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldClaimed), v))
+	})
+}
+
+// ClaimedNEQ applies the NEQ predicate on the "claimed" field.
+func ClaimedNEQ(v bool) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldClaimed), v))
+	})
+}
+
+// OpenedEQ applies the EQ predicate on the "opened" field.
+func OpenedEQ(v bool) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOpened), v))
+	})
+}
+
+// OpenedNEQ applies the NEQ predicate on the "opened" field.
+func OpenedNEQ(v bool) predicate.Search {
+	return predicate.Search(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldOpened), v))
 	})
 }
 
