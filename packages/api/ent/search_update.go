@@ -58,6 +58,18 @@ func (su *SearchUpdate) ClearGreatness() *SearchUpdate {
 	return su
 }
 
+// SetClaimed sets the "claimed" field.
+func (su *SearchUpdate) SetClaimed(b bool) *SearchUpdate {
+	su.mutation.SetClaimed(b)
+	return su
+}
+
+// SetOpened sets the "opened" field.
+func (su *SearchUpdate) SetOpened(b bool) *SearchUpdate {
+	su.mutation.SetOpened(b)
+	return su
+}
+
 // SetSaleActive sets the "sale_active" field.
 func (su *SearchUpdate) SetSaleActive(b bool) *SearchUpdate {
 	su.mutation.SetSaleActive(b)
@@ -278,6 +290,20 @@ func (su *SearchUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: search.FieldGreatness,
 		})
 	}
+	if value, ok := su.mutation.Claimed(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: search.FieldClaimed,
+		})
+	}
+	if value, ok := su.mutation.Opened(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: search.FieldOpened,
+		})
+	}
 	if value, ok := su.mutation.SaleActive(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
@@ -461,6 +487,18 @@ func (suo *SearchUpdateOne) AddGreatness(i int) *SearchUpdateOne {
 // ClearGreatness clears the value of the "greatness" field.
 func (suo *SearchUpdateOne) ClearGreatness() *SearchUpdateOne {
 	suo.mutation.ClearGreatness()
+	return suo
+}
+
+// SetClaimed sets the "claimed" field.
+func (suo *SearchUpdateOne) SetClaimed(b bool) *SearchUpdateOne {
+	suo.mutation.SetClaimed(b)
+	return suo
+}
+
+// SetOpened sets the "opened" field.
+func (suo *SearchUpdateOne) SetOpened(b bool) *SearchUpdateOne {
+	suo.mutation.SetOpened(b)
 	return suo
 }
 
@@ -706,6 +744,20 @@ func (suo *SearchUpdateOne) sqlSave(ctx context.Context) (_node *Search, err err
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Column: search.FieldGreatness,
+		})
+	}
+	if value, ok := suo.mutation.Claimed(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: search.FieldClaimed,
+		})
+	}
+	if value, ok := suo.mutation.Opened(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: search.FieldOpened,
 		})
 	}
 	if value, ok := suo.mutation.SaleActive(); ok {

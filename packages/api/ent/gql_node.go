@@ -891,7 +891,7 @@ func (s *Search) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     s.ID,
 		Type:   "Search",
-		Fields: make([]*Field, 5),
+		Fields: make([]*Field, 7),
 		Edges:  make([]*Edge, 3),
 	}
 	var buf []byte
@@ -911,10 +911,26 @@ func (s *Search) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "greatness",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(s.SaleActive); err != nil {
+	if buf, err = json.Marshal(s.Claimed); err != nil {
 		return nil, err
 	}
 	node.Fields[2] = &Field{
+		Type:  "bool",
+		Name:  "claimed",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(s.Opened); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "bool",
+		Name:  "opened",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(s.SaleActive); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
 		Type:  "bool",
 		Name:  "sale_active",
 		Value: string(buf),
@@ -922,7 +938,7 @@ func (s *Search) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(s.SalePrice); err != nil {
 		return nil, err
 	}
-	node.Fields[3] = &Field{
+	node.Fields[5] = &Field{
 		Type:  "schema.BigInt",
 		Name:  "sale_price",
 		Value: string(buf),
@@ -930,7 +946,7 @@ func (s *Search) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(s.LastSalePrice); err != nil {
 		return nil, err
 	}
-	node.Fields[4] = &Field{
+	node.Fields[6] = &Field{
 		Type:  "schema.BigInt",
 		Name:  "last_sale_price",
 		Value: string(buf),

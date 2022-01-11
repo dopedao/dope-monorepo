@@ -281,6 +281,8 @@ var (
 		{Name: "id", Type: field.TypeString},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"dope", "item", "hustler"}},
 		{Name: "greatness", Type: field.TypeInt, Nullable: true},
+		{Name: "claimed", Type: field.TypeBool},
+		{Name: "opened", Type: field.TypeBool},
 		{Name: "sale_active", Type: field.TypeBool},
 		{Name: "sale_price", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
 		{Name: "last_sale_price", Type: field.TypeInt, SchemaType: map[string]string{"postgres": "numeric"}},
@@ -296,19 +298,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "search_index_dopes_index",
-				Columns:    []*schema.Column{SearchIndexColumns[6]},
+				Columns:    []*schema.Column{SearchIndexColumns[8]},
 				RefColumns: []*schema.Column{DopesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "search_index_hustlers_index",
-				Columns:    []*schema.Column{SearchIndexColumns[7]},
+				Columns:    []*schema.Column{SearchIndexColumns[9]},
 				RefColumns: []*schema.Column{HustlersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "search_index_items_index",
-				Columns:    []*schema.Column{SearchIndexColumns[8]},
+				Columns:    []*schema.Column{SearchIndexColumns[10]},
 				RefColumns: []*schema.Column{ItemsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

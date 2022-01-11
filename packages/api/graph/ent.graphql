@@ -904,6 +904,14 @@ input SearchWhereInput {
   greatnessIsNil: Boolean
   greatnessNotNil: Boolean
   
+  """claimed field predicates"""
+  claimed: Boolean
+  claimedNEQ: Boolean
+  
+  """opened field predicates"""
+  opened: Boolean
+  openedNEQ: Boolean
+  
   """sale_active field predicates"""
   saleActive: Boolean
   saleActiveNEQ: Boolean

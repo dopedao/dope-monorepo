@@ -19,6 +19,10 @@ const (
 	FieldType = "type"
 	// FieldGreatness holds the string denoting the greatness field in the database.
 	FieldGreatness = "greatness"
+	// FieldClaimed holds the string denoting the claimed field in the database.
+	FieldClaimed = "claimed"
+	// FieldOpened holds the string denoting the opened field in the database.
+	FieldOpened = "opened"
 	// FieldSaleActive holds the string denoting the sale_active field in the database.
 	FieldSaleActive = "sale_active"
 	// FieldSalePrice holds the string denoting the sale_price field in the database.
@@ -61,6 +65,8 @@ var Columns = []string{
 	FieldID,
 	FieldType,
 	FieldGreatness,
+	FieldClaimed,
+	FieldOpened,
 	FieldSaleActive,
 	FieldSalePrice,
 	FieldLastSalePrice,

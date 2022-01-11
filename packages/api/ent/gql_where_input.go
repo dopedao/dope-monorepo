@@ -3106,6 +3106,14 @@ type SearchWhereInput struct {
 	GreatnessIsNil  bool  `json:"greatnessIsNil,omitempty"`
 	GreatnessNotNil bool  `json:"greatnessNotNil,omitempty"`
 
+	// "claimed" field predicates.
+	Claimed    *bool `json:"claimed,omitempty"`
+	ClaimedNEQ *bool `json:"claimedNEQ,omitempty"`
+
+	// "opened" field predicates.
+	Opened    *bool `json:"opened,omitempty"`
+	OpenedNEQ *bool `json:"openedNEQ,omitempty"`
+
 	// "sale_active" field predicates.
 	SaleActive    *bool `json:"saleActive,omitempty"`
 	SaleActiveNEQ *bool `json:"saleActiveNEQ,omitempty"`
@@ -3267,6 +3275,18 @@ func (i *SearchWhereInput) P() (predicate.Search, error) {
 	}
 	if i.GreatnessNotNil {
 		predicates = append(predicates, search.GreatnessNotNil())
+	}
+	if i.Claimed != nil {
+		predicates = append(predicates, search.ClaimedEQ(*i.Claimed))
+	}
+	if i.ClaimedNEQ != nil {
+		predicates = append(predicates, search.ClaimedNEQ(*i.ClaimedNEQ))
+	}
+	if i.Opened != nil {
+		predicates = append(predicates, search.OpenedEQ(*i.Opened))
+	}
+	if i.OpenedNEQ != nil {
+		predicates = append(predicates, search.OpenedNEQ(*i.OpenedNEQ))
 	}
 	if i.SaleActive != nil {
 		predicates = append(predicates, search.SaleActiveEQ(*i.SaleActive))
