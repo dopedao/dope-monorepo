@@ -5,11 +5,12 @@ package ent
 import (
 	"time"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
@@ -18,16 +19,16 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	assetFields := schema.Asset{}.Fields()
-	_ = assetFields
-	// assetDescAmount is the schema descriptor for amount field.
-	assetDescAmount := assetFields[4].Descriptor()
-	// asset.DefaultAmount holds the default value on creation for the amount field.
-	asset.DefaultAmount = assetDescAmount.Default.(func() schema.BigInt)
-	// assetDescAssetID is the schema descriptor for asset_id field.
-	assetDescAssetID := assetFields[5].Descriptor()
-	// asset.DefaultAssetID holds the default value on creation for the asset_id field.
-	asset.DefaultAssetID = assetDescAssetID.Default.(func() schema.BigInt)
+	amountFields := schema.Amount{}.Fields()
+	_ = amountFields
+	// amountDescAmount is the schema descriptor for amount field.
+	amountDescAmount := amountFields[2].Descriptor()
+	// amount.DefaultAmount holds the default value on creation for the amount field.
+	amount.DefaultAmount = amountDescAmount.Default.(func() schema.BigInt)
+	// amountDescAssetID is the schema descriptor for asset_id field.
+	amountDescAssetID := amountFields[3].Descriptor()
+	// amount.DefaultAssetID holds the default value on creation for the asset_id field.
+	amount.DefaultAssetID = amountDescAssetID.Default.(func() schema.BigInt)
 	dopeFields := schema.Dope{}.Fields()
 	_ = dopeFields
 	// dopeDescClaimed is the schema descriptor for claimed field.
@@ -64,6 +65,16 @@ func init() {
 	hustlerDescCreatedAt := hustlerFields[11].Descriptor()
 	// hustler.DefaultCreatedAt holds the default value on creation for the created_at field.
 	hustler.DefaultCreatedAt = hustlerDescCreatedAt.Default.(func() time.Time)
+	searchFields := schema.Search{}.Fields()
+	_ = searchFields
+	// searchDescSalePrice is the schema descriptor for sale_price field.
+	searchDescSalePrice := searchFields[4].Descriptor()
+	// search.DefaultSalePrice holds the default value on creation for the sale_price field.
+	search.DefaultSalePrice = searchDescSalePrice.Default.(func() schema.BigInt)
+	// searchDescLastSalePrice is the schema descriptor for last_sale_price field.
+	searchDescLastSalePrice := searchFields[5].Descriptor()
+	// search.DefaultLastSalePrice holds the default value on creation for the last_sale_price field.
+	search.DefaultLastSalePrice = searchDescLastSalePrice.Default.(func() schema.BigInt)
 	walletFields := schema.Wallet{}.Fields()
 	_ = walletFields
 	// walletDescPaper is the schema descriptor for paper field.

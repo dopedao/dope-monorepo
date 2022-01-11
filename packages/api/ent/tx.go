@@ -12,8 +12,8 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// Asset is the client for interacting with the Asset builders.
-	Asset *AssetClient
+	// Amount is the client for interacting with the Amount builders.
+	Amount *AmountClient
 	// BodyPart is the client for interacting with the BodyPart builders.
 	BodyPart *BodyPartClient
 	// Dope is the client for interacting with the Dope builders.
@@ -26,6 +26,8 @@ type Tx struct {
 	Item *ItemClient
 	// Listing is the client for interacting with the Listing builders.
 	Listing *ListingClient
+	// Search is the client for interacting with the Search builders.
+	Search *SearchClient
 	// SyncState is the client for interacting with the SyncState builders.
 	SyncState *SyncStateClient
 	// Wallet is the client for interacting with the Wallet builders.
@@ -167,13 +169,14 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.Asset = NewAssetClient(tx.config)
+	tx.Amount = NewAmountClient(tx.config)
 	tx.BodyPart = NewBodyPartClient(tx.config)
 	tx.Dope = NewDopeClient(tx.config)
 	tx.Event = NewEventClient(tx.config)
 	tx.Hustler = NewHustlerClient(tx.config)
 	tx.Item = NewItemClient(tx.config)
 	tx.Listing = NewListingClient(tx.config)
+	tx.Search = NewSearchClient(tx.config)
 	tx.SyncState = NewSyncStateClient(tx.config)
 	tx.Wallet = NewWalletClient(tx.config)
 	tx.WalletItems = NewWalletItemsClient(tx.config)
@@ -186,7 +189,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Asset.QueryXXX(), the query will be executed
+// applies a query, for example: Amount.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

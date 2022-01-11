@@ -9,14 +9,26 @@ import (
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (a *AssetQuery) CollectFields(ctx context.Context, satisfies ...string) *AssetQuery {
+func (a *AmountQuery) CollectFields(ctx context.Context, satisfies ...string) *AmountQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		a = a.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
 	}
 	return a
 }
 
-func (a *AssetQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *AssetQuery {
+func (a *AmountQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *AmountQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "listing_input":
+			a = a.WithListingInput(func(query *ListingQuery) {
+				query.collectField(ctx, field)
+			})
+		case "listing_output":
+			a = a.WithListingOutput(func(query *ListingQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
 	return a
 }
 
@@ -59,12 +71,24 @@ func (d *DopeQuery) CollectFields(ctx context.Context, satisfies ...string) *Dop
 func (d *DopeQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *DopeQuery {
 	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
 		switch field.Name {
+		case "index":
+			d = d.WithIndex(func(query *SearchQuery) {
+				query.collectField(ctx, field)
+			})
 		case "items":
 			d = d.WithItems(func(query *ItemQuery) {
 				query.collectField(ctx, field)
 			})
+		case "last_sale":
+			d = d.WithLastSale(func(query *ListingQuery) {
+				query.collectField(ctx, field)
+			})
 		case "listings":
 			d = d.WithListings(func(query *ListingQuery) {
+				query.collectField(ctx, field)
+			})
+		case "wallet":
+			d = d.WithWallet(func(query *WalletQuery) {
 				query.collectField(ctx, field)
 			})
 		}
@@ -93,6 +117,14 @@ func (h *HustlerQuery) CollectFields(ctx context.Context, satisfies ...string) *
 }
 
 func (h *HustlerQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *HustlerQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "index":
+			h = h.WithIndex(func(query *SearchQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
 	return h
 }
 
@@ -151,6 +183,10 @@ func (i *ItemQuery) collectField(ctx *graphql.OperationContext, field graphql.Co
 			i = i.WithHustlerWeapons(func(query *HustlerQuery) {
 				query.collectField(ctx, field)
 			})
+		case "index":
+			i = i.WithIndex(func(query *SearchQuery) {
+				query.collectField(ctx, field)
+			})
 		case "wallets":
 			i = i.WithWallets(func(query *WalletItemsQuery) {
 				query.collectField(ctx, field)
@@ -180,16 +216,44 @@ func (l *ListingQuery) collectField(ctx *graphql.OperationContext, field graphql
 				query.collectField(ctx, field)
 			})
 		case "inputs":
-			l = l.WithInputs(func(query *AssetQuery) {
+			l = l.WithInputs(func(query *AmountQuery) {
 				query.collectField(ctx, field)
 			})
 		case "outputs":
-			l = l.WithOutputs(func(query *AssetQuery) {
+			l = l.WithOutputs(func(query *AmountQuery) {
 				query.collectField(ctx, field)
 			})
 		}
 	}
 	return l
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (s *SearchQuery) CollectFields(ctx context.Context, satisfies ...string) *SearchQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		s = s.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return s
+}
+
+func (s *SearchQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *SearchQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "dope":
+			s = s.WithDope(func(query *DopeQuery) {
+				query.collectField(ctx, field)
+			})
+		case "hustler":
+			s = s.WithHustler(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		case "item":
+			s = s.WithItem(func(query *ItemQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
+	return s
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.

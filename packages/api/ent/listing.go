@@ -33,9 +33,9 @@ type ListingEdges struct {
 	// DopeLastsales holds the value of the dope_lastsales edge.
 	DopeLastsales *Dope `json:"dope_lastsales,omitempty"`
 	// Inputs holds the value of the inputs edge.
-	Inputs []*Asset `json:"inputs,omitempty"`
+	Inputs []*Amount `json:"inputs,omitempty"`
 	// Outputs holds the value of the outputs edge.
-	Outputs []*Asset `json:"outputs,omitempty"`
+	Outputs []*Amount `json:"outputs,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [4]bool
@@ -71,7 +71,7 @@ func (e ListingEdges) DopeLastsalesOrErr() (*Dope, error) {
 
 // InputsOrErr returns the Inputs value or an error if the edge
 // was not loaded in eager-loading.
-func (e ListingEdges) InputsOrErr() ([]*Asset, error) {
+func (e ListingEdges) InputsOrErr() ([]*Amount, error) {
 	if e.loadedTypes[2] {
 		return e.Inputs, nil
 	}
@@ -80,7 +80,7 @@ func (e ListingEdges) InputsOrErr() ([]*Asset, error) {
 
 // OutputsOrErr returns the Outputs value or an error if the edge
 // was not loaded in eager-loading.
-func (e ListingEdges) OutputsOrErr() ([]*Asset, error) {
+func (e ListingEdges) OutputsOrErr() ([]*Amount, error) {
 	if e.loadedTypes[3] {
 		return e.Outputs, nil
 	}
@@ -154,12 +154,12 @@ func (l *Listing) QueryDopeLastsales() *DopeQuery {
 }
 
 // QueryInputs queries the "inputs" edge of the Listing entity.
-func (l *Listing) QueryInputs() *AssetQuery {
+func (l *Listing) QueryInputs() *AmountQuery {
 	return (&ListingClient{config: l.config}).QueryInputs(l)
 }
 
 // QueryOutputs queries the "outputs" edge of the Listing entity.
-func (l *Listing) QueryOutputs() *AssetQuery {
+func (l *Listing) QueryOutputs() *AmountQuery {
 	return (&ListingClient{config: l.config}).QueryOutputs(l)
 }
 

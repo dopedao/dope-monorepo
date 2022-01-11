@@ -14,6 +14,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -435,6 +436,25 @@ func (hu *HustlerUpdate) SetBeard(b *BodyPart) *HustlerUpdate {
 	return hu.SetBeardID(b.ID)
 }
 
+// SetIndexID sets the "index" edge to the Search entity by ID.
+func (hu *HustlerUpdate) SetIndexID(id string) *HustlerUpdate {
+	hu.mutation.SetIndexID(id)
+	return hu
+}
+
+// SetNillableIndexID sets the "index" edge to the Search entity by ID if the given value is not nil.
+func (hu *HustlerUpdate) SetNillableIndexID(id *string) *HustlerUpdate {
+	if id != nil {
+		hu = hu.SetIndexID(*id)
+	}
+	return hu
+}
+
+// SetIndex sets the "index" edge to the Search entity.
+func (hu *HustlerUpdate) SetIndex(s *Search) *HustlerUpdate {
+	return hu.SetIndexID(s.ID)
+}
+
 // Mutation returns the HustlerMutation object of the builder.
 func (hu *HustlerUpdate) Mutation() *HustlerMutation {
 	return hu.mutation
@@ -521,6 +541,12 @@ func (hu *HustlerUpdate) ClearHair() *HustlerUpdate {
 // ClearBeard clears the "beard" edge to the BodyPart entity.
 func (hu *HustlerUpdate) ClearBeard() *HustlerUpdate {
 	hu.mutation.ClearBeard()
+	return hu
+}
+
+// ClearIndex clears the "index" edge to the Search entity.
+func (hu *HustlerUpdate) ClearIndex() *HustlerUpdate {
+	hu.mutation.ClearIndex()
 	return hu
 }
 
@@ -1202,6 +1228,41 @@ func (hu *HustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if hu.mutation.IndexCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   hustler.IndexTable,
+			Columns: []string{hustler.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := hu.mutation.IndexIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   hustler.IndexTable,
+			Columns: []string{hustler.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, hu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{hustler.Label}
@@ -1626,6 +1687,25 @@ func (huo *HustlerUpdateOne) SetBeard(b *BodyPart) *HustlerUpdateOne {
 	return huo.SetBeardID(b.ID)
 }
 
+// SetIndexID sets the "index" edge to the Search entity by ID.
+func (huo *HustlerUpdateOne) SetIndexID(id string) *HustlerUpdateOne {
+	huo.mutation.SetIndexID(id)
+	return huo
+}
+
+// SetNillableIndexID sets the "index" edge to the Search entity by ID if the given value is not nil.
+func (huo *HustlerUpdateOne) SetNillableIndexID(id *string) *HustlerUpdateOne {
+	if id != nil {
+		huo = huo.SetIndexID(*id)
+	}
+	return huo
+}
+
+// SetIndex sets the "index" edge to the Search entity.
+func (huo *HustlerUpdateOne) SetIndex(s *Search) *HustlerUpdateOne {
+	return huo.SetIndexID(s.ID)
+}
+
 // Mutation returns the HustlerMutation object of the builder.
 func (huo *HustlerUpdateOne) Mutation() *HustlerMutation {
 	return huo.mutation
@@ -1712,6 +1792,12 @@ func (huo *HustlerUpdateOne) ClearHair() *HustlerUpdateOne {
 // ClearBeard clears the "beard" edge to the BodyPart entity.
 func (huo *HustlerUpdateOne) ClearBeard() *HustlerUpdateOne {
 	huo.mutation.ClearBeard()
+	return huo
+}
+
+// ClearIndex clears the "index" edge to the Search entity.
+func (huo *HustlerUpdateOne) ClearIndex() *HustlerUpdateOne {
+	huo.mutation.ClearIndex()
 	return huo
 }
 
@@ -2409,6 +2495,41 @@ func (huo *HustlerUpdateOne) sqlSave(ctx context.Context) (_node *Hustler, err e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: bodypart.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if huo.mutation.IndexCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   hustler.IndexTable,
+			Columns: []string{hustler.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := huo.mutation.IndexIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   hustler.IndexTable,
+			Columns: []string{hustler.IndexColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: search.FieldID,
 				},
 			},
 		}

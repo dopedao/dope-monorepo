@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 )
 
@@ -44,9 +45,11 @@ type DopeEdges struct {
 	Listings []*Listing `json:"listings,omitempty"`
 	// Items holds the value of the items edge.
 	Items []*Item `json:"items,omitempty"`
+	// Index holds the value of the index edge.
+	Index *Search `json:"index,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [5]bool
 }
 
 // WalletOrErr returns the Wallet value or an error if the edge
@@ -93,6 +96,20 @@ func (e DopeEdges) ItemsOrErr() ([]*Item, error) {
 		return e.Items, nil
 	}
 	return nil, &NotLoadedError{edge: "items"}
+}
+
+// IndexOrErr returns the Index value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DopeEdges) IndexOrErr() (*Search, error) {
+	if e.loadedTypes[4] {
+		if e.Index == nil {
+			// The edge index was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: search.Label}
+		}
+		return e.Index, nil
+	}
+	return nil, &NotLoadedError{edge: "index"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -198,6 +215,11 @@ func (d *Dope) QueryListings() *ListingQuery {
 // QueryItems queries the "items" edge of the Dope entity.
 func (d *Dope) QueryItems() *ItemQuery {
 	return (&DopeClient{config: d.config}).QueryItems(d)
+}
+
+// QueryIndex queries the "index" edge of the Dope entity.
+func (d *Dope) QueryIndex() *SearchQuery {
+	return (&DopeClient{config: d.config}).QueryIndex(d)
 }
 
 // Update returns a builder for updating this Dope.

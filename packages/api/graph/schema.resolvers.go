@@ -10,9 +10,18 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	generated1 "github.com/dopedao/dope-monorepo/packages/api/graph/generated"
 	"github.com/dopedao/dope-monorepo/packages/api/graph/model"
 )
+
+func (r *amountResolver) Token(ctx context.Context, obj *ent.Amount) (model.Token, error) {
+	switch obj.Type {
+	case amount.TypeDOPE:
+		return r.client.Dope.Get(ctx, obj.AssetID.String())
+	}
+	return nil, nil
+}
 
 func (r *itemResolver) Fullname(ctx context.Context, obj *ent.Item) (string, error) {
 	fullname := obj.Name
@@ -67,40 +76,41 @@ func (r *queryResolver) Listings(ctx context.Context, after *ent.Cursor, first *
 	return r.client.Listing.Query().Paginate(ctx, after, first, before, last, ent.WithListingOrder(orderBy), ent.WithListingFilter(where.Filter))
 }
 
-func (r *queryResolver) Search(ctx context.Context, query string, orderBy *model.SearchOrder, where *model.SearchWhereInput) ([]model.SearchResult, error) {
+func (r *queryResolver) Search(ctx context.Context, query string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SearchOrder, where *ent.SearchWhereInput) (*ent.SearchConnection, error) {
 	var tsquery string
 
-	parts := strings.Split(query, " ")
-	for i, part := range parts {
-		tsquery += part + ":*"
+	q := r.client.Search.Query()
 
-		if i != len(parts)-1 {
-			tsquery += " & "
-		}
-	}
+	if query != "" {
+		parts := strings.Split(query, " ")
+		for i, part := range parts {
+			tsquery += part + ":*"
 
-	items, err := r.client.Item.Query().Where(func(s *sql.Selector) {
-		s.Where(sql.P(func(b *sql.Builder) {
-			b.WriteString(fmt.Sprintf("ts @@ to_tsquery('english', '%s')", tsquery))
-		}))
-	}).WithDopes().All(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	var results []model.SearchResult
-	seen := make(map[string]bool)
-	for _, item := range items {
-		for _, dope := range item.Edges.Dopes {
-			if !seen[dope.ID] {
-				results = append(results, dope)
+			if i != len(parts)-1 {
+				tsquery += " & "
 			}
-			seen[dope.ID] = true
 		}
+
+		q = q.Where(func(s *sql.Selector) {
+			s.From(sql.Table("search_index"))
+			s.Where(sql.P(func(b *sql.Builder) {
+				b.WriteString(fmt.Sprintf("tsv_document @@ to_tsquery('english', '%s')", tsquery))
+			}))
+		})
 	}
 
-	return results, nil
+	return q.WithDope(func(d *ent.DopeQuery) {
+		d.WithLastSale(func(l *ent.ListingQuery) {
+			l.WithInputs()
+		})
+		d.WithListings(func(l *ent.ListingQuery) {
+			l.WithInputs()
+		})
+	}).WithItem().WithHustler().Paginate(ctx, after, first, before, last, ent.WithSearchOrder(orderBy), ent.WithSearchFilter(where.Filter))
 }
+
+// Amount returns generated1.AmountResolver implementation.
+func (r *Resolver) Amount() generated1.AmountResolver { return &amountResolver{r} }
 
 // Item returns generated1.ItemResolver implementation.
 func (r *Resolver) Item() generated1.ItemResolver { return &itemResolver{r} }
@@ -108,5 +118,6 @@ func (r *Resolver) Item() generated1.ItemResolver { return &itemResolver{r} }
 // Query returns generated1.QueryResolver implementation.
 func (r *Resolver) Query() generated1.QueryResolver { return &queryResolver{r} }
 
+type amountResolver struct{ *Resolver }
 type itemResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

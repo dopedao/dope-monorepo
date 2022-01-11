@@ -14,13 +14,14 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -241,111 +242,111 @@ const (
 	totalCountField = "totalCount"
 )
 
-// AssetEdge is the edge representation of Asset.
-type AssetEdge struct {
-	Node   *Asset `json:"node"`
-	Cursor Cursor `json:"cursor"`
+// AmountEdge is the edge representation of Amount.
+type AmountEdge struct {
+	Node   *Amount `json:"node"`
+	Cursor Cursor  `json:"cursor"`
 }
 
-// AssetConnection is the connection containing edges to Asset.
-type AssetConnection struct {
-	Edges      []*AssetEdge `json:"edges"`
-	PageInfo   PageInfo     `json:"pageInfo"`
-	TotalCount int          `json:"totalCount"`
+// AmountConnection is the connection containing edges to Amount.
+type AmountConnection struct {
+	Edges      []*AmountEdge `json:"edges"`
+	PageInfo   PageInfo      `json:"pageInfo"`
+	TotalCount int           `json:"totalCount"`
 }
 
-// AssetPaginateOption enables pagination customization.
-type AssetPaginateOption func(*assetPager) error
+// AmountPaginateOption enables pagination customization.
+type AmountPaginateOption func(*amountPager) error
 
-// WithAssetOrder configures pagination ordering.
-func WithAssetOrder(order *AssetOrder) AssetPaginateOption {
+// WithAmountOrder configures pagination ordering.
+func WithAmountOrder(order *AmountOrder) AmountPaginateOption {
 	if order == nil {
-		order = DefaultAssetOrder
+		order = DefaultAmountOrder
 	}
 	o := *order
-	return func(pager *assetPager) error {
+	return func(pager *amountPager) error {
 		if err := o.Direction.Validate(); err != nil {
 			return err
 		}
 		if o.Field == nil {
-			o.Field = DefaultAssetOrder.Field
+			o.Field = DefaultAmountOrder.Field
 		}
 		pager.order = &o
 		return nil
 	}
 }
 
-// WithAssetFilter configures pagination filter.
-func WithAssetFilter(filter func(*AssetQuery) (*AssetQuery, error)) AssetPaginateOption {
-	return func(pager *assetPager) error {
+// WithAmountFilter configures pagination filter.
+func WithAmountFilter(filter func(*AmountQuery) (*AmountQuery, error)) AmountPaginateOption {
+	return func(pager *amountPager) error {
 		if filter == nil {
-			return errors.New("AssetQuery filter cannot be nil")
+			return errors.New("AmountQuery filter cannot be nil")
 		}
 		pager.filter = filter
 		return nil
 	}
 }
 
-type assetPager struct {
-	order  *AssetOrder
-	filter func(*AssetQuery) (*AssetQuery, error)
+type amountPager struct {
+	order  *AmountOrder
+	filter func(*AmountQuery) (*AmountQuery, error)
 }
 
-func newAssetPager(opts []AssetPaginateOption) (*assetPager, error) {
-	pager := &assetPager{}
+func newAmountPager(opts []AmountPaginateOption) (*amountPager, error) {
+	pager := &amountPager{}
 	for _, opt := range opts {
 		if err := opt(pager); err != nil {
 			return nil, err
 		}
 	}
 	if pager.order == nil {
-		pager.order = DefaultAssetOrder
+		pager.order = DefaultAmountOrder
 	}
 	return pager, nil
 }
 
-func (p *assetPager) applyFilter(query *AssetQuery) (*AssetQuery, error) {
+func (p *amountPager) applyFilter(query *AmountQuery) (*AmountQuery, error) {
 	if p.filter != nil {
 		return p.filter(query)
 	}
 	return query, nil
 }
 
-func (p *assetPager) toCursor(a *Asset) Cursor {
+func (p *amountPager) toCursor(a *Amount) Cursor {
 	return p.order.Field.toCursor(a)
 }
 
-func (p *assetPager) applyCursors(query *AssetQuery, after, before *Cursor) *AssetQuery {
+func (p *amountPager) applyCursors(query *AmountQuery, after, before *Cursor) *AmountQuery {
 	for _, predicate := range cursorsToPredicates(
 		p.order.Direction, after, before,
-		p.order.Field.field, DefaultAssetOrder.Field.field,
+		p.order.Field.field, DefaultAmountOrder.Field.field,
 	) {
 		query = query.Where(predicate)
 	}
 	return query
 }
 
-func (p *assetPager) applyOrder(query *AssetQuery, reverse bool) *AssetQuery {
+func (p *amountPager) applyOrder(query *AmountQuery, reverse bool) *AmountQuery {
 	direction := p.order.Direction
 	if reverse {
 		direction = direction.reverse()
 	}
 	query = query.Order(direction.orderFunc(p.order.Field.field))
-	if p.order.Field != DefaultAssetOrder.Field {
-		query = query.Order(direction.orderFunc(DefaultAssetOrder.Field.field))
+	if p.order.Field != DefaultAmountOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultAmountOrder.Field.field))
 	}
 	return query
 }
 
-// Paginate executes the query and returns a relay based cursor connection to Asset.
-func (a *AssetQuery) Paginate(
+// Paginate executes the query and returns a relay based cursor connection to Amount.
+func (a *AmountQuery) Paginate(
 	ctx context.Context, after *Cursor, first *int,
-	before *Cursor, last *int, opts ...AssetPaginateOption,
-) (*AssetConnection, error) {
+	before *Cursor, last *int, opts ...AmountPaginateOption,
+) (*AmountConnection, error) {
 	if err := validateFirstLast(first, last); err != nil {
 		return nil, err
 	}
-	pager, err := newAssetPager(opts)
+	pager, err := newAmountPager(opts)
 	if err != nil {
 		return nil, err
 	}
@@ -354,7 +355,7 @@ func (a *AssetQuery) Paginate(
 		return nil, err
 	}
 
-	conn := &AssetConnection{Edges: []*AssetEdge{}}
+	conn := &AmountConnection{Edges: []*AmountEdge{}}
 	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
 		if hasCollectedField(ctx, totalCountField) ||
 			hasCollectedField(ctx, pageInfoField) {
@@ -404,22 +405,22 @@ func (a *AssetQuery) Paginate(
 		nodes = nodes[:len(nodes)-1]
 	}
 
-	var nodeAt func(int) *Asset
+	var nodeAt func(int) *Amount
 	if last != nil {
 		n := len(nodes) - 1
-		nodeAt = func(i int) *Asset {
+		nodeAt = func(i int) *Amount {
 			return nodes[n-i]
 		}
 	} else {
-		nodeAt = func(i int) *Asset {
+		nodeAt = func(i int) *Amount {
 			return nodes[i]
 		}
 	}
 
-	conn.Edges = make([]*AssetEdge, len(nodes))
+	conn.Edges = make([]*AmountEdge, len(nodes))
 	for i := range nodes {
 		node := nodeAt(i)
-		conn.Edges[i] = &AssetEdge{
+		conn.Edges[i] = &AmountEdge{
 			Node:   node,
 			Cursor: pager.toCursor(node),
 		}
@@ -434,35 +435,35 @@ func (a *AssetQuery) Paginate(
 	return conn, nil
 }
 
-// AssetOrderField defines the ordering field of Asset.
-type AssetOrderField struct {
+// AmountOrderField defines the ordering field of Amount.
+type AmountOrderField struct {
 	field    string
-	toCursor func(*Asset) Cursor
+	toCursor func(*Amount) Cursor
 }
 
-// AssetOrder defines the ordering of Asset.
-type AssetOrder struct {
-	Direction OrderDirection   `json:"direction"`
-	Field     *AssetOrderField `json:"field"`
+// AmountOrder defines the ordering of Amount.
+type AmountOrder struct {
+	Direction OrderDirection    `json:"direction"`
+	Field     *AmountOrderField `json:"field"`
 }
 
-// DefaultAssetOrder is the default ordering of Asset.
-var DefaultAssetOrder = &AssetOrder{
+// DefaultAmountOrder is the default ordering of Amount.
+var DefaultAmountOrder = &AmountOrder{
 	Direction: OrderDirectionAsc,
-	Field: &AssetOrderField{
-		field: asset.FieldID,
-		toCursor: func(a *Asset) Cursor {
+	Field: &AmountOrderField{
+		field: amount.FieldID,
+		toCursor: func(a *Amount) Cursor {
 			return Cursor{ID: a.ID}
 		},
 	},
 }
 
-// ToEdge converts Asset into AssetEdge.
-func (a *Asset) ToEdge(order *AssetOrder) *AssetEdge {
+// ToEdge converts Amount into AmountEdge.
+func (a *Amount) ToEdge(order *AmountOrder) *AmountEdge {
 	if order == nil {
-		order = DefaultAssetOrder
+		order = DefaultAmountOrder
 	}
-	return &AssetEdge{
+	return &AmountEdge{
 		Node:   a,
 		Cursor: order.Field.toCursor(a),
 	}
@@ -1970,6 +1971,304 @@ func (l *Listing) ToEdge(order *ListingOrder) *ListingEdge {
 	return &ListingEdge{
 		Node:   l,
 		Cursor: order.Field.toCursor(l),
+	}
+}
+
+// SearchEdge is the edge representation of Search.
+type SearchEdge struct {
+	Node   *Search `json:"node"`
+	Cursor Cursor  `json:"cursor"`
+}
+
+// SearchConnection is the connection containing edges to Search.
+type SearchConnection struct {
+	Edges      []*SearchEdge `json:"edges"`
+	PageInfo   PageInfo      `json:"pageInfo"`
+	TotalCount int           `json:"totalCount"`
+}
+
+// SearchPaginateOption enables pagination customization.
+type SearchPaginateOption func(*searchPager) error
+
+// WithSearchOrder configures pagination ordering.
+func WithSearchOrder(order *SearchOrder) SearchPaginateOption {
+	if order == nil {
+		order = DefaultSearchOrder
+	}
+	o := *order
+	return func(pager *searchPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultSearchOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithSearchFilter configures pagination filter.
+func WithSearchFilter(filter func(*SearchQuery) (*SearchQuery, error)) SearchPaginateOption {
+	return func(pager *searchPager) error {
+		if filter == nil {
+			return errors.New("SearchQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type searchPager struct {
+	order  *SearchOrder
+	filter func(*SearchQuery) (*SearchQuery, error)
+}
+
+func newSearchPager(opts []SearchPaginateOption) (*searchPager, error) {
+	pager := &searchPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultSearchOrder
+	}
+	return pager, nil
+}
+
+func (p *searchPager) applyFilter(query *SearchQuery) (*SearchQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *searchPager) toCursor(s *Search) Cursor {
+	return p.order.Field.toCursor(s)
+}
+
+func (p *searchPager) applyCursors(query *SearchQuery, after, before *Cursor) *SearchQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultSearchOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *searchPager) applyOrder(query *SearchQuery, reverse bool) *SearchQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultSearchOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultSearchOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Search.
+func (s *SearchQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...SearchPaginateOption,
+) (*SearchConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newSearchPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if s, err = pager.applyFilter(s); err != nil {
+		return nil, err
+	}
+
+	conn := &SearchConnection{Edges: []*SearchEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := s.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := s.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	s = pager.applyCursors(s, after, before)
+	s = pager.applyOrder(s, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		s = s.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		s = s.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := s.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *Search
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Search {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Search {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*SearchEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &SearchEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+var (
+	// SearchOrderFieldGreatness orders Search by greatness.
+	SearchOrderFieldGreatness = &SearchOrderField{
+		field: search.FieldGreatness,
+		toCursor: func(s *Search) Cursor {
+			return Cursor{
+				ID:    s.ID,
+				Value: s.Greatness,
+			}
+		},
+	}
+	// SearchOrderFieldSalePrice orders Search by sale_price.
+	SearchOrderFieldSalePrice = &SearchOrderField{
+		field: search.FieldSalePrice,
+		toCursor: func(s *Search) Cursor {
+			return Cursor{
+				ID:    s.ID,
+				Value: s.SalePrice,
+			}
+		},
+	}
+	// SearchOrderFieldLastSalePrice orders Search by last_sale_price.
+	SearchOrderFieldLastSalePrice = &SearchOrderField{
+		field: search.FieldLastSalePrice,
+		toCursor: func(s *Search) Cursor {
+			return Cursor{
+				ID:    s.ID,
+				Value: s.LastSalePrice,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f SearchOrderField) String() string {
+	var str string
+	switch f.field {
+	case search.FieldGreatness:
+		str = "GREATNESS"
+	case search.FieldSalePrice:
+		str = "SALE_PRICE"
+	case search.FieldLastSalePrice:
+		str = "LAST_SALE_PRICE"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f SearchOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *SearchOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("SearchOrderField %T must be a string", v)
+	}
+	switch str {
+	case "GREATNESS":
+		*f = *SearchOrderFieldGreatness
+	case "SALE_PRICE":
+		*f = *SearchOrderFieldSalePrice
+	case "LAST_SALE_PRICE":
+		*f = *SearchOrderFieldLastSalePrice
+	default:
+		return fmt.Errorf("%s is not a valid SearchOrderField", str)
+	}
+	return nil
+}
+
+// SearchOrderField defines the ordering field of Search.
+type SearchOrderField struct {
+	field    string
+	toCursor func(*Search) Cursor
+}
+
+// SearchOrder defines the ordering of Search.
+type SearchOrder struct {
+	Direction OrderDirection    `json:"direction"`
+	Field     *SearchOrderField `json:"field"`
+}
+
+// DefaultSearchOrder is the default ordering of Search.
+var DefaultSearchOrder = &SearchOrder{
+	Direction: OrderDirectionAsc,
+	Field: &SearchOrderField{
+		field: search.FieldID,
+		toCursor: func(s *Search) Cursor {
+			return Cursor{ID: s.ID}
+		},
+	},
+}
+
+// ToEdge converts Search into SearchEdge.
+func (s *Search) ToEdge(order *SearchOrder) *SearchEdge {
+	if order == nil {
+		order = DefaultSearchOrder
+	}
+	return &SearchEdge{
+		Node:   s,
+		Cursor: order.Field.toCursor(s),
 	}
 }
 

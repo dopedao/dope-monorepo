@@ -146,45 +146,36 @@ export const useFetchMetadata = () => {
             hustler.address,
             BigNumber.from(METADATA_KEY).add(WEAPON_SLOT).toHexString(),
           )
-          .then(BigNumber.from)
           .then(BigNumber.from),
         provider
           .getStorageAt(
             hustler.address,
             BigNumber.from(METADATA_KEY).add(CLOTHES_SLOT).toHexString(),
           )
-          .then(BigNumber.from)
           .then(BigNumber.from),
         provider
           .getStorageAt(
             hustler.address,
             BigNumber.from(METADATA_KEY).add(VEHICLE_SLOT).toHexString(),
           )
-          .then(BigNumber.from)
           .then(BigNumber.from),
         provider
           .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(WAIST_SLOT).toHexString())
-          .then(BigNumber.from)
           .then(BigNumber.from),
         provider
           .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(FOOT_SLOT).toHexString())
-          .then(BigNumber.from)
           .then(BigNumber.from),
         provider
           .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(HAND_SLOT).toHexString())
-          .then(BigNumber.from)
           .then(BigNumber.from),
         provider
           .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(DRUGS_SLOT).toHexString())
-          .then(BigNumber.from)
           .then(BigNumber.from),
         provider
           .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(NECK_SLOT).toHexString())
-          .then(BigNumber.from)
           .then(BigNumber.from),
         provider
           .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(RING_SLOT).toHexString())
-          .then(BigNumber.from)
           .then(BigNumber.from),
         provider
           .getStorageAt(

@@ -16,6 +16,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
 )
 
@@ -43,6 +44,7 @@ type ItemQuery struct {
 	withHustlerAccessories *HustlerQuery
 	withBase               *ItemQuery
 	withDerivative         *ItemQuery
+	withIndex              *SearchQuery
 	withFKs                bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -388,6 +390,28 @@ func (iq *ItemQuery) QueryDerivative() *ItemQuery {
 	return query
 }
 
+// QueryIndex chains the current query on the "index" edge.
+func (iq *ItemQuery) QueryIndex() *SearchQuery {
+	query := &SearchQuery{config: iq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := iq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := iq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, selector),
+			sqlgraph.To(search.Table, search.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, item.IndexTable, item.IndexColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first Item entity from the query.
 // Returns a *NotFoundError when no Item was found.
 func (iq *ItemQuery) First(ctx context.Context) (*Item, error) {
@@ -583,6 +607,7 @@ func (iq *ItemQuery) Clone() *ItemQuery {
 		withHustlerAccessories: iq.withHustlerAccessories.Clone(),
 		withBase:               iq.withBase.Clone(),
 		withDerivative:         iq.withDerivative.Clone(),
+		withIndex:              iq.withIndex.Clone(),
 		// clone intermediate query.
 		sql:  iq.sql.Clone(),
 		path: iq.path,
@@ -743,6 +768,17 @@ func (iq *ItemQuery) WithDerivative(opts ...func(*ItemQuery)) *ItemQuery {
 	return iq
 }
 
+// WithIndex tells the query-builder to eager-load the nodes that are connected to
+// the "index" edge. The optional arguments are used to configure the query builder of the edge.
+func (iq *ItemQuery) WithIndex(opts ...func(*SearchQuery)) *ItemQuery {
+	query := &SearchQuery{config: iq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	iq.withIndex = query
+	return iq
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -809,7 +845,7 @@ func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 		nodes       = []*Item{}
 		withFKs     = iq.withFKs
 		_spec       = iq.querySpec()
-		loadedTypes = [14]bool{
+		loadedTypes = [15]bool{
 			iq.withWallets != nil,
 			iq.withDopes != nil,
 			iq.withHustlerWeapons != nil,
@@ -824,6 +860,7 @@ func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 			iq.withHustlerAccessories != nil,
 			iq.withBase != nil,
 			iq.withDerivative != nil,
+			iq.withIndex != nil,
 		}
 	)
 	if iq.withBase != nil {
@@ -1291,6 +1328,34 @@ func (iq *ItemQuery) sqlAll(ctx context.Context) ([]*Item, error) {
 				return nil, fmt.Errorf(`unexpected foreign-key "item_derivative" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Derivative = append(node.Edges.Derivative, n)
+		}
+	}
+
+	if query := iq.withIndex; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*Item)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Search(func(s *sql.Selector) {
+			s.Where(sql.InValues(item.IndexColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.item_index
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "item_index" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "item_index" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Index = n
 		}
 	}
 

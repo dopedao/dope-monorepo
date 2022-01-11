@@ -9,13 +9,14 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -49,42 +50,26 @@ type Edge struct {
 	IDs  []string `json:"ids,omitempty"`  // node ids (where this edge point to).
 }
 
-func (a *Asset) Node(ctx context.Context) (node *Node, err error) {
+func (a *Amount) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     a.ID,
-		Type:   "Asset",
-		Fields: make([]*Field, 6),
-		Edges:  make([]*Edge, 0),
+		Type:   "Amount",
+		Fields: make([]*Field, 3),
+		Edges:  make([]*Edge, 2),
 	}
 	var buf []byte
-	if buf, err = json.Marshal(a.Address); err != nil {
-		return nil, err
-	}
-	node.Fields[0] = &Field{
-		Type:  "string",
-		Name:  "address",
-		Value: string(buf),
-	}
 	if buf, err = json.Marshal(a.Type); err != nil {
 		return nil, err
 	}
-	node.Fields[1] = &Field{
-		Type:  "asset.Type",
+	node.Fields[0] = &Field{
+		Type:  "amount.Type",
 		Name:  "type",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(a.Symbol); err != nil {
-		return nil, err
-	}
-	node.Fields[2] = &Field{
-		Type:  "string",
-		Name:  "symbol",
 		Value: string(buf),
 	}
 	if buf, err = json.Marshal(a.Amount); err != nil {
 		return nil, err
 	}
-	node.Fields[3] = &Field{
+	node.Fields[1] = &Field{
 		Type:  "schema.BigInt",
 		Name:  "amount",
 		Value: string(buf),
@@ -92,18 +77,30 @@ func (a *Asset) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(a.AssetID); err != nil {
 		return nil, err
 	}
-	node.Fields[4] = &Field{
+	node.Fields[2] = &Field{
 		Type:  "schema.BigInt",
 		Name:  "asset_id",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(a.Decimals); err != nil {
+	node.Edges[0] = &Edge{
+		Type: "Listing",
+		Name: "listing_input",
+	}
+	err = a.QueryListingInput().
+		Select(listing.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
 		return nil, err
 	}
-	node.Fields[5] = &Field{
-		Type:  "int",
-		Name:  "decimals",
-		Value: string(buf),
+	node.Edges[1] = &Edge{
+		Type: "Listing",
+		Name: "listing_output",
+	}
+	err = a.QueryListingOutput().
+		Select(listing.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
 	}
 	return node, nil
 }
@@ -178,7 +175,7 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 		ID:     d.ID,
 		Type:   "Dope",
 		Fields: make([]*Field, 5),
-		Edges:  make([]*Edge, 4),
+		Edges:  make([]*Edge, 5),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(d.Claimed); err != nil {
@@ -261,6 +258,16 @@ func (d *Dope) Node(ctx context.Context) (node *Node, err error) {
 	if err != nil {
 		return nil, err
 	}
+	node.Edges[4] = &Edge{
+		Type: "Search",
+		Name: "index",
+	}
+	err = d.QueryIndex().
+		Select(search.FieldID).
+		Scan(ctx, &node.Edges[4].IDs)
+	if err != nil {
+		return nil, err
+	}
 	return node, nil
 }
 
@@ -320,7 +327,7 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 		ID:     h.ID,
 		Type:   "Hustler",
 		Fields: make([]*Field, 11),
-		Edges:  make([]*Edge, 14),
+		Edges:  make([]*Edge, 15),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(h.Type); err != nil {
@@ -551,6 +558,16 @@ func (h *Hustler) Node(ctx context.Context) (node *Node, err error) {
 	if err != nil {
 		return nil, err
 	}
+	node.Edges[14] = &Edge{
+		Type: "Search",
+		Name: "index",
+	}
+	err = h.QueryIndex().
+		Select(search.FieldID).
+		Scan(ctx, &node.Edges[14].IDs)
+	if err != nil {
+		return nil, err
+	}
 	return node, nil
 }
 
@@ -559,7 +576,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 		ID:     i.ID,
 		Type:   "Item",
 		Fields: make([]*Field, 11),
-		Edges:  make([]*Edge, 14),
+		Edges:  make([]*Edge, 15),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(i.Type); err != nil {
@@ -790,6 +807,16 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	if err != nil {
 		return nil, err
 	}
+	node.Edges[14] = &Edge{
+		Type: "Search",
+		Name: "index",
+	}
+	err = i.QueryIndex().
+		Select(search.FieldID).
+		Scan(ctx, &node.Edges[14].IDs)
+	if err != nil {
+		return nil, err
+	}
 	return node, nil
 }
 
@@ -838,22 +865,103 @@ func (l *Listing) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Edges[2] = &Edge{
-		Type: "Asset",
+		Type: "Amount",
 		Name: "inputs",
 	}
 	err = l.QueryInputs().
-		Select(asset.FieldID).
+		Select(amount.FieldID).
 		Scan(ctx, &node.Edges[2].IDs)
 	if err != nil {
 		return nil, err
 	}
 	node.Edges[3] = &Edge{
-		Type: "Asset",
+		Type: "Amount",
 		Name: "outputs",
 	}
 	err = l.QueryOutputs().
-		Select(asset.FieldID).
+		Select(amount.FieldID).
 		Scan(ctx, &node.Edges[3].IDs)
+	if err != nil {
+		return nil, err
+	}
+	return node, nil
+}
+
+func (s *Search) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     s.ID,
+		Type:   "Search",
+		Fields: make([]*Field, 5),
+		Edges:  make([]*Edge, 3),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(s.Type); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "search.Type",
+		Name:  "type",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(s.Greatness); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "int",
+		Name:  "greatness",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(s.SaleActive); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "bool",
+		Name:  "sale_active",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(s.SalePrice); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "schema.BigInt",
+		Name:  "sale_price",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(s.LastSalePrice); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
+		Type:  "schema.BigInt",
+		Name:  "last_sale_price",
+		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "Dope",
+		Name: "dope",
+	}
+	err = s.QueryDope().
+		Select(dope.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[1] = &Edge{
+		Type: "Item",
+		Name: "item",
+	}
+	err = s.QueryItem().
+		Select(item.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[2] = &Edge{
+		Type: "Hustler",
+		Name: "hustler",
+	}
+	err = s.QueryHustler().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[2].IDs)
 	if err != nil {
 		return nil, err
 	}
@@ -1042,10 +1150,10 @@ func (c *Client) Noder(ctx context.Context, id string, opts ...NodeOption) (_ No
 
 func (c *Client) noder(ctx context.Context, table string, id string) (Noder, error) {
 	switch table {
-	case asset.Table:
-		n, err := c.Asset.Query().
-			Where(asset.ID(id)).
-			CollectFields(ctx, "Asset").
+	case amount.Table:
+		n, err := c.Amount.Query().
+			Where(amount.ID(id)).
+			CollectFields(ctx, "Amount").
 			Only(ctx)
 		if err != nil {
 			return nil, err
@@ -1100,6 +1208,15 @@ func (c *Client) noder(ctx context.Context, table string, id string) (Noder, err
 		n, err := c.Listing.Query().
 			Where(listing.ID(id)).
 			CollectFields(ctx, "Listing").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case search.Table:
+		n, err := c.Search.Query().
+			Where(search.ID(id)).
+			CollectFields(ctx, "Search").
 			Only(ctx)
 		if err != nil {
 			return nil, err
@@ -1205,10 +1322,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
-	case asset.Table:
-		nodes, err := c.Asset.Query().
-			Where(asset.IDIn(ids...)).
-			CollectFields(ctx, "Asset").
+	case amount.Table:
+		nodes, err := c.Amount.Query().
+			Where(amount.IDIn(ids...)).
+			CollectFields(ctx, "Amount").
 			All(ctx)
 		if err != nil {
 			return nil, err
@@ -1287,6 +1404,19 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		nodes, err := c.Listing.Query().
 			Where(listing.IDIn(ids...)).
 			CollectFields(ctx, "Listing").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case search.Table:
+		nodes, err := c.Search.Query().
+			Where(search.IDIn(ids...)).
+			CollectFields(ctx, "Search").
 			All(ctx)
 		if err != nil {
 			return nil, err

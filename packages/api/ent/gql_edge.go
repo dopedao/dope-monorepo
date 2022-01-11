@@ -4,6 +4,22 @@ package ent
 
 import "context"
 
+func (a *Amount) ListingInput(ctx context.Context) (*Listing, error) {
+	result, err := a.Edges.ListingInputOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryListingInput().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (a *Amount) ListingOutput(ctx context.Context) (*Listing, error) {
+	result, err := a.Edges.ListingOutputOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryListingOutput().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (bp *BodyPart) HustlerBodies(ctx context.Context) ([]*Hustler, error) {
 	result, err := bp.Edges.HustlerBodiesOrErr()
 	if IsNotLoaded(err) {
@@ -58,6 +74,14 @@ func (d *Dope) Items(ctx context.Context) ([]*Item, error) {
 		result, err = d.QueryItems().All(ctx)
 	}
 	return result, err
+}
+
+func (d *Dope) Index(ctx context.Context) (*Search, error) {
+	result, err := d.Edges.IndexOrErr()
+	if IsNotLoaded(err) {
+		result, err = d.QueryIndex().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (h *Hustler) Wallet(ctx context.Context) (*Wallet, error) {
@@ -168,6 +192,14 @@ func (h *Hustler) Beard(ctx context.Context) (*BodyPart, error) {
 	result, err := h.Edges.BeardOrErr()
 	if IsNotLoaded(err) {
 		result, err = h.QueryBeard().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (h *Hustler) Index(ctx context.Context) (*Search, error) {
+	result, err := h.Edges.IndexOrErr()
+	if IsNotLoaded(err) {
+		result, err = h.QueryIndex().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -284,6 +316,14 @@ func (i *Item) Derivative(ctx context.Context) ([]*Item, error) {
 	return result, err
 }
 
+func (i *Item) Index(ctx context.Context) (*Search, error) {
+	result, err := i.Edges.IndexOrErr()
+	if IsNotLoaded(err) {
+		result, err = i.QueryIndex().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (l *Listing) Dope(ctx context.Context) (*Dope, error) {
 	result, err := l.Edges.DopeOrErr()
 	if IsNotLoaded(err) {
@@ -300,7 +340,7 @@ func (l *Listing) DopeLastsales(ctx context.Context) (*Dope, error) {
 	return result, MaskNotFound(err)
 }
 
-func (l *Listing) Inputs(ctx context.Context) ([]*Asset, error) {
+func (l *Listing) Inputs(ctx context.Context) ([]*Amount, error) {
 	result, err := l.Edges.InputsOrErr()
 	if IsNotLoaded(err) {
 		result, err = l.QueryInputs().All(ctx)
@@ -308,12 +348,36 @@ func (l *Listing) Inputs(ctx context.Context) ([]*Asset, error) {
 	return result, err
 }
 
-func (l *Listing) Outputs(ctx context.Context) ([]*Asset, error) {
+func (l *Listing) Outputs(ctx context.Context) ([]*Amount, error) {
 	result, err := l.Edges.OutputsOrErr()
 	if IsNotLoaded(err) {
 		result, err = l.QueryOutputs().All(ctx)
 	}
 	return result, err
+}
+
+func (s *Search) Dope(ctx context.Context) (*Dope, error) {
+	result, err := s.Edges.DopeOrErr()
+	if IsNotLoaded(err) {
+		result, err = s.QueryDope().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (s *Search) Item(ctx context.Context) (*Item, error) {
+	result, err := s.Edges.ItemOrErr()
+	if IsNotLoaded(err) {
+		result, err = s.QueryItem().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (s *Search) Hustler(ctx context.Context) (*Hustler, error) {
+	result, err := s.Edges.HustlerOrErr()
+	if IsNotLoaded(err) {
+		result, err = s.QueryHustler().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (w *Wallet) Dopes(ctx context.Context) ([]*Dope, error) {

@@ -9,13 +9,14 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent/migrate"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent/asset"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -30,8 +31,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Asset is the client for interacting with the Asset builders.
-	Asset *AssetClient
+	// Amount is the client for interacting with the Amount builders.
+	Amount *AmountClient
 	// BodyPart is the client for interacting with the BodyPart builders.
 	BodyPart *BodyPartClient
 	// Dope is the client for interacting with the Dope builders.
@@ -44,6 +45,8 @@ type Client struct {
 	Item *ItemClient
 	// Listing is the client for interacting with the Listing builders.
 	Listing *ListingClient
+	// Search is the client for interacting with the Search builders.
+	Search *SearchClient
 	// SyncState is the client for interacting with the SyncState builders.
 	SyncState *SyncStateClient
 	// Wallet is the client for interacting with the Wallet builders.
@@ -63,13 +66,14 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Asset = NewAssetClient(c.config)
+	c.Amount = NewAmountClient(c.config)
 	c.BodyPart = NewBodyPartClient(c.config)
 	c.Dope = NewDopeClient(c.config)
 	c.Event = NewEventClient(c.config)
 	c.Hustler = NewHustlerClient(c.config)
 	c.Item = NewItemClient(c.config)
 	c.Listing = NewListingClient(c.config)
+	c.Search = NewSearchClient(c.config)
 	c.SyncState = NewSyncStateClient(c.config)
 	c.Wallet = NewWalletClient(c.config)
 	c.WalletItems = NewWalletItemsClient(c.config)
@@ -106,13 +110,14 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:         ctx,
 		config:      cfg,
-		Asset:       NewAssetClient(cfg),
+		Amount:      NewAmountClient(cfg),
 		BodyPart:    NewBodyPartClient(cfg),
 		Dope:        NewDopeClient(cfg),
 		Event:       NewEventClient(cfg),
 		Hustler:     NewHustlerClient(cfg),
 		Item:        NewItemClient(cfg),
 		Listing:     NewListingClient(cfg),
+		Search:      NewSearchClient(cfg),
 		SyncState:   NewSyncStateClient(cfg),
 		Wallet:      NewWalletClient(cfg),
 		WalletItems: NewWalletItemsClient(cfg),
@@ -134,13 +139,14 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
 		config:      cfg,
-		Asset:       NewAssetClient(cfg),
+		Amount:      NewAmountClient(cfg),
 		BodyPart:    NewBodyPartClient(cfg),
 		Dope:        NewDopeClient(cfg),
 		Event:       NewEventClient(cfg),
 		Hustler:     NewHustlerClient(cfg),
 		Item:        NewItemClient(cfg),
 		Listing:     NewListingClient(cfg),
+		Search:      NewSearchClient(cfg),
 		SyncState:   NewSyncStateClient(cfg),
 		Wallet:      NewWalletClient(cfg),
 		WalletItems: NewWalletItemsClient(cfg),
@@ -150,7 +156,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Asset.
+//		Amount.
 //		Query().
 //		Count(ctx)
 //
@@ -173,96 +179,97 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Asset.Use(hooks...)
+	c.Amount.Use(hooks...)
 	c.BodyPart.Use(hooks...)
 	c.Dope.Use(hooks...)
 	c.Event.Use(hooks...)
 	c.Hustler.Use(hooks...)
 	c.Item.Use(hooks...)
 	c.Listing.Use(hooks...)
+	c.Search.Use(hooks...)
 	c.SyncState.Use(hooks...)
 	c.Wallet.Use(hooks...)
 	c.WalletItems.Use(hooks...)
 }
 
-// AssetClient is a client for the Asset schema.
-type AssetClient struct {
+// AmountClient is a client for the Amount schema.
+type AmountClient struct {
 	config
 }
 
-// NewAssetClient returns a client for the Asset from the given config.
-func NewAssetClient(c config) *AssetClient {
-	return &AssetClient{config: c}
+// NewAmountClient returns a client for the Amount from the given config.
+func NewAmountClient(c config) *AmountClient {
+	return &AmountClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `asset.Hooks(f(g(h())))`.
-func (c *AssetClient) Use(hooks ...Hook) {
-	c.hooks.Asset = append(c.hooks.Asset, hooks...)
+// A call to `Use(f, g, h)` equals to `amount.Hooks(f(g(h())))`.
+func (c *AmountClient) Use(hooks ...Hook) {
+	c.hooks.Amount = append(c.hooks.Amount, hooks...)
 }
 
-// Create returns a create builder for Asset.
-func (c *AssetClient) Create() *AssetCreate {
-	mutation := newAssetMutation(c.config, OpCreate)
-	return &AssetCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for Amount.
+func (c *AmountClient) Create() *AmountCreate {
+	mutation := newAmountMutation(c.config, OpCreate)
+	return &AmountCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Asset entities.
-func (c *AssetClient) CreateBulk(builders ...*AssetCreate) *AssetCreateBulk {
-	return &AssetCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Amount entities.
+func (c *AmountClient) CreateBulk(builders ...*AmountCreate) *AmountCreateBulk {
+	return &AmountCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Asset.
-func (c *AssetClient) Update() *AssetUpdate {
-	mutation := newAssetMutation(c.config, OpUpdate)
-	return &AssetUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Amount.
+func (c *AmountClient) Update() *AmountUpdate {
+	mutation := newAmountMutation(c.config, OpUpdate)
+	return &AmountUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *AssetClient) UpdateOne(a *Asset) *AssetUpdateOne {
-	mutation := newAssetMutation(c.config, OpUpdateOne, withAsset(a))
-	return &AssetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AmountClient) UpdateOne(a *Amount) *AmountUpdateOne {
+	mutation := newAmountMutation(c.config, OpUpdateOne, withAmount(a))
+	return &AmountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AssetClient) UpdateOneID(id string) *AssetUpdateOne {
-	mutation := newAssetMutation(c.config, OpUpdateOne, withAssetID(id))
-	return &AssetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AmountClient) UpdateOneID(id string) *AmountUpdateOne {
+	mutation := newAmountMutation(c.config, OpUpdateOne, withAmountID(id))
+	return &AmountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Asset.
-func (c *AssetClient) Delete() *AssetDelete {
-	mutation := newAssetMutation(c.config, OpDelete)
-	return &AssetDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Amount.
+func (c *AmountClient) Delete() *AmountDelete {
+	mutation := newAmountMutation(c.config, OpDelete)
+	return &AmountDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *AssetClient) DeleteOne(a *Asset) *AssetDeleteOne {
+func (c *AmountClient) DeleteOne(a *Amount) *AmountDeleteOne {
 	return c.DeleteOneID(a.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *AssetClient) DeleteOneID(id string) *AssetDeleteOne {
-	builder := c.Delete().Where(asset.ID(id))
+func (c *AmountClient) DeleteOneID(id string) *AmountDeleteOne {
+	builder := c.Delete().Where(amount.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &AssetDeleteOne{builder}
+	return &AmountDeleteOne{builder}
 }
 
-// Query returns a query builder for Asset.
-func (c *AssetClient) Query() *AssetQuery {
-	return &AssetQuery{
+// Query returns a query builder for Amount.
+func (c *AmountClient) Query() *AmountQuery {
+	return &AmountQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Asset entity by its id.
-func (c *AssetClient) Get(ctx context.Context, id string) (*Asset, error) {
-	return c.Query().Where(asset.ID(id)).Only(ctx)
+// Get returns a Amount entity by its id.
+func (c *AmountClient) Get(ctx context.Context, id string) (*Amount, error) {
+	return c.Query().Where(amount.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AssetClient) GetX(ctx context.Context, id string) *Asset {
+func (c *AmountClient) GetX(ctx context.Context, id string) *Amount {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -270,9 +277,41 @@ func (c *AssetClient) GetX(ctx context.Context, id string) *Asset {
 	return obj
 }
 
+// QueryListingInput queries the listing_input edge of a Amount.
+func (c *AmountClient) QueryListingInput(a *Amount) *ListingQuery {
+	query := &ListingQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(amount.Table, amount.FieldID, id),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, amount.ListingInputTable, amount.ListingInputColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryListingOutput queries the listing_output edge of a Amount.
+func (c *AmountClient) QueryListingOutput(a *Amount) *ListingQuery {
+	query := &ListingQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(amount.Table, amount.FieldID, id),
+			sqlgraph.To(listing.Table, listing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, amount.ListingOutputTable, amount.ListingOutputColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
-func (c *AssetClient) Hooks() []Hook {
-	return c.hooks.Asset
+func (c *AmountClient) Hooks() []Hook {
+	return c.hooks.Amount
 }
 
 // BodyPartClient is a client for the BodyPart schema.
@@ -555,6 +594,22 @@ func (c *DopeClient) QueryItems(d *Dope) *ItemQuery {
 			sqlgraph.From(dope.Table, dope.FieldID, id),
 			sqlgraph.To(item.Table, item.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, dope.ItemsTable, dope.ItemsPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryIndex queries the index edge of a Dope.
+func (c *DopeClient) QueryIndex(d *Dope) *SearchQuery {
+	query := &SearchQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dope.Table, dope.FieldID, id),
+			sqlgraph.To(search.Table, search.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, dope.IndexTable, dope.IndexColumn),
 		)
 		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
 		return fromV, nil
@@ -966,6 +1021,22 @@ func (c *HustlerClient) QueryBeard(h *Hustler) *BodyPartQuery {
 	return query
 }
 
+// QueryIndex queries the index edge of a Hustler.
+func (c *HustlerClient) QueryIndex(h *Hustler) *SearchQuery {
+	query := &SearchQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hustler.Table, hustler.FieldID, id),
+			sqlgraph.To(search.Table, search.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, hustler.IndexTable, hustler.IndexColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *HustlerClient) Hooks() []Hook {
 	return c.hooks.Hustler
@@ -1280,6 +1351,22 @@ func (c *ItemClient) QueryDerivative(i *Item) *ItemQuery {
 	return query
 }
 
+// QueryIndex queries the index edge of a Item.
+func (c *ItemClient) QueryIndex(i *Item) *SearchQuery {
+	query := &SearchQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(search.Table, search.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, item.IndexTable, item.IndexColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ItemClient) Hooks() []Hook {
 	return c.hooks.Item
@@ -1403,13 +1490,13 @@ func (c *ListingClient) QueryDopeLastsales(l *Listing) *DopeQuery {
 }
 
 // QueryInputs queries the inputs edge of a Listing.
-func (c *ListingClient) QueryInputs(l *Listing) *AssetQuery {
-	query := &AssetQuery{config: c.config}
+func (c *ListingClient) QueryInputs(l *Listing) *AmountQuery {
+	query := &AmountQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := l.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listing.Table, listing.FieldID, id),
-			sqlgraph.To(asset.Table, asset.FieldID),
+			sqlgraph.To(amount.Table, amount.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, listing.InputsTable, listing.InputsColumn),
 		)
 		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
@@ -1419,13 +1506,13 @@ func (c *ListingClient) QueryInputs(l *Listing) *AssetQuery {
 }
 
 // QueryOutputs queries the outputs edge of a Listing.
-func (c *ListingClient) QueryOutputs(l *Listing) *AssetQuery {
-	query := &AssetQuery{config: c.config}
+func (c *ListingClient) QueryOutputs(l *Listing) *AmountQuery {
+	query := &AmountQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := l.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listing.Table, listing.FieldID, id),
-			sqlgraph.To(asset.Table, asset.FieldID),
+			sqlgraph.To(amount.Table, amount.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, listing.OutputsTable, listing.OutputsColumn),
 		)
 		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
@@ -1437,6 +1524,144 @@ func (c *ListingClient) QueryOutputs(l *Listing) *AssetQuery {
 // Hooks returns the client hooks.
 func (c *ListingClient) Hooks() []Hook {
 	return c.hooks.Listing
+}
+
+// SearchClient is a client for the Search schema.
+type SearchClient struct {
+	config
+}
+
+// NewSearchClient returns a client for the Search from the given config.
+func NewSearchClient(c config) *SearchClient {
+	return &SearchClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `search.Hooks(f(g(h())))`.
+func (c *SearchClient) Use(hooks ...Hook) {
+	c.hooks.Search = append(c.hooks.Search, hooks...)
+}
+
+// Create returns a create builder for Search.
+func (c *SearchClient) Create() *SearchCreate {
+	mutation := newSearchMutation(c.config, OpCreate)
+	return &SearchCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Search entities.
+func (c *SearchClient) CreateBulk(builders ...*SearchCreate) *SearchCreateBulk {
+	return &SearchCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Search.
+func (c *SearchClient) Update() *SearchUpdate {
+	mutation := newSearchMutation(c.config, OpUpdate)
+	return &SearchUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SearchClient) UpdateOne(s *Search) *SearchUpdateOne {
+	mutation := newSearchMutation(c.config, OpUpdateOne, withSearch(s))
+	return &SearchUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SearchClient) UpdateOneID(id string) *SearchUpdateOne {
+	mutation := newSearchMutation(c.config, OpUpdateOne, withSearchID(id))
+	return &SearchUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Search.
+func (c *SearchClient) Delete() *SearchDelete {
+	mutation := newSearchMutation(c.config, OpDelete)
+	return &SearchDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *SearchClient) DeleteOne(s *Search) *SearchDeleteOne {
+	return c.DeleteOneID(s.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *SearchClient) DeleteOneID(id string) *SearchDeleteOne {
+	builder := c.Delete().Where(search.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SearchDeleteOne{builder}
+}
+
+// Query returns a query builder for Search.
+func (c *SearchClient) Query() *SearchQuery {
+	return &SearchQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Search entity by its id.
+func (c *SearchClient) Get(ctx context.Context, id string) (*Search, error) {
+	return c.Query().Where(search.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SearchClient) GetX(ctx context.Context, id string) *Search {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryDope queries the dope edge of a Search.
+func (c *SearchClient) QueryDope(s *Search) *DopeQuery {
+	query := &DopeQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(search.Table, search.FieldID, id),
+			sqlgraph.To(dope.Table, dope.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, search.DopeTable, search.DopeColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryItem queries the item edge of a Search.
+func (c *SearchClient) QueryItem(s *Search) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(search.Table, search.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, search.ItemTable, search.ItemColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHustler queries the hustler edge of a Search.
+func (c *SearchClient) QueryHustler(s *Search) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(search.Table, search.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, search.HustlerTable, search.HustlerColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *SearchClient) Hooks() []Hook {
+	return c.hooks.Search
 }
 
 // SyncStateClient is a client for the SyncState schema.

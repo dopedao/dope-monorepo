@@ -1,16 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { AspectRatio } from '@chakra-ui/layout';
 import { BigNumber } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
-import { hexColorToBase16 } from 'utils/utils';
 import { HustlerSex, DEFAULT_BG_COLORS, ZoomWindow } from 'utils/HustlerConfig';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import { useHustler, useSwapMeet } from 'hooks/contracts';
-
-type Metadata = {
-  image: string;
-};
+import { buildSVG } from 'utils/svg-builder';
 
 export interface HustlerRenderProps {
   bgColor?: string;
@@ -25,6 +21,7 @@ export interface HustlerRenderProps {
   zoomWindow: ZoomWindow;
   ogTitle?: string;
   dopeId?: string;
+  resolution?: number;
 }
 
 const RenderFromItemIds = ({
@@ -40,19 +37,21 @@ const RenderFromItemIds = ({
   zoomWindow,
   ogTitle,
   dopeId,
+  resolution = 64,
 }: HustlerRenderProps) => {
-  const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);
+  const [vehicleRle, setVehicleRle] = useState<string>();
   const [bodyRles, setBodyRles] = useState<string[]>([]);
-  const [hasRenderedFromChain, setHasRenderedFromChain] = useState(false);
 
   const swapmeet = useSwapMeet();
   const hustlers = useHustler();
 
   useEffect(() => {
-    setHasRenderedFromChain(false);
     const sexIndex = sex && sex == 'female' ? 1 : 0;
-    Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(setItemRles);
+    Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(rles => {
+      setVehicleRle(rles[0]);
+      setItemRles(rles.slice(1));
+    });
   }, [itemIds, sex, swapmeet]);
 
   useEffect(() => {
@@ -72,7 +71,6 @@ const RenderFromItemIds = ({
     const facialHairParams: [number, number] = [4, facialHair ?? 0];
 
     if (!hustlers) return;
-    setHasRenderedFromChain(false);
     // DEBUG INFO for when contract call fails.
     // Was tracking down bug that happens on Rinkeby.
     // console.log('body');
@@ -90,33 +88,25 @@ const RenderFromItemIds = ({
     Promise.all(promises).then(setBodyRles);
   }, [hustlers, sex, body, hair, facialHair]);
 
-  useEffect(() => {
-    if (hustlers && bodyRles.length > 0 && itemRles.length > 0) {
-      setHasRenderedFromChain(false);
+  const svg = useMemo(() => {
+    if (bodyRles.length > 0 && itemRles.length > 0) {
       const hustlerShadowHex = '0x0036283818022b01000d2b0500092b0200';
       const drugShadowHex = '0x00362f3729062b';
-      hustlers
-        .render(
-          renderName && ogTitle && Number(dopeId) < 500 ? ogTitle : '', // title
-          renderName ? name : '', // subtitle – should this be "name" ?
-          64,
-          hexColorToBase16(bgColor),
-          hexColorToBase16(textColor),
-          zoomWindow,
-          [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles],
-        )
-        .then(meta => {
-          meta = meta.replace('data:application/json;base64,', '');
-          meta = Buffer.from(meta, 'base64').toString();
-          const decoded = JSON.parse(meta);
-          setJson(decoded as Metadata);
-          setHasRenderedFromChain(true);
-        });
+
+      const title = renderName && ogTitle && Number(dopeId) < 500 ? ogTitle : '';
+      const subtitle = renderName ? name : '';
+
+      const rles = [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles];
+
+      if (resolution === 160 && vehicleRle) {
+        rles.unshift(vehicleRle);
+      }
+
+      return buildSVG(rles, bgColor, textColor, title, subtitle, zoomWindow, resolution);
     }
   }, [
-    swapmeet,
-    hustlers,
     itemRles,
+    vehicleRle,
     bodyRles,
     name,
     textColor,
@@ -125,9 +115,10 @@ const RenderFromItemIds = ({
     zoomWindow,
     ogTitle,
     dopeId,
+    resolution,
   ]);
 
-  if (!hasRenderedFromChain) return <LoadingBlockSquareCentered />;
+  if (!svg) return <LoadingBlockSquareCentered />;
 
   return (
     // Need to set overflow hidden so whole container doesn't scroll
@@ -136,9 +127,14 @@ const RenderFromItemIds = ({
       ratio={1}
       css={css`
         overflow: hidden;
+
+        svg {
+          width: 100%;
+          height: auto;
+        }
       `}
     >
-      {json && <img src={json.image} alt="" />}
+      {svg && <div dangerouslySetInnerHTML={{ __html: svg }} />}
     </AspectRatio>
   );
 };
