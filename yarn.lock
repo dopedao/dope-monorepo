@@ -3216,6 +3216,7 @@ __metadata:
     graphql: ^15.5.3
     gray-matter: ^4.0.3
     jest: ^27.2.5
+    ldtk: ^0.8.7
     next: ^11.1.2
     parse-data-url: ^4.0.1
     pathfinding: ^0.4.18
@@ -23100,6 +23101,13 @@ fsevents@~2.1.1:
   dependencies:
     invert-kv: ^2.0.0
   checksum: 278e27b5a0707cf9ab682146963ebff2328795be10cd6f8ea8edae293439325d345ac5e33079cce77ac3a86a3dcfb97a34f279dbc46b03f3e419aa39b5915a16
+  languageName: node
+  linkType: hard
+
+"ldtk@npm:^0.8.7":
+  version: 0.8.7
+  resolution: "ldtk@npm:0.8.7"
+  checksum: 16d807ba4c7613775601cf4890bab2c569e15f9362859a2194a92455d10bfb44d516ce5c7b5a8a183ad50a358784ddb20a2efce45fb538231b094f34c71e4939
   languageName: node
   linkType: hard
 
