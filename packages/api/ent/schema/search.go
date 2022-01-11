@@ -26,6 +26,8 @@ func (Search) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("GREATNESS"),
 			),
+		field.Bool("claimed"),
+		field.Bool("opened"),
 		field.Bool("sale_active"),
 		field.Int("sale_price").
 			GoType(BigInt{}).

@@ -7824,6 +7824,8 @@ type SearchMutation struct {
 	_type              *search.Type
 	greatness          *int
 	addgreatness       *int
+	claimed            *bool
+	opened             *bool
 	sale_active        *bool
 	sale_price         *schema.BigInt
 	addsale_price      *schema.BigInt
@@ -8049,6 +8051,78 @@ func (m *SearchMutation) ResetGreatness() {
 	m.greatness = nil
 	m.addgreatness = nil
 	delete(m.clearedFields, search.FieldGreatness)
+}
+
+// SetClaimed sets the "claimed" field.
+func (m *SearchMutation) SetClaimed(b bool) {
+	m.claimed = &b
+}
+
+// Claimed returns the value of the "claimed" field in the mutation.
+func (m *SearchMutation) Claimed() (r bool, exists bool) {
+	v := m.claimed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldClaimed returns the old "claimed" field's value of the Search entity.
+// If the Search object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SearchMutation) OldClaimed(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldClaimed is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldClaimed requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldClaimed: %w", err)
+	}
+	return oldValue.Claimed, nil
+}
+
+// ResetClaimed resets all changes to the "claimed" field.
+func (m *SearchMutation) ResetClaimed() {
+	m.claimed = nil
+}
+
+// SetOpened sets the "opened" field.
+func (m *SearchMutation) SetOpened(b bool) {
+	m.opened = &b
+}
+
+// Opened returns the value of the "opened" field in the mutation.
+func (m *SearchMutation) Opened() (r bool, exists bool) {
+	v := m.opened
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOpened returns the old "opened" field's value of the Search entity.
+// If the Search object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SearchMutation) OldOpened(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOpened is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOpened requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOpened: %w", err)
+	}
+	return oldValue.Opened, nil
+}
+
+// ResetOpened resets all changes to the "opened" field.
+func (m *SearchMutation) ResetOpened() {
+	m.opened = nil
 }
 
 // SetSaleActive sets the "sale_active" field.
@@ -8335,12 +8409,18 @@ func (m *SearchMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SearchMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 7)
 	if m._type != nil {
 		fields = append(fields, search.FieldType)
 	}
 	if m.greatness != nil {
 		fields = append(fields, search.FieldGreatness)
+	}
+	if m.claimed != nil {
+		fields = append(fields, search.FieldClaimed)
+	}
+	if m.opened != nil {
+		fields = append(fields, search.FieldOpened)
 	}
 	if m.sale_active != nil {
 		fields = append(fields, search.FieldSaleActive)
@@ -8363,6 +8443,10 @@ func (m *SearchMutation) Field(name string) (ent.Value, bool) {
 		return m.GetType()
 	case search.FieldGreatness:
 		return m.Greatness()
+	case search.FieldClaimed:
+		return m.Claimed()
+	case search.FieldOpened:
+		return m.Opened()
 	case search.FieldSaleActive:
 		return m.SaleActive()
 	case search.FieldSalePrice:
@@ -8382,6 +8466,10 @@ func (m *SearchMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldType(ctx)
 	case search.FieldGreatness:
 		return m.OldGreatness(ctx)
+	case search.FieldClaimed:
+		return m.OldClaimed(ctx)
+	case search.FieldOpened:
+		return m.OldOpened(ctx)
 	case search.FieldSaleActive:
 		return m.OldSaleActive(ctx)
 	case search.FieldSalePrice:
@@ -8410,6 +8498,20 @@ func (m *SearchMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetGreatness(v)
+		return nil
+	case search.FieldClaimed:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetClaimed(v)
+		return nil
+	case search.FieldOpened:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOpened(v)
 		return nil
 	case search.FieldSaleActive:
 		v, ok := value.(bool)
@@ -8534,6 +8636,12 @@ func (m *SearchMutation) ResetField(name string) error {
 		return nil
 	case search.FieldGreatness:
 		m.ResetGreatness()
+		return nil
+	case search.FieldClaimed:
+		m.ResetClaimed()
+		return nil
+	case search.FieldOpened:
+		m.ResetOpened()
 		return nil
 	case search.FieldSaleActive:
 		m.ResetSaleActive()
