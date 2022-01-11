@@ -84,12 +84,12 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         
         this.setPosition(x, y);
         
-        this.setDepth(1);
+        this.setDepth(40);
 
         // offset the hustler texture from the body
         this.setOrigin(0.5, 0.52);
         // make it a bit bigger
-        this.setScale(2);
+        this.setScale(1.3);
 
         // prevent angular momentum from rotating our body
         this.setFixedRotation();

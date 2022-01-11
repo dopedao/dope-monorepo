@@ -41,7 +41,6 @@
     "gear-rarity": "^1.0.5",
     "graphql": "^15.5.3",
     "gray-matter": "^4.0.3",
-    "ldtk": "^0.8.7",
     "next": "^11.1.2",
     "parse-data-url": "^4.0.1",
     "pathfinding": "^0.4.18",

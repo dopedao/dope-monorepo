@@ -20,6 +20,8 @@ export default class Player extends Hustler
     private _inventoryOpen: boolean = false;
     private _busy: boolean = false;
 
+    private readonly _baseDepth: number;
+
     get interactSensor() { return this._interactSensor; }
     
     get inventory() { return this._inventory; }
@@ -44,6 +46,11 @@ export default class Player extends Hustler
         // create controller
         this.controller = new PlayerController(this);
         this._handleEvents();
+
+        this._baseDepth = this.depth;
+
+        this.hitboxSensor.onCollideActiveCallback = this.updateDepth;
+        this.hitboxSensor.onCollideEndCallback = () => this.setDepth(this._baseDepth);
     }
 
     toggleInventory()
@@ -136,19 +143,19 @@ export default class Player extends Hustler
         }
     }
 
-    updateDepth(player: MatterJS.Body, other: MatterJS.Body)
+    updateDepth(pair: MatterJS.IPair)
     {
-        const playerBodyType: MatterJS.BodyType = (player as MatterJS.BodyType)
-        let otherBodyType: MatterJS.BodyType = (other as MatterJS.BodyType);
+        let other = pair.bodyA as MatterJS.BodyType;
+        let playerHitbox = pair.bodyB as MatterJS.BodyType;
 
         // if the overlapped has a parent body, use it instead for calculating delta Y
-        if (otherBodyType.parent)
-            otherBodyType = otherBodyType.parent;
+        if (other.parent)
+            other = other.parent;
         
-        if ((otherBodyType.position.y - playerBodyType.position.y) < 0)
-            playerBodyType.gameObject.setDepth(2);
+        if ((other.position.y - playerHitbox.position.y) < 0)
+            playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 10);
         else
-            playerBodyType.gameObject.setDepth(0);
+            playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 10);
     }
 
     private _handleEvents()
@@ -168,16 +175,6 @@ export default class Player extends Hustler
     {
         super.update();
         this.updateSensorPosition();
-
-        // this.questManager.update();
-
-        // update depth depending other bodies
-        const overlapped = this.scene.matter.overlap((this.body as MatterJS.BodyType), undefined, this.updateDepth);
-        // reset depth if not overlapped
-        if (this.depth !== 2 && !overlapped)
-        {
-            this.setDepth(2);
-        }
 
         // takes input and update player
         this.controller.update();

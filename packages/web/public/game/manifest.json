@@ -60,8 +60,8 @@
                 "size": 14290
             },
             "tileset_sidewalk_webmodular": {
-                "file":"./game/MAP/Road_Sidewalk_WebModular.png",
-                "size": 16568
+                "file":"./game/MAP/DW_Tileset_Grounds_WebModular.png",
+                "size": 23173
             },
             "tileset_props_preprotosetv1": {
                 "file":"./game/MAP/dw_Props_PreProtoSetV1.png",
@@ -69,6 +69,10 @@
             },
             "tileset_buildings_preprotosetv1": {
                 "file":"./game/MAP/dw_Buildings_PreProtoSetV1_TileAbsolute.png",
+                "size": 4952
+            },
+            "tileset_grass_street": {
+                "file":"./game/MAP/DW_Tileset_GrassStreet.png",
                 "size": 4952
             },
             "tileset_vegetation_general": {

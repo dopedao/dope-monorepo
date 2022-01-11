@@ -153,12 +153,12 @@ export default class HustlerModel
     createSprites()
     {
         // Shadow
-        this.shadowSprite = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y + (this.hustler.height / 1.5), this.hustler.width, this.hustler.height / 5, 0x565a73, 0.5);
+        this.shadowSprite = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 3), this.hustler.width, this.hustler.height / 5, 0x565a73, 0.5);
         (this.shadowSprite.scene.plugins.get('rexPixelationPipeline') as PixelationPipelinePlugin).add(this.shadowSprite, {
             pixelWidth: 2,
             pixelHeight: 2
         })
-        this.shadowSprite.setDepth(0);
+        this.shadowSprite.setDepth(this.hustler.depth - 1);
         //this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Shadow]);
         //this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y, this.hustler.width, this.hustler.height / 3);
 
@@ -195,7 +195,7 @@ export default class HustlerModel
                 sprite.play(sprite.texture.key + direction, true);
         };
 
-        this.shadowSprite.setPosition(this.hustler.x, this.hustler.y + (this.hustler.height / 1.5));
+        this.shadowSprite.setPosition(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 3));
         this.clothesSprites.forEach(sprite => update(sprite));
         Object.values(this.sprites).forEach(sprite => update(sprite));
     }

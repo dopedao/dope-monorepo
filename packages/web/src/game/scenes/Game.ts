@@ -18,6 +18,7 @@ import Item from 'game/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';
 import ItemQuest from 'game/quests/ItemQuest';
 import BringItemQuest from 'game/quests/BringItemQuest';
+import { LdtkReader } from '../world/LDtkParser';
 
 export default class GameScene extends Scene {
   private player!: Player;
@@ -77,61 +78,39 @@ export default class GameScene extends Scene {
       });
     });
 
-    this._map = this.make.tilemap({ key: "map" });
+    // create the map
+    const ldtkReader: LdtkReader = new LdtkReader(this, this.cache.json.get('map'));
+    const map = ldtkReader.CreateMap('Level_0', Object.keys(this.textures.list).filter(key => key.startsWith('tileset_')));
 
-    // not my assets, used only for demonstration purposes
-    const tileset = this.map.addTilesetImage("tuxmon-sample-32px-extruded", "tiles");
+    // set depths for each of the tile layers
+    map.displayLayers.forEach((layer, index) => {
+      // if (layer.name === 'FloorDecorations')
+      // {
+      //   layer.destroy();
+      // }
+      layer.setDepth(layer.getData('id') * 5);
+      console.log(`${layer.name} - ${layer.getData('id') * 5}`);
+    });
 
-    this.map.createLayer("Below Player", tileset, 0, 0);
-    const world = this.map.createLayer("World", tileset, 0, 0);
+    // collision layer
+    map.collideLayer = map.intGridLayers.find(e => e.name === 'Collisions');
 
-    // render above hustlers
-    world.setDepth(0);
-    // set world as being collidable
-    world.setCollisionByProperty({ collides: true });
+    if (!map.collideLayer)
+    {
+      console.error("No collision layer found");
+      return;
+    }
 
-    // transform world into a matter one
-    const matterWorld = this.matter.world.convertTilemapLayer(world);
+    // enable collisions for all tiles that have index 1
+    map.collideLayer?.setCollision(1);
+    // map.collideLayer.setDepth(100000);
 
-    let points = [ new Phaser.Math.Vector2(200, 650), 120, new Phaser.Math.Vector2(700, 400), new Phaser.Math.Vector2(600, 600), 5, new Phaser.Math.Vector2(300, 1000) ];
-    points = points.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
+    // set map as tilemap of collidelayer
+    this._map = map.collideLayer.tilemap;
+    // matterjs collisions
+    this.matter.world.convertTilemapLayer(map.collideLayer);
 
-    let points2 = [ new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600) ];
-    points2 = points2.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
-
-    const crackHeadClothesZone = new Zone(this.matter.add.circle(300, 1200, 50), this);
-    const item = new Item('Cool Item', 'This is a cool item');
-
-    this.citizens.push(
-      new Citizen(
-        matterWorld, 600, 350, new HustlerModel(Base.Male, [], Feet.NikeCortez, Hands.BlackGloves, undefined, Necklace.Gold),
-        'Michel', 
-        'Patrick is not evil', 
-        [new Conversation('Give me some clothes please', () => {
-          this.player.questManager.addQuest(new BringItemQuest(this.player.questManager, this.citizens[0], item, "Mr.Crackhead", "Get him some clothes ASAP"));
-          return false;
-        }),
-        new Conversation('Thanks for bringing me my clothes!', () => true)
-      ], 
-        points, true,),
-
-      // new Citizen(
-      // matterWorld, 500, 600, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves),
-      // 'Patrick', 
-      // 'Patrick is evil', 
-      // [new Conversation('Hello', () => false), 
-      // new Conversation('Hello again!', () => true)], 
-      // points2, true,),
-    );
-
-    this.player = new Player(
-      matterWorld, 500, 600,
-      new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold));
-
-    const above = this.map.createLayer("Above Player", tileset, 0, 0);
-    
-    // above world
-    above.setDepth(3);
+    this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male));
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -141,9 +120,6 @@ export default class GameScene extends Scene {
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
     this.scene.launch('UIScene', { player: this.player });
-
-    // test item entities
-    new ItemEntity(this.matter.world, 300, 650, 'item_' + 'anitem', item);
   }
 
   update(time: number, delta: number): void {

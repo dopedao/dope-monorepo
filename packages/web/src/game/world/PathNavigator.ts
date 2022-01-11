@@ -39,7 +39,7 @@ export default class PathNavigator
 
         // convert grid of tiles into PF grid
         this.grid = new PF.Grid(
-            map.layers[1].data
+            map.layers[0].data
             .map(
                 tileArr => tileArr.map(tile => tile.collides ? 1 : 0)))
 
