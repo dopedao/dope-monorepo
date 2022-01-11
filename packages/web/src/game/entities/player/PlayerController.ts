@@ -28,6 +28,9 @@ export default class PlayerController
 
     update()
     {
+        if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).tab))
+            this.player.toggleInventory();
+
         if (Phaser.Input.Keyboard.JustUp(this.arrows.space))
             // check interact sensor
             this.player.tryInteraction();

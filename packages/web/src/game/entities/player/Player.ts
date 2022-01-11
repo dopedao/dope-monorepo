@@ -5,6 +5,7 @@ import QuestManager from "game/managers/QuestManager";
 import Quest from "game/quests/Quest";
 import Citizen from "../citizen/Citizen";
 import Hustler, { Direction } from "../Hustler";
+import ItemEntity from "../ItemEntity";
 import PlayerController from "./PlayerController";
 
 export default class Player extends Hustler
@@ -16,12 +17,15 @@ export default class Player extends Hustler
     private _inventory: Inventory;
     private _questManager: QuestManager;
 
+    private _inventoryOpen: boolean = false;
     private _busy: boolean = false;
 
     get interactSensor() { return this._interactSensor; }
     
     get inventory() { return this._inventory; }
     get questManager() { return this._questManager; }
+
+    get inventoryOpen() { return this._inventoryOpen; }
 
     get busy() { return this._busy; }
 
@@ -33,7 +37,7 @@ export default class Player extends Hustler
         this._questManager = new QuestManager(this, quests);
 
         // create interact sensor
-        this._interactSensor = this.scene.matter.add.rectangle(x + 30, y - 40, 40, this.height, {
+        this._interactSensor = this.scene.matter.add.rectangle(x + 40, y - 40, 40, this.height, {
             isSensor: true,
         });
 
@@ -42,9 +46,22 @@ export default class Player extends Hustler
         this._handleEvents();
     }
 
-    openInventory()
+    toggleInventory()
     {
-        this.scene.events.emit(Events.PLAYER_OPEN_INVENTORY);
+        if (!this.inventoryOpen)
+        {
+            EventHandler.emitter().emit(Events.PLAYER_INVENTORY_OPEN);
+
+            this._inventoryOpen = true;
+            this._busy = true;
+        }
+        else
+        {
+            EventHandler.emitter().emit(Events.PLAYER_INVENTORY_CLOSE);
+
+            this._inventoryOpen = false;
+            this._busy = false;
+        }
     }
 
     tryInteraction()
@@ -52,19 +69,47 @@ export default class Player extends Hustler
         if (this.busy)
             return;
 
-        this.scene.matter.overlap(this._interactSensor, undefined, (player: MatterJS.Body, other: MatterJS.Body) => {
+        let flag = false;
+
+        const onOverlap = (interactSensor: MatterJS.Body, other: MatterJS.Body) => {
             const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType).gameObject;
             if (otherGameObject instanceof Citizen)
             {
+                // if has no conversations, dont emit interaction
+                if ((otherGameObject as Citizen).conversations.length === 0)
+                    return;
                 // prevent setTimeout in onInteractionFinish
                 // from setting shouldFollowPath back to true again when in interaction
                 if (!(otherGameObject as Citizen).shouldFollowPath)
                     return;
                 // call onInteraction method of citizen
                 otherGameObject.onInteraction(this);
-                EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, otherGameObject);
+                // make player look at npc
+                this.lookAt(otherGameObject.x, otherGameObject.y);
+
+                EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, otherGameObject);
+
+                flag = true;
             }
-        });
+            else if (otherGameObject instanceof ItemEntity)
+            {
+                // if item succesfully picked up
+                if (this.inventory.add((otherGameObject as ItemEntity).item, true))
+                    (otherGameObject as ItemEntity).onPickup();
+                
+                flag = true;
+            }
+        };
+
+        // check interact sensor
+        this.scene.matter.overlap(this._interactSensor, undefined, onOverlap);
+        
+        // prevent double interaction
+        if (flag)
+            return;
+
+        // check hitbox
+        this.scene.matter.overlap(this.hitboxSensor, undefined, onOverlap);
     }
 
     updateSensorPosition()
@@ -74,11 +119,11 @@ export default class Player extends Hustler
         {
             if (this.lastDirection === Direction.South)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y + 60 });
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y + 75 });
             }
             else if (this.lastDirection === Direction.North)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y - 55});
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y - 85});
             }
             else if (this.lastDirection === Direction.West)
             {
@@ -94,23 +139,27 @@ export default class Player extends Hustler
     updateDepth(player: MatterJS.Body, other: MatterJS.Body)
     {
         const playerBodyType: MatterJS.BodyType = (player as MatterJS.BodyType)
-        const otherBodyType: MatterJS.BodyType = (other as MatterJS.BodyType);
+        let otherBodyType: MatterJS.BodyType = (other as MatterJS.BodyType);
 
-        if ((otherBodyType.position.y - playerBodyType.position.y) > 20)
-            playerBodyType.gameObject.setDepth(0);
-        else if ((otherBodyType.position.y - playerBodyType.position.y) < -15)
+        // if the overlapped has a parent body, use it instead for calculating delta Y
+        if (otherBodyType.parent)
+            otherBodyType = otherBodyType.parent;
+        
+        if ((otherBodyType.position.y - playerBodyType.position.y) < 0)
             playerBodyType.gameObject.setDepth(2);
+        else
+            playerBodyType.gameObject.setDepth(0);
     }
 
     private _handleEvents()
     {
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC, (npc: Phaser.GameObjects.GameObject) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
             this._busy = true;
         });
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_CANCEL, (npc: Phaser.GameObjects.GameObject) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (citizen: Citizen) => {
             this._busy = false;
         });
-        EventHandler.emitter().on(Events.PLAYER_INTERACT_NPC_COMPLETE, (npc: Phaser.GameObjects.GameObject) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, (citizen: Citizen) => {
             this._busy = false;
         });
     }
@@ -120,10 +169,10 @@ export default class Player extends Hustler
         super.update();
         this.updateSensorPosition();
 
-        this.questManager.update();
+        // this.questManager.update();
 
         // update depth depending other bodies
-        const overlapped = this.scene.matter.overlap(this, undefined, this.updateDepth);
+        const overlapped = this.scene.matter.overlap((this.body as MatterJS.BodyType), undefined, this.updateDepth);
         // reset depth if not overlapped
         if (this.depth !== 2 && !overlapped)
         {
