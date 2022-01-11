@@ -1,0 +1,94 @@
+{
+    "assetRoot":"assets",
+    "totalSize": 1614077,
+    "assets": {
+        "spritesheet": {
+            "male_base": {
+                "file": "./game/character/male/base/male_base.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 22992
+            },
+            "male_base_shadow": {
+                "file": "./game/character/male/base/male_base_shadow.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 7180
+            },
+            "male_clothes_shirtless": {
+                "file": "./game/character/male/clothes/male_clothes_shirtless.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 12300
+            },
+            "male_feet_nikecortez": {
+                "file": "./game/character/male/feet/male_feet_nikecortez.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 12288 
+            },
+            "male_hands_blackgloves": {
+                "file": "./game/character/male/hands/male_hands_blackgloves.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 8657 
+            },
+            "male_mask_mrfax": {
+                "file": "./game/character/male/mask/male_mask_mrfax.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 10988
+            },
+            "male_necklace_gold": {
+                "file": "./game/character/male/necklace/male_necklace_gold.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 8023
+            },
+            "male_ring_gold": {
+                "file": "./game/character/male/ring/male_ring_gold.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 7216
+            },
+            "male_waist_waistsuspenders": {
+                "file": "./game/character/male/waist/male_waist_waistsuspenders.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 10680
+            },
+            "male_weapons_ak47": {
+                "file": "./game/character/male/weapons/male_weapons_ak47.png",
+                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
+                "size": 17866
+            }
+        },
+        "image": {
+            "tileset_vegetation_tree": {
+                "file":"./game/MAP/DW_Vegetation_Trees.png",
+                "size": 14290
+            },
+            "tileset_sidewalk_webmodular": {
+                "file":"./game/MAP/Road_Sidewalk_WebModular.png",
+                "size": 16568
+            },
+            "tileset_props_preprotosetv1": {
+                "file":"./game/MAP/dw_Props_PreProtoSetV1.png",
+                "size": 183160
+            },
+            "tileset_buildings_preprotosetv1": {
+                "file":"./game/MAP/dw_Buildings_PreProtoSetV1_TileAbsolute.png",
+                "size": 4952
+            },
+            "tileset_vegetation_general": {
+                "file":"./game/MAP/dw_Props_Vegetation.png",
+                "size": 34088
+            },
+            "tileset_vegetation_small": {
+                "file":"./game/MAP/DW_Props_Vegetation_Small.png",
+                "size": 9713
+            },
+            "tileset_vegetation_medium": {
+                "file":"./game/MAP/DW_Props_Vegetation_Medium.png",
+                "size": 3860
+            }
+        },
+        "json": {
+            "map": {
+                "file": "./game/MAP/LDTK/DopeWars_LD_V2.json",
+                "size": 1229256
+            }
+        }
+    }
+}
