@@ -25,14 +25,14 @@ type InitiatorProcessor interface {
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessOpened(ctx context.Context, e *InitiatorOpened, tx *ent.Tx) error
+	ProcessOpened(ctx context.Context, e *InitiatorOpened) (func(tx *ent.Tx) error, error)
 
-	ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred, tx *ent.Tx) error
+	ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred) (func(tx *ent.Tx) error, error)
 
-	mustEmbedUnimplementedInitiatorProcessor()
+	mustEmbedBaseInitiatorProcessor()
 }
 
-type UnimplementedInitiatorProcessor struct {
+type BaseInitiatorProcessor struct {
 	Address  common.Address
 	ABI      abi.ABI
 	Contract *Initiator
@@ -44,7 +44,7 @@ type UnimplementedInitiatorProcessor struct {
 	}
 }
 
-func (h *UnimplementedInitiatorProcessor) Setup(address common.Address, eth interface {
+func (h *BaseInitiatorProcessor) Setup(address common.Address, eth interface {
 	ethereum.ChainReader
 	ethereum.ChainStateReader
 	ethereum.TransactionReader
@@ -67,38 +67,44 @@ func (h *UnimplementedInitiatorProcessor) Setup(address common.Address, eth inte
 	return nil
 }
 
-func (h *UnimplementedInitiatorProcessor) ProcessElement(p interface{}) func(context.Context, types.Log, *ent.Tx) error {
-	return func(ctx context.Context, vLog types.Log, tx *ent.Tx) error {
+func (h *BaseInitiatorProcessor) ProcessElement(p interface{}) func(context.Context, types.Log) (func(*ent.Tx) error, error) {
+	return func(ctx context.Context, vLog types.Log) (func(*ent.Tx) error, error) {
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["Opened"].ID.Hex():
 			e := new(InitiatorOpened)
 			if err := h.UnpackLog(e, "Opened", vLog); err != nil {
-				return fmt.Errorf("unpacking Opened: %w", err)
+				return nil, fmt.Errorf("unpacking Opened: %w", err)
 			}
 
 			e.Raw = vLog
-			if err := p.(InitiatorProcessor).ProcessOpened(ctx, e, tx); err != nil {
-				return fmt.Errorf("processing Opened: %w", err)
+			cb, err := p.(InitiatorProcessor).ProcessOpened(ctx, e)
+			if err != nil {
+				return nil, fmt.Errorf("processing Opened: %w", err)
 			}
+
+			return cb, nil
 
 		case h.ABI.Events["OwnershipTransferred"].ID.Hex():
 			e := new(InitiatorOwnershipTransferred)
 			if err := h.UnpackLog(e, "OwnershipTransferred", vLog); err != nil {
-				return fmt.Errorf("unpacking OwnershipTransferred: %w", err)
+				return nil, fmt.Errorf("unpacking OwnershipTransferred: %w", err)
 			}
 
 			e.Raw = vLog
-			if err := p.(InitiatorProcessor).ProcessOwnershipTransferred(ctx, e, tx); err != nil {
-				return fmt.Errorf("processing OwnershipTransferred: %w", err)
+			cb, err := p.(InitiatorProcessor).ProcessOwnershipTransferred(ctx, e)
+			if err != nil {
+				return nil, fmt.Errorf("processing OwnershipTransferred: %w", err)
 			}
 
+			return cb, nil
+
 		}
-		return nil
+		return nil, nil
 	}
 }
 
-func (h *UnimplementedInitiatorProcessor) UnpackLog(out interface{}, event string, log types.Log) error {
+func (h *BaseInitiatorProcessor) UnpackLog(out interface{}, event string, log types.Log) error {
 	if len(log.Data) > 0 {
 		if err := h.ABI.UnpackIntoInterface(out, event, log.Data); err != nil {
 			return err
@@ -113,16 +119,16 @@ func (h *UnimplementedInitiatorProcessor) UnpackLog(out interface{}, event strin
 	return abi.ParseTopics(out, indexed, log.Topics[1:])
 }
 
-func (h *UnimplementedInitiatorProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
+func (h *BaseInitiatorProcessor) Initialize(ctx context.Context, start uint64, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *UnimplementedInitiatorProcessor) ProcessOpened(ctx context.Context, e *InitiatorOpened, tx *ent.Tx) error {
-	return nil
+func (h *BaseInitiatorProcessor) ProcessOpened(ctx context.Context, e *InitiatorOpened) (func(tx *ent.Tx) error, error) {
+	return nil, nil
 }
 
-func (h *UnimplementedInitiatorProcessor) ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred, tx *ent.Tx) error {
-	return nil
+func (h *BaseInitiatorProcessor) ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred) (func(tx *ent.Tx) error, error) {
+	return nil, nil
 }
 
-func (h *UnimplementedInitiatorProcessor) mustEmbedUnimplementedInitiatorProcessor() {}
+func (h *BaseInitiatorProcessor) mustEmbedBaseInitiatorProcessor() {}

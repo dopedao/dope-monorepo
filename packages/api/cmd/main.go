@@ -23,7 +23,7 @@ var network = os.Getenv("NETWORK")
 var index = os.Getenv("INDEX")
 
 func main() {
-	log := zerolog.New(os.Stdout)
+	log := zerolog.New(os.Stderr)
 
 	log.Debug().Msgf("config: is indexer: %v", index)
 
@@ -37,7 +37,7 @@ func main() {
 		log.Fatal().Err(err).Msgf("Connecting to db.") //nolint:gocritic
 	}
 
-	srv, err := api.NewServer(context.Background(), db, index == "True", network)
+	srv, err := api.NewServer(log.WithContext(context.Background()), db, index == "True", network)
 	if err != nil {
 		log.Fatal().Err(err).Msgf("Creating server.") //nolint:gocritic
 	}
