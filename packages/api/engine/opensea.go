@@ -214,7 +214,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 							if err := tx.Dope.UpdateOneID(oasset.TokenID).SetLastSaleID(oasset.LastSale.Transaction.TransactionHash).
 								Exec(ctx); err != nil {
-								return fmt.Errorf("upserting to listing lastsale: %w", err)
+								return fmt.Errorf("upserting to dope lastsale: %w", err)
 							}
 
 						}

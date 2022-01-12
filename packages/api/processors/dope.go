@@ -14,7 +14,7 @@ type DopeProcessor struct {
 	bindings.BaseDopeProcessor
 }
 
-func (p *DopeProcessor) ProcessTransfer(ctx context.Context, e *bindings.DopeTransfer) (func(tx *ent.Tx) error, error) {
+func (p *DopeProcessor) ProcessTransfer(ctx context.Context, e bindings.DopeTransfer) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
 		if err := tx.Wallet.
 			Create().

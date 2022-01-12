@@ -25,17 +25,17 @@ type DopeProcessor interface {
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessApproval(ctx context.Context, e *DopeApproval) (func(tx *ent.Tx) error, error)
+	ProcessApproval(ctx context.Context, e DopeApproval) (func(tx *ent.Tx) error, error)
 
-	ProcessApprovalForAll(ctx context.Context, e *DopeApprovalForAll) (func(tx *ent.Tx) error, error)
+	ProcessApprovalForAll(ctx context.Context, e DopeApprovalForAll) (func(tx *ent.Tx) error, error)
 
-	ProcessDelegateChanged(ctx context.Context, e *DopeDelegateChanged) (func(tx *ent.Tx) error, error)
+	ProcessDelegateChanged(ctx context.Context, e DopeDelegateChanged) (func(tx *ent.Tx) error, error)
 
-	ProcessDelegateVotesChanged(ctx context.Context, e *DopeDelegateVotesChanged) (func(tx *ent.Tx) error, error)
+	ProcessDelegateVotesChanged(ctx context.Context, e DopeDelegateVotesChanged) (func(tx *ent.Tx) error, error)
 
-	ProcessOwnershipTransferred(ctx context.Context, e *DopeOwnershipTransferred) (func(tx *ent.Tx) error, error)
+	ProcessOwnershipTransferred(ctx context.Context, e DopeOwnershipTransferred) (func(tx *ent.Tx) error, error)
 
-	ProcessTransfer(ctx context.Context, e *DopeTransfer) (func(tx *ent.Tx) error, error)
+	ProcessTransfer(ctx context.Context, e DopeTransfer) (func(tx *ent.Tx) error, error)
 
 	mustEmbedBaseDopeProcessor()
 }
@@ -80,8 +80,8 @@ func (h *BaseDopeProcessor) ProcessElement(p interface{}) func(context.Context, 
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["Approval"].ID.Hex():
-			e := new(DopeApproval)
-			if err := h.UnpackLog(e, "Approval", vLog); err != nil {
+			e := DopeApproval{}
+			if err := h.UnpackLog(&e, "Approval", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking Approval: %w", err)
 			}
 
@@ -94,8 +94,8 @@ func (h *BaseDopeProcessor) ProcessElement(p interface{}) func(context.Context, 
 			return cb, nil
 
 		case h.ABI.Events["ApprovalForAll"].ID.Hex():
-			e := new(DopeApprovalForAll)
-			if err := h.UnpackLog(e, "ApprovalForAll", vLog); err != nil {
+			e := DopeApprovalForAll{}
+			if err := h.UnpackLog(&e, "ApprovalForAll", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking ApprovalForAll: %w", err)
 			}
 
@@ -108,8 +108,8 @@ func (h *BaseDopeProcessor) ProcessElement(p interface{}) func(context.Context, 
 			return cb, nil
 
 		case h.ABI.Events["DelegateChanged"].ID.Hex():
-			e := new(DopeDelegateChanged)
-			if err := h.UnpackLog(e, "DelegateChanged", vLog); err != nil {
+			e := DopeDelegateChanged{}
+			if err := h.UnpackLog(&e, "DelegateChanged", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking DelegateChanged: %w", err)
 			}
 
@@ -122,8 +122,8 @@ func (h *BaseDopeProcessor) ProcessElement(p interface{}) func(context.Context, 
 			return cb, nil
 
 		case h.ABI.Events["DelegateVotesChanged"].ID.Hex():
-			e := new(DopeDelegateVotesChanged)
-			if err := h.UnpackLog(e, "DelegateVotesChanged", vLog); err != nil {
+			e := DopeDelegateVotesChanged{}
+			if err := h.UnpackLog(&e, "DelegateVotesChanged", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking DelegateVotesChanged: %w", err)
 			}
 
@@ -136,8 +136,8 @@ func (h *BaseDopeProcessor) ProcessElement(p interface{}) func(context.Context, 
 			return cb, nil
 
 		case h.ABI.Events["OwnershipTransferred"].ID.Hex():
-			e := new(DopeOwnershipTransferred)
-			if err := h.UnpackLog(e, "OwnershipTransferred", vLog); err != nil {
+			e := DopeOwnershipTransferred{}
+			if err := h.UnpackLog(&e, "OwnershipTransferred", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking OwnershipTransferred: %w", err)
 			}
 
@@ -150,8 +150,8 @@ func (h *BaseDopeProcessor) ProcessElement(p interface{}) func(context.Context, 
 			return cb, nil
 
 		case h.ABI.Events["Transfer"].ID.Hex():
-			e := new(DopeTransfer)
-			if err := h.UnpackLog(e, "Transfer", vLog); err != nil {
+			e := DopeTransfer{}
+			if err := h.UnpackLog(&e, "Transfer", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking Transfer: %w", err)
 			}
 
@@ -187,27 +187,27 @@ func (h *BaseDopeProcessor) Initialize(ctx context.Context, start uint64, tx *en
 	return nil
 }
 
-func (h *BaseDopeProcessor) ProcessApproval(ctx context.Context, e *DopeApproval) (func(tx *ent.Tx) error, error) {
+func (h *BaseDopeProcessor) ProcessApproval(ctx context.Context, e DopeApproval) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseDopeProcessor) ProcessApprovalForAll(ctx context.Context, e *DopeApprovalForAll) (func(tx *ent.Tx) error, error) {
+func (h *BaseDopeProcessor) ProcessApprovalForAll(ctx context.Context, e DopeApprovalForAll) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseDopeProcessor) ProcessDelegateChanged(ctx context.Context, e *DopeDelegateChanged) (func(tx *ent.Tx) error, error) {
+func (h *BaseDopeProcessor) ProcessDelegateChanged(ctx context.Context, e DopeDelegateChanged) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseDopeProcessor) ProcessDelegateVotesChanged(ctx context.Context, e *DopeDelegateVotesChanged) (func(tx *ent.Tx) error, error) {
+func (h *BaseDopeProcessor) ProcessDelegateVotesChanged(ctx context.Context, e DopeDelegateVotesChanged) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseDopeProcessor) ProcessOwnershipTransferred(ctx context.Context, e *DopeOwnershipTransferred) (func(tx *ent.Tx) error, error) {
+func (h *BaseDopeProcessor) ProcessOwnershipTransferred(ctx context.Context, e DopeOwnershipTransferred) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseDopeProcessor) ProcessTransfer(ctx context.Context, e *DopeTransfer) (func(tx *ent.Tx) error, error) {
+func (h *BaseDopeProcessor) ProcessTransfer(ctx context.Context, e DopeTransfer) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 

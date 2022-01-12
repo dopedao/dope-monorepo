@@ -47,7 +47,7 @@ func (p *SwapMeetProcessor) Setup(address common.Address, eth interface {
 	return nil
 }
 
-func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapMeetSetRle) (func(tx *ent.Tx) error, error) {
+func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMeetSetRle) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
 		male, err := p.Contract.TokenRle(nil, e.Id, 0)
 		if err != nil {
@@ -85,7 +85,7 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e *bindings.SwapM
 	}, nil
 }
 
-func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *bindings.SwapMeetTransferBatch) (func(tx *ent.Tx) error, error) {
+func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings.SwapMeetTransferBatch) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
 		if err := tx.Wallet.Create().
 			SetID(e.To.Hex()).
@@ -155,7 +155,7 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e *binding
 	}, nil
 }
 
-func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e *bindings.SwapMeetTransferSingle) (func(tx *ent.Tx) error, error) {
+func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e bindings.SwapMeetTransferSingle) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
 		if err := tx.Wallet.Create().
 			SetID(e.To.Hex()).
