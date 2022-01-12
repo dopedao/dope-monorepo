@@ -1,40 +1,45 @@
-import Citizen from "game/entities/citizen/Citizen";
-import EventHandler, { Events } from "game/handlers/EventHandler";
-import Item from "game/inventory/Item";
-import QuestManager from "game/managers/QuestManager";
-import { compareByMostAffordable } from "utils/DopeDatabase";
-import Quest from "./Quest";
+import Citizen from 'game/entities/citizen/Citizen';
+import EventHandler, { Events } from 'game/handlers/EventHandler';
+import Item from 'game/inventory/Item';
+import QuestManager from 'game/managers/QuestManager';
+import Quest from './Quest';
 
-export default class ItemQuest extends Quest
-{
-    protected _item: Item;
-        
-    get item() { return this._item; }
+export default class ItemQuest extends Quest {
+  protected _item: Item;
 
-    constructor(questManager: QuestManager, questReferer: Citizen, item: Item, name: string, description: string, start?: () => void, complete?: () => void, isActive?: boolean) {
-        super(questManager, questReferer, name, description, start, complete, isActive);
+  get item() {
+    return this._item;
+  }
 
-        this._item = item;
-    }
+  constructor(
+    questManager: QuestManager,
+    questReferer: Citizen,
+    item: Item,
+    name: string,
+    description: string,
+    start?: () => void,
+    complete?: () => void,
+    isActive?: boolean,
+  ) {
+    super(questManager, questReferer, name, description, start, complete, isActive);
 
-    protected _handleItemEvent(item: Item)
-    {
-        if (item === this.item)
-            this.questManager.completeQuest(this);
-    }
+    this._item = item;
+  }
 
-    onStart() 
-    {
-        super.onStart();
+  protected _handleItemEvent(item: Item) {
+    if (item === this.item) this.questManager.completeQuest(this);
+  }
 
-        EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent, this);
-    }
+  onStart() {
+    super.onStart();
 
-    onComplete()
-    {
-        super.onComplete();
+    EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent, this);
+  }
 
-        // unsubscribe from event when quest is completed
-        EventHandler.emitter().removeListener(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent);
-    }
-} 
+  onComplete() {
+    super.onComplete();
+
+    // unsubscribe from event when quest is completed
+    EventHandler.emitter().removeListener(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent);
+  }
+}
