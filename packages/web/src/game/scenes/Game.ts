@@ -82,16 +82,6 @@ export default class GameScene extends Scene {
     const ldtkReader: LdtkReader = new LdtkReader(this, this.cache.json.get('map'));
     const map = ldtkReader.CreateMap('Level_0', Object.keys(this.textures.list).filter(key => key.startsWith('tileset_')));
 
-    // set depths for each of the tile layers
-    map.displayLayers.forEach((layer, index) => {
-      // if (layer.name === 'FloorDecorations')
-      // {
-      //   layer.destroy();
-      // }
-      layer.setDepth(layer.getData('id') * 5);
-      console.log(`${layer.name} - ${layer.getData('id') * 5}`);
-    });
-
     // collision layer
     map.collideLayer = map.intGridLayers.find(e => e.name === 'Collisions');
 
@@ -110,13 +100,18 @@ export default class GameScene extends Scene {
     // matterjs collisions
     this.matter.world.convertTilemapLayer(map.collideLayer);
 
+    // spawn map entities
+    map.entityLayers?.entityInstances.forEach(entity => {
+      
+    });
+
     this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male));
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
     // make the camera follow the player
-    camera.setZoom(1.5, 1.5);
+    camera.setZoom(3, 3);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
     this.scene.launch('UIScene', { player: this.player });

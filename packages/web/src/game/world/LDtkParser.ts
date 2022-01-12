@@ -59,9 +59,26 @@ export class LdtkReader {
         let tilesetWidth = tilesetObj.__cWid;
         let tileSize = layer.__gridSize;
 
+        // 10 is stacked maximum layers
+        let stackLayers: Tile[][] = new Array(10);
+        for (let i = 0; i < stackLayers.length; i++)
+            stackLayers[i] = new Array();
+        
+        // number of stacked tiles
+        let layerCount = 0;
         layer.gridTiles.forEach(t => {
             let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
-            csv[tileloc.y][tileloc.x] = this.GetTileID(t.src[0], t.src[1], tileSize, tilesetWidth) ;
+            if (!csv[tileloc.y][tileloc.x])
+            {
+                csv[tileloc.y][tileloc.x] = this.GetTileID(t.src[0], t.src[1], tileSize, tilesetWidth);
+                layerCount = 0;
+            }
+            else
+            {
+                stackLayers[layerCount].push(t);
+                layerCount++;
+            }
+                
         });
 
         map = this.scene.make.tilemap({
@@ -72,11 +89,39 @@ export class LdtkReader {
 
         map.addTilesetImage(tileset);
 
+        const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
         let l = map.createLayer(0, map.tilesets, 0,0)
             .setName(layer.__identifier)
-            .setData('id', this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer))
+            .setData('id', orderId)
+            .setDepth(orderId * 5)
             .setVisible(true);
-        l.name = layer.__identifier;
+
+        stackLayers.forEach((tiles, i) => {
+            if (tiles.length === 0)
+                return;
+
+            const newLayer = map.createBlankLayer(`${layer.__identifier} - ${i}`, map.tilesets, 0,0)
+                .setDepth(l.depth + (i + 1))
+                .setVisible(true);
+            
+            tiles.forEach(t => {
+                let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
+                const tile = newLayer.putTileAt(this.GetTileID(t.src[0], t.src[1], tileSize, tilesetWidth), tileloc.x, tileloc.y);
+
+                if (t.f !== 0)
+                {
+                    if(t.f === 1)
+                        tile.flipX = true;
+                    else if (t.f === 2)
+                        tile.flipY = true;
+                    else 
+                    {
+                        tile.flipX = true;
+                        tile.flipY = true;
+                    }
+                }
+            });
+        });
 
         layer.gridTiles.forEach(t => {
             if(t.f != 0) {
@@ -122,11 +167,12 @@ export class LdtkReader {
 
         map.addTilesetImage(tileset);
 
+        const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
         let l = map.createLayer(0, map.tilesets, 0,0)
             .setName(layer.__identifier)
-            .setData('id', this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer))
+            .setData('id', orderId)
+            .setDepth(orderId * 5)
             .setVisible(true);
-        l.name = layer.__identifier;
 
         layer.autoLayerTiles.forEach(t => {
             if(t.f != 0) {
@@ -180,9 +226,11 @@ export class LdtkReader {
         if (tileset)
             map.addTilesetImage(tileset);
 
+        const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
         return map.createLayer(0, map.tilesets, 0,0)
             .setName(layer.__identifier)
-            .setData('id', layer.layerDefUid)
+            .setData('id', orderId)
+            .setDepth(orderId * 5)
             .setVisible(false);
     }
 }
