@@ -25,17 +25,17 @@ type PaperProcessor interface {
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessApproval(ctx context.Context, e *PaperApproval) (func(tx *ent.Tx) error, error)
+	ProcessApproval(ctx context.Context, e PaperApproval) (func(tx *ent.Tx) error, error)
 
-	ProcessDelegateChanged(ctx context.Context, e *PaperDelegateChanged) (func(tx *ent.Tx) error, error)
+	ProcessDelegateChanged(ctx context.Context, e PaperDelegateChanged) (func(tx *ent.Tx) error, error)
 
-	ProcessDelegateVotesChanged(ctx context.Context, e *PaperDelegateVotesChanged) (func(tx *ent.Tx) error, error)
+	ProcessDelegateVotesChanged(ctx context.Context, e PaperDelegateVotesChanged) (func(tx *ent.Tx) error, error)
 
-	ProcessOwnershipTransferred(ctx context.Context, e *PaperOwnershipTransferred) (func(tx *ent.Tx) error, error)
+	ProcessOwnershipTransferred(ctx context.Context, e PaperOwnershipTransferred) (func(tx *ent.Tx) error, error)
 
-	ProcessSnapshot(ctx context.Context, e *PaperSnapshot) (func(tx *ent.Tx) error, error)
+	ProcessSnapshot(ctx context.Context, e PaperSnapshot) (func(tx *ent.Tx) error, error)
 
-	ProcessTransfer(ctx context.Context, e *PaperTransfer) (func(tx *ent.Tx) error, error)
+	ProcessTransfer(ctx context.Context, e PaperTransfer) (func(tx *ent.Tx) error, error)
 
 	mustEmbedBasePaperProcessor()
 }
@@ -80,8 +80,8 @@ func (h *BasePaperProcessor) ProcessElement(p interface{}) func(context.Context,
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["Approval"].ID.Hex():
-			e := new(PaperApproval)
-			if err := h.UnpackLog(e, "Approval", vLog); err != nil {
+			e := PaperApproval{}
+			if err := h.UnpackLog(&e, "Approval", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking Approval: %w", err)
 			}
 
@@ -94,8 +94,8 @@ func (h *BasePaperProcessor) ProcessElement(p interface{}) func(context.Context,
 			return cb, nil
 
 		case h.ABI.Events["DelegateChanged"].ID.Hex():
-			e := new(PaperDelegateChanged)
-			if err := h.UnpackLog(e, "DelegateChanged", vLog); err != nil {
+			e := PaperDelegateChanged{}
+			if err := h.UnpackLog(&e, "DelegateChanged", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking DelegateChanged: %w", err)
 			}
 
@@ -108,8 +108,8 @@ func (h *BasePaperProcessor) ProcessElement(p interface{}) func(context.Context,
 			return cb, nil
 
 		case h.ABI.Events["DelegateVotesChanged"].ID.Hex():
-			e := new(PaperDelegateVotesChanged)
-			if err := h.UnpackLog(e, "DelegateVotesChanged", vLog); err != nil {
+			e := PaperDelegateVotesChanged{}
+			if err := h.UnpackLog(&e, "DelegateVotesChanged", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking DelegateVotesChanged: %w", err)
 			}
 
@@ -122,8 +122,8 @@ func (h *BasePaperProcessor) ProcessElement(p interface{}) func(context.Context,
 			return cb, nil
 
 		case h.ABI.Events["OwnershipTransferred"].ID.Hex():
-			e := new(PaperOwnershipTransferred)
-			if err := h.UnpackLog(e, "OwnershipTransferred", vLog); err != nil {
+			e := PaperOwnershipTransferred{}
+			if err := h.UnpackLog(&e, "OwnershipTransferred", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking OwnershipTransferred: %w", err)
 			}
 
@@ -136,8 +136,8 @@ func (h *BasePaperProcessor) ProcessElement(p interface{}) func(context.Context,
 			return cb, nil
 
 		case h.ABI.Events["Snapshot"].ID.Hex():
-			e := new(PaperSnapshot)
-			if err := h.UnpackLog(e, "Snapshot", vLog); err != nil {
+			e := PaperSnapshot{}
+			if err := h.UnpackLog(&e, "Snapshot", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking Snapshot: %w", err)
 			}
 
@@ -150,8 +150,8 @@ func (h *BasePaperProcessor) ProcessElement(p interface{}) func(context.Context,
 			return cb, nil
 
 		case h.ABI.Events["Transfer"].ID.Hex():
-			e := new(PaperTransfer)
-			if err := h.UnpackLog(e, "Transfer", vLog); err != nil {
+			e := PaperTransfer{}
+			if err := h.UnpackLog(&e, "Transfer", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking Transfer: %w", err)
 			}
 
@@ -187,27 +187,27 @@ func (h *BasePaperProcessor) Initialize(ctx context.Context, start uint64, tx *e
 	return nil
 }
 
-func (h *BasePaperProcessor) ProcessApproval(ctx context.Context, e *PaperApproval) (func(tx *ent.Tx) error, error) {
+func (h *BasePaperProcessor) ProcessApproval(ctx context.Context, e PaperApproval) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BasePaperProcessor) ProcessDelegateChanged(ctx context.Context, e *PaperDelegateChanged) (func(tx *ent.Tx) error, error) {
+func (h *BasePaperProcessor) ProcessDelegateChanged(ctx context.Context, e PaperDelegateChanged) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BasePaperProcessor) ProcessDelegateVotesChanged(ctx context.Context, e *PaperDelegateVotesChanged) (func(tx *ent.Tx) error, error) {
+func (h *BasePaperProcessor) ProcessDelegateVotesChanged(ctx context.Context, e PaperDelegateVotesChanged) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BasePaperProcessor) ProcessOwnershipTransferred(ctx context.Context, e *PaperOwnershipTransferred) (func(tx *ent.Tx) error, error) {
+func (h *BasePaperProcessor) ProcessOwnershipTransferred(ctx context.Context, e PaperOwnershipTransferred) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BasePaperProcessor) ProcessSnapshot(ctx context.Context, e *PaperSnapshot) (func(tx *ent.Tx) error, error) {
+func (h *BasePaperProcessor) ProcessSnapshot(ctx context.Context, e PaperSnapshot) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BasePaperProcessor) ProcessTransfer(ctx context.Context, e *PaperTransfer) (func(tx *ent.Tx) error, error) {
+func (h *BasePaperProcessor) ProcessTransfer(ctx context.Context, e PaperTransfer) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 

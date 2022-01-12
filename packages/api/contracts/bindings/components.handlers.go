@@ -25,9 +25,9 @@ type ComponentsProcessor interface {
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessAddComponent(ctx context.Context, e *ComponentsAddComponent) (func(tx *ent.Tx) error, error)
+	ProcessAddComponent(ctx context.Context, e ComponentsAddComponent) (func(tx *ent.Tx) error, error)
 
-	ProcessOwnershipTransferred(ctx context.Context, e *ComponentsOwnershipTransferred) (func(tx *ent.Tx) error, error)
+	ProcessOwnershipTransferred(ctx context.Context, e ComponentsOwnershipTransferred) (func(tx *ent.Tx) error, error)
 
 	mustEmbedBaseComponentsProcessor()
 }
@@ -72,8 +72,8 @@ func (h *BaseComponentsProcessor) ProcessElement(p interface{}) func(context.Con
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["AddComponent"].ID.Hex():
-			e := new(ComponentsAddComponent)
-			if err := h.UnpackLog(e, "AddComponent", vLog); err != nil {
+			e := ComponentsAddComponent{}
+			if err := h.UnpackLog(&e, "AddComponent", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking AddComponent: %w", err)
 			}
 
@@ -86,8 +86,8 @@ func (h *BaseComponentsProcessor) ProcessElement(p interface{}) func(context.Con
 			return cb, nil
 
 		case h.ABI.Events["OwnershipTransferred"].ID.Hex():
-			e := new(ComponentsOwnershipTransferred)
-			if err := h.UnpackLog(e, "OwnershipTransferred", vLog); err != nil {
+			e := ComponentsOwnershipTransferred{}
+			if err := h.UnpackLog(&e, "OwnershipTransferred", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking OwnershipTransferred: %w", err)
 			}
 
@@ -123,11 +123,11 @@ func (h *BaseComponentsProcessor) Initialize(ctx context.Context, start uint64, 
 	return nil
 }
 
-func (h *BaseComponentsProcessor) ProcessAddComponent(ctx context.Context, e *ComponentsAddComponent) (func(tx *ent.Tx) error, error) {
+func (h *BaseComponentsProcessor) ProcessAddComponent(ctx context.Context, e ComponentsAddComponent) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseComponentsProcessor) ProcessOwnershipTransferred(ctx context.Context, e *ComponentsOwnershipTransferred) (func(tx *ent.Tx) error, error) {
+func (h *BaseComponentsProcessor) ProcessOwnershipTransferred(ctx context.Context, e ComponentsOwnershipTransferred) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
