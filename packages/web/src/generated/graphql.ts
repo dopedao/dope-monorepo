@@ -1,29 +1,10 @@
 import { useQuery, UseQueryOptions, useInfiniteQuery, UseInfiniteQueryOptions, QueryFunctionContext } from 'react-query';
+import { useFetchData } from 'hooks/fetcher';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-
-function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch(process.env.NEXT_PUBLIC_DOPEWARS_API as string, {
-    method: "POST",
-    ...({"headers":{"Content-Type":"application/json"}}),
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const json = await res.json();
-
-    if (json.errors) {
-      const { message } = json.errors[0];
-
-      throw new Error(message);
-    }
-
-    return json.data;
-  }
-}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -1505,20 +1486,19 @@ export const useAllHustlersQuery = <
     ) =>
     useQuery<AllHustlersQuery, TError, TData>(
       variables === undefined ? ['AllHustlers'] : ['AllHustlers', variables],
-      fetcher<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, variables),
+      useFetchData<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument).bind(null, variables),
       options
     );
 export const useInfiniteAllHustlersQuery = <
       TData = AllHustlersQuery,
       TError = unknown
     >(
-      pageParamKey: keyof AllHustlersQueryVariables,
       variables?: AllHustlersQueryVariables,
       options?: UseInfiniteQueryOptions<AllHustlersQuery, TError, TData>
     ) =>
     useInfiniteQuery<AllHustlersQuery, TError, TData>(
       variables === undefined ? ['AllHustlers.infinite'] : ['AllHustlers.infinite', variables],
-      (metaData) => fetcher<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => useFetchData<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument).bind(null, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 
@@ -1594,20 +1574,19 @@ export const useDopesQuery = <
     ) =>
     useQuery<DopesQuery, TError, TData>(
       variables === undefined ? ['Dopes'] : ['Dopes', variables],
-      fetcher<DopesQuery, DopesQueryVariables>(DopesDocument, variables),
+      useFetchData<DopesQuery, DopesQueryVariables>(DopesDocument).bind(null, variables),
       options
     );
 export const useInfiniteDopesQuery = <
       TData = DopesQuery,
       TError = unknown
     >(
-      pageParamKey: keyof DopesQueryVariables,
       variables?: DopesQueryVariables,
       options?: UseInfiniteQueryOptions<DopesQuery, TError, TData>
     ) =>
     useInfiniteQuery<DopesQuery, TError, TData>(
       variables === undefined ? ['Dopes.infinite'] : ['Dopes.infinite', variables],
-      (metaData) => fetcher<DopesQuery, DopesQueryVariables>(DopesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => useFetchData<DopesQuery, DopesQueryVariables>(DopesDocument).bind(null, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 
@@ -1765,20 +1744,19 @@ export const useHustlerQuery = <
     ) =>
     useQuery<HustlerQuery, TError, TData>(
       variables === undefined ? ['Hustler'] : ['Hustler', variables],
-      fetcher<HustlerQuery, HustlerQueryVariables>(HustlerDocument, variables),
+      useFetchData<HustlerQuery, HustlerQueryVariables>(HustlerDocument).bind(null, variables),
       options
     );
 export const useInfiniteHustlerQuery = <
       TData = HustlerQuery,
       TError = unknown
     >(
-      pageParamKey: keyof HustlerQueryVariables,
       variables?: HustlerQueryVariables,
       options?: UseInfiniteQueryOptions<HustlerQuery, TError, TData>
     ) =>
     useInfiniteQuery<HustlerQuery, TError, TData>(
       variables === undefined ? ['Hustler.infinite'] : ['Hustler.infinite', variables],
-      (metaData) => fetcher<HustlerQuery, HustlerQueryVariables>(HustlerDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => useFetchData<HustlerQuery, HustlerQueryVariables>(HustlerDocument).bind(null, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 
@@ -1943,20 +1921,19 @@ export const useHustlersWalletQuery = <
     ) =>
     useQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet'] : ['HustlersWallet', variables],
-      fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, variables),
+      useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument).bind(null, variables),
       options
     );
 export const useInfiniteHustlersWalletQuery = <
       TData = HustlersWalletQuery,
       TError = unknown
     >(
-      pageParamKey: keyof HustlersWalletQueryVariables,
       variables?: HustlersWalletQueryVariables,
       options?: UseInfiniteQueryOptions<HustlersWalletQuery, TError, TData>
     ) =>
     useInfiniteQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet.infinite'] : ['HustlersWallet.infinite', variables],
-      (metaData) => fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument).bind(null, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 
@@ -2028,20 +2005,19 @@ export const useSearchDopeQuery = <
     ) =>
     useQuery<SearchDopeQuery, TError, TData>(
       ['SearchDope', variables],
-      fetcher<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument, variables),
+      useFetchData<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument).bind(null, variables),
       options
     );
 export const useInfiniteSearchDopeQuery = <
       TData = SearchDopeQuery,
       TError = unknown
     >(
-      pageParamKey: keyof SearchDopeQueryVariables,
       variables: SearchDopeQueryVariables,
       options?: UseInfiniteQueryOptions<SearchDopeQuery, TError, TData>
     ) =>
     useInfiniteQuery<SearchDopeQuery, TError, TData>(
       ['SearchDope.infinite', variables],
-      (metaData) => fetcher<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => useFetchData<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument).bind(null, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
 
@@ -2099,19 +2075,18 @@ export const useWalletQuery = <
     ) =>
     useQuery<WalletQuery, TError, TData>(
       variables === undefined ? ['Wallet'] : ['Wallet', variables],
-      fetcher<WalletQuery, WalletQueryVariables>(WalletDocument, variables),
+      useFetchData<WalletQuery, WalletQueryVariables>(WalletDocument).bind(null, variables),
       options
     );
 export const useInfiniteWalletQuery = <
       TData = WalletQuery,
       TError = unknown
     >(
-      pageParamKey: keyof WalletQueryVariables,
       variables?: WalletQueryVariables,
       options?: UseInfiniteQueryOptions<WalletQuery, TError, TData>
     ) =>
     useInfiniteQuery<WalletQuery, TError, TData>(
       variables === undefined ? ['Wallet.infinite'] : ['Wallet.infinite', variables],
-      (metaData) => fetcher<WalletQuery, WalletQueryVariables>(WalletDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => useFetchData<WalletQuery, WalletQueryVariables>(WalletDocument).bind(null, {...variables, ...(metaData.pageParam ?? {})})(),
       options
     );
