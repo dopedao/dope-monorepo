@@ -14,6 +14,10 @@ import Conversation from 'game/entities/citizen/Conversation';
 import { TypeKind } from 'graphql';
 import Quest from 'game/quests/Quest';
 import PointQuest from 'game/quests/PointQuest';
+import Item from 'game/inventory/Item';
+import ItemEntity from 'game/entities/ItemEntity';
+import ItemQuest from 'game/quests/ItemQuest';
+import BringItemQuest from 'game/quests/BringItemQuest';
 
 export default class GameScene extends Scene {
   private player!: Player;
@@ -34,10 +38,22 @@ export default class GameScene extends Scene {
     });
   }
 
+  handleItemEntities()
+  {
+    EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop: boolean) => {
+      if (drop)
+        new ItemEntity(this.matter.world, this.player.x, this.player.y, 'item_' + item.name, item);
+    })
+  }
+
   create(): void {
+    // create item entities when need 
+    this.handleItemEntities();
+
     // create all of the animations
     new GameAnimations(this.anims).create();
 
+    // on click pathfinding
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (!this.canUseMouse)
         return;
@@ -55,7 +71,7 @@ export default class GameScene extends Scene {
             if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
             {
               citizenToTalkTo?.onInteraction(this.player);
-              EventHandler.emitter().emit(Events.PLAYER_INTERACT_NPC, citizenToTalkTo);
+              EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
             }
           });
       });
@@ -77,13 +93,14 @@ export default class GameScene extends Scene {
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
-    let points = [ new Phaser.Math.Vector2(200, 400), 120, new Phaser.Math.Vector2(700, 400), new Phaser.Math.Vector2(600, 600), 5, new Phaser.Math.Vector2(300, 1000) ];
+    let points = [ new Phaser.Math.Vector2(200, 650), 120, new Phaser.Math.Vector2(700, 400), new Phaser.Math.Vector2(600, 600), 5, new Phaser.Math.Vector2(300, 1000) ];
     points = points.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
 
     let points2 = [ new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600) ];
     points2 = points2.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
 
     const crackHeadClothesZone = new Zone(this.matter.add.circle(300, 1200, 50), this);
+    const item = new Item('Cool Item', 'This is a cool item');
 
     this.citizens.push(
       new Citizen(
@@ -91,9 +108,11 @@ export default class GameScene extends Scene {
         'Michel', 
         'Patrick is not evil', 
         [new Conversation('Give me some clothes please', () => {
-          this.player.questManager.addQuest(new PointQuest(crackHeadClothesZone, "Mr.Crackhead", "Get him some clothes ASAP"));
+          this.player.questManager.addQuest(new BringItemQuest(this.player.questManager, this.citizens[0], item, "Mr.Crackhead", "Get him some clothes ASAP"));
           return false;
-        })], 
+        }),
+        new Conversation('Thanks for bringing me my clothes!', () => true)
+      ], 
         points, true,),
 
       // new Citizen(
@@ -122,6 +141,9 @@ export default class GameScene extends Scene {
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
     this.scene.launch('UIScene', { player: this.player });
+
+    // test item entities
+    new ItemEntity(this.matter.world, 300, 650, 'item_' + 'anitem', item);
   }
 
   update(time: number, delta: number): void {

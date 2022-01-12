@@ -46,6 +46,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this._lastDirection = dir;
     }
 
+    get collider() { return (this.body as MatterJS.BodyType).parts[1]; }
+    get hitboxSensor() { return (this.body as MatterJS.BodyType).parts[2]; }
+
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, frame?: number)
     {
         super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
@@ -58,18 +61,33 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // create main body
         const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
-        const mainBody = Bodies.rectangle(x, y, this.width * 0.48, this.height * 0.35, {
+        const colliderBody = Bodies.rectangle(0, 0, this.width * 0.48, this.height * 0.35, {
+            label: "collider",
             collisionFilter: {
                 group: -69
             },
             chamfer: { radius: 7.2 },
         } as MatterJS.BodyType);
-        this.setExistingBody(mainBody);
+        const sensorHitBox = Bodies.rectangle(0, 0 - this.height / 4.5, this.width * 0.6, this.height * 0.8, {
+            label: "hitboxSensor",
+            isSensor: true,
+        } as MatterJS.BodyType);
+        this.setExistingBody(Body.create({
+            parts: [colliderBody, sensorHitBox],
+            collisionFilter: {
+                group: -69
+            },
+        } as MatterJS.BodyType));
+        // parts[0] = mainBody
+        // parts[1] = collider
+        // parts[2] = hitboxSensor
+        
+        this.setPosition(x, y);
         
         this.setDepth(1);
 
         // offset the hustler texture from the body
-        this.setOrigin(0.5, 0.70);
+        this.setOrigin(0.5, 0.52);
         // make it a bit bigger
         this.setScale(2);
 

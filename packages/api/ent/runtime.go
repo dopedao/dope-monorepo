@@ -68,11 +68,11 @@ func init() {
 	searchFields := schema.Search{}.Fields()
 	_ = searchFields
 	// searchDescSalePrice is the schema descriptor for sale_price field.
-	searchDescSalePrice := searchFields[4].Descriptor()
+	searchDescSalePrice := searchFields[6].Descriptor()
 	// search.DefaultSalePrice holds the default value on creation for the sale_price field.
 	search.DefaultSalePrice = searchDescSalePrice.Default.(func() schema.BigInt)
 	// searchDescLastSalePrice is the schema descriptor for last_sale_price field.
-	searchDescLastSalePrice := searchFields[5].Descriptor()
+	searchDescLastSalePrice := searchFields[7].Descriptor()
 	// search.DefaultLastSalePrice holds the default value on creation for the last_sale_price field.
 	search.DefaultLastSalePrice = searchDescLastSalePrice.Default.(func() schema.BigInt)
 	walletFields := schema.Wallet{}.Fields()
