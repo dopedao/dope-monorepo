@@ -25,19 +25,19 @@ type HustlerProcessor interface {
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessAddRles(ctx context.Context, e *HustlerAddRles) (func(tx *ent.Tx) error, error)
+	ProcessAddRles(ctx context.Context, e HustlerAddRles) (func(tx *ent.Tx) error, error)
 
-	ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll) (func(tx *ent.Tx) error, error)
+	ProcessApprovalForAll(ctx context.Context, e HustlerApprovalForAll) (func(tx *ent.Tx) error, error)
 
-	ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate) (func(tx *ent.Tx) error, error)
+	ProcessMetadataUpdate(ctx context.Context, e HustlerMetadataUpdate) (func(tx *ent.Tx) error, error)
 
-	ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred) (func(tx *ent.Tx) error, error)
+	ProcessOwnershipTransferred(ctx context.Context, e HustlerOwnershipTransferred) (func(tx *ent.Tx) error, error)
 
-	ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch) (func(tx *ent.Tx) error, error)
+	ProcessTransferBatch(ctx context.Context, e HustlerTransferBatch) (func(tx *ent.Tx) error, error)
 
-	ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle) (func(tx *ent.Tx) error, error)
+	ProcessTransferSingle(ctx context.Context, e HustlerTransferSingle) (func(tx *ent.Tx) error, error)
 
-	ProcessURI(ctx context.Context, e *HustlerURI) (func(tx *ent.Tx) error, error)
+	ProcessURI(ctx context.Context, e HustlerURI) (func(tx *ent.Tx) error, error)
 
 	mustEmbedBaseHustlerProcessor()
 }
@@ -82,8 +82,8 @@ func (h *BaseHustlerProcessor) ProcessElement(p interface{}) func(context.Contex
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["AddRles"].ID.Hex():
-			e := new(HustlerAddRles)
-			if err := h.UnpackLog(e, "AddRles", vLog); err != nil {
+			e := HustlerAddRles{}
+			if err := h.UnpackLog(&e, "AddRles", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking AddRles: %w", err)
 			}
 
@@ -96,8 +96,8 @@ func (h *BaseHustlerProcessor) ProcessElement(p interface{}) func(context.Contex
 			return cb, nil
 
 		case h.ABI.Events["ApprovalForAll"].ID.Hex():
-			e := new(HustlerApprovalForAll)
-			if err := h.UnpackLog(e, "ApprovalForAll", vLog); err != nil {
+			e := HustlerApprovalForAll{}
+			if err := h.UnpackLog(&e, "ApprovalForAll", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking ApprovalForAll: %w", err)
 			}
 
@@ -110,8 +110,8 @@ func (h *BaseHustlerProcessor) ProcessElement(p interface{}) func(context.Contex
 			return cb, nil
 
 		case h.ABI.Events["MetadataUpdate"].ID.Hex():
-			e := new(HustlerMetadataUpdate)
-			if err := h.UnpackLog(e, "MetadataUpdate", vLog); err != nil {
+			e := HustlerMetadataUpdate{}
+			if err := h.UnpackLog(&e, "MetadataUpdate", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking MetadataUpdate: %w", err)
 			}
 
@@ -124,8 +124,8 @@ func (h *BaseHustlerProcessor) ProcessElement(p interface{}) func(context.Contex
 			return cb, nil
 
 		case h.ABI.Events["OwnershipTransferred"].ID.Hex():
-			e := new(HustlerOwnershipTransferred)
-			if err := h.UnpackLog(e, "OwnershipTransferred", vLog); err != nil {
+			e := HustlerOwnershipTransferred{}
+			if err := h.UnpackLog(&e, "OwnershipTransferred", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking OwnershipTransferred: %w", err)
 			}
 
@@ -138,8 +138,8 @@ func (h *BaseHustlerProcessor) ProcessElement(p interface{}) func(context.Contex
 			return cb, nil
 
 		case h.ABI.Events["TransferBatch"].ID.Hex():
-			e := new(HustlerTransferBatch)
-			if err := h.UnpackLog(e, "TransferBatch", vLog); err != nil {
+			e := HustlerTransferBatch{}
+			if err := h.UnpackLog(&e, "TransferBatch", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking TransferBatch: %w", err)
 			}
 
@@ -152,8 +152,8 @@ func (h *BaseHustlerProcessor) ProcessElement(p interface{}) func(context.Contex
 			return cb, nil
 
 		case h.ABI.Events["TransferSingle"].ID.Hex():
-			e := new(HustlerTransferSingle)
-			if err := h.UnpackLog(e, "TransferSingle", vLog); err != nil {
+			e := HustlerTransferSingle{}
+			if err := h.UnpackLog(&e, "TransferSingle", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking TransferSingle: %w", err)
 			}
 
@@ -166,8 +166,8 @@ func (h *BaseHustlerProcessor) ProcessElement(p interface{}) func(context.Contex
 			return cb, nil
 
 		case h.ABI.Events["URI"].ID.Hex():
-			e := new(HustlerURI)
-			if err := h.UnpackLog(e, "URI", vLog); err != nil {
+			e := HustlerURI{}
+			if err := h.UnpackLog(&e, "URI", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking URI: %w", err)
 			}
 
@@ -203,31 +203,31 @@ func (h *BaseHustlerProcessor) Initialize(ctx context.Context, start uint64, tx 
 	return nil
 }
 
-func (h *BaseHustlerProcessor) ProcessAddRles(ctx context.Context, e *HustlerAddRles) (func(tx *ent.Tx) error, error) {
+func (h *BaseHustlerProcessor) ProcessAddRles(ctx context.Context, e HustlerAddRles) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseHustlerProcessor) ProcessApprovalForAll(ctx context.Context, e *HustlerApprovalForAll) (func(tx *ent.Tx) error, error) {
+func (h *BaseHustlerProcessor) ProcessApprovalForAll(ctx context.Context, e HustlerApprovalForAll) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseHustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e *HustlerMetadataUpdate) (func(tx *ent.Tx) error, error) {
+func (h *BaseHustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e HustlerMetadataUpdate) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseHustlerProcessor) ProcessOwnershipTransferred(ctx context.Context, e *HustlerOwnershipTransferred) (func(tx *ent.Tx) error, error) {
+func (h *BaseHustlerProcessor) ProcessOwnershipTransferred(ctx context.Context, e HustlerOwnershipTransferred) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseHustlerProcessor) ProcessTransferBatch(ctx context.Context, e *HustlerTransferBatch) (func(tx *ent.Tx) error, error) {
+func (h *BaseHustlerProcessor) ProcessTransferBatch(ctx context.Context, e HustlerTransferBatch) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseHustlerProcessor) ProcessTransferSingle(ctx context.Context, e *HustlerTransferSingle) (func(tx *ent.Tx) error, error) {
+func (h *BaseHustlerProcessor) ProcessTransferSingle(ctx context.Context, e HustlerTransferSingle) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseHustlerProcessor) ProcessURI(ctx context.Context, e *HustlerURI) (func(tx *ent.Tx) error, error) {
+func (h *BaseHustlerProcessor) ProcessURI(ctx context.Context, e HustlerURI) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 

@@ -635,8 +635,8 @@ github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9/go.mod h1:HVxBVPUK/+fZMonk4bi1is
 github.com/vmihailenco/tagparser v0.1.2 h1:gnjoVuB/kljJ5wICEEOpx98oXMWPLj22G67Vbd1qPqc=
 github.com/vmihailenco/tagparser v0.1.2/go.mod h1:OeAg3pn3UbLjkWt+rN9oFYB6u/cQgqMEUPoW2WPyhdI=
 github.com/willf/bitset v1.1.3/go.mod h1:RjeCKbqT1RxIR/KWY6phxZiaY1IyutSBfGjNPySAYV4=
-github.com/withtally/synceth v0.0.8 h1:7gYrJx+J5+cy8fjbUqqT4aI+lO75/msjpvHF8ySyEBA=
-github.com/withtally/synceth v0.0.8/go.mod h1:Aq39YECo0RhMw3fWZO4n68JLhTnyZjbpwJ7AEHu6CB8=
+github.com/withtally/synceth v0.0.10 h1:jnGt5Zw3HpY/qFY1eKcbui3ZEXK2UTTGvxLQOCLmzwU=
+github.com/withtally/synceth v0.0.10/go.mod h1:Aq39YECo0RhMw3fWZO4n68JLhTnyZjbpwJ7AEHu6CB8=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xlab/treeprint v0.0.0-20180616005107-d6fb6747feb6/go.mod h1:ce1O1j6UtZfjr22oyGxGLbauSBp2YVXpARAosm7dHBg=
 github.com/yfuruyama/crzerolog v0.3.0 h1:Bz4QpKiuQGBDJQ0/866rc9L1NH7zQ47IpwFBCZO+NmY=

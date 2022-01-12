@@ -25,9 +25,9 @@ type InitiatorProcessor interface {
 	}) error
 	Initialize(ctx context.Context, start uint64, tx *ent.Tx) error
 
-	ProcessOpened(ctx context.Context, e *InitiatorOpened) (func(tx *ent.Tx) error, error)
+	ProcessOpened(ctx context.Context, e InitiatorOpened) (func(tx *ent.Tx) error, error)
 
-	ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred) (func(tx *ent.Tx) error, error)
+	ProcessOwnershipTransferred(ctx context.Context, e InitiatorOwnershipTransferred) (func(tx *ent.Tx) error, error)
 
 	mustEmbedBaseInitiatorProcessor()
 }
@@ -72,8 +72,8 @@ func (h *BaseInitiatorProcessor) ProcessElement(p interface{}) func(context.Cont
 		switch vLog.Topics[0].Hex() {
 
 		case h.ABI.Events["Opened"].ID.Hex():
-			e := new(InitiatorOpened)
-			if err := h.UnpackLog(e, "Opened", vLog); err != nil {
+			e := InitiatorOpened{}
+			if err := h.UnpackLog(&e, "Opened", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking Opened: %w", err)
 			}
 
@@ -86,8 +86,8 @@ func (h *BaseInitiatorProcessor) ProcessElement(p interface{}) func(context.Cont
 			return cb, nil
 
 		case h.ABI.Events["OwnershipTransferred"].ID.Hex():
-			e := new(InitiatorOwnershipTransferred)
-			if err := h.UnpackLog(e, "OwnershipTransferred", vLog); err != nil {
+			e := InitiatorOwnershipTransferred{}
+			if err := h.UnpackLog(&e, "OwnershipTransferred", vLog); err != nil {
 				return nil, fmt.Errorf("unpacking OwnershipTransferred: %w", err)
 			}
 
@@ -123,11 +123,11 @@ func (h *BaseInitiatorProcessor) Initialize(ctx context.Context, start uint64, t
 	return nil
 }
 
-func (h *BaseInitiatorProcessor) ProcessOpened(ctx context.Context, e *InitiatorOpened) (func(tx *ent.Tx) error, error) {
+func (h *BaseInitiatorProcessor) ProcessOpened(ctx context.Context, e InitiatorOpened) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
-func (h *BaseInitiatorProcessor) ProcessOwnershipTransferred(ctx context.Context, e *InitiatorOwnershipTransferred) (func(tx *ent.Tx) error, error) {
+func (h *BaseInitiatorProcessor) ProcessOwnershipTransferred(ctx context.Context, e InitiatorOwnershipTransferred) (func(tx *ent.Tx) error, error) {
 	return nil, nil
 }
 
