@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, ChangeEvent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { OrderDirection, SearchOrderField, useInfiniteSearchDopeQuery } from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
@@ -10,12 +10,33 @@ import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
 import { useDebounce } from 'usehooks-ts';
 
+export type FILTERS = 'All' | 'Has Unclaimed $PAPER' | 'For Sale' | 'Ready To Unpack';
+
 const MarketList = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const debouncedValue = useDebounce<string>(searchValue, 500);
   const [orderBy, setOrderBy] = useState<SearchOrderField>(SearchOrderField.Greatness);
-
+  const [filterBy, setFilterBy] = useState<FILTERS>('All');
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
+
+  const handleFilter = () => {
+    switch (filterBy) {
+      case 'All':
+        return {
+          saleActive: true,
+          opened: true,
+          claimed: true,
+        };
+      case 'For Sale':
+        return { saleActive: true };
+      case 'Has Unclaimed $PAPER':
+        return { claimed: false };
+      case 'Ready To Unpack':
+        return { opened: false };
+      default:
+        return {};
+    }
+  };
 
   const {
     data: searchResult,
@@ -32,9 +53,7 @@ const MarketList = () => {
         direction:
           orderBy === SearchOrderField.SalePrice ? OrderDirection.Asc : OrderDirection.Desc,
       },
-      where: {
-        saleActive: true,
-      },
+      where: handleFilter(),
       query: debouncedValue,
     },
     {
@@ -60,8 +79,10 @@ const MarketList = () => {
         searchValue={searchValue}
         orderBy={orderBy}
         setOrderBy={setOrderBy}
-        compactViewCallback={(toggle: boolean) => setViewCompactCards(toggle)}
+        setViewCompactCards={setViewCompactCards}
         compactSwitchOn={viewCompactCards}
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
       />
       {isLoading ? (
         <LoadingState />
@@ -102,7 +123,7 @@ const MarketList = () => {
                     key={dope.node.id}
                     dope={dope.node}
                     footer="for-marketplace"
-                    isExpanded={viewCompactCards ? false : true}
+                    isExpanded={!viewCompactCards}
                     showCollapse
                   />
                 );

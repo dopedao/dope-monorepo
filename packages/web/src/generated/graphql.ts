@@ -1073,6 +1073,9 @@ export enum SearchType {
  */
 export type SearchWhereInput = {
   and?: InputMaybe<Array<SearchWhereInput>>;
+  /** claimed field predicates */
+  claimed?: InputMaybe<Scalars['Boolean']>;
+  claimedNEQ?: InputMaybe<Scalars['Boolean']>;
   /** greatness field predicates */
   greatness?: InputMaybe<Scalars['Int']>;
   greatnessGT?: InputMaybe<Scalars['Int']>;
@@ -1112,6 +1115,9 @@ export type SearchWhereInput = {
   lastSalePriceNEQ?: InputMaybe<Scalars['BigInt']>;
   lastSalePriceNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
   not?: InputMaybe<SearchWhereInput>;
+  /** opened field predicates */
+  opened?: InputMaybe<Scalars['Boolean']>;
+  openedNEQ?: InputMaybe<Scalars['Boolean']>;
   or?: InputMaybe<Array<SearchWhereInput>>;
   /** sale_active field predicates */
   saleActive?: InputMaybe<Scalars['Boolean']>;
