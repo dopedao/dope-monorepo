@@ -44,15 +44,15 @@ const ScreenSaver = styled.div`
 
 const GangstaParty = () => {
   const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllHustlersQuery(
-    'first',
     {
       first: 100,
     },
-
     {
       getNextPageParam: lastPage => {
         if (lastPage.hustlers.pageInfo.hasNextPage) {
-          return lastPage.hustlers.pageInfo.endCursor;
+          return {
+            first: lastPage.hustlers.pageInfo.endCursor,
+          };
         }
         return false;
       },
