@@ -214,16 +214,16 @@ type Type string
 
 // Type values.
 const (
-	TypeWeapon    Type = "weapon"
-	TypeClothes   Type = "clothes"
-	TypeVehicle   Type = "vehicle"
-	TypeWaist     Type = "waist"
-	TypeFoot      Type = "foot"
-	TypeHand      Type = "hand"
-	TypeDrugs     Type = "drugs"
-	TypeNeck      Type = "neck"
-	TypeRing      Type = "ring"
-	TypeAccessory Type = "accessory"
+	TypeWEAPON    Type = "WEAPON"
+	TypeCLOTHES   Type = "CLOTHES"
+	TypeVEHICLE   Type = "VEHICLE"
+	TypeWAIST     Type = "WAIST"
+	TypeFOOT      Type = "FOOT"
+	TypeHAND      Type = "HAND"
+	TypeDRUGS     Type = "DRUGS"
+	TypeNECK      Type = "NECK"
+	TypeRING      Type = "RING"
+	TypeACCESSORY Type = "ACCESSORY"
 )
 
 func (_type Type) String() string {
@@ -233,7 +233,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeWeapon, TypeClothes, TypeVehicle, TypeWaist, TypeFoot, TypeHand, TypeDrugs, TypeNeck, TypeRing, TypeAccessory:
+	case TypeWEAPON, TypeCLOTHES, TypeVEHICLE, TypeWAIST, TypeFOOT, TypeHAND, TypeDRUGS, TypeNECK, TypeRING, TypeACCESSORY:
 		return nil
 	default:
 		return fmt.Errorf("item: invalid enum value for type field: %q", _type)
@@ -245,10 +245,10 @@ type Tier string
 
 // Tier values.
 const (
-	TierCommon      Tier = "common"
-	TierRare        Tier = "rare"
-	TierCustom      Tier = "custom"
-	TierBlackMarket Tier = "black_market"
+	TierCOMMON       Tier = "COMMON"
+	TierRARE         Tier = "RARE"
+	TierCUSTOM       Tier = "CUSTOM"
+	TierBLACK_MARKET Tier = "BLACK_MARKET"
 )
 
 func (t Tier) String() string {
@@ -258,7 +258,7 @@ func (t Tier) String() string {
 // TierValidator is a validator for the "tier" field enum values. It is called by the builders before save.
 func TierValidator(t Tier) error {
 	switch t {
-	case TierCommon, TierRare, TierCustom, TierBlackMarket:
+	case TierCOMMON, TierRARE, TierCUSTOM, TierBLACK_MARKET:
 		return nil
 	default:
 		return fmt.Errorf("item: invalid enum value for tier field: %q", t)

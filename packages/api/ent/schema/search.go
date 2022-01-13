@@ -19,7 +19,7 @@ func (Search) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.Enum("type").
-			Values("dope", "item", "hustler").
+			Values("DOPE", "ITEM", "HUSTLER").
 			Immutable(),
 		field.Int("greatness").
 			Optional().
