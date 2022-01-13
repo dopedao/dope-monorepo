@@ -82,9 +82,6 @@ export default class GameScene extends Scene {
     const ldtkReader: LdtkReader = new LdtkReader(this, this.cache.json.get('map'));
     const map = ldtkReader.CreateMap('Level_0', Object.keys(this.textures.list).filter(key => key.startsWith('tileset_')));
 
-    // collision layer
-    map.collideLayer = map.intGridLayers.find(e => e.name === 'Collisions');
-
     if (!map.collideLayer)
     {
       console.error("No collision layer found");
@@ -92,7 +89,7 @@ export default class GameScene extends Scene {
     }
 
     // enable collisions for all tiles that have index 1
-    map.collideLayer?.setCollision(1);
+    map.collideLayer.setCollision(1);
     // map.collideLayer.setDepth(100000);
 
     // set map as tilemap of collidelayer
@@ -101,9 +98,25 @@ export default class GameScene extends Scene {
     this.matter.world.convertTilemapLayer(map.collideLayer);
 
     // spawn map entities
-    map.entityLayers?.entityInstances.forEach(entity => {
-      
-    });
+    if (map.entityLayers)
+    {
+      map.entityLayers.entityInstances.forEach(entity => {
+        const pos = ldtkReader.GetTileXY(entity.__grid[0], entity.__grid[1], map.entityLayers!.__gridSize);
+        const tileset = ldtkReader.tilesets.find(t => t.uid === entity.__tile.tilesetUid);
+        if (!tileset)
+          return;
+
+        
+          let frame = this.textures.get(tileset.identifier.toLowerCase()).get(entity.__identifier);
+          if (frame.name === "__BASE")
+            frame = this.textures.get(tileset.identifier.toLowerCase())
+            .add(entity.__identifier, 0, entity.__tile.srcRect[0], entity.__tile.srcRect[1], entity.__tile.srcRect[2], entity.__tile.srcRect[3]);
+
+          const entitySprite = this.add.sprite(entity.px[0], entity.px[1], tileset.identifier.toLowerCase(), frame.name);
+          entitySprite.setDepth(40);
+      });
+    }
+    
 
     this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male));
 
@@ -111,7 +124,7 @@ export default class GameScene extends Scene {
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
     // make the camera follow the player
-    camera.setZoom(3, 3);
+    camera.setZoom(1, 1);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
     this.scene.launch('UIScene', { player: this.player });

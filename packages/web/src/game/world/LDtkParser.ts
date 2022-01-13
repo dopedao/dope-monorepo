@@ -43,6 +43,17 @@ export class LdtkReader {
             }
         });
         mappack.entityLayers = level.layerInstances.find((l:LayerInstance) => l.__type === 'Entities');
+        mappack.collideLayer = mappack.intGridLayers.find(e => e.name === 'Collisions');
+
+        // create entity textures
+        // this.ldtk.defs.entities.forEach(e => {
+        //     const tileset = this.tilesets.find(t => t.uid === e.tilesetId);
+        //     if (!tileset)
+        //         return;
+
+        //     const tilesetTexture = this.scene.textures.get(tileset.identifier.toLowerCase());
+        //     tilesetTexture.add(e.identifier, 0, tileset.)
+        // });
 
         return mappack;
     }

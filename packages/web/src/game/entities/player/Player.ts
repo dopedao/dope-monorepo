@@ -78,7 +78,7 @@ export default class Player extends Hustler
 
         let flag = false;
 
-        const onOverlap = (interactSensor: MatterJS.Body, other: MatterJS.Body) => {
+        const overlap = (interactSensor: MatterJS.Body, other: MatterJS.Body) => {
             const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType).gameObject;
             if (otherGameObject instanceof Citizen)
             {
@@ -109,14 +109,14 @@ export default class Player extends Hustler
         };
 
         // check interact sensor
-        this.scene.matter.overlap(this._interactSensor, undefined, onOverlap);
+        this.scene.matter.overlap(this._interactSensor, undefined, overlap);
         
         // prevent double interaction
         if (flag)
             return;
 
         // check hitbox
-        this.scene.matter.overlap(this.hitboxSensor, undefined, onOverlap);
+        this.scene.matter.overlap(this.hitboxSensor, undefined, overlap);
     }
 
     updateSensorPosition()
