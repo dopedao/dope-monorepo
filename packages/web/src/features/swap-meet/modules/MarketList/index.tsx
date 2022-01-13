@@ -1,6 +1,11 @@
 import { useState, ChangeEvent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { OrderDirection, SearchOrderField, SearchType, useInfiniteSearchDopeQuery } from 'generated/graphql';
+import {
+  OrderDirection,
+  SearchOrderField,
+  SearchType,
+  useInfiniteSearchDopeQuery,
+} from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
 import DopeCard from 'features/dope/components/DopeCard';
 import MarketFilterBar from 'features/swap-meet/components/MarketFilterBar';
@@ -50,18 +55,12 @@ const MarketList = () => {
       },
       where: {
         type: SearchType.Dope,
-        ...handleFilter()
+        ...handleFilter(),
       },
       query: debouncedValue,
     },
     {
-      getNextPageParam: lastPage => {
-        if (lastPage.search.pageInfo.hasNextPage) {
-          return {
-            after: lastPage.search.pageInfo.endCursor,
-          };
-        }
-      },
+      getNextPageParam: lastPage => lastPage.search.pageInfo.endCursor,
     },
   );
 
@@ -69,7 +68,7 @@ const MarketList = () => {
     setSearchValue(event.target.value);
   };
 
-  const isLoading = isSearchFetching || searchStatus === 'loading'; // || !hasUpdateDopeDbWithPaper;
+  const isLoading = searchStatus === 'loading';
 
   return (
     <>
@@ -90,23 +89,7 @@ const MarketList = () => {
       ) : (
         <Container>
           <InfiniteScroll
-            pageStart={0}
-            loadMore={() =>
-              searchFetchNextPage({
-                pageParam: {
-                  first: 25,
-                  after:
-                    searchResult?.pages[searchResult.pages.length - 1].search.pageInfo.endCursor,
-                  orderBy: {
-                    direction:
-                      orderBy === SearchOrderField.SalePrice
-                        ? OrderDirection.Asc
-                        : OrderDirection.Desc,
-                  },
-                  query: searchValue,
-                },
-              })
-            }
+            loadMore={() => searchFetchNextPage()}
             hasMore={searchHasNextPage}
             loader={<LoadingBlock key="loading-block" />}
             useWindow={false}
