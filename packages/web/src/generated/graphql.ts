@@ -1304,7 +1304,7 @@ export type HustlersWalletQueryVariables = Exact<{
 }>;
 
 
-export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean }> } | null | undefined } | null | undefined> | null | undefined } };
+export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, svg?: string | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type SearchDopeQueryVariables = Exact<{
   query: Scalars['String'];
@@ -1775,140 +1775,10 @@ export const HustlersWalletDocument = `
           title
           name
           type
-          title
           color
           background
           age
-          background
-          neck {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          sex
-          viewbox
-          order
-          ring {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          accessory {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
           svg
-          body {
-            id
-            type
-            sex
-            rle
-          }
-          beard {
-            id
-            type
-            sex
-            rle
-          }
-          drug {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          hand {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          weapon {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          clothes {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          vehicle {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          waist {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          foot {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-        }
-        items {
-          id
-          balance
-          item {
-            id
-            name
-          }
-        }
-        dopes {
-          id
-          claimed
-          opened
         }
       }
     }
