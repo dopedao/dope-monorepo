@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { OrderDirection, SearchOrderField, useInfiniteSearchDopeQuery } from 'generated/graphql';
+import { OrderDirection, SearchOrderField, SearchType, useInfiniteSearchDopeQuery } from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
 import DopeCard from 'features/dope/components/DopeCard';
 import MarketFilterBar from 'features/swap-meet/components/MarketFilterBar';
@@ -48,7 +48,10 @@ const MarketList = () => {
         direction:
           orderBy === SearchOrderField.SalePrice ? OrderDirection.Asc : OrderDirection.Desc,
       },
-      where: handleFilter(),
+      where: {
+        type: SearchType.Dope,
+        ...handleFilter()
+      },
       query: debouncedValue,
     },
     {

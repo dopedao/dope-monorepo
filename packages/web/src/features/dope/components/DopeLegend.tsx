@@ -3,17 +3,17 @@ import { Button } from '@chakra-ui/button';
 import styled from '@emotion/styled';
 
 export const DopeLegendBackgroundColors = {
-  black_market: 'rgba(255,252,63,0.5)',
-  custom: 'rgba(254,101,33,0.15)',
-  rare: 'rgba(46,130,255,0.15)',
-  common: 'rgba(18,171,23,0.0)',
+  BLACK_MARKET: 'rgba(255,252,63,0.5)',
+  CUSTOM: 'rgba(254,101,33,0.15)',
+  RARE: 'rgba(46,130,255,0.15)',
+  COMMON: 'rgba(18,171,23,0.0)',
 };
 
 const DopeLegendLabels = {
-  black_market: 'Black Market',
-  common: 'Common',
-  custom: 'Custom',
-  rare: 'Rare',
+  BLACK_MARKET: 'Black Market',
+  COMMON: 'Common',
+  CUSTOM: 'Custom',
+  RARE: 'Rare',
 };
 
 const DopeLegendContainer = styled.div`
@@ -58,7 +58,7 @@ const DopeLegend = ({ toggleVisibility }: DopeLegendProps) => {
             `}
             key={key}
           >
-            {DopeLegendLabels[key as 'black_market' | 'common' | 'custom' | 'rare']}
+            {DopeLegendLabels[key as 'BLACK_MARKET' | 'COMMON' | 'CUSTOM' | 'RARE']}
           </DopeLegendItem>
         ))}
       </div>
