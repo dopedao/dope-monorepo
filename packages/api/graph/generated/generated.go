@@ -2201,6 +2201,12 @@ input ListingOrder {
   direction: OrderDirection!
 }
 
+enum SearchType {
+  DOPE
+  ITEM
+  HUSTLER
+}
+
 enum SearchOrderField {
   GREATNESS
   SALE_PRICE
@@ -2405,12 +2411,6 @@ type Wallet implements Node {
 }
 
 union SearchResult = Dope | Item | Hustler
-
-enum SearchType {
-  DOPE
-  ITEM
-  HUSTLER
-}
 
 type Query {
   node(id: ID!): Node

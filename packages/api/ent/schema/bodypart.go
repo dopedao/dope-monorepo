@@ -17,10 +17,10 @@ func (BodyPart) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.Enum("type").
-			Values("body", "hair", "beard").
+			Values("BODY", "HAIR", "BEARD").
 			Immutable(),
 		field.Enum("sex").
-			Values("male", "female").
+			Values("MALE", "FEMALE").
 			Immutable(),
 		field.String("rle").
 			Immutable(),

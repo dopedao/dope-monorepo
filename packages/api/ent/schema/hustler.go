@@ -19,7 +19,7 @@ func (Hustler) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.Enum("type").
-			Values("original_gangsta", "regular").
+			Values("ORIGINAL_GANGSTA", "REGULAR").
 			Immutable(),
 		field.String("name").
 			Optional(),
@@ -34,8 +34,8 @@ func (Hustler) Fields() []ent.Field {
 				entgql.Type("Long"),
 			),
 		field.Enum("sex").
-			Values("male", "female").
-			Default("male"),
+			Values("MALE", "FEMALE").
+			Default("MALE"),
 		field.Ints("viewbox").
 			Default([]int{0, 0, 0, 0}),
 		field.Ints("order").

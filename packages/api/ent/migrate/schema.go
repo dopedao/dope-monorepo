@@ -41,8 +41,8 @@ var (
 	// BodyPartsColumns holds the columns for the "body_parts" table.
 	BodyPartsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"body", "hair", "beard"}},
-		{Name: "sex", Type: field.TypeEnum, Enums: []string{"male", "female"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"BODY", "HAIR", "BEARD"}},
+		{Name: "sex", Type: field.TypeEnum, Enums: []string{"MALE", "FEMALE"}},
 		{Name: "rle", Type: field.TypeString},
 	}
 	// BodyPartsTable holds the schema information for the "body_parts" table.
@@ -107,13 +107,13 @@ var (
 	// HustlersColumns holds the columns for the "hustlers" table.
 	HustlersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"original_gangsta", "regular"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"ORIGINAL_GANGSTA", "REGULAR"}},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "title", Type: field.TypeString, Nullable: true},
 		{Name: "color", Type: field.TypeString, Nullable: true},
 		{Name: "background", Type: field.TypeString, Nullable: true},
 		{Name: "age", Type: field.TypeUint64},
-		{Name: "sex", Type: field.TypeEnum, Enums: []string{"male", "female"}, Default: "male"},
+		{Name: "sex", Type: field.TypeEnum, Enums: []string{"MALE", "FEMALE"}, Default: "MALE"},
 		{Name: "viewbox", Type: field.TypeJSON},
 		{Name: "order", Type: field.TypeJSON},
 		{Name: "svg", Type: field.TypeString, Nullable: true},
@@ -228,14 +228,14 @@ var (
 	// ItemsColumns holds the columns for the "items" table.
 	ItemsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"weapon", "clothes", "vehicle", "waist", "foot", "hand", "drugs", "neck", "ring", "accessory"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"WEAPON", "CLOTHES", "VEHICLE", "WAIST", "FOOT", "HAND", "DRUGS", "NECK", "RING", "ACCESSORY"}},
 		{Name: "name_prefix", Type: field.TypeString, Nullable: true},
 		{Name: "name_suffix", Type: field.TypeString, Nullable: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "suffix", Type: field.TypeString, Nullable: true},
 		{Name: "augmented", Type: field.TypeBool, Nullable: true},
 		{Name: "count", Type: field.TypeInt, Nullable: true},
-		{Name: "tier", Type: field.TypeEnum, Nullable: true, Enums: []string{"common", "rare", "custom", "black_market"}},
+		{Name: "tier", Type: field.TypeEnum, Nullable: true, Enums: []string{"COMMON", "RARE", "CUSTOM", "BLACK_MARKET"}},
 		{Name: "greatness", Type: field.TypeInt, Nullable: true},
 		{Name: "rles", Type: field.TypeJSON, Nullable: true},
 		{Name: "svg", Type: field.TypeString, Nullable: true},
@@ -279,7 +279,7 @@ var (
 	// SearchIndexColumns holds the columns for the "search_index" table.
 	SearchIndexColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"dope", "item", "hustler"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"DOPE", "ITEM", "HUSTLER"}},
 		{Name: "greatness", Type: field.TypeInt, Nullable: true},
 		{Name: "claimed", Type: field.TypeBool},
 		{Name: "opened", Type: field.TypeBool},

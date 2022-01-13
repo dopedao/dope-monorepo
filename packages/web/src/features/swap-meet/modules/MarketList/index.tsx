@@ -22,11 +22,7 @@ const MarketList = () => {
   const handleFilter = () => {
     switch (filterBy) {
       case 'All':
-        return {
-          saleActive: true,
-          opened: true,
-          claimed: true,
-        };
+        return {};
       case 'For Sale':
         return { saleActive: true };
       case 'Has Unclaimed $PAPER':
@@ -59,8 +55,8 @@ const MarketList = () => {
       getNextPageParam: lastPage => {
         if (lastPage.search.pageInfo.hasNextPage) {
           return {
-            after: lastPage.search.pageInfo.endCursor
-          }
+            after: lastPage.search.pageInfo.endCursor,
+          };
         }
       },
     },
