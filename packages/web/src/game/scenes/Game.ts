@@ -100,20 +100,22 @@ export default class GameScene extends Scene {
     // spawn map entities
     if (map.entityLayers)
     {
-      map.entityLayers.entityInstances.forEach(entity => {
+      map.entityLayers.entityInstances.forEach((entity, i) => {
         const pos = ldtkReader.GetTileXY(entity.__grid[0], entity.__grid[1], map.entityLayers!.__gridSize);
         const tileset = ldtkReader.tilesets.find(t => t.uid === entity.__tile.tilesetUid);
         if (!tileset)
           return;
+          
+        let frame = this.textures.get(tileset.identifier.toLowerCase())
+          .add(entity.__identifier + " - " + i, 0, entity.__tile.srcRect[0], entity.__tile.srcRect[1], entity.__tile.srcRect[2], entity.__tile.srcRect[3]);
 
-        
-          let frame = this.textures.get(tileset.identifier.toLowerCase()).get(entity.__identifier);
-          if (frame.name === "__BASE")
-            frame = this.textures.get(tileset.identifier.toLowerCase())
-            .add(entity.__identifier, 0, entity.__tile.srcRect[0], entity.__tile.srcRect[1], entity.__tile.srcRect[2], entity.__tile.srcRect[3]);
+        const pivotOffset = new Phaser.Math.Vector2(
+          Math.abs(entity.__pivot[0] - 0.5) * entity.width, 
+          Math.abs(entity.__pivot[1] - 0.5) * entity.height
+        );
 
-          const entitySprite = this.add.sprite(entity.px[0], entity.px[1], tileset.identifier.toLowerCase(), frame.name);
-          entitySprite.setDepth(40);
+        const entitySprite = this.add.sprite(entity.px[0] + pivotOffset.x, entity.px[1] + pivotOffset.y, tileset.identifier.toLowerCase(), frame.name);
+        entitySprite.setDepth((ldtkReader.ldtk.levels.find(l => l.uid === map.entityLayers!.levelId)!.layerInstances.length - ldtkReader.ldtk.levels.find(l => l.uid === map.entityLayers!.levelId)!.layerInstances.indexOf(map.entityLayers!)) * 5);
       });
     }
     
