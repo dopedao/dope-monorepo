@@ -39,7 +39,7 @@ export default class Player extends Hustler
         this._questManager = new QuestManager(this, quests);
 
         // create interact sensor
-        this._interactSensor = this.scene.matter.add.rectangle(x + 40, y - 40, 40, this.height, {
+        this._interactSensor = this.scene.matter.add.rectangle(x + this.displayWidth, y - this.displayHeight / 4, this.displayWidth, this.displayHeight / 2, {
             isSensor: true,
         });
 
@@ -126,19 +126,19 @@ export default class Player extends Hustler
         {
             if (this.lastDirection === Direction.South)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y + 75 });
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y + this.displayHeight / 1.5 });
             }
             else if (this.lastDirection === Direction.North)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y - 85});
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y - this.displayHeight / 1.2 });
             }
             else if (this.lastDirection === Direction.West)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x - 40, y: this.y - 40 });
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x - this.displayWidth, y: this.y - this.displayHeight / 4 });
             }
             else if (this.lastDirection === Direction.East)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x + 40, y: this.y - 40 });
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x + this.displayWidth, y: this.y - this.displayHeight / 4 });
             }
         }
     }

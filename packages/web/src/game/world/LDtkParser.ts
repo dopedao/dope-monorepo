@@ -101,7 +101,7 @@ export class LdtkReader {
                 return;
 
             const newLayer = map.createBlankLayer(`${layer.__identifier} - ${i}`, map.tilesets, 0,0)
-                .setDepth(l.depth + (i + 1))
+                .setDepth(l.depth)
                 .setVisible(true);
             
             tiles.forEach(t => {
