@@ -10,16 +10,15 @@ import {
 } from '@chakra-ui/react';
 import { MAX_HAIR, MAX_FACIAL_HAIR } from 'utils/HustlerConfig';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
-import Accordion from 'ui/components/Accordion';
 
 const HairSelector = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
   const isMale = config.sex == 'male';
 
   return (
-    <Accordion title="Other">
+    <div>
       <Flex gridGap={4}>
-        <Box width={isMale ? '50%' : '100%'}>
-          <FormLabel htmlFor="hair" color="blackAlpha.900">
+        <Box width={isMale ? '50%' : '100%'} borderBottom="1px solid #EFEFEF" paddingBottom="16px">
+          <FormLabel htmlFor="hair" color="blackAlpha.900" fontSize="14px">
             Hair
           </FormLabel>
           <NumberInput
@@ -40,8 +39,8 @@ const HairSelector = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
         </Box>
         {/* Only render Facial Hair for Males  */}
         {isMale && (
-          <Box width="50%">
-            <FormLabel htmlFor="facial_hair" color="blackAlpha.900">
+          <Box width="50%" borderBottom="1px solid #EFEFEF" paddingBottom="16px">
+            <FormLabel htmlFor="facial_hair" color="blackAlpha.900" fontSize="14px">
               Facial Hair
             </FormLabel>
             <NumberInput
@@ -62,7 +61,7 @@ const HairSelector = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
           </Box>
         )}
       </Flex>
-    </Accordion>
+    </div>
   );
 };
 

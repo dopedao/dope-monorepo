@@ -1,13 +1,6 @@
-import { useMemo, useState } from 'react';
-import { Button, HStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { useRouter } from 'next/router';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Hustler__factory } from '@dopewars/contracts';
-import { HustlerCustomization, randomizeHustlerAttributes } from 'utils/HustlerConfig';
-import { NETWORK } from 'utils/constants';
-import { useOptimism } from 'hooks/web3';
+import { HustlerCustomization } from 'utils/HustlerConfig';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
@@ -23,6 +16,7 @@ export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   ogTitle?: string;
   itemIds?: BigNumber[];
   goBackToInitialStep?: () => void;
+  isCustomize?: boolean;
 };
 
 const ConfigureHustler = ({
@@ -32,106 +26,9 @@ const ConfigureHustler = ({
   ogTitle,
   itemIds,
   goBackToInitialStep,
-}: ConfigureHustlerProps & { isCustomize?: boolean }) => {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const { chainId } = useOptimism();
-  const { library, chainId: web3ReactChainId } = useWeb3React();
-
-  const hustlers = useMemo(
-    () =>
-      chainId
-        ? Hustler__factory.connect(NETWORK[chainId].contracts.hustlers, library.getSigner())
-        : null,
-    [chainId, library],
-  );
-
-  const customizeHustler = async () => {
-    setLoading(true);
-    if (web3ReactChainId && web3ReactChainId !== chainId) {
-      setLoading(false);
-      return alert('You must be on the Optimistic network to customize your Hustler.');
-    }
-    const {
-      dopeId,
-      body,
-      bgColor,
-      facialHair,
-      hair,
-      name,
-      renderName,
-      sex,
-      textColor,
-      zoomWindow,
-    } = config;
-
-    const setname = name ? name : '';
-    const color = '0x' + textColor.slice(1) + 'ff';
-    const background = '0x' + bgColor.slice(1) + 'ff';
-    const bodyParts: [BigNumber, BigNumber, BigNumber, BigNumber] = [
-      sex == 'male' ? BigNumber.from(0) : BigNumber.from(1),
-      BigNumber.from(body),
-      BigNumber.from(hair),
-      sex == 'male' ? BigNumber.from(facialHair) : BigNumber.from(0),
-    ];
-
-    let bitoptions = 0;
-
-    if (renderName) {
-      // title
-      bitoptions += 10;
-      // name
-      bitoptions += 100;
-    }
-
-    const options =
-      '0x' +
-      parseInt('' + bitoptions, 2)
-        .toString(16)
-        .padStart(4, '0');
-
-    let bitmask = 11110110;
-    if (setname.length > 0) {
-      bitmask += 1;
-    }
-
-    if (zoomWindow[0].gt(0) || zoomWindow[0].gt(1) || zoomWindow[0].gt(2) || zoomWindow[0].gt(3)) {
-      bitmask += 1000;
-    }
-
-    const mask =
-      '0x' +
-      parseInt('' + bitmask, 2)
-        .toString(16)
-        .padStart(4, '0');
-
-    if (hustlers) {
-      try {
-        const transaction = await hustlers.setMetadata(BigNumber.from(dopeId), {
-          name: setname,
-          color,
-          background,
-          options,
-          viewbox: zoomWindow,
-          body: bodyParts,
-          mask,
-          order: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        });
-        await transaction.wait();
-        setLoading(false);
-        router.push({
-          pathname: '/hustlers',
-          search: `?c=true`,
-        });
-      } catch (error) {
-        setLoading(false);
-      }
-    }
-  };
-
+}: ConfigureHustlerProps) => {
   return (
     <StackedResponsiveContainer>
-      <ConfigurationControls config={config} setHustlerConfig={setHustlerConfig} />
       <PanelContainer
         css={css`
           min-height: 500px;
@@ -184,34 +81,14 @@ const ConfigureHustler = ({
           `}
         >
           <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
-          <HStack mt={0} justify="end">
-            <Button onClick={() => randomizeHustlerAttributes(config.dopeId, setHustlerConfig)}>
-              Randomize
-            </Button>
-            {isCustomize ? (
-              <Button
-                type="button"
-                variant="primary"
-                onClick={customizeHustler}
-                isLoading={loading}
-                loadingText="Processing..."
-              >
-                Save Configuration
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                onClick={goBackToInitialStep}
-                variant="primary"
-                isLoading={loading}
-                loadingText="Processing..."
-              >
-                Finish Configuration
-              </Button>
-            )}
-          </HStack>
         </PanelFooter>
       </PanelContainer>
+      <ConfigurationControls
+        config={config}
+        setHustlerConfig={setHustlerConfig}
+        goBackToInitialStep={goBackToInitialStep}
+        isCustomize={isCustomize}
+      />
     </StackedResponsiveContainer>
   );
 };
