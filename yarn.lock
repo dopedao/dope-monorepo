@@ -2617,7 +2617,7 @@ __metadata:
     "@graphql-codegen/schema-ast": ^2.4.0
     "@graphql-codegen/typescript": ^2.2.2
     "@graphql-codegen/typescript-operations": ^2.1.4
-    "@graphql-codegen/typescript-react-query": ^3.3.0
+    "@graphql-codegen/typescript-react-query": ^3.3.1
     "@ion-phaser/react": ^1.3.0
     "@mdx-js/react": ^1.6.22
     "@sentry/react": ^6.13.2
@@ -4152,9 +4152,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/typescript-react-query@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "@graphql-codegen/typescript-react-query@npm:3.3.0"
+"@graphql-codegen/typescript-react-query@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "@graphql-codegen/typescript-react-query@npm:3.3.1"
   dependencies:
     "@graphql-codegen/plugin-helpers": ^2.3.2
     "@graphql-codegen/visitor-plugin-common": 2.5.2
@@ -4163,7 +4163,7 @@ __metadata:
     tslib: ~2.3.0
   peerDependencies:
     graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: cfe15be7a6a1fc68306f45182fd59ed31ddc35f2f805dc015fac34fd2ed9fea65cbee4646846a0c97687c077c3e28358511b22cc27375e3a971a9f0ebc1a3034
+  checksum: 12c21621d2d7105ccb7b367a97a0b17161d94c7854380a5aa16b884ca2db7e3d613a543dbd1639183bb21f2fa1df9205bd06bd0437269de4de47dd69dfd52f13
   languageName: node
   linkType: hard
 
