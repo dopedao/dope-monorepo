@@ -41,7 +41,6 @@ const MarketList = () => {
 
   const {
     data: searchResult,
-    isFetching: isSearchFetching,
     fetchNextPage: searchFetchNextPage,
     hasNextPage: searchHasNextPage,
     status: searchStatus,
@@ -60,7 +59,9 @@ const MarketList = () => {
       query: debouncedValue,
     },
     {
-      getNextPageParam: lastPage => lastPage.search.pageInfo.endCursor,
+      getNextPageParam: lastPage => ({
+        after: lastPage.search.pageInfo.endCursor,
+      }),
     },
   );
 
