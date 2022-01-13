@@ -126,7 +126,7 @@ export default class GameScene extends Scene {
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
     // make the camera follow the player
-    camera.setZoom(1, 1);
+    camera.setZoom(3, 3);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
     this.scene.launch('UIScene', { player: this.player });

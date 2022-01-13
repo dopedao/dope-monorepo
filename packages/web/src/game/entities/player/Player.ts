@@ -153,9 +153,9 @@ export default class Player extends Hustler
             other = other.parent;
         
         if ((other.position.y - playerHitbox.position.y) < 0)
-            playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 10);
+            playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 20);
         else
-            playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 10);
+            playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 20);
     }
 
     private _handleEvents()

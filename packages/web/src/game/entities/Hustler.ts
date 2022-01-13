@@ -84,7 +84,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         
         this.setPosition(x, y);
         
-        this.setDepth(40);
+        this.setDepth(30);
 
         // offset the hustler texture from the body
         this.setOrigin(0.5, 0.52);
