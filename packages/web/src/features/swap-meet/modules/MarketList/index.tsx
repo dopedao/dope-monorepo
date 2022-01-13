@@ -45,7 +45,6 @@ const MarketList = () => {
     hasNextPage: searchHasNextPage,
     status: searchStatus,
   } = useInfiniteSearchDopeQuery(
-    'first',
     {
       first: 25,
       orderBy: {
@@ -59,9 +58,10 @@ const MarketList = () => {
     {
       getNextPageParam: lastPage => {
         if (lastPage.search.pageInfo.hasNextPage) {
-          return lastPage.search.pageInfo.endCursor;
+          return {
+            after: lastPage.search.pageInfo.endCursor
+          }
         }
-        return false;
       },
     },
   );

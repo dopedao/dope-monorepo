@@ -51,7 +51,7 @@
     "react-countdown": "^2.3.2",
     "react-dom": "^17.0.2",
     "react-hot-toast": "^2.1.1",
-    "react-query": "^3.34.4",
+    "react-query": "latest",
     "react-table": "^7.7.0",
     "remark": "^14.0.2",
     "remark-html": "^15.0.1"
@@ -66,7 +66,7 @@
     "@graphql-codegen/schema-ast": "^2.4.0",
     "@graphql-codegen/typescript": "^2.2.2",
     "@graphql-codegen/typescript-operations": "^2.1.4",
-    "@graphql-codegen/typescript-react-query": "^3.2.2",
+    "@graphql-codegen/typescript-react-query": "^3.3.1",
     "@mdx-js/react": "^1.6.22",
     "@sentry/react": "^6.13.2",
     "@sentry/tracing": "^6.13.2",
