@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { Button, HStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
-import { ReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Hustler__factory } from '@dopewars/contracts';
@@ -17,10 +16,10 @@ import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
 import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
+import { StepsProps } from 'features/hustlers/modules/Steps';
 
-export type ConfigureHustlerProps = {
+export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   config: HustlerCustomization;
-  makeVarConfig?: ReactiveVar<HustlerCustomization>;
   ogTitle?: string;
   itemIds?: BigNumber[];
   goBackToInitialStep?: () => void;
@@ -28,7 +27,7 @@ export type ConfigureHustlerProps = {
 
 const ConfigureHustler = ({
   config,
-  makeVarConfig,
+  setHustlerConfig,
   isCustomize,
   ogTitle,
   itemIds,
@@ -132,7 +131,7 @@ const ConfigureHustler = ({
 
   return (
     <StackedResponsiveContainer>
-      <ConfigurationControls config={config} makeVarConfig={makeVarConfig} />
+      <ConfigurationControls config={config} setHustlerConfig={setHustlerConfig} />
       <PanelContainer
         css={css`
           min-height: 500px;
@@ -184,9 +183,9 @@ const ConfigureHustler = ({
             }
           `}
         >
-          <ZoomControls config={config} makeVarConfig={makeVarConfig} />
+          <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
           <HStack mt={0} justify="end">
-            <Button onClick={() => randomizeHustlerAttributes(config.dopeId, makeVarConfig)}>
+            <Button onClick={() => randomizeHustlerAttributes(config.dopeId, setHustlerConfig)}>
               Randomize
             </Button>
             {isCustomize ? (

@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import { CloseButton } from '@chakra-ui/close-button';
 import { media } from 'ui/styles/mixins';
 import { useHustlersWalletQuery, useWalletQuery } from 'generated/graphql';
-import { useOptimismClient } from 'components/EthereumApolloProvider';
 import AppWindow from 'components/AppWindow';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
@@ -66,16 +65,28 @@ const Hustlers = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(true);
   const router = useRouter();
   const { account } = useWeb3React();
-  const client = useOptimismClient();
-  const { data, loading } = useHustlersWalletQuery({
-    client,
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
-  const { loading: walletLoading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
+
+  const { data, isFetching: loading } = useHustlersWalletQuery(
+    {
+      where: {
+        id: account,
+      },
+    },
+    {
+      enabled: !!account,
+    },
+  );
+
+  const { isFetching: walletLoading } = useWalletQuery(
+    {
+      where: {
+        id: account,
+      },
+    },
+    {
+      enabled: !!account,
+    },
+  );
 
   const handleSuccessAlert = () => {
     setShowSuccessAlert(false);
@@ -116,19 +127,23 @@ const Hustlers = () => {
       )}
       {loading || walletLoading ? (
         ContentLoading
-      ) : !data?.wallet?.hustlers || data?.wallet?.hustlers.length === 0 ? (
+      ) : !data?.wallets.edges![0]?.node?.hustlers ? (
         ContentEmpty
       ) : (
         <Container>
           <div className="hustlerGrid">
-            {data.wallet.hustlers.map(({ id, data }) => {
-              let meta = data.replace('data:application/json;base64,', '');
-              meta = Buffer.from(meta, 'base64').toString();
-              const decoded = JSON.parse(meta);
+            {data.wallets.edges[0].node.hustlers.map(({ id, svg, name }) => {
+              if (!svg) return null;
               return (
                 <Link key={id} href={`/hustlers/${id}/customize`}>
                   <a>
-                    <RenderFromChain data={decoded} id={id} />
+                    <RenderFromChain
+                      data={{
+                        image: svg,
+                        name,
+                      }}
+                      id={id}
+                    />
                   </a>
                 </Link>
               );

@@ -1,0 +1,68 @@
+query Dopes(
+  $after: Cursor
+  $first: Int
+  $before: Cursor
+  $last: Int
+  $orderBy: DopeOrder
+  $where: DopeWhereInput
+) {
+  dopes(
+    after: $after
+    first: $first
+    before: $before
+    last: $last
+    orderBy: $orderBy
+    where: $where
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        claimed
+        opened
+        score
+        rank
+        lastSale {
+          inputs {
+            amount
+            id
+            type
+          }
+        }
+        listings {
+          id
+          outputs {
+            id
+            type
+            amount
+            token {
+              ... on Dope {
+                id
+              }
+            }
+          }
+        }
+        items {
+          id
+          fullname
+          type
+          name
+          namePrefix
+          nameSuffix
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+      }
+    }
+  }
+}

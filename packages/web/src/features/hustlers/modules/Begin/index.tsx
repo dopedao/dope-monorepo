@@ -5,7 +5,7 @@ import InitiationInfo from 'components/hustler/InitiationInfo';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import InitiationFooterDopeContent from 'components/hustler/InitiationFooterDopeContent';
 
-const Begin = ({ hustlerConfig, makeVarConfig }: StepsProps) => (
+const Begin = ({ hustlerConfig, setHustlerConfig }: StepsProps) => (
   <>
     <Head title="Initiate Your Hustler" />
     <StackedResponsiveContainer>
@@ -15,7 +15,7 @@ const Begin = ({ hustlerConfig, makeVarConfig }: StepsProps) => (
         footer={
           <InitiationFooterDopeContent
             hustlerConfig={hustlerConfig}
-            makeVarConfig={makeVarConfig}
+            setHustlerConfig={setHustlerConfig}
           />
         }
       />

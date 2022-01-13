@@ -12,7 +12,7 @@ const HustlerWrapper = styled.div`
 
 type Metadata = {
   image: string;
-  name?: string;
+  name?: string | null | undefined;
   description?: string;
   attributes?: {
     trait_type: string;
@@ -69,7 +69,7 @@ const RenderFromChain = ({ data, id }: HustlerItemProps) => (
               max-height: 100%;
             `}
             src={data.image}
-            alt={data.name}
+            alt={data.name || ''}
           />
         </div>
       </div>

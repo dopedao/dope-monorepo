@@ -3,11 +3,14 @@ import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { Hydrate } from 'react-query/hydration';
+
 import DesktopIconList from 'components/DesktopIconList';
 import GlobalStyles from 'ui/styles/GlobalStyles';
 import PageLoadingIndicator from 'components/PageLoadingIndicator';
 import theme from 'ui/styles/theme';
-import EthereumApolloProvider from 'components/EthereumApolloProvider';
 
 // Error tracking and tracing from Sentry.io
 import * as Sentry from '@sentry/react';
@@ -28,20 +31,32 @@ function getLibrary(provider: any): Web3Provider {
   return library;
 }
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // ✅ globally default to 20 seconds
+      staleTime: 1000 * 20,
+    },
+  },
+});
+
 export default function CreateDopeApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <GlobalStyles />
       <ChakraProvider theme={theme}>
-        <Web3ReactProvider getLibrary={getLibrary}>
-          <EthereumApolloProvider>
-            <main>
-              <PageLoadingIndicator />
-              <DesktopIconList />
-              <Component {...pageProps} />
-            </main>
-          </EthereumApolloProvider>
-        </Web3ReactProvider>
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <Web3ReactProvider getLibrary={getLibrary}>
+              <main>
+                <PageLoadingIndicator />
+                <DesktopIconList />
+                <Component {...pageProps} />
+              </main>
+            </Web3ReactProvider>
+            {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
+          </Hydrate>
+        </QueryClientProvider>
       </ChakraProvider>
     </>
   );

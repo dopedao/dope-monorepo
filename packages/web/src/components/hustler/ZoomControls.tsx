@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HustlerInitConfig, ZoomWindow, ZOOM_WINDOWS } from 'utils/HustlerConfig';
+import { ZoomWindow, ZOOM_WINDOWS } from 'utils/HustlerConfig';
 import { Button } from '@chakra-ui/button';
 import { Image } from '@chakra-ui/image';
 import styled from '@emotion/styled';
@@ -18,7 +18,7 @@ const indexFromZoomValue = (zoomValue: ZoomWindow) => {
   return index;
 };
 
-const ZoomControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
+const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
   const [currentIndex, setCurrentIndex] = useState(
     indexFromZoomValue(config.zoomWindow ?? [0, 0, 0, 0]),
   );
@@ -29,27 +29,25 @@ const ZoomControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
     let newIndex = currentIndex - 1;
     if (minIndex > newIndex) newIndex = maxIndex;
     setCurrentIndex(newIndex);
-    setHustlerConfig();
+    handleSetHustlerConfig();
   };
 
   const incrementZoomWindowIndex = () => {
     let newIndex = currentIndex + 1;
     if (maxIndex < newIndex) newIndex = minIndex;
     setCurrentIndex(newIndex);
-    setHustlerConfig();
+    handleSetHustlerConfig();
   };
 
-  const setHustlerConfig = () => {
+  const handleSetHustlerConfig = () => {
     let renderName = config.renderName;
     // for mugshots doesn't make sense to render name, because it gets cut off.
     if (currentIndex == 1) renderName = false;
-    makeVarConfig
-      ? makeVarConfig({ ...config, zoomWindow: ZOOM_WINDOWS[currentIndex], renderName: renderName })
-      : HustlerInitConfig({
-          ...config,
-          zoomWindow: ZOOM_WINDOWS[currentIndex],
-          renderName: renderName,
-        });
+    setHustlerConfig({
+      ...config,
+      zoomWindow: ZOOM_WINDOWS[currentIndex],
+      renderName: renderName,
+    });
   };
 
   return (

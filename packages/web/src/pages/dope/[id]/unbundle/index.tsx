@@ -13,7 +13,7 @@ import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ApprovePaper from 'components/panels/ApprovePaper';
 import MintTo from 'components/panels/MintTo';
-import RenderDope from 'components/dope/RenderDope';
+import RenderDope from 'features/dope/components/RenderDope';
 import AppWindow from 'components/AppWindow';
 
 const Approve = () => {
