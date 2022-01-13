@@ -95,7 +95,7 @@ func (e *Ethereum) Sync(ctx context.Context) {
 
 			e.Lock()
 			e.latest = latest
-
+			numUpdates := 0
 			for _, c := range e.contracts {
 				_from := c.StartBlock
 				for {
@@ -173,6 +173,8 @@ func (e *Ethereum) Sync(ctx context.Context) {
 							return fmt.Errorf("updating sync state: %w", err)
 						}
 
+						numUpdates += len(committers)
+
 						return nil
 					}); err != nil {
 						log.Fatal().Err(err).Msg("Syncing contract.")
@@ -185,6 +187,13 @@ func (e *Ethereum) Sync(ctx context.Context) {
 				}
 			}
 			e.Unlock()
+
+			if numUpdates > 0 {
+				if err := e.ent.RefreshSearchIndex(ctx); err != nil {
+					log.Err(err).Msgf("Refreshing search index.")
+				}
+			}
+			numUpdates = 0
 
 		case <-ctx.Done():
 			return
