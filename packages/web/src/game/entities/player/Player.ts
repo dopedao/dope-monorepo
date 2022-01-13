@@ -50,7 +50,9 @@ export default class Player extends Hustler
         this._baseDepth = this.depth;
 
         this.hitboxSensor.onCollideActiveCallback = this.updateDepth;
-        this.hitboxSensor.onCollideEndCallback = () => this.setDepth(this._baseDepth);
+        // setTimeout prevents depth changing too fast
+        // and causing player render stutter
+        this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => this.setDepth(this._baseDepth));
     }
 
     toggleInventory()
