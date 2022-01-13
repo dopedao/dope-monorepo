@@ -230,6 +230,10 @@ func (o *Opensea) Sync(ctx context.Context) {
 			log.Info().Msgf("Syncing opensea: finished total assets: %d, current offset: %d", assetsCompleted, offset)
 		}
 
+		if err := o.ent.RefreshSearchIndex(ctx); err != nil {
+			log.Err(err).Msgf("Refreshing search index.")
+		}
+
 		select {
 		case <-o.ticker.C:
 			continue
