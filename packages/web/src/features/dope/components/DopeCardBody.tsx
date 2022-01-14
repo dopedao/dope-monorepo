@@ -43,7 +43,6 @@ const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
             }
           })
           .map(({ id, fullname, type, tier }) => {
-            console.log(type);
             return (
               // @ts-ignore
               <Row
