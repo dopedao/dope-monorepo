@@ -19,19 +19,20 @@ import ItemEntity from 'game/entities/ItemEntity';
 import ItemQuest from 'game/quests/ItemQuest';
 import BringItemQuest from 'game/quests/BringItemQuest';
 import { LdtkReader } from '../world/LDtkParser';
+import MapHelper from 'game/world/MapHelper';
 
 export default class GameScene extends Scene {
   private player!: Player;
   private citizens: Citizen[] = new Array();
 
-  private _map!: Phaser.Tilemaps.Tilemap;
+  private _mapHelper!: MapHelper;
 
   public canUseMouse: boolean = true;
   public rexUI!: RexUIPlugin;
 
   private accumulator: number = 0;
 
-  get map() { return this._map; }
+  get mapHelper() { return this._mapHelper; }
 
   constructor() {
     super({
@@ -67,7 +68,7 @@ export default class GameScene extends Scene {
         const citizenToTalkTo = this.citizens.find(citizen => citizen.shouldFollowPath && citizen.getBounds().contains(pointer.worldX, pointer.worldY));
 
         this.player.navigator.moveTo(
-          this.map.worldToTileX(pointer.worldX), this.map.worldToTileY(pointer.worldY), 
+          this._mapHelper.map.displayLayers[0].tilemap.worldToTileX(pointer.worldX), this.mapHelper.map.displayLayers[0].tilemap.worldToTileY(pointer.worldY), 
           () => {
             if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
             {
@@ -78,52 +79,15 @@ export default class GameScene extends Scene {
       });
     });
 
-    // create the map
-    const ldtkReader: LdtkReader = new LdtkReader(this, this.cache.json.get('map'));
-    const map = ldtkReader.CreateMap('Level_0', Object.keys(this.textures.list).filter(key => key.startsWith('tileset_')));
-
-    if (!map.collideLayer)
-    {
-      console.error("No collision layer found");
-      return;
-    }
-
-    // enable collisions for all tiles that have index 1
-    map.collideLayer.setCollision(1);
-    // map.collideLayer.setDepth(100000);
-
-    // set map as tilemap of collidelayer
-    this._map = map.collideLayer.tilemap;
-    // matterjs collisions
-    this.matter.world.convertTilemapLayer(map.collideLayer);
-
-    // spawn map entities
-    if (map.entityLayers)
-    {
-      map.entityLayers.entityInstances.forEach((entity, i) => {
-        const pos = ldtkReader.GetTileXY(entity.__grid[0], entity.__grid[1], map.entityLayers!.__gridSize);
-        const tileset = ldtkReader.tilesets.find(t => t.uid === entity.__tile.tilesetUid);
-        if (!tileset)
-          return;
-          
-        let frame = this.textures.get(tileset.identifier.toLowerCase())
-          .add(entity.__identifier + " - " + i, 0, entity.__tile.srcRect[0], entity.__tile.srcRect[1], entity.__tile.srcRect[2], entity.__tile.srcRect[3]);
-
-        const pivotOffset = new Phaser.Math.Vector2(
-          Math.abs(entity.__pivot[0] - 0.5) * entity.width, 
-          Math.abs(entity.__pivot[1] - 0.5) * entity.height
-        );
-
-        const entitySprite = this.add.sprite(entity.px[0] + pivotOffset.x, entity.px[1] + pivotOffset.y, tileset.identifier.toLowerCase(), frame.name);
-        entitySprite.setDepth((ldtkReader.ldtk.levels.find(l => l.uid === map.entityLayers!.levelId)!.layerInstances.length - ldtkReader.ldtk.levels.find(l => l.uid === map.entityLayers!.levelId)!.layerInstances.indexOf(map.entityLayers!)) * 5);
-      });
-    }
     
+    this._mapHelper = new MapHelper(this);
+    this.mapHelper.createMap('Level_0');
+    this.mapHelper.createEntities();
 
     this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male));
 
     const camera = this.cameras.main;
-    camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+    camera.setBounds(0, 0, this.mapHelper.map.displayLayers[0].tilemap.widthInPixels, this.mapHelper.map.displayLayers[0].tilemap.heightInPixels);
 
     // make the camera follow the player
     camera.setZoom(3, 3);

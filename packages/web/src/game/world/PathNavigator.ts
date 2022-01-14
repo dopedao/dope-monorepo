@@ -25,23 +25,25 @@ export default class PathNavigator
 
     moveTo(x: number, y: number, onMoved?: () => void)
     {
+        // the game scene used map
+        const map = (this.hustler.scene as GameScene).mapHelper.map;
+        if (!map.collideLayer)
+        {
+            console.warn("No collide layer found");
+            return;
+        }
+
         // use the collider pos instead of the whole body pos to avoid
         // the player being stuck due to the collider's offset
         const hustlerBodyPos = (this.hustler.body as MatterJS.BodyType).parts[1].position;
 
         this.onMoved = onMoved;
 
-        // the game scene used map
-        const map = (this.hustler.scene as GameScene).map;
-
         // hustler world position to tile position
-        const hustlerTile = map.worldToTileXY(hustlerBodyPos.x, hustlerBodyPos.y);
+        const hustlerTile = map.collideLayer.worldToTileXY(hustlerBodyPos.x, hustlerBodyPos.y);
 
         // convert grid of tiles into PF grid
-        this.grid = new PF.Grid(
-            map.layers[0].data
-            .map(
-                tileArr => tileArr.map(tile => tile.collides ? 1 : 0)))
+        this.grid = new PF.Grid(map.collideLayer.layer.data.map(row => row.map(tile => tile.collides ? 1 : 0)));
 
         // find path, smoothen it and map it to Vec2s
         this.path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, x, y, this.grid).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
@@ -49,7 +51,7 @@ export default class PathNavigator
         const targetTilePos = this.path.shift();
         if (targetTilePos)
         {
-            const targetTile = map.getTileAt(targetTilePos.x, targetTilePos.y, true);
+            const targetTile = map.collideLayer.getTileAt(targetTilePos.x, targetTilePos.y, true);
             this.target = new Phaser.Math.Vector2(targetTile.getCenterX(), targetTile.getCenterY());
         }
     }
@@ -97,7 +99,7 @@ export default class PathNavigator
 	    		if (this.path.length > 0)
 	    		{
                     const targetTilePos = this.path.shift()!;
-                    const targetTile = (this.hustler.scene as GameScene).map.getTileAt(targetTilePos.x, targetTilePos.y, true);
+                    const targetTile = (this.hustler.scene as GameScene).mapHelper.map.collideLayer!.getTileAt(targetTilePos.x, targetTilePos.y, true);
 	    			this.target = new Phaser.Math.Vector2(targetTile.getCenterX(), targetTile.getCenterY());
 	    			return;
 	    		}

@@ -1,6 +1,7 @@
 export class LdtkReader {
     json: any;
     scene: Phaser.Scene;
+    level!: Level;
     tilesets: Array<Tileset>;
     ldtk: iLDtk;
     // filejson is the raw content of the ldtk project file
@@ -13,17 +14,16 @@ export class LdtkReader {
 
     CreateMap(levelName: string, tileset: string | string[]):LDtkMapPack {
         let j = this.ldtk;
-        var levels = j.levels;
-        let level: Level | undefined = levels.find((l: any) => l.identifier === levelName);
+        this.level = j.levels.find((l: Level) => l.identifier === levelName)!;
 
-        if (!level)
+        if (!this.level)
             throw new Error("Level not found");
 
         let mappack: LDtkMapPack = new LDtkMapPack();
 
-        mappack.bgColor = level.bgColor ?? undefined;
-        mappack.settings = level.fieldInstances;
-        level.layerInstances.forEach(layer => {
+        mappack.bgColor = this.level.bgColor ?? undefined;
+        mappack.settings = this.level.fieldInstances;
+        this.level.layerInstances.forEach(layer => {
             let usedTileset;
             if (typeof tileset === "string")
                 usedTileset = tileset;
@@ -42,7 +42,7 @@ export class LdtkReader {
                 mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset ?? tileset[0]));
             }
         });
-        mappack.entityLayers = level.layerInstances.find((l:LayerInstance) => l.__type === 'Entities');
+        mappack.entityLayer = this.level.layerInstances.find((l:LayerInstance) => l.__type === 'Entities');
         mappack.collideLayer = mappack.intGridLayers.find(e => e.name === 'Collisions');
 
         // create entity textures
@@ -250,7 +250,9 @@ export class LDtkMapPack {
     collideLayer?: Phaser.Tilemaps.TilemapLayer;
     intGridLayers: Array<Phaser.Tilemaps.TilemapLayer>;
     displayLayers: Array<Phaser.Tilemaps.TilemapLayer>;
-    entityLayers?: LayerInstance;
+    
+    entityLayer?: LayerInstance;
+
     bgColor?: string;
     settings?: FieldInstance[];
 
