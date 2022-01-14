@@ -21,7 +21,7 @@ import (
 	"github.com/withtally/synceth/engine"
 )
 
-const blockLimit = 5
+const blockLimit = 500
 
 type Contract struct {
 	Address    common.Address
@@ -181,7 +181,8 @@ func (e *Ethereum) Sync(ctx context.Context) {
 
 						return nil
 					}); err != nil {
-						log.Fatal().Err(err).Msg("Syncing contract.")
+						log.Err(err).Msgf("Syncing contract: %s.", c.Address.Hex())
+						break
 					}
 
 					if _to == latest {

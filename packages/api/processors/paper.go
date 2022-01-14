@@ -39,7 +39,7 @@ func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e bindings.PaperTr
 				return fmt.Errorf("getting from wallet %s balance at txn %s: %w", e.From.Hex(), e.Raw.TxHash.Hex(), err)
 			}
 
-			if err := tx.Wallet.UpdateOneID(e.From.Hex()).AddPaper(schema.BigInt{Int: bal}).Exec(ctx); err != nil {
+			if err := tx.Wallet.UpdateOneID(e.From.Hex()).SetPaper(schema.BigInt{Int: bal}).Exec(ctx); err != nil {
 				return fmt.Errorf("update from wallet %s at txn %s: %w", e.From.Hex(), e.Raw.TxHash.Hex(), err)
 			}
 		}
