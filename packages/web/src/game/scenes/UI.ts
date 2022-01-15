@@ -44,6 +44,8 @@ export default class UIScene extends Scene {
     // can the player open it?
     // false during timeout
     public canOpenMessageInput = true;
+    // player precedent messages
+    public precedentMessages: string[] = new Array();
 
     public player!: Player;
     public inventoryComponent?: ComponentManager;
@@ -118,7 +120,7 @@ export default class UIScene extends Scene {
             // prevent player from opening another messageinput
             this.canOpenMessageInput = false;
 
-            this.sendMessageInput = this.add.reactDom(ChatType);
+            this.sendMessageInput = this.add.reactDom(ChatType, { precedentMessages: this.precedentMessages });
 
             this.sendMessageInput.events.on('chat_submit', (text: string) => {
                 if (text.length > 150)
@@ -137,7 +139,12 @@ export default class UIScene extends Scene {
                 this.sendMessageInput = undefined;
 
                 if (text.length > 0)
+                {
+                    this.precedentMessages.unshift(text);
                     EventHandler.emitter().emit(Events.CHAT_MESSAGE, text);
+                }
+                else 
+                    this.canOpenMessageInput = true;
             });
         });
         
@@ -162,7 +169,7 @@ export default class UIScene extends Scene {
     {
         const messageDuration = {
             in: 500,
-            hold: 4000,
+            hold: 3500,
             out: 500
         };
 

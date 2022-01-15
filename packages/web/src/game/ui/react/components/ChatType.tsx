@@ -4,16 +4,44 @@ import React from "react";
 import { FormEvent } from "react";
 import theme from 'ui/styles/theme';
 
-export default function ChatType(props: {manager: ComponentManager})
+interface Props
+{
+    manager: ComponentManager;
+    precedentMessages: string[];
+}
+
+export default function ChatType(props: Props)
 {
     const [inputText, setInputText] = React.useState("");
-
+    
+    let state = React.useRef({
+        i: -1
+    });
+    
     const handleInputKey = (e: string) => {
         if (e === 'Enter')
             handleSubmit(inputText);
         else if (e === 'Escape')
             // send "nothing", chat will get closed & message will not get sent
             handleSubmit("");
+        else if (e === 'ArrowUp')
+        {
+            state.current.i = ++state.current.i % props.precedentMessages.length;
+            const precedentMessage = props.precedentMessages[state.current.i];
+            if (precedentMessage)
+                setInputText(precedentMessage);
+        }
+        else if (e === 'ArrowDown')
+        {
+            // rolling window, wrap around 
+            state.current.i = --state.current.i % props.precedentMessages.length;
+            if (state.current.i < 0)
+                state.current.i = props.precedentMessages.length - 1;
+
+            const precedentMessage = props.precedentMessages[state.current.i];
+            if (precedentMessage)
+                setInputText(precedentMessage);
+        }
     }
 
     const handleSubmit = (content: string) => {
