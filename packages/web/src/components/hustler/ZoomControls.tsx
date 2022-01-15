@@ -61,7 +61,7 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
         onClick={() => decrementZoomWindowIndex()}
         borderTopRightRadius="0"
         borderBottomRightRadius="0"
-        backgroundColor={currentIndex == 0 ? '#434345' : undefined}
+        backgroundColor={currentIndex == 0 ? '#434345' : '#DEDEDD'}
         _hover={{
           backgroundColor: currentIndex == 0 ? '#434345' : 'unset',
         }}
@@ -73,7 +73,7 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
         borderRadius="0"
         borderLeft="unset"
         borderRight="unset"
-        backgroundColor={currentIndex == 1 ? '#434345' : undefined}
+        backgroundColor={currentIndex == 1 ? '#434345' : '#DEDEDD'}
         _hover={{
           backgroundColor: currentIndex == 1 ? '#434345' : 'unset',
         }}
@@ -84,7 +84,7 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
         onClick={() => {}}
         borderTopLeftRadius="0"
         borderBottomLeftRadius="0"
-        backgroundColor={currentIndex == 2 ? '#434345' : undefined}
+        backgroundColor={currentIndex == 2 ? '#434345' : '#DEDEDD'}
         _hover={{
           backgroundColor: currentIndex == 2 ? '#434345' : 'unset',
         }}

@@ -5,9 +5,7 @@ const PanelFooter = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 44px;
-  background: #dededd;
-  border-top: 2px solid #000;
-  padding: 0 8px;
+  padding: 0 16px 14px 16px;
   div {
     flex-grow: 1;
   }

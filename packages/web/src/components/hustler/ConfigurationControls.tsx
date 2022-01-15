@@ -25,6 +25,8 @@ const ControlsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border: 2px solid #000;
+  border-left: none;
 `;
 
 const ControlsBody = styled.div`
