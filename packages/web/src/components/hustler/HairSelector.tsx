@@ -97,8 +97,21 @@ const HairSelector = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
                 />
               </ImageWrapper>
               <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
+                <NumberIncrementStepper
+                  backgroundColor="#EFEFEF"
+                  boxShadow={`inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25);`}
+                  borderRight="1px solid #b3b3b3"
+                  borderBottom="2px solid #b3b3b3"
+                  height="30px"
+                />
+                <NumberDecrementStepper
+                  backgroundColor="#EFEFEF"
+                  boxShadow={`inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25);`}
+                  borderTop="2px solid black"
+                  borderRight="1px solid #b3b3b3"
+                  borderBottom="1px solid #b3b3b3"
+                  height="30px"
+                />
               </NumberInputStepper>
             </NumberInput>
           </Box>

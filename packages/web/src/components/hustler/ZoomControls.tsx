@@ -54,7 +54,7 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
       renderName: renderName,
     });
   };
-  console.log({ currentIndex });
+
   return (
     <ZoomContainer>
       <Button
