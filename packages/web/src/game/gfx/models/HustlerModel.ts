@@ -197,9 +197,9 @@ export default class HustlerModel
                 sprite.play(sprite.texture.key + direction, true);
         };
 
-        this.shadowSprite.setPosition(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 3));
         this.clothesSprites.forEach(sprite => update(sprite));
         Object.values(this.sprites).forEach(sprite => update(sprite));
+        this.shadowSprite.setPosition(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 3));
     }
 
     // cancel sprites animation

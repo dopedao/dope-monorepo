@@ -23,6 +23,6 @@ export default class HustlerAnimator
         }
 
         this.hustler.play(this.hustler.texture.key + this.hustler.moveDirection, true);
-        this.hustler.model.updateSprites(false, this.hustler.moveDirection);
+        this.hustler.model.updateSprites(true, this.hustler.moveDirection);
     }
 }
