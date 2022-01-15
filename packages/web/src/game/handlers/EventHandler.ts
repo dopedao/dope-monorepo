@@ -20,6 +20,8 @@ export enum Events
     PLAYER_QUEST_NEW = 'player_new_quest',
     PLAYER_QUEST_START = 'player_start_quest',
     PLAYER_QUEST_COMPLETE = 'player_complete_quest',
+
+    CHAT_MESSAGE = 'chat_message',
 }
 
 export default class EventHandler
@@ -48,6 +50,8 @@ export default class EventHandler
         EventHandler._emitter.on(Events.PLAYER_QUEST_NEW, (quest: Quest) => this._log(`New quest: ${quest.name}`));
         EventHandler._emitter.on(Events.PLAYER_QUEST_START, (quest: Quest) => this._log(`Started quest: ${quest.name}`));
         EventHandler._emitter.on(Events.PLAYER_QUEST_COMPLETE, (quest: Quest) => this._log(`Completed quest: ${quest.name}`));
+    
+        EventHandler._emitter.on(Events.CHAT_MESSAGE, (message: string) => this._log(`New chat message: ${message}`));
     }
 
     private _log(event: string, ...args: any[])

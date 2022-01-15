@@ -28,9 +28,6 @@ export default class GameScene extends Scene {
   private _mapHelper!: MapHelper;
 
   public canUseMouse: boolean = true;
-  public rexUI!: RexUIPlugin;
-
-  private accumulator: number = 0;
 
   get mapHelper() { return this._mapHelper; }
 
@@ -79,15 +76,16 @@ export default class GameScene extends Scene {
       });
     });
 
-    
+    // create map and entities
     this._mapHelper = new MapHelper(this);
     this.mapHelper.createMap('Level_0');
     this.mapHelper.createEntities();
 
-    this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male));
+    // TODO when map update: create player directly from map data
+    this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold));
 
     const camera = this.cameras.main;
-    camera.setBounds(0, 0, this.mapHelper.map.displayLayers[0].tilemap.widthInPixels, this.mapHelper.map.displayLayers[0].tilemap.heightInPixels);
+    camera.setBounds(0, 0, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
 
     // make the camera follow the player
     camera.setZoom(3, 3);
