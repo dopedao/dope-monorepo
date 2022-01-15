@@ -7,7 +7,7 @@ import Quest from "game/quests/Quest";
 import ChatType from "game/ui/react/components/ChatType";
 import InventoryComponent from "game/ui/react/components/InventoryComponent";
 import DialogueTextBox from "game/ui/rex/DialogueTextBox";
-import { getBBcodeText } from "game/ui/rex/RexUtils";
+import { getBBcodeText, getBuiltInText } from "game/ui/rex/RexUtils";
 import { Scene } from "phaser";
 import { ComponentManager } from "phaser3-react/src/manager";
 import Toast from "phaser3-rex-plugins/templates/ui/toast/Toast";
@@ -90,7 +90,7 @@ export default class UIScene extends Scene {
         // console.log(this.chatMessageBoxes.length);
         this.chatMessageBoxes.forEach(t => t.setPosition(
             (this.player.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom, 
-            ((this.player.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom) - this.player.displayHeight * 1.5));
+            ((this.player.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom) - (this.player.displayHeight * 1.5) - (t.displayHeight / 2)));
     }
 
     private _handleEvents()
@@ -121,6 +121,15 @@ export default class UIScene extends Scene {
             this.sendMessageInput = this.add.reactDom(ChatType);
 
             this.sendMessageInput.events.on('chat_submit', (text: string) => {
+                if (text.length > 200)
+                {
+                    toast.error("Your message is too long!", {
+                        ...toastStyle,
+                        icon: '⚠️',
+                    });
+                    return;
+                }
+
                 // reset to default
                 this.player.scene.input.keyboard.enabled = true;
                 this.player.scene.input.keyboard.enableGlobalCapture();
@@ -160,7 +169,7 @@ export default class UIScene extends Scene {
         EventHandler.emitter().on(Events.CHAT_MESSAGE, (text: string) => {
             this.chatMessageBoxes.push(this.rexUI.add.toast({
                 background: this.rexUI.add.roundRectangle(0, 0, 2, 1, 10, 0xffffff, 0.4),
-                text: getBBcodeText(this, 0, 0, 0).setText(text),
+                text: getBBcodeText(this, 300, 0, 0, 10).setText(text),
                 space: {
                     left: 5,
                     right: 5,

@@ -80,20 +80,22 @@ export const createTextBox = (scene: UIScene, config: TextBoxConfig, icon?: Phas
     return textBox;
 }
 
-export const getBuiltInText = (scene: UIScene, wrapWidth: number, fixedWidth: number, fixedHeight: number) => {
+export const getBuiltInText = (scene: UIScene, wrapWidth: number, fixedWidth: number, fixedHeight: number, maxLines?: number) => {
     return scene.add.text(0, 0, '', {
             font: 'Dope',
+
+            fixedWidth: fixedWidth,
+            fixedHeight: fixedHeight,
 
             fontSize: '20px',
             wordWrap: {
                 width: wrapWidth
             },
-            maxLines: 3
+            maxLines: maxLines ?? 3
         })
-        .setFixedSize(fixedWidth, fixedHeight);
 }
 
-export const getBBcodeText = (scene: UIScene, wrapWidth: number, fixedWidth: number, fixedHeight: number) => {
+export const getBBcodeText = (scene: UIScene, wrapWidth: number, fixedWidth: number, fixedHeight: number, maxLines?: number) => {
     return scene.rexUI.add.BBCodeText(0, 0, '', {
         fontFamily: 'Dope',
 
@@ -105,7 +107,7 @@ export const getBBcodeText = (scene: UIScene, wrapWidth: number, fixedWidth: num
             mode: 'word',
             width: wrapWidth
         },
-        maxLines: 3
+        maxLines: maxLines ?? 3
     })
 }
 

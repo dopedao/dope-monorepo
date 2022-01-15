@@ -23,6 +23,8 @@ export default class PlayerController
           right: Phaser.Input.Keyboard.KeyCodes.D,
           // inventory
           tab: Phaser.Input.Keyboard.KeyCodes.TAB, 
+          // interaction
+          e: Phaser.Input.Keyboard.KeyCodes.E,
         }) as Phaser.Types.Input.Keyboard.CursorKeys;
     }
 
@@ -31,7 +33,7 @@ export default class PlayerController
         if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).tab))
             this.player.toggleInventory();
 
-        if (Phaser.Input.Keyboard.JustUp(this.arrows.space))
+        if (Phaser.Input.Keyboard.JustUp(this.arrows.space) || Phaser.Input.Keyboard.JustUp((this.mainKeys as any).e))
             // check interact sensor
             this.player.tryInteraction();
 
