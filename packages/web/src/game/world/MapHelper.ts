@@ -28,10 +28,13 @@ export default class MapHelper
     
         // enable collisions for all tiles that have index 1
         this.map.collideLayer?.setCollision(1);
-    
+
         // matterjs collisions
         if (this.map.collideLayer)
+        {
             this.scene.matter.world.convertTilemapLayer(this.map.collideLayer);
+            this.scene.matter.world.setBounds(0, 0, this.map.collideLayer.displayWidth, this.map.collideLayer.displayHeight);
+        }
     } 
 
     createEntities()
@@ -49,7 +52,7 @@ export default class MapHelper
                 return;
             
             const frameId = entity.fieldInstances[0].__value ?? "default";
-            console.info('Try loading existing entity frame. Ignore warning message if there is');
+            console.log('Try loading existing entity frame. Ignore warning message if there is');
             let frame = this.scene.textures.get(tileset.identifier.toLowerCase()).get(frameId).name !== frameId ?
                 this.scene.textures.get(tileset.identifier.toLowerCase())
                     .add(frameId, 0, 

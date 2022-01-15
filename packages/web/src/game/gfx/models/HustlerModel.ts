@@ -98,12 +98,14 @@ export default class HustlerModel
     {
         this.clothesSprites.forEach(sprite => sprite.setDepth(value));
         Object.values(this.sprites).forEach(sprite => sprite.setDepth(value));
+        this.shadowSprite?.setDepth(value - 1);
     }
 
     setOrigin(x: number, y: number)
     {
         this.clothesSprites.forEach(sprite => sprite.setOrigin(x, y));
         Object.values(this.sprites).forEach(sprite => sprite.setOrigin(x, y));
+        this.shadowSprite.setOrigin(x, y);
     }
 
     // field is the identifier of a field in the class, for eg.
@@ -153,10 +155,10 @@ export default class HustlerModel
     createSprites()
     {
         // Shadow
-        this.shadowSprite = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 3), this.hustler.width, this.hustler.height / 5, 0x565a73, 0.5);
+        this.shadowSprite = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 3), this.hustler.width, this.hustler.height / 5, 0x000000, 0.2);
         (this.shadowSprite.scene.plugins.get('rexPixelationPipeline') as PixelationPipelinePlugin).add(this.shadowSprite, {
-            pixelWidth: 2,
-            pixelHeight: 2
+            pixelWidth: 3,
+            pixelHeight: 3
         })
         this.shadowSprite.setDepth(this.hustler.depth - 1);
         //this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Shadow]);
