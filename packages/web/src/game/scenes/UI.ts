@@ -82,6 +82,11 @@ export default class UIScene extends Scene {
                 EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_CANCEL, citizen);
             }
         }
+
+        // console.log(this.chatMessageBoxes.length);
+        // this.chatMessageBoxes.forEach(t => t.setPosition(
+            // this.player.x - this.player.scene.cameras.main.scrollX * this.player.scrollFactorX, 
+            // (this.player.y - this.player.scene.cameras.main.scrollY * this.player.scrollFactorY) - (this.player.displayHeight * 2)));
     }
 
     private _handleEvents()
@@ -150,7 +155,20 @@ export default class UIScene extends Scene {
                     top: 5,
                     bottom: 5,
                 },
-            }).showMessage(text));
+                duration: {
+                    in: 500,
+                    hold: 3000,
+                    out: 500
+                }
+            }));
+            const chatMessage = this.chatMessageBoxes[this.chatMessageBoxes.length - 1];
+            // show message
+            chatMessage.showMessage(text);
+            // destroy game object after duration & remove from array
+            setTimeout(() => {
+                chatMessage.destroy();
+                this.chatMessageBoxes.splice(this.chatMessageBoxes.indexOf(chatMessage), 1);
+            }, 4000);
         });
     }
 
