@@ -121,7 +121,7 @@ export default class UIScene extends Scene {
             this.sendMessageInput = this.add.reactDom(ChatType);
 
             this.sendMessageInput.events.on('chat_submit', (text: string) => {
-                if (text.length > 200)
+                if (text.length > 150)
                 {
                     toast.error("Your message is too long!", {
                         ...toastStyle,
@@ -168,8 +168,8 @@ export default class UIScene extends Scene {
 
         EventHandler.emitter().on(Events.CHAT_MESSAGE, (text: string) => {
             this.chatMessageBoxes.push(this.rexUI.add.toast({
-                background: this.rexUI.add.roundRectangle(0, 0, 2, 1, 10, 0xffffff, 0.4),
-                text: getBBcodeText(this, 300, 0, 0, 10).setText(text),
+                background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 10, 0xffffff, 0.4),
+                text: getBBcodeText(this, 200, 0, 0, 10).setText(text),
                 space: {
                     left: 5,
                     right: 5,
