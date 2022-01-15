@@ -39,7 +39,11 @@ export default class UIScene extends Scene {
     public rexUI!: RexUIPlugin;
     public toaster!: ComponentManager;
 
+    // react component for inputing message content
     public sendMessageInput?: ComponentManager;
+    // can the player open it?
+    // false during timeout
+    public canOpenMessageInput = true;
 
     public player!: Player;
     public inventoryComponent?: ComponentManager;
@@ -84,9 +88,9 @@ export default class UIScene extends Scene {
         }
 
         // console.log(this.chatMessageBoxes.length);
-        // this.chatMessageBoxes.forEach(t => t.setPosition(
-            // this.player.x - this.player.scene.cameras.main.scrollX * this.player.scrollFactorX, 
-            // (this.player.y - this.player.scene.cameras.main.scrollY * this.player.scrollFactorY) - (this.player.displayHeight * 2)));
+        this.chatMessageBoxes.forEach(t => t.setPosition(
+            (this.player.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom, 
+            ((this.player.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom) - this.player.displayHeight * 1.5));
     }
 
     private _handleEvents()
@@ -104,18 +108,23 @@ export default class UIScene extends Scene {
         chatKey.on(Phaser.Input.Keyboard.Events.UP, () => {
             if (this.player.busy)
                 return;
+            if (!this.canOpenMessageInput)
+                return;
             
             // prevent player from moving
             this.player.scene.input.keyboard.enabled = false;
             // prevent phaser from "blocking" some keys (for typing in chat)
             this.player.scene.input.keyboard.disableGlobalCapture();
+            // prevent player from opening another messageinput
+            this.canOpenMessageInput = false;
 
             this.sendMessageInput = this.add.reactDom(ChatType);
+
             this.sendMessageInput.events.on('chat_submit', (text: string) => {
                 // reset to default
                 this.player.scene.input.keyboard.enabled = true;
                 this.player.scene.input.keyboard.enableGlobalCapture();
-                this.sendMessageInput!.destroy();
+                this.sendMessageInput?.destroy();
                 this.sendMessageInput = undefined;
 
                 if (text.length > 0)
@@ -142,11 +151,14 @@ export default class UIScene extends Scene {
 
     private _handleMisc()
     {
+        const messageDuration = {
+            in: 500,
+            hold: 4000,
+            out: 500
+        };
+
         EventHandler.emitter().on(Events.CHAT_MESSAGE, (text: string) => {
             this.chatMessageBoxes.push(this.rexUI.add.toast({
-                x: this.player.x - this.player.scene.cameras.main.scrollX * this.player.scrollFactorX,
-                y: (this.player.y - this.player.scene.cameras.main.scrollY * this.player.scrollFactorY) - (this.player.displayHeight * 2),
-    
                 background: this.rexUI.add.roundRectangle(0, 0, 2, 1, 10, 0xffffff, 0.4),
                 text: getBBcodeText(this, 0, 0, 0).setText(text),
                 space: {
@@ -155,20 +167,21 @@ export default class UIScene extends Scene {
                     top: 5,
                     bottom: 5,
                 },
-                duration: {
-                    in: 500,
-                    hold: 3000,
-                    out: 500
-                }
+                duration: messageDuration
             }));
             const chatMessage = this.chatMessageBoxes[this.chatMessageBoxes.length - 1];
             // show message
             chatMessage.showMessage(text);
+
             // destroy game object after duration & remove from array
+            // timeout for duration of message
             setTimeout(() => {
                 chatMessage.destroy();
                 this.chatMessageBoxes.splice(this.chatMessageBoxes.indexOf(chatMessage), 1);
-            }, 4000);
+                // let player open message input again
+                // after the duration
+                this.canOpenMessageInput = true;
+            }, Object.values(messageDuration).reduce((a, b) => a + b, 0));
         });
     }
 
