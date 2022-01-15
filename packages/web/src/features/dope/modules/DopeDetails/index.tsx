@@ -69,18 +69,25 @@ const DopeDetails = () => {
         <FlexFiftyContainer>
           {data?.wallets.edges?.[0] && (
             <DopeTable
-              data={data.wallets.edges[0].node.dopes.map(({ opened, claimed, id, rank }) => ({
-                opened,
-                claimed,
-                id,
-                rank,
-              }))}
+              data={data.wallets.edges[0].node.dopes.map(
+                ({ opened, claimed, id, rank, items }) => ({
+                  opened,
+                  claimed,
+                  id,
+                  rank,
+                  items,
+                }),
+              )}
               selected={selected}
               onSelect={setSelected}
             />
           )}
           {data?.wallets.edges?.[0] && (
-            <DopeCard dope={data.wallets.edges[0].node.dopes[selected]} footer="for-owner" />
+            <DopeCard
+              dope={data.wallets.edges[0].node.dopes[selected]}
+              footer="for-owner"
+              isExpanded
+            />
           )}
         </FlexFiftyContainer>
       )}

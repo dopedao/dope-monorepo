@@ -19,13 +19,15 @@ func (Search) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.Enum("type").
-			Values("dope", "item", "hustler").
+			Values("DOPE", "ITEM", "HUSTLER").
 			Immutable(),
 		field.Int("greatness").
 			Optional().
 			Annotations(
 				entgql.OrderField("GREATNESS"),
 			),
+		field.Bool("claimed"),
+		field.Bool("opened"),
 		field.Bool("sale_active"),
 		field.Int("sale_price").
 			GoType(BigInt{}).

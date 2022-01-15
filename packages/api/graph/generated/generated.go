@@ -2044,6 +2044,14 @@ input SearchWhereInput {
   greatnessIsNil: Boolean
   greatnessNotNil: Boolean
   
+  """claimed field predicates"""
+  claimed: Boolean
+  claimedNEQ: Boolean
+  
+  """opened field predicates"""
+  opened: Boolean
+  openedNEQ: Boolean
+  
   """sale_active field predicates"""
   saleActive: Boolean
   saleActiveNEQ: Boolean
@@ -2191,6 +2199,12 @@ type ListingEdge {
 
 input ListingOrder {
   direction: OrderDirection!
+}
+
+enum SearchType {
+  DOPE
+  ITEM
+  HUSTLER
 }
 
 enum SearchOrderField {
@@ -2397,12 +2411,6 @@ type Wallet implements Node {
 }
 
 union SearchResult = Dope | Item | Hustler
-
-enum SearchType {
-  DOPE
-  ITEM
-  HUSTLER
-}
 
 type Query {
   node(id: ID!): Node
@@ -12402,6 +12410,38 @@ func (ec *executionContext) unmarshalInputSearchWhereInput(ctx context.Context, 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("greatnessNotNil"))
 			it.GreatnessNotNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "claimed":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("claimed"))
+			it.Claimed, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "claimedNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("claimedNEQ"))
+			it.ClaimedNEQ, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "opened":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("opened"))
+			it.Opened, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "openedNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("openedNEQ"))
+			it.OpenedNEQ, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}

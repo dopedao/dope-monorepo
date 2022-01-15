@@ -214,7 +214,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 							if err := tx.Dope.UpdateOneID(oasset.TokenID).SetLastSaleID(oasset.LastSale.Transaction.TransactionHash).
 								Exec(ctx); err != nil {
-								return fmt.Errorf("upserting to listing lastsale: %w", err)
+								return fmt.Errorf("upserting to dope lastsale: %w", err)
 							}
 
 						}
@@ -227,7 +227,11 @@ func (o *Opensea) Sync(ctx context.Context) {
 			}
 
 			assetsCompleted += len(ret.Assets)
-			log.Info().Msgf("Syncing opensea: finished total assets: %d, current offset: %d\n", assetsCompleted, offset)
+			log.Info().Msgf("Syncing opensea: finished total assets: %d, current offset: %d", assetsCompleted, offset)
+		}
+
+		if err := o.ent.RefreshSearchIndex(ctx); err != nil {
+			log.Err(err).Msgf("Refreshing search index.")
 		}
 
 		select {

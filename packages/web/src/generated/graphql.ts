@@ -1,29 +1,10 @@
 import { useQuery, UseQueryOptions, useInfiniteQuery, UseInfiniteQueryOptions, QueryFunctionContext } from 'react-query';
+import { useFetchData } from 'hooks/fetcher';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-
-function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch(process.env.NEXT_PUBLIC_DOPEWARS_API as string, {
-    method: "POST",
-    ...({"headers":{"Content-Type":"application/json"}}),
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const json = await res.json();
-
-    if (json.errors) {
-      const { message } = json.errors[0];
-
-      throw new Error(message);
-    }
-
-    return json.data;
-  }
-}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -92,6 +73,12 @@ export type AmountWhereInput = {
   assetIDLTE?: InputMaybe<Scalars['BigInt']>;
   assetIDNEQ?: InputMaybe<Scalars['BigInt']>;
   assetIDNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
+  /** listing_input edge predicates */
+  hasListingInput?: InputMaybe<Scalars['Boolean']>;
+  hasListingInputWith?: InputMaybe<Array<ListingWhereInput>>;
+  /** listing_output edge predicates */
+  hasListingOutput?: InputMaybe<Scalars['Boolean']>;
+  hasListingOutputWith?: InputMaybe<Array<ListingWhereInput>>;
   /** id field predicates */
   id?: InputMaybe<Scalars['ID']>;
   idGT?: InputMaybe<Scalars['ID']>;
@@ -1067,6 +1054,9 @@ export enum SearchType {
  */
 export type SearchWhereInput = {
   and?: InputMaybe<Array<SearchWhereInput>>;
+  /** claimed field predicates */
+  claimed?: InputMaybe<Scalars['Boolean']>;
+  claimedNEQ?: InputMaybe<Scalars['Boolean']>;
   /** greatness field predicates */
   greatness?: InputMaybe<Scalars['Int']>;
   greatnessGT?: InputMaybe<Scalars['Int']>;
@@ -1106,6 +1096,9 @@ export type SearchWhereInput = {
   lastSalePriceNEQ?: InputMaybe<Scalars['BigInt']>;
   lastSalePriceNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
   not?: InputMaybe<SearchWhereInput>;
+  /** opened field predicates */
+  opened?: InputMaybe<Scalars['Boolean']>;
+  openedNEQ?: InputMaybe<Scalars['Boolean']>;
   or?: InputMaybe<Array<SearchWhereInput>>;
   /** sale_active field predicates */
   saleActive?: InputMaybe<Scalars['Boolean']>;
@@ -1311,7 +1304,7 @@ export type HustlersWalletQueryVariables = Exact<{
 }>;
 
 
-export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean }> } | null | undefined } | null | undefined> | null | undefined } };
+export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, svg?: string | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type SearchDopeQueryVariables = Exact<{
   query: Scalars['String'];
@@ -1331,7 +1324,7 @@ export type WalletQueryVariables = Exact<{
 }>;
 
 
-export type WalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number }> } | null | undefined } | null | undefined> | null | undefined } };
+export type WalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> }> } | null | undefined } | null | undefined> | null | undefined } };
 
 
 export const AllHustlersDocument = `
@@ -1493,22 +1486,22 @@ export const useAllHustlersQuery = <
     ) =>
     useQuery<AllHustlersQuery, TError, TData>(
       variables === undefined ? ['AllHustlers'] : ['AllHustlers', variables],
-      fetcher<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, variables),
+      useFetchData<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument).bind(null, variables),
       options
     );
 export const useInfiniteAllHustlersQuery = <
       TData = AllHustlersQuery,
       TError = unknown
     >(
-      pageParamKey: keyof AllHustlersQueryVariables,
       variables?: AllHustlersQueryVariables,
       options?: UseInfiniteQueryOptions<AllHustlersQuery, TError, TData>
-    ) =>
-    useInfiniteQuery<AllHustlersQuery, TError, TData>(
+    ) =>{
+    const query = useFetchData<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument)
+    return useInfiniteQuery<AllHustlersQuery, TError, TData>(
       variables === undefined ? ['AllHustlers.infinite'] : ['AllHustlers.infinite', variables],
-      (metaData) => fetcher<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
-    );
+    )};
 
 export const DopesDocument = `
     query Dopes($after: Cursor, $first: Int, $before: Cursor, $last: Int, $orderBy: DopeOrder, $where: DopeWhereInput) {
@@ -1582,22 +1575,22 @@ export const useDopesQuery = <
     ) =>
     useQuery<DopesQuery, TError, TData>(
       variables === undefined ? ['Dopes'] : ['Dopes', variables],
-      fetcher<DopesQuery, DopesQueryVariables>(DopesDocument, variables),
+      useFetchData<DopesQuery, DopesQueryVariables>(DopesDocument).bind(null, variables),
       options
     );
 export const useInfiniteDopesQuery = <
       TData = DopesQuery,
       TError = unknown
     >(
-      pageParamKey: keyof DopesQueryVariables,
       variables?: DopesQueryVariables,
       options?: UseInfiniteQueryOptions<DopesQuery, TError, TData>
-    ) =>
-    useInfiniteQuery<DopesQuery, TError, TData>(
+    ) =>{
+    const query = useFetchData<DopesQuery, DopesQueryVariables>(DopesDocument)
+    return useInfiniteQuery<DopesQuery, TError, TData>(
       variables === undefined ? ['Dopes.infinite'] : ['Dopes.infinite', variables],
-      (metaData) => fetcher<DopesQuery, DopesQueryVariables>(DopesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
-    );
+    )};
 
 export const HustlerDocument = `
     query Hustler($where: HustlerWhereInput) {
@@ -1753,22 +1746,22 @@ export const useHustlerQuery = <
     ) =>
     useQuery<HustlerQuery, TError, TData>(
       variables === undefined ? ['Hustler'] : ['Hustler', variables],
-      fetcher<HustlerQuery, HustlerQueryVariables>(HustlerDocument, variables),
+      useFetchData<HustlerQuery, HustlerQueryVariables>(HustlerDocument).bind(null, variables),
       options
     );
 export const useInfiniteHustlerQuery = <
       TData = HustlerQuery,
       TError = unknown
     >(
-      pageParamKey: keyof HustlerQueryVariables,
       variables?: HustlerQueryVariables,
       options?: UseInfiniteQueryOptions<HustlerQuery, TError, TData>
-    ) =>
-    useInfiniteQuery<HustlerQuery, TError, TData>(
+    ) =>{
+    const query = useFetchData<HustlerQuery, HustlerQueryVariables>(HustlerDocument)
+    return useInfiniteQuery<HustlerQuery, TError, TData>(
       variables === undefined ? ['Hustler.infinite'] : ['Hustler.infinite', variables],
-      (metaData) => fetcher<HustlerQuery, HustlerQueryVariables>(HustlerDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
-    );
+    )};
 
 export const HustlersWalletDocument = `
     query HustlersWallet($where: WalletWhereInput) {
@@ -1782,140 +1775,10 @@ export const HustlersWalletDocument = `
           title
           name
           type
-          title
           color
           background
           age
-          background
-          neck {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          sex
-          viewbox
-          order
-          ring {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          accessory {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
           svg
-          body {
-            id
-            type
-            sex
-            rle
-          }
-          beard {
-            id
-            type
-            sex
-            rle
-          }
-          drug {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          hand {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          weapon {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          clothes {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          vehicle {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          waist {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-          foot {
-            id
-            type
-            name
-            suffix
-            augmented
-            tier
-            greatness
-            count
-          }
-        }
-        items {
-          id
-          balance
-          item {
-            id
-            name
-          }
-        }
-        dopes {
-          id
-          claimed
-          opened
         }
       }
     }
@@ -1931,22 +1794,22 @@ export const useHustlersWalletQuery = <
     ) =>
     useQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet'] : ['HustlersWallet', variables],
-      fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, variables),
+      useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument).bind(null, variables),
       options
     );
 export const useInfiniteHustlersWalletQuery = <
       TData = HustlersWalletQuery,
       TError = unknown
     >(
-      pageParamKey: keyof HustlersWalletQueryVariables,
       variables?: HustlersWalletQueryVariables,
       options?: UseInfiniteQueryOptions<HustlersWalletQuery, TError, TData>
-    ) =>
-    useInfiniteQuery<HustlersWalletQuery, TError, TData>(
+    ) =>{
+    const query = useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument)
+    return useInfiniteQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet.infinite'] : ['HustlersWallet.infinite', variables],
-      (metaData) => fetcher<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
-    );
+    )};
 
 export const SearchDopeDocument = `
     query SearchDope($query: String!, $after: Cursor, $first: Int, $before: Cursor, $last: Int, $orderBy: SearchOrder, $where: SearchWhereInput) {
@@ -2016,22 +1879,22 @@ export const useSearchDopeQuery = <
     ) =>
     useQuery<SearchDopeQuery, TError, TData>(
       ['SearchDope', variables],
-      fetcher<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument, variables),
+      useFetchData<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument).bind(null, variables),
       options
     );
 export const useInfiniteSearchDopeQuery = <
       TData = SearchDopeQuery,
       TError = unknown
     >(
-      pageParamKey: keyof SearchDopeQueryVariables,
       variables: SearchDopeQueryVariables,
       options?: UseInfiniteQueryOptions<SearchDopeQuery, TError, TData>
-    ) =>
-    useInfiniteQuery<SearchDopeQuery, TError, TData>(
+    ) =>{
+    const query = useFetchData<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument)
+    return useInfiniteQuery<SearchDopeQuery, TError, TData>(
       ['SearchDope.infinite', variables],
-      (metaData) => fetcher<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
-    );
+    )};
 
 export const WalletDocument = `
     query Wallet($where: WalletWhereInput) {
@@ -2059,6 +1922,19 @@ export const WalletDocument = `
           opened
           score
           rank
+          items {
+            id
+            fullname
+            type
+            name
+            namePrefix
+            nameSuffix
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
         }
       }
     }
@@ -2074,19 +1950,19 @@ export const useWalletQuery = <
     ) =>
     useQuery<WalletQuery, TError, TData>(
       variables === undefined ? ['Wallet'] : ['Wallet', variables],
-      fetcher<WalletQuery, WalletQueryVariables>(WalletDocument, variables),
+      useFetchData<WalletQuery, WalletQueryVariables>(WalletDocument).bind(null, variables),
       options
     );
 export const useInfiniteWalletQuery = <
       TData = WalletQuery,
       TError = unknown
     >(
-      pageParamKey: keyof WalletQueryVariables,
       variables?: WalletQueryVariables,
       options?: UseInfiniteQueryOptions<WalletQuery, TError, TData>
-    ) =>
-    useInfiniteQuery<WalletQuery, TError, TData>(
+    ) =>{
+    const query = useFetchData<WalletQuery, WalletQueryVariables>(WalletDocument)
+    return useInfiniteQuery<WalletQuery, TError, TData>(
       variables === undefined ? ['Wallet.infinite'] : ['Wallet.infinite', variables],
-      (metaData) => fetcher<WalletQuery, WalletQueryVariables>(WalletDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
-    );
+    )};

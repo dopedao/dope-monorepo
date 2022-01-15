@@ -10,10 +10,8 @@ generates:
     config:
       addInfiniteQuery: true
       fetcher:
-        endpoint: process.env.NEXT_PUBLIC_DOPEWARS_API
-        fetchParams:
-          headers:
-            'Content-Type': 'application/json'
+        func: hooks/fetcher#useFetchData
+        isReactHook: true
   src/generated/introspection.ts:
     plugins:
       - fragment-matcher

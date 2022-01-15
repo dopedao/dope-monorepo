@@ -1,4 +1,4 @@
-import { Flex, Radio, RadioGroup, Spacer } from '@chakra-ui/react';
+import { Flex, Radio, RadioGroup } from '@chakra-ui/react';
 import { HustlerSex } from 'utils/HustlerConfig';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
 import styled from '@emotion/styled';

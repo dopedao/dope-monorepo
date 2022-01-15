@@ -3,10 +3,17 @@ import { Button } from '@chakra-ui/button';
 import styled from '@emotion/styled';
 
 export const DopeLegendBackgroundColors = {
-  black_market: 'rgba(255,252,63,0.5)',
-  common: 'rgba(18,171,23,0.0)',
-  custom: 'rgba(254,101,33,0.15)',
-  rare: 'rgba(46,130,255,0.15)',
+  BLACK_MARKET: 'rgba(255,252,63,0.5)',
+  CUSTOM: 'rgba(254,101,33,0.15)',
+  RARE: 'rgba(46,130,255,0.15)',
+  COMMON: 'rgba(18,171,23,0.0)',
+};
+
+const DopeLegendLabels = {
+  BLACK_MARKET: 'Black Market',
+  COMMON: 'Common',
+  CUSTOM: 'Custom',
+  RARE: 'Rare',
 };
 
 const DopeLegendContainer = styled.div`
@@ -44,21 +51,16 @@ const DopeLegend = ({ toggleVisibility }: DopeLegendProps) => {
           padding: 8px 16px;
         `}
       >
-        {Object.entries(DopeLegendBackgroundColors)
-          .map(([key, value]) => {
-            return (
-              <DopeLegendItem
-                css={css`
-                  background-color: ${value};
-                `}
-                key={key}
-              >
-                {key}
-              </DopeLegendItem>
-            );
-          })
-          .reverse()
-          .slice(0, -1)}
+        {Object.entries(DopeLegendBackgroundColors).map(([key, value]) => (
+          <DopeLegendItem
+            css={css`
+              background-color: ${value};
+            `}
+            key={key}
+          >
+            {DopeLegendLabels[key as 'BLACK_MARKET' | 'COMMON' | 'CUSTOM' | 'RARE']}
+          </DopeLegendItem>
+        ))}
       </div>
       <div
         css={css`

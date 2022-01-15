@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/spf13/pflag"
 
@@ -23,8 +24,21 @@ func main() {
 
 	client := ent.NewClient(ent.Driver(drv))
 
+	ctx := context.Background()
+
 	// Run the auto migration tool.
-	if err := client.Schema.Create(context.Background()); err != nil {
+	if err := client.Schema.Create(ctx, schema.WithHooks(func(next schema.Creator) schema.Creator {
+		return schema.CreateFunc(func(ctx context.Context, tables ...*schema.Table) error {
+			var tables2 []*schema.Table
+			for _, t := range tables {
+				// Remove search_index since it is a materialized view
+				if t.Name != "search_index" {
+					tables2 = append(tables2, t)
+				}
+			}
+			return next.Create(ctx, tables2...)
+		})
+	})); err != nil {
 		log.Fatalf("Migrating db: %+v", err) //nolint:gocritic
 	}
 

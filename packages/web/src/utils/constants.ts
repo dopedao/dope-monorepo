@@ -80,13 +80,12 @@ export const NETWORK = {
   },
 };
 
-export const API_URI = process.env.NEXT_PUBLIC_DOPEWARS_API as string;
+const MAINNET_API_URL = 'https://api.dopewars.gg/query';
+const TESTNET_API_URL = 'https://testnet.api.dopewars.gg/query';
 
-export const fetchParams = {
-  endpoint: API_URI,
-  fetchParams: {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  },
+export const API_URI = {
+  1: MAINNET_API_URL,
+  10: MAINNET_API_URL,
+  42: TESTNET_API_URL,
+  69: TESTNET_API_URL,
 };

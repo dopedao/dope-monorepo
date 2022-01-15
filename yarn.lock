@@ -2617,7 +2617,7 @@ __metadata:
     "@graphql-codegen/schema-ast": ^2.4.0
     "@graphql-codegen/typescript": ^2.2.2
     "@graphql-codegen/typescript-operations": ^2.1.4
-    "@graphql-codegen/typescript-react-query": ^3.2.2
+    "@graphql-codegen/typescript-react-query": ^3.3.1
     "@ion-phaser/react": ^1.3.0
     "@mdx-js/react": ^1.6.22
     "@sentry/react": ^6.13.2
@@ -2668,7 +2668,7 @@ __metadata:
     react-hot-toast: ^2.1.1
     react-infinite-scroller: ^1.2.4
     react-markdown: ^7.0.1
-    react-query: ^3.34.4
+    react-query: latest
     react-table: ^7.7.0
     remark: ^14.0.2
     remark-html: ^15.0.1
@@ -4152,9 +4152,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/typescript-react-query@npm:^3.2.2":
-  version: 3.3.0
-  resolution: "@graphql-codegen/typescript-react-query@npm:3.3.0"
+"@graphql-codegen/typescript-react-query@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "@graphql-codegen/typescript-react-query@npm:3.3.1"
   dependencies:
     "@graphql-codegen/plugin-helpers": ^2.3.2
     "@graphql-codegen/visitor-plugin-common": 2.5.2
@@ -4163,7 +4163,7 @@ __metadata:
     tslib: ~2.3.0
   peerDependencies:
     graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: cfe15be7a6a1fc68306f45182fd59ed31ddc35f2f805dc015fac34fd2ed9fea65cbee4646846a0c97687c077c3e28358511b22cc27375e3a971a9f0ebc1a3034
+  checksum: 12c21621d2d7105ccb7b367a97a0b17161d94c7854380a5aa16b884ca2db7e3d613a543dbd1639183bb21f2fa1df9205bd06bd0437269de4de47dd69dfd52f13
   languageName: node
   linkType: hard
 
@@ -28497,9 +28497,9 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
-"react-query@npm:^3.34.4":
-  version: 3.34.7
-  resolution: "react-query@npm:3.34.7"
+"react-query@npm:latest":
+  version: 3.34.8
+  resolution: "react-query@npm:3.34.8"
   dependencies:
     "@babel/runtime": ^7.5.5
     broadcast-channel: ^3.4.1
@@ -28511,7 +28511,7 @@ fsevents@~2.1.1:
       optional: true
     react-native:
       optional: true
-  checksum: 879ea7c42a9414eaa0a49cceb2c87f69731ccb7e93cda73cf427b260822a1e5b34e524e6cc1dfcc00b6915cfc08399f23b36f701f5805b9ecb36cd4126cc4abe
+  checksum: 0e071561422170b0115959e5c2d9d648ac893f72b45f1e3ae3f83291e973bf51827376487bb8535487da59ce682f0e4c0291992946fb54cd4989b6d8c5b7336a
   languageName: node
   linkType: hard
 

@@ -1,6 +1,11 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, ChangeEvent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { OrderDirection, SearchOrderField, useInfiniteSearchDopeQuery } from 'generated/graphql';
+import {
+  OrderDirection,
+  SearchOrderField,
+  SearchType,
+  useInfiniteSearchDopeQuery,
+} from 'generated/graphql';
 import { isTouchDevice } from 'utils/utils';
 import DopeCard from 'features/dope/components/DopeCard';
 import MarketFilterBar from 'features/swap-meet/components/MarketFilterBar';
@@ -10,21 +15,36 @@ import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
 import { useDebounce } from 'usehooks-ts';
 
+export type FILTERS = 'All' | 'Has Unclaimed $PAPER' | 'For Sale' | 'Ready To Unpack';
+
 const MarketList = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const debouncedValue = useDebounce<string>(searchValue, 500);
   const [orderBy, setOrderBy] = useState<SearchOrderField>(SearchOrderField.Greatness);
-
+  const [filterBy, setFilterBy] = useState<FILTERS>('All');
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
+
+  const handleFilter = () => {
+    switch (filterBy) {
+      case 'All':
+        return {};
+      case 'For Sale':
+        return { saleActive: true };
+      case 'Has Unclaimed $PAPER':
+        return { claimed: false };
+      case 'Ready To Unpack':
+        return { opened: false };
+      default:
+        return {};
+    }
+  };
 
   const {
     data: searchResult,
-    isFetching: isSearchFetching,
     fetchNextPage: searchFetchNextPage,
     hasNextPage: searchHasNextPage,
     status: searchStatus,
   } = useInfiniteSearchDopeQuery(
-    'first',
     {
       first: 25,
       orderBy: {
@@ -33,17 +53,15 @@ const MarketList = () => {
           orderBy === SearchOrderField.SalePrice ? OrderDirection.Asc : OrderDirection.Desc,
       },
       where: {
-        saleActive: true,
+        type: SearchType.Dope,
+        ...handleFilter(),
       },
       query: debouncedValue,
     },
     {
-      getNextPageParam: lastPage => {
-        if (lastPage.search.pageInfo.hasNextPage) {
-          return lastPage.search.pageInfo.endCursor;
-        }
-        return false;
-      },
+      getNextPageParam: lastPage => ({
+        after: lastPage.search.pageInfo.endCursor,
+      }),
     },
   );
 
@@ -51,7 +69,7 @@ const MarketList = () => {
     setSearchValue(event.target.value);
   };
 
-  const isLoading = isSearchFetching || searchStatus === 'loading'; // || !hasUpdateDopeDbWithPaper;
+  const isLoading = searchStatus === 'loading';
 
   return (
     <>
@@ -60,8 +78,10 @@ const MarketList = () => {
         searchValue={searchValue}
         orderBy={orderBy}
         setOrderBy={setOrderBy}
-        compactViewCallback={(toggle: boolean) => setViewCompactCards(toggle)}
+        setViewCompactCards={setViewCompactCards}
         compactSwitchOn={viewCompactCards}
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
       />
       {isLoading ? (
         <LoadingState />
@@ -70,23 +90,7 @@ const MarketList = () => {
       ) : (
         <Container>
           <InfiniteScroll
-            pageStart={0}
-            loadMore={() =>
-              searchFetchNextPage({
-                pageParam: {
-                  first: 25,
-                  after:
-                    searchResult?.pages[searchResult.pages.length - 1].search.pageInfo.endCursor,
-                  orderBy: {
-                    direction:
-                      orderBy === SearchOrderField.SalePrice
-                        ? OrderDirection.Asc
-                        : OrderDirection.Desc,
-                  },
-                  query: searchValue,
-                },
-              })
-            }
+            loadMore={() => searchFetchNextPage()}
             hasMore={searchHasNextPage}
             loader={<LoadingBlock key="loading-block" />}
             useWindow={false}
@@ -102,7 +106,7 @@ const MarketList = () => {
                     key={dope.node.id}
                     dope={dope.node}
                     footer="for-marketplace"
-                    isExpanded={viewCompactCards ? false : true}
+                    isExpanded={!viewCompactCards}
                     showCollapse
                   />
                 );

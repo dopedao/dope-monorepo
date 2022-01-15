@@ -4,6 +4,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import PanelContainer from 'components/PanelContainer';
 import Check from 'ui/svg/Check';
+import { ItemTier, ItemType } from 'generated/graphql';
 
 type DopeTableProps = {
   className?: string;
@@ -12,6 +13,20 @@ type DopeTableProps = {
     claimed: boolean;
     opened: boolean;
     rank: number;
+    items: Array<{
+      __typename?: 'Item';
+      id: string;
+      fullname: string;
+      type: ItemType;
+      name: string;
+      namePrefix?: string | null | undefined;
+      nameSuffix?: string | null | undefined;
+      suffix?: string | null | undefined;
+      augmented?: boolean | null | undefined;
+      tier: ItemTier;
+      greatness: number;
+      count: number;
+    }>;
   }[];
   selected: number;
   onSelect: (i: number) => void;
@@ -112,7 +127,7 @@ const DopeTable = ({ className = '', data, selected, onSelect }: DopeTableProps)
             <colgroup>
               <col width="25%" />
               <col width="25%" />
-              {/* <col width="25%" /> */}
+              <col width="25%" />
               <col width="25%" />
             </colgroup>
             <Thead>
