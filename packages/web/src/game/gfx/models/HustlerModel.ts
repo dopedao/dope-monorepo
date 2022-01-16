@@ -103,6 +103,13 @@ export default class HustlerModel
         this.updateClothesSprites();
     }
 
+    setScale(x: number, y?: number)
+    {
+        this.clothesSprites.forEach(sprite => sprite.setScale(x, y));
+        Object.values(this.sprites).forEach(sprite => sprite.setScale(x, y));
+        this.shadowSprite?.setScale(x, y);
+    }
+
     setDepth(value: number)
     {
         this.clothesSprites.forEach(sprite => sprite.setDepth(value));
@@ -110,11 +117,11 @@ export default class HustlerModel
         this.shadowSprite?.setDepth(value - 1);
     }
 
-    setOrigin(x: number, y: number)
+    setOrigin(x: number, y?: number)
     {
         this.clothesSprites.forEach(sprite => sprite.setOrigin(x, y));
         Object.values(this.sprites).forEach(sprite => sprite.setOrigin(x, y));
-        this.shadowSprite.setOrigin(x, y);
+        this.shadowSprite?.setOrigin(x, y);
     }
 
     // field is the identifier of a field in the class, for eg.
@@ -164,7 +171,7 @@ export default class HustlerModel
     createSprites()
     {
         // Shadow
-        this.shadowSprite = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 3), this.hustler.width, this.hustler.height / 5, 0x000000, 0.2);
+        this.shadowSprite = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y + (this.hustler.height / 5), this.hustler.width * 0.8, this.hustler.height / 5, 0x000000, 0.2);
         (this.shadowSprite.scene.plugins.get('rexPixelationPipeline') as PixelationPipelinePlugin).add(this.shadowSprite, {
             pixelWidth: 3,
             pixelHeight: 3
@@ -195,6 +202,7 @@ export default class HustlerModel
 
         this.clothesSprites.forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY) && sprite.setDepth(this.hustler.depth));
         Object.values(this.sprites).forEach(sprite => sprite.setScale(this.hustler.scaleX, this.hustler.scaleY) && sprite.setOrigin(this.hustler.originX, this.hustler.originY) && sprite.setDepth(this.hustler.depth));
+        this.shadowSprite?.setScale(this.hustler.scale);
     }
 
     // pos: boolean, if pos is true, the position of the sprites will get updated
@@ -210,7 +218,7 @@ export default class HustlerModel
 
         this.clothesSprites.forEach(sprite => update(sprite));
         Object.values(this.sprites).forEach(sprite => update(sprite));
-        this.shadowSprite.setPosition(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 3));
+        this.shadowSprite.setPosition(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 5));
     }
 
     // cancel sprites animation

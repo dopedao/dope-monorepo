@@ -132,7 +132,7 @@ export default class Player extends Hustler
             }
             else if (this.lastDirection === Direction.North)
             {
-                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y - this.displayHeight / 1.2 });
+                (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, { x: this.x, y: this.y - this.displayHeight / 1.1 });
             }
             else if (this.lastDirection === Direction.West)
             {
@@ -149,6 +149,10 @@ export default class Player extends Hustler
     {
         let other = pair.bodyA as MatterJS.BodyType;
         let playerHitbox = pair.bodyB as MatterJS.BodyType;
+
+        // ignore collision with hustler collider
+        if (other.label === "collider" || other.label === "interactSensor")
+            return;
 
         // if the overlapped has a parent body, use it instead for calculating delta Y
         if (other.parent)

@@ -81,6 +81,17 @@ export default class GameScene extends Scene {
     this.mapHelper.createMap('Level_0');
     this.mapHelper.createEntities();
 
+    // citizens
+    this.citizens.push(new Citizen(
+      this.matter.world, 
+      500, 500, 
+      new HustlerModel(Base.Male, undefined, Feet.NikeCortez), 
+      "Michel", "Arpenteur",
+      [new Conversation("Welcome to Dope City!")],
+      [ this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
+      true
+    ));
+
     // TODO when map update: create player directly from map data
     this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
 
