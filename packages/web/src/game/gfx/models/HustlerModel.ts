@@ -1,4 +1,4 @@
-import { Base, Categories, CharacterCategories, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Weapons } from "game/constants/Sprites";
+import { Base, Categories, CharacterCategories, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Waist, Weapons } from "game/constants/Sprites";
 import Hustler from "game/entities/Hustler";
 import PixelationPipelinePlugin from "phaser3-rex-plugins/plugins/pixelationpipeline-plugin";
 import PixelationPostFx from 'phaser3-rex-plugins/plugins/pixelationpipeline.js';
@@ -19,6 +19,7 @@ export default class HustlerModel
     private _mask?: Mask;
     private _necklace?: Necklace;
     private _ring?: Ring;
+    private _waist?: Waist;
     private _weapon?: Weapons;
     
     // sprites
@@ -28,7 +29,7 @@ export default class HustlerModel
     public sprites: { [key: number]: Phaser.GameObjects.Sprite } = {};
 
     // The model of the hustler, contains all of the layers on top of its base skin 
-    constructor(base: Base, clothes?: Array<Clothes>, feet?: Feet, hands?: Hands, mask?: Mask, necklace?: Necklace, ring?: Ring, weapon?: Weapons)
+    constructor(base: Base, clothes?: Array<Clothes>, feet?: Feet, hands?: Hands, mask?: Mask, waist?: Waist, necklace?: Necklace, ring?: Ring, weapon?: Weapons)
     {
         this.base = base;
 
@@ -36,6 +37,7 @@ export default class HustlerModel
         this._feet = feet;
         this._hands = hands;
         this._mask = mask;
+        this._waist = waist;
         this._necklace = necklace;
         this._ring = ring;
         this._weapon = weapon;
@@ -54,6 +56,9 @@ export default class HustlerModel
     }
     public get mask(): Mask | undefined {
         return this._mask;
+    }
+    public get waist(): Waist | undefined {
+        return this._waist;
     }
     public get necklace(): Necklace | undefined {
         return this._necklace;
@@ -76,6 +81,10 @@ export default class HustlerModel
     public set necklace(value: Necklace | undefined) {
         this._necklace = value;
         this.updateSprite(CharacterCategories.Necklace, 'necklace');
+    }
+    public set waist(value: Waist | undefined) {
+        this._waist = value;
+        this.updateSprite(CharacterCategories.Waist, 'waist');
     }
     public set mask(value: Mask | undefined) {
         this._mask = value;
@@ -175,6 +184,8 @@ export default class HustlerModel
             this.sprites[CharacterCategories.Hands] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Hands][this.hands]);
         if (this.mask != undefined)
             this.sprites[CharacterCategories.Mask] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Mask][this.mask]);
+        if (this.waist != undefined)
+            this.sprites[CharacterCategories.Waist] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Waist][this.waist]);
         if (this.necklace != undefined)
             this.sprites[CharacterCategories.Necklace] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Necklace][this.necklace]);
         if (this.ring != undefined)

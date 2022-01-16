@@ -1,4 +1,4 @@
-import { Base, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Weapons } from 'game/constants/Sprites';
+import { Base, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Waist, Weapons } from 'game/constants/Sprites';
 import Hustler from 'game/entities/Hustler';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
@@ -82,7 +82,7 @@ export default class GameScene extends Scene {
     this.mapHelper.createEntities();
 
     // TODO when map update: create player directly from map data
-    this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold));
+    this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
