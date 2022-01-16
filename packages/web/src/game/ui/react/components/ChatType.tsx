@@ -63,10 +63,14 @@ export default function ChatType(props: Props)
                         onBlur={({ target }) => target.focus()}
                         pr='4.5rem'
                         placeholder='Message'
+                        _placeholder={{color: "#b8b8b8"}}
+                        textColor="#f5f5f5"
                         value={inputText}
                         onChange={({ target }) => setInputText(target.value)}
                         onKeyDown={(e) => handleInputKey(e.key)}
-                        // value={props.text}
+                        style={{
+                            backgroundColor: "rgba(0, 0, 0, 0.3)",
+                        }}
                     />
                     <InputRightElement width='4.5rem' style={{paddingRight: "2%"}}>
                         <Button h='1.75rem' size='sm' onClick={() => handleSubmit(inputText)}>
