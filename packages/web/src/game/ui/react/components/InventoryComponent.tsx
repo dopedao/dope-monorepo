@@ -4,7 +4,7 @@ import { CSSProperties } from "react";
 
 import Item from "game/entities/player/inventory/Item";
 import Inventory from "../../../entities/player/inventory/Inventory";
-import Quest from "game/quests/Quest";
+import Quest from "game/entities/player/quests/Quest";
 
 interface InventoryProps
 {
