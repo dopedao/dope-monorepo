@@ -10,9 +10,11 @@ import Item from 'game/entities/player/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';
 import MapHelper from 'game/world/MapHelper';
 
+
 export default class GameScene extends Scene {
   private player!: Player;
   private citizens: Citizen[] = new Array();
+  private itemEntities: ItemEntity[] = new Array();
 
   private _mapHelper!: MapHelper;
 
@@ -30,7 +32,7 @@ export default class GameScene extends Scene {
   {
     EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop: boolean) => {
       if (drop)
-        new ItemEntity(this.matter.world, this.player.x, this.player.y, 'item_' + item.name, item);
+        this.itemEntities.push(new ItemEntity(this.matter.world, this.player.x, this.player.y, 'item_' + item.name, item));
     })
   }
 
@@ -81,6 +83,10 @@ export default class GameScene extends Scene {
       true
     ));
 
+    this.itemEntities.push(new ItemEntity(this.matter.world, 800, 1200, 'lol', new Item('item_test', 'jsp'), (item: Item) => {
+      this.player.inventory.remove(item, true);
+    }));
+
     // TODO when map update: create player directly from map data
     this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
 
@@ -97,5 +103,6 @@ export default class GameScene extends Scene {
   update(time: number, delta: number): void {
     this.player.update();
     this.citizens.forEach(citizen => citizen.update());
+    this.itemEntities.forEach(itemEntity => itemEntity.update());
   }
 }
