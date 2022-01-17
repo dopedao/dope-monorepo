@@ -22,6 +22,7 @@ export enum Events
     PLAYER_QUEST_COMPLETE = 'player_complete_quest',
 
     CHAT_MESSAGE = 'chat_message',
+    ITEM_ENTITY_DESTROYED = 'item_entity_destroyed',
 }
 
 export default class EventHandler

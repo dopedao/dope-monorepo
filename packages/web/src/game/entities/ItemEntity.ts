@@ -38,8 +38,11 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite
         this.setInteractive({ useHandCursor: true });
         this.on('pointerover', () => {
             const uiScene = this.scene.scene.get('UIScene') as UIScene;
-            this.hoverText = getBBcodeText(uiScene, 100, 0, 0)
-                .setText(this.item.name);
+            this.hoverText = uiScene.rexUI.add.BBCodeText(0, 0, this.item.name, {
+                fontFamily: 'Dope',
+                fontSize: '20px',
+                color: '#ffffff'
+            });
         });
         this.on('pointerout', () => {
             this.hoverText?.destroy();
@@ -51,6 +54,11 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite
     {
         // destroy gameobject, since item has been picked up
         this.destroy();
+
+        this.hoverText?.destroy();
+        this.hoverText = undefined;
+
+        EventHandler.emitter().emit(Events.ITEM_ENTITY_DESTROYED, this);
         
         if (this.onPickupCallback)
             this.onPickupCallback(this.item);

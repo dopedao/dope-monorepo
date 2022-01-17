@@ -33,7 +33,12 @@ export default class GameScene extends Scene {
     EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop: boolean) => {
       if (drop)
         this.itemEntities.push(new ItemEntity(this.matter.world, this.player.x, this.player.y, 'item_' + item.name, item));
-    })
+      console.log(this.itemEntities);
+    });
+    EventHandler.emitter().on(Events.ITEM_ENTITY_DESTROYED, (itemEntity: ItemEntity) => {
+      this.itemEntities.splice(this.itemEntities.indexOf(itemEntity), 1);
+      console.log(this.itemEntities);
+    });
   }
 
   create(): void {

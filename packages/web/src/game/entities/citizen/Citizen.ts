@@ -48,8 +48,11 @@ export default class Citizen extends Hustler
         this.setInteractive({ useHandCursor: true });
         this.on('pointerover', () => {
             const uiScene = this.scene.scene.get('UIScene') as UIScene;
-            this.hoverText = getBBcodeText(uiScene, 100, 0, 0)
-                .setText(this.name);
+            this.hoverText = uiScene.rexUI.add.BBCodeText(0, 0, this.name, {
+                fontFamily: 'Dope',
+                fontSize: '20px',
+                color: '#ffffff'
+            });
         });
         this.on('pointerout', () => {
             this.hoverText?.destroy();
