@@ -1,8 +1,8 @@
 import HustlerModel from "game/gfx/models/HustlerModel";
 import EventHandler, { Events } from "game/handlers/EventHandler";
-import Inventory from "game/inventory/Inventory";
-import QuestManager from "game/managers/QuestManager";
-import Quest from "game/quests/Quest";
+import Inventory from "game/entities/player/inventory/Inventory";
+import QuestManager from "game/entities/player/managers/QuestManager";
+import Quest from "game/entities/player/quests/Quest";
 import Citizen from "../citizen/Citizen";
 import Hustler, { Direction } from "../Hustler";
 import ItemEntity from "../ItemEntity";

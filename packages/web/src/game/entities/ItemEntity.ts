@@ -1,5 +1,5 @@
 import EventHandler, { Events } from "game/handlers/EventHandler";
-import Item from "game/inventory/Item";
+import Item from "game/entities/player/inventory/Item";
 import Player from "./player/Player";
 
 // Item entity class for items on ground

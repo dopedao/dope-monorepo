@@ -1,8 +1,8 @@
 import Player from "game/entities/player/Player";
 import EventHandler, { Events } from "game/handlers/EventHandler";
-import ItemQuest from "game/quests/ItemQuest";
-import PointQuest from "game/quests/PointQuest";
-import Quest from "game/quests/Quest";
+import ItemQuest from "game/entities/player/quests/ItemQuest";
+import PointQuest from "game/entities/player/quests/PointQuest";
+import Quest from "game/entities/player/quests/Quest";
 
 export default class QuestManager {
     private _player: Player;

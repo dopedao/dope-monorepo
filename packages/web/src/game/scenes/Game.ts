@@ -1,24 +1,13 @@
 import { Base, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Waist, Weapons } from 'game/constants/Sprites';
-import Hustler from 'game/entities/Hustler';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
 import Player from 'game/entities/player/Player';
 import Citizen from 'game/entities/citizen/Citizen';
-import Zone from 'game/world/Zone';
-import CustomCharacter from 'game/ui/react/components/CustomCharacter';
-import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
-import { createTextBox } from '../ui/rex/RexUtils';
 import EventHandler, { Events } from 'game/handlers/EventHandler';
 import Conversation from 'game/entities/citizen/Conversation';
-import { TypeKind } from 'graphql';
-import Quest from 'game/quests/Quest';
-import PointQuest from 'game/quests/PointQuest';
-import Item from 'game/inventory/Item';
+import Item from 'game/entities/player/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';
-import ItemQuest from 'game/quests/ItemQuest';
-import BringItemQuest from 'game/quests/BringItemQuest';
-import { LdtkReader } from '../world/LDtkParser';
 import MapHelper from 'game/world/MapHelper';
 
 export default class GameScene extends Scene {

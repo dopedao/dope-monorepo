@@ -1,6 +1,6 @@
 import Citizen from "game/entities/citizen/Citizen";
 import EventHandler, { Events } from "game/handlers/EventHandler";
-import QuestManager from "game/managers/QuestManager";
+import QuestManager from "game/entities/player/managers/QuestManager";
 
 export default class Quest 
 {

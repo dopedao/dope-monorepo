@@ -1,6 +1,6 @@
 import Citizen from "game/entities/citizen/Citizen";
-import Item from "game/inventory/Item";
-import Quest from "game/quests/Quest";
+import Item from "game/entities/player/inventory/Item";
+import Quest from "game/entities/player/quests/Quest";
 
 export enum Events
 {

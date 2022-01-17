@@ -1,6 +1,6 @@
 import Citizen from "game/entities/citizen/Citizen";
 import Player from "game/entities/player/Player";
-import QuestManager from "game/managers/QuestManager";
+import QuestManager from "game/entities/player/managers/QuestManager";
 import Zone from "game/world/Zone";
 import Quest from "./Quest";
 

@@ -2,8 +2,8 @@ import { Box, ChakraProvider, Flex, Text } from "@chakra-ui/react";
 import { Grid, GridItem } from '@chakra-ui/react'
 import { CSSProperties } from "react";
 
-import Item from "game/inventory/Item";
-import Inventory from "../../../inventory/Inventory";
+import Item from "game/entities/player/inventory/Item";
+import Inventory from "../../../entities/player/inventory/Inventory";
 import Quest from "game/quests/Quest";
 
 interface InventoryProps

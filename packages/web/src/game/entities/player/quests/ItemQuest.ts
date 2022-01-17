@@ -1,7 +1,7 @@
 import Citizen from "game/entities/citizen/Citizen";
 import EventHandler, { Events } from "game/handlers/EventHandler";
-import Item from "game/inventory/Item";
-import QuestManager from "game/managers/QuestManager";
+import Item from "game/entities/player/inventory/Item";
+import QuestManager from "game/entities/player/managers/QuestManager";
 import { compareByMostAffordable } from "utils/DopeDatabase";
 import Quest from "./Quest";
 
