@@ -9,6 +9,7 @@ import Conversation from 'game/entities/citizen/Conversation';
 import Item from 'game/entities/player/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';
 import MapHelper from 'game/world/MapHelper';
+import Quest from 'game/entities/player/quests/Quest';
 
 
 export default class GameScene extends Scene {
@@ -19,6 +20,8 @@ export default class GameScene extends Scene {
   private _mapHelper!: MapHelper;
 
   public canUseMouse: boolean = true;
+
+  readonly zoom: number = 3;
 
   get mapHelper() { return this._mapHelper; }
 
@@ -41,9 +44,33 @@ export default class GameScene extends Scene {
     });
   }
 
+  handleCamera()
+  {
+    // to use for important events
+    // this.cameras.main.shake(700, 0.001);
+    // this.cameras.main.flash(800, 0xff, 0xff, 0xff);
+
+    // zoom to citizen when talking
+    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
+      this.cameras.main.zoomTo(4, 700, 'Sine.easeInOut');
+      this.cameras.main.pan(citizen.x, citizen.y, 700, 'Sine.easeInOut');
+    });
+
+    // cancel zoom
+    // force camera to zoom even if pan's already running
+    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, () => {
+      this.cameras.main.zoomTo(this.zoom, 700, 'Sine.easeInOut', true);
+    });
+    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, () => {
+      this.cameras.main.zoomTo(this.zoom, 700, 'Sine.easeInOut', true);
+    });
+  }
+
   create(): void {
     // create item entities when need 
     this.handleItemEntities();
+    // handle camera effects
+    this.handleCamera();
 
     // create all of the animations
     new GameAnimations(this.anims).create();
@@ -99,7 +126,7 @@ export default class GameScene extends Scene {
     camera.setBounds(0, 0, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
 
     // make the camera follow the player
-    camera.setZoom(3, 3);
+    camera.setZoom(this.zoom, this.zoom);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
     this.scene.launch('UIScene', { player: this.player });

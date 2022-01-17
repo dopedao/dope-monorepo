@@ -68,6 +68,6 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite
     {
         this.hoverText?.setPosition(
             (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
-            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - (this.displayHeight * 2));
+            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.5) * this.scene.cameras.main.zoom));
     }
 }

@@ -259,7 +259,7 @@ export default class UIScene extends Scene {
                         if (conv.onFinish())
                             citizen.conversations.shift();
                 });
-            this.currentInteraction = { citizen, textBox, maxDistance: 200 };
+            this.currentInteraction = { citizen, textBox, maxDistance: 100 };
             
                 
             // Chat bubbles

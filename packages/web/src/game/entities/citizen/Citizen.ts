@@ -85,7 +85,7 @@ export default class Citizen extends Hustler
         // make hovertext follow us
         this.hoverText?.setPosition(
             (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
-            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - (this.displayHeight * 2));;
+            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.5) * this.scene.cameras.main.zoom));;
 
         // if the citizen has no target currently, check if he has a next point and move to it
         // or, if lastPointTimestamp is set, check if the time has passed and move to the next point
