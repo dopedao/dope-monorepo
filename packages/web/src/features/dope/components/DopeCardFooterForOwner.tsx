@@ -21,7 +21,12 @@ const DopeCardFooterForOwner = ({ dope, toggleVisibility }: DopeCardFooterForOwn
   const router = useRouter();
 
   return (
-    <div>
+    <div
+      css={css`
+        display: flex;
+        align-items: center;
+      `}
+    >
       <Link href={`/hustlers/${dope.id}/initiate`} passHref>
         <Button variant="primary">Initiate Hustler</Button>
       </Link>

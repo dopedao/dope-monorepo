@@ -4,8 +4,8 @@ const PanelFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 44px;
-  padding: 0 16px 14px 16px;
+  padding: 8px;
+  background-color: #dededd;
   div {
     flex-grow: 1;
   }
@@ -14,9 +14,6 @@ const PanelFooter = styled.div`
     &:last-of-type {
       margin-right: 0;
     }
-  }
-  @media (max-width: 768px) {
-    height: 120px;
   }
 `;
 
