@@ -172,11 +172,11 @@ export default class HustlerModel
     {
         // Shadow
         this.shadowSprite = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y + (this.hustler.height / 5), this.hustler.width * 0.8, this.hustler.height / 5, 0x000000, 0.2);
+        this.shadowSprite.setDepth(this.hustler.depth - 1);
         (this.shadowSprite.scene.plugins.get('rexPixelationPipeline') as PixelationPipelinePlugin).add(this.shadowSprite, {
             pixelWidth: 3,
             pixelHeight: 3
-        })
-        this.shadowSprite.setDepth(this.hustler.depth - 1);
+        });
         //this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Shadow]);
         //this.sprites[CharacterCategories.Shadow] = this.hustler.scene.add.ellipse(this.hustler.x, this.hustler.y, this.hustler.width, this.hustler.height / 3);
 
@@ -218,7 +218,7 @@ export default class HustlerModel
 
         this.clothesSprites.forEach(sprite => update(sprite));
         Object.values(this.sprites).forEach(sprite => update(sprite));
-        this.shadowSprite.setPosition(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 5));
+        this.shadowSprite?.setPosition(this.hustler.x, this.hustler.y + (this.hustler.displayHeight / 5));
     }
 
     // cancel sprites animation

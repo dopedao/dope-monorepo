@@ -23,7 +23,7 @@ interface Interaction
     maxDistance: number;
 }
 
-const toastStyle: ToastOptions = {
+export const toastStyle: ToastOptions = {
     duration: 5000,
     icon: 'ℹ️',
     position: 'top-right',

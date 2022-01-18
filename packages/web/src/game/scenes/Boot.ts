@@ -1,3 +1,4 @@
+import EventHandler from 'game/handlers/EventHandler';
 import { Scene } from 'phaser';
 
 export default class Boot extends Scene {
@@ -24,6 +25,12 @@ export default class Boot extends Scene {
     });
 
     window.onresize = () => this.scale.setGameSize(this.scale.parentSize.width, this.scale.parentSize.height);
+
+    // free plugins
+    this.events.on(Phaser.Core.Events.DESTROY, () => {
+      EventHandler.emitter().removeAllListeners();
+      this.game.plugins.removeScenePlugin('rexUI');
+    });
     
     this.scene.start('PreloadScene');
   }

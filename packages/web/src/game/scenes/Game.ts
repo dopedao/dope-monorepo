@@ -50,20 +50,27 @@ export default class GameScene extends Scene {
     // this.cameras.main.shake(700, 0.001);
     // this.cameras.main.flash(800, 0xff, 0xff, 0xff);
 
-    // zoom to citizen when talking
-    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
+    const focusCitizen = (citizen: Citizen) => {
       this.cameras.main.zoomTo(4, 700, 'Sine.easeInOut');
       this.cameras.main.pan(citizen.x, citizen.y, 700, 'Sine.easeInOut');
-    });
+    }
+
+    const cancelFocus = () => this.cameras.main.zoomTo(this.zoom, 700, 'Sine.easeInOut', true);
+
+    // zoom to citizen when talking
+    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, focusCitizen);
 
     // cancel zoom
     // force camera to zoom even if pan's already running
-    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, () => {
-      this.cameras.main.zoomTo(this.zoom, 700, 'Sine.easeInOut', true);
-    });
-    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, () => {
-      this.cameras.main.zoomTo(this.zoom, 700, 'Sine.easeInOut', true);
-    });
+    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, cancelFocus);
+    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, cancelFocus);
+
+    // remove event listeners
+    // return () => {
+    //   EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT, focusCitizen);
+    //   EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, cancelFocus);
+    //   EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT_CANCEL, cancelFocus);
+    // }
   }
 
   create(): void {

@@ -7,6 +7,11 @@ import Citizen from "../citizen/Citizen";
 import Hustler, { Direction } from "../Hustler";
 import ItemEntity from "../ItemEntity";
 import PlayerController from "./PlayerController";
+import ENS, { getEnsAddress } from "@ensdomains/ensjs";
+import { EmptyBagStruct } from "utils/DopeDatabase";
+import UIScene from "game/scenes/UI";
+import BBCodeText from "phaser3-rex-plugins/plugins/bbcodetext";
+import { getShortAddress } from "utils/utils";
 
 export default class Player extends Hustler
 {
@@ -19,6 +24,8 @@ export default class Player extends Hustler
 
     private _inventoryOpen: boolean = false;
     private _busy: boolean = false;
+
+    private hoverText?: BBCodeText;
 
     private readonly _baseDepth: number;
 
@@ -48,6 +55,30 @@ export default class Player extends Hustler
         this._handleEvents();
 
         this._baseDepth = this.depth;
+
+        // display ens domain name / address on hover
+        if ((window.ethereum as any).selectedAddress)
+        {
+            const address = (window.ethereum as any).selectedAddress;
+            const ens = new ENS({ provider: window.ethereum, ensAddress: getEnsAddress(1) });
+
+            ens.getName(address).then((ensName: { name: string }) => {
+                const uiScene = this.scene.scene.get('UIScene') as UIScene;
+                
+                this.setInteractive({ useHandCursor: true });
+                this.on('pointerover', () => {
+                    this.hoverText = uiScene.rexUI.add.BBCodeText(0, 0, ensName.name ?? getShortAddress(address), {
+                        fontFamily: 'Dope',
+                        fontSize: '20px',
+                        color: '#ffffff'
+                    });
+                });
+                this.on('pointerout', () => {
+                    this.hoverText?.destroy();
+                    this.hoverText = undefined;
+                });
+            });
+        }
 
         this.hitboxSensor.onCollideActiveCallback = this.updateDepth;
         // setTimeout prevents depth changing too fast
@@ -180,7 +211,12 @@ export default class Player extends Hustler
     update(): void
     {
         super.update();
+        // update interaction box sensor position
         this.updateSensorPosition();
+        // make hovertext follow us
+        this.hoverText?.setPosition(
+            (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
+            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.5) * this.scene.cameras.main.zoom));;
 
         // takes input and update player
         this.controller.update();
