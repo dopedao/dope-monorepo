@@ -19,18 +19,21 @@ import { useWeb3React } from '@web3-react/core';
 import { NETWORK } from 'utils/constants';
 import { Hustler__factory } from '@dopewars/contracts';
 import { BigNumber } from '@ethersproject/bignumber';
+import { css } from '@emotion/react';
 
 const ControlsWrapper = styled.div`
   background-color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 2px solid #000;
   border-left: none;
+  position: relative;
 `;
 
 const ControlsBody = styled.div`
   padding: 16px;
+  height: calc(100% - 56px);
+  overflow-y: auto;
 `;
 
 const PanelFooter = styled.div`
@@ -39,7 +42,7 @@ const PanelFooter = styled.div`
   justify-content: space-between;
   background: #dededd;
   border-top: 2px solid #000;
-  padding: 14px;
+  padding: 11px;
   div {
     flex-grow: 1;
   }
@@ -80,7 +83,7 @@ const ConfigurationControls = ({
 
   useEffect(() => {
     setShowTextColor(config.renderName === true);
-    setShowNameControls(config.zoomWindow === ZOOM_WINDOWS[0]);
+    setShowNameControls(config.zoomWindow !== ZOOM_WINDOWS[1]);
   }, [config]);
 
   const customizeHustler = async () => {
@@ -202,7 +205,14 @@ const ConfigurationControls = ({
           <HairSelector config={config} setHustlerConfig={setHustlerConfig} />
         </Stack>
       </ControlsBody>
-      <PanelFooter>
+      <PanelFooter
+        css={css`
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+        `}
+      >
         <HStack mt={0} justify="flex-end" flexWrap="wrap">
           <Button onClick={() => randomizeHustlerAttributes(config.dopeId, setHustlerConfig)}>
             Randomize

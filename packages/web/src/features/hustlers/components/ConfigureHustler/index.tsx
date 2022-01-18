@@ -3,8 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { HustlerCustomization } from 'utils/HustlerConfig';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import PanelContainer from 'components/PanelContainer';
-import PanelFooter, { PanelFooterLeft } from 'components/PanelFooter';
-import PanelTitleBar from 'components/PanelTitleBar';
+import { PanelFooterLeft } from 'components/PanelFooter';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
@@ -24,10 +23,10 @@ const HustlerCard = styled.div<{ bgColor?: string }>(props => ({
   // This bg color will have to change once we can configure it
   // It's the default right now for testnet renders.
   backgroundColor: props.bgColor || '',
-  margin: '16px',
+  margin: '16px 16px 0 16px',
   border: '2px solid #000000',
   borderRadius: '4px',
-  height: 'calc(100% - 50px - 44px - 32px)',
+  height: 'calc(100% - 60px - 16px)',
 }));
 
 const ConfigureHustler = ({
@@ -46,7 +45,6 @@ const ConfigureHustler = ({
           background-color: #edefee;
         `}
       >
-        <PanelTitleBar>DOPE NFT #{config.dopeId}</PanelTitleBar>
         <HustlerCard bgColor={config.bgColor}>
           {isCustomize && itemIds ? (
             <RenderFromItemIds
@@ -62,7 +60,7 @@ const ConfigureHustler = ({
               zoomWindow={config.zoomWindow}
               ogTitle={ogTitle}
               dopeId={config.dopeId}
-              resolution={64}
+              isVehicle={config.isVehicle}
             />
           ) : (
             <RenderFromDopeId
@@ -77,7 +75,7 @@ const ConfigureHustler = ({
               textColor={config.textColor}
               zoomWindow={config.zoomWindow}
               ogTitle={ogTitle}
-              resolution={64}
+              isVehicle={config.isVehicle}
             />
           )}
         </HustlerCard>

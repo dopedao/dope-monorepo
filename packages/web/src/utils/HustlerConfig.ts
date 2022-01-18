@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers';
 import { getRandomNumber } from 'utils/utils';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
 import { HUSTLER_NAMES } from 'utils/hustler-names';
+import { bool } from 'aws-sdk/clients/signer';
 const HUSTLER_SEXES = ['male', 'female'];
 export type HustlerSex = 'male' | 'female';
 export const MAX_BODIES = 4;
@@ -18,6 +19,7 @@ export type ZoomWindow = [BigNumber, BigNumber, BigNumber, BigNumber];
 export const ZOOM_WINDOWS = [
   [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)] as ZoomWindow, // default
   [BigNumber.from(110), BigNumber.from(20), BigNumber.from(100), BigNumber.from(100)] as ZoomWindow, // mugshot
+  [BigNumber.from(70), BigNumber.from(0), BigNumber.from(200), BigNumber.from(320)] as ZoomWindow, // vehicle
 ];
 
 export type HustlerCustomization = {
@@ -31,6 +33,7 @@ export type HustlerCustomization = {
   sex: HustlerSex;
   textColor: string;
   zoomWindow: ZoomWindow;
+  isVehicle: bool;
   mintAddress?: string;
 };
 
@@ -66,6 +69,7 @@ export const getRandomHustler = ({
     sex: sex || (HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex),
     textColor: textColor || '#000000',
     zoomWindow: zoomWindow || ZOOM_WINDOWS[0],
+    isVehicle: false,
   };
 };
 

@@ -8,7 +8,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  line-height: 32px;
   font-size: var(--text-00);
   text-align: center;
   margin-bottom: 16px;
