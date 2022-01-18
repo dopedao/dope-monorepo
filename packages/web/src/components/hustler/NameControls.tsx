@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Input, HStack, FormControl, FormLabel, Checkbox, Stack } from '@chakra-ui/react';
 import { FormErrorMessage } from '@chakra-ui/form-control';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
-import Accordion from 'ui/components/Accordion';
 import { css } from '@emotion/react';
 
 const NAME_MAX_LENGTH = 20;
@@ -35,9 +34,9 @@ const NameControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
   }, [debouncedHustlerName, config, nameFieldDirty, setHustlerConfig]);
 
   return (
-    <Accordion title="Display">
-      <Stack spacing={FIELD_SPACING}>
-        <FormLabel htmlFor="name" color="#000" padding="0">
+    <div>
+      <Stack spacing={FIELD_SPACING} borderBottom="1px solid #EFEFEF" paddingBottom="16px">
+        <FormLabel htmlFor="name" color="#000" padding="0" fontSize="14px">
           Name
         </FormLabel>
         <HStack
@@ -54,6 +53,7 @@ const NameControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
               maxLength={NAME_MAX_LENGTH}
               value={hustlerName}
               border="2px"
+              fontSize="14px"
               paddingX="14px"
               paddingY="10px"
               rounded="unset"
@@ -72,7 +72,7 @@ const NameControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
               onChange={e => setHustlerConfig({ ...config, renderName: e.target.checked })}
               colorScheme="whiteAlpha"
               iconColor="black"
-              rounded="unset"
+              borderRadius="10px"
               sx={{
                 borderColor: '#000',
                 '[data-checked][data-hover]': {
@@ -80,7 +80,6 @@ const NameControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
                 },
                 '[data-checked]': {
                   borderColor: '#000 !important',
-                  borderRadius: 'unset',
                 },
               }}
             />
@@ -90,7 +89,7 @@ const NameControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
           </FormControl>
         </HStack>
       </Stack>
-    </Accordion>
+    </div>
   );
 };
 

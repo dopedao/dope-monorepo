@@ -12,10 +12,7 @@ const ButtonsWrapper = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
-  @media (max-width: 768px) {
-    gap: 6px;
-  }
+  gap: 6px;
 `;
 
 type DopeCardFooterForOwnerProps = {

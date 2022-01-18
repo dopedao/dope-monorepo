@@ -83,7 +83,11 @@ const DopeDetails = () => {
             />
           )}
           {data?.wallets.edges?.[0] && (
-            <DopeCard dope={data.wallets.edges[0].node.dopes[selected]} footer="for-owner" isExpanded />
+            <DopeCard
+              dope={data.wallets.edges[0].node.dopes[selected]}
+              footer="for-owner"
+              isExpanded
+            />
           )}
         </FlexFiftyContainer>
       )}

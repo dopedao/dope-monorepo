@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { css } from '@emotion/react';
 import DopeCardBody from 'features/dope/components/DopeCardBody';
 import DopeCardFooterForMarket from 'features/dope/components/DopeCardFooterForMarket';
@@ -67,15 +67,11 @@ export type DopeCardProps = {
 const DopeCard = ({
   footer,
   dope,
-  isExpanded: isExpandedProp,
+  isExpanded: isExpandedProp = true,
   showCollapse = false,
 }: DopeCardProps) => {
   const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(isExpandedProp);
-
-  useEffect(() => {
-    setIsExpanded(isExpandedProp);
-  }, [isExpandedProp]);
 
   const toggleItemLegendVisibility = (): void => {
     setIsItemLegendVisible(!isItemLegendVisible);
@@ -96,11 +92,7 @@ const DopeCard = ({
           align-items: center;
         `}
       >
-        <img
-          src={`${iconPath}/${icon}.svg`}
-          alt=""
-          onClick={() => setIsExpanded(prevState => !prevState)}
-        />
+        <img src={`${iconPath}/${icon}.svg`} alt="" onClick={() => setIsExpanded(!isExpanded)} />
       </div>
     );
   };
