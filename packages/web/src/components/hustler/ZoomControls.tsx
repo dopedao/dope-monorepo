@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ZoomWindow, ZOOM_WINDOWS } from 'utils/HustlerConfig';
 import { Button } from '@chakra-ui/button';
 import styled from '@emotion/styled';
@@ -17,79 +17,67 @@ const ZoomContainer = styled.div`
   }
 `;
 
-const indexFromZoomValue = (zoomValue: ZoomWindow) => {
-  let index = ZOOM_WINDOWS.findIndex(window => window == zoomValue);
-  if (index == -1) index = 0;
-  return index;
-};
-
 const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
-  const [currentIndex, setCurrentIndex] = useState(
-    indexFromZoomValue(config.zoomWindow ?? [0, 0, 0, 0]),
-  );
-  const minIndex = 0;
-  const maxIndex = ZOOM_WINDOWS.length - 1;
+  const [selected, setSelected] = useState(1);
+  const [isVehicle, setIsVehicle] = useState(config.isVehicle);
 
-  const decrementZoomWindowIndex = () => {
-    let newIndex = currentIndex - 1;
-    if (minIndex > newIndex) newIndex = maxIndex;
-    setCurrentIndex(newIndex);
-    handleSetHustlerConfig();
-  };
-
-  const incrementZoomWindowIndex = () => {
-    let newIndex = currentIndex + 1;
-    if (maxIndex < newIndex) newIndex = minIndex;
-    setCurrentIndex(newIndex);
-    handleSetHustlerConfig();
-  };
-
-  const handleSetHustlerConfig = () => {
+  useEffect(() => {
     let renderName = config.renderName;
     // for mugshots doesn't make sense to render name, because it gets cut off.
-    if (currentIndex == 1) renderName = false;
+    if (selected == 0) renderName = false;
     setHustlerConfig({
       ...config,
-      zoomWindow: ZOOM_WINDOWS[currentIndex],
+      zoomWindow:
+        selected == 0 ? ZOOM_WINDOWS[1] : selected == 1 ? ZOOM_WINDOWS[0] : ZOOM_WINDOWS[2],
+      isVehicle,
       renderName: renderName,
     });
-  };
+  }, [selected, isVehicle]);
 
   return (
     <ZoomContainer>
       <Button
-        onClick={() => decrementZoomWindowIndex()}
+        onClick={() => {
+          setSelected(0);
+          setIsVehicle(false);
+        }}
         borderTopRightRadius="0"
         borderBottomRightRadius="0"
-        backgroundColor={currentIndex == 0 ? '#434345' : '#DEDEDD'}
+        backgroundColor={selected == 0 ? '#434345' : '#DEDEDD'}
         _hover={{
-          backgroundColor: currentIndex == 0 ? '#434345' : 'unset',
+          backgroundColor: selected == 0 ? '#434345' : 'unset',
         }}
       >
-        <PersonHeadIcon color={currentIndex == 0 ? '#fff' : undefined} />
+        <PersonHeadIcon color={selected == 0 ? '#fff' : undefined} />
       </Button>
       <Button
-        onClick={() => incrementZoomWindowIndex()}
+        onClick={() => {
+          setSelected(1);
+          setIsVehicle(false);
+        }}
         borderRadius="0"
         borderLeft="unset"
         borderRight="unset"
-        backgroundColor={currentIndex == 1 ? '#434345' : '#DEDEDD'}
+        backgroundColor={selected == 1 ? '#434345' : '#DEDEDD'}
         _hover={{
-          backgroundColor: currentIndex == 1 ? '#434345' : 'unset',
+          backgroundColor: selected == 1 ? '#434345' : 'unset',
         }}
       >
-        <PersonIcon color={currentIndex == 1 ? '#fff' : undefined} />
+        <PersonIcon color={selected == 1 ? '#fff' : undefined} />
       </Button>
       <Button
-        onClick={() => {}}
+        onClick={() => {
+          setSelected(2);
+          setIsVehicle(true);
+        }}
         borderTopLeftRadius="0"
         borderBottomLeftRadius="0"
-        backgroundColor={currentIndex == 2 ? '#434345' : '#DEDEDD'}
+        backgroundColor={selected == 2 ? '#434345' : '#DEDEDD'}
         _hover={{
-          backgroundColor: currentIndex == 2 ? '#434345' : 'unset',
+          backgroundColor: selected == 2 ? '#434345' : 'unset',
         }}
       >
-        <VehicleIcon color={currentIndex == 2 ? '#fff' : undefined} />
+        <VehicleIcon color={selected == 2 ? '#fff' : undefined} />
       </Button>
     </ZoomContainer>
   );
