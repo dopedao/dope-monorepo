@@ -289,8 +289,7 @@ func (t *TimeNano) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	tt := time.Time{}
-	tt, err = time.Parse("2006-01-02T15:04:05.999999", s)
+	tt, err := time.Parse("2006-01-02T15:04:05.999999", s)
 	if err != nil {
 		return err
 	}

@@ -7,7 +7,7 @@ const PanelTitleBar = styled.div`
   box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25);
   font-size: var(--text-00);
   position: 'sticky';
-  padding: 16px;
+  padding: 8px;
 `;
 
 export default PanelTitleBar;

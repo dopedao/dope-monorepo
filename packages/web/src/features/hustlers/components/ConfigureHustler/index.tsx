@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { HustlerCustomization } from 'utils/HustlerConfig';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import PanelContainer from 'components/PanelContainer';
-import PanelFooter from 'components/PanelFooter';
+import PanelFooter, { PanelFooterLeft } from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
@@ -43,6 +43,7 @@ const ConfigureHustler = ({
       <PanelContainer
         css={css`
           min-height: 500px;
+          background-color: #edefee;
         `}
       >
         <PanelTitleBar>DOPE NFT #{config.dopeId}</PanelTitleBar>
@@ -80,7 +81,7 @@ const ConfigureHustler = ({
             />
           )}
         </HustlerCard>
-        <PanelFooter
+        <PanelFooterLeft
           css={css`
             width: 100%;
             border-top-width: 1px;
@@ -91,7 +92,7 @@ const ConfigureHustler = ({
           `}
         >
           <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
-        </PanelFooter>
+        </PanelFooterLeft>
       </PanelContainer>
       <ConfigurationControls
         config={config}

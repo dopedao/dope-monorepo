@@ -46,7 +46,7 @@ const PanelFooter = styled.div`
   * > button {
     margin-right: 10px;
     &:last-of-type {
-      margin-right: 0;
+      margin: 0;
     }
   }
   @media (max-width: 768px) {

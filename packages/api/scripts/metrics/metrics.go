@@ -16,18 +16,18 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var componentType = map[item.Type]uint8{
-	item.TypeWEAPON:    0,
-	item.TypeCLOTHES:   1,
-	item.TypeVEHICLE:   2,
-	item.TypeWAIST:     3,
-	item.TypeFOOT:      4,
-	item.TypeHAND:      5,
-	item.TypeDRUGS:     6,
-	item.TypeNECK:      7,
-	item.TypeRING:      8,
-	item.TypeACCESSORY: 9,
-}
+// var componentType = map[item.Type]uint8{
+// 	item.TypeWEAPON:    0,
+// 	item.TypeCLOTHES:   1,
+// 	item.TypeVEHICLE:   2,
+// 	item.TypeWAIST:     3,
+// 	item.TypeFOOT:      4,
+// 	item.TypeHAND:      5,
+// 	item.TypeDRUGS:     6,
+// 	item.TypeNECK:      7,
+// 	item.TypeRING:      8,
+// 	item.TypeACCESSORY: 9,
+// }
 
 func main() {
 	ctx := context.Background()

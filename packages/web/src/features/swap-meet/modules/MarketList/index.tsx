@@ -59,9 +59,15 @@ const MarketList = () => {
       query: debouncedValue,
     },
     {
-      getNextPageParam: lastPage => ({
-        after: lastPage.search.pageInfo.endCursor,
-      }),
+      getNextPageParam: lastPage => {
+        if (!lastPage.search.pageInfo.hasNextPage) {
+          return null;
+        }
+
+        return {
+          after: lastPage.search.pageInfo.endCursor,
+        };
+      },
     },
   );
 
@@ -70,7 +76,6 @@ const MarketList = () => {
   };
 
   const isLoading = searchStatus === 'loading';
-
   return (
     <>
       <MarketFilterBar
@@ -97,7 +102,7 @@ const MarketList = () => {
             className="dopeGrid"
           >
             {searchResult?.pages.map(group =>
-              group.search.edges!.map((dope: any) => {
+              group.search.edges?.map((dope: any) => {
                 if (!dope || !dope.node) {
                   return null;
                 }

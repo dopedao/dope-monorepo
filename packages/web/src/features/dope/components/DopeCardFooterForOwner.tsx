@@ -6,6 +6,14 @@ import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { Dope } from 'generated/graphql';
 import { useInitiator, usePaper } from 'hooks/contracts';
+import styled from '@emotion/styled';
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+`;
 
 type DopeCardFooterForOwnerProps = {
   dope: Pick<Dope, 'id' | 'claimed'>;
@@ -21,28 +29,25 @@ const DopeCardFooterForOwner = ({ dope, toggleVisibility }: DopeCardFooterForOwn
   const router = useRouter();
 
   return (
-    <div
-      css={css`
-        display: flex;
-        align-items: center;
-      `}
-    >
-      <Link href={`/hustlers/${dope.id}/initiate`} passHref>
-        <Button variant="primary">Initiate Hustler</Button>
-      </Link>
-      {initiator && paper && account && chainId === 42 && (
-        <Button onClick={() => router.push(`/dope/${dope.id}/unbundle`)}>Unbundle</Button>
-      )}
-      {paper && (
-        <Button
-          disabled={dope.claimed}
-          onClick={async () => {
-            await paper.claimById(dope.id);
-          }}
-        >
-          Claim Paper
-        </Button>
-      )}
+    <>
+      <ButtonsWrapper>
+        <Link href={`/hustlers/${dope.id}/initiate`} passHref>
+          <Button variant="primary">Initiate Hustler</Button>
+        </Link>
+        {initiator && paper && account && chainId === 42 && (
+          <Button onClick={() => router.push(`/dope/${dope.id}/unbundle`)}>Unbundle</Button>
+        )}
+        {paper && (
+          <Button
+            disabled={dope.claimed}
+            onClick={async () => {
+              await paper.claimById(dope.id);
+            }}
+          >
+            Claim Paper
+          </Button>
+        )}
+      </ButtonsWrapper>
       <div
         css={css`
           float: right;
@@ -61,7 +66,7 @@ const DopeCardFooterForOwner = ({ dope, toggleVisibility }: DopeCardFooterForOwn
           alt="info"
         />
       </div>
-    </div>
+    </>
   );
 };
 export default DopeCardFooterForOwner;
