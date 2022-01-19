@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { Stack, HStack, Button } from '@chakra-ui/react';
 import {
   DEFAULT_BG_COLORS,
@@ -86,8 +86,9 @@ const ConfigurationControls = ({
     setShowNameControls(config.zoomWindow !== ZOOM_WINDOWS[1]);
   }, [config]);
 
-  const customizeHustler = async () => {
+  const customizeHustler = useCallback(async () => {
     setLoading(true);
+
     if (web3ReactChainId && web3ReactChainId !== chainId) {
       setLoading(false);
       return alert('You must be on the Optimistic network to customize your Hustler.');
@@ -103,6 +104,7 @@ const ConfigurationControls = ({
       sex,
       textColor,
       zoomWindow,
+      isVehicle,
     } = config;
 
     const setname = name ? name : '';
@@ -116,6 +118,10 @@ const ConfigurationControls = ({
     ];
 
     let bitoptions = 0;
+
+    if (isVehicle) {
+      bitoptions += 1;
+    }
 
     if (renderName) {
       // title
@@ -164,10 +170,11 @@ const ConfigurationControls = ({
           search: `?c=true`,
         });
       } catch (error) {
+        console.error(error)
         setLoading(false);
       }
     }
-  };
+  }, [chainId, hustlers, config, router, web3ReactChainId]);
 
   return (
     <ControlsWrapper>
