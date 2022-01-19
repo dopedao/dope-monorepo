@@ -30,16 +30,18 @@ export class LdtkReader {
             else
                 usedTileset = tileset.find(t => t === this.tilesets.find(t2 => t2.uid === layer.__tilesetDefUid)?.identifier.toLowerCase());
 
+            if (!usedTileset)
+            {
+                console.warn("No tileset found for layer " + layer.__identifier);
+                return;
+            }
+
             if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length === 0) {
                 mappack.intGridLayers.push(this.CreateIntGridLayer(layer, usedTileset));
             } else if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) {
-                if (!usedTileset)
-                    console.warn("No tileset found for layer " + layer.__identifier + ", using first tileset");
-                mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset ?? tileset[0]));
+                mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset));
             } else if (layer.__type === 'Tiles') {
-                if (!usedTileset)
-                    console.warn("No tileset found for layer " + layer.__identifier + ", using first tileset");
-                mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset ?? tileset[0]));
+                mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset));
             }
         });
         mappack.entityLayer = this.level.layerInstances.find((l:LayerInstance) => l.__type === 'Entities');
@@ -105,6 +107,7 @@ export class LdtkReader {
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
+            .setAlpha(layer.__opacity)
             .setVisible(true);
 
         stackLayers.forEach((tiles, i) => {
@@ -183,6 +186,7 @@ export class LdtkReader {
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
+            .setAlpha(layer.__opacity)
             .setVisible(true);
 
         layer.autoLayerTiles.forEach(t => {
@@ -242,6 +246,7 @@ export class LdtkReader {
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
+            .setAlpha(layer.__opacity)
             .setVisible(false);
     }
 }

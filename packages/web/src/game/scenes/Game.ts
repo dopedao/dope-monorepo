@@ -21,7 +21,7 @@ export default class GameScene extends Scene {
 
   public canUseMouse: boolean = true;
 
-  readonly zoom: number = 3;
+  readonly zoom: number = 2;
 
   get mapHelper() { return this._mapHelper; }
 
@@ -108,19 +108,19 @@ export default class GameScene extends Scene {
 
     // create map and entities
     this._mapHelper = new MapHelper(this);
-    this.mapHelper.createMap('Level_0');
+    this.mapHelper.createMap('CarDealer_Parking');
     this.mapHelper.createEntities();
-
+    
     // citizens
-    this.citizens.push(new Citizen(
-      this.matter.world, 
-      500, 500, 
-      new HustlerModel(Base.Male, undefined, Feet.NikeCortez), 
-      "Michel", "Arpenteur",
-      [new Conversation("Welcome to Dope City!")],
-      [ this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
-      true
-    ));
+    // this.citizens.push(new Citizen(
+    //   this.matter.world, 
+    //   500, 500, 
+    //   new HustlerModel(Base.Male, undefined, Feet.NikeCortez), 
+    //   "Michel", "Arpenteur",
+    //   [new Conversation("Welcome to Dope City!")],
+    //   [ this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
+    //   true
+    // ));
 
     this.itemEntities.push(new ItemEntity(this.matter.world, 800, 1200, 'lol', new Item('item_test', 'jsp'), (item: Item) => {
       this.player.inventory.remove(item, true);
