@@ -27,8 +27,7 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
     if (selected == 0) renderName = false;
     setHustlerConfig({
       ...config,
-      zoomWindow:
-        selected == 0 ? ZOOM_WINDOWS[1] : selected == 1 ? ZOOM_WINDOWS[0] : ZOOM_WINDOWS[2],
+      zoomWindow: selected == 0 ? ZOOM_WINDOWS[1] : ZOOM_WINDOWS[0],
       isVehicle,
       renderName: renderName,
     });
