@@ -13,6 +13,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/hashicorp/go-retryablehttp"
 
 	"entgo.io/ent/dialect/sql"
 
@@ -257,14 +258,14 @@ func (o *Opensea) getAssetCollection(ctx context.Context, contract string, page 
 	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d&offset=%d", assetPath, contract, page, offset)
 	b, err := o.getURL(ctx, o.URL+path)
 	if err != nil {
-		return nil, fmt.Errorf("retrieving opensea assets %w", err)
+		return nil, fmt.Errorf("retrieving opensea assets: %w", err)
 	}
 	ret := &Assets{Assets: []Asset{}}
 	return ret, json.Unmarshal(b, ret)
 }
 
 func (o *Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
-	client := httpClient()
+	client := retryablehttp.NewClient().StandardClient()
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -273,6 +274,8 @@ func (o *Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
 		req.Header.Add("X-API-KEY", o.APIKey)
 	}
 	req.Header.Add("Accept", "application/json")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0")
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -297,15 +300,4 @@ func (o *Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
 	}
 
 	return body, nil
-}
-
-func httpClient() *http.Client {
-	client := new(http.Client)
-	var transport http.RoundTripper = &http.Transport{
-		MaxIdleConns:    100,
-		IdleConnTimeout: 90 * time.Second,
-	}
-	client.Transport = transport
-	client.Timeout = 10 * time.Second
-	return client
 }
