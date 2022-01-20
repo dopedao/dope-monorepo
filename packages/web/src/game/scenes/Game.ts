@@ -154,18 +154,20 @@ export default class GameScene extends Scene {
     const centerMapPos = new Phaser.Math.Vector2((level.worldX + (level.worldX + level.pxWid)) / 2, (level.worldY + (level.worldY + level.pxHei)) / 2);
     const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
 
-    const checkDir = (dir: string) => {
+    const checkDir = (dir: string, patchMap: boolean) => {
       level.__neighbours.forEach(n => {
         const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
         if (this.loadedMaps.find(m => m === lvl.identifier))
         {
-          if (n.dir === dir)
+          if (!patchMap && n.dir === dir)
           {
-            console.log(lvl.identifier);
             this.currentMap = lvl.identifier;
           }
           return;
         }
+
+        if (!patchMap)
+          return;
 
         if (n.dir === dir)
         {
@@ -177,25 +179,34 @@ export default class GameScene extends Scene {
       });
     }
 
+    // patch map
+    // east
+    if (playerPos.x - centerMapPos.x > level.pxWid / 4)
+      checkDir('e', true);
+    // north
+    else if (playerPos.y - centerMapPos.y < -(level.pxHei / 4))
+      checkDir('n', true);
+    // west
+    else if (playerPos.x - centerMapPos.x < -(level.pxWid / 4))
+      checkDir('w', true);
+    // south
+    else if (playerPos.y - centerMapPos.y > level.pxHei / 4)
+      checkDir('s', true);
+
+    // update current map
     // east
     if (playerPos.x - centerMapPos.x > level.pxWid / 2)
-    {
-      checkDir('e');
-    }
-    // south
+      checkDir('e', false);
+    // north
     else if (playerPos.y - centerMapPos.y < -(level.pxHei / 2))
-    {
-      checkDir('s');
-    }
+      checkDir('n', false);
     // west
     else if (playerPos.x - centerMapPos.x < -(level.pxWid / 2))
-    {
-      checkDir('w');
-    }
-    // north
+      checkDir('w', false);
+    // south
     else if (playerPos.y - centerMapPos.y > level.pxHei / 2)
-    {
-      checkDir('n');
-    }
+      checkDir('s', false);
+
+    console.log(this.currentMap);
   }
 }

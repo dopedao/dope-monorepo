@@ -57,7 +57,7 @@ export default class Player extends Hustler
         this._baseDepth = this.depth;
 
         // display ens domain name / address on hover
-        if ((window.ethereum as any).selectedAddress)
+        if (window.ethereum && (window.ethereum as any).selectedAddress)
         {
             const address = (window.ethereum as any).selectedAddress;
             const ens = new ENS({ provider: window.ethereum, ensAddress: getEnsAddress(1) });
