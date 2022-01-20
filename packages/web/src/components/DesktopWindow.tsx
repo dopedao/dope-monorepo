@@ -78,11 +78,16 @@ const DesktopWindow = ({
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
 
-  const { data, isFetching: loading } = useWalletQuery({
-    where: {
-      id: account,
+  const { data, isFetching: loading } = useWalletQuery(
+    {
+      where: {
+        id: account,
+      },
     },
-  });
+    {
+      enabled: !!account,
+    },
+  );
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
   const [isFullScreen, setIsFullScreen] = useState(fullScreen || false);
