@@ -113,6 +113,8 @@ const DopeCard = ({
                 overflow-y: hidden;
               }
             }
+            display: flex;
+            flex-direction: column;
           `}
         >
           <PanelTitleBarFlex>
