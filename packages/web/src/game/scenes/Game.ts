@@ -23,7 +23,7 @@ export default class GameScene extends Scene {
 
   public canUseMouse: boolean = true;
 
-  readonly zoom: number = 1.5;
+  readonly zoom: number = 3;
 
   get mapHelper() { return this._mapHelper; }
 
@@ -116,22 +116,23 @@ export default class GameScene extends Scene {
     this.currentMap = this.mapHelper.mapReader.level.identifier;
     
     // citizens
-    // this.citizens.push(new Citizen(
-    //   this.matter.world, 
-    //   500, 500, 
-    //   new HustlerModel(Base.Male, undefined, Feet.NikeCortez), 
-    //   "Michel", "Arpenteur",
-    //   [new Conversation("Welcome to Dope City!")],
-    //   [ this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
-    //   true
-    // ));
+    this.citizens.push(new Citizen(
+      this.matter.world, 
+      150, 200, 
+      new HustlerModel(Base.Male, undefined, Feet.NikeCortez), 
+      "Michel", "Arpenteur",
+      [new Conversation("Welcome to Dope City!")],
+      undefined,
+      //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
+      true
+    ));
 
     this.itemEntities.push(new ItemEntity(this.matter.world, 800, 1200, 'lol', new Item('item_test', 'jsp'), (item: Item) => {
       this.player.inventory.remove(item, true);
     }));
 
     // TODO when map update: create player directly from map data
-    this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
+    this.player = new Player(this.matter.world, 100, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
 
     const camera = this.cameras.main;
     // camera.setBounds(0, 0, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
