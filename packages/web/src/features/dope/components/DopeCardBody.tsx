@@ -29,10 +29,10 @@ const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
     >
       <Row title="Rank" value={`${dope.rank + 1} / ${NUM_DOPE_TOKENS}`} />
       {/* PAPER */}
-      {!dope.claimed && <Row title="$PAPER" value="✅ 125,000 Claimable ✅" />}
-      {dope.claimed && <Row title="$PAPER" value="🚫 Claimed 🚫" />}
-      {!dope.opened && <Row title="Bundled" value="✅ Ready to Unpack ✅" />}
-      {dope.opened && <Row title="Bundled" value="🚫 Unpacked 🚫" />}
+      {!dope.claimed && <Row title="$PAPER" value="✅ Contains 125k $PAPER" />}
+      {dope.claimed && <Row title="$PAPER" value="🚫 Does not contain $PAPER" />}
+      {!dope.opened && <Row title="Bundled" value="✅ Contains Unpackable Gear" />}
+      {dope.opened && <Row title="Bundled" value="🚫 Does not contain Gear" />}
       {dope.items &&
         dope.items
           .sort(function (a, b) {
