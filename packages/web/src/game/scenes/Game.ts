@@ -17,11 +17,13 @@ export default class GameScene extends Scene {
   private citizens: Citizen[] = new Array();
   private itemEntities: ItemEntity[] = new Array();
 
+  private loadedMaps: string[] = new Array();
+  private currentMap!: string;
   private _mapHelper!: MapHelper;
 
   public canUseMouse: boolean = true;
 
-  readonly zoom: number = 2;
+  readonly zoom: number = 1.5;
 
   get mapHelper() { return this._mapHelper; }
 
@@ -108,8 +110,10 @@ export default class GameScene extends Scene {
 
     // create map and entities
     this._mapHelper = new MapHelper(this);
-    this.mapHelper.createMap('CarDealer_Parking');
+    this.mapHelper.createMap('NYCHood2');
     this.mapHelper.createEntities();
+    this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
+    this.currentMap = this.mapHelper.mapReader.level.identifier;
     
     // citizens
     // this.citizens.push(new Citizen(
@@ -130,7 +134,7 @@ export default class GameScene extends Scene {
     this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
 
     const camera = this.cameras.main;
-    camera.setBounds(0, 0, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
+    // camera.setBounds(0, 0, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
 
     // make the camera follow the player
     camera.setZoom(this.zoom, this.zoom);
@@ -143,5 +147,54 @@ export default class GameScene extends Scene {
     this.player.update();
     this.citizens.forEach(citizen => citizen.update());
     this.itemEntities.forEach(itemEntity => itemEntity.update());
+
+    // update map 
+    const level = this.mapHelper.mapReader.ldtk.levels.find(l => l.identifier === this.currentMap)!;
+    const centerMapPos = new Phaser.Math.Vector2((level.worldX + (level.worldX + level.pxWid)) / 2, (level.worldY + (level.worldY + level.pxHei)) / 2);
+    const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
+
+    const checkDir = (dir: string) => {
+      level.__neighbours.forEach(n => {
+        const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
+        if (this.loadedMaps.find(m => m === lvl.identifier))
+        {
+          if (n.dir === dir)
+          {
+            console.log(lvl.identifier);
+            this.currentMap = lvl.identifier;
+          }
+          return;
+        }
+
+        if (n.dir === dir)
+        {
+          this.mapHelper.createMap(lvl.identifier);
+          this.mapHelper.createEntities();
+          this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
+          // this.cameras.main.setBounds(this.mapHelper.mapReader.level.worldX, this.mapHelper.mapReader.level.worldY, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
+        }
+      });
+    }
+
+    // east
+    if (playerPos.x - centerMapPos.x > level.pxWid / 2)
+    {
+      checkDir('e');
+    }
+    // south
+    else if (playerPos.y - centerMapPos.y < -(level.pxHei / 2))
+    {
+      checkDir('s');
+    }
+    // west
+    else if (playerPos.x - centerMapPos.x < -(level.pxWid / 2))
+    {
+      checkDir('w');
+    }
+    // north
+    else if (playerPos.y - centerMapPos.y > level.pxHei / 2)
+    {
+      checkDir('n');
+    }
   }
 }

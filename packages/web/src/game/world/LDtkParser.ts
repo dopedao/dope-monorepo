@@ -19,7 +19,7 @@ export class LdtkReader {
         if (!this.level)
             throw new Error("Level not found");
 
-        let mappack: LDtkMapPack = new LDtkMapPack();
+        let mappack: LDtkMapPack = new LDtkMapPack(this.level.identifier);
 
         mappack.bgColor = this.level.bgColor ?? undefined;
         mappack.settings = this.level.fieldInstances;
@@ -103,7 +103,7 @@ export class LdtkReader {
         map.addTilesetImage(tileset);
 
         const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
-        let l = map.createLayer(0, map.tilesets, 0,0)
+        let l = map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
@@ -114,7 +114,7 @@ export class LdtkReader {
             if (tiles.length === 0)
                 return;
 
-            const newLayer = map.createBlankLayer(`${layer.__identifier} - ${i}`, map.tilesets, 0,0)
+            const newLayer = map.createBlankLayer(`${layer.__identifier} - ${i}`, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
                 .setDepth(l.depth)
                 .setVisible(true);
             
@@ -182,7 +182,7 @@ export class LdtkReader {
         map.addTilesetImage(tileset);
 
         const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
-        let l = map.createLayer(0, map.tilesets, 0,0)
+        let l = map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
@@ -242,7 +242,7 @@ export class LdtkReader {
             map.addTilesetImage(tileset);
 
         const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
-        return map.createLayer(0, map.tilesets, 0,0)
+        return map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
@@ -261,7 +261,7 @@ export class LDtkMapPack {
     bgColor?: string;
     settings?: FieldInstance[];
 
-    constructor() {
+    constructor(levelIdentifier: string) {        
         this.intGridLayers = [];
         this.displayLayers = [];
     }
@@ -269,12 +269,10 @@ export class LDtkMapPack {
     dispose() {
         console.log('Map pack disposed of');
 
-        if (this.collideLayer)
-            this.collideLayer.destroy();
+        this.collideLayer?.destroy();
         
-        this.displayLayers.forEach(element => {
-            element.destroy();
-        });
+        this.intGridLayers.forEach(l => l.destroy());
+        this.displayLayers.forEach(l => l.destroy());
     }
 }
 

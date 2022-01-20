@@ -1,6 +1,6 @@
 {
     "assetRoot":"assets",
-    "totalSize": 1614077,
+    "totalSize": 6518498,
     "assets": {
         "spritesheet": {
             "male_base": {
@@ -103,7 +103,7 @@
         "json": {
             "map": {
                 "file": "./game/MAP/LDTK/DopeWars_LD_V3/DopeWars_LD_V3.ldtk",
-                "size": 1229256
+                "size": 5526292
             }
         }
     }
