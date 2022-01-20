@@ -10,6 +10,9 @@ export function useGame (
   const [game, setGame] = useState<Game>()
   // reload on account/chain change 
   useEffect(() => {
+    if (!window.ethereum)
+      return
+
     const { ethereum } = window as any
     const toast = createStandaloneToast()
 
