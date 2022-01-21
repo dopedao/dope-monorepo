@@ -2,8 +2,9 @@
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import DopeCardBody from 'features/dope/components/DopeCardBody';
-import DopeCardFooterForMarket from 'features/dope/components/DopeCardFooterForMarket';
-import DopeCardFooterForOwner from 'features/dope/components/DopeCardFooterForOwner';
+import { NUM_DOPE_TOKENS } from 'utils/constants';
+import DopeCardButtonBarMarket from 'features/dope/components/DopeCardButtonBarMarket';
+import DopeCardButtonBarOwner from 'features/dope/components/DopeCardButtonBarOwner';
 import DopeCardTitleCost from 'features/dope/components/DopeCardTitleCost';
 import DopeLegend from 'features/dope/components/DopeLegend';
 import PanelContainer from 'components/PanelContainer';
@@ -14,7 +15,7 @@ import { AmountType, ItemTier, ItemType } from 'generated/graphql';
 const iconPath = '/images/icon';
 
 export type DopeCardProps = {
-  footer: 'for-marketplace' | 'for-owner';
+  buttonBar: 'for-marketplace' | 'for-owner';
   dope: {
     __typename?: 'Dope';
     id: string;
@@ -67,7 +68,7 @@ export type DopeCardProps = {
   showCollapse?: boolean;
 };
 
-const DopeCard = ({ footer, dope, isExpanded = true, showCollapse = false }: DopeCardProps) => {
+const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: DopeCardProps) => {
   const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
 
   const toggleItemLegendVisibility = (): void => {
@@ -91,26 +92,50 @@ const DopeCard = ({ footer, dope, isExpanded = true, showCollapse = false }: Dop
               }
             }
             display: flex;
+            flex: 1 auto;
+            justify-content: space-between;
+            align-items: stretch;
             flex-direction: column;
+            gap: 0;
           `}
         >
           <PanelTitleBarFlex>
             <div
               css={css`
-                flex: auto;
                 text-align: left;
               `}
             >
               #{dope.id}
+              <span className="small"
+                css={css`padding-left: 6px; display:inline-block; height:12px; color: var(--gray-400);`}>
+                ( {dope.rank + 1} / {NUM_DOPE_TOKENS}{' '} )
+              </span>
             </div>
-            {/* <img
-              alt="favorite"
-              css={css`
-                margin: 8px;
+            <div
+                css={css`
+                padding: 0px 8px;
+                width: 48px;
               `}
-              src={iconPath + '/favorite.svg'}
-            /> */}
-            {footer === 'for-marketplace' && <DopeCardTitleCost dope={dope}></DopeCardTitleCost>}
+            >
+              {/* <img
+                alt="favorite"
+                css={css`
+                  margin: 8px;
+                `}
+                src={iconPath + '/favorite.svg'}
+              /> */}
+            </div>
+            <div
+              css={css`
+                width: 96px;
+                padding:0;
+                display: flex;
+                flex-direction:column;
+                align-items: stretch;
+              `}
+            >
+              { buttonBar === 'for-marketplace' && <DopeCardTitleCost dope={dope}></DopeCardTitleCost> }
+            </div>
           </PanelTitleBarFlex>
           <DopeCardBody dope={dope} isExpanded={isExpanded} />
         </PanelContainer>

@@ -15,12 +15,12 @@ const ButtonsWrapper = styled.div`
   gap: 6px;
 `;
 
-type DopeCardFooterForOwnerProps = {
+type DopeCardButtonBarOwnerProps = {
   dope: Pick<Dope, 'id' | 'claimed'>;
   toggleVisibility(): void;
 };
 
-const DopeCardFooterForOwner = ({ dope, toggleVisibility }: DopeCardFooterForOwnerProps) => {
+const DopeCardButtonBarOwner = ({ dope, toggleVisibility }: DopeCardButtonBarOwnerProps) => {
   const { chainId, account } = useWeb3React();
 
   const paper = usePaper();
@@ -69,4 +69,4 @@ const DopeCardFooterForOwner = ({ dope, toggleVisibility }: DopeCardFooterForOwn
     </>
   );
 };
-export default DopeCardFooterForOwner;
+export default DopeCardButtonBarOwner;

@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
-import { NUM_DOPE_TOKENS } from 'utils/constants';
 import { DopeCardProps } from './DopeCard';
 import DopeCardItems from 'features/dope/components/DopeCardItems';
 import DopeStatus from 'features/dope/components/DopeStatus';
@@ -65,13 +64,6 @@ const DopeCardBody = ({
       {/* <DopePreviewButton /> */}
       <DopeStatus content={'paper'} status={!dope.claimed} />
       <DopeStatus content={'hustler'} status={!dope.opened} />
-      <div
-        css={css`
-          margin: 8px;
-        `}
-      >
-        Rank: {dope.rank + 1} / {NUM_DOPE_TOKENS}{' '}
-      </div>
     </div>
   );
 };

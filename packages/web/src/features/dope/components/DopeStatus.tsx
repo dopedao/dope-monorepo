@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { Image } from '@chakra-ui/image';
 
 const iconPath = '/images/icon';
 
@@ -12,7 +13,7 @@ type StatusIconProps = {
 }
 
 const DopeStatus = ({ content, status }: RowProps) => (
-  <div
+  <div className="small"
     css={css`
       display: flex;
       padding: 6px;
@@ -25,14 +26,14 @@ const DopeStatus = ({ content, status }: RowProps) => (
       <>
         <StatusIcon status={status} />
         <span> 
-          { status ? "Contains $Paper" : "Does not contain $Paper" }
+          { status ? "Can Claim $PAPER" : "No $PAPER To Claim" }
         </span>
       </>
     :
       <>
         <StatusIcon status={status} />
         <span>
-          { status ? "Has Dope Gear" : "Does not have Dope Gear"}
+          { status ? "Can Unpack Gear & Initiate Hustler" : "Gear Has Been Unpacked"}
         </span>
       </>
     }
@@ -40,11 +41,13 @@ const DopeStatus = ({ content, status }: RowProps) => (
 );
 
 const StatusIcon = ({status} : StatusIconProps) => (
-  <img
+  <Image
     css={css`
-      margin-right: 5px;
+      display: block;
+      margin-right: 4px;
     `}
     src={status ? iconPath+'/check-sm.svg' : iconPath+'/circle-slash.svg' }
+    alt={status ? 'Yes' : 'No' }
   />
 );
 

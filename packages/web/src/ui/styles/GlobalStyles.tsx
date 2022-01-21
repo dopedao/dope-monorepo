@@ -34,7 +34,16 @@ export default function GlobalStyles() {
           /* COLORS */
           --black: #000;
           --white: #fff;
-          --gray: #dededd;
+          --gray-00: #EDEFEE;
+          --gray-100: #DEDEDD;
+          --gray-200: #BFB9BD;
+          --gray-300: #A8A9AE;
+          --gray-400: #878783;
+          --gray-500: #767674;
+          --gray-600: #5D5354;
+          --gray-700: #434345;
+          --gray-800: #202221;
+          --gray-900: #141011;
           --bg-color: #000;
           --hover-bg: #434345;
           --primary: #3523fe;

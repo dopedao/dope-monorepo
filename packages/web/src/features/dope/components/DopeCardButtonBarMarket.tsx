@@ -10,7 +10,7 @@ const viewOnOpenSea = (tokenId: string): void => {
   window.open(url, 'dopeWarsList')?.focus();
 };
 
-const ContextSensitiveButton = ({ dope }: DopeCardFooterForMarketProps) => {
+const ContextSensitiveButton = ({ dope }: DopeCardButtonBarMarketProps) => {
   const isOnSale = !!dope.listings?.[0]?.inputs?.[0]?.amount;
   const price = dope.listings?.[0]?.inputs?.[0]?.amount;
   const unit = dope.listings?.[0]?.inputs[0]?.type;
@@ -27,7 +27,7 @@ const ContextSensitiveButton = ({ dope }: DopeCardFooterForMarketProps) => {
   );
 };
 
-const LastSaleOrNever = ({ dope }: DopeCardFooterForMarketProps) => {
+const LastSaleOrNever = ({ dope }: DopeCardButtonBarMarketProps) => {
   const lastSalePrice = dope.lastSale?.inputs?.[0]?.amount;
   const unit = dope.lastSale?.inputs?.[0]?.type;
   if (lastSalePrice)
@@ -43,9 +43,9 @@ const LastSaleOrNever = ({ dope }: DopeCardFooterForMarketProps) => {
   return <></>;
 };
 
-type DopeCardFooterForMarketProps = Pick<DopeCardProps, 'dope'>;
+type DopeCardButtonBarMarketProps = Pick<DopeCardProps, 'dope'>;
 
-const DopeCardFooterForMarket = ({ dope }: DopeCardFooterForMarketProps) => {
+const DopeCardButtonBarMarket = ({ dope }: DopeCardButtonBarMarketProps) => {
   return (
     <>
       <div
@@ -61,4 +61,4 @@ const DopeCardFooterForMarket = ({ dope }: DopeCardFooterForMarketProps) => {
     </>
   );
 };
-export default DopeCardFooterForMarket;
+export default DopeCardButtonBarMarket;

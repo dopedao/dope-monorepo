@@ -110,7 +110,7 @@ const MarketList = () => {
                   <DopeCard
                     key={dope.node.id}
                     dope={dope.node}
-                    footer="for-marketplace"
+                    buttonBar="for-marketplace"
                     isExpanded={!viewCompactCards}
                     showCollapse
                   />

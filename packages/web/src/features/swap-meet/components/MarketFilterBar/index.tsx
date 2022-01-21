@@ -97,7 +97,7 @@ const MarketFilterBar = ({
           display: flex;
           justify-content: center;
           align-items: center;
-          background-color: var(--gray);
+          background-color: var(--gray-100);
           border-radius: 2px !important;
           box-shadow: 'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)';
         `}
