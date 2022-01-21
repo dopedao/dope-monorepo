@@ -18,8 +18,8 @@ export default class GameScene extends Scene {
   private citizens: Citizen[] = new Array();
   private itemEntities: ItemEntity[] = new Array();
 
-  // map helpers 
-  private loadedMaps: MapHelper[] = new Array();
+  // level identifiers of the current loaded maps
+  private loadedMaps: string[] = new Array();
   // level identifier of the map
   private currentMap!: string;
   private _mapHelper!: MapHelper;
@@ -115,8 +115,8 @@ export default class GameScene extends Scene {
     this._mapHelper = new MapHelper(this);
     this.mapHelper.createMap('NYCHood2');
     this.mapHelper.createEntities();
-    this.loadedMaps.push(this.mapHelper);
     this.currentMap = this.mapHelper.mapReader.level.identifier;
+    this.loadedMaps.push(this.currentMap);
     
     // citizens
     this.citizens.push(new Citizen(
