@@ -19,7 +19,10 @@ const ITEM_ORDER = [
   'RING',
 ];
 
-const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
+const DopeCardBody = ({
+  dope,
+  isExpanded,
+}: Pick<DopeCardProps, 'dope'> & { isExpanded: boolean }) => {
   return (
     <div
       css={css`
@@ -54,7 +57,7 @@ const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
                   augmented={augmented}
                   type={type}
                   color={DopeLegendColors[tier]}
-                  isExpanded
+                  isExpanded={isExpanded}
                 />
               );
             })}

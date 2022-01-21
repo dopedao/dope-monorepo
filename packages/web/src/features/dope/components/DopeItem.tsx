@@ -52,11 +52,11 @@ const Item = ({
             css={css`
               color: #888;
               font-size: 12px;
+              padding-right: 5px;
             `}
           >
-            {' '}
-            {namePrefix ? `${namePrefix} ${nameSuffix}` : ' '}
-            {suffix}{' '}
+            {namePrefix ? `${namePrefix} ${nameSuffix} ` : ' '}
+            {suffix}
           </div>
         </>
       )}
@@ -78,6 +78,7 @@ const Bullet = ({ color }: BulletProps) => (
     css={css`
       height: 10px;
       width: 10px;
+      min-width: 10px;
       border-radius: 50%;
       margin-right: 8px;
       background-color: ${color};

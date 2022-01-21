@@ -67,37 +67,11 @@ export type DopeCardProps = {
   showCollapse?: boolean;
 };
 
-const DopeCard = ({
-  footer,
-  dope,
-  isExpanded: isExpandedProp = true,
-  showCollapse = false,
-}: DopeCardProps) => {
+const DopeCard = ({ footer, dope, isExpanded = true, showCollapse = false }: DopeCardProps) => {
   const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(isExpandedProp);
 
   const toggleItemLegendVisibility = (): void => {
     setIsItemLegendVisible(!isItemLegendVisible);
-  };
-
-  const ToggleButton = () => {
-    const iconPath = '/images/icon';
-    const icon = isExpanded ? 'collapse' : 'expand';
-    return (
-      <div
-        css={css`
-          width: 32px;
-          height: 32px;
-          cursor: pointer;
-          cursor: hand;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        `}
-      >
-        <img src={`${iconPath}/${icon}.svg`} alt="" onClick={() => setIsExpanded(!isExpanded)} />
-      </div>
-    );
   };
 
   return (
@@ -138,7 +112,7 @@ const DopeCard = ({
             /> */}
             {footer === 'for-marketplace' && <DopeCardTitleCost dope={dope}></DopeCardTitleCost>}
           </PanelTitleBarFlex>
-          <DopeCardBody dope={dope} />
+          <DopeCardBody dope={dope} isExpanded={isExpanded} />
         </PanelContainer>
       )}
     </>
