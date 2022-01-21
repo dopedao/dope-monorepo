@@ -36,10 +36,13 @@ export class LdtkReader {
                 return;
             }
 
+            // non auto int grid layer
             if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length === 0) {
                 mappack.intGridLayers.push(this.CreateIntGridLayer(layer, usedTileset));
+            // auto int grid layer
             } else if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) {
                 mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset));
+            // tiles layer
             } else if (layer.__type === 'Tiles') {
                 mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset));
             }
