@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { MAX_HAIR, MAX_FACIAL_HAIR } from 'utils/HustlerConfig';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
-import Image from 'next/image';
+import { Image } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
 const ImageWrapper = styled.div`

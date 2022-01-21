@@ -1,8 +1,8 @@
 // Blank-slate state for the Dope screen,
 // encouraging visitors to go pick up some DOPE.
 import { Button } from '@chakra-ui/react';
+import { Image } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import styled from '@emotion/styled';
 
 const NoDopeContainer = styled.div`
