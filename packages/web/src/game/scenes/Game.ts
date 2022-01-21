@@ -17,7 +17,9 @@ export default class GameScene extends Scene {
   private citizens: Citizen[] = new Array();
   private itemEntities: ItemEntity[] = new Array();
 
-  private loadedMaps: string[] = new Array();
+  // map helpers 
+  private loadedMaps: MapHelper[] = new Array();
+  // level identifier of the map
   private currentMap!: string;
   private _mapHelper!: MapHelper;
 
@@ -112,7 +114,7 @@ export default class GameScene extends Scene {
     this._mapHelper = new MapHelper(this);
     this.mapHelper.createMap('NYCHood2');
     this.mapHelper.createEntities();
-    this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
+    this.loadedMaps.push(this.mapHelper);
     this.currentMap = this.mapHelper.mapReader.level.identifier;
     
     // citizens
@@ -135,7 +137,9 @@ export default class GameScene extends Scene {
     this.player = new Player(this.matter.world, 100, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
 
     const camera = this.cameras.main;
-    // camera.setBounds(0, 0, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
+    // camera.setBounds(this.mapHelper.mapReader.level.worldX - 10, this.mapHelper.mapReader.level.worldY - 10, 
+    //   this.mapHelper.mapReader.level.pxWid + 10, 
+    //   this.mapHelper.mapReader.level.pxHei + 10);
 
     // make the camera follow the player
     camera.setZoom(this.zoom, this.zoom);
@@ -157,11 +161,14 @@ export default class GameScene extends Scene {
     const checkDir = (dir: string, patchMap: boolean) => {
       level.__neighbours.forEach(n => {
         const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
-        if (this.loadedMaps.find(m => m === lvl.identifier))
+        if (this.loadedMaps.find(m => m.mapReader.level.identifier === lvl.identifier))
         {
           if (!patchMap && n.dir === dir)
           {
             this.currentMap = lvl.identifier;
+            // this.cameras.main.setBounds(lvl.worldX - 10, lvl.worldY - 10, 
+            //   lvl.pxWid + 10, 
+            //   lvl.pxHei + 10);
           }
           return;
         }
@@ -173,7 +180,7 @@ export default class GameScene extends Scene {
         {
           this.mapHelper.createMap(lvl.identifier);
           this.mapHelper.createEntities();
-          this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
+          this.loadedMaps.push(this.mapHelper);
           // this.cameras.main.setBounds(this.mapHelper.mapReader.level.worldX, this.mapHelper.mapReader.level.worldY, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
         }
       });
