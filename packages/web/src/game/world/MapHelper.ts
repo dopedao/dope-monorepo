@@ -73,7 +73,7 @@ export default class MapHelper
                 Math.abs(entity.__pivot[1] - 0.5) * entity.height
             );
 
-            this.entities.push(this.scene.add.sprite(entity.px[0] + pivotOffset.x, entity.px[1] + pivotOffset.y, tileset.identifier.toLowerCase(), frame.name));
+            this.entities.push(this.scene.add.sprite(this.mapReader.level.worldX + this.map.entityLayer!.pxOffsetX + entity.px[0] + pivotOffset.x, this.mapReader.level.worldY + this.map.entityLayer!.pxOffsetY + entity.px[1] + pivotOffset.y, tileset.identifier.toLowerCase(), frame.name));
             const entitySprite = this.entities[this.entities.length - 1] as Phaser.GameObjects.Sprite;
             entitySprite
                 .setName(entity.__identifier)

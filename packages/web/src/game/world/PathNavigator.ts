@@ -33,14 +33,10 @@ export default class PathNavigator
             return;
         }
 
-        // use the collider pos instead of the whole body pos to avoid
-        // the player being stuck due to the collider's offset
-        const hustlerBodyPos = (this.hustler.body as MatterJS.BodyType).parts[1].position;
-
         this.onMoved = onMoved;
 
         // hustler world position to tile position
-        const hustlerTile = map.collideLayer.worldToTileXY(hustlerBodyPos.x, hustlerBodyPos.y);
+        const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.body.position.x, this.hustler.body.position.y);
 
         // convert grid of tiles into PF grid
         this.grid = new PF.Grid(map.collideLayer.layer.data.map(row => row.map(tile => tile.collides ? 1 : 0)));
@@ -75,15 +71,13 @@ export default class PathNavigator
 
     update()
     {
-        const hustlerBodyPos = (this.hustler.body as MatterJS.BodyType).parts[1].position;
-
         let dx = 0;
 	    let dy = 0;
 
 	    if (this.target)
 	    {
-	    	dx = this.target.x - hustlerBodyPos.x;
-	    	dy = this.target.y - hustlerBodyPos.y;
+	    	dx = this.target.x - this.hustler.body.position.x;
+	    	dy = this.target.y - this.hustler.body.position.y;
 
 	    	if (Math.abs(dx) < 7)
 	    	{
@@ -204,7 +198,7 @@ export default class PathNavigator
         // }
 
 
-        this.previousPosition = new Phaser.Math.Vector2(hustlerBodyPos.x, hustlerBodyPos.y);
+        this.previousPosition = new Phaser.Math.Vector2(this.hustler.x, this.hustler.y);
         
         
         // if (dir === "")

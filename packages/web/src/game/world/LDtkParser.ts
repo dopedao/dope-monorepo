@@ -19,7 +19,7 @@ export class LdtkReader {
         if (!this.level)
             throw new Error("Level not found");
 
-        let mappack: LDtkMapPack = new LDtkMapPack();
+        let mappack: LDtkMapPack = new LDtkMapPack(this.level.identifier);
 
         mappack.bgColor = this.level.bgColor ?? undefined;
         mappack.settings = this.level.fieldInstances;
@@ -30,23 +30,21 @@ export class LdtkReader {
             else
                 usedTileset = tileset.find(t => t === this.tilesets.find(t2 => t2.uid === layer.__tilesetDefUid)?.identifier.toLowerCase());
 
-            // intgrid layer
-            if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length === 0) 
+            if (!usedTileset)
             {
-                mappack.intGridLayers.push(this.CreateIntGridLayer(layer, usedTileset));
+                console.warn("No tileset found for layer " + layer.__identifier);
+                return;
             }
-            // auto layer 
-            else if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) 
-            {
-                if (!usedTileset)
-                    console.warn("No tileset found for layer " + layer.__identifier + ", using first tileset");
-                mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset ?? tileset[0]));
-            } 
-            // basic tiles layer
-            else if (layer.__type === 'Tiles') {
-                if (!usedTileset)
-                    console.warn("No tileset found for layer " + layer.__identifier + ", using first tileset");
-                mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset ?? tileset[0]));
+
+            // non auto int grid layer
+            if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length === 0) {
+                mappack.intGridLayers.push(this.CreateIntGridLayer(layer, usedTileset));
+            // auto int grid layer
+            } else if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) {
+                mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset));
+            // tiles layer
+            } else if (layer.__type === 'Tiles') {
+                mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset));
             }
         });
         mappack.entityLayer = this.level.layerInstances.find((l:LayerInstance) => l.__type === 'Entities');
@@ -108,17 +106,18 @@ export class LdtkReader {
         map.addTilesetImage(tileset);
 
         const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
-        let l = map.createLayer(0, map.tilesets, 0,0)
+        let l = map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
+            .setAlpha(layer.__opacity)
             .setVisible(true);
 
         stackLayers.forEach((tiles, i) => {
             if (tiles.length === 0)
                 return;
 
-            const newLayer = map.createBlankLayer(`${layer.__identifier} - ${i}`, map.tilesets, 0,0)
+            const newLayer = map.createBlankLayer(`${layer.__identifier} - ${i}`, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
                 .setDepth(l.depth)
                 .setVisible(true);
             
@@ -186,10 +185,11 @@ export class LdtkReader {
         map.addTilesetImage(tileset);
 
         const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
-        let l = map.createLayer(0, map.tilesets, 0,0)
+        let l = map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
+            .setAlpha(layer.__opacity)
             .setVisible(true);
 
         layer.autoLayerTiles.forEach(t => {
@@ -245,10 +245,11 @@ export class LdtkReader {
             map.addTilesetImage(tileset);
 
         const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
-        return map.createLayer(0, map.tilesets, 0,0)
+        return map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
+            .setAlpha(layer.__opacity)
             .setVisible(false);
     }
 }
@@ -263,7 +264,7 @@ export class LDtkMapPack {
     bgColor?: string;
     settings?: FieldInstance[];
 
-    constructor() {
+    constructor(levelIdentifier: string) {        
         this.intGridLayers = [];
         this.displayLayers = [];
     }
@@ -271,12 +272,10 @@ export class LDtkMapPack {
     dispose() {
         console.log('Map pack disposed of');
 
-        if (this.collideLayer)
-            this.collideLayer.destroy();
+        this.collideLayer?.destroy();
         
-        this.displayLayers.forEach(element => {
-            element.destroy();
-        });
+        this.intGridLayers.forEach(l => l.destroy());
+        this.displayLayers.forEach(l => l.destroy());
     }
 }
 

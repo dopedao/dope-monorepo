@@ -2,8 +2,8 @@ import Citizen from "game/entities/citizen/Citizen";
 import Conversation from "game/entities/citizen/Conversation";
 import Player from "game/entities/player/Player";
 import EventHandler, { Events } from "game/handlers/EventHandler";
-import Item from "game/inventory/Item";
-import Quest from "game/quests/Quest";
+import Item from "game/entities/player/inventory/Item";
+import Quest from "game/entities/player/quests/Quest";
 import ChatType from "game/ui/react/components/ChatType";
 import InventoryComponent from "game/ui/react/components/InventoryComponent";
 import DialogueTextBox from "game/ui/rex/DialogueTextBox";
@@ -23,7 +23,7 @@ interface Interaction
     maxDistance: number;
 }
 
-const toastStyle: ToastOptions = {
+export const toastStyle: ToastOptions = {
     duration: 5000,
     icon: 'ℹ️',
     position: 'top-right',
@@ -259,7 +259,7 @@ export default class UIScene extends Scene {
                         if (conv.onFinish())
                             citizen.conversations.shift();
                 });
-            this.currentInteraction = { citizen, textBox, maxDistance: 200 };
+            this.currentInteraction = { citizen, textBox, maxDistance: 100 };
             
                 
             // Chat bubbles

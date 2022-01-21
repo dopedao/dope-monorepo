@@ -1,4 +1,8 @@
 import HustlerModel from "game/gfx/models/HustlerModel";
+import GameScene from "game/scenes/Game";
+import UIScene from "game/scenes/UI";
+import { getBBcodeText } from "game/ui/rex/RexUtils";
+import BBCodeText from "phaser3-rex-plugins/plugins/bbcodetext";
 import Hustler from "../Hustler";
 import Player from "../player/Player";
 import Conversation from "./Conversation";
@@ -20,8 +24,10 @@ export default class Citizen extends Hustler
     // should continue following the path
     // if false, the citizen will not follow its path and move until its true
     shouldFollowPath: boolean = true;
-
     lastPointTimestamp?: number;
+
+    // text object showing up when hovering citizen
+    private hoverText?: BBCodeText;
 
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, name: string, description: string, conversations?: Conversation[], path?: (Phaser.Math.Vector2 | number)[], repeatPath?: boolean, shouldFollowPath?: boolean)
     {
@@ -38,7 +44,20 @@ export default class Citizen extends Hustler
             this.repeatPath = repeatPath;
         if (shouldFollowPath)
             this.shouldFollowPath = shouldFollowPath;
-        
+
+        this.setInteractive({ useHandCursor: true });
+        this.on('pointerover', () => {
+            const uiScene = this.scene.scene.get('UIScene') as UIScene;
+            this.hoverText = uiScene.rexUI.add.BBCodeText(0, 0, this.name, {
+                fontFamily: 'Dope',
+                fontSize: '20px',
+                color: '#ffffff'
+            });
+        });
+        this.on('pointerout', () => {
+            this.hoverText?.destroy();
+            this.hoverText = undefined;
+        });
     }
 
     // called when npc enters in an interaction
@@ -62,6 +81,11 @@ export default class Citizen extends Hustler
     update()
     {
         super.update();
+
+        // make hovertext follow us
+        this.hoverText?.setPosition(
+            (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
+            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.5) * this.scene.cameras.main.zoom));
 
         // if the citizen has no target currently, check if he has a next point and move to it
         // or, if lastPointTimestamp is set, check if the time has passed and move to the next point

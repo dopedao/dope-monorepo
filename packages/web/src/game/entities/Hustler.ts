@@ -30,6 +30,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     private _animator: HustlerAnimator;
     private _navigator: PathNavigator;
 
+    private _hitboxSensor: MatterJS.BodyType;
+
     get model() { return this._model; }
     get animator() { return this._animator; }
     get navigator() { return this._navigator; }
@@ -46,8 +48,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this._lastDirection = dir;
     }
 
-    get collider() { return (this.body as MatterJS.BodyType).parts[1]; }
-    get hitboxSensor() { return (this.body as MatterJS.BodyType).parts[2]; }
+    get collider() { return this.body; }
+    get hitboxSensor() { return this._hitboxSensor; }
 
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, frame?: number)
     {
@@ -68,28 +70,26 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
             },
             chamfer: { radius: 7.2 },
         } as MatterJS.BodyType);
-        const sensorHitBox = Bodies.rectangle(0, 0 - this.height / 4.5, this.width * 0.6, this.height * 0.8, {
+        
+        this._hitboxSensor = this.scene.matter.add.rectangle(this.x, this.y - this.displayHeight / 5, this.displayWidth * 0.6, this.displayHeight * 0.8, {
             label: "hitboxSensor",
             isSensor: true,
+            gameObject: this,
+            // collisionFilter: {
+            //     group: -69
+            // },
         } as MatterJS.BodyType);
-        this.setExistingBody(Body.create({
-            parts: [colliderBody, sensorHitBox],
-            collisionFilter: {
-                group: -69
-            },
-        } as MatterJS.BodyType));
-        // parts[0] = mainBody
-        // parts[1] = collider
-        // parts[2] = hitboxSensor
+        
+        this.setExistingBody(colliderBody);
         
         this.setPosition(x, y);
         
-        this.setDepth(30);
+        this.setDepth(35);
 
         // offset the hustler texture from the body
-        this.setOrigin(0.5, 0.52);
+        this.setOrigin(0.5, 0.65);
         // make it a bit bigger
-        this.setScale(1.3);
+        this.setScale(1);
 
         // prevent angular momentum from rotating our body
         this.setFixedRotation();
@@ -141,9 +141,27 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this.stop();
     }
 
+    // setOrigin(x: number, y?: number)
+    // {
+    //     super.setOrigin(x, y);
+    //     this._model.setOrigin(x, y);
+    //     return this;
+    // }
+
+    setScale(x: number, y?: number)
+    {
+        super.setScale(x, y);
+        // update hitbox sensor scale
+        (Phaser.Physics.Matter as any).Matter.Body.scale(this._hitboxSensor, x, y ?? x);
+        // update model scale
+        this._model.setScale(x, y);
+        return this;
+    }
+
     setDepth(value: number)
     {
         super.setDepth(value);
+        // update model depth
         this._model.setDepth(value);
         return this;
     }
@@ -154,5 +172,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this.animator.update();
         // path finding
         this.navigator.update();
+        // update hitbox pos
+        (Phaser.Physics.Matter as any).Matter.Body.setPosition(this.hitboxSensor, { x: this.x, y: this.y - this.displayHeight / 5 });
     }
 }

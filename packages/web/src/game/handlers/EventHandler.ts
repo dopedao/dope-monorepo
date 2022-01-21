@@ -1,6 +1,6 @@
 import Citizen from "game/entities/citizen/Citizen";
-import Item from "game/inventory/Item";
-import Quest from "game/quests/Quest";
+import Item from "game/entities/player/inventory/Item";
+import Quest from "game/entities/player/quests/Quest";
 
 export enum Events
 {
@@ -22,6 +22,7 @@ export enum Events
     PLAYER_QUEST_COMPLETE = 'player_complete_quest',
 
     CHAT_MESSAGE = 'chat_message',
+    ITEM_ENTITY_DESTROYED = 'item_entity_destroyed',
 }
 
 export default class EventHandler
