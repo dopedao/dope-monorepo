@@ -125,17 +125,7 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: 
                 src={iconPath + '/favorite.svg'}
               /> */}
             </div>
-            <div
-              css={css`
-                width: 96px;
-                padding:0;
-                display: flex;
-                flex-direction:column;
-                align-items: stretch;
-              `}
-            >
-              { buttonBar === 'for-marketplace' && <DopeCardTitleCost dope={dope}></DopeCardTitleCost> }
-            </div>
+            <DopeCardTitleCost dope={dope} />
           </PanelTitleBarFlex>
           <DopeCardBody dope={dope} isExpanded={isExpanded} />
         </PanelContainer>
