@@ -11,7 +11,7 @@ const VerticalPanelStack = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 16px;
+  gap: 16px; // Phone, make sure there's a gap between modules
   height: 100%;
   & > * {
     flex: 0 0 auto;
@@ -33,11 +33,7 @@ const InitiationInfo = () => {
         <PanelTitleBar>
           <div>Info</div>
         </PanelTitleBar>
-        <PanelBody
-          css={css`
-            height: 100%;
-          `}
-        >
+        <PanelBody>
           <h3>Initiation</h3>
           <p>
             Hustlers are the in-game representation of characters inside DOPE WARS. Each Hustler
@@ -84,13 +80,12 @@ const InitiationInfo = () => {
         status="info"
         css={css`
           max-height: 100px;
+          border: 2px solid black;
         `}
       >
         <AlertIcon />
         <div>
           All OGs have been Initiated, but Hustlers are an infinite mint! Make as many as you want.
-          <br />
-          See you on the streets in 2022.
         </div>
       </Alert>
     </VerticalPanelStack>
