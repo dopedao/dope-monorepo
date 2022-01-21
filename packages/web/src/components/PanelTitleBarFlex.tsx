@@ -5,6 +5,7 @@ const PanelTitleBarFlex = styled(PanelTitleBar)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 0 0 8px;
 `;
 
 export default PanelTitleBarFlex;
