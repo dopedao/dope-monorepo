@@ -33,17 +33,16 @@ export class LdtkReader {
             if (!usedTileset)
             {
                 console.warn("No tileset found for layer " + layer.__identifier);
-                return;
             }
 
             // non auto int grid layer
             if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length === 0) {
                 mappack.intGridLayers.push(this.CreateIntGridLayer(layer, usedTileset));
             // auto int grid layer
-            } else if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) {
+            } else if (usedTileset && layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) {
                 mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset));
             // tiles layer
-            } else if (layer.__type === 'Tiles') {
+            } else if (usedTileset && layer.__type === 'Tiles') {
                 mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset));
             }
         });
@@ -245,12 +244,30 @@ export class LdtkReader {
             map.addTilesetImage(tileset);
 
         const orderId = this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length - this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
-        return map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
+        const mapLayer = map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
             .setName(layer.__identifier)
             .setData('id', orderId)
             .setDepth(orderId * 5)
             .setAlpha(layer.__opacity)
             .setVisible(false);
+
+        const ogLayer: Layer = this.ldtk.defs.layers.find(l => l.uid === layer.layerDefUid)!;
+
+        mapLayer.layer.data.forEach(row => row.forEach(tile => {
+            const vData = ogLayer.intGridValues.find(v => v.value === tile.index)!;
+            if (vData && vData.color)
+            {
+                this.scene.add.rectangle(
+                    tile.x * tile.width + mapLayer.x, 
+                    tile.y * tile.height + mapLayer.y, 
+                    tile.width, tile.height, 
+                    Number.parseInt(vData.color.split('#')[1], 16),
+                    mapLayer.alpha
+                ).setDepth(mapLayer.depth);
+            }
+        }));
+
+        return mapLayer;
     }
 }
 

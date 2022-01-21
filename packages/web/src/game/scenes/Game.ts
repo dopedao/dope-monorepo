@@ -26,7 +26,7 @@ export default class GameScene extends Scene {
 
   public canUseMouse: boolean = true;
 
-  readonly zoom: number = 3;
+  readonly zoom: number = 1;
 
   get mapHelper() { return this._mapHelper; }
 
