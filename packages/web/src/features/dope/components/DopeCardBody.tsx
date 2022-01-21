@@ -31,8 +31,8 @@ const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
       {/* PAPER */}
       {!dope.claimed && <Row title="$PAPER" value="✅ Contains 125k $PAPER" />}
       {dope.claimed && <Row title="$PAPER" value="🚫 Does not contain $PAPER" />}
-      {!dope.opened && <Row title="Bundled" value="✅ Contains Unpackable Gear" />}
-      {dope.opened && <Row title="Bundled" value="🚫 Does not contain Gear" />}
+      {!dope.opened && <Row title="Hustler Gear" value="✅ Contains Unpackable Gear" />}
+      {dope.opened && <Row title="Hustler Gear" value="🚫 Does not contain Gear" />}
       {dope.items &&
         dope.items
           .sort(function (a, b) {
