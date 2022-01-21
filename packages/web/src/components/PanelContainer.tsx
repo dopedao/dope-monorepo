@@ -8,6 +8,10 @@ const PanelContainer = styled.div`
   @media (max-width: 768px) {
     background-color: #edefee;
   }
+
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
 `;
 
 export default PanelContainer;

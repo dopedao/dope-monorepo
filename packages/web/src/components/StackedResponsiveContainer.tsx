@@ -15,6 +15,8 @@ const StackedResponsiveContainer = styled.div`
     height: 100%;
     display: flex;
     justify-content: center;
+    padding: 32px;
+    gap: 16px;
     & > div {
       margin: 0;
       flex: 2;
