@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 
 const PanelTitleBar = styled.div`
-  line-height: 16px;
-  background: #bfb9bd;
-  border-bottom: 2px solid #000;
-  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25);
+  line-height: 42px;
+  background: #fff;
+  box-shadow: inset 0 -2px 0 #ddd;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   font-size: var(--text-00);
   position: 'sticky';
   padding: 8px;

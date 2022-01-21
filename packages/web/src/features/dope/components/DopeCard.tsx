@@ -4,11 +4,14 @@ import { css } from '@emotion/react';
 import DopeCardBody from 'features/dope/components/DopeCardBody';
 import DopeCardFooterForMarket from 'features/dope/components/DopeCardFooterForMarket';
 import DopeCardFooterForOwner from 'features/dope/components/DopeCardFooterForOwner';
+import DopeCardTitleCost from 'features/dope/components/DopeCardTitleCost';
 import DopeLegend from 'features/dope/components/DopeLegend';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
 import { AmountType, ItemTier, ItemType } from 'generated/graphql';
+
+const iconPath = '/images/icon';
 
 export type DopeCardProps = {
   footer: 'for-marketplace' | 'for-owner';
@@ -64,37 +67,11 @@ export type DopeCardProps = {
   showCollapse?: boolean;
 };
 
-const DopeCard = ({
-  footer,
-  dope,
-  isExpanded: isExpandedProp = true,
-  showCollapse = false,
-}: DopeCardProps) => {
+const DopeCard = ({ footer, dope, isExpanded = true, showCollapse = false }: DopeCardProps) => {
   const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(isExpandedProp);
 
   const toggleItemLegendVisibility = (): void => {
     setIsItemLegendVisible(!isItemLegendVisible);
-  };
-
-  const ToggleButton = () => {
-    const iconPath = '/images/icon';
-    const icon = isExpanded ? 'collapse' : 'expand';
-    return (
-      <div
-        css={css`
-          width: 32px;
-          height: 32px;
-          cursor: pointer;
-          cursor: hand;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        `}
-      >
-        <img src={`${iconPath}/${icon}.svg`} alt="" onClick={() => setIsExpanded(!isExpanded)} />
-      </div>
-    );
   };
 
   return (
@@ -120,29 +97,22 @@ const DopeCard = ({
           <PanelTitleBarFlex>
             <div
               css={css`
-                width: 32px;
-              `}
-            ></div>
-            <div>DOPE #{dope.id}</div>
-            <div
-              css={css`
-                width: 32px;
+                flex: auto;
+                text-align: left;
               `}
             >
-              {showCollapse && <ToggleButton />}
+              #{dope.id}
             </div>
+            {/* <img
+              alt="favorite"
+              css={css`
+                margin: 8px;
+              `}
+              src={iconPath + '/favorite.svg'}
+            /> */}
+            {footer === 'for-marketplace' && <DopeCardTitleCost dope={dope}></DopeCardTitleCost>}
           </PanelTitleBarFlex>
-          <DopeCardBody dope={dope} />
-          {footer && footer === 'for-owner' && (
-            <PanelFooter>
-              <DopeCardFooterForOwner dope={dope} toggleVisibility={toggleItemLegendVisibility} />
-            </PanelFooter>
-          )}
-          {footer && footer === 'for-marketplace' && (
-            <PanelFooter>
-              <DopeCardFooterForMarket dope={dope} />
-            </PanelFooter>
-          )}
+          <DopeCardBody dope={dope} isExpanded={isExpanded} />
         </PanelContainer>
       )}
     </>

@@ -2,6 +2,13 @@ import { css } from '@emotion/react';
 import { Button } from '@chakra-ui/button';
 import styled from '@emotion/styled';
 
+export const DopeLegendColors = {
+  BLACK_MARKET: 'rgba(255,252,63)',
+  CUSTOM: 'rgba(254,101,33)',
+  RARE: 'rgba(46,130,255)',
+  COMMON: 'rgba(255,255,255)',
+}
+
 export const DopeLegendBackgroundColors = {
   BLACK_MARKET: 'rgba(255,252,63,0.5)',
   CUSTOM: 'rgba(254,101,33,0.15)',
