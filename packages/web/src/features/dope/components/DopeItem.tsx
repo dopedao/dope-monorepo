@@ -15,6 +15,21 @@ type BulletProps = {
   color?: string;
 };
 
+const Bullet = ({ color }: BulletProps) => (
+  <div
+    css={css`
+      height: 10px;
+      width: 10px;
+      min-width: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+      background-color: ${color};
+      // necessary when 'align-items: top' to ensure proper alignment with text
+      margin-top: 4px; 
+    `}
+  ></div>
+);
+
 const Item = ({
   name,
   namePrefix,
@@ -28,7 +43,7 @@ const Item = ({
   <div
     css={css`
       display: flex;
-      align-items: center;
+      align-items: top;
     `}
   >
     <Bullet color={color} />
@@ -71,19 +86,6 @@ const Item = ({
       {type}
     </div>
   </div>
-);
-
-const Bullet = ({ color }: BulletProps) => (
-  <div
-    css={css`
-      height: 10px;
-      width: 10px;
-      min-width: 10px;
-      border-radius: 50%;
-      margin-right: 8px;
-      background-color: ${color};
-    `}
-  ></div>
 );
 
 export default Item;

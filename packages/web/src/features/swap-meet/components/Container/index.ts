@@ -8,6 +8,7 @@ const Container = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   background-color: #fff;
+  padding: 16px 16px;
   .dopeGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -18,7 +19,7 @@ const Container = styled.div`
     max-height: auto;
   }
   ${media.tablet`
-    padding: 16px 16px;
+    
   `}
 `;
 
