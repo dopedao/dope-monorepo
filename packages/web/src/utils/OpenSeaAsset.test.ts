@@ -17,17 +17,17 @@ test('Dumped OpenSea response file contains expected tokens', () => {
   expect(lastTokenId).toBe(osa.MAX_TOKENS);
 });
 
-describe('getOpenSeaAssetPagesJson', () => {
-  // NOTE
-  //
-  // The method called here actually hits the OpenSea API and should probably
-  // be stubbed in the future if we utilize testing more heavily.
-  test('returns expected amount of tokens', async () => {
-    const numExpectedAssets = 5;
-    const assets = await osa.getOpenSeaAssetPagesJson(numExpectedAssets);
-    expect(assets.length).toBe(numExpectedAssets);
-  });
-});
+// describe('getOpenSeaAssetPagesJson', () => {
+//   // NOTE
+//   //
+//   // The method called here actually hits the OpenSea API and should probably
+//   // be stubbed in the future if we utilize testing more heavily.
+//   test('returns expected amount of tokens', async () => {
+//     const numExpectedAssets = 5;
+//     const assets = await osa.getOpenSeaAssetPagesJson(numExpectedAssets);
+//     expect(assets.length).toBe(numExpectedAssets);
+//   });
+// });
 
 // describe('getOpenSeaAssets', () => {
 //   test('returns an array of OpenSeaAsset objects', async () => {

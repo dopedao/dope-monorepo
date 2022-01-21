@@ -33,25 +33,25 @@ export const getOpenSeaAssetJson = (tokenId: string) => {
 
 // NOTE: MUST BE CALLED ON SERVER-SIDE OR FAILS CORS
 // Called from api/open-sea-assets
-export const getOpenSeaAssetPagesJson = async (totalTokens = MAX_TOKENS) => {
-  console.log('getOpenSeaAssetPagesJson');
-  const maxAssetsPerRequest = 50;
-  const ASSETS_PER_REQUEST = maxAssetsPerRequest > totalTokens ? totalTokens : maxAssetsPerRequest;
-  const TOTAL_NUM_TOKENS = totalTokens;
-  const assets = [];
+// export const getOpenSeaAssetPagesJson = async (totalTokens = MAX_TOKENS) => {
+//   console.log('getOpenSeaAssetPagesJson');
+//   const maxAssetsPerRequest = 50;
+//   const ASSETS_PER_REQUEST = maxAssetsPerRequest > totalTokens ? totalTokens : maxAssetsPerRequest;
+//   const TOTAL_NUM_TOKENS = totalTokens;
+//   const assets = [];
 
-  const baseUrl = `https://api.opensea.io/api/v1/assets?asset_contract_address=${dopeContractAddress}&order_direction=asc&limit=${ASSETS_PER_REQUEST}`;
+//   const baseUrl = `https://api.opensea.io/api/v1/assets?asset_contract_address=${dopeContractAddress}&order_direction=asc&limit=${ASSETS_PER_REQUEST}`;
 
-  for (let offset = 0; offset < TOTAL_NUM_TOKENS; offset += ASSETS_PER_REQUEST) {
-    console.log(`getOpenSeaAssetPagesJson: ${offset}`);
-    const currentUrl = baseUrl + '&offset=' + offset;
-    const response = await fetch(currentUrl);
-    const pageOfAssets = await response.json();
-    assets.push(pageOfAssets['assets']);
-  }
-  const flatAssets = assets.flat(Infinity);
-  return flatAssets;
-};
+//   for (let offset = 0; offset < TOTAL_NUM_TOKENS; offset += ASSETS_PER_REQUEST) {
+//     console.log(`getOpenSeaAssetPagesJson: ${offset}`);
+//     const currentUrl = baseUrl + '&offset=' + offset;
+//     const response = await fetch(currentUrl);
+//     const pageOfAssets = await response.json();
+//     assets.push(pageOfAssets['assets']);
+//   }
+//   const flatAssets = assets.flat(Infinity);
+//   return flatAssets;
+// };
 
 // export const getOpenSeaAssets = async (totalTokens = MAX_TOKENS) => {
 //   const assets = await getOpenSeaAssetPagesJson(totalTokens);
