@@ -24,9 +24,9 @@ export default class BringItemQuest extends ItemQuest
         }
     }
 
-    private _handleCitizenEvent(citizen: Citizen)
+    private _handleCitizenEvent(citizen: Citizen, cancelled: boolean)
     {
-        if (citizen !== this.questReferer)
+        if (cancelled || citizen !== this.questReferer)
             return;
         
         // if has picked up item during quest "lifetime"
@@ -42,7 +42,7 @@ export default class BringItemQuest extends ItemQuest
     {
         super.onStart();
 
-        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, this._handleCitizenEvent, this);
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, this._handleCitizenEvent, this);
     }
 
     onComplete()
@@ -50,6 +50,6 @@ export default class BringItemQuest extends ItemQuest
         super.onComplete();
 
         // unsubscribe from events
-        EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, this._handleCitizenEvent);
+        EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT_FINISH, this._handleCitizenEvent);
     }
 }

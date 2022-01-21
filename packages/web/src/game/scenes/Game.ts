@@ -55,20 +55,19 @@ export default class GameScene extends Scene {
     // this.cameras.main.shake(700, 0.001);
     // this.cameras.main.flash(800, 0xff, 0xff, 0xff);
 
+    // zoom to citizen when talking
     const focusCitizen = (citizen: Citizen) => {
       this.cameras.main.zoomTo(4, 700, 'Sine.easeInOut');
       this.cameras.main.pan(citizen.x, citizen.y, 700, 'Sine.easeInOut');
     }
 
-    const cancelFocus = () => this.cameras.main.zoomTo(this.zoom, 700, 'Sine.easeInOut', true);
-
-    // zoom to citizen when talking
-    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, focusCitizen);
-
     // cancel zoom
     // force camera to zoom even if pan's already running
-    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, cancelFocus);
-    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, cancelFocus);
+    const cancelFocus = () => this.cameras.main.zoomTo(this.zoom, 700, 'Sine.easeInOut', true);
+
+    
+    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, focusCitizen);
+    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, cancelFocus);
 
     // remove event listeners
     // return () => {
@@ -121,7 +120,7 @@ export default class GameScene extends Scene {
     // citizens
     this.citizens.push(new Citizen(
       this.matter.world, 
-      150, 200, 
+      180, 200, 
       new HustlerModel(Base.Male, undefined, Feet.NikeCortez), 
       "Michel", "Arpenteur",
       [new Conversation("Welcome to Dope City!")],
@@ -130,12 +129,12 @@ export default class GameScene extends Scene {
       true
     ));
 
-    this.itemEntities.push(new ItemEntity(this.matter.world, 800, 1200, 'lol', new Item('item_test', 'jsp'), (item: Item) => {
+    this.itemEntities.push(new ItemEntity(this.matter.world, 100, 200, 'lol', new Item('item_test', 'jsp'), (item: Item) => {
       this.player.inventory.remove(item, true);
     }));
 
     // TODO when map update: create player directly from map data
-    this.player = new Player(this.matter.world, 100, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
+    this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
 
     const camera = this.cameras.main;
     // camera.setBounds(this.mapHelper.mapReader.level.worldX - 10, this.mapHelper.mapReader.level.worldY - 10, 
@@ -159,7 +158,7 @@ export default class GameScene extends Scene {
     const centerMapPos = new Phaser.Math.Vector2((level.worldX + (level.worldX + level.pxWid)) / 2, (level.worldY + (level.worldY + level.pxHei)) / 2);
     const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
 
-    // patch map
+    // check to load new maps
     // east
     if (playerPos.x - centerMapPos.x > level.pxWid / 4)
       this._checkDir(level, 'e', true);
@@ -173,7 +172,7 @@ export default class GameScene extends Scene {
     else if (playerPos.y - centerMapPos.y > level.pxHei / 4)
       this._checkDir(level, 's', true);
 
-    // update current map
+    // check in which map we're in
     // east
     if (playerPos.x - centerMapPos.x > level.pxWid / 2)
       this._checkDir(level, 'e', false);
@@ -186,8 +185,6 @@ export default class GameScene extends Scene {
     // south
     else if (playerPos.y - centerMapPos.y > level.pxHei / 2)
       this._checkDir(level, 's', false);
-
-    console.log(this.currentMap);
   }
 
   private _checkDir(level: Level, dir: string, patchMap: boolean)

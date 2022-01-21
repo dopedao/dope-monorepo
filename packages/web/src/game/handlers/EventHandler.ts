@@ -14,8 +14,7 @@ export enum Events
     PLAYER_ZONE_LEAVE = 'player_leave_zone',
     
     PLAYER_CITIZEN_INTERACT = 'player_interact_npc',
-    PLAYER_CITIZEN_INTERACT_COMPLETE = 'player_interact_npc_complete',
-    PLAYER_CITIZEN_INTERACT_CANCEL = 'player_interact_npc_cancel',
+    PLAYER_CITIZEN_INTERACT_FINISH = 'player_interact_npc_finish',
 
     PLAYER_QUEST_NEW = 'player_new_quest',
     PLAYER_QUEST_START = 'player_start_quest',
@@ -45,8 +44,8 @@ export default class EventHandler
         EventHandler._emitter.on(Events.PLAYER_ZONE_LEAVE, () => this._log('Left zone'));
         
         EventHandler._emitter.on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => this._log(`Started interaction with citizen: ${citizen.name}`));
-        EventHandler._emitter.on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, (citizen: Citizen) => this._log(`Completed interaction with citizen: ${citizen.name}`));
-        EventHandler._emitter.on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (citizen: Citizen) => this._log(`Canceled interaction with citizen: ${citizen.name}`));
+        EventHandler._emitter.on(Events.PLAYER_CITIZEN_INTERACT_FINISH, (citizen: Citizen, cancelled: boolean) => this._log(`Finished interaction with citizen: ${citizen.name}
+            cancelled?: ${cancelled}`));
 
         EventHandler._emitter.on(Events.PLAYER_QUEST_NEW, (quest: Quest) => this._log(`New quest: ${quest.name}`));
         EventHandler._emitter.on(Events.PLAYER_QUEST_START, (quest: Quest) => this._log(`Started quest: ${quest.name}`));

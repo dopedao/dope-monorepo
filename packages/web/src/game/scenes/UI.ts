@@ -85,7 +85,7 @@ export default class UIScene extends Scene {
                 this.currentInteraction.textBox.destroy();
                 this.currentInteraction = undefined;
 
-                EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_CANCEL, citizen);
+                EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_FINISH, citizen, true);
             }
         }
 
@@ -225,7 +225,10 @@ export default class UIScene extends Scene {
 
     private _handleNpcInteractions()
     {
-        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (citizen: Citizen) => {
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, (citizen: Citizen, cancelled: boolean) => {
+            if (!cancelled)
+                return;
+
             toast("You ran away from the conversation!", {
                 ...toastStyle,
                 icon: '🚫',
@@ -252,7 +255,7 @@ export default class UIScene extends Scene {
 
                     // TODO: Move somewhere else, maybe in the Citizen class?
                     citizen.onInteractionFinish();
-                    EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, citizen);
+                    EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_FINISH, citizen, false);
 
                     // if the conversation is not marked as complete, push it to the array again
                     if (conv.onFinish)
