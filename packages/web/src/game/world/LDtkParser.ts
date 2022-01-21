@@ -30,13 +30,20 @@ export class LdtkReader {
             else
                 usedTileset = tileset.find(t => t === this.tilesets.find(t2 => t2.uid === layer.__tilesetDefUid)?.identifier.toLowerCase());
 
-            if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length === 0) {
+            // intgrid layer
+            if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length === 0) 
+            {
                 mappack.intGridLayers.push(this.CreateIntGridLayer(layer, usedTileset));
-            } else if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) {
+            }
+            // auto layer 
+            else if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) 
+            {
                 if (!usedTileset)
                     console.warn("No tileset found for layer " + layer.__identifier + ", using first tileset");
                 mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset ?? tileset[0]));
-            } else if (layer.__type === 'Tiles') {
+            } 
+            // basic tiles layer
+            else if (layer.__type === 'Tiles') {
                 if (!usedTileset)
                     console.warn("No tileset found for layer " + layer.__identifier + ", using first tileset");
                 mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset ?? tileset[0]));
