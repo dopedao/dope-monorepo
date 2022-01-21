@@ -10,6 +10,7 @@ import Item from 'game/entities/player/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';
 import MapHelper from 'game/world/MapHelper';
 import Quest from 'game/entities/player/quests/Quest';
+import { Level } from 'game/world/LDtkParser';
 
 
 export default class GameScene extends Scene {
@@ -154,59 +155,60 @@ export default class GameScene extends Scene {
     const centerMapPos = new Phaser.Math.Vector2((level.worldX + (level.worldX + level.pxWid)) / 2, (level.worldY + (level.worldY + level.pxHei)) / 2);
     const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
 
-    const checkDir = (dir: string, patchMap: boolean) => {
-      level.__neighbours.forEach(n => {
-        const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
-        if (this.loadedMaps.find(m => m === lvl.identifier))
-        {
-          if (!patchMap && n.dir === dir)
-          {
-            this.currentMap = lvl.identifier;
-          }
-          return;
-        }
-
-        if (!patchMap)
-          return;
-
-        if (n.dir === dir)
-        {
-          this.mapHelper.createMap(lvl.identifier);
-          this.mapHelper.createEntities();
-          this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
-          // this.cameras.main.setBounds(this.mapHelper.mapReader.level.worldX, this.mapHelper.mapReader.level.worldY, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
-        }
-      });
-    }
-
     // patch map
     // east
     if (playerPos.x - centerMapPos.x > level.pxWid / 4)
-      checkDir('e', true);
+      this._checkDir(level, 'e', true);
     // north
     else if (playerPos.y - centerMapPos.y < -(level.pxHei / 4))
-      checkDir('n', true);
+      this._checkDir(level, 'n', true);
     // west
     else if (playerPos.x - centerMapPos.x < -(level.pxWid / 4))
-      checkDir('w', true);
+      this._checkDir(level, 'w', true);
     // south
     else if (playerPos.y - centerMapPos.y > level.pxHei / 4)
-      checkDir('s', true);
+      this._checkDir(level, 's', true);
 
     // update current map
     // east
     if (playerPos.x - centerMapPos.x > level.pxWid / 2)
-      checkDir('e', false);
+      this._checkDir(level, 'e', false);
     // north
     else if (playerPos.y - centerMapPos.y < -(level.pxHei / 2))
-      checkDir('n', false);
+      this._checkDir(level, 'n', false);
     // west
     else if (playerPos.x - centerMapPos.x < -(level.pxWid / 2))
-      checkDir('w', false);
+      this._checkDir(level, 'w', false);
     // south
     else if (playerPos.y - centerMapPos.y > level.pxHei / 2)
-      checkDir('s', false);
+      this._checkDir(level, 's', false);
 
     console.log(this.currentMap);
+  }
+
+  private _checkDir(level: Level, dir: string, patchMap: boolean)
+  {
+    level.__neighbours.forEach(n => {
+      const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
+      if (this.loadedMaps.find(m => m === lvl.identifier))
+      {
+        if (!patchMap && n.dir === dir)
+        {
+          this.currentMap = lvl.identifier;
+        }
+        return;
+      }
+
+      if (!patchMap)
+        return;
+
+      if (n.dir === dir)
+      {
+        this.mapHelper.createMap(lvl.identifier);
+        this.mapHelper.createEntities();
+        this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
+        // this.cameras.main.setBounds(this.mapHelper.mapReader.level.worldX, this.mapHelper.mapReader.level.worldY, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
+      }
+    });
   }
 }
