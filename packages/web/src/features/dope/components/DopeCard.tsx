@@ -73,7 +73,6 @@ const DopeCard = ({
   isExpanded: isExpandedProp = true,
   showCollapse = false,
 }: DopeCardProps) => {
-
   const [isItemLegendVisible, setIsItemLegendVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(isExpandedProp);
 
@@ -127,18 +126,17 @@ const DopeCard = ({
                 flex: auto;
                 text-align: left;
               `}
-            >#{dope.id}</div>
-            <img
+            >
+              #{dope.id}
+            </div>
+            {/* <img
+              alt="favorite"
               css={css`
                 margin: 8px;
               `}
-              src={iconPath+'/favorite.svg'} />
-            {
-              footer === 'for-marketplace' && (
-                <DopeCardTitleCost dope={dope}></DopeCardTitleCost>
-              )
-            }
-            
+              src={iconPath + '/favorite.svg'}
+            /> */}
+            {footer === 'for-marketplace' && <DopeCardTitleCost dope={dope}></DopeCardTitleCost>}
           </PanelTitleBarFlex>
           <DopeCardBody dope={dope} />
         </PanelContainer>

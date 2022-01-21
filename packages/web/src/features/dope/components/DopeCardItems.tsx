@@ -8,6 +8,7 @@ const DopeCardItems = styled.div`
   border-right: 2px solid #000;
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
+  flex: 1;
 `;
 
 export default DopeCardItems;

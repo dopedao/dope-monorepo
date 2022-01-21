@@ -28,6 +28,8 @@ const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
         padding: 8px;
         overflow-y: auto;
         border-radius: 5px;
+        display: flex;
+        flex-direction: column;
       `}
     >
       <DopeCardItems>
@@ -52,19 +54,21 @@ const DopeCardBody = ({ dope }: Pick<DopeCardProps, 'dope'>) => {
                   augmented={augmented}
                   type={type}
                   color={DopeLegendColors[tier]}
+                  isExpanded
                 />
               );
-            })
-        }
+            })}
       </DopeCardItems>
-      <DopePreviewButton />
-      <DopeStatus content={"paper"} status={!dope.claimed} />
-      <DopeStatus content={"hustler"} status={!dope.opened} />
+      {/* <DopePreviewButton /> */}
+      <DopeStatus content={'paper'} status={!dope.claimed} />
+      <DopeStatus content={'hustler'} status={!dope.opened} />
       <div
         css={css`
           margin: 8px;
         `}
-      >Rank: {dope.rank + 1} / {NUM_DOPE_TOKENS} </div>
+      >
+        Rank: {dope.rank + 1} / {NUM_DOPE_TOKENS}{' '}
+      </div>
     </div>
   );
 };
