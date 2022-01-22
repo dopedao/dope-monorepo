@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@chakra-ui/react';
 import Link from 'next/link';
 import styled from '@emotion/styled';
@@ -16,6 +16,7 @@ import LoadingBlock from 'components/LoadingBlock';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import Dialog from 'components/Dialog';
 import StickyNote from 'components/StickyNote';
+import { useSwitchOptimism } from 'hooks/web3';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 const streetBackground =
@@ -62,9 +63,24 @@ const ContentEmpty = (
 );
 
 const Hustlers = () => {
+  const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(true);
   const router = useRouter();
-  const { account } = useWeb3React();
+  const { account, chainId } = useWeb3React();
+  useSwitchOptimism(chainId, account);
+
+  useEffect(() => {
+    const localNetworkAlert = localStorage.getItem('networkAlertCustomizeHustler');
+
+    if (localNetworkAlert !== 'true') {
+      setShowNetworkAlert(true);
+    }
+  }, []);
+
+  const handleCloseAlert = () => {
+    window.localStorage.setItem('networkAlertCustomizeHustler', 'false');
+    setShowNetworkAlert(false);
+  };
 
   const { data, isFetching: loading } = useHustlersWalletQuery(
     {
@@ -96,6 +112,26 @@ const Hustlers = () => {
   return (
     <AppWindow requiresWalletConnection={true} padBody={false} navbar={<DopeWarsExeNav />}>
       <Head title="Your Hustler Squad" />
+      {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
+        <StickyNote>
+          <div
+            css={css`
+              display: flex;
+              align-items: center;
+            `}
+          >
+            <p
+              css={css`
+                margin-right: 10px;
+                padding-bottom: unset;
+              `}
+            >
+              You should switch to Optimism network to customize your hustler.
+            </p>{' '}
+            <CloseButton onClick={handleCloseAlert} />
+          </div>
+        </StickyNote>
+      )}
       {account && router.query.c === 'true' && showSuccessAlert && (
         <StickyNote>
           <div
