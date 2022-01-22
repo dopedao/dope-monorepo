@@ -96,8 +96,8 @@ const DopeCardBody = ({
         }
       </DopeCardItems>
       {/* <DopePreviewButton /> */}
-      <DopeStatus content={'paper'} status={!dope.claimed} />
       <DopeStatus content={'hustler'} status={!dope.opened} />
+      <DopeStatus content={'paper'} status={!dope.claimed} />
     </div>
   );
 };

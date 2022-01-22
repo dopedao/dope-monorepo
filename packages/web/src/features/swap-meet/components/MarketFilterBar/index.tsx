@@ -6,7 +6,7 @@ import { SearchOrderField } from 'generated/graphql';
 import { Container } from './styles';
 import { FILTERS } from 'features/swap-meet/modules/MarketList';
 
-const statusKeys = ['All', 'For Sale', 'Has Unclaimed $PAPER', 'Has Unclaimed Gear'];
+const statusKeys = ['All', 'For Sale', 'Has Unclaimed Gear', 'Has Unclaimed $PAPER'];
 
 const sortKeys = [
   {
