@@ -1,10 +1,12 @@
+// import DopePreviewButton from 'features/dope/components/DopeCardPreviewButton';
 import { css } from '@emotion/react';
-import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { DopeCardProps } from './DopeCard';
+import { DopeLegendColors } from 'features/dope/components/DopeLegend';
+import { useState } from 'react';
+import { NUM_DOPE_TOKENS } from 'utils/constants';
 import DopeCardItems from 'features/dope/components/DopeCardItems';
-import DopeStatus from 'features/dope/components/DopeStatus';
 import DopeItem from 'features/dope/components/DopeItem';
-import DopePreviewButton from 'features/dope/components/DopeCardPreviewButton';
+import DopeStatus from 'features/dope/components/DopeStatus';
 
 const ITEM_ORDER = [
   'WEAPON',
@@ -22,6 +24,11 @@ const DopeCardBody = ({
   dope,
   isExpanded,
 }: Pick<DopeCardProps, 'dope'> & { isExpanded: boolean }) => {
+  const [isRarityVisible, setRarityVisible] = useState(false);
+  const toggleItemLegendVisibility = (): void => {
+    setRarityVisible(!isRarityVisible);
+  };
+
   return (
     <div
       css={css`
@@ -32,9 +39,28 @@ const DopeCardBody = ({
         border-radius: 5px;
         display: flex;
         flex-direction: column;
+        justify-content: space-evenly;
+        align-items: stretch;
       `}
     >
       <DopeCardItems>
+        <div 
+          css={css`
+            padding-bottom: 8px;
+            font-size: var(--text-small);
+            color: var(--gray-400);
+            cursor: pointer;
+            cursor: hand;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+          `}
+          onClick={toggleItemLegendVisibility}>
+          <span>
+            ( {dope.rank + 1} / {NUM_DOPE_TOKENS}{' '} )
+          </span>
+          { isRarityVisible ? '🙈' : '👀' }
+        </div>
         {dope.items &&
           dope.items
             .sort(function (a, b) {
@@ -57,9 +83,13 @@ const DopeCardBody = ({
                   type={type}
                   color={DopeLegendColors[tier]}
                   isExpanded={isExpanded}
+                  tier={tier}
+                  showRarity={isRarityVisible}
                 />
               );
-            })}
+            }
+          )
+        }
       </DopeCardItems>
       {/* <DopePreviewButton /> */}
       <DopeStatus content={'paper'} status={!dope.claimed} />

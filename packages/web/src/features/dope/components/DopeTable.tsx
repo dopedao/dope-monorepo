@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { css } from '@emotion/react';
-import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Tfoot } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import PanelContainer from 'components/PanelContainer';
+import PanelFooter from 'components/PanelFooter';
 import Check from 'ui/svg/Check';
 import { ItemTier, ItemType } from 'generated/graphql';
 
@@ -115,78 +116,55 @@ const DopeTable = ({ className = '', data, selected, onSelect }: DopeTableProps)
           display: flex;
           min-height: 100%;
           flex-direction: column;
-          align-items: stretch;
+          // justify-content: space-around;
+          // align-items: stretch;
         `}
       >
-        <div
-          css={css`
-            flex-grow: 1;
-          `}
-        >
-          <Table variant="dope">
-            <colgroup>
-              <col width="25%" />
-              <col width="25%" />
-              <col width="25%" />
-              <col width="25%" />
-            </colgroup>
-            <Thead>
-              <Tr>
-                <Th onClick={() => setSort('id')}>Dope ID</Th>
-                <Th onClick={() => setSort('rank')}>Rank</Th>
-                <Th>Paper</Th>
-                <Th>Bundled</Th>
+        <Table variant="dope">
+          <colgroup>
+            <col width="25%" />
+            <col width="25%" />
+            <col width="25%" />
+            <col width="25%" />
+          </colgroup>
+          <Thead>
+            <Tr>
+              <Th onClick={() => setSort('id')}>Dope ID</Th>
+              <Th onClick={() => setSort('rank')}>Rank</Th>
+              <Th>Paper</Th>
+              <Th>Bundled</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {items.map(({ id, rank, opened, claimed, idx }) => (
+              <Tr
+                className={selected === idx ? 'selected' : ''}
+                key={id}
+                onClick={() => onSelect(idx)}
+              >
+                <Td>{id}</Td>
+                <Td>{rank}</Td>
+                <Td>{claimed}</Td>
+                <Td>{opened}</Td>
               </Tr>
-            </Thead>
-            <Tbody>
-              {items.map(({ id, rank, opened, claimed, idx }) => (
-                <Tr
-                  className={selected === idx ? 'selected' : ''}
-                  key={id}
-                  onClick={() => onSelect(idx)}
-                >
-                  <Td>{id}</Td>
-                  <Td>{rank}</Td>
-                  <Td>{claimed}</Td>
-                  <Td>{opened}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </div>
-        <div
-          css={css`
-            position: sticky;
-            bottom: 0;
-            cursor: pointer;
-            background: rgb(222, 222, 221);
-          `}
-        >
-          <div
-            css={css`
-              border-top: 2px solid rgb(0, 0, 0);
-              height: 44px;
-              padding: 10px 16px;
-              text-align: center;
-              vertical-align: middle;
-              text-transform: uppercase;
-              font-weight: 600;
-              font-size: 0.9em;
-            `}
-          >
-            {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
-            <span
-              className="separator"
-              css={css`
-                padding: 8px;
-                color: rgb(168, 169, 174);
-              `}
-            >
-              /
-            </span>
-            {formattedUnclaimedPaper()} Unclaimed $PAPER
-          </div>
-        </div>
+            ))}
+          </Tbody>
+          <Tfoot>
+            <Th colSpan={4}>
+              {items.length} DOPE {items.length > 1 ? 'Tokens' : 'Token'}
+              <span
+                className="separator"
+                css={css`
+                  padding: 8px;
+                  color: rgb(168, 169, 174);
+                `}
+              >
+                /
+              </span>
+              {formattedUnclaimedPaper()} Unclaimed $PAPER
+            </Th>
+          </Tfoot>
+        </Table>
       </div>
     </PanelContainer>
   );

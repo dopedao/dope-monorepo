@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { HustlerCustomization } from 'utils/HustlerConfig';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import PanelContainer from 'components/PanelContainer';
-import { PanelFooterLeft } from 'components/PanelFooter';
+import { PanelFooter } from 'components/PanelFooter';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ZoomControls from 'components/hustler/ZoomControls';
@@ -79,18 +79,9 @@ const ConfigureHustler = ({
             />
           )}
         </HustlerCard>
-        <PanelFooterLeft
-          css={css`
-            width: 100%;
-            border-top-width: 1px;
-            @media (max-width: 960px) {
-              display: flex;
-              flex-direction: column;
-            }
-          `}
-        >
+        <PanelFooter>
           <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
-        </PanelFooterLeft>
+        </PanelFooter>
       </PanelContainer>
       <ConfigurationControls
         config={config}

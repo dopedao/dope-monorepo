@@ -8,7 +8,9 @@ type ItemProps = {
   augmented?: boolean | null;
   type: string;
   color?: string;
+  tier?: string;
   isExpanded: boolean;
+  showRarity: boolean;
 };
 
 type BulletProps = {
@@ -38,19 +40,25 @@ const Item = ({
   augmented,
   type,
   color,
+  tier,
   isExpanded,
+  showRarity
 }: ItemProps) => (
   <div
     css={css`
       display: flex;
       align-items: top;
+      font-size: var(--text-small);
+      ${isExpanded && 
+        `border-top: 1px solid rgba(255,255,255,0.1);
+         padding-top:4px;`
+      }
     `}
   >
     <Bullet color={color} />
     <div
       css={css`
         color: ${color};
-        font-size: 12px;
       `}
     >
       {name}
@@ -66,12 +74,11 @@ const Item = ({
           <div
             css={css`
               color: #888;
-              font-size: 12px;
               padding-right: 5px;
             `}
           >
             {namePrefix ? `${namePrefix} ${nameSuffix} ` : ' '}
-            {suffix}
+            {suffix} 
           </div>
         </>
       )}
@@ -80,10 +87,12 @@ const Item = ({
       css={css`
         color: #888;
         margin-left: auto;
-        font-size: 12px;
+        font-size: var(--text-small);
+        text-align: right;
+        width: 96px;
       `}
     >
-      {type}
+      {`${showRarity ? tier: ''} ${type}`}
     </div>
   </div>
 );

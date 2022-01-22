@@ -9,6 +9,9 @@ const DopeCardItems = styled.div`
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 `;
 
 export default DopeCardItems;

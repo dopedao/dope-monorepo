@@ -11,7 +11,7 @@ import {
   isHustlerRandom,
   randomizeHustlerAttributes,
 } from 'utils/HustlerConfig';
-import PanelFooter, { PanelFooterRight } from 'components/PanelFooter';
+import PanelFooter from 'components/PanelFooter';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 
 const NoDopeMessage = () => {
@@ -144,7 +144,7 @@ const InitiationFooterDopeContent = ({
               ))}
           </Select>
         </SubPanelForm>
-        <PanelFooterRight>
+        <PanelFooter>
           <div>
             <Button onClick={goToConfigureStep}>Configure</Button>
             <Button
@@ -156,7 +156,7 @@ const InitiationFooterDopeContent = ({
           <Button variant="primary" onClick={goToNextStep}>
             👉 Next
           </Button>
-        </PanelFooterRight>
+        </PanelFooter>
       </div>
     );
   }
