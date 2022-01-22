@@ -124,7 +124,7 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
             </Box>
           </Flex>
           {middlePosts.map(post => (
-            <Box padding="0 10px">
+            <Box padding="0 10px" key={post.slug}>
               <Box
                 borderTop={'1px solid black'}
                 borderBottom={'1px solid black'}

@@ -4,6 +4,7 @@ import { DopeCardProps } from './DopeCard';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { useState } from 'react';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
+import { Image } from '@chakra-ui/react';
 import DopeCardItems from 'features/dope/components/DopeCardItems';
 import DopeItem from 'features/dope/components/DopeItem';
 import DopeStatus from 'features/dope/components/DopeStatus';
@@ -59,9 +60,12 @@ const DopeCardBody = ({
           <span>
             ( {dope.rank + 1} / {NUM_DOPE_TOKENS}{' '} )
           </span>
-          { isRarityVisible ? '🙈' : '👀' }
+          { !dope.opened && (isRarityVisible ? '🙈' : '👀') }
         </div>
-        {dope.items &&
+        {dope.opened &&
+          <Image src="/images/hustler/vote_female.png" alt="This DOPE NFT has no Gear to Unpack" />
+        }
+        {!dope.opened && dope.items &&
           dope.items
             .sort(function (a, b) {
               if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
