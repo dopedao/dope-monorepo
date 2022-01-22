@@ -92,7 +92,7 @@ const Item = ({
         width: 96px;
       `}
     >
-      {`${showRarity ? tier: ''} ${type}`}
+      {`${showRarity && tier?.toLowerCase() !== 'common' ? tier: ''} ${type}`}
     </div>
   </div>
 );
