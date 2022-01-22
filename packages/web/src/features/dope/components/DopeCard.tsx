@@ -79,7 +79,7 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: 
           }
         }
         display: flex;
-        flex: 1 auto;
+        flex: 1;
         justify-content: space-between;
         align-items: stretch;
         flex-direction: column;

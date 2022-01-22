@@ -39,7 +39,7 @@ const DopeCardBody = ({
         border-radius: 5px;
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
+        justify-content: stretch;
         align-items: stretch;
       `}
     >
