@@ -46,9 +46,9 @@ const InitiationInfo = () => {
             next-level technical approach that few projects can match.
           </p>
 
-          <h3>Unbundling</h3>
+          <h3>Claiming Gear</h3>
           <p>
-            Initiating a hustler will Unbundle and create 9 new Item NFTs from one DOPE NFT, and
+            Initiating a Hustler will Claim Gear and create 9 new Item NFTs from one DOPE NFT, and
             equip them on your Hustler. Because each of these new items become their own separate
             NFT, they’re also tradeable on the secondary market.
           </p>
@@ -57,9 +57,7 @@ const InitiationInfo = () => {
             DOPE NFT bundles – with over ONE BILLION possible combinations.
           </p>
           <p>
-            Each DOPE NFT can only be unbundled once. The DOPE NFT remains in your wallet and still
-            serves as the governance token for DopeWars DAO. Expect each DOPE NFT to have more
-            utility developed for it in the future.
+            Gear from each DOPE NFT can only be claimed once. The DOPE NFT remains in your wallet and still serves as the governance token for DopeWars DAO. Expect each DOPE NFT to have more utility developed for it in the future.
           </p>
           <h3>More Info</h3>
           <ul className="normal">

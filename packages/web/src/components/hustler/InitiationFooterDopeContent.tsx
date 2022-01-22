@@ -115,7 +115,7 @@ const InitiationFooterDopeContent = ({
       <PanelFooter>
         <SpinnerContainer>
           <Spinner size="xs" />
-          Finding unbundled DOPE in your wallet
+          Finding DOPE in your wallet with Gear
         </SpinnerContainer>
       </PanelFooter>
     );

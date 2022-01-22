@@ -31,7 +31,7 @@ const DopeCardButtonBarOwner = ({ dope }: DopeCardButtonBarOwnerProps) => {
         onClick={() => router.push(`/dope/${dope.id}/unbundle`)}
         disabled={ dope.opened }
       >
-        Unbundle
+        Claim Gear
       </Button>
       <Link href={`/hustlers/${dope.id}/initiate`} passHref>
         <Button variant="primary" disabled={ dope.opened }>Initiate Hustler</Button>
