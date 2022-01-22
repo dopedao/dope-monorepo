@@ -26,7 +26,7 @@ export default class GameScene extends Scene {
 
   public canUseMouse: boolean = true;
 
-  readonly zoom: number = 1;
+  readonly zoom: number = 2.5;
 
   get mapHelper() { return this._mapHelper; }
 
@@ -120,7 +120,7 @@ export default class GameScene extends Scene {
     // citizens
     this.citizens.push(new Citizen(
       this.matter.world, 
-      180, 200, 
+      100, 200, 
       new HustlerModel(Base.Male, undefined, Feet.NikeCortez), 
       "Michel", "Arpenteur",
       [new Conversation("Welcome to Dope City!")],
@@ -134,7 +134,7 @@ export default class GameScene extends Scene {
     }));
 
     // TODO when map update: create player directly from map data
-    this.player = new Player(this.matter.world, 200, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
+    this.player = new Player(this.matter.world, 110, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
 
     const camera = this.cameras.main;
     // camera.setBounds(this.mapHelper.mapReader.level.worldX - 10, this.mapHelper.mapReader.level.worldY - 10, 

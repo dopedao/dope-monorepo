@@ -251,22 +251,25 @@ export class LdtkReader {
             .setAlpha(layer.__opacity)
             .setVisible(false);
 
-        const ogLayer: Layer = this.ldtk.defs.layers.find(l => l.uid === layer.layerDefUid)!;
+        if (layer.__identifier !== 'Collisions')
+        {
+            const ogLayer: Layer = this.ldtk.defs.layers.find(l => l.uid === layer.layerDefUid)!;
 
-        mapLayer.layer.data.forEach(row => row.forEach(tile => {
-            const vData = ogLayer.intGridValues.find(v => v.value === tile.index)!;
-            if (vData && vData.color)
-            {
-                this.scene.add.rectangle(
-                    tile.x * tile.width + mapLayer.x, 
-                    tile.y * tile.height + mapLayer.y, 
-                    tile.width, tile.height, 
-                    Number.parseInt(vData.color.split('#')[1], 16),
-                    mapLayer.alpha
-                ).setDepth(mapLayer.depth);
-            }
-        }));
-
+            mapLayer.layer.data.forEach(row => row.forEach(tile => {
+                const vData = ogLayer.intGridValues.find(v => v.value === tile.index)!;
+                if (vData && vData.color)
+                {
+                    this.scene.add.rectangle(
+                        tile.x * tile.width + mapLayer.x, 
+                        tile.y * tile.height + mapLayer.y, 
+                        tile.width, tile.height, 
+                        Number.parseInt(vData.color.split('#')[1], 16),
+                        mapLayer.alpha
+                    ).setDepth(mapLayer.depth);
+                }
+            }));
+        }
+        
         return mapLayer;
     }
 }

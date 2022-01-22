@@ -59,15 +59,15 @@
                 "file":"./game/MAP/DW_Vegetation_Trees.png",
                 "size": 14290
             },
-            "tileset_sidewalk_webmodular": {
+            "tileset_ground_main": {
                 "file":"./game/MAP/DW_Tileset_Grounds_WebModular.png",
                 "size": 28752
             },
-            "tileset_buildings_modular": {
+            "tileset_building_modular": {
                 "file":"./game/MAP/Dw_Tileset_BuildingsModular.png",
                 "size": 23589
             },
-            "tileset_props_preprotosetv1": {
+            "tileset_props_main": {
                 "file":"./game/MAP/dw_Props_PreProtoSetV1.png",
                 "size": 202808
             },
@@ -75,11 +75,11 @@
                 "file":"./game/MAP/dw_Buildings_PreProtoSetV1_TileAbsolute.png",
                 "size": 208661
             },
-            "tileset_buildings_preprotosetv2": {
+            "tileset_building_nycpack1": {
                 "file":"./game/MAP/dw_Buildings_PreProtoSetV2_TileAbsolute.png",
                 "size": 321197
             },
-            "tileset_grass_street": {
+            "tileset_ground_autotiles": {
                 "file":"./game/MAP/DW_Tileset_GrassStreet.png",
                 "size": 16861
             },
@@ -95,7 +95,7 @@
                 "file":"./game/MAP/DW_Props_Vegetation_Medium.png",
                 "size": 3860
             },
-            "tileset_props_telephonepolewire": {
+            "tileset_props_telephonewire": {
                 "file": "./game/MAP/dw_Props_TelephonePoleWire.png",
                 "size": 10197
             }
