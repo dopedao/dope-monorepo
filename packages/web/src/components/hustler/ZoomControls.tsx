@@ -24,10 +24,10 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
   useEffect(() => {
     let renderName = config.renderName;
     // for mugshots doesn't make sense to render name, because it gets cut off.
-    if (selected == 0) renderName = false;
+    if (selected == 1 || selected == 2) renderName = false;
     setHustlerConfig({
       ...config,
-      zoomWindow: selected == 0 ? ZOOM_WINDOWS[1] : ZOOM_WINDOWS[0],
+      zoomWindow: ZOOM_WINDOWS[selected],
       isVehicle,
       renderName: renderName,
     });
@@ -37,32 +37,32 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
     <ZoomContainer>
       <Button
         onClick={() => {
-          setSelected(0);
+          setSelected(1);
           setIsVehicle(false);
         }}
         borderTopRightRadius="0"
         borderBottomRightRadius="0"
-        backgroundColor={selected == 0 ? '#434345' : '#DEDEDD'}
-        _hover={{
-          backgroundColor: selected == 0 ? '#434345' : 'unset',
-        }}
-      >
-        <PersonHeadIcon color={selected == 0 ? '#fff' : undefined} />
-      </Button>
-      <Button
-        onClick={() => {
-          setSelected(1);
-          setIsVehicle(false);
-        }}
-        borderRadius="0"
-        borderLeft="unset"
-        borderRight="unset"
         backgroundColor={selected == 1 ? '#434345' : '#DEDEDD'}
         _hover={{
           backgroundColor: selected == 1 ? '#434345' : 'unset',
         }}
       >
-        <PersonIcon color={selected == 1 ? '#fff' : undefined} />
+        <PersonHeadIcon color={selected == 1 ? '#fff' : undefined} />
+      </Button>
+      <Button
+        onClick={() => {
+          setSelected(0);
+          setIsVehicle(false);
+        }}
+        borderRadius="0"
+        borderLeft="unset"
+        borderRight="unset"
+        backgroundColor={selected == 0 ? '#434345' : '#DEDEDD'}
+        _hover={{
+          backgroundColor: selected == 0 ? '#434345' : 'unset',
+        }}
+      >
+        <PersonIcon color={selected == 0 ? '#fff' : undefined} />
       </Button>
       <Button
         onClick={() => {

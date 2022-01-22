@@ -129,7 +129,6 @@ const RenderFromItemIds = ({
       css={css`
         height: 100%;
         overflow: hidden;
-
         svg {
           width: 100%;
           height: auto;
