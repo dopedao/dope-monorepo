@@ -152,7 +152,7 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
             </Box>
           ))}
         </MiddlePosts>
-        <RightPosts flex={{ base: 1, md: 3 }} padding={{ base: '0 5px', md: '0 10px' }}>
+        <RightPosts flex={{ base: 1, md: 3 }} padding={{ base: '0 4px', md: '0 10px' }}>
           {rightPosts.map((post, index) => {
             const isLargerTitle = index == 0 && !isTabletOrMobile;
 

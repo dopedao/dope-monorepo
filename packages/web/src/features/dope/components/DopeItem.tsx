@@ -74,7 +74,7 @@ const Item = ({
           <div
             css={css`
               color: #888;
-              padding-right: 5px;
+              padding-right: 4px;
             `}
           >
             {namePrefix ? `${namePrefix} ${nameSuffix} ` : ' '}

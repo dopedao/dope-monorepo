@@ -16,8 +16,8 @@ const PreviewHustler = ({}) => (
           border-bottom: 2px solid #000;
           border-right: 2px solid #000;
           border-left: 2px solid #000;
-          border-bottom-right-radius: 5px;
-          border-bottom-left-radius: 5px;
+          border-bottom-right-radius: 4px;
+          border-bottom-left-radius: 4px;
           box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.25);
         `}
       >
