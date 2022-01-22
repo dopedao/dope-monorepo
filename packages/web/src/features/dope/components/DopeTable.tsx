@@ -131,8 +131,8 @@ const DopeTable = ({ className = '', data, selected, onSelect }: DopeTableProps)
             <Tr>
               <Th onClick={() => setSort('id')}>Dope ID</Th>
               <Th onClick={() => setSort('rank')}>Rank</Th>
-              <Th>Paper</Th>
-              <Th>Bundled</Th>
+              <Th>Has Paper</Th>
+              <Th>Has Gear</Th>
             </Tr>
           </Thead>
           <Tbody>
