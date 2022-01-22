@@ -15,7 +15,7 @@ import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
 import { useDebounce } from 'usehooks-ts';
 
-export type FILTERS = 'All' | 'Has Unclaimed $PAPER' | 'For Sale' | 'Ready To Unpack';
+export type FILTERS = 'All' | 'Has Unclaimed $PAPER' | 'For Sale' | 'Has Unclaimed Gear';
 
 const MarketList = () => {
   const [searchValue, setSearchValue] = useState<string>('');
@@ -32,7 +32,7 @@ const MarketList = () => {
         return { saleActive: true };
       case 'Has Unclaimed $PAPER':
         return { claimed: false };
-      case 'Ready To Unpack':
+      case 'Has Unclaimed Gear':
         return { opened: false };
       default:
         return {};
