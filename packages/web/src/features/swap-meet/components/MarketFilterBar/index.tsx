@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useEffect } from 'react';
 import { Input, Select } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { SearchOrderField } from 'generated/graphql';
 import { Container } from './styles';
 import { FILTERS } from 'features/swap-meet/modules/MarketList';
+import useQueryParam from 'utils/use-query-param';
+import { useDebounce } from 'usehooks-ts';
 
 const statusKeys = ['All', 'For Sale', 'Has Unclaimed Gear', 'Has Unclaimed $PAPER'];
 
@@ -30,27 +32,48 @@ type MarketFilterBarProps = {
   setFilterBy: Dispatch<SetStateAction<FILTERS>>;
   filterBy: FILTERS;
   compactSwitchOn: boolean;
-  handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  searchValue: string;
+  setSearchValue: Dispatch<SetStateAction<string>>;
 };
 
 const MarketFilterBar = ({
   setViewCompactCards,
-  compactSwitchOn,
   setOrderBy,
   orderBy,
-  handleChange,
-  searchValue,
   setFilterBy,
   filterBy,
+  compactSwitchOn,
+  setSearchValue,
 }: MarketFilterBarProps) => {
-  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
+  const [sortBy, setSortBy] = useQueryParam('sort_by', sortKeys[0].value);
+  const [status, setStatus] = useQueryParam('status', statusKeys[0]);
+  const [searchValueParm, setSearchValueParam] = useQueryParam('q', '');
+
+  const debouncedSearchValue = useDebounce<string>(searchValueParm, 250);
+
+  useEffect(() => {
+    setSearchValue(debouncedSearchValue);
+  }, [debouncedSearchValue, setSearchValue]);
+
+  useEffect(() => {
+    setFilterBy(status as FILTERS);
+    setOrderBy(sortBy as SearchOrderField);
+  }, [sortBy, setOrderBy, status, setFilterBy]);
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setOrderBy(value as SearchOrderField);
+    setSearchValueParam(value);
+    setSearchValue(value);
   };
 
-  const onFilterChange = (event: ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
+    setStatus(value);
+    setFilterBy(status as FILTERS);
+  };
+
+  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setSortBy(value);
     setFilterBy(value as FILTERS);
   };
 
@@ -64,12 +87,12 @@ const MarketFilterBar = ({
           placeholder="Search…"
           size="sm"
           variant="filterBar"
-          onChange={handleChange}
-          value={searchValue}
+          onChange={handleSearchChange}
+          value={searchValueParm}
         />
       </div>
       <div>
-        <Select size="sm" variant="filterBar" onChange={onFilterChange} value={filterBy}>
+        <Select size="sm" variant="filterBar" onChange={handleStatusChange} value={filterBy}>
           <option disabled>Status…</option>
           {statusKeys.map((value, index) => (
             <option key={`${value}-${index}`}>{value}</option>

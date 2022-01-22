@@ -6,6 +6,7 @@ import {
   SearchType,
   useInfiniteSearchDopeQuery,
 } from 'generated/graphql';
+import { useDebounce } from 'usehooks-ts';
 import { isTouchDevice } from 'utils/utils';
 import DopeCard from 'features/dope/components/DopeCard';
 import MarketFilterBar from 'features/swap-meet/components/MarketFilterBar';
@@ -13,13 +14,11 @@ import LoadingState from 'features/swap-meet/components/LoadingState';
 import EmptyState from 'features/swap-meet/components/EmptyState';
 import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
-import { useDebounce } from 'usehooks-ts';
 
 export type FILTERS = 'All' | 'Has Unclaimed $PAPER' | 'For Sale' | 'Has Unclaimed Gear';
 
 const MarketList = () => {
   const [searchValue, setSearchValue] = useState<string>('');
-  const debouncedValue = useDebounce<string>(searchValue, 500);
   const [orderBy, setOrderBy] = useState<SearchOrderField>(SearchOrderField.Greatness);
   const [filterBy, setFilterBy] = useState<FILTERS>('All');
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
@@ -56,7 +55,7 @@ const MarketList = () => {
         type: SearchType.Dope,
         ...handleFilter(),
       },
-      query: debouncedValue,
+      query: searchValue,
     },
     {
       getNextPageParam: lastPage => {
@@ -71,22 +70,17 @@ const MarketList = () => {
     },
   );
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
-  };
-
   const isLoading = searchStatus === 'loading';
   return (
     <>
       <MarketFilterBar
-        handleChange={handleChange}
-        searchValue={searchValue}
         orderBy={orderBy}
         setOrderBy={setOrderBy}
         setViewCompactCards={setViewCompactCards}
         compactSwitchOn={viewCompactCards}
         filterBy={filterBy}
         setFilterBy={setFilterBy}
+        setSearchValue={setSearchValue}
       />
       {isLoading ? (
         <LoadingState />
