@@ -64,6 +64,7 @@ export default function GlobalStyles() {
           --space-lg: calc(var(--base-unit) * 5);
 
           /* TYPOGRAPHY */
+          --text-smallest: 0.75em;
           --text-small: 0.9em;
           --text-00: 1em;
           --text-01: 1.125em;
@@ -190,8 +191,10 @@ export default function GlobalStyles() {
         }
         a.primary {
           color: var(--primary);
-        }
-        ,
+        },
+        a.underline {
+          text-decoration: underline !important;
+        },
         p,
         ol,
         ul {
@@ -207,7 +210,9 @@ export default function GlobalStyles() {
         .small {
           font-size: var(--text-small);
         }
-
+        .smallest {
+          font-size: var(--text-smallest);
+        }
         em {
           background-color: rgba(255, 252, 63, 0.5);
         }

@@ -1,13 +1,15 @@
-// import DopePreviewButton from 'features/dope/components/DopeCardPreviewButton';
 import { css } from '@emotion/react';
 import { DopeCardProps } from './DopeCard';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
-import { useState } from 'react';
-import { NUM_DOPE_TOKENS } from 'utils/constants';
 import { Image } from '@chakra-ui/react';
+import { NUM_DOPE_TOKENS } from 'utils/constants';
+import { useState } from 'react';
+import { Link } from '@chakra-ui/layout';
 import DopeCardItems from 'features/dope/components/DopeCardItems';
 import DopeItem from 'features/dope/components/DopeItem';
+import DopePreviewButton from 'features/dope/components/DopeCardPreviewButton';
 import DopeStatus from 'features/dope/components/DopeStatus';
+import RenderFromDopeIdOnly from 'components/hustler/RenderFromDopeIdOnly';
 
 const ITEM_ORDER = [
   'WEAPON',
@@ -25,9 +27,13 @@ const DopeCardBody = ({
   dope,
   isExpanded,
 }: Pick<DopeCardProps, 'dope'> & { isExpanded: boolean }) => {
+  const [isPreviewShown, setPreviewShown] = useState(false);
   const [isRarityVisible, setRarityVisible] = useState(false);
   const toggleItemLegendVisibility = (): void => {
     setRarityVisible(!isRarityVisible);
+  };
+  const togglePreview = (): void => {
+    setPreviewShown(!isPreviewShown);
   };
 
   return (
@@ -63,9 +69,27 @@ const DopeCardBody = ({
           { !dope.opened && (isRarityVisible ? '🙈' : '👀') }
         </div>
         {dope.opened &&
-          <Image src="/images/hustler/vote_female.png" alt="This DOPE NFT has no Gear to Unpack" />
+          <div css={css`display:flex;justify-content:center;align-items:center;height:100%;padding-bottom:7.5em;`}>
+            <Image 
+              src="/images/hustler/vote_female.png" 
+              alt="This DOPE NFT has no Gear to Unpack" 
+            />
+          </div>
         }
-        {!dope.opened && dope.items &&
+        { isPreviewShown && <>
+            <RenderFromDopeIdOnly id={dope.id} /> 
+            <div className="smallest" css={css`color:rgba(255,255,255,0.75);padding-bottom:2em;text-align:center;`}>
+              Hustler must be Initiated as a separate NFT.
+              <Link
+                href="https://dope-wars.notion.site/Hustler-Guide-ad81eb1129c2405f8168177ba99774cf"
+                target="hustler-minting-faq"
+                className="underline"
+                css={css`display: inline-block !important;`}
+              >Read the Hustler Guide for more info.</Link>
+            </div>
+          </>
+        }
+        {!dope.opened && dope.items && !isPreviewShown &&
           dope.items
             .sort(function (a, b) {
               if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
@@ -95,7 +119,10 @@ const DopeCardBody = ({
           )
         }
       </DopeCardItems>
-      {/* <DopePreviewButton /> */}
+      { !dope.opened && 
+        <DopePreviewButton togglePreview={togglePreview} isPreviewShown={isPreviewShown} />
+      }
+      
       <DopeStatus content={'hustler'} status={!dope.opened} />
       <DopeStatus content={'paper'} status={!dope.claimed} />
     </div>
