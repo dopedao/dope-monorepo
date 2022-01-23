@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
 
+	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/game"
@@ -250,8 +251,9 @@ var (
 	wsUpgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
+		CheckOrigin:     func(r *http.Request) bool { return true },
 	}
-	wsConn *websocket.Conn
+	gameState = game.NewGame()
 )
 
 func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string) (http.Handler, error) {
@@ -291,6 +293,29 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
+	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
+		_, log := base.LogFor(ctx)
+
+		wsConn, err := wsUpgrader.Upgrade(w, r, nil)
+
+		if err != nil {
+			log.Err(err).Msg("failed to upgrade websocket")
+			return
+		}
+
+		// close the connection when the function returns
+		defer wsConn.Close()
+
+		// handle messages
+		gameState.Handle(ctx, wsConn)
+
+		// if the connection is closed, dispatch player leave
+		player := gameState.PlayerByConn(ctx, wsConn)
+		if player != nil {
+			gameState.DispatchPlayerLeave(ctx, player)
+		}
+	})
+
 	if index {
 		ctx, cancel := context.WithCancel(ctx)
 
@@ -315,21 +340,6 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 			}
 			w.WriteHeader(200)
 			_, _ = w.Write([]byte(`{"success":true}`))
-		})
-
-		r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
-			wsConn, err := wsUpgrader.Upgrade(w, r, nil)
-
-			if err != nil {
-				fmt.Errorf("error upgrading websocket: %w", err)
-				return
-			}
-
-			// close the connection when the function returns
-			defer wsConn.Close()
-
-			gameState := game.NewGame(ctx, wsConn)
-			game.Handle(ctx, wsConn, gameState)
 		})
 
 		r.HandleFunc("/_ah/stop", func(w http.ResponseWriter, r *http.Request) {
