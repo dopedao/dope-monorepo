@@ -312,7 +312,10 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 		// if the connection is closed, dispatch player leave
 		player := gameState.PlayerByConn(ctx, wsConn)
 		if player != nil {
-			gameState.DispatchPlayerLeave(ctx, player)
+			data := game.IdData{
+				Id: player.Id.String(),
+			}
+			gameState.HandlePlayerLeave(ctx, wsConn, data)
 		}
 	})
 

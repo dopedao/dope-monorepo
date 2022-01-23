@@ -3,7 +3,6 @@ package game
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"sync"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
@@ -67,7 +66,7 @@ func (g *Game) PlayerByUUID(ctx context.Context, uuid uuid.UUID) *Player {
 	defer g.players.mutex.Unlock()
 
 	for _, player := range g.players.data {
-		if player.id == uuid {
+		if player.Id == uuid {
 			return player
 		}
 	}
@@ -90,7 +89,7 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 	_, log := base.LogFor(ctx)
 
 	joinData, err := json.Marshal(PlayerJoinClientData{
-		Id:   player.id.String(),
+		Id:   player.Id.String(),
 		Name: player.name,
 		X:    player.x,
 		Y:    player.y,
@@ -100,11 +99,9 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 		return
 	}
 
-	fmt.Println(g.players.data)
-
 	// tell every other player that this player joined
 	for _, otherPlayer := range g.players.data {
-		if player.id == otherPlayer.id {
+		if player.Id == otherPlayer.Id {
 			continue
 		}
 
@@ -125,14 +122,14 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 	player := &Player{
 		conn: conn,
 
-		id:   uuid.New(),
+		Id:   uuid.New(),
 		name: data.Name,
 		x:    data.X,
 		y:    data.Y,
 	}
 
 	g.players.data = append(g.players.data, player)
-	handShakeData, err := json.Marshal(IdData{Id: player.id.String()})
+	handShakeData, err := json.Marshal(IdData{Id: player.Id.String()})
 	if err != nil {
 		log.Err(err).Msg("could not marshal handshake data")
 		// remove player
@@ -148,13 +145,13 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 
 	g.DispatchPlayerJoin(ctx, player)
 
-	log.Info().Msgf("player joined: %s | %s", player.id, player.name)
+	log.Info().Msgf("player joined: %s | %s", player.Id, player.name)
 }
 
 func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 	_, log := base.LogFor(ctx)
 
-	leaveData, err := json.Marshal(IdData{Id: player.id.String()})
+	leaveData, err := json.Marshal(IdData{Id: player.Id.String()})
 	if err != nil {
 		log.Err(err).Msg("could not marshal leave data")
 		return
@@ -162,7 +159,7 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 
 	// tell every other player that this player left
 	for _, otherPlayer := range g.players.data {
-		if player.id == otherPlayer.id {
+		if player.Id == otherPlayer.Id {
 			continue
 		}
 
@@ -180,18 +177,18 @@ func (g *Game) HandlePlayerLeave(ctx context.Context, conn *websocket.Conn, data
 
 	_, log := base.LogFor(ctx)
 
-	uuid, err := uuid.FromBytes([]byte(data.Id)[:32])
+	uuid, err := uuid.Parse(data.Id)
 	if err != nil {
 		log.Err(err).Msgf("could not parse uuid: %s", data.Id)
 		return
 	}
 
 	for i, player := range g.players.data {
-		if player.id == uuid {
+		if player.Id == uuid {
 			g.players.data = append(g.players.data[:i], g.players.data[i+1:]...)
 			conn.Close()
 			g.DispatchPlayerLeave(ctx, player)
-			log.Info().Msgf("player left: %s | %s", player.id, player.name)
+			log.Info().Msgf("player left: %s | %s", player.Id, player.name)
 			break
 		}
 	}
@@ -203,14 +200,14 @@ func (g *Game) HandlePlayerMove(ctx context.Context, data PlayerMoveData) {
 
 	_, log := base.LogFor(ctx)
 
-	uuid, err := uuid.FromBytes([]byte(data.Id)[:32])
+	uuid, err := uuid.Parse(data.Id)
 	if err != nil {
 		log.Err(err).Msg("could not parse uuid: " + data.Id)
 		return
 	}
 
 	for i, player := range g.players.data {
-		if player.id == uuid {
+		if player.Id == uuid {
 			g.players.data[i].x = data.X
 			g.players.data[i].y = data.Y
 			// TODO: send player move message to other players
@@ -241,7 +238,7 @@ func (g *Game) HandleItemEntityDestroy(ctx context.Context, data IdData) {
 
 	_, log := base.LogFor(ctx)
 
-	uuid, err := uuid.FromBytes([]byte(data.Id)[:32])
+	uuid, err := uuid.Parse(data.Id)
 	if err != nil {
 		log.Err(err).Msgf("could not parse uuid: %s", data.Id)
 		return
@@ -259,7 +256,7 @@ func (g *Game) HandleItemEntityDestroy(ctx context.Context, data IdData) {
 type Player struct {
 	conn *websocket.Conn
 
-	id   uuid.UUID
+	Id   uuid.UUID
 	name string
 	x    float32
 	y    float32
