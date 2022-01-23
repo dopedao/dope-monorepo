@@ -194,6 +194,33 @@ func (g *Game) HandlePlayerLeave(ctx context.Context, conn *websocket.Conn, data
 	}
 }
 
+func (g *Game) DispatchPlayerMove(ctx context.Context, player *Player) {
+	_, log := base.LogFor(ctx)
+
+	moveData, err := json.Marshal(PlayerMoveData{
+		Id: player.Id.String(),
+		X:  player.x,
+		Y:  player.y,
+	})
+	if err != nil {
+		log.Err(err).Msg("could not marshal move data")
+		return
+	}
+
+	// tell every other player that this player moved
+	for _, otherPlayer := range g.players.data {
+		if player.Id == otherPlayer.Id {
+			continue
+		}
+
+		// player move message
+		otherPlayer.conn.WriteJSON(BaseMessage{
+			Event: "player_move",
+			Data:  moveData,
+		})
+	}
+}
+
 func (g *Game) HandlePlayerMove(ctx context.Context, data PlayerMoveData) {
 	g.players.mutex.Lock()
 	defer g.players.mutex.Unlock()
@@ -210,7 +237,7 @@ func (g *Game) HandlePlayerMove(ctx context.Context, data PlayerMoveData) {
 		if player.Id == uuid {
 			g.players.data[i].x = data.X
 			g.players.data[i].y = data.Y
-			// TODO: send player move message to other players
+			g.DispatchPlayerMove(ctx, player)
 			break
 		}
 	}
@@ -228,8 +255,22 @@ func (g *Game) HandleItemEntityCreate(ctx context.Context, data ItemEntityCreate
 		x:    data.X,
 		y:    data.Y,
 	})
-	// TODO: send item entity create message to other players
+
 	log.Info().Msgf("item entity created: %s | %s", g.itemEntities.data[len(g.itemEntities.data)-1].id, data.Item)
+
+	marshaledData, err := json.Marshal(data)
+	if err != nil {
+		log.Err(err).Msg("could not marshal item entity create data")
+		return
+	}
+
+	// dispatch to all players item entity creation
+	for _, player := range g.players.data {
+		player.conn.WriteJSON(BaseMessage{
+			Event: "item_entity_create",
+			Data:  marshaledData,
+		})
+	}
 }
 
 func (g *Game) HandleItemEntityDestroy(ctx context.Context, data IdData) {
@@ -246,11 +287,24 @@ func (g *Game) HandleItemEntityDestroy(ctx context.Context, data IdData) {
 
 	for i, itemEntity := range g.itemEntities.data {
 		if itemEntity.id == uuid {
+			// remove item entity
 			g.itemEntities.data = append(g.itemEntities.data[:i], g.itemEntities.data[i+1:]...)
+
+			data, err := json.Marshal(IdData{Id: itemEntity.id.String()})
+			if err != nil {
+				log.Err(err).Msg("could not marshal item entity destroy data")
+				break
+			}
+			// dispatch item entity destroy message to other players
+			for _, player := range g.players.data {
+				player.conn.WriteJSON(BaseMessage{
+					Event: "item_entity_destroy",
+					Data:  data,
+				})
+			}
 			break
 		}
 	}
-	// TODO: send item entity destroy message to other players
 }
 
 type Player struct {
@@ -261,7 +315,7 @@ type Player struct {
 	x    float32
 	y    float32
 
-	// send chan *BaseMessage
+	// messages chan
 }
 
 type ItemEntity struct {
