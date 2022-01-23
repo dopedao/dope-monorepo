@@ -348,6 +348,21 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 			_, _ = w.Write([]byte(`{"success":true}`))
 		})
 
+		r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
+			wsConn, err := wsUpgrader.Upgrade(w, r, nil)
+
+			if err != nil {
+				fmt.Errorf("error upgrading websocket: %w", err)
+				return
+			}
+
+			// close the connection when the function returns
+			defer wsConn.Close()
+
+			gameState := game.NewGame(ctx, wsConn)
+			game.Handle(ctx, wsConn, gameState)
+		})
+
 		r.HandleFunc("/_ah/stop", func(w http.ResponseWriter, r *http.Request) {
 			cancel()
 			w.WriteHeader(200)
