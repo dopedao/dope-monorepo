@@ -3,42 +3,48 @@ package game
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
+	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/gorilla/websocket"
 )
 
-func NewGame(ctx context.Context, conn *websocket.Conn) *Game {
-	return &Game{
-		ctx:        ctx,
-		connection: conn,
-	}
+func NewGame() *Game {
+	return &Game{}
 }
 
-func Handle(ctx context.Context, conn *websocket.Conn, game *Game) {
+func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
+	ctx, log := base.LogFor(ctx)
+	log.Info().Msg("New connection")
+
 	for {
 		var msg BaseMessage
 		err := conn.ReadJSON(&msg)
 
 		if err != nil {
-			fmt.Println("error reading message: ", err)
-			break
+			return err
 		}
-
-		var data interface{}
-		json.Unmarshal(msg.Data, &data)
 
 		switch msg.Event {
 		case "player_join":
-			game.HandlePlayerJoin(data.(PlayerJoinData))
+			var data PlayerJoinData
+			json.Unmarshal(msg.Data, &data)
+			g.HandlePlayerJoin(ctx, conn, data)
 		case "player_move":
-			game.HandlePlayerMove(data.(PlayerMoveData))
+			var data PlayerMoveData
+			json.Unmarshal(msg.Data, &data)
+			g.HandlePlayerMove(ctx, data)
 		case "player_leave":
-			game.HandlePlayerLeave(data.(IdData))
-		case "item_create":
-			game.HandleItemEntityCreate(data.(ItemEntityCreateData))
-		case "item_destroy":
-			game.HandleItemEntityDestroy(data.(IdData))
+			var data IdData
+			json.Unmarshal(msg.Data, &data)
+			g.HandlePlayerLeave(ctx, conn, data)
+			// case "item_create":
+			// 	var data ItemEntityCreateData
+			// 	json.Unmarshal(msg.Data, &data)
+			// 	g.HandleItemEntityCreate(ctx, data)
+			// case "item_destroy":
+			// 	var data IdData
+			// 	json.Unmarshal(msg.Data, &data)
+			// 	g.HandleItemEntityDestroy(ctx, data)
 		}
 	}
 }
