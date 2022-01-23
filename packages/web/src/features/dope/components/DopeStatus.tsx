@@ -33,7 +33,7 @@ const DopeStatus = ({ content, status }: RowProps) => (
       <>
         <StatusIcon status={status} />
         <span>
-          { status ? "Can Unpack Gear & Initiate Hustler" : "Gear Has Been Unpacked"}
+          { status ? "Can Claim Gear & Initiate Hustler" : "Gear Has Been Claimed"}
         </span>
       </>
     }

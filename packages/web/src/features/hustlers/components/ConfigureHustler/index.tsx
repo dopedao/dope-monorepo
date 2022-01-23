@@ -42,7 +42,8 @@ const ConfigureHustler = ({
       <PanelContainer
         css={css`
           min-height: 500px;
-          background-color: #edefee;
+          background-color: var(--gray-00);
+          gap: 16px;
         `}
       >
         <HustlerCard bgColor={config.bgColor}>

@@ -8,7 +8,7 @@ import Begin from 'features/hustlers/modules/Begin';
 import Approve from 'features/hustlers/modules/Approve';
 import Finalize from 'features/hustlers/modules/Finalize';
 import Stepper from 'features/hustlers/components/Stepper';
-import { HustlerContainer } from './styles';
+import HustlerContainer from 'components/hustler/HustlerContainer';
 
 export type StepsProps = {
   hustlerConfig: HustlerCustomization;
@@ -52,7 +52,7 @@ const Steps = () => {
   return (
     <>
       <Stepper />
-      <HustlerContainer>{stepToRender()}</HustlerContainer>
+      <HustlerContainer bgColor="transparent">{stepToRender()}</HustlerContainer>
     </>
   );
 };

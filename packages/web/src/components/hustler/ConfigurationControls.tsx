@@ -6,20 +6,21 @@ import {
   SKIN_TONE_COLORS,
   ZOOM_WINDOWS,
 } from 'utils/HustlerConfig';
+import { BigNumber } from '@ethersproject/bignumber';
+import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
+import { Hustler__factory } from '@dopewars/contracts';
+import { NETWORK } from 'utils/constants';
+import { randomizeHustlerAttributes } from 'utils/HustlerConfig';
+import { useOptimism } from 'hooks/web3';
+import { useRouter } from 'next/router';
+import { useWeb3React } from '@web3-react/core';
 import HairSelector from 'components/hustler/HairSelector';
 import NameControls from 'components/hustler/NameControls';
-import SexSelector from 'components/hustler/SexSelector';
 import PanelColorSelector from 'components/PanelColorSelector';
-import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
+import PanelFooter from 'components/PanelFooter';
+import SexSelector from 'components/hustler/SexSelector';
 import styled from '@emotion/styled';
-import { randomizeHustlerAttributes } from 'utils/HustlerConfig';
-import { useRouter } from 'next/router';
-import { useOptimism } from 'hooks/web3';
-import { useWeb3React } from '@web3-react/core';
-import { NETWORK } from 'utils/constants';
-import { Hustler__factory } from '@dopewars/contracts';
-import { BigNumber } from '@ethersproject/bignumber';
-import { css } from '@emotion/react';
+
 
 const ControlsWrapper = styled.div`
   background-color: white;
@@ -34,30 +35,6 @@ const ControlsBody = styled.div`
   padding: 16px;
   height: calc(100% - 56px);
   overflow-y: auto;
-`;
-
-const PanelFooter = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #dededd;
-  border-top: 2px solid #000;
-  padding: 11px;
-  div {
-    flex-grow: 1;
-  }
-  * > button {
-    margin-right: 10px;
-    &:last-of-type {
-      margin: 0;
-    }
-  }
-  @media (max-width: 768px) {
-    button {
-      width: 100%;
-      margin: 0 0 14px 0;
-    }
-  }
 `;
 
 const ConfigurationControls = ({
@@ -212,40 +189,31 @@ const ConfigurationControls = ({
           <HairSelector config={config} setHustlerConfig={setHustlerConfig} />
         </Stack>
       </ControlsBody>
-      <PanelFooter
-        css={css`
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-        `}
-      >
-        <HStack mt={0} justify="flex-end" flexWrap="wrap">
-          <Button onClick={() => randomizeHustlerAttributes(config.dopeId, setHustlerConfig)}>
-            Randomize
+      <PanelFooter>
+        <Button onClick={() => randomizeHustlerAttributes(config.dopeId, setHustlerConfig)}>
+          Randomize
+        </Button>
+        {isCustomize ? (
+          <Button
+            type="button"
+            variant="primary"
+            onClick={customizeHustler}
+            isLoading={loading}
+            loadingText="Processing..."
+          >
+            Save Configuration
           </Button>
-          {isCustomize ? (
-            <Button
-              type="button"
-              variant="primary"
-              onClick={customizeHustler}
-              isLoading={loading}
-              loadingText="Processing..."
-            >
-              Save Configuration
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              onClick={goBackToInitialStep}
-              variant="primary"
-              isLoading={loading}
-              loadingText="Processing..."
-            >
-              Finish Configuration
-            </Button>
-          )}
-        </HStack>
+        ) : (
+          <Button
+            type="button"
+            onClick={goBackToInitialStep}
+            variant="primary"
+            isLoading={loading}
+            loadingText="Processing..."
+          >
+            Finish Configuration
+          </Button>
+        )}
       </PanelFooter>
     </ControlsWrapper>
   );

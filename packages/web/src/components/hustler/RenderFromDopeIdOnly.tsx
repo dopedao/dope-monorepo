@@ -1,5 +1,6 @@
 import RenderFromDopeId from "./RenderFromDopeId";
 import { getRandomHustler } from "utils/HustlerConfig";
+import { ZOOM_WINDOWS } from "utils/HustlerConfig";
 
 const RenderFromDopeIdOnly = ({id}: {id: string}) => {
   const hustlerConfig = getRandomHustler({dopeId: id});
@@ -14,7 +15,7 @@ const RenderFromDopeIdOnly = ({id}: {id: string}) => {
       renderName={hustlerConfig.renderName}
       sex={hustlerConfig.sex}
       textColor={hustlerConfig.textColor}
-      zoomWindow={hustlerConfig.zoomWindow}
+      zoomWindow={ZOOM_WINDOWS[2]}
       isVehicle={true}
     />
   );

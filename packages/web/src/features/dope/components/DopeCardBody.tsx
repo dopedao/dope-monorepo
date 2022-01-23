@@ -10,6 +10,7 @@ import DopeItem from 'features/dope/components/DopeItem';
 import DopePreviewButton from 'features/dope/components/DopeCardPreviewButton';
 import DopeStatus from 'features/dope/components/DopeStatus';
 import RenderFromDopeIdOnly from 'components/hustler/RenderFromDopeIdOnly';
+import HustlerContainer from 'components/hustler/HustlerContainer';
 
 const ITEM_ORDER = [
   'WEAPON',
@@ -77,7 +78,9 @@ const DopeCardBody = ({
           </div>
         }
         { isPreviewShown && <>
-            <RenderFromDopeIdOnly id={dope.id} /> 
+            <HustlerContainer bgColor="transparent">
+              <RenderFromDopeIdOnly id={dope.id} /> 
+            </HustlerContainer>
             <div className="smallest" css={css`color:rgba(255,255,255,0.75);padding-bottom:2em;text-align:center;`}>
               Hustler must be Initiated as a separate NFT.
               <Link

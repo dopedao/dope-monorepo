@@ -11,7 +11,7 @@ import LoadingBlock from 'components/LoadingBlock';
 import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
 import LoadingState from 'features/swap-meet/components/LoadingState';
 
-const HustlerContainer = styled.div`
+const Container = styled.div`
   position: absolute;
   z-index: 1;
   top: 0;
@@ -69,7 +69,7 @@ const GangstaParty = () => {
           <LoadingState />
         ) : (
           data && (
-            <HustlerContainer>
+            <Container>
               <InfiniteScroll
                 pageStart={0}
                 loadMore={() =>
@@ -106,7 +106,7 @@ const GangstaParty = () => {
                   )}
                 </div>
               </InfiniteScroll>
-            </HustlerContainer>
+            </Container>
           )
         )}
         <WebAmpPlayer />
