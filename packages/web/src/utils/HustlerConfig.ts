@@ -19,7 +19,7 @@ export type ZoomWindow = [BigNumber, BigNumber, BigNumber, BigNumber];
 export const ZOOM_WINDOWS = [
   [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)] as ZoomWindow, // default
   [BigNumber.from(110), BigNumber.from(20), BigNumber.from(100), BigNumber.from(100)] as ZoomWindow, // mugshot
-  [BigNumber.from(55), BigNumber.from(80), BigNumber.from(240), BigNumber.from(240)] as ZoomWindow // vehicle
+  [BigNumber.from(60), BigNumber.from(110), BigNumber.from(230), BigNumber.from(100)] as ZoomWindow // vehicle
 ];
 
 export type HustlerCustomization = {

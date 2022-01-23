@@ -1,27 +1,14 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import styled from '@emotion/styled';
-import { useWeb3React } from '@web3-react/core';
-import { useWalletQuery } from 'generated/graphql';
 import { getRandomHustler } from 'utils/HustlerConfig';
-import DesktopWindow from 'components/DesktopWindow';
-import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
-import Head from 'components/Head';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { useWalletQuery } from 'generated/graphql';
+import { useWeb3React } from '@web3-react/core';
 import Container from 'components/Container';
+import DesktopWindow from 'components/DesktopWindow';
+import Head from 'components/Head';
+import HustlerContainer from 'components/hustler/HustlerContainer';
 import LoadingBlock from 'components/LoadingBlock';
-
-const HustlerContainer = styled.div<{ bgColor: string }>`
-  background-color: ${({ bgColor }) => bgColor};
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-
-  & > * {
-    flex: 1;
-  }
-`;
+import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 
 const Dope = () => {
   const [hustlerConfig, _setHustlerConfig] = useState(getRandomHustler({}));
