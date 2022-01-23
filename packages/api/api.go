@@ -11,10 +11,12 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
 
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/game"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
 )
 
@@ -244,6 +246,14 @@ CREATE UNIQUE INDEX search_index_pk ON search_index using btree(id);
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);
 `
 
+var (
+	wsUpgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
+	wsConn *websocket.Conn
+)
+
 func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string) (http.Handler, error) {
 	client := ent.NewClient(ent.Driver(drv))
 
@@ -305,6 +315,21 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 			}
 			w.WriteHeader(200)
 			_, _ = w.Write([]byte(`{"success":true}`))
+		})
+
+		r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
+			wsConn, err := wsUpgrader.Upgrade(w, r, nil)
+
+			if err != nil {
+				fmt.Errorf("error upgrading websocket: %w", err)
+				return
+			}
+
+			// close the connection when the function returns
+			defer wsConn.Close()
+
+			gameState := game.NewGame(ctx, wsConn)
+			game.Handle(ctx, wsConn, gameState)
 		})
 
 		r.HandleFunc("/_ah/stop", func(w http.ResponseWriter, r *http.Request) {
