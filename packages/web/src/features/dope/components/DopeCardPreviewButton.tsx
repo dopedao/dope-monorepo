@@ -5,14 +5,15 @@ const iconPath = '/images/icon';
 type PreviewProps = {
   isPreviewShown: boolean;
   togglePreview(): void; 
+  disabled: boolean;
 }
 
-const PreviewHustler = ({isPreviewShown, togglePreview}: PreviewProps) => (
+const PreviewHustler = ({isPreviewShown, togglePreview, disabled}: PreviewProps) => (
   <button
-    onClick={togglePreview}
+    onClick={() => { (disabled ? (() => {return false}) : togglePreview)() } }
     css={css`
       width: 100%;
-      color: #fff;
+      color: ${disabled ? '#999' : '#fff'};
       display: flex;
       padding: 6px;
       align-items: center;
@@ -27,14 +28,16 @@ const PreviewHustler = ({isPreviewShown, togglePreview}: PreviewProps) => (
     `}
   >
     { !isPreviewShown && <>
-        <Image
-          css={css`margin-right:4px;`}
-          src={iconPath + '/image.svg'} 
-          width="12px"
-          height="12px"
-          alt="Image"
-        /> 
-        Preview Hustler
+        { !disabled && 
+          <Image
+            css={css`margin-right:4px;`}
+            src={iconPath + '/image.svg'} 
+            width="12px"
+            height="12px"
+            alt="Image"
+          /> 
+        }
+        { disabled ? 'No Preview Available' : 'Preview Hustler' }
       </>
     }
     { isPreviewShown && <>

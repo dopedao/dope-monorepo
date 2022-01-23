@@ -5,6 +5,7 @@ import { Image } from '@chakra-ui/react';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
 import { useState } from 'react';
 import { Link } from '@chakra-ui/layout';
+import styled from '@emotion/styled';
 import DopeCardItems from 'features/dope/components/DopeCardItems';
 import DopeItem from 'features/dope/components/DopeItem';
 import DopePreviewButton from 'features/dope/components/DopeCardPreviewButton';
@@ -23,6 +24,13 @@ const ITEM_ORDER = [
   'NECK',
   'RING',
 ];
+
+const FinePrint = styled.div`
+  color:rgba(255,255,255,0.75);
+  padding-bottom:2em;
+  text-align:center;
+  font-size: var(--text-smallest);
+`;
 
 const DopeCardBody = ({
   dope,
@@ -70,26 +78,32 @@ const DopeCardBody = ({
           { !dope.opened && (isRarityVisible ? '🙈' : '👀') }
         </div>
         {dope.opened &&
-          <div css={css`display:flex;justify-content:center;align-items:center;height:100%;padding-bottom:7.5em;`}>
-            <Image 
-              src="/images/hustler/vote_female.png" 
-              alt="This DOPE NFT has no Gear to Unpack" 
-            />
-          </div>
+          <>
+            <HustlerContainer bgColor="transparent">
+              <Image 
+                src="/images/hustler/vote_female.png" 
+                alt="This DOPE NFT has no Gear to Unpack" 
+              />
+            </HustlerContainer>
+            <FinePrint>
+              This DOPE NFT has been fully claimed. It serves as a DAO voting token, and may be eligible for future airdrops.
+            </FinePrint>
+          </>
         }
         { isPreviewShown && <>
             <HustlerContainer bgColor="transparent">
               <RenderFromDopeIdOnly id={dope.id} /> 
             </HustlerContainer>
-            <div className="smallest" css={css`color:rgba(255,255,255,0.75);padding-bottom:2em;text-align:center;`}>
+            <FinePrint>
               Hustler must be Initiated as a separate NFT.
+              <br/>
               <Link
                 href="https://dope-wars.notion.site/Hustler-Guide-ad81eb1129c2405f8168177ba99774cf"
                 target="hustler-minting-faq"
                 className="underline"
                 css={css`display: inline-block !important;`}
               >Read the Hustler Guide for more info.</Link>
-            </div>
+            </FinePrint>
           </>
         }
         {!dope.opened && dope.items && !isPreviewShown &&
@@ -122,9 +136,11 @@ const DopeCardBody = ({
           )
         }
       </DopeCardItems>
-      { !dope.opened && 
-        <DopePreviewButton togglePreview={togglePreview} isPreviewShown={isPreviewShown} />
-      }
+      <DopePreviewButton 
+        togglePreview={togglePreview} 
+        isPreviewShown={isPreviewShown} 
+        disabled={dope.opened}
+      />
       
       <DopeStatus content={'hustler'} status={!dope.opened} />
       <DopeStatus content={'paper'} status={!dope.claimed} />
