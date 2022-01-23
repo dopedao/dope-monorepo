@@ -114,7 +114,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 						if err := tx.Amount.
 							Create().
-							SetID(so.OrderHash).
+							SetID(fmt.Sprintf("input_%s", so.OrderHash)).
 							SetAmount(schema.BigInt{Int: so.CurrentPrice.Big()}).
 							SetType(amount.TypeETH).
 							SetListingInputID(so.OrderHash).
@@ -128,7 +128,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 						// TODO: How do bundles work?
 						if err := tx.Amount.
 							Create().
-							SetID(so.OrderHash).
+							SetID(fmt.Sprintf("output_%s", so.OrderHash)).
 							SetType(amount.TypeDOPE).
 							SetAssetID(schema.BigInt{Int: dopeID}).
 							SetAmount(schema.BigInt{Int: big.NewInt(1)}).
@@ -158,7 +158,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 						// paying `amount` for this
 						if err := tx.Amount.
 							Create().
-							SetID(id).
+							SetID(fmt.Sprintf("input_%s", id)).
 							SetAmount(schema.BigInt{Int: asset.LastSale.TotalPrice.Big()}).
 							SetType(amount.TypeETH).
 							SetListingInputID(id).
@@ -171,7 +171,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 						// TODO: How do bundles work?
 						if err := tx.Amount.
 							Create().
-							SetID(id).
+							SetID(fmt.Sprintf("output_%s", id)).
 							SetType(amount.TypeDOPE).
 							SetAssetID(schema.BigInt{Int: dopeID}).
 							SetAmount(schema.BigInt{Int: big.NewInt(1)}).
