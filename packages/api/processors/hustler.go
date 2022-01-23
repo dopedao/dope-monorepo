@@ -143,7 +143,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e bindings
 
 	metadata, err := p.Contract.TokenURI(nil, e.Id)
 	if err != nil {
-		return nil, fmt.Errorf("getting metadata item rle: %w", err)
+		return nil, fmt.Errorf("getting metadata item rle for id: %s: %w", e.Id, err)
 	}
 
 	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
