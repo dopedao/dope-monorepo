@@ -78,7 +78,7 @@ const DopeCardBody = ({
           </div>
         }
         { isPreviewShown && <>
-            <HustlerContainer>
+            <HustlerContainer bgColor="transparent">
               <RenderFromDopeIdOnly id={dope.id} /> 
             </HustlerContainer>
             <div className="smallest" css={css`color:rgba(255,255,255,0.75);padding-bottom:2em;text-align:center;`}>
