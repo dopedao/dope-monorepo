@@ -293,6 +293,9 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
+	// run game server loop in the background
+	go gameState.Start(ctx)
+
 	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
 		_, log := base.LogFor(ctx)
 
@@ -310,7 +313,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 		gameState.Handle(ctx, wsConn)
 
 		// if the connection is closed, dispatch player leave
-		player := gameState.PlayerByConn(ctx, wsConn)
+		player := gameState.Players.PlayerByConn(ctx, wsConn)
 		if player != nil {
 			data := game.IdData{
 				Id: player.Id.String(),
