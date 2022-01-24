@@ -88,7 +88,7 @@ const DopeCardBody = ({
           <span>
             ( {dope.rank + 1} / {NUM_DOPE_TOKENS}{' '} )
           </span>
-          { !dope.opened && (isRarityVisible ? '🙈' : '👀') }
+          { !dope.opened && isExpanded && (isRarityVisible ? '🙈' : '👀') }
         </div>
         {dope.opened && isExpanded &&
           <div>
