@@ -64,7 +64,7 @@ const DopeCardBody = ({
         flex: 1;
         background: #fff;
         padding: 8px;
-        overflow-y: auto;
+        overflow-y: ${isExpanded ? 'auto' : 'hidden' };
         border-radius: 4px;
         display: flex;
         flex-direction: column;
@@ -72,7 +72,7 @@ const DopeCardBody = ({
         align-items: stretch;
       `}
     >
-      <DopeCardItems>
+      <DopeCardItems isExpanded={isExpanded}>
         <div 
           css={css`
             padding-bottom: 8px;
@@ -90,7 +90,7 @@ const DopeCardBody = ({
           </span>
           { !dope.opened && (isRarityVisible ? '🙈' : '👀') }
         </div>
-        {dope.opened &&
+        {dope.opened && isExpanded &&
           <div>
             <HustlerContainer bgColor="transparent">
               <Image 
@@ -106,6 +106,7 @@ const DopeCardBody = ({
         }
         {!dope.opened && dope.items &&
           <div
+            className="slideContainer"
             css={css`
               display: flex;
               overflow: hidden;
@@ -125,32 +126,32 @@ const DopeCardBody = ({
             `}
           >
             <div className="slide" ref={hustlerItemsRef}>
-              { dope.items.sort(function (a, b) {
-                    if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
-                      return 1;
-                    } else {
-                      return -1;
-                    }
-                  })
-                  .map(({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
-                    return (
-                      // @ts-ignore
-                      <DopeItem
-                        key={id}
-                        name={name}
-                        namePrefix={namePrefix}
-                        nameSuffix={nameSuffix}
-                        suffix={suffix}
-                        augmented={augmented}
-                        type={type}
-                        color={DopeLegendColors[tier]}
-                        isExpanded={isExpanded}
-                        tier={tier}
-                        showRarity={isRarityVisible}
-                      />
-                    );
+              { 
+                dope.items.sort(function (a, b) {
+                  if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
+                    return 1;
+                  } else {
+                    return -1;
                   }
-                )
+                })
+                .map(({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
+                  return (
+                    // @ts-ignore
+                    <DopeItem
+                      key={id}
+                      name={name}
+                      namePrefix={namePrefix}
+                      nameSuffix={nameSuffix}
+                      suffix={suffix}
+                      augmented={augmented}
+                      type={type}
+                      color={DopeLegendColors[tier]}
+                      isExpanded={isExpanded}
+                      tier={tier}
+                      showRarity={isRarityVisible}
+                    />
+                  );
+                })
               }
             </div>
             <div className="slide" ref={hustlerPreviewRef}>
@@ -171,11 +172,13 @@ const DopeCardBody = ({
           </div>
         } 
       </DopeCardItems>
-      <DopePreviewButton 
-        togglePreview={togglePreview} 
-        isPreviewShown={isPreviewShown} 
-        disabled={dope.opened}
-      />
+      { isExpanded && 
+        <DopePreviewButton 
+          togglePreview={togglePreview} 
+          isPreviewShown={isPreviewShown} 
+          disabled={dope.opened}
+        />
+      }
       <DopeStatus content={'hustler'} status={!dope.opened} />
       <DopeStatus content={'paper'} status={!dope.claimed} />
     </div>

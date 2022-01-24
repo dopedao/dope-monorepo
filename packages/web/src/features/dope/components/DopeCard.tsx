@@ -74,9 +74,7 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: 
       css={css`
         &.collapsed {
           max-height: 225px;
-          .dopeCardBody {
-            overflow-y: hidden;
-          }
+          overflow: hidden;
         }
         display: flex;
         flex: 1;

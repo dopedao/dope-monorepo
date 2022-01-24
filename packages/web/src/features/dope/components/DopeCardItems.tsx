@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const DopeCardItems = styled.div`
+const DopeCardItems = styled.div<{ isExpanded: boolean }>`
   background-color: #202221;
   padding: 16px;
   border-top: 2px solid #000;
@@ -12,6 +12,7 @@ const DopeCardItems = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  height: ${({ isExpanded }) => isExpanded ? 'auto' : '60px'};
 `;
 
 export default DopeCardItems;

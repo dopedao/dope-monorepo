@@ -46,7 +46,7 @@ const Item = ({
 }: ItemProps) => (
   <div
     css={css`
-      display: flex;
+      display: ${ isExpanded ? 'flex' : 'inline-block' };
       align-items: top;
       font-size: var(--text-small);
       ${isExpanded && 
@@ -61,7 +61,7 @@ const Item = ({
         color: ${color};
       `}
     >
-      {name}
+      {isExpanded && name}
       {isExpanded && (
         <>
           <span
@@ -83,17 +83,19 @@ const Item = ({
         </>
       )}
     </div>
-    <div
-      css={css`
-        color: #888;
-        margin-left: auto;
-        font-size: var(--text-small);
-        text-align: right;
-        width: 96px;
-      `}
-    >
-      {`${showRarity && tier?.toLowerCase() !== 'common' ? tier: ''} ${type}`}
-    </div>
+    { isExpanded && 
+      <div
+        css={css`
+          color: #888;
+          margin-left: auto;
+          font-size: var(--text-small);
+          text-align: right;
+          width: 96px;
+        `}
+      >
+        {`${showRarity && tier?.toLowerCase() !== 'common' ? tier: ''} ${type}`}
+      </div>
+    }
   </div>
 );
 
