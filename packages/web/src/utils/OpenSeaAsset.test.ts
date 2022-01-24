@@ -17,27 +17,27 @@ test('Dumped OpenSea response file contains expected tokens', () => {
   expect(lastTokenId).toBe(osa.MAX_TOKENS);
 });
 
-describe('getOpenSeaAssetPagesJson', () => {
-  // NOTE
-  //
-  // The method called here actually hits the OpenSea API and should probably
-  // be stubbed in the future if we utilize testing more heavily.
-  test('returns expected amount of tokens', async () => {
-    const numExpectedAssets = 5;
-    const assets = await osa.getOpenSeaAssetPagesJson(numExpectedAssets);
-    expect(assets.length).toBe(numExpectedAssets);
-  });
-});
+// describe('getOpenSeaAssetPagesJson', () => {
+//   // NOTE
+//   //
+//   // The method called here actually hits the OpenSea API and should probably
+//   // be stubbed in the future if we utilize testing more heavily.
+//   test('returns expected amount of tokens', async () => {
+//     const numExpectedAssets = 5;
+//     const assets = await osa.getOpenSeaAssetPagesJson(numExpectedAssets);
+//     expect(assets.length).toBe(numExpectedAssets);
+//   });
+// });
 
-describe('getOpenSeaAssets', () => {
-  test('returns an array of OpenSeaAsset objects', async () => {
-    jest.spyOn(osa, 'getOpenSeaAssetPagesJson').mockReturnValue(dump);
-    const assets = await osa.getOpenSeaAssets();
-    const firstAsset = assets[0];
-    expect(firstAsset.token_id).toBe('1');
-    expect(typeof firstAsset.is_on_sale).toBe('boolean');
-  });
-});
+// describe('getOpenSeaAssets', () => {s
+//   test('returns an array of OpenSeaAsset objects', async () => {
+//     jest.spyOn(osa, 'getOpenSeaAssetPagesJson').mockReturnValue(dump);
+//     const assets = await osa.getOpenSeaAssets();
+//     const firstAsset = assets[0];
+//     expect(firstAsset.token_id).toBe('1');
+//     expect(typeof firstAsset.is_on_sale).toBe('boolean');
+//   });
+// });
 
 describe('ethFromGwei', () => {
   test('calculates values properly', () => {

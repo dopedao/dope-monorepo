@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	entgo.io/contrib v0.2.0
-	entgo.io/ent v0.9.2-0.20211202152557-7dba6969fad0
+	entgo.io/ent v0.9.2-0.20211220092907-4d01a56b8de7
 	github.com/99designs/gqlgen v0.14.0
 	github.com/ethereum/go-ethereum v1.10.13
 	github.com/hashicorp/go-multierror v1.1.1
@@ -25,3 +25,5 @@ require (
 	github.com/yfuruyama/crzerolog v0.3.0
 	google.golang.org/genproto v0.0.0-20210921142501-181ce0d877f6
 )
+
+replace entgo.io/contrib => github.com/tarrencev/contrib v0.0.0-20220114171150-7eb36888a822

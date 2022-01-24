@@ -1,21 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BigNumber } from 'ethers';
 import styled from '@emotion/styled';
 import { Button } from '@chakra-ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Image } from '@chakra-ui/image';
-import { makeVar, useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { CloseButton } from '@chakra-ui/close-button';
 import { css } from '@emotion/react';
-import { Maybe, useHustlerQuery, useWalletQuery } from 'generated/graphql';
-import { getRandomHustler, HustlerCustomization } from 'utils/HustlerConfig';
+import { Hustler, useHustlerQuery, useWalletQuery } from 'generated/graphql';
+import { getRandomHustler } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
 import { useFetchMetadata } from 'hooks/contracts';
 import { useSwitchOptimism } from 'hooks/web3';
-import { useOptimismClient } from 'components/EthereumApolloProvider';
 import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
 import Head from 'components/Head';
@@ -49,31 +47,19 @@ const ContentLoading = () => (
 );
 
 type HustlerEditProps = {
-  hustler:
-    | Maybe<{
-        __typename?: 'Hustler' | undefined;
-        id: string;
-        data: string;
-      }>
-    | undefined;
+  hustler: Hustler;
 };
 
 const HustlerEdit = ({ hustler }: HustlerEditProps) => {
   const router = useRouter();
   const [isLoading, setLoading] = useState(true);
   const [itemIds, setItemIds] = useState<BigNumber[]>();
-  const [fetchedHustlerConfig, setHustlerConfig] = useState<
-    Partial<HustlerCustomization> & { ogTitle?: string }
-  >({});
+  const [ogTitle, setOgTitle] = useState('');
+  const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
 
   const fetchMetadata = useFetchMetadata();
 
   useEffect(() => {
-    if (!hustler) {
-      setLoading(false);
-      return;
-    }
-
     const fetch = async () => {
       try {
         const metadata = await fetchMetadata(BigNumber.from(hustler.id));
@@ -83,17 +69,20 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
           return;
         }
 
-        setHustlerConfig({
-          ogTitle: metadata.ogTitle,
-          name: metadata.name,
-          dopeId: hustler.id,
-          sex: metadata.body[0].eq(0) ? 'male' : 'female',
-          textColor: `#${metadata.color.slice(2, -2)}`,
-          bgColor: `#${metadata.background.slice(2, -2).toUpperCase()}`,
-          body: metadata.body[1],
-          hair: metadata.body[2],
-          facialHair: metadata.body[3],
-        });
+        setHustlerConfig(
+          getRandomHustler({
+            renderName: Boolean(hustler.name && hustler.name.length > 0),
+            name: metadata.name,
+            dopeId: hustler.id,
+            sex: metadata.body[0].eq(0) ? 'male' : 'female',
+            textColor: `#${metadata.color.slice(2, -2)}`,
+            bgColor: `#${metadata.background.slice(2, -2).toUpperCase()}`,
+            body: metadata.body[1],
+            hair: metadata.body[2],
+            facialHair: metadata.body[3],
+          }),
+        );
+        setOgTitle(hustler.title || metadata.ogTitle);
 
         const fetchedItemIds = [
           metadata.vehicle,
@@ -118,43 +107,14 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hustler]);
 
-  const makeVarConfig = useMemo(
-    () =>
-      makeVar(
-        getRandomHustler({
-          renderName: Boolean(fetchedHustlerConfig.name && fetchedHustlerConfig.name.length > 0),
-          dopeId: fetchedHustlerConfig.dopeId,
-          sex: fetchedHustlerConfig.sex,
-          name: fetchedHustlerConfig.name,
-          textColor: fetchedHustlerConfig.textColor,
-          bgColor: fetchedHustlerConfig.bgColor,
-          facialHair: fetchedHustlerConfig.facialHair,
-          hair: fetchedHustlerConfig.hair,
-          body: fetchedHustlerConfig.body,
-        }),
-      ),
-    [
-      fetchedHustlerConfig.bgColor,
-      fetchedHustlerConfig.body,
-      fetchedHustlerConfig.dopeId,
-      fetchedHustlerConfig.facialHair,
-      fetchedHustlerConfig.hair,
-      fetchedHustlerConfig.name,
-      fetchedHustlerConfig.sex,
-      fetchedHustlerConfig.textColor,
-    ],
-  );
-
-  const hustlerConfig = useReactiveVar(makeVarConfig);
-
   return isLoading ? (
     <ContentLoading />
   ) : (
     <>
       <ConfigureHustler
         config={hustlerConfig}
-        makeVarConfig={makeVarConfig}
-        ogTitle={fetchedHustlerConfig.ogTitle}
+        setHustlerConfig={setHustlerConfig}
+        ogTitle={ogTitle}
         itemIds={itemIds}
         isCustomize
       />
@@ -174,19 +134,31 @@ const Nav = () => (
 );
 
 const Hustlers = () => {
-  const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const router = useRouter();
+
+  const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const { account, chainId } = useWeb3React();
-  const { loading: walletLoading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-  });
-  const client = useOptimismClient();
-  const { data, loading } = useHustlerQuery({
-    client,
-    variables: { id: String(router.query.id) },
-    skip: !router.query.id || !account,
-  });
+
+  const { isFetching: walletLoading } = useWalletQuery(
+    {
+      where: {
+        id: account,
+      },
+    },
+    {
+      enabled: !!account,
+    },
+  );
+  const { data, isFetching: loading } = useHustlerQuery(
+    {
+      where: {
+        id: String(router.query.id),
+      },
+    },
+    {
+      enabled: !!account && router.isReady && !!String(router.query.id),
+    },
+  );
   useSwitchOptimism(chainId, account);
 
   useEffect(() => {
@@ -203,7 +175,7 @@ const Hustlers = () => {
   };
 
   return (
-    <AppWindow padBody={false} navbar={<Nav />}>
+    <AppWindow padBody={false} navbar={<Nav />} requiresWalletConnection={true}>
       <Head title="Your Hustler Squad" />
       {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
         <StickyNote>
@@ -225,10 +197,10 @@ const Hustlers = () => {
           </div>
         </StickyNote>
       )}
-      {walletLoading || loading || !data?.hustler?.data || !data?.hustler?.data.length ? (
+      {walletLoading || loading || !data?.hustlers.edges?.[0]?.node || !router.isReady ? (
         <ContentLoading />
       ) : (
-        <HustlerEdit hustler={data.hustler} />
+        <HustlerEdit hustler={data.hustlers.edges[0].node} />
       )}
     </AppWindow>
   );

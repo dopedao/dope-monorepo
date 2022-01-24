@@ -18,25 +18,16 @@ const PanelColorChipRadio = (props: ChipRadioProps) => {
       <Box
         {...checkbox}
         cursor="pointer"
-        borderWidth="1px"
-        borderRadius="0"
-        borderColor="#000000"
+        borderRadius="4px"
+        border="2px solid black"
         boxShadow="0"
-        outline="1px solid"
-        outlineColor="#000000"
         bg={props.color}
         height={SELECTOR_SIZE}
         _checked={{
-          borderWidth: '4px',
-          borderColor: '#000000',
-          outline: '4px solid',
-          outlineColor: '#000000',
+          boxShadow: '0 0 0 2px black',
         }}
         _focus={{
-          boxShadow: 'outline',
-          borderColor: '#000000',
-          outline: '4px solid',
-          outlineColor: '#000000',
+          boxShadow: '0 0 0 2px black',
         }}
       >
         &nbsp;

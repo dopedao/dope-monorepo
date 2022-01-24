@@ -3,14 +3,11 @@ import { Base, Categories, CharacterCategories, SpritesMap } from "game/constant
 import ReactDOMServer from "react-dom/server";
 import ReactDOM from "react-dom";
 import DesktopWindow from "components/DesktopWindow";
-import { MockedProvider } from "@apollo/client/testing";
 import AppWindow from "components/AppWindow";
 
 export default function CustomCharacter(props: {gameWidth: number})
 {
-    console.log(props.gameWidth)
     return (
-        <MockedProvider>
             <DesktopWindow title="Character customization" width={props.gameWidth / 2}>
                 <div style={{backgroundColor: "white"}}>
             {/* {        <Container style={{marginBottom: "5vh", marginTop: "5vh"}}>
@@ -36,6 +33,5 @@ export default function CustomCharacter(props: {gameWidth: number})
                     <h1>Hello</h1>
                 </div>
             </DesktopWindow>
-        </MockedProvider>
     );   
 }

@@ -19,19 +19,27 @@ type PaperProcessor struct {
 func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e bindings.PaperTransfer) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
 		if e.To != (common.Address{}) {
+			bal, err := p.Contract.BalanceOf(nil, e.To)
+			if err != nil {
+				return fmt.Errorf("getting to wallet %s balance at txn %s: %w", e.To.Hex(), e.Raw.TxHash.Hex(), err)
+			}
+
 			if err := tx.Wallet.Create().
 				SetID(e.To.Hex()).
-				SetPaper(schema.BigInt{Int: e.Value}).
+				SetPaper(schema.BigInt{Int: bal}).
 				OnConflictColumns(wallet.FieldID).
-				Update(func(w *ent.WalletUpsert) {
-					w.AddPaper(schema.BigInt{Int: e.Value})
-				}).Exec(ctx); err != nil {
-				return fmt.Errorf("update to wallet %s at txn %s: %w", e.From.Hex(), e.Raw.TxHash.Hex(), err)
+				UpdateNewValues().Exec(ctx); err != nil {
+				return fmt.Errorf("update to wallet %s at txn %s: %w", e.To.Hex(), e.Raw.TxHash.Hex(), err)
 			}
 		}
 
 		if e.From != (common.Address{}) {
-			if err := tx.Wallet.UpdateOneID(e.From.Hex()).AddPaper(schema.BigInt{Int: new(big.Int).Neg(e.Value)}).Exec(ctx); err != nil {
+			bal, err := p.Contract.BalanceOf(nil, e.From)
+			if err != nil {
+				return fmt.Errorf("getting from wallet %s balance at txn %s: %w", e.From.Hex(), e.Raw.TxHash.Hex(), err)
+			}
+
+			if err := tx.Wallet.UpdateOneID(e.From.Hex()).SetPaper(schema.BigInt{Int: bal}).Exec(ctx); err != nil {
 				return fmt.Errorf("update from wallet %s at txn %s: %w", e.From.Hex(), e.Raw.TxHash.Hex(), err)
 			}
 		}

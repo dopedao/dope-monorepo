@@ -73,7 +73,7 @@ export const buttonInit = css`
 export const buttonStyle = css`
   ${buttonInit};
   border: 2px solid var(--black);
-  background-color: var(--gray);
+  background-color: var(--gray-100);
   position: relative;
   display: block;
   padding: var(--base-unit) var(--space-md);

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { media } from 'ui/styles/mixins';
 

@@ -19,7 +19,7 @@ import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 import { useInitiator, usePaper } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
 
-const Approve = ({ hustlerConfig, makeVarConfig }: StepsProps) => {
+const Approve = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
   const { account } = useWeb3React();
   const [mintTo, setMintTo] = useState(hustlerConfig.mintAddress != null);
   const [canMint, setCanMint] = useState(false);
@@ -127,11 +127,9 @@ const Approve = ({ hustlerConfig, makeVarConfig }: StepsProps) => {
 
   const setMintAddress = useCallback(
     (value: string) => {
-      if (makeVarConfig) {
-        makeVarConfig({ ...hustlerConfig, mintAddress: value });
-      }
+      setHustlerConfig({ ...hustlerConfig, mintAddress: value });
     },
-    [hustlerConfig, makeVarConfig],
+    [hustlerConfig, setHustlerConfig],
   );
 
   return (
@@ -186,6 +184,7 @@ const Approve = ({ hustlerConfig, makeVarConfig }: StepsProps) => {
                 position: relative;
               `}
             >
+              <div></div>
               <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
                 ✨ Mint Hustler ✨
               </Button>

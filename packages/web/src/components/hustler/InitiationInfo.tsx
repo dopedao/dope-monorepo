@@ -11,7 +11,7 @@ const VerticalPanelStack = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 16px;
+  gap: 16px; // Phone, make sure there's a gap between modules
   height: 100%;
   & > * {
     flex: 0 0 auto;
@@ -33,11 +33,7 @@ const InitiationInfo = () => {
         <PanelTitleBar>
           <div>Info</div>
         </PanelTitleBar>
-        <PanelBody
-          css={css`
-            height: 100%;
-          `}
-        >
+        <PanelBody>
           <h3>Initiation</h3>
           <p>
             Hustlers are the in-game representation of characters inside DOPE WARS. Each Hustler
@@ -50,9 +46,9 @@ const InitiationInfo = () => {
             next-level technical approach that few projects can match.
           </p>
 
-          <h3>Unbundling</h3>
+          <h3>Claiming Gear</h3>
           <p>
-            Initiating a hustler will Unbundle and create 9 new Item NFTs from one DOPE NFT, and
+            Initiating a Hustler will Claim Gear and create 9 new Item NFTs from one DOPE NFT, and
             equip them on your Hustler. Because each of these new items become their own separate
             NFT, they’re also tradeable on the secondary market.
           </p>
@@ -61,9 +57,7 @@ const InitiationInfo = () => {
             DOPE NFT bundles – with over ONE BILLION possible combinations.
           </p>
           <p>
-            Each DOPE NFT can only be unbundled once. The DOPE NFT remains in your wallet and still
-            serves as the governance token for DopeWars DAO. Expect each DOPE NFT to have more
-            utility developed for it in the future.
+            Gear from each DOPE NFT can only be claimed once. The DOPE NFT remains in your wallet and still serves as the governance token for DopeWars DAO. Expect each DOPE NFT to have more utility developed for it in the future.
           </p>
           <h3>More Info</h3>
           <ul className="normal">
@@ -84,13 +78,12 @@ const InitiationInfo = () => {
         status="info"
         css={css`
           max-height: 100px;
+          border: 2px solid black;
         `}
       >
         <AlertIcon />
         <div>
           All OGs have been Initiated, but Hustlers are an infinite mint! Make as many as you want.
-          <br />
-          See you on the streets in 2022.
         </div>
       </Alert>
     </VerticalPanelStack>

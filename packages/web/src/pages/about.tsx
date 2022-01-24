@@ -116,8 +116,7 @@ Our first project is to provide a portal for the DOPE WARS ecosystem. Additional
 #### Now
 You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have purchased.
 
-#### Soon
-Very shortly, you’ll be able to [unbundle your items, create a PFP of your Dope Dealer](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual items with other players to equip your Dope Dealer in our MARKET.
+[Claim Gear, create a PFP of your Dope Dealer](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual items with other players to equip your Dope Dealer in our SWAP MEET.
 
 ----
 

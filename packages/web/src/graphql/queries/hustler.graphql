@@ -1,0 +1,143 @@
+query Hustler($where: HustlerWhereInput) {
+  hustlers(where: $where) {
+    edges {
+      node {
+        id
+        title
+        name
+        type
+        title
+        color
+        background
+        age
+        background
+        neck {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+        sex
+        viewbox
+        order
+        ring {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+        accessory {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+        svg
+        body {
+          id
+          type
+          sex
+          rle
+        }
+        beard {
+          id
+          type
+          sex
+          rle
+        }
+        drug {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+        hand {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+        weapon {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+        clothes {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+        vehicle {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+        waist {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+        foot {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+          fullname
+        }
+      }
+    }
+  }
+}

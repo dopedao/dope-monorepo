@@ -1,28 +1,41 @@
-import { Flex, Radio, RadioGroup, Spacer } from '@chakra-ui/react';
-import { HustlerInitConfig, HustlerSex } from 'utils/HustlerConfig';
+import { Flex, Radio, RadioGroup } from '@chakra-ui/react';
+import { HustlerSex } from 'utils/HustlerConfig';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
-import Accordion from 'ui/components/Accordion';
+import styled from '@emotion/styled';
 
-const SexSelector = ({ config, makeVarConfig }: ConfigureHustlerProps) => (
-  <Accordion title="Sex">
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  line-height: 32px;
+  font-size: var(--text-00);
+  text-align: center;
+  padding: 0;
+  margin-bottom: 16px;
+`;
+
+const SexSelector = ({ config, setHustlerConfig }: ConfigureHustlerProps) => (
+  <div>
+    <Header>
+      <h4>Sex</h4>
+    </Header>
     <RadioGroup
-      onChange={value => {
-        makeVarConfig
-          ? makeVarConfig({ ...config, sex: value as HustlerSex })
-          : HustlerInitConfig({ ...config, sex: value as HustlerSex });
-      }}
+      borderBottom="1px solid #EFEFEF"
+      paddingBottom="16px"
+      onChange={value => setHustlerConfig({ ...config, sex: value as HustlerSex })}
       value={config.sex}
       color="blackAlpha.900"
     >
-      <Flex>
-        <Spacer />
-        <Radio value="male">Male</Radio>
-        <Spacer />
-        <Radio value="female">Female</Radio>
-        <Spacer />
+      <Flex justifyContent="flex-start" gap="32px">
+        <Radio fontSize="14px !important" value="male">
+          Male
+        </Radio>
+        <Radio fontSize="14px !important" value="female">
+          Female
+        </Radio>
       </Flex>
     </RadioGroup>
-  </Accordion>
+  </div>
 );
 
 export default SexSelector;

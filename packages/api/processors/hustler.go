@@ -91,20 +91,20 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.Hustle
 
 	switch e.Part {
 	case MaleBody:
-		part = bodypart.TypeBody
-		sex = bodypart.SexMale
+		part = bodypart.TypeBODY
+		sex = bodypart.SexMALE
 	case FemaleBody:
-		part = bodypart.TypeBody
-		sex = bodypart.SexFemale
+		part = bodypart.TypeBODY
+		sex = bodypart.SexFEMALE
 	case MaleHair:
-		part = bodypart.TypeHair
-		sex = bodypart.SexMale
+		part = bodypart.TypeHAIR
+		sex = bodypart.SexMALE
 	case FemaleHair:
-		part = bodypart.TypeHair
-		sex = bodypart.SexFemale
+		part = bodypart.TypeHAIR
+		sex = bodypart.SexFEMALE
 	case Beard:
-		part = bodypart.TypeBeard
-		sex = bodypart.SexMale
+		part = bodypart.TypeBEARD
+		sex = bodypart.SexMALE
 	}
 
 	return func(tx *ent.Tx) error {
@@ -143,7 +143,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e bindings
 
 	metadata, err := p.Contract.TokenURI(nil, e.Id)
 	if err != nil {
-		return nil, fmt.Errorf("getting metadata item rle: %w", err)
+		return nil, fmt.Errorf("getting metadata item rle for id: %s: %w", e.Id, err)
 	}
 
 	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
@@ -203,25 +203,25 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e bindings
 	var beardID *string
 	sex := hustler.DefaultSex
 	if new(big.Int).SetBytes(bodyParts[31:32]).Uint64() == 1 {
-		sex = hustler.SexFemale
+		sex = hustler.SexFEMALE
 	} else {
-		sex = hustler.SexMale
-		beardID_ := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBeard, new(big.Int).SetBytes(bodyParts[28:29]).Uint64())
+		sex = hustler.SexMALE
+		beardID_ := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBEARD, new(big.Int).SetBytes(bodyParts[28:29]).Uint64())
 		beardID = &beardID_
 	}
 
-	bodyID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBody, new(big.Int).SetBytes(bodyParts[30:31]).Uint64())
-	hairID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeHair, new(big.Int).SetBytes(bodyParts[29:30]).Uint64())
+	bodyID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBODY, new(big.Int).SetBytes(bodyParts[30:31]).Uint64())
+	hairID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeHAIR, new(big.Int).SetBytes(bodyParts[29:30]).Uint64())
 
 	var title *string
-	typ := hustler.TypeRegular
+	typ := hustler.TypeREGULAR
 	if e.Id.Cmp(big.NewInt(500)) == -1 {
 		title_, err := p.components.Title(nil, e.Id)
 		if err != nil {
 			return nil, fmt.Errorf("getting hustler title %s metadata: %w", e.Id.String(), err)
 		}
 		title = &title_
-		typ = hustler.TypeOriginalGangsta
+		typ = hustler.TypeORIGINAL_GANGSTA
 	}
 
 	block, err := p.Eth.BlockByNumber(ctx, new(big.Int).SetUint64(e.Raw.BlockNumber))
@@ -314,9 +314,9 @@ func (p *HustlerProcessor) ProcessTransferSingle(ctx context.Context, e bindings
 		}
 
 		if e.From == (common.Address{}) {
-			typ := hustler.TypeRegular
+			typ := hustler.TypeREGULAR
 			if e.Id.Cmp(big.NewInt(500)) == -1 {
-				typ = hustler.TypeOriginalGangsta
+				typ = hustler.TypeORIGINAL_GANGSTA
 			}
 
 			if err := tx.Hustler.

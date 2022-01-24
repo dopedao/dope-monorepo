@@ -21,7 +21,7 @@ export interface HustlerRenderProps {
   zoomWindow: ZoomWindow;
   ogTitle?: string;
   dopeId?: string;
-  resolution?: number;
+  isVehicle?: boolean;
 }
 
 const RenderFromItemIds = ({
@@ -37,8 +37,9 @@ const RenderFromItemIds = ({
   zoomWindow,
   ogTitle,
   dopeId,
-  resolution = 64,
+  isVehicle = false,
 }: HustlerRenderProps) => {
+  const resolution = useMemo(() => (isVehicle ? 160 : 64), [isVehicle]);
   const [itemRles, setItemRles] = useState<string[]>([]);
   const [vehicleRle, setVehicleRle] = useState<string>();
   const [bodyRles, setBodyRles] = useState<string[]>([]);
@@ -95,10 +96,9 @@ const RenderFromItemIds = ({
 
       const title = renderName && ogTitle && Number(dopeId) < 500 ? ogTitle : '';
       const subtitle = renderName ? name : '';
-
       const rles = [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles];
 
-      if (resolution === 160 && vehicleRle) {
+      if (isVehicle && vehicleRle) {
         rles.unshift(vehicleRle);
       }
 
@@ -115,6 +115,7 @@ const RenderFromItemIds = ({
     zoomWindow,
     ogTitle,
     dopeId,
+    isVehicle,
     resolution,
   ]);
 
@@ -126,8 +127,8 @@ const RenderFromItemIds = ({
     <AspectRatio
       ratio={1}
       css={css`
+        height: 100%;
         overflow: hidden;
-
         svg {
           width: 100%;
           height: auto;

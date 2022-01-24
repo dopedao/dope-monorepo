@@ -1,0 +1,155 @@
+query AllHustlers(
+  $after: Cursor
+  $first: Int
+  $before: Cursor
+  $last: Int
+  $orderBy: HustlerOrder
+  $where: HustlerWhereInput
+) {
+  hustlers(
+    after: $after
+    first: $first
+    before: $before
+    last: $last
+    orderBy: $orderBy
+    where: $where
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        title
+        name
+        type
+        title
+        color
+        background
+        age
+        background
+        neck {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        sex
+        viewbox
+        order
+        ring {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        accessory {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        svg
+        body {
+          id
+          type
+          sex
+          rle
+        }
+        beard {
+          id
+          type
+          sex
+          rle
+        }
+        drug {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        hand {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        weapon {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        clothes {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        vehicle {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        waist {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+        foot {
+          id
+          type
+          name
+          suffix
+          augmented
+          tier
+          greatness
+          count
+        }
+      }
+    }
+  }
+}

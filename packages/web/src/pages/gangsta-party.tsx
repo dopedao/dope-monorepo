@@ -2,17 +2,16 @@ import { Button, HStack } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import Link from 'next/link';
 import styled from '@emotion/styled';
+import { useInfiniteAllHustlersQuery } from 'generated/graphql';
 import Head from 'components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
 import WebAmpPlayer from 'components/WebAmpPlayer';
-import { useHustlerPaginationClient } from 'components/EthereumApolloProvider';
 import RenderFromChain from 'components/hustler/RenderFromChain';
-import { useMemo } from 'react';
 import LoadingBlock from 'components/LoadingBlock';
 import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
-import { useAllHustlersQuery } from 'generated/graphql';
+import LoadingState from 'features/swap-meet/components/LoadingState';
 
-const HustlerContainer = styled.div`
+const Container = styled.div`
   position: absolute;
   z-index: 1;
   top: 0;
@@ -44,43 +43,76 @@ const ScreenSaver = styled.div`
 `;
 
 const GangstaParty = () => {
-  //Amount of hustlers to render per page
-  const PAGE_SIZE = 75;
+  const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllHustlersQuery(
+    {
+      first: 100,
+    },
+    {
+      getNextPageParam: lastPage => {
+        if (lastPage.hustlers.pageInfo.hasNextPage) {
+          return {
+            first: lastPage.hustlers.pageInfo.endCursor,
+          };
+        }
+        return false;
+      },
+    },
+  );
 
-  const client = useHustlerPaginationClient();
-  const { data, fetchMore } = useAllHustlersQuery({ variables: { first: PAGE_SIZE, skip: 0 }, client, notifyOnNetworkStatusChange: true });
-
-  const hustlers = useMemo(() => {
-      const mappedHustlers = data?.hustlers.map(({ id, data }) => {
-        let meta = data.replace('data:application/json;base64,', '');
-        meta = Buffer.from(meta, 'base64').toString();
-        const decoded = JSON.parse(meta);
-        return <RenderFromChain data={decoded} id={id} key={id} />
-      })
-      return mappedHustlers ?? [];
-  }, [data]);
+  const isLoading = status === 'loading';
 
   return (
     <>
       <Head title="DOPE WARS GANGSTA PARTY" />
       <ScreenSaver>
-        {data &&(
-          <HustlerContainer>
-            <InfiniteScroll
-              pageStart={0}
-              hasMore={ 8000 > data.hustlers.length}
-              loadMore={() => { fetchMore({ variables: { skip: data.hustlers.length } })}}
-              loader={<LoadingBlock key={`loader_${data.hustlers.length}`} />}
-              useWindow={false}
-              className='hustlerGrid'
-            >
-              {hustlers}
-            </InfiniteScroll>
-          </HustlerContainer>
+        {isLoading ? (
+          <LoadingState />
+        ) : (
+          data && (
+            <Container>
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={() =>
+                  fetchNextPage({
+                    pageParam: {
+                      first: 100,
+                      after: data?.pages[data.pages.length - 1].hustlers.pageInfo.endCursor,
+                    },
+                  })
+                }
+                hasMore={hasNextPage}
+                loader={<LoadingBlock key="loading-block-2" />}
+                useWindow={false}
+                className="dopeGrid"
+              >
+                <div className="hustlerGrid">
+                  {data?.pages.map(group =>
+                    group.hustlers.edges!.map(hustler => {
+                      if (!hustler?.node!.svg) {
+                        return null;
+                      }
+
+                      return (
+                        <RenderFromChain
+                          data={{
+                            image: hustler.node.svg,
+                            name: hustler.node.name,
+                          }}
+                          id={hustler.node.id}
+                          key={hustler.node.id}
+                        />
+                      );
+                    }),
+                  )}
+                </div>
+              </InfiniteScroll>
+            </Container>
+          )
         )}
         <WebAmpPlayer />
         <StickyNoteHustlerMint />
-      </ScreenSaver><HStack
+      </ScreenSaver>
+      <HStack
         m={4}
         gridGap={1}
         bottom={0}

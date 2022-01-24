@@ -13,13 +13,15 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/processors"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/go-retryablehttp"
+	"github.com/rs/zerolog/log"
 	"github.com/withtally/synceth/engine"
 )
 
-const blockLimit = 5
+const blockLimit = 500
 
 type Contract struct {
 	Address    common.Address
@@ -79,6 +81,30 @@ func NewEthereum(ctx context.Context, client *ent.Client, config EthConfig) *Eth
 	return e
 }
 
+func eventLogCommitter(ctx context.Context, c *Contract, l types.Log, committer func(tx *ent.Tx) error) func(tx *ent.Tx) error {
+	return func(tx *ent.Tx) error {
+		id := fmt.Sprintf("%s-%s-%d", c.Address.Hex(), l.TxHash.Hex(), l.Index)
+		if _, err := tx.Event.Get(ctx, id); err != nil {
+			if ent.IsNotFound(err) {
+				if err := tx.Event.Create().
+					SetID(id).
+					SetAddress(c.Address).
+					SetHash(l.TxHash).
+					SetIndex(uint64(l.Index)).
+					Exec(ctx); err != nil {
+					return fmt.Errorf("creating event log %s: %w", id, err)
+				}
+
+				return committer(tx)
+			}
+
+			return fmt.Errorf("getting event log %s: %w", id, err)
+		}
+		log.Warn().Msgf("duplicate event log %s", id)
+		return nil
+	}
+}
+
 func (e *Ethereum) Sync(ctx context.Context) {
 	ctx, log := base.LogFor(ctx)
 
@@ -87,13 +113,13 @@ func (e *Ethereum) Sync(ctx context.Context) {
 	for {
 		select {
 		case <-e.ticker.C:
+			e.Lock()
 			latest, err := e.eth.BlockNumber(ctx)
 			if err != nil {
 				log.Err(err).Msg("Getting latest block number.")
 				continue
 			}
 
-			e.Lock()
 			e.latest = latest
 			numUpdates := 0
 			for _, c := range e.contracts {
@@ -119,39 +145,17 @@ func (e *Ethereum) Sync(ctx context.Context) {
 
 					var committers []func(*ent.Tx) error
 					for _, l := range logs {
-						_c := c
-						_l := l
-
-						committer, err := _c.Processor.ProcessElement(_c.Processor)(ctx, _l)
+						committer, err := c.Processor.ProcessElement(c.Processor)(ctx, l)
 						if err != nil {
-							log.Fatal().Err(err).Msgf("Processing element %s.", _l.TxHash.Hex())
+							log.Fatal().Err(err).Msgf("Processing element %s.", l.TxHash.Hex())
 						}
 
 						if committer == nil {
+							// Event log not handled
 							continue
 						}
 
-						committers = append(committers, func(tx *ent.Tx) error {
-							id := fmt.Sprintf("%s-%s-%d", _c.Address.Hex(), _l.TxHash.Hex(), _l.Index)
-							if _, err := tx.Event.Get(ctx, id); err != nil {
-								if ent.IsNotFound(err) {
-									if err := tx.Event.Create().
-										SetID(id).
-										SetAddress(_c.Address).
-										SetHash(_l.TxHash).
-										SetIndex(uint64(_l.Index)).
-										Exec(ctx); err != nil {
-										return fmt.Errorf("creating event log %s: %w", id, err)
-									}
-
-									return committer(tx)
-								}
-
-								return fmt.Errorf("getting event log %s: %w", id, err)
-							}
-							log.Warn().Msgf("duplicate event log %s: %+v", id, err)
-							return nil
-						})
+						committers = append(committers, eventLogCommitter(ctx, c, l, committer))
 					}
 
 					_from = _to + 1
@@ -177,7 +181,8 @@ func (e *Ethereum) Sync(ctx context.Context) {
 
 						return nil
 					}); err != nil {
-						log.Fatal().Err(err).Msg("Syncing contract.")
+						log.Err(err).Msgf("Syncing contract: %s.", c.Address.Hex())
+						break
 					}
 
 					if _to == latest {

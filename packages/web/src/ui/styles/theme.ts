@@ -122,6 +122,7 @@ export default extendTheme({
               position: 'sticky',
               top: 0,
               borderBottom: '2px solid #000',
+              height: '44px',
             },
           },
           tfoot: {
