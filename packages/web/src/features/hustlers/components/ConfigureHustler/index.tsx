@@ -36,62 +36,60 @@ const ConfigureHustler = ({
   ogTitle,
   itemIds,
   goBackToInitialStep,
-}: ConfigureHustlerProps) => {
-  return (
-    <StackedResponsiveContainer>
-      <PanelContainer
-        css={css`
-          min-height: 500px;
-          background-color: var(--gray-00);
-          gap: 16px;
-        `}
-      >
-        <HustlerCard bgColor={config.bgColor}>
-          {isCustomize && itemIds ? (
-            <RenderFromItemIds
-              bgColor={config.bgColor}
-              body={config.body}
-              facialHair={config.facialHair}
-              hair={config.hair}
-              itemIds={itemIds}
-              name={config.name}
-              renderName={config.renderName}
-              sex={config.sex}
-              textColor={config.textColor}
-              zoomWindow={config.zoomWindow}
-              ogTitle={ogTitle}
-              dopeId={config.dopeId}
-              isVehicle={config.isVehicle}
-            />
-          ) : (
-            <RenderFromDopeId
-              bgColor={config.bgColor}
-              body={config.body}
-              facialHair={config.facialHair}
-              hair={config.hair}
-              id={config.dopeId}
-              name={config.name}
-              renderName={config.renderName}
-              sex={config.sex}
-              textColor={config.textColor}
-              zoomWindow={config.zoomWindow}
-              ogTitle={ogTitle}
-              isVehicle={config.isVehicle}
-            />
-          )}
-        </HustlerCard>
-        <PanelFooter>
-          <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
-        </PanelFooter>
-      </PanelContainer>
-      <ConfigurationControls
-        config={config}
-        setHustlerConfig={setHustlerConfig}
-        goBackToInitialStep={goBackToInitialStep}
-        isCustomize={isCustomize}
-      />
-    </StackedResponsiveContainer>
-  );
-};
+}: ConfigureHustlerProps) => (
+  <StackedResponsiveContainer>
+    <PanelContainer
+      css={css`
+        min-height: 500px;
+        background-color: var(--gray-00);
+        gap: 16px;
+      `}
+    >
+      <HustlerCard bgColor={config.bgColor}>
+        {isCustomize && itemIds ? (
+          <RenderFromItemIds
+            bgColor={config.bgColor}
+            body={config.body}
+            facialHair={config.facialHair}
+            hair={config.hair}
+            itemIds={itemIds}
+            name={config.name}
+            renderName={config.renderName}
+            sex={config.sex}
+            textColor={config.textColor}
+            zoomWindow={config.zoomWindow}
+            ogTitle={ogTitle}
+            dopeId={config.dopeId}
+            isVehicle={config.isVehicle}
+          />
+        ) : (
+          <RenderFromDopeId
+            bgColor={config.bgColor}
+            body={config.body}
+            facialHair={config.facialHair}
+            hair={config.hair}
+            id={config.dopeId}
+            name={config.name}
+            renderName={config.renderName}
+            sex={config.sex}
+            textColor={config.textColor}
+            zoomWindow={config.zoomWindow}
+            ogTitle={ogTitle}
+            isVehicle={config.isVehicle}
+          />
+        )}
+      </HustlerCard>
+      <PanelFooter>
+        <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
+      </PanelFooter>
+    </PanelContainer>
+    <ConfigurationControls
+      config={config}
+      setHustlerConfig={setHustlerConfig}
+      goBackToInitialStep={goBackToInitialStep}
+      isCustomize={isCustomize}
+    />
+  </StackedResponsiveContainer>
+);
 
 export default ConfigureHustler;

@@ -22,7 +22,7 @@ export const ZOOM_WINDOWS = [
   [BigNumber.from(40), BigNumber.from(120), BigNumber.from(255), BigNumber.from(100)] as ZoomWindow, // vehicle
   // This view will crop certain vehicles like Lowrider,
   // but shows other at higher resolution. A decent tradeoff.
-  [BigNumber.from(80), BigNumber.from(120), BigNumber.from(200), BigNumber.from(100)] as ZoomWindow // vehicle bigger zoom
+  [BigNumber.from(80), BigNumber.from(120), BigNumber.from(200), BigNumber.from(100)] as ZoomWindow, // vehicle bigger zoom
 ];
 
 export type HustlerCustomization = {
@@ -64,7 +64,7 @@ export const getRandomHustler = ({
   return {
     bgColor: bgColor || DEFAULT_BG_COLORS[getRandomNumber(0, DEFAULT_BG_COLORS.length - 1)],
     body: body || getRandomNumber(0, MAX_BODIES),
-    dopeId: dopeId || getRandomHustlerId(),
+    dopeId: dopeId || '42',
     facialHair: facialHair || getRandomNumber(0, MAX_FACIAL_HAIR),
     hair: hair || getRandomNumber(0, MAX_HAIR),
     name: name || HUSTLER_NAMES[getRandomNumber(0, HUSTLER_NAMES.length - 1)],
