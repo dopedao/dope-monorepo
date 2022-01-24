@@ -1,4 +1,4 @@
-import { Dispatch, useState, SetStateAction } from 'react';
+import { Dispatch, useState, SetStateAction, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getRandomHustler, HustlerCustomization } from 'utils/HustlerConfig';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
@@ -21,9 +21,7 @@ const Steps = () => {
   const hustler = useHustler();
   const dispatch = useDispatchHustler();
   const [hustlerConfig, setHustlerConfig] = useState(
-    getRandomHustler({
-      dopeId: String(router.query.id) || '1',
-    }),
+    getRandomHustler({ dopeId: String(router.query.id) }),
   );
 
   const goBackToInitialStep = () => {
