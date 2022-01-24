@@ -90,7 +90,7 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: 
             text-align: left;
           `}
         >
-          #{dope.id}
+          DOPE #{dope.id}
         </div>
         <div
             css={css`
