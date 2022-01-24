@@ -31,9 +31,13 @@ const DopeCardTitleCost = ({ dope }: DopeCardTitleCostProps) => {
         a { 
           width: 100%;
           text-align: center;
+          // truncate long prices
           overflow:hidden;
           white-space:nowrap;
-          text-overflow:ellipsis; // for long prices
+          text-overflow:ellipsis; 
+          // to center image
+          display: flex;
+          justify-content: center;
         }
       `}
     > 
