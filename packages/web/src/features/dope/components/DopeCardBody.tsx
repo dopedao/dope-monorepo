@@ -115,6 +115,7 @@ const DopeCardBody = ({
               -webkit-overflow-scrolling: touch;
               div.slide {
                 width: 100%;
+                height: 100%;
                 scroll-snap-align: start;
                 flex-shrink: 0;
                 margin-right: 40px;
@@ -155,21 +156,19 @@ const DopeCardBody = ({
               }
             </div>
             <div className="slide" ref={hustlerPreviewRef}>
-              { isPreviewShown && 
-                <HustlerContainer bgColor="transparent">
-                  <RenderFromDopeIdOnly id={dope.id} /> 
-                  <FinePrint>
-                    Hustler must be Initiated as a separate NFT.
-                    <br/>
-                    <Link
-                      href="https://dope-wars.notion.site/Hustler-Guide-ad81eb1129c2405f8168177ba99774cf"
-                      target="hustler-minting-faq"
-                      className="underline"
-                      css={css`display: inline-block !important;`}
-                    >Read the Hustler Guide for more info.</Link>
-                  </FinePrint>
-                </HustlerContainer>
-              }
+              <HustlerContainer bgColor="transparent">
+                { isPreviewShown && <RenderFromDopeIdOnly id={dope.id} /> }
+                <FinePrint>
+                  Hustler must be Initiated as a separate NFT.
+                  <br/>
+                  <Link
+                    href="https://dope-wars.notion.site/Hustler-Guide-ad81eb1129c2405f8168177ba99774cf"
+                    target="hustler-minting-faq"
+                    className="underline"
+                    css={css`display: inline-block !important;`}
+                  >Read the Hustler Guide for more info.</Link>
+                </FinePrint>
+              </HustlerContainer>
             </div>
           </div>
         } 
