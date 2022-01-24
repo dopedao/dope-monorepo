@@ -28,20 +28,12 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
 			return err
 		}
 
+		// messages from players are handled else where
 		switch msg.Event {
 		case "player_join":
 			var data PlayerJoinData
 			json.Unmarshal(msg.Data, &data)
 			g.HandlePlayerJoin(ctx, conn, data)
-			// case "player_move":
-			// 	var data PlayerMoveData
-			// 	json.Unmarshal(msg.Data, &data)
-			// 	g.HandlePlayerMove(ctx, data)
-			// case "player_leave":
-			// 	var data IdData
-			// 	json.Unmarshal(msg.Data, &data)
-			// 	g.HandlePlayerLeave(ctx, conn, data)
-			// 	fmt.Println(data)
 		}
 	}
 }
