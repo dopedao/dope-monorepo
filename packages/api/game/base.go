@@ -3,7 +3,6 @@ package game
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/gorilla/websocket"
@@ -34,16 +33,15 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
 			var data PlayerJoinData
 			json.Unmarshal(msg.Data, &data)
 			g.HandlePlayerJoin(ctx, conn, data)
-			fmt.Println(data)
-		// case "player_move":
-		// 	var data PlayerMoveData
-		// 	json.Unmarshal(msg.Data, &data)
-		// 	g.HandlePlayerMove(ctx, data)
-		case "player_leave":
-			var data IdData
-			json.Unmarshal(msg.Data, &data)
-			g.HandlePlayerLeave(ctx, conn, data)
-			fmt.Println(data)
+			// case "player_move":
+			// 	var data PlayerMoveData
+			// 	json.Unmarshal(msg.Data, &data)
+			// 	g.HandlePlayerMove(ctx, data)
+			// case "player_leave":
+			// 	var data IdData
+			// 	json.Unmarshal(msg.Data, &data)
+			// 	g.HandlePlayerLeave(ctx, conn, data)
+			// 	fmt.Println(data)
 		}
 	}
 }

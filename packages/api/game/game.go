@@ -41,13 +41,17 @@ func (g *Game) Start(ctx context.Context) {
 			})
 			g.Players.mutex.Unlock()
 
+			// read incoming messages
+			go player.readPump(ctx)
+			// write outgoing messages
+			go player.writePump(ctx)
+
 			log.Info().Msgf("player joined: %s | %s", player.Id, player.name)
 		case player := <-g.Unregister:
 			g.Players.mutex.Lock()
 			for i, p := range g.Players.data {
 				if p == player {
 					g.Players.data = append(g.Players.data[:i], g.Players.data[i+1:]...)
-					player.conn.Close()
 					break
 				}
 			}
@@ -88,11 +92,13 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data PlayerJoinData) {
 	player := &Player{
 		conn: conn,
+		game: g,
 
-		Id:   uuid.New(),
-		name: data.Name,
-		x:    data.X,
-		y:    data.Y,
+		Id:         uuid.New(),
+		currentMap: data.CurrentMap,
+		name:       data.Name,
+		x:          data.X,
+		y:          data.Y,
 	}
 
 	g.Register <- player
