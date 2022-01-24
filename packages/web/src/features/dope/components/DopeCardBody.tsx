@@ -37,18 +37,23 @@ const DopeCardBody = ({
 }: Pick<DopeCardProps, 'dope'> & { isExpanded: boolean }) => {
   const [isPreviewShown, setPreviewShown] = useState(false);
   const [isRarityVisible, setRarityVisible] = useState(false);
-  const hustlerItemsRef = useRef(null);
-  const hustlerPreviewRef = useRef(null);
+  const hustlerItemsRef = useRef<HTMLDivElement>(null);
+  const hustlerPreviewRef = useRef<HTMLDivElement>(null);
 
   const toggleItemLegendVisibility = (): void => {
     setRarityVisible(!isRarityVisible);
   };
+  // Toggles preview and smoothly scrolls into view
   const togglePreview = (): void => {
     setPreviewShown(!isPreviewShown);
-    const scrollParams = { behavior: 'smooth', block: 'nearest', inline: 'start' };
-    if (isPreviewShown) {
+    const scrollParams = { 
+      behavior: 'smooth', 
+      block: 'nearest', 
+      inline: 'start' 
+    } as ScrollIntoViewOptions;
+    if (isPreviewShown && hustlerItemsRef.current) {
       hustlerItemsRef.current.scrollIntoView(scrollParams);
-    } else {
+    } else if (!isPreviewShown && hustlerPreviewRef.current) {
       hustlerPreviewRef.current.scrollIntoView(scrollParams);
     }
   };
