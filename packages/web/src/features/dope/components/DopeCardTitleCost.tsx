@@ -18,7 +18,7 @@ const DopeCardTitleCost = ({ dope }: DopeCardTitleCostProps) => {
       css={css`
         width: 96px;
         height: 100%;
-        padding:0;
+        padding: 0 8px;
         display: flex;
         flex-direction:column;
         align-items: center;
@@ -28,6 +28,13 @@ const DopeCardTitleCost = ({ dope }: DopeCardTitleCostProps) => {
         color: #fff;
         box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset, 1px 1px 0px rgba(255, 255, 255, 0.25) inset;
         border-top-right-radius: 4px;
+        a { 
+          width: 100%;
+          text-align: center;
+          overflow:hidden;
+          white-space:nowrap;
+          text-overflow:ellipsis; // for long prices
+        }
       `}
     > 
       <Link href={ LINK_PREFIX + dope.id } passHref={true}>
