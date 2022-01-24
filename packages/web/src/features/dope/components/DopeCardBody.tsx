@@ -98,7 +98,7 @@ const DopeCardBody = ({
                 alt="This DOPE NFT has no Gear to Unpack" 
               />
               <FinePrint>
-                This DOPE NFT has been fully claimed. It serves as a DAO voting token, and may be eligible for future airdrops.
+                This DOPE NFT has been fully claimed. It serves as a DAO voting token, and will be eligible for future airdrops.
               </FinePrint>
             </HustlerContainer>
 
