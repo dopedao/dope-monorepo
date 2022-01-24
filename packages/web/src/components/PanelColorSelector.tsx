@@ -2,7 +2,16 @@ import { css } from '@emotion/react';
 import { useRadioGroup } from '@chakra-ui/radio';
 import PanelColorChipRadio from 'components/PanelColorChipRadio';
 import { Box } from '@chakra-ui/layout';
-import Accordion from 'ui/components/Accordion';
+import styled from '@emotion/styled';
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-00);
+  text-align: center;
+  margin-bottom: 16px;
+`;
 
 interface ColorSelectorProps {
   changeCallback?(value: string): void;
@@ -28,8 +37,13 @@ const PanelColorSelector = ({
   const group = getRootProps();
 
   return (
-    <Accordion title={title}>
+    <div>
+      <Header>
+        <h4>{title}</h4>
+      </Header>
       <Box
+        borderBottom="1px solid #EFEFEF"
+        paddingBottom="16px"
         css={css`
           display: flex;
           gap: 16px;
@@ -43,18 +57,16 @@ const PanelColorSelector = ({
             }
             return color !== '#77F8F8';
           })
-          .map((color, index) => {
-            return (
-              <PanelColorChipRadio
-                {...getRadioProps({ value: color })}
-                value={color}
-                key={index}
-                color={color}
-              />
-            );
-          })}
+          .map((color, index) => (
+            <PanelColorChipRadio
+              {...getRadioProps({ value: color })}
+              value={color}
+              key={index}
+              color={color}
+            />
+          ))}
       </Box>
-    </Accordion>
+    </div>
   );
 };
 

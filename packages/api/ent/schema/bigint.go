@@ -93,6 +93,8 @@ func (b *BigInt) UnmarshalGQL(v interface{}) error {
 		if !ok {
 			return fmt.Errorf("invalid big number: %s", bi)
 		}
+
+		return nil
 	}
 
 	return fmt.Errorf("invalid big number")

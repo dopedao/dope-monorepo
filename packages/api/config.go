@@ -80,7 +80,7 @@ var configs = map[string]Configs{
 			},
 		},
 	}, engine.EthConfig{
-		RPC:      "https://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9",
+		RPC:      "https://opt-kovan.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG",
 		Interval: time.Second * 5,
 		Contracts: []engine.Contract{
 			// SwapMeet

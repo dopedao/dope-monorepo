@@ -181,12 +181,6 @@ type Wallet implements Node {
 
 union SearchResult = Dope | Item | Hustler
 
-enum SearchType {
-  DOPE
-  ITEM
-  HUSTLER
-}
-
 type Query {
   node(id: ID!): Node
   nodes(ids: [ID!]!): [Node]!

@@ -3,6 +3,7 @@ import { HustlerCustomization } from 'utils/HustlerConfig';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
+import { ZOOM_WINDOWS } from "utils/HustlerConfig";
 
 interface Props {
   hustlerConfig: HustlerCustomization;
@@ -28,7 +29,8 @@ const HustlerPanel = ({ hustlerConfig, footer }: Props) => {
         renderName={hustlerConfig.renderName}
         sex={hustlerConfig.sex}
         textColor={hustlerConfig.textColor}
-        zoomWindow={hustlerConfig.zoomWindow}
+        zoomWindow={ZOOM_WINDOWS[2]}
+        isVehicle={true}
       />
       {footer}
     </PanelContainer>

@@ -1,24 +1,22 @@
 import styled from '@emotion/styled';
 
-const PanelFooter = styled.div`
+export const PanelFooter = styled.div`
+  border-top: 2px solid #000;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 44px;
-  background: #dededd;
-  border-top: 2px solid #000;
-  padding: 0 8px;
+  gap: 8px;
+  padding: 8px;
+  background-color: #dededd;
   div {
     flex-grow: 1;
   }
-  * > button {
+  * > button, div {
     margin-right: 10px;
     &:last-of-type {
       margin-right: 0;
     }
-  }
-  @media (max-width: 768px) {
-    height: 120px;
   }
 `;
 

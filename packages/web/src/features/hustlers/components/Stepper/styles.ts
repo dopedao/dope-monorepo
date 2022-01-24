@@ -1,17 +1,19 @@
 import styled from '@emotion/styled';
+import { returnBreakpoint } from 'ui/styles/breakpoints';
 
 export const Wrapper = styled.div`
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 128px;
+  padding: 4px 64px;
   border-bottom: 2px solid #1c1c1c;
   border-top: 2px solid #1c1c1c;
-  position: fixed;
+  height: 40px;
   width: 100%;
   background: #434345;
-  @media (max-width: 640px) {
-    width: 80%;
+  @media (max-width: ${returnBreakpoint('tablet')}) {
+    padding: 4px 32px;
   }
 `;
 

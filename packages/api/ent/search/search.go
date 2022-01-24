@@ -107,9 +107,9 @@ type Type string
 
 // Type values.
 const (
-	TypeDope    Type = "dope"
-	TypeItem    Type = "item"
-	TypeHustler Type = "hustler"
+	TypeDOPE    Type = "DOPE"
+	TypeITEM    Type = "ITEM"
+	TypeHUSTLER Type = "HUSTLER"
 )
 
 func (_type Type) String() string {
@@ -119,7 +119,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeDope, TypeItem, TypeHustler:
+	case TypeDOPE, TypeITEM, TypeHUSTLER:
 		return nil
 	default:
 		return fmt.Errorf("search: invalid enum value for type field: %q", _type)

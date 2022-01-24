@@ -27,7 +27,7 @@ const StickyNoteHustlerMint = () => {
       {hr}
       <span>
         <a
-          href="https://dope-wars.notion.site/Hustler-Minting-and-Unbundling-25c6dfb9dca64196aedf8def6297c51a"
+          href="https://dope-wars.notion.site/Hustler-Guide-ad81eb1129c2405f8168177ba99774cf"
           target="hustler-minting-faq"
           className="primary"
         >

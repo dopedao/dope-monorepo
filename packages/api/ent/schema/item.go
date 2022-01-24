@@ -22,7 +22,7 @@ func (Item) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.Enum("type").
-			Values("weapon", "clothes", "vehicle", "waist", "foot", "hand", "drugs", "neck", "ring", "accessory").
+			Values("WEAPON", "CLOTHES", "VEHICLE", "WAIST", "FOOT", "HAND", "DRUGS", "NECK", "RING", "ACCESSORY").
 			Immutable(),
 		field.String("name_prefix").
 			Optional().
@@ -41,7 +41,7 @@ func (Item) Fields() []ent.Field {
 		field.Int("count").
 			Optional(),
 		field.Enum("tier").
-			Values("common", "rare", "custom", "black_market").
+			Values("COMMON", "RARE", "CUSTOM", "BLACK_MARKET").
 			Optional(),
 		field.Int("greatness").
 			Optional().

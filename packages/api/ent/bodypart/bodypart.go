@@ -73,9 +73,9 @@ type Type string
 
 // Type values.
 const (
-	TypeBody  Type = "body"
-	TypeHair  Type = "hair"
-	TypeBeard Type = "beard"
+	TypeBODY  Type = "BODY"
+	TypeHAIR  Type = "HAIR"
+	TypeBEARD Type = "BEARD"
 )
 
 func (_type Type) String() string {
@@ -85,7 +85,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeBody, TypeHair, TypeBeard:
+	case TypeBODY, TypeHAIR, TypeBEARD:
 		return nil
 	default:
 		return fmt.Errorf("bodypart: invalid enum value for type field: %q", _type)
@@ -97,8 +97,8 @@ type Sex string
 
 // Sex values.
 const (
-	SexMale   Sex = "male"
-	SexFemale Sex = "female"
+	SexMALE   Sex = "MALE"
+	SexFEMALE Sex = "FEMALE"
 )
 
 func (s Sex) String() string {
@@ -108,7 +108,7 @@ func (s Sex) String() string {
 // SexValidator is a validator for the "sex" field enum values. It is called by the builders before save.
 func SexValidator(s Sex) error {
 	switch s {
-	case SexMale, SexFemale:
+	case SexMALE, SexFEMALE:
 		return nil
 	default:
 		return fmt.Errorf("bodypart: invalid enum value for sex field: %q", s)

@@ -3,13 +3,12 @@ import { useState, useEffect } from 'react';
 import { Input, HStack, FormControl, FormLabel, Checkbox, Stack } from '@chakra-ui/react';
 import { FormErrorMessage } from '@chakra-ui/form-control';
 import { ConfigureHustlerProps } from 'features/hustlers/components/ConfigureHustler';
-import Accordion from 'ui/components/Accordion';
 import { css } from '@emotion/react';
 
 const NAME_MAX_LENGTH = 20;
 const FIELD_SPACING = '16px';
 
-const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
+const NameControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
   const [errorName, setErrorName] = useState<string | undefined>(undefined);
   const [hustlerName, setHustlerName] = useState(config.name ?? '');
   const [nameFieldDirty, setNameFieldDirty] = useState(false);
@@ -26,20 +25,18 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
   useEffect(() => {
     // Set from typing
     if (nameFieldDirty && config.name !== debouncedHustlerName) {
-      if (makeVarConfig) {
-        makeVarConfig({ ...config, name: debouncedHustlerName });
-      }
+      setHustlerConfig({ ...config, name: debouncedHustlerName });
       setNameFieldDirty(false);
       // Set from randomize or external change
     } else if (!nameFieldDirty && config.name !== debouncedHustlerName) {
       setHustlerName(config.name ?? '');
     }
-  }, [debouncedHustlerName, config, nameFieldDirty, makeVarConfig]);
+  }, [debouncedHustlerName, config, nameFieldDirty, setHustlerConfig]);
 
   return (
-    <Accordion title="Display">
-      <Stack spacing={FIELD_SPACING}>
-        <FormLabel htmlFor="name" color="#000" padding="0">
+    <div>
+      <Stack spacing={FIELD_SPACING} borderBottom="1px solid #EFEFEF" paddingBottom="16px">
+        <FormLabel htmlFor="name" color="#000" padding="0" fontSize="14px">
           Name
         </FormLabel>
         <HStack
@@ -56,6 +53,7 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
               maxLength={NAME_MAX_LENGTH}
               value={hustlerName}
               border="2px"
+              fontSize="14px"
               paddingX="14px"
               paddingY="10px"
               rounded="unset"
@@ -71,12 +69,10 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
             <Checkbox
               id="render-name"
               isChecked={config.renderName ?? false}
-              onChange={e => {
-                if (makeVarConfig) makeVarConfig({ ...config, renderName: e.target.checked });
-              }}
+              onChange={e => setHustlerConfig({ ...config, renderName: e.target.checked })}
               colorScheme="whiteAlpha"
               iconColor="black"
-              rounded="unset"
+              borderRadius="10px"
               sx={{
                 borderColor: '#000',
                 '[data-checked][data-hover]': {
@@ -84,7 +80,6 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
                 },
                 '[data-checked]': {
                   borderColor: '#000 !important',
-                  borderRadius: 'unset',
                 },
               }}
             />
@@ -94,7 +89,7 @@ const NameControls = ({ config, makeVarConfig }: ConfigureHustlerProps) => {
           </FormControl>
         </HStack>
       </Stack>
-    </Accordion>
+    </div>
   );
 };
 

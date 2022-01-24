@@ -1,18 +1,16 @@
 import { Button, Spinner } from '@chakra-ui/react';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Select } from '@chakra-ui/react';
-import { ReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
-import { useWalletQuery, WalletQuery } from 'generated/graphql';
+import { Dope, useWalletQuery, WalletQuery } from 'generated/graphql';
 import {
   HustlerCustomization,
   isHustlerRandom,
   randomizeHustlerAttributes,
 } from 'utils/HustlerConfig';
-import { PickedBag } from 'utils/DopeDatabase';
 import PanelFooter from 'components/PanelFooter';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 
@@ -49,64 +47,54 @@ const NoDopeMessage = () => {
   );
 };
 
-const SubPanelForm = styled.div`
-  border-top: 1px solid black;
-  background-color: #ffffff;
-  select {
-    border-bottom: 1px solid #dededd;
-  }
-`;
-
-const SpinnerContainer = styled.div`
-  border: 0px;
-  .chakra-spinner {
-    margin: 0 0.5em;
-  }
-`;
-
 type InitiationFooterDopeContentProps = {
   hustlerConfig: HustlerCustomization;
-  makeVarConfig?: ReactiveVar<HustlerCustomization>;
+  setHustlerConfig: Dispatch<SetStateAction<HustlerCustomization>>;
 };
 
 const InitiationFooterDopeContent = ({
   hustlerConfig,
-  makeVarConfig,
+  setHustlerConfig,
 }: InitiationFooterDopeContentProps) => {
   const { account } = useWeb3React();
   const dispatchHustler = useDispatchHustler();
 
   const handleDopeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    if (makeVarConfig) {
-      makeVarConfig({ ...hustlerConfig, dopeId: value });
-    }
+    setHustlerConfig({ ...hustlerConfig, dopeId: value });
   };
 
   const getBundledDopeFromData = (data: WalletQuery) => {
-    let bundledDope = [] as PickedBag[];
-    if (data?.wallet?.bags && data.wallet.bags.length > 0) {
-      bundledDope = data.wallet.bags.filter((dopeNft: PickedBag) => !dopeNft.opened);
+    let bundledDope: Dope[] | [] = [];
+
+    if (
+      data?.wallets.edges &&
+      data.wallets.edges[0]?.node?.dopes &&
+      data.wallets.edges[0].node.dopes.length > 0
+    ) {
+      bundledDope = data.wallets.edges[0].node.dopes.filter(dopeNft => !dopeNft.opened) as Dope[];
     }
     return bundledDope;
   };
 
-  const { data, loading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-    // Set first item as selected when it comes back from
-    // the contract query.
-    onCompleted: data => {
-      const bundledDope = getBundledDopeFromData(data);
-      if (bundledDope.length > 0 && isHustlerRandom()) {
-        const firstDopeId = bundledDope[0].id;
-        console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
-        if (makeVarConfig) {
-          makeVarConfig({ ...hustlerConfig, dopeId: firstDopeId });
-        }
-      }
+  const { data, isFetching: loading } = useWalletQuery(
+    {
+      where: {
+        id: account,
+      },
     },
-  });
+    {
+      enabled: !account,
+      onSuccess: data => {
+        const bundledDope = getBundledDopeFromData(data);
+        if (bundledDope.length > 0 && isHustlerRandom()) {
+          const firstDopeId = bundledDope[0].id;
+          console.log(`Setting hustler ID from dope returned: ${firstDopeId}`);
+          setHustlerConfig({ ...hustlerConfig, dopeId: firstDopeId });
+        }
+      },
+    },
+  );
 
   const goToNextStep = () => {
     dispatchHustler({
@@ -127,16 +115,17 @@ const InitiationFooterDopeContent = ({
       <PanelFooter>
         <SpinnerContainer>
           <Spinner size="xs" />
-          Finding unbundled DOPE in your wallet
+          Finding DOPE in your wallet with Gear
         </SpinnerContainer>
       </PanelFooter>
     );
-  } else if (!data?.wallet?.bags || data.wallet.bags.length === 0) {
+  } else if (!loading && !data?.wallets.edges![0]?.node?.dopes) {
     return <NoDopeMessage />;
   } else {
     // Prevent controls from showing if no qualified DOPE
-    const bundledDope = getBundledDopeFromData(data);
-    if (bundledDope.length == 0) return <NoDopeMessage />;
+    const bundledDope = data && getBundledDopeFromData(data);
+
+    if (bundledDope && bundledDope.length === 0) return <NoDopeMessage />;
     return (
       <div>
         <SubPanelForm>
@@ -147,17 +136,20 @@ const InitiationFooterDopeContent = ({
             value={hustlerConfig.dopeId}
           >
             <option disabled>YOUR DOPE</option>
-            {bundledDope.map(dopeNft => (
-              <option key={dopeNft.id} value={dopeNft.id}>
-                DOPE NFT #{dopeNft.id}
-              </option>
-            ))}
+            {bundledDope &&
+              bundledDope.map(dopeNft => (
+                <option key={dopeNft.id} value={dopeNft.id}>
+                  DOPE NFT #{dopeNft.id}
+                </option>
+              ))}
           </Select>
         </SubPanelForm>
         <PanelFooter>
           <div>
             <Button onClick={goToConfigureStep}>Configure</Button>
-            <Button onClick={() => randomizeHustlerAttributes(hustlerConfig.dopeId, makeVarConfig)}>
+            <Button
+              onClick={() => randomizeHustlerAttributes(hustlerConfig.dopeId, setHustlerConfig)}
+            >
               Randomize
             </Button>
           </div>
@@ -169,5 +161,20 @@ const InitiationFooterDopeContent = ({
     );
   }
 };
+
+const SubPanelForm = styled.div`
+  border-top: 1px solid black;
+  background-color: #ffffff;
+  select {
+    border-bottom: 1px solid #dededd;
+  }
+`;
+
+const SpinnerContainer = styled.div`
+  border: 0px;
+  .chakra-spinner {
+    margin: 0 0.5em;
+  }
+`;
 
 export default InitiationFooterDopeContent;
