@@ -15,7 +15,7 @@ const RenderFromDopeIdOnly = ({id}: {id: string}) => {
       renderName={hustlerConfig.renderName}
       sex={hustlerConfig.sex}
       textColor={hustlerConfig.textColor}
-      zoomWindow={ZOOM_WINDOWS[2]}
+      zoomWindow={ZOOM_WINDOWS[3]}
       isVehicle={true}
     />
   );
