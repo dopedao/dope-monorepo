@@ -184,6 +184,7 @@ const Approve = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
                 position: relative;
               `}
             >
+              <div></div>
               <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
                 ✨ Mint Hustler ✨
               </Button>

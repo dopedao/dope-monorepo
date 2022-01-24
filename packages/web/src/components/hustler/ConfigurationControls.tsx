@@ -29,6 +29,7 @@ const ControlsWrapper = styled.div`
   justify-content: space-between;
   border: 2px solid black;
   position: relative;
+  border-radius: 8px;
 `;
 
 const ControlsBody = styled.div`
