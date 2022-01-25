@@ -13,11 +13,13 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
 import ZoomControls from 'components/hustler/ZoomControls';
 import SVGToImage from 'react-svg-to-image';
+import Link from 'next/link';
 
 export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   config: HustlerCustomization;
   ogTitle?: string;
   itemIds?: BigNumber[];
+  hustlerId?: string;
   goBackToInitialStep?: () => void;
   isCustomize?: boolean;
 };
@@ -37,6 +39,7 @@ const ConfigureHustler = ({
   setHustlerConfig,
   isCustomize,
   ogTitle,
+  hustlerId,
   itemIds,
   goBackToInitialStep,
 }: ConfigureHustlerProps) => (
@@ -84,6 +87,7 @@ const ConfigureHustler = ({
       </HustlerCard>
       <PanelFooter>
         { isCustomize && itemIds &&
+          <>
           <Button
             onClick={() => {
               SVGToImage(
@@ -95,6 +99,16 @@ const ConfigureHustler = ({
           >
             <Image src="/images/icon/download.svg" alt="Download" />
           </Button>
+          <Link 
+            href={`https://community.dopewars.gg/collectibles/new?hustler_id=${hustlerId}`} 
+            passHref>
+              <a target="rebel">
+                <Button>
+                  <Image src="/images/icon/camera.svg" alt="Mint a Mugshot" height="40px" />
+                </Button>
+              </a>
+          </Link>
+          </>
         }
         <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
       </PanelFooter>
