@@ -61,7 +61,7 @@ const ConfigurationControls = ({
 
   useEffect(() => {
     setShowTextColor(config.renderName === true);
-    setShowNameControls(config.zoomWindow !== ZOOM_WINDOWS[1]);
+    setShowNameControls(config.zoomWindow == ZOOM_WINDOWS[0]);
   }, [config]);
 
   const customizeHustler = useCallback(async () => {
