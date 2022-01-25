@@ -117,7 +117,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
         setHustlerConfig={setHustlerConfig}
         ogTitle={ogTitle}
         itemIds={itemIds}
-        hustlerId={hustlerId}
+        hustlerId={hustlerId?.toString()}
         isCustomize
       />
     </>
