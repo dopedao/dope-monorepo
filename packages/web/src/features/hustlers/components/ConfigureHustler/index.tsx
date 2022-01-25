@@ -1,15 +1,18 @@
-import { css } from '@emotion/react';
 import { BigNumber } from '@ethersproject/bignumber';
+import { Button } from '@chakra-ui/button';
+import { css } from '@emotion/react';
 import { HustlerCustomization } from 'utils/HustlerConfig';
+import { Image } from '@chakra-ui/react';
+import { PanelFooter } from 'components/PanelFooter';
+import { StepsProps } from 'features/hustlers/modules/Steps';
 import ConfigurationControls from 'components/hustler/ConfigurationControls';
 import PanelContainer from 'components/PanelContainer';
-import { PanelFooter } from 'components/PanelFooter';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
-import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
-import ZoomControls from 'components/hustler/ZoomControls';
 import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
-import { StepsProps } from 'features/hustlers/modules/Steps';
+import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
+import ZoomControls from 'components/hustler/ZoomControls';
+import SVGToImage from 'react-svg-to-image';
 
 export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   config: HustlerCustomization;
@@ -80,6 +83,19 @@ const ConfigureHustler = ({
         )}
       </HustlerCard>
       <PanelFooter>
+        { isCustomize && itemIds &&
+          <Button
+            onClick={() => {
+              SVGToImage(
+                'svg#dynamicBuiltSvg',  
+                `dope-wars-hustler-${config.name?.replace(' ', '_')}`, 
+                { download: true }
+              );
+            }}
+          >
+            <Image src="/images/icon/download.svg" alt="Download" />
+          </Button>
+        }
         <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
       </PanelFooter>
     </PanelContainer>
