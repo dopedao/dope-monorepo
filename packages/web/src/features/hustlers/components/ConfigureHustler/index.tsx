@@ -87,7 +87,7 @@ const ConfigureHustler = ({
           <Button
             onClick={() => {
               SVGToImage(
-                'svg',  
+                'svg#dynamicBuiltSvg',  
                 `dope-wars-hustler-${config.name?.replace(' ', '_')}`, 
                 { download: true }
               );
