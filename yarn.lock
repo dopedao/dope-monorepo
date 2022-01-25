@@ -15134,6 +15134,7 @@ __metadata:
     lerna: ^3.22.1
     mocha: ^8.4.0
     pinst: ^2.1.6
+    react-svg-to-image: ^3.0.0
     ts-node: ^10.0.0
     typescript: ^4.3.2
   languageName: unknown
@@ -28614,6 +28615,13 @@ fsevents@~2.1.1:
     "@types/react":
       optional: true
   checksum: d44524158c403658132c33bcbe2c274fc919981fbe05a5205033a6adf3d1a1c3d07433d519213285dd581a932f9e2c66bd8b4511af40ec02a39ac4d426e146d4
+  languageName: node
+  linkType: hard
+
+"react-svg-to-image@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "react-svg-to-image@npm:3.0.0"
+  checksum: a09ee08f8e753796f2bd067025853fb2c715b831c02658b245c7afa288183359d32a9d230965399b50ad509eab3466150510d0e14c6cb4ce99397a5eb8703607
   languageName: node
   linkType: hard
 
