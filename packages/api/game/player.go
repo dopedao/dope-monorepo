@@ -53,7 +53,7 @@ func (p *Player) readPump(ctx context.Context) {
 			})
 
 			if err != nil {
-				log.Err(err).Msg("could not marshal chat message data")
+				p.Send <- generateErrorMessage("could not marshal chat message data")
 				break
 			}
 

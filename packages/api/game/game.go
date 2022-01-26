@@ -153,11 +153,8 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 }
 
 func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
-	_, log := base.LogFor(ctx)
-
 	leaveData, err := json.Marshal(IdData{Id: player.Id.String()})
 	if err != nil {
-		log.Err(err).Msgf("could not marshal leave data for player: %s | %s", player.Id, player.name)
 		player.Send <- generateErrorMessage("could not marshal leave data")
 		return
 	}
