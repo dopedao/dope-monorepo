@@ -32,6 +32,8 @@ type Player struct {
 func (p *Player) readPump(ctx context.Context) {
 	_, log := base.LogFor(ctx)
 
+	defer func() { close(p.Send) }()
+
 	for {
 		var msg BaseMessage
 		err := p.conn.ReadJSON(&msg)
@@ -62,17 +64,25 @@ func (p *Player) readPump(ctx context.Context) {
 
 			log.Info().Msgf("player %s | %s sent chat message: %s", p.Id, p.name, data.Message)
 		case "player_leave":
-			var data IdData
-			json.Unmarshal(msg.Data, &data)
-			p.game.HandlePlayerLeave(ctx, p.conn, data)
+			msg.Data, _ = json.Marshal(IdData{
+				Id: p.Id.String(),
+			})
+			p.game.Unregister <- p
+			p.game.Broadcast <- msg
+			return
 		}
 	}
 }
 
 func (p *Player) writePump(ctx context.Context) {
+	// p.game.Players.mutex.Lock()
 	for {
 		select {
-		case msg := <-p.Send:
+		case msg, ok := <-p.Send:
+			if !ok {
+				return
+			}
+
 			p.conn.WriteJSON(msg)
 		}
 	}

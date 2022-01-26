@@ -3,6 +3,7 @@ package game
 import (
 	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/gorilla/websocket"
@@ -10,6 +11,8 @@ import (
 
 func NewGame() *Game {
 	return &Game{
+		// tick each 1/60th of a second
+		Ticker:     time.NewTicker(time.Second / 3),
 		Register:   make(chan *Player),
 		Unregister: make(chan *Player),
 		Broadcast:  make(chan BaseMessage),

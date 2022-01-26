@@ -3,6 +3,8 @@ package game
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/google/uuid"
@@ -10,6 +12,10 @@ import (
 )
 
 type Game struct {
+	// ticks per second
+	TickRate int
+	Ticker   *time.Ticker
+
 	Players      PlayersContainer
 	ItemEntities ItemEntitiesContainer
 
@@ -21,49 +27,70 @@ type Game struct {
 func (g *Game) Start(ctx context.Context) {
 	_, log := base.LogFor(ctx)
 
+	log.Info().Msg("starting game")
+
 	for {
 		select {
+		case <-g.Ticker.C:
+			g.tick(ctx)
 		case player := <-g.Register:
-			g.Players.mutex.Lock()
 			g.Players.data = append(g.Players.data, player)
-
-			// handshake
-			handShakeData, err := json.Marshal(IdData{Id: player.Id.String()})
-			if err != nil {
-				log.Err(err).Msg("could not marshal handshake data")
-				return
-			}
-
-			// send back id to player
-			player.conn.WriteJSON(BaseMessage{
-				Event: "player_handshake",
-				Data:  handShakeData,
-			})
-			g.Players.mutex.Unlock()
 
 			// read incoming messages
 			go player.readPump(ctx)
 			// write outgoing messages
 			go player.writePump(ctx)
 
+			// handshake
+			handShakeData, err := json.Marshal(IdData{Id: player.Id.String()})
+			if err != nil {
+				player.Send <- generateErrorMessage("could not marshal handshake data")
+				return
+			}
+
 			log.Info().Msgf("player joined: %s | %s", player.Id, player.name)
+
+			// send back id to player
+			player.Send <- BaseMessage{
+				Event: "player_handshake",
+				Data:  handShakeData,
+			}
 		case player := <-g.Unregister:
-			g.Players.mutex.Lock()
 			for i, p := range g.Players.data {
 				if p == player {
 					g.Players.data = append(g.Players.data[:i], g.Players.data[i+1:]...)
 					break
 				}
 			}
-			g.Players.mutex.Unlock()
 
 			log.Info().Msgf("player left: %s | %s", player.Id, player.name)
 		case msg := <-g.Broadcast:
-			g.Players.mutex.Lock()
-			for _, player := range g.Players.data {
-				player.conn.WriteJSON(msg)
+			for i, player := range g.Players.data {
+				select {
+				case player.Send <- msg:
+				default:
+					log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.name)
+					close(player.Send)
+					g.Players.data = append(g.Players.data[:i], g.Players.data[i+1:]...)
+				}
 			}
-			g.Players.mutex.Unlock()
+		}
+	}
+}
+
+func (g *Game) tick(ctx context.Context) {
+	fmt.Println(g.Players.data)
+
+	// for each player, broadcast their position
+	for _, player := range g.Players.data {
+		data, _ := json.Marshal(PlayerMoveData{
+			Id: player.Id.String(),
+			X:  player.x,
+			Y:  player.y,
+		})
+		g.Broadcast <- BaseMessage{
+			Event: "player_move",
+			Data:  data,
 		}
 	}
 }
@@ -78,7 +105,8 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 		Y:    player.y,
 	})
 	if err != nil {
-		log.Err(err).Msg("could not marshal join data")
+		log.Err(err).Msgf("could not marshal join data for player: %s | %s", player.Id, player.name)
+		player.Send <- generateErrorMessage("could not marshal join data")
 		return
 	}
 
@@ -99,6 +127,8 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 		name:       data.Name,
 		x:          data.X,
 		y:          data.Y,
+
+		Send: make(chan BaseMessage),
 	}
 
 	g.Register <- player
@@ -110,7 +140,8 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 
 	leaveData, err := json.Marshal(IdData{Id: player.Id.String()})
 	if err != nil {
-		log.Err(err).Msg("could not marshal leave data")
+		log.Err(err).Msgf("could not marshal leave data for player: %s | %s", player.Id, player.name)
+		player.Send <- generateErrorMessage("could not marshal leave data")
 		return
 	}
 
@@ -118,24 +149,6 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 	g.Broadcast <- BaseMessage{
 		Event: "player_leave",
 		Data:  leaveData,
-	}
-}
-
-func (g *Game) HandlePlayerLeave(ctx context.Context, conn *websocket.Conn, data IdData) {
-	_, log := base.LogFor(ctx)
-
-	uuid, err := uuid.Parse(data.Id)
-	if err != nil {
-		log.Err(err).Msgf("could not parse uuid: %s", data.Id)
-		return
-	}
-
-	for _, player := range g.Players.data {
-		if player.Id == uuid {
-			g.Unregister <- player
-			g.DispatchPlayerLeave(ctx, player)
-			break
-		}
 	}
 }
 

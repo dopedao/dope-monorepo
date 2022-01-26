@@ -1,10 +1,16 @@
 package game
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type BaseMessage struct {
 	Event string          `json:"event"`
 	Data  json.RawMessage `json:"data"`
+}
+
+type ErrorMessageData struct {
+	Error string `json:"error"`
 }
 
 type ChatMessageData struct {
@@ -39,4 +45,15 @@ type PlayerMoveData struct {
 
 type IdData struct {
 	Id string `json:"id"`
+}
+
+func generateErrorMessage(err string) BaseMessage {
+	data, _ := json.Marshal(ErrorMessageData{
+		Error: err,
+	})
+
+	return BaseMessage{
+		Event: "error",
+		Data:  data,
+	}
 }
