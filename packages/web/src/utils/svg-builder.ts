@@ -62,6 +62,7 @@ export const buildSVG = (
   subtitle: string,
   zoomWindow: ZoomWindow,
   resolution: number = 64,
+  htmlId: string = 'dynamicBuiltSvg'
 ): string => {
   const step = 320 / resolution;
   const svgWithoutEndTag = parts.reduce((result, part, i) => {
@@ -96,7 +97,8 @@ export const buildSVG = (
     });
     result += svgRects.join('');
     return result;
-  }, `<svg width="100%" height="100%" viewBox="${zoomWindow[0].toString()} ${zoomWindow[1].toString()} ${zoomWindow[2].gt(0) ? zoomWindow[2].toString() : '320'} ${zoomWindow[3].gt(0) ? zoomWindow[3].toString() : '320'}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><style xmlns="http://www.w3.org/2000/svg">.base { fill: ${textColor}; font-family: Dope; font-size: 14px; }</style><rect width="100%" height="100%" fill="${bgColor}" /><text xmlns="http://www.w3.org/2000/svg" x="160" y="25" with="320" text-anchor="middle" class="base">${title}</text><text xmlns="http://www.w3.org/2000/svg" x="160" y="303" with="320" text-anchor="middle" class="base">${subtitle}</text>`);
+    }, `<svg id=${htmlId} width="100%" height="100%" viewBox="${zoomWindow[0].toString()} ${zoomWindow[1].toString()} ${zoomWindow[2].gt(0) ? zoomWindow[2].toString() : '320'} ${zoomWindow[3].gt(0) ? zoomWindow[3].toString() : '320'}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><style xmlns="http://www.w3.org/2000/svg">.base { fill: ${textColor}; font-family: Dope; font-size: 14px; }</style><rect width="100%" height="100%" fill="${bgColor}" /><text xmlns="http://www.w3.org/2000/svg" x="160" y="25" with="320" text-anchor="middle" class="base">${title}</text><text xmlns="http://www.w3.org/2000/svg" x="160" y="303" with="320" text-anchor="middle" class="base">${subtitle}</text>`
+  );
 
   return `${svgWithoutEndTag}</svg>`;
 };
