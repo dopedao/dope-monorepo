@@ -9,6 +9,7 @@ const HustlerContainer = styled.div<{ bgColor: string }>`
   flex-direction: column;
   justify-content: stretch;
   gap: 16px;
+  padding-top: 32px;
 
   .chakra-aspect-ratio > img {
     width: 100%;

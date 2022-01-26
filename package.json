@@ -28,6 +28,7 @@
 		"@dopewars/contracts": "workspace:packages/contracts",
 		"@dopewars/web": "workspace:packages/web",
 		"@types/isomorphic-fetch": "^0.0.35",
-		"isomorphic-fetch": "^3.0.0"
+		"isomorphic-fetch": "^3.0.0",
+		"react-svg-to-image": "^3.0.0"
 	}
 }

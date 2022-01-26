@@ -52,6 +52,7 @@ type HustlerEditProps = {
 
 const HustlerEdit = ({ hustler }: HustlerEditProps) => {
   const router = useRouter();
+  const hustlerId = router.query.id;
   const [isLoading, setLoading] = useState(true);
   const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [ogTitle, setOgTitle] = useState('');
@@ -116,6 +117,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
         setHustlerConfig={setHustlerConfig}
         ogTitle={ogTitle}
         itemIds={itemIds}
+        hustlerId={hustlerId?.toString()}
         isCustomize
       />
     </>
