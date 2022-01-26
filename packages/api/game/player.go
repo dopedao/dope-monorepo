@@ -88,7 +88,7 @@ func (p *Player) writePump(ctx context.Context) {
 	}
 }
 
-func (pc *PlayersContainer) PlayerByUUID(ctx context.Context, uuid uuid.UUID) *Player {
+func (pc *PlayersContainer) PlayerByUUID(uuid uuid.UUID) *Player {
 	for _, player := range pc.data {
 		if player.Id == uuid {
 			return player
@@ -97,7 +97,7 @@ func (pc *PlayersContainer) PlayerByUUID(ctx context.Context, uuid uuid.UUID) *P
 	return nil
 }
 
-func (pc *PlayersContainer) PlayerByConn(ctx context.Context, conn *websocket.Conn) *Player {
+func (pc *PlayersContainer) PlayerByConn(conn *websocket.Conn) *Player {
 	for _, player := range pc.data {
 		if player.conn == conn {
 			return player

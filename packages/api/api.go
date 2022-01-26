@@ -314,7 +314,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 		gameState.Handle(ctx, wsConn)
 
 		// if the connection is closed, dispatch player leave
-		player := gameState.Players.PlayerByConn(ctx, wsConn)
+		player := gameState.Players.PlayerByConn(wsConn)
 		if player != nil {
 			data, err := json.Marshal(game.IdData{
 				Id: player.Id.String(),

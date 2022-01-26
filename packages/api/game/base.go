@@ -24,6 +24,11 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
 	log.Info().Msg("New connection from " + conn.RemoteAddr().String())
 
 	for {
+		// ignore if player is already registered
+		if g.Players.PlayerByConn(conn) != nil {
+			continue
+		}
+
 		var msg BaseMessage
 		err := conn.ReadJSON(&msg)
 
