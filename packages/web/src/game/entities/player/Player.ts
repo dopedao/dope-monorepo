@@ -8,7 +8,6 @@ import Hustler, { Direction } from "../Hustler";
 import ItemEntity from "../ItemEntity";
 import PlayerController from "./PlayerController";
 import ENS, { getEnsAddress } from "@ensdomains/ensjs";
-import { EmptyBagStruct } from "utils/DopeDatabase";
 import UIScene from "game/scenes/UI";
 import BBCodeText from "phaser3-rex-plugins/plugins/bbcodetext";
 import { getShortAddress } from "utils/utils";
