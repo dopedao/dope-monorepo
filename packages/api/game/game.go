@@ -15,8 +15,8 @@ type Game struct {
 	TickRate int
 	Ticker   *time.Ticker
 
-	Players      PlayersContainer
-	ItemEntities ItemEntitiesContainer
+	Players      []*Player
+	ItemEntities []*ItemEntity
 
 	Register   chan *Player
 	Unregister chan *Player
@@ -33,7 +33,7 @@ func (g *Game) Start(ctx context.Context) {
 		case t := <-g.Ticker.C:
 			g.tick(ctx, t)
 		case player := <-g.Register:
-			g.Players.data = append(g.Players.data, player)
+			g.Players = append(g.Players, player)
 
 			// read incoming messages
 			go player.readPump(ctx)
@@ -55,21 +55,21 @@ func (g *Game) Start(ctx context.Context) {
 
 			log.Info().Msgf("player joined: %s | %s", player.Id, player.name)
 		case player := <-g.Unregister:
-			for i, p := range g.Players.data {
+			for i, p := range g.Players {
 				if p == player {
-					g.Players.data = append(g.Players.data[:i], g.Players.data[i+1:]...)
+					g.Players = append(g.Players[:i], g.Players[i+1:]...)
 					break
 				}
 			}
 
 			log.Info().Msgf("player left: %s | %s", player.Id, player.name)
 		case msg := <-g.Broadcast:
-			for i, player := range g.Players.data {
+			for i, player := range g.Players {
 				select {
 				case player.Send <- msg:
 				default:
 					log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.name)
-					g.Players.data = append(g.Players.data[:i], g.Players.data[i+1:]...)
+					g.Players = append(g.Players[:i], g.Players[i+1:]...)
 					close(player.Send)
 				}
 			}
@@ -79,10 +79,10 @@ func (g *Game) Start(ctx context.Context) {
 
 func (g *Game) tick(ctx context.Context, time time.Time) {
 	// for each player, send a tick message
-	for _, player := range g.Players.data {
+	for _, player := range g.Players {
 		players := []PlayerMoveData{}
 
-		for _, otherPlayer := range g.Players.data {
+		for _, otherPlayer := range g.Players {
 			if otherPlayer == player || otherPlayer.currentMap != player.currentMap {
 				continue
 			}
@@ -108,6 +108,24 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 			Data:  data,
 		}
 	}
+}
+
+func (g *Game) PlayerByUUID(uuid uuid.UUID) *Player {
+	for _, player := range g.Players {
+		if player.Id == uuid {
+			return player
+		}
+	}
+	return nil
+}
+
+func (g *Game) PlayerByConn(conn *websocket.Conn) *Player {
+	for _, player := range g.Players {
+		if player.conn == conn {
+			return player
+		}
+	}
+	return nil
 }
 
 func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
@@ -185,7 +203,7 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 // 	}
 
 // 	// tell every other player that this player moved
-// 	for _, otherPlayer := range g.players.data {
+// 	for _, otherPlayer := range g.Players {
 // 		if player.Id == otherPlayer.Id {
 // 			continue
 // 		}
@@ -210,10 +228,10 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 // 		return
 // 	}
 
-// 	for i, player := range g.players.data {
+// 	for i, player := range g.Players {
 // 		if player.Id == uuid {
-// 			g.players.data[i].x = data.X
-// 			g.players.data[i].y = data.Y
+// 			g.Players[i].x = data.X
+// 			g.Players[i].y = data.Y
 // 			g.DispatchPlayerMove(ctx, player)
 // 			break
 // 		}
@@ -242,7 +260,7 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 // 	}
 
 // 	// dispatch to all players item entity creation
-// 	for _, player := range g.players.data {
+// 	for _, player := range g.Players {
 // 		player.conn.WriteJSON(BaseMessage{
 // 			Event: "item_entity_create",
 // 			Data:  marshaledData,
@@ -273,7 +291,7 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 // 				break
 // 			}
 // 			// dispatch item entity destroy message to other players
-// 			for _, player := range g.players.data {
+// 			for _, player := range g.Players {
 // 				player.conn.WriteJSON(BaseMessage{
 // 					Event: "item_entity_destroy",
 // 					Data:  data,

@@ -25,7 +25,7 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
 
 	for {
 		// ignore if player is already registered
-		if g.Players.PlayerByConn(conn) != nil {
+		if g.PlayerByConn(conn) != nil {
 			continue
 		}
 

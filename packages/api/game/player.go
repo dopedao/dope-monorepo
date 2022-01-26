@@ -3,17 +3,11 @@ package game
 import (
 	"context"
 	"encoding/json"
-	"sync"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
-
-type PlayersContainer struct {
-	data  []*Player
-	mutex sync.Mutex
-}
 
 type Player struct {
 	conn *websocket.Conn
@@ -41,6 +35,7 @@ func (p *Player) readPump(ctx context.Context) {
 			Event: "player_leave",
 			Data:  data,
 		}
+		// closing p.send will also stop the writepump
 		close(p.Send)
 	}()
 
@@ -98,22 +93,4 @@ func (p *Player) writePump(ctx context.Context) {
 			p.conn.WriteJSON(msg)
 		}
 	}
-}
-
-func (pc *PlayersContainer) PlayerByUUID(uuid uuid.UUID) *Player {
-	for _, player := range pc.data {
-		if player.Id == uuid {
-			return player
-		}
-	}
-	return nil
-}
-
-func (pc *PlayersContainer) PlayerByConn(conn *websocket.Conn) *Player {
-	for _, player := range pc.data {
-		if player.conn == conn {
-			return player
-		}
-	}
-	return nil
 }

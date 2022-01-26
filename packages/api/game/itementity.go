@@ -1,8 +1,6 @@
 package game
 
 import (
-	"sync"
-
 	"github.com/google/uuid"
 )
 
@@ -11,9 +9,4 @@ type ItemEntity struct {
 	item string
 	x    float32
 	y    float32
-}
-
-type ItemEntitiesContainer struct {
-	data  []*ItemEntity
-	mutex sync.Mutex
 }
