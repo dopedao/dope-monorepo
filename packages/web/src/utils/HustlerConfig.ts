@@ -19,10 +19,10 @@ export type ZoomWindow = [BigNumber, BigNumber, BigNumber, BigNumber];
 export const ZOOM_WINDOWS = [
   [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)] as ZoomWindow, // default
   [BigNumber.from(110), BigNumber.from(20), BigNumber.from(100), BigNumber.from(100)] as ZoomWindow, // mugshot
-  [BigNumber.from(40), BigNumber.from(120), BigNumber.from(255), BigNumber.from(100)] as ZoomWindow, // vehicle
+  [BigNumber.from(40), BigNumber.from(110), BigNumber.from(255), BigNumber.from(100)] as ZoomWindow, // vehicle
   // This view will crop certain vehicles like Lowrider,
   // but shows other at higher resolution. A decent tradeoff.
-  [BigNumber.from(80), BigNumber.from(120), BigNumber.from(200), BigNumber.from(100)] as ZoomWindow, // vehicle bigger zoom
+  [BigNumber.from(70), BigNumber.from(110), BigNumber.from(210), BigNumber.from(100)] as ZoomWindow, // vehicle bigger zoom
 ];
 
 export type HustlerCustomization = {
