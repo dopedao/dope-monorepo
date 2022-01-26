@@ -2,7 +2,6 @@ import { useMemo, useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { CloseButton } from '@chakra-ui/react';
-import { makeVar, useReactiveVar } from '@apollo/client';
 import { useWeb3React } from '@web3-react/core';
 import { useWalletQuery } from 'generated/graphql';
 import { getRandomHustler } from 'utils/HustlerConfig';
@@ -47,15 +46,25 @@ const Initiate = () => {
   const router = useRouter();
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
   const { account, chainId } = useWeb3React();
-  const { data, loading } = useWalletQuery({
-    variables: { id: account?.toLowerCase() || '' },
-    skip: !account,
-    onCompleted: () => {
-      if (data?.wallet?.bags && data.wallet.bags.length > 0) {
-        router.push('/hustlers/[id]/initiate', `/hustlers/${data?.wallet?.bags[0].id}/initiate`);
-      }
+  const { isFetching: loading } = useWalletQuery(
+    {
+      where: { id: account },
     },
-  });
+    {
+      enabled: !account,
+      onSuccess: data => {
+        if (
+          data?.wallets?.edges![0]?.node?.dopes &&
+          data?.wallets?.edges![0]?.node?.dopes.length > 0
+        ) {
+          router.push(
+            '/hustlers/[id]/initiate',
+            `/hustlers/${data.wallets.edges[0].node.dopes[0].id}/initiate`,
+          );
+        }
+      },
+    },
+  );
   useSwitchEthereum(chainId, account);
 
   useEffect(() => {
@@ -71,16 +80,11 @@ const Initiate = () => {
     setShowNetworkAlert(false);
   };
 
-  const makeVarConfig = useMemo(
-    () =>
-      makeVar(
-        getRandomHustler({
-          dopeId: '1',
-        }),
-      ),
-    [],
+  const [hustlerConfig, setHustlerConfig] = useState(
+    getRandomHustler({
+      dopeId: '1',
+    }),
   );
-  const hustlerConfig = useReactiveVar(makeVarConfig);
 
   return (
     <AppWindow requiresWalletConnection={true} scrollable={true}>
@@ -111,7 +115,7 @@ const Initiate = () => {
             <LoadingBlock />
           </FlexFiftyContainer>
         ) : (
-          <Begin hustlerConfig={hustlerConfig} makeVarConfig={makeVarConfig} />
+          <Begin hustlerConfig={hustlerConfig} setHustlerConfig={setHustlerConfig} />
         )}
       </HustlerProvider>
     </AppWindow>

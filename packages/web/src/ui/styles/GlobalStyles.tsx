@@ -34,7 +34,16 @@ export default function GlobalStyles() {
           /* COLORS */
           --black: #000;
           --white: #fff;
-          --gray: #dededd;
+          --gray-00: #EDEFEE;
+          --gray-100: #DEDEDD;
+          --gray-200: #BFB9BD;
+          --gray-300: #A8A9AE;
+          --gray-400: #878783;
+          --gray-500: #767674;
+          --gray-600: #5D5354;
+          --gray-700: #434345;
+          --gray-800: #202221;
+          --gray-900: #141011;
           --bg-color: #000;
           --hover-bg: #434345;
           --primary: #3523fe;
@@ -55,6 +64,7 @@ export default function GlobalStyles() {
           --space-lg: calc(var(--base-unit) * 5);
 
           /* TYPOGRAPHY */
+          --text-smallest: 0.75em;
           --text-small: 0.9em;
           --text-00: 1em;
           --text-01: 1.125em;
@@ -181,8 +191,10 @@ export default function GlobalStyles() {
         }
         a.primary {
           color: var(--primary);
-        }
-        ,
+        },
+        a.underline {
+          text-decoration: underline !important;
+        },
         p,
         ol,
         ul {
@@ -198,7 +210,9 @@ export default function GlobalStyles() {
         .small {
           font-size: var(--text-small);
         }
-
+        .smallest {
+          font-size: var(--text-smallest);
+        }
         em {
           background-color: rgba(255, 252, 63, 0.5);
         }

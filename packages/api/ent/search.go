@@ -23,6 +23,10 @@ type Search struct {
 	Type search.Type `json:"type,omitempty"`
 	// Greatness holds the value of the "greatness" field.
 	Greatness int `json:"greatness,omitempty"`
+	// Claimed holds the value of the "claimed" field.
+	Claimed bool `json:"claimed,omitempty"`
+	// Opened holds the value of the "opened" field.
+	Opened bool `json:"opened,omitempty"`
 	// SaleActive holds the value of the "sale_active" field.
 	SaleActive bool `json:"sale_active,omitempty"`
 	// SalePrice holds the value of the "sale_price" field.
@@ -99,7 +103,7 @@ func (*Search) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case search.FieldSalePrice, search.FieldLastSalePrice:
 			values[i] = new(schema.BigInt)
-		case search.FieldSaleActive:
+		case search.FieldClaimed, search.FieldOpened, search.FieldSaleActive:
 			values[i] = new(sql.NullBool)
 		case search.FieldGreatness:
 			values[i] = new(sql.NullInt64)
@@ -143,6 +147,18 @@ func (s *Search) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field greatness", values[i])
 			} else if value.Valid {
 				s.Greatness = int(value.Int64)
+			}
+		case search.FieldClaimed:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field claimed", values[i])
+			} else if value.Valid {
+				s.Claimed = value.Bool
+			}
+		case search.FieldOpened:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field opened", values[i])
+			} else if value.Valid {
+				s.Opened = value.Bool
 			}
 		case search.FieldSaleActive:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -230,6 +246,10 @@ func (s *Search) String() string {
 	builder.WriteString(fmt.Sprintf("%v", s.Type))
 	builder.WriteString(", greatness=")
 	builder.WriteString(fmt.Sprintf("%v", s.Greatness))
+	builder.WriteString(", claimed=")
+	builder.WriteString(fmt.Sprintf("%v", s.Claimed))
+	builder.WriteString(", opened=")
+	builder.WriteString(fmt.Sprintf("%v", s.Opened))
 	builder.WriteString(", sale_active=")
 	builder.WriteString(fmt.Sprintf("%v", s.SaleActive))
 	builder.WriteString(", sale_price=")

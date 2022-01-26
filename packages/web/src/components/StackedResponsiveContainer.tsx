@@ -5,7 +5,6 @@ import { media } from 'ui/styles/mixins';
 const StackedResponsiveContainer = styled.div`
   // Mobile phones just stack regularly with box layout
   display: block;
-  padding: 32px;
 
   & > div {
     margin-bottom: 16px;
@@ -16,16 +15,17 @@ const StackedResponsiveContainer = styled.div`
     height: 100%;
     display: flex;
     justify-content: center;
-    // Mobile screens stack, 16px gap  
+    padding: 32px;
+    padding-top: 64px;
     gap: 16px;
     & > div {
       margin: 0;
-      flex: 1;
+      flex: 2;
       overflow-y: auto;
     }
     flex-flow: row nowrap;
       & > div:last-child {
-        flex: 1;
+        flex: 3;
       } 
     `}
 `;

@@ -2,7 +2,7 @@
 
 ## The DOPE DAO DESKTOP
 
-Contains the DOPEWARS.EXE desktop to view your DOPE, unbundle, generate Hustlers, and buy/sell.
+Contains the DOPEWARS.EXE desktop to view your DOPE, Claim Gear, generate Hustlers, and buy/sell.
 
 ### Features
 
@@ -19,7 +19,13 @@ yarn web dev
 
 ## Develop
 
-First, run the development server:
+First, create an `.env` file and paste in the following env variable:
+
+```bash
+NEXT_PUBLIC_DOPEWARS_API=https://testnet.api.dopewars.gg/query
+```
+
+Second, run the development server:
 
 ```bash
 yarn dev

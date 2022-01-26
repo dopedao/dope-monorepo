@@ -28,7 +28,7 @@ export const toastStyle: ToastOptions = {
     icon: 'ℹ️',
     position: 'top-right',
     style: {
-      borderRadius: '5px',
+      borderRadius: '4px',
       backdropFilter: 'blur(8px)',
       backgroundColor: 'rgba(0, 0, 0, 0.6)',
       color: '#fff',

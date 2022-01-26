@@ -13,7 +13,7 @@ import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ApprovePaper from 'components/panels/ApprovePaper';
 import MintTo from 'components/panels/MintTo';
-import RenderDope from 'components/dope/RenderDope';
+import RenderDope from 'features/dope/components/RenderDope';
 import AppWindow from 'components/AppWindow';
 
 const Approve = () => {
@@ -76,7 +76,7 @@ const Approve = () => {
   };
 
   return (
-    <AppWindow requiresWalletConnection={true} padBody={false} title="Unbundle Dope">
+    <AppWindow requiresWalletConnection={true} padBody={false} title="Claim DOPE Gear">
       <Head title="Approve spend" />
       <StackedResponsiveContainer>
         <Stack>
@@ -104,7 +104,7 @@ const Approve = () => {
             isApproved={isPaperApproved}
             onApprove={approved => setIsPaperApproved(approved)}
           >
-            We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of your
+            We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of your
             DOPE NFT #{dopeId}.
           </ApprovePaper>
           <MintTo
@@ -129,7 +129,7 @@ const Approve = () => {
             `}
           >
             <Button variant="primary" onClick={unbundleDope} disabled={!canMint}>
-              🔓 Unbundle Dope 🔓
+              🔓 Claim Gear 🔓
             </Button>
           </PanelFooter>
         </PanelContainer>

@@ -1,0 +1,20 @@
+query HustlersWallet($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        id
+        paper
+        hustlers {
+          id
+          title
+          name
+          type
+          color
+          background
+          age
+          svg
+        }
+      }
+    }
+  }
+}

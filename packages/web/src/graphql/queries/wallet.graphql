@@ -1,0 +1,43 @@
+query Wallet($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        id
+        paper
+        hustlers {
+          id
+          title
+          name
+        }
+        items {
+          id
+          balance
+          item {
+            id
+            name
+          }
+        }
+        dopes {
+          id
+          claimed
+          opened
+          score
+          rank
+          items {
+            id
+            fullname
+            type
+            name
+            namePrefix
+            nameSuffix
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+        }
+      }
+    }
+  }
+}

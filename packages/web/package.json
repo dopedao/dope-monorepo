@@ -9,6 +9,7 @@
     "lint": "next lint",
     "format": "prettier --write ./**/*.{ts,tsx}",
     "gen": "graphql-codegen --config codegen.yml",
+    "gen-opensea": "graphql-codegen --config codegen-opensea.yml",
     "test": "jest",
     "test-watch": "jest --watch",
     "dump-opensea": "ts-node --script-mode script/dump-opensea-json.ts",
@@ -17,7 +18,6 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@apollo/client": "^3.4.11",
     "@chakra-ui/react": "^1.6.7",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
@@ -51,20 +51,22 @@
     "react-countdown": "^2.3.2",
     "react-dom": "^17.0.2",
     "react-hot-toast": "^2.1.1",
+    "react-query": "latest",
     "react-table": "^7.7.0",
     "remark": "^14.0.2",
-    "remark-html": "^15.0.1",
-    "swr": "^0.5.6"
+    "remark-html": "^15.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
     "@emotion/babel-plugin": "^11.3.0",
-    "@graphql-codegen/cli": "^2.2.0",
+    "@graphql-cli/codegen": "^2.1.5",
+    "@graphql-codegen/cli": "^2.3.1",
     "@graphql-codegen/fragment-matcher": "^3.1.0",
     "@graphql-codegen/introspection": "^2.1.0",
+    "@graphql-codegen/schema-ast": "^2.4.0",
     "@graphql-codegen/typescript": "^2.2.2",
     "@graphql-codegen/typescript-operations": "^2.1.4",
-    "@graphql-codegen/typescript-react-apollo": "^3.1.4",
+    "@graphql-codegen/typescript-react-query": "^3.3.1",
     "@mdx-js/react": "^1.6.22",
     "@sentry/react": "^6.13.2",
     "@sentry/tracing": "^6.13.2",
@@ -90,7 +92,7 @@
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
     "typechain": "^5.1.2",
-    "typescript": "^4.4.3",
+    "typescript": "^4.5.4",
     "usehooks-ts": "^1.0.3"
   },
   "husky": {

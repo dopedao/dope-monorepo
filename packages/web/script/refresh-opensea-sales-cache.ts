@@ -4,8 +4,7 @@ import * as dotenv from 'dotenv';
 const ENV_FILE = __dirname + '/../../../.env';
 dotenv.config({ path: ENV_FILE });
 
-
-import { getOpenSeaAssets } from '../src/utils/OpenSeaAsset';
+// import { getOpenSeaAssets } from '../src/utils/OpenSeaAsset';
 import S3 from 'aws-sdk/clients/s3';
 
 const S3_ID = process.env.S3_ID;
@@ -23,20 +22,20 @@ const s3client = new S3({
   secretAccessKey: S3_SECRET,
 });
 
-const main = async () => {
-  try {
-    const assetJson = await getOpenSeaAssets();
-    const params = {
-      Bucket: S3_BUCKET,
-      Key: FILENAME,
-      Body: JSON.stringify(assetJson),
-    };
-    await s3client.upload(params).promise();
-    process.exit(0);
-  } catch (e) {
-    console.log(e);
-    process.exit(1);
-  }
-};
+// const main = async () => {
+//   try {
+//     const assetJson = await getOpenSeaAssets();
+//     const params = {
+//       Bucket: S3_BUCKET,
+//       Key: FILENAME,
+//       Body: JSON.stringify(assetJson),
+//     };
+//     await s3client.upload(params).promise();
+//     process.exit(0);
+//   } catch (e) {
+//     console.log(e);
+//     process.exit(1);
+//   }
+// };
 
-main();
+// main();

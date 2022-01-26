@@ -16,18 +16,18 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var componentType = map[item.Type]uint8{
-	item.TypeWeapon:    0,
-	item.TypeClothes:   1,
-	item.TypeVehicle:   2,
-	item.TypeWaist:     3,
-	item.TypeFoot:      4,
-	item.TypeHand:      5,
-	item.TypeDrugs:     6,
-	item.TypeNeck:      7,
-	item.TypeRing:      8,
-	item.TypeAccessory: 9,
-}
+// var componentType = map[item.Type]uint8{
+// 	item.TypeWEAPON:    0,
+// 	item.TypeCLOTHES:   1,
+// 	item.TypeVEHICLE:   2,
+// 	item.TypeWAIST:     3,
+// 	item.TypeFOOT:      4,
+// 	item.TypeHAND:      5,
+// 	item.TypeDRUGS:     6,
+// 	item.TypeNECK:      7,
+// 	item.TypeRING:      8,
+// 	item.TypeACCESSORY: 9,
+// }
 
 func main() {
 	ctx := context.Background()
@@ -127,13 +127,13 @@ func main() {
 
 			switch g := itm.Greatness; {
 			case g > 19:
-				client.Item.UpdateOneID(itm.ID).SetTier(item.TierBlackMarket).ExecX(ctx)
+				client.Item.UpdateOneID(itm.ID).SetTier(item.TierBLACK_MARKET).ExecX(ctx)
 			case g == 19:
-				client.Item.UpdateOneID(itm.ID).SetTier(item.TierCustom).ExecX(ctx)
+				client.Item.UpdateOneID(itm.ID).SetTier(item.TierCUSTOM).ExecX(ctx)
 			case g > 14:
-				client.Item.UpdateOneID(itm.ID).SetTier(item.TierRare).ExecX(ctx)
+				client.Item.UpdateOneID(itm.ID).SetTier(item.TierRARE).ExecX(ctx)
 			default:
-				client.Item.UpdateOneID(itm.ID).SetTier(item.TierCommon).ExecX(ctx)
+				client.Item.UpdateOneID(itm.ID).SetTier(item.TierCOMMON).ExecX(ctx)
 			}
 			wg.Done()
 		}(itm)
@@ -151,11 +151,11 @@ func main() {
 		for _, itm := range dope.Edges.Items {
 
 			switch itm.Tier {
-			case item.TierBlackMarket:
+			case item.TierBLACK_MARKET:
 				score += 3
-			case item.TierCustom:
+			case item.TierCUSTOM:
 				score += 2
-			case item.TierRare:
+			case item.TierRARE:
 				score += 1
 			}
 		}

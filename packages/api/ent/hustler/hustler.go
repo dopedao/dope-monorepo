@@ -239,8 +239,8 @@ type Type string
 
 // Type values.
 const (
-	TypeOriginalGangsta Type = "original_gangsta"
-	TypeRegular         Type = "regular"
+	TypeORIGINAL_GANGSTA Type = "ORIGINAL_GANGSTA"
+	TypeREGULAR          Type = "REGULAR"
 )
 
 func (_type Type) String() string {
@@ -250,7 +250,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeOriginalGangsta, TypeRegular:
+	case TypeORIGINAL_GANGSTA, TypeREGULAR:
 		return nil
 	default:
 		return fmt.Errorf("hustler: invalid enum value for type field: %q", _type)
@@ -260,13 +260,13 @@ func TypeValidator(_type Type) error {
 // Sex defines the type for the "sex" enum field.
 type Sex string
 
-// SexMale is the default value of the Sex enum.
-const DefaultSex = SexMale
+// SexMALE is the default value of the Sex enum.
+const DefaultSex = SexMALE
 
 // Sex values.
 const (
-	SexMale   Sex = "male"
-	SexFemale Sex = "female"
+	SexMALE   Sex = "MALE"
+	SexFEMALE Sex = "FEMALE"
 )
 
 func (s Sex) String() string {
@@ -276,7 +276,7 @@ func (s Sex) String() string {
 // SexValidator is a validator for the "sex" field enum values. It is called by the builders before save.
 func SexValidator(s Sex) error {
 	switch s {
-	case SexMale, SexFemale:
+	case SexMALE, SexFEMALE:
 		return nil
 	default:
 		return fmt.Errorf("hustler: invalid enum value for sex field: %q", s)

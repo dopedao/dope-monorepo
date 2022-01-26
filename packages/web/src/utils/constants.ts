@@ -79,3 +79,13 @@ export const NETWORK = {
     chainId: 69,
   },
 };
+
+const MAINNET_API_URL = 'https://api.dopewars.gg/query';
+const TESTNET_API_URL = 'https://testnet.api.dopewars.gg/query';
+
+export const API_URI = {
+  1: MAINNET_API_URL,
+  10: MAINNET_API_URL,
+  42: TESTNET_API_URL,
+  69: TESTNET_API_URL,
+};
