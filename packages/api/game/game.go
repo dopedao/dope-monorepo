@@ -128,7 +128,7 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 		x:          data.X,
 		y:          data.Y,
 
-		Send: make(chan BaseMessage),
+		Send: make(chan BaseMessage, 256),
 	}
 
 	g.Register <- player
