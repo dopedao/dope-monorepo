@@ -5,6 +5,7 @@ export type DopeTabType = { title: string; number?: number; content: ReactElemen
 
 type DopeTabsProps = {
   tabs: DopeTabType[];
+  height?: string;
 };
 
 const formatTitle = (title: string) =>
@@ -12,10 +13,10 @@ const formatTitle = (title: string) =>
     ? `${title.slice(0, 2)}..${title.slice(title.length - 4, title.length)}`
     : title;
 
-const DopeTabs = ({ tabs }: DopeTabsProps) => {
+const DopeTabs = ({ tabs, height }: DopeTabsProps) => {
   return (
     <Tabs>
-      <TabList padding="8px 8px 0 8px" backgroundColor="#222222">
+      <TabList  padding="0px 8px 0 8px">
         {tabs.map(tab => (
           <Tab
             marginRight="8px"
@@ -35,7 +36,9 @@ const DopeTabs = ({ tabs }: DopeTabsProps) => {
           >
             <Box flexGrow="1" />
             <Box flexGrow="1">
-              <Text margin="0">{formatTitle(tab.title)}</Text>
+              <Text margin="0" pb="0">
+                {formatTitle(tab.title)}
+              </Text>
             </Box>
             <Box flexGrow="1">
               {Boolean(tab.number) && (
@@ -57,9 +60,17 @@ const DopeTabs = ({ tabs }: DopeTabsProps) => {
         ))}
       </TabList>
 
-      <TabPanels>
-        {tabs.map(tab => (
-          <TabPanel>{tab.content}</TabPanel>
+      <TabPanels
+        h={height || "auto"}
+      >
+        {tabs.map((tab, index) => (
+          <TabPanel 
+            p="0"
+            key={`tab-${index}`}
+            h="100%"
+          >
+            {tab.content}
+          </TabPanel>
         ))}
       </TabPanels>
     </Tabs>

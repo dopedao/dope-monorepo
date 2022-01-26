@@ -171,7 +171,7 @@ const Hustlers = () => {
             {data.wallets.edges[0].node.hustlers.map(({ id, svg, name }) => {
               if (!svg) return null;
               return (
-                <Link key={id} href={`/hustlers/${id}/customize`}>
+                <Link key={id} href={`/hustlers/${id}/details`}>
                   <a>
                     <RenderFromChain
                       data={{
