@@ -15,7 +15,8 @@ type TickData struct {
 }
 
 type ErrorMessageData struct {
-	Error string `json:"error"`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }
 
 type ChatMessageData struct {
@@ -52,9 +53,10 @@ type IdData struct {
 	Id string `json:"id"`
 }
 
-func generateErrorMessage(err string) BaseMessage {
+func generateErrorMessage(code int, message string) BaseMessage {
 	data, _ := json.Marshal(ErrorMessageData{
-		Error: err,
+		Code:    code,
+		Message: message,
 	})
 
 	return BaseMessage{

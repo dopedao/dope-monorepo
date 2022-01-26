@@ -57,13 +57,19 @@ func (p *Player) readPump(ctx context.Context) {
 			var data ChatMessageData
 			json.Unmarshal(msg.Data, &data)
 
+			// if message length is 0, no need
+			// to broadcast it
+			if len(data.Message) == 0 {
+				continue
+			}
+
 			broadcastedData, err := json.Marshal(ChatMessageClientData{
 				Message: data.Message,
 				Author:  p.Id.String(),
 			})
 
 			if err != nil {
-				p.Send <- generateErrorMessage("could not marshal chat message data")
+				p.Send <- generateErrorMessage(500, "could not marshal chat message data")
 				break
 			}
 

@@ -43,7 +43,7 @@ func (g *Game) Start(ctx context.Context) {
 			// handshake
 			handShakeData, err := json.Marshal(IdData{Id: player.Id.String()})
 			if err != nil {
-				player.Send <- generateErrorMessage("could not marshal handshake data")
+				player.Send <- generateErrorMessage(500, "could not marshal handshake data")
 				return
 			}
 
@@ -83,7 +83,7 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 		players := []PlayerMoveData{}
 
 		for _, otherPlayer := range g.Players.data {
-			if otherPlayer == player {
+			if otherPlayer == player || otherPlayer.currentMap != player.currentMap {
 				continue
 			}
 
@@ -99,7 +99,7 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 			Players: players,
 		})
 		if err != nil {
-			player.Send <- generateErrorMessage("could not marshal player move data")
+			player.Send <- generateErrorMessage(500, "could not marshal player move data")
 			continue
 		}
 
@@ -121,7 +121,7 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 	})
 	if err != nil {
 		log.Err(err).Msgf("could not marshal join data for player: %s | %s", player.Id, player.name)
-		player.Send <- generateErrorMessage("could not marshal join data")
+		player.Send <- generateErrorMessage(500, "could not marshal join data")
 		return
 	}
 
@@ -133,6 +133,13 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 }
 
 func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data PlayerJoinData) {
+	if data.CurrentMap == "" {
+		// we can directly use writejson here
+		// because player is not yet registered
+		conn.WriteJSON(generateErrorMessage(422, "current map is not set"))
+		return
+	}
+
 	player := &Player{
 		conn: conn,
 		game: g,
@@ -153,7 +160,7 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 	leaveData, err := json.Marshal(IdData{Id: player.Id.String()})
 	if err != nil {
-		player.Send <- generateErrorMessage("could not marshal leave data")
+		player.Send <- generateErrorMessage(500, "could not marshal leave data")
 		return
 	}
 
