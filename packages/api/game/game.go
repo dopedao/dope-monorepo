@@ -31,8 +31,8 @@ func (g *Game) Start(ctx context.Context) {
 
 	for {
 		select {
-		case <-g.Ticker.C:
-			g.tick(ctx)
+		case t := <-g.Ticker.C:
+			g.tick(ctx, t)
 		case player := <-g.Register:
 			g.Players.data = append(g.Players.data, player)
 
@@ -48,13 +48,13 @@ func (g *Game) Start(ctx context.Context) {
 				return
 			}
 
-			log.Info().Msgf("player joined: %s | %s", player.Id, player.name)
-
 			// send back id to player
 			player.Send <- BaseMessage{
 				Event: "player_handshake",
 				Data:  handShakeData,
 			}
+
+			log.Info().Msgf("player joined: %s | %s", player.Id, player.name)
 		case player := <-g.Unregister:
 			for i, p := range g.Players.data {
 				if p == player {
@@ -78,18 +78,35 @@ func (g *Game) Start(ctx context.Context) {
 	}
 }
 
-func (g *Game) tick(ctx context.Context) {
+func (g *Game) tick(ctx context.Context, time time.Time) {
 	fmt.Println(g.Players.data)
 
 	// for each player, broadcast their position
 	for _, player := range g.Players.data {
-		data, _ := json.Marshal(PlayerMoveData{
-			Id: player.Id.String(),
-			X:  player.x,
-			Y:  player.y,
+		players := []PlayerMoveData{}
+
+		for _, otherPlayer := range g.Players.data {
+			if otherPlayer == player {
+				continue
+			}
+
+			players = append(players, PlayerMoveData{
+				Id: otherPlayer.Id.String(),
+				X:  otherPlayer.x,
+				Y:  otherPlayer.y,
+			})
+		}
+
+		data, err := json.Marshal(TickData{
+			Tick:    time.Unix(),
+			Players: players,
 		})
-		g.Broadcast <- BaseMessage{
-			Event: "player_move",
+		if err != nil {
+			player.Send <- generateErrorMessage("could not marshal player move data")
+			continue
+		}
+		player.Send <- BaseMessage{
+			Event: "tick",
 			Data:  data,
 		}
 	}

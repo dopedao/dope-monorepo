@@ -9,6 +9,11 @@ type BaseMessage struct {
 	Data  json.RawMessage `json:"data"`
 }
 
+type TickData struct {
+	Tick    int64            `json:"tick"`
+	Players []PlayerMoveData `json:"players"`
+}
+
 type ErrorMessageData struct {
 	Error string `json:"error"`
 }
