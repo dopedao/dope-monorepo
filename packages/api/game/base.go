@@ -12,7 +12,7 @@ import (
 func NewGame() *Game {
 	return &Game{
 		// tick each 1/60th of a second
-		Ticker:     time.NewTicker(time.Second / 3),
+		Ticker:     time.NewTicker(time.Second / 60),
 		Register:   make(chan *Player),
 		Unregister: make(chan *Player),
 		Broadcast:  make(chan BaseMessage),

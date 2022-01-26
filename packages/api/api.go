@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -312,25 +311,6 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 
 		// handle messages
 		gameState.Handle(ctx, wsConn)
-
-		// if the connection is closed, dispatch player leave
-		player := gameState.Players.PlayerByConn(wsConn)
-		if player != nil {
-			data, err := json.Marshal(game.IdData{
-				Id: player.Id.String(),
-			})
-
-			if err != nil {
-				log.Err(err).Msg("could not to marshal player leave data")
-				return
-			}
-
-			gameState.Unregister <- player
-			gameState.Broadcast <- game.BaseMessage{
-				Event: "player_leave",
-				Data:  data,
-			}
-		}
 	})
 
 	if index {

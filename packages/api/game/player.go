@@ -32,7 +32,17 @@ type Player struct {
 func (p *Player) readPump(ctx context.Context) {
 	_, log := base.LogFor(ctx)
 
-	defer func() { close(p.Send) }()
+	defer func() {
+		data, _ := json.Marshal(IdData{
+			Id: p.Id.String(),
+		})
+		p.game.Unregister <- p
+		p.game.Broadcast <- BaseMessage{
+			Event: "player_leave",
+			Data:  data,
+		}
+		close(p.Send)
+	}()
 
 	for {
 		var msg BaseMessage
@@ -64,21 +74,17 @@ func (p *Player) readPump(ctx context.Context) {
 
 			log.Info().Msgf("player %s | %s sent chat message: %s", p.Id, p.name, data.Message)
 		case "player_leave":
-			msg.Data, _ = json.Marshal(IdData{
-				Id: p.Id.String(),
-			})
-			p.game.Unregister <- p
-			p.game.Broadcast <- msg
+			// see defer
 			return
 		}
 	}
 }
 
 func (p *Player) writePump(ctx context.Context) {
-	// p.game.Players.mutex.Lock()
 	for {
 		select {
 		case msg, ok := <-p.Send:
+			// if channel is closed, stop writepump
 			if !ok {
 				return
 			}

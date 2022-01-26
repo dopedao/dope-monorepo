@@ -3,7 +3,6 @@ package game
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
@@ -70,8 +69,8 @@ func (g *Game) Start(ctx context.Context) {
 				case player.Send <- msg:
 				default:
 					log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.name)
-					close(player.Send)
 					g.Players.data = append(g.Players.data[:i], g.Players.data[i+1:]...)
+					close(player.Send)
 				}
 			}
 		}
@@ -79,9 +78,7 @@ func (g *Game) Start(ctx context.Context) {
 }
 
 func (g *Game) tick(ctx context.Context, time time.Time) {
-	fmt.Println(g.Players.data)
-
-	// for each player, broadcast their position
+	// for each player, send a tick message
 	for _, player := range g.Players.data {
 		players := []PlayerMoveData{}
 
@@ -105,6 +102,7 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 			player.Send <- generateErrorMessage("could not marshal player move data")
 			continue
 		}
+
 		player.Send <- BaseMessage{
 			Event: "tick",
 			Data:  data,
