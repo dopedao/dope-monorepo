@@ -48,6 +48,17 @@ func (p *Player) readPump(ctx context.Context) {
 		}
 
 		switch msg.Event {
+		case "player_move":
+			var data PlayerMoveData
+			err := json.Unmarshal(msg.Data, &data)
+
+			if err != nil {
+				p.Send <- generateErrorMessage(500, "could not marshal chat message data")
+				break
+			}
+			
+			p.x = data.X
+			p.y = data.Y
 		case "player_chat_message":
 			var data ChatMessageData
 			json.Unmarshal(msg.Data, &data)
