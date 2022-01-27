@@ -117,6 +117,8 @@ CREATE MATERIALIZED VIEW search_index AS (
 				coalesce(fullnames [6],
 					'')) || to_tsvector('english',
 				coalesce(fullnames [7],
+					'')) || to_tsvector('english',
+				coalesce(id,
 					''))) AS tsv_document
 	FROM
 		dope_agg
@@ -152,7 +154,9 @@ CREATE MATERIALIZED VIEW search_index AS (
 									'+1'
 								END,
 								'')))),
-				''))) AS tsv_document
+				'')) || to_tsvector('english',
+				coalesce(id,
+					''))) AS tsv_document
 	FROM
 		items
 )
@@ -238,6 +242,8 @@ UNION (WITH hustler_agg AS (
 				coalesce(name,
 					'')) || to_tsvector('english',
 				coalesce(title,
+					'')) || to_tsvector('english',
+				coalesce(id,
 					''))) AS tsv_document
 	FROM
 		hustler_agg
