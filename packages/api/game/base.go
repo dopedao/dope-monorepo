@@ -19,9 +19,9 @@ func NewGame() *Game {
 	}
 }
 
-func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
+func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) {
 	ctx, log := base.LogFor(ctx)
-	log.Info().Msg("New connection from " + conn.RemoteAddr().String())
+	log.Info().Msgf("New connection from ", conn.RemoteAddr().String())
 
 	for {
 		// ignore if player is already registered
@@ -30,17 +30,24 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
 		}
 
 		var msg BaseMessage
-		err := conn.ReadJSON(&msg)
-
-		if err != nil {
-			return err
+		if err := conn.ReadJSON(&msg); err != nil {
+			// we can directly use writejson here
+			// because player is not yet registered
+			conn.WriteJSON(generateErrorMessage(500, "could not read json"))
+			continue
 		}
 
 		// messages from players are handled else where
 		switch msg.Event {
 		case "player_join":
 			var data PlayerJoinData
-			json.Unmarshal(msg.Data, &data)
+			if err := json.Unmarshal(msg.Data, &data); err != nil {
+				// we can directly use writejson here
+				// because player is not yet registered
+				conn.WriteJSON(generateErrorMessage(500, "could not unmarshal player_join data"))
+				continue
+			}
+
 			g.HandlePlayerJoin(ctx, conn, data)
 		}
 	}

@@ -3,6 +3,7 @@ package game
 import (
 	"context"
 	"encoding/json"
+	"sync"
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
@@ -12,8 +13,9 @@ import (
 
 type Game struct {
 	// ticks per second
-	TickRate int
-	Ticker   *time.Ticker
+	Ticker *time.Ticker
+
+	Mutex sync.Mutex
 
 	Players      []*Player
 	ItemEntities []*ItemEntity
@@ -154,7 +156,7 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 	if data.CurrentMap == "" {
 		// we can directly use writejson here
 		// because player is not yet registered
-		conn.WriteJSON(generateErrorMessage(422, "current map is not set"))
+		conn.WriteJSON(generateErrorMessage(422, "current_map is not set"))
 		return
 	}
 

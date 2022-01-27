@@ -14,7 +14,6 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
 
-	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/game"
@@ -297,12 +296,11 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 	go gameState.Start(ctx)
 
 	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
-		_, log := base.LogFor(ctx)
-
 		wsConn, err := wsUpgrader.Upgrade(w, r, nil)
 
 		if err != nil {
-			log.Err(err).Msg("failed to upgrade websocket")
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("501 - Could not upgrade to websocket connection"))
 			return
 		}
 
@@ -310,7 +308,11 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 		defer wsConn.Close()
 
 		// handle messages
-		gameState.Handle(ctx, wsConn)
+		handleErr := gameState.Handle(r.Context(), wsConn)
+		if handleErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("501 - Could not read mesage"))
+		}
 	})
 
 	if index {
