@@ -308,11 +308,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 		defer wsConn.Close()
 
 		// handle messages
-		handleErr := gameState.Handle(r.Context(), wsConn)
-		if handleErr != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("501 - Could not read mesage"))
-		}
+		gameState.Handle(r.Context(), wsConn)
 	})
 
 	if index {
