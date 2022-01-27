@@ -1,4 +1,4 @@
-import EventHandler, { Events } from "game/handlers/EventHandler";
+import EventHandler, { Events } from "game/handlers/events/EventHandler";
 import Item from "game/entities/player/inventory/Item";
 import Player from "./player/Player";
 import UIScene from "game/scenes/UI";

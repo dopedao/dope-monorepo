@@ -4,7 +4,7 @@ import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
 import Player from 'game/entities/player/Player';
 import Citizen from 'game/entities/citizen/Citizen';
-import EventHandler, { Events } from 'game/handlers/EventHandler';
+import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import Conversation from 'game/entities/citizen/Conversation';
 import Item from 'game/entities/player/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';

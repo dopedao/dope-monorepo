@@ -1,5 +1,5 @@
 import Citizen from "game/entities/citizen/Citizen";
-import EventHandler, { Events } from "game/handlers/EventHandler";
+import EventHandler, { Events } from "game/handlers/events/EventHandler";
 import Item from "game/entities/player/inventory/Item";
 import QuestManager from "game/entities/player/managers/QuestManager";
 import Quest from "./Quest";

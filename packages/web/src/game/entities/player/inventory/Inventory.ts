@@ -1,4 +1,4 @@
-import EventHandler, { Events } from "game/handlers/EventHandler";
+import EventHandler, { Events } from "game/handlers/events/EventHandler";
 import Item from "./Item";
 
 export default class Inventory 

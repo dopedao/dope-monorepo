@@ -1,5 +1,5 @@
 import HustlerModel from "game/gfx/models/HustlerModel";
-import EventHandler, { Events } from "game/handlers/EventHandler";
+import EventHandler, { Events } from "game/handlers/events/EventHandler";
 import Inventory from "game/entities/player/inventory/Inventory";
 import QuestManager from "game/entities/player/managers/QuestManager";
 import Quest from "game/entities/player/quests/Quest";

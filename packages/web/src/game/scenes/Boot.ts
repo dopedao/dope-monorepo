@@ -1,4 +1,4 @@
-import EventHandler from 'game/handlers/EventHandler';
+import EventHandler from 'game/handlers/events/EventHandler';
 import { Scene } from 'phaser';
 
 export default class Boot extends Scene {

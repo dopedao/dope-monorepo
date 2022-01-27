@@ -1,7 +1,7 @@
 import Citizen from "game/entities/citizen/Citizen";
 import Conversation from "game/entities/citizen/Conversation";
 import Player from "game/entities/player/Player";
-import EventHandler, { Events } from "game/handlers/EventHandler";
+import EventHandler, { Events } from "game/handlers/events/EventHandler";
 import Item from "game/entities/player/inventory/Item";
 import Quest from "game/entities/player/quests/Quest";
 import ChatType from "game/ui/react/components/ChatType";

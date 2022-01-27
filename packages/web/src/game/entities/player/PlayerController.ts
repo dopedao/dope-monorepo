@@ -1,4 +1,4 @@
-import EventHandler, { Events } from "game/handlers/EventHandler";
+import EventHandler, { Events } from "game/handlers/events/EventHandler";
 import Citizen from "../citizen/Citizen";
 import Hustler, { Direction } from "../Hustler";
 import Player from "./Player";
