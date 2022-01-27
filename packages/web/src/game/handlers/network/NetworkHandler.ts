@@ -1,11 +1,11 @@
-import { ClientDataTypes, NetworkEvents } from "./types";
+import { DataTypes, NetworkEvents, UniversalEventNames } from "./types";
 
 export default class NetworkHandler
 {
     private static instance: NetworkHandler;
 
     public emitter: Phaser.Events.EventEmitter;
-    public connection?: WebSocket;
+    private connection?: WebSocket;
 
     constructor()
     {
@@ -15,49 +15,72 @@ export default class NetworkHandler
         this.emitter.on(NetworkEvents.DISCONNECTED, () => console.log("Disconnected from server"));
         this.emitter.on(NetworkEvents.RECONNECTED, () => console.log("Reconnected to server"));
 
-        this.emitter.on(NetworkEvents.PLAYER_JOIN, (data: ClientDataTypes[NetworkEvents.PLAYER_JOIN]) => console.log(`Player ${data.id} joined`));
-        this.emitter.on(NetworkEvents.PLAYER_LEAVE, (data: ClientDataTypes[NetworkEvents.PLAYER_LEAVE]) => console.log(`Player ${data.id} left`));
-        this.emitter.on(NetworkEvents.PLAYER_MOVE, (data: ClientDataTypes[NetworkEvents.PLAYER_MOVE]) => console.log(`Player ${data.id} moved`));
-        this.emitter.on(NetworkEvents.TICK, (data: ClientDataTypes[NetworkEvents.TICK]) => console.log(`Tick ${data.tick}`));
+        this.emitter.on(NetworkEvents.SERVER_PLAYER_JOIN, (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => console.log(`Player ${data.id} joined`));
+        this.emitter.on(NetworkEvents.SERVER_PLAYER_LEAVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_LEAVE]) => console.log(`Player ${data.id} left`));
+        this.emitter.on(NetworkEvents.SERVER_PLAYER_MOVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_MOVE]) => console.log(`Player ${data.id} moved`));
+        this.emitter.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => console.log(`Tick ${data.tick}`));
 
-    }
-
-    private _handleMessage(event: MessageEvent)
-    {
-        const data = JSON.parse(event.data);
-            
-        switch (data.type)
-        {
-            case NetworkEvents.TICK:
-                this.emitter.emit(NetworkEvents.TICK, data.payload);
-                break;
-            case NetworkEvents.PLAYER_JOIN:
-                this.emitter.emit(NetworkEvents.PLAYER_JOIN, data.payload);
-                break;
-            case NetworkEvents.PLAYER_LEAVE:
-                this.emitter.emit(NetworkEvents.PLAYER_LEAVE, data.payload);
-                break;
-            case NetworkEvents.PLAYER_MOVE:
-                this.emitter.emit(NetworkEvents.PLAYER_MOVE, data.payload);
-                break;
-            case NetworkEvents.PLAYER_CHAT_MESSAGE:
-                this.emitter.emit(NetworkEvents.PLAYER_CHAT_MESSAGE, data.payload);
-                break;
-        }
     }
 
     connect()
     {
+        if (this.connection?.readyState === WebSocket.OPEN)
+        {
+            console.warn("Already connected to server");
+            return;
+        }
+
         this.connection = new WebSocket(`ws://${window.location.host}/game/ws`);
-        
+
         this.connection.onopen = () => {
             this.emitter.emit(NetworkEvents.CONNECTED);
         }
         this.connection.onclose = () => {
             this.emitter.emit(NetworkEvents.DISCONNECTED);
         }
-        this.connection.onmessage = (event) => {
-            
+    }
+
+    listenMessages(listen: boolean = true)
+    {
+        if (this.connection)
+            this.connection.onmessage = listen ? (event) => {
+                this._handleMessage(event);
+            } : null;
+    }
+
+    sendMessage(event: UniversalEventNames, data: any)
+    {
+        if (this.connection?.readyState !== WebSocket.OPEN)
+            return;
+
+        this.connection.send(JSON.stringify({ event: event, data: data }));
+        this.emitter.emit('client_' + event, data);
+    }
+
+    // Handle messages coming from the server
+    // and dispatches them through the event emitter as
+    // server-type events
+    private _handleMessage(event: MessageEvent)
+    {
+        const data = JSON.parse(event.data);
+        
+        switch (data.event)
+        {
+            case NetworkEvents.TICK:
+                this.emitter.emit(NetworkEvents.TICK, data.payload);
+                break;
+            case UniversalEventNames.PLAYER_JOIN:
+                this.emitter.emit(NetworkEvents.SERVER_PLAYER_JOIN, data.payload);
+                break;
+            case UniversalEventNames.PLAYER_LEAVE:
+                this.emitter.emit(NetworkEvents.SERVER_PLAYER_LEAVE, data.payload);
+                break;
+            case UniversalEventNames.PLAYER_MOVE:
+                this.emitter.emit(NetworkEvents.SERVER_PLAYER_MOVE, data.payload);
+                break;
+            case UniversalEventNames.PLAYER_CHAT_MESSAGE:
+                this.emitter.emit(NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE, data.payload);
+                break;
         }
     }
 

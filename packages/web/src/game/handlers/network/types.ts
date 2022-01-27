@@ -1,3 +1,11 @@
+enum UniversalEventNames
+{
+    PLAYER_JOIN = 'player_join',
+    PLAYER_LEAVE = 'player_leave',
+    PLAYER_MOVE = 'player_move',
+    PLAYER_CHAT_MESSAGE = 'player_chat_message',
+}
+
 enum NetworkEvents
 {
     CONNECTED = "connected",
@@ -7,59 +15,63 @@ enum NetworkEvents
     // Coming from server
     TICK = "tick",
     
-    PLAYER_JOIN = "player_join",
-    PLAYER_LEAVE = "player_leave",
-    PLAYER_MOVE = "player_move",
-    PLAYER_CHAT_MESSAGE = "player_chat_message",
+    SERVER_PLAYER_JOIN = "server_player_join",
+    SERVER_PLAYER_LEAVE = "server_player_leave",
+    SERVER_PLAYER_MOVE = "server_player_move",
+    SERVER_PLAYER_CHAT_MESSAGE = "server_player_chat_message",
+
+    // From client to server
+    CLIENT_PLAYER_JOIN = "client_player_join",
+    CLIENT_PLAYER_LEAVE = "client_player_leave",
+    CLIENT_PLAYER_MOVE = "client_player_move",
+    CLIENT_PLAYER_CHAT_MESSAGE = "client_player_chat_message",
+
 }
 
-// Data coming from server to client
-interface ClientDataTypes
+interface DataTypes
 {
+    // Data coming from server
     [NetworkEvents.TICK]: {
         tick: bigint,
-        players: Array<ClientDataTypes[NetworkEvents.PLAYER_MOVE]>,
+        players: Array<DataTypes[NetworkEvents.SERVER_PLAYER_MOVE]>,
     }
-    [NetworkEvents.PLAYER_CHAT_MESSAGE]: {
+    [NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]: {
         message: string
         // author id
         author: string
     },
-    [NetworkEvents.PLAYER_JOIN]: {
+    [NetworkEvents.SERVER_PLAYER_JOIN]: {
         id: string,
         name: string,
         currentMap: string,
         x: number,
         y: number,
     },
-    [NetworkEvents.PLAYER_LEAVE]: {
+    [NetworkEvents.SERVER_PLAYER_LEAVE]: {
         id: string,
     },
-    [NetworkEvents.PLAYER_MOVE]: {
+    [NetworkEvents.SERVER_PLAYER_MOVE]: {
         id: string,
         x: number,
         y: number,
-    }
-}
+    },
 
-// What gets sent to the server
-interface ServerDataTypes
-{
-    [NetworkEvents.PLAYER_JOIN]: {
+    // From client to server
+    [NetworkEvents.CLIENT_PLAYER_JOIN]: {
         name: string,
         currentMap: string,
         x: number,
         y: number,
     },
     // no data is needed for leaving, only event
-    [NetworkEvents.PLAYER_LEAVE]: null,
-    [NetworkEvents.PLAYER_MOVE]: {
+    [NetworkEvents.CLIENT_PLAYER_LEAVE]: null,
+    [NetworkEvents.CLIENT_PLAYER_MOVE]: {
         x: number,
         y: number,
     },
-    [NetworkEvents.PLAYER_CHAT_MESSAGE]: {
+    [NetworkEvents.CLIENT_PLAYER_CHAT_MESSAGE]: {
         message: string
     }
 }
 
-export { NetworkEvents, type ClientDataTypes };
+export { UniversalEventNames, NetworkEvents, type DataTypes };
