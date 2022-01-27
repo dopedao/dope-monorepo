@@ -14,6 +14,7 @@ enum NetworkEvents
 
     // Coming from server
     TICK = "tick",
+    ERROR = "error",
     
     SERVER_PLAYER_JOIN = "server_player_join",
     SERVER_PLAYER_LEAVE = "server_player_leave",
@@ -34,7 +35,11 @@ interface DataTypes
     [NetworkEvents.TICK]: {
         tick: bigint,
         players: Array<DataTypes[NetworkEvents.SERVER_PLAYER_MOVE]>,
-    }
+    },
+    [NetworkEvents.ERROR]: {
+        code: number,
+        message: string,
+    },
     [NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]: {
         message: string
         // author id

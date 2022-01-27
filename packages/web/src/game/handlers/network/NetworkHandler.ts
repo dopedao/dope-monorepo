@@ -15,11 +15,13 @@ export default class NetworkHandler
         this.emitter.on(NetworkEvents.DISCONNECTED, () => console.log("Disconnected from server"));
         this.emitter.on(NetworkEvents.RECONNECTED, () => console.log("Reconnected to server"));
 
+        this.emitter.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => console.log(`Tick ${data.tick}`));
+        this.emitter.on(NetworkEvents.ERROR, (data: DataTypes[NetworkEvents.ERROR]) => console.warn(`Error ${data.code}: ${data.message}`));
+
         this.emitter.on(NetworkEvents.SERVER_PLAYER_JOIN, (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => console.log(`Player ${data.id} joined`));
         this.emitter.on(NetworkEvents.SERVER_PLAYER_LEAVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_LEAVE]) => console.log(`Player ${data.id} left`));
         this.emitter.on(NetworkEvents.SERVER_PLAYER_MOVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_MOVE]) => console.log(`Player ${data.id} moved`));
-        this.emitter.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => console.log(`Tick ${data.tick}`));
-
+        this.emitter.on(NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => console.log(`Player ${data.author} said: ${data.message}`));
     }
 
     connect()
@@ -68,6 +70,9 @@ export default class NetworkHandler
         {
             case NetworkEvents.TICK:
                 this.emitter.emit(NetworkEvents.TICK, data.payload);
+                break;
+            case NetworkEvents.ERROR:
+                this.emitter.emit(NetworkEvents.ERROR, data.payload);
                 break;
             case UniversalEventNames.PLAYER_JOIN:
                 this.emitter.emit(NetworkEvents.SERVER_PLAYER_JOIN, data.payload);
