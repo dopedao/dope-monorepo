@@ -24,8 +24,6 @@ export default class Player extends Hustler
     private _inventoryOpen: boolean = false;
     private _busy: boolean = false;
 
-    private hoverText?: BBCodeText;
-
     private readonly _baseDepth: number;
 
     get interactSensor() { return this._interactSensor; }
@@ -41,6 +39,18 @@ export default class Player extends Hustler
     {
         super(world, x, y, model);
         
+        if (window.ethereum && (window.ethereum as any).selectedAddress)
+        {
+            const address = (window.ethereum as any).selectedAddress;
+            const ens = new ENS({ provider: window.ethereum, ensAddress: getEnsAddress(1) });
+
+            ens.getName(address).then((ensName: { name: string }) => this.setName(ensName.name ?? getShortAddress(address)));
+        }
+        else
+        {
+            this.setName("Hustler");
+        }
+
         this._inventory = inventory ?? new Inventory();
         this._questManager = new QuestManager(this, quests);
 
@@ -55,34 +65,10 @@ export default class Player extends Hustler
 
         this._baseDepth = this.depth;
 
-        // display ens domain name / address on hover
-        if (window.ethereum && (window.ethereum as any).selectedAddress)
-        {
-            const address = (window.ethereum as any).selectedAddress;
-            const ens = new ENS({ provider: window.ethereum, ensAddress: getEnsAddress(1) });
-
-            ens.getName(address).then((ensName: { name: string }) => {
-                const uiScene = this.scene.scene.get('UIScene') as UIScene;
-                
-                this.setInteractive({ useHandCursor: true });
-                this.on('pointerover', () => {
-                    this.hoverText = uiScene.rexUI.add.BBCodeText(0, 0, ensName.name ?? getShortAddress(address), {
-                        fontFamily: 'Dope',
-                        fontSize: '20px',
-                        color: '#ffffff'
-                    });
-                });
-                this.on('pointerout', () => {
-                    this.hoverText?.destroy();
-                    this.hoverText = undefined;
-                });
-            });
-        }
-
         this.hitboxSensor.onCollideActiveCallback = this.updateDepth;
         // setTimeout prevents depth changing too fast
         // and causing player render stutter
-        this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => this.setDepth(this._baseDepth));
+        this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => {this.setDepth(this._baseDepth); console.log('stop')});
     }
 
     toggleInventory()
@@ -177,18 +163,32 @@ export default class Player extends Hustler
 
     updateDepth(pair: MatterJS.IPair)
     {
-        let other = pair.bodyA as MatterJS.BodyType;
-        let playerHitbox = pair.bodyB as MatterJS.BodyType;
+        let playerHitbox: MatterJS.BodyType;
+        let otherHitbox: MatterJS.BodyType;
+
+        if ((pair.bodyB as MatterJS.BodyType).gameObject instanceof Player)
+        {
+            playerHitbox = pair.bodyB as MatterJS.BodyType;
+            otherHitbox = pair.bodyA as MatterJS.BodyType;
+        }
+        else
+        {
+            playerHitbox = pair.bodyA as MatterJS.BodyType;
+            otherHitbox = pair.bodyB as MatterJS.BodyType;
+        }
 
         // ignore collision with hustler collider
-        if (other.label === "collider" || other.label === "interactSensor")
+        if (otherHitbox.gameObject instanceof Player)
             return;
 
+        console.log(playerHitbox);
+        console.log(pair);
+
         // if the overlapped has a parent body, use it instead for calculating delta Y
-        if (other.parent)
-            other = other.parent;
+        if (otherHitbox.parent)
+            otherHitbox = otherHitbox.parent;
         
-        if ((other.position.y - playerHitbox.position.y) < 0)
+        if ((otherHitbox.position.y - playerHitbox.position.y) < 0)
             playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 20);
         else
             playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 20);
@@ -209,10 +209,6 @@ export default class Player extends Hustler
         super.update();
         // update interaction box sensor position
         this.updateSensorPosition();
-        // make hovertext follow us
-        this.hoverText?.setPosition(
-            (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
-            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.5) * this.scene.cameras.main.zoom));;
 
         // takes input and update player
         this.controller.update();

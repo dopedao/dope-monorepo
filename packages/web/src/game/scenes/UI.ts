@@ -15,6 +15,8 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import toast, { Toaster } from "react-hot-toast";
 import { ToastOptions } from "react-hot-toast/dist/core/types";
 import GameScene from "./Game";
+import NetworkHandler from "game/handlers/network/NetworkHandler";
+import { NetworkEvents } from "game/handlers/network/types";
 
 interface Interaction
 {
@@ -97,6 +99,35 @@ export default class UIScene extends Scene {
 
     private _handleEvents()
     {
+        if (NetworkHandler.getInstance().connected)
+            setTimeout(() => toast(`Connection established`, {
+                ...toastStyle,
+                icon: '🔌',
+                style: {
+                    ...toastStyle.style,
+                    backgroundColor: 'rgba(0, 255, 0, 0.6)',
+                }
+            }), 1000);
+        
+        NetworkHandler.getInstance().on(NetworkEvents.CONNECTED, () =>
+            toast(`Connection established`, {
+                ...toastStyle,
+                icon: '🔌',
+                style: {
+                    ...toastStyle.style,
+                    backgroundColor: 'rgba(0, 255, 0, 0.6)',
+                }
+            }));
+        NetworkHandler.getInstance().on(NetworkEvents.DISCONNECTED, () =>
+            toast(`Connect lost`, {
+                ...toastStyle,
+                icon: '🔌',
+                style: {
+                    ...toastStyle.style,
+                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
+                }
+            }));
+
         this._handleInputs();
         this._handleInteractions();
         this._handleQuests();
@@ -125,7 +156,7 @@ export default class UIScene extends Scene {
             this.sendMessageInput.events.on('chat_submit', (text: string) => {
                 if (text.length > 150)
                 {
-                    toast.error("Your message is too long!", {
+                    toast("Your message is too long!", {
                         ...toastStyle,
                         icon: '⚠️',
                     });

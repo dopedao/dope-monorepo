@@ -1,8 +1,10 @@
 import HustlerAnimator from "game/anims/HustlerAnimator";
 import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
 import HustlerModel from "game/gfx/models/HustlerModel";
+import UIScene from "game/scenes/UI";
 import PathNavigator from "game/world/PathNavigator";
 import PF from "pathfinding";
+import BBCodeText from "phaser3-rex-plugins/plugins/bbcodetext";
 
 export enum Direction
 {
@@ -31,6 +33,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     private _navigator: PathNavigator;
 
     private _hitboxSensor: MatterJS.BodyType;
+    private hoverText?: BBCodeText;
 
     get model() { return this._model; }
     get animator() { return this._animator; }
@@ -55,6 +58,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     {
         super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
 
+        this.name = "Hustler";
+        
         this._model = model;
         this._model.hustler = this;
 
@@ -96,6 +101,21 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // create sub sprites
         this._model.createSprites();
+
+        // display name on hover
+        const uiScene = this.scene.scene.get('UIScene') as UIScene;
+        this.setInteractive({ useHandCursor: true });
+        this.on('pointerover', () => {
+            this.hoverText = uiScene.rexUI.add.BBCodeText(0, 0, this.name, {
+                fontFamily: 'Dope',
+                fontSize: '20px',
+                color: '#ffffff'
+            });
+        });
+        this.on('pointerout', () => {
+            this.hoverText?.destroy();
+            this.hoverText = undefined;
+        });
 
         // create navigator
         this._navigator = new PathNavigator(this, new PF.AStarFinder({
@@ -168,6 +188,11 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
     update()
     {
+        // make hovertext follow us
+        this.hoverText?.setPosition(
+            (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
+            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.5) * this.scene.cameras.main.zoom));
+
         // update animation frames
         this.animator.update();
         // path finding

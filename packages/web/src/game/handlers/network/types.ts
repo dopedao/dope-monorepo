@@ -15,7 +15,8 @@ enum NetworkEvents
     // Coming from server
     TICK = "tick",
     ERROR = "error",
-    
+    PLAYER_HANDSHAKE = "player_handshake",
+
     SERVER_PLAYER_JOIN = "server_player_join",
     SERVER_PLAYER_LEAVE = "server_player_leave",
     SERVER_PLAYER_MOVE = "server_player_move",
@@ -40,6 +41,9 @@ interface DataTypes
         code: number,
         message: string,
     },
+    [NetworkEvents.PLAYER_HANDSHAKE]: {
+        id: string,
+    },
     [NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]: {
         message: string
         // author id
@@ -48,7 +52,7 @@ interface DataTypes
     [NetworkEvents.SERVER_PLAYER_JOIN]: {
         id: string,
         name: string,
-        currentMap: string,
+        current_map: string,
         x: number,
         y: number,
     },
@@ -64,7 +68,7 @@ interface DataTypes
     // From client to server
     [NetworkEvents.CLIENT_PLAYER_JOIN]: {
         name: string,
-        currentMap: string,
+        current_map: string,
         x: number,
         y: number,
     },
@@ -79,4 +83,5 @@ interface DataTypes
     }
 }
 
-export { UniversalEventNames, NetworkEvents, type DataTypes };
+export { UniversalEventNames, NetworkEvents };
+export type { DataTypes };

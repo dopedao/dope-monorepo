@@ -11,10 +11,16 @@ import ItemEntity from 'game/entities/ItemEntity';
 import MapHelper from 'game/world/MapHelper';
 import Quest from 'game/entities/player/quests/Quest';
 import { Level } from 'game/world/LDtkParser';
+import NetworkHandler from 'game/handlers/network/NetworkHandler';
+import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
+import Hustler from 'game/entities/Hustler';
 
 
 export default class GameScene extends Scene {
   private player!: Player;
+  // other players
+  private hustlers: Array<Hustler> = [];
+  // npcs
   private citizens: Citizen[] = new Array();
   private itemEntities: ItemEntity[] = new Array();
 
@@ -77,6 +83,41 @@ export default class GameScene extends Scene {
     // }
   }
 
+  handleNetwork()
+  {
+    const networkHandler = NetworkHandler.getInstance();
+    // register player
+    networkHandler.sendMessage(UniversalEventNames.PLAYER_JOIN, {
+      name: this.player.name,
+      current_map: this.currentMap,
+      x: this.player.x,
+      y: this.player.y,
+    });
+
+    // wait on handshake
+    networkHandler.on(NetworkEvents.PLAYER_HANDSHAKE, (data: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) => {
+      this.player.setData('id', data.id);
+      // register listeners
+      networkHandler.on(NetworkEvents.SERVER_PLAYER_JOIN, (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => {
+        // if (data.id === this.player.getData('id'))
+        //   return;
+        
+        this.hustlers.push(new Hustler(this.matter.world, data.x, data.y, new HustlerModel(Base.Male)));
+        this.hustlers[this.hustlers.length - 1].setName(data.name);
+        this.hustlers[this.hustlers.length - 1].setData('id', data.id);
+        this.hustlers[this.hustlers.length - 1].setData('current_map', data.current_map);
+      });
+      networkHandler.on(NetworkEvents.TICK, () => {
+        networkHandler.sendMessage(UniversalEventNames.PLAYER_MOVE, {
+          x: this.player.x,
+          y: this.player.y,
+        });
+      });
+      EventHandler.emitter().on(Events.CHAT_MESSAGE, (message: string) => 
+        networkHandler.sendMessage(UniversalEventNames.PLAYER_CHAT_MESSAGE, { message }));
+    });
+  }
+
   create(): void {
     // create item entities when need 
     this.handleItemEntities();
@@ -121,7 +162,7 @@ export default class GameScene extends Scene {
     this.citizens.push(new Citizen(
       this.matter.world, 
       100, 200, 
-      new HustlerModel(Base.Male, undefined, Feet.NikeCortez), 
+      new HustlerModel(Base.Male), 
       "Michel", "Arpenteur",
       [new Conversation("Welcome to Dope City!")],
       undefined,
@@ -145,11 +186,14 @@ export default class GameScene extends Scene {
     camera.setZoom(this.zoom, this.zoom);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
+    this.handleNetwork();
+
     this.scene.launch('UIScene', { player: this.player });
   }
 
   update(time: number, delta: number): void {
     this.player.update();
+    this.hustlers.forEach(hustler => hustler.update());
     this.citizens.forEach(citizen => citizen.update());
     this.itemEntities.forEach(itemEntity => itemEntity.update());
 

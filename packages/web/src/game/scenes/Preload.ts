@@ -1,6 +1,9 @@
 import { Scene } from 'phaser';
 import ProgressBar from '../ui/ProgressBar';
 import manifest from '../../../public/game/manifest.json';
+import NetworkHandler from 'game/handlers/network/NetworkHandler';
+import { NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
+import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 
 export default class Preload extends Scene {
   private downloadedSize: number = 0;
@@ -46,6 +49,19 @@ export default class Preload extends Scene {
 
   // start gamescene after preload
   create(): void {
-    this.scene.start('GameScene');
+    const networkHandler = NetworkHandler.getInstance();
+    networkHandler.connect();
+    
+    const onConnection = () => {
+      // we dont want to launch the game scene again and again when the connection is lost and restored 
+      networkHandler.emitter.removeListener(NetworkEvents.CONNECTED, onConnection);
+      
+      // handle messages
+      networkHandler.listenMessages();
+      // start game scene
+      this.scene.start('GameScene');
+    }
+
+    networkHandler.on(NetworkEvents.CONNECTED, onConnection);
   }
 }
