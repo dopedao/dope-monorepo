@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
 
+	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/game"
@@ -302,6 +303,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 	go gameState.Start(ctx)
 
 	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
+		_, log := base.LogFor(r.Context())
 		wsConn, err := wsUpgrader.Upgrade(w, r, nil)
 
 		if err != nil {
@@ -314,7 +316,11 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 		defer wsConn.Close()
 
 		// handle messages
-		gameState.Handle(r.Context(), wsConn)
+		if wsErr := gameState.Handle(r.Context(), wsConn); wsErr != nil {
+			log.Error().Msgf("connection closed with error: %v | %v", wsConn.RemoteAddr().String(), wsErr)
+		} else {
+			log.Info().Msgf("connection closed: %v", wsConn.RemoteAddr().String())
+		}
 	})
 
 	if index {

@@ -19,7 +19,7 @@ func NewGame() *Game {
 	}
 }
 
-func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) {
+func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
 	ctx, log := base.LogFor(ctx)
 	log.Info().Msgf("New connection from ", conn.RemoteAddr().String())
 
@@ -31,6 +31,11 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) {
 
 		var msg BaseMessage
 		if err := conn.ReadJSON(&msg); err != nil {
+			// return if close error
+			if websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				return err
+			}
+
 			// we can directly use writejson here
 			// because player is not yet registered
 			conn.WriteJSON(generateErrorMessage(500, "could not read json"))
