@@ -114,7 +114,7 @@ export default class GameScene extends Scene {
         const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
         if (hustler)
         {
-          hustler.destroy();
+          hustler.destroyRuntime();
           this.hustlers.splice(this.hustlers.indexOf(hustler), 1);
         }
       });

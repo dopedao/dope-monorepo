@@ -14,19 +14,6 @@ export default class NetworkHandler
     constructor()
     {
         this.emitter = new Phaser.Events.EventEmitter();
-    
-        this.emitter.on(NetworkEvents.CONNECTED, () => console.log("Connected to server"));
-        this.emitter.on(NetworkEvents.DISCONNECTED, () => console.log("Disconnected from server"));
-        this.emitter.on(NetworkEvents.RECONNECTED, () => console.log("Reconnected to server"));
-
-        // this.emitter.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => console.log(`Tick ${data.tick}`));
-        this.emitter.on(NetworkEvents.ERROR, (data: DataTypes[NetworkEvents.ERROR]) => console.warn(`Error ${data.code}: ${data.message}`));
-        this.emitter.on(NetworkEvents.PLAYER_HANDSHAKE, (data: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) => console.log(`Got player handshake: ${data.id}`));
-
-        this.emitter.on(NetworkEvents.SERVER_PLAYER_JOIN, (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => console.log(`Player ${data.id} joined`));
-        this.emitter.on(NetworkEvents.SERVER_PLAYER_LEAVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_LEAVE]) => console.log(`Player ${data.id} left`));
-        this.emitter.on(NetworkEvents.SERVER_PLAYER_MOVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_MOVE]) => console.log(`Player ${data.id} moved`));
-        this.emitter.on(NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => console.log(`Player ${data.author} said: ${data.message}`));
     }
 
     on(event: string, callback: Function, context?: any)
@@ -52,6 +39,17 @@ export default class NetworkHandler
             this._connected = false;
             this.emitter.emit(NetworkEvents.DISCONNECTED);
         }
+    }
+
+    disconnect()
+    {
+        if (this.connection?.readyState === WebSocket.CLOSED)
+        {
+            console.warn("Already disconnected from server");
+            return;
+        }
+
+        this.connection?.close();
     }
 
     listenMessages(listen: boolean = true)

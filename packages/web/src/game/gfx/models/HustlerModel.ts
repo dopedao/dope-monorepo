@@ -124,7 +124,7 @@ export default class HustlerModel
         this.shadowSprite?.setOrigin(x, y);
     }
 
-    destroy(fromScene?: boolean)
+    destroyRuntime(fromScene?: boolean)
     {
         this.clothesSprites.forEach(sprite => sprite.destroy(fromScene));
         Object.values(this.sprites).forEach(sprite => sprite.destroy(fromScene));

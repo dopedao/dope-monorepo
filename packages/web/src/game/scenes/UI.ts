@@ -12,12 +12,13 @@ import { Scene } from "phaser";
 import { ComponentManager } from "phaser3-react/src/manager";
 import Toast from "phaser3-rex-plugins/templates/ui/toast/Toast";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
-import toast, { Toaster } from "react-hot-toast";
+import { createStandaloneToast, UseToastOptions } from '@chakra-ui/react'
 import { ToastOptions } from "react-hot-toast/dist/core/types";
 import GameScene from "./Game";
 import NetworkHandler from "game/handlers/network/NetworkHandler";
 import { NetworkEvents, UniversalEventNames } from "game/handlers/network/types";
 import Hustler from "game/entities/Hustler";
+import { toast } from "@chakra-ui/react";
 
 interface Interaction
 {
@@ -38,9 +39,18 @@ export const toastStyle: ToastOptions = {
     },
 };
 
+export const chakraToastStyle: UseToastOptions = {
+    isClosable: false,
+    duration: 5000,
+    status: 'info',
+    position: 'top-right',
+}
+    
+
 export default class UIScene extends Scene {
     public rexUI!: RexUIPlugin;
     public toaster!: ComponentManager;
+    public toast = createStandaloneToast();
 
     // react component for inputing message content
     public sendMessageInput?: ComponentManager;
@@ -68,7 +78,7 @@ export default class UIScene extends Scene {
     }
   
     create(): void {
-        this.toaster = this.add.reactDom(Toaster);
+        // this.toaster = this.add.reactDom(Toaster);
         this._handleEvents();
     }
 
@@ -101,33 +111,27 @@ export default class UIScene extends Scene {
 
     private _handleEvents()
     {
-        if (NetworkHandler.getInstance().connected)
-            setTimeout(() => toast(`Connection established`, {
-                ...toastStyle,
-                icon: '🔌',
-                style: {
-                    ...toastStyle.style,
-                    backgroundColor: 'rgba(0, 255, 0, 0.6)',
-                }
-            }), 1000);
-        
+        // setimeout to wait for the scene to setup itself before sending a toast
+        // if (NetworkHandler.getInstance().connected)
+        //     setTimeout(() => toast(`Connection established`, {
+        //         ...toastStyle,
+        //         icon: '🔌',
+        //         style: {
+        //             ...toastStyle.style,
+        //             backgroundColor: 'rgba(0, 255, 0, 0.6)',
+        //         }
+        //     }));
         NetworkHandler.getInstance().on(NetworkEvents.CONNECTED, () =>
-            toast(`Connection established`, {
-                ...toastStyle,
-                icon: '🔌',
-                style: {
-                    ...toastStyle.style,
-                    backgroundColor: 'rgba(0, 255, 0, 0.6)',
-                }
+            this.toast({
+                ...chakraToastStyle,
+                title: 'Connection established',
+                status: 'success',
             }));
         NetworkHandler.getInstance().on(NetworkEvents.DISCONNECTED, () =>
-            toast(`Connect lost`, {
-                ...toastStyle,
-                icon: '🔌',
-                style: {
-                    ...toastStyle.style,
-                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
-                }
+            this.toast({
+                ...chakraToastStyle,
+                title: 'Connection lost',
+                status: 'error',
             }));
 
         this._handleInputs();
@@ -158,9 +162,10 @@ export default class UIScene extends Scene {
             this.sendMessageInput.events.on('chat_submit', (text: string) => {
                 if (text.length > 150)
                 {
-                    toast("Your message is too long!", {
-                        ...toastStyle,
-                        icon: '⚠️',
+                    this.toast({
+                        ...chakraToastStyle,
+                        title: 'Message too long',
+                        status: 'warning',
                     });
                     return;
                 }
@@ -208,9 +213,6 @@ export default class UIScene extends Scene {
         };
 
         EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string) => {
-            console.log(hustler);
-            console.log(text);
-
             this.chatMessageBoxes.set(hustler, this.rexUI.add.toast({
                 background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 10, 0xffffff, 0.4),
                 text: getBBcodeText(this, 200, 0, 0, 10).setText(text),
@@ -242,20 +244,18 @@ export default class UIScene extends Scene {
     {
         // handle player add itme into inventory
         EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, (item: Item, pickup?: boolean) => {
-            toast(pickup ? `You picked up ${item.name}` : `${item.name} has been added to your inventory`, {
-                ...toastStyle,
-                icon: '💠'
+            this.toast({
+                ...chakraToastStyle,
+                title: pickup ? `You picked up ${item.name}` : `${item.name} has been added to your inventory`,
+                status: 'info',
             });
         });
         // handle player remove item from inventory
         EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop?: boolean) => {
-            toast(drop ? `You dropped ${item.name}` : `${item.name} was removed from your inventory`, {
-                ...toastStyle,
-                icon: '💠',
-                style: {
-                    ...toastStyle.style,
-                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
-                }
+            this.toast({
+                ...chakraToastStyle,
+                title: drop ? `You dropped ${item.name}` : `${item.name} was removed from your inventory`,
+                status: 'info',
             });
         });
     }
@@ -266,13 +266,10 @@ export default class UIScene extends Scene {
             if (!cancelled)
                 return;
 
-            toast("You ran away from the conversation!", {
-                ...toastStyle,
-                icon: '🚫',
-                style: {
-                    ...toastStyle.style,
-                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
-                }
+            this.toast({
+                ...chakraToastStyle,
+                title: "You ran away from the conversation!",
+                status: 'info',
             });
         });
 
@@ -329,10 +326,16 @@ export default class UIScene extends Scene {
         EventHandler.emitter().on(Events.PLAYER_QUEST_NEW, (quest: Quest) => {
 
             // TODO: Add line break and quest description when escape sequences are supported
-            toast(`New quest: ${quest.name}`, { ...toastStyle, icon: icon });
+            this.toast({
+                ...chakraToastStyle,
+                title: `New quest: ${quest.name}`,
+            });
         })
         EventHandler.emitter().on(Events.PLAYER_QUEST_COMPLETE, (quest: Quest) => {
-            toast(`Completed quest: ${quest.name}`, { ...toastStyle, icon: icon });
+            this.toast({
+                ...chakraToastStyle,
+                title: `Completed quest: ${quest.name}`,
+            });
         });
     }
 }
