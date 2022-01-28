@@ -15,6 +15,8 @@ export const Wrapper = styled.div`
   @media (max-width: ${returnBreakpoint('tablet')}) {
     padding: 4px 32px;
   }
+  // prevent Hustler slide over bar sometimes when scrolling
+  z-index: 2;
 `;
 
 type ButtonProps = {
