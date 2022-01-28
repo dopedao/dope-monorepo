@@ -16,9 +16,9 @@ contract Hongbao is MerkleClaim, MaintainerOwner {
     uint256 start = 1643691600;
 
     uint8 prefix = 65;
-    uint8 suffix = 10;
+    uint8 suffix = 20;
     uint8[10] internal accessories = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    uint8[12] internal zodiacs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    uint8[12] internal zodiacs = [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
 
     constructor(bytes32 root) MerkleClaim(root) {}
 

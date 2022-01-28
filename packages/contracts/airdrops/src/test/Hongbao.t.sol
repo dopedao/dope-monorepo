@@ -68,7 +68,7 @@ contract ContractTest is DSTest {
         paper.approve(address(hongbao), type(uint256).max);
         hongbao.mint();
 
-        uint256 want = TokenId.toId([1, 10, 65, 5, 0], 0x9);
+        uint256 want = TokenId.toId([1, 20, 65, 5, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
@@ -80,10 +80,10 @@ contract ContractTest is DSTest {
 
         vm.roll(0); // rolls 117
         hongbao.mint{value: 783e16}();
-        uint256 want = TokenId.toId([1, 10, 6, 5, 0], 0x9);
+        uint256 want = TokenId.toId([1, 20, 6, 5, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
 
-        want = TokenId.toId([1, 10, 65, 10, 0], 0x9);
+        want = TokenId.toId([1, 20, 65, 28, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
@@ -95,10 +95,10 @@ contract ContractTest is DSTest {
 
         vm.roll(0); // rolls 117
         hongbao.mint{value: 878e16}();
-        uint256 want = TokenId.toId([1, 10, 20, 5, 1], 0x9);
+        uint256 want = TokenId.toId([1, 20, 20, 5, 1], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
 
-        want = TokenId.toId([1, 10, 65, 10, 0], 0x9);
+        want = TokenId.toId([1, 20, 65, 28, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
