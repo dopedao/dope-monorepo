@@ -109,6 +109,15 @@ export default class GameScene extends Scene {
       });
 
       // register listeners
+      // remove hustler on player leave
+      networkHandler.on(NetworkEvents.SERVER_PLAYER_LEAVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_LEAVE]) => {
+        const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
+        if (hustler)
+        {
+          hustler.destroy();
+          this.hustlers.splice(this.hustlers.indexOf(hustler), 1);
+        }
+      });
       // instantiate a new hustler on player join 
       networkHandler.on(NetworkEvents.SERVER_PLAYER_JOIN, (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => {
         if (data.id === this.player.getData('id'))
