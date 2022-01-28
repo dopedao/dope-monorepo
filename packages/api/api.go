@@ -316,11 +316,9 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 		defer wsConn.Close()
 
 		// handle messages
-		if wsErr := gameState.Handle(r.Context(), wsConn); wsErr != nil {
-			log.Error().Msgf("connection closed with error: %v | %v", wsConn.RemoteAddr().String(), wsErr)
-		} else {
-			log.Info().Msgf("connection closed: %v", wsConn.RemoteAddr().String())
-		}
+		gameState.Handle(r.Context(), wsConn)
+
+		log.Info().Msgf("connection closed: %v", wsConn.RemoteAddr().String())
 	})
 
 	if index {

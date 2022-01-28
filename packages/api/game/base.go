@@ -19,7 +19,7 @@ func NewGame() *Game {
 	}
 }
 
-func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
+func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) {
 	ctx, log := base.LogFor(ctx)
 	log.Info().Msgf("New connection from ", conn.RemoteAddr().String())
 
@@ -31,9 +31,9 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
 
 		var msg BaseMessage
 		if err := conn.ReadJSON(&msg); err != nil {
-			// return if close error
-			if websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				return err
+			// facing a close error, we need to stop handling messages
+			if _, ok := err.(*websocket.CloseError); ok {
+				return
 			}
 
 			// we can directly use writejson here
