@@ -9,6 +9,12 @@ type BaseMessage struct {
 	Data  json.RawMessage `json:"data"`
 }
 
+type HandshakeData struct {
+	Id      string                 `json:"id"`
+	Players []PlayerJoinClientData `json:"players"`
+	// ItemEntities []*ItemEntity `json:"itemEntities"`
+}
+
 type TickData struct {
 	Tick    int64            `json:"tick"`
 	Players []PlayerMoveData `json:"players"`
@@ -44,9 +50,10 @@ type PlayerJoinData struct {
 }
 
 type PlayerMoveData struct {
-	Id string  `json:"id"`
-	X  float32 `json:"x"`
-	Y  float32 `json:"y"`
+	Id        string  `json:"id"`
+	X         float32 `json:"x"`
+	Y         float32 `json:"y"`
+	Direction string  `json:"direction"`
 }
 
 type IdData struct {

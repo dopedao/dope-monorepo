@@ -42,14 +42,32 @@ func (g *Game) Start(ctx context.Context) {
 			// write outgoing messages
 			go player.writePump(ctx)
 
-			// handshake
-			handShakeData, err := json.Marshal(IdData{Id: player.Id.String()})
+			// players data
+			playersData := []PlayerJoinClientData{}
+			for _, otherPlayer := range g.Players {
+				if player.Id == otherPlayer.Id {
+					continue
+				}
+
+				playersData = append(playersData, PlayerJoinClientData{
+					Id:         otherPlayer.Id.String(),
+					Name:       otherPlayer.name,
+					CurrentMap: otherPlayer.currentMap,
+					X:          otherPlayer.x,
+					Y:          otherPlayer.y,
+				})
+			}
+
+			// handshake data, player ID & game state info
+			handShakeData, err := json.Marshal(HandshakeData{
+				Id:      player.Id.String(),
+				Players: playersData,
+			})
 			if err != nil {
 				player.Send <- generateErrorMessage(500, "could not marshal handshake data")
 				return
 			}
 
-			// send back id to player
 			player.Send <- BaseMessage{
 				Event: "player_handshake",
 				Data:  handShakeData,
@@ -90,9 +108,10 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 			}
 
 			players = append(players, PlayerMoveData{
-				Id: otherPlayer.Id.String(),
-				X:  otherPlayer.x,
-				Y:  otherPlayer.y,
+				Id:        otherPlayer.Id.String(),
+				X:         otherPlayer.x,
+				Y:         otherPlayer.y,
+				Direction: otherPlayer.direction,
 			})
 		}
 

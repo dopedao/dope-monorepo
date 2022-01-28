@@ -16,6 +16,7 @@ type Player struct {
 	Id         uuid.UUID
 	name       string
 	currentMap string
+	direction  string
 	x          float32
 	y          float32
 
@@ -56,9 +57,10 @@ func (p *Player) readPump(ctx context.Context) {
 				p.Send <- generateErrorMessage(500, "could not marshal chat message data")
 				break
 			}
-			
+
 			p.x = data.X
 			p.y = data.Y
+			p.direction = data.Direction
 		case "player_chat_message":
 			var data ChatMessageData
 			json.Unmarshal(msg.Data, &data)
