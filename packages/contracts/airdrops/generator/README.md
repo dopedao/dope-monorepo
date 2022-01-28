@@ -46,3 +46,8 @@ Outputs a `merkle.json`, in the following format:
   }
 }
 ```
+
+```sql
+select count(wallet_items) as count, wallet_items as address from wallet_items w LEFT JOIN items i on w.item_wallets = i.id where i."type" = 'WEAPON' group by address
+select count(wallet_hustlers) as count, wallet_hustlers as address from hustlers where item_hustler_clothes > '0' group by address
+```

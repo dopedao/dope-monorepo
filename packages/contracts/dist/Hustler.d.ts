@@ -1,26 +1,14 @@
-import { ethers, Signer, BigNumber, BigNumberish, PopulatedTransaction, BaseContract, ContractTransaction, Overrides, CallOverrides } from "ethers";
-import { BytesLike } from "@ethersproject/bytes";
+import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, ContractTransaction, Overrides, PopulatedTransaction, Signer, utils } from "ethers";
+import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
-import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
+import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export declare type SetMetadataStruct = {
     color: BytesLike;
     background: BytesLike;
     options: BytesLike;
     viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
     body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
-    order: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-    ];
+    order: BigNumberish[];
     mask: BytesLike;
     name: string;
 };
@@ -40,18 +28,7 @@ export declare type SetMetadataStructOutput = [
         number,
         number
     ],
-    [
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number
-    ],
+    number[],
     string,
     string
 ] & {
@@ -60,22 +37,11 @@ export declare type SetMetadataStructOutput = [
     options: string;
     viewbox: [number, number, number, number];
     body: [number, number, number, number];
-    order: [
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number
-    ];
+    order: number[];
     mask: string;
     name: string;
 };
-export interface HustlerInterface extends ethers.utils.Interface {
+export interface HustlerInterface extends utils.Interface {
     functions: {
         "addRles(uint8,bytes[])": FunctionFragment;
         "attributes(uint256)": FunctionFragment;

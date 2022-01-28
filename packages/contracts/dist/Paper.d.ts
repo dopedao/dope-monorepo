@@ -1,8 +1,7 @@
-import { ethers, Signer, BigNumber, BigNumberish, PopulatedTransaction, BaseContract, ContractTransaction, Overrides, CallOverrides } from "ethers";
-import { BytesLike } from "@ethersproject/bytes";
+import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, ContractTransaction, Overrides, PopulatedTransaction, Signer, utils } from "ethers";
+import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
-import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
+import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export declare type CheckpointStruct = {
     fromBlock: BigNumberish;
     votes: BigNumberish;
@@ -11,7 +10,7 @@ export declare type CheckpointStructOutput = [number, BigNumber] & {
     fromBlock: number;
     votes: BigNumber;
 };
-export interface PaperInterface extends ethers.utils.Interface {
+export interface PaperInterface extends utils.Interface {
     functions: {
         "DOMAIN_SEPARATOR()": FunctionFragment;
         "allowance(address,address)": FunctionFragment;
