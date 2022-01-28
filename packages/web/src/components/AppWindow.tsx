@@ -6,7 +6,7 @@ import AppWindowFooter from 'components/AppWindowFooter';
 import ConnectWallet from 'components/ConnectWallet';
 import DesktopWindow from 'components/DesktopWindow';
 
-interface AppWindowProps {
+export interface AppWindowProps {
   children: ReactNode;
   footer?: ReactNode;
   height?: number | string;
