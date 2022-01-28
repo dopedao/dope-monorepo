@@ -124,6 +124,13 @@ export default class HustlerModel
         this.shadowSprite?.setOrigin(x, y);
     }
 
+    destroy(fromScene?: boolean)
+    {
+        this.clothesSprites.forEach(sprite => sprite.destroy(fromScene));
+        Object.values(this.sprites).forEach(sprite => sprite.destroy(fromScene));
+        this.shadowSprite?.destroy(fromScene);
+    }
+
     // field is the identifier of a field in the class, for eg.
     // this.feet = this['feet'], feet is the field
     updateSprite(category: CharacterCategories, field: string)

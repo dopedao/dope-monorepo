@@ -195,6 +195,13 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         return this;
     }
 
+    destroy(fromScene?: boolean)
+    {
+        this._model.destroy(fromScene);
+        this.scene.matter.world.remove(this._hitboxSensor);
+        super.destroy(fromScene);
+    }
+
     update()
     {
         // make hovertext follow us
