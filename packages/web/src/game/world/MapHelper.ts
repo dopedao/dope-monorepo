@@ -27,14 +27,14 @@ export default class MapHelper
         );
     
         // enable collisions for all tiles that have index 1
-        this.map.collideLayer?.setCollision(1);
+        // this.map.collideLayer?.setCollision(1);
 
         // matterjs collisions
-        // if (this.map.collideLayer)
-        // {
-        //     this.scene.matter.world.convertTilemapLayer(this.map.collideLayer);
-        //     this.scene.matter.world.setBounds(0, 0, this.map.collideLayer.displayWidth, this.map.collideLayer.displayHeight);
-        // }
+        if (this.map.collideLayer)
+        {
+            this.scene.matter.world.convertTilemapLayer(this.map.collideLayer);
+            // this.scene.matter.world.setBounds(0, 0, this.map.collideLayer.displayWidth, this.map.collideLayer.displayHeight);
+        }
     } 
 
     createEntities()

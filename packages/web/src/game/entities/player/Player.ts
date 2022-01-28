@@ -38,18 +38,6 @@ export default class Player extends Hustler
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, inventory?: Inventory, quests?: Array<Quest>)
     {
         super(world, x, y, model);
-        
-        if (window.ethereum && (window.ethereum as any).selectedAddress)
-        {
-            const address = (window.ethereum as any).selectedAddress;
-            const ens = new ENS({ provider: window.ethereum, ensAddress: getEnsAddress(1) });
-
-            ens.getName(address).then((ensName: { name: string }) => this.setName(ensName.name ?? getShortAddress(address)));
-        }
-        else
-        {
-            this.setName("Hustler");
-        }
 
         this._inventory = inventory ?? new Inventory();
         this._questManager = new QuestManager(this, quests);
@@ -180,9 +168,6 @@ export default class Player extends Hustler
         // ignore collision with hustler collider
         if (otherHitbox.gameObject instanceof Player)
             return;
-
-        console.log(playerHitbox);
-        console.log(pair);
 
         // if the overlapped has a parent body, use it instead for calculating delta Y
         if (otherHitbox.parent)

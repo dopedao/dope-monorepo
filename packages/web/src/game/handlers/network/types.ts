@@ -43,6 +43,7 @@ interface DataTypes
     },
     [NetworkEvents.PLAYER_HANDSHAKE]: {
         id: string,
+        players: Array<DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]>,
     },
     [NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]: {
         message: string
@@ -63,6 +64,7 @@ interface DataTypes
         id: string,
         x: number,
         y: number,
+        direction: string,
     },
 
     // From client to server
@@ -77,6 +79,7 @@ interface DataTypes
     [NetworkEvents.CLIENT_PLAYER_MOVE]: {
         x: number,
         y: number,
+        direction: string,
     },
     [NetworkEvents.CLIENT_PLAYER_CHAT_MESSAGE]: {
         message: string

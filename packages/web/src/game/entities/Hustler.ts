@@ -186,6 +186,15 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         return this;
     }
 
+    setPosition(x?: number, y?: number, z?: number, w?: number)
+    {
+        super.setPosition(x, y);
+        // update model position
+        this._model?.updateSprites(true);
+        
+        return this;
+    }
+
     update()
     {
         // make hovertext follow us

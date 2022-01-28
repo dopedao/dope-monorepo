@@ -36,10 +36,14 @@ export default class PathNavigator
         this.onMoved = onMoved;
 
         // hustler world position to tile position
-        const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.body.position.x, this.hustler.body.position.y);
+        const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.body.position.x + map.collideLayer.x, this.hustler.body.position.y + map.collideLayer.y);
 
         // convert grid of tiles into PF grid
         this.grid = new PF.Grid(map.collideLayer.layer.data.map(row => row.map(tile => tile.collides ? 1 : 0)));
+        
+        console.log(hustlerTile);
+        console.log(x, y);
+        console.log(this.grid);
 
         // find path, smoothen it and map it to Vec2s
         this.path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, x, y, this.grid).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
@@ -76,8 +80,8 @@ export default class PathNavigator
 
 	    if (this.target)
 	    {
-	    	dx = this.target.x - this.hustler.body.position.x;
-	    	dy = this.target.y - this.hustler.body.position.y;
+	    	dx = this.target.x - (this.hustler.body.position.x + (this.hustler.scene as GameScene).mapHelper.map.collideLayer!.x);
+	    	dy = this.target.y - (this.hustler.body.position.y + (this.hustler.scene as GameScene).mapHelper.map.collideLayer!.y);
 
 	    	if (Math.abs(dx) < 7)
 	    	{

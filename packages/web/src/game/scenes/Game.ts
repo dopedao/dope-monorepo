@@ -13,7 +13,9 @@ import Quest from 'game/entities/player/quests/Quest';
 import { Level } from 'game/world/LDtkParser';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
 import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
-import Hustler from 'game/entities/Hustler';
+import Hustler, { Direction } from 'game/entities/Hustler';
+import ENS, { getEnsAddress } from '@ensdomains/ensjs';
+import { getShortAddress } from 'utils/utils';
 
 
 export default class GameScene extends Scene {
@@ -97,28 +99,61 @@ export default class GameScene extends Scene {
     // wait on handshake
     networkHandler.on(NetworkEvents.PLAYER_HANDSHAKE, (data: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) => {
       this.player.setData('id', data.id);
+
+      // initiate all players
+      data.players.forEach(data => {
+        this.hustlers.push(new Hustler(this.matter.world, data.x, data.y, new HustlerModel(Base.Male)));
+        this.hustlers[this.hustlers.length - 1].setName(data.name);
+        this.hustlers[this.hustlers.length - 1].setData('id', data.id);
+        this.hustlers[this.hustlers.length - 1].setData('current_map', data.current_map);
+      });
+
       // register listeners
+      // instantiate a new hustler on player join 
       networkHandler.on(NetworkEvents.SERVER_PLAYER_JOIN, (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => {
-        // if (data.id === this.player.getData('id'))
-        //   return;
+        if (data.id === this.player.getData('id'))
+          return;
         
         this.hustlers.push(new Hustler(this.matter.world, data.x, data.y, new HustlerModel(Base.Male)));
         this.hustlers[this.hustlers.length - 1].setName(data.name);
         this.hustlers[this.hustlers.length - 1].setData('id', data.id);
         this.hustlers[this.hustlers.length - 1].setData('current_map', data.current_map);
       });
-      networkHandler.on(NetworkEvents.TICK, () => {
+      networkHandler.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => {
+        // TODO: implement a proper player move message send system
         networkHandler.sendMessage(UniversalEventNames.PLAYER_MOVE, {
           x: this.player.x,
           y: this.player.y,
+          direction: this.player.moveDirection,
+        });
+
+        // update players positions
+        data.players.forEach(p => {
+          if (p.id === this.player.getData('id'))
+            return;
+          
+          const hustler = this.hustlers.find(h => h.getData('id') === p.id);
+          if (hustler)
+          {
+            hustler.setPosition(p.x, p.y);
+            hustler.moveDirection = p.direction as Direction;
+          }
         });
       });
-      EventHandler.emitter().on(Events.CHAT_MESSAGE, (message: string) => 
-        networkHandler.sendMessage(UniversalEventNames.PLAYER_CHAT_MESSAGE, { message }));
+      networkHandler.on(NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => {
+        if (data.author === this.player.getData('id'))
+          return;
+
+        const hustler = this.hustlers.find(h => h.getData('id') === data.author);
+        if (hustler)
+        {
+          EventHandler.emitter().emit(Events.CHAT_MESSAGE, hustler, data.message);
+        }
+      });
     });
   }
 
-  create(): void {
+  async create(): Promise<void> {
     // create item entities when need 
     this.handleItemEntities();
     // handle camera effects
@@ -129,10 +164,7 @@ export default class GameScene extends Scene {
 
     // on click pathfinding
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      if (!this.canUseMouse)
-        return;
-
-      if (this.player.busy)
+      if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer)
         return;
       
       // run asynchronously
@@ -140,7 +172,7 @@ export default class GameScene extends Scene {
         const citizenToTalkTo = this.citizens.find(citizen => citizen.shouldFollowPath && citizen.getBounds().contains(pointer.worldX, pointer.worldY));
 
         this.player.navigator.moveTo(
-          this._mapHelper.map.displayLayers[0].tilemap.worldToTileX(pointer.worldX), this.mapHelper.map.displayLayers[0].tilemap.worldToTileY(pointer.worldY), 
+          this._mapHelper.map.collideLayer!.worldToTileX(pointer.worldX + this.mapHelper.map.collideLayer!.x), this.mapHelper.map.collideLayer!.worldToTileY(pointer.worldY + this.mapHelper.map.collideLayer!.y), 
           () => {
             if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
             {
@@ -176,11 +208,15 @@ export default class GameScene extends Scene {
 
     // TODO when map update: create player directly from map data
     this.player = new Player(this.matter.world, 110, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
+    if (window.ethereum && (window.ethereum as any).selectedAddress)
+    {
+        const address = (window.ethereum as any).selectedAddress;
+        const ens = new ENS({ provider: window.ethereum, ensAddress: getEnsAddress(1) });
+
+        this.player.setName((await ens.getName(address)).name ?? getShortAddress(address));
+    }
 
     const camera = this.cameras.main;
-    // camera.setBounds(this.mapHelper.mapReader.level.worldX - 10, this.mapHelper.mapReader.level.worldY - 10, 
-    //   this.mapHelper.mapReader.level.pxWid + 10, 
-    //   this.mapHelper.mapReader.level.pxHei + 10);
 
     // make the camera follow the player
     camera.setZoom(this.zoom, this.zoom);

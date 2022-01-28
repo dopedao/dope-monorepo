@@ -1,4 +1,5 @@
 import Citizen from "game/entities/citizen/Citizen";
+import Hustler from "game/entities/Hustler";
 import Item from "game/entities/player/inventory/Item";
 import Quest from "game/entities/player/quests/Quest";
 
@@ -51,7 +52,7 @@ export default class EventHandler
         EventHandler._emitter.on(Events.PLAYER_QUEST_START, (quest: Quest) => this._log(`Started quest: ${quest.name}`));
         EventHandler._emitter.on(Events.PLAYER_QUEST_COMPLETE, (quest: Quest) => this._log(`Completed quest: ${quest.name}`));
     
-        EventHandler._emitter.on(Events.CHAT_MESSAGE, (message: string) => this._log(`New chat message: ${message}`));
+        EventHandler._emitter.on(Events.CHAT_MESSAGE, (hustler: Hustler, message: string) => this._log(`${hustler.name} says: ${message}`));
     }
 
     private _log(event: string, ...args: any[])

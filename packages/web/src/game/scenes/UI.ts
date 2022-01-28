@@ -16,7 +16,8 @@ import toast, { Toaster } from "react-hot-toast";
 import { ToastOptions } from "react-hot-toast/dist/core/types";
 import GameScene from "./Game";
 import NetworkHandler from "game/handlers/network/NetworkHandler";
-import { NetworkEvents } from "game/handlers/network/types";
+import { NetworkEvents, UniversalEventNames } from "game/handlers/network/types";
+import Hustler from "game/entities/Hustler";
 
 interface Interaction
 {
@@ -53,7 +54,7 @@ export default class UIScene extends Scene {
     public inventoryComponent?: ComponentManager;
     public currentInteraction?: Interaction;
 
-    private chatMessageBoxes: Toast[] = new Array(); 
+    private chatMessageBoxes: Map<Hustler, Toast> = new Map(); 
 
     constructor() {
       super({
@@ -92,9 +93,10 @@ export default class UIScene extends Scene {
         }
 
         // console.log(this.chatMessageBoxes.length);
-        this.chatMessageBoxes.forEach(t => t.setPosition(
-            (this.player.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom, 
-            ((this.player.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom) - (this.player.displayHeight * 1.5) - (t.displayHeight / 2)));
+        this.chatMessageBoxes.forEach((chatToast, hustler) =>
+            chatToast.setPosition(
+                (hustler.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom, 
+                ((hustler.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom) - (hustler.displayHeight * 1.5) - (chatToast.displayHeight / 2)));
     }
 
     private _handleEvents()
@@ -172,7 +174,8 @@ export default class UIScene extends Scene {
                 if (text.length > 0)
                 {
                     this.precedentMessages.unshift(text);
-                    EventHandler.emitter().emit(Events.CHAT_MESSAGE, text);
+                    EventHandler.emitter().emit(Events.CHAT_MESSAGE, this.player, text);
+                    NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_CHAT_MESSAGE, { message: text });
                 }
                 else 
                     this.canOpenMessageInput = true;
@@ -204,8 +207,11 @@ export default class UIScene extends Scene {
             out: 500
         };
 
-        EventHandler.emitter().on(Events.CHAT_MESSAGE, (text: string) => {
-            this.chatMessageBoxes.push(this.rexUI.add.toast({
+        EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string) => {
+            console.log(hustler);
+            console.log(text);
+
+            this.chatMessageBoxes.set(hustler, this.rexUI.add.toast({
                 background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 10, 0xffffff, 0.4),
                 text: getBBcodeText(this, 200, 0, 0, 10).setText(text),
                 space: {
@@ -216,7 +222,7 @@ export default class UIScene extends Scene {
                 },
                 duration: messageDuration
             }));
-            const chatMessage = this.chatMessageBoxes[this.chatMessageBoxes.length - 1];
+            const chatMessage = this.chatMessageBoxes.get(hustler)!;
             // show message
             chatMessage.showMessage(text);
 
@@ -224,7 +230,7 @@ export default class UIScene extends Scene {
             // timeout for duration of message
             setTimeout(() => {
                 chatMessage.destroy();
-                this.chatMessageBoxes.splice(this.chatMessageBoxes.indexOf(chatMessage), 1);
+                this.chatMessageBoxes.delete(hustler);
                 // let player open message input again
                 // after the duration
                 this.canOpenMessageInput = true;
