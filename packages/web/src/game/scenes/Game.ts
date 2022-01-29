@@ -209,7 +209,7 @@ export default class GameScene extends Scene {
     }));
 
     // TODO when map update: create player directly from map data
-    this.player = new Player(this.matter.world, 110, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
+    this.player = new Player(this.matter.world, 90, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
     if (window.ethereum && (window.ethereum as any).selectedAddress)
     {
         const address = (window.ethereum as any).selectedAddress;
