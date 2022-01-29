@@ -1,4 +1,6 @@
 import EventHandler, { Events } from "game/handlers/events/EventHandler";
+import NetworkHandler from "game/handlers/network/NetworkHandler";
+import { UniversalEventNames } from "game/handlers/network/types";
 import Citizen from "../citizen/Citizen";
 import Hustler, { Direction } from "../Hustler";
 import Player from "./Player";
@@ -9,6 +11,10 @@ export default class PlayerController
     private arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
 
     private _player: Player;
+
+    static readonly MOVE_TICKRATE = 1 / 25; 
+    private _lastMoveTimestamp: number = 0;
+
     get player() { return this._player; }
 
     constructor(player: Player)
@@ -26,6 +32,18 @@ export default class PlayerController
           // interaction
           e: Phaser.Input.Keyboard.KeyCodes.E,
         }) as Phaser.Types.Input.Keyboard.CursorKeys;
+
+        // for (let i = 0; i < 4; i++)
+        // {
+        //     ((this.arrows as any)[Object.keys(this.arrows)[i]] as Phaser.Input.Keyboard.Key).onUp((e: KeyboardEvent) => {
+        //         if (NetworkHandler.getInstance().connected)
+        //             NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+        //                 x: this.player.x,
+        //                 y: this.player.y,
+        //                 direction: this.player.moveDirection,
+        //             })
+        //     });
+        // }
     }
 
     update()
@@ -80,6 +98,35 @@ export default class PlayerController
             // normalize and scale the velocity so that sprite can't move faster along a diagonal
             const newVel = new Phaser.Math.Vector2((this.player.body as MatterJS.BodyType).velocity).normalize().scale(Hustler.DEFAULT_VELOCITY);
             this.player.setVelocity(newVel.x, newVel.y);
+
+            if (Date.now() -  this._lastMoveTimestamp > PlayerController.MOVE_TICKRATE * 1000)
+            {
+                this._lastMoveTimestamp = Date.now();
+
+                if (NetworkHandler.getInstance().connected)
+                    NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+                        x: this.player.x,
+                        y: this.player.y,
+                        direction: this.player.moveDirection,
+                    });
+            }
+
+            // if player stopped moving
+            // setTimeout(() => {
+            //     let moved = false;
+            //     if (this.mainKeys.up.isDown || this.arrows.up.isDown)
+            //         moved = true;
+            //     else if (this.mainKeys.down.isDown || this.arrows.down.isDown)
+            //         moved = true;
+            //     else if (this.mainKeys.left.isDown || this.arrows.left.isDown)
+            //         moved = true;
+            //     else if (this.mainKeys.right.isDown || this.arrows.right.isDown)
+            //         moved = true;
+
+            //     if (!moved)
+            //     {
+            //     }
+            // }, 15);
         }
 
         // cancel pathfinding if player moved

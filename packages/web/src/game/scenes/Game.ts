@@ -129,13 +129,6 @@ export default class GameScene extends Scene {
         this.hustlers[this.hustlers.length - 1].setData('current_map', data.current_map);
       });
       networkHandler.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => {
-        // TODO: implement a proper player move message send system
-        networkHandler.sendMessage(UniversalEventNames.PLAYER_MOVE, {
-          x: this.player.x,
-          y: this.player.y,
-          direction: this.player.moveDirection,
-        });
-
         // update players positions
         data.players.forEach(p => {
           if (p.id === this.player.getData('id'))
