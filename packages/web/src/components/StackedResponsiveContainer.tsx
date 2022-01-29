@@ -4,18 +4,14 @@ import { media } from 'ui/styles/mixins';
 // Contains side-by-side columns on desktop, stacked items on mobile.
 const StackedResponsiveContainer = styled.div`
   // Mobile phones just stack regularly with box layout
-  display: block;
   padding: 16px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: stretch;
 
   & > div {
     margin-bottom: 16px;
     height: auto;
-  }
-  .panelFooter {
-    flex: 0;
   }
 
   // Screen > Tablet display items side by side via FlexBox
