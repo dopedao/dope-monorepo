@@ -12,7 +12,7 @@ export default class PlayerController
 
     private _player: Player;
 
-    static readonly MOVE_TICKRATE = 1 / 25; 
+    static readonly MOVE_TICKRATE = 1 / 60; 
     private _lastMoveTimestamp: number = 0;
 
     get player() { return this._player; }
@@ -112,21 +112,27 @@ export default class PlayerController
             }
 
             // if player stopped moving
-            // setTimeout(() => {
-            //     let moved = false;
-            //     if (this.mainKeys.up.isDown || this.arrows.up.isDown)
-            //         moved = true;
-            //     else if (this.mainKeys.down.isDown || this.arrows.down.isDown)
-            //         moved = true;
-            //     else if (this.mainKeys.left.isDown || this.arrows.left.isDown)
-            //         moved = true;
-            //     else if (this.mainKeys.right.isDown || this.arrows.right.isDown)
-            //         moved = true;
+            setTimeout(() => {
+                let moved = false;
+                if (this.mainKeys.up.isDown || this.arrows.up.isDown)
+                    moved = true;
+                else if (this.mainKeys.down.isDown || this.arrows.down.isDown)
+                    moved = true;
+                else if (this.mainKeys.left.isDown || this.arrows.left.isDown)
+                    moved = true;
+                else if (this.mainKeys.right.isDown || this.arrows.right.isDown)
+                    moved = true;
 
-            //     if (!moved)
-            //     {
-            //     }
-            // }, 15);
+                if (!moved)
+                {
+                    if (NetworkHandler.getInstance().connected)
+                    NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+                        x: this.player.x,
+                        y: this.player.y,
+                        direction: this.player.moveDirection,
+                    });
+                }
+            }, 100);
         }
 
         // cancel pathfinding if player moved
