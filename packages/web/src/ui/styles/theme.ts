@@ -6,7 +6,7 @@ const desktopImageCss = [
   // "#d10913 url('/images/desktop/LAMBO.png') center center / cover repeat-y fixed",
   // "#1d261c url('/images/desktop/limo-chopper.png') center / cover repeat-y",
   // "#5f3084 url('/images/desktop/PAPER.png') center / 512px repeat",
-
+  // "#202221 url('/images/hustler/street_scene.png') center / cover no-repeat fixed",
   "#202221 url('/images/dope-wars-stacked-logo.png') center / 400px no-repeat fixed",
   "#202221 url('/images/dope-wars-smiley.png') center / 400px no-repeat fixed",
   "#000000 url('/images/desktop/cny/dragon_dance.jpg') center center / contain repeat fixed",
