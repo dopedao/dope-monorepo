@@ -59,6 +59,7 @@ contract ContractTest is DSTest {
         hongbao = new Hongbao(
             hex"8755580928908cf73580a9e83798a50c9b3e64dbebafd543c956482e52620e6f"
         );
+        hongbao.unpause();
 
         vm.deal(alice, 1e22);
     }
@@ -68,13 +69,14 @@ contract ContractTest is DSTest {
         paper.approve(address(hongbao), type(uint256).max);
         hongbao.mint();
 
-        uint256 want = TokenId.toId([7, 20, 65, 21, 0], 0x9);
+        vm.roll(0); // rolls 117
+        uint256 want = TokenId.toId([7, 20, 65, 28, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
     }
 
-    function testMintShouldGiveZodiacAndBigTiger() public {
+    function testMintShouldGiveBigTiger() public {
         vm.startPrank(alice);
         paper.approve(address(hongbao), type(uint256).max);
 
@@ -82,23 +84,17 @@ contract ContractTest is DSTest {
         hongbao.mint{value: 783e16}();
         uint256 want = TokenId.toId([7, 20, 6, 21, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
-
-        want = TokenId.toId([7, 20, 65, 28, 0], 0x9);
-        assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
     }
 
-    function testMintShouldGiveZodiacAndNotoriousTiger() public {
+    function testMintShouldGiveNotoriousTiger() public {
         vm.startPrank(alice);
         paper.approve(address(hongbao), type(uint256).max);
 
         vm.roll(0); // rolls 117
         hongbao.mint{value: 878e16}();
         uint256 want = TokenId.toId([7, 20, 20, 21, 1], 0x9);
-        assertEq(swapmeet.balanceOf(alice, want), 1);
-
-        want = TokenId.toId([7, 20, 65, 28, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);

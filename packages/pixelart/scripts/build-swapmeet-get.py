@@ -1,5 +1,6 @@
 import json
 from web3 import Web3
+import sys
 
 types = {
     # "weapons": 0,
@@ -11,7 +12,8 @@ types = {
     # "drugs": 6,
     # "neck": 7,
     # "rings": 8,
-    "accessories": 9,
+    # "accessories": 9,
+    "cny": 10,
 }
 
 abi = [
@@ -41,7 +43,10 @@ abi = [
     },
 ]
 
-f = open("../outputs/ITEMS/output-cny.json", "r")
+palleteidx = sys.argv[1]
+fmeta = sys.argv[2]
+
+f = open("../outputs/"+fmeta, "r")
 meta1 = json.load(f)
 
 meta1_palette = "[bytes4(hex'')"
@@ -68,7 +73,7 @@ contract GetPalettes {{
 """
 
 p = set_palette.format(palette=meta1_palette, n=len(meta1['partcolors']))
-f = open("../../contracts/hustlers/src/GetPalettes1.sol", "w")
+f = open("../../contracts/hustlers/src/GetPalettes"+palleteidx+".sol", "w")
 f.write(p)
 
 components = {}
@@ -135,7 +140,7 @@ for category, idxs in components.items():
             if len(ids) > 0:
                 ids += ","
                 rles += ","
-            ids += "uint256(%d)" % id
+            ids += "uint256(%s)" % id
 
             if category == "vehicles":
                 weight += len(genders["none"])
@@ -152,7 +157,7 @@ for category, idxs in components.items():
             rles_len += 2
 
         if weight > 10000:
-            write_contract("%sPart1x%d" %
+            write_contract("%sPart%d" %
                            (category.capitalize(), contract_idx), ids, rles, ids_len, rles_len)
             contract_idx += 1
             weight = 0
@@ -161,5 +166,5 @@ for category, idxs in components.items():
             ids_len = 0
             rles_len = 0
 
-    write_contract("%sPart1x%d" % (category.capitalize(), contract_idx),
+    write_contract("%sPart%d" % (category.capitalize(), contract_idx),
                    ids, rles, ids_len, rles_len)

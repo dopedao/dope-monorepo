@@ -7,8 +7,9 @@ from collections import OrderedDict
 import sys
 
 typ = sys.argv[1]
+fmeta = sys.argv[2]
 
-f = open("../outputs/"+typ+"/output-cny.json", "r")
+f = open("../outputs/"+fmeta, "r")
 meta = json.load(f)
 
 colors = OrderedDict()
@@ -18,7 +19,7 @@ if 'partcolors' in meta:
 else:
     colors[""] = True
 
-for file in glob.glob("../imgs/"+typ+"/*_CNY/*.png"):
+for file in glob.glob("../imgs/"+typ+"/*.png"):
     img = image.imread(file)
     a = np.where(img[:, :, 3] != 0)
 
@@ -37,5 +38,5 @@ for file in glob.glob("../imgs/"+typ+"/*_CNY/*.png"):
                 colors[c] = True
 
 meta["partcolors"] = list(colors.keys())
-f = open("../outputs/"+typ+"/output-cny.json", "w")
+f = open("../outputs/"+fmeta, "w")
 json.dump(meta, f, indent=4)
