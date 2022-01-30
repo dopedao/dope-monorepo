@@ -1,3 +1,23 @@
+query ProfileDopes($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        dopes {
+          id
+          rank
+          score
+          claimed
+          opened
+          items {
+            id
+						tier
+          }
+        }
+      }
+    }
+  }
+}
+
 query ProfileWallet($where: WalletWhereInput) {
   wallets(where: $where) {
     edges {

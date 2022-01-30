@@ -8,6 +8,7 @@ import LoadingBlock from 'components/LoadingBlock';
 import { useMemo } from 'react';
 import { ProfileGear, ProfileHustler } from "../types"
 import HustlersWrapper from './HustlersWrapper';
+import Dopes from './Dopes';
 
 const Profile = () => {
   // const { account } = useWeb3React();
@@ -43,12 +44,6 @@ const Profile = () => {
     }, [] as ProfileHustler[])
   }, [data])
 
-  if (isLoading) {
-    <Box background="#fff" h="full" p={5}>
-      <LoadingBlock />
-    </Box>
-  }
-
   return (
     <Accordion
       allowMultiple
@@ -57,6 +52,7 @@ const Profile = () => {
       defaultIndex={0}
     >
       <Section title="Dopes">
+        <Dopes />
         {/* <HustlersWrapper hustlers={hustlers} /> */}
       </Section>
       <Section title="Hustlers">
