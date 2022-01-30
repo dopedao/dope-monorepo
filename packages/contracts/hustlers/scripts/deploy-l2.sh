@@ -168,3 +168,13 @@ ControllerAddr="0x124760902088dDBFEb8F27210D3B0C645a5c0A8B"
 # # Optimism: 0xE079521E2fdD7f7225c228DbFEf8cC0430897149
 # GetVehiclesPart3x1Addr=$(deploy GetVehiclesPart3x1)
 # log "GetVehiclesPart3x1 deployed at:" $GetVehiclesPart3x1Addr
+
+# # Kovan: 
+# # Optimism: 
+GetPalettes5Addr=$(deploy GetPalettes5)
+log "GetPalettes5 deployed at:" $GetPalettes5Addr
+
+# Kovan: 
+# Optimism: 
+GetCnyPart0Addr=$(deploy GetCnyPart0)
+log "GetCnyPart0 deployed at:" $GetCnyPart0Addr

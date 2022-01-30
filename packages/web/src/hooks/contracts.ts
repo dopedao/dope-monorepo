@@ -7,6 +7,7 @@ import {
   Hustler__factory,
   SwapMeet__factory,
   Components__factory,
+  Hongbao__factory,
 } from '@dopewars/contracts/dist';
 import { ethers, BigNumber } from 'ethers';
 import { NETWORK } from 'utils/constants';
@@ -72,6 +73,15 @@ export const useHustlerComponents = () => {
 
   return useMemo(
     () => Components__factory.connect(NETWORK[chainId].contracts.components, provider),
+    [chainId, provider],
+  );
+};
+
+export const useHongbao = () => {
+  const { chainId, provider } = useOptimism();
+
+  return useMemo(
+    () => Hongbao__factory.connect(NETWORK[chainId].contracts.hustlers, provider),
     [chainId, provider],
   );
 };

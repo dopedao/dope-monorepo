@@ -67,6 +67,7 @@ export const NETWORK = {
       swapmeet: '0x7144893df7456fB9678875aa09800d514685850F',
       hustlers: '0x5701ff301d67174d63B271cf321e3886d518370d',
       components: '0xA9d6Ef18457c4d87Ba77d5c22569c93a41b8f326',
+      hongbao: '0x181a48176e7aa1acb777f49087c5db8a567f7915',
     },
     rpc: 'https://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9',
     ws: 'wss://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYgYxhHE9',
