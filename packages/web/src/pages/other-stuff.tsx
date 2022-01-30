@@ -12,6 +12,11 @@ const SocialLinks = () => {
     <DesktopWindow title="Other Stuff" width={640}>
       <IconGrid css={css`top:32px;`}>
         <DesktopIcon
+          icon="file"
+          label="Wiki + Players Guide"
+          clickAction={() => openBrowserTab('http://wiki.dopedao.org')}
+        />
+        <DesktopIcon
           icon="twitter"
           label="Twitter"
           clickAction={() => openBrowserTab('https://twitter.com/theDopeWars')}
