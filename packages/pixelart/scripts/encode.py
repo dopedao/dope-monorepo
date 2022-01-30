@@ -8,8 +8,9 @@ import sys
 
 typ = sys.argv[1]
 palette_idx = int(sys.argv[2])
+fmeta = sys.argv[3]
 
-f = open("../outputs/"+typ+"/output-vehicles-part3.json", "r")
+f = open("../outputs/"+fmeta, "r")
 meta = json.load(f)
 
 colors = {0: 0}
@@ -17,9 +18,7 @@ for i, c in enumerate(meta["partcolors"]):
     colors[c] = i
 
 meta["parts"] = []
-# for file in glob.glob("../imgs/"+typ+"/NONE_VEHICLES/[0-9]-*.png") + glob.glob("../imgs/"+typ+"/NONE_VEHICLES/[0-9][0]-*.png"):
-# for file in glob.glob("../imgs/"+typ+"/NONE_VEHICLES/1[1-3]-*.png"):
-for file in glob.glob("../imgs/"+typ+"/NONE_VEHICLES/1[4-9]-*.png"):
+for file in glob.glob("../imgs/"+typ+"/*.png"):
     img = image.imread(file)
 
     a = np.where(img[:, :, 3] != 0)
@@ -71,5 +70,5 @@ for file in glob.glob("../imgs/"+typ+"/NONE_VEHICLES/1[4-9]-*.png"):
         "data": to_hex(bytes(encoded))
     }])
 
-f = open("../outputs/"+typ+"/output-vehicles-part3.json", "w")
+f = open("../outputs/"+fmeta, "w")
 json.dump(meta, f, indent=4)

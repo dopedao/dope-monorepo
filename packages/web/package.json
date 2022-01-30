@@ -41,6 +41,8 @@
     "gear-rarity": "^1.0.5",
     "graphql": "^15.5.3",
     "gray-matter": "^4.0.3",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.2.27",
     "next": "^11.1.2",
     "parse-data-url": "^4.0.1",
     "pathfinding": "^0.4.18",

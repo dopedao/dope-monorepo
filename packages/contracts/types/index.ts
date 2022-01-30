@@ -4,6 +4,7 @@
 export type { Components } from "./Components";
 export type { Controller } from "./Controller";
 export type { CrossDomainMessenger } from "./CrossDomainMessenger";
+export type { Hongbao } from "./Hongbao";
 export type { Hustler } from "./Hustler";
 export type { Initiator } from "./Initiator";
 export type { Loot } from "./Loot";
@@ -14,6 +15,7 @@ export type { SwapMeet } from "./SwapMeet";
 export { Components__factory } from "./factories/Components__factory";
 export { Controller__factory } from "./factories/Controller__factory";
 export { CrossDomainMessenger__factory } from "./factories/CrossDomainMessenger__factory";
+export { Hongbao__factory } from "./factories/Hongbao__factory";
 export { Hustler__factory } from "./factories/Hustler__factory";
 export { Initiator__factory } from "./factories/Initiator__factory";
 export { Loot__factory } from "./factories/Loot__factory";
