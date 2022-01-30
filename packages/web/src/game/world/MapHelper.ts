@@ -1,3 +1,4 @@
+import { s } from "gear-rarity/dist/image-140bf8ec";
 import PixelationPipelinePlugin from "phaser3-rex-plugins/plugins/pixelationpipeline-plugin";
 import { LDtkMapPack, LdtkReader } from "./LDtkParser";
 
@@ -8,6 +9,8 @@ export default class MapHelper
 
     map!: LDtkMapPack;
     entities: Phaser.GameObjects.GameObject[] = new Array();
+
+    loadedMaps: Map<string, LDtkMapPack> = new Map();
 
     constructor(scene: Phaser.Scene)
     {
@@ -32,9 +35,66 @@ export default class MapHelper
         // matterjs collisions
         if (this.map.collideLayer)
         {
-            this.scene.matter.world.convertTilemapLayer(this.map.collideLayer);
-            //this.scene.matter.world.setBounds(0, 0, this.map.collideLayer.displayWidth, this.map.collideLayer.displayHeight);
+            const tiles = this.map.collideLayer.layer.data;
+            let visitedTiles: Phaser.Math.Vector2[] = new Array();
+
+            for (let i = 0; i < this.map.collideLayer.layer.height; i++)
+            {
+                for (let j = 0; j < this.map.collideLayer.layer.width; j++)
+                {
+                    const tile = new Phaser.Math.Vector2(j, i);
+
+                    if (tiles[i][j].index !== 1 || visitedTiles.find(v => v.equals(tile)))
+                        continue;
+
+                    visitedTiles.push(tile);
+
+                    let rowEndTile = tile;
+                    for (let x = tile.x + 1; x < this.map.collideLayer.layer.width; x++)
+                    {
+                        if (tiles[i][x].index !== 1)
+                            break;
+
+                        rowEndTile = new Phaser.Math.Vector2(x, i);
+                        visitedTiles.push(rowEndTile);
+                    }
+
+                    let currentTile: Phaser.Math.Vector2 = rowEndTile;
+                    outer: for (let y = tile.y + 1; y < this.map.collideLayer.layer.height; y++)
+                    {
+                        for (let x = tile.x; x <= rowEndTile.x; x++)
+                        {
+                            if (tiles[y][x].index !== 1 || visitedTiles.find(v => v.equals(new Phaser.Math.Vector2(x, y))))
+                                break outer;
+
+                            currentTile = new Phaser.Math.Vector2(x, y);
+                            visitedTiles.push(currentTile);
+                        }
+                    }
+
+                    let startTileBounds = tiles[tile.y][tile.x].getBounds() as Phaser.Geom.Rectangle;
+                    let endTileBounds = tiles[currentTile.y][currentTile.x].getBounds() as Phaser.Geom.Rectangle;
+
+                    if (currentTile.x !== rowEndTile.x)
+                    {
+                        const size = new Phaser.Math.Vector2(endTileBounds.x - startTileBounds.x + endTileBounds.width, endTileBounds.height);
+                        const pos = new Phaser.Math.Vector2(startTileBounds.x + size.x / 2, endTileBounds.y + size.y / 2);
+                        this.scene.matter.add.rectangle(pos.x, pos.y, size.x, size.y, { isStatic: true });
+
+                        currentTile.y--;
+                        currentTile.x = rowEndTile.x;
+                        endTileBounds = tiles[currentTile.y][currentTile.x].getBounds() as Phaser.Geom.Rectangle;
+                    }
+
+                    const size = new Phaser.Math.Vector2(endTileBounds.x - startTileBounds.x + endTileBounds.width,
+                        endTileBounds.y - startTileBounds.y + endTileBounds.height);
+                    const pos = new Phaser.Math.Vector2(startTileBounds.x + size.x / 2, startTileBounds.y + size.y / 2);
+                    this.scene.matter.add.rectangle(pos.x, pos.y, size.x, size.y, { isStatic: true });
+                }
+            }
         }
+
+        this.loadedMaps.set(this.mapReader.level.identifier, this.map);
     } 
 
     createEntities()
