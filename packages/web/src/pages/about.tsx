@@ -61,9 +61,15 @@ const TextBody = styled.div`
 const AboutContent = `
 # What is this?
 
-The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum and [StarkWare](https://starkware.co/) blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
+The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum and [StarkNet](https://starkware.co/) blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
 
 DOPE WARS is also an ongoing NFT art project and experiment in decentralized project governance using a [DAO](https://ethereum.org/en/dao/).
+
+----
+
+### For detailed information…
+…Including how to purchase your first DOPE NFT, how to get involved with the project, or what "the game" will be like
+👉 [Please see our Wiki and Players Guide](http://wiki.dopedao.org) 👈
 
 ----
 
@@ -113,7 +119,6 @@ The supply of paper is currently fixed at 1 billion, and while this can be incre
 
 Our first project is to provide a portal for the DOPE WARS ecosystem. Additional experiences like the game will be hosted here.
 
-#### Now
 You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have purchased.
 
 [Claim Gear, create a PFP of your Dope Dealer](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual items with other players to equip your Dope Dealer in our SWAP MEET.
@@ -146,10 +151,10 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 
 ----
 
-### More Info
+### Voting
 
-- [Dope DAO Wiki](http://wiki.dopedao.org)
-- [DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
+- [On-Chain DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
+- [Heat Check Voting with Snapshot](https://snapshot.org/#/dopedao.eth)
 
 `;
 
