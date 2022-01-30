@@ -79,7 +79,10 @@ DOPE WARS is also an ongoing NFT art project and experiment in decentralized pro
 
 [A limited edition of 8,000 DOPE NFTs were created in September 2021.](https://opensea.io/collection/dope-v4) 
 
-These bundles contain items with randomized attributes and rarity scores. Each one allows you to build a character to be used in game and provides an equal Governance Vote on Proposals from the DAO.
+These bundles contain Gear with randomized attributes and rarity scores. Each NFT allows you to build a "Hustler" character to be used in our upcoming games, and provides an equal Governance Vote on Proposals from the DAO.
+
+### Ready to jump in?
+[Read this guide to help purchase your first DOPE NFT.](https://dope-wars.notion.site/Swap-Meet-Guide-9d2f661813c44b1dbfe35c49eb89c59b)
 
 
 ### DAO Governance + Compensation
@@ -89,11 +92,14 @@ Community members draft [proposals](https://dope-wars.notion.site/626df3ff9e4d47
 
 ----
 
-## Characters
+## Hustlers
 
-![Hustlers and Dealers](/images/hustlers.png#full-bleed)
+[Learn more about Hustlers on our Wiki.](https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a)
 
-Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them with items, then minting a Hustler NFT with artwork all stored on the Ethereum blockchain. [This proposal passed our second DAO vote](https://dope-wars.notion.site/Pixel-Avatar-Project-0f64bb450aba46cebdced07c63f69bce), and we hope to launch sometime in October 2021.
+![Hustlers](/images/hustlers.png#full-bleed)
+
+Hustlers are in-game characters that are created by Claiming Gear from your DOPE NFT, then minting a Hustler NFT with artwork all stored on the Ethereum blockchain. [This proposal passed our second DAO vote](https://dope-wars.notion.site/Pixel-Avatar-Project-0f64bb450aba46cebdced07c63f69bce).
+
 
 ----
 
