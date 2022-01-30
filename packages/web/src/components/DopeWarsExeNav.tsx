@@ -1,16 +1,16 @@
 import { useContext } from 'react';
 import { NavLink } from 'components/NavLink';
 import AppWindowNavBar from 'components/AppWindowNavBar';
-import {SearchFilterContext} from 'components/SearchFilter';
+import { SearchFilterContext } from 'components/SearchFilter';
 import MarketFilterBar from 'features/swap-meet/components/MarketFilterBar';
 
 const DopeWarsExeNav = () => {
   const { search, order, filter, view } = useContext(SearchFilterContext);
-  
-  const [ searchValue, setSearchValue ] = search;
-  const [ orderBy, setOrderBy ] = order;
-  const [ filterBy, setFilterBy ] = filter;
-  const [ viewCompactCards, setViewCompactCards ] = view;
+
+  const [searchValue, setSearchValue] = search;
+  const [orderBy, setOrderBy] = order;
+  const [filterBy, setFilterBy] = filter;
+  const [viewCompactCards, setViewCompactCards] = view;
 
   return (
     <>
@@ -24,21 +24,21 @@ const DopeWarsExeNav = () => {
         setSearchValue={setSearchValue}
       />
       <AppWindowNavBar>
-          <NavLink href="#">
-            <a>Profile</a>
-          </NavLink>
-          <NavLink href="/swap-meet">
-            <a>Market</a>
-          </NavLink>
-          <NavLink href="/dope">
-            <a>Gear</a>
-          </NavLink>
-          <NavLink href="/hustlers">
-            <a>Hustlers</a>
-          </NavLink>
+        <NavLink href="#">
+          <a>Profile</a>
+        </NavLink>
+        <NavLink href="/swap-meet">
+          <a>Market</a>
+        </NavLink>
+        <NavLink href="/dope">
+          <a>Gear</a>
+        </NavLink>
+        <NavLink href="/hustlers">
+          <a>Hustlers</a>
+        </NavLink>
       </AppWindowNavBar>
     </>
-    
+
   );
 };
 

@@ -1,0 +1,27 @@
+query ProfileWallet($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        hustlers {
+          id
+          name
+          svg
+          title
+          type
+        }
+        items {
+          id
+          item {
+            id
+            count
+            fullname
+            name
+            svg
+            suffix
+            type
+          }
+        }
+      }
+    }
+  }
+}

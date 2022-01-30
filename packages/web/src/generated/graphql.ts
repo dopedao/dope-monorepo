@@ -1306,6 +1306,13 @@ export type HustlersWalletQueryVariables = Exact<{
 
 export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, svg?: string | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
 
+export type ProfileWalletQueryVariables = Exact<{
+  where?: InputMaybe<WalletWhereInput>;
+}>;
+
+
+export type ProfileWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', hustlers: Array<{ __typename?: 'Hustler', id: string, name?: string | null | undefined, svg?: string | null | undefined, title?: string | null | undefined, type: HustlerType }>, items: Array<{ __typename?: 'WalletItems', id: string, item: { __typename?: 'Item', id: string, count: number, fullname: string, name: string, svg?: string | null | undefined, suffix?: string | null | undefined, type: ItemType } }> } | null | undefined } | null | undefined> | null | undefined } };
+
 export type SearchDopeQueryVariables = Exact<{
   query: Scalars['String'];
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1807,6 +1814,61 @@ export const useInfiniteHustlersWalletQuery = <
     const query = useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument)
     return useInfiniteQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet.infinite'] : ['HustlersWallet.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const ProfileWalletDocument = `
+    query ProfileWallet($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        hustlers {
+          id
+          name
+          svg
+          title
+          type
+        }
+        items {
+          id
+          item {
+            id
+            count
+            fullname
+            name
+            svg
+            suffix
+            type
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useProfileWalletQuery = <
+      TData = ProfileWalletQuery,
+      TError = unknown
+    >(
+      variables?: ProfileWalletQueryVariables,
+      options?: UseQueryOptions<ProfileWalletQuery, TError, TData>
+    ) =>
+    useQuery<ProfileWalletQuery, TError, TData>(
+      variables === undefined ? ['ProfileWallet'] : ['ProfileWallet', variables],
+      useFetchData<ProfileWalletQuery, ProfileWalletQueryVariables>(ProfileWalletDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteProfileWalletQuery = <
+      TData = ProfileWalletQuery,
+      TError = unknown
+    >(
+      variables?: ProfileWalletQueryVariables,
+      options?: UseInfiniteQueryOptions<ProfileWalletQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<ProfileWalletQuery, ProfileWalletQueryVariables>(ProfileWalletDocument)
+    return useInfiniteQuery<ProfileWalletQuery, TError, TData>(
+      variables === undefined ? ['ProfileWallet.infinite'] : ['ProfileWallet.infinite', variables],
       (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
     )};
