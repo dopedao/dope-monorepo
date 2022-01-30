@@ -68,8 +68,8 @@ const DesktopWindow = ({
   // Smaller devices default to "full screen".
   width = 1024,
   height = 768,
-  fullScreen,
-  fullPage,
+  fullScreen, // TODO…rename
+  fullPage, // These are confusing next to one another.
   fullScreenHandler,
   titleChildren,
   children,

@@ -25,7 +25,7 @@ const DesktopIconList = () => {
         <DesktopIcon
           icon="hongbao"
           label="新年好"
-          clickAction={() => openLocalRoute('/special-event')}
+          clickAction={() => openLocalRoute('/new-year-goodness')}
         />
         <DesktopIcon
           icon="dopewars-exe"
