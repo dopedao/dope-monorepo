@@ -259,10 +259,12 @@ export class LdtkReader {
                 const vData = ogLayer.intGridValues.find(v => v.value === tile.index)!;
                 if (vData && vData.color)
                 {
+                    const bounds = tile.getBounds() as Phaser.Geom.Rectangle;
+
                     this.scene.add.rectangle(
-                        tile.x * tile.width + mapLayer.x, 
-                        tile.y * tile.height + mapLayer.y, 
-                        tile.width, tile.height, 
+                        bounds.x + bounds.width / 2, 
+                        bounds.y + bounds.height / 2,
+                        bounds.width, bounds.height, 
                         Number.parseInt(vData.color.split('#')[1], 16),
                         mapLayer.alpha
                     ).setDepth(mapLayer.depth);
