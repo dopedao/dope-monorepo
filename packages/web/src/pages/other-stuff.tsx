@@ -9,13 +9,8 @@ const SocialLinks = () => {
   };
 
   return(
-    <DesktopWindow title="Social Links" width={640}>
+    <DesktopWindow title="Other Stuff" width={640}>
       <IconGrid css={css`top:32px;`}>
-        <DesktopIcon 
-          icon="file-chart" 
-          label="DOPE Stats" 
-          clickAction={() => openBrowserTab('https://dune.xyz/HorizonXP/Dope-Wars-Degen-Dashboard')} 
-        />
         <DesktopIcon
           icon="twitter"
           label="Twitter"
@@ -45,6 +40,11 @@ const SocialLinks = () => {
           icon="snapshot"
           label="Snapshot"
           clickAction={() => openBrowserTab('https://snapshot.org/#/dopedao.eth')}
+        />
+        <DesktopIcon 
+          icon="file-chart" 
+          label="DOPE Stats" 
+          clickAction={() => openBrowserTab('https://dune.xyz/HorizonXP/Dope-Wars-Degen-Dashboard')} 
         />
       </IconGrid>
     </DesktopWindow>
