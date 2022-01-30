@@ -24,7 +24,7 @@ const DesktopIconList = () => {
       <IconGrid>
         <DesktopIcon
           icon="dopewars-exe"
-          label="DOPEWARS.EXE"
+          label="Swap Meet"
           clickAction={() => {
             const hasAgreed = window.localStorage.getItem('tos');
             if (hasAgreed === 'true') {
@@ -36,16 +36,16 @@ const DesktopIconList = () => {
         />
         <DesktopIcon
           icon="file"
-          label="READ ME FIRST"
+          label="About"
           clickAction={() => openLocalRoute('/about')}
         />
         {/* <DesktopIcon icon="todo" label="GAME" clickAction={() => openLocalRoute('/game')} /> */}
-        <DesktopIcon icon="tv" label="DOPE TV" clickAction={() => openLocalRoute('/dope-tv')} />
+        <DesktopIcon icon="tv" label="Dope TV" clickAction={() => openLocalRoute('/dope-tv')} />
         {/* <DesktopIcon icon="file" label="News" clickAction={() => openLocalRoute('/news')} /> */}
-        <DesktopIcon icon="winamp" label="DOPE AMP" clickAction={() => setShowWebAmp(true)} />      
+        <DesktopIcon icon="winamp" label="Dope Amp" clickAction={() => setShowWebAmp(true)} />      
         <DesktopIcon
           icon="paper-bill-desktop"
-          label="GET $PAPER"
+          label="Get $PAPER"
           clickAction={() =>
             openBrowserTab(
               'https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483',
@@ -55,7 +55,7 @@ const DesktopIconList = () => {
 
         <DesktopIcon
           icon="hongbao"
-          label="LUNAR NEW YEAR"
+          label="新年好"
           clickAction={() => openLocalRoute('/special-event')}
         />
         <DesktopIcon
