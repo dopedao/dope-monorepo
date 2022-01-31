@@ -1311,7 +1311,7 @@ export type ProfileDopesQueryVariables = Exact<{
 }>;
 
 
-export type ProfileDopesQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', dopes: Array<{ __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, tier: ItemTier }> }> } | null | undefined } | null | undefined> | null | undefined } };
+export type ProfileDopesQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', dopes: Array<{ __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, tier: ItemTier, greatness: number, count: number }> }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type ProfileHustlersQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
@@ -1845,7 +1845,12 @@ export const ProfileDopesDocument = `
           opened
           items {
             id
+            fullname
+            type
+            name
             tier
+            greatness
+            count
           }
         }
       }

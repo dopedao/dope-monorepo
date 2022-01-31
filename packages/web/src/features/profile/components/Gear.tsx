@@ -1,5 +1,5 @@
 import { FC, useMemo } from "react"
-import { HStack, Image, Stack, Wrap, WrapItem } from "@chakra-ui/react"
+import { HStack, Image, Stack } from "@chakra-ui/react"
 import { useWeb3React } from "@web3-react/core";
 
 import PanelBody from "components/PanelBody";
@@ -10,6 +10,7 @@ import ProfileCard from "./ProfileCard";
 import ProfileCardHeader from "./ProfileCardHeader";
 import SectionContent from "./SectionContent";
 import SectionHeader from "./SectionHeader";
+import CardContainer from "./CardContainer";
 
 type ProfileGear = Pick<WalletItems, "id"> & {
   item: Pick<Item, "id" | "count" | "fullname" | "name" | "svg" | "suffix" | "type">
@@ -54,30 +55,28 @@ const GearWrapper: FC = () => {
       </SectionHeader>
       <SectionContent isFetching={isFetching} minH={isFetching ? 200 : 0}>
         {gear.length ? (
-          <Wrap>
+          <CardContainer>
             {gear.map(({ id, item }) => {
               const origin = getOrigin(item.suffix)
 
               return (
-                <WrapItem key={id}>
-                  <ProfileCard>
-                    <ProfileCardHeader>
-                      {item.name}
-                    </ProfileCardHeader>
-                    <PanelBody>
-                      <Stack>
-                        {item.svg && <Image borderRadius="md" src={item.svg} />}
-                        <span>Type: {item.type}</span>
-                        <span>Origin: {origin}</span>
-                        <span>Title: {item.fullname}</span>
-                        <span>In Stock: {item.count}</span>
-                      </Stack>
-                    </PanelBody>
-                  </ProfileCard>
-                </WrapItem>
+                <ProfileCard key={id}>
+                  <ProfileCardHeader>
+                    {item.name}
+                  </ProfileCardHeader>
+                  <PanelBody>
+                    <Stack>
+                      {item.svg && <Image borderRadius="md" src={item.svg} />}
+                      <span>Type: {item.type}</span>
+                      <span>Origin: {origin}</span>
+                      <span>Title: {item.fullname}</span>
+                      <span>In Stock: {item.count}</span>
+                    </Stack>
+                  </PanelBody>
+                </ProfileCard>
               )
             })}
-          </Wrap>
+          </CardContainer>
         ) : (
           <span>This wallet does not have any Gear</span>
         )}

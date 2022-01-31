@@ -1,5 +1,5 @@
 import { FC, useMemo } from "react"
-import { Stack, Image, Wrap, WrapItem, HStack } from "@chakra-ui/react"
+import { Stack, Image, HStack } from "@chakra-ui/react"
 import { useWeb3React } from "@web3-react/core";
 
 import PanelBody from "components/PanelBody";
@@ -10,6 +10,7 @@ import ProfileCardHeader from "./ProfileCardHeader";
 import ProfileCard from "./ProfileCard";
 import SectionContent from "./SectionContent";
 import SectionHeader from "./SectionHeader";
+import CardContainer from "./CardContainer";
 
 type ProfileHustler = Pick<Hustler, "id" | "name" | "svg" | "title" | "type">
 
@@ -50,28 +51,26 @@ const HustlersWrapper: FC = () => {
       </SectionHeader>
       <SectionContent isFetching={isFetching} minH={isFetching ? 200 : 0}>
         {hustlers.length ? (
-          <Wrap>
+          <CardContainer>
             {hustlers.map(({ id, name, svg, title, type }) => {
               const formattedType = formatType(type)
 
               return (
-                <WrapItem key={id}>
-                  <ProfileCard>
-                    <ProfileCardHeader>
-                      {formattedType} #{id}
-                    </ProfileCardHeader>
-                    <PanelBody>
-                      {svg && <Image borderRadius="md" src={svg} />}
-                      <Stack mt={4}>
-                        <span>Name: {name}</span>
-                        <span>Title: {title}</span>
-                      </Stack>
-                    </PanelBody>
-                  </ProfileCard>
-                </WrapItem>
+                <ProfileCard>
+                  <ProfileCardHeader>
+                    {formattedType} #{id}
+                  </ProfileCardHeader>
+                  <PanelBody>
+                    {svg && <Image borderRadius="md" src={svg} />}
+                    <Stack mt={4}>
+                      <span>Name: {name}</span>
+                      <span>Title: {title}</span>
+                    </Stack>
+                  </PanelBody>
+                </ProfileCard>
               )
             })}
-          </Wrap>
+          </CardContainer>
         ) : (
           <span>This wallet does not have any Hustlers</span>
         )}

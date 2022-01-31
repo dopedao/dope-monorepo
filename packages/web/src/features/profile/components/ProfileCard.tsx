@@ -13,7 +13,12 @@ const ProfileCard: FC<ProfileCardProps> = ({
   return (
     <PanelContainer
       css={css`
-        width: 320px;
+        display: flex;
+        flex: 1;
+        justify-content: space-between;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0;
       `}
     >
       {children}

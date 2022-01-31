@@ -10,7 +10,12 @@ query ProfileDopes($where: WalletWhereInput) {
           opened
           items {
             id
-						tier
+            fullname
+            type
+            name
+            tier
+            greatness
+            count
           }
         }
       }

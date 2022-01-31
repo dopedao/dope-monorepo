@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { Box } from "@chakra-ui/react"
+import { Flex } from "@chakra-ui/react"
 
 type ItemCountProps = {
   count: number
@@ -9,14 +9,17 @@ const ItemCount: FC<ItemCountProps> = ({
   count,
 }) => {
   return (
-    <Box
+    <Flex
+      align="center"
       background="black"
       borderRadius="full"
       color="white"
-      boxSize={6}
+      height={8}
+      justify="center"
+      width={8}
     >
       {count}
-    </Box>
+    </Flex>
   )
 }
 
