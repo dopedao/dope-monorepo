@@ -4,7 +4,10 @@ import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { BigNumber, utils } from 'ethers';
+import { constants, utils } from 'ethers';
+import { usePaper } from 'hooks/contracts';
+import { useOptimism } from 'hooks/web3';
+import { NETWORK } from 'utils/constants';
 
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
@@ -50,9 +53,15 @@ const BoostPanel = () => {
 
   const [boosts, setBoost] = useState(minBoosts);
   const hongbao = useHongbao();
+  const paper = usePaper();
+  const { chainId } = useOptimism();
 
-  const mint = useCallback(() => {
-    hongbao.mint({ value: utils.parseEther('' + boosts / 10) });
+  const mint = useCallback(async () => {
+    const tx = await hongbao.mint({ value: utils.parseEther('' + boosts / 10) });
+    const receipt = await tx.wait();
+    receipt.logs.map((log, idx, array) => {
+      debugger;
+    });
   }, [hongbao, boosts]);
 
   const ethCost = () => (boosts * 1) / 10;
@@ -145,6 +154,15 @@ const BoostPanel = () => {
         </Bar>
       </PanelBody>
       <PanelFooter>
+        <Button
+          variant="cny"
+          onClick={async () => {
+            const txn = await paper.approve(NETWORK[chainId].contracts.hongbao, constants.MaxUint256);
+            await txn.wait(1);
+          }}
+        >
+          Approve Paper
+        </Button>
         <Button variant="cny" onClick={mint}>
           Buy Now
         </Button>
