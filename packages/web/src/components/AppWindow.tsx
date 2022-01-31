@@ -4,9 +4,10 @@ import { getBreakpointWidth } from 'ui/styles/breakpoints';
 import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from 'components/AppWindowFooter';
 import ConnectWallet from 'components/ConnectWallet';
-import DesktopWindow from 'components/DesktopWindow';
+import DesktopWindow, { DesktopWindowProps } from 'components/DesktopWindow';
 
 export interface AppWindowProps {
+  background?: string;
   children: ReactNode;
   footer?: ReactNode;
   height?: number | string;
@@ -48,6 +49,7 @@ export default function AppWindow({
   footer,
   onlyFullScreen,
   fullScreen,
+  background
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
@@ -59,6 +61,7 @@ export default function AppWindow({
       height={height}
       onlyFullScreen={onlyFullScreen}
       fullScreen={fullScreen}
+      background={background}
     >
       {requiresWalletConnection && !account ? (
         <ConnectWallet />
