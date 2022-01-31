@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/big"
+	"strconv"
 	"strings"
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
@@ -26,8 +27,9 @@ type SwapMeetProcessor struct {
 }
 
 type Attribute struct {
-	Type  string `json:"trait_type"`
-	Value string `json:"value"`
+	Type        string          `json:"trait_type"`
+	DisplayType string          `json:"display_type"`
+	Value       json.RawMessage `json:"value"`
 }
 
 type Metadata struct {
@@ -85,17 +87,22 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMe
 			SetID(e.Id.String())
 
 		for _, a := range parsed.Attributes {
+			v, err := strconv.Unquote(string(a.Value))
+			if err != nil {
+				return fmt.Errorf("parsing attribuet value %v+: %w", a.Value, err)
+			}
+
 			switch a.Type {
 			case "Slot":
-				create = create.SetType(item.Type(strings.ToUpper(a.Value)))
+				create = create.SetType(item.Type(strings.ToUpper(v)))
 			case "Item":
-				create = create.SetName(a.Value)
+				create = create.SetName(v)
 			case "Suffix":
-				create = create.SetSuffix(a.Value)
+				create = create.SetSuffix(v)
 			case "Name Prefix":
-				create = create.SetNamePrefix(a.Value)
+				create = create.SetNamePrefix(v)
 			case "Name Suffix":
-				create = create.SetNameSuffix(a.Value)
+				create = create.SetNameSuffix(v)
 			case "Augmentation":
 				create = create.SetAugmented(true)
 			}

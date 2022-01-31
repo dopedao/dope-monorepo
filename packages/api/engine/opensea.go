@@ -208,7 +208,9 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 // getAssetCollection for Opensea
 func (o *Opensea) getAssetCollection(ctx context.Context, contract string, page int, offset int) (*Assets, error) {
+	ctx, log := base.LogFor(ctx)
 	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d&offset=%d", assetPath, contract, page, offset)
+	log.Debug().Str("url", o.URL+path).Msg("Getting asset collection.")
 	b, err := o.getURL(ctx, o.URL+path)
 	if err != nil {
 		return nil, fmt.Errorf("retrieving opensea assets: %w", err)
