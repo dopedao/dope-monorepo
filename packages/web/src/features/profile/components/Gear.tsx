@@ -1,5 +1,5 @@
 import { FC, useMemo } from "react"
-import { HStack, Stack, Wrap, WrapItem } from "@chakra-ui/react"
+import { HStack, Image, Stack, Wrap, WrapItem } from "@chakra-ui/react"
 import { useWeb3React } from "@web3-react/core";
 
 import PanelBody from "components/PanelBody";
@@ -66,7 +66,7 @@ const GearWrapper: FC = () => {
                     </ProfileCardHeader>
                     <PanelBody>
                       <Stack>
-                        {item.svg && <img src={item.svg} />}
+                        {item.svg && <Image borderRadius="md" src={item.svg} />}
                         <span>Type: {item.type}</span>
                         <span>Origin: {origin}</span>
                         <span>Title: {item.fullname}</span>
