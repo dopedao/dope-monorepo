@@ -1,4 +1,4 @@
-import { BreadcrumbLink, Button } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import { Image } from "@chakra-ui/react";
 import { useState } from "react";
@@ -6,7 +6,6 @@ import PanelBody from "components/PanelBody";
 import PanelContainer from "components/PanelContainer";
 import PanelFooter from "components/PanelFooter";
 import styled from "@emotion/styled";
-import { e } from "gear-rarity/dist/image-140bf8ec";
 
 const Stats = styled.div`
   font-size: var(--text-smallest);
@@ -82,7 +81,7 @@ const BoostPanel = () => {
       case 4:
         return imgPrefix + 'mask-roulette_2.gif';
       case maxBoosts:
-        return imgPrefix + 'golden-mask-black.png';
+        return imgPrefix + 'golden-mask.png';
       default:
         return imgPrefix + 'mask-roulette_3.gif';
     }
@@ -95,7 +94,7 @@ const BoostPanel = () => {
         <Stats>
           <div css={css`display:flex;gap:8px;`}>
             <div>{ boosts } BOOST{ boosts == 1 ? '' : 'S' }</div>
-            <div css={css`color:var(--gray-400)`}>( { ethCost() } Ξ )</div>
+            <div css={css`color:var(--gray-400)`}>( { ethCost() } Ξ + $5000P )</div>
           </div>
           <div css={css`text-align:right;`}>
             { boosts === maxBoosts && <>GUARANTEED RARE</> }
@@ -117,7 +116,7 @@ const BoostPanel = () => {
       </PanelBody>
       <PanelFooter>
         <Button variant="cny" disabled>
-          { boosts === 0 ? 'Open' : 'Buy' } Now
+          Buy Now
         </Button>
       </PanelFooter>
     </PanelContainer>
