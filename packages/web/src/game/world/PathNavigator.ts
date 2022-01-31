@@ -78,6 +78,13 @@ export default class PathNavigator
 
 	    if (this.target)
 	    {
+            // cancel pathfinding if stuck
+            const pos = new Phaser.Math.Vector2(this.hustler.body.position.x, this.hustler.body.position.y);
+            setTimeout(() => {
+                if (this.previousPosition && pos.equals(this.previousPosition))
+                    this.cancel();
+            }, 500);
+
 	    	dx = this.target.x - (this.hustler.body.position.x);
 	    	dy = this.target.y - (this.hustler.body.position.y);
 
@@ -157,13 +164,6 @@ export default class PathNavigator
             const newVel = new Phaser.Math.Vector2((this.hustler.body as MatterJS.BodyType).velocity).normalize().scale(Hustler.DEFAULT_VELOCITY);
             this.hustler.setVelocity(newVel.x, newVel.y);
             this.hustler.moving = true;
-        }
-
-
-        // stuck
-        if (willMoveFlag && this.target && this.previousPosition?.equals(this.hustler.body.position))
-        {
-            this.cancel();
         }
 
         // if stuck in a corner, move in the direction of the other corner
