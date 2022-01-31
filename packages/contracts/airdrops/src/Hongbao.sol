@@ -12,12 +12,12 @@ import {TokenId} from "./utils/TokenId.sol";
 contract Hongbao is MerkleClaim, MaintainerOwner, Pausable {
     event Opened(uint8 typ, uint256 value);
 
-    IERC20 paper = IERC20(0x00F932F0FE257456b32dedA4758922E56A4F4b42);
+    IERC20 paper = IERC20(0x3F3Ef5f39a95F13c821E4a12AaE09c2446C72452);
     address treasury = 0x90103beDCfbE1eeE44ded89cEd88bA8503580b3D;
     address tarrence = 0xF8C3875bFa461a38532FEDF90453985901C55114;
-    address mrfax = 0xF8C3875bFa461a38532FEDF90453985901C55114;
-    address clicksave = 0xF8C3875bFa461a38532FEDF90453985901C55114;
-    address faces = 0xF8C3875bFa461a38532FEDF90453985901C55114;
+    address mrfax = 0x50258A2aE0b3065754936828Cd7814731C6fC008;
+    address clicksave = 0xD6Fd8413B1FaCafcB46b3F7C08d07DaA0fe5E770;
+    address faces = 0xA2dE2d19edb4094c79FB1A285F3c30c77931Bf1e;
 
     uint8 prefix = 65;
     uint8 suffix = 20;
@@ -32,20 +32,7 @@ contract Hongbao is MerkleClaim, MaintainerOwner, Pausable {
         85899739145,
         85899870217
     ];
-    uint8[12] internal zodiacs = [
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30
-    ];
+    uint8[11] internal zodiacs = [19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30];
 
     constructor(bytes32 root) MerkleClaim(root) {
         _pause();
@@ -76,29 +63,25 @@ contract Hongbao is MerkleClaim, MaintainerOwner, Pausable {
         components[0] = 7;
         components[1] = suffix;
         components[2] = prefix;
-        components[3] = zodiacs[rand % 12];
+        components[3] = 21;
 
-        if (msg.value > 0) {
-            uint256 boosted = rand % 1000 + msg.value / 1e16;
+        if (msg.value > 1e17) {
+            uint256 roll = rand % 1000;
+            uint256 offset = (msg.value / 1e15) - 100;
 
-            if (boosted >= 995) {
+            if (offset >= 900 || roll >= 995 - offset) {
                 // Notorius Tiger
                 components[2] = 20;
-                components[3] = 21;
                 components[4] = 1;
-            } else if (boosted >= 900) {
+            } else if (roll >= 900 - offset) {
                 // Big Tiger
-                components[3] = 21;
                 components[2] = 6;
+            } else {
+                components[3] = zodiacs[rand % 11];
             }
         }
 
-        IMaintainer(0xb949A2648cf9209AAa1EeA5DBc65B7AAAEdC78dc).mintAccessory(
-            msg.sender,
-            components,
-            1,
-            ""
-        );
+        maintainer.mintAccessory(msg.sender, components, 1, "");
 
         paper.transferFrom(msg.sender, address(this), 5000e18);
     }
