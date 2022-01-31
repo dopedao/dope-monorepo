@@ -13,7 +13,7 @@ import SectionHeader from "./SectionHeader";
 import CardContainer from "./CardContainer";
 import LoadingBlock from "components/LoadingBlock";
 
-type ProfileHustler = Pick<Hustler, "id" | "name" | "svg" | "title" | "type">
+type ProfileHustler = Pick<Hustler, 'id' | 'name' | 'svg' | 'title' | 'type'>;
 
 type HustlerData = {
   hustlers: ProfileHustler[]
@@ -21,10 +21,18 @@ type HustlerData = {
 }
 
 const formatType = (type: HustlerType): string => {
-  if (type === HustlerType.OriginalGangsta) return "OG"
+  if (type === HustlerType.OriginalGangsta) return 'OG';
 
-  return "Hustler"
-}
+  return 'Hustler';
+};
+
+const HustlerFooter = ({ id }: { id: string }) => (
+  <PanelFooter>
+    <Link href={`/hustlers/${id}/customize`} passHref>
+      <Button variant="primary">Customize</Button>
+    </Link>
+  </PanelFooter>
+);
 
 const Hustlers: FC = () => {
   const { account } = useWeb3React()
@@ -45,7 +53,7 @@ const Hustlers: FC = () => {
       }
       return false;
     },
-  })
+  });
 
   const hustlerData: HustlerData = useMemo(() => {
     const defaultValue = { hustlers: [], totalCount: 0 }
@@ -94,14 +102,15 @@ const Hustlers: FC = () => {
                     {formattedType} #{id}
                   </ProfileCardHeader>
                   <PanelBody>
-                    {svg && <Image borderRadius="md" src={svg} />}
+                    {svg && <Image alt="The hustler" borderRadius="md" src={svg} />}
                     <Stack mt={4}>
                       <span>Name: {name}</span>
                       <span>Title: {title}</span>
                     </Stack>
                   </PanelBody>
+                  <HustlerFooter id={id} />
                 </ProfileCard>
-              )
+              );
             })}
             {isFetching && hustlerData.hustlers.length && <LoadingBlock maxRows={1} />}
             {hasNextPage && <Button onClick={() => fetchNextPage()}>Load more</Button>}
@@ -111,7 +120,7 @@ const Hustlers: FC = () => {
         )}
       </SectionContent>
     </>
-  )
-}
+  );
+};
 
 export default Hustlers

@@ -24,21 +24,14 @@ const DopeWarsExeNav = () => {
         setSearchValue={setSearchValue}
       />
       <AppWindowNavBar>
-        <NavLink href="/profile">
-          <a>Profile</a>
+        <NavLink href="/inventory">
+          <a>Inventory</a>
         </NavLink>
         <NavLink href="/swap-meet">
           <a>Market</a>
         </NavLink>
-        <NavLink href="/dope">
-          <a>Gear</a>
-        </NavLink>
-        <NavLink href="/hustlers">
-          <a>Hustlers</a>
-        </NavLink>
       </AppWindowNavBar>
     </>
-
   );
 };
 
