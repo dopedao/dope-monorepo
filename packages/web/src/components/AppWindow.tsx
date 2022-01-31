@@ -17,7 +17,7 @@ export interface AppWindowProps {
   scrollable?: boolean;
   title?: string | undefined;
   width?: number | string;
-  fullPage?: boolean;
+  onlyFullScreen?: boolean;
   fullScreen?: boolean;
 }
 
@@ -47,7 +47,7 @@ export default function AppWindow({
   children,
   navbar,
   footer,
-  fullPage,
+  onlyFullScreen,
   fullScreen,
 }: AppWindowProps) {
   const { account } = useWeb3React();
@@ -59,7 +59,7 @@ export default function AppWindow({
         titleChildren={navbar}
         width={width}
         height={height}
-        fullPage={fullPage}
+        onlyFullScreen={onlyFullScreen}
         fullScreen={fullScreen}
       >
         {requiresWalletConnection && !account ? (
