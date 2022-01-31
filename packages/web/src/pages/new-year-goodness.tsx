@@ -64,11 +64,11 @@ const LunarNewYear = () => {
                 <Image src="/images/lunar_new_year_2022/free_accessories.png" alt="Free Airdrop Accessories" css={css`width:80%`} />
               </div>
               <p>
-                To celebrate Year of the Tiger, we're giving every Hustler who claimed gear by January 31st a special accessory airdrop.
+                To celebrate Year of the Tiger, we&apos;re giving every Hustler who claimed gear by January 31st a special accessory airdrop.
               </p>
 
               <p>
-                Claiming only requires minimal gas fees on the Optimism network. You will randomly receive a celebratory accessory or if you're lucky, some $PAPER!
+                Claiming only requires minimal gas fees on the Optimism network. You will randomly receive a celebratory accessory or if you&apos;re lucky, some $PAPER!
               </p>
             </PanelBody>
           </PanelContainer>
@@ -82,7 +82,7 @@ const LunarNewYear = () => {
                 New RARE accessories for your Hustler
               </h3>
               <p>
-                In addition to the gifts above, we're launching a celebratory mask drop. From Feb. 1st – Feb. 15th, 2022 you can purchase a Tiger Mask for 5000 $PAPER and try your luck at a chance to win more rare masks!
+                In addition to the gifts above, we&apos;re launching a celebratory mask drop. From Feb. 1st – Feb. 15th, 2022 you can purchase a Tiger Mask for 5000 $PAPER and try your luck at a chance to win more rare masks!
               </p>
               <Image src="/images/lunar_new_year_2022/walking_hustlers.png" alt="Walking Hustlers with Dragon" />
               <h3>Mask boost lotto</h3>
