@@ -136,10 +136,10 @@ export default class GameScene extends Scene {
             return;
           
           const hustler = this.hustlers.find(h => h.getData('id') === p.id);
-          if (hustler)
+          if (hustler && !hustler.navigator.target && hustler.x !== p.x && hustler.y !== p.y)
           {
-            hustler.setPosition(p.x, p.y);
-            hustler.moveDirection = p.direction as Direction;
+            hustler.navigator.moveTo(p.x, p.y);
+            //hustler.moveDirection = p.direction as Direction;
           }
         });
       });

@@ -12,7 +12,8 @@ export default class PlayerController
 
     private _player: Player;
 
-    static readonly MOVE_TICKRATE = 1 / 60; 
+    // send move message each MOVE_TICKRATE ms (if moving)
+    static readonly MOVE_TICKRATE = 1 / 2; 
     private _lastMoveTimestamp: number = 0;
 
     get player() { return this._player; }
@@ -126,11 +127,12 @@ export default class PlayerController
                 if (!moved)
                 {
                     if (NetworkHandler.getInstance().connected)
-                    NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
-                        x: this.player.x,
-                        y: this.player.y,
-                        direction: this.player.moveDirection,
-                    });
+                        NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+                            x: this.player.x,
+                            y: this.player.y,
+                            direction: this.player.moveDirection,
+                        });
+                    this._lastMoveTimestamp = 0;
                 }
             }, 100);
         }
