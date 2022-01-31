@@ -18,7 +18,7 @@ query ProfileDopes($where: WalletWhereInput) {
   }
 }
 
-query ProfileWallet($where: WalletWhereInput) {
+query ProfileHustlers($where: WalletWhereInput) {
   wallets(where: $where) {
     edges {
       node {
@@ -29,6 +29,15 @@ query ProfileWallet($where: WalletWhereInput) {
           title
           type
         }
+      }
+    }
+  }
+}
+
+query ProfileGear($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
         items {
           id
           item {

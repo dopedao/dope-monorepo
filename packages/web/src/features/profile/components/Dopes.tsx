@@ -1,30 +1,27 @@
 import { FC, useMemo } from "react"
-import { AccordionItem, Box, Stack, Text, Wrap, WrapItem } from "@chakra-ui/react"
-import { css } from '@emotion/react';
+import { HStack, Image, Stack, Wrap, WrapItem } from "@chakra-ui/react"
+import { useWeb3React } from "@web3-react/core";
 
-import LoadingBlock from "components/LoadingBlock"
 import PanelBody from "components/PanelBody";
-import PanelContainer from "components/PanelContainer"
-import PanelTitleBarFlex from "components/PanelTitleBarFlex";
-
 import { Dope, Item, useProfileDopesQuery } from "generated/graphql"
 
 import DopePreview from "./DopePreview";
-
-type DopesProps = {
-
-}
+import ProfileCard from "./ProfileCard";
+import SectionContent from "./SectionContent";
+import ProfileCardHeader from "./ProfileCardHeader";
+import SectionHeader from "./SectionHeader";
+import ItemCount from "./ItemCount";
 
 type ProfileDope = Pick<Dope, "id" | "claimed" | "opened" | "rank" | "score"> & {
   items: Pick<Item, "id" | "tier">[]
 }
 
-const Dopes: FC<DopesProps> = ({
+const Dopes: FC = () => {
+  const { account } = useWeb3React()
 
-}) => {
   const { data, isFetching } = useProfileDopesQuery({
     where: {
-      id: "0xba740c9035fF3c24A69e0df231149c9cd12BAe07",
+      id: account,
     },
   })
 
@@ -40,45 +37,40 @@ const Dopes: FC<DopesProps> = ({
     }, [] as ProfileDope[])
   }, [data])
 
-  console.log("dopes", dopes)
-
   return (
-    <Box minH={500}>
-      {isFetching && (
-        <Box>
-          <LoadingBlock maxRows={3} />
-        </Box>
-      )}
-      {!isFetching && data && (
-        <Wrap>
-          {dopes.map((dope) => {
-            return (
-              <WrapItem key={dope.id}>
-                <PanelContainer
-                  css={css`
-                  width: 320px;
-                `}
-                >
-                  <PanelTitleBarFlex
-                    css={css`
-                    height: 40px;
-                  `}
-                  >
-                    #{dope.id}
-                  </PanelTitleBarFlex>
-                  <PanelBody>
-                    <Stack>
-                      <DopePreview dope={dope} />
-                      <DopeStatuses dope={dope} />
-                    </Stack>
-                  </PanelBody>
-                </PanelContainer>
-              </WrapItem>
-            )
-          })}
-        </Wrap>
-      )}
-    </Box>
+    <>
+      <SectionHeader>
+        <HStack>
+          <span>Dopes</span>
+          <ItemCount count={dopes.length} />
+        </HStack>
+      </SectionHeader>
+      <SectionContent isFetching={isFetching} minH={isFetching ? 200 : 0}>
+        {dopes.length ? (
+          <Wrap>
+            {dopes.map((dope) => {
+              return (
+                <WrapItem key={dope.id}>
+                  <ProfileCard>
+                    <ProfileCardHeader>
+                      #{dope.id}
+                    </ProfileCardHeader>
+                    <PanelBody>
+                      <Stack>
+                        <DopePreview dope={dope} />
+                        <DopeStatuses dope={dope} />
+                      </Stack>
+                    </PanelBody>
+                  </ProfileCard>
+                </WrapItem>
+              )
+            })}
+          </Wrap>
+        ) : (
+          <span>This wallet does not have any Dope</span>
+        )}
+      </SectionContent>
+    </>
   )
 }
 
@@ -88,17 +80,40 @@ type DopeStatuesProps = {
   dope: Pick<Dope, "claimed" | "opened">
 }
 
+const GREEN = "#9BFFCB"
+const GRAY = "#DEDEDD"
+
+const getDopeStatusBackground = (success: boolean): string => {
+  if (success) return GREEN
+
+  return GRAY
+}
+
+const getDopeStatusIconSrc = (success: boolean): string => {
+  if (success) return "/images/icon/check-sm.svg"
+
+  return "/images/icon/circle-slash.svg"
+}
+
 const DopeStatuses: FC<DopeStatuesProps> = ({ dope }) => {
   const { claimed, opened } = dope
 
+  const paperBackground = getDopeStatusBackground(claimed)
+  const paperIconSrc = getDopeStatusIconSrc(claimed)
+
+  const gearBackground = getDopeStatusBackground(opened)
+  const gearIconSrc = getDopeStatusIconSrc(opened)
+
   return (
     <Stack>
-      <Box background={claimed ? "#9BFFCB" : "#DEDEDD"} p={2}>
-        <Text p={0}>{claimed ? "Contains $Paper" : "Does not contain $Paper"}</Text>
-      </Box>
-      <Box background={opened ? "#9BFFCB" : "#DEDEDD"} p={2}>
-        <Text p={0}>{opened ? "Has Dope Gear" : "Does not have Dope Gear"}</Text>
-      </Box>
+      <HStack background={paperBackground} borderRadius="sm" p={2}>
+        <Image src={paperIconSrc} />
+        <span>{claimed ? "Contains $Paper" : "Does not contain $Paper"}</span>
+      </HStack>
+      <HStack background={gearBackground} borderRadius="sm" p={2}>
+        <Image src={gearIconSrc} />
+        <span>{opened ? "Has Dope Gear" : "Does not have Dope Gear"}</span>
+      </HStack>
     </Stack>
   )
 }

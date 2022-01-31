@@ -1,5 +1,5 @@
 import { FC, useMemo } from "react"
-import { Box, Flex, Stack, Text } from "@chakra-ui/react"
+import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/react"
 
 import { Dope, Item, ItemTier } from "generated/graphql"
 
@@ -11,11 +11,23 @@ type DopePreviewProps = {
   dope: DopePreviewDope
 }
 
-const TIER_LABELS = {
-  [ItemTier.BlackMarket]: "BLACK MARKET",
-  [ItemTier.Common]: "COMMON",
-  [ItemTier.Custom]: "CUSTOM",
-  [ItemTier.Rare]: "RARE",
+const TIER_META = {
+  [ItemTier.BlackMarket]: {
+    color: "#FEFC66",
+    label: "BLACK MARKET",
+  },
+  [ItemTier.Common]: {
+    color: "#EC6F38",
+    label: "COMMON",
+  },
+  [ItemTier.Custom]: {
+    color: "#4780F7",
+    label: "CUSTOM",
+  },
+  [ItemTier.Rare]: {
+    color: "#FFFFFF",
+    label: "RARE",
+  },
 }
 
 const DopePreview: FC<DopePreviewProps> = ({
@@ -36,7 +48,7 @@ const DopePreview: FC<DopePreviewProps> = ({
   }, [dope])
 
   return (
-    <Box background="black" p={4}>
+    <Box background="black" borderRadius="md" p={4}>
       <Stack>
         <Text color="#fff" opacity={0.5}>( {dope.rank} / 8000 )</Text>
         {[
@@ -44,12 +56,17 @@ const DopePreview: FC<DopePreviewProps> = ({
           ItemTier.Custom,
           ItemTier.Rare,
           ItemTier.Common,
-        ].map((tier) => (
-          <Flex id={tier} justify="space-between">
-            <Text color="#fff" opacity={0.5}>{TIER_LABELS[tier]}</Text>
-            <Text color="#fff" opacity={0.5}>{tierCounts[tier]}</Text>
-          </Flex>
-        ))}
+        ].map((tier) => {
+          return (
+            <Flex key={tier} justify="space-between">
+              <HStack color={TIER_META[tier].color} spacing={2}>
+                <Text p={0}>●</Text>
+                <Text p={0}>{tierCounts[tier]}</Text>
+              </HStack>
+              <Text color="#fff" opacity={0.5} p={0}>{TIER_META[tier].label}</Text>
+            </Flex>
+          )
+        })}
       </Stack>
     </Box>
   )
