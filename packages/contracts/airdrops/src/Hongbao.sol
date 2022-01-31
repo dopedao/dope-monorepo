@@ -79,14 +79,15 @@ contract Hongbao is MerkleClaim, MaintainerOwner, Pausable {
         components[3] = zodiacs[rand % 12];
 
         if (msg.value > 0) {
-            uint256 boosted = rand % 1000 + msg.value / 1e16;
+            uint256 roll = rand % 1000;
+            uint256 offset = (msg.value / 1e16) - 100;
 
-            if (boosted >= 995) {
+            if (offset >= 900 || roll >= 995 - offset) {
                 // Notorius Tiger
                 components[2] = 20;
                 components[3] = 21;
                 components[4] = 1;
-            } else if (boosted >= 900) {
+            } else if (roll >= 900 - offset) {
                 // Big Tiger
                 components[3] = 21;
                 components[2] = 6;
