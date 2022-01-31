@@ -1,11 +1,11 @@
 import { Button } from '@chakra-ui/react';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { getProof } from 'utils/merkleproof';
 import config from 'config'; // Airdrop config
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/react';
-import { Hongbao } from '@dopewars/contracts/dist';
+import { OpenedEvent } from '@dopewars/contracts/dist/Hongbao';
 
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
@@ -16,15 +16,26 @@ const HongbaoPanel = () => {
   const hongbao = useHongbao();
   const { account } = useWeb3React();
 
+  // if event.args.typ == 0
+  //      PAPER reward. event.args.value is the amount
+  // if event.args.typ == 1
+  //      Item reward. event.args.value is the item id
+  const [opens, setOpens] = useState<OpenedEvent[]>();
+
   const amount = useMemo(() => config.airdrop[account!].toString(), [account]);
   const claim = useCallback(async () => {
     const proof = getProof(account!, amount);
     const tx = await hongbao.claim(amount, proof);
     const receipt = await tx.wait();
-    receipt.logs.map((log, idx, array) => {
-      debugger;
-    });
-  }, [hongbao, account, amount]);
+    setOpens(
+      receipt.logs.reduce<OpenedEvent[]>((o, log, idx) => {
+        if (idx % 2 == 0) return o;
+        const event = hongbao.interface.parseLog(log) as unknown as OpenedEvent;
+        // Set roll to item id
+        return [...o, event];
+      }, []),
+    );
+  }, [hongbao, account, amount, setOpens]);
 
   return (
     <PanelContainer>
