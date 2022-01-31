@@ -5,6 +5,7 @@ import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from 'components/AppWindowFooter';
 import ConnectWallet from 'components/ConnectWallet';
 import DesktopWindow from 'components/DesktopWindow';
+import {SearchFilterProvider} from 'components/SearchFilter';
 
 export interface AppWindowProps {
   children: ReactNode;
@@ -32,7 +33,7 @@ const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean }>`
   position: relative;
   height: 100%;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
-  background-color: #a8a9ae;
+  background-color: #fff;
   padding: ${({ padBody }) => (padBody ? getBodyPadding() : '0px')};
 `;
 
@@ -52,22 +53,24 @@ export default function AppWindow({
   const { account } = useWeb3React();
 
   return (
-    <DesktopWindow
-      title={title || 'DOPEWARS.EXE'}
-      titleChildren={navbar}
-      width={width}
-      height={height}
-      fullPage={fullPage}
-      fullScreen={fullScreen}
-    >
-      {requiresWalletConnection && !account ? (
-        <ConnectWallet />
-      ) : (
-        <AppWindowBody className="appWindowBody" scrollable={scrollable} padBody={padBody}>
-          {children}
-        </AppWindowBody>
-      )}
-      <AppWindowFooter>{footer}</AppWindowFooter>
-    </DesktopWindow>
+    <SearchFilterProvider>
+      <DesktopWindow
+        title={title || 'DOPEWARS.EXE'}
+        titleChildren={navbar}
+        width={width}
+        height={height}
+        fullPage={fullPage}
+        fullScreen={fullScreen}
+      >
+        {requiresWalletConnection && !account ? (
+          <ConnectWallet />
+        ) : (
+          <AppWindowBody className="appWindowBody" scrollable={scrollable} padBody={padBody}>
+            {children}
+          </AppWindowBody>
+        )}
+        <AppWindowFooter>{footer}</AppWindowFooter>
+      </DesktopWindow>
+    </SearchFilterProvider>
   );
 }
