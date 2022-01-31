@@ -1,5 +1,6 @@
 import { Button, Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import AppWindowOptimism from 'components/AppWindowOptimism';
 import BoostPanel from 'components/panels/BoostPanel';
 import DesktopWindow from "components/DesktopWindow";
 import HongbaoPanel from 'components/panels/HongbaoPanel';
@@ -46,7 +47,7 @@ const EventContainer = styled.div`
 const LunarNewYear = () => {
 
   return(
-    <DesktopWindow title="I Hope You Get Rich" background="#FF6464">
+    <AppWindowOptimism title="I Hope You Get Rich" background="#FF6464" requiresWalletConnection>
       <EventContainer>
         <EventHeader>
           {lanternImg}
@@ -96,7 +97,7 @@ const LunarNewYear = () => {
           </PanelContainer>
         </StackedResponsiveContainer>
       </EventContainer>
-    </DesktopWindow>
+    </AppWindowOptimism>
   ); 
 };
 

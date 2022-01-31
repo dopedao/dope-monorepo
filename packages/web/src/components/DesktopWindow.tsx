@@ -15,7 +15,7 @@ type Position = {
   y: number;
 };
 
-type DesktopWindowProps = {
+export type DesktopWindowProps = {
   title: string | undefined;
   width?: number | string;
   height?: number | string;

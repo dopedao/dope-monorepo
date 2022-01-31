@@ -8,6 +8,7 @@ import DesktopWindow from 'components/DesktopWindow';
 import {SearchFilterProvider} from 'components/SearchFilter';
 
 export interface AppWindowProps {
+  background?: string;
   children: ReactNode;
   footer?: ReactNode;
   height?: number | string;
@@ -49,6 +50,7 @@ export default function AppWindow({
   footer,
   onlyFullScreen,
   fullScreen,
+  background
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
@@ -61,6 +63,7 @@ export default function AppWindow({
         height={height}
         onlyFullScreen={onlyFullScreen}
         fullScreen={fullScreen}
+        background={background}
       >
         {requiresWalletConnection && !account ? (
           <ConnectWallet />
