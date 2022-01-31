@@ -3,7 +3,7 @@ import { HStack, Image, Stack } from "@chakra-ui/react"
 import { useWeb3React } from "@web3-react/core";
 
 import PanelBody from "components/PanelBody";
-import { Item, useProfileGearQuery, WalletItems } from "generated/graphql";
+import { Item, Maybe, useProfileGearQuery, WalletItems } from "generated/graphql";
 
 import ItemCount from "./ItemCount";
 import ProfileCard from "./ProfileCard";
@@ -12,8 +12,12 @@ import SectionContent from "./SectionContent";
 import SectionHeader from "./SectionHeader";
 import CardContainer from "./CardContainer";
 
+type ProfileItem = Pick<Item, "id" | "count" | "fullname" | "name" | "svg" | "suffix" | "type"> & {
+  base?: Maybe<Pick<Item, "svg">>
+}
+
 type ProfileGear = Pick<WalletItems, "id"> & {
-  item: Pick<Item, "id" | "count" | "fullname" | "name" | "svg" | "suffix" | "type">
+  item: ProfileItem
 }
 
 const getOrigin = (suffix?: string | null): string => {
@@ -22,6 +26,10 @@ const getOrigin = (suffix?: string | null): string => {
   const [, origin] = suffix.split("from ")
 
   return origin
+}
+
+const getImageSrc = (item: ProfileItem): string => {
+  return item.svg || item.base?.svg || ""
 }
 
 const GearWrapper: FC = () => {
@@ -58,6 +66,7 @@ const GearWrapper: FC = () => {
           <CardContainer>
             {gear.map(({ id, item }) => {
               const origin = getOrigin(item.suffix)
+              const imageSrc = getImageSrc(item)
 
               return (
                 <ProfileCard key={id}>
@@ -66,7 +75,7 @@ const GearWrapper: FC = () => {
                   </ProfileCardHeader>
                   <PanelBody>
                     <Stack>
-                      {item.svg && <Image borderRadius="md" src={item.svg} />}
+                      <Image borderRadius="md" src={imageSrc} />
                       <span>Type: {item.type}</span>
                       <span>Origin: {origin}</span>
                       <span>Title: {item.fullname}</span>

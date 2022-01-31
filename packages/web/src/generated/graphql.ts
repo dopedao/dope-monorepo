@@ -550,6 +550,7 @@ export type HustlerWhereInput = {
 export type Item = Node & {
   __typename?: 'Item';
   augmented?: Maybe<Scalars['Boolean']>;
+  base?: Maybe<Item>;
   count: Scalars['Int'];
   fullname: Scalars['String'];
   greatness: Scalars['Int'];
@@ -1325,7 +1326,7 @@ export type ProfileGearQueryVariables = Exact<{
 }>;
 
 
-export type ProfileGearQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', items: Array<{ __typename?: 'WalletItems', id: string, item: { __typename?: 'Item', id: string, count: number, fullname: string, name: string, svg?: string | null | undefined, suffix?: string | null | undefined, type: ItemType } }> } | null | undefined } | null | undefined> | null | undefined } };
+export type ProfileGearQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', items: Array<{ __typename?: 'WalletItems', id: string, item: { __typename?: 'Item', id: string, count: number, fullname: string, name: string, svg?: string | null | undefined, suffix?: string | null | undefined, type: ItemType, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type SearchDopeQueryVariables = Exact<{
   query: Scalars['String'];
@@ -1942,6 +1943,9 @@ export const ProfileGearDocument = `
             svg
             suffix
             type
+            base {
+              svg
+            }
           }
         }
       }

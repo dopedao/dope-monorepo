@@ -53,6 +53,9 @@ query ProfileGear($where: WalletWhereInput) {
             svg
             suffix
             type
+            base {
+              svg
+            }
           }
         }
       }
