@@ -64,7 +64,7 @@ contract Hongbao is MerkleClaim, MaintainerOwner, Pausable {
     }
 
     function mint() external payable whenNotPaused {
-        uint256 rand = draw(0) % 1000;
+        uint256 rand = draw(0);
 
         // uint8[5] =>
         //     [0] = Item ID
@@ -79,7 +79,7 @@ contract Hongbao is MerkleClaim, MaintainerOwner, Pausable {
         components[3] = zodiacs[rand % 12];
 
         if (msg.value > 0) {
-            uint256 boosted = rand + msg.value / 1e16;
+            uint256 boosted = rand % 1000 + msg.value / 1e16;
 
             if (boosted >= 995) {
                 // Notorius Tiger

@@ -11,6 +11,7 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
@@ -24,8 +25,14 @@ type SwapMeetProcessor struct {
 	hustlers *bindings.HustlerCaller
 }
 
+type Attribute struct {
+	Type  string `json:"trait_type"`
+	Value string `json:"value"`
+}
+
 type Metadata struct {
-	Image string `json:"image"`
+	Image      string      `json:"image"`
+	Attributes []Attribute `json:"attributes"`
 }
 
 func (p *SwapMeetProcessor) Setup(address common.Address, eth interface {
@@ -48,36 +55,76 @@ func (p *SwapMeetProcessor) Setup(address common.Address, eth interface {
 }
 
 func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMeetSetRle) (func(tx *ent.Tx) error, error) {
+	male, err := p.Contract.TokenRle(nil, e.Id, 0)
+	if err != nil {
+		return nil, fmt.Errorf("getting item %s male rle: %w", e.Id.String(), err)
+	}
+
+	female, err := p.Contract.TokenRle(nil, e.Id, 1)
+	if err != nil {
+		return nil, fmt.Errorf("getting item %s female rle: %w", e.Id.String(), err)
+	}
+
+	metadata, err := p.Contract.TokenURI(nil, e.Id)
+	if err != nil {
+		return nil, fmt.Errorf("getting item %s metadata: %w", e.Id.String(), err)
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
+	if err != nil {
+		return nil, fmt.Errorf("decoding metadata: %w", err)
+	}
+
+	var parsed Metadata
+	if err := json.Unmarshal(decoded, &parsed); err != nil {
+		return nil, fmt.Errorf("unmarshalling metadata: %w", err)
+	}
+
 	return func(tx *ent.Tx) error {
-		male, err := p.Contract.TokenRle(nil, e.Id, 0)
-		if err != nil {
-			return fmt.Errorf("getting item %s male rle: %w", e.Id.String(), err)
+		create := tx.Item.Create().
+			SetID(e.Id.String())
+
+		for _, a := range parsed.Attributes {
+			switch a.Type {
+			case "Slot":
+				create = create.SetType(item.Type(strings.ToUpper(a.Value)))
+			case "Item":
+				create = create.SetName(a.Value)
+			case "Suffix":
+				create = create.SetSuffix(a.Value)
+			case "Name Prefix":
+				create = create.SetNamePrefix(a.Value)
+			case "Name Suffix":
+				create = create.SetNameSuffix(a.Value)
+			case "Augmentation":
+				create = create.SetAugmented(true)
+			}
 		}
 
-		female, err := p.Contract.TokenRle(nil, e.Id, 1)
-		if err != nil {
-			return fmt.Errorf("getting item %s female rle: %w", e.Id.String(), err)
+		greatness := 1
+		tier := item.TierCOMMON
+
+		switch len(parsed.Attributes) {
+		case 3:
+			greatness = 2
+			tier = item.TierRARE
+		case 5:
+			greatness = 3
+			tier = item.TierCUSTOM
+		case 6:
+			greatness = 4
+			tier = item.TierBLACK_MARKET
 		}
 
-		metadata, err := p.Contract.TokenURI(nil, e.Id)
-		if err != nil {
-			return fmt.Errorf("getting item %s metadata: %w", e.Id.String(), err)
-		}
-
-		decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
-		if err != nil {
-			return fmt.Errorf("decoding metadata: %w", err)
-		}
-
-		var parsed Metadata
-		if err := json.Unmarshal(decoded, &parsed); err != nil {
-			return fmt.Errorf("unmarshalling metadata: %w", err)
-		}
-
-		if err := tx.Item.UpdateOneID(e.Id.String()).SetRles(schema.RLEs{
-			Male:   hex.EncodeToString(male),
-			Female: hex.EncodeToString(female),
-		}).SetSvg(parsed.Image).Exec(ctx); err != nil {
+		if err := create.SetTier(tier).
+			SetGreatness(greatness).
+			SetRles(schema.RLEs{
+				Male:   hex.EncodeToString(male),
+				Female: hex.EncodeToString(female),
+			}).SetSvg(parsed.Image).
+			OnConflictColumns(item.FieldID).
+			UpdateNewValues().
+			Exec(ctx); err != nil {
 			return fmt.Errorf("updating item %s rles: %w", e.Id.String(), err)
 		}
 
@@ -87,12 +134,8 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMe
 
 func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings.SwapMeetTransferBatch) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
-		if err := tx.Wallet.Create().
-			SetID(e.To.Hex()).
-			OnConflictColumns(wallet.FieldID).
-			UpdateNewValues().
-			Exec(ctx); err != nil {
-			return fmt.Errorf("swapmeet: upsert to wallet: %w", err)
+		if err := ensureWallet(ctx, tx, e.To); err != nil {
+			return fmt.Errorf("swapmeet: %w", err)
 		}
 
 		if e.From != (common.Address{}) {
@@ -157,12 +200,8 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 
 func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e bindings.SwapMeetTransferSingle) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
-		if err := tx.Wallet.Create().
-			SetID(e.To.Hex()).
-			OnConflictColumns(wallet.FieldID).
-			UpdateNewValues().
-			Exec(ctx); err != nil {
-			return fmt.Errorf("swapmeet: upsert to wallet: %w", err)
+		if err := ensureWallet(ctx, tx, e.To); err != nil {
+			return fmt.Errorf("swapmeet: %w", err)
 		}
 
 		if e.From != (common.Address{}) {

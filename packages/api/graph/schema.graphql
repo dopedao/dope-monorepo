@@ -65,6 +65,7 @@ type Item implements Node {
   count: Int!
   rles: RLEs
   svg: String
+  base: Item
 }
 
 type WalletItems implements Node {
