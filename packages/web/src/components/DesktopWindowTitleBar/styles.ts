@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 
 export const Header = styled.header`
   background: #141011;
-  height: var(--header-height);
   position: sticky;
   top: 0;
   z-index: var(--header-z);
