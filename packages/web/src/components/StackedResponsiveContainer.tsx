@@ -16,21 +16,19 @@ const StackedResponsiveContainer = styled.div`
 
   // Screen > Tablet display items side by side via FlexBox
   ${media.tablet`
-    flex-direction: row;
     height: 100%;
     padding: 32px;
     gap: 16px;
+    flex-flow: row nowrap;
     & > div {
       margin: 0;
-      flex: 2;
+      flex: 1;
       overflow-y: auto;
-      height: 100%;
     }
-    flex-flow: row nowrap;
-      & > div:last-child {
-        flex: 3;
-      } 
-    `}
+    & > div:last-child {
+      flex: 2;
+    } 
+  `}
 `;
 
 export default StackedResponsiveContainer;

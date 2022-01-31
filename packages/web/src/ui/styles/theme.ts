@@ -1,4 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
+import { withTheme } from '@emotion/react';
 
 const desktopImageCss = [
   // regular bgs uncomment after cny
@@ -97,6 +98,31 @@ export default extendTheme({
           width: 'auto',
           display: 'inline-block',
         },
+        cny: {
+          backgroundColor: '#E02514',
+          color: '#ffffff',
+          textShadow: '1px 1px 0px rgba(0, 0, 0, 0.66)',
+          border: '2px solid #000000',
+          borderRadius: '4px',
+          padding: '8px 12px',
+          height: '32px',
+          boxShadow:
+            'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)',
+          fontSize: '1em',
+          lineHeight: '1em',
+          fontWeight: '400',
+          width: '100%',
+          _hover: {
+            backgroundColor: '#000',
+            color: '#fff',
+          },
+          _disabled: {
+            _hover: {
+              backgroundColor: '#000 !important',
+              color: '#fff',
+            },
+          },
+        },
         primary: {
           backgroundColor: 'var(--primary)',
           color: '#ffffff',
@@ -116,6 +142,7 @@ export default extendTheme({
           },
           _disabled: {
             _hover: {
+              backgroundColor: '#000 !important',
               color: '#000',
             },
           },

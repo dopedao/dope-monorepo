@@ -19,6 +19,7 @@ type DesktopWindowProps = {
   title: string | undefined;
   width?: number | string;
   height?: number | string;
+  background?: string;
   fullScreen?: boolean;
   onlyFullScreen?: boolean;
   fullScreenHandler?: (fullScreen: boolean) => void;
@@ -30,12 +31,12 @@ type DesktopWindowProps = {
   onMoved?: (position: any) => void;
 };
 
-const WindowWrapper = styled.div<{ width: number | string; height: number | string }>`
+const WindowWrapper = styled.div<{ width: number | string; height: number | string; background: string }>`
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #a8a9ae;
+  background: ${({ background }) => (background)};
   border: 2px solid #000;
   filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
   display: flex;
@@ -68,6 +69,7 @@ const DesktopWindow = ({
   // Smaller devices default to "full screen".
   width = 1024,
   height = 768,
+  background,
   fullScreen,
   onlyFullScreen,
   fullScreenHandler,
@@ -140,7 +142,7 @@ const DesktopWindow = ({
         </Draggable>
       )}
     >
-      <WindowWrapper className={isFullScreen ? '' : 'floating'} height={height} width={width}>
+      <WindowWrapper className={isFullScreen ? '' : 'floating'} height={height} width={width} background={ background && background.length > 0 ? background : '#a8a9ae' }>
         {!onlyFullScreen && (
           <DesktopWindowTitleBar
             title={title}
