@@ -29,13 +29,14 @@ export default class GameScene extends Scene {
   // level identifiers of the current loaded maps
   private loadedMaps: string[] = new Array();
   // level identifier of the map
-  private currentMap!: string;
+  private _currentMap!: string;
   private _mapHelper!: MapHelper;
 
   public canUseMouse: boolean = true;
 
   readonly zoom: number = 2.5;
 
+  get currentMap() { return this._currentMap; }
   get mapHelper() { return this._mapHelper; }
 
   constructor() {
@@ -91,7 +92,7 @@ export default class GameScene extends Scene {
     // register player
     networkHandler.sendMessage(UniversalEventNames.PLAYER_JOIN, {
       name: this.player.name,
-      current_map: this.currentMap,
+      current_map: this._currentMap,
       x: this.player.x,
       y: this.player.y,
     });
@@ -174,7 +175,8 @@ export default class GameScene extends Scene {
         const citizenToTalkTo = this.citizens.find(citizen => citizen.shouldFollowPath && citizen.getBounds().contains(pointer.worldX, pointer.worldY));
 
         this.player.navigator.moveTo(
-          this._mapHelper.map.collideLayer!.worldToTileX(pointer.worldX + this.mapHelper.map.collideLayer!.x), this.mapHelper.map.collideLayer!.worldToTileY(pointer.worldY + this.mapHelper.map.collideLayer!.y), 
+          pointer.worldX,
+          pointer.worldY, 
           () => {
             if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
             {
@@ -189,8 +191,8 @@ export default class GameScene extends Scene {
     this._mapHelper = new MapHelper(this);
     this.mapHelper.createMap('NYCHood2');
     this.mapHelper.createEntities();
-    this.currentMap = this.mapHelper.mapReader.level.identifier;
-    this.loadedMaps.push(this.currentMap);
+    this._currentMap = this.mapHelper.mapReader.level.identifier;
+    this.loadedMaps.push(this._currentMap);
     
     // citizens
     this.citizens.push(new Citizen(
@@ -236,7 +238,7 @@ export default class GameScene extends Scene {
     this.itemEntities.forEach(itemEntity => itemEntity.update());
 
     // update map 
-    const level = this.mapHelper.mapReader.ldtk.levels.find(l => l.identifier === this.currentMap)!;
+    const level = this.mapHelper.mapReader.ldtk.levels.find(l => l.identifier === this._currentMap)!;
     const centerMapPos = new Phaser.Math.Vector2((level.worldX + (level.worldX + level.pxWid)) / 2, (level.worldY + (level.worldY + level.pxHei)) / 2);
     const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
 
@@ -277,7 +279,7 @@ export default class GameScene extends Scene {
       {
         if (!patchMap && n.dir === dir)
         {
-          this.currentMap = lvl.identifier;
+          this._currentMap = lvl.identifier;
         }
         return;
       }

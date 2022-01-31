@@ -1,6 +1,8 @@
 import { s } from "gear-rarity/dist/image-140bf8ec";
 import PixelationPipelinePlugin from "phaser3-rex-plugins/plugins/pixelationpipeline-plugin";
 import { LDtkMapPack, LdtkReader } from "./LDtkParser";
+import PF from "pathfinding";
+
 
 export default class MapHelper
 {
@@ -35,6 +37,9 @@ export default class MapHelper
         // matterjs collisions
         if (this.map.collideLayer)
         {
+            const grid = new PF.Grid(this.map.collideLayer.layer.data.map(row => row.map(tile => tile.index)));
+            this.map.collideLayer.setData('pf_grid', grid);
+
             const tiles = this.map.collideLayer.layer.data;
             let visitedTiles: Phaser.Math.Vector2[] = new Array();
 

@@ -48,7 +48,6 @@ export class LdtkReader {
         });
         mappack.entityLayer = this.level.layerInstances.find((l:LayerInstance) => l.__type === 'Entities');
         mappack.collideLayer = mappack.intGridLayers.find(e => e.name === 'Collisions');
-
         // create entity textures
         // this.ldtk.defs.entities.forEach(e => {
         //     const tileset = this.tilesets.find(t => t.uid === e.tilesetId);
