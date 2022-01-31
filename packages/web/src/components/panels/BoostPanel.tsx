@@ -5,13 +5,14 @@ import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import { constants, utils } from 'ethers';
-import { usePaper } from 'hooks/contracts';
+import { usePaper, useSwapMeet } from 'hooks/contracts';
 import { useOptimism } from 'hooks/web3';
 import { NETWORK } from 'utils/constants';
 
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
+import { TransferSingleEvent } from '@dopewars/contracts/dist/SwapMeet';
 import { useHongbao } from 'hooks/contracts';
 
 const Stats = styled.div`
@@ -52,17 +53,23 @@ const BoostPanel = () => {
   const maxBoosts = 10;
 
   const [boosts, setBoost] = useState(minBoosts);
+  // Roll is set to the item id
+  const [roll, setRoll] = useState<string | undefined>();
   const hongbao = useHongbao();
+  const swapmeet = useSwapMeet();
   const paper = usePaper();
   const { chainId } = useOptimism();
 
   const mint = useCallback(async () => {
     const tx = await hongbao.mint({ value: utils.parseEther('' + boosts / 10) });
     const receipt = await tx.wait();
-    receipt.logs.map((log, idx, array) => {
-      debugger;
+    receipt.logs.map((log, idx) => {
+      if (idx !== 0) return;
+      const event = swapmeet.interface.parseLog(log) as unknown as TransferSingleEvent;
+      // Set roll to item id
+      setRoll(event.args.id.toString());
     });
-  }, [hongbao, boosts]);
+  }, [hongbao, swapmeet, boosts]);
 
   const ethCost = () => (boosts * 1) / 10;
   const percentChance = () => {
@@ -157,7 +164,10 @@ const BoostPanel = () => {
         <Button
           variant="cny"
           onClick={async () => {
-            const txn = await paper.approve(NETWORK[chainId].contracts.hongbao, constants.MaxUint256);
+            const txn = await paper.approve(
+              NETWORK[chainId].contracts.hongbao,
+              constants.MaxUint256,
+            );
             await txn.wait(1);
           }}
         >
