@@ -131,6 +131,7 @@ type ComplexityRoot struct {
 
 	Item struct {
 		Augmented  func(childComplexity int) int
+		Base       func(childComplexity int) int
 		Count      func(childComplexity int) int
 		Fullname   func(childComplexity int) int
 		Greatness  func(childComplexity int) int
@@ -627,6 +628,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Item.Augmented(childComplexity), true
+
+	case "Item.base":
+		if e.complexity.Item.Base == nil {
+			break
+		}
+
+		return e.complexity.Item.Base(childComplexity), true
 
 	case "Item.count":
 		if e.complexity.Item.Count == nil {
@@ -2296,6 +2304,7 @@ type Item implements Node {
   count: Int!
   rles: RLEs
   svg: String
+  base: Item
 }
 
 type WalletItems implements Node {
@@ -5035,6 +5044,38 @@ func (ec *executionContext) _Item_svg(ctx context.Context, field graphql.Collect
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Item_base(ctx context.Context, field graphql.CollectedField, obj *ent.Item) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Item",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Base(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Item)
+	fc.Result = res
+	return ec.marshalOItem2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ItemConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.ItemConnection) (ret graphql.Marshaler) {
@@ -14051,6 +14092,17 @@ func (ec *executionContext) _Item(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = ec._Item_rles(ctx, field, obj)
 		case "svg":
 			out.Values[i] = ec._Item_svg(ctx, field, obj)
+		case "base":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Item_base(ctx, field, obj)
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

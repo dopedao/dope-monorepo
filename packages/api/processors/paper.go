@@ -28,7 +28,8 @@ func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e bindings.PaperTr
 				SetID(e.To.Hex()).
 				SetPaper(schema.BigInt{Int: bal}).
 				OnConflictColumns(wallet.FieldID).
-				UpdateNewValues().Exec(ctx); err != nil {
+				SetPaper(schema.BigInt{Int: bal}).
+				Exec(ctx); err != nil {
 				return fmt.Errorf("update to wallet %s at txn %s: %w", e.To.Hex(), e.Raw.TxHash.Hex(), err)
 			}
 		}
