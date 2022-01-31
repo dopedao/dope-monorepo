@@ -64,13 +64,13 @@ contract ContractTest is DSTest {
         vm.deal(alice, 1e22);
     }
 
-    function testMintShouldGiveBase() public {
+    function testMintShouldGiveTiger() public {
         vm.startPrank(alice);
         paper.approve(address(hongbao), type(uint256).max);
         hongbao.mint();
 
         vm.roll(0); // rolls 117
-        uint256 want = TokenId.toId([7, 20, 65, 28, 0], 0x9);
+        uint256 want = TokenId.toId([7, 20, 65, 21, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
@@ -81,19 +81,31 @@ contract ContractTest is DSTest {
         paper.approve(address(hongbao), type(uint256).max);
 
         vm.roll(0); // rolls 117
-        hongbao.mint{value: 783e16}();
+        hongbao.mint{value: 883e15}();
         uint256 want = TokenId.toId([7, 20, 6, 21, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
     }
 
-    function testMintShouldGiveNotoriousTiger() public {
+    function testMintShouldRollNotoriousTiger() public {
         vm.startPrank(alice);
         paper.approve(address(hongbao), type(uint256).max);
 
         vm.roll(0); // rolls 117
-        hongbao.mint{value: 878e16}();
+        hongbao.mint{value: 978e15}();
+        uint256 want = TokenId.toId([7, 20, 20, 21, 1], 0x9);
+        assertEq(swapmeet.balanceOf(alice, want), 1);
+        assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
+        assertEq(paper.balanceOf(address(hongbao)), 5000e18);
+    }
+
+    function testMintShouldGiveNotoriousTigerForETH() public {
+        vm.startPrank(alice);
+        paper.approve(address(hongbao), type(uint256).max);
+
+        vm.roll(0); // rolls 117
+        hongbao.mint{value: 1e18}();
         uint256 want = TokenId.toId([7, 20, 20, 21, 1], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
@@ -111,5 +123,14 @@ contract ContractTest is DSTest {
 
         vm.expectRevert(abi.encodeWithSignature("Claimed()"));
         hongbao.claim(5, proof);
+    }
+
+    function testBoosts() public {
+        vm.startPrank(alice);
+        paper.approve(address(hongbao), type(uint256).max);
+
+        for (uint256 i = 0; i < 150; i += 1) {
+            hongbao.mint{value: i * 1e16}();
+        }
     }
 }
