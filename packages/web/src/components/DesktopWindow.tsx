@@ -20,7 +20,7 @@ type DesktopWindowProps = {
   width?: number | string;
   height?: number | string;
   fullScreen?: boolean;
-  fullPage?: boolean;
+  onlyFullScreen?: boolean;
   fullScreenHandler?: (fullScreen: boolean) => void;
   titleChildren?: ReactNode;
   balance?: string;
@@ -68,8 +68,8 @@ const DesktopWindow = ({
   // Smaller devices default to "full screen".
   width = 1024,
   height = 768,
-  fullScreen, // TODO…rename
-  fullPage, // These are confusing next to one another.
+  fullScreen,
+  onlyFullScreen,
   fullScreenHandler,
   titleChildren,
   children,
@@ -141,7 +141,7 @@ const DesktopWindow = ({
       )}
     >
       <WindowWrapper className={isFullScreen ? '' : 'floating'} height={height} width={width}>
-        {!fullPage && (
+        {!onlyFullScreen && (
           <DesktopWindowTitleBar
             title={title}
             isTouchDevice={isTouchDevice()}
