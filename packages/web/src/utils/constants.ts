@@ -29,6 +29,7 @@ export const NETWORK = {
       hustlers: '0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E',
       components: '0xe03C4eb2a0a797766a5DB708172e04f6A970DC7f',
       paper: '0x3F3Ef5f39a95F13c821E4a12AaE09c2446C72452',
+      hongbao: '0x117216Ec403b337F80228bFBFF3F161d727Bc3bf',
     },
     rpc: 'https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG',
     ws: 'wss://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG',

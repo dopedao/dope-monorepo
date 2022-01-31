@@ -81,7 +81,7 @@ export const useHongbao = () => {
   const { chainId, provider } = useOptimism();
 
   return useMemo(
-    () => Hongbao__factory.connect(NETWORK[chainId].contracts.hustlers, provider),
+    () => Hongbao__factory.connect(NETWORK[chainId].contracts.hongbao, provider),
     [chainId, provider],
   );
 };
