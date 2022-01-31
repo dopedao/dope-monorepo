@@ -550,6 +550,7 @@ export type HustlerWhereInput = {
 export type Item = Node & {
   __typename?: 'Item';
   augmented?: Maybe<Scalars['Boolean']>;
+  base?: Maybe<Item>;
   count: Scalars['Int'];
   fullname: Scalars['String'];
   greatness: Scalars['Int'];
@@ -1306,6 +1307,27 @@ export type HustlersWalletQueryVariables = Exact<{
 
 export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, svg?: string | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
 
+export type ProfileDopesQueryVariables = Exact<{
+  where?: InputMaybe<WalletWhereInput>;
+}>;
+
+
+export type ProfileDopesQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', dopes: Array<{ __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, tier: ItemTier, greatness: number, count: number }> }> } | null | undefined } | null | undefined> | null | undefined } };
+
+export type ProfileHustlersQueryVariables = Exact<{
+  where?: InputMaybe<WalletWhereInput>;
+}>;
+
+
+export type ProfileHustlersQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', hustlers: Array<{ __typename?: 'Hustler', id: string, name?: string | null | undefined, svg?: string | null | undefined, title?: string | null | undefined, type: HustlerType }> } | null | undefined } | null | undefined> | null | undefined } };
+
+export type ProfileGearQueryVariables = Exact<{
+  where?: InputMaybe<WalletWhereInput>;
+}>;
+
+
+export type ProfileGearQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', items: Array<{ __typename?: 'WalletItems', id: string, item: { __typename?: 'Item', id: string, count: number, fullname: string, name: string, svg?: string | null | undefined, suffix?: string | null | undefined, type: ItemType, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } }> } | null | undefined } | null | undefined> | null | undefined } };
+
 export type SearchDopeQueryVariables = Exact<{
   query: Scalars['String'];
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1807,6 +1829,152 @@ export const useInfiniteHustlersWalletQuery = <
     const query = useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument)
     return useInfiniteQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet.infinite'] : ['HustlersWallet.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const ProfileDopesDocument = `
+    query ProfileDopes($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        dopes {
+          id
+          rank
+          score
+          claimed
+          opened
+          items {
+            id
+            fullname
+            type
+            name
+            tier
+            greatness
+            count
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useProfileDopesQuery = <
+      TData = ProfileDopesQuery,
+      TError = unknown
+    >(
+      variables?: ProfileDopesQueryVariables,
+      options?: UseQueryOptions<ProfileDopesQuery, TError, TData>
+    ) =>
+    useQuery<ProfileDopesQuery, TError, TData>(
+      variables === undefined ? ['ProfileDopes'] : ['ProfileDopes', variables],
+      useFetchData<ProfileDopesQuery, ProfileDopesQueryVariables>(ProfileDopesDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteProfileDopesQuery = <
+      TData = ProfileDopesQuery,
+      TError = unknown
+    >(
+      variables?: ProfileDopesQueryVariables,
+      options?: UseInfiniteQueryOptions<ProfileDopesQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<ProfileDopesQuery, ProfileDopesQueryVariables>(ProfileDopesDocument)
+    return useInfiniteQuery<ProfileDopesQuery, TError, TData>(
+      variables === undefined ? ['ProfileDopes.infinite'] : ['ProfileDopes.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const ProfileHustlersDocument = `
+    query ProfileHustlers($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        hustlers {
+          id
+          name
+          svg
+          title
+          type
+        }
+      }
+    }
+  }
+}
+    `;
+export const useProfileHustlersQuery = <
+      TData = ProfileHustlersQuery,
+      TError = unknown
+    >(
+      variables?: ProfileHustlersQueryVariables,
+      options?: UseQueryOptions<ProfileHustlersQuery, TError, TData>
+    ) =>
+    useQuery<ProfileHustlersQuery, TError, TData>(
+      variables === undefined ? ['ProfileHustlers'] : ['ProfileHustlers', variables],
+      useFetchData<ProfileHustlersQuery, ProfileHustlersQueryVariables>(ProfileHustlersDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteProfileHustlersQuery = <
+      TData = ProfileHustlersQuery,
+      TError = unknown
+    >(
+      variables?: ProfileHustlersQueryVariables,
+      options?: UseInfiniteQueryOptions<ProfileHustlersQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<ProfileHustlersQuery, ProfileHustlersQueryVariables>(ProfileHustlersDocument)
+    return useInfiniteQuery<ProfileHustlersQuery, TError, TData>(
+      variables === undefined ? ['ProfileHustlers.infinite'] : ['ProfileHustlers.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const ProfileGearDocument = `
+    query ProfileGear($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        items {
+          id
+          item {
+            id
+            count
+            fullname
+            name
+            svg
+            suffix
+            type
+            base {
+              svg
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useProfileGearQuery = <
+      TData = ProfileGearQuery,
+      TError = unknown
+    >(
+      variables?: ProfileGearQueryVariables,
+      options?: UseQueryOptions<ProfileGearQuery, TError, TData>
+    ) =>
+    useQuery<ProfileGearQuery, TError, TData>(
+      variables === undefined ? ['ProfileGear'] : ['ProfileGear', variables],
+      useFetchData<ProfileGearQuery, ProfileGearQueryVariables>(ProfileGearDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteProfileGearQuery = <
+      TData = ProfileGearQuery,
+      TError = unknown
+    >(
+      variables?: ProfileGearQueryVariables,
+      options?: UseInfiniteQueryOptions<ProfileGearQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<ProfileGearQuery, ProfileGearQueryVariables>(ProfileGearDocument)
+    return useInfiniteQuery<ProfileGearQuery, TError, TData>(
+      variables === undefined ? ['ProfileGear.infinite'] : ['ProfileGear.infinite', variables],
       (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
     )};
