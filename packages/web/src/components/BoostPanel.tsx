@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { BreadcrumbLink, Button } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import { Image } from "@chakra-ui/react";
 import { useState } from "react";
@@ -73,14 +73,19 @@ const BoostPanel = () => {
   const getBoostImage = () => {
     const imgPrefix = '/images/lunar_new_year_2022/'; 
     let imgPath;
-    if (boosts == 0) {
-      imgPath = imgPrefix + 'hongbao-with-bg.png';
-    } else if (boosts == maxBoosts) {
-      imgPath = imgPrefix + 'golden-mask-black.png';
-    } else {
-      imgPath = imgPrefix + 'mask-roulette_3.gif';
-    };
-    return imgPath;
+    switch (boosts) {
+      case 0:
+        return imgPrefix + 'hongbao-with-bg.png';
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+        return imgPrefix + 'mask-roulette_2.gif';
+      case maxBoosts:
+        return imgPrefix + 'golden-mask-black.png';
+      default:
+        return imgPrefix + 'mask-roulette_3.gif';
+    }
   };
   
   return(
