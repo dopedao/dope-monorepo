@@ -15,12 +15,7 @@ const HongbaoPanel = () => {
   const hongbao = useHongbao();
   const { account } = useWeb3React();
 
-  const amount = useMemo(() => {
-    if (account) {
-      return config.airdrop[account!].toString();
-    }
-    return '0';
-  }, [account]);
+  const amount = useMemo(() => config.airdrop[account!].toString(), [account]);
   const claim = useCallback(() => {
     const proof = getProof(account!, amount);
     hongbao.claim(amount, proof);
