@@ -1,14 +1,19 @@
-import { HStack, Text, Wrap, WrapItem } from "@chakra-ui/react"
 import { FC, useMemo } from "react"
-import { ProfileGear } from "../types"
-import PanelBody from "components/PanelBody";
-import { useProfileGearQuery } from "generated/graphql";
-import SectionHeader from "./SectionHeader";
-import ItemCount from "./ItemCount";
-import SectionContent from "./SectionContent";
+import { HStack, Stack, Wrap, WrapItem } from "@chakra-ui/react"
 import { useWeb3React } from "@web3-react/core";
+
+import PanelBody from "components/PanelBody";
+import { Item, useProfileGearQuery, WalletItems } from "generated/graphql";
+
+import ItemCount from "./ItemCount";
 import ProfileCard from "./ProfileCard";
 import ProfileCardHeader from "./ProfileCardHeader";
+import SectionContent from "./SectionContent";
+import SectionHeader from "./SectionHeader";
+
+type ProfileGear = Pick<WalletItems, "id"> & {
+  item: Pick<Item, "id" | "count" | "fullname" | "name" | "svg" | "suffix" | "type">
+}
 
 const getOrigin = (suffix?: string | null): string => {
   if (!suffix) return "..."
@@ -60,11 +65,13 @@ const GearWrapper: FC = () => {
                       {item.name}
                     </ProfileCardHeader>
                     <PanelBody>
-                      {item.svg && <img src={item.svg} />}
-                      <Text>Type: {item.type}</Text>
-                      <Text>Origin: {origin}</Text>
-                      <Text>Title: {item.fullname}</Text>
-                      <Text>In Stock: {item.count}</Text>
+                      <Stack>
+                        {item.svg && <img src={item.svg} />}
+                        <span>Type: {item.type}</span>
+                        <span>Origin: {origin}</span>
+                        <span>Title: {item.fullname}</span>
+                        <span>In Stock: {item.count}</span>
+                      </Stack>
                     </PanelBody>
                   </ProfileCard>
                 </WrapItem>

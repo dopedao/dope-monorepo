@@ -1,14 +1,17 @@
-import { Stack, Image, Text, Wrap, WrapItem, HStack } from "@chakra-ui/react"
 import { FC, useMemo } from "react"
-import { ProfileHustler } from "../types"
-import PanelBody from "components/PanelBody";
-import { HustlerType, useProfileHustlersQuery } from "generated/graphql";
+import { Stack, Image, Wrap, WrapItem, HStack } from "@chakra-ui/react"
 import { useWeb3React } from "@web3-react/core";
-import SectionHeader from "./SectionHeader";
+
+import PanelBody from "components/PanelBody";
+import { Hustler, HustlerType, useProfileHustlersQuery } from "generated/graphql";
+
 import ItemCount from "./ItemCount";
-import SectionContent from "./SectionContent";
 import ProfileCardHeader from "./ProfileCardHeader";
 import ProfileCard from "./ProfileCard";
+import SectionContent from "./SectionContent";
+import SectionHeader from "./SectionHeader";
+
+type ProfileHustler = Pick<Hustler, "id" | "name" | "svg" | "title" | "type">
 
 const formatType = (type: HustlerType): string => {
   if (type === HustlerType.OriginalGangsta) return "OG"
@@ -60,8 +63,8 @@ const HustlersWrapper: FC = () => {
                     <PanelBody>
                       {svg && <Image borderRadius="md" src={svg} />}
                       <Stack mt={4}>
-                        <Text p={0}>Name: {name}</Text>
-                        <Text p={0}>Title: {title}</Text>
+                        <span>Name: {name}</span>
+                        <span>Title: {title}</span>
                       </Stack>
                     </PanelBody>
                   </ProfileCard>

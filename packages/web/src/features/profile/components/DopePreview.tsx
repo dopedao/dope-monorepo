@@ -1,5 +1,5 @@
 import { FC, useMemo } from "react"
-import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/react"
+import { Box, Flex, HStack, Stack } from "@chakra-ui/react"
 
 import { Dope, Item, ItemTier } from "generated/graphql"
 
@@ -49,8 +49,8 @@ const DopePreview: FC<DopePreviewProps> = ({
 
   return (
     <Box background="black" borderRadius="md" p={4}>
-      <Stack>
-        <Text color="#fff" opacity={0.5}>( {dope.rank} / 8000 )</Text>
+      <Stack color="gray">
+        <span>( {dope.rank} / 8000 )</span>
         {[
           ItemTier.BlackMarket,
           ItemTier.Custom,
@@ -60,10 +60,10 @@ const DopePreview: FC<DopePreviewProps> = ({
           return (
             <Flex key={tier} justify="space-between">
               <HStack color={TIER_META[tier].color} spacing={2}>
-                <Text p={0}>●</Text>
-                <Text p={0}>{tierCounts[tier]}</Text>
+                <span>●</span>
+                <span>{tierCounts[tier]}</span>
               </HStack>
-              <Text color="#fff" opacity={0.5} p={0}>{TIER_META[tier].label}</Text>
+              <span>{TIER_META[tier].label}</span>
             </Flex>
           )
         })}
