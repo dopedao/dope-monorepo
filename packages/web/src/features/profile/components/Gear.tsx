@@ -43,7 +43,7 @@ const GearWrapper: FC = () => {
     <>
       <SectionHeader>
         <HStack>
-          <span>Hustlers</span>
+          <span>Gear</span>
           <ItemCount count={gear.length} />
         </HStack>
       </SectionHeader>

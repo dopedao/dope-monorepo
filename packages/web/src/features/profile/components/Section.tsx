@@ -9,7 +9,7 @@ const Section: FC<SectionProps> = ({
   children,
 }) => {
   return (
-    <AccordionItem border="1px">
+    <AccordionItem borderBottom="2px">
       {children}
     </AccordionItem>
   )

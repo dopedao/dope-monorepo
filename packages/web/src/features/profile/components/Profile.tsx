@@ -8,7 +8,6 @@ import Hustlers from './Hustlers';
 const Profile = () => {
   return (
     <Accordion
-      allowMultiple
       allowToggle
       background="#fff"
       defaultIndex={0}
