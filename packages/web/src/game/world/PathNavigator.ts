@@ -156,6 +156,14 @@ export default class PathNavigator
             // normalize and scale the velocity so that sprite can't move faster along a diagonal
             const newVel = new Phaser.Math.Vector2((this.hustler.body as MatterJS.BodyType).velocity).normalize().scale(Hustler.DEFAULT_VELOCITY);
             this.hustler.setVelocity(newVel.x, newVel.y);
+            this.hustler.moving = true;
+        }
+
+
+        // stuck
+        if (willMoveFlag && this.target && this.previousPosition?.equals(this.hustler.body.position))
+        {
+            this.cancel();
         }
 
         // if stuck in a corner, move in the direction of the other corner

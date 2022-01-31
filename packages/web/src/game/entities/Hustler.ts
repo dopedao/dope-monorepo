@@ -26,6 +26,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     // the last direction of the player
     // cant be None
     private _lastDirection: Direction = Direction.None;
+    // is hustler currently moving?
+    public moving: boolean = false;
 
     private _model: HustlerModel;
 
@@ -204,6 +206,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
     update()
     {
+        this.moving = false;
         // make hovertext follow us
         this.hoverText?.setPosition(
             (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 

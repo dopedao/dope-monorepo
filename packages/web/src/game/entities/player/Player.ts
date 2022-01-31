@@ -11,6 +11,8 @@ import ENS, { getEnsAddress } from "@ensdomains/ensjs";
 import UIScene from "game/scenes/UI";
 import BBCodeText from "phaser3-rex-plugins/plugins/bbcodetext";
 import { getShortAddress } from "utils/utils";
+import NetworkHandler from "game/handlers/network/NetworkHandler";
+import { UniversalEventNames } from "game/handlers/network/types";
 
 export default class Player extends Hustler
 {
@@ -24,8 +26,10 @@ export default class Player extends Hustler
     private _inventoryOpen: boolean = false;
     private _busy: boolean = false;
 
-    private readonly _baseDepth: number;
+    private _lastMoveTimestamp: number = 0;
 
+    private readonly _baseDepth: number;
+    
     get interactSensor() { return this._interactSensor; }
     
     get inventory() { return this._inventory; }
@@ -197,5 +201,34 @@ export default class Player extends Hustler
 
         // takes input and update player
         this.controller.update();
+
+        if (this.moving)
+        {
+            if (Date.now() -  this._lastMoveTimestamp > PlayerController.MOVE_TICKRATE * 1000)
+            {
+                this._lastMoveTimestamp = Date.now();
+
+                if (NetworkHandler.getInstance().connected)
+                    NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+                        x: this.x,
+                        y: this.y,
+                        direction: this.moveDirection,
+                    });
+            }
+
+            // if player stopped moving
+            setTimeout(() => {
+                if (!this.moving)
+                {
+                    if (NetworkHandler.getInstance().connected)
+                        NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+                            x: this.x,
+                            y: this.y,
+                            direction: this.moveDirection,
+                        });
+                    this._lastMoveTimestamp = 0;
+                }
+            }, 50);
+        } 
     }
 }
