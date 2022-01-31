@@ -2,7 +2,6 @@ import { Button, Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import AppWindowOptimism from 'components/AppWindowOptimism';
 import BoostPanel from 'components/panels/BoostPanel';
-import DesktopWindow from "components/DesktopWindow";
 import HongbaoPanel from 'components/panels/HongbaoPanel';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';

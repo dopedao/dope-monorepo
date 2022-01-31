@@ -5,6 +5,7 @@ import { getProof } from 'utils/merkleproof';
 import config from 'config'; // Airdrop config
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/react';
+import { Hongbao } from '@dopewars/contracts/dist';
 
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
@@ -16,9 +17,13 @@ const HongbaoPanel = () => {
   const { account } = useWeb3React();
 
   const amount = useMemo(() => config.airdrop[account!].toString(), [account]);
-  const claim = useCallback(() => {
+  const claim = useCallback(async () => {
     const proof = getProof(account!, amount);
-    hongbao.claim(amount, proof);
+    const tx = await hongbao.claim(amount, proof);
+    const receipt = await tx.wait();
+    receipt.logs.map((log, idx, array) => {
+      debugger;
+    });
   }, [hongbao, account, amount]);
 
   return (
