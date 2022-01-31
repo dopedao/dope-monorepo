@@ -1,9 +1,9 @@
 import { FC, useMemo } from "react"
-import { HStack, Image, Stack } from "@chakra-ui/react"
+import { Button, HStack, Image, Stack } from "@chakra-ui/react"
 import { useWeb3React } from "@web3-react/core";
 
 import PanelBody from "components/PanelBody";
-import { Item, Maybe, useProfileGearQuery, WalletItems } from "generated/graphql";
+import { Item, Maybe, useInfiniteProfileGearQuery, WalletItems } from "generated/graphql";
 
 import ItemCount from "./ItemCount";
 import ProfileCard from "./ProfileCard";
@@ -11,13 +11,15 @@ import ProfileCardHeader from "./ProfileCardHeader";
 import SectionContent from "./SectionContent";
 import SectionHeader from "./SectionHeader";
 import CardContainer from "./CardContainer";
+import LoadingBlock from "components/LoadingBlock";
 
 type ProfileItem = Pick<Item, "id" | "count" | "fullname" | "name" | "svg" | "suffix" | "type"> & {
   base?: Maybe<Pick<Item, "svg">>
 }
 
-type ProfileGear = Pick<WalletItems, "id"> & {
-  item: ProfileItem
+type GearData = {
+  items: ProfileItem[]
+  totalCount: number
 }
 
 const getOrigin = (suffix?: string | null): string => {
@@ -35,22 +37,48 @@ const getImageSrc = (item: ProfileItem): string => {
 const GearWrapper: FC = () => {
   const { account } = useWeb3React()
 
-  const { data, isFetching } = useProfileGearQuery({
+  const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileGearQuery({
     where: {
-      id: account,
+      hasWalletsWith: [{
+        hasWalletWith: [{
+          id: account,
+        }],
+      }],
+    },
+    first: 50,
+  }, {
+    getNextPageParam: lastPage => {
+      if (lastPage.items.pageInfo.hasNextPage) {
+        return {
+          after: lastPage.items.pageInfo.endCursor,
+        };
+      }
+      return false;
     },
   })
 
-  const gear = useMemo(() => {
-    if (!data?.wallets.edges) return []
+  const gearData: GearData = useMemo(() => {
+    const defaultValue = { items: [], totalCount: 0 }
 
-    return data.wallets.edges?.reduce((result, edge) => {
-      if (!edge?.node?.items) return result
+    if (!data?.pages) return defaultValue
 
-      const { items } = edge.node
+    return data.pages.reduce((result, page) => {
+      if (!page.items.edges) return result
 
-      return [...result, ...items]
-    }, [] as ProfileGear[])
+      const { totalCount } = page.items
+
+      return {
+        totalCount,
+        items: [
+          ...result.items,
+          ...page.items.edges.reduce((result, edge) => {
+            if (!edge?.node) return result
+
+            return [...result, edge.node]
+          }, [] as ProfileItem[])
+        ]
+      }
+    }, defaultValue as GearData)
   }, [data])
 
   return (
@@ -58,18 +86,21 @@ const GearWrapper: FC = () => {
       <SectionHeader>
         <HStack>
           <span>Gear</span>
-          <ItemCount count={gear.length} />
+          <ItemCount count={gearData.totalCount} />
         </HStack>
       </SectionHeader>
-      <SectionContent isFetching={isFetching} minH={isFetching ? 200 : 0}>
-        {gear.length ? (
+      <SectionContent
+        isFetching={isFetching && !gearData.items.length}
+        minH={isFetching ? 200 : 0}
+      >
+        {gearData.items.length ? (
           <CardContainer>
-            {gear.map(({ id, item }) => {
+            {gearData.items.map((item) => {
               const origin = getOrigin(item.suffix)
               const imageSrc = getImageSrc(item)
 
               return (
-                <ProfileCard key={id}>
+                <ProfileCard key={item.id}>
                   <ProfileCardHeader>
                     {item.name}
                   </ProfileCardHeader>
@@ -85,6 +116,8 @@ const GearWrapper: FC = () => {
                 </ProfileCard>
               )
             })}
+            {isFetching && gearData.items.length && <LoadingBlock maxRows={1} />}
+            {hasNextPage && <Button onClick={() => fetchNextPage()}>Load more</Button>}
           </CardContainer>
         ) : (
           <span>This wallet does not have any Gear</span>
