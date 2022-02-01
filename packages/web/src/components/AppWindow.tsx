@@ -30,11 +30,11 @@ const getBodyPadding = () => {
   return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
 };
 
-const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean }>`
+const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean; background: string | undefined }>`
   position: relative;
   height: 100%;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
-  background-color: #fff;
+  background: ${({ background }) => (background ? background : '#a8a9ae')}
   padding: ${({ padBody }) => (padBody ? getBodyPadding() : '0px')};
 `;
 
@@ -68,7 +68,7 @@ export default function AppWindow({
         {requiresWalletConnection && !account ? (
           <ConnectWallet />
         ) : (
-          <AppWindowBody className="appWindowBody" scrollable={scrollable} padBody={padBody}>
+          <AppWindowBody className="appWindowBody" background={background} scrollable={scrollable} padBody={padBody}>
             {children}
           </AppWindowBody>
         )}

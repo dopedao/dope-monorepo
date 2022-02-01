@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { media } from 'ui/styles/mixins';
 
 // Contains side-by-side columns on desktop, stacked items on mobile.
+// Default, ratio is 1:2 with the left panel being more slim.
 const StackedResponsiveContainer = styled.div`
   // Mobile phones just stack regularly with box layout
   padding: 16px;

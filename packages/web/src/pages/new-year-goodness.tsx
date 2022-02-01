@@ -31,8 +31,6 @@ const EventHeader = styled.div`
 `;
 
 const EventContainer = styled.div`
-  height: 100%;
-  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -46,7 +44,13 @@ const EventContainer = styled.div`
 const LunarNewYear = () => {
 
   return(
-    <AppWindowOptimism title="I Hope You Get Rich" background="#FF6464" requiresWalletConnection>
+    <AppWindowOptimism 
+      requiresWalletConnection
+      title="I Hope You Get Rich" 
+      background="#FF6464" 
+      padBody={false}
+      scrollable={true}
+    >
       <EventContainer>
         <EventHeader>
           {lanternImg}

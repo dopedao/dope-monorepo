@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
-import { css } from '@emotion/react';
 import { CloseButton } from '@chakra-ui/close-button';
+import { css } from '@emotion/react';
+import { useEffect, useState } from 'react';
+import { useSwitchEthereum } from 'hooks/web3';
 import { useWalletQuery } from 'generated/graphql';
-import LoadingBlock from 'components/LoadingBlock';
+import { useWeb3React } from '@web3-react/core';
 import DopeCard from 'features/dope/components/DopeCard';
 import DopeTable from 'features/dope/components/DopeTable';
+import LoadingBlock from 'components/LoadingBlock';
 import NoDopeCard from 'features/dope/components/NoDopeCard';
-import { useSwitchEthereum } from 'hooks/web3';
 import StickyNote from 'components/StickyNote';
-import { FlexFiftyContainer } from './styles';
+import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
 const DopeDetails = () => {
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
@@ -52,21 +52,21 @@ const DopeDetails = () => {
                 padding-bottom: unset;
               `}
             >
-              You should switch to Main network to customize your hustler.
+              Please switch to Ethereum Main Network.
             </p>{' '}
             <CloseButton onClick={handleCloseAlert} />
           </div>
         </StickyNote>
       )}
       {loading ? (
-        <FlexFiftyContainer>
+        <StackedResponsiveContainer>
           <LoadingBlock />
           <LoadingBlock />
-        </FlexFiftyContainer>
+        </StackedResponsiveContainer>
       ) : !data?.wallets.edges![0]?.node?.dopes ? (
         <NoDopeCard />
       ) : (
-        <FlexFiftyContainer>
+        <StackedResponsiveContainer>
           {data?.wallets.edges?.[0] && (
             <DopeTable
               data={data.wallets.edges[0].node.dopes.map(
@@ -89,7 +89,7 @@ const DopeDetails = () => {
               isExpanded
             />
           )}
-        </FlexFiftyContainer>
+        </StackedResponsiveContainer>
       )}
     </>
   );

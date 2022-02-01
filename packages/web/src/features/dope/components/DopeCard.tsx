@@ -75,7 +75,9 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: 
           overflow: hidden;
         }
         display: flex;
-        flex: 1;
+        // Override default StackedResponsiveContainer
+        // ratio where 2nd panel would be wider on /dope
+        flex: 1 !important;
         justify-content: space-between;
         align-items: stretch;
         flex-direction: column;
