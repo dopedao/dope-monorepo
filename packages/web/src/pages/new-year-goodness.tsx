@@ -62,7 +62,7 @@ const LunarNewYear = () => {
           <PanelContainer>
             <PanelBody>
               <h3>
-                Free airdrop for all hustlers
+                Free airdrop for all Hustlers
               </h3>
               <div css={css`display:flex;align-items:center;justify-content:center`}>
                 <Image src="/images/lunar_new_year_2022/free_accessories.png" alt="Free Airdrop Accessories" css={css`width:80%`} />
@@ -83,7 +83,7 @@ const LunarNewYear = () => {
           <PanelContainer>
             <PanelBody>
               <h3>
-                New RARE accessories for your Hustler
+                ✨ Limited-edition, rare accessories ✨
               </h3>
               <p>
                 In addition to the gifts above, we&apos;re launching a celebratory mask drop. From Feb. 1st – Feb. 15th, 2022 you can purchase a Tiger Mask for 5000 $PAPER and try your luck at a chance to win more rare masks!
@@ -91,10 +91,10 @@ const LunarNewYear = () => {
               <Image src="/images/lunar_new_year_2022/walking_hustlers.png" alt="Walking Hustlers with Dragon" />
               <h3>Mask boost lotto</h3>
               <p>
-                <em>Boost 0.1eth for a chance to receive a random zodiac mask.</em> You could receive a rare Tiger Mask, or a super rare Golden Tiger Mask.
+                <em>Boost 0.1Ξ for a chance to receive a random zodiac mask.</em> You could receive a rare Tiger Mask, or a super rare Golden Tiger Mask.
               </p>
               <p>
-                Each 0.1eth boost increases your odds by 10%. Spend 1 eth for a guaranteed Golden Tiger Mask.
+                Each boost increases your odds by 10%. Spend 1Ξ for a guaranteed Golden Tiger Mask.
               </p>
             </PanelBody>
           </PanelContainer>

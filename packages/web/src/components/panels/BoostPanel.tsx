@@ -131,7 +131,7 @@ const BoostPanel = () => {
                 color: var(--gray-400);
               `}
             >
-              ( {ethCost()} Ξ + $5000P )
+              ( {ethCost()}Ξ + $5000P )
             </div>
           </div>
           <div
