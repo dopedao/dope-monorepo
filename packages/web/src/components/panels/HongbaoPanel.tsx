@@ -60,7 +60,7 @@ const HongbaoPanel = () => {
   return (
     <PanelContainer>
       { eligibleForAirdrop && <>
-        <PanelTitleBar css={css`text-align:center;`}>
+        <PanelTitleBar centered>
           { !claimed ? 'A gift for you' : 'Enjoy your gift' }
         </PanelTitleBar>
         <PanelBody>
