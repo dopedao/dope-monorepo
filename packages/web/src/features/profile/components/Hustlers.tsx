@@ -1,9 +1,9 @@
 import { FC, useMemo } from "react"
-import { Stack, Image, HStack } from "@chakra-ui/react"
+import { Stack, Image, HStack, Button } from "@chakra-ui/react"
 import { useWeb3React } from "@web3-react/core";
 
 import PanelBody from "components/PanelBody";
-import { Hustler, HustlerType, useProfileHustlersQuery } from "generated/graphql";
+import { Hustler, HustlerType, useInfiniteProfileHustlersQuery } from "generated/graphql";
 
 import ItemCount from "./ItemCount";
 import ProfileCardHeader from "./ProfileCardHeader";
@@ -11,8 +11,14 @@ import ProfileCard from "./ProfileCard";
 import SectionContent from "./SectionContent";
 import SectionHeader from "./SectionHeader";
 import CardContainer from "./CardContainer";
+import LoadingBlock from "components/LoadingBlock";
 
 type ProfileHustler = Pick<Hustler, "id" | "name" | "svg" | "title" | "type">
+
+type HustlerData = {
+  hustlers: ProfileHustler[]
+  totalCount: number
+}
 
 const formatType = (type: HustlerType): string => {
   if (type === HustlerType.OriginalGangsta) return "OG"
@@ -20,25 +26,49 @@ const formatType = (type: HustlerType): string => {
   return "Hustler"
 }
 
-const HustlersWrapper: FC = () => {
+const Hustlers: FC = () => {
   const { account } = useWeb3React()
 
-  const { data, isFetching } = useProfileHustlersQuery({
+  const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileHustlersQuery({
     where: {
-      id: account,
+      hasWalletWith: [{
+        id: account,
+      }],
+    },
+    first: 50,
+  }, {
+    getNextPageParam: lastPage => {
+      if (lastPage.hustlers.pageInfo.hasNextPage) {
+        return {
+          after: lastPage.hustlers.pageInfo.endCursor,
+        };
+      }
+      return false;
     },
   })
 
-  const hustlers = useMemo(() => {
-    if (!data?.wallets.edges) return []
+  const hustlerData: HustlerData = useMemo(() => {
+    const defaultValue = { hustlers: [], totalCount: 0 }
 
-    return data.wallets.edges?.reduce((result, edge) => {
-      if (!edge?.node?.hustlers) return result
+    if (!data?.pages) return defaultValue
 
-      const { hustlers } = edge.node
+    return data.pages.reduce((result, page) => {
+      if (!page.hustlers.edges) return result
 
-      return [...result, ...hustlers]
-    }, [] as ProfileHustler[])
+      const { totalCount } = page.hustlers
+
+      return {
+        totalCount,
+        hustlers: [
+          ...result.hustlers,
+          ...page.hustlers.edges.reduce((result, edge) => {
+            if (!edge?.node) return result
+
+            return [...result, edge.node]
+          }, [] as ProfileHustler[])
+        ]
+      }
+    }, defaultValue as HustlerData)
   }, [data])
 
   return (
@@ -46,17 +76,20 @@ const HustlersWrapper: FC = () => {
       <SectionHeader>
         <HStack>
           <span>Hustlers</span>
-          <ItemCount count={hustlers.length} />
+          <ItemCount count={hustlerData.totalCount} />
         </HStack>
       </SectionHeader>
-      <SectionContent isFetching={isFetching} minH={isFetching ? 200 : 0}>
-        {hustlers.length ? (
+      <SectionContent
+        isFetching={isFetching && !hustlerData.hustlers.length}
+        minH={isFetching ? 200 : 0}
+      >
+        {hustlerData.hustlers.length ? (
           <CardContainer>
-            {hustlers.map(({ id, name, svg, title, type }) => {
+            {hustlerData.hustlers.map(({ id, name, svg, title, type }) => {
               const formattedType = formatType(type)
 
               return (
-                <ProfileCard>
+                <ProfileCard key={id}>
                   <ProfileCardHeader>
                     {formattedType} #{id}
                   </ProfileCardHeader>
@@ -70,6 +103,8 @@ const HustlersWrapper: FC = () => {
                 </ProfileCard>
               )
             })}
+            {isFetching && hustlerData.hustlers.length && <LoadingBlock maxRows={1} />}
+            {hasNextPage && <Button onClick={() => fetchNextPage()}>Load more</Button>}
           </CardContainer>
         ) : (
           <span>This wallet does not have any Hustlers</span>
@@ -79,4 +114,4 @@ const HustlersWrapper: FC = () => {
   )
 }
 
-export default HustlersWrapper
+export default Hustlers
