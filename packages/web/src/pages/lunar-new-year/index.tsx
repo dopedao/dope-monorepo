@@ -1,8 +1,8 @@
 import { Button, Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import AppWindowOptimism from 'components/AppWindowOptimism';
-import MaskBoostPanel from 'components/panels/MaskBoostPanel';
-import HongbaoPanel from 'components/panels/HongbaoPanel';
+import MaskBoostPanel from 'components/lunar_new_year/MaskBoostPanel';
+import HongbaoPanel from 'components/lunar_new_year/HongbaoPanel';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
