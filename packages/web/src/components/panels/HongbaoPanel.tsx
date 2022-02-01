@@ -1,11 +1,12 @@
 import { Button } from '@chakra-ui/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { getProof } from 'utils/merkleproof';
 import config from 'config'; // Airdrop config
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/react';
 import { OpenedEvent } from '@dopewars/contracts/dist/Hongbao';
+import { solidityKeccak256 } from 'ethers/lib/utils';
 
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
@@ -21,8 +22,16 @@ const HongbaoPanel = () => {
   // if event.args.typ == 1
   //      Item reward. event.args.value is the item id
   const [opens, setOpens] = useState<OpenedEvent[]>();
+  const [claimed, setClaimed] = useState<boolean>();
 
   const amount = useMemo(() => config.airdrop[account!].toString(), [account]);
+  useEffect(() => {
+    hongbao
+      .claimed(
+        Buffer.from(solidityKeccak256(['address', 'uint256'], [account, amount]).slice(2), 'hex'),
+      )
+      .then(setClaimed);
+  }, [hongbao, account, amount]);
   const claim = useCallback(async () => {
     const proof = getProof(account!, amount);
     const tx = await hongbao.claim(amount, proof);
@@ -43,8 +52,8 @@ const HongbaoPanel = () => {
         <Image src="/images/lunar_new_year_2022/hongbao-with-bg.png" alt="A surprise awaits you" />
       </PanelBody>
       <PanelFooter>
-        <Button variant="cny" onClick={claim}>
-          Open {amount} Envelopes
+        <Button variant="cny" onClick={claim} disabled={claimed}>
+          {claimed ? 'Already Claimed!' : `Open ${amount} Envelopes`}
         </Button>
       </PanelFooter>
     </PanelContainer>
