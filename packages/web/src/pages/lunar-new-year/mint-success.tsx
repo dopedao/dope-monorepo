@@ -15,6 +15,21 @@ const FireworksShow = styled.div`
     max-height: 70vh;
   }
 `;
+const LogoContainer = styled.div`
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  img {
+    margin: auto;
+    width: 50%;
+  }
+`;
 
 const MintSuccess = () => {
 
@@ -27,6 +42,9 @@ const MintSuccess = () => {
       scrollable={true}
     >
       <EventHeader />
+      <LogoContainer>
+        <Image src="/images/Logo-Gold.png" alt="Dope Wars" />
+      </LogoContainer>
       <FireworksShow>
         <Image src="/images/lunar_new_year_2022/firecrackers.gif" alt="Fireworks" />
         <Image src="/images/lunar_new_year_2022/firecrackers.gif" alt="Fireworks" />
