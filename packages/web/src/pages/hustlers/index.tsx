@@ -17,6 +17,7 @@ import LoadingBlock from 'components/LoadingBlock';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import DialogSwitchNetwork from 'components/DialogSwitchNetwork';
 import styled from '@emotion/styled';
+import StickyNote from 'components/StickyNote';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 const streetBackground =
@@ -107,9 +108,9 @@ const Hustlers = () => {
   return (
     <AppWindow requiresWalletConnection={true} padBody={false} navbar={<DopeWarsExeNav />}>
       <Head title="Your Hustler Squad" />
-      {/* {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
+      {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
         <DialogSwitchNetwork networkName="Optimism" />
-      )} */}
+      )}
       {account && router.query.c === 'true' && showSuccessAlert && (
         <StickyNote>
           <div
