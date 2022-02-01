@@ -65,7 +65,9 @@ const HongbaoPanel = () => {
         </PanelTitleBar>
         <PanelBody>
           <Image 
-            src="/images/lunar_new_year_2022/hongbao-with-bg.png" 
+            src={
+              `/images/lunar_new_year_2022/${claimed ? 'hongbao-with-bg.png' : 'hongbao_animated.gif'}` 
+            }
             alt="A surprise awaits you" 
           />
         </PanelBody>
