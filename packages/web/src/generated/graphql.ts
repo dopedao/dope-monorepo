@@ -1308,25 +1308,31 @@ export type HustlersWalletQueryVariables = Exact<{
 export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, svg?: string | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type ProfileDopesQueryVariables = Exact<{
-  where?: InputMaybe<WalletWhereInput>;
+  where?: InputMaybe<DopeWhereInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['Cursor']>;
 }>;
 
 
-export type ProfileDopesQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', dopes: Array<{ __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, tier: ItemTier, greatness: number, count: number }> }> } | null | undefined } | null | undefined> | null | undefined } };
+export type ProfileDopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, tier: ItemTier, greatness: number, count: number }> } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
 
 export type ProfileHustlersQueryVariables = Exact<{
-  where?: InputMaybe<WalletWhereInput>;
+  where?: InputMaybe<HustlerWhereInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['Cursor']>;
 }>;
 
 
-export type ProfileHustlersQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', hustlers: Array<{ __typename?: 'Hustler', id: string, name?: string | null | undefined, svg?: string | null | undefined, title?: string | null | undefined, type: HustlerType }> } | null | undefined } | null | undefined> | null | undefined } };
+export type ProfileHustlersQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', totalCount: number, edges?: Array<{ __typename?: 'HustlerEdge', node?: { __typename?: 'Hustler', id: string, name?: string | null | undefined, svg?: string | null | undefined, title?: string | null | undefined, type: HustlerType } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
 
 export type ProfileGearQueryVariables = Exact<{
-  where?: InputMaybe<WalletWhereInput>;
+  where?: InputMaybe<ItemWhereInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['Cursor']>;
 }>;
 
 
-export type ProfileGearQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', items: Array<{ __typename?: 'WalletItems', id: string, item: { __typename?: 'Item', id: string, count: number, fullname: string, name: string, svg?: string | null | undefined, suffix?: string | null | undefined, type: ItemType, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } }> } | null | undefined } | null | undefined> | null | undefined } };
+export type ProfileGearQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, count: number, fullname: string, name: string, svg?: string | null | undefined, suffix?: string | null | undefined, type: ItemType, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
 
 export type SearchDopeQueryVariables = Exact<{
   query: Scalars['String'];
@@ -1834,27 +1840,31 @@ export const useInfiniteHustlersWalletQuery = <
     )};
 
 export const ProfileDopesDocument = `
-    query ProfileDopes($where: WalletWhereInput) {
-  wallets(where: $where) {
+    query ProfileDopes($where: DopeWhereInput, $first: Int, $after: Cursor) {
+  dopes(where: $where, first: $first, after: $after) {
+    totalCount
     edges {
       node {
-        dopes {
+        id
+        id
+        rank
+        score
+        claimed
+        opened
+        items {
           id
-          rank
-          score
-          claimed
-          opened
-          items {
-            id
-            fullname
-            type
-            name
-            tier
-            greatness
-            count
-          }
+          fullname
+          type
+          name
+          tier
+          greatness
+          count
         }
       }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
     }
   }
 }
@@ -1886,18 +1896,21 @@ export const useInfiniteProfileDopesQuery = <
     )};
 
 export const ProfileHustlersDocument = `
-    query ProfileHustlers($where: WalletWhereInput) {
-  wallets(where: $where) {
+    query ProfileHustlers($where: HustlerWhereInput, $first: Int, $after: Cursor) {
+  hustlers(where: $where, first: $first, after: $after) {
+    totalCount
     edges {
       node {
-        hustlers {
-          id
-          name
-          svg
-          title
-          type
-        }
+        id
+        name
+        svg
+        title
+        type
       }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
     }
   }
 }
@@ -1929,26 +1942,26 @@ export const useInfiniteProfileHustlersQuery = <
     )};
 
 export const ProfileGearDocument = `
-    query ProfileGear($where: WalletWhereInput) {
-  wallets(where: $where) {
+    query ProfileGear($where: ItemWhereInput, $first: Int, $after: Cursor) {
+  items(where: $where, first: $first, after: $after) {
+    totalCount
     edges {
       node {
-        items {
-          id
-          item {
-            id
-            count
-            fullname
-            name
-            svg
-            suffix
-            type
-            base {
-              svg
-            }
-          }
+        id
+        count
+        fullname
+        name
+        svg
+        suffix
+        type
+        base {
+          svg
         }
       }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
     }
   }
 }
