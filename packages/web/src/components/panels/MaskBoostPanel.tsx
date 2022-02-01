@@ -85,7 +85,7 @@ const BoostPanel = () => {
       paper
         .allowance(account, NETWORK[chainId].contracts.hongbao)
         .then((allowance: BigNumber) => {
-          alert(allowance);
+          console.log(`$P approval allowance: ${allowance}`);
           setIsPaperApproved(allowance.gte('500000000000000000000'));
         });
     }
