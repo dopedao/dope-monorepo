@@ -163,10 +163,15 @@ const GearWrapper: FC = () => {
 
               return (
                 <ProfileCard key={walletItem.item.id}>
-                  <ProfileCardHeader>{walletItem.item.name}</ProfileCardHeader>
+                  <ProfileCardHeader>
+                    <div>{walletItem.item.name}</div>
+                    <div css={css`padding-right:16px;color:var(--gray-500);`} title="You have this many in inventory">
+                      x{walletItem.balance}
+                    </div>
+                  </ProfileCardHeader>
                   <PanelBody>
                     <Stack>
-                      <Image borderRadius="md" src={imageSrc} />
+                      <Image borderRadius="md" src={imageSrc} alt={walletItem.item.name} />
                       <span>Type: {walletItem.item.type}</span>
                       <span>Origin: {origin}</span>
                       <span
@@ -176,7 +181,6 @@ const GearWrapper: FC = () => {
                       >
                         Title: {walletItem.item.fullname}
                       </span>
-                      <span>Balance: {walletItem.balance}</span>
                     </Stack>
                   </PanelBody>
                   <GearFooter id={walletItem.item.id} />
