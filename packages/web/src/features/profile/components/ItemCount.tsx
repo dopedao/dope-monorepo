@@ -11,12 +11,13 @@ const ItemCount: FC<ItemCountProps> = ({
   return (
     <Flex
       align="center"
-      background="black"
+      background="var(--gray-100)"
       borderRadius="full"
-      color="white"
+      color="black"
       height={8}
       justify="center"
       width={8}
+      fontSize="xs"
     >
       {count}
     </Flex>

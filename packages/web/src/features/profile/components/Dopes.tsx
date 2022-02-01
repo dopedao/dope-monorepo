@@ -69,7 +69,7 @@ const Dopes: FC = () => {
   return (
     <>
       <SectionHeader>
-        <HStack>
+        <HStack alignContent="center" justifyContent="space-between" width="100%" marginRight="8px">
           <span>DOPE</span>
           <ItemCount count={dopeData.totalCount} />
         </HStack>

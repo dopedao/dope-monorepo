@@ -5,7 +5,7 @@ import Profile from 'features/profile/components/Profile';
 
 const ProfilePage = () => {
   return (
-    <AppWindowOptimism padBody={false} navbar={<DopeWarsExeNav />}>
+    <AppWindowOptimism padBody={false} navbar={<DopeWarsExeNav hideFilterBar />}>
       <Head />
       <Profile />
     </AppWindowOptimism>

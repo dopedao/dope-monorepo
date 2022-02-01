@@ -84,7 +84,7 @@ const Hustlers: FC = () => {
   return (
     <>
       <SectionHeader>
-        <HStack>
+        <HStack alignContent="center" justifyContent="space-between" width="100%" marginRight="8px">
           <span>Hustlers</span>
           <ItemCount count={hustlerData.totalCount} />
         </HStack>
