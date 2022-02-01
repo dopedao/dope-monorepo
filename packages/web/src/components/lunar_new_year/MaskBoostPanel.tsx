@@ -16,6 +16,7 @@ import PanelFooter from 'components/PanelFooter';
 import PanelTitleHeader from 'components/PanelTitleHeader';
 import SpinnerMessage from 'components/SpinnerMessage';
 import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
 
 const Stats = styled.div`
   font-size: var(--text-smallest);
@@ -52,6 +53,7 @@ const Progress = styled.div`
 
 const BoostPanel = () => {
   const { account, library } = useWeb3React();
+  const router = useRouter();
 
   const minBoosts = 0;
   const maxBoosts = 10;
@@ -73,19 +75,17 @@ const BoostPanel = () => {
   const [ethBalance, setEthBalance] = useState<BigNumber>();
   const [ethToSpend, setEthToSpend] = useState<BigNumber>();
   useEffect(() => {
-    library
-    .getBalance(account)
-    .then((balance: any) => {
+    library.getBalance(account).then((balance: any) => {
       console.log('ETH Balance ' + utils.formatEther(balance));
       setEthBalance(balance);
-    })
+    });
     setEthToSpend(utils.parseEther('' + boosts / 10));
   }, [account, library, chainId, boosts]);
 
   const hasEnoughEthToMint = () => {
     if (!ethToSpend || ethToSpend.isZero()) return true;
     return ethBalance?.gte(ethToSpend);
-  }
+  };
 
   const mintMask = useCallback(async () => {
     try {
@@ -96,16 +96,29 @@ const BoostPanel = () => {
         if (idx !== 0) return;
         const event = swapmeet.interface.parseLog(log) as unknown as TransferSingleEvent;
         // Set roll to item id
-        setRoll(event.args.id.toString());
+        router.push(
+          {
+            pathname: '/lunar-new-year/mint-success',
+            query: {
+              items: JSON.stringify([
+                {
+                  typ: 1,
+                  id: event.args.id.toString(),
+                },
+              ]),
+            },
+          },
+          {
+            pathname: '/lunar-new-year/mint-success',
+          },
+        );
       });
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     } finally {
       setIsBuyingMask(false);
     }
-  }, [hongbao, swapmeet, ethToSpend]);
-
-
+  }, [hongbao, swapmeet, ethToSpend, router]);
 
   // Check if PAPER spend approved for 5000
   useEffect(() => {
@@ -248,12 +261,16 @@ const BoostPanel = () => {
             {!isPaperApproved && isApprovingPaper && <SpinnerMessage text="Approving…" />}
           </Button>
         )}
-        <Button variant="cny" onClick={mintMask} disabled={!isPaperApproved || isBuyingMask || !hasEnoughEthToMint() }>
+        <Button
+          variant="cny"
+          onClick={mintMask}
+          disabled={!isPaperApproved || isBuyingMask || !hasEnoughEthToMint()}
+        >
           {!isBuyingMask && hasEnoughEthToMint() && 'Complete Purchase'}
           {!isBuyingMask && !hasEnoughEthToMint() && 'Not Enough Optimistic ETH'}
-          {isBuyingMask && 
+          {isBuyingMask && (
             <SpinnerMessage text={boosts > 0 ? 'Rolling the dice…' : 'Processing…'} />
-          }
+          )}
         </Button>
       </PanelFooter>
     </PanelContainer>

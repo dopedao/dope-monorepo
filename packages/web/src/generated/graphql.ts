@@ -1335,6 +1335,13 @@ export type HustlersWalletQueryVariables = Exact<{
 
 export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, svg?: string | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
 
+export type ItemQueryVariables = Exact<{
+  where?: InputMaybe<ItemWhereInput>;
+}>;
+
+
+export type ItemQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, fullname: string, svg?: string | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
 export type ProfileDopesQueryVariables = Exact<{
   where?: InputMaybe<DopeWhereInput>;
   first?: InputMaybe<Scalars['Int']>;
@@ -1863,6 +1870,48 @@ export const useInfiniteHustlersWalletQuery = <
     const query = useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument)
     return useInfiniteQuery<HustlersWalletQuery, TError, TData>(
       variables === undefined ? ['HustlersWallet.infinite'] : ['HustlersWallet.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const ItemDocument = `
+    query Item($where: ItemWhereInput) {
+  items(where: $where) {
+    edges {
+      node {
+        id
+        fullname
+        svg
+        base {
+          svg
+        }
+      }
+    }
+  }
+}
+    `;
+export const useItemQuery = <
+      TData = ItemQuery,
+      TError = unknown
+    >(
+      variables?: ItemQueryVariables,
+      options?: UseQueryOptions<ItemQuery, TError, TData>
+    ) =>
+    useQuery<ItemQuery, TError, TData>(
+      variables === undefined ? ['Item'] : ['Item', variables],
+      useFetchData<ItemQuery, ItemQueryVariables>(ItemDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteItemQuery = <
+      TData = ItemQuery,
+      TError = unknown
+    >(
+      variables?: ItemQueryVariables,
+      options?: UseInfiniteQueryOptions<ItemQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<ItemQuery, ItemQueryVariables>(ItemDocument)
+    return useInfiniteQuery<ItemQuery, TError, TData>(
+      variables === undefined ? ['Item.infinite'] : ['Item.infinite', variables],
       (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
     )};
