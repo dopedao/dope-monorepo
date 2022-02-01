@@ -1,6 +1,6 @@
 import NextHead from 'next/head';
 
-const defaultTitle = 'DOPEWARS.EXE';
+const defaultTitle = 'DOPE WARS';
 const defaultDescription = 'Welcome to the streets';
 const defaultOGURL = 'https://dopewars.gg';
 const defaultOGImage = `${defaultOGURL}/fpo/social-card.gif`;

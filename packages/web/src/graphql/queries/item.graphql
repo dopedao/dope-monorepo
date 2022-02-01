@@ -1,0 +1,14 @@
+query Item($where: ItemWhereInput) {
+  items(where: $where) {
+    edges {
+      node {
+        id
+        fullname
+        svg
+        base {
+          svg
+        }
+      }
+    }
+  }
+}

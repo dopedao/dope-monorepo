@@ -33,6 +33,7 @@ export type DopeCardProps = {
           | {
               __typename?: 'Listing';
               id: string;
+              active: boolean;
               inputs: Array<
                 | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
                 | null
@@ -75,7 +76,9 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: 
           overflow: hidden;
         }
         display: flex;
-        flex: 1;
+        // Override default StackedResponsiveContainer
+        // ratio where 2nd panel would be wider on /dope
+        flex: 1 !important;
         justify-content: space-between;
         align-items: stretch;
         flex-direction: column;

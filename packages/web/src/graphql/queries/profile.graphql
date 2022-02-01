@@ -1,7 +1,7 @@
 query ProfileDopes($where: DopeWhereInput, $first: Int, $after: Cursor) {
   dopes(where: $where, first: $first, after: $after) {
     totalCount
-		edges {
+    edges {
       node {
         id
         id
@@ -30,7 +30,7 @@ query ProfileDopes($where: DopeWhereInput, $first: Int, $after: Cursor) {
 query ProfileHustlers($where: HustlerWhereInput, $first: Int, $after: Cursor) {
   hustlers(where: $where, first: $first, after: $after) {
     totalCount
-		edges {
+    edges {
       node {
         id
         name
@@ -46,20 +46,24 @@ query ProfileHustlers($where: HustlerWhereInput, $first: Int, $after: Cursor) {
   }
 }
 
-query ProfileGear($where: ItemWhereInput, $first: Int, $after: Cursor) {
-  items(where: $where, first: $first, after: $after) {
+query ProfileGear($where: WalletItemsWhereInput, $first: Int, $after: Cursor) {
+  walletItems(where: $where, first: $first, after: $after) {
     totalCount
-		edges {
+    edges {
       node {
         id
-        count
-        fullname
-        name
-        svg
-        suffix
-        type
-        base {
+        balance
+        item {
+          id
+          count
+          fullname
+          name
           svg
+          suffix
+          type
+          base {
+            svg
+          }
         }
       }
     }
