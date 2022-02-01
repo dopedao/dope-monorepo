@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useSwitchEthereum } from 'hooks/web3';
 import { useWalletQuery } from 'generated/graphql';
 import { useWeb3React } from '@web3-react/core';
@@ -29,15 +29,16 @@ const DopeDetails = () => {
     }
   }, []);
 
-  const notOnProperNetwork = () => {
-    return account && chainId !== 1 && chainId !== 42;
-  };
+  const onProperNetwork = useMemo(() => {
+    return !(account && chainId !== 1 && chainId !== 42 && showNetworkAlert);
+  }, [account, chainId, showNetworkAlert]);
+
 
   return (
     <>
-      {notOnProperNetwork() && showNetworkAlert && (
+      {!onProperNetwork && 
         <DialogSwitchNetwork networkName="Main" />
-      )}
+      }
       {loading ? (
         <StackedResponsiveContainer>
           <LoadingBlock />
@@ -62,7 +63,7 @@ const DopeDetails = () => {
               onSelect={setSelected}
             />
           )}
-          { !notOnProperNetwork() && data?.wallets.edges?.[0] && (
+          { onProperNetwork && data?.wallets.edges?.[0] && (
             <DopeCard
               dope={data.wallets.edges[0].node.dopes[selected]}
               buttonBar="for-owner"
