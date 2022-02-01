@@ -14,7 +14,7 @@ const AppWindowNavBar = ({ children }: { children: ReactNode }) => {
         overflow-y: hidden;
         display: flex;
         align-items: flex-end;
-        justify-content: space-evenly;
+
         a {
           position: relative;
           height: 30px;
@@ -24,6 +24,7 @@ const AppWindowNavBar = ({ children }: { children: ReactNode }) => {
           display: flex;
           align-items: center;
           justify-content: center;
+          margin-left: 25px;
         }
         a.active {
           text-decoration: none;
