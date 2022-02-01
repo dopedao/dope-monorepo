@@ -126,7 +126,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
 
 const Nav = () => (
   <AppWindowNavBar>
-    <Link href="/hustlers" passHref>
+    <Link href="/inventory" passHref>
       <Button variant="back">
         <Image src="/images/icon/arrow-back.svg" width="16px" alt="Arrow" />
         Your Hustlers

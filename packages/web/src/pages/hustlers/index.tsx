@@ -106,7 +106,7 @@ const Hustlers = () => {
 
   const handleSuccessAlert = () => {
     setShowSuccessAlert(false);
-    router.replace('/hustlers');
+    router.replace('/inventory');
   };
 
   return (

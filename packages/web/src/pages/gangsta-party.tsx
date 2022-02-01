@@ -124,7 +124,7 @@ const GangstaParty = () => {
         <Link href="/" passHref>
           <Button>Back to DOPE WARS</Button>
         </Link>
-        <Link href="/hustlers" passHref>
+        <Link href="/inventory" passHref>
           <Button>Peep Your Squad</Button>
         </Link>
         <Link href="/dope" passHref>
