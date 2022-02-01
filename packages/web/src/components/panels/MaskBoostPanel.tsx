@@ -1,19 +1,20 @@
-import { useCallback, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
 import { Button } from '@chakra-ui/react';
+import { BigNumber, constants, utils } from 'ethers';
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/react';
-import styled from '@emotion/styled';
-import { constants, utils } from 'ethers';
-import { usePaper, useSwapMeet } from 'hooks/contracts';
-import { useOptimism } from 'hooks/web3';
 import { NETWORK } from 'utils/constants';
-
+import { TransferSingleEvent } from '@dopewars/contracts/dist/SwapMeet';
+import { useEffect, useCallback, useState } from 'react';
+import { useHongbao } from 'hooks/contracts';
+import { useOptimism } from 'hooks/web3';
+import { usePaper, useSwapMeet } from 'hooks/contracts';
+import { useWeb3React } from '@web3-react/core';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
-import { TransferSingleEvent } from '@dopewars/contracts/dist/SwapMeet';
-import { useHongbao } from 'hooks/contracts';
+import PanelTitleBar from 'components/PanelTitleBar';
+import SpinnerMessage from 'components/SpinnerMessage';
+import styled from '@emotion/styled';
 
 const Stats = styled.div`
   font-size: var(--text-smallest);
@@ -49,10 +50,16 @@ const Progress = styled.div`
 `;
 
 const BoostPanel = () => {
+  const { account } = useWeb3React();
+
   const minBoosts = 0;
   const maxBoosts = 10;
 
   const [boosts, setBoost] = useState(minBoosts);
+  const [isApprovingPaper, setIsApprovingPaper] = useState(false);
+  const [isPaperApproved, setIsPaperApproved] = useState(false);
+  const [isBuyingMask, setIsBuyingMask] = useState(false);
+
   // Roll is set to the item id
   const [roll, setRoll] = useState<string | undefined>();
   const hongbao = useHongbao();
@@ -70,6 +77,34 @@ const BoostPanel = () => {
       setRoll(event.args.id.toString());
     });
   }, [hongbao, swapmeet, boosts]);
+
+
+  // Check if PAPER spend approved for 5000
+  useEffect(() => {
+    if (account) {
+      paper
+        .allowance(account, NETWORK[chainId].contracts.hongbao)
+        .then((allowance: BigNumber) => {
+          alert(allowance);
+          setIsPaperApproved(allowance.gte('500000000000000000000'));
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, paper]);
+
+  const approvePaper = async () => {
+    try {
+      setIsApprovingPaper(true);
+      const txn = await paper.approve(
+        NETWORK[chainId].contracts.hongbao,
+        constants.MaxUint256,
+      );
+      await txn.wait(1);
+      setIsPaperApproved(true);
+    } finally {
+      setIsApprovingPaper(false);
+    }
+  }
 
   const ethCost = () => (boosts * 1) / 10;
   const percentChance = () => {
@@ -114,31 +149,19 @@ const BoostPanel = () => {
 
   return (
     <PanelContainer>
+      <PanelTitleBar centered>Good luck and big profit</PanelTitleBar>
       <PanelBody>
         <Image src={getBoostImage()} alt="Your Prize Awaits" />
         <Stats>
-          <div
-            css={css`
-              display: flex;
-              gap: 8px;
-            `}
-          >
+          <div css={css`display: flex; gap: 8px;`}>
             <div>
               {boosts} BOOST{boosts == 1 ? '' : 'S'}
             </div>
-            <div
-              css={css`
-                color: var(--gray-400);
-              `}
-            >
+            <div css={css`color: var(--gray-400);`}>
               ( {ethCost()}Ξ + $5000P )
             </div>
           </div>
-          <div
-            css={css`
-              text-align: right;
-            `}
-          >
+          <div css={css`text-align: right;`}>
             {boosts === maxBoosts && <>GUARANTEED RARE</>}
             {boosts !== maxBoosts && <>{percentChance()}% ODDS</>}
           </div>
@@ -161,19 +184,12 @@ const BoostPanel = () => {
         </Bar>
       </PanelBody>
       <PanelFooter>
-        <Button
-          variant="cny"
-          onClick={async () => {
-            const txn = await paper.approve(
-              NETWORK[chainId].contracts.hongbao,
-              constants.MaxUint256,
-            );
-            await txn.wait(1);
-          }}
-        >
-          Approve Paper
+        <Button variant="cny" onClick={approvePaper} disabled={isApprovingPaper || isPaperApproved}>
+          { !isPaperApproved && !isApprovingPaper && <span>Approve Paper</span> }
+          { !isPaperApproved && isApprovingPaper && <SpinnerMessage text="Approving…" /> }
+          { isPaperApproved && <span>$PAPER Approved</span> } 
         </Button>
-        <Button variant="cny" onClick={mint}>
+        <Button variant="cny" onClick={mint} disabled={ !isPaperApproved }>
           Buy Now
         </Button>
       </PanelFooter>
