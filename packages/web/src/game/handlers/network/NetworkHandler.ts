@@ -29,7 +29,7 @@ export default class NetworkHandler
             return;
         }
 
-        this.connection = new WebSocket(`ws://localhost:8080/game/ws`);
+        this.connection = new WebSocket(`ws://involvement-terror-cowboy-specializing.trycloudflare.com/game/ws`);
 
         this.connection.onopen = () => {
             this._connected = true;
@@ -63,7 +63,10 @@ export default class NetworkHandler
     sendMessage(event: UniversalEventNames, data: any)
     {
         if (this.connection?.readyState !== WebSocket.OPEN)
+        {
+            console.error("Cannot send message, connection is not open");
             return;
+        }
 
         this.connection.send(JSON.stringify({ event: event, data: data }));
         this.emitter.emit('client_' + event, data);
