@@ -179,7 +179,7 @@ const BoostPanel = () => {
               text-align: right;
             `}
           >
-            {boosts === maxBoosts && <>GUARANTEED BLACK MARKET</>}
+            {boosts === maxBoosts && <>GOLDEN</>}
             {boosts === 0 && <>TIGER MASK</>}
             {boosts !== maxBoosts && boosts > 0 && <>{percentChance()}% ODDS</>}
           </div>
