@@ -27,7 +27,7 @@ const Dopes: FC = () => {
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileDopesQuery({
     where: {
       hasWalletWith: [{
-        id: "0xba740c9035fF3c24A69e0df231149c9cd12BAe07",
+        id: account,
       }],
     },
     first: 50,
