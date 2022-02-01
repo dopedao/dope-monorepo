@@ -1,17 +1,17 @@
 import { Button } from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
-import { getProof } from 'utils/merkleproof';
-import config from 'config'; // Airdrop config
 import { css } from '@emotion/react';
+import { getProof } from 'utils/merkleproof';
 import { Image } from '@chakra-ui/react';
 import { OpenedEvent } from '@dopewars/contracts/dist/Hongbao';
 import { solidityKeccak256 } from 'ethers/lib/utils';
-
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useHongbao } from 'hooks/contracts';
+import { useWeb3React } from '@web3-react/core';
+import config from 'config'; // Airdrop config
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
-import { useHongbao } from 'hooks/contracts';
+import SpinnerMessage from 'components/SpinnerMessage';
 
 const HongbaoPanel = () => {
   const hongbao = useHongbao();
@@ -23,6 +23,7 @@ const HongbaoPanel = () => {
   //      Item reward. event.args.value is the item id
   const [opens, setOpens] = useState<OpenedEvent[]>();
   const [claimed, setClaimed] = useState<boolean>();
+  const [isClaiming, setIsClaiming] = useState(false);
 
   const eligibleForAirdrop = Object.keys(config.airdrop).includes(account || '');
   const numUnopenedEnvelopes = useMemo(() => config.airdrop[account!], [account]);
@@ -37,17 +38,22 @@ const HongbaoPanel = () => {
   }, [hongbao, account, numUnopenedEnvelopes]);
 
   const claim = useCallback(async () => {
-    const proof = getProof(account!, numUnopenedEnvelopes.toString());
-    const tx = await hongbao.claim(numUnopenedEnvelopes, proof);
-    const receipt = await tx.wait();
-    setOpens(
-      receipt.logs.reduce<OpenedEvent[]>((o, log, idx) => {
-        if (idx % 2 == 0) return o;
-        const event = hongbao.interface.parseLog(log) as unknown as OpenedEvent;
-        // Set roll to item id
-        return [...o, event];
-      }, []),
-    );
+    try {
+      setIsClaiming(true);
+      const proof = getProof(account!, numUnopenedEnvelopes.toString());
+      const tx = await hongbao.claim(numUnopenedEnvelopes, proof);
+      const receipt = await tx.wait();
+      setOpens(
+        receipt.logs.reduce<OpenedEvent[]>((o, log, idx) => {
+          if (idx % 2 == 0) return o;
+          const event = hongbao.interface.parseLog(log) as unknown as OpenedEvent;
+          // Set roll to item id
+          return [...o, event];
+        }, []),
+      );
+    } finally {
+      setIsClaiming(false);
+    }
   }, [hongbao, account, numUnopenedEnvelopes, setOpens]);
 
   return (
@@ -60,8 +66,17 @@ const HongbaoPanel = () => {
           />
         </PanelBody>
         <PanelFooter>
-          <Button variant="cny" onClick={claim} disabled={claimed}>
-            {claimed ? 'Already Claimed!' : `Open ${numUnopenedEnvelopes} Envelopes`}
+          <Button 
+            variant="cny" 
+            onClick={claim}
+            disabled={claimed || isClaiming}
+          >
+            { !isClaiming && 
+              (claimed ? 'Already Claimed!' : `Open ${numUnopenedEnvelopes} Envelopes`)
+            }
+            { isClaiming && 
+              <SpinnerMessage text="Opening Envelopes…" />
+            }
           </Button>
         </PanelFooter>
         </>
