@@ -83,7 +83,7 @@ const Initiate = () => {
     <AppWindow requiresWalletConnection={true} scrollable={true}>
       <HustlerProvider>
         {account && chainId !== 1 && chainId !== 42 && showNetworkAlert && (
-          <DialogSwitchNetwork networkName="Ethereum Main" />
+          <DialogSwitchNetwork networkName="Main" />
         )}
         {loading ? (
           <FlexFiftyContainer>

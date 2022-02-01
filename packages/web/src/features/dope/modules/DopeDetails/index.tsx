@@ -29,10 +29,14 @@ const DopeDetails = () => {
     }
   }, []);
 
+  const notOnProperNetwork = () => {
+    return account && chainId !== 1 && chainId !== 42;
+  };
+
   return (
     <>
-      {account && chainId !== 1 && chainId !== 42 && showNetworkAlert && (
-        <DialogSwitchNetwork networkName="Ethereum Main" />
+      {notOnProperNetwork() && showNetworkAlert && (
+        <DialogSwitchNetwork networkName="Main" />
       )}
       {loading ? (
         <StackedResponsiveContainer>
@@ -58,7 +62,7 @@ const DopeDetails = () => {
               onSelect={setSelected}
             />
           )}
-          {data?.wallets.edges?.[0] && (
+          { !notOnProperNetwork() && data?.wallets.edges?.[0] && (
             <DopeCard
               dope={data.wallets.edges[0].node.dopes[selected]}
               buttonBar="for-owner"
