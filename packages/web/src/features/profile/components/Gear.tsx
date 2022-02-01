@@ -50,7 +50,7 @@ const getImageSrc = (walletItem: ProfileItem): string => {
 const GearFooter = ({ id }: { id: string }) => {
   const { account } = useWeb3React();
   const { chainId } = useOptimism();
-  const [selected, setSelected] = useState<string>();
+  const [selected, setSelected] = useState<string>(undefined);
   const { data, isFetching: loading } = useHustlersWalletQuery(
     {
       where: {
@@ -83,6 +83,7 @@ const GearFooter = ({ id }: { id: string }) => {
         onChange={({ target }) => setSelected(target.value)}
         value={selected}
       >
+        <option disabled>Equip to…</option>
         {data?.wallets.edges![0]?.node?.hustlers.map(({ id, title, name }) => (
           <option key={id} value={id}>
             {title} {name}
