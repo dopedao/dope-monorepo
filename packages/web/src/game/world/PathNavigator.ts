@@ -37,14 +37,15 @@ export default class PathNavigator
 
         // hustler world position to tile position
         const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.body.position.x, this.hustler.body.position.y);
-        if (hustlerTile.x < 0 || hustlerTile.y < 0)
+        const moveTile = map.collideLayer.worldToTileXY(x, y);
+        if (hustlerTile.x < 0 || hustlerTile.y < 0 || moveTile.x < 0 || moveTile.y < 0)
             return;
 
         // retrieve grid data from layer (defined in ldtkparser)
         this.grid = (map.collideLayer.getData('pf_grid') as PF.Grid).clone();
 
         // find path and map it to Vec2s
-        this.path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, map.collideLayer.worldToTileX(x), map.collideLayer.worldToTileY(y), this.grid).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
+        this.path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, moveTile.x, moveTile.y, this.grid).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
 
         const targetTilePos = this.path.shift();
         if (targetTilePos)
