@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, HStack, Image, Stack, Select } from '@chakra-ui/react';
 import { useWeb3React } from '@web3-react/core';
 import { utils } from 'ethers';
@@ -50,7 +50,7 @@ const getImageSrc = (walletItem: ProfileItem): string => {
 const GearFooter = ({ id }: { id: string }) => {
   const { account } = useWeb3React();
   const { chainId } = useOptimism();
-  const [selected, setSelected] = useState<string>(undefined);
+  const [selected, setSelected] = useState<string>();
   const { data, isFetching: loading } = useHustlersWalletQuery(
     {
       where: {
@@ -62,6 +62,12 @@ const GearFooter = ({ id }: { id: string }) => {
     },
   );
   const swapmeet = useSwapMeet();
+
+  useEffect(() => {
+    if (data) {
+      setSelected(data?.wallets.edges![0]?.node?.hustlers[0].id);
+    }
+  }, [data]);
 
   const equip = useCallback(() => {
     const sig = '0xbe3d1e89';
@@ -166,7 +172,13 @@ const GearWrapper: FC = () => {
                 <ProfileCard key={walletItem.item.id}>
                   <ProfileCardHeader>
                     <div>{walletItem.item.name}</div>
-                    <div css={css`padding-right:16px;color:var(--gray-500);`} title="You have this many in inventory">
+                    <div
+                      css={css`
+                        padding-right: 16px;
+                        color: var(--gray-500);
+                      `}
+                      title="You have this many in inventory"
+                    >
                       x{walletItem.balance}
                     </div>
                   </ProfileCardHeader>
