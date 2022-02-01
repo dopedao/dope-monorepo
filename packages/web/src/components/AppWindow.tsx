@@ -57,7 +57,7 @@ export default function AppWindow({
   return (
     <SearchFilterProvider>
       <DesktopWindow
-        title={title || 'DOPEWARS.EXE'}
+        title={title || 'DOPE WARS'}
         titleChildren={navbar}
         width={width}
         height={height}

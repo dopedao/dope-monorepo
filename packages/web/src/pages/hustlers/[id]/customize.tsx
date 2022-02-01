@@ -21,6 +21,7 @@ import LoadingBlock from 'components/LoadingBlock';
 import StickyNote from 'components/StickyNote';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
 import DialogSwitchNetwork from 'components/DialogSwitchNetwork';
+import ArrowBack from 'ui/svg/ArrowBack';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -129,7 +130,7 @@ const Nav = () => (
   <AppWindowNavBar>
     <Link href="/inventory" passHref>
       <Button variant="back">
-        <Image src="/images/icon/arrow-back.svg" width="16px" alt="Arrow" />
+        <ArrowBack size={16} color="white" />
         Your Hustlers
       </Button>
     </Link>

@@ -64,9 +64,10 @@ export default extendTheme({
       variants: {
         back: {
           display: 'flex',
-          gap: '0.25em',
+          gap: '8px',
           fontSize: 'var(--text-small)',
           fontWeight: '400',
+          color: 'white',
         },
         solid: {
           background: '#EDEFEE',
