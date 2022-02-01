@@ -37,6 +37,8 @@ export default class PathNavigator
 
         // hustler world position to tile position
         const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.body.position.x, this.hustler.body.position.y);
+        if (hustlerTile.x < 0 || hustlerTile.y < 0)
+            return;
 
         // retrieve grid data from layer (defined in ldtkparser)
         this.grid = (map.collideLayer.getData('pf_grid') as PF.Grid).clone();
