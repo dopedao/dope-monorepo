@@ -99,7 +99,7 @@ const BoostPanel = () => {
     let imgPath;
     switch (boosts) {
       case 0:
-        return imgPrefix + 'hongbao-with-bg.png';
+        return imgPrefix + 'tiger-mask-from-chinatown.png';
       case 1:
       case 2:
       case 3:
@@ -115,7 +115,7 @@ const BoostPanel = () => {
   return (
     <PanelContainer>
       <PanelBody>
-        <Image src={getBoostImage()} alt="Hello" />
+        <Image src={getBoostImage()} alt="Your Prize Awaits" />
         <Stats>
           <div
             css={css`
