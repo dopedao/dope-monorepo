@@ -3,6 +3,7 @@ import { BigNumber, constants, utils } from 'ethers';
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/react';
 import { NETWORK } from 'utils/constants';
+import Link from 'next/link';
 import { TransferSingleEvent } from '@dopewars/contracts/dist/SwapMeet';
 import { useEffect, useCallback, useState } from 'react';
 import { useHongbao } from 'hooks/contracts';
@@ -58,6 +59,7 @@ const BoostPanel = () => {
   const [boosts, setBoost] = useState(minBoosts);
   const [isApprovingPaper, setIsApprovingPaper] = useState(false);
   const [isPaperApproved, setIsPaperApproved] = useState(false);
+  const [hasEnoughPaper, setHasEnoughPaper] = useState(false);
   const [isBuyingMask, setIsBuyingMask] = useState(false);
 
   // Roll is set to the item id
@@ -69,7 +71,7 @@ const BoostPanel = () => {
 
   const mint = useCallback(async () => {
     const tx = await hongbao.mint({ value: utils.parseEther('' + boosts / 10) });
-    const receipt = await tx.wait();
+    const receipt = await tx.wait(1);
     receipt.logs.map((log, idx) => {
       if (idx !== 0) return;
       const event = swapmeet.interface.parseLog(log) as unknown as TransferSingleEvent;
@@ -78,38 +80,40 @@ const BoostPanel = () => {
     });
   }, [hongbao, swapmeet, boosts]);
 
-
   // Check if PAPER spend approved for 5000
   useEffect(() => {
     if (account) {
-      paper
-        .allowance(account, NETWORK[chainId].contracts.hongbao)
-        .then((allowance: BigNumber) => {
-          console.log(`$P approval allowance: ${allowance}`);
-          setIsPaperApproved(allowance.gte('500000000000000000000'));
-        });
+      paper.allowance(account, NETWORK[chainId].contracts.hongbao).then((allowance: BigNumber) => {
+        console.log(`$P approval allowance: ${allowance}`);
+        setIsPaperApproved(allowance.gte('500000000000000000000'));
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, paper]);
+  }, [account, paper, chainId]);
+
+  // Check if has 5000 PAPER
+  useEffect(() => {
+    if (account) {
+      paper.balanceOf(account).then((balance: BigNumber) => {
+        setHasEnoughPaper(balance.gte('500000000000000000000'));
+      });
+    }
+  }, [account, paper, chainId, roll]);
 
   const approvePaper = async () => {
     try {
       setIsApprovingPaper(true);
-      const txn = await paper.approve(
-        NETWORK[chainId].contracts.hongbao,
-        constants.MaxUint256,
-      );
+      const txn = await paper.approve(NETWORK[chainId].contracts.hongbao, constants.MaxUint256);
       await txn.wait(1);
       setIsPaperApproved(true);
     } finally {
       setIsApprovingPaper(false);
     }
-  }
+  };
 
   const ethCost = () => (boosts * 1) / 10;
   const percentChance = () => {
     if (boosts == 0) {
-      return 1;
+      return 0;
     } else {
       return boosts * maxBoosts;
     }
@@ -153,17 +157,31 @@ const BoostPanel = () => {
       <PanelBody>
         <Image src={getBoostImage()} alt="Your Prize Awaits" />
         <Stats>
-          <div css={css`display: flex; gap: 8px;`}>
+          <div
+            css={css`
+              display: flex;
+              gap: 8px;
+            `}
+          >
             <div>
               {boosts} BOOST{boosts == 1 ? '' : 'S'}
             </div>
-            <div css={css`color: var(--gray-400);`}>
+            <div
+              css={css`
+                color: var(--gray-400);
+              `}
+            >
               ( {ethCost()}Ξ + $5000P )
             </div>
           </div>
-          <div css={css`text-align: right;`}>
-            {boosts === maxBoosts && <>GUARANTEED RARE</>}
-            {boosts !== maxBoosts && <>{percentChance()}% ODDS</>}
+          <div
+            css={css`
+              text-align: right;
+            `}
+          >
+            {boosts === maxBoosts && <>GUARANTEED BLACK MARKET</>}
+            {boosts === 0 && <>TIGER MASK</>}
+            {boosts !== maxBoosts && boosts > 0 && <>{percentChance()}% ODDS</>}
           </div>
         </Stats>
         <Divider />
@@ -184,12 +202,27 @@ const BoostPanel = () => {
         </Bar>
       </PanelBody>
       <PanelFooter>
-        <Button variant="cny" onClick={approvePaper} disabled={isApprovingPaper || isPaperApproved}>
-          { !isPaperApproved && !isApprovingPaper && <span>Approve Paper</span> }
-          { !isPaperApproved && isApprovingPaper && <SpinnerMessage text="Approving…" /> }
-          { isPaperApproved && <span>$PAPER Approved</span> } 
-        </Button>
-        <Button variant="cny" onClick={mint} disabled={ !isPaperApproved }>
+        {!hasEnoughPaper && (
+          <Link
+            href={`https://app.uniswap.org/#/swap?outputCurrency=0x00F932F0FE257456b32dedA4758922E56A4F4b42&inputCurrency=ETH&exactAmount=5000&exactField=output`}
+            passHref
+          >
+            <a target="_blank" rel="noreferrer">
+              <Button variant="cny">Buy Paper</Button>
+            </a>
+          </Link>
+        )}
+        {hasEnoughPaper && !isPaperApproved && (
+          <Button
+            variant="cny"
+            onClick={approvePaper}
+            disabled={isApprovingPaper || isPaperApproved}
+          >
+            {!isPaperApproved && !isApprovingPaper && <span>Approve Paper</span>}
+            {!isPaperApproved && isApprovingPaper && <SpinnerMessage text="Approving…" />}
+          </Button>
+        )}
+        <Button variant="cny" onClick={mint} disabled={!isPaperApproved}>
           Buy Now
         </Button>
       </PanelFooter>
