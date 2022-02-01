@@ -5,25 +5,23 @@ import Dopes from './Dopes';
 import Gear from './Gear';
 import Hustlers from './Hustlers';
 
-const Profile = ({section}: { section: string | string[] | undefined }) => {
-  
-  const getDefaultIndex = () => {
-    switch (section?.toLowerCase()) {
-      case 'gear':
-        return 2;
-      case 'hustlers':
-        return 1;
-      case 'dope':
-      default: 
-        return 0;
-    }
-  }
+import useQueryParam from 'utils/use-query-param';
+const SECTIONS = ['Dope', 'Hustlers', 'Gear'];
+
+const Profile = () => {
+
+  const [section, setSection] = useQueryParam('section', SECTIONS[0]);
 
   return (
     <Accordion
       allowToggle
       background="#fff"
-      defaultIndex={getDefaultIndex()}
+      defaultIndex={SECTIONS.findIndex(val => val === section)}
+      onChange={(idx) => { 
+        if (idx == -1) return;
+        const sectionIdx = Array.isArray(idx) ? idx[0] : idx;
+        setSection(SECTIONS[sectionIdx]); 
+      }}
     >
       <Section>
         <Dopes />

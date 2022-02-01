@@ -84,7 +84,7 @@ const HongbaoPanel = () => {
             </Button>
           }
           { claimed && 
-            <Link href="/inventory?section=gear" passHref>
+            <Link href="/inventory?section=Gear" passHref>
               <Button variant="cny">View your gifts</Button>
             </Link>
           }
