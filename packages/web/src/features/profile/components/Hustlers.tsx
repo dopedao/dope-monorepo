@@ -1,6 +1,7 @@
 import { FC, useMemo } from "react"
 import { Stack, Image, HStack, Button } from "@chakra-ui/react"
 import { useWeb3React } from "@web3-react/core";
+import Link from 'next/link';
 
 import PanelBody from "components/PanelBody";
 import { Hustler, HustlerType, useInfiniteProfileHustlersQuery } from "generated/graphql";
@@ -12,6 +13,7 @@ import SectionContent from "./SectionContent";
 import SectionHeader from "./SectionHeader";
 import CardContainer from "./CardContainer";
 import LoadingBlock from "components/LoadingBlock";
+import PanelFooter from 'components/PanelFooter';
 
 type ProfileHustler = Pick<Hustler, 'id' | 'name' | 'svg' | 'title' | 'type'>;
 
