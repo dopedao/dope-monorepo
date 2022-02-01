@@ -5,7 +5,7 @@ import Dopes from './Dopes';
 import Gear from './Gear';
 import Hustlers from './Hustlers';
 
-const Profile = ({section}: { section: string | undefined }) => {
+const Profile = ({section}: { section: string | string[] | undefined }) => {
   
   const getDefaultIndex = () => {
     switch (section?.toLowerCase()) {
