@@ -61,7 +61,7 @@ const HongbaoPanel = () => {
     <PanelContainer>
       { eligibleForAirdrop && <>
         <PanelTitleBar css={css`text-align:center;`}>
-          A gift for you
+          { !claimed ? 'A gift for you' : 'Enjoy your gift' }
         </PanelTitleBar>
         <PanelBody>
           <Image 
@@ -76,7 +76,7 @@ const HongbaoPanel = () => {
             disabled={claimed || isClaiming}
           >
             { !isClaiming && 
-              (claimed ? 'Already Claimed!' : `Open ${numUnopenedEnvelopes} Envelopes`)
+              (claimed ? 'All Envelopes Claimed' : `Open ${numUnopenedEnvelopes} Envelopes`)
             }
             { isClaiming && 
               <SpinnerMessage text="Opening Envelopes…" />
