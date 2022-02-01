@@ -29,7 +29,7 @@ export default class NetworkHandler
             return;
         }
 
-        this.connection = new WebSocket(`ws://involvement-terror-cowboy-specializing.trycloudflare.com/game/ws`);
+        this.connection = new WebSocket(`wss://involvement-terror-cowboy-specializing.trycloudflare.com/game/ws`);
 
         this.connection.onopen = () => {
             this._connected = true;
