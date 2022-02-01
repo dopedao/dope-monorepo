@@ -33,6 +33,7 @@ export type DopeCardProps = {
           | {
               __typename?: 'Listing';
               id: string;
+              active: boolean;
               inputs: Array<
                 | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
                 | null
