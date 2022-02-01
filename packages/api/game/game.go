@@ -153,10 +153,11 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 	_, log := base.LogFor(ctx)
 
 	joinData, err := json.Marshal(PlayerJoinClientData{
-		Id:   player.Id.String(),
-		Name: player.name,
-		X:    player.x,
-		Y:    player.y,
+		Id:         player.Id.String(),
+		Name:       player.name,
+		CurrentMap: player.currentMap,
+		X:          player.x,
+		Y:          player.y,
 	})
 	if err != nil {
 		log.Err(err).Msgf("could not marshal join data for player: %s | %s", player.Id, player.name)
