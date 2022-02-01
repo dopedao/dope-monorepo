@@ -5,10 +5,7 @@ import styled from '@emotion/styled';
 import { Button } from '@chakra-ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Image } from '@chakra-ui/image';
 import { useWeb3React } from '@web3-react/core';
-import { CloseButton } from '@chakra-ui/close-button';
-import { css } from '@emotion/react';
 import { Hustler, useHustlerQuery, useWalletQuery } from 'generated/graphql';
 import { getRandomHustler } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
@@ -18,7 +15,6 @@ import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
 import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
-import StickyNote from 'components/StickyNote';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
 import DialogSwitchNetwork from 'components/DialogSwitchNetwork';
 import ArrowBack from 'ui/svg/ArrowBack';
@@ -128,7 +124,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
 
 const Nav = () => (
   <AppWindowNavBar>
-    <Link href="/inventory" passHref>
+    <Link href="/inventory?section=Hustlers" passHref>
       <Button variant="back">
         <ArrowBack size={16} color="white" />
         Your Hustlers

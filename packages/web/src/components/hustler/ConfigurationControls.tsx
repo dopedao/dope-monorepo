@@ -145,7 +145,7 @@ const ConfigurationControls = ({
         setLoading(false);
         router.push({
           pathname: '/inventory',
-          search: `?c=true`,
+          search: `?section=Hustlers`,
         });
       } catch (error) {
         console.error(error)
