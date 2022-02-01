@@ -2,6 +2,8 @@ import { Image } from '@chakra-ui/react';
 import styled from "@emotion/styled";
 
 const EventHeaderContainer = styled.div`
+  position: relative;
+  z-index: 2;
   padding: 0px 32px;
   padding-bottom: 16px;
   display: flex;
