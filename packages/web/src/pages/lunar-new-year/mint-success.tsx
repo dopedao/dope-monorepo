@@ -1,8 +1,15 @@
+import { useMemo } from 'react';
 import { css } from '@emotion/react';
-import { Image } from '@chakra-ui/react';
+import { Button, Stack, Image } from '@chakra-ui/react';
 import AppWindowOptimism from 'components/AppWindowOptimism';
 import EventHeader from 'components/lunar_new_year/EventHeader';
 import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
+import { useItemQuery } from 'generated/graphql';
+import ProfileCard from 'features/profile/components/ProfileCard';
+import PanelTitleBar from 'components/PanelTitleBar';
+import PanelBody from 'components/PanelBody';
+import Link from 'next/link';
 
 const FireworksShow = styled.div`
   position: absolute;
@@ -58,11 +65,12 @@ const LogoContainer = styled.div`
   animation: scroll-in 5.2s linear forwards 0s;
 `;
 const MessageContainer = styled.div`
-  color: white;
+  text-align: center;
   padding: 32px 64px;
   margin: 32px 25%;
-  background-color: rgba(0,0,0,0.5);
   opacity: 0;
+  position: relative;
+  z-index: 5;
   @keyframes appear {
     from {
       opacity: 0;
@@ -72,25 +80,103 @@ const MessageContainer = styled.div`
     }
   }
   animation: appear 1s forwards 5.5s;
+  h3 {
+    color: white;
+    margin-bottom: 1em;
+    background-color: rgba(0,0,0,0.75);
+    padding: 32px;
+    border-radius: 8px;
+  }
 `;
 
-const MintSuccess = () => {
+const Item = ({ id }: { id: string }) => {
+  const { data, isLoading } = useItemQuery({
+    where: { id },
+  });
 
-  return(
-    <AppWindowOptimism 
+  const item = data?.items.edges![0]?.node;
+
+  return (
+    <ProfileCard>
+      {isLoading || !item ? (
+        'Loading'
+      ) : (
+        <>
+          {/* <PanelTitleBar centered>
+            {item.fullname}
+          </PanelTitleBar> */}
+          <PanelBody>
+            <Stack>
+              <Image
+                borderRadius="md"
+                src={item.svg || item.base?.svg || ''}
+                alt={item.fullname}
+              />
+              <span
+                css={css`
+                  height: 2.5em;
+                `}
+              >
+                Title: {item.fullname}
+              </span>
+            </Stack>
+          </PanelBody>
+        </>
+      )}
+    </ProfileCard>
+  );
+};
+
+const MintSuccess = () => {
+  const router = useRouter();
+  const { items } = router.query;
+
+  const parsed: { typ: number; id: string }[] = useMemo(() => {
+    if (items) {
+      return JSON.parse(items as string);
+    }
+
+    return [];
+  }, [items]);
+
+  return (
+    <AppWindowOptimism
       requiresWalletConnection
-      title="Success!" 
-      background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x" 
+      title="Success!"
+      background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
       padBody={false}
       scrollable={true}
     >
       <div css={css`display:flex;width:100%;flex-direction:column;`}>
         <EventHeader />
         <MessageContainer>
-          <h4>Thank you</h4>
-          <p>
-            …
-          </p>
+          <h3>Your gift has been revealed</h3>
+          <div css={css`
+            display:flex;
+            flex-direction:column;
+            gap:16px;
+            & > * {
+              flex: 1;
+            }
+          `}>
+            {parsed.map((item, i) => {
+              if (item.typ === 1) {
+                return <Item key={i} id={item.id} />;
+              } else {
+                return <div key={i}>
+                  <ProfileCard>
+                    <PanelTitleBar centered>
+                      <div>YOU WON 1000 $PAPER</div>
+                    </PanelTitleBar>
+                    <Image src="/images/desktop/PAPER.png" alt="1000 $PAPER" />
+                  </ProfileCard>
+                </div>;
+              }
+            })}
+            <Link href="/inventory?section=Gear" passHref>
+              <Button variant="cny">View your gifts</Button>
+            </Link>
+          </div>
         </MessageContainer>
       </div>
       <LogoContainer>
@@ -102,7 +188,7 @@ const MintSuccess = () => {
         <Image src="/images/lunar_new_year_2022/firecrackers.gif" alt="Fireworks" />
       </FireworksShow>
     </AppWindowOptimism>
-  ); 
+  );
 };
 
 export default MintSuccess;
