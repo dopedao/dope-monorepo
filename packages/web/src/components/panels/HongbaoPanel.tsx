@@ -36,15 +36,15 @@ const HongbaoPanel = () => {
       .claimed(
         Buffer.from(solidityKeccak256(['address', 'uint256'], [account, numUnopenedEnvelopes]).slice(2), 'hex'),
       )
-      .then(() => setClaimed(true));
-  }, [hongbao, account, numUnopenedEnvelopes]);
+      .then(setClaimed);
+  }, [eligibleForAirdrop, hongbao, account, numUnopenedEnvelopes]);
 
   const claim = useCallback(async () => {
     try {
       setIsClaiming(true);
       const proof = getProof(account!, numUnopenedEnvelopes.toString());
       const tx = await hongbao.claim(numUnopenedEnvelopes, proof);
-      const receipt = await tx.wait();
+      const receipt = await tx.wait(1);
       setOpens(
         receipt.logs.reduce<OpenedEvent[]>((o, log, idx) => {
           if (idx % 2 == 0) return o;
