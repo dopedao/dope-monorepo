@@ -27,10 +27,16 @@ const DopeWarsExeNav = ({hideFilterBar = false}: {hideFilterBar: boolean}) => {
       }
       <AppWindowNavBar showBorder>
         <NavLink href="/inventory">
-          <a>Inventory</a>
+          <a>Your Inventory</a>
         </NavLink>
         <NavLink href="/swap-meet">
-          <a>Market</a>
+          <a>DOPE</a>
+        </NavLink>
+        <NavLink href="/swap-meet-hustlers">
+          <a>Hustlers</a>
+        </NavLink>
+        <NavLink href="/swap-meet-gear">
+          <a>Gear</a>
         </NavLink>
       </AppWindowNavBar>
     </>
