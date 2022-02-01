@@ -15,6 +15,6 @@ ARGS=${@:1}
 # GetCnyPart0Address=$(deploy src/cny/GetCnyPart0.sol:GetCnyPart0 "$ARGS")
 # echo "GetCnyPart0 deployed to: $GetCnyPart0Address"
 
-MERKLE_ROOT=0x9e2ed0dc390ce7f5dd5ab6e3de690a616723a2266bbeb7744bf13a1958f084b6
+MERKLE_ROOT=0x9030d52768b363bc813840303521ad0d681b949c302cc51842c3463adf32bb63
 HongbaoAddress=$(deploy src/Hongbao.sol:Hongbao "$ARGS" --constructor-args "$MERKLE_ROOT")
 echo "Hongbao deployed to: $HongbaoAddress"
