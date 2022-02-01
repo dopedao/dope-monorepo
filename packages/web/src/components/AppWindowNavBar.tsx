@@ -2,13 +2,14 @@ import { css } from '@emotion/react';
 import { media } from 'ui/styles/mixins';
 import { ReactNode } from 'react';
 
-const AppWindowNavBar = ({ children }: { children: ReactNode }) => {
+const AppWindowNavBar = ({ children, showBorder = false }: { children: ReactNode, showBorder?: boolean }) => {
   return (
     <div
       id="app-title-bar_nav-items"
       css={css`
         background: #202221;
         border: 0;
+        border-bottom: ${showBorder ? '4px' : '0' } solid white; 
         height: 40px;
         width: 100%;
         overflow-y: hidden;

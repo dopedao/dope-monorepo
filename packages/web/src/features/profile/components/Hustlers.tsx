@@ -107,7 +107,9 @@ const Hustlers: FC = () => {
                     {svg && <Image alt="The hustler" borderRadius="md" src={svg} />}
                     <Stack mt={4}>
                       <span>Name: {name}</span>
-                      <span>Title: {title}</span>
+                      <span>
+                        { title ? `Title: ${title}` : '\u00A0' }
+                      </span>
                     </Stack>
                   </PanelBody>
                   <HustlerFooter id={id} />

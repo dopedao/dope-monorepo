@@ -23,7 +23,7 @@ const DopeWarsExeNav = () => {
         setFilterBy={setFilterBy}
         setSearchValue={setSearchValue}
       />
-      <AppWindowNavBar>
+      <AppWindowNavBar showBorder>
         <NavLink href="/inventory">
           <a>Inventory</a>
         </NavLink>
