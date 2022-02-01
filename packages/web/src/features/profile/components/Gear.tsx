@@ -5,6 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import PanelBody from "components/PanelBody";
 import { Item, Maybe, useInfiniteProfileGearQuery, WalletItems } from "generated/graphql";
 
+import { css } from "@emotion/react";
 import ItemCount from "./ItemCount";
 import ProfileCard from "./ProfileCard";
 import ProfileCardHeader from "./ProfileCardHeader";
@@ -109,8 +110,8 @@ const GearWrapper: FC = () => {
                       <Image borderRadius="md" src={imageSrc} />
                       <span>Type: {item.type}</span>
                       <span>Origin: {origin}</span>
-                      <span>Title: {item.fullname}</span>
-                      <span>In Stock: {item.count}</span>
+                      <span css={css`height:2.5em`}>Title: {item.fullname}</span>
+                      {/* <span>In Stock: {item.count}</span> */}
                     </Stack>
                   </PanelBody>
                 </ProfileCard>

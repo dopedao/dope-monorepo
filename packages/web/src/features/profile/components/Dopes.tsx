@@ -70,7 +70,7 @@ const Dopes: FC = () => {
     <>
       <SectionHeader>
         <HStack>
-          <span>Dopes</span>
+          <span>DOPE</span>
           <ItemCount count={dopeData.totalCount} />
         </HStack>
       </SectionHeader>

@@ -13,6 +13,7 @@ import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import SpinnerMessage from 'components/SpinnerMessage';
 import PanelTitleBar from 'components/PanelTitleBar';
+import Link from 'next/link';
 
 const HongbaoPanel = () => {
   const hongbao = useHongbao();
@@ -61,7 +62,7 @@ const HongbaoPanel = () => {
     <PanelContainer>
       { eligibleForAirdrop && <>
         <PanelTitleBar centered>
-          { !claimed ? 'A gift for you' : 'Enjoy your gift' }
+          { !claimed ? 'A gift for you' : 'All envelopes have been opened' }
         </PanelTitleBar>
         <PanelBody>
           <Image 
@@ -72,18 +73,21 @@ const HongbaoPanel = () => {
           />
         </PanelBody>
         <PanelFooter>
-          <Button 
-            variant="cny" 
-            onClick={claim}
-            disabled={claimed || isClaiming}
-          >
-            { !isClaiming && 
-              (claimed ? 'All Envelopes Claimed' : `Open ${numUnopenedEnvelopes} Envelopes`)
-            }
-            { isClaiming && 
-              <SpinnerMessage text="Opening Envelopes…" />
-            }
-          </Button>
+          { !claimed && 
+            <Button 
+              variant="cny" 
+              onClick={claim}
+              disabled={claimed || isClaiming}
+            >
+              { !isClaiming && `Open ${numUnopenedEnvelopes} Envelopes` }
+              { isClaiming && <SpinnerMessage text="Opening Envelopes…" />}
+            </Button>
+          }
+          { claimed && 
+            <Link href="/inventory?section=gear" passHref>
+              <Button variant="cny">View your gifts</Button>
+            </Link>
+          }
         </PanelFooter>
         </>
       }
