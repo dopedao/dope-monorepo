@@ -22,7 +22,7 @@ const ApprovePaper = ({
   const { account } = useWeb3React();
   const paper = usePaper();
 
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (account) {
@@ -53,14 +53,14 @@ const ApprovePaper = ({
         <p>{children}</p>
         <Button
           onClick={async () => {
-            setLoading(true);
+            setIsLoading(true);
             try {
               const txn = await paper.approve(address, constants.MaxUint256);
               await txn.wait(1);
               onApprove(true);
             } catch (error) {
             } finally {
-              setLoading(false);
+              setIsLoading(false);
             }
           }}
           disabled={isLoading}
