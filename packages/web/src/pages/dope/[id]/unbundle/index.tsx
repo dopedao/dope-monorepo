@@ -14,7 +14,7 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ApprovePaper from 'components/panels/ApprovePaper';
 import MintTo from 'components/panels/MintTo';
 import RenderDope from 'features/dope/components/RenderDope';
-import AppWindow from 'components/AppWindow';
+import AppWindowEthereum from 'components/AppWindowEthereum';
 
 const Approve = () => {
   const { account } = useWeb3React();
@@ -76,7 +76,7 @@ const Approve = () => {
   };
 
   return (
-    <AppWindow requiresWalletConnection={true} padBody={false} title="Claim DOPE Gear">
+    <AppWindowEthereum requiresWalletConnection={true} padBody={false} title="Claim DOPE Gear">
       <Head title="Approve spend" />
       <StackedResponsiveContainer>
         <Stack>
@@ -104,8 +104,8 @@ const Approve = () => {
             isApproved={isPaperApproved}
             onApprove={approved => setIsPaperApproved(approved)}
           >
-            We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of your
-            DOPE NFT #{dopeId}.
+            We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of your DOPE NFT
+            #{dopeId}.
           </ApprovePaper>
           <MintTo
             mintTo={mintTo}
@@ -134,7 +134,7 @@ const Approve = () => {
           </PanelFooter>
         </PanelContainer>
       </StackedResponsiveContainer>
-    </AppWindow>
+    </AppWindowEthereum>
   );
 };
 
