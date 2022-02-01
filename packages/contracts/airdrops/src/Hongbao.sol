@@ -12,7 +12,7 @@ import {TokenId} from "./utils/TokenId.sol";
 contract Hongbao is MerkleClaim, MaintainerOwner, Pausable {
     event Opened(uint8 typ, uint256 value);
 
-    IERC20 paper = IERC20(0x3F3Ef5f39a95F13c821E4a12AaE09c2446C72452);
+    IERC20 paper = IERC20(0x00F932F0FE257456b32dedA4758922E56A4F4b42);
     address treasury = 0x90103beDCfbE1eeE44ded89cEd88bA8503580b3D;
     address tarrence = 0xF8C3875bFa461a38532FEDF90453985901C55114;
     address mrfax = 0x50258A2aE0b3065754936828Cd7814731C6fC008;
