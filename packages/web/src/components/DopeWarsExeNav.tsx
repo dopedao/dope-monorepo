@@ -4,7 +4,7 @@ import AppWindowNavBar from 'components/AppWindowNavBar';
 import { SearchFilterContext } from 'components/SearchFilter';
 import MarketFilterBar from 'features/swap-meet/components/MarketFilterBar';
 
-const DopeWarsExeNav = () => {
+const DopeWarsExeNav = ({hideFilterBar = false}: {hideFilterBar?: boolean}) => {
   const { search, order, filter, view } = useContext(SearchFilterContext);
 
   const [searchValue, setSearchValue] = search;
@@ -14,21 +14,29 @@ const DopeWarsExeNav = () => {
 
   return (
     <>
-      <MarketFilterBar
-        orderBy={orderBy}
-        setOrderBy={setOrderBy}
-        setViewCompactCards={setViewCompactCards}
-        compactSwitchOn={viewCompactCards}
-        filterBy={filterBy}
-        setFilterBy={setFilterBy}
-        setSearchValue={setSearchValue}
-      />
-      <AppWindowNavBar>
+      {!hideFilterBar && 
+        <MarketFilterBar
+          orderBy={orderBy}
+          setOrderBy={setOrderBy}
+          setViewCompactCards={setViewCompactCards}
+          compactSwitchOn={viewCompactCards}
+          filterBy={filterBy}
+          setFilterBy={setFilterBy}
+          setSearchValue={setSearchValue}
+        />
+      }
+      <AppWindowNavBar showBorder>
         <NavLink href="/inventory">
-          <a>Inventory</a>
+          <a>Your Inventory</a>
         </NavLink>
         <NavLink href="/swap-meet">
-          <a>Market</a>
+          <a>DOPE</a>
+        </NavLink>
+        <NavLink href="/swap-meet-hustlers">
+          <a>Hustlers</a>
+        </NavLink>
+        <NavLink href="/swap-meet-gear">
+          <a>Gear</a>
         </NavLink>
       </AppWindowNavBar>
     </>

@@ -8,6 +8,7 @@ import DesktopWindow from 'components/DesktopWindow';
 import {SearchFilterProvider} from 'components/SearchFilter';
 
 export interface AppWindowProps {
+  background?: string;
   children: ReactNode;
   footer?: ReactNode;
   height?: number | string;
@@ -17,7 +18,7 @@ export interface AppWindowProps {
   scrollable?: boolean;
   title?: string | undefined;
   width?: number | string;
-  fullPage?: boolean;
+  onlyFullScreen?: boolean;
   fullScreen?: boolean;
 }
 
@@ -29,11 +30,11 @@ const getBodyPadding = () => {
   return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
 };
 
-const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean }>`
+const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean; background: string | undefined }>`
   position: relative;
   height: 100%;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
-  background-color: #fff;
+  background: ${({ background }) => (background ? background : '#a8a9ae')}
   padding: ${({ padBody }) => (padBody ? getBodyPadding() : '0px')};
 `;
 
@@ -47,25 +48,27 @@ export default function AppWindow({
   children,
   navbar,
   footer,
-  fullPage,
+  onlyFullScreen,
   fullScreen,
+  background
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
   return (
     <SearchFilterProvider>
       <DesktopWindow
-        title={title || 'DOPEWARS.EXE'}
+        title={title || 'DOPE WARS'}
         titleChildren={navbar}
         width={width}
         height={height}
-        fullPage={fullPage}
+        onlyFullScreen={onlyFullScreen}
         fullScreen={fullScreen}
+        background={background}
       >
         {requiresWalletConnection && !account ? (
           <ConnectWallet />
         ) : (
-          <AppWindowBody className="appWindowBody" scrollable={scrollable} padBody={padBody}>
+          <AppWindowBody className="appWindowBody" background={background} scrollable={scrollable} padBody={padBody}>
             {children}
           </AppWindowBody>
         )}

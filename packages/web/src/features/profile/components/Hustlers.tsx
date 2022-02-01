@@ -1,5 +1,6 @@
 import { FC, useMemo } from "react"
 import { Stack, Image, HStack, Button } from "@chakra-ui/react"
+import { AspectRatio } from '@chakra-ui/layout';
 import { useWeb3React } from "@web3-react/core";
 import Link from 'next/link';
 
@@ -84,7 +85,7 @@ const Hustlers: FC = () => {
   return (
     <>
       <SectionHeader>
-        <HStack>
+        <HStack alignContent="center" justifyContent="space-between" width="100%" marginRight="8px">
           <span>Hustlers</span>
           <ItemCount count={hustlerData.totalCount} />
         </HStack>
@@ -104,10 +105,16 @@ const Hustlers: FC = () => {
                     {formattedType} #{id}
                   </ProfileCardHeader>
                   <PanelBody>
-                    {svg && <Image alt="The hustler" borderRadius="md" src={svg} />}
+                    {svg && 
+                      <AspectRatio ratio={1}>
+                        <Image alt="The hustler" borderRadius="md" src={svg} />
+                      </AspectRatio>
+                    }
                     <Stack mt={4}>
                       <span>Name: {name}</span>
-                      <span>Title: {title}</span>
+                      <span>
+                        { title ? `Title: ${title}` : '\u00A0' }
+                      </span>
                     </Stack>
                   </PanelBody>
                   <HustlerFooter id={id} />
