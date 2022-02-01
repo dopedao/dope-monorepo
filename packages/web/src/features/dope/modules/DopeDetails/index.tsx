@@ -1,5 +1,3 @@
-import { CloseButton } from '@chakra-ui/close-button';
-import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { useSwitchEthereum } from 'hooks/web3';
 import { useWalletQuery } from 'generated/graphql';
@@ -8,8 +6,8 @@ import DopeCard from 'features/dope/components/DopeCard';
 import DopeTable from 'features/dope/components/DopeTable';
 import LoadingBlock from 'components/LoadingBlock';
 import NoDopeCard from 'features/dope/components/NoDopeCard';
-import StickyNote from 'components/StickyNote';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
+import DialogSwitchNetwork from 'components/DialogSwitchNetwork';
 
 const DopeDetails = () => {
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
@@ -31,32 +29,10 @@ const DopeDetails = () => {
     }
   }, []);
 
-  const handleCloseAlert = () => {
-    window.localStorage.setItem('networkAlertInitiateHustler', 'false');
-    setShowNetworkAlert(false);
-  };
-
   return (
     <>
       {account && chainId !== 1 && chainId !== 42 && showNetworkAlert && (
-        <StickyNote>
-          <div
-            css={css`
-              display: flex;
-              align-items: center;
-            `}
-          >
-            <p
-              css={css`
-                margin-right: 10px;
-                padding-bottom: unset;
-              `}
-            >
-              Please switch to Ethereum Main Network.
-            </p>{' '}
-            <CloseButton onClick={handleCloseAlert} />
-          </div>
-        </StickyNote>
+        <DialogSwitchNetwork networkName="Ethereum Main" />
       )}
       {loading ? (
         <StackedResponsiveContainer>

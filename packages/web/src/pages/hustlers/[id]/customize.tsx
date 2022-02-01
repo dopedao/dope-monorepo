@@ -20,6 +20,7 @@ import Head from 'components/Head';
 import LoadingBlock from 'components/LoadingBlock';
 import StickyNote from 'components/StickyNote';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
+import DialogSwitchNetwork from 'components/DialogSwitchNetwork';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -171,33 +172,12 @@ const Hustlers = () => {
     }
   }, []);
 
-  const handleCloseAlert = () => {
-    window.localStorage.setItem('networkAlertCustomizeHustler', 'false');
-    setShowNetworkAlert(false);
-  };
 
   return (
     <AppWindow padBody={false} navbar={<Nav />} requiresWalletConnection={true}>
       <Head title="Your Hustler Squad" />
       {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
-        <StickyNote>
-          <div
-            css={css`
-              display: flex;
-              align-items: center;
-            `}
-          >
-            <p
-              css={css`
-                margin-right: 10px;
-                padding-bottom: unset;
-              `}
-            >
-              You should switch to Optimism network to customize your hustler.
-            </p>{' '}
-            <CloseButton onClick={handleCloseAlert} />
-          </div>
-        </StickyNote>
+        <DialogSwitchNetwork networkName="Optimism" />
       )}
       {walletLoading || loading || !data?.hustlers.edges?.[0]?.node || !router.isReady ? (
         <ContentLoading />
