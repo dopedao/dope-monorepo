@@ -26,15 +26,16 @@ const ITEM_ORDER = [
 ];
 
 const FinePrint = styled.div`
-  color:rgba(255,255,255,0.75);
-  text-align:center;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
   font-size: var(--text-smallest);
 `;
 
 const DopeCardBody = ({
+  buttonBar,
   dope,
   isExpanded,
-}: Pick<DopeCardProps, 'dope'> & { isExpanded: boolean }) => {
+}: Pick<DopeCardProps, 'dope' | 'buttonBar'> & { isExpanded: boolean }) => {
   const [isPreviewShown, setPreviewShown] = useState(false);
   const [isRarityVisible, setRarityVisible] = useState(false);
   const hustlerItemsRef = useRef<HTMLDivElement>(null);
@@ -46,10 +47,10 @@ const DopeCardBody = ({
   // Toggles preview and smoothly scrolls into view
   const togglePreview = (): void => {
     setPreviewShown(!isPreviewShown);
-    const scrollParams = { 
-      behavior: 'smooth', 
-      block: 'nearest', 
-      inline: 'start' 
+    const scrollParams = {
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'start',
     } as ScrollIntoViewOptions;
     if (isPreviewShown && hustlerItemsRef.current) {
       hustlerItemsRef.current.scrollIntoView(scrollParams);
@@ -64,7 +65,7 @@ const DopeCardBody = ({
         flex: 1;
         background: #fff;
         padding: 8px;
-        overflow-y: ${isExpanded ? 'auto' : 'hidden' };
+        overflow-y: ${isExpanded ? 'auto' : 'hidden'};
         border-radius: 4px;
         display: flex;
         flex-direction: column;
@@ -73,7 +74,7 @@ const DopeCardBody = ({
       `}
     >
       <DopeCardItems isExpanded={isExpanded}>
-        <div 
+        <div
           css={css`
             padding-bottom: 8px;
             font-size: var(--text-small);
@@ -84,27 +85,28 @@ const DopeCardBody = ({
             flex-direction: row;
             justify-content: space-between;
           `}
-          onClick={toggleItemLegendVisibility}>
+          onClick={toggleItemLegendVisibility}
+        >
           <span>
-            ( {dope.rank + 1} / {NUM_DOPE_TOKENS}{' '} )
+            ( {dope.rank + 1} / {NUM_DOPE_TOKENS} )
           </span>
-          { !dope.opened && isExpanded && (isRarityVisible ? '🙈' : '👀') }
+          {!dope.opened && isExpanded && (isRarityVisible ? '🙈' : '👀')}
         </div>
-        {dope.opened && isExpanded &&
+        {dope.opened && isExpanded && (
           <div>
             <HustlerContainer bgColor="transparent">
-              <Image 
-                src="/images/hustler/vote_female.png" 
-                alt="This DOPE NFT has no Gear to Unpack" 
+              <Image
+                src="/images/hustler/vote_female.png"
+                alt="This DOPE NFT has no Gear to Unpack"
               />
               <FinePrint>
-                This DOPE NFT has been fully claimed. It serves as a DAO voting token, and will be eligible for future airdrops.
+                This DOPE NFT has been fully claimed. It serves as a DAO voting token, and will be
+                eligible for future airdrops.
               </FinePrint>
             </HustlerContainer>
-
           </div>
-        }
-        {!dope.opened && dope.items &&
+        )}
+        {!dope.opened && dope.items && (
           <div
             className="slideContainer"
             css={css`
@@ -127,8 +129,8 @@ const DopeCardBody = ({
             `}
           >
             <div className="slide" ref={hustlerItemsRef}>
-              { 
-                dope.items.sort(function (a, b) {
+              {dope.items
+                .sort(function (a, b) {
                   if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
                     return 1;
                   } else {
@@ -152,36 +154,43 @@ const DopeCardBody = ({
                       showRarity={isRarityVisible}
                     />
                   );
-                })
-              }
+                })}
             </div>
             <div className="slide" ref={hustlerPreviewRef}>
               <HustlerContainer bgColor="transparent">
-                { isPreviewShown && <RenderFromDopeIdOnly id={dope.id} /> }
+                {isPreviewShown && <RenderFromDopeIdOnly id={dope.id} />}
                 <FinePrint>
                   Hustler must be Initiated as a separate NFT.
-                  <br/>
+                  <br />
                   <Link
                     href="https://dope-wars.notion.site/Hustler-Guide-ad81eb1129c2405f8168177ba99774cf"
                     target="hustler-minting-faq"
                     className="underline"
-                    css={css`display: inline-block !important;`}
-                  >Read the Hustler Guide for more info.</Link>
+                    css={css`
+                      display: inline-block !important;
+                    `}
+                  >
+                    Read the Hustler Guide for more info.
+                  </Link>
                 </FinePrint>
               </HustlerContainer>
             </div>
           </div>
-        } 
+        )}
       </DopeCardItems>
-      { isExpanded && 
-        <DopePreviewButton 
-          togglePreview={togglePreview} 
-          isPreviewShown={isPreviewShown} 
+      {isExpanded && (
+        <DopePreviewButton
+          togglePreview={togglePreview}
+          isPreviewShown={isPreviewShown}
           disabled={dope.opened}
         />
-      }
-      <DopeStatus content={'hustler'} status={!dope.opened} />
-      <DopeStatus content={'paper'} status={!dope.claimed} />
+      )}
+      {buttonBar === 'for-marketplace' && (
+        <>
+          <DopeStatus content={'hustler'} status={!dope.opened} />
+          <DopeStatus content={'paper'} status={!dope.claimed} />
+        </>
+      )}
     </div>
   );
 };
