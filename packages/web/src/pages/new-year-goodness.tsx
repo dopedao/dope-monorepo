@@ -7,6 +7,7 @@ import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 
 const lanternImg = (
   <Image 
@@ -34,7 +35,7 @@ const EventContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  h3 {
+  h4 {
     padding-bottom: 4px;
     border-bottom: 2px solid var(--gray-00);
     margin-bottom: .5em;
@@ -60,15 +61,13 @@ const LunarNewYear = () => {
         <StackedResponsiveContainer css={css`padding-bottom:0 !important; padding-top: 0px !important`}>
           <HongbaoPanel />
           <PanelContainer>
+            <PanelTitleHeader>✨ Free airdrop for all Hustlers ✨</PanelTitleHeader>
             <PanelBody>
-              <h3>
-                Free airdrop for all Hustlers
-              </h3>
               <div css={css`display:flex;align-items:center;justify-content:center`}>
                 <Image src="/images/lunar_new_year_2022/free_accessories.png" alt="Free Airdrop Accessories" css={css`width:80%`} />
               </div>
               <p>
-                To celebrate Year of the Tiger, we&apos;re giving every Hustler who claimed gear by January 31st a special accessory airdrop.
+                To celebrate Year of the Tiger we&apos;re giving every Hustler who claimed gear by January 31st a special accessory airdrop.
               </p>
 
               <p>
@@ -81,15 +80,13 @@ const LunarNewYear = () => {
         <StackedResponsiveContainer css={css`padding-top:0 !important;`}>
           <MaskBoostPanel />
           <PanelContainer>
+            <PanelTitleHeader>✨ Limited-edition, rare accessories ✨</PanelTitleHeader>
             <PanelBody>
-              <h3>
-                ✨ Limited-edition, rare accessories ✨
-              </h3>
               <p>
                 In addition to the gifts above, we&apos;re launching a celebratory mask drop. From Feb. 1st – Feb. 15th, 2022 you can purchase a Tiger Mask for 5000 $PAPER and try your luck at a chance to win more rare masks!
               </p>
               <Image src="/images/lunar_new_year_2022/walking_hustlers.png" alt="Walking Hustlers with Dragon" />
-              <h3>Mask boost lotto</h3>
+              <h4>Mask boost lotto</h4>
               <p>
                 <em>Boost 0.1Ξ for a chance to receive a random zodiac mask.</em> You could receive a rare Tiger Mask, or a super rare Golden Tiger Mask. Each boost increases your odds by 10%. Spend 1Ξ for a guaranteed Golden Tiger Mask.
               </p>

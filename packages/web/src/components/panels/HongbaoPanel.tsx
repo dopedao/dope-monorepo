@@ -12,7 +12,7 @@ import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import SpinnerMessage from 'components/SpinnerMessage';
-import PanelTitleBar from 'components/PanelTitleBar';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 import Link from 'next/link';
 
 const HongbaoPanel = () => {
@@ -61,9 +61,9 @@ const HongbaoPanel = () => {
   return (
     <PanelContainer>
       { eligibleForAirdrop && <>
-        <PanelTitleBar centered>
+        <PanelTitleHeader>
           { !claimed ? 'A gift for you' : 'All envelopes have been opened' }
-        </PanelTitleBar>
+        </PanelTitleHeader>
         <PanelBody>
           <Image 
             src={

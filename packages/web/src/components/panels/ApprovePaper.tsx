@@ -4,9 +4,10 @@ import { useWeb3React } from '@web3-react/core';
 import { BigNumber, constants } from 'ethers';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
-import PanelTitleBar from 'components/PanelTitleBar';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 import Spinner from 'ui/svg/Spinner';
 import { usePaper } from 'hooks/contracts';
+import PanelFooter from 'components/PanelFooter';
 
 const ApprovePaper = ({
   address,
@@ -48,9 +49,11 @@ const ApprovePaper = ({
 
   return (
     <PanelContainer>
-      <PanelTitleBar>Approve $PAPER Spend</PanelTitleBar>
+      <PanelTitleHeader>Approve $PAPER Spend</PanelTitleHeader>
       <PanelBody>
         <p>{children}</p>
+      </PanelBody>
+      <PanelFooter stacked>
         <Button
           onClick={async () => {
             setIsLoading(true);
@@ -64,11 +67,10 @@ const ApprovePaper = ({
             }
           }}
           disabled={isLoading}
-          width="220px"
         >
           {isLoading ? <Spinner /> : 'Approve $PAPER Spend'}
         </Button>
-      </PanelBody>
+      </PanelFooter>
     </PanelContainer>
   );
 };

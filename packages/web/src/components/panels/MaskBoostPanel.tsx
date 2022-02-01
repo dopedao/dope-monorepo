@@ -13,7 +13,7 @@ import { useWeb3React } from '@web3-react/core';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
-import PanelTitleBar from 'components/PanelTitleBar';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 import SpinnerMessage from 'components/SpinnerMessage';
 import styled from '@emotion/styled';
 
@@ -179,7 +179,7 @@ const BoostPanel = () => {
 
   return (
     <PanelContainer>
-      <PanelTitleBar centered>Good luck and big profit</PanelTitleBar>
+      <PanelTitleHeader>Good luck and big profit</PanelTitleHeader>
       <PanelBody>
         <Image src={getBoostImage()} alt="Your Prize Awaits" />
         <Stats>
@@ -227,14 +227,14 @@ const BoostPanel = () => {
           </Button>
         </Bar>
       </PanelBody>
-      <PanelFooter>
+      <PanelFooter stacked>
         {!hasEnoughPaper && (
           <Link
             href={`https://app.uniswap.org/#/swap?outputCurrency=0x00F932F0FE257456b32dedA4758922E56A4F4b42&inputCurrency=ETH&exactAmount=5000&exactField=output`}
             passHref
           >
             <a target="_blank" rel="noreferrer">
-              <Button variant="cny">Buy OΞ $PAPER</Button>
+              <Button variant="cny">Buy $PAPER on Optimism</Button>
             </a>
           </Link>
         )}
@@ -249,7 +249,7 @@ const BoostPanel = () => {
           </Button>
         )}
         <Button variant="cny" onClick={mintMask} disabled={!isPaperApproved || isBuyingMask || !hasEnoughEthToMint() }>
-          {!isBuyingMask && hasEnoughEthToMint() && 'Buy Now'}
+          {!isBuyingMask && hasEnoughEthToMint() && 'Complete Purchase'}
           {!isBuyingMask && !hasEnoughEthToMint() && 'Not Enough Optimistic ETH'}
           {isBuyingMask && 
             <SpinnerMessage text={boosts > 0 ? 'Rolling the dice…' : 'Processing…'} />
