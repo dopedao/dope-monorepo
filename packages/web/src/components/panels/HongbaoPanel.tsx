@@ -35,7 +35,7 @@ const HongbaoPanel = () => {
       .claimed(
         Buffer.from(solidityKeccak256(['address', 'uint256'], [account, numUnopenedEnvelopes]).slice(2), 'hex'),
       )
-      .then(setClaimed);
+      .then(() => setClaimed(true));
   }, [hongbao, account, numUnopenedEnvelopes]);
 
   const claim = useCallback(async () => {
