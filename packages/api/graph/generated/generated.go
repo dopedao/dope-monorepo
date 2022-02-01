@@ -184,15 +184,14 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Dopes       func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.DopeOrder, where *ent.DopeWhereInput) int
-		Hustlers    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder, where *ent.HustlerWhereInput) int
-		Items       func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ItemOrder, where *ent.ItemWhereInput) int
-		Listings    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ListingOrder, where *ent.ListingWhereInput) int
-		Node        func(childComplexity int, id string) int
-		Nodes       func(childComplexity int, ids []string) int
-		Search      func(childComplexity int, query string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SearchOrder, where *ent.SearchWhereInput) int
-		WalletItems func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.WalletItemsOrder, where *ent.WalletItemsWhereInput) int
-		Wallets     func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.WalletOrder, where *ent.WalletWhereInput) int
+		Dopes    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.DopeOrder, where *ent.DopeWhereInput) int
+		Hustlers func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder, where *ent.HustlerWhereInput) int
+		Items    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ItemOrder, where *ent.ItemWhereInput) int
+		Listings func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ListingOrder, where *ent.ListingWhereInput) int
+		Node     func(childComplexity int, id string) int
+		Nodes    func(childComplexity int, ids []string) int
+		Search   func(childComplexity int, query string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SearchOrder, where *ent.SearchWhereInput) int
+		Wallets  func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.WalletOrder, where *ent.WalletWhereInput) int
 	}
 
 	RLEs struct {
@@ -236,17 +235,6 @@ type ComplexityRoot struct {
 		Item    func(childComplexity int) int
 		Wallet  func(childComplexity int) int
 	}
-
-	WalletItemsConnection struct {
-		Edges      func(childComplexity int) int
-		PageInfo   func(childComplexity int) int
-		TotalCount func(childComplexity int) int
-	}
-
-	WalletItemsEdge struct {
-		Cursor func(childComplexity int) int
-		Node   func(childComplexity int) int
-	}
 }
 
 type AmountResolver interface {
@@ -261,7 +249,6 @@ type QueryResolver interface {
 	Wallets(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.WalletOrder, where *ent.WalletWhereInput) (*ent.WalletConnection, error)
 	Dopes(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.DopeOrder, where *ent.DopeWhereInput) (*ent.DopeConnection, error)
 	Items(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ItemOrder, where *ent.ItemWhereInput) (*ent.ItemConnection, error)
-	WalletItems(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.WalletItemsOrder, where *ent.WalletItemsWhereInput) (*ent.WalletItemsConnection, error)
 	Hustlers(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder, where *ent.HustlerWhereInput) (*ent.HustlerConnection, error)
 	Listings(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ListingOrder, where *ent.ListingWhereInput) (*ent.ListingConnection, error)
 	Search(ctx context.Context, query string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SearchOrder, where *ent.SearchWhereInput) (*ent.SearchConnection, error)
@@ -950,18 +937,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Search(childComplexity, args["query"].(string), args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.SearchOrder), args["where"].(*ent.SearchWhereInput)), true
 
-	case "Query.walletItems":
-		if e.complexity.Query.WalletItems == nil {
-			break
-		}
-
-		args, err := ec.field_Query_walletItems_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.WalletItems(childComplexity, args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.WalletItemsOrder), args["where"].(*ent.WalletItemsWhereInput)), true
-
 	case "Query.wallets":
 		if e.complexity.Query.Wallets == nil {
 			break
@@ -1120,41 +1095,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.WalletItems.Wallet(childComplexity), true
-
-	case "WalletItemsConnection.edges":
-		if e.complexity.WalletItemsConnection.Edges == nil {
-			break
-		}
-
-		return e.complexity.WalletItemsConnection.Edges(childComplexity), true
-
-	case "WalletItemsConnection.pageInfo":
-		if e.complexity.WalletItemsConnection.PageInfo == nil {
-			break
-		}
-
-		return e.complexity.WalletItemsConnection.PageInfo(childComplexity), true
-
-	case "WalletItemsConnection.totalCount":
-		if e.complexity.WalletItemsConnection.TotalCount == nil {
-			break
-		}
-
-		return e.complexity.WalletItemsConnection.TotalCount(childComplexity), true
-
-	case "WalletItemsEdge.cursor":
-		if e.complexity.WalletItemsEdge.Cursor == nil {
-			break
-		}
-
-		return e.complexity.WalletItemsEdge.Cursor(childComplexity), true
-
-	case "WalletItemsEdge.node":
-		if e.complexity.WalletItemsEdge.Node == nil {
-			break
-		}
-
-		return e.complexity.WalletItemsEdge.Node(childComplexity), true
 
 	}
 	return 0, false
@@ -2296,21 +2236,7 @@ type SearchEdge {
   node: SearchResult
   cursor: Cursor!
 }
-
-type WalletItemsConnection {
-  totalCount: Int!
-  pageInfo: PageInfo!
-  edges: [WalletItemsEdge]
-}
-
-type WalletItemsEdge {
-  node: WalletItems
-  cursor: Cursor!
-}
-
-input WalletItemsOrder {
-  direction: OrderDirection!
-}`, BuiltIn: false},
+`, BuiltIn: false},
 	{Name: "graph/schema.graphql", Input: `"Maps a Time GraphQL scalar to a Go time.Time struct."
 scalar Time
 "Timestamp is a RFC3339 string."
@@ -2522,14 +2448,6 @@ type Query {
     orderBy: ItemOrder
     where: ItemWhereInput
   ): ItemConnection!
-  walletItems(
-    after: Cursor
-    first: Int
-    before: Cursor
-    last: Int
-    orderBy: WalletItemsOrder
-    where: WalletItemsWhereInput
-  ): WalletItemsConnection!
   hustlers(
     after: Cursor
     first: Int
@@ -2915,66 +2833,6 @@ func (ec *executionContext) field_Query_search_args(ctx context.Context, rawArgs
 		}
 	}
 	args["where"] = arg6
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_walletItems_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *ent.Cursor
-	if tmp, ok := rawArgs["after"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-		arg0, err = ec.unmarshalOCursor2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐCursor(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["after"] = arg0
-	var arg1 *int
-	if tmp, ok := rawArgs["first"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["first"] = arg1
-	var arg2 *ent.Cursor
-	if tmp, ok := rawArgs["before"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-		arg2, err = ec.unmarshalOCursor2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐCursor(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["before"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["last"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["last"] = arg3
-	var arg4 *ent.WalletItemsOrder
-	if tmp, ok := rawArgs["orderBy"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
-		arg4, err = ec.unmarshalOWalletItemsOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsOrder(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["orderBy"] = arg4
-	var arg5 *ent.WalletItemsWhereInput
-	if tmp, ok := rawArgs["where"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
-		arg5, err = ec.unmarshalOWalletItemsWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsWhereInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["where"] = arg5
 	return args, nil
 }
 
@@ -6071,48 +5929,6 @@ func (ec *executionContext) _Query_items(ctx context.Context, field graphql.Coll
 	return ec.marshalNItemConnection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐItemConnection(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_walletItems(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_walletItems_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().WalletItems(rctx, args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.WalletItemsOrder), args["where"].(*ent.WalletItemsWhereInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*ent.WalletItemsConnection)
-	fc.Result = res
-	return ec.marshalNWalletItemsConnection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsConnection(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Query_hustlers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -7031,175 +6847,6 @@ func (ec *executionContext) _WalletItems_item(ctx context.Context, field graphql
 	res := resTmp.(*ent.Item)
 	fc.Result = res
 	return ec.marshalNItem2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐItem(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _WalletItemsConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.WalletItemsConnection) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "WalletItemsConnection",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TotalCount, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _WalletItemsConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *ent.WalletItemsConnection) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "WalletItemsConnection",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PageInfo, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(ent.PageInfo)
-	fc.Result = res
-	return ec.marshalNPageInfo2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐPageInfo(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _WalletItemsConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.WalletItemsConnection) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "WalletItemsConnection",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*ent.WalletItemsEdge)
-	fc.Result = res
-	return ec.marshalOWalletItemsEdge2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsEdge(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _WalletItemsEdge_node(ctx context.Context, field graphql.CollectedField, obj *ent.WalletItemsEdge) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "WalletItemsEdge",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*ent.WalletItems)
-	fc.Result = res
-	return ec.marshalOWalletItems2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItems(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _WalletItemsEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *ent.WalletItemsEdge) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "WalletItemsEdge",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cursor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(ent.Cursor)
-	fc.Result = res
-	return ec.marshalNCursor2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐCursor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -13268,29 +12915,6 @@ func (ec *executionContext) unmarshalInputSyncStateWhereInput(ctx context.Contex
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputWalletItemsOrder(ctx context.Context, obj interface{}) (ent.WalletItemsOrder, error) {
-	var it ent.WalletItemsOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputWalletItemsWhereInput(ctx context.Context, obj interface{}) (ent.WalletItemsWhereInput, error) {
 	var it ent.WalletItemsWhereInput
 	asMap := map[string]interface{}{}
@@ -14796,20 +14420,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
-		case "walletItems":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_walletItems(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
 		case "hustlers":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -15157,69 +14767,6 @@ func (ec *executionContext) _WalletItems(ctx context.Context, sel ast.SelectionS
 				}
 				return res
 			})
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var walletItemsConnectionImplementors = []string{"WalletItemsConnection"}
-
-func (ec *executionContext) _WalletItemsConnection(ctx context.Context, sel ast.SelectionSet, obj *ent.WalletItemsConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, walletItemsConnectionImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("WalletItemsConnection")
-		case "totalCount":
-			out.Values[i] = ec._WalletItemsConnection_totalCount(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "pageInfo":
-			out.Values[i] = ec._WalletItemsConnection_pageInfo(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "edges":
-			out.Values[i] = ec._WalletItemsConnection_edges(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var walletItemsEdgeImplementors = []string{"WalletItemsEdge"}
-
-func (ec *executionContext) _WalletItemsEdge(ctx context.Context, sel ast.SelectionSet, obj *ent.WalletItemsEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, walletItemsEdgeImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("WalletItemsEdge")
-		case "node":
-			out.Values[i] = ec._WalletItemsEdge_node(ctx, field, obj)
-		case "cursor":
-			out.Values[i] = ec._WalletItemsEdge_cursor(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -16206,20 +15753,6 @@ func (ec *executionContext) marshalNWalletItems2ᚖgithubᚗcomᚋdopedaoᚋdope
 		return graphql.Null
 	}
 	return ec._WalletItems(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNWalletItemsConnection2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsConnection(ctx context.Context, sel ast.SelectionSet, v ent.WalletItemsConnection) graphql.Marshaler {
-	return ec._WalletItemsConnection(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNWalletItemsConnection2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsConnection(ctx context.Context, sel ast.SelectionSet, v *ent.WalletItemsConnection) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._WalletItemsConnection(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNWalletItemsWhereInput2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsWhereInput(ctx context.Context, v interface{}) (*ent.WalletItemsWhereInput, error) {
@@ -18525,69 +18058,6 @@ func (ec *executionContext) marshalOWalletEdge2ᚖgithubᚗcomᚋdopedaoᚋdope�
 		return graphql.Null
 	}
 	return ec._WalletEdge(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOWalletItems2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItems(ctx context.Context, sel ast.SelectionSet, v *ent.WalletItems) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._WalletItems(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOWalletItemsEdge2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsEdge(ctx context.Context, sel ast.SelectionSet, v []*ent.WalletItemsEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOWalletItemsEdge2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsEdge(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOWalletItemsEdge2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsEdge(ctx context.Context, sel ast.SelectionSet, v *ent.WalletItemsEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._WalletItemsEdge(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOWalletItemsOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsOrder(ctx context.Context, v interface{}) (*ent.WalletItemsOrder, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputWalletItemsOrder(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOWalletItemsWhereInput2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋentᚐWalletItemsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.WalletItemsWhereInput, error) {

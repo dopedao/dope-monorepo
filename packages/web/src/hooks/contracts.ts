@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useWeb3React } from '@web3-react/core';
 import {
   CrossDomainMessenger__factory,
   Controller__factory,
@@ -24,19 +23,7 @@ export const useInitiator = () => {
 };
 
 export const usePaper = () => {
-  let chainId: 1 | 10 | 42 | 69;
-  let provider: ethers.providers.JsonRpcProvider;
-  let { chainId: curChainId, library } = useWeb3React();
-  const { chainId: ethChainId, provider: ethProvider } = useEthereum();
-
-  if (curChainId && [1, 10, 42, 69].includes(curChainId)) {
-    chainId = curChainId as 1 | 10 | 42 | 69;
-    provider = library.getSigner();
-  } else {
-    chainId = ethChainId;
-    provider = ethProvider;
-  }
-
+  const { chainId, provider } = useEthereum();
   return useMemo(
     () => Paper__factory.connect(NETWORK[chainId].contracts.paper, provider),
     [chainId, provider],
@@ -94,7 +81,7 @@ export const useHongbao = () => {
   const { chainId, provider } = useOptimism();
 
   return useMemo(
-    () => Hongbao__factory.connect(NETWORK[chainId].contracts.hongbao, provider),
+    () => Hongbao__factory.connect(NETWORK[chainId].contracts.hustlers, provider),
     [chainId, provider],
   );
 };

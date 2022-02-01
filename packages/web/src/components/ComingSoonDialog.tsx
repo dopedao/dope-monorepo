@@ -10,16 +10,9 @@ const ComingSoonDialog = ({
   onClose,
   backgroundCss = constructionBackground,
   children,
-  icon
 }: DialogProps) => {
   return (
-    <Dialog 
-      backgroundCss={backgroundCss} 
-      title={title} 
-      className={className} 
-      onClose={onClose}
-      icon={icon}
-    >
+    <Dialog backgroundCss={backgroundCss} title={title} className={className} onClose={onClose}>
       {children}
     </Dialog>
   );

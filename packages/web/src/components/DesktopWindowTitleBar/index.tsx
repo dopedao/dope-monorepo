@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { css } from '@emotion/react';
-import { ethers, BigNumber } from 'ethers';
+import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
@@ -8,7 +8,6 @@ import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import { formatLargeNumber, getShortAddress } from 'utils/utils';
 import DesktopWindowTitleButton from 'components/DesktopWindowTitleButton';
 import { Header, RightColumn, TitleBar, TitleBarDescription, ENSAddressWrapper } from './styles';
-import { usePaper } from 'hooks/contracts';
 
 type WindowTitleBarProps = {
   title: string | undefined;
@@ -25,20 +24,13 @@ const DesktopWindowTitleBar = ({
   isTouchDevice,
   isFullScreen,
   toggleFullScreen,
+  balance,
+  loadingBalance,
   children,
 }: WindowTitleBarProps) => {
   const [ensAddress, setEnsAddress] = useState<string | null>(null);
   const { account, library } = useWeb3React();
   const router = useRouter();
-  const [balance, setBalance] = useState<BigNumber>();
-
-  const paper = usePaper();
-
-  useEffect(() => {
-    if (account) {
-      paper.balanceOf(account).then(setBalance);
-    }
-  }, [paper, account]);
 
   const closeWindow = (): void => {
     router.replace('/');
@@ -86,7 +78,7 @@ const DesktopWindowTitleBar = ({
             >
               {account && (
                 <>
-                  {balance === undefined ? (
+                  {loadingBalance ? (
                     <div>__.__ $PAPER</div>
                   ) : (
                     <div>

@@ -61,15 +61,9 @@ const TextBody = styled.div`
 const AboutContent = `
 # What is this?
 
-The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum and [StarkNet](https://starkware.co/) blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
+The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum and [StarkWare](https://starkware.co/) blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
 
 DOPE WARS is also an ongoing NFT art project and experiment in decentralized project governance using a [DAO](https://ethereum.org/en/dao/).
-
-----
-
-### For detailed information…
-…Including how to purchase your first DOPE NFT, how to get involved with the project, or what "the game" will be like
-👉 [Please see our Wiki and Players Guide](http://wiki.dopedao.org) 👈
 
 ----
 
@@ -79,10 +73,7 @@ DOPE WARS is also an ongoing NFT art project and experiment in decentralized pro
 
 [A limited edition of 8,000 DOPE NFTs were created in September 2021.](https://opensea.io/collection/dope-v4) 
 
-These bundles contain Gear with randomized attributes and rarity scores. Each NFT allows you to build a "Hustler" character to be used in our upcoming games, and provides an equal Governance Vote on Proposals from the DAO.
-
-### Ready to jump in?
-[Read this guide to help purchase your first DOPE NFT.](https://dope-wars.notion.site/Swap-Meet-Guide-9d2f661813c44b1dbfe35c49eb89c59b)
+These bundles contain items with randomized attributes and rarity scores. Each one allows you to build a character to be used in game and provides an equal Governance Vote on Proposals from the DAO.
 
 
 ### DAO Governance + Compensation
@@ -92,14 +83,11 @@ Community members draft [proposals](https://dope-wars.notion.site/626df3ff9e4d47
 
 ----
 
-## Hustlers
+## Characters
 
-[Learn more about Hustlers on our Wiki.](https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a)
+![Hustlers and Dealers](/images/hustlers.png#full-bleed)
 
-![Hustlers](/images/hustlers.png#full-bleed)
-
-Hustlers are in-game characters that are created by Claiming Gear from your DOPE NFT, then minting a Hustler NFT with artwork all stored on the Ethereum blockchain. [This proposal passed our second DAO vote](https://dope-wars.notion.site/Pixel-Avatar-Project-0f64bb450aba46cebdced07c63f69bce).
-
+Hustlers and Dealers are created by unbundling your DOPE NFT, equipping them with items, then minting a Hustler NFT with artwork all stored on the Ethereum blockchain. [This proposal passed our second DAO vote](https://dope-wars.notion.site/Pixel-Avatar-Project-0f64bb450aba46cebdced07c63f69bce), and we hope to launch sometime in October 2021.
 
 ----
 
@@ -125,6 +113,7 @@ The supply of paper is currently fixed at 1 billion, and while this can be incre
 
 Our first project is to provide a portal for the DOPE WARS ecosystem. Additional experiences like the game will be hosted here.
 
+#### Now
 You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have purchased.
 
 [Claim Gear, create a PFP of your Dope Dealer](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual items with other players to equip your Dope Dealer in our SWAP MEET.
@@ -157,10 +146,10 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 
 ----
 
-### Voting
+### More Info
 
-- [On-Chain DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
-- [Heat Check Voting with Snapshot](https://snapshot.org/#/dopedao.eth)
+- [Dope DAO Wiki](http://wiki.dopedao.org)
+- [DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
 
 `;
 

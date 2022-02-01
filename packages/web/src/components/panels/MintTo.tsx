@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useIsContract } from 'hooks/web3';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
-import PanelTitleHeader from 'components/PanelTitleHeader';
+import PanelTitleBar from 'components/PanelTitleBar';
 
 const MintTo = ({
   mintTo,
@@ -37,7 +37,7 @@ const MintTo = ({
   if (isContract) {
     return (
       <PanelContainer>
-        <PanelTitleHeader>Mint to Different Address</PanelTitleHeader>
+        <PanelTitleBar>Mint to Different Address</PanelTitleBar>
         <PanelBody>
           <p>
             It looks like you are using a contract wallet. Please set the optimism address you want
@@ -55,7 +55,7 @@ const MintTo = ({
 
   return (
     <PanelContainer>
-      <PanelTitleHeader onClick={() => setMintTo(false)}>Mint to Different Address</PanelTitleHeader>
+      <PanelTitleBar onClick={() => setMintTo(false)}>Mint to Different Address</PanelTitleBar>
       <PanelBody>
         <p>Send this Hustler to a friend, or another wallet?</p>
         <Input

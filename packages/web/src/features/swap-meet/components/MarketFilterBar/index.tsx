@@ -84,7 +84,6 @@ const MarketFilterBar = ({
     <Container>
       <div>
         <Input
-          className="search"
           placeholder="Search…"
           size="sm"
           variant="filterBar"
@@ -93,12 +92,7 @@ const MarketFilterBar = ({
         />
       </div>
       <div>
-        <Select 
-          className="status"
-          size="sm" 
-          variant="filterBar" 
-          onChange={handleStatusChange} 
-          value={filterBy}>
+        <Select size="sm" variant="filterBar" onChange={handleStatusChange} value={filterBy}>
           <option disabled>Status…</option>
           {statusKeys.map((value, index) => (
             <option key={`${value}-${index}`}>{value}</option>
@@ -117,6 +111,19 @@ const MarketFilterBar = ({
       </div>
       <div
         className="toggleButton"
+        css={css`
+          min-width: 32px;
+          max-width: 32px;
+          height: 32px;
+          cursor: pointer;
+          cursor: hand;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: var(--gray-100);
+          border-radius: 2px !important;
+          box-shadow: 'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)';
+        `}
         onClick={() => setViewCompactCards(prevState => !prevState)}
       >
         <img alt="toggle" src={`${iconPath}/${icon}.svg`} />

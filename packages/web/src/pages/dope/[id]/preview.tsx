@@ -11,7 +11,7 @@ const Preview = () => {
   const router = useRouter();
   const { id } = router.query;
   return (
-    <DesktopWindow title={TITLE} onlyFullScreen>
+    <DesktopWindow title={TITLE} fullPage>
       <Head title={TITLE} />
       <HustlerContainer bgColor='transparent'>
         <RenderFromDopeIdOnly id={id ? id.toString() : '1'} />

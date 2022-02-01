@@ -164,7 +164,7 @@ func (h *BaseDopeProcessor) ProcessElement(p interface{}) func(context.Context, 
 			return cb, nil
 
 		}
-		return func(*ent.Tx) error { return nil }, nil
+		return nil, nil
 	}
 }
 
@@ -188,27 +188,27 @@ func (h *BaseDopeProcessor) Initialize(ctx context.Context, start uint64, tx *en
 }
 
 func (h *BaseDopeProcessor) ProcessApproval(ctx context.Context, e DopeApproval) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseDopeProcessor) ProcessApprovalForAll(ctx context.Context, e DopeApprovalForAll) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseDopeProcessor) ProcessDelegateChanged(ctx context.Context, e DopeDelegateChanged) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseDopeProcessor) ProcessDelegateVotesChanged(ctx context.Context, e DopeDelegateVotesChanged) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseDopeProcessor) ProcessOwnershipTransferred(ctx context.Context, e DopeOwnershipTransferred) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseDopeProcessor) ProcessTransfer(ctx context.Context, e DopeTransfer) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseDopeProcessor) mustEmbedBaseDopeProcessor() {}

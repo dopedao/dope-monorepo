@@ -100,7 +100,7 @@ func (h *BaseInitiatorProcessor) ProcessElement(p interface{}) func(context.Cont
 			return cb, nil
 
 		}
-		return func(*ent.Tx) error { return nil }, nil
+		return nil, nil
 	}
 }
 
@@ -124,11 +124,11 @@ func (h *BaseInitiatorProcessor) Initialize(ctx context.Context, start uint64, t
 }
 
 func (h *BaseInitiatorProcessor) ProcessOpened(ctx context.Context, e InitiatorOpened) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseInitiatorProcessor) ProcessOwnershipTransferred(ctx context.Context, e InitiatorOwnershipTransferred) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseInitiatorProcessor) mustEmbedBaseInitiatorProcessor() {}

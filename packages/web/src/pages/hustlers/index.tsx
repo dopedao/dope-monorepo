@@ -1,23 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
-import { Button } from '@chakra-ui/react';
-import { CloseButton } from '@chakra-ui/close-button';
-import { css } from '@emotion/react';
-import { media } from 'ui/styles/mixins';
 import { useEffect, useState } from 'react';
-import { useHustlersWalletQuery, useWalletQuery } from 'generated/graphql';
-import { useRouter } from 'next/router';
-import { useSwitchOptimism } from 'hooks/web3';
+import { Button } from '@chakra-ui/react';
+import Link from 'next/link';
+import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
+import { css } from '@emotion/react';
+import { useRouter } from 'next/router';
+import { CloseButton } from '@chakra-ui/close-button';
+import { media } from 'ui/styles/mixins';
+import { useHustlersWalletQuery, useWalletQuery } from 'generated/graphql';
 import AppWindow from 'components/AppWindow';
-import Dialog from 'components/Dialog';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
-import Link from 'next/link';
 import LoadingBlock from 'components/LoadingBlock';
 import RenderFromChain from 'components/hustler/RenderFromChain';
-import DialogSwitchNetwork from 'components/DialogSwitchNetwork';
-import styled from '@emotion/styled';
+import Dialog from 'components/Dialog';
 import StickyNote from 'components/StickyNote';
+import { useSwitchOptimism } from 'hooks/web3';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 const streetBackground =
@@ -68,15 +67,20 @@ const Hustlers = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(true);
   const router = useRouter();
   const { account, chainId } = useWeb3React();
-  // useSwitchOptimism(chainId, account);
+  useSwitchOptimism(chainId, account);
 
-  // useEffect(() => {
-  //   const localNetworkAlert = localStorage.getItem('networkAlertCustomizeHustler');
+  useEffect(() => {
+    const localNetworkAlert = localStorage.getItem('networkAlertCustomizeHustler');
 
-  //   if (localNetworkAlert !== 'true') {
-  //     setShowNetworkAlert(true);
-  //   }
-  // }, []);
+    if (localNetworkAlert !== 'true') {
+      setShowNetworkAlert(true);
+    }
+  }, []);
+
+  const handleCloseAlert = () => {
+    window.localStorage.setItem('networkAlertCustomizeHustler', 'false');
+    setShowNetworkAlert(false);
+  };
 
   const { data, isFetching: loading } = useHustlersWalletQuery(
     {
@@ -102,14 +106,31 @@ const Hustlers = () => {
 
   const handleSuccessAlert = () => {
     setShowSuccessAlert(false);
-    router.replace('/inventory');
+    router.replace('/hustlers');
   };
 
   return (
     <AppWindow requiresWalletConnection={true} padBody={false} navbar={<DopeWarsExeNav />}>
       <Head title="Your Hustler Squad" />
       {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
-        <DialogSwitchNetwork networkName="Optimism" />
+        <StickyNote>
+          <div
+            css={css`
+              display: flex;
+              align-items: center;
+            `}
+          >
+            <p
+              css={css`
+                margin-right: 10px;
+                padding-bottom: unset;
+              `}
+            >
+              You should switch to Optimism network to customize your hustler.
+            </p>{' '}
+            <CloseButton onClick={handleCloseAlert} />
+          </div>
+        </StickyNote>
       )}
       {account && router.query.c === 'true' && showSuccessAlert && (
         <StickyNote>

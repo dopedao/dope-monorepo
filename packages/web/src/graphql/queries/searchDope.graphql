@@ -39,7 +39,6 @@ query SearchDope(
             }
           }
           listings {
-            active
             inputs {
               amount
               id

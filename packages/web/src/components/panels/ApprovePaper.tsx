@@ -4,10 +4,9 @@ import { useWeb3React } from '@web3-react/core';
 import { BigNumber, constants } from 'ethers';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
-import PanelTitleHeader from 'components/PanelTitleHeader';
+import PanelTitleBar from 'components/PanelTitleBar';
 import Spinner from 'ui/svg/Spinner';
 import { usePaper } from 'hooks/contracts';
-import PanelFooter from 'components/PanelFooter';
 
 const ApprovePaper = ({
   address,
@@ -23,7 +22,7 @@ const ApprovePaper = ({
   const { account } = useWeb3React();
   const paper = usePaper();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     if (account) {
@@ -49,28 +48,27 @@ const ApprovePaper = ({
 
   return (
     <PanelContainer>
-      <PanelTitleHeader>Approve $PAPER Spend</PanelTitleHeader>
+      <PanelTitleBar>Approve $PAPER Spend</PanelTitleBar>
       <PanelBody>
         <p>{children}</p>
-      </PanelBody>
-      <PanelFooter stacked>
         <Button
           onClick={async () => {
-            setIsLoading(true);
+            setLoading(true);
             try {
               const txn = await paper.approve(address, constants.MaxUint256);
               await txn.wait(1);
               onApprove(true);
             } catch (error) {
             } finally {
-              setIsLoading(false);
+              setLoading(false);
             }
           }}
           disabled={isLoading}
+          width="220px"
         >
           {isLoading ? <Spinner /> : 'Approve $PAPER Spend'}
         </Button>
-      </PanelFooter>
+      </PanelBody>
     </PanelContainer>
   );
 };

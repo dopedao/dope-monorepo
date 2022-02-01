@@ -164,7 +164,7 @@ func (h *BaseSwapMeetProcessor) ProcessElement(p interface{}) func(context.Conte
 			return cb, nil
 
 		}
-		return func(*ent.Tx) error { return nil }, nil
+		return nil, nil
 	}
 }
 
@@ -188,27 +188,27 @@ func (h *BaseSwapMeetProcessor) Initialize(ctx context.Context, start uint64, tx
 }
 
 func (h *BaseSwapMeetProcessor) ProcessApprovalForAll(ctx context.Context, e SwapMeetApprovalForAll) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseSwapMeetProcessor) ProcessOwnershipTransferred(ctx context.Context, e SwapMeetOwnershipTransferred) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseSwapMeetProcessor) ProcessSetRle(ctx context.Context, e SwapMeetSetRle) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseSwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e SwapMeetTransferBatch) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseSwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e SwapMeetTransferSingle) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseSwapMeetProcessor) ProcessURI(ctx context.Context, e SwapMeetURI) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error { return nil }, nil
+	return nil, nil
 }
 
 func (h *BaseSwapMeetProcessor) mustEmbedBaseSwapMeetProcessor() {}

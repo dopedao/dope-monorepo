@@ -67,7 +67,7 @@ const InitiationInfo = () => {
               </Link>
             </li>
             <li>
-              <Link href="/inventory">
+              <Link href="/hustlers">
                 <a className="primary">Gangsta Party</a>
               </Link>
             </li>
