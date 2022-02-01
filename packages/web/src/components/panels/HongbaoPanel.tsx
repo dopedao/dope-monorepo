@@ -12,6 +12,7 @@ import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import SpinnerMessage from 'components/SpinnerMessage';
+import PanelTitleBar from 'components/PanelTitleBar';
 
 const HongbaoPanel = () => {
   const hongbao = useHongbao();
@@ -59,6 +60,9 @@ const HongbaoPanel = () => {
   return (
     <PanelContainer>
       { eligibleForAirdrop && <>
+        <PanelTitleBar css={css`text-align:center;`}>
+          A gift for you
+        </PanelTitleBar>
         <PanelBody>
           <Image 
             src="/images/lunar_new_year_2022/hongbao-with-bg.png" 
