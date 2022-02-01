@@ -51,40 +51,66 @@ const Progress = styled.div`
 `;
 
 const BoostPanel = () => {
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
 
   const minBoosts = 0;
   const maxBoosts = 10;
 
-  const [boosts, setBoost] = useState(minBoosts);
+  const [boosts, setBoosts] = useState(minBoosts);
   const [isApprovingPaper, setIsApprovingPaper] = useState(false);
   const [isPaperApproved, setIsPaperApproved] = useState(false);
   const [hasEnoughPaper, setHasEnoughPaper] = useState(false);
   const [isBuyingMask, setIsBuyingMask] = useState(false);
 
-  // Roll is set to the item id
+  // Roll is set to the mask item id purchased
   const [roll, setRoll] = useState<string | undefined>();
   const hongbao = useHongbao();
   const swapmeet = useSwapMeet();
   const paper = usePaper();
   const { chainId } = useOptimism();
 
-  const mint = useCallback(async () => {
-    const tx = await hongbao.mint({ value: utils.parseEther('' + boosts / 10) });
-    const receipt = await tx.wait(1);
-    receipt.logs.map((log, idx) => {
-      if (idx !== 0) return;
-      const event = swapmeet.interface.parseLog(log) as unknown as TransferSingleEvent;
-      // Set roll to item id
-      setRoll(event.args.id.toString());
-    });
-  }, [hongbao, swapmeet, boosts]);
+  // Check ETH account balance
+  const [ethBalance, setEthBalance] = useState<BigNumber>();
+  const [ethToSpend, setEthToSpend] = useState<BigNumber>();
+  useEffect(() => {
+    library
+    .getBalance(account)
+    .then((balance: any) => {
+      console.log('ETH Balance ' + utils.formatEther(balance));
+      setEthBalance(balance);
+    })
+    setEthToSpend(utils.parseEther('' + boosts / 10));
+  }, [account, library, chainId, boosts]);
+
+  const hasEnoughEthToMint = () => {
+    if (!ethToSpend || ethToSpend.isZero()) return true;
+    return ethBalance?.gte(ethToSpend);
+  }
+
+  const mintMask = useCallback(async () => {
+    try {
+      setIsBuyingMask(true);
+      const tx = await hongbao.mint({ value: ethToSpend });
+      const receipt = await tx.wait(1);
+      receipt.logs.map((log, idx) => {
+        if (idx !== 0) return;
+        const event = swapmeet.interface.parseLog(log) as unknown as TransferSingleEvent;
+        // Set roll to item id
+        setRoll(event.args.id.toString());
+      });
+    } catch(e) {
+      console.log(e);
+    } finally {
+      setIsBuyingMask(false);
+    }
+  }, [hongbao, swapmeet, ethToSpend]);
+
+
 
   // Check if PAPER spend approved for 5000
   useEffect(() => {
     if (account) {
       paper.allowance(account, NETWORK[chainId].contracts.hongbao).then((allowance: BigNumber) => {
-        console.log(`$P approval allowance: ${allowance}`);
         setIsPaperApproved(allowance.gte('500000000000000000000'));
       });
     }
@@ -123,14 +149,14 @@ const BoostPanel = () => {
     let tempBoost = boosts;
     tempBoost--;
     if (minBoosts > tempBoost) tempBoost = minBoosts;
-    setBoost(tempBoost);
+    setBoosts(tempBoost);
   };
 
   const addBoost = () => {
     let tempBoost = boosts;
     tempBoost++;
     if (tempBoost > maxBoosts) tempBoost = maxBoosts;
-    setBoost(tempBoost);
+    setBoosts(tempBoost);
   };
 
   const getBoostImage = () => {
@@ -208,7 +234,7 @@ const BoostPanel = () => {
             passHref
           >
             <a target="_blank" rel="noreferrer">
-              <Button variant="cny">Buy Paper</Button>
+              <Button variant="cny">Buy OΞ $PAPER</Button>
             </a>
           </Link>
         )}
@@ -218,12 +244,16 @@ const BoostPanel = () => {
             onClick={approvePaper}
             disabled={isApprovingPaper || isPaperApproved}
           >
-            {!isPaperApproved && !isApprovingPaper && <span>Approve Paper</span>}
+            {!isPaperApproved && !isApprovingPaper && <span>Approve $PAPER</span>}
             {!isPaperApproved && isApprovingPaper && <SpinnerMessage text="Approving…" />}
           </Button>
         )}
-        <Button variant="cny" onClick={mint} disabled={!isPaperApproved}>
-          Buy Now
+        <Button variant="cny" onClick={mintMask} disabled={!isPaperApproved || isBuyingMask || !hasEnoughEthToMint() }>
+          {!isBuyingMask && hasEnoughEthToMint() && 'Buy Now'}
+          {!isBuyingMask && !hasEnoughEthToMint() && 'Not Enough Optimistic ETH'}
+          {isBuyingMask && 
+            <SpinnerMessage text={boosts > 0 ? 'Rolling the dice…' : 'Processing…'} />
+          }
         </Button>
       </PanelFooter>
     </PanelContainer>
