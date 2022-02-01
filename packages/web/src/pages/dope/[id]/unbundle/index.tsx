@@ -110,7 +110,7 @@ const Approve = () => {
             background-color: #000;
           `}
         >
-          <PanelTitleHeader>Gear You're Claiming</PanelTitleHeader>
+          <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
           <RenderFromDopeId id={dopeId} isVehicle={true} zoomWindow={ZOOM_WINDOWS[3]} />
           
           <PanelFooter>
