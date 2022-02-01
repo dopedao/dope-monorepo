@@ -15,6 +15,7 @@ const HustlerPanel = ({ hustlerConfig, footer }: Props) => {
     <PanelContainer
       css={css`
         min-height: 400px;
+        flex: 1 !important;
         background-color: ${hustlerConfig.bgColor};
       `}
     >

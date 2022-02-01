@@ -100,7 +100,7 @@ func (h *BaseComponentsProcessor) ProcessElement(p interface{}) func(context.Con
 			return cb, nil
 
 		}
-		return nil, nil
+		return func(*ent.Tx) error { return nil }, nil
 	}
 }
 
@@ -124,11 +124,11 @@ func (h *BaseComponentsProcessor) Initialize(ctx context.Context, start uint64, 
 }
 
 func (h *BaseComponentsProcessor) ProcessAddComponent(ctx context.Context, e ComponentsAddComponent) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BaseComponentsProcessor) ProcessOwnershipTransferred(ctx context.Context, e ComponentsOwnershipTransferred) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BaseComponentsProcessor) mustEmbedBaseComponentsProcessor() {}
