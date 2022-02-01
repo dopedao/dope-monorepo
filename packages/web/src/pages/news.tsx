@@ -19,7 +19,7 @@ type NewsProps = {
 };
 
 const News = ({ allPosts }: NewsProps) => (
-  <DesktopWindow title={TITLE} onlyFullScreen>
+  <DesktopWindow title={TITLE} fullPage>
     <Head title={TITLE} />
     <Container>
       <DopeNewsCast posts={allPosts} />

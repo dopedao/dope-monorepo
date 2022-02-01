@@ -9,13 +9,12 @@ import Head from 'components/Head';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
-import PanelTitleHeader from 'components/PanelTitleHeader';
+import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import ApprovePaper from 'components/panels/ApprovePaper';
 import MintTo from 'components/panels/MintTo';
-import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
-import AppWindowEthereum from 'components/AppWindowEthereum';
-import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
+import RenderDope from 'features/dope/components/RenderDope';
+import AppWindow from 'components/AppWindow';
 
 const Approve = () => {
   const { account } = useWeb3React();
@@ -27,9 +26,20 @@ const Approve = () => {
   const [canMint, setCanMint] = useState(false);
   const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
   const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
+  const [itemIds, setItemIds] = useState<BigNumber[]>();
 
   const initiator = useInitiator();
   const paper = usePaper();
+  const swapmeet = useSwapMeet();
+
+  useEffect(() => {
+    if (dopeId) {
+      swapmeet.itemIds(dopeId).then(ids =>
+        // Excludes vehicle (2) and orders layers
+        setItemIds([ids[6], ids[8], ids[5], ids[1], ids[3], ids[4], ids[7], ids[0]]),
+      );
+    }
+  }, [swapmeet, dopeId]);
 
   useEffect(() => {
     if (account) {
@@ -66,12 +76,12 @@ const Approve = () => {
   };
 
   return (
-    <AppWindowEthereum requiresWalletConnection={true} padBody={false} title="Claim DOPE Gear">
+    <AppWindow requiresWalletConnection={true} padBody={false} title="Claim DOPE Gear">
       <Head title="Approve spend" />
       <StackedResponsiveContainer>
         <Stack>
           <PanelContainer>
-            <PanelTitleHeader>Cost of Unbundling</PanelTitleHeader>
+            <PanelTitleBar>Cost of Unbundling</PanelTitleBar>
             <PanelBody>
               <Table>
                 <Tbody>
@@ -94,8 +104,8 @@ const Approve = () => {
             isApproved={isPaperApproved}
             onApprove={approved => setIsPaperApproved(approved)}
           >
-            We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of your DOPE NFT
-            #{dopeId}.
+            We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of your
+            DOPE NFT #{dopeId}.
           </ApprovePaper>
           <MintTo
             mintTo={mintTo}
@@ -110,18 +120,21 @@ const Approve = () => {
             background-color: #000;
           `}
         >
-          <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
-          <RenderFromDopeId id={dopeId} isVehicle={true} zoomWindow={ZOOM_WINDOWS[3]} />
-          
-          <PanelFooter>
-            <div className="smallest">This only claims gear, it does not create a Hustler</div>
+          <PanelTitleBar>Dope</PanelTitleBar>
+          <RenderDope itemIds={itemIds} />
+          <PanelFooter
+            css={css`
+              padding: 1em;
+              position: relative;
+            `}
+          >
             <Button variant="primary" onClick={unbundleDope} disabled={!canMint}>
               🔓 Claim Gear 🔓
             </Button>
           </PanelFooter>
         </PanelContainer>
       </StackedResponsiveContainer>
-    </AppWindowEthereum>
+    </AppWindow>
   );
 };
 

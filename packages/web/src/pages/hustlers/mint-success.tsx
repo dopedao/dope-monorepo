@@ -290,7 +290,7 @@ const MintSuccess = () => {
         width="100%"
         justifyContent="end"
       >
-        <Link href="/inventory" passHref>
+        <Link href="/hustlers" passHref>
           <a target="your-squad" rel="noreferrer">
             <Button>Peep Your Squad</Button>
           </a>

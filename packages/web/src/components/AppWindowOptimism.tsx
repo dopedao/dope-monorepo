@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useSwitchOptimism } from 'hooks/web3';
 import { useWeb3React } from '@web3-react/core';
-import { useMemo } from 'react';
+import { css } from '@emotion/react';
+import { CloseButton } from '@chakra-ui/close-button';
+import { useSwitchOptimism } from 'hooks/web3';
+import StickyNote from 'components/StickyNote';
 import AppWindow, { AppWindowProps } from './AppWindow';
-import DialogSwitchNetwork from 'components/DialogSwitchNetwork';
 
 const AppWindowOptimism = ({ children, ...rest }: AppWindowProps) => {
   const [showNetworkAlert, setShowNetworkAlert] = useState(false);
@@ -19,17 +20,34 @@ const AppWindowOptimism = ({ children, ...rest }: AppWindowProps) => {
     }
   }, []);
 
-  const onProperNetwork = useMemo(() => {
-    return !(account && chainId !== 10 && chainId !== 69 && showNetworkAlert);
-  }, [account, chainId, showNetworkAlert]);
-
+  const handleCloseAlert = () => {
+    window.localStorage.setItem('networkAlertOptimism', 'false');
+    setShowNetworkAlert(false);
+  };
 
   return (
     <AppWindow {...rest}>
-      {!onProperNetwork && 
-        <DialogSwitchNetwork networkName="Optimism" />
-      }
-      {onProperNetwork && children}
+      {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
+        <StickyNote>
+          <div
+            css={css`
+              display: flex;
+              align-items: center;
+            `}
+          >
+            <p
+              css={css`
+                margin-right: 10px;
+                padding-bottom: unset;
+              `}
+            >
+              You should switch to Optimism to claim your airdrop.
+            </p>{' '}
+            <CloseButton onClick={handleCloseAlert} />
+          </div>
+        </StickyNote>
+      )}
+      {children}
     </AppWindow>
   );
 };

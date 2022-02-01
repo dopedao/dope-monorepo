@@ -237,12 +237,12 @@ func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e binding
 		// If it is not from the zero address and to the hustler contract, it is
 		// an equip to an existing hustler.
 		if e.From != (common.Address{}) && e.To == hustlerAddr {
-			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.From.Hex())).First(ctx)
+			hustlers, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.From.Hex())).All(ctx)
 			if err != nil {
 				return fmt.Errorf("getting user's hustlers: %w", err)
 			}
 
-			for _, h := range wallet.Edges.Hustlers {
+			for _, h := range hustlers {
 				if err := refreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
 					return err
 				}
@@ -251,12 +251,12 @@ func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e binding
 
 		// If from the hustler contract this is an unequip.
 		if e.From == hustlerAddr {
-			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.To.Hex())).First(ctx)
+			hustlers, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.To.Hex())).All(ctx)
 			if err != nil {
 				return fmt.Errorf("getting user's hustlers: %w", err)
 			}
 
-			for _, h := range wallet.Edges.Hustlers {
+			for _, h := range hustlers {
 				if err := refreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
 					return err
 				}

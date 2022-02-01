@@ -177,7 +177,6 @@ export default function GlobalStyles() {
           font-size: var(--text-02) !important;
         }
         h4 {
-          font-size: var(--text-01) !important;
           font-weight: 400 !important;
         }
         a {

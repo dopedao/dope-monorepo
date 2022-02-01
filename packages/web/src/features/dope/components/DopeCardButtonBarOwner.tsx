@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Button } from '@chakra-ui/button';
-import { usePaper } from 'hooks/contracts';
+import { useInitiator, usePaper } from 'hooks/contracts';
 import { Dope } from 'generated/graphql';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -17,8 +17,9 @@ const DopeCardButtonBarOwner = ({ dope }: DopeCardButtonBarOwnerProps) => {
   return (
     <PanelFooter>
       <div></div>
-      {paper && !dope.claimed && (
+      {paper && (
         <Button
+          disabled={ dope.claimed }
           onClick={async () => {
             await paper.claimById(dope.id);
           }}
@@ -26,18 +27,15 @@ const DopeCardButtonBarOwner = ({ dope }: DopeCardButtonBarOwnerProps) => {
           Claim $PAPER
         </Button>
       )}
-      {!dope.opened && (
-        <>
-          <Button onClick={() => router.push(`/dope/${dope.id}/unbundle`)} disabled={dope.opened}>
-            Claim Gear
-          </Button>
-          <Link href={`/hustlers/${dope.id}/initiate`} passHref>
-            <Button variant="primary" disabled={dope.opened}>
-              Initiate Hustler
-            </Button>
-          </Link>
-        </>
-      )}
+      <Button 
+        onClick={() => router.push(`/dope/${dope.id}/unbundle`)}
+        disabled={ dope.opened }
+      >
+        Claim Gear
+      </Button>
+      <Link href={`/hustlers/${dope.id}/initiate`} passHref>
+        <Button variant="primary" disabled={ dope.opened }>Initiate Hustler</Button>
+      </Link>
     </PanelFooter>
   );
 };

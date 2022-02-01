@@ -1,4 +1,4 @@
-import { useContext, ChangeEvent } from 'react';
+import { useState, ChangeEvent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import {
   OrderDirection,
@@ -6,22 +6,22 @@ import {
   SearchType,
   useInfiniteSearchDopeQuery,
 } from 'generated/graphql';
+import { useDebounce } from 'usehooks-ts';
+import { isTouchDevice } from 'utils/utils';
 import DopeCard from 'features/dope/components/DopeCard';
+import MarketFilterBar from 'features/swap-meet/components/MarketFilterBar';
 import LoadingState from 'features/swap-meet/components/LoadingState';
 import EmptyState from 'features/swap-meet/components/EmptyState';
 import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
-import {SearchFilterContext} from 'components/SearchFilter';
 
 export type FILTERS = 'All' | 'Has Unclaimed $PAPER' | 'For Sale' | 'Has Unclaimed Gear';
 
 const MarketList = () => {
-  const { search, order, filter, view } = useContext(SearchFilterContext);
-  
-  const [ searchValue, setSearchValue ] = search;
-  const [ orderBy, setOrderBy ] = order;
-  const [ filterBy, setFilterBy ] = filter;
-  const [ viewCompactCards, setViewCompactCards ] = view;
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [orderBy, setOrderBy] = useState<SearchOrderField>(SearchOrderField.Greatness);
+  const [filterBy, setFilterBy] = useState<FILTERS>('All');
+  const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
 
   const handleFilter = () => {
     switch (filterBy) {
@@ -73,6 +73,15 @@ const MarketList = () => {
   const isLoading = searchStatus === 'loading';
   return (
     <>
+      <MarketFilterBar
+        orderBy={orderBy}
+        setOrderBy={setOrderBy}
+        setViewCompactCards={setViewCompactCards}
+        compactSwitchOn={viewCompactCards}
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
+        setSearchValue={setSearchValue}
+      />
       {isLoading ? (
         <LoadingState />
       ) : Boolean(!searchResult?.pages.length) ? (

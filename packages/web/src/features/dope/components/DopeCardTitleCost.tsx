@@ -9,9 +9,9 @@ type DopeCardTitleCostProps = Pick<DopeCardProps, 'dope'>;
 const LINK_PREFIX = 'https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/';
 
 const DopeCardTitleCost = ({ dope }: DopeCardTitleCostProps) => {
-  const activeListings = dope.listings?.filter(l => l?.active)
-  const isOnSale = !!activeListings?.[0]?.inputs?.[0]?.amount;
-  const price = activeListings?.[0]?.inputs?.[0]?.amount;
+  const isOnSale = !!dope.listings?.[0]?.inputs?.[0]?.amount;
+  const price = dope.listings?.[0]?.inputs?.[0]?.amount;
+  const unit = dope.listings?.[0]?.inputs[0]?.type;
 
   return (
     <div

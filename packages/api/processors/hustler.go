@@ -338,38 +338,12 @@ func (p *HustlerProcessor) ProcessTransferSingle(ctx context.Context, e bindings
 }
 
 func refreshEquipment(ctx context.Context, eth interface {
-	bind.ContractBackend
 	ethereum.ChainStateReader
 	ethereum.TransactionReader
 }, tx *ent.Tx, id string, address common.Address, blockNumber *big.Int) error {
 	slots, err := equipmentSlots(ctx, eth, id, address, blockNumber)
 	if err != nil {
 		return err
-	}
-
-	h, err := bindings.NewHustler(address, eth)
-	if err != nil {
-		return fmt.Errorf("initialize hustler contract: %w", err)
-	}
-
-	big, ok := new(big.Int).SetString(id, 10)
-	if !ok {
-		return fmt.Errorf("casting id to int: %s", id)
-	}
-
-	metadata, err := h.TokenURI(nil, big)
-	if err != nil {
-		return fmt.Errorf("getting metadata item rle for id: %s: %w", id, err)
-	}
-
-	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
-	if err != nil {
-		return fmt.Errorf("decoding metadata: %w", err)
-	}
-
-	var parsed Metadata
-	if err := json.Unmarshal(decoded, &parsed); err != nil {
-		return fmt.Errorf("unmarshalling metadata: %w", err)
 	}
 
 	if err := tx.Hustler.Update().
@@ -383,7 +357,6 @@ func refreshEquipment(ctx context.Context, eth interface {
 		SetDrugID(slots.Drug.String()).
 		SetNeckID(slots.Neck.String()).
 		SetRingID(slots.Ring.String()).
-		SetSvg(parsed.Image).
 		SetAccessoryID(slots.Accessory.String()).Exec(ctx); err != nil {
 		return fmt.Errorf("updating equipment: %w", err)
 	}

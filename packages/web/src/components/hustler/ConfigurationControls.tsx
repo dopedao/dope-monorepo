@@ -144,8 +144,8 @@ const ConfigurationControls = ({
         await transaction.wait();
         setLoading(false);
         router.push({
-          pathname: '/inventory',
-          search: `?section=Hustlers`,
+          pathname: '/hustlers',
+          search: `?c=true`,
         });
       } catch (error) {
         console.error(error)

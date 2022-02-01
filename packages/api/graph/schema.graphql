@@ -209,14 +209,6 @@ type Query {
     orderBy: ItemOrder
     where: ItemWhereInput
   ): ItemConnection!
-  walletItems(
-    after: Cursor
-    first: Int
-    before: Cursor
-    last: Int
-    orderBy: WalletItemsOrder
-    where: WalletItemsWhereInput
-  ): WalletItemsConnection!
   hustlers(
     after: Cursor
     first: Int
