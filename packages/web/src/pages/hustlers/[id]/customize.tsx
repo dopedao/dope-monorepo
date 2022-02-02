@@ -1,3 +1,4 @@
+//CUSTOMIZE
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
 import { BigNumber } from 'ethers';
@@ -49,8 +50,7 @@ type HustlerEditProps = {
 };
 
 const HustlerEdit = ({ hustler }: HustlerEditProps) => {
-  const router = useRouter();
-  const hustlerId = router.query.id;
+  const router = useRouter();const hustlerId = router.query.id;
   const [isLoading, setLoading] = useState(true);
   const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [ogTitle, setOgTitle] = useState('');
@@ -93,6 +93,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
           metadata.drugs,
           metadata.neck,
           metadata.ring,
+          metadata.accessory
         ];
 
         setItemIds(fetchedItemIds);

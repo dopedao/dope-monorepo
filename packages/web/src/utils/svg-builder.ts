@@ -1,3 +1,4 @@
+//SVGBUILDER
 // Forked from: https://github.com/nounsDAO/nouns-monorepo/blob/master/packages/nouns-sdk/src/image/types.ts
 
 import { ZoomWindow } from 'utils/HustlerConfig';
@@ -62,7 +63,7 @@ export const buildSVG = (
   subtitle: string,
   zoomWindow: ZoomWindow,
   resolution: number = 64,
-  htmlId: string = 'dynamicBuiltSvg'
+  htmlId: string = 'dynamicBuiltSvg',
 ): string => {
   const step = 320 / resolution;
   const svgWithoutEndTag = parts.reduce((result, part, i) => {
@@ -97,8 +98,7 @@ export const buildSVG = (
     });
     result += svgRects.join('');
     return result;
-    }, `<svg id=${htmlId} width="100%" height="100%" viewBox="${zoomWindow[0].toString()} ${zoomWindow[1].toString()} ${zoomWindow[2].gt(0) ? zoomWindow[2].toString() : '320'} ${zoomWindow[3].gt(0) ? zoomWindow[3].toString() : '320'}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><style xmlns="http://www.w3.org/2000/svg">.base { fill: ${textColor}; font-family: Dope; font-size: 14px; }</style><rect width="100%" height="100%" fill="${bgColor}" /><text xmlns="http://www.w3.org/2000/svg" x="160" y="25" with="320" text-anchor="middle" class="base">${title}</text><text xmlns="http://www.w3.org/2000/svg" x="160" y="303" with="320" text-anchor="middle" class="base">${subtitle}</text>`
-  );
+  }, `<svg id=${htmlId} width="100%" height="100%" viewBox="${zoomWindow[0].toString()} ${zoomWindow[1].toString()} ${zoomWindow[2].gt(0) ? zoomWindow[2].toString() : '320'} ${zoomWindow[3].gt(0) ? zoomWindow[3].toString() : '320'}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><style xmlns="http://www.w3.org/2000/svg">.base { fill: ${textColor}; font-family: Dope; font-size: 14px; }</style><rect width="100%" height="100%" fill="${bgColor}" /><text xmlns="http://www.w3.org/2000/svg" x="160" y="25" with="320" text-anchor="middle" class="base">${title}</text><text xmlns="http://www.w3.org/2000/svg" x="160" y="303" with="320" text-anchor="middle" class="base">${subtitle}</text>`);
 
   return `${svgWithoutEndTag}</svg>`;
 };
@@ -778,6 +778,7 @@ export const palettes = [
     '0x2a2d30ff',
     '0xa5adb5ff',
   ],
+  // Car palettes
   [
     '',
     '0xfee0cbff',
@@ -1002,5 +1003,105 @@ export const palettes = [
     '0x9f3c42ff',
     '0x000001ff',
     '0x2e333aff',
+  ],
+  // Accessory palettes from packages/contracts/airdrops/src/cny/GetPalettes5.sol
+  [
+    '',
+    '0x000000ff',
+    '0xc72112ff',
+    '0xe02514ff',
+    '0x4a2f22ff',
+    '0x64402eff',
+    '0xc7967fff',
+    '0xe1aa90ff',
+    '0xad7a65ff',
+    '0xc88d74ff',
+    '0xa87999ff',
+    '0xf2aeddff',
+    '0xc48db3ff',
+    '0xd79ac4ff',
+    '0xf62578ff',
+    '0xa2828dff',
+    '0xf5e1ebff',
+    '0x000100ff',
+    '0x8a5000ff',
+    '0xf2a54aff',
+    '0xb16600ff',
+    '0xf5e8d7ff',
+    '0xf08a01ff',
+    '0xde3680ff',
+    '0xf1c092ff',
+    '0xf5f5f5ff',
+    '0x0d1114ff',
+    '0xf6c95dff',
+    '0xbf9980ff',
+    '0x773332ff',
+    '0x944548ff',
+    '0x947f83ff',
+    '0xad9498ff',
+    '0xc72112eb',
+    '0xe02514eb',
+    '0xc77e71ff',
+    '0xa6695eff',
+    '0xe39082ff',
+    '0xb37166ff',
+    '0xf19888ff',
+    '0xe5e4daff',
+    '0xb54f33ff',
+    '0x3e8039ff',
+    '0xa92223ff',
+    '0xdb2c2cff',
+    '0x32662eff',
+    '0x254d22ff',
+    '0x766352ff',
+    '0x967c65ff',
+    '0xdb7783ff',
+    '0x806955ff',
+    '0x8c745eff',
+    '0xff6b4bff',
+    '0xebebebff',
+    '0xd4474fff',
+    '0x992e35ff',
+    '0xbb3941ff',
+    '0xdbd8d3ff',
+    '0xe8e2dcff',
+    '0xf5efe9ff',
+    '0x5b2b41ff',
+    '0xd5943aff',
+    '0xe9a52aff',
+    '0xccc1b4ff',
+    '0xa62424ff',
+    '0xd5891aff',
+    '0xc5c5c5ff',
+    '0xf0f0f0ff',
+    '0xab6f15ff',
+    '0xedededff',
+    '0xde5f5fff',
+    '0xe4a673ff',
+    '0x8b9bb4ff',
+    '0xa9b4c2ff',
+    '0xecf0f1ff',
+    '0xc0ccdcff',
+    '0x5a6988ff',
+    '0x590f08ff',
+    '0xcc9d25ff',
+    '0xfcc02eff',
+    '0xef6711ff',
+    '0xe3640fff',
+    '0xe45c0cff',
+    '0xca8b5bff',
+    '0x5f5b7aff',
+    '0x996242ff',
+    '0x3a374aff',
+    '0xa96c48ff',
+    '0xdbd6d0ff',
+    '0x8a6a19ff',
+    '0xb08720ff',
+    '0xa37d1dff',
+    '0x141414ff',
+    '0x262626ff',
+    '0x99190eff',
+    '0xc4c4c4ff',
+    '0xffffffff',
   ],
 ];
