@@ -37,7 +37,7 @@ const RenderDope = ({ itemIds }: { itemIds?: BigNumber[] }) => {
         .render(
           '',
           '',
-          64,
+          160,
           hexColorToBase16(bgColor),
           hexColorToBase16(bgColor),
           [0, 0, 0, 0],
