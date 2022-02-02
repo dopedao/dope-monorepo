@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
 
-const PanelContainer = styled.div`
+const PanelContainer = styled.div<{ justifyContent?: string | undefined; }>`
   border: 2px solid #000;
   border-radius: 8px;
   background-color: #fff;
   display: flex;
   flex-basis: 1;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: ${({ justifyContent }) => (justifyContent ? justifyContent : 'space-between')};
   overflow: hidden;
   @media (max-width: 768px) {
     background-color: #edefee;

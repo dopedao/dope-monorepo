@@ -62,7 +62,7 @@ const LunarNewYear = () => {
         </EventHeader>
         <StackedResponsiveContainer css={css`padding-bottom:0 !important; padding-top: 0px !important`}>
           <HongbaoPanel />
-          <PanelContainer>
+          <PanelContainer justifyContent='flex-start'>
             <PanelTitleHeader>✨ Free airdrop for all Hustlers ✨</PanelTitleHeader>
             <PanelBody>
               <div css={css`display:flex;align-items:center;justify-content:center`}>
@@ -81,7 +81,7 @@ const LunarNewYear = () => {
 
         <StackedResponsiveContainer css={css`padding-top:0 !important;`}>
           <MaskBoostPanel />
-          <PanelContainer>
+          <PanelContainer justifyContent='flex-start'>
             <PanelTitleHeader>✨ Limited-edition, rare accessories ✨</PanelTitleHeader>
             <PanelBody>
               <p>
@@ -90,7 +90,13 @@ const LunarNewYear = () => {
               <Image src="/images/lunar_new_year_2022/walking_hustlers.png" alt="Walking Hustlers with Dragon" />
               <h4>Mask boost lotto</h4>
               <p>
-                <em>Boost 0.1Ξ for a chance to receive a random zodiac mask.</em> Each boost increases your odds by 10% to win a super rare Golden Tiger Mask. Spend 1Ξ for a guaranteed Golden Tiger Mask.
+                <em>To participate in this special, one-time only drop you must bridge $PAPER and Ethereum to Optimism.</em> 
+              </p>
+              <p>
+                Boost 0.1Ξ for a chance to receive a random zodiac mask. Each boost increases your odds by 10% to win a super rare Golden Tiger Mask. Spend 1Ξ for a guaranteed Golden Tiger Mask.
+              </p>
+              <p>
+                <a class="cny" target="optimism" href="https://www.optimism.io/apps/bridges">Read more about Optimism bridges here…</a>
               </p>
             </PanelBody>
           </PanelContainer>
