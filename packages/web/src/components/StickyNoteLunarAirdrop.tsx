@@ -10,16 +10,17 @@ const StickyNoteHustlerMint = () => {
   const currentPageIsGangsta = router.pathname == '/gangsta-party';
 
   return (
-    <StickyNote maxWidth="680px" background="#FFB6B6">
+    <StickyNote maxWidth="680px" background="#FFB6B6" canClose>
       <h3 css={css`margin-bottom:0px !important;`}>
         <Link href="/hustlers/initiate" variation="primary">
-          <a>Happy New Year! Claim Your Airdrop…</a>
+          <a>Claim Your Airdrop Now</a>
         </Link>
       </h3>
       <Link href="/lunar-new-year">
         <Image 
           src="/images/lunar_new_year_2022/hongbao_explanation.png" 
           alt="Airdrop Instructions" 
+          maxWidth="400px"
         />
       </Link>
     </StickyNote>
