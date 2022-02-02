@@ -79,7 +79,8 @@ const BoostPanel = () => {
       console.log('ETH Balance ' + utils.formatEther(balance));
       setEthBalance(balance);
     });
-    setEthToSpend(utils.parseEther('' + boosts / 10));
+    const value = boosts === 1 ? (boosts + 0.00042) / 10 : boosts / 10;
+    setEthToSpend(utils.parseEther('' + value));
   }, [account, library, chainId, boosts]);
 
   const hasEnoughEthToMint = () => {
@@ -149,7 +150,12 @@ const BoostPanel = () => {
     }
   };
 
-  const ethCost = () => (boosts * 1) / 10;
+  const ethCost = () => {
+    if (boosts === 1) {
+      return boosts + 0.00042 / 10;
+    }
+    return boosts / 10;
+  };
   const percentChance = () => {
     if (boosts == 0) {
       return 0;
