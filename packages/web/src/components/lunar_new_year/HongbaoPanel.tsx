@@ -49,7 +49,7 @@ const HongbaoPanel = () => {
       setIsClaiming(true);
       const proof = getProof(account!, numUnopenedEnvelopes.toString());
       const tx = await hongbao.claim(numUnopenedEnvelopes, proof, {
-        gasLimit: 100000 * numUnopenedEnvelopes,
+        gasLimit: 2000000 + (70000 * numUnopenedEnvelopes),
       });
       const receipt = await tx.wait(1);
 
