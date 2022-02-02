@@ -47,6 +47,7 @@ export default function GlobalStyles() {
           --bg-color: #000;
           --hover-bg: #434345;
           --primary: #3523fe;
+          --new-year-red: #E02514;
           --overlay: rgba(0, 0, 0, 0.85);
           --overlay-light: rgba(0, 0, 0, 0.35);
           --border-black: 1px solid var(--black);
@@ -192,6 +193,9 @@ export default function GlobalStyles() {
         }
         a.primary {
           color: var(--primary);
+        },
+        a.cny {
+          color: var(--new-year-red);
         },
         a.underline {
           text-decoration: underline !important;

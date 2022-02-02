@@ -101,7 +101,7 @@ export default extendTheme({
           display: 'inline-block',
         },
         cny: {
-          backgroundColor: '#E02514',
+          backgroundColor: 'var(--new-year-red)',
           color: '#ffffff',
           textShadow: '1px 1px 0px rgba(0, 0, 0, 0.66)',
           border: '2px solid #000000',
