@@ -43,7 +43,7 @@ export const chakraToastStyle: UseToastOptions = {
     isClosable: false,
     duration: 5000,
     status: 'info',
-    position: 'top-right',
+    position: 'bottom-right',
 }
     
 
@@ -121,6 +121,13 @@ export default class UIScene extends Scene {
         //             backgroundColor: 'rgba(0, 255, 0, 0.6)',
         //         }
         //     }));
+        if (NetworkHandler.getInstance().connected)
+            this.toast({
+                ...chakraToastStyle,
+                title: 'Connection established',
+                status: 'success',
+            });
+
         NetworkHandler.getInstance().on(NetworkEvents.CONNECTED, () =>
             this.toast({
                 ...chakraToastStyle,
