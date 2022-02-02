@@ -91,7 +91,7 @@ const BoostPanel = () => {
   const mintMask = useCallback(async () => {
     try {
       setIsBuyingMask(true);
-      const tx = await hongbao.mint({ value: ethToSpend });
+      const tx = await hongbao.mint({ value: ethToSpend, gasLimit: 300000 });
       const receipt = await tx.wait(1);
       receipt.logs.map((log, idx) => {
         if (idx !== 0) return;

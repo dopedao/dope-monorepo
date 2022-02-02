@@ -88,7 +88,7 @@ const LunarNewYear = () => {
               <Image src="/images/lunar_new_year_2022/walking_hustlers.png" alt="Walking Hustlers with Dragon" />
               <h4>Mask boost lotto</h4>
               <p>
-                <em>Boost 0.1Ξ for a chance to receive a random zodiac mask.</em> You could receive a rare Tiger Mask, or a super rare Golden Tiger Mask. Each boost increases your odds by 10%. Spend 1Ξ for a guaranteed Golden Tiger Mask.
+                <em>Boost 0.1Ξ for a chance to receive a random zodiac mask.</em> You could receive a rare Tiger Mask, or a super rare Golden Tiger Mask. Each boost increases your odds of a Golden Tiger Mask by 10%. Spend 1Ξ for a guaranteed Golden Tiger Mask.
               </p>
             </PanelBody>
           </PanelContainer>
