@@ -7,6 +7,7 @@ type StickyNoteProps = {
   children?: React.ReactNode;
   maxWidth?: string;
   background?: string;
+  canClose?: boolean;
 };
 
 const NoteContainer = styled.div<{ maxWidth?: string; background?: string; }>`
@@ -24,8 +25,8 @@ const NoteContainer = styled.div<{ maxWidth?: string; background?: string; }>`
 `;
 const CloseIconContainer = styled.div`
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 8px;
+  right: 8px;
   padding: 8px;
   border-radius: 4px;
   background-color: rgba(0,0,0,0.5);
@@ -33,14 +34,16 @@ const CloseIconContainer = styled.div`
   cursor:hand;
 `;
 
-const StickyNote = ({ children, maxWidth, background }: StickyNoteProps) => {
+const StickyNote = ({ children, maxWidth, background, canClose = false }: StickyNoteProps) => {
   const [isVisible, setIsVisible] = useState(true);
   if (isVisible) return (
     <Draggable>
       <NoteContainer maxWidth={maxWidth} background={background}>
-        <CloseIconContainer onClick={() => setIsVisible(false)}>
-          <Image src="/images/icon/close.svg" alt="close" width="16px" />
-        </CloseIconContainer>
+        { canClose && 
+          <CloseIconContainer onClick={() => setIsVisible(false)}>
+            <Image src="/images/icon/close.svg" alt="close" width="12px" />
+          </CloseIconContainer>
+        }
         {children}
       </NoteContainer>
     </Draggable>
