@@ -61,6 +61,14 @@ func (p *Player) readPump(ctx context.Context) {
 			p.x = data.X
 			p.y = data.Y
 			p.direction = data.Direction
+		case "player_update_map":
+			var data PlayerUpdateMapData
+			if err := json.Unmarshal(msg.Data, &data); err != nil {
+				p.Send <- generateErrorMessage(500, "could not marshal map update data")
+				break
+			}
+
+			p.currentMap = data.Map
 		case "player_chat_message":
 			var data ChatMessageData
 			json.Unmarshal(msg.Data, &data)

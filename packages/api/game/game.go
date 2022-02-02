@@ -3,6 +3,7 @@ package game
 import (
 	"context"
 	"encoding/json"
+	"math"
 	"sync"
 	"time"
 
@@ -103,7 +104,8 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 		players := []PlayerMoveData{}
 
 		for _, otherPlayer := range g.Players {
-			if otherPlayer == player || otherPlayer.currentMap != player.currentMap {
+			var squaredDist = math.Pow(float64(otherPlayer.x-player.x), 2) + math.Pow(float64(otherPlayer.y-player.y), 2)
+			if otherPlayer == player || squaredDist > math.Pow(200, 2) {
 				continue
 			}
 

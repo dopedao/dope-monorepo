@@ -49,6 +49,10 @@ type PlayerJoinData struct {
 	Y          float32 `json:"y"`
 }
 
+type PlayerUpdateMapData struct {
+	Map string `json:"map"`
+}
+
 type PlayerMoveData struct {
 	Id        string  `json:"id"`
 	X         float32 `json:"x"`
