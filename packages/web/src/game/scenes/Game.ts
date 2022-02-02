@@ -177,13 +177,13 @@ export default class GameScene extends Scene {
         this.player.navigator.moveTo(
           pointer.worldX,
           pointer.worldY, 
-          () => {
+          citizenToTalkTo ? () => {
             if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
             {
               citizenToTalkTo?.onInteraction(this.player);
               EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
             }
-          });
+          } : undefined);
       });
     });
 
@@ -279,6 +279,7 @@ export default class GameScene extends Scene {
       {
         if (!patchMap && n.dir === dir)
         {
+          // this.mapHelper.loadedMaps.get(level.identifier)?.dispose();
           this._currentMap = lvl.identifier;
         }
         return;
