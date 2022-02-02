@@ -8,6 +8,7 @@ import PanelContainer from 'components/PanelContainer';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
 import PanelTitleHeader from 'components/PanelTitleHeader';
+import Fireworks from 'components/lunar_new_year/Fireworks';
 
 const lanternImg = (
   <Image 
@@ -52,6 +53,7 @@ const LunarNewYear = () => {
       padBody={false}
       scrollable={true}
     >
+      <Fireworks />
       <EventContainer>
         <EventHeader>
           {lanternImg}
