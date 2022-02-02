@@ -26,7 +26,7 @@ const NoteContainer = styled.div<{ maxWidth?: string; background?: string; }>`
 const CloseIconContainer = styled.div`
   position: absolute;
   top: 8px;
-  right: 8px;
+  left: 8px;
   padding: 8px;
   border-radius: 4px;
   background-color: rgba(0,0,0,0.5);
