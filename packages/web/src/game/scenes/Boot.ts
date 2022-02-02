@@ -34,15 +34,18 @@ export default class Boot extends Scene {
 
     // free plugins
     this.events.on(Phaser.Core.Events.DESTROY, () => {
+      window.onresize = null;
       EventHandler.emitter().removeAllListeners();
 
       this.game.plugins.removeScenePlugin('rexUI');
       this.game.plugins.removeGlobalPlugin('phaser-react');
       this.game.plugins.removeGlobalPlugin('rexPixelationPipeline');
 
-      NetworkHandler.getInstance().emitter.removeAllListeners();
       if (NetworkHandler.getInstance().connected)
         NetworkHandler.getInstance().disconnect();
+      NetworkHandler.getInstance().on(NetworkEvents.DISCONNECTED, () => {
+        NetworkHandler.getInstance().emitter.removeAllListeners();
+      });
     });
 
     // log events
