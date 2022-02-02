@@ -28,15 +28,12 @@ export default class GameScene extends Scene {
 
   // level identifiers of the current loaded maps
   private loadedMaps: string[] = new Array();
-  // level identifier of the map
-  private _currentMap!: string;
   private _mapHelper!: MapHelper;
 
   public canUseMouse: boolean = true;
 
   readonly zoom: number = 2.5;
 
-  get currentMap() { return this._currentMap; }
   get mapHelper() { return this._mapHelper; }
 
   constructor() {
@@ -88,11 +85,12 @@ export default class GameScene extends Scene {
 
   handleNetwork()
   {
+    console.log(this.player.currentMap);
     const networkHandler = NetworkHandler.getInstance();
     // register player
     networkHandler.sendMessage(UniversalEventNames.PLAYER_JOIN, {
       name: this.player.name,
-      current_map: this._currentMap,
+      current_map: this.player.currentMap,
       x: this.player.x,
       y: this.player.y,
     });
@@ -106,7 +104,7 @@ export default class GameScene extends Scene {
         this.hustlers.push(new Hustler(this.matter.world, data.x, data.y, new HustlerModel(Base.Male)));
         this.hustlers[this.hustlers.length - 1].setName(data.name);
         this.hustlers[this.hustlers.length - 1].setData('id', data.id);
-        this.hustlers[this.hustlers.length - 1].setData('current_map', data.current_map);
+        this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
       });
 
       // register listeners
@@ -127,7 +125,7 @@ export default class GameScene extends Scene {
         this.hustlers.push(new Hustler(this.matter.world, data.x, data.y, new HustlerModel(Base.Male)));
         this.hustlers[this.hustlers.length - 1].setName(data.name);
         this.hustlers[this.hustlers.length - 1].setData('id', data.id);
-        this.hustlers[this.hustlers.length - 1].setData('current_map', data.current_map);
+        this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
       });
       networkHandler.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => {
         // update players positions
@@ -152,6 +150,11 @@ export default class GameScene extends Scene {
         {
           EventHandler.emitter().emit(Events.CHAT_MESSAGE, hustler, data.message);
         }
+      });
+      networkHandler.on(NetworkEvents.SERVER_PLAYER_UPDATE_MAP, (data: DataTypes[NetworkEvents.SERVER_PLAYER_UPDATE_MAP]) => {
+        const hustler = this.hustlers.find(h => h.getData('id') === data.id);
+        if (hustler)
+          hustler.currentMap = data.current_map;
       });
     });
   }
@@ -191,8 +194,7 @@ export default class GameScene extends Scene {
     this._mapHelper = new MapHelper(this);
     this.mapHelper.createMap('NYCHood2');
     this.mapHelper.createEntities();
-    this._currentMap = this.mapHelper.mapReader.level.identifier;
-    this.loadedMaps.push(this._currentMap);
+    this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
     
     // citizens
     this.citizens.push(new Citizen(
@@ -212,6 +214,7 @@ export default class GameScene extends Scene {
 
     // TODO when map update: create player directly from map data
     this.player = new Player(this.matter.world, 90, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
+    this.player.currentMap = this.mapHelper.mapReader.level.identifier;
     if (window.ethereum && (window.ethereum as any).selectedAddress)
     {
         const address = (window.ethereum as any).selectedAddress;
@@ -226,6 +229,9 @@ export default class GameScene extends Scene {
     camera.setZoom(this.zoom, this.zoom);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
+    const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
+    this.cameras.main.setBounds(map.displayLayers[0].x, map.displayLayers[0].y, map.displayLayers[0].width, map.displayLayers[0].height);
+
     this.handleNetwork();
 
     this.scene.launch('UIScene', { player: this.player });
@@ -238,7 +244,7 @@ export default class GameScene extends Scene {
     this.itemEntities.forEach(itemEntity => itemEntity.update());
 
     // update map 
-    const level = this.mapHelper.mapReader.ldtk.levels.find(l => l.identifier === this._currentMap)!;
+    const level = this.mapHelper.mapReader.ldtk.levels.find(l => l.identifier === this.player.currentMap)!;
     const centerMapPos = new Phaser.Math.Vector2((level.worldX + (level.worldX + level.pxWid)) / 2, (level.worldY + (level.worldY + level.pxHei)) / 2);
     const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
 
@@ -279,8 +285,12 @@ export default class GameScene extends Scene {
       {
         if (!patchMap && n.dir === dir)
         {
-          // this.mapHelper.loadedMaps.get(level.identifier)?.dispose();
-          this._currentMap = lvl.identifier;
+          this.player.currentMap = lvl.identifier;
+          const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
+          this.cameras.main.setBounds(map.displayLayers[0].x, map.displayLayers[0].y, map.displayLayers[0].width, map.displayLayers[0].height);
+
+          if (NetworkHandler.getInstance().connected)
+            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_MAP, { current_map: lvl.identifier });
         }
         return;
       }

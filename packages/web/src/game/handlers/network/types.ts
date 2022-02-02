@@ -4,6 +4,7 @@ enum UniversalEventNames
     PLAYER_LEAVE = 'player_leave',
     PLAYER_MOVE = 'player_move',
     PLAYER_CHAT_MESSAGE = 'player_chat_message',
+    PLAYER_UPDATE_MAP = 'player_update_map',
 }
 
 enum NetworkEvents
@@ -21,13 +22,14 @@ enum NetworkEvents
     SERVER_PLAYER_LEAVE = "server_player_leave",
     SERVER_PLAYER_MOVE = "server_player_move",
     SERVER_PLAYER_CHAT_MESSAGE = "server_player_chat_message",
+    SERVER_PLAYER_UPDATE_MAP = "server_player_update_map",
 
     // From client to server
     CLIENT_PLAYER_JOIN = "client_player_join",
     CLIENT_PLAYER_LEAVE = "client_player_leave",
     CLIENT_PLAYER_MOVE = "client_player_move",
     CLIENT_PLAYER_CHAT_MESSAGE = "client_player_chat_message",
-
+    CLIENT_PLAYER_UPDATE_MAP = "client_player_update_map",
 }
 
 interface DataTypes
@@ -66,6 +68,10 @@ interface DataTypes
         y: number,
         direction: string,
     },
+    [NetworkEvents.SERVER_PLAYER_UPDATE_MAP]: {
+        id: string,
+        current_map: string,
+    },
 
     // From client to server
     [NetworkEvents.CLIENT_PLAYER_JOIN]: {
@@ -83,7 +89,10 @@ interface DataTypes
     },
     [NetworkEvents.CLIENT_PLAYER_CHAT_MESSAGE]: {
         message: string
-    }
+    },
+    [NetworkEvents.CLIENT_PLAYER_UPDATE_MAP]: {
+        current_map: string,
+    },
 }
 
 export { UniversalEventNames, NetworkEvents };

@@ -29,6 +29,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     // is hustler currently moving?
     public moving: boolean = false;
 
+    // level identifier of the map
+    private _currentMap!: string;
+
     private _model: HustlerModel;
 
     private _animator: HustlerAnimator;
@@ -36,6 +39,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
     private _hitboxSensor: MatterJS.BodyType;
     private hoverText?: BBCodeText;
+
+    get currentMap() { return this._currentMap; }
+    set currentMap(value: string) { this._currentMap = value; }
 
     get model() { return this._model; }
     get animator() { return this._animator; }
