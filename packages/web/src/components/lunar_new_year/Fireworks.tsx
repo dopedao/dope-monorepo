@@ -23,7 +23,7 @@ const Fireworks = () => {
 
   useInterval(() => {
     setRandomValues();
-  }, 1000);
+  }, 2500);
 
   const FireworkContainer = styled.div`
     position:absolute;
