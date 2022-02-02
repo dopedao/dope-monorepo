@@ -180,7 +180,7 @@ func (h *BaseHustlerProcessor) ProcessElement(p interface{}) func(context.Contex
 			return cb, nil
 
 		}
-		return nil, nil
+		return func(*ent.Tx) error { return nil }, nil
 	}
 }
 
@@ -204,31 +204,31 @@ func (h *BaseHustlerProcessor) Initialize(ctx context.Context, start uint64, tx 
 }
 
 func (h *BaseHustlerProcessor) ProcessAddRles(ctx context.Context, e HustlerAddRles) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BaseHustlerProcessor) ProcessApprovalForAll(ctx context.Context, e HustlerApprovalForAll) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BaseHustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e HustlerMetadataUpdate) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BaseHustlerProcessor) ProcessOwnershipTransferred(ctx context.Context, e HustlerOwnershipTransferred) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BaseHustlerProcessor) ProcessTransferBatch(ctx context.Context, e HustlerTransferBatch) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BaseHustlerProcessor) ProcessTransferSingle(ctx context.Context, e HustlerTransferSingle) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BaseHustlerProcessor) ProcessURI(ctx context.Context, e HustlerURI) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BaseHustlerProcessor) mustEmbedBaseHustlerProcessor() {}

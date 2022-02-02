@@ -1,18 +1,16 @@
-import { useMemo, useState, useEffect } from 'react';
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { CloseButton } from '@chakra-ui/react';
-import { useWeb3React } from '@web3-react/core';
-import { useWalletQuery } from 'generated/graphql';
 import { getRandomHustler } from 'utils/HustlerConfig';
+import { media } from 'ui/styles/mixins';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useSwitchEthereum } from 'hooks/web3';
+import { useWalletQuery } from 'generated/graphql';
+import { useWeb3React } from '@web3-react/core';
 import AppWindow from 'components/AppWindow';
 import Begin from 'features/hustlers/modules/Begin';
 import HustlerProvider from 'features/hustlers/HustlerProvider';
-import StickyNote from 'components/StickyNote';
 import LoadingBlock from 'components/LoadingBlock';
-import { media } from 'ui/styles/mixins';
-import { useRouter } from 'next/router';
+import DialogSwitchNetwork from 'components/DialogSwitchNetwork';
+import styled from '@emotion/styled';
 
 const FlexFiftyContainer = styled.div`
   height: 100%;
@@ -75,11 +73,6 @@ const Initiate = () => {
     }
   }, []);
 
-  const handleCloseAlert = () => {
-    window.localStorage.setItem('networkAlertInitiateHustler0', 'false');
-    setShowNetworkAlert(false);
-  };
-
   const [hustlerConfig, setHustlerConfig] = useState(
     getRandomHustler({
       dopeId: '1',
@@ -90,24 +83,7 @@ const Initiate = () => {
     <AppWindow requiresWalletConnection={true} scrollable={true}>
       <HustlerProvider>
         {account && chainId !== 1 && chainId !== 42 && showNetworkAlert && (
-          <StickyNote>
-            <div
-              css={css`
-                display: flex;
-                align-items: center;
-              `}
-            >
-              <p
-                css={css`
-                  margin-right: 10px;
-                  padding-bottom: unset;
-                `}
-              >
-                You should switch to Main network to initiate your hustler.
-              </p>{' '}
-              <CloseButton onClick={handleCloseAlert} />
-            </div>
-          </StickyNote>
+          <DialogSwitchNetwork networkName="Main" />
         )}
         {loading ? (
           <FlexFiftyContainer>

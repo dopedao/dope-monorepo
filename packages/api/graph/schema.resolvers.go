@@ -68,6 +68,10 @@ func (r *queryResolver) Items(ctx context.Context, after *ent.Cursor, first *int
 	return r.client.Item.Query().Paginate(ctx, after, first, before, last, ent.WithItemOrder(orderBy), ent.WithItemFilter(where.Filter))
 }
 
+func (r *queryResolver) WalletItems(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.WalletItemsOrder, where *ent.WalletItemsWhereInput) (*ent.WalletItemsConnection, error) {
+	return r.client.WalletItems.Query().Paginate(ctx, after, first, before, last, ent.WithWalletItemsOrder(orderBy), ent.WithWalletItemsFilter(where.Filter))
+}
+
 func (r *queryResolver) Hustlers(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.HustlerOrder, where *ent.HustlerWhereInput) (*ent.HustlerConnection, error) {
 	return r.client.Hustler.Query().Paginate(ctx, after, first, before, last, ent.WithHustlerOrder(orderBy), ent.WithHustlerFilter(where.Filter))
 }
