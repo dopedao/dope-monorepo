@@ -64,8 +64,14 @@ const GearFooter = ({ id }: { id: string }) => {
   const swapmeet = useSwapMeet();
 
   useEffect(() => {
-    if (data) {
-      setSelected(data?.wallets.edges![0]?.node?.hustlers[0].id);
+    if (
+      data &&
+      data.wallets.edges &&
+      data.wallets.edges[0] &&
+      data.wallets.edges[0].node &&
+      data.wallets.edges[0].node.hustlers.length > 0
+    ) {
+      setSelected(data.wallets.edges[0].node.hustlers[0].id);
     }
   }, [data]);
 
