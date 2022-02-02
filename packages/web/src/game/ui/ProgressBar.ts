@@ -10,6 +10,7 @@ export default class ProgressBar {
   private width: number;
   private height: number;
   private lineWidth: number;
+  private loadingText: GameObjects.Text;
   private percentText: GameObjects.Text;
   private downloadedText: GameObjects.Text;
   private totalFileSize: number;
@@ -36,17 +37,17 @@ export default class ProgressBar {
       color: '#ffffff'
     };
 
-    const loadingText = scene.make.text({
+    this.loadingText = scene.make.text({
       x: this.x + this.lineWidth,
       y: this.y - this.lineWidth,
       text: 'Loading...',
       style: textStyle
     });
-    loadingText.setOrigin(0, 1);
+    this.loadingText.setOrigin(0, 1);
 
+    x: this.x + this.width - this.lineWidth,
     this.percentText = scene.make.text({
-      x: this.x + this.width - this.lineWidth,
-      y: loadingText.y,
+      y: this.loadingText.y,
       text: '0%',
       style: {
         ...textStyle,
@@ -56,7 +57,7 @@ export default class ProgressBar {
     this.percentText.setOrigin(1, 1);
 
     const totalBytesText = scene.make.text({
-      x: loadingText.x,
+      x: this.loadingText.x,
       y: this.y + this.height + this.lineWidth,
       text: this.formatBytes(totalFileSize),
       style: textStyle
@@ -91,7 +92,7 @@ export default class ProgressBar {
     }
   }
 
-  setProgress(progress: number): void {
+  setProgress(progress: number, loadingText?: string): void {
     this.progressBar.clear();
 
     this.progressBar.fillStyle(0x3d8f3d);
@@ -99,6 +100,8 @@ export default class ProgressBar {
 
     this.percentText.setText(Math.round(progress * 100) + '%');
     this.downloadedText.text = this.formatBytes(this.totalFileSize * progress);
+    if (loadingText)
+      this.loadingText.setText(loadingText);
   }
 
   private formatBytes(bytes: number): string {
