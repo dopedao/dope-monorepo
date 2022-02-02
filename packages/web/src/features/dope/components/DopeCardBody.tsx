@@ -64,7 +64,7 @@ const DopeCardBody = ({
       css={css`
         flex: 1;
         background: #fff;
-        padding: 8px;
+        padding: 16px;
         overflow-y: ${isExpanded ? 'auto' : 'hidden'};
         border-radius: 4px;
         display: flex;

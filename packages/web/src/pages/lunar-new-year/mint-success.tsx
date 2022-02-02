@@ -10,6 +10,8 @@ import ProfileCard from 'features/profile/components/ProfileCard';
 import PanelTitleBar from 'components/PanelTitleBar';
 import PanelBody from 'components/PanelBody';
 import Link from 'next/link';
+import Fireworks from 'components/lunar_new_year/Fireworks';
+import { media } from 'ui/styles/mixins';
 
 const FireworksShow = styled.div`
   position: absolute;
@@ -46,7 +48,10 @@ const LogoContainer = styled.div`
   transform: translate(-50%, -100%);
   img {
     margin: auto;
-    width: 66%;
+    width: 95%;
+    ${media.tablet`
+      width: 66%;
+    `}
   }
   @keyframes scroll-in {
     0% {
@@ -66,11 +71,15 @@ const LogoContainer = styled.div`
 `;
 const MessageContainer = styled.div`
   text-align: center;
-  padding: 32px 64px;
-  margin: 32px 25%;
+  padding: 16px;
+  margin: 16px;
   opacity: 0;
   position: relative;
   z-index: 5;
+  ${media.tablet`
+    padding: 32px 64px;
+    margin: 32px 25%;
+  `}
   @keyframes appear {
     from {
       opacity: 0;
@@ -147,6 +156,7 @@ const MintSuccess = () => {
       padBody={false}
       scrollable={true}
     >
+      <Fireworks />
       <div css={css`display:flex;width:100%;flex-direction:column;`}>
         <EventHeader />
         <MessageContainer>

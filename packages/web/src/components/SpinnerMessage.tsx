@@ -1,5 +1,6 @@
 import { Spinner } from '@chakra-ui/react';
 import styled from "@emotion/styled";
+import { css } from '@emotion/react';
 
 const SpinnerContainer = styled.div`
   border: 0px;
@@ -7,8 +8,8 @@ const SpinnerContainer = styled.div`
   align-items: center;
   justify-content: center;
   gap: 4px;
+  height: 1em;
   & > div {
-    flex: 0;
   }
 `;
 

@@ -31,6 +31,7 @@ const formatType = (type: HustlerType): string => {
 
 const HustlerFooter = ({ id }: { id: string }) => (
   <PanelFooter>
+    <div></div>
     <Link href={`/hustlers/${id}/customize`} passHref>
       <Button variant="primary">Customize</Button>
     </Link>

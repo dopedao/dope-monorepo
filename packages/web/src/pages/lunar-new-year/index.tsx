@@ -8,6 +8,7 @@ import PanelContainer from 'components/PanelContainer';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
 import PanelTitleHeader from 'components/PanelTitleHeader';
+import Fireworks from 'components/lunar_new_year/Fireworks';
 
 const lanternImg = (
   <Image 
@@ -52,6 +53,7 @@ const LunarNewYear = () => {
       padBody={false}
       scrollable={true}
     >
+      <Fireworks />
       <EventContainer>
         <EventHeader>
           {lanternImg}
@@ -88,7 +90,7 @@ const LunarNewYear = () => {
               <Image src="/images/lunar_new_year_2022/walking_hustlers.png" alt="Walking Hustlers with Dragon" />
               <h4>Mask boost lotto</h4>
               <p>
-                <em>Boost 0.1Ξ for a chance to receive a random zodiac mask.</em> You could receive a rare Tiger Mask, or a super rare Golden Tiger Mask. Each boost increases your odds of a Golden Tiger Mask by 10%. Spend 1Ξ for a guaranteed Golden Tiger Mask.
+                <em>Boost 0.1Ξ for a chance to receive a random zodiac mask.</em> Each boost increases your odds by 10% to win a super rare Golden Tiger Mask. Spend 1Ξ for a guaranteed Golden Tiger Mask.
               </p>
             </PanelBody>
           </PanelContainer>

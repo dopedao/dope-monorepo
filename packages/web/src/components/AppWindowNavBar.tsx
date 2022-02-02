@@ -15,16 +15,18 @@ const AppWindowNavBar = ({ children, showBorder = false }: { children: ReactNode
         overflow-y: hidden;
         display: flex;
         align-items: flex-end;
+        justify-content: stretch;
         a {
           position: relative;
           height: 30px;
-          width: 20%;
           background-color: #434345;
           color: #fff;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-left: 25px;
+          margin-left: 20px;
+          white-space: nowrap;
+          padding: 0px 24px;
         }
         a.active {
           text-decoration: none;
