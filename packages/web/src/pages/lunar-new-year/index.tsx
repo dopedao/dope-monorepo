@@ -96,7 +96,7 @@ const LunarNewYear = () => {
                 Boost 0.1Ξ for a chance to receive a random zodiac mask. Each boost increases your odds by 10% to win a super rare Golden Tiger Mask. Spend 1Ξ for a guaranteed Golden Tiger Mask.
               </p>
               <p>
-                <a class="cny" target="optimism" href="https://www.optimism.io/apps/bridges">Read more about Optimism bridges here…</a>
+                <a className="cny" target="optimism" href="https://www.optimism.io/apps/bridges">Read more about Optimism bridges here…</a>
               </p>
             </PanelBody>
           </PanelContainer>
