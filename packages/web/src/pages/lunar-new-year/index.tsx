@@ -71,9 +71,11 @@ const LunarNewYear = () => {
               <p>
                 To celebrate Year of the Tiger we&apos;re giving every Hustler who claimed gear by January 31st a special accessory airdrop.
               </p>
-
               <p>
-                Claiming only requires minimal gas fees on the Optimism network. You will randomly receive a celebratory accessory or if you&apos;re lucky, some $PAPER!
+                You will randomly receive a celebratory accessory or if you&apos;re lucky, some $PAPER!
+              </p>
+              <p>
+                Claiming only requires minimal gas fees on the Optimism network. <a className="cny" target="optimism" href="https://app.hop.exchange/#/send?token=ETH&sourceNetwork=ethereum&destNetwork=optimism">Bridge Ethereum here</a> if you don&apos;t already have some on Optimism.
               </p>
             </PanelBody>
           </PanelContainer>
