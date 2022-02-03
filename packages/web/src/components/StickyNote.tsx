@@ -1,7 +1,11 @@
 import Draggable from 'react-draggable';
+import { isTouchDevice } from 'utils/utils';
+import ConditionalWrapper from 'components/ConditionalWrapper';
+
 import styled from '@emotion/styled';
 import { Image } from '@chakra-ui/react';
 import { useState } from 'react';
+import { media } from 'ui/styles/mixins';
 
 type StickyNoteProps = {
   children?: React.ReactNode;
@@ -15,13 +19,18 @@ const NoteContainer = styled.div<{ maxWidth?: string; background?: string; }>`
   z-index: 2;
   filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
   min-width: 128px;
-  max-width: ${({ maxWidth }) => maxWidth || '100%'};
   min-height: 64px;
   position: absolute;
-  right: 1em;
-  top: 1em;
+  left: 0em;
+  top: 0em;
   background: ${({ background }) => background || '#caffff'};
   text-align: center;
+  ${media.tablet`
+    max-width: 375px;
+    left: unset;
+    top: 2em;
+    right: 2em;
+  `}
 `;
 const CloseIconContainer = styled.div`
   position: absolute;
@@ -34,19 +43,28 @@ const CloseIconContainer = styled.div`
   cursor:hand;
 `;
 
+const shouldBeDraggable = !isTouchDevice();
+
 const StickyNote = ({ children, maxWidth, background, canClose = false }: StickyNoteProps) => {
   const [isVisible, setIsVisible] = useState(true);
   if (isVisible) return (
-    <Draggable>
-      <NoteContainer maxWidth={maxWidth} background={background}>
-        { canClose && 
-          <CloseIconContainer onClick={() => setIsVisible(false)}>
-            <Image src="/images/icon/close.svg" alt="close" width="12px" />
-          </CloseIconContainer>
-        }
-        {children}
-      </NoteContainer>
-    </Draggable>
+      <ConditionalWrapper
+        condition={shouldBeDraggable}
+        wrap={children => (
+          <Draggable>
+            {children}
+          </Draggable>
+        )}
+      >
+        <NoteContainer maxWidth={maxWidth} background={background}>
+          { canClose && 
+            <CloseIconContainer onClick={() => setIsVisible(false)}>
+              <Image src="/images/icon/close.svg" alt="close" width="12px" />
+            </CloseIconContainer>
+          }
+          {children}
+        </NoteContainer>
+    </ConditionalWrapper>
   );
   return <></>;
 }

@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import { media } from 'ui/styles/mixins';
 import { ReactNode } from 'react';
 
 const AppWindowNavBar = ({ children, showBorder = false }: { children: ReactNode, showBorder?: boolean }) => {
