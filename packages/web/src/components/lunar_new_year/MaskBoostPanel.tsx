@@ -125,7 +125,7 @@ const BoostPanel = () => {
   useEffect(() => {
     if (account) {
       paper.allowance(account, NETWORK[chainId].contracts.hongbao).then((allowance: BigNumber) => {
-        setIsPaperApproved(allowance.gte('500000000000000000000'));
+        setIsPaperApproved(allowance.gte('5000000000000000000000'));
       });
     }
   }, [account, paper, chainId]);
@@ -134,7 +134,7 @@ const BoostPanel = () => {
   useEffect(() => {
     if (account) {
       paper.balanceOf(account).then((balance: BigNumber) => {
-        setHasEnoughPaper(balance.gte('500000000000000000000'));
+        setHasEnoughPaper(balance.gte('5000000000000000000000'));
       });
     }
   }, [account, paper, chainId, roll]);
