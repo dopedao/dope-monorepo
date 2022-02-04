@@ -34,6 +34,7 @@ const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean; backgr
   position: relative;
   height: 100%;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
+  overflow-x: hidden;
   background: ${({ background }) => (background ? background : '#a8a9ae')}
   padding: ${({ padBody }) => (padBody ? getBodyPadding() : '0px')};
 `;
