@@ -1,16 +1,13 @@
-import { FC, useMemo } from "react"
 import { Button, HStack } from "@chakra-ui/react"
-import { useWeb3React } from "@web3-react/core";
-
-import DopeCard from "features/dope/components/DopeCard";
-
 import { Dope, Item, useInfiniteProfileDopesQuery } from "generated/graphql"
-
+import { useMemo } from "react"
+import { useWeb3React } from "@web3-react/core";
 import CardContainer from "./CardContainer";
-import SectionContent from "./SectionContent";
-import SectionHeader from "./SectionHeader";
+import DopeCard from "features/dope/components/DopeCard";
 import ItemCount from "./ItemCount";
 import LoadingBlock from "components/LoadingBlock";
+import SectionContent from "./SectionContent";
+import SectionHeader from "./SectionHeader";
 
 type ProfileDope = Pick<Dope, "id" | "claimed" | "opened" | "rank" | "score"> & {
   items: Pick<Item, "id" | "fullname" | "type" | "name" | "tier" | "greatness" | "count">[]
@@ -21,13 +18,13 @@ type DopeData = {
   totalCount: number
 }
 
-const Dopes: FC = () => {
+const Dopes = ({walletAddress}: {walletAddress?: string}) => {
   const { account } = useWeb3React()
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileDopesQuery({
     where: {
       hasWalletWith: [{
-        id: account,
+        id: walletAddress || account,
       }],
     },
     first: 50,

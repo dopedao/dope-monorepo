@@ -1,14 +1,15 @@
 import { Accordion } from '@chakra-ui/react'
-
 import Section from "./Section"
 import Dopes from './Dopes';
 import Gear from './Gear';
 import Hustlers from './Hustlers';
-
+import { useRouter } from 'next/router'
 import useQueryParam from 'utils/use-query-param';
 const SECTIONS = ['Dope', 'Hustlers', 'Gear'];
 
 const Profile = () => {
+  const router = useRouter()
+  const { walletAddress } = router.query
 
   const [section, setSection] = useQueryParam('section', SECTIONS[0]);
 
@@ -24,13 +25,13 @@ const Profile = () => {
       }}
     >
       <Section>
-        <Dopes />
+        <Dopes walletAddress={walletAddress} />
       </Section>
       <Section>
-        <Hustlers />
+        <Hustlers walletAddress={walletAddress} />
       </Section>
       <Section>
-        <Gear />
+        <Gear walletAddress={walletAddress} />
       </Section>
     </Accordion>
   )

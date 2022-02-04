@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, HStack, Image, Stack, Select } from '@chakra-ui/react';
 import { useWeb3React } from '@web3-react/core';
 import { utils } from 'ethers';
@@ -109,13 +109,13 @@ const GearFooter = ({ id }: { id: string }) => {
   );
 };
 
-const GearWrapper: FC = () => {
+const GearWrapper = ({walletAddress}: {walletAddress?: string}) => {
   const { account } = useWeb3React();
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileGearQuery(
     {
       where: {
-        hasWalletWith: [{ id: account }],
+        hasWalletWith: [{ id: walletAddress || account }],
         balanceGT: '0',
       },
       first: 50,

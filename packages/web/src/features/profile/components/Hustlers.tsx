@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react"
+import { useMemo } from "react"
 import { Stack, Image, HStack, Button } from "@chakra-ui/react"
 import { AspectRatio } from '@chakra-ui/layout';
 import { useWeb3React } from "@web3-react/core";
@@ -38,13 +38,13 @@ const HustlerFooter = ({ id }: { id: string }) => (
   </PanelFooter>
 );
 
-const Hustlers: FC = () => {
+const Hustlers = ({walletAddress}: {walletAddress?: string}) => {
   const { account } = useWeb3React()
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileHustlersQuery({
     where: {
       hasWalletWith: [{
-        id: account,
+        id: walletAddress || account,
       }],
     },
     first: 50,

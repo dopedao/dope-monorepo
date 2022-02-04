@@ -30,7 +30,7 @@ const Container = styled.div`
   background: ${brickBackground};
   .hustlerGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     grid-column-gap: 32px;
     grid-row-gap: 64px;
   }
