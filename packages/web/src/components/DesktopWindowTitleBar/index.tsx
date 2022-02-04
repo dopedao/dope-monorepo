@@ -18,6 +18,7 @@ type WindowTitleBarProps = {
   balance?: string;
   loadingBalance?: boolean;
   children: React.ReactNode;
+  windowRef?: HTMLDivElement | null;
 };
 
 const DesktopWindowTitleBar = ({
@@ -26,6 +27,7 @@ const DesktopWindowTitleBar = ({
   isFullScreen,
   toggleFullScreen,
   children,
+  windowRef
 }: WindowTitleBarProps) => {
   const [ensAddress, setEnsAddress] = useState<string | null>(null);
   const { account, library } = useWeb3React();
@@ -41,7 +43,12 @@ const DesktopWindowTitleBar = ({
   }, [paper, account]);
 
   const closeWindow = (): void => {
-    router.replace('/');
+    if(router.pathname === '/' && windowRef) {
+      // Close desktop window if one is open by default on home page
+      windowRef.style.display = 'none';
+    } else {
+      router.replace('/');
+    }
   };
 
   useEffect(() => {
