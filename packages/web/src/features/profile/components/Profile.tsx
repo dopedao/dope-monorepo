@@ -6,7 +6,7 @@ import Gear from './Gear';
 import Hustlers from './Hustlers';
 
 import useQueryParam from 'utils/use-query-param';
-const SECTIONS = ['Dope', 'Hustlers', 'Gear'];
+const SECTIONS = ['Hustlers', 'Gear', 'Dope'];
 
 const Profile = () => {
 
