@@ -240,9 +240,11 @@ export default class UIScene extends Scene {
             setTimeout(() => {
                 chatMessage.destroy();
                 this.chatMessageBoxes.delete(hustler);
+
                 // let player open message input again
                 // after the duration
-                this.canOpenMessageInput = true;
+                if (hustler === this.player)
+                    this.canOpenMessageInput = true;
             }, Object.values(messageDuration).reduce((a, b) => a + b, 0));
         });
     }

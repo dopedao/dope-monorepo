@@ -71,6 +71,8 @@ interface DataTypes
     [NetworkEvents.SERVER_PLAYER_UPDATE_MAP]: {
         id: string,
         current_map: string,
+        x: number,
+        y: number,
     },
 
     // From client to server
@@ -92,6 +94,8 @@ interface DataTypes
     },
     [NetworkEvents.CLIENT_PLAYER_UPDATE_MAP]: {
         current_map: string,
+        x: number,
+        y: number,
     },
 }
 

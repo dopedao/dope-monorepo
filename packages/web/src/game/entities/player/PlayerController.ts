@@ -13,7 +13,7 @@ export default class PlayerController
     private _player: Player;
 
     // send move message each MOVE_TICKRATE ms (if moving)
-    static readonly MOVE_TICKRATE = 1 / 2; 
+    static readonly MOVE_TICKRATE = 1 / 2;
 
     get player() { return this._player; }
 

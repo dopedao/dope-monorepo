@@ -228,7 +228,7 @@ export default class Player extends Hustler
                         });
                     this._lastMoveTimestamp = 0;
                 }
-            }, 50);
+            }, 250);
         } 
     }
 }

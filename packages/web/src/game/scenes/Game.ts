@@ -108,15 +108,6 @@ export default class GameScene extends Scene {
       });
 
       // register listeners
-      // remove hustler on player leave
-      networkHandler.on(NetworkEvents.SERVER_PLAYER_LEAVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_LEAVE]) => {
-        const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
-        if (hustler)
-        {
-          hustler.destroyRuntime();
-          this.hustlers.splice(this.hustlers.indexOf(hustler), 1);
-        }
-      });
       // instantiate a new hustler on player join 
       networkHandler.on(NetworkEvents.SERVER_PLAYER_JOIN, (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => {
         if (data.id === this.player.getData('id'))
@@ -126,6 +117,27 @@ export default class GameScene extends Scene {
         this.hustlers[this.hustlers.length - 1].setName(data.name);
         this.hustlers[this.hustlers.length - 1].setData('id', data.id);
         this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
+      });
+      // update map
+      networkHandler.on(NetworkEvents.SERVER_PLAYER_UPDATE_MAP, (data: DataTypes[NetworkEvents.SERVER_PLAYER_UPDATE_MAP]) => {
+        if (data.id === this.player.getData('id'))
+          return;
+
+        const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
+        if (hustler)
+        {
+          hustler.currentMap = data.current_map;
+          hustler.setPosition(data.x, data.y);
+        }
+      });
+      // remove hustler on player leave
+      networkHandler.on(NetworkEvents.SERVER_PLAYER_LEAVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_LEAVE]) => {
+        const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
+        if (hustler)
+        {
+          hustler.destroyRuntime();
+          this.hustlers.splice(this.hustlers.indexOf(hustler), 1);
+        }
       });
       networkHandler.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => {
         // update players positions
@@ -303,7 +315,11 @@ export default class GameScene extends Scene {
           this.cameras.main.setBounds(map.displayLayers[0].x, map.displayLayers[0].y, map.displayLayers[0].width, map.displayLayers[0].height);
 
           if (NetworkHandler.getInstance().connected)
-            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_MAP, { current_map: lvl.identifier });
+            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_MAP, { 
+              current_map: lvl.identifier,
+              x: this.player.x,
+              y: this.player.y
+            });
         }
         return;
       }

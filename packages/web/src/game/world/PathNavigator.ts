@@ -41,7 +41,10 @@ export default class PathNavigator
         const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.body.position.x, this.hustler.body.position.y);
         const moveTile = map.collideLayer.worldToTileXY(x, y);
         if (hustlerTile.x < 0 || hustlerTile.y < 0 || moveTile.x < 0 || moveTile.y < 0)
+        {
+            console.error("outside");
             return;
+        }
 
         // retrieve grid data from layer (defined in ldtkparser)
         this.grid = (map.collideLayer.getData('pf_grid') as PF.Grid).clone();
@@ -87,20 +90,20 @@ export default class PathNavigator
 	    if (this.target)
 	    {
             // cancel pathfinding if stuck
-            const pos = new Phaser.Math.Vector2(this.hustler.body.position.x, this.hustler.body.position.y);
+            const pos = new Phaser.Math.Vector2(this.hustler.x, this.hustler.y);
             setTimeout(() => {
                 if (this.previousPosition && pos.equals(this.previousPosition))
                     this.cancel();
             }, 500);
 
-	    	dx = this.target.x - (this.hustler.body.position.x);
-	    	dy = this.target.y - (this.hustler.body.position.y);
+	    	dx = this.target.x - (this.hustler.x);
+	    	dy = this.target.y - (this.hustler.y);
 
-	    	if (Math.abs(dx) < 7)
+	    	if (Math.abs(dx) < 5)
 	    	{
 	    		dx = 0;
 	    	}
-	    	if (Math.abs(dy) < 7)
+	    	if (Math.abs(dy) < 5)
 	    	{
 	    		dy = 0;
 	    	}
