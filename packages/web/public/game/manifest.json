@@ -3,55 +3,1878 @@
     "totalSize": 18012825,
     "assets": {
         "spritesheet": {
-            "male_base": {
-                "file": "./game/character/male/base/male_base.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 22992
+            "DW_M_Base_Spritesheet": {
+              "file": "./game/character/male/Base/DW_M_Base_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 23832
             },
-            "male_base_shadow": {
-                "file": "./game/character/male/base/male_base_shadow.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 7180
+            "DW_M_Beard_01_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_01_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3506
             },
-            "male_clothes_shirtless": {
-                "file": "./game/character/male/clothes/male_clothes_shirtless.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 12300
+            "DW_M_Beard_02_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_02_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3525
             },
-            "male_feet_nikecortez": {
-                "file": "./game/character/male/feet/male_feet_nikecortez.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 12288 
+            "DW_M_Beard_03_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_03_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3501
             },
-            "male_hands_blackgloves": {
-                "file": "./game/character/male/hands/male_hands_blackgloves.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 8657 
+            "DW_M_Beard_04_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_04_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3544
             },
-            "male_mask_mrfax": {
-                "file": "./game/character/male/mask/male_mask_mrfax.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 10988
+            "DW_M_Beard_05_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_05_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3988
             },
-            "male_necklace_gold": {
-                "file": "./game/character/male/necklace/male_necklace_gold.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 8023
+            "DW_M_Beard_06_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_06_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3822
             },
-            "male_ring_gold": {
-                "file": "./game/character/male/ring/male_ring_gold.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 7216
+            "DW_M_Beard_07_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_07_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3405
             },
-            "male_waist_waistsuspenders": {
-                "file": "./game/character/male/waist/male_waist_waistsuspenders.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 10680
+            "DW_M_Beard_08_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_08_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3459
             },
-            "male_weapons_ak47": {
-                "file": "./game/character/male/weapons/male_weapons_ak47.png",
-                "frameConfig": { "frameWidth": 30, "frameHeight": 60 },
-                "size": 17866
+            "DW_M_Beard_09_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_09_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3442
+            },
+            "DW_M_Beard_10_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_10_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3545
+            },
+            "DW_M_Beard_11_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_11_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3510
+            },
+            "DW_M_Beard_12_Spritesheet": {
+              "file": "./game/character/male/Beards/DW_M_Beard_12_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3511
+            },
+            "DW_M_Clothes_3_Piece_Suit_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_3_Piece_Suit_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15388
+            },
+            "DW_M_Clothes_Basketball_Jersey_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Basketball_Jersey_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15845
+            },
+            "DW_M_Clothes_Bikini_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Bikini_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9288
+            },
+            "DW_M_Clothes_Black_Hoodie_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Black_Hoodie_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 17418
+            },
+            "DW_M_Clothes_Black_Tanktop_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Black_Tanktop_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 13520
+            },
+            "DW_M_Clothes_Black_Tshirt_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Black_Tshirt_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14741
+            },
+            "DW_M_Clothes_Blood_Stained_Shirt_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Blood_Stained_Shirt_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 16102
+            },
+            "DW_M_Clothes_Bulletproof_Vest_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Bulletproof_Vest_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14045
+            },
+            "DW_M_Clothes_Checkered_Shirt_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Checkered_Shirt_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15573
+            },
+            "DW_M_Clothes_Combat_Jacket_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Combat_Jacket_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15884
+            },
+            "DW_M_Clothes_Golden_Shirt_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Golden_Shirt_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15873
+            },
+            "DW_M_Clothes_Leather_Vest_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Leather_Vest_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14419
+            },
+            "DW_M_Clothes_Police_Uniform_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Police_Uniform_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14955
+            },
+            "DW_M_Clothes_Shirtless_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Shirtless_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14375
+            },
+            "DW_M_Clothes_Tracksuit_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Tracksuit_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15017
+            },
+            "DW_M_Clothes_Trenchcoat_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_Trenchcoat_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 17151
+            },
+            "DW_M_Clothes_White_Hoodie_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_White_Hoodie_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 16950
+            },
+            "DW_M_Clothes_White_Tanktop_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_White_Tanktop_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 12865
+            },
+            "DW_M_Clothes_White_Tshirt_spritesheet": {
+              "file": "./game/character/male/Clothes/DW_M_Clothes_White_Tshirt_spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14090
+            },
+            "DW_M_Feet_Air_Jordan_1_Chicagos_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Air_Jordan_1_Chicagos_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 10451
+            },
+            "DW_M_Feet_Air_Max_95_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Air_Max_95_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9457
+            },
+            "DW_M_Feet_Alligator_Dress_Shoes_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Alligator_Dress_Shoes_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8911
+            },
+            "DW_M_Feet_Black_Airforce_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Black_Airforce_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9978
+            },
+            "DW_M_Feet_Converse_All_Stars_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Converse_All_Stars_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9705
+            },
+            "DW_M_Feet_Dress_Shoes_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Dress_Shoes_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8655
+            },
+            "DW_M_Feet_Flip_Flops_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Flip_Flops_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8378
+            },
+            "DW_M_Feet_Gucci_Slides_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Gucci_Slides_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9023
+            },
+            "DW_M_Feet_Gucci_Tenis_84_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Gucci_Tenis_84_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9129
+            },
+            "DW_M_Feet_Nike_Cortez_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Nike_Cortez_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 12649
+            },
+            "DW_M_Feet_Open_Toe_Sandals_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Open_Toe_Sandals_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9136
+            },
+            "DW_M_Feet_Reebok_Classics_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Reebok_Classics_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9172
+            },
+            "DW_M_Feet_Socks_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Socks_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9843
+            },
+            "DW_M_Feet_Timberlands_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_Timberlands_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 10315
+            },
+            "DW_M_Feet_White_Forces_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_White_Forces_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9541
+            },
+            "DW_M_Feet_White_Slippers_Spritesheet": {
+              "file": "./game/character/male/Feet/DW_M_Feet_White_Slippers_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8855
+            },
+            "DW_M_Hair_01_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_01_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3787
+            },
+            "DW_M_Hair_02_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_02_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3803
+            },
+            "DW_M_Hair_03_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_03_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4033
+            },
+            "DW_M_Hair_04_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_04_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3940
+            },
+            "DW_M_Hair_05_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_05_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3803
+            },
+            "DW_M_Hair_06_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_06_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3749
+            },
+            "DW_M_Hair_07_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_07_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3898
+            },
+            "DW_M_Hair_08_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_08_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3937
+            },
+            "DW_M_Hair_09_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_09_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4237
+            },
+            "DW_M_Hair_10_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_10_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4423
+            },
+            "DW_M_Hair_11_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_11_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3945
+            },
+            "DW_M_Hair_12_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_12_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3842
+            },
+            "DW_M_Hair_13_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_13_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4334
+            },
+            "DW_M_Hair_14_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_14_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3979
+            },
+            "DW_M_Hair_15_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_15_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4306
+            },
+            "DW_M_Hair_16_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_16_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4456
+            },
+            "DW_M_Hair_17_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_17_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4544
+            },
+            "DW_M_Hair_18_Spritesheet": {
+              "file": "./game/character/male/Hair/DW_M_Hair_18_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3955
+            },
+            "DW_M_Hands_Basebal_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Basebal_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_Black_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Black_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9094
+            },
+            "DW_M_Hands_Boxing_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Boxing_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_Combat_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Combat_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_Fingerless_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Fingerless_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_Kevlar_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Kevlar_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_Leather_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Leather_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_MMA_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_MMA_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_Nitrile_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Nitrile_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_Rubber_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Rubber_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_StuddedLeather_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_StuddedLeather_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_Surgical_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Surgical_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_White_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_White_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Hands_Winter_Gloves_Spritesheet": {
+              "file": "./game/character/male/Hands/DW_M_Hands_Winter_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_M_Necklace_Bronze_Chain_Spritesheet": {
+              "file": "./game/character/male/Necklace/DW_M_Necklace_Bronze_Chain_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3865
+            },
+            "DW_M_Necklace_Gold_Spritesheet": {
+              "file": "./game/character/male/Necklace/DW_M_Necklace_Gold_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8536
+            },
+            "DW_M_Necklace_Silver_Chain_Spritesheet": {
+              "file": "./game/character/male/Necklace/DW_M_Necklace_Silver_Chain_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3723
+            },
+            "DW_M_Ring_Diamond_Spritesheet": {
+              "file": "./game/character/male/Ring/DW_M_Ring_Diamond_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3422
+            },
+            "DW_M_Ring_Gold_Spritesheet": {
+              "file": "./game/character/male/Ring/DW_M_Ring_Gold_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7805
+            },
+            "DW_M_Ring_Pinky_Spritesheet": {
+              "file": "./game/character/male/Ring/DW_M_Ring_Pinky_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3462
+            },
+            "DW_M_Ring_Platinum_Spritesheet": {
+              "file": "./game/character/male/Ring/DW_M_Ring_Platinum_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3437
+            },
+            "DW_M_Ring_Silver_Spritesheet": {
+              "file": "./game/character/male/Ring/DW_M_Ring_Silver_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3480
+            },
+            "DW_M_Ring_Titanium_Spritesheet": {
+              "file": "./game/character/male/Ring/DW_M_Ring_Titanium_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3613
+            },
+            "DW_M_Ring_Tumb_Spritesheet": {
+              "file": "./game/character/male/Ring/DW_M_Ring_Tumb_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3420
+            },
+            "DW_M_Waist_Concealed_Holster_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Concealed_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8029
+            },
+            "DW_M_Waist_Diamond_Belt_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Diamond_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7392
+            },
+            "DW_M_Waist_Fanny_Belt_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Fanny_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8180
+            },
+            "DW_M_Waist_Gucci_Belt_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Gucci_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7935
+            },
+            "DW_M_Waist_Knife_Holster_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Knife_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7378
+            },
+            "DW_M_Waist_Laces_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Laces_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8680
+            },
+            "DW_M_Waist_Metal_Belt_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Metal_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7539
+            },
+            "DW_M_Waist_Military_Belt_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Military_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7445
+            },
+            "DW_M_Waist_Pistol_Holster_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Pistol_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7803
+            },
+            "DW_M_Waist_Ring_Belt_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Ring_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8323
+            },
+            "DW_M_Waist_Sash_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Sash_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8965
+            },
+            "DW_M_Waist_SMG_Holster_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_SMG_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8959
+            },
+            "DW_M_Waist_Studded_Belt_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Studded_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7355
+            },
+            "DW_M_Waist_Suspenders_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Suspenders_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 11345
+            },
+            "DW_M_Waist_Taser_Holster_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Taser_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7920
+            },
+            "DW_M_Waist_Versace_Belt_Spritesheet": {
+              "file": "./game/character/male/Waist/DW_M_Waist_Versace_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7811
+            },
+            "DW_M_Weapon_AK47_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_AK47_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 18607
+            },
+            "DW_M_Weapon_Baseball_Bat_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Baseball_Bat_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8986
+            },
+            "DW_M_Weapon_Brass_Knuckle_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Brass_Knuckle_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7357
+            },
+            "DW_M_Weapon_Chain_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Chain_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8985
+            },
+            "DW_M_Weapon_Crowbar_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Crowbar_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7868
+            },
+            "DW_M_Weapon_Glock_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Glock_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7729
+            },
+            "DW_M_Weapon_Handgun_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Handgun_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8077
+            },
+            "DW_M_Weapon_Knife_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Knife_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8771
+            },
+            "DW_M_Weapon_Pepper_Spray_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Pepper_Spray_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7585
+            },
+            "DW_M_Weapon_Pocket_Knife_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Pocket_Knife_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8021
+            },
+            "DW_M_Weapon_Police_Baton_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Police_Baton_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8150
+            },
+            "DW_M_Weapon_Razor_Blade_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Razor_Blade_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7756
+            },
+            "DW_M_Weapon_Shotgun_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Shotgun_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9068
+            },
+            "DW_M_Weapon_Shovel_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Shovel_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 10182
+            },
+            "DW_M_Weapon_Taser_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Taser_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8381
+            },
+            "DW_M_Weapon_Tire_Iron_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Tire_Iron_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8648
+            },
+            "DW_M_Weapon_Uzi_Spritesheet": {
+              "file": "./game/character/male/Weapon/DW_M_Weapon_Uzi_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8821
+            },
+
+            "DW_F_Base_Spritesheet": {
+              "file": "./game/character/female/Base/DW_F_Base_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 23139
+            },
+            "DW_F_Clothes_3_Piece_Suit_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_3_Piece_Suit_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15416
+            },
+            "DW_F_Clothes_Basketball_Jersey_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Basketball_Jersey_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 13672
+            },
+            "DW_F_Clothes_Bikini_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Bikini_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 11172
+            },
+            "DW_F_Clothes_Black_Hoodie_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Black_Hoodie_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15308
+            },
+            "DW_F_Clothes_Black_Tanktop_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Black_Tanktop_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 13316
+            },
+            "DW_F_Clothes_Black_Tshirt_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Black_Tshirt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14253
+            },
+            "DW_F_Clothes_Blood_Stained_Shirt_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Blood_Stained_Shirt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14290
+            },
+            "DW_F_Clothes_Bulletproof_Vest_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Bulletproof_Vest_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 12638
+            },
+            "DW_F_Clothes_Checkered_Shirt_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Checkered_Shirt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15281
+            },
+            "DW_F_Clothes_Combat_Jacket_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Combat_Jacket_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14317
+            },
+            "DW_F_Clothes_Golden_Shirt_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Golden_Shirt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15348
+            },
+            "DW_F_Clothes_Leather_Vest_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Leather_Vest_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 13694
+            },
+            "DW_F_Clothes_Police_Uniform_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Police_Uniform_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 14117
+            },
+            "DW_F_Clothes_Shirtless_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Shirtless_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 12537
+            },
+            "DW_F_Clothes_Track_Suit_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Track_Suit_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 13926
+            },
+            "DW_F_Clothes_Trenchcoat_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_Trenchcoat_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15587
+            },
+            "DW_F_Clothes_White_Hoodie_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_White_Hoodie_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 16240
+            },
+            "DW_F_Clothes_White_Tanktop_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_White_Tanktop_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 13890
+            },
+            "DW_F_Clothes_White_Tshirt_Spritesheet": {
+              "file": "./game/character/female/Clothes/DW_F_Clothes_White_Tshirt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 15114
+            },
+            "DW_F_Feet_Air_Jordan_1_Chicagos_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Air_Jordan_1_Chicagos_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 10321
+            },
+            "DW_F_Feet_Air_Max_95_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Air_Max_95_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9220
+            },
+            "DW_F_Feet_Alligator_Dress_Shoes_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Alligator_Dress_Shoes_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8937
+            },
+            "DW_F_Feet_Black_Airforce_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Black_Airforce_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9349
+            },
+            "DW_F_Feet_Converse_All_Stars_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Converse_All_Stars_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9512
+            },
+            "DW_F_Feet_Dress_Shoes_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Dress_Shoes_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8588
+            },
+            "DW_F_Feet_Flip_Flops_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Flip_Flops_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8226
+            },
+            "DW_F_Feet_Gucci_Slides_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Gucci_Slides_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8618
+            },
+            "DW_F_Feet_Gucci_Tennis_84_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Gucci_Tennis_84_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8848
+            },
+            "DW_F_Feet_Nike_Cortez_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Nike_Cortez_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7003
+            },
+            "DW_F_Feet_Open_Toe_Sandals_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Open_Toe_Sandals_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8641
+            },
+            "DW_F_Feet_Reebok_Classics_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Reebok_Classics_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8750
+            },
+            "DW_F_Feet_Socks_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Socks_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9331
+            },
+            "DW_F_Feet_Timberlands_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_Feet_Timberlands_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 10209
+            },
+            "DW_F_White_Forces_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_White_Forces_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9103
+            },
+            "DW_F_White_Slippers_Spritesheet": {
+              "file": "./game/character/female/Feet/DW_F_White_Slippers_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8444
+            },
+            "DW_F_Hair_01_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_01_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3770
+            },
+            "DW_F_Hair_02_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_02_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3838
+            },
+            "DW_F_Hair_03_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_03_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3789
+            },
+            "DW_F_Hair_04_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_04_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4157
+            },
+            "DW_F_Hair_05_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_05_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3888
+            },
+            "DW_F_Hair_06_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_06_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4319
+            },
+            "DW_F_Hair_07_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_07_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4326
+            },
+            "DW_F_Hair_08_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_08_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4598
+            },
+            "DW_F_Hair_09_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_09_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4146
+            },
+            "DW_F_Hair_10_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_10_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4118
+            },
+            "DW_F_Hair_11_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_11_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3959
+            },
+            "DW_F_Hair_12_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_12_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4354
+            },
+            "DW_F_Hair_13_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_13_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4334
+            },
+            "DW_F_Hair_14_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_14_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4022
+            },
+            "DW_F_Hair_15_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_15_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4071
+            },
+            "DW_F_Hair_16_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_16_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4119
+            },
+            "DW_F_Hair_17_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_17_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4051
+            },
+            "DW_F_Hair_18_Spritesheet": {
+              "file": "./game/character/female/Hair/DW_F_Hair_18_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4424
+            },
+            "DW_F_Hands_Baseball_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Baseball_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Black_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Black_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Boxing_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Boxing_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Combat_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Combat_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Fingerlesst_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Fingerlesst_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Kevlart_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Kevlart_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Leather_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Leather_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_MMA_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_MMA_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Nitirile_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Nitirile_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Rubber_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Rubber_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Studded_Leather_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Studded_Leather_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Surgical_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Surgical_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_White_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_White_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Hands_Winter_Gloves_Spritesheet": {
+              "file": "./game/character/female/Hands/DW_F_Hands_Winter_Gloves_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 233459
+            },
+            "DW_F_Necklace_Bronze_Spritesheet": {
+              "file": "./game/character/female/Necklace/DW_F_Necklace_Bronze_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4074
+            },
+            "DW_F_Necklace_Gold_Spritesheet": {
+              "file": "./game/character/female/Necklace/DW_F_Necklace_Gold_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3572
+            },
+            "DW_F_Necklace_Silver_Spritesheet": {
+              "file": "./game/character/female/Necklace/DW_F_Necklace_Silver_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 4518
+            },
+            "DW_F_Ring_Diamond_Spritesheet": {
+              "file": "./game/character/female/Ring/DW_F_Ring_Diamond_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3430
+            },
+            "DW_F_Ring_Gold_Spritesheet": {
+              "file": "./game/character/female/Ring/DW_F_Ring_Gold_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3513
+            },
+            "DW_F_Ring_Pinky_Spritesheet": {
+              "file": "./game/character/female/Ring/DW_F_Ring_Pinky_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3426
+            },
+            "DW_F_Ring_Platinum_Spritesheet": {
+              "file": "./game/character/female/Ring/DW_F_Ring_Platinum_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3421
+            },
+            "DW_F_Ring_Silver_Spritesheet": {
+              "file": "./game/character/female/Ring/DW_F_Ring_Silver_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3608
+            },
+            "DW_F_Ring_Thumb_Spritesheet": {
+              "file": "./game/character/female/Ring/DW_F_Ring_Thumb_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3495
+            },
+            "DW_F_Ring_Titanium_Spritesheet": {
+              "file": "./game/character/female/Ring/DW_F_Ring_Titanium_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 3426
+            },
+            "DW_F_Waist_Concealed_Holster_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Concealed_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 19178
+            },
+            "DW_F_Waist_Diamond_Belt_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Diamond_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 19181
+            },
+            "DW_F_Waist_Fanny_Pack_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Fanny_Pack_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7811
+            },
+            "DW_F_Waist_Gucci_Belt_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Gucci_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7726
+            },
+            "DW_F_Waist_Knife_Holster_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Knife_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7380
+            },
+            "DW_F_Waist_Laces_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Laces_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8203
+            },
+            "DW_F_Waist_Metal_Belt_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Metal_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7423
+            },
+            "DW_F_Waist_Military_Belt_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Military_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7377
+            },
+            "DW_F_Waist_Pistol_Holster_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Pistol_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7804
+            },
+            "DW_F_Waist_Ring_Belt_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Ring_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7750
+            },
+            "DW_F_Waist_Sash_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Sash_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9652
+            },
+            "DW_F_Waist_SMG_Holster_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_SMG_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8384
+            },
+            "DW_F_Waist_Studded_Belt_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Studded_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7341
+            },
+            "DW_F_Waist_Suspenders_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Suspenders_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7812
+            },
+            "DW_F_Waist_Taser_Holster_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Taser_Holster_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8087
+            },
+            "DW_F_Waist_Versace_Belt_Spritesheet": {
+              "file": "./game/character/female/Waist/DW_F_Waist_Versace_Belt_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7742
+            },
+            "DW_F_Weapon_AK47_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_AK47_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 13692
+            },
+            "DW_F_Weapon_Baseball_Bat_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Baseball_Bat_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9046
+            },
+            "DW_F_Weapon_Brass_Knuckle_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Brass_Knuckle_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7288
+            },
+            "DW_F_Weapon_Chain_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Chain_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 9004
+            },
+            "DW_F_Weapon_Crowbar_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Crowbar_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8112
+            },
+            "DW_F_Weapon_Glock_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Glock_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7672
+            },
+            "DW_F_Weapon_Handgun_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Handgun_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8025
+            },
+            "DW_F_Weapon_Knife_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Knife_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8733
+            },
+            "DW_F_Weapon_Pepper_Spray_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Pepper_Spray_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7579
+            },
+            "DW_F_Weapon_Pocket_Knife_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Pocket_Knife_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7957
+            },
+            "DW_F_Weapon_Police_Baton_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Police_Baton_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8169
+            },
+            "DW_F_Weapon_Razor_Blade_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Razor_Blade_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 7713
+            },
+            "DW_F_Weapon_Shotgun_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Shotgun_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8823
+            },
+            "DW_F_Weapon_Shovel_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Shovel_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 10779
+            },
+            "DW_F_Weapon_Taser_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Taser_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8008
+            },
+            "DW_F_Weapon_Tire_Iron_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Tire_Iron_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8602
+            },
+            "DW_F_Weapon_Uzi_Spritesheet": {
+              "file": "./game/character/female/Weapon/DW_F_Weapon_Uzi_Spritesheet.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8773
             }
         },
         "image": {

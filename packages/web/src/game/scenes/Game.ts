@@ -1,4 +1,4 @@
-import { Base, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Waist, Weapons } from 'game/constants/Sprites';
+import { Base, Beard, Clothes, Feet, Hair, Hands, Mask, Necklace, Ring, SpritesMap, Waist, Weapons } from 'game/constants/Sprites';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
@@ -213,7 +213,27 @@ export default class GameScene extends Scene {
     }));
 
     // TODO when map update: create player directly from map data
-    this.player = new Player(this.matter.world, 90, 200, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Waist.WaistSuspenders, Necklace.Gold, Ring.Gold));
+    this.player = new Player(this.matter.world, 90, 200, new HustlerModel(
+      Base.Male,
+      Math.floor(Math.random() * (Object.keys(Hair).length / 2)), 
+      Math.floor(Math.random() * (Object.keys(Beard).length / 2)), 
+      [Math.floor(Math.random() * (Object.keys(Clothes).length / 2))], 
+      Math.floor(Math.random() * (Object.keys(Feet).length / 2)), 
+      Math.floor(Math.random() * (Object.keys(Hands).length / 2)), 
+      Math.floor(Math.random() * (Object.keys(Waist).length / 2)), 
+      Math.floor(Math.random() * (Object.keys(Ring).length / 2))));
+
+    // this.player = new Player(this.matter.world, 90, 200, new HustlerModel(
+    //   Base.Male,
+    //   Hair.Hair15,
+    //   Beard.Beard6,
+    //   [Clothes.ThreePieceSuit],
+    //   Feet.DressShoes,
+    //   Hands.RubberGloves,
+    //   Waist.PistolHolster,
+    //   Necklace.Gold,
+    //   Ring.Diamond
+    // ));
     this.player.currentMap = this.mapHelper.mapReader.level.identifier;
     if (window.ethereum && (window.ethereum as any).selectedAddress)
     {
