@@ -305,6 +305,23 @@ type BodyPartWhereInput struct {
 	RleEqualFold    *string  `json:"rleEqualFold,omitempty"`
 	RleContainsFold *string  `json:"rleContainsFold,omitempty"`
 
+	// "sprite" field predicates.
+	Sprite             *string  `json:"sprite,omitempty"`
+	SpriteNEQ          *string  `json:"spriteNEQ,omitempty"`
+	SpriteIn           []string `json:"spriteIn,omitempty"`
+	SpriteNotIn        []string `json:"spriteNotIn,omitempty"`
+	SpriteGT           *string  `json:"spriteGT,omitempty"`
+	SpriteGTE          *string  `json:"spriteGTE,omitempty"`
+	SpriteLT           *string  `json:"spriteLT,omitempty"`
+	SpriteLTE          *string  `json:"spriteLTE,omitempty"`
+	SpriteContains     *string  `json:"spriteContains,omitempty"`
+	SpriteHasPrefix    *string  `json:"spriteHasPrefix,omitempty"`
+	SpriteHasSuffix    *string  `json:"spriteHasSuffix,omitempty"`
+	SpriteIsNil        bool     `json:"spriteIsNil,omitempty"`
+	SpriteNotNil       bool     `json:"spriteNotNil,omitempty"`
+	SpriteEqualFold    *string  `json:"spriteEqualFold,omitempty"`
+	SpriteContainsFold *string  `json:"spriteContainsFold,omitempty"`
+
 	// "hustler_bodies" edge predicates.
 	HasHustlerBodies     *bool                `json:"hasHustlerBodies,omitempty"`
 	HasHustlerBodiesWith []*HustlerWhereInput `json:"hasHustlerBodiesWith,omitempty"`
@@ -463,6 +480,51 @@ func (i *BodyPartWhereInput) P() (predicate.BodyPart, error) {
 	}
 	if i.RleContainsFold != nil {
 		predicates = append(predicates, bodypart.RleContainsFold(*i.RleContainsFold))
+	}
+	if i.Sprite != nil {
+		predicates = append(predicates, bodypart.SpriteEQ(*i.Sprite))
+	}
+	if i.SpriteNEQ != nil {
+		predicates = append(predicates, bodypart.SpriteNEQ(*i.SpriteNEQ))
+	}
+	if len(i.SpriteIn) > 0 {
+		predicates = append(predicates, bodypart.SpriteIn(i.SpriteIn...))
+	}
+	if len(i.SpriteNotIn) > 0 {
+		predicates = append(predicates, bodypart.SpriteNotIn(i.SpriteNotIn...))
+	}
+	if i.SpriteGT != nil {
+		predicates = append(predicates, bodypart.SpriteGT(*i.SpriteGT))
+	}
+	if i.SpriteGTE != nil {
+		predicates = append(predicates, bodypart.SpriteGTE(*i.SpriteGTE))
+	}
+	if i.SpriteLT != nil {
+		predicates = append(predicates, bodypart.SpriteLT(*i.SpriteLT))
+	}
+	if i.SpriteLTE != nil {
+		predicates = append(predicates, bodypart.SpriteLTE(*i.SpriteLTE))
+	}
+	if i.SpriteContains != nil {
+		predicates = append(predicates, bodypart.SpriteContains(*i.SpriteContains))
+	}
+	if i.SpriteHasPrefix != nil {
+		predicates = append(predicates, bodypart.SpriteHasPrefix(*i.SpriteHasPrefix))
+	}
+	if i.SpriteHasSuffix != nil {
+		predicates = append(predicates, bodypart.SpriteHasSuffix(*i.SpriteHasSuffix))
+	}
+	if i.SpriteIsNil {
+		predicates = append(predicates, bodypart.SpriteIsNil())
+	}
+	if i.SpriteNotNil {
+		predicates = append(predicates, bodypart.SpriteNotNil())
+	}
+	if i.SpriteEqualFold != nil {
+		predicates = append(predicates, bodypart.SpriteEqualFold(*i.SpriteEqualFold))
+	}
+	if i.SpriteContainsFold != nil {
+		predicates = append(predicates, bodypart.SpriteContainsFold(*i.SpriteContainsFold))
 	}
 
 	if i.HasHustlerBodies != nil {

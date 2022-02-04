@@ -361,6 +361,23 @@ input BodyPartWhereInput {
   rleEqualFold: String
   rleContainsFold: String
   
+  """sprite field predicates"""
+  sprite: String
+  spriteNEQ: String
+  spriteIn: [String!]
+  spriteNotIn: [String!]
+  spriteGT: String
+  spriteGTE: String
+  spriteLT: String
+  spriteLTE: String
+  spriteContains: String
+  spriteHasPrefix: String
+  spriteHasSuffix: String
+  spriteIsNil: Boolean
+  spriteNotNil: Boolean
+  spriteEqualFold: String
+  spriteContainsFold: String
+  
   """id field predicates"""
   id: ID
   idNEQ: ID

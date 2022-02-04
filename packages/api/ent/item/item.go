@@ -35,6 +35,8 @@ const (
 	FieldRles = "rles"
 	// FieldSvg holds the string denoting the svg field in the database.
 	FieldSvg = "svg"
+	// FieldSprite holds the string denoting the sprite field in the database.
+	FieldSprite = "sprite"
 	// EdgeWallets holds the string denoting the wallets edge name in mutations.
 	EdgeWallets = "wallets"
 	// EdgeDopes holds the string denoting the dopes edge name in mutations.
@@ -180,6 +182,7 @@ var Columns = []string{
 	FieldGreatness,
 	FieldRles,
 	FieldSvg,
+	FieldSprite,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "items"
