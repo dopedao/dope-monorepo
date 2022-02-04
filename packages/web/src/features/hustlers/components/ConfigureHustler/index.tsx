@@ -12,8 +12,9 @@ import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
 import ZoomControls from 'components/hustler/ZoomControls';
-import SVGToImage from 'react-svg-to-image';
 import Link from 'next/link';
+
+import svgtopng from './svg-to-png';
 
 export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   config: HustlerCustomization;
@@ -90,10 +91,10 @@ const ConfigureHustler = ({
           <>
             <Button
               onClick={() => {
-                SVGToImage(
+                svgtopng(
                   'svg#dynamicBuiltSvg',
                   `dope-wars-hustler-${config.name?.replace(' ', '_')}`,
-                  { download: true, scale: 5 },
+                  config.bgColor,
                 );
               }}
             >
