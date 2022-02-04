@@ -1,14 +1,15 @@
-import { Button, Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { Image } from '@chakra-ui/react';
+import { media } from 'ui/styles/mixins';
 import AppWindowOptimism from 'components/AppWindowOptimism';
-import MaskBoostPanel from 'components/lunar_new_year/MaskBoostPanel';
+import Fireworks from 'components/lunar_new_year/Fireworks';
 import HongbaoPanel from 'components/lunar_new_year/HongbaoPanel';
+import MaskBoostPanel from 'components/lunar_new_year/MaskBoostPanel';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
-import PanelTitleHeader from 'components/PanelTitleHeader';
-import Fireworks from 'components/lunar_new_year/Fireworks';
 
 const lanternImg = (
   <Image 
@@ -18,8 +19,7 @@ const lanternImg = (
 );
 
 const EventHeader = styled.div`
-  padding: 0px 32px;
-  padding-bottom: 16px;
+  padding: 0px 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -28,8 +28,22 @@ const EventHeader = styled.div`
     color: white;
     text-align: center;
     // Offset padding-bottom on containing div
-    padding-top: 24px;
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
+  img {
+    max-width: 20% !important;
+    padding-bottom: 16px;
+  }
+  ${media.tablet`
+    padding: 0px 32px;
+    h2 {
+      padding-top: 24px;
+    }
+    img {
+      width: auto;
+    }
+  `}
 `;
 
 const EventContainer = styled.div`

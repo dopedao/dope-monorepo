@@ -44,6 +44,8 @@ export const TitleBarDescription = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
+  text-overflow: ellipsis; 
 `;
 
 export const ENSAddressWrapper = styled.div`
