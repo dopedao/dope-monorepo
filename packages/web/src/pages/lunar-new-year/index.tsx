@@ -69,9 +69,9 @@ const LunarNewYear = () => {
   useEffect(() => {
     if(section && section === 'mask' && maskRef?.current) {
       maskRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'start',
+        behavior: 'auto',
+        block: 'end',
+        inline: 'end',
       });
     }
     // Have to use `account` as a ref, otherwise content
@@ -114,9 +114,9 @@ const LunarNewYear = () => {
           </PanelContainer>
         </StackedResponsiveContainer>
 
-        <StackedResponsiveContainer id="mask" ref={maskRef} css={css`padding-top:0 !important;`}>
-          <MaskBoostPanel />
-          <PanelContainer justifyContent='flex-start'>
+        <StackedResponsiveContainer css={css`padding-top:0 !important;`}>
+          <MaskBoostPanel/>
+          <PanelContainer justifyContent='flex-start' ref={maskRef}>
             <PanelTitleHeader>✨ Limited-edition, rare accessories ✨</PanelTitleHeader>
             <PanelBody>
               <p>
