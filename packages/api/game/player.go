@@ -68,7 +68,27 @@ func (p *Player) readPump(ctx context.Context) {
 				break
 			}
 
-			p.currentMap = data.Map
+			p.currentMap = data.CurrentMap
+			p.x = data.X
+			p.y = data.Y
+
+			broadcastedData, err := json.Marshal(PlayerUpdateMapClientData{
+				Id: p.Id.String(),
+				CurrentMap: data.CurrentMap,
+				X: data.X,
+				Y: data.Y,
+			})
+			if err != nil {
+				p.Send <- generateErrorMessage(500, "could not marshal map update data")
+				break
+			}
+
+			p.game.Broadcast <- BaseMessage{
+				Event: "player_update_map",
+				Data:  broadcastedData,
+			}
+
+			log.Info().Msgf("player %s | %s changed map: %s", p.Id, p.name, data.CurrentMap)
 		case "player_chat_message":
 			var data ChatMessageData
 			json.Unmarshal(msg.Data, &data)

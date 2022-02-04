@@ -50,7 +50,16 @@ type PlayerJoinData struct {
 }
 
 type PlayerUpdateMapData struct {
-	Map string `json:"map"`
+	CurrentMap	string  `json:"current_map"`
+	X		float32 `json:"x"`
+	Y		float32 `json:"y"`
+}
+
+type PlayerUpdateMapClientData struct {
+	Id		string `json:"id"`
+	CurrentMap	string `json:"current_map"`
+	X		float32 `json:"x"`
+	Y		float32 `json:"y"`
 }
 
 type PlayerMoveData struct {
