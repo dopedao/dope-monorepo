@@ -86,30 +86,31 @@ const ConfigureHustler = ({
         )}
       </HustlerCard>
       <PanelFooter>
-        { isCustomize && itemIds &&
+        {isCustomize && itemIds && (
           <>
-          <Button
-            onClick={() => {
-              SVGToImage(
-                'svg#dynamicBuiltSvg',  
-                `dope-wars-hustler-${config.name?.replace(' ', '_')}`, 
-                { download: true }
-              );
-            }}
-          >
-            <Image src="/images/icon/download.svg" alt="Download" />
-          </Button>
-          <Link 
-            href={`https://community.dopewars.gg/collectibles/new?hustler_id=${hustlerId}`} 
-            passHref>
+            <Button
+              onClick={() => {
+                SVGToImage(
+                  'svg#dynamicBuiltSvg',
+                  `dope-wars-hustler-${config.name?.replace(' ', '_')}`,
+                  { download: true, scale: 5 },
+                );
+              }}
+            >
+              <Image src="/images/icon/download.svg" alt="Download" />
+            </Button>
+            <Link
+              href={`https://community.dopewars.gg/collectibles/new?hustler_id=${hustlerId}`}
+              passHref
+            >
               <a target="rebel">
                 <Button>
                   <Image src="/images/icon/camera.svg" alt="Mint a Mugshot" height="40px" />
                 </Button>
               </a>
-          </Link>
+            </Link>
           </>
-        }
+        )}
         <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
       </PanelFooter>
     </PanelContainer>
