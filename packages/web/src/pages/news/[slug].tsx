@@ -33,7 +33,7 @@ type PostProps = {
 const Nav = () => (
   <AppWindowNavBar>
     <Link href="/news" passHref>
-      <Button variant="back">
+      <Button variant="navBar">
         <Image src="/images/icon/arrow-back.svg" width="16px" alt="Arrow" />
         Back to News
       </Button>

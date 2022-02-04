@@ -62,7 +62,7 @@ export default extendTheme({
     },
     Button: {
       variants: {
-        back: {
+        navBar: {
           display: 'flex',
           gap: '8px',
           fontSize: 'var(--text-small)',
