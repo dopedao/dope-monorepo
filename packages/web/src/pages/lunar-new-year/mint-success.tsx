@@ -186,6 +186,9 @@ const MintSuccess = () => {
             <Link href="/inventory?section=Gear" passHref>
               <Button variant="cny">View your gifts</Button>
             </Link>
+            <Link href="/lunar-new-year?section=mask" passHref>
+              <Button variant="cny" css={css`margin-top:8px`}>Buy a Rare Mask</Button>
+            </Link>
           </div>
         </MessageContainer>
       </div>
