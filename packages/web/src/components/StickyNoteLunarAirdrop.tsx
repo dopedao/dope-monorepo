@@ -22,7 +22,10 @@ const StickyNoteHustlerMint = () => {
         />
       </Link>
       <Link href="/lunar-new-year" passHref>
-        <Button variant="cny">Claim Yours Now</Button>
+        <Button variant="cny">Claim Your Airdrop</Button>
+      </Link>
+      <Link href="/lunar-new-year?section=mask" passHref>
+        <Button variant="cny" css={css`margin-top:8px`}>Buy a Rare Mask</Button>
       </Link>
     </StickyNote>
   );

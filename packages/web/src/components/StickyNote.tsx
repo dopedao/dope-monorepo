@@ -25,6 +25,8 @@ const NoteContainer = styled.div<{ maxWidth?: string; background?: string; }>`
   bottom: 0em;
   background: ${({ background }) => background || '#caffff'};
   text-align: center;
+  cursor: pointer;
+  cursor: hand;
   ${media.tablet`
     max-width: 375px;
     left: unset;

@@ -1,6 +1,9 @@
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
+import { useRef, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useWeb3React } from '@web3-react/core';
 import AppWindowOptimism from 'components/AppWindowOptimism';
 import Fireworks from 'components/lunar_new_year/Fireworks';
 import HongbaoPanel from 'components/lunar_new_year/HongbaoPanel';
@@ -58,6 +61,22 @@ const EventContainer = styled.div`
 `;
 
 const LunarNewYear = () => {
+  const router = useRouter();
+  const { section } = router.query;
+  const maskRef = useRef<HTMLDivElement>(null);
+  const { account } = useWeb3React();
+
+  useEffect(() => {
+    if(section && section === 'mask' && maskRef?.current) {
+      maskRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'start',
+      });
+    }
+    // Have to use `account` as a ref, otherwise content
+    // does not scroll after authenticated thru metamask.
+  }, [section, maskRef, account]);
 
   return(
     <AppWindowOptimism 
@@ -95,7 +114,7 @@ const LunarNewYear = () => {
           </PanelContainer>
         </StackedResponsiveContainer>
 
-        <StackedResponsiveContainer css={css`padding-top:0 !important;`}>
+        <StackedResponsiveContainer id="mask" ref={maskRef} css={css`padding-top:0 !important;`}>
           <MaskBoostPanel />
           <PanelContainer justifyContent='flex-start'>
             <PanelTitleHeader>✨ Limited-edition, rare accessories ✨</PanelTitleHeader>
