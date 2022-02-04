@@ -41,6 +41,20 @@ func (bpc *BodyPartCreate) SetRle(s string) *BodyPartCreate {
 	return bpc
 }
 
+// SetSprite sets the "sprite" field.
+func (bpc *BodyPartCreate) SetSprite(s string) *BodyPartCreate {
+	bpc.mutation.SetSprite(s)
+	return bpc
+}
+
+// SetNillableSprite sets the "sprite" field if the given value is not nil.
+func (bpc *BodyPartCreate) SetNillableSprite(s *string) *BodyPartCreate {
+	if s != nil {
+		bpc.SetSprite(*s)
+	}
+	return bpc
+}
+
 // SetID sets the "id" field.
 func (bpc *BodyPartCreate) SetID(s string) *BodyPartCreate {
 	bpc.mutation.SetID(s)
@@ -242,6 +256,14 @@ func (bpc *BodyPartCreate) createSpec() (*BodyPart, *sqlgraph.CreateSpec) {
 		})
 		_node.Rle = value
 	}
+	if value, ok := bpc.mutation.Sprite(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: bodypart.FieldSprite,
+		})
+		_node.Sprite = value
+	}
 	if nodes := bpc.mutation.HustlerBodiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -389,6 +411,24 @@ func (u *BodyPartUpsert) UpdateRle() *BodyPartUpsert {
 	return u
 }
 
+// SetSprite sets the "sprite" field.
+func (u *BodyPartUpsert) SetSprite(v string) *BodyPartUpsert {
+	u.Set(bodypart.FieldSprite, v)
+	return u
+}
+
+// UpdateSprite sets the "sprite" field to the value that was provided on create.
+func (u *BodyPartUpsert) UpdateSprite() *BodyPartUpsert {
+	u.SetExcluded(bodypart.FieldSprite)
+	return u
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (u *BodyPartUpsert) ClearSprite() *BodyPartUpsert {
+	u.SetNull(bodypart.FieldSprite)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -487,6 +527,27 @@ func (u *BodyPartUpsertOne) SetRle(v string) *BodyPartUpsertOne {
 func (u *BodyPartUpsertOne) UpdateRle() *BodyPartUpsertOne {
 	return u.Update(func(s *BodyPartUpsert) {
 		s.UpdateRle()
+	})
+}
+
+// SetSprite sets the "sprite" field.
+func (u *BodyPartUpsertOne) SetSprite(v string) *BodyPartUpsertOne {
+	return u.Update(func(s *BodyPartUpsert) {
+		s.SetSprite(v)
+	})
+}
+
+// UpdateSprite sets the "sprite" field to the value that was provided on create.
+func (u *BodyPartUpsertOne) UpdateSprite() *BodyPartUpsertOne {
+	return u.Update(func(s *BodyPartUpsert) {
+		s.UpdateSprite()
+	})
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (u *BodyPartUpsertOne) ClearSprite() *BodyPartUpsertOne {
+	return u.Update(func(s *BodyPartUpsert) {
+		s.ClearSprite()
 	})
 }
 
@@ -753,6 +814,27 @@ func (u *BodyPartUpsertBulk) SetRle(v string) *BodyPartUpsertBulk {
 func (u *BodyPartUpsertBulk) UpdateRle() *BodyPartUpsertBulk {
 	return u.Update(func(s *BodyPartUpsert) {
 		s.UpdateRle()
+	})
+}
+
+// SetSprite sets the "sprite" field.
+func (u *BodyPartUpsertBulk) SetSprite(v string) *BodyPartUpsertBulk {
+	return u.Update(func(s *BodyPartUpsert) {
+		s.SetSprite(v)
+	})
+}
+
+// UpdateSprite sets the "sprite" field to the value that was provided on create.
+func (u *BodyPartUpsertBulk) UpdateSprite() *BodyPartUpsertBulk {
+	return u.Update(func(s *BodyPartUpsert) {
+		s.UpdateSprite()
+	})
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (u *BodyPartUpsertBulk) ClearSprite() *BodyPartUpsertBulk {
+	return u.Update(func(s *BodyPartUpsert) {
+		s.ClearSprite()
 	})
 }
 

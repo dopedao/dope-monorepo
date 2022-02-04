@@ -24,6 +24,8 @@ func (BodyPart) Fields() []ent.Field {
 			Immutable(),
 		field.String("rle").
 			Immutable(),
+		field.String("sprite").
+			Optional(),
 	}
 }
 

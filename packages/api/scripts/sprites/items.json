@@ -1,0 +1,772 @@
+[
+  {
+    "id": "720896",
+    "name": "Razor Blade",
+    "type": "WEAPON"
+  },
+  {
+    "id": "327680",
+    "name": "AK47",
+    "type": "WEAPON"
+  },
+  {
+    "id": "393216",
+    "name": "Shovel",
+    "type": "WEAPON"
+  },
+  {
+    "id": "65536",
+    "name": "Chain",
+    "type": "WEAPON"
+  },
+  {
+    "id": "196608",
+    "name": "Crowbar",
+    "type": "WEAPON"
+  },
+  {
+    "id": "589824",
+    "name": "Police Baton",
+    "type": "WEAPON"
+  },
+  {
+    "id": "786432",
+    "name": "Chain",
+    "type": "WEAPON"
+  },
+  {
+    "id": "131072",
+    "name": "Knife",
+    "type": "WEAPON"
+  },
+  {
+    "id": "1048576",
+    "name": "Glock",
+    "type": "WEAPON"
+  },
+  {
+    "id": "851968",
+    "name": "Taser",
+    "type": "WEAPON"
+  },
+  {
+    "id": "983040",
+    "name": "Shotgun",
+    "type": "WEAPON"
+  },
+  {
+    "id": "458752",
+    "name": "Baseball Bat",
+    "type": "WEAPON"
+  },
+  {
+    "id": "262144",
+    "name": "Handgun",
+    "type": "WEAPON"
+  },
+  {
+    "id": "917504",
+    "name": "Brass Knuckles",
+    "type": "WEAPON"
+  },
+  {
+    "id": "1114112",
+    "name": "Uzi",
+    "type": "WEAPON"
+  },
+  {
+    "id": "655360",
+    "name": "Pepper Spray",
+    "type": "WEAPON"
+  },
+  {
+    "id": "0",
+    "name": "Pocket Knife",
+    "type": "WEAPON"
+  },
+  {
+    "id": "524288",
+    "name": "Tire Iron",
+    "type": "WEAPON"
+  },
+  {
+    "id": "917507",
+    "name": "Sash",
+    "type": "WAIST"
+  },
+  {
+    "id": "589827",
+    "name": "Metal Belt",
+    "type": "WAIST"
+  },
+  {
+    "id": "524291",
+    "name": "Military Belt",
+    "type": "WAIST"
+  },
+  {
+    "id": "720899",
+    "name": "SMG Holster",
+    "type": "WAIST"
+  },
+  {
+    "id": "196611",
+    "name": "Taser Holster",
+    "type": "WAIST"
+  },
+  {
+    "id": "851971",
+    "name": "Laces",
+    "type": "WAIST"
+  },
+  {
+    "id": "65539",
+    "name": "Versace Belt",
+    "type": "WAIST"
+  },
+  {
+    "id": "327683",
+    "name": "Diamond Belt",
+    "type": "WAIST"
+  },
+  {
+    "id": "983043",
+    "name": "Fanny Pack",
+    "type": "WAIST"
+  },
+  {
+    "id": "655363",
+    "name": "Pistol Holster",
+    "type": "WAIST"
+  },
+  {
+    "id": "131075",
+    "name": "Studded Belt",
+    "type": "WAIST"
+  },
+  {
+    "id": "393219",
+    "name": "D Ring Belt",
+    "type": "WAIST"
+  },
+  {
+    "id": "786435",
+    "name": "Knife Holster",
+    "type": "WAIST"
+  },
+  {
+    "id": "458755",
+    "name": "Suspenders",
+    "type": "WAIST"
+  },
+  {
+    "id": "262147",
+    "name": "Concealed Holster",
+    "type": "WAIST"
+  },
+  {
+    "id": "3",
+    "name": "Gucci Belt",
+    "type": "WAIST"
+  },
+  {
+    "id": "458754",
+    "name": "Golf Cart",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "2",
+    "name": "Dodge",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "589826",
+    "name": "Rollerblades",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "327682",
+    "name": "Push Bike",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "131074",
+    "name": "Tricycle",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "720898",
+    "name": "Camper",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "196610",
+    "name": "Scooter",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "262146",
+    "name": "ATV",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "65538",
+    "name": "Porsche",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "1048578",
+    "name": "G Wagon",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "983042",
+    "name": "C63 AMG",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "917506",
+    "name": "Bike",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "786434",
+    "name": "Rolls Royce",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "851970",
+    "name": "BMW M3",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "655362",
+    "name": "Lowrider",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "524290",
+    "name": "Chopper",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "393218",
+    "name": "Electric Scooter",
+    "type": "VEHICLE"
+  },
+  {
+    "id": "131080",
+    "name": "Diamond Ring",
+    "type": "RING"
+  },
+  {
+    "id": "8",
+    "name": "Gold Ring",
+    "type": "RING"
+  },
+  {
+    "id": "262152",
+    "name": "Titanium Ring",
+    "type": "RING"
+  },
+  {
+    "id": "327688",
+    "name": "Pinky Ring",
+    "type": "RING"
+  },
+  {
+    "id": "196616",
+    "name": "Platinum Ring",
+    "type": "RING"
+  },
+  {
+    "id": "393224",
+    "name": "Thumb Ring",
+    "type": "RING"
+  },
+  {
+    "id": "65544",
+    "name": "Silver Ring",
+    "type": "RING"
+  },
+  {
+    "id": "65543",
+    "name": "Silver Chain",
+    "type": "NECK"
+  },
+  {
+    "id": "131079",
+    "name": "Gold Chain",
+    "type": "NECK"
+  },
+  {
+    "id": "7",
+    "name": "Bronze Chain",
+    "type": "NECK"
+  },
+  {
+    "id": "655365",
+    "name": "Black Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "196613",
+    "name": "MMA Wraps",
+    "type": "HAND"
+  },
+  {
+    "id": "524293",
+    "name": "Leather Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "131077",
+    "name": "Boxing Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "393221",
+    "name": "Studded Leather Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "65541",
+    "name": "Baseball Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "589829",
+    "name": "White Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "851973",
+    "name": "Fingerless Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "458757",
+    "name": "Combat Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "262149",
+    "name": "Winter Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "327685",
+    "name": "Nitrile Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "720901",
+    "name": "Kevlar Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "786437",
+    "name": "Surgical Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "5",
+    "name": "Rubber Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "131076",
+    "name": "Air Jordan 1 Chicagos",
+    "type": "FOOT"
+  },
+  {
+    "id": "4",
+    "name": "Black Air Force 1s",
+    "type": "FOOT"
+  },
+  {
+    "id": "1048580",
+    "name": "Barefoot",
+    "type": "FOOT"
+  },
+  {
+    "id": "589828",
+    "name": "Dress Shoes",
+    "type": "FOOT"
+  },
+  {
+    "id": "786436",
+    "name": "Gucci Slides",
+    "type": "FOOT"
+  },
+  {
+    "id": "983044",
+    "name": "Open Toe Sandals",
+    "type": "FOOT"
+  },
+  {
+    "id": "262148",
+    "name": "Air Max 95",
+    "type": "FOOT"
+  },
+  {
+    "id": "524292",
+    "name": "Nike Cortez",
+    "type": "FOOT"
+  },
+  {
+    "id": "655364",
+    "name": "Converse All Stars",
+    "type": "FOOT"
+  },
+  {
+    "id": "196612",
+    "name": "Gucci Tennis 84",
+    "type": "FOOT"
+  },
+  {
+    "id": "393220",
+    "name": "Reebok Classics",
+    "type": "FOOT"
+  },
+  {
+    "id": "917508",
+    "name": "Socks",
+    "type": "FOOT"
+  },
+  {
+    "id": "327684",
+    "name": "Timberlands",
+    "type": "FOOT"
+  },
+  {
+    "id": "65540",
+    "name": "White Forces",
+    "type": "FOOT"
+  },
+  {
+    "id": "458756",
+    "name": "Flip Flops",
+    "type": "FOOT"
+  },
+  {
+    "id": "720900",
+    "name": "White Slippers",
+    "type": "FOOT"
+  },
+  {
+    "id": "851972",
+    "name": "Alligator Dress Shoes",
+    "type": "FOOT"
+  },
+  {
+    "id": "1179654",
+    "name": "Adderall",
+    "type": "DRUGS"
+  },
+  {
+    "id": "786438",
+    "name": "PCP",
+    "type": "DRUGS"
+  },
+  {
+    "id": "589830",
+    "name": "Krokodil",
+    "type": "DRUGS"
+  },
+  {
+    "id": "393222",
+    "name": "Oxycontin",
+    "type": "DRUGS"
+  },
+  {
+    "id": "524294",
+    "name": "Fentanyl",
+    "type": "DRUGS"
+  },
+  {
+    "id": "1048582",
+    "name": "Xanax",
+    "type": "DRUGS"
+  },
+  {
+    "id": "1114118",
+    "name": "Molly",
+    "type": "DRUGS"
+  },
+  {
+    "id": "327686",
+    "name": "Heroin",
+    "type": "DRUGS"
+  },
+  {
+    "id": "458758",
+    "name": "Zoloft",
+    "type": "DRUGS"
+  },
+  {
+    "id": "131078",
+    "name": "Ludes",
+    "type": "DRUGS"
+  },
+  {
+    "id": "983046",
+    "name": "Soma",
+    "type": "DRUGS"
+  },
+  {
+    "id": "851974",
+    "name": "LSD",
+    "type": "DRUGS"
+  },
+  {
+    "id": "6",
+    "name": "Weed",
+    "type": "DRUGS"
+  },
+  {
+    "id": "65542",
+    "name": "Cocaine",
+    "type": "DRUGS"
+  },
+  {
+    "id": "917510",
+    "name": "Shrooms",
+    "type": "DRUGS"
+  },
+  {
+    "id": "262150",
+    "name": "Speed",
+    "type": "DRUGS"
+  },
+  {
+    "id": "720902",
+    "name": "Crack",
+    "type": "DRUGS"
+  },
+  {
+    "id": "196614",
+    "name": "Acid",
+    "type": "DRUGS"
+  },
+  {
+    "id": "655366",
+    "name": "Coke",
+    "type": "DRUGS"
+  },
+  {
+    "id": "589825",
+    "name": "Leather Vest",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "131073",
+    "name": "White Hoodie",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "720897",
+    "name": "Police Uniform",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "393217",
+    "name": "Checkered Shirt",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "786433",
+    "name": "Combat Jacket",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "65537",
+    "name": "Black T Shirt",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "851969",
+    "name": "Basketball Jersey",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "524289",
+    "name": "Golden Shirt",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "655361",
+    "name": "Blood Stained Shirt",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "196609",
+    "name": "Black Hoodie",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "1245185",
+    "name": "Naked",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "327681",
+    "name": "3 Piece Suit",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "1048577",
+    "name": "White Tank Top",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "917505",
+    "name": "Track Suit",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "1179649",
+    "name": "Shirtless",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "458753",
+    "name": "Bikini",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "1",
+    "name": "White T Shirt",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "1114113",
+    "name": "Black Tank Top",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "262145",
+    "name": "Bulletproof Vest",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "983041",
+    "name": "Trenchcoat",
+    "type": "CLOTHES"
+  },
+  {
+    "id": "387383314483660652553",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "516527130023253442569",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "85899870217",
+    "name": "Wig",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "479633641875834339337",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "1209313206869762509307913",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "461186897802124787721",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "85899542537",
+    "name": "Bracelet",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "85899739145",
+    "name": "Lantern",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "498080385949543890953",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "85899673609",
+    "name": "Hand Prop",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "85899477001",
+    "name": "Headband",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "387399921507286253577",
+    "name": "Headband",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "442740153728415236105",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "387399921507286581257",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "534973874096962994185",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "553420618170672545801",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "424293409654705684489",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "405846665580996132873",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "368953177433577029641",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "85899345929",
+    "name": "Glasses",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "350506433359867478025",
+    "name": "Mask",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "85899411465",
+    "name": "Hat",
+    "type": "ACCESSORY"
+  },
+  {
+    "id": "85899608073",
+    "name": "Flag",
+    "type": "ACCESSORY"
+  }
+]

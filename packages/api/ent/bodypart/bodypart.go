@@ -19,6 +19,8 @@ const (
 	FieldSex = "sex"
 	// FieldRle holds the string denoting the rle field in the database.
 	FieldRle = "rle"
+	// FieldSprite holds the string denoting the sprite field in the database.
+	FieldSprite = "sprite"
 	// EdgeHustlerBodies holds the string denoting the hustler_bodies edge name in mutations.
 	EdgeHustlerBodies = "hustler_bodies"
 	// EdgeHustlerHairs holds the string denoting the hustler_hairs edge name in mutations.
@@ -56,6 +58,7 @@ var Columns = []string{
 	FieldType,
 	FieldSex,
 	FieldRle,
+	FieldSprite,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

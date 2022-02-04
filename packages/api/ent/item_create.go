@@ -165,6 +165,20 @@ func (ic *ItemCreate) SetNillableSvg(s *string) *ItemCreate {
 	return ic
 }
 
+// SetSprite sets the "sprite" field.
+func (ic *ItemCreate) SetSprite(s schema.Sprites) *ItemCreate {
+	ic.mutation.SetSprite(s)
+	return ic
+}
+
+// SetNillableSprite sets the "sprite" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableSprite(s *schema.Sprites) *ItemCreate {
+	if s != nil {
+		ic.SetSprite(*s)
+	}
+	return ic
+}
+
 // SetID sets the "id" field.
 func (ic *ItemCreate) SetID(s string) *ItemCreate {
 	ic.mutation.SetID(s)
@@ -614,6 +628,14 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 			Column: item.FieldSvg,
 		})
 		_node.Svg = value
+	}
+	if value, ok := ic.mutation.Sprite(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: item.FieldSprite,
+		})
+		_node.Sprite = value
 	}
 	if nodes := ic.mutation.WalletsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1153,6 +1175,24 @@ func (u *ItemUpsert) ClearSvg() *ItemUpsert {
 	return u
 }
 
+// SetSprite sets the "sprite" field.
+func (u *ItemUpsert) SetSprite(v schema.Sprites) *ItemUpsert {
+	u.Set(item.FieldSprite, v)
+	return u
+}
+
+// UpdateSprite sets the "sprite" field to the value that was provided on create.
+func (u *ItemUpsert) UpdateSprite() *ItemUpsert {
+	u.SetExcluded(item.FieldSprite)
+	return u
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (u *ItemUpsert) ClearSprite() *ItemUpsert {
+	u.SetNull(item.FieldSprite)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -1449,6 +1489,27 @@ func (u *ItemUpsertOne) UpdateSvg() *ItemUpsertOne {
 func (u *ItemUpsertOne) ClearSvg() *ItemUpsertOne {
 	return u.Update(func(s *ItemUpsert) {
 		s.ClearSvg()
+	})
+}
+
+// SetSprite sets the "sprite" field.
+func (u *ItemUpsertOne) SetSprite(v schema.Sprites) *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetSprite(v)
+	})
+}
+
+// UpdateSprite sets the "sprite" field to the value that was provided on create.
+func (u *ItemUpsertOne) UpdateSprite() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateSprite()
+	})
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (u *ItemUpsertOne) ClearSprite() *ItemUpsertOne {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearSprite()
 	})
 }
 
@@ -1913,6 +1974,27 @@ func (u *ItemUpsertBulk) UpdateSvg() *ItemUpsertBulk {
 func (u *ItemUpsertBulk) ClearSvg() *ItemUpsertBulk {
 	return u.Update(func(s *ItemUpsert) {
 		s.ClearSvg()
+	})
+}
+
+// SetSprite sets the "sprite" field.
+func (u *ItemUpsertBulk) SetSprite(v schema.Sprites) *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.SetSprite(v)
+	})
+}
+
+// UpdateSprite sets the "sprite" field to the value that was provided on create.
+func (u *ItemUpsertBulk) UpdateSprite() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.UpdateSprite()
+	})
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (u *ItemUpsertBulk) ClearSprite() *ItemUpsertBulk {
+	return u.Update(func(s *ItemUpsert) {
+		s.ClearSprite()
 	})
 }
 

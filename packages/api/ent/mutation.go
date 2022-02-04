@@ -680,6 +680,7 @@ type BodyPartMutation struct {
 	_type                 *bodypart.Type
 	sex                   *bodypart.Sex
 	rle                   *string
+	sprite                *string
 	clearedFields         map[string]struct{}
 	hustler_bodies        map[string]struct{}
 	removedhustler_bodies map[string]struct{}
@@ -907,6 +908,55 @@ func (m *BodyPartMutation) ResetRle() {
 	m.rle = nil
 }
 
+// SetSprite sets the "sprite" field.
+func (m *BodyPartMutation) SetSprite(s string) {
+	m.sprite = &s
+}
+
+// Sprite returns the value of the "sprite" field in the mutation.
+func (m *BodyPartMutation) Sprite() (r string, exists bool) {
+	v := m.sprite
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSprite returns the old "sprite" field's value of the BodyPart entity.
+// If the BodyPart object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BodyPartMutation) OldSprite(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSprite is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSprite requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSprite: %w", err)
+	}
+	return oldValue.Sprite, nil
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (m *BodyPartMutation) ClearSprite() {
+	m.sprite = nil
+	m.clearedFields[bodypart.FieldSprite] = struct{}{}
+}
+
+// SpriteCleared returns if the "sprite" field was cleared in this mutation.
+func (m *BodyPartMutation) SpriteCleared() bool {
+	_, ok := m.clearedFields[bodypart.FieldSprite]
+	return ok
+}
+
+// ResetSprite resets all changes to the "sprite" field.
+func (m *BodyPartMutation) ResetSprite() {
+	m.sprite = nil
+	delete(m.clearedFields, bodypart.FieldSprite)
+}
+
 // AddHustlerBodyIDs adds the "hustler_bodies" edge to the Hustler entity by ids.
 func (m *BodyPartMutation) AddHustlerBodyIDs(ids ...string) {
 	if m.hustler_bodies == nil {
@@ -1088,7 +1138,7 @@ func (m *BodyPartMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BodyPartMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m._type != nil {
 		fields = append(fields, bodypart.FieldType)
 	}
@@ -1097,6 +1147,9 @@ func (m *BodyPartMutation) Fields() []string {
 	}
 	if m.rle != nil {
 		fields = append(fields, bodypart.FieldRle)
+	}
+	if m.sprite != nil {
+		fields = append(fields, bodypart.FieldSprite)
 	}
 	return fields
 }
@@ -1112,6 +1165,8 @@ func (m *BodyPartMutation) Field(name string) (ent.Value, bool) {
 		return m.Sex()
 	case bodypart.FieldRle:
 		return m.Rle()
+	case bodypart.FieldSprite:
+		return m.Sprite()
 	}
 	return nil, false
 }
@@ -1127,6 +1182,8 @@ func (m *BodyPartMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldSex(ctx)
 	case bodypart.FieldRle:
 		return m.OldRle(ctx)
+	case bodypart.FieldSprite:
+		return m.OldSprite(ctx)
 	}
 	return nil, fmt.Errorf("unknown BodyPart field %s", name)
 }
@@ -1157,6 +1214,13 @@ func (m *BodyPartMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRle(v)
 		return nil
+	case bodypart.FieldSprite:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSprite(v)
+		return nil
 	}
 	return fmt.Errorf("unknown BodyPart field %s", name)
 }
@@ -1186,7 +1250,11 @@ func (m *BodyPartMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *BodyPartMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(bodypart.FieldSprite) {
+		fields = append(fields, bodypart.FieldSprite)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1199,6 +1267,11 @@ func (m *BodyPartMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *BodyPartMutation) ClearField(name string) error {
+	switch name {
+	case bodypart.FieldSprite:
+		m.ClearSprite()
+		return nil
+	}
 	return fmt.Errorf("unknown BodyPart nullable field %s", name)
 }
 
@@ -1214,6 +1287,9 @@ func (m *BodyPartMutation) ResetField(name string) error {
 		return nil
 	case bodypart.FieldRle:
 		m.ResetRle()
+		return nil
+	case bodypart.FieldSprite:
+		m.ResetSprite()
 		return nil
 	}
 	return fmt.Errorf("unknown BodyPart field %s", name)
@@ -4860,6 +4936,7 @@ type ItemMutation struct {
 	addgreatness               *int
 	rles                       *schema.RLEs
 	svg                        *string
+	sprite                     *schema.Sprites
 	clearedFields              map[string]struct{}
 	wallets                    map[string]struct{}
 	removedwallets             map[string]struct{}
@@ -5566,6 +5643,55 @@ func (m *ItemMutation) SvgCleared() bool {
 func (m *ItemMutation) ResetSvg() {
 	m.svg = nil
 	delete(m.clearedFields, item.FieldSvg)
+}
+
+// SetSprite sets the "sprite" field.
+func (m *ItemMutation) SetSprite(s schema.Sprites) {
+	m.sprite = &s
+}
+
+// Sprite returns the value of the "sprite" field in the mutation.
+func (m *ItemMutation) Sprite() (r schema.Sprites, exists bool) {
+	v := m.sprite
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSprite returns the old "sprite" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldSprite(ctx context.Context) (v schema.Sprites, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSprite is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSprite requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSprite: %w", err)
+	}
+	return oldValue.Sprite, nil
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (m *ItemMutation) ClearSprite() {
+	m.sprite = nil
+	m.clearedFields[item.FieldSprite] = struct{}{}
+}
+
+// SpriteCleared returns if the "sprite" field was cleared in this mutation.
+func (m *ItemMutation) SpriteCleared() bool {
+	_, ok := m.clearedFields[item.FieldSprite]
+	return ok
+}
+
+// ResetSprite resets all changes to the "sprite" field.
+func (m *ItemMutation) ResetSprite() {
+	m.sprite = nil
+	delete(m.clearedFields, item.FieldSprite)
 }
 
 // AddWalletIDs adds the "wallets" edge to the WalletItems entity by ids.
@@ -6367,7 +6493,7 @@ func (m *ItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ItemMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m._type != nil {
 		fields = append(fields, item.FieldType)
 	}
@@ -6401,6 +6527,9 @@ func (m *ItemMutation) Fields() []string {
 	if m.svg != nil {
 		fields = append(fields, item.FieldSvg)
 	}
+	if m.sprite != nil {
+		fields = append(fields, item.FieldSprite)
+	}
 	return fields
 }
 
@@ -6431,6 +6560,8 @@ func (m *ItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Rles()
 	case item.FieldSvg:
 		return m.Svg()
+	case item.FieldSprite:
+		return m.Sprite()
 	}
 	return nil, false
 }
@@ -6462,6 +6593,8 @@ func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldRles(ctx)
 	case item.FieldSvg:
 		return m.OldSvg(ctx)
+	case item.FieldSprite:
+		return m.OldSprite(ctx)
 	}
 	return nil, fmt.Errorf("unknown Item field %s", name)
 }
@@ -6548,6 +6681,13 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSvg(v)
 		return nil
+	case item.FieldSprite:
+		v, ok := value.(schema.Sprites)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSprite(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
 }
@@ -6632,6 +6772,9 @@ func (m *ItemMutation) ClearedFields() []string {
 	if m.FieldCleared(item.FieldSvg) {
 		fields = append(fields, item.FieldSvg)
 	}
+	if m.FieldCleared(item.FieldSprite) {
+		fields = append(fields, item.FieldSprite)
+	}
 	return fields
 }
 
@@ -6673,6 +6816,9 @@ func (m *ItemMutation) ClearField(name string) error {
 	case item.FieldSvg:
 		m.ClearSvg()
 		return nil
+	case item.FieldSprite:
+		m.ClearSprite()
+		return nil
 	}
 	return fmt.Errorf("unknown Item nullable field %s", name)
 }
@@ -6713,6 +6859,9 @@ func (m *ItemMutation) ResetField(name string) error {
 		return nil
 	case item.FieldSvg:
 		m.ResetSvg()
+		return nil
+	case item.FieldSprite:
+		m.ResetSprite()
 		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)

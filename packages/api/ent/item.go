@@ -40,6 +40,8 @@ type Item struct {
 	Rles schema.RLEs `json:"rles,omitempty"`
 	// Svg holds the value of the "svg" field.
 	Svg string `json:"svg,omitempty"`
+	// Sprite holds the value of the "sprite" field.
+	Sprite schema.Sprites `json:"sprite,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ItemQuery when eager-loading is set.
 	Edges           ItemEdges `json:"edges"`
@@ -233,7 +235,7 @@ func (*Item) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case item.FieldRles:
+		case item.FieldRles, item.FieldSprite:
 			values[i] = new([]byte)
 		case item.FieldAugmented:
 			values[i] = new(sql.NullBool)
@@ -331,6 +333,14 @@ func (i *Item) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field svg", values[j])
 			} else if value.Valid {
 				i.Svg = value.String
+			}
+		case item.FieldSprite:
+			if value, ok := values[j].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field sprite", values[j])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &i.Sprite); err != nil {
+					return fmt.Errorf("unmarshal field sprite: %w", err)
+				}
 			}
 		case item.ForeignKeys[0]:
 			if value, ok := values[j].(*sql.NullString); !ok {
@@ -464,6 +474,8 @@ func (i *Item) String() string {
 	builder.WriteString(fmt.Sprintf("%v", i.Rles))
 	builder.WriteString(", svg=")
 	builder.WriteString(i.Svg)
+	builder.WriteString(", sprite=")
+	builder.WriteString(fmt.Sprintf("%v", i.Sprite))
 	builder.WriteByte(')')
 	return builder.String()
 }
