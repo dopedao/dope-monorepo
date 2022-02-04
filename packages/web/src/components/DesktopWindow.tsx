@@ -1,8 +1,7 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
-
 import { useWalletQuery } from 'generated/graphql';
 import { media } from 'ui/styles/mixins';
 import { returnBreakpoint } from 'ui/styles/breakpoints';
@@ -79,7 +78,7 @@ const DesktopWindow = ({
   onMoved,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
-
+  const windowRef = useRef<HTMLDivElement>(null);
   const { data, isFetching: loading } = useWalletQuery(
     {
       where: {
@@ -142,7 +141,7 @@ const DesktopWindow = ({
         </Draggable>
       )}
     >
-      <WindowWrapper className={isFullScreen ? '' : 'floating'} height={height} width={width} background={ background && background.length > 0 ? background : '#a8a9ae' }>
+      <WindowWrapper ref={windowRef} className={isFullScreen ? '' : 'floating'} height={height} width={width} background={ background && background.length > 0 ? background : '#a8a9ae' }>
         {!onlyFullScreen && (
           <DesktopWindowTitleBar
             title={title}
@@ -151,6 +150,7 @@ const DesktopWindow = ({
             toggleFullScreen={toggleFullScreen}
             balance={data?.wallets?.edges![0]?.node?.paper}
             loadingBalance={loading}
+            windowRef={windowRef?.current}
           >
             {titleChildren}
           </DesktopWindowTitleBar>
