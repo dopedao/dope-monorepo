@@ -213,10 +213,11 @@ export default class GameScene extends Scene {
     }));
 
     // TODO when map update: create player directly from map data
+    const sex = Math.floor(Math.random() * (Object.keys(Base).length / 2));
     this.player = new Player(this.matter.world, 90, 200, new HustlerModel(
-      Base.Male,
+      sex,
       Math.floor(Math.random() * (Object.keys(Hair).length / 2)), 
-      Math.floor(Math.random() * (Object.keys(Beard).length / 2)), 
+      sex == Base.Male ? Math.floor(Math.random() * (Object.keys(Beard).length / 2)) : undefined, 
       [Math.floor(Math.random() * (Object.keys(Clothes).length / 2))], 
       Math.floor(Math.random() * (Object.keys(Feet).length / 2)), 
       Math.floor(Math.random() * (Object.keys(Hands).length / 2)), 

@@ -64,7 +64,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, frame?: number)
     {
-        super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
+        super(world, x, y, SpritesMap[Categories.Character][model.base][CharacterCategories.Base], frame);
 
         this.name = "Hustler";
         
