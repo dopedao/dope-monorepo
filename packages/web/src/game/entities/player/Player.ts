@@ -27,6 +27,7 @@ export default class Player extends Hustler
     private _busy: boolean = false;
 
     private _lastMoveTimestamp: number = 0;
+    private _wasMoving: boolean = false;
 
     private readonly _baseDepth: number;
     
@@ -215,20 +216,19 @@ export default class Player extends Hustler
                         direction: this.moveDirection,
                     });
             }
+            this._wasMoving = true;
+        }
 
-            // if player stopped moving
-            setTimeout(() => {
-                if (this.moveDirection === Direction.None)
-                {
-                    if (NetworkHandler.getInstance().connected)
-                        NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
-                            x: this.x,
-                            y: this.y,
-                            direction: this.moveDirection,
-                        });
-                    this._lastMoveTimestamp = 0;
-                }
-            }, 250);
-        } 
+        if (this.moveDirection === Direction.None && this._wasMoving)
+        {
+            if (NetworkHandler.getInstance().connected)
+                NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+                    x: this.x,
+                    y: this.y,
+                    direction: this.moveDirection,
+                });
+            this._lastMoveTimestamp = 0;
+            this._wasMoving = false;
+        }
     }
 }

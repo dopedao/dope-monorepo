@@ -146,7 +146,7 @@ export default class GameScene extends Scene {
             return;
           
           const hustler = this.hustlers.find(h => h.getData('id') === p.id);
-          if (hustler && !hustler.navigator.target && hustler.x !== p.x && hustler.y !== p.y)
+          if (hustler && !hustler.navigator.target && new Phaser.Math.Vector2(hustler.x, hustler.y).distance(new Phaser.Math.Vector2(p.x, p.y)) > 5)
           {
             hustler.navigator.moveTo(p.x, p.y, undefined, () => {
               // if hustler has been stuck, just teleport him to new position
