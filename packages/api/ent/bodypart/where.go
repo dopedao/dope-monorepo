@@ -98,6 +98,13 @@ func Rle(v string) predicate.BodyPart {
 	})
 }
 
+// Sprite applies equality check predicate on the "sprite" field. It's identical to SpriteEQ.
+func Sprite(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSprite), v))
+	})
+}
+
 // TypeEQ applies the EQ predicate on the "type" field.
 func TypeEQ(v Type) predicate.BodyPart {
 	return predicate.BodyPart(func(s *sql.Selector) {
@@ -302,6 +309,131 @@ func RleEqualFold(v string) predicate.BodyPart {
 func RleContainsFold(v string) predicate.BodyPart {
 	return predicate.BodyPart(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldRle), v))
+	})
+}
+
+// SpriteEQ applies the EQ predicate on the "sprite" field.
+func SpriteEQ(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteNEQ applies the NEQ predicate on the "sprite" field.
+func SpriteNEQ(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteIn applies the In predicate on the "sprite" field.
+func SpriteIn(vs ...string) predicate.BodyPart {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.BodyPart(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldSprite), v...))
+	})
+}
+
+// SpriteNotIn applies the NotIn predicate on the "sprite" field.
+func SpriteNotIn(vs ...string) predicate.BodyPart {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.BodyPart(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldSprite), v...))
+	})
+}
+
+// SpriteGT applies the GT predicate on the "sprite" field.
+func SpriteGT(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteGTE applies the GTE predicate on the "sprite" field.
+func SpriteGTE(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteLT applies the LT predicate on the "sprite" field.
+func SpriteLT(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteLTE applies the LTE predicate on the "sprite" field.
+func SpriteLTE(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteContains applies the Contains predicate on the "sprite" field.
+func SpriteContains(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteHasPrefix applies the HasPrefix predicate on the "sprite" field.
+func SpriteHasPrefix(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteHasSuffix applies the HasSuffix predicate on the "sprite" field.
+func SpriteHasSuffix(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteIsNil applies the IsNil predicate on the "sprite" field.
+func SpriteIsNil() predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldSprite)))
+	})
+}
+
+// SpriteNotNil applies the NotNil predicate on the "sprite" field.
+func SpriteNotNil() predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldSprite)))
+	})
+}
+
+// SpriteEqualFold applies the EqualFold predicate on the "sprite" field.
+func SpriteEqualFold(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldSprite), v))
+	})
+}
+
+// SpriteContainsFold applies the ContainsFold predicate on the "sprite" field.
+func SpriteContainsFold(v string) predicate.BodyPart {
+	return predicate.BodyPart(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldSprite), v))
 	})
 }
 

@@ -146,6 +146,26 @@ func (iu *ItemUpdate) ClearSvg() *ItemUpdate {
 	return iu
 }
 
+// SetSprite sets the "sprite" field.
+func (iu *ItemUpdate) SetSprite(s schema.Sprites) *ItemUpdate {
+	iu.mutation.SetSprite(s)
+	return iu
+}
+
+// SetNillableSprite sets the "sprite" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableSprite(s *schema.Sprites) *ItemUpdate {
+	if s != nil {
+		iu.SetSprite(*s)
+	}
+	return iu
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (iu *ItemUpdate) ClearSprite() *ItemUpdate {
+	iu.mutation.ClearSprite()
+	return iu
+}
+
 // AddWalletIDs adds the "wallets" edge to the WalletItems entity by IDs.
 func (iu *ItemUpdate) AddWalletIDs(ids ...string) *ItemUpdate {
 	iu.mutation.AddWalletIDs(ids...)
@@ -858,6 +878,19 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: item.FieldSvg,
+		})
+	}
+	if value, ok := iu.mutation.Sprite(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: item.FieldSprite,
+		})
+	}
+	if iu.mutation.SpriteCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: item.FieldSprite,
 		})
 	}
 	if iu.mutation.WalletsCleared() {
@@ -1765,6 +1798,26 @@ func (iuo *ItemUpdateOne) ClearSvg() *ItemUpdateOne {
 	return iuo
 }
 
+// SetSprite sets the "sprite" field.
+func (iuo *ItemUpdateOne) SetSprite(s schema.Sprites) *ItemUpdateOne {
+	iuo.mutation.SetSprite(s)
+	return iuo
+}
+
+// SetNillableSprite sets the "sprite" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableSprite(s *schema.Sprites) *ItemUpdateOne {
+	if s != nil {
+		iuo.SetSprite(*s)
+	}
+	return iuo
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (iuo *ItemUpdateOne) ClearSprite() *ItemUpdateOne {
+	iuo.mutation.ClearSprite()
+	return iuo
+}
+
 // AddWalletIDs adds the "wallets" edge to the WalletItems entity by IDs.
 func (iuo *ItemUpdateOne) AddWalletIDs(ids ...string) *ItemUpdateOne {
 	iuo.mutation.AddWalletIDs(ids...)
@@ -2501,6 +2554,19 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: item.FieldSvg,
+		})
+	}
+	if value, ok := iuo.mutation.Sprite(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: item.FieldSprite,
+		})
+	}
+	if iuo.mutation.SpriteCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: item.FieldSprite,
 		})
 	}
 	if iuo.mutation.WalletsCleared() {
