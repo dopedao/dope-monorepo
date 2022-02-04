@@ -1569,6 +1569,23 @@ input BodyPartWhereInput {
   rleEqualFold: String
   rleContainsFold: String
   
+  """sprite field predicates"""
+  sprite: String
+  spriteNEQ: String
+  spriteIn: [String!]
+  spriteNotIn: [String!]
+  spriteGT: String
+  spriteGTE: String
+  spriteLT: String
+  spriteLTE: String
+  spriteContains: String
+  spriteHasPrefix: String
+  spriteHasSuffix: String
+  spriteIsNil: Boolean
+  spriteNotNil: Boolean
+  spriteEqualFold: String
+  spriteContainsFold: String
+  
   """id field predicates"""
   id: ID
   idNEQ: ID
@@ -8817,6 +8834,126 @@ func (ec *executionContext) unmarshalInputBodyPartWhereInput(ctx context.Context
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rleContainsFold"))
 			it.RleContainsFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "sprite":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sprite"))
+			it.Sprite, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteNEQ"))
+			it.SpriteNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteIn"))
+			it.SpriteIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteNotIn"))
+			it.SpriteNotIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteGT"))
+			it.SpriteGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteGTE"))
+			it.SpriteGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteLT"))
+			it.SpriteLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteLTE"))
+			it.SpriteLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteContains"))
+			it.SpriteContains, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteHasPrefix"))
+			it.SpriteHasPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteHasSuffix"))
+			it.SpriteHasSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteIsNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteIsNil"))
+			it.SpriteIsNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteNotNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteNotNil"))
+			it.SpriteNotNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteEqualFold"))
+			it.SpriteEqualFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "spriteContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spriteContainsFold"))
+			it.SpriteContainsFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

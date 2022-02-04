@@ -6,16 +6,19 @@ import (
 	"net/http"
 	"strings"
 
+	"cloud.google.com/go/storage"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/schema"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
+	"github.com/dopedao/dope-monorepo/packages/api/resources"
 )
 
 const ts_migation = `
@@ -250,7 +253,7 @@ CREATE UNIQUE INDEX search_index_pk ON search_index using btree(id);
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);
 `
 
-func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string) (http.Handler, error) {
+func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, index bool, network string) (http.Handler, error) {
 	client := ent.NewClient(ent.Driver(drv))
 
 	if index {
@@ -279,13 +282,16 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 
 	srv := handler.NewDefaultServer(graph.NewSchema(client))
 
-	r := http.NewServeMux()
+	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(`{"success":true}`))
 	})
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
+
+	r.HandleFunc("/hustlers/{id}/sprites", resources.HustlerSpritesHandler(client))
+	r.HandleFunc("/hustlers/{id}/sprites/composite.png", resources.HustlerSpritesCompositeHandler(client, static))
 
 	if index {
 		ctx, cancel := context.WithCancel(ctx)
