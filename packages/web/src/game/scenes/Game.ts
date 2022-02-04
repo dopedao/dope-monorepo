@@ -136,8 +136,10 @@ export default class GameScene extends Scene {
           const hustler = this.hustlers.find(h => h.getData('id') === p.id);
           if (hustler && !hustler.navigator.target && hustler.x !== p.x && hustler.y !== p.y)
           {
-            hustler.navigator.moveTo(p.x, p.y);
-            //hustler.moveDirection = p.direction as Direction;
+            hustler.navigator.moveTo(p.x, p.y, undefined, () => {
+              // if hustler has been stuck, just teleport him to new position
+              hustler.setPosition(p.x, p.y);
+            });
           }
         });
       });
@@ -222,19 +224,9 @@ export default class GameScene extends Scene {
       Math.floor(Math.random() * (Object.keys(Feet).length / 2)), 
       Math.floor(Math.random() * (Object.keys(Hands).length / 2)), 
       Math.floor(Math.random() * (Object.keys(Waist).length / 2)), 
+      Math.floor(Math.random() * (Object.keys(Necklace).length / 2)), 
       Math.floor(Math.random() * (Object.keys(Ring).length / 2))));
 
-    // this.player = new Player(this.matter.world, 90, 200, new HustlerModel(
-    //   Base.Male,
-    //   Hair.Hair15,
-    //   Beard.Beard6,
-    //   [Clothes.ThreePieceSuit],
-    //   Feet.DressShoes,
-    //   Hands.RubberGloves,
-    //   Waist.PistolHolster,
-    //   Necklace.Gold,
-    //   Ring.Diamond
-    // ));
     this.player.currentMap = this.mapHelper.mapReader.level.identifier;
     if (window.ethereum && (window.ethereum as any).selectedAddress)
     {

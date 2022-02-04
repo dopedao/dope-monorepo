@@ -202,7 +202,7 @@ export default class Player extends Hustler
         // takes input and update player
         this.controller.update();
 
-        if (this.moving)
+        if (this.moveDirection !== Direction.None)
         {
             if (Date.now() -  this._lastMoveTimestamp > PlayerController.MOVE_TICKRATE * 1000)
             {
@@ -218,7 +218,7 @@ export default class Player extends Hustler
 
             // if player stopped moving
             setTimeout(() => {
-                if (!this.moving)
+                if (this.moveDirection === Direction.None)
                 {
                     if (NetworkHandler.getInstance().connected)
                         NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {

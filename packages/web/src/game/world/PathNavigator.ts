@@ -9,6 +9,7 @@ export default class PathNavigator
     private pathFinder: PF.Finder; 
 
     private onMoved?: () => void;
+    private onCancel?: () => void;
 
     private grid!: PF.Grid;
 
@@ -23,7 +24,7 @@ export default class PathNavigator
         this.pathFinder = pathFinder;
     }
 
-    moveTo(x: number, y: number, onMoved?: () => void)
+    moveTo(x: number, y: number, onMoved?: () => void, onCancel?: () => void)
     {
         // the game scene used map
         const map = (this.hustler.scene as GameScene).mapHelper.loadedMaps.get(this.hustler.currentMap);
@@ -34,6 +35,7 @@ export default class PathNavigator
         }
 
         this.onMoved = onMoved;
+        this.onCancel = onCancel;
 
         // hustler world position to tile position
         const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.body.position.x, this.hustler.body.position.y);
@@ -59,6 +61,9 @@ export default class PathNavigator
     {
         this.path = [];
         this.stop();
+        
+        if (this.onCancel)
+            this.onCancel();
     }
 
     stop()
@@ -166,7 +171,6 @@ export default class PathNavigator
             // normalize and scale the velocity so that sprite can't move faster along a diagonal
             const newVel = new Phaser.Math.Vector2((this.hustler.body as MatterJS.BodyType).velocity).normalize().scale(Hustler.DEFAULT_VELOCITY);
             this.hustler.setVelocity(newVel.x, newVel.y);
-            this.hustler.moving = true;
         }
 
         // if stuck in a corner, move in the direction of the other corner

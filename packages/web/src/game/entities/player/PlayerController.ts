@@ -98,8 +98,6 @@ export default class PlayerController
             // normalize and scale the velocity so that sprite can't move faster along a diagonal
             const newVel = new Phaser.Math.Vector2((this.player.body as MatterJS.BodyType).velocity).normalize().scale(Hustler.DEFAULT_VELOCITY);
             this.player.setVelocity(newVel.x, newVel.y);
-
-            this.player.moving = true;
         }
 
         // cancel pathfinding if player moved

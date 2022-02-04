@@ -26,8 +26,6 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     // the last direction of the player
     // cant be None
     private _lastDirection: Direction = Direction.None;
-    // is hustler currently moving?
-    public moving: boolean = false;
 
     // level identifier of the map
     private _currentMap!: string;
@@ -97,7 +95,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         
         this.setPosition(x, y);
         
-        this.setDepth(25);
+        this.setDepth(30);
 
         // offset the hustler texture from the body
         this.setOrigin(0.5, 0.65);
@@ -212,7 +210,6 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
     update()
     {
-        this.moving = false;
         // make hovertext follow us
         this.hoverText?.setPosition(
             (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
