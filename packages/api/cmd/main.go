@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"cloud.google.com/go/storage"
 	"entgo.io/ent/dialect/sql"
 
 	"entgo.io/ent/dialect"
@@ -37,7 +38,14 @@ func main() {
 		log.Fatal().Err(err).Msgf("Connecting to db.") //nolint:gocritic
 	}
 
-	srv, err := api.NewServer(log.WithContext(context.Background()), db, index == "True", network)
+	ctx := context.Background()
+
+	s, err := storage.NewClient(ctx)
+	if err != nil {
+		log.Fatal().Err(err).Msgf("Creating storage client.") //nolint:gocritic
+	}
+
+	srv, err := api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), index == "True", network)
 	if err != nil {
 		log.Fatal().Err(err).Msgf("Creating server.") //nolint:gocritic
 	}

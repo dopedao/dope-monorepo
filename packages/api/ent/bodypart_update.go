@@ -28,6 +28,26 @@ func (bpu *BodyPartUpdate) Where(ps ...predicate.BodyPart) *BodyPartUpdate {
 	return bpu
 }
 
+// SetSprite sets the "sprite" field.
+func (bpu *BodyPartUpdate) SetSprite(s string) *BodyPartUpdate {
+	bpu.mutation.SetSprite(s)
+	return bpu
+}
+
+// SetNillableSprite sets the "sprite" field if the given value is not nil.
+func (bpu *BodyPartUpdate) SetNillableSprite(s *string) *BodyPartUpdate {
+	if s != nil {
+		bpu.SetSprite(*s)
+	}
+	return bpu
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (bpu *BodyPartUpdate) ClearSprite() *BodyPartUpdate {
+	bpu.mutation.ClearSprite()
+	return bpu
+}
+
 // AddHustlerBodyIDs adds the "hustler_bodies" edge to the Hustler entity by IDs.
 func (bpu *BodyPartUpdate) AddHustlerBodyIDs(ids ...string) *BodyPartUpdate {
 	bpu.mutation.AddHustlerBodyIDs(ids...)
@@ -213,6 +233,19 @@ func (bpu *BodyPartUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := bpu.mutation.Sprite(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: bodypart.FieldSprite,
+		})
+	}
+	if bpu.mutation.SpriteCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: bodypart.FieldSprite,
+		})
+	}
 	if bpu.mutation.HustlerBodiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -392,6 +425,26 @@ type BodyPartUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *BodyPartMutation
+}
+
+// SetSprite sets the "sprite" field.
+func (bpuo *BodyPartUpdateOne) SetSprite(s string) *BodyPartUpdateOne {
+	bpuo.mutation.SetSprite(s)
+	return bpuo
+}
+
+// SetNillableSprite sets the "sprite" field if the given value is not nil.
+func (bpuo *BodyPartUpdateOne) SetNillableSprite(s *string) *BodyPartUpdateOne {
+	if s != nil {
+		bpuo.SetSprite(*s)
+	}
+	return bpuo
+}
+
+// ClearSprite clears the value of the "sprite" field.
+func (bpuo *BodyPartUpdateOne) ClearSprite() *BodyPartUpdateOne {
+	bpuo.mutation.ClearSprite()
+	return bpuo
 }
 
 // AddHustlerBodyIDs adds the "hustler_bodies" edge to the Hustler entity by IDs.
@@ -602,6 +655,19 @@ func (bpuo *BodyPartUpdateOne) sqlSave(ctx context.Context) (_node *BodyPart, er
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := bpuo.mutation.Sprite(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: bodypart.FieldSprite,
+		})
+	}
+	if bpuo.mutation.SpriteCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: bodypart.FieldSprite,
+		})
 	}
 	if bpuo.mutation.HustlerBodiesCleared() {
 		edge := &sqlgraph.EdgeSpec{

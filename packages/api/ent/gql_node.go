@@ -109,7 +109,7 @@ func (bp *BodyPart) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     bp.ID,
 		Type:   "BodyPart",
-		Fields: make([]*Field, 3),
+		Fields: make([]*Field, 4),
 		Edges:  make([]*Edge, 3),
 	}
 	var buf []byte
@@ -135,6 +135,14 @@ func (bp *BodyPart) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[2] = &Field{
 		Type:  "string",
 		Name:  "rle",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(bp.Sprite); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "string",
+		Name:  "sprite",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{
@@ -575,7 +583,7 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     i.ID,
 		Type:   "Item",
-		Fields: make([]*Field, 11),
+		Fields: make([]*Field, 12),
 		Edges:  make([]*Edge, 15),
 	}
 	var buf []byte
@@ -665,6 +673,14 @@ func (i *Item) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[10] = &Field{
 		Type:  "string",
 		Name:  "svg",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(i.Sprite); err != nil {
+		return nil, err
+	}
+	node.Fields[11] = &Field{
+		Type:  "schema.Sprites",
+		Name:  "sprite",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{

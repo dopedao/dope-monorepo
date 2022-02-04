@@ -12,6 +12,11 @@ type RLEs struct {
 	Male   string
 }
 
+type Sprites struct {
+	Female string
+	Male   string
+}
+
 // Item holds the schema definition for the Item entity.
 type Item struct {
 	ent.Schema
@@ -51,6 +56,8 @@ func (Item) Fields() []ent.Field {
 		field.JSON("rles", RLEs{}).
 			Optional(),
 		field.String("svg").
+			Optional(),
+		field.JSON("sprite", Sprites{}).
 			Optional(),
 	}
 }
