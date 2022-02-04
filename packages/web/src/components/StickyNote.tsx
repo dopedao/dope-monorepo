@@ -22,12 +22,13 @@ const NoteContainer = styled.div<{ maxWidth?: string; background?: string; }>`
   min-height: 64px;
   position: absolute;
   left: 0em;
-  top: 0em;
+  bottom: 0em;
   background: ${({ background }) => background || '#caffff'};
   text-align: center;
   ${media.tablet`
     max-width: 375px;
     left: unset;
+    bottom: unset;
     top: 2em;
     right: 2em;
   `}

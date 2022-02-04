@@ -24,13 +24,13 @@ const Profile = () => {
       }}
     >
       <Section>
-        <Dopes />
-      </Section>
-      <Section>
         <Hustlers />
       </Section>
       <Section>
         <Gear />
+      </Section>
+      <Section>
+        <Dopes />
       </Section>
     </Accordion>
   )

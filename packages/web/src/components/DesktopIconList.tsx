@@ -33,7 +33,7 @@ const DesktopIconList = () => {
           clickAction={() => {
             const hasAgreed = window.localStorage.getItem('tos');
             if (hasAgreed === 'true') {
-              openLocalRoute('/swap-meet');
+              openLocalRoute('/inventory');
             } else {
               openLocalRoute('/terms-of-service');
             }
