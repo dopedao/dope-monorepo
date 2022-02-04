@@ -18,7 +18,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	db, err := sql.Open(dialect.Postgres, "postgres://postgres:postgres@localhost:5432?sslmode=disable")
+	db, err := sql.Open(dialect.Postgres, "postgres://postgres:postgres@localhost:5433?sslmode=disable")
 	if err != nil {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
@@ -46,7 +46,6 @@ func main() {
 		println(attrs.Name)
 
 		if !strings.Contains(attrs.Name, ".png") {
-			println("asdas")
 			continue
 		}
 

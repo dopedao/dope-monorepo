@@ -83,17 +83,17 @@ func sprites(ctx context.Context, id string, client *ent.Client) (*Sprites, erro
 	}
 
 	return &Sprites{
-		Body:      h.Edges.Body.Sprite,
-		Beard:     h.Edges.Beard.Sprite,
-		Hair:      h.Edges.Hair.Sprite,
-		Accessory: sprite(h, "Accessory", h.Sex.String()),
-		Clothes:   sprite(h, "Clothes", h.Sex.String()),
-		Foot:      sprite(h, "Foot", h.Sex.String()),
-		Hand:      sprite(h, "Hand", h.Sex.String()),
-		Neck:      sprite(h, "Neck", h.Sex.String()),
-		Ring:      sprite(h, "Ring", h.Sex.String()),
-		Waist:     sprite(h, "Waist", h.Sex.String()),
-		Weapon:    sprite(h, "Weapon", h.Sex.String()),
+		Body:  h.Edges.Body.Sprite,
+		Beard: h.Edges.Beard.Sprite,
+		Hair:  h.Edges.Hair.Sprite,
+		// Accessory: sprite(h, "Accessory", h.Sex.String()),
+		Clothes: sprite(h, "Clothes", h.Sex.String()),
+		Foot:    sprite(h, "Foot", h.Sex.String()),
+		Hand:    sprite(h, "Hand", h.Sex.String()),
+		Neck:    sprite(h, "Neck", h.Sex.String()),
+		Ring:    sprite(h, "Ring", h.Sex.String()),
+		Waist:   sprite(h, "Waist", h.Sex.String()),
+		Weapon:  sprite(h, "Weapon", h.Sex.String()),
 	}, nil
 }
 

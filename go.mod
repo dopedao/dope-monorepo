@@ -25,6 +25,7 @@ require (
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	github.com/spf13/pflag v1.0.5
 	github.com/yfuruyama/crzerolog v0.3.0
+	google.golang.org/api v0.66.0 // indirect
 	google.golang.org/genproto v0.0.0-20220201184016-50beb8ab5c44
 )
 
