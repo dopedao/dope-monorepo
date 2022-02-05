@@ -2,8 +2,9 @@
 import { BigNumber } from 'ethers';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { getRandomHustler } from 'utils/HustlerConfig';
-import { Stack, Button, Grid, GridItem } from '@chakra-ui/react';
+import { getRandomDate } from 'utils/utils';
+import { getRandomHustler, HustlerSex } from 'utils/HustlerConfig';
+import { Stack, Button, Grid, GridItem, Image } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useHustlerQuery } from 'generated/graphql';
 import { useRouter } from 'next/router';
@@ -59,13 +60,19 @@ const MugshotContainer = styled.div`
   background: #f2f2f2 url(/images/hustler/mugshot_bg.png) center center / contain no-repeat;
 `
 
+// We receive things like 'FEMALE-BODY-2' from the API
+const getBodyIndexFromMetadata = (bodyStringFromApi: string) => {
+  const indexFromString = bodyStringFromApi.charAt(bodyStringFromApi.length-1) || '0';
+  return indexFromString;
+}
+
 const Flex = () => {
 
   const router = useRouter();
   const {id: hustlerId} = router.query;
   const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
-  const [bgColor, setBgColor] = useState('transparent');
+  const [onChainImage, setOnChainImage] = useState('');
 
   const { data, isFetching: isLoading } = useHustlerQuery(
     {
@@ -82,12 +89,14 @@ const Flex = () => {
     if (data?.hustlers.edges?.[0]?.node) {
       const h = data.hustlers.edges[0].node;
       console.log(h);
-      setBgColor(h?.background ? '#'+h.background.substring(0,h.background.length-2) : 'transparent');
       setHustlerConfig({ 
         ...hustlerConfig, 
         name: h?.name || '',
-        title: h?.title || ''
+        title: h?.title || '',
+        sex: (h?.sex.toLowerCase() || 'male') as HustlerSex,
+        body: getBodyIndexFromMetadata(h?.body?.id || '')
       });
+      setOnChainImage(h?.svg);
       setItemIds([
         BigNumber.from(h.vehicle?.id), 
         BigNumber.from(h.drug?.id), 
@@ -134,7 +143,11 @@ const Flex = () => {
             <Stack width="100%" direction="row" height="25%" gap="16px">
               <PanelContainer css={css`flex:2;`}>
                 <MugshotContainer>
-                  <HustlerTitle>{ hustlerConfig.name }</HustlerTitle>
+                  <HustlerTitle>
+                    { hustlerConfig.name }
+                    <br/>
+                    { getRandomDate('01/01/1980', '01/01/2020') }
+                  </HustlerTitle>
                   <HustlerImage>{ renderHustler(1) }</HustlerImage>
                 </MugshotContainer>
               </PanelContainer>
@@ -149,7 +162,9 @@ const Flex = () => {
                     >
                       <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
                     </GridItem>
-                    <GridItem minWidth="256px">{ renderHustler(0) }</GridItem>
+                    <GridItem minWidth="256px">
+                      <Image src={onChainImage} alt={hustlerConfig.name} />
+                    </GridItem>
                   </Grid>
                 </PanelBody>
               </PanelContainer>
@@ -157,7 +172,7 @@ const Flex = () => {
             <Stack width="100%">
               <PanelContainer>
                 <PanelBody>
-                  { renderHustler(3) }
+                  Share
                 </PanelBody>
               </PanelContainer>
             </Stack>
