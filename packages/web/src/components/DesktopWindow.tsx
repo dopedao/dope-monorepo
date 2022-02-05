@@ -31,6 +31,7 @@ export type DesktopWindowProps = {
   onMoved?: (position: any) => void;
   posX?: number;
   posY?: number;
+  hideWalletAddress?: boolean;
 };
 
 const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string; height: number | string; background: string }>`
@@ -87,6 +88,7 @@ const DesktopWindow = ({
   scrollable,
   posX = 0,
   posY = 0,
+  hideWalletAddress = false
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const windowRef = useRef<HTMLDivElement>(null);
@@ -185,6 +187,7 @@ const DesktopWindow = ({
             balance={data?.wallets?.edges![0]?.node?.paper}
             loadingBalance={loading}
             windowRef={windowRef?.current}
+            hideWalletAddress={hideWalletAddress}
           >
             {titleChildren}
           </DesktopWindowTitleBar>
