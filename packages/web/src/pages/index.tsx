@@ -20,6 +20,7 @@ const IndexPage = ({ allPosts }: {allPosts: PostType[]}) => (
     <AboutWindow posX={32} posY={32} />
   </IndexWrapper>
 );
+export default IndexPage;
 
 // Server-side rendered with Next.js so that
 // we gather our news posts from the filesystem on server.
@@ -40,5 +41,3 @@ export const getStaticProps = async () => {
     props: { allPosts },
   };
 };
-
-export default IndexPage;

@@ -48,6 +48,7 @@ const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string;
   overflow-x: hidden;
   position: absolute;
   &.floating {
+    position: absolute;
     ${media.phone`
       width: 100%;
       height: 100%;
@@ -125,7 +126,7 @@ const DesktopWindow = ({
     }
   };
 
-  const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
+  const shouldBeDraggable = !isTouchDevice() && !isFullScreen && windowPosition.x !== 0;
 
   useEffect(() => {
     if (onResize) {

@@ -1,5 +1,5 @@
 ---
-title: 'Collect Your Lunar New Year Airdrop'
+title: 'Happy New Year'
 date: '2022-02-01'
 coverImage: '/images/lunar_new_year_2022/hongbao_explanation.png'
 coverImageText: 'Get yours before February 15th'
