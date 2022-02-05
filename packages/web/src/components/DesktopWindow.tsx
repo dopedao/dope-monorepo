@@ -33,7 +33,7 @@ export type DesktopWindowProps = {
 
 const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string; height: number | string; background: string }>`
   width: 100%;
-  height: 50%;
+  height: 100%;
   margin: 0;
   padding: 0;
   background: ${({ background }) => (background)};
