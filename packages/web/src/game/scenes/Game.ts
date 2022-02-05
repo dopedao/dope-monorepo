@@ -332,7 +332,6 @@ export default class GameScene extends Scene {
               // constantly check if hustler has to move to a new position on map change and if yes
               // just teleport him instead of moving him
               const id = setInterval(() => {
-                console.log('checking hustler');
                 if (h.navigator.target)
                 {
                   h.setPosition(
