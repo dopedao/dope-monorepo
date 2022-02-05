@@ -36,7 +36,9 @@ const Nav = () => (
     </Link> */}
     <div css={css`position:absolute;right:16px;bottom:8px;`}>
       <Share
-        url={window.location.toString()}
+        url={
+          (typeof window !== 'undefined') ? window?.location.toString() : 'https://dopewars.gg'
+        }
         options={{ 
           text: `${PHRASES[Math.floor(Math.random()*PHRASES.length)]} \n#hustlerFollowHustler @TheDopeWars`,
         }}
