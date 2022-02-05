@@ -4,5 +4,6 @@ service: api-testnet
 main: ./packages/api/cmd
 
 env_variables:
+  OPENSEA: projects/803405501117/secrets/opensea/versions/1
   PG_CONNSTR: projects/803405501117/secrets/pg-testnet-connstr/versions/1
   NETWORK: testnet

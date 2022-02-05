@@ -22,7 +22,7 @@ import (
 
 const assetPath = "/api/v1/assets"
 const maxTokens = 8000
-const assetsPerPage = 50
+const limit = 50
 
 // Opensea is an opensea client
 type Opensea struct {
@@ -53,6 +53,7 @@ type OpenseaConfig struct {
 // NewOpensea creates an opensea API client on maassetet
 func NewOpensea(client *ent.Client, config OpenseaConfig) *Opensea {
 	o := &Opensea{
+		APIKey:   config.APIKey,
 		URL:      config.URL,
 		ent:      client,
 		Contract: config.Contract,
@@ -69,8 +70,8 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 	for {
 		assetsCompleted := 0
-		for offset := 0; offset <= maxTokens; offset += assetsPerPage {
-			ret, err := o.getAssetCollection(ctx, o.Contract, assetsPerPage, offset)
+		for offset := 0; offset <= maxTokens; offset += limit {
+			ret, err := o.getAssetCollection(ctx, o.Contract, limit, offset)
 			if err != nil {
 				log.Err(err).Msg("Getting asset collection")
 				break
@@ -207,9 +208,9 @@ func (o *Opensea) Sync(ctx context.Context) {
 }
 
 // getAssetCollection for Opensea
-func (o *Opensea) getAssetCollection(ctx context.Context, contract string, page int, offset int) (*Assets, error) {
+func (o *Opensea) getAssetCollection(ctx context.Context, contract string, limit int, offset int) (*Assets, error) {
 	ctx, log := base.LogFor(ctx)
-	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d&offset=%d", assetPath, contract, page, offset)
+	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d&offset=%d", assetPath, contract, limit, offset)
 	log.Debug().Str("url", o.URL+path).Msg("Getting asset collection.")
 	b, err := o.getURL(ctx, o.URL+path)
 	if err != nil {
@@ -225,6 +226,7 @@ func (o *Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if o.APIKey != "" {
 		req.Header.Add("X-API-KEY", o.APIKey)
 	}
