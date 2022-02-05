@@ -6,6 +6,7 @@ const AppWindowNavBar = ({ children, showBorder = false }: { children: ReactNode
     <div
       id="app-title-bar_nav-items"
       css={css`
+        position:relative;
         background: #202221;
         border: 0;
         border-bottom: ${showBorder ? '4px' : '0' } solid white; 

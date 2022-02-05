@@ -23,7 +23,7 @@ import { Share } from 'react-twitter-widgets';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
 const Nav = () => (
-  <AppWindowNavBar css={css`position:relative;`}>
+  <AppWindowNavBar>
     <Link href="/inventory?section=Hustlers" passHref>
       <Button variant="navBar">
         Your Hustlers
