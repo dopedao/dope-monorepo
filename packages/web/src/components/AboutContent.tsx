@@ -6,7 +6,7 @@ import { css } from '@emotion/react';
 import { Stack } from '@chakra-ui/react';
 
 const TextBody = styled.div`
-  background-color: #efefee;
+  background-color: var(--gray-00);
   flex: 1;
   overflow-y: scroll;
   padding: 32px;
