@@ -40,6 +40,11 @@ const DesktopIconList = () => {
           }}
         />
         <DesktopIcon
+          icon="newspaper"
+          label="The Daily Dope"
+          clickAction={() => openLocalRoute('/news')}
+        />
+        <DesktopIcon
           icon="file"
           label="About"
           clickAction={() => openLocalRoute('/about')}
