@@ -18,6 +18,7 @@ import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
 import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
+import { Share } from 'react-twitter-widgets';
 
 const Nav = () => (
   <AppWindowNavBar>
@@ -26,11 +27,11 @@ const Nav = () => (
         Your Hustlers
       </Button>
     </Link>
-    <Link href="/gangsta-party" passHref>
+    {/* <Link href="/gangsta-party" passHref>
       <Button variant="navBar">
         Gangsta Party
       </Button>
-    </Link>
+    </Link> */}
   </AppWindowNavBar>
 );
 
@@ -49,7 +50,6 @@ const HustlerTitle = styled.h1`
 `
 const HustlerImage = styled.div`
   position: absolute;
-  top:-2em;
   left:0px;
   bottom:0px;
   right:0px;
@@ -65,6 +65,16 @@ const getBodyIndexFromMetadata = (bodyStringFromApi: string) => {
   const indexFromString = bodyStringFromApi.charAt(bodyStringFromApi.length-1) || '0';
   return indexFromString;
 }
+
+const PHRASES = [
+  "This is how we FLEX 💪",
+  "🚀 $PAPER to the moon",
+  "🕹 WEN GAME 🕹",
+  "Devs always doing something",
+  "Based devs",
+  "Welcome to the MURDERVERSE",
+  "Hustle Hard"
+];
 
 const Flex = () => {
 
@@ -172,7 +182,13 @@ const Flex = () => {
             <Stack width="100%">
               <PanelContainer>
                 <PanelBody>
-                  Share
+                  <Share
+                    url={window.location.toString()}
+                    options={{ 
+                      size: "large",
+                      text: `${PHRASES[Math.floor(Math.random()*PHRASES.length)]} \n#hustlerFollowHustler @TheDopeWars`
+                    }}
+                  ></Share>
                 </PanelBody>
               </PanelContainer>
             </Stack>
