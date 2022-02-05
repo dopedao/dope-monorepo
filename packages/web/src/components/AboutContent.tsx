@@ -158,8 +158,10 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 * DOPE TV and DOPE MUSIC produced by [Shecky Green](https://twitter.com/SheckyGreen)
 * Chiptunes by [Baron Von Future](https://twitter.com/baronvonfuture)
 * Dank memes by [M1](https://twitter.com/_541va_)
-* DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
+* Tokenomics by [Winston Wolfe](https://twitter.com/wolfcryptogroup)
+* Grimey Graff and island vibes by [Cyberbitz](https://twitter.com/Cyberbitz)
 * Everything else [Beatws9](https://twitter.com/beatws9)
+* DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
 
 ----
 
@@ -186,7 +188,7 @@ const BuyNow = () => (
 
 const AboutContent = () => {
   return (
-    <DesktopWindow title="ABOUT.FAQ" scrollable>
+    <DesktopWindow title="ABOUT.FAQ" width="640px" scrollable>
 
       <TextBody className="markdownContainer">
         <ReactMarkdown>{Content}</ReactMarkdown>
