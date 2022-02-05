@@ -253,7 +253,7 @@ CREATE UNIQUE INDEX search_index_pk ON search_index using btree(id);
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);
 `
 
-func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, index bool, network string) (http.Handler, error) {
+func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, index bool, openseaApiKey, network string) (http.Handler, error) {
 	client := ent.NewClient(ent.Driver(drv))
 
 	if index {
@@ -311,6 +311,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 					engine := engine.NewEthereum(ctx, client, c)
 					go engine.Sync(ctx)
 				case engine.OpenseaConfig:
+					c.APIKey = openseaApiKey
 					opensea := engine.NewOpensea(client, c)
 					go opensea.Sync(ctx)
 				}

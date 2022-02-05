@@ -168,14 +168,14 @@ func HustlerSpritesCompositeHandler(client *ent.Client, static *storage.BucketHa
 
 		body, err := readSprite(ctx, static, s.Body)
 		if err != nil {
-			log.Err(err).Msgf("Getting hustler body with id: %s", id)
+			log.Err(err).Msgf("Getting hustler body with id: %s", s.Body)
 			http.Error(w, "unexpected error", http.StatusInternalServerError)
 			return
 		}
 
 		hair, err := readSprite(ctx, static, s.Hair)
 		if err != nil {
-			log.Err(err).Msgf("Getting hustler hair with id: %s", id)
+			log.Err(err).Msgf("Getting hustler hair with id: %s", s.Hair)
 			http.Error(w, "unexpected error", http.StatusInternalServerError)
 			return
 		}
@@ -189,49 +189,49 @@ func HustlerSpritesCompositeHandler(client *ent.Client, static *storage.BucketHa
 
 		clothes, err := readSprite(ctx, static, s.Clothes)
 		if err != nil {
-			log.Err(err).Msgf("Getting hustler clothes with id: %s", id)
+			log.Err(err).Msgf("Getting hustler clothes with id: %s", s.Clothes)
 			http.Error(w, "unexpected error", http.StatusInternalServerError)
 			return
 		}
 
 		foot, err := readSprite(ctx, static, s.Foot)
 		if err != nil {
-			log.Err(err).Msgf("Getting hustler foot with id: %s", id)
+			log.Err(err).Msgf("Getting hustler foot with id: %s", s.Foot)
 			http.Error(w, "unexpected error", http.StatusInternalServerError)
 			return
 		}
 
 		hand, err := readSprite(ctx, static, s.Hand)
 		if err != nil {
-			log.Err(err).Msgf("Getting hustler hand with id: %s", id)
+			log.Err(err).Msgf("Getting hustler hand with id: %s", s.Hand)
 			http.Error(w, "unexpected error", http.StatusInternalServerError)
 			return
 		}
 
 		neck, err := readSprite(ctx, static, s.Neck)
 		if err != nil {
-			log.Err(err).Msgf("Getting hustler neck with id: %s", id)
+			log.Err(err).Msgf("Getting hustler neck with id: %s", s.Neck)
 			http.Error(w, "unexpected error", http.StatusInternalServerError)
 			return
 		}
 
 		ring, err := readSprite(ctx, static, s.Ring)
 		if err != nil {
-			log.Err(err).Msgf("Getting hustler ring with id: %s", id)
+			log.Err(err).Msgf("Getting hustler ring with id: %s", s.Ring)
 			http.Error(w, "unexpected error", http.StatusInternalServerError)
 			return
 		}
 
 		waist, err := readSprite(ctx, static, s.Waist)
 		if err != nil {
-			log.Err(err).Msgf("Getting hustler waist with id: %s", id)
+			log.Err(err).Msgf("Getting hustler waist with id: %s", s.Waist)
 			http.Error(w, "unexpected error", http.StatusInternalServerError)
 			return
 		}
 
 		weapon, err := readSprite(ctx, static, s.Weapon)
 		if err != nil {
-			log.Err(err).Msgf("Getting hustler weapon with id: %s", id)
+			log.Err(err).Msgf("Getting hustler weapon with id: %s", s.Weapon)
 			http.Error(w, "unexpected error", http.StatusInternalServerError)
 			return
 		}
