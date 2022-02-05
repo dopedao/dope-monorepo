@@ -27,11 +27,11 @@ const NoteContainer = styled.div<{ maxWidth?: string; background?: string; }>`
   text-align: center;
   cursor: pointer;
   cursor: hand;
+  margin: 2em;
   ${media.tablet`
     max-width: 375px;
     left: unset;
-    bottom: 2em;
-    right: 2em;
+    right: 0;
   `}
 `;
 const CloseIconContainer = styled.div`
