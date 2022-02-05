@@ -6,14 +6,13 @@ import { getAllPosts } from 'utils/lib';
 
 const TITLE = 'The Daily Dope';
 
-const News = ({ allPosts }: {allPosts: PostType[]}) => (
+const News = ({ allPosts }: { allPosts: PostType[] }) => (
   <>
     <Head title={TITLE} />
     <NewsWindow allPosts={allPosts} />
   </>
 );
 export default News;
-
 
 // Server-side rendered with Next.js so that
 // we gather our news posts from the filesystem on server.

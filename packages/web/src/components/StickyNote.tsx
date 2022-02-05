@@ -15,7 +15,7 @@ type StickyNoteProps = {
   canClose?: boolean;
 };
 
-const NoteContainer = styled.div<{ maxWidth?: string; background?: string; }>`
+const NoteContainer = styled.div<{ maxWidth?: string; background?: string }>`
   padding: 1em;
   z-index: 2;
   filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
@@ -41,39 +41,38 @@ const CloseIconContainer = styled.div`
   left: 8px;
   padding: 8px;
   border-radius: 4px;
-  background-color: rgba(0,0,0,0.5);
-  cursor:pointer;
-  cursor:hand;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  cursor: hand;
 `;
 
 const shouldBeDraggable = !isTouchDevice();
 
 const StickyNote = ({ children, maxWidth, background, canClose = false }: StickyNoteProps) => {
   const [isVisible, setIsVisible] = useState(true);
-  if (isVisible) return (
+  if (isVisible)
+    return (
       <ConditionalWrapper
         condition={shouldBeDraggable}
-        wrap={children => (
-          <Draggable>
-            {children}
-          </Draggable>
-        )}
+        wrap={children => <Draggable>{children}</Draggable>}
       >
         <NoteContainer maxWidth={maxWidth} background={background}>
           {children}
-          { canClose && 
-            <Button 
+          {canClose && (
+            <Button
               onClick={() => setIsVisible(false)}
-              css={css`margin-top:8px;`}
+              css={css`
+                margin-top: 8px;
+              `}
               width="100%"
             >
               Close
             </Button>
-          }
+          )}
         </NoteContainer>
-    </ConditionalWrapper>
-  );
+      </ConditionalWrapper>
+    );
   return <></>;
-}
+};
 
 export default StickyNote;

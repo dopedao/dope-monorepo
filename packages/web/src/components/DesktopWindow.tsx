@@ -1,12 +1,12 @@
 /**
  * DesktopWindow is the base for most of our containers within the app.
  * It contains complex logic to display itself intelligently on
- * phones, tablets, and laptops. 
- * 
+ * phones, tablets, and laptops.
+ *
  * When not a touch device, we allow dragging of windows.
  * On a touch device, we try to display as a full-screen content window,
  * which generally feels like a higher quality experience there.
- * 
+ *
  * 🙃
  */
 import { ReactNode, useEffect, useState, useRef } from 'react';
@@ -33,7 +33,7 @@ export type DesktopWindowProps = {
   background?: string;
   fullScreen?: boolean;
   onlyFullScreen?: boolean;
-  scrollable?: boolean,
+  scrollable?: boolean;
   fullScreenHandler?: (fullScreen: boolean) => void;
   titleChildren?: ReactNode;
   balance?: string;
@@ -46,12 +46,17 @@ export type DesktopWindowProps = {
   hideWalletAddress?: boolean;
 };
 
-const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string; height: number | string; background: string }>`
+const WindowWrapper = styled.div<{
+  scrollable?: boolean;
+  width: number | string;
+  height: number | string;
+  background: string;
+}>`
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-  background: ${({ background }) => (background)};
+  background: ${({ background }) => background};
   border: 2px solid #000;
   filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
   display: flex;
@@ -107,7 +112,7 @@ const DesktopWindow = ({
   scrollable,
   posX = 0,
   posY = 0,
-  hideWalletAddress = false
+  hideWalletAddress = false,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const windowRef = useRef<HTMLDivElement>(null);
@@ -165,37 +170,34 @@ const DesktopWindow = ({
     }
   };
 
-
   // Set zIndex to ensure we can have more than one DesktopWindow open at a time
   const focusWindow = () => {
-    const windows = document.getElementsByClassName('desktopWindow') as HTMLCollectionOf<HTMLElement>;
+    const windows = document.getElementsByClassName(
+      'desktopWindow',
+    ) as HTMLCollectionOf<HTMLElement>;
     console.log(windows);
-    for (let i=0; i<windows.length; i++) {
+    for (let i = 0; i < windows.length; i++) {
       windows[i].style.zIndex = '0';
     }
-    if(windowRef?.current) windowRef.current.style.zIndex = '50';
+    if (windowRef?.current) windowRef.current.style.zIndex = '50';
   };
 
   return (
     <ConditionalWrapper
       condition={shouldBeDraggable}
       wrap={children => (
-        <Draggable 
-          onStop={handleStop} 
-          defaultPosition={windowPosition} 
-          handle=".windowTitleBar"
-        >
+        <Draggable onStop={handleStop} defaultPosition={windowPosition} handle=".windowTitleBar">
           {children}
         </Draggable>
       )}
     >
-      <WindowWrapper 
-        ref={windowRef} 
+      <WindowWrapper
+        ref={windowRef}
         className={`desktopWindow ${isFullScreen ? '' : 'floating'}`}
-        height={height} 
-        width={width} 
-        background={ background && background.length > 0 ? background : '#a8a9ae' }
-        scrollable={ scrollable }
+        height={height}
+        width={width}
+        background={background && background.length > 0 ? background : '#a8a9ae'}
+        scrollable={scrollable}
         onClick={focusWindow}
       >
         {!onlyFullScreen && (

@@ -26,13 +26,13 @@ const Body = styled.div`
 // Allow for posts using Excerpt or Body content
 const getPostSnippet = (post: PostType) => {
   let snippet = '';
-  if(post.excerpt && post.excerpt.length > 0) {
+  if (post.excerpt && post.excerpt.length > 0) {
     snippet = post.excerpt;
   } else if (post.content && post.content.length > 0) {
     snippet = post.content;
   }
   return truncate(snippet);
-}
+};
 
 type DopePostBodyProps = { posts: PostType[]; hasMore: boolean };
 
@@ -117,10 +117,14 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
           </Box>
           <Box maxW="427px" margin="0 auto">
             <Link href={`/news/${heroPost.slug}`} passHref>
-              <Image 
-                src={heroPost.coverImage} 
-                alt={`Cover Image for ${heroPost.title}`} 
-                css={css`filter:saturate(0);cursor:pointer;cursor:hand;`}
+              <Image
+                src={heroPost.coverImage}
+                alt={`Cover Image for ${heroPost.title}`}
+                css={css`
+                  filter: saturate(0);
+                  cursor: pointer;
+                  cursor: hand;
+                `}
               />
             </Link>
             {heroPost.coverImageText && (

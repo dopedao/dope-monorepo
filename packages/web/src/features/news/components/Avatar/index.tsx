@@ -13,11 +13,11 @@ const Avatar = ({ name, picture, date }: AvatarProps) => (
     <ChakraAvatar background="transparent" src={picture} alt={name} marginRight="2" />
     <Stack gap="0">
       <h4>{name}</h4>
-      { date && 
+      {date && (
         <div className="mb-6 text-lg">
           <DateFormatter dateString={date} />
         </div>
-      }
+      )}
     </Stack>
   </Box>
 );

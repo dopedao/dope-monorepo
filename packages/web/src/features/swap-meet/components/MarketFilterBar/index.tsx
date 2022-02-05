@@ -93,12 +93,13 @@ const MarketFilterBar = ({
         />
       </div>
       <div>
-        <Select 
+        <Select
           className="status"
-          size="sm" 
-          variant="filterBar" 
-          onChange={handleStatusChange} 
-          value={filterBy}>
+          size="sm"
+          variant="filterBar"
+          onChange={handleStatusChange}
+          value={filterBy}
+        >
           <option disabled>Status…</option>
           {statusKeys.map((value, index) => (
             <option key={`${value}-${index}`}>{value}</option>
@@ -115,10 +116,7 @@ const MarketFilterBar = ({
           ))}
         </Select>
       </div>
-      <div
-        className="toggleButton"
-        onClick={() => setViewCompactCards(prevState => !prevState)}
-      >
+      <div className="toggleButton" onClick={() => setViewCompactCards(prevState => !prevState)}>
         <img alt="toggle" src={`${iconPath}/${icon}.svg`} />
       </div>
     </Container>

@@ -112,7 +112,7 @@ const Approve = () => {
         >
           <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
           <RenderFromDopeId id={dopeId} isVehicle={true} zoomWindow={ZOOM_WINDOWS[3]} />
-          
+
           <PanelFooter>
             <div className="smallest">This only claims gear, it does not create a Hustler</div>
             <Button variant="primary" onClick={unbundleDope} disabled={!canMint}>

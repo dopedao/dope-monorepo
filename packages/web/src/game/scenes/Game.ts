@@ -1,4 +1,14 @@
-import { Base, Clothes, Feet, Hands, Mask, Necklace, Ring, SpritesMap, Weapons } from 'game/constants/Sprites';
+import {
+  Base,
+  Clothes,
+  Feet,
+  Hands,
+  Mask,
+  Necklace,
+  Ring,
+  SpritesMap,
+  Weapons,
+} from 'game/constants/Sprites';
 import Hustler from 'game/entities/Hustler';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
@@ -30,7 +40,9 @@ export default class GameScene extends Scene {
 
   private accumulator: number = 0;
 
-  get map() { return this._map; }
+  get map() {
+    return this._map;
+  }
 
   constructor() {
     super({
@@ -38,16 +50,15 @@ export default class GameScene extends Scene {
     });
   }
 
-  handleItemEntities()
-  {
+  handleItemEntities() {
     EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop: boolean) => {
       if (drop)
         new ItemEntity(this.matter.world, this.player.x, this.player.y, 'item_' + item.name, item);
-    })
+    });
   }
 
   create(): void {
-    // create item entities when need 
+    // create item entities when need
     this.handleItemEntities();
 
     // create all of the animations
@@ -55,35 +66,42 @@ export default class GameScene extends Scene {
 
     // on click pathfinding
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      if (!this.canUseMouse)
-        return;
+      if (!this.canUseMouse) return;
 
-      if (this.player.busy)
-        return;
-      
+      if (this.player.busy) return;
+
       // run asynchronously
       setTimeout(() => {
-        const citizenToTalkTo = this.citizens.find(citizen => citizen.shouldFollowPath && citizen.getBounds().contains(pointer.worldX, pointer.worldY));
+        const citizenToTalkTo = this.citizens.find(
+          citizen =>
+            citizen.shouldFollowPath &&
+            citizen.getBounds().contains(pointer.worldX, pointer.worldY),
+        );
 
         this.player.navigator.moveTo(
-          this.map.worldToTileX(pointer.worldX), this.map.worldToTileY(pointer.worldY), 
+          this.map.worldToTileX(pointer.worldX),
+          this.map.worldToTileY(pointer.worldY),
           () => {
-            if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
-            {
+            if (
+              new Phaser.Math.Vector2(this.player).distance(
+                new Phaser.Math.Vector2(citizenToTalkTo),
+              ) < 100
+            ) {
               citizenToTalkTo?.onInteraction(this.player);
               EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
             }
-          });
+          },
+        );
       });
     });
 
-    this._map = this.make.tilemap({ key: "map" });
+    this._map = this.make.tilemap({ key: 'map' });
 
     // not my assets, used only for demonstration purposes
-    const tileset = this.map.addTilesetImage("tuxmon-sample-32px-extruded", "tiles");
+    const tileset = this.map.addTilesetImage('tuxmon-sample-32px-extruded', 'tiles');
 
-    this.map.createLayer("Below Player", tileset, 0, 0);
-    const world = this.map.createLayer("World", tileset, 0, 0);
+    this.map.createLayer('Below Player', tileset, 0, 0);
+    const world = this.map.createLayer('World', tileset, 0, 0);
 
     // render above hustlers
     world.setDepth(0);
@@ -93,43 +111,86 @@ export default class GameScene extends Scene {
     // transform world into a matter one
     const matterWorld = this.matter.world.convertTilemapLayer(world);
 
-    let points = [ new Phaser.Math.Vector2(200, 650), 120, new Phaser.Math.Vector2(700, 400), new Phaser.Math.Vector2(600, 600), 5, new Phaser.Math.Vector2(300, 1000) ];
-    points = points.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
+    let points = [
+      new Phaser.Math.Vector2(200, 650),
+      120,
+      new Phaser.Math.Vector2(700, 400),
+      new Phaser.Math.Vector2(600, 600),
+      5,
+      new Phaser.Math.Vector2(300, 1000),
+    ];
+    points = points.map(point =>
+      point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point,
+    );
 
-    let points2 = [ new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600) ];
-    points2 = points2.map(point => point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point);
+    let points2 = [new Phaser.Math.Vector2(200, 600), new Phaser.Math.Vector2(700, 600)];
+    points2 = points2.map(point =>
+      point instanceof Phaser.Math.Vector2 ? world.worldToTileXY(point.x, point.y) : point,
+    );
 
     const crackHeadClothesZone = new Zone(this.matter.add.circle(300, 1200, 50), this);
     const item = new Item('Cool Item', 'This is a cool item');
 
     this.citizens.push(
       new Citizen(
-        matterWorld, 600, 350, new HustlerModel(Base.Male, [], Feet.NikeCortez, Hands.BlackGloves, undefined, Necklace.Gold),
-        'Michel', 
-        'Patrick is not evil', 
-        [new Conversation('Give me some clothes please', () => {
-          this.player.questManager.addQuest(new BringItemQuest(this.player.questManager, this.citizens[0], item, "Mr.Crackhead", "Get him some clothes ASAP"));
-          return false;
-        }),
-        new Conversation('Thanks for bringing me my clothes!', () => true)
-      ], 
-        points, true,),
+        matterWorld,
+        600,
+        350,
+        new HustlerModel(
+          Base.Male,
+          [],
+          Feet.NikeCortez,
+          Hands.BlackGloves,
+          undefined,
+          Necklace.Gold,
+        ),
+        'Michel',
+        'Patrick is not evil',
+        [
+          new Conversation('Give me some clothes please', () => {
+            this.player.questManager.addQuest(
+              new BringItemQuest(
+                this.player.questManager,
+                this.citizens[0],
+                item,
+                'Mr.Crackhead',
+                'Get him some clothes ASAP',
+              ),
+            );
+            return false;
+          }),
+          new Conversation('Thanks for bringing me my clothes!', () => true),
+        ],
+        points,
+        true,
+      ),
 
       // new Citizen(
       // matterWorld, 500, 600, new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves),
-      // 'Patrick', 
-      // 'Patrick is evil', 
-      // [new Conversation('Hello', () => false), 
-      // new Conversation('Hello again!', () => true)], 
+      // 'Patrick',
+      // 'Patrick is evil',
+      // [new Conversation('Hello', () => false),
+      // new Conversation('Hello again!', () => true)],
       // points2, true,),
     );
 
     this.player = new Player(
-      matterWorld, 500, 600,
-      new HustlerModel(Base.Male, [Clothes.Shirtless], Feet.NikeCortez, Hands.BlackGloves, Mask.MrFax, Necklace.Gold, Ring.Gold));
+      matterWorld,
+      500,
+      600,
+      new HustlerModel(
+        Base.Male,
+        [Clothes.Shirtless],
+        Feet.NikeCortez,
+        Hands.BlackGloves,
+        Mask.MrFax,
+        Necklace.Gold,
+        Ring.Gold,
+      ),
+    );
 
-    const above = this.map.createLayer("Above Player", tileset, 0, 0);
-    
+    const above = this.map.createLayer('Above Player', tileset, 0, 0);
+
     // above world
     above.setDepth(3);
 

@@ -1,15 +1,13 @@
-import { FC, ReactNode } from "react";
-import { css } from "@emotion/react";
+import { FC, ReactNode } from 'react';
+import { css } from '@emotion/react';
 
-import PanelContainer from "components/PanelContainer";
+import PanelContainer from 'components/PanelContainer';
 
 type ProfileCardProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
-const ProfileCard: FC<ProfileCardProps> = ({
-  children,
-}) => {
+const ProfileCard: FC<ProfileCardProps> = ({ children }) => {
   return (
     <PanelContainer
       css={css`
@@ -23,7 +21,7 @@ const ProfileCard: FC<ProfileCardProps> = ({
     >
       {children}
     </PanelContainer>
-  )
-}
+  );
+};
 
-export default ProfileCard
+export default ProfileCard;

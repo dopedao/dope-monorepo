@@ -30,11 +30,13 @@ export const Container = styled.div`
     border-radius: 5px;
     white-space: nowrap;
     background-color: #434345;
-  },
+  }
+  ,
   div.toggleButton img {
     height: 18px;
     width: 18px;
-  },
+  }
+  ,
   .search {
     color: #878783;
     border: 2px solid #000;
@@ -42,16 +44,17 @@ export const Container = styled.div`
     border-radius: 5px;
     background-color: #141011;
     box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.25), inset -1px -1px 0px rgba(255, 255, 255, 0.25);
-  },
+  }
+  ,
   select {
     color: #fff;
     border: 2px solid #000;
     cursor: pointer;
     border-radius: 5px;
     background-color: #434345;
-  },
+  }
+  ,
   select option {
     background-color: #434345;
   }
-
 `;

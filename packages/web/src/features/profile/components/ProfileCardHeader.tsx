@@ -1,15 +1,13 @@
-import { FC, ReactNode } from "react";
-import { css } from "@emotion/react";
+import { FC, ReactNode } from 'react';
+import { css } from '@emotion/react';
 
-import PanelTitleBarFlex from "components/PanelTitleBarFlex";
+import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
 
 type ProfileCardHeaderProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
-const ProfileCardHeader: FC<ProfileCardHeaderProps> = ({
-  children,
-}) => {
+const ProfileCardHeader: FC<ProfileCardHeaderProps> = ({ children }) => {
   return (
     <PanelTitleBarFlex
       css={css`
@@ -19,7 +17,7 @@ const ProfileCardHeader: FC<ProfileCardHeaderProps> = ({
     >
       {children}
     </PanelTitleBarFlex>
-  )
-}
+  );
+};
 
-export default ProfileCardHeader
+export default ProfileCardHeader;

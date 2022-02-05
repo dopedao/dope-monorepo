@@ -12,29 +12,36 @@ const BannerLunarAirDrop = () => {
   return (
     <Stack
       direction="row"
-      background="#FFB6B6" 
+      background="#FFB6B6"
       width="100%"
       borderBottom="2px solid black"
       alignItems="center"
     >
       <Link href="/lunar-new-year" flex="1">
-        <Image 
-          src="/images/lunar_new_year_2022/accessories_men_animate.gif" 
-          alt="Airdrop Instructions" 
+        <Image
+          src="/images/lunar_new_year_2022/accessories_men_animate.gif"
+          alt="Airdrop Instructions"
           width="100%"
-          css={css`image-rendering:pixelated`}
+          css={css`
+            image-rendering: pixelated;
+          `}
         />
       </Link>
       <Box flex="2" padding="16px">
-        <h3 css={css`margin-bottom:0px !important;`}>
+        <h3
+          css={css`
+            margin-bottom: 0px !important;
+          `}
+        >
           DONT MISS THE LUNAR AIRDROP
         </h3>
         <div className="smallest">
           Ends in <Countdown date={new Date('02/15/2022')} />
         </div>
-        <br/>
+        <br />
         <p className="smaller">
-          Until Feb 15th we&apos;re celebrating the Lunar New Year with a free accessory drop from Chinatown. Feeling Lucky? Spin the wheel for a chance at a rare Zodiac Mask…
+          Until Feb 15th we&apos;re celebrating the Lunar New Year with a free accessory drop from
+          Chinatown. Feeling Lucky? Spin the wheel for a chance at a rare Zodiac Mask…
         </p>
         <Stack direction="row" alignItems="center">
           <Link href="/lunar-new-year" passHref>

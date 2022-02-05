@@ -1,27 +1,27 @@
-import { FC, useMemo } from "react"
-import { Stack, Image, HStack, Button } from "@chakra-ui/react"
+import { FC, useMemo } from 'react';
+import { Stack, Image, HStack, Button } from '@chakra-ui/react';
 import { AspectRatio } from '@chakra-ui/layout';
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 
-import PanelBody from "components/PanelBody";
-import { Hustler, HustlerType, useInfiniteProfileHustlersQuery } from "generated/graphql";
+import PanelBody from 'components/PanelBody';
+import { Hustler, HustlerType, useInfiniteProfileHustlersQuery } from 'generated/graphql';
 
-import ItemCount from "./ItemCount";
-import ProfileCardHeader from "./ProfileCardHeader";
-import ProfileCard from "./ProfileCard";
-import SectionContent from "./SectionContent";
-import SectionHeader from "./SectionHeader";
-import CardContainer from "./CardContainer";
-import LoadingBlock from "components/LoadingBlock";
+import ItemCount from './ItemCount';
+import ProfileCardHeader from './ProfileCardHeader';
+import ProfileCard from './ProfileCard';
+import SectionContent from './SectionContent';
+import SectionHeader from './SectionHeader';
+import CardContainer from './CardContainer';
+import LoadingBlock from 'components/LoadingBlock';
 import PanelFooter from 'components/PanelFooter';
 
 type ProfileHustler = Pick<Hustler, 'id' | 'name' | 'svg' | 'title' | 'type'>;
 
 type HustlerData = {
-  hustlers: ProfileHustler[]
-  totalCount: number
-}
+  hustlers: ProfileHustler[];
+  totalCount: number;
+};
 
 const formatType = (type: HustlerType): string => {
   if (type === HustlerType.OriginalGangsta) return 'OG';
@@ -31,8 +31,7 @@ const formatType = (type: HustlerType): string => {
 
 const HustlerFooter = ({ id }: { id: string }) => (
   <PanelFooter>
-    <div>
-    </div>
+    <div></div>
     <Link href={`/hustlers/${id}/flex`} passHref>
       <Button>Flex</Button>
     </Link>
@@ -43,49 +42,54 @@ const HustlerFooter = ({ id }: { id: string }) => (
 );
 
 const Hustlers: FC = () => {
-  const { account } = useWeb3React()
+  const { account } = useWeb3React();
 
-  const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileHustlersQuery({
-    where: {
-      hasWalletWith: [{
-        id: account,
-      }],
+  const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileHustlersQuery(
+    {
+      where: {
+        hasWalletWith: [
+          {
+            id: account,
+          },
+        ],
+      },
+      first: 50,
     },
-    first: 50,
-  }, {
-    getNextPageParam: lastPage => {
-      if (lastPage.hustlers.pageInfo.hasNextPage) {
-        return {
-          after: lastPage.hustlers.pageInfo.endCursor,
-        };
-      }
-      return false;
+    {
+      getNextPageParam: lastPage => {
+        if (lastPage.hustlers.pageInfo.hasNextPage) {
+          return {
+            after: lastPage.hustlers.pageInfo.endCursor,
+          };
+        }
+        return false;
+      },
     },
-  });
+  );
 
   const hustlerData: HustlerData = useMemo(() => {
-    const defaultValue = { hustlers: [], totalCount: 0 }
+    const defaultValue = { hustlers: [], totalCount: 0 };
 
-    if (!data?.pages) return defaultValue
+    if (!data?.pages) return defaultValue;
 
     return data.pages.reduce((result, page) => {
-      if (!page.hustlers.edges) return result
+      if (!page.hustlers.edges) return result;
 
-      const { totalCount } = page.hustlers
+      const { totalCount } = page.hustlers;
 
       return {
         totalCount,
         hustlers: [
           ...result.hustlers,
           ...page.hustlers.edges.reduce((result, edge) => {
-            if (!edge?.node) return result
+            if (!edge?.node) return result;
 
-            return [...result, edge.node]
-          }, [] as ProfileHustler[])
-        ]
-      }
-    }, defaultValue as HustlerData)
-  }, [data])
+            return [...result, edge.node];
+          }, [] as ProfileHustler[]),
+        ],
+      };
+    }, defaultValue as HustlerData);
+  }, [data]);
 
   return (
     <>
@@ -102,7 +106,7 @@ const Hustlers: FC = () => {
         {hustlerData.hustlers.length ? (
           <CardContainer>
             {hustlerData.hustlers.map(({ id, name, svg, title, type }) => {
-              const formattedType = formatType(type)
+              const formattedType = formatType(type);
 
               return (
                 <ProfileCard key={id}>
@@ -110,18 +114,21 @@ const Hustlers: FC = () => {
                     {formattedType} #{id}
                   </ProfileCardHeader>
                   <PanelBody>
-                    {svg && 
+                    {svg && (
                       <AspectRatio ratio={1}>
                         <Link href={`/hustlers/${id}/flex`} passHref>
-                          <Image alt={name || 'Hustler'} borderRadius="md" src={svg} cursor="pointer" />
+                          <Image
+                            alt={name || 'Hustler'}
+                            borderRadius="md"
+                            src={svg}
+                            cursor="pointer"
+                          />
                         </Link>
                       </AspectRatio>
-                    }
+                    )}
                     <Stack mt={4}>
                       <span>Name: {name}</span>
-                      <span>
-                        { title ? `Title: ${title}` : '\u00A0' }
-                      </span>
+                      <span>{title ? `Title: ${title}` : '\u00A0'}</span>
                     </Stack>
                   </PanelBody>
                   <HustlerFooter id={id} />
@@ -139,4 +146,4 @@ const Hustlers: FC = () => {
   );
 };
 
-export default Hustlers
+export default Hustlers;

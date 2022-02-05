@@ -16,15 +16,15 @@ const IndexWrapper = styled(PageWrapper)`
   max-width: var(--content-width-xl);
 `;
 
-const IndexPage = ({ allPosts }: {allPosts: PostType[]}) => {
+const IndexPage = ({ allPosts }: { allPosts: PostType[] }) => {
   return (
     <IndexWrapper>
       <Head />
       {/* <StickyNoteHustlerMint /> */}
       <AboutWindow posX={128} posY={-32} />
-      <NewsWindow allPosts={allPosts} posX={0} posY={0}  />
+      <NewsWindow allPosts={allPosts} posX={0} posY={0} />
     </IndexWrapper>
-  )
+  );
 };
 export default IndexPage;
 

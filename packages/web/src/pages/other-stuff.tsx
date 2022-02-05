@@ -8,9 +8,13 @@ const SocialLinks = () => {
     window.open(url, '_blank')?.focus();
   };
 
-  return(
+  return (
     <DesktopWindow title="Other Stuff" width={640}>
-      <IconGrid css={css`top:32px;`}>
+      <IconGrid
+        css={css`
+          top: 32px;
+        `}
+      >
         <DesktopIcon
           icon="file"
           label="Wiki + Players Guide"
@@ -46,10 +50,10 @@ const SocialLinks = () => {
           label="Snapshot"
           clickAction={() => openBrowserTab('https://snapshot.org/#/dopedao.eth')}
         />
-        <DesktopIcon 
-          icon="file-chart" 
-          label="DOPE Stats" 
-          clickAction={() => openBrowserTab('https://dune.xyz/HorizonXP/Dope-Wars-Degen-Dashboard')} 
+        <DesktopIcon
+          icon="file-chart"
+          label="DOPE Stats"
+          clickAction={() => openBrowserTab('https://dune.xyz/HorizonXP/Dope-Wars-Degen-Dashboard')}
         />
       </IconGrid>
     </DesktopWindow>

@@ -29,7 +29,7 @@ const DesktopWindowTitleBar = ({
   toggleFullScreen,
   children,
   windowRef,
-  hideWalletAddress = false
+  hideWalletAddress = false,
 }: WindowTitleBarProps) => {
   const [ensAddress, setEnsAddress] = useState<string | null>(null);
   const { account, library } = useWeb3React();
@@ -45,7 +45,7 @@ const DesktopWindowTitleBar = ({
   }, [paper, account]);
 
   const closeWindow = (): void => {
-    if(router.pathname === '/' && windowRef) {
+    if (router.pathname === '/' && windowRef) {
       // Close desktop window if one is open by default on home page
       windowRef.style.display = 'none';
     } else {
@@ -56,7 +56,7 @@ const DesktopWindowTitleBar = ({
   useEffect(() => {
     // No sense to do this work if no wallet address shown
     if (hideWalletAddress) return;
-    
+
     const getEns = async () => {
       if (!account) {
         return null;
@@ -87,7 +87,7 @@ const DesktopWindowTitleBar = ({
             {title || 'UNTITLED'}
           </TitleBarDescription>
           <RightColumn>
-            {!hideWalletAddress &&
+            {!hideWalletAddress && (
               <div
                 css={css`
                   cursor: pointer;
@@ -112,7 +112,7 @@ const DesktopWindowTitleBar = ({
                   </>
                 )}
               </div>
-            }
+            )}
             {!isTouchDevice && (
               <DesktopWindowTitleButton
                 icon={isFullScreen ? 'window-restore' : 'window-maximize'}

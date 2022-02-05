@@ -18,9 +18,11 @@ interface NewsWindowProps {
 }
 
 const NewsWindow = ({ allPosts, posX, posY, ...props }: NewsWindowProps) => (
-  <DesktopWindow 
-    title="The Daily Dope" 
-    width={768} posX={posX} posY={posY} 
+  <DesktopWindow
+    title="The Daily Dope"
+    width={768}
+    posX={posX}
+    posY={posY}
     hideWalletAddress
     {...props}
   >

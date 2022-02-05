@@ -21,7 +21,6 @@ import PanelFooter from 'components/PanelFooter';
 import SexSelector from 'components/hustler/SexSelector';
 import styled from '@emotion/styled';
 
-
 const ControlsWrapper = styled.div`
   background-color: white;
   display: flex;
@@ -148,7 +147,7 @@ const ConfigurationControls = ({
           search: `?section=Hustlers`,
         });
       } catch (error) {
-        console.error(error)
+        console.error(error);
         setLoading(false);
       }
     }

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const PanelContainer = styled.div<{ justifyContent?: string | undefined; }>`
+const PanelContainer = styled.div<{ justifyContent?: string | undefined }>`
   border: 2px solid #000;
   border-radius: 8px;
   background-color: #fff;

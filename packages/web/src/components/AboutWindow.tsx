@@ -184,35 +184,33 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 const BuyNow = () => (
   <div
     css={css`
-      padding:16px;
-      background-color:var(--gray-300);
-      border-top:2px solid black;
-      display:flex;
+      padding: 16px;
+      background-color: var(--gray-300);
+      border-top: 2px solid black;
+      display: flex;
       justify-content: flex-end;
       gap: 8px;
       width: 100%;
-      height:96px;
+      height: 96px;
     `}
   >
     <Link href="/news" passHref>
-      <Button>
-        Read The Daily Dope
-      </Button>
+      <Button>Read The Daily Dope</Button>
     </Link>
     <Link href="/swap-meet" passHref>
-      <Button variant="primary">
-        Get a Hustler
-      </Button>
+      <Button variant="primary">Get a Hustler</Button>
     </Link>
   </div>
 );
 
-const AboutWindow = ({...props}) => {
+const AboutWindow = ({ ...props }) => {
   return (
-    <DesktopWindow title="ABOUT.FAQ" 
-      background="#efefee" 
-      width="640px" 
-      hideWalletAddress {...props}
+    <DesktopWindow
+      title="ABOUT.FAQ"
+      background="#efefee"
+      width="640px"
+      hideWalletAddress
+      {...props}
     >
       <Stack height="100%" gap="0">
         <TextBody className="markdownContainer">
@@ -222,5 +220,5 @@ const AboutWindow = ({...props}) => {
       </Stack>
     </DesktopWindow>
   );
-}
+};
 export default AboutWindow;
