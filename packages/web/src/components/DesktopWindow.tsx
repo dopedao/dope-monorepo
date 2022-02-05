@@ -8,6 +8,7 @@ import { returnBreakpoint } from 'ui/styles/breakpoints';
 import { isTouchDevice } from 'utils/utils';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
+import useBrowserWidth from 'hooks/use-browser-width';
 
 type Position = {
   x: number;
@@ -55,8 +56,8 @@ const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string;
       margin: 0;
     `}
     ${media.tablet`
-      width: 100%;
-      height: 100%;
+      width: 80%;
+      height: 90%;
       margin: 0;
     `}
     @media (min-width: ${returnBreakpoint('laptop')}) {
@@ -93,6 +94,7 @@ const DesktopWindow = ({
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const windowRef = useRef<HTMLDivElement>(null);
+  const browserWidth = useBrowserWidth();
   const { data, isFetching: loading } = useWalletQuery(
     {
       where: {
@@ -126,7 +128,7 @@ const DesktopWindow = ({
     }
   };
 
-  const shouldBeDraggable = !isTouchDevice() && !isFullScreen && windowPosition.x !== 0;
+  const shouldBeDraggable = !isTouchDevice() && !isFullScreen && browserWidth > 768;
 
   useEffect(() => {
     if (onResize) {
