@@ -1,4 +1,10 @@
-import { useQuery, UseQueryOptions, useInfiniteQuery, UseInfiniteQueryOptions, QueryFunctionContext } from 'react-query';
+import {
+  useQuery,
+  UseQueryOptions,
+  useInfiniteQuery,
+  UseInfiniteQueryOptions,
+  QueryFunctionContext,
+} from 'react-query';
 import { useFetchData } from 'hooks/fetcher';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -46,7 +52,7 @@ export enum AmountType {
   Eth = 'ETH',
   Hustler = 'HUSTLER',
   Paper = 'PAPER',
-  Turf = 'TURF'
+  Turf = 'TURF',
 }
 
 /**
@@ -107,13 +113,13 @@ export type BodyPart = Node & {
 
 export enum BodyPartSex {
   Female = 'FEMALE',
-  Male = 'MALE'
+  Male = 'MALE',
 }
 
 export enum BodyPartType {
   Beard = 'BEARD',
   Body = 'BODY',
-  Hair = 'HAIR'
+  Hair = 'HAIR',
 }
 
 /**
@@ -216,7 +222,7 @@ export type DopeOrder = {
 
 export enum DopeOrderField {
   Id = 'ID',
-  Rank = 'RANK'
+  Rank = 'RANK',
 }
 
 /**
@@ -383,12 +389,12 @@ export type HustlerOrder = {
 
 export enum HustlerSex {
   Female = 'FEMALE',
-  Male = 'MALE'
+  Male = 'MALE',
 }
 
 export enum HustlerType {
   OriginalGangsta = 'ORIGINAL_GANGSTA',
-  Regular = 'REGULAR'
+  Regular = 'REGULAR',
 }
 
 /**
@@ -600,7 +606,7 @@ export type ItemOrder = {
 };
 
 export enum ItemOrderField {
-  Greatness = 'GREATNESS'
+  Greatness = 'GREATNESS',
 }
 
 /** ItemTier represents the tier of an item. */
@@ -608,7 +614,7 @@ export enum ItemTier {
   BlackMarket = 'BLACK_MARKET',
   Common = 'COMMON',
   Custom = 'CUSTOM',
-  Rare = 'RARE'
+  Rare = 'RARE',
 }
 
 /** ItemType represents the item slot the item belongs to. */
@@ -622,7 +628,7 @@ export enum ItemType {
   Ring = 'RING',
   Vehcile = 'VEHCILE',
   Waist = 'WAIST',
-  Weapon = 'WEAPON'
+  Weapon = 'WEAPON',
 }
 
 /**
@@ -877,7 +883,7 @@ export type Node = {
 
 export enum OrderDirection {
   Asc = 'ASC',
-  Desc = 'DESC'
+  Desc = 'DESC',
 }
 
 export type PageInfo = {
@@ -901,7 +907,6 @@ export type Query = {
   wallets: WalletConnection;
 };
 
-
 export type QueryDopesArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
@@ -910,7 +915,6 @@ export type QueryDopesArgs = {
   orderBy?: InputMaybe<DopeOrder>;
   where?: InputMaybe<DopeWhereInput>;
 };
-
 
 export type QueryHustlersArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -921,7 +925,6 @@ export type QueryHustlersArgs = {
   where?: InputMaybe<HustlerWhereInput>;
 };
 
-
 export type QueryItemsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
@@ -930,7 +933,6 @@ export type QueryItemsArgs = {
   orderBy?: InputMaybe<ItemOrder>;
   where?: InputMaybe<ItemWhereInput>;
 };
-
 
 export type QueryListingsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -941,16 +943,13 @@ export type QueryListingsArgs = {
   where?: InputMaybe<ListingWhereInput>;
 };
 
-
 export type QueryNodeArgs = {
   id: Scalars['ID'];
 };
 
-
 export type QueryNodesArgs = {
   ids: Array<Scalars['ID']>;
 };
-
 
 export type QuerySearchArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -962,7 +961,6 @@ export type QuerySearchArgs = {
   where?: InputMaybe<SearchWhereInput>;
 };
 
-
 export type QueryWalletItemsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
@@ -971,7 +969,6 @@ export type QueryWalletItemsArgs = {
   orderBy?: InputMaybe<WalletItemsOrder>;
   where?: InputMaybe<WalletItemsWhereInput>;
 };
-
 
 export type QueryWalletsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1037,7 +1034,7 @@ export type SearchOrder = {
 export enum SearchOrderField {
   Greatness = 'GREATNESS',
   LastSalePrice = 'LAST_SALE_PRICE',
-  SalePrice = 'SALE_PRICE'
+  SalePrice = 'SALE_PRICE',
 }
 
 export type SearchResult = Dope | Hustler | Item;
@@ -1073,7 +1070,7 @@ export type SearchResultWhereInput = {
 export enum SearchType {
   Dope = 'DOPE',
   Hustler = 'HUSTLER',
-  Item = 'ITEM'
+  Item = 'ITEM',
 }
 
 /**
@@ -1149,7 +1146,7 @@ export type SearchWhereInput = {
 
 export enum Source {
   Opensea = 'OPENSEA',
-  Swapmeet = 'SWAPMEET'
+  Swapmeet = 'SWAPMEET',
 }
 
 /**
@@ -1322,8 +1319,208 @@ export type AllHustlersQueryVariables = Exact<{
   where?: InputMaybe<HustlerWhereInput>;
 }>;
 
-
-export type AllHustlersQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'HustlerEdge', cursor: any, node?: { __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type AllHustlersQuery = {
+  __typename?: 'Query';
+  hustlers: {
+    __typename?: 'HustlerConnection';
+    totalCount: number;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: any | null | undefined;
+      endCursor?: any | null | undefined;
+    };
+    edges?:
+      | Array<
+          | {
+              __typename?: 'HustlerEdge';
+              cursor: any;
+              node?:
+                | {
+                    __typename?: 'Hustler';
+                    id: string;
+                    title?: string | null | undefined;
+                    name?: string | null | undefined;
+                    type: HustlerType;
+                    color?: string | null | undefined;
+                    background?: string | null | undefined;
+                    age: any;
+                    sex: HustlerSex;
+                    viewbox: Array<number>;
+                    order: Array<number>;
+                    svg?: string | null | undefined;
+                    neck?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                    ring?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                    accessory?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                    body?:
+                      | {
+                          __typename?: 'BodyPart';
+                          id: string;
+                          type: BodyPartType;
+                          sex: BodyPartSex;
+                          rle: string;
+                        }
+                      | null
+                      | undefined;
+                    beard?:
+                      | {
+                          __typename?: 'BodyPart';
+                          id: string;
+                          type: BodyPartType;
+                          sex: BodyPartSex;
+                          rle: string;
+                        }
+                      | null
+                      | undefined;
+                    drug?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                    hand?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                    weapon?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                    clothes?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                    vehicle?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                    waist?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                    foot?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                        }
+                      | null
+                      | undefined;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+};
 
 export type DopesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1334,29 +1531,376 @@ export type DopesQueryVariables = Exact<{
   where?: InputMaybe<DopeWhereInput>;
 }>;
 
-
-export type DopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, lastSale?: { __typename?: 'Listing', inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined, listings?: Array<{ __typename?: 'Listing', id: string, outputs: Array<{ __typename?: 'Amount', id: string, type: AmountType, amount: any, token?: { __typename?: 'Dope', id: string } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> } | null | undefined> | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | null | undefined } | null | undefined> | null | undefined } };
+export type DopesQuery = {
+  __typename?: 'Query';
+  dopes: {
+    __typename?: 'DopeConnection';
+    totalCount: number;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: any | null | undefined;
+      endCursor?: any | null | undefined;
+    };
+    edges?:
+      | Array<
+          | {
+              __typename?: 'DopeEdge';
+              cursor: any;
+              node?:
+                | {
+                    __typename?: 'Dope';
+                    id: string;
+                    claimed: boolean;
+                    opened: boolean;
+                    score: number;
+                    rank: number;
+                    lastSale?:
+                      | {
+                          __typename?: 'Listing';
+                          inputs: Array<
+                            | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
+                            | null
+                            | undefined
+                          >;
+                        }
+                      | null
+                      | undefined;
+                    listings?:
+                      | Array<
+                          | {
+                              __typename?: 'Listing';
+                              id: string;
+                              outputs: Array<
+                                | {
+                                    __typename?: 'Amount';
+                                    id: string;
+                                    type: AmountType;
+                                    amount: any;
+                                    token?:
+                                      | { __typename?: 'Dope'; id: string }
+                                      | { __typename?: 'Hustler' }
+                                      | { __typename?: 'Item' }
+                                      | null
+                                      | undefined;
+                                  }
+                                | null
+                                | undefined
+                              >;
+                            }
+                          | null
+                          | undefined
+                        >
+                      | null
+                      | undefined;
+                    items: Array<{
+                      __typename?: 'Item';
+                      id: string;
+                      fullname: string;
+                      type: ItemType;
+                      name: string;
+                      namePrefix?: string | null | undefined;
+                      nameSuffix?: string | null | undefined;
+                      suffix?: string | null | undefined;
+                      augmented?: boolean | null | undefined;
+                      tier: ItemTier;
+                      greatness: number;
+                      count: number;
+                    }>;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+};
 
 export type HustlerQueryVariables = Exact<{
   where?: InputMaybe<HustlerWhereInput>;
 }>;
 
-
-export type HustlerQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', edges?: Array<{ __typename?: 'HustlerEdge', node?: { __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type HustlerQuery = {
+  __typename?: 'Query';
+  hustlers: {
+    __typename?: 'HustlerConnection';
+    edges?:
+      | Array<
+          | {
+              __typename?: 'HustlerEdge';
+              node?:
+                | {
+                    __typename?: 'Hustler';
+                    id: string;
+                    title?: string | null | undefined;
+                    name?: string | null | undefined;
+                    type: HustlerType;
+                    color?: string | null | undefined;
+                    background?: string | null | undefined;
+                    age: any;
+                    sex: HustlerSex;
+                    viewbox: Array<number>;
+                    order: Array<number>;
+                    svg?: string | null | undefined;
+                    neck?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                    ring?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                    accessory?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                    body?:
+                      | {
+                          __typename?: 'BodyPart';
+                          id: string;
+                          type: BodyPartType;
+                          sex: BodyPartSex;
+                          rle: string;
+                        }
+                      | null
+                      | undefined;
+                    beard?:
+                      | {
+                          __typename?: 'BodyPart';
+                          id: string;
+                          type: BodyPartType;
+                          sex: BodyPartSex;
+                          rle: string;
+                        }
+                      | null
+                      | undefined;
+                    drug?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                    hand?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                    weapon?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                    clothes?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                    vehicle?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                    waist?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                    foot?:
+                      | {
+                          __typename?: 'Item';
+                          id: string;
+                          type: ItemType;
+                          name: string;
+                          suffix?: string | null | undefined;
+                          augmented?: boolean | null | undefined;
+                          tier: ItemTier;
+                          greatness: number;
+                          count: number;
+                          fullname: string;
+                        }
+                      | null
+                      | undefined;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+};
 
 export type HustlersWalletQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
 }>;
 
-
-export type HustlersWalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, svg?: string | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
+export type HustlersWalletQuery = {
+  __typename?: 'Query';
+  wallets: {
+    __typename?: 'WalletConnection';
+    edges?:
+      | Array<
+          | {
+              __typename?: 'WalletEdge';
+              node?:
+                | {
+                    __typename?: 'Wallet';
+                    id: string;
+                    paper: any;
+                    hustlers: Array<{
+                      __typename?: 'Hustler';
+                      id: string;
+                      title?: string | null | undefined;
+                      name?: string | null | undefined;
+                      type: HustlerType;
+                      color?: string | null | undefined;
+                      background?: string | null | undefined;
+                      age: any;
+                      svg?: string | null | undefined;
+                    }>;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+};
 
 export type ItemQueryVariables = Exact<{
   where?: InputMaybe<ItemWhereInput>;
 }>;
 
-
-export type ItemQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, fullname: string, svg?: string | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type ItemQuery = {
+  __typename?: 'Query';
+  items: {
+    __typename?: 'ItemConnection';
+    edges?:
+      | Array<
+          | {
+              __typename?: 'ItemEdge';
+              node?:
+                | {
+                    __typename?: 'Item';
+                    id: string;
+                    fullname: string;
+                    svg?: string | null | undefined;
+                    base?:
+                      | { __typename?: 'Item'; svg?: string | null | undefined }
+                      | null
+                      | undefined;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+};
 
 export type ProfileDopesQueryVariables = Exact<{
   where?: InputMaybe<DopeWhereInput>;
@@ -1364,8 +1908,45 @@ export type ProfileDopesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
 }>;
 
-
-export type ProfileDopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, tier: ItemTier, greatness: number, count: number }> } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
+export type ProfileDopesQuery = {
+  __typename?: 'Query';
+  dopes: {
+    __typename?: 'DopeConnection';
+    totalCount: number;
+    edges?:
+      | Array<
+          | {
+              __typename?: 'DopeEdge';
+              node?:
+                | {
+                    __typename?: 'Dope';
+                    id: string;
+                    rank: number;
+                    score: number;
+                    claimed: boolean;
+                    opened: boolean;
+                    items: Array<{
+                      __typename?: 'Item';
+                      id: string;
+                      fullname: string;
+                      type: ItemType;
+                      name: string;
+                      tier: ItemTier;
+                      greatness: number;
+                      count: number;
+                    }>;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: any | null | undefined; hasNextPage: boolean };
+  };
+};
 
 export type ProfileHustlersQueryVariables = Exact<{
   where?: InputMaybe<HustlerWhereInput>;
@@ -1373,8 +1954,35 @@ export type ProfileHustlersQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
 }>;
 
-
-export type ProfileHustlersQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', totalCount: number, edges?: Array<{ __typename?: 'HustlerEdge', node?: { __typename?: 'Hustler', id: string, name?: string | null | undefined, svg?: string | null | undefined, title?: string | null | undefined, type: HustlerType } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
+export type ProfileHustlersQuery = {
+  __typename?: 'Query';
+  hustlers: {
+    __typename?: 'HustlerConnection';
+    totalCount: number;
+    edges?:
+      | Array<
+          | {
+              __typename?: 'HustlerEdge';
+              node?:
+                | {
+                    __typename?: 'Hustler';
+                    id: string;
+                    name?: string | null | undefined;
+                    svg?: string | null | undefined;
+                    title?: string | null | undefined;
+                    type: HustlerType;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: any | null | undefined; hasNextPage: boolean };
+  };
+};
 
 export type ProfileGearQueryVariables = Exact<{
   where?: InputMaybe<WalletItemsWhereInput>;
@@ -1382,8 +1990,46 @@ export type ProfileGearQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
 }>;
 
-
-export type ProfileGearQuery = { __typename?: 'Query', walletItems: { __typename?: 'WalletItemsConnection', totalCount: number, edges?: Array<{ __typename?: 'WalletItemsEdge', node?: { __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, count: number, fullname: string, name: string, svg?: string | null | undefined, suffix?: string | null | undefined, type: ItemType, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
+export type ProfileGearQuery = {
+  __typename?: 'Query';
+  walletItems: {
+    __typename?: 'WalletItemsConnection';
+    totalCount: number;
+    edges?:
+      | Array<
+          | {
+              __typename?: 'WalletItemsEdge';
+              node?:
+                | {
+                    __typename?: 'WalletItems';
+                    id: string;
+                    balance: any;
+                    item: {
+                      __typename?: 'Item';
+                      id: string;
+                      count: number;
+                      fullname: string;
+                      name: string;
+                      svg?: string | null | undefined;
+                      suffix?: string | null | undefined;
+                      type: ItemType;
+                      base?:
+                        | { __typename?: 'Item'; svg?: string | null | undefined }
+                        | null
+                        | undefined;
+                    };
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: any | null | undefined; hasNextPage: boolean };
+  };
+};
 
 export type SearchDopeQueryVariables = Exact<{
   query: Scalars['String'];
@@ -1395,16 +2041,152 @@ export type SearchDopeQueryVariables = Exact<{
   where?: InputMaybe<SearchWhereInput>;
 }>;
 
-
-export type SearchDopeQuery = { __typename?: 'Query', search: { __typename?: 'SearchConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'SearchEdge', node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, lastSale?: { __typename?: 'Listing', inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined, listings?: Array<{ __typename?: 'Listing', active: boolean, inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined> | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> | null | undefined } };
+export type SearchDopeQuery = {
+  __typename?: 'Query';
+  search: {
+    __typename?: 'SearchConnection';
+    totalCount: number;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: any | null | undefined;
+      endCursor?: any | null | undefined;
+    };
+    edges?:
+      | Array<
+          | {
+              __typename?: 'SearchEdge';
+              node?:
+                | {
+                    __typename?: 'Dope';
+                    id: string;
+                    claimed: boolean;
+                    opened: boolean;
+                    score: number;
+                    rank: number;
+                    lastSale?:
+                      | {
+                          __typename?: 'Listing';
+                          inputs: Array<
+                            | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
+                            | null
+                            | undefined
+                          >;
+                        }
+                      | null
+                      | undefined;
+                    listings?:
+                      | Array<
+                          | {
+                              __typename?: 'Listing';
+                              active: boolean;
+                              inputs: Array<
+                                | {
+                                    __typename?: 'Amount';
+                                    amount: any;
+                                    id: string;
+                                    type: AmountType;
+                                  }
+                                | null
+                                | undefined
+                              >;
+                            }
+                          | null
+                          | undefined
+                        >
+                      | null
+                      | undefined;
+                    items: Array<{
+                      __typename?: 'Item';
+                      id: string;
+                      fullname: string;
+                      type: ItemType;
+                      name: string;
+                      namePrefix?: string | null | undefined;
+                      nameSuffix?: string | null | undefined;
+                      suffix?: string | null | undefined;
+                      augmented?: boolean | null | undefined;
+                      tier: ItemTier;
+                      greatness: number;
+                      count: number;
+                    }>;
+                  }
+                | { __typename?: 'Hustler' }
+                | { __typename?: 'Item' }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+};
 
 export type WalletQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
 }>;
 
-
-export type WalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> }> } | null | undefined } | null | undefined> | null | undefined } };
-
+export type WalletQuery = {
+  __typename?: 'Query';
+  wallets: {
+    __typename?: 'WalletConnection';
+    edges?:
+      | Array<
+          | {
+              __typename?: 'WalletEdge';
+              node?:
+                | {
+                    __typename?: 'Wallet';
+                    id: string;
+                    paper: any;
+                    hustlers: Array<{
+                      __typename?: 'Hustler';
+                      id: string;
+                      title?: string | null | undefined;
+                      name?: string | null | undefined;
+                    }>;
+                    items: Array<{
+                      __typename?: 'WalletItems';
+                      id: string;
+                      balance: any;
+                      item: { __typename?: 'Item'; id: string; name: string };
+                    }>;
+                    dopes: Array<{
+                      __typename?: 'Dope';
+                      id: string;
+                      claimed: boolean;
+                      opened: boolean;
+                      score: number;
+                      rank: number;
+                      items: Array<{
+                        __typename?: 'Item';
+                        id: string;
+                        fullname: string;
+                        type: ItemType;
+                        name: string;
+                        namePrefix?: string | null | undefined;
+                        nameSuffix?: string | null | undefined;
+                        suffix?: string | null | undefined;
+                        augmented?: boolean | null | undefined;
+                        tier: ItemTier;
+                        greatness: number;
+                        count: number;
+                      }>;
+                    }>;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+};
 
 export const AllHustlersDocument = `
     query AllHustlers($after: Cursor, $first: Int, $before: Cursor, $last: Int, $orderBy: HustlerOrder, $where: HustlerWhereInput) {
@@ -1556,31 +2338,29 @@ export const AllHustlersDocument = `
   }
 }
     `;
-export const useAllHustlersQuery = <
-      TData = AllHustlersQuery,
-      TError = unknown
-    >(
-      variables?: AllHustlersQueryVariables,
-      options?: UseQueryOptions<AllHustlersQuery, TError, TData>
-    ) =>
-    useQuery<AllHustlersQuery, TError, TData>(
-      variables === undefined ? ['AllHustlers'] : ['AllHustlers', variables],
-      useFetchData<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteAllHustlersQuery = <
-      TData = AllHustlersQuery,
-      TError = unknown
-    >(
-      variables?: AllHustlersQueryVariables,
-      options?: UseInfiniteQueryOptions<AllHustlersQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument)
-    return useInfiniteQuery<AllHustlersQuery, TError, TData>(
-      variables === undefined ? ['AllHustlers.infinite'] : ['AllHustlers.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useAllHustlersQuery = <TData = AllHustlersQuery, TError = unknown>(
+  variables?: AllHustlersQueryVariables,
+  options?: UseQueryOptions<AllHustlersQuery, TError, TData>,
+) =>
+  useQuery<AllHustlersQuery, TError, TData>(
+    variables === undefined ? ['AllHustlers'] : ['AllHustlers', variables],
+    useFetchData<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteAllHustlersQuery = <TData = AllHustlersQuery, TError = unknown>(
+  variables?: AllHustlersQueryVariables,
+  options?: UseInfiniteQueryOptions<AllHustlersQuery, TError, TData>,
+) => {
+  const query = useFetchData<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument);
+  return useInfiniteQuery<AllHustlersQuery, TError, TData>(
+    variables === undefined ? ['AllHustlers.infinite'] : ['AllHustlers.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
 
 export const DopesDocument = `
     query Dopes($after: Cursor, $first: Int, $before: Cursor, $last: Int, $orderBy: DopeOrder, $where: DopeWhereInput) {
@@ -1645,31 +2425,26 @@ export const DopesDocument = `
   }
 }
     `;
-export const useDopesQuery = <
-      TData = DopesQuery,
-      TError = unknown
-    >(
-      variables?: DopesQueryVariables,
-      options?: UseQueryOptions<DopesQuery, TError, TData>
-    ) =>
-    useQuery<DopesQuery, TError, TData>(
-      variables === undefined ? ['Dopes'] : ['Dopes', variables],
-      useFetchData<DopesQuery, DopesQueryVariables>(DopesDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteDopesQuery = <
-      TData = DopesQuery,
-      TError = unknown
-    >(
-      variables?: DopesQueryVariables,
-      options?: UseInfiniteQueryOptions<DopesQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<DopesQuery, DopesQueryVariables>(DopesDocument)
-    return useInfiniteQuery<DopesQuery, TError, TData>(
-      variables === undefined ? ['Dopes.infinite'] : ['Dopes.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useDopesQuery = <TData = DopesQuery, TError = unknown>(
+  variables?: DopesQueryVariables,
+  options?: UseQueryOptions<DopesQuery, TError, TData>,
+) =>
+  useQuery<DopesQuery, TError, TData>(
+    variables === undefined ? ['Dopes'] : ['Dopes', variables],
+    useFetchData<DopesQuery, DopesQueryVariables>(DopesDocument).bind(null, variables),
+    options,
+  );
+export const useInfiniteDopesQuery = <TData = DopesQuery, TError = unknown>(
+  variables?: DopesQueryVariables,
+  options?: UseInfiniteQueryOptions<DopesQuery, TError, TData>,
+) => {
+  const query = useFetchData<DopesQuery, DopesQueryVariables>(DopesDocument);
+  return useInfiniteQuery<DopesQuery, TError, TData>(
+    variables === undefined ? ['Dopes.infinite'] : ['Dopes.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
 
 export const HustlerDocument = `
     query Hustler($where: HustlerWhereInput) {
@@ -1816,31 +2591,26 @@ export const HustlerDocument = `
   }
 }
     `;
-export const useHustlerQuery = <
-      TData = HustlerQuery,
-      TError = unknown
-    >(
-      variables?: HustlerQueryVariables,
-      options?: UseQueryOptions<HustlerQuery, TError, TData>
-    ) =>
-    useQuery<HustlerQuery, TError, TData>(
-      variables === undefined ? ['Hustler'] : ['Hustler', variables],
-      useFetchData<HustlerQuery, HustlerQueryVariables>(HustlerDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteHustlerQuery = <
-      TData = HustlerQuery,
-      TError = unknown
-    >(
-      variables?: HustlerQueryVariables,
-      options?: UseInfiniteQueryOptions<HustlerQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<HustlerQuery, HustlerQueryVariables>(HustlerDocument)
-    return useInfiniteQuery<HustlerQuery, TError, TData>(
-      variables === undefined ? ['Hustler.infinite'] : ['Hustler.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useHustlerQuery = <TData = HustlerQuery, TError = unknown>(
+  variables?: HustlerQueryVariables,
+  options?: UseQueryOptions<HustlerQuery, TError, TData>,
+) =>
+  useQuery<HustlerQuery, TError, TData>(
+    variables === undefined ? ['Hustler'] : ['Hustler', variables],
+    useFetchData<HustlerQuery, HustlerQueryVariables>(HustlerDocument).bind(null, variables),
+    options,
+  );
+export const useInfiniteHustlerQuery = <TData = HustlerQuery, TError = unknown>(
+  variables?: HustlerQueryVariables,
+  options?: UseInfiniteQueryOptions<HustlerQuery, TError, TData>,
+) => {
+  const query = useFetchData<HustlerQuery, HustlerQueryVariables>(HustlerDocument);
+  return useInfiniteQuery<HustlerQuery, TError, TData>(
+    variables === undefined ? ['Hustler.infinite'] : ['Hustler.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
 
 export const HustlersWalletDocument = `
     query HustlersWallet($where: WalletWhereInput) {
@@ -1864,31 +2634,31 @@ export const HustlersWalletDocument = `
   }
 }
     `;
-export const useHustlersWalletQuery = <
-      TData = HustlersWalletQuery,
-      TError = unknown
-    >(
-      variables?: HustlersWalletQueryVariables,
-      options?: UseQueryOptions<HustlersWalletQuery, TError, TData>
-    ) =>
-    useQuery<HustlersWalletQuery, TError, TData>(
-      variables === undefined ? ['HustlersWallet'] : ['HustlersWallet', variables],
-      useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteHustlersWalletQuery = <
-      TData = HustlersWalletQuery,
-      TError = unknown
-    >(
-      variables?: HustlersWalletQueryVariables,
-      options?: UseInfiniteQueryOptions<HustlersWalletQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument)
-    return useInfiniteQuery<HustlersWalletQuery, TError, TData>(
-      variables === undefined ? ['HustlersWallet.infinite'] : ['HustlersWallet.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useHustlersWalletQuery = <TData = HustlersWalletQuery, TError = unknown>(
+  variables?: HustlersWalletQueryVariables,
+  options?: UseQueryOptions<HustlersWalletQuery, TError, TData>,
+) =>
+  useQuery<HustlersWalletQuery, TError, TData>(
+    variables === undefined ? ['HustlersWallet'] : ['HustlersWallet', variables],
+    useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(HustlersWalletDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteHustlersWalletQuery = <TData = HustlersWalletQuery, TError = unknown>(
+  variables?: HustlersWalletQueryVariables,
+  options?: UseInfiniteQueryOptions<HustlersWalletQuery, TError, TData>,
+) => {
+  const query = useFetchData<HustlersWalletQuery, HustlersWalletQueryVariables>(
+    HustlersWalletDocument,
+  );
+  return useInfiniteQuery<HustlersWalletQuery, TError, TData>(
+    variables === undefined ? ['HustlersWallet.infinite'] : ['HustlersWallet.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
 
 export const ItemDocument = `
     query Item($where: ItemWhereInput) {
@@ -1906,31 +2676,26 @@ export const ItemDocument = `
   }
 }
     `;
-export const useItemQuery = <
-      TData = ItemQuery,
-      TError = unknown
-    >(
-      variables?: ItemQueryVariables,
-      options?: UseQueryOptions<ItemQuery, TError, TData>
-    ) =>
-    useQuery<ItemQuery, TError, TData>(
-      variables === undefined ? ['Item'] : ['Item', variables],
-      useFetchData<ItemQuery, ItemQueryVariables>(ItemDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteItemQuery = <
-      TData = ItemQuery,
-      TError = unknown
-    >(
-      variables?: ItemQueryVariables,
-      options?: UseInfiniteQueryOptions<ItemQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<ItemQuery, ItemQueryVariables>(ItemDocument)
-    return useInfiniteQuery<ItemQuery, TError, TData>(
-      variables === undefined ? ['Item.infinite'] : ['Item.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useItemQuery = <TData = ItemQuery, TError = unknown>(
+  variables?: ItemQueryVariables,
+  options?: UseQueryOptions<ItemQuery, TError, TData>,
+) =>
+  useQuery<ItemQuery, TError, TData>(
+    variables === undefined ? ['Item'] : ['Item', variables],
+    useFetchData<ItemQuery, ItemQueryVariables>(ItemDocument).bind(null, variables),
+    options,
+  );
+export const useInfiniteItemQuery = <TData = ItemQuery, TError = unknown>(
+  variables?: ItemQueryVariables,
+  options?: UseInfiniteQueryOptions<ItemQuery, TError, TData>,
+) => {
+  const query = useFetchData<ItemQuery, ItemQueryVariables>(ItemDocument);
+  return useInfiniteQuery<ItemQuery, TError, TData>(
+    variables === undefined ? ['Item.infinite'] : ['Item.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
 
 export const ProfileDopesDocument = `
     query ProfileDopes($where: DopeWhereInput, $first: Int, $after: Cursor) {
@@ -1962,31 +2727,29 @@ export const ProfileDopesDocument = `
   }
 }
     `;
-export const useProfileDopesQuery = <
-      TData = ProfileDopesQuery,
-      TError = unknown
-    >(
-      variables?: ProfileDopesQueryVariables,
-      options?: UseQueryOptions<ProfileDopesQuery, TError, TData>
-    ) =>
-    useQuery<ProfileDopesQuery, TError, TData>(
-      variables === undefined ? ['ProfileDopes'] : ['ProfileDopes', variables],
-      useFetchData<ProfileDopesQuery, ProfileDopesQueryVariables>(ProfileDopesDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteProfileDopesQuery = <
-      TData = ProfileDopesQuery,
-      TError = unknown
-    >(
-      variables?: ProfileDopesQueryVariables,
-      options?: UseInfiniteQueryOptions<ProfileDopesQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<ProfileDopesQuery, ProfileDopesQueryVariables>(ProfileDopesDocument)
-    return useInfiniteQuery<ProfileDopesQuery, TError, TData>(
-      variables === undefined ? ['ProfileDopes.infinite'] : ['ProfileDopes.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useProfileDopesQuery = <TData = ProfileDopesQuery, TError = unknown>(
+  variables?: ProfileDopesQueryVariables,
+  options?: UseQueryOptions<ProfileDopesQuery, TError, TData>,
+) =>
+  useQuery<ProfileDopesQuery, TError, TData>(
+    variables === undefined ? ['ProfileDopes'] : ['ProfileDopes', variables],
+    useFetchData<ProfileDopesQuery, ProfileDopesQueryVariables>(ProfileDopesDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteProfileDopesQuery = <TData = ProfileDopesQuery, TError = unknown>(
+  variables?: ProfileDopesQueryVariables,
+  options?: UseInfiniteQueryOptions<ProfileDopesQuery, TError, TData>,
+) => {
+  const query = useFetchData<ProfileDopesQuery, ProfileDopesQueryVariables>(ProfileDopesDocument);
+  return useInfiniteQuery<ProfileDopesQuery, TError, TData>(
+    variables === undefined ? ['ProfileDopes.infinite'] : ['ProfileDopes.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
 
 export const ProfileHustlersDocument = `
     query ProfileHustlers($where: HustlerWhereInput, $first: Int, $after: Cursor) {
@@ -2008,31 +2771,33 @@ export const ProfileHustlersDocument = `
   }
 }
     `;
-export const useProfileHustlersQuery = <
-      TData = ProfileHustlersQuery,
-      TError = unknown
-    >(
-      variables?: ProfileHustlersQueryVariables,
-      options?: UseQueryOptions<ProfileHustlersQuery, TError, TData>
-    ) =>
-    useQuery<ProfileHustlersQuery, TError, TData>(
-      variables === undefined ? ['ProfileHustlers'] : ['ProfileHustlers', variables],
-      useFetchData<ProfileHustlersQuery, ProfileHustlersQueryVariables>(ProfileHustlersDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteProfileHustlersQuery = <
-      TData = ProfileHustlersQuery,
-      TError = unknown
-    >(
-      variables?: ProfileHustlersQueryVariables,
-      options?: UseInfiniteQueryOptions<ProfileHustlersQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<ProfileHustlersQuery, ProfileHustlersQueryVariables>(ProfileHustlersDocument)
-    return useInfiniteQuery<ProfileHustlersQuery, TError, TData>(
-      variables === undefined ? ['ProfileHustlers.infinite'] : ['ProfileHustlers.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useProfileHustlersQuery = <TData = ProfileHustlersQuery, TError = unknown>(
+  variables?: ProfileHustlersQueryVariables,
+  options?: UseQueryOptions<ProfileHustlersQuery, TError, TData>,
+) =>
+  useQuery<ProfileHustlersQuery, TError, TData>(
+    variables === undefined ? ['ProfileHustlers'] : ['ProfileHustlers', variables],
+    useFetchData<ProfileHustlersQuery, ProfileHustlersQueryVariables>(ProfileHustlersDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteProfileHustlersQuery = <TData = ProfileHustlersQuery, TError = unknown>(
+  variables?: ProfileHustlersQueryVariables,
+  options?: UseInfiniteQueryOptions<ProfileHustlersQuery, TError, TData>,
+) => {
+  const query = useFetchData<ProfileHustlersQuery, ProfileHustlersQueryVariables>(
+    ProfileHustlersDocument,
+  );
+  return useInfiniteQuery<ProfileHustlersQuery, TError, TData>(
+    variables === undefined
+      ? ['ProfileHustlers.infinite']
+      : ['ProfileHustlers.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
 
 export const ProfileGearDocument = `
     query ProfileGear($where: WalletItemsWhereInput, $first: Int, $after: Cursor) {
@@ -2063,31 +2828,29 @@ export const ProfileGearDocument = `
   }
 }
     `;
-export const useProfileGearQuery = <
-      TData = ProfileGearQuery,
-      TError = unknown
-    >(
-      variables?: ProfileGearQueryVariables,
-      options?: UseQueryOptions<ProfileGearQuery, TError, TData>
-    ) =>
-    useQuery<ProfileGearQuery, TError, TData>(
-      variables === undefined ? ['ProfileGear'] : ['ProfileGear', variables],
-      useFetchData<ProfileGearQuery, ProfileGearQueryVariables>(ProfileGearDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteProfileGearQuery = <
-      TData = ProfileGearQuery,
-      TError = unknown
-    >(
-      variables?: ProfileGearQueryVariables,
-      options?: UseInfiniteQueryOptions<ProfileGearQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<ProfileGearQuery, ProfileGearQueryVariables>(ProfileGearDocument)
-    return useInfiniteQuery<ProfileGearQuery, TError, TData>(
-      variables === undefined ? ['ProfileGear.infinite'] : ['ProfileGear.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useProfileGearQuery = <TData = ProfileGearQuery, TError = unknown>(
+  variables?: ProfileGearQueryVariables,
+  options?: UseQueryOptions<ProfileGearQuery, TError, TData>,
+) =>
+  useQuery<ProfileGearQuery, TError, TData>(
+    variables === undefined ? ['ProfileGear'] : ['ProfileGear', variables],
+    useFetchData<ProfileGearQuery, ProfileGearQueryVariables>(ProfileGearDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteProfileGearQuery = <TData = ProfileGearQuery, TError = unknown>(
+  variables?: ProfileGearQueryVariables,
+  options?: UseInfiniteQueryOptions<ProfileGearQuery, TError, TData>,
+) => {
+  const query = useFetchData<ProfileGearQuery, ProfileGearQueryVariables>(ProfileGearDocument);
+  return useInfiniteQuery<ProfileGearQuery, TError, TData>(
+    variables === undefined ? ['ProfileGear.infinite'] : ['ProfileGear.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
 
 export const SearchDopeDocument = `
     query SearchDope($query: String!, $after: Cursor, $first: Int, $before: Cursor, $last: Int, $orderBy: SearchOrder, $where: SearchWhereInput) {
@@ -2149,31 +2912,29 @@ export const SearchDopeDocument = `
   }
 }
     `;
-export const useSearchDopeQuery = <
-      TData = SearchDopeQuery,
-      TError = unknown
-    >(
-      variables: SearchDopeQueryVariables,
-      options?: UseQueryOptions<SearchDopeQuery, TError, TData>
-    ) =>
-    useQuery<SearchDopeQuery, TError, TData>(
-      ['SearchDope', variables],
-      useFetchData<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteSearchDopeQuery = <
-      TData = SearchDopeQuery,
-      TError = unknown
-    >(
-      variables: SearchDopeQueryVariables,
-      options?: UseInfiniteQueryOptions<SearchDopeQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument)
-    return useInfiniteQuery<SearchDopeQuery, TError, TData>(
-      ['SearchDope.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useSearchDopeQuery = <TData = SearchDopeQuery, TError = unknown>(
+  variables: SearchDopeQueryVariables,
+  options?: UseQueryOptions<SearchDopeQuery, TError, TData>,
+) =>
+  useQuery<SearchDopeQuery, TError, TData>(
+    ['SearchDope', variables],
+    useFetchData<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteSearchDopeQuery = <TData = SearchDopeQuery, TError = unknown>(
+  variables: SearchDopeQueryVariables,
+  options?: UseInfiniteQueryOptions<SearchDopeQuery, TError, TData>,
+) => {
+  const query = useFetchData<SearchDopeQuery, SearchDopeQueryVariables>(SearchDopeDocument);
+  return useInfiniteQuery<SearchDopeQuery, TError, TData>(
+    ['SearchDope.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
 
 export const WalletDocument = `
     query Wallet($where: WalletWhereInput) {
@@ -2220,28 +2981,23 @@ export const WalletDocument = `
   }
 }
     `;
-export const useWalletQuery = <
-      TData = WalletQuery,
-      TError = unknown
-    >(
-      variables?: WalletQueryVariables,
-      options?: UseQueryOptions<WalletQuery, TError, TData>
-    ) =>
-    useQuery<WalletQuery, TError, TData>(
-      variables === undefined ? ['Wallet'] : ['Wallet', variables],
-      useFetchData<WalletQuery, WalletQueryVariables>(WalletDocument).bind(null, variables),
-      options
-    );
-export const useInfiniteWalletQuery = <
-      TData = WalletQuery,
-      TError = unknown
-    >(
-      variables?: WalletQueryVariables,
-      options?: UseInfiniteQueryOptions<WalletQuery, TError, TData>
-    ) =>{
-    const query = useFetchData<WalletQuery, WalletQueryVariables>(WalletDocument)
-    return useInfiniteQuery<WalletQuery, TError, TData>(
-      variables === undefined ? ['Wallet.infinite'] : ['Wallet.infinite', variables],
-      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
-      options
-    )};
+export const useWalletQuery = <TData = WalletQuery, TError = unknown>(
+  variables?: WalletQueryVariables,
+  options?: UseQueryOptions<WalletQuery, TError, TData>,
+) =>
+  useQuery<WalletQuery, TError, TData>(
+    variables === undefined ? ['Wallet'] : ['Wallet', variables],
+    useFetchData<WalletQuery, WalletQueryVariables>(WalletDocument).bind(null, variables),
+    options,
+  );
+export const useInfiniteWalletQuery = <TData = WalletQuery, TError = unknown>(
+  variables?: WalletQueryVariables,
+  options?: UseInfiniteQueryOptions<WalletQuery, TError, TData>,
+) => {
+  const query = useFetchData<WalletQuery, WalletQueryVariables>(WalletDocument);
+  return useInfiniteQuery<WalletQuery, TError, TData>(
+    variables === undefined ? ['Wallet.infinite'] : ['Wallet.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};

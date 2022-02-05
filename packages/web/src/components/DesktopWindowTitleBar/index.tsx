@@ -19,6 +19,7 @@ type WindowTitleBarProps = {
   loadingBalance?: boolean;
   children: React.ReactNode;
   windowRef?: HTMLDivElement | null;
+  hideWalletAddress?: boolean;
 };
 
 const DesktopWindowTitleBar = ({
@@ -27,7 +28,8 @@ const DesktopWindowTitleBar = ({
   isFullScreen,
   toggleFullScreen,
   children,
-  windowRef
+  windowRef,
+  hideWalletAddress = false,
 }: WindowTitleBarProps) => {
   const [ensAddress, setEnsAddress] = useState<string | null>(null);
   const { account, library } = useWeb3React();
@@ -43,7 +45,7 @@ const DesktopWindowTitleBar = ({
   }, [paper, account]);
 
   const closeWindow = (): void => {
-    if(router.pathname === '/' && windowRef) {
+    if (router.pathname === '/' && windowRef) {
       // Close desktop window if one is open by default on home page
       windowRef.style.display = 'none';
     } else {
@@ -52,6 +54,9 @@ const DesktopWindowTitleBar = ({
   };
 
   useEffect(() => {
+    // No sense to do this work if no wallet address shown
+    if (hideWalletAddress) return;
+
     const getEns = async () => {
       if (!account) {
         return null;
@@ -69,7 +74,7 @@ const DesktopWindowTitleBar = ({
     };
 
     getEns();
-  }, [account, library]);
+  }, [account, library, hideWalletAddress]);
 
   return (
     <div className="windowTitleBar">
@@ -82,30 +87,32 @@ const DesktopWindowTitleBar = ({
             {title || 'UNTITLED'}
           </TitleBarDescription>
           <RightColumn>
-            <div
-              css={css`
-                cursor: pointer;
-                cursor: hand;
-                white-space: nowrap;
-                display: flex;
-              `}
-              onClick={() => router.replace('/wallet')}
-            >
-              {account && (
-                <>
-                  {balance === undefined ? (
-                    <div>__.__ $PAPER</div>
-                  ) : (
-                    <div>
-                      {balance ? formatLargeNumber(Number(ethers.utils.formatEther(balance))) : 0}{' '}
-                      $PAPER
-                    </div>
-                  )}
-                  <span>|</span>
-                  <ENSAddressWrapper>{ensAddress || getShortAddress(account)}</ENSAddressWrapper>
-                </>
-              )}
-            </div>
+            {!hideWalletAddress && (
+              <div
+                css={css`
+                  cursor: pointer;
+                  cursor: hand;
+                  white-space: nowrap;
+                  display: flex;
+                `}
+                onClick={() => router.replace('/wallet')}
+              >
+                {account && (
+                  <>
+                    {balance === undefined ? (
+                      <div>__.__ $PAPER</div>
+                    ) : (
+                      <div>
+                        {balance ? formatLargeNumber(Number(ethers.utils.formatEther(balance))) : 0}{' '}
+                        $PAPER
+                      </div>
+                    )}
+                    <span>|</span>
+                    <ENSAddressWrapper>{ensAddress || getShortAddress(account)}</ENSAddressWrapper>
+                  </>
+                )}
+              </div>
+            )}
             {!isTouchDevice && (
               <DesktopWindowTitleButton
                 icon={isFullScreen ? 'window-restore' : 'window-maximize'}

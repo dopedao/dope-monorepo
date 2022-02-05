@@ -1,11 +1,11 @@
 import Head from 'components/Head';
-import AboutContent from 'components/AboutContent';
+import AboutWindow from 'components/AboutWindow';
 
 export default function About() {
   return (
     <>
       <Head title={'About DOPE WARS NFT'} />
-      <AboutContent />
+      <AboutWindow />
     </>
   );
 }

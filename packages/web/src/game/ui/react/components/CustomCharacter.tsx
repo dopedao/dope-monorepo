@@ -1,16 +1,22 @@
-import { Button, ChakraProvider, Container, FormControl, FormLabel, Select } from "@chakra-ui/react";
-import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
-import ReactDOMServer from "react-dom/server";
-import ReactDOM from "react-dom";
-import DesktopWindow from "components/DesktopWindow";
-import AppWindow from "components/AppWindow";
+import {
+  Button,
+  ChakraProvider,
+  Container,
+  FormControl,
+  FormLabel,
+  Select,
+} from '@chakra-ui/react';
+import { Base, Categories, CharacterCategories, SpritesMap } from 'game/constants/Sprites';
+import ReactDOMServer from 'react-dom/server';
+import ReactDOM from 'react-dom';
+import DesktopWindow from 'components/DesktopWindow';
+import AppWindow from 'components/AppWindow';
 
-export default function CustomCharacter(props: {gameWidth: number})
-{
-    return (
-            <DesktopWindow title="Character customization" width={props.gameWidth / 2}>
-                <div style={{backgroundColor: "white"}}>
-            {/* {        <Container style={{marginBottom: "5vh", marginTop: "5vh"}}>
+export default function CustomCharacter(props: { gameWidth: number }) {
+  return (
+    <DesktopWindow title="Character customization" width={props.gameWidth / 2}>
+      <div style={{ backgroundColor: 'white' }}>
+        {/* {        <Container style={{marginBottom: "5vh", marginTop: "5vh"}}>
                         <FormControl>
                             <FormLabel htmlFor='clothes'>Clothes</FormLabel>
                             <Select id='clothes' placeholder='Select some clothes'>
@@ -30,8 +36,8 @@ export default function CustomCharacter(props: {gameWidth: number})
                             </Select>
                         </FormControl>
                     </Container>} */}
-                    <h1>Hello</h1>
-                </div>
-            </DesktopWindow>
-    );   
+        <h1>Hello</h1>
+      </div>
+    </DesktopWindow>
+  );
 }

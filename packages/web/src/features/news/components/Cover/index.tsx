@@ -9,7 +9,17 @@ type CoverProps = {
 };
 
 const Cover = ({ title, src, slug }: CoverProps) => {
-  const image = <Image src={src} alt={`Cover Image for ${title}`} css={css``} />;
+  const image = (
+    <Image
+      src={src}
+      alt={`Cover Image for ${title}`}
+      css={css`
+        filter: saturate(0);
+        cursor: pointer;
+        cursor: hand;
+      `}
+    />
+  );
 
   return (
     <div className="sm:mx-0">

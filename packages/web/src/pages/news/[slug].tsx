@@ -1,17 +1,18 @@
-import Link from 'next/link';
-import styled from '@emotion/styled';
-import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
-import { Image } from '@chakra-ui/image';
-import ErrorPage from 'next/error';
+import { css } from '@emotion/react';
 import { getPostBySlug, getAllPosts, markdownToHtml } from 'utils/lib';
-import Head from 'components/Head';
-import { PostType } from 'features/news/types';
-import PostHeader from 'features/news/components/PostHeader';
-import PostBody from 'features/news/components/PostBody';
 import { media } from 'ui/styles/mixins';
+import { PostType } from 'features/news/types';
+import { useRouter } from 'next/router';
 import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
+import ArrowBack from 'ui/svg/ArrowBack';
+import ErrorPage from 'next/error';
+import Head from 'components/Head';
+import Link from 'next/link';
+import PostBody from 'features/news/components/PostBody';
+import PostHeader from 'features/news/components/PostHeader';
+import styled from '@emotion/styled';
 
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
@@ -21,6 +22,8 @@ const Container = styled.div`
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
+  display: flex;
+  justify-content: center;
   ${media.tablet`
     padding: 32px;
   `}
@@ -34,7 +37,7 @@ const Nav = () => (
   <AppWindowNavBar>
     <Link href="/news" passHref>
       <Button variant="navBar">
-        <Image src="/images/icon/arrow-back.svg" width="16px" alt="Arrow" />
+        <ArrowBack color="white" size={16} />
         Back to News
       </Button>
     </Link>
@@ -47,14 +50,18 @@ const Post = ({ post }: PostProps) => {
     return <ErrorPage statusCode={404} />;
   }
   return (
-    <AppWindow padBody={false} navbar={<Nav />} fullScreen>
+    <AppWindow padBody={false} navbar={<Nav />}>
       {post.ogImage && <Head ogImage={post.ogImage.url} title={post.title} />}
       <Container>
         {router.isFallback ? (
           <h4>Loading…</h4>
         ) : (
           <>
-            <article>
+            <article
+              css={css`
+                max-width: 680px;
+              `}
+            >
               <PostHeader
                 title={post.title}
                 coverImage={post.coverImage}

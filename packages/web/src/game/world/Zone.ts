@@ -1,57 +1,57 @@
-import Hustler from "game/entities/Hustler";
-import EventHandler from "game/handlers/EventHandler";
+import Hustler from 'game/entities/Hustler';
+import EventHandler from 'game/handlers/EventHandler';
 
-export default class Zone
-{
-    private _body: MatterJS.BodyType;
-    
-    private scene: Phaser.Scene;
-    private objects?: Array<Phaser.GameObjects.GameObject>;
+export default class Zone {
+  private _body: MatterJS.BodyType;
 
-    private _inside: boolean = false;
+  private scene: Phaser.Scene;
+  private objects?: Array<Phaser.GameObjects.GameObject>;
 
-    // callbacks
-    private onEnter?: () => void;
-    private onExit?: () => void;
+  private _inside: boolean = false;
 
-    get body() { return this._body; }
-    get inside() { return this._inside; }
+  // callbacks
+  private onEnter?: () => void;
+  private onExit?: () => void;
 
-    constructor(body: MatterJS.BodyType, scene: Phaser.Scene, objects?: Array<Phaser.GameObjects.GameObject>, onEnter?: () => void, onExit?: () => void)
-    {
-        this._body = body;
+  get body() {
+    return this._body;
+  }
+  get inside() {
+    return this._inside;
+  }
 
-        // set the body as being a sensor so that it doesn't collide with anything
-        this.body.isSensor = true;
+  constructor(
+    body: MatterJS.BodyType,
+    scene: Phaser.Scene,
+    objects?: Array<Phaser.GameObjects.GameObject>,
+    onEnter?: () => void,
+    onExit?: () => void,
+  ) {
+    this._body = body;
 
-        this.scene = scene;
-        this.objects = objects;
+    // set the body as being a sensor so that it doesn't collide with anything
+    this.body.isSensor = true;
 
-        this.onEnter = onEnter;
-        this.onExit = onExit;
+    this.scene = scene;
+    this.objects = objects;
+
+    this.onEnter = onEnter;
+    this.onExit = onExit;
+  }
+
+  overlap(other: Array<MatterJS.BodyType>) {
+    return this.scene.matter.overlap(this.body, other);
+  }
+
+  update() {
+    if (!this.objects) return;
+
+    if (!this.inside && this.scene.matter.overlap(this.body, this.objects)) {
+      if (this.onEnter) this.onEnter();
+      this._inside = true;
+    } else if (this.inside && !this.scene.matter.overlap(this.body, this.objects)) {
+      if (this.onExit) this.onExit();
+      this._inside = false;
     }
-
-    overlap(other: Array<MatterJS.BodyType>)
-    {
-        return this.scene.matter.overlap(this.body, other);
-    }
-
-    update()
-    {
-        if (!this.objects)
-            return;
-
-        if (!this.inside && this.scene.matter.overlap(this.body, this.objects))
-        {
-            if (this.onEnter)
-                this.onEnter();
-            this._inside = true;
-        }
-        else if (this.inside && !this.scene.matter.overlap(this.body, this.objects))
-        {
-            if (this.onExit)
-                this.onExit();
-            this._inside = false;
-        }
-    }
+  }
 }

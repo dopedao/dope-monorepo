@@ -1,32 +1,21 @@
 import styled from '@emotion/styled';
-import DesktopWindow from 'components/DesktopWindow';
 import Head from 'components/Head';
+import NewsWindow from 'features/news/components/NewsWindow';
 import { PostType } from 'features/news/types';
-import { media } from 'ui/styles/mixins';
 import { getAllPosts } from 'utils/lib';
-import DopeNewsCast from 'features/news/components/DopeNewsCast';
-
-const Container = styled.div`
-  height: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
-`;
 
 const TITLE = 'The Daily Dope';
 
-type NewsProps = {
-  allPosts: PostType[];
-};
-
-const News = ({ allPosts }: NewsProps) => (
-  <DesktopWindow title={TITLE}>
+const News = ({ allPosts }: { allPosts: PostType[] }) => (
+  <>
     <Head title={TITLE} />
-    <Container>
-      <DopeNewsCast posts={allPosts} />
-    </Container>
-  </DesktopWindow>
+    <NewsWindow allPosts={allPosts} />
+  </>
 );
+export default News;
 
+// Server-side rendered with Next.js so that
+// we gather our news posts from the filesystem on server.
 export const getStaticProps = async () => {
   const allPosts = getAllPosts([
     'title',
@@ -44,5 +33,3 @@ export const getStaticProps = async () => {
     props: { allPosts },
   };
 };
-
-export default News;

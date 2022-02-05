@@ -23,12 +23,9 @@ const AppWindowOptimism = ({ children, ...rest }: AppWindowProps) => {
     return !(account && chainId !== 10 && chainId !== 69 && showNetworkAlert);
   }, [account, chainId, showNetworkAlert]);
 
-
   return (
     <AppWindow {...rest}>
-      {!onProperNetwork && 
-        <DialogSwitchNetwork networkName="Optimism" />
-      }
+      {!onProperNetwork && <DialogSwitchNetwork networkName="Optimism" />}
       {onProperNetwork && children}
     </AppWindow>
   );
