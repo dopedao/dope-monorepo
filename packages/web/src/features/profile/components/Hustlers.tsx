@@ -112,7 +112,9 @@ const Hustlers: FC = () => {
                   <PanelBody>
                     {svg && 
                       <AspectRatio ratio={1}>
-                        <Image alt="The hustler" borderRadius="md" src={svg} />
+                        <Link href={`/hustlers/${id}/flex`} passHref>
+                          <Image alt={name || 'Hustler'} borderRadius="md" src={svg} cursor="pointer" />
+                        </Link>
                       </AspectRatio>
                     }
                     <Stack mt={4}>
