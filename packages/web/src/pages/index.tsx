@@ -16,12 +16,13 @@ const IndexPage = ({ allPosts }: {allPosts: PostType[]}) => (
   <IndexWrapper>
     <Head />
     {/* <StickyNoteHustlerMint /> */}
-    <AboutWindow />
-    <NewsWindow allPosts={allPosts} />
+    <AboutWindow posX={32} posY={32} />
+    <NewsWindow allPosts={allPosts} posX={128} posY={128}  />
   </IndexWrapper>
 );
 
-// Needed for the news window
+// Server-side rendered with Next.js so that
+// we gather our news posts from the filesystem on server.
 export const getStaticProps = async () => {
   const allPosts = getAllPosts([
     'title',

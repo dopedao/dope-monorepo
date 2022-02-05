@@ -29,6 +29,8 @@ export type DesktopWindowProps = {
   children: ReactNode;
   onResize?: () => void;
   onMoved?: (position: any) => void;
+  posX?: number;
+  posY?: number;
 };
 
 const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string; height: number | string; background: string }>`
@@ -44,8 +46,6 @@ const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
   overflow-x: hidden;
   position: absolute;
-  top: 0 !important;
-  left: 0 !important;
   &.floating {
     ${media.phone`
       width: 100%;
@@ -85,6 +85,8 @@ const DesktopWindow = ({
   onResize,
   onMoved,
   scrollable,
+  posX = 0,
+  posY = 0,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const windowRef = useRef<HTMLDivElement>(null);
@@ -104,8 +106,8 @@ const DesktopWindow = ({
   const toggleFullScreen = () =>
     fullScreenHandler ? fullScreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen);
   const [windowPosition, setWindowPosition] = useState<Position>({
-    x: 0,
-    y: 0,
+    x: posX || 0,
+    y: posY || 0,
   });
 
   const updatePosition = (transformStyle: string) => {
@@ -156,7 +158,11 @@ const DesktopWindow = ({
     <ConditionalWrapper
       condition={shouldBeDraggable}
       wrap={children => (
-        <Draggable onStop={handleStop} defaultPosition={windowPosition} handle=".windowTitleBar">
+        <Draggable 
+          onStop={handleStop} 
+          defaultPosition={windowPosition} 
+          handle=".windowTitleBar"
+        >
           {children}
         </Draggable>
       )}

@@ -206,9 +206,9 @@ const BuyNow = () => (
   </div>
 );
 
-const AboutWindow = () => {
+const AboutWindow = ({...props}) => {
   return (
-    <DesktopWindow title="ABOUT.FAQ" background="#efefee" width="640px">
+    <DesktopWindow title="ABOUT.FAQ" background="#efefee" width="640px" {...props}>
       <Stack height="100%" gap="0">
         <TextBody className="markdownContainer">
           <ReactMarkdown className="markdown">{Content}</ReactMarkdown>

@@ -9,8 +9,14 @@ const Container = styled.div`
   overflow-x: hidden;
 `;
 
-const NewsWindow = ({ allPosts }: {allPosts: PostType[]}) => (
-  <DesktopWindow title="The Daily Dope">
+interface NewsWindowProps {
+  allPosts: PostType[];
+  posX?: number;
+  posY?: number;
+}
+
+const NewsWindow = ({ allPosts, posX, posY, ...props }: NewsWindowProps) => (
+  <DesktopWindow title="The Daily Dope" width={768} posX={posX} posY={posY} {...props}>
     <Container>
       <DopeNewsCast posts={allPosts} />
     </Container>
