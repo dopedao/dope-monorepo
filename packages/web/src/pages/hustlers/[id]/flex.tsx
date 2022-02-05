@@ -110,11 +110,16 @@ const Flex = () => {
               </PanelContainer>
               <PanelContainer css={css`flex:1;`}>
                 <PanelBody>
-                  <Grid templateRows="repeat(2, 1fr)" gap="0" justifyContent="center" alignItems="stretch" width="100%">
-                    <GridItem minWidth="256px">{ renderHustler(0) }</GridItem>
-                    <GridItem display="flex" justifyContent="center">
+                  <Grid templateRows="repeat(2, 1fr)" gap="8" justifyContent="center" 
+                  alignItems="stretch" width="100%">
+                    <GridItem 
+                      display="flex" 
+                      justifyContent="center"
+                      background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
+                    >
                       <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
                     </GridItem>
+                    <GridItem minWidth="256px">{ renderHustler(0) }</GridItem>
                   </Grid>
                 </PanelBody>
               </PanelContainer>
