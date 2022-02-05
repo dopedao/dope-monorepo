@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Link } from '@chakra-ui/layout';
 import StickyNote from './StickyNote';
 import { Button, Image } from '@chakra-ui/react';
+import Countdown from 'react-countdown';
 
 const StickyNoteHustlerMint = () => {
   const router = useRouter();
@@ -13,6 +14,9 @@ const StickyNoteHustlerMint = () => {
     <StickyNote background="#FFB6B6" canClose>
       <h3 css={css`margin-bottom:0px !important;`}>
         Lunar New Year Airdrop
+        <div className="smallest">
+          Ending in <Countdown date={new Date('02/15/2022')} />
+        </div>
       </h3>
       <Link href="/lunar-new-year">
         <Image 
