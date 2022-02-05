@@ -61,9 +61,10 @@ const MugshotContainer = styled.div`
 `
 
 // We receive things like 'FEMALE-BODY-2' from the API
-const getBodyIndexFromMetadata = (bodyStringFromApi: string) => {
-  const indexFromString = bodyStringFromApi.charAt(bodyStringFromApi.length-1) || '0';
-  return indexFromString;
+const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
+  if (!bodyStringFromApi) return 0;
+  const indexFromString = bodyStringFromApi.charAt(bodyStringFromApi.length-1);
+  return parseInt(indexFromString);
 }
 
 const PHRASES = [
@@ -104,9 +105,9 @@ const Flex = () => {
         name: h?.name || '',
         title: h?.title || '',
         sex: (h?.sex.toLowerCase() || 'male') as HustlerSex,
-        body: getBodyIndexFromMetadata(h?.body?.id || '')
+        body: getBodyIndexFromMetadata(h?.body?.id)
       });
-      setOnChainImage(h?.svg);
+      if(h?.svg) setOnChainImage(h?.svg);
       setItemIds([
         BigNumber.from(h.vehicle?.id), 
         BigNumber.from(h.drug?.id), 
