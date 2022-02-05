@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { BigNumber } from 'ethers';
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { getRandomHustler } from 'utils/HustlerConfig';
 import { Stack, Button, Grid, GridItem } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
@@ -32,12 +33,39 @@ const Nav = () => (
   </AppWindowNavBar>
 );
 
+const HustlerTitle = styled.h1`
+  font-family: Dope !important;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 0;
+  z-index: 2;
+  padding: 16px 32px;
+  text-align:center;
+  color: white;
+  background-color: black;
+  border: 4px solid white;
+`
+const HustlerImage = styled.div`
+  position: absolute;
+  top:-2em;
+  left:0px;
+  bottom:0px;
+  right:0px;
+`
+const MugshotContainer = styled.div`
+  position: relative;
+  height: 100%;
+  background: #f2f2f2 url(/images/hustler/mugshot_bg.png) center center / contain no-repeat;
+`
+
 const Flex = () => {
 
   const router = useRouter();
   const {id: hustlerId} = router.query;
   const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
+  const [bgColor, setBgColor] = useState('transparent');
 
   const { data, isFetching: isLoading } = useHustlerQuery(
     {
@@ -53,6 +81,8 @@ const Flex = () => {
   useEffect(() => {
     if (data?.hustlers.edges?.[0]?.node) {
       const h = data.hustlers.edges[0].node;
+      console.log(h);
+      setBgColor(h?.background ? '#'+h.background.substring(0,h.background.length-2) : 'transparent');
       setHustlerConfig({ 
         ...hustlerConfig, 
         name: h?.name || '',
@@ -101,12 +131,12 @@ const Flex = () => {
         { isLoading && <LoadingBlock /> }
         { !isLoading && itemIds &&
           <Stack direction="column" width="100%" minHeight="100%" padding="32px" gap="16px">
-            <h2>{ hustlerConfig.name }</h2>
             <Stack width="100%" direction="row" height="25%" gap="16px">
               <PanelContainer css={css`flex:2;`}>
-                <PanelBody>
-                  { renderHustler(1) }
-                </PanelBody>
+                <MugshotContainer>
+                  <HustlerTitle>{ hustlerConfig.name }</HustlerTitle>
+                  <HustlerImage>{ renderHustler(1) }</HustlerImage>
+                </MugshotContainer>
               </PanelContainer>
               <PanelContainer css={css`flex:1;`}>
                 <PanelBody>

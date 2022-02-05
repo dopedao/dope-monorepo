@@ -30,8 +30,7 @@ const NoteContainer = styled.div<{ maxWidth?: string; background?: string; }>`
   ${media.tablet`
     max-width: 375px;
     left: unset;
-    bottom: unset;
-    top: 2em;
+    bottom: 2em;
     right: 2em;
   `}
 `;

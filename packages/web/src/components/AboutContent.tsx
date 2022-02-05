@@ -165,7 +165,7 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 
 const AboutContent = () => {
   return (
-    <DesktopWindow title="ABOUT.FAQ" width={640} height="90vh">
+    <DesktopWindow title="ABOUT.FAQ">
       <TextBody className="markdownContainer">
         <ReactMarkdown>{Content}</ReactMarkdown>
       </TextBody>
