@@ -86,7 +86,6 @@ const WindowWrapper = styled.div<{
       top: 32px;
       left: 96px;
       width: 80%;
-      height: 90%;
       margin: auto;
       margin-top: 32px;
       max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
@@ -100,7 +99,7 @@ const DesktopWindow = ({
   // Default size of the window is 1024 x 768.
   // Smaller devices default to "full screen".
   width = 1024,
-  height = 768,
+  height = "90%",
   background,
   fullScreen,
   onlyFullScreen,
