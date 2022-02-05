@@ -128,8 +128,7 @@ export default class GameScene extends Scene {
         {
           hustler.currentMap = data.current_map;
           hustler.setVisible(hustler.currentMap === this.player.currentMap);
-          // hustler.setPosition(data.x, data.y);
-          // console.log(hustler);
+          hustler.setPosition(data.x, data.y);
         }
       });
       // remove hustler on player leave
