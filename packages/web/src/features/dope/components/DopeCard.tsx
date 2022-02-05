@@ -10,57 +10,58 @@ import { AmountType, ItemTier, ItemType } from 'generated/graphql';
 
 const iconPath = '/images/icon';
 
+export type DopeItemApiResponse = {
+  __typename?: 'Dope';
+  id: string;
+  claimed: boolean;
+  opened: boolean;
+  score: number;
+  rank: number;
+  lastSale?:
+    | {
+        __typename?: 'Listing';
+        inputs: Array<
+          { __typename?: 'Amount'; amount: any; id: string; type: AmountType } | null | undefined
+        >;
+      }
+    | null
+    | undefined;
+  listings?:
+    | Array<
+        | {
+            __typename?: 'Listing';
+            id: string;
+            active: boolean;
+            inputs: Array<
+              | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
+              | null
+              | undefined
+            >;
+          }
+        | null
+        | undefined
+      >
+    | null
+    | undefined;
+  items?: Array<{
+    __typename?: 'Item';
+    id: string;
+    fullname: string;
+    type: ItemType;
+    name: string;
+    namePrefix?: string | null | undefined;
+    nameSuffix?: string | null | undefined;
+    suffix?: string | null | undefined;
+    augmented?: boolean | null | undefined;
+    tier: ItemTier;
+    greatness: number;
+    count: number;
+  }>;
+};
+
 export type DopeCardProps = {
   buttonBar: 'for-marketplace' | 'for-owner';
-  dope: {
-    __typename?: 'Dope';
-    id: string;
-    claimed: boolean;
-    opened: boolean;
-    score: number;
-    rank: number;
-    lastSale?:
-      | {
-          __typename?: 'Listing';
-          inputs: Array<
-            { __typename?: 'Amount'; amount: any; id: string; type: AmountType } | null | undefined
-          >;
-        }
-      | null
-      | undefined;
-    listings?:
-      | Array<
-          | {
-              __typename?: 'Listing';
-              id: string;
-              active: boolean;
-              inputs: Array<
-                | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
-                | null
-                | undefined
-              >;
-            }
-          | null
-          | undefined
-        >
-      | null
-      | undefined;
-    items?: Array<{
-      __typename?: 'Item';
-      id: string;
-      fullname: string;
-      type: ItemType;
-      name: string;
-      namePrefix?: string | null | undefined;
-      nameSuffix?: string | null | undefined;
-      suffix?: string | null | undefined;
-      augmented?: boolean | null | undefined;
-      tier: ItemTier;
-      greatness: number;
-      count: number;
-    }>;
-  };
-
+  dope: DopeItemApiResponse;
   isExpanded?: boolean;
   showCollapse?: boolean;
 };

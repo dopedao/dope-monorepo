@@ -13,7 +13,7 @@ import DopeStatus from 'features/dope/components/DopeStatus';
 import RenderFromDopeIdOnly from 'components/hustler/RenderFromDopeIdOnly';
 import HustlerContainer from 'components/hustler/HustlerContainer';
 
-const ITEM_ORDER = [
+export const ITEM_ORDER = [
   'WEAPON',
   'VEHICLE',
   'DRUGS',

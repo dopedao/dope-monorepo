@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-type ItemProps = {
+export type ItemProps = {
   name: string;
   namePrefix?: string | null;
   nameSuffix?: string | null;
@@ -90,7 +90,7 @@ const Item = ({
           margin-left: auto;
           font-size: var(--text-small);
           text-align: right;
-          width: 96px;
+          width: 25%;
         `}
       >
         {`${showRarity && tier?.toLowerCase() !== 'common' ? tier?.toString().replace('_', ' ') : ''} ${type}`}

@@ -21,6 +21,11 @@ import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
 import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
 import { Share } from 'react-twitter-widgets';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
+import PanelTitleHeader from 'components/PanelTitleHeader';
+import DopeItem from 'features/dope/components/DopeItem';
+import { ITEM_ORDER } from 'features/dope/components/DopeCardBody';
+import { DopeLegendColors } from 'features/dope/components/DopeLegend';
+import { Item as DopeItemApiResponse } from 'generated/graphql';
 
 const Nav = () => (
   <AppWindowNavBar>
@@ -105,6 +110,7 @@ const Flex = () => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
   const [onChainImage, setOnChainImage] = useState('');
+  const [hustlerItems, setHustlerItems] = useState<any>([]);
 
   const { data, isFetching: isLoading } = useHustlerQuery(
     {
@@ -128,6 +134,18 @@ const Flex = () => {
         sex: (h?.sex.toLowerCase() || 'male') as HustlerSex,
         body: getBodyIndexFromMetadata(h?.body?.id)
       });
+      setHustlerItems([
+        h.clothes,
+        h.drug,
+        h.foot,
+        h.hand,
+        h.neck,
+        h.ring,
+        h.accessory,
+        h.vehicle,
+        h.waist,
+        h.weapon
+      ]);
       if(h?.svg) setOnChainImage(h?.svg);
       setItemIds([
         BigNumber.from(h.vehicle?.id), 
@@ -170,38 +188,74 @@ const Flex = () => {
     <AppWindow padBody={true} navbar={<Nav />} scrollable>
       <Head title={`${hustlerConfig.name} is flexin`} ogImage={`https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`} />
         { isLoading && <LoadingBlock /> }
-        { !isLoading && itemIds &&          
-          <StackedResponsiveContainer>
-            <PanelContainer css={css`flex:2 !important;`}>
-              <MugshotContainer>
-                <HustlerTitle>
-                  { hustlerConfig.name }
-                  <br/>
-                  { getRandomDate('01/01/1980', '01/01/2020') }
-                </HustlerTitle>
-                <HustlerImage>{ renderHustler(1) }</HustlerImage>
-              </MugshotContainer>
-            </PanelContainer>
-            <PanelContainer css={css`flex:1 !important;`}>
-              <PanelBody>
-                <Grid templateRows="repeat(2, 1fr)" gap="8" justifyContent="center" 
-                alignItems="stretch" width="100%">
-                  <GridItem 
-                    display="flex" 
-                    justifyContent="center"
-                    background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
-                  >
-                    <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
-                  </GridItem>
-                  <GridItem 
-                    minWidth="256px"
-                  >
-                    <Image src={onChainImage} alt={hustlerConfig.name} />
-                  </GridItem>
-                </Grid>
-              </PanelBody>
-            </PanelContainer>
-          </StackedResponsiveContainer>
+        { !isLoading && itemIds &&    
+          <Stack>
+            <StackedResponsiveContainer css={css`padding-bottom: 8px !important;`}>
+              <PanelContainer css={css`flex:2 !important;`}>
+                <MugshotContainer>
+                  <HustlerTitle>
+                    { hustlerConfig.name }
+                    <br/>
+                    { getRandomDate('01/01/1980', '01/01/2020') }
+                  </HustlerTitle>
+                  <HustlerImage>{ renderHustler(1) }</HustlerImage>
+                </MugshotContainer>
+              </PanelContainer>
+              <PanelContainer css={css`flex:1 !important;`}>
+                <PanelBody>
+                  <Grid templateRows="repeat(2, 1fr)" gap="8" justifyContent="center" 
+                  alignItems="stretch" width="100%">
+                    <GridItem 
+                      display="flex" 
+                      justifyContent="center"
+                      background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
+                    >
+                      <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
+                    </GridItem>
+                    <GridItem 
+                      minWidth="256px"
+                    >
+                      <Image src={onChainImage} alt={hustlerConfig.name} />
+                    </GridItem>
+                  </Grid>
+                </PanelBody>
+              </PanelContainer>
+            </StackedResponsiveContainer>
+            <Stack direction="row" padding={['8px', '16px', '32px']} gap="16px" paddingTop="0 !important">
+              <PanelContainer>
+                <PanelTitleHeader>Gear</PanelTitleHeader>
+                <PanelBody 
+                  css={css`background-color:var(--gray-800);`}
+                >
+                  {hustlerItems.sort(function (a: DopeItemApiResponse, b: DopeItemApiResponse) {
+                    if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
+                      return 1;
+                    } else {
+                      return -1;
+                    }
+                  })
+                  .map(({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }: DopeItemApiResponse) => {
+                    return (
+                      // @ts-ignore
+                      <DopeItem
+                        key={id}
+                        name={name}
+                        namePrefix={namePrefix}
+                        nameSuffix={nameSuffix}
+                        suffix={suffix}
+                        augmented={augmented}
+                        type={type}
+                        color={DopeLegendColors[tier]}
+                        isExpanded={true}
+                        tier={tier}
+                        showRarity={true}
+                      />
+                    );
+                  })}                  
+                </PanelBody>
+              </PanelContainer>
+            </Stack>
+          </Stack>      
         }
     </AppWindow>
   );
