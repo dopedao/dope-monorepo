@@ -168,7 +168,7 @@ const Flex = () => {
 
   return (
     <AppWindow padBody={true} navbar={<Nav />} scrollable>
-      <Head title="Hustler Flex" ogImage={`https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`} />
+      <Head title={`${hustlerConfig.name} is flexin`} ogImage={`https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`} />
         { isLoading && <LoadingBlock /> }
         { !isLoading && itemIds &&          
           <StackedResponsiveContainer>
