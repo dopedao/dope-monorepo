@@ -85,7 +85,6 @@ export default class GameScene extends Scene {
 
   handleNetwork()
   {
-    console.log(this.player.currentMap);
     const networkHandler = NetworkHandler.getInstance();
     // register player
     networkHandler.sendMessage(UniversalEventNames.PLAYER_JOIN, {

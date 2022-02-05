@@ -19,6 +19,7 @@ import NetworkHandler from "game/handlers/network/NetworkHandler";
 import { NetworkEvents, UniversalEventNames } from "game/handlers/network/types";
 import Hustler from "game/entities/Hustler";
 import { toast } from "@chakra-ui/react";
+import ConnectionLostWindow from "game/ui/react/components/ConnectionLostWindow";
 
 interface Interaction
 {
@@ -111,16 +112,15 @@ export default class UIScene extends Scene {
 
     private _handleEvents()
     {
-        // setimeout to wait for the scene to setup itself before sending a toast
-        // if (NetworkHandler.getInstance().connected)
-        //     setTimeout(() => toast(`Connection established`, {
-        //         ...toastStyle,
-        //         icon: '🔌',
-        //         style: {
-        //             ...toastStyle.style,
-        //             backgroundColor: 'rgba(0, 255, 0, 0.6)',
-        //         }
-        //     }));
+        this._handleNetworkEvents();
+        this._handleInputs();
+        this._handleInteractions();
+        this._handleQuests();
+        this._handleMisc();
+    }
+
+    private _handleNetworkEvents()
+    {
         if (NetworkHandler.getInstance().connected)
             this.toast({
                 ...chakraToastStyle,
@@ -134,17 +134,17 @@ export default class UIScene extends Scene {
                 title: 'Connection established',
                 status: 'success',
             }));
-        NetworkHandler.getInstance().on(NetworkEvents.DISCONNECTED, () =>
+
+        NetworkHandler.getInstance().on(NetworkEvents.DISCONNECTED, () => {
             this.toast({
                 ...chakraToastStyle,
                 title: 'Connection lost',
                 status: 'error',
-            }));
+            });
 
-        this._handleInputs();
-        this._handleInteractions();
-        this._handleQuests();
-        this._handleMisc();
+            // display connection lost window
+            // this.add.reactDom(ConnectionLostWindow);
+        });
     }
 
     private _handleInputs()

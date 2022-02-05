@@ -1,7 +1,7 @@
 import { s } from "gear-rarity/dist/image-140bf8ec";
 import PixelationPipelinePlugin from "phaser3-rex-plugins/plugins/pixelationpipeline-plugin";
 import { LDtkMapPack, LdtkReader } from "./LDtkParser";
-import PF from "pathfinding";
+import PF, { DiagonalMovement } from "pathfinding";
 
 
 export default class MapHelper
@@ -38,8 +38,35 @@ export default class MapHelper
         if (this.map.collideLayer)
         {
             const grid = new PF.Grid(this.map.collideLayer.layer.data.map(row => row.map(tile => tile.index)));
+
+            // "bolden" the pathfinding grid. will make up for the body of the hustlers.
+            // keep track of the visisted neighbours to not end up in an infinite boldening loop.
+            let neighbours: Array<number> = [];
+            for (let y = 0; y < grid.height; y++)
+            {
+                for (let x = 0; x < grid.width; x++)
+                {
+                    // is a neighbour, dont check
+                    if (neighbours.includes(x + y * grid.width))
+                        continue;
+
+                    // if node is not walkable, also set its neighbours as not walkable.
+                    let node = grid.getNodeAt(x, y);
+                    if (!node.walkable)
+                    {
+                        grid.getNeighbors(node, DiagonalMovement.Always).forEach(neigh => {
+                            neigh.walkable = false;
+                            neighbours.push(neigh.x + neigh.y * grid.width);
+                        });
+                    }
+                }
+            }
             this.map.collideLayer.setData('pf_grid', grid);
 
+
+            // greedy meshing algorithm.
+            // will look for walkable neighbour tiles and create a single body for all of them instead
+            // of multiple bodies. 
             const tiles = this.map.collideLayer.layer.data;
             let visitedTiles: Phaser.Math.Vector2[] = new Array();
 

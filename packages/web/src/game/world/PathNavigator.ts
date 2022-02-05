@@ -1,6 +1,6 @@
 import Hustler, { Direction } from "game/entities/Hustler";
 import GameScene from "game/scenes/Game";
-import PF from "pathfinding";
+import PF, { DiagonalMovement } from "pathfinding";
 import { runInThisContext } from "vm";
 
 export default class PathNavigator
@@ -34,25 +34,41 @@ export default class PathNavigator
             return;
         }
 
+        // retrieve grid data from layer (defined in maphelper)
+        this.grid = (map.collideLayer.getData('pf_grid') as PF.Grid).clone();
+
         this.onMoved = onMoved;
         this.onCancel = onCancel;
 
         // hustler world position to tile position
-        const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.body.position.x, this.hustler.body.position.y);
+        const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.x, this.hustler.y);
         const moveTile = map.collideLayer.worldToTileXY(x, y);
-        if (hustlerTile.x < 0 || hustlerTile.y < 0 || moveTile.x < 0 || moveTile.y < 0 || 
-            hustlerTile.x > map.collideLayer.layer.width || hustlerTile.y > map.collideLayer.layer.height || moveTile.x > map.collideLayer.layer.width || moveTile.y > map.collideLayer.layer.height)
+        
+        // point not inside of map, just teleport hustler directly to the target
+        if (!this.grid.isInside(hustlerTile.x, hustlerTile.y) || !this.grid.isInside(moveTile.x, moveTile.y))
         {
-            //console.error("outside");
             this.hustler.setPosition(x, y);
             return;
         }
 
-        // retrieve grid data from layer (defined in ldtkparser)
-        this.grid = (map.collideLayer.getData('pf_grid') as PF.Grid).clone();
-
         // find path and map it to Vec2s
-        this.path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, moveTile.x, moveTile.y, this.grid).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
+        let path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, moveTile.x, moveTile.y, this.grid.clone());
+        // if there is no path, return
+        if (path.length === 0)
+        {
+            // try finding a path from one of the neighbours of the target tile 
+            this.grid.getNeighbors(this.grid.getNodeAt(moveTile.x, moveTile.y), DiagonalMovement.Always).forEach(neigh => {
+                path = this.pathFinder.findPath(hustlerTile.x, hustlerTile.y, neigh.x, neigh.y, this.grid.clone());
+                if (path.length > 0)
+                    return;
+            });
+
+            if (path.length === 0)
+                return;
+        }
+
+        // smoothen path. makes it less "brutal"
+        this.path = PF.Util.smoothenPath(this.grid, path).map(targ => new Phaser.Math.Vector2(targ[0], targ[1]));
 
         const targetTilePos = this.path.shift();
         if (targetTilePos)
@@ -98,8 +114,8 @@ export default class PathNavigator
                     this.cancel();
             }, 500);
 
-	    	dx = this.target.x - (this.hustler.x);
-	    	dy = this.target.y - (this.hustler.y);
+	    	dx = this.target.x - pos.x;
+	    	dy = this.target.y - pos.y;
 
 	    	if (Math.abs(dx) < 5)
 	    	{
