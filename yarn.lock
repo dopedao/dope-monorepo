@@ -2672,6 +2672,7 @@ __metadata:
     react-markdown: ^7.0.1
     react-query: latest
     react-table: ^7.7.0
+    react-twitter-widgets: ^1.10.0
     remark: ^14.0.2
     remark-html: ^15.0.1
     ts-jest: ^27.0.5
@@ -23144,6 +23145,13 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
+"loadjs@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "loadjs@npm:4.2.0"
+  checksum: 2144723f55c75260ce6781b36009c40d098d96fe06e3ec5c85ba250cf96c3a0aa37169b829e818c40bcba7c5141a8e52736fec193333bb6260ab95f9a493a2ef
+  languageName: node
+  linkType: hard
+
 "locate-path@npm:^2.0.0":
   version: 2.0.0
   resolution: "locate-path@npm:2.0.0"
@@ -28786,6 +28794,17 @@ fsevents@~2.1.1:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0
   checksum: da3d0192825df3d9f27eef33e7eddf928359a7e3e2b01ae7f7f672ecf4e5c1f7a34f27bdde9ccc24e2e9fbe1d1b9dd2a39c7d47323c9bdf63e7b9bd05c325a71
+  languageName: node
+  linkType: hard
+
+"react-twitter-widgets@npm:^1.10.0":
+  version: 1.10.0
+  resolution: "react-twitter-widgets@npm:1.10.0"
+  dependencies:
+    loadjs: ^4.2.0
+  peerDependencies:
+    react: ^16.8.0 || ^17
+  checksum: ea9582ec24722660edd1a05c5eeec7c3ae7f5d683aa3b606f9594cba189423f4d3dac7b1098e052e81e0f49a37719c1841e2b7cd3ae1c7fbfb3f4c5c7df83b6a
   languageName: node
   linkType: hard
 

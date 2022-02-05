@@ -50,7 +50,8 @@ type HustlerEditProps = {
 };
 
 const HustlerEdit = ({ hustler }: HustlerEditProps) => {
-  const router = useRouter();const hustlerId = router.query.id;
+  const router = useRouter();
+  const hustlerId = router.query.id;
   const [isLoading, setLoading] = useState(true);
   const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [ogTitle, setOgTitle] = useState('');
@@ -126,7 +127,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
 const Nav = () => (
   <AppWindowNavBar>
     <Link href="/inventory?section=Hustlers" passHref>
-      <Button variant="back">
+      <Button variant="navBar">
         <ArrowBack size={16} color="white" />
         Your Hustlers
       </Button>
@@ -173,7 +174,7 @@ const Hustlers = () => {
 
   return (
     <AppWindow padBody={false} navbar={<Nav />} requiresWalletConnection={true}>
-      <Head title="Your Hustler Squad" />
+      <Head title="Customize Hustler" />
       {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
         <DialogSwitchNetwork networkName="Optimism" />
       )}

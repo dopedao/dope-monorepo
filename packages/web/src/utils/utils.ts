@@ -19,6 +19,16 @@ export const getRandomNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max + 1)) + min;
 };
 
+export const getRandomDate = (date1: string, date2: string) => {
+  const time1 = new Date(date1).getTime()
+  const time2 = new Date(date2).getTime()
+  if(time1>time2){
+      return new Date(getRandomNumber(time2,time1)).toLocaleDateString()   
+  } else{
+      return new Date(getRandomNumber(time1,time2)).toLocaleDateString()  
+  }
+}
+
 export const hexColorToBase16 = (color: string) => color.replace('#', '0x') + 'ff';
 
 export const formatLargeNumber = (num: number) => {

@@ -21,6 +21,7 @@ export type DesktopWindowProps = {
   background?: string;
   fullScreen?: boolean;
   onlyFullScreen?: boolean;
+  scrollable?: boolean,
   fullScreenHandler?: (fullScreen: boolean) => void;
   titleChildren?: ReactNode;
   balance?: string;
@@ -30,9 +31,9 @@ export type DesktopWindowProps = {
   onMoved?: (position: any) => void;
 };
 
-const WindowWrapper = styled.div<{ width: number | string; height: number | string; background: string }>`
+const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string; height: number | string; background: string }>`
   width: 100%;
-  height: 100%;
+  height: 50%;
   margin: 0;
   padding: 0;
   background: ${({ background }) => (background)};
@@ -40,6 +41,8 @@ const WindowWrapper = styled.div<{ width: number | string; height: number | stri
   filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
   display: flex;
   flex-direction: column;
+  overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
+  overflow-x: hidden;
   &.floating {
     ${media.phone`
         width: 100%;
@@ -76,6 +79,7 @@ const DesktopWindow = ({
   children,
   onResize,
   onMoved,
+  scrollable,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const windowRef = useRef<HTMLDivElement>(null);
@@ -141,7 +145,14 @@ const DesktopWindow = ({
         </Draggable>
       )}
     >
-      <WindowWrapper ref={windowRef} className={isFullScreen ? '' : 'floating'} height={height} width={width} background={ background && background.length > 0 ? background : '#a8a9ae' }>
+      <WindowWrapper 
+        ref={windowRef} 
+        className={isFullScreen ? '' : 'floating'} 
+        height={height} 
+        width={width} 
+        background={ background && background.length > 0 ? background : '#a8a9ae' }
+        scrollable={ scrollable }
+      >
         {!onlyFullScreen && (
           <DesktopWindowTitleBar
             title={title}

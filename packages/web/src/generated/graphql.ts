@@ -161,6 +161,22 @@ export type BodyPartWhereInput = {
   sexIn?: InputMaybe<Array<BodyPartSex>>;
   sexNEQ?: InputMaybe<BodyPartSex>;
   sexNotIn?: InputMaybe<Array<BodyPartSex>>;
+  /** sprite field predicates */
+  sprite?: InputMaybe<Scalars['String']>;
+  spriteContains?: InputMaybe<Scalars['String']>;
+  spriteContainsFold?: InputMaybe<Scalars['String']>;
+  spriteEqualFold?: InputMaybe<Scalars['String']>;
+  spriteGT?: InputMaybe<Scalars['String']>;
+  spriteGTE?: InputMaybe<Scalars['String']>;
+  spriteHasPrefix?: InputMaybe<Scalars['String']>;
+  spriteHasSuffix?: InputMaybe<Scalars['String']>;
+  spriteIn?: InputMaybe<Array<Scalars['String']>>;
+  spriteIsNil?: InputMaybe<Scalars['Boolean']>;
+  spriteLT?: InputMaybe<Scalars['String']>;
+  spriteLTE?: InputMaybe<Scalars['String']>;
+  spriteNEQ?: InputMaybe<Scalars['String']>;
+  spriteNotIn?: InputMaybe<Array<Scalars['String']>>;
+  spriteNotNil?: InputMaybe<Scalars['Boolean']>;
   /** type field predicates */
   type?: InputMaybe<BodyPartType>;
   typeIn?: InputMaybe<Array<BodyPartType>>;
