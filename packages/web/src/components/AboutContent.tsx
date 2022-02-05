@@ -3,13 +3,21 @@ import styled from '@emotion/styled';
 import DesktopWindow from 'components/DesktopWindow';
 import { Button, Link } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { Stack } from '@chakra-ui/react';
 
 const TextBody = styled.div`
   background-color: #efefee;
-  height: 100%;
-  overflow: auto;
+  flex: 1;
+  overflow-y: scroll;
   padding: 32px;
+  padding-bottom: 0;
   font-size: 1.125em;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  .markdown {
+    max-width: 680px;
+  }
   p,
   div,
   h2,
@@ -123,13 +131,13 @@ The supply of paper is currently fixed at 1 billion, and while this can be incre
 
 ----
 
-## DOPEWARS.EXE
+## DOPEWARS.GG
 
 Our first project is to provide a portal for the DOPE WARS ecosystem. Additional experiences like the game will be hosted here.
 
 You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have purchased.
 
-[Claim Gear, create a PFP of your Dope Dealer](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual items with other players to equip your Dope Dealer in our SWAP MEET.
+[Claim Gear, create a Hustler](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual Gear with other players to equip your Hustler in our SWAP MEET.
 
 ----
 
@@ -173,28 +181,34 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 `;
 
 const BuyNow = () => (
-  <Link href="/swap-meet" passHref css={css`
-    padding:16px;
-    background-color:var(--gray-300);
-    border-top:2px solid black;
-    display:flex;
-    justify-content: flex-end;
-  `}>
-    <Button variant="primary" css={css``}>
-      Get a Dope Wars Hustler
-    </Button>
-  </Link>
+  <div
+    css={css`
+      padding:16px;
+      background-color:var(--gray-300);
+      border-top:2px solid black;
+      display:flex;
+      justify-content: flex-end;
+      width: 100%;
+      height:96px;
+    `}
+  >
+    <Link href="/swap-meet" passHref>
+      <Button variant="primary" css={css``}>
+        Get a Dope Wars Hustler
+      </Button>
+    </Link>
+  </div>
 );
 
 const AboutContent = () => {
   return (
-    <DesktopWindow title="ABOUT.FAQ" width="640px" scrollable>
-
-      <TextBody className="markdownContainer">
-        <ReactMarkdown>{Content}</ReactMarkdown>
-      </TextBody>
-
-      <BuyNow />
+    <DesktopWindow title="ABOUT.FAQ" background="#efefee" width="640px">
+      <Stack height="100%" gap="0">
+        <TextBody className="markdownContainer">
+          <ReactMarkdown className="markdown">{Content}</ReactMarkdown>
+        </TextBody>
+        <BuyNow />
+      </Stack>
     </DesktopWindow>
   );
 }
