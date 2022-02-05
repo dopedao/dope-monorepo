@@ -2,15 +2,11 @@ import styled from '@emotion/styled';
 import { PageWrapper } from 'ui/styles/components';
 import Head from 'components/Head';
 import AboutWindow from 'components/AboutWindow';
-import { useEffect, useState } from 'react';
 
 // For News
 import NewsWindow from 'features/news/components/NewsWindow';
 import { PostType } from 'features/news/types';
 import { getAllPosts } from 'utils/lib';
-import useBrowserWidth from 'hooks/use-browser-width';
-import { getBreakpointWidth } from 'ui/styles/breakpoints';
-import { browser } from 'process';
 
 const IndexWrapper = styled(PageWrapper)`
   max-width: var(--content-width-xl);
