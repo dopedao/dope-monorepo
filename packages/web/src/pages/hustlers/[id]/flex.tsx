@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { BigNumber } from 'ethers';
 import { css } from '@emotion/react';
+import { media } from 'ui/styles/mixins';
 import styled from '@emotion/styled';
 import { getRandomDate } from 'utils/utils';
 import { getRandomHustler, HustlerSex } from 'utils/HustlerConfig';
@@ -19,9 +20,10 @@ import PanelContainer from 'components/PanelContainer';
 import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
 import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
 import { Share } from 'react-twitter-widgets';
+import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
 const Nav = () => (
-  <AppWindowNavBar>
+  <AppWindowNavBar css={css`position:relative;`}>
     <Link href="/inventory?section=Hustlers" passHref>
       <Button variant="navBar">
         Your Hustlers
@@ -32,6 +34,14 @@ const Nav = () => (
         Gangsta Party
       </Button>
     </Link> */}
+    <div css={css`position:absolute;right:16px;bottom:8px;`}>
+      <Share
+        url={window.location.toString()}
+        options={{ 
+          text: `${PHRASES[Math.floor(Math.random()*PHRASES.length)]} \n#hustlerFollowHustler @TheDopeWars`,
+        }}
+      />
+    </div>
   </AppWindowNavBar>
 );
 
@@ -39,7 +49,7 @@ const HustlerTitle = styled.h1`
   font-family: Dope !important;
   position: absolute;
   left: 50%;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, 0%);
   bottom: 0;
   z-index: 2;
   padding: 16px 32px;
@@ -50,13 +60,22 @@ const HustlerTitle = styled.h1`
 `
 const HustlerImage = styled.div`
   position: absolute;
-  left:0px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 100%;
+  padding: 0 15%;
   bottom:0px;
   right:0px;
+  top: 0px;
+  ${media.tablet`
+    padding: 0 5%;
+    width: 100%;
+  `}
 `
 const MugshotContainer = styled.div`
   position: relative;
   height: 100%;
+  min-height: 400px;
   background: #f2f2f2 url(/images/hustler/mugshot_bg.png) center center / contain no-repeat;
 `
 
@@ -149,51 +168,38 @@ const Flex = () => {
     <AppWindow padBody={true} navbar={<Nav />} scrollable>
       <Head title="Hustler Flex" />
         { isLoading && <LoadingBlock /> }
-        { !isLoading && itemIds &&
-          <Stack direction="column" width="100%" minHeight="100%" padding="32px" gap="16px">
-            <Stack width="100%" direction="row" height="25%" gap="16px">
-              <PanelContainer css={css`flex:2;`}>
-                <MugshotContainer>
-                  <HustlerTitle>
-                    { hustlerConfig.name }
-                    <br/>
-                    { getRandomDate('01/01/1980', '01/01/2020') }
-                  </HustlerTitle>
-                  <HustlerImage>{ renderHustler(1) }</HustlerImage>
-                </MugshotContainer>
-              </PanelContainer>
-              <PanelContainer css={css`flex:1;`}>
-                <PanelBody>
-                  <Grid templateRows="repeat(2, 1fr)" gap="8" justifyContent="center" 
-                  alignItems="stretch" width="100%">
-                    <GridItem 
-                      display="flex" 
-                      justifyContent="center"
-                      background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
-                    >
-                      <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
-                    </GridItem>
-                    <GridItem minWidth="256px">
-                      <Image src={onChainImage} alt={hustlerConfig.name} />
-                    </GridItem>
-                  </Grid>
-                </PanelBody>
-              </PanelContainer>
-            </Stack>
-            <Stack width="100%">
-              <PanelContainer>
-                <PanelBody>
-                  <Share
-                    url={window.location.toString()}
-                    options={{ 
-                      size: "large",
-                      text: `${PHRASES[Math.floor(Math.random()*PHRASES.length)]} \n#hustlerFollowHustler @TheDopeWars`
-                    }}
-                  ></Share>
-                </PanelBody>
-              </PanelContainer>
-            </Stack>
-          </Stack>
+        { !isLoading && itemIds &&          
+          <StackedResponsiveContainer>
+            <PanelContainer css={css`flex:2 !important;`}>
+              <MugshotContainer>
+                <HustlerTitle>
+                  { hustlerConfig.name }
+                  <br/>
+                  { getRandomDate('01/01/1980', '01/01/2020') }
+                </HustlerTitle>
+                <HustlerImage>{ renderHustler(1) }</HustlerImage>
+              </MugshotContainer>
+            </PanelContainer>
+            <PanelContainer css={css`flex:1 !important;`}>
+              <PanelBody>
+                <Grid templateRows="repeat(2, 1fr)" gap="8" justifyContent="center" 
+                alignItems="stretch" width="100%">
+                  <GridItem 
+                    display="flex" 
+                    justifyContent="center"
+                    background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
+                  >
+                    <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
+                  </GridItem>
+                  <GridItem 
+                    minWidth="256px"
+                  >
+                    <Image src={onChainImage} alt={hustlerConfig.name} />
+                  </GridItem>
+                </Grid>
+              </PanelBody>
+            </PanelContainer>
+          </StackedResponsiveContainer>
         }
     </AppWindow>
   );
