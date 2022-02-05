@@ -54,6 +54,9 @@ const DesktopWindowTitleBar = ({
   };
 
   useEffect(() => {
+    // No sense to do this work if no wallet address shown
+    if (hideWalletAddress) return;
+    
     const getEns = async () => {
       if (!account) {
         return null;
@@ -71,7 +74,7 @@ const DesktopWindowTitleBar = ({
     };
 
     getEns();
-  }, [account, library]);
+  }, [account, library, hideWalletAddress]);
 
   return (
     <div className="windowTitleBar">
