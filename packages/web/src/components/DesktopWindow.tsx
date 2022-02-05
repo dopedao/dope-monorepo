@@ -1,3 +1,14 @@
+/**
+ * DesktopWindow is the base for most of our containers within the app.
+ * It contains complex logic to display itself intelligently on
+ * phones, tablets, and laptops. 
+ * 
+ * When not a touch device, we allow dragging of windows.
+ * On a touch device, we try to display as a full-screen content window,
+ * which generally feels like a higher quality experience there.
+ * 
+ * 🙃
+ */
 import { ReactNode, useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import styled from '@emotion/styled';
