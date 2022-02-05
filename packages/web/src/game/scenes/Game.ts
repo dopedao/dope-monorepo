@@ -127,7 +127,9 @@ export default class GameScene extends Scene {
         if (hustler)
         {
           hustler.currentMap = data.current_map;
-          hustler.setPosition(data.x, data.y);
+          hustler.setVisible(hustler.currentMap === this.player.currentMap);
+          // hustler.setPosition(data.x, data.y);
+          // console.log(hustler);
         }
       });
       // remove hustler on player leave
@@ -313,6 +315,8 @@ export default class GameScene extends Scene {
           this.player.currentMap = lvl.identifier;
           const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
           this.cameras.main.setBounds(map.displayLayers[0].x, map.displayLayers[0].y, map.displayLayers[0].width, map.displayLayers[0].height);
+
+          this.hustlers.filter(h => h.currentMap === this.player.currentMap).forEach(h => h.setVisible(true));
 
           if (NetworkHandler.getInstance().connected)
             NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_MAP, { 

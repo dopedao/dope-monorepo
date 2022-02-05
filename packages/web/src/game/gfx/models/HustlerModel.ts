@@ -106,6 +106,13 @@ export default class HustlerModel
         this.updateSprite(CharacterCategories.Hair, 'hair');
     }
 
+    setVisible(visible: boolean)
+    {
+        this.clothesSprites.forEach(sprite => sprite.setVisible(visible));
+        Object.values(this.sprites).forEach(sprite => sprite.setVisible(visible));
+        this.shadowSprite.setVisible(visible);   
+    }
+
     setScale(x: number, y?: number)
     {
         this.clothesSprites.forEach(sprite => sprite.setScale(x, y));

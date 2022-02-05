@@ -40,9 +40,11 @@ export default class PathNavigator
         // hustler world position to tile position
         const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.body.position.x, this.hustler.body.position.y);
         const moveTile = map.collideLayer.worldToTileXY(x, y);
-        if (hustlerTile.x < 0 || hustlerTile.y < 0 || moveTile.x < 0 || moveTile.y < 0)
+        if (hustlerTile.x < 0 || hustlerTile.y < 0 || moveTile.x < 0 || moveTile.y < 0 || 
+            hustlerTile.x > map.collideLayer.layer.width || hustlerTile.y > map.collideLayer.layer.height || moveTile.x > map.collideLayer.layer.width || moveTile.y > map.collideLayer.layer.height)
         {
-            console.error("outside");
+            //console.error("outside");
+            this.hustler.setPosition(x, y);
             return;
         }
 

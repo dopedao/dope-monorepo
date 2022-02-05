@@ -174,6 +174,13 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     //     return this;
     // }
 
+    setVisible(value: boolean)
+    {
+        super.setVisible(value);
+        this._model.setVisible(value);
+        return this;
+    }
+
     setScale(x: number, y?: number)
     {
         super.setScale(x, y);
