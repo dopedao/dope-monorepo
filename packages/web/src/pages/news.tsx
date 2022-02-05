@@ -12,14 +12,14 @@ const Container = styled.div`
   overflow-x: hidden;
 `;
 
-const TITLE = 'News';
+const TITLE = 'The Daily Dope';
 
 type NewsProps = {
   allPosts: PostType[];
 };
 
 const News = ({ allPosts }: NewsProps) => (
-  <DesktopWindow title={TITLE} onlyFullScreen>
+  <DesktopWindow title={TITLE}>
     <Head title={TITLE} />
     <Container>
       <DopeNewsCast posts={allPosts} />

@@ -188,13 +188,19 @@ const BuyNow = () => (
       border-top:2px solid black;
       display:flex;
       justify-content: flex-end;
+      gap: 8px;
       width: 100%;
       height:96px;
     `}
   >
+    <Link href="/news" passHref>
+      <Button>
+        Read The Daily Dope
+      </Button>
+    </Link>
     <Link href="/swap-meet" passHref>
-      <Button variant="primary" css={css``}>
-        Get a Dope Wars Hustler
+      <Button variant="primary">
+        Get a Hustler
       </Button>
     </Link>
   </div>
