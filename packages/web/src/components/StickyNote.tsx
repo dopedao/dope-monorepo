@@ -3,9 +3,10 @@ import { isTouchDevice } from 'utils/utils';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 
 import styled from '@emotion/styled';
-import { Image } from '@chakra-ui/react';
+import { Button, Image } from '@chakra-ui/react';
 import { useState } from 'react';
 import { media } from 'ui/styles/mixins';
+import { css } from '@emotion/react';
 
 type StickyNoteProps = {
   children?: React.ReactNode;
@@ -59,12 +60,16 @@ const StickyNote = ({ children, maxWidth, background, canClose = false }: Sticky
         )}
       >
         <NoteContainer maxWidth={maxWidth} background={background}>
-          { canClose && 
-            <CloseIconContainer onClick={() => setIsVisible(false)}>
-              <Image src="/images/icon/close.svg" alt="close" width="12px" />
-            </CloseIconContainer>
-          }
           {children}
+          { canClose && 
+            <Button 
+              onClick={() => setIsVisible(false)}
+              css={css`margin-top:8px;`}
+              width="100%"
+            >
+              Close
+            </Button>
+          }
         </NoteContainer>
     </ConditionalWrapper>
   );
