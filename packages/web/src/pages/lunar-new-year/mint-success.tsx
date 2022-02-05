@@ -92,7 +92,7 @@ const MessageContainer = styled.div`
   h3 {
     color: white;
     margin-bottom: 1em;
-    background-color: rgba(0,0,0,0.75);
+    background-color: rgba(0, 0, 0, 0.75);
     padding: 32px;
     border-radius: 8px;
   }
@@ -116,11 +116,7 @@ const Item = ({ id }: { id: string }) => {
           </PanelTitleBar> */}
           <PanelBody>
             <Stack>
-              <Image
-                borderRadius="md"
-                src={item.svg || item.base?.svg || ''}
-                alt={item.fullname}
-              />
+              <Image borderRadius="md" src={item.svg || item.base?.svg || ''} alt={item.fullname} />
               <span
                 css={css`
                   height: 2.5em;
@@ -157,37 +153,54 @@ const MintSuccess = () => {
       scrollable={true}
     >
       <Fireworks />
-      <div css={css`display:flex;width:100%;flex-direction:column;`}>
+      <div
+        css={css`
+          display: flex;
+          width: 100%;
+          flex-direction: column;
+        `}
+      >
         <EventHeader />
         <MessageContainer>
           <h3>Your gift has been revealed</h3>
-          <div css={css`
-            display:flex;
-            flex-direction:column;
-            gap:16px;
-            & > * {
-              flex: 1;
-            }
-          `}>
+          <div
+            css={css`
+              display: flex;
+              flex-direction: column;
+              gap: 16px;
+              & > * {
+                flex: 1;
+              }
+            `}
+          >
             {parsed.map((item, i) => {
               if (item.typ === 1) {
                 return <Item key={i} id={item.id} />;
               } else {
-                return <div key={i}>
-                  <ProfileCard>
-                    <PanelTitleBar centered>
-                      <div>YOU WON 1000 $PAPER</div>
-                    </PanelTitleBar>
-                    <Image src="/images/desktop/PAPER.png" alt="1000 $PAPER" />
-                  </ProfileCard>
-                </div>;
+                return (
+                  <div key={i}>
+                    <ProfileCard>
+                      <PanelTitleBar centered>
+                        <div>YOU WON 1000 $PAPER</div>
+                      </PanelTitleBar>
+                      <Image src="/images/desktop/PAPER.png" alt="1000 $PAPER" />
+                    </ProfileCard>
+                  </div>
+                );
               }
             })}
             <Link href="/inventory?section=Gear" passHref>
               <Button variant="cny">View your gifts</Button>
             </Link>
             <Link href="/lunar-new-year?section=mask" passHref>
-              <Button variant="cny" css={css`margin-top:8px`}>Buy a Rare Mask</Button>
+              <Button
+                variant="cny"
+                css={css`
+                  margin-top: 8px;
+                `}
+              >
+                Buy a Rare Mask
+              </Button>
             </Link>
           </div>
         </MessageContainer>

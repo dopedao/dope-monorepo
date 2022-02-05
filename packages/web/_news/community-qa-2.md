@@ -6,8 +6,8 @@ excerpt: 'This second Community Q&A was successful in covering a wide range of s
 coverImage: '/images/news/dope-post.png'
 coverImageText: 'john dope - dope wiki archive'
 author:
-  name: vmod
-  picture: '/images/authors/author0.webp'
+  name: Bikemaker
+  picture: '/images/icon/dope-smiley.svg'
 ogImage:
   url: '/images/news/post1.png'
 ---

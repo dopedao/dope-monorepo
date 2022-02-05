@@ -33,12 +33,9 @@ const DopeDetails = () => {
     return !(account && chainId !== 1 && chainId !== 42 && showNetworkAlert);
   }, [account, chainId, showNetworkAlert]);
 
-
   return (
     <>
-      {!onProperNetwork && 
-        <DialogSwitchNetwork networkName="Main" />
-      }
+      {!onProperNetwork && <DialogSwitchNetwork networkName="Main" />}
       {loading ? (
         <StackedResponsiveContainer>
           <LoadingBlock />
@@ -63,7 +60,7 @@ const DopeDetails = () => {
               onSelect={setSelected}
             />
           )}
-          { onProperNetwork && data?.wallets.edges?.[0] && (
+          {onProperNetwork && data?.wallets.edges?.[0] && (
             <DopeCard
               dope={data.wallets.edges[0].node.dopes[selected]}
               buttonBar="for-owner"

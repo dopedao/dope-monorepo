@@ -11,17 +11,17 @@ import LoadingState from 'features/swap-meet/components/LoadingState';
 import EmptyState from 'features/swap-meet/components/EmptyState';
 import Container from 'features/swap-meet/components/Container';
 import LoadingBlock from 'components/LoadingBlock';
-import {SearchFilterContext} from 'components/SearchFilter';
+import { SearchFilterContext } from 'components/SearchFilter';
 
 export type FILTERS = 'All' | 'Has Unclaimed $PAPER' | 'For Sale' | 'Has Unclaimed Gear';
 
 const MarketList = () => {
   const { search, order, filter, view } = useContext(SearchFilterContext);
-  
-  const [ searchValue, setSearchValue ] = search;
-  const [ orderBy, setOrderBy ] = order;
-  const [ filterBy, setFilterBy ] = filter;
-  const [ viewCompactCards, setViewCompactCards ] = view;
+
+  const [searchValue, setSearchValue] = search;
+  const [orderBy, setOrderBy] = order;
+  const [filterBy, setFilterBy] = filter;
+  const [viewCompactCards, setViewCompactCards] = view;
 
   const handleFilter = () => {
     switch (filterBy) {

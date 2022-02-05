@@ -7,7 +7,7 @@ export const DopeLegendColors = {
   CUSTOM: 'rgba(254,101,33)',
   RARE: 'rgba(46,130,255)',
   COMMON: 'rgba(255,255,255)',
-}
+};
 
 export const DopeLegendBackgroundColors = {
   BLACK_MARKET: 'rgba(255,252,63,0.5)',

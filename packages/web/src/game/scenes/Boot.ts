@@ -3,7 +3,7 @@ import { Scene } from 'phaser';
 export default class Boot extends Scene {
   constructor() {
     super({
-      key: 'BootScene'
+      key: 'BootScene',
     });
   }
 
@@ -23,8 +23,9 @@ export default class Boot extends Scene {
       //this.scale.setParentSize(this.scale.parent.clientWidth, this.scale.parent.clientHeight);
     });
 
-    window.onresize = () => this.scale.setGameSize(this.scale.parentSize.width, this.scale.parentSize.height);
-    
+    window.onresize = () =>
+      this.scale.setGameSize(this.scale.parentSize.width, this.scale.parentSize.height);
+
     this.scene.start('PreloadScene');
   }
 }

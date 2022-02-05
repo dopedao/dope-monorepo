@@ -57,7 +57,9 @@ const InitiationInfo = () => {
             DOPE NFT bundles – with over ONE BILLION possible combinations.
           </p>
           <p>
-            Gear from each DOPE NFT can only be claimed once. The DOPE NFT remains in your wallet and still serves as the governance token for DopeWars DAO. Expect each DOPE NFT to have more utility developed for it in the future.
+            Gear from each DOPE NFT can only be claimed once. The DOPE NFT remains in your wallet
+            and still serves as the governance token for DopeWars DAO. Expect each DOPE NFT to have
+            more utility developed for it in the future.
           </p>
           <h3>More Info</h3>
           <ul className="normal">

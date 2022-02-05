@@ -1,12 +1,12 @@
-import { FC, ReactNode } from "react";
-import { AccordionPanel, Box, AccordionPanelProps } from "@chakra-ui/react";
+import { FC, ReactNode } from 'react';
+import { AccordionPanel, Box, AccordionPanelProps } from '@chakra-ui/react';
 
-import LoadingBlock from "components/LoadingBlock";
+import LoadingBlock from 'components/LoadingBlock';
 
 type SectionContentProps = {
-  children: ReactNode
-  isFetching?: boolean
-}
+  children: ReactNode;
+  isFetching?: boolean;
+};
 
 const SectionContent: FC<SectionContentProps & AccordionPanelProps> = ({
   children,
@@ -19,9 +19,11 @@ const SectionContent: FC<SectionContentProps & AccordionPanelProps> = ({
         <Box>
           <LoadingBlock maxRows={3} />
         </Box>
-      ) : children}
+      ) : (
+        children
+      )}
     </AccordionPanel>
-  )
-}
+  );
+};
 
-export default SectionContent
+export default SectionContent;

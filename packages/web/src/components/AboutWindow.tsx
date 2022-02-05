@@ -68,9 +68,9 @@ const TextBody = styled.div`
 `;
 
 const Content = `
-# What is this?
+# About Dope Wars
 
-The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum and [StarkNet](https://starkware.co/) blockchain, inspired by the classic TI-83 game we played instead of doing math homework.
+The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum, Optimism, and [StarkNet](https://starkware.co/) blockchains, inspired by the classic TI-83 game we played instead of doing math homework.
 
 DOPE WARS is also an ongoing NFT art project and experiment in decentralized project governance using a [DAO](https://ethereum.org/en/dao/).
 
@@ -108,8 +108,7 @@ Community members draft [proposals](https://dope-wars.notion.site/626df3ff9e4d47
 
 ![Hustlers](/images/hustlers.png#full-bleed)
 
-Hustlers are in-game characters that are created by Claiming Gear from your DOPE NFT, then minting a Hustler NFT with artwork all stored on the Ethereum blockchain. [This proposal passed our second DAO vote](https://dope-wars.notion.site/Pixel-Avatar-Project-0f64bb450aba46cebdced07c63f69bce).
-
+Hustlers are in-game characters that are created by Claiming Gear from an original DOPE NFT, then minting a Hustler NFT with artwork all stored on the Ethereum blockchain. [This proposal passed our second DAO vote](https://dope-wars.notion.site/Pixel-Avatar-Project-0f64bb450aba46cebdced07c63f69bce).
 
 ----
 
@@ -131,13 +130,13 @@ The supply of paper is currently fixed at 1 billion, and while this can be incre
 
 ----
 
-## DOPEWARS.GG
+## About this site
 
-Our first project is to provide a portal for the DOPE WARS ecosystem. Additional experiences like the game will be hosted here.
+Our first project is to provide a portal for the DOPE WARS ecosystem right here. Additional experiences like the game will be hosted here.
 
 You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have purchased.
 
-[Claim Gear, create a Hustler](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual Gear with other players to equip your Hustler in our SWAP MEET.
+[Claim Gear, create a Hustler](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual Gear with other players to equip your Hustler in our [SWAP MEET](/swap-meet).
 
 ----
 
@@ -159,15 +158,17 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 
 ### Credits
 * Original concept by [Dennison Bertram](https://twitter.com/dennisonbertram)
-* DOPEWARS.EXE produced by [tarrence](https://twitter.com/tarrenceva) and [facesof.eth](https://twitter.com/facesOfEth)
+* DOPEWARS.GG produced by [tarrence](https://twitter.com/tarrenceva) and [facesof.eth](https://twitter.com/facesOfEth)
 * Character pixel artwork by [Mr Fax](https://twitter.com/Mr_faxu)
 * Game Artwork and Maps by [HPMNK](https://twitter.com/HPMNK_One)
-* Design and branding by [facesof.eth](https://twitter.com/facesOfEth) and [Clicksave](https://twitter.com/click__save)
+* Art direction by [facesof.eth](https://twitter.com/facesOfEth)
 * DOPE TV and DOPE MUSIC produced by [Shecky Green](https://twitter.com/SheckyGreen)
 * Chiptunes by [Baron Von Future](https://twitter.com/baronvonfuture)
 * Dank memes by [M1](https://twitter.com/_541va_)
 * Tokenomics by [Winston Wolfe](https://twitter.com/wolfcryptogroup)
 * Grimey Graff and island vibes by [Cyberbitz](https://twitter.com/Cyberbitz)
+* UX Design by [facesof.eth](https://twitter.com/facesOfEth) and [Clicksave](https://twitter.com/click__save)
+* Copy for The Daily Dope by [Bikemaker](https://twitter.com/bikemaker)
 * Everything else [Beatws9](https://twitter.com/beatws9)
 * DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
 
@@ -183,32 +184,34 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 const BuyNow = () => (
   <div
     css={css`
-      padding:16px;
-      background-color:var(--gray-300);
-      border-top:2px solid black;
-      display:flex;
+      padding: 16px;
+      background-color: var(--gray-300);
+      border-top: 2px solid black;
+      display: flex;
       justify-content: flex-end;
       gap: 8px;
       width: 100%;
-      height:96px;
+      height: 96px;
     `}
   >
     <Link href="/news" passHref>
-      <Button>
-        Read The Daily Dope
-      </Button>
+      <Button>Read The Daily Dope</Button>
     </Link>
     <Link href="/swap-meet" passHref>
-      <Button variant="primary">
-        Get a Hustler
-      </Button>
+      <Button variant="primary">Get a Hustler</Button>
     </Link>
   </div>
 );
 
-const AboutContent = () => {
+const AboutWindow = ({ ...props }) => {
   return (
-    <DesktopWindow title="ABOUT.FAQ" background="#efefee" width="640px">
+    <DesktopWindow
+      title="ABOUT.FAQ"
+      background="#efefee"
+      width="640px"
+      hideWalletAddress
+      {...props}
+    >
       <Stack height="100%" gap="0">
         <TextBody className="markdownContainer">
           <ReactMarkdown className="markdown">{Content}</ReactMarkdown>
@@ -217,5 +220,5 @@ const AboutContent = () => {
       </Stack>
     </DesktopWindow>
   );
-}
-export default AboutContent;
+};
+export default AboutWindow;

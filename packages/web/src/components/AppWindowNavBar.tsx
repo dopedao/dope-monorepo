@@ -1,15 +1,21 @@
 import { css } from '@emotion/react';
 import { ReactNode } from 'react';
 
-const AppWindowNavBar = ({ children, showBorder = false }: { children: ReactNode, showBorder?: boolean }) => {
+const AppWindowNavBar = ({
+  children,
+  showBorder = false,
+}: {
+  children: ReactNode;
+  showBorder?: boolean;
+}) => {
   return (
     <div
       id="app-title-bar_nav-items"
       css={css`
-        position:relative;
+        position: relative;
         background: var(--gray-800);
         border: 0;
-        border-bottom: ${showBorder ? '4px' : '0' } solid white; 
+        border-bottom: ${showBorder ? '4px' : '0'} solid white;
         height: 40px;
         width: 100%;
         overflow-y: hidden;
@@ -34,26 +40,30 @@ const AppWindowNavBar = ({ children, showBorder = false }: { children: ReactNode
           color: #000;
         }
         a::before {
-          content: " ";
+          content: ' ';
           position: absolute;
           width: 10px;
-          top: 0; left: 0; bottom: 0; 
+          top: 0;
+          left: 0;
+          bottom: 0;
           background-color: #434345;
           border-radius: 3px 3px 0 0;
-          transform: translateX(-5px) scale(1.26) perspective(1px) rotateX(.5deg);
+          transform: translateX(-5px) scale(1.26) perspective(1px) rotateX(0.5deg);
           transform-origin: bottom;
         }
         a.active::before {
           background-color: #fff;
         }
         a::after {
-          content: " ";
+          content: ' ';
           position: absolute;
           width: 10px;
-          top: 0; right: 0; bottom: 0; 
+          top: 0;
+          right: 0;
+          bottom: 0;
           background-color: #434345;
           border-radius: 3px 3px 0 0;
-          transform: translateX(5px) scale(1.26) perspective(1px) rotateX(.5deg);
+          transform: translateX(5px) scale(1.26) perspective(1px) rotateX(0.5deg);
           transform-origin: bottom;
         }
         a.active::after {
