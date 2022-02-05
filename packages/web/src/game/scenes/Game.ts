@@ -322,6 +322,30 @@ export default class GameScene extends Scene {
               x: this.player.x,
               y: this.player.y
             });
+          this.hustlers.forEach(h => {
+            // hide/show hustlers if in current map
+            h.setVisible(h.currentMap === this.player.currentMap);
+            
+
+            if (h.currentMap === this.player.currentMap)
+            {
+              // constantly check if hustler has to move to a new position on map change and if yes
+              // just teleport him instead of moving him
+              const id = setInterval(() => {
+                console.log('checking hustler');
+                if (h.navigator.target)
+                {
+                  h.setPosition(
+                    this.mapHelper.map.collideLayer!.tileToWorldX((h.navigator.path[h.navigator.path.length - 1] ?? h.navigator.target).x), 
+                    this.mapHelper.map.collideLayer!.tileToWorldY((h.navigator.path[h.navigator.path.length - 1] ?? h.navigator.target).y));
+                  h.navigator.cancel();
+                  clearInterval(id);
+                }
+              });
+              // clear after 1 second
+              setTimeout(() => clearInterval(id), 1000);
+            }
+          });
         }
         return;
       }
@@ -334,7 +358,6 @@ export default class GameScene extends Scene {
         this.mapHelper.createMap(lvl.identifier);
         this.mapHelper.createEntities();
         this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
-        // this.cameras.main.setBounds(this.mapHelper.mapReader.level.worldX, this.mapHelper.mapReader.level.worldY, this.mapHelper.map.displayLayers[0].displayWidth, this.mapHelper.map.displayLayers[0].displayHeight);
       }
     });
   }

@@ -30,7 +30,13 @@ export default class MapHelper
             Object.keys(this.scene.textures.list)
                 .filter(key => key.startsWith('tileset_'))
         );
-    
+
+        // this.map.gfx = this.scene.add.rectangle(
+        //     this.map.displayLayers[0].x, this.map.displayLayers[0].y,  
+        //     this.mapReader.level.pxWid, this.mapReader.level.pxHei, 
+        //     0x000000, 0.5)
+        //     .setDepth(this.map.displayLayers[0].depth + 100);
+
         // enable collisions for all tiles that have index 1
         this.map.collideLayer?.setCollision(1);
 
