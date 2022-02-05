@@ -10,7 +10,7 @@ type AvatarProps = {
 
 const Avatar = ({ name, picture, date }: AvatarProps) => (
   <Box display="flex" alignItems="center" marginLeft="2em" marginTop="2em">
-    <ChakraAvatar src={picture} alt={name} marginRight="2" />
+    <ChakraAvatar background="transparent" src={picture} alt={name} marginRight="2" />
     <Stack gap="0">
       <h4>{name}</h4>
       { date && 

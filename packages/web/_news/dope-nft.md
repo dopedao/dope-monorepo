@@ -6,8 +6,8 @@ excerpt: 'This is a huge day, as payment for Perama and Mr Fax’s work has come
 coverImage: '/images/news/dope-post.png'
 coverImageText: 'john dope - dope wiki archive'
 author:
-  name: vmod
-  picture: '/images/authors/author0.webp'
+  name: Bikemaker
+  picture: '/images/icon/dope-smiley.svg'
 ogImage:
   url: '/images/news/post1.png'
 ---

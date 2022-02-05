@@ -2,8 +2,7 @@
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import { Link } from '@chakra-ui/layout';
-import StickyNote from './StickyNote';
-import { Button, Image } from '@chakra-ui/react';
+import { Box, Button, Image } from '@chakra-ui/react';
 import Countdown from 'react-countdown';
 
 const StickyNoteHustlerMint = () => {
@@ -11,7 +10,7 @@ const StickyNoteHustlerMint = () => {
   const currentPageIsGangsta = router.pathname == '/gangsta-party';
 
   return (
-    <StickyNote background="#FFB6B6" canClose>
+    <Box background="#FFB6B6" height="256px !important" width="256px" position="absolute">
       <h3 css={css`margin-bottom:0px !important;`}>
         Lunar New Year Airdrop
         <div className="smallest">
@@ -31,7 +30,7 @@ const StickyNoteHustlerMint = () => {
       <Link href="/lunar-new-year?section=mask" passHref>
         <Button variant="cny" css={css`margin-top:8px`}>Buy a Rare Mask</Button>
       </Link>
-    </StickyNote>
+    </Box>
   );
 };
 

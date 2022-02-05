@@ -206,7 +206,7 @@ const BuyNow = () => (
   </div>
 );
 
-const AboutContent = () => {
+const AboutWindow = () => {
   return (
     <DesktopWindow title="ABOUT.FAQ" background="#efefee" width="640px">
       <Stack height="100%" gap="0">
@@ -218,4 +218,4 @@ const AboutContent = () => {
     </DesktopWindow>
   );
 }
-export default AboutContent;
+export default AboutWindow;

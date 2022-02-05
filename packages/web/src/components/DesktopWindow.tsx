@@ -43,18 +43,23 @@ const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string;
   flex-direction: column;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
   overflow-x: hidden;
+  position: absolute;
+  top: 0 !important;
+  left: 0 !important;
   &.floating {
     ${media.phone`
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      `}
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    `}
     ${media.tablet`
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      `}
-      @media (min-width: ${returnBreakpoint('laptop')}) {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    `}
+    @media (min-width: ${returnBreakpoint('laptop')}) {
+      top: 1em;
+      left: 1em;
       width: 80%;
       height: 90%;
       margin: auto;
@@ -136,6 +141,17 @@ const DesktopWindow = ({
     }
   };
 
+
+  // Set zIndex to ensure we can have more than one DesktopWindow open at a time
+  const focusWindow = () => {
+    const windows = document.getElementsByClassName('desktopWindow') as HTMLCollectionOf<HTMLElement>;
+    console.log(windows);
+    for (let i=0; i<windows.length; i++) {
+      windows[i].style.zIndex = '0';
+    }
+    if(windowRef?.current) windowRef.current.style.zIndex = '50';
+  };
+
   return (
     <ConditionalWrapper
       condition={shouldBeDraggable}
@@ -147,11 +163,12 @@ const DesktopWindow = ({
     >
       <WindowWrapper 
         ref={windowRef} 
-        className={isFullScreen ? '' : 'floating'} 
+        className={`desktopWindow ${isFullScreen ? '' : 'floating'}`}
         height={height} 
         width={width} 
         background={ background && background.length > 0 ? background : '#a8a9ae' }
         scrollable={ scrollable }
+        onClick={focusWindow}
       >
         {!onlyFullScreen && (
           <DesktopWindowTitleBar
