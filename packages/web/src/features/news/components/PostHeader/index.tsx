@@ -1,26 +1,22 @@
-import { Box, Text } from '@chakra-ui/layout';
+import { Box, Text, Stack } from '@chakra-ui/layout';
 import { PostType } from 'features/news/types';
 import Avatar from 'features/news/components/Avatar';
-import DateFormatter from 'features/news/components/DateFormatter';
 import Cover from 'features/news/components/Cover';
 
 type PostHeaderProps = Pick<PostType, 'title' | 'coverImage' | 'author' | 'date'>;
 
 const PostHeader = ({ title, coverImage, date, author }: PostHeaderProps) => (
-  <>
-    <Text color="whiteAlpha.900" fontWeight="800" fontSize="6xl">
-      {title}
-    </Text>
-    <Box marginBottom="8px">
+  <Stack direction="row" gap="16px">
+    <Box marginBottom="8px" flex={1}>
       <Cover title={title} src={coverImage} />
     </Box>
-    <Box marginY="5" color="whiteAlpha.900">
-      <Avatar name={author.name} picture={author.picture} />
-      <div className="mb-6 text-lg">
-        <DateFormatter dateString={date} />
-      </div>
-    </Box>
-  </>
+    <Stack flex="2">
+      <Text color="black" fontWeight="800" fontSize="6xl" lineHeight="1em">
+        {title}
+      </Text>
+      <Avatar name={author.name} picture={author.picture} date={date} />
+    </Stack>
+  </Stack>
 );
 
 export default PostHeader;

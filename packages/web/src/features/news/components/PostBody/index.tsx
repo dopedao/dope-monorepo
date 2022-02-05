@@ -5,7 +5,7 @@ type PostBodyProps = {
 };
 
 const TextBody = styled.div`
-  background-color: #efefee;
+  background-color: var(--gray-00);
   height: 100%;
   overflow: auto;
   padding: 32px;

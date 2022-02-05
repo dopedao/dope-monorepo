@@ -16,11 +16,11 @@ import AppWindowNavBar from 'components/AppWindowNavBar';
 const brickBackground = "#000000 url('/images/tile/brick-black.png') center/25% fixed";
 
 const Container = styled.div`
+  background-color: var(--gray-00);
   padding: 32px 16px;
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  background: ${brickBackground};
   ${media.tablet`
     padding: 32px;
   `}
