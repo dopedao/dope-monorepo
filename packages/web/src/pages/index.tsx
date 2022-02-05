@@ -16,8 +16,8 @@ const IndexPage = ({ allPosts }: {allPosts: PostType[]}) => (
   <IndexWrapper>
     <Head />
     {/* <StickyNoteHustlerMint /> */}
-    <AboutWindow posX={32} posY={32} />
     <NewsWindow allPosts={allPosts} posX={128} posY={128}  />
+    <AboutWindow posX={32} posY={32} />
   </IndexWrapper>
 );
 
