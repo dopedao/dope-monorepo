@@ -32,6 +32,7 @@ export type HustlerCustomization = {
   facialHair: number;
   hair: number;
   name?: string;
+  title?: string;
   renderName?: boolean;
   sex: HustlerSex;
   textColor: string;

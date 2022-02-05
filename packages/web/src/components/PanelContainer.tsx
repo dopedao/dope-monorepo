@@ -5,7 +5,7 @@ const PanelContainer = styled.div<{ justifyContent?: string | undefined; }>`
   border-radius: 8px;
   background-color: #fff;
   display: flex;
-  flex-basis: 1;
+  flex: 1;
   flex-direction: column;
   justify-content: ${({ justifyContent }) => (justifyContent ? justifyContent : 'space-between')};
   overflow: hidden;

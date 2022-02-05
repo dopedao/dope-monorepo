@@ -34,7 +34,7 @@ const DesktopIconList = () => {
             const hasAgreed = window.localStorage.getItem('tos');
             if (hasAgreed === 'true') {
               openLocalRoute('/inventory');
-            } else {
+            } else {``
               openLocalRoute('/terms-of-service');
             }
           }}

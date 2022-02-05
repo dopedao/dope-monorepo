@@ -1,6 +1,8 @@
 import ReactMarkdown from 'react-markdown';
 import styled from '@emotion/styled';
 import DesktopWindow from 'components/DesktopWindow';
+import { Button, Link } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 
 const TextBody = styled.div`
   background-color: #efefee;
@@ -66,9 +68,10 @@ DOPE WARS is also an ongoing NFT art project and experiment in decentralized pro
 
 ----
 
-### For detailed information…
-…Including how to purchase your first DOPE NFT, how to get involved with the project, or what "the game" will be like
-👉 [Please see our Wiki and Players Guide](http://wiki.dopedao.org) 👈
+### For more
+Including how to purchase your first DOPE NFT, how to get involved with the project, or what "the game" will be like
+
+👉 [Please see our Wiki and Players Guide](http://wiki.dopedao.org)
 
 ----
 
@@ -147,12 +150,16 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 ----
 
 ### Credits
-* Original concept by [Dennison Bertram](https://twitter.com/dennisonbertram) and [tarrence](https://twitter.com/tarrenceva)
-* DOPEWARS.EXE produced by [facesof.eth](https://twitter.com/facesOfEth) and [tarrence](https://twitter.com/tarrenceva)
+* Original concept by [Dennison Bertram](https://twitter.com/dennisonbertram)
+* DOPEWARS.EXE produced by [tarrence](https://twitter.com/tarrenceva) and [facesof.eth](https://twitter.com/facesOfEth)
 * Character pixel artwork by [Mr Fax](https://twitter.com/Mr_faxu)
-* Design and branding by [facesof.eth](https://twitter.com/facesOfEth)
+* Game Artwork and Maps by [HPMNK](https://twitter.com/HPMNK_One)
+* Design and branding by [facesof.eth](https://twitter.com/facesOfEth) and [Clicksave](https://twitter.com/click__save)
+* DOPE TV and DOPE MUSIC produced by [Shecky Green](https://twitter.com/SheckyGreen)
+* Chiptunes by [Baron Von Future](https://twitter.com/baronvonfuture)
+* Dank memes by [M1](https://twitter.com/_541va_)
 * DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
-* DOPE TV produced by [Shecky Green](https://twitter.com/SheckyGreen)
+* Everything else [Beatws9](https://twitter.com/beatws9)
 
 ----
 
@@ -163,12 +170,29 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 
 `;
 
+const BuyNow = () => (
+  <Link href="/swap-meet" passHref css={css`
+    padding:16px;
+    background-color:var(--gray-300);
+    border-top:2px solid black;
+    display:flex;
+    justify-content: flex-end;
+  `}>
+    <Button variant="primary" css={css``}>
+      Buy a Dope Wars Hustler
+    </Button>
+  </Link>
+);
+
 const AboutContent = () => {
   return (
-    <DesktopWindow title="ABOUT.FAQ" width={640} height="90vh">
+    <DesktopWindow title="ABOUT.FAQ" scrollable>
+
       <TextBody className="markdownContainer">
         <ReactMarkdown>{Content}</ReactMarkdown>
       </TextBody>
+
+      <BuyNow />
     </DesktopWindow>
   );
 }
