@@ -181,7 +181,7 @@ const BuyNow = () => (
     justify-content: flex-end;
   `}>
     <Button variant="primary" css={css``}>
-      Buy a Dope Wars Hustler
+      Get a Dope Wars Hustler
     </Button>
   </Link>
 );
