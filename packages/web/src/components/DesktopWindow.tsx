@@ -65,15 +65,21 @@ const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string;
       width: 100%;
       height: 100%;
       margin: 0;
+      top: 0;
+      left: 0;
+      right: 0;
     `}
     ${media.tablet`
       width: 80%;
       height: 90%;
       margin: 0;
+      top: 32px;
+      right: 96px;
+      left: unset;
     `}
     @media (min-width: ${returnBreakpoint('laptop')}) {
-      top: 1em;
-      left: 1em;
+      top: 32px;
+      left: 96px;
       width: 80%;
       height: 90%;
       margin: auto;
