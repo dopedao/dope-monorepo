@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import { SearchOrderField } from 'generated/graphql';
 import { Container } from './styles';
 import { FILTERS } from 'features/swap-meet/modules/MarketList';
-import useQueryParam from 'utils/use-query-param';
+import useQueryParam from 'hooks/use-query-param';
 import { useDebounce } from 'usehooks-ts';
 
 const statusKeys = ['All', 'For Sale', 'Has Unclaimed Gear', 'Has Unclaimed $PAPER'];
