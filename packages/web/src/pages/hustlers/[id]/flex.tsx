@@ -26,6 +26,7 @@ import DopeItem from 'features/dope/components/DopeItem';
 import { ITEM_ORDER } from 'features/dope/components/DopeCardBody';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { Item as DopeItemApiResponse } from 'generated/graphql';
+import { PHRASES } from 'features/news/components/DopePostHeader/index'
 
 const Nav = () => (
   <AppWindowNavBar>
@@ -96,16 +97,6 @@ const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
   const indexFromString = bodyStringFromApi.charAt(bodyStringFromApi.length - 1);
   return parseInt(indexFromString);
 };
-
-const PHRASES = [
-  'This is how we FLEX 💪',
-  '🚀 $PAPER to the moon',
-  '🕹 WEN GAME 🕹',
-  'Devs always doing something',
-  'Based devs',
-  'Welcome to the MURDERVERSE',
-  'Hustle Hard',
-];
 
 const Flex = () => {
   const router = useRouter();

@@ -2,10 +2,17 @@ import styled from '@emotion/styled';
 import { Text, Box, Flex, Spacer } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import { media } from 'ui/styles/mixins';
+import { getRandomNumber } from 'utils/utils';
 
 const Wrapper = styled.div`
   h1 {
     font-family: Dope !important;
+    font-size: 3.5em !important;
+    padding: 0em 2em;
+    ${media.tablet`
+      font-size: 4.5em !important;
+      text-align: center;
+    `}
   }
 
   p {
@@ -14,19 +21,16 @@ const Wrapper = styled.div`
 `;
 
 const Description = styled.div`
-  border: 1px solid black;
-  text-align: center;
-  padding: 4px;
-
+  text-align: left;
+  padding: 0;
   ${media.tablet`
-    padding: 8px 20px;
   `}
 `;
 
 const TitleWrapper = styled.div`
-  text-align: center;
   > h1 {
-    margin: 13.5px 0;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 `;
 
@@ -37,39 +41,48 @@ type DopePostHeaderProps = {
   description?: string;
 };
 
+export const PHRASES = [
+  'This is how we FLEX 💪',
+  '🚀 $PAPER to the moon',
+  '🕹 WEN GAME 🕹',
+  'Devs always doing something',
+  'Based devs',
+  'Welcome to the MURDERVERSE',
+  'Hustle Hard',
+  'The truth and something else'
+];
+
+
 const DopePostHeader = ({
   $paper = 0.5,
-  description = 'The truth and something else',
+  description = PHRASES[getRandomNumber(0,PHRASES.length-1)],
   location = 'DOPECITY',
   date,
 }: DopePostHeaderProps) => (
   <Wrapper>
     <Flex padding="12px 0">
-      <Description>
-        <Flex align="center" justify="center" height="full">
-          <Text
-            fontSize="xs"
-            textTransform="uppercase"
-            color="#000"
-            width="80%"
-            padding={0}
-          >{`"${description}"`}</Text>
-        </Flex>
-      </Description>
-
-      <Spacer />
-
       <TitleWrapper>
         <Text
           color="#000"
           fontWeight="normal"
           marginBottom={0}
-          fontSize="7xl"
           paddingBottom={0}
           as="h1"
         >
           The Daily Dope
         </Text>
+        <Description>
+          <Flex height="full">
+            <Text
+              fontSize="xs"
+              textTransform="uppercase"
+              color="#000"
+              width="80%"
+              padding={0}
+              paddingLeft=".5em"
+            >{`"${description}"`}</Text>
+          </Flex>
+        </Description>
       </TitleWrapper>
 
       <Spacer />
@@ -77,11 +90,11 @@ const DopePostHeader = ({
       <Box textAlign="right" paddingRight="20px">
         <Flex height="100%" align="center" justify="center">
           <div>
-            <Text fontSize="lg" paddingBottom="2px" textTransform="uppercase">
+            <Text fontSize="md" paddingBottom="2px" textTransform="uppercase">
               MORNING EDITION
             </Text>
             <Text
-              fontSize="lg"
+              fontSize="md"
               paddingBottom={0}
               textTransform="uppercase"
             >{`${$paper} $paper`}</Text>
