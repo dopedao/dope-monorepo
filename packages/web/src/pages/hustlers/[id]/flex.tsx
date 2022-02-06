@@ -218,7 +218,7 @@ const Flex = () => {
               <HustlerTitle>
                 {hustlerConfig.name}
                 <br />
-                {getRandomDate('01/01/1980', '01/01/2020')}
+                {getRandomDate('01/01/1980')}
               </HustlerTitle>
               <HustlerImage>{renderHustler(1)}</HustlerImage>
             </MugshotContainer>
