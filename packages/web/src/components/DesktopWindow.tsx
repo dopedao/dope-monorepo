@@ -174,7 +174,6 @@ const DesktopWindow = ({
     const windows = document.getElementsByClassName(
       'desktopWindow',
     ) as HTMLCollectionOf<HTMLElement>;
-    console.log(windows);
     for (let i = 0; i < windows.length; i++) {
       windows[i].style.zIndex = '0';
     }
