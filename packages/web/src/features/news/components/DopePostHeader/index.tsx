@@ -43,18 +43,23 @@ type DopePostHeaderProps = {
 
 export const PHRASES = [
   'This is how we FLEX 💪',
-  '🚀 $PAPER to the moon',
-  '🕹 WEN GAME 🕹',
+  '$PAPER to the moon 🚀 ',
+  'WEN GAME 🕹',
   'Devs always doing something',
   'Based devs',
   'Welcome to the MURDERVERSE',
   'Hustle Hard',
-  'The truth and something else'
+  'The truth and something else',
+  'We need marketing',
+  'Always trending #1 on DEXTOOLS',
+  'The talk of Crypto Twitter',
+  'Doing shit different because we can',
+  'We heard p2e metaverse games are going to be big'
 ];
 
 
 const DopePostHeader = ({
-  $paper = 0.5,
+  $paper = 20,
   description = PHRASES[getRandomNumber(0,PHRASES.length-1)],
   location = 'DOPECITY',
   date,
@@ -80,7 +85,7 @@ const DopePostHeader = ({
               width="80%"
               padding={0}
               paddingLeft=".5em"
-            >{`"${description}"`}</Text>
+            >{description}</Text>
           </Flex>
         </Description>
       </TitleWrapper>
@@ -88,13 +93,13 @@ const DopePostHeader = ({
       <Spacer />
 
       <Box textAlign="right" paddingRight="20px">
-        <Flex height="100%" align="center" justify="center">
+        <Flex height="100%" align="center" justify="center" gap="0">
           <div>
-            <Text fontSize="md" paddingBottom="2px" textTransform="uppercase">
-              MORNING EDITION
+            <Text fontSize="md" paddingBottom="0px" textTransform="uppercase">
+              { new Date().getHours() > 12 ? 'Evening' : 'Morning' } EDITION
             </Text>
             <Text
-              fontSize="md"
+              fontSize="sm"
               paddingBottom={0}
               textTransform="uppercase"
             >{`${$paper} $paper`}</Text>
