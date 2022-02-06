@@ -44,8 +44,8 @@ const MarketFilterBar = ({
   compactSwitchOn,
   setSearchValue,
 }: MarketFilterBarProps) => {
-  const [sortBy, setSortBy] = useQueryParam('sort_by', sortKeys[0].value);
-  const [status, setStatus] = useQueryParam('status', statusKeys[0]);
+  const [sortBy, setSortBy] = useQueryParam('sort_by', sortKeys[1].value);
+  const [status, setStatus] = useQueryParam('status', statusKeys[2]);
   const [searchValueParm, setSearchValueParam] = useQueryParam('q', '');
 
   const debouncedSearchValue = useDebounce<string>(searchValueParm, 250);
