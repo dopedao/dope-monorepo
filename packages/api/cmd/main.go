@@ -20,7 +20,7 @@ import (
 
 var listen = pflag.String("listen", "8080", "server listen port")
 var pgConnstring = common.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
-var openseaApiKey = common.SecretEnv("OPENSEA", "plaintext://")
+var openseaApiKey = common.SecretEnv("OPENSEA", "plaintext://a4ead0acfe2140dfa04ee8ae741c9d1e")
 var network = os.Getenv("NETWORK")
 var index = os.Getenv("INDEX")
 

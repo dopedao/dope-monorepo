@@ -262,6 +262,7 @@ var (
 		{Name: "id", Type: field.TypeString},
 		{Name: "active", Type: field.TypeBool},
 		{Name: "source", Type: field.TypeEnum, Enums: []string{"OPENSEA", "SWAPMEET"}},
+		{Name: "order", Type: field.TypeJSON, Nullable: true},
 		{Name: "dope_listings", Type: field.TypeString, Nullable: true},
 	}
 	// ListingsTable holds the schema information for the "listings" table.
@@ -272,7 +273,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "listings_dopes_listings",
-				Columns:    []*schema.Column{ListingsColumns[3]},
+				Columns:    []*schema.Column{ListingsColumns[4]},
 				RefColumns: []*schema.Column{DopesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

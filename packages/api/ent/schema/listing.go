@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"encoding/json"
+
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
@@ -20,6 +22,7 @@ func (Listing) Fields() []ent.Field {
 		field.Enum("source").
 			Values("OPENSEA", "SWAPMEET").
 			Immutable(),
+		field.JSON("order", json.RawMessage{}).Optional(),
 	}
 }
 

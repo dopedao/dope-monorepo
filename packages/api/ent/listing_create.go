@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -33,6 +34,12 @@ func (lc *ListingCreate) SetActive(b bool) *ListingCreate {
 // SetSource sets the "source" field.
 func (lc *ListingCreate) SetSource(l listing.Source) *ListingCreate {
 	lc.mutation.SetSource(l)
+	return lc
+}
+
+// SetOrder sets the "order" field.
+func (lc *ListingCreate) SetOrder(jm json.RawMessage) *ListingCreate {
+	lc.mutation.SetOrder(jm)
 	return lc
 }
 
@@ -244,6 +251,14 @@ func (lc *ListingCreate) createSpec() (*Listing, *sqlgraph.CreateSpec) {
 		})
 		_node.Source = value
 	}
+	if value, ok := lc.mutation.Order(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: listing.FieldOrder,
+		})
+		_node.Order = value
+	}
 	if nodes := lc.mutation.DopeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -399,6 +414,24 @@ func (u *ListingUpsert) UpdateSource() *ListingUpsert {
 	return u
 }
 
+// SetOrder sets the "order" field.
+func (u *ListingUpsert) SetOrder(v json.RawMessage) *ListingUpsert {
+	u.Set(listing.FieldOrder, v)
+	return u
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *ListingUpsert) UpdateOrder() *ListingUpsert {
+	u.SetExcluded(listing.FieldOrder)
+	return u
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *ListingUpsert) ClearOrder() *ListingUpsert {
+	u.SetNull(listing.FieldOrder)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -477,6 +510,27 @@ func (u *ListingUpsertOne) SetSource(v listing.Source) *ListingUpsertOne {
 func (u *ListingUpsertOne) UpdateSource() *ListingUpsertOne {
 	return u.Update(func(s *ListingUpsert) {
 		s.UpdateSource()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *ListingUpsertOne) SetOrder(v json.RawMessage) *ListingUpsertOne {
+	return u.Update(func(s *ListingUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *ListingUpsertOne) UpdateOrder() *ListingUpsertOne {
+	return u.Update(func(s *ListingUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *ListingUpsertOne) ClearOrder() *ListingUpsertOne {
+	return u.Update(func(s *ListingUpsert) {
+		s.ClearOrder()
 	})
 }
 
@@ -723,6 +777,27 @@ func (u *ListingUpsertBulk) SetSource(v listing.Source) *ListingUpsertBulk {
 func (u *ListingUpsertBulk) UpdateSource() *ListingUpsertBulk {
 	return u.Update(func(s *ListingUpsert) {
 		s.UpdateSource()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *ListingUpsertBulk) SetOrder(v json.RawMessage) *ListingUpsertBulk {
+	return u.Update(func(s *ListingUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *ListingUpsertBulk) UpdateOrder() *ListingUpsertBulk {
+	return u.Update(func(s *ListingUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *ListingUpsertBulk) ClearOrder() *ListingUpsertBulk {
+	return u.Update(func(s *ListingUpsert) {
+		s.ClearOrder()
 	})
 }
 

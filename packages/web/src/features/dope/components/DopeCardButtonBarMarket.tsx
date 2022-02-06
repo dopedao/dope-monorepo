@@ -10,11 +10,11 @@ const viewOnOpenSea = (tokenId: string): void => {
   window.open(url, 'dopeWarsList')?.focus();
 };
 
-const ContextSensitiveButton = ({ dope }: DopeCardButtonBarMarketProps) => {
+type DopeCardButtonBarMarketProps = Pick<DopeCardProps, 'dope'>;
+
+const DopeCardButtonBarMarket = ({ dope }: DopeCardButtonBarMarketProps) => {
   const isOnSale = !!dope.listings?.[0]?.inputs?.[0]?.amount;
-  const price = dope.listings?.[0]?.inputs?.[0]?.amount;
-  const unit = dope.listings?.[0]?.inputs[0]?.type;
-  return (
+  return isOnSale ? (
     <Button
       onClick={() => viewOnOpenSea(dope.id)}
       css={css`
@@ -22,43 +22,8 @@ const ContextSensitiveButton = ({ dope }: DopeCardButtonBarMarketProps) => {
       `}
       variant={isOnSale ? 'primary' : 'solid'}
     >
-      {isOnSale ? `Buy for ${ethers.utils.formatEther(price)} ${unit}` : 'View'}
+      Mint Hustler
     </Button>
-  );
-};
-
-const LastSaleOrNever = ({ dope }: DopeCardButtonBarMarketProps) => {
-  const lastSalePrice = dope.lastSale?.inputs?.[0]?.amount;
-  const unit = dope.lastSale?.inputs?.[0]?.type;
-  if (lastSalePrice)
-    return (
-      <span
-        css={css`
-          white-space: nowrap;
-        `}
-      >
-        Last {ethers.utils.formatEther(lastSalePrice)} {unit}
-      </span>
-    );
-  return <></>;
-};
-
-type DopeCardButtonBarMarketProps = Pick<DopeCardProps, 'dope'>;
-
-const DopeCardButtonBarMarket = ({ dope }: DopeCardButtonBarMarketProps) => {
-  return (
-    <>
-      <div
-        css={css`
-          text-align: center;
-        `}
-      >
-        <LastSaleOrNever dope={dope} />
-      </div>
-      <div>
-        <ContextSensitiveButton dope={dope} />
-      </div>
-    </>
-  );
+  ) : null;
 };
 export default DopeCardButtonBarMarket;
