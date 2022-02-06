@@ -57,11 +57,22 @@ func (g *Game) Start(ctx context.Context) {
 					Y:          otherPlayer.y,
 				})
 			}
+			// item entities data
+			itemEntitiesData := []ItemEntityData{}
+			for _, itemEntity := range(g.ItemEntities) {
+				itemEntitiesData = append(itemEntitiesData, ItemEntityData{
+					Id: itemEntity.id.String(),
+					Item: itemEntity.item,
+					X: itemEntity.x,
+					Y: itemEntity.y,
+				})
+			}
 
 			// handshake data, player ID & game state info
 			handShakeData, err := json.Marshal(HandshakeData{
 				Id:      player.Id.String(),
 				Players: playersData,
+				ItemEntities: itemEntitiesData,
 			})
 			if err != nil {
 				player.Send <- generateErrorMessage(500, "could not marshal handshake data")

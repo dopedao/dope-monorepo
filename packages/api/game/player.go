@@ -115,6 +115,27 @@ func (p *Player) readPump(ctx context.Context) {
 			}
 
 			log.Info().Msgf("player %s | %s sent chat message: %s", p.Id, p.name, data.Message)
+		case "player_pickup_itementity":
+			var data IdData
+			json.Unmarshal(msg.Data, &data)
+
+			// search for item entity and remove it + broadcast its removal to all players
+			for i, itemEntity := range(p.game.ItemEntities) {
+				if (itemEntity.id.String() != data.Id) {
+					continue
+				}
+
+				p.game.ItemEntities = append(p.game.ItemEntities[:i], p.game.ItemEntities[i+1:]...)
+				// broadcast the item entity removal to all players
+				p.game.Broadcast <- BaseMessage{
+					Event: "itementity_destroy",
+					Data: msg.Data,
+				}
+				break
+			}
+
+			// TODO: confirm item entitiy pickup by addingf item to players inventory
+			log.Info().Msgf("player %s | %s picked up item entity: %s", p.Id, p.name, data.Id)
 		case "player_leave":
 			// see defer
 			return
