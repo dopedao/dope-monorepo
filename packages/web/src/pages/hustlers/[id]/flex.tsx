@@ -1,10 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import { BigNumber } from 'ethers';
 import { css } from '@emotion/react';
-import { media } from 'ui/styles/mixins';
-import styled from '@emotion/styled';
+import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { getRandomDate } from 'utils/utils';
 import { getRandomHustler, HustlerSex } from 'utils/HustlerConfig';
+import { Item as DopeItemApiResponse } from 'generated/graphql';
+import { ITEM_ORDER } from 'features/dope/components/DopeCardBody';
+import { media } from 'ui/styles/mixins';
+import { PHRASES } from 'features/news/components/DopePostHeader/index'
+import { Share } from 'react-twitter-widgets';
 import { Stack, Button, Grid, GridItem, Image } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useHustlerQuery } from 'generated/graphql';
@@ -12,21 +16,18 @@ import { useRouter } from 'next/router';
 import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
 import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
+import DopeItem from 'features/dope/components/DopeItem';
 import Head from 'components/Head';
+import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
 import Link from 'next/link';
 import LoadingBlock from 'components/LoadingBlock';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
+import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
-import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
-import { Share } from 'react-twitter-widgets';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
-import PanelTitleHeader from 'components/PanelTitleHeader';
-import DopeItem from 'features/dope/components/DopeItem';
-import { ITEM_ORDER } from 'features/dope/components/DopeCardBody';
-import { DopeLegendColors } from 'features/dope/components/DopeLegend';
-import { Item as DopeItemApiResponse } from 'generated/graphql';
-import { PHRASES } from 'features/news/components/DopePostHeader/index'
+import styled from '@emotion/styled';
+import GearCard from 'features/profile/components/GearCard';
 
 const Nav = () => (
   <AppWindowNavBar>
@@ -178,6 +179,16 @@ const Flex = () => {
     );
   };
 
+  const sortedHustlerItems = hustlerItems.sort(
+    function (a: DopeItemApiResponse, b: DopeItemApiResponse) {
+      if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
+        return 1;
+      } else {
+        return -1;
+      }
+    }
+  );
+
   return (
     <AppWindow padBody={true} navbar={<Nav />} scrollable>
       <Head
@@ -233,59 +244,58 @@ const Flex = () => {
               </PanelBody>
             </PanelContainer>
           </StackedResponsiveContainer>
-          <Stack
-            direction="row"
-            padding={['8px', '16px', '32px']}
+          <Grid
+            templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
             gap="16px"
-            paddingTop="0 !important"
+            justifyContent="center"
+            alignItems="stretch"
+            width="100%"
+            padding="32px"
+            paddingTop="8px"
           >
             <PanelContainer>
-              <PanelTitleHeader>Gear</PanelTitleHeader>
+              <ProfileCardHeader>Equipped Gear</ProfileCardHeader>
               <PanelBody
                 css={css`
                   background-color: var(--gray-800);
+                  flex: 2;
                 `}
               >
-                {hustlerItems
-                  .sort(function (a: DopeItemApiResponse, b: DopeItemApiResponse) {
-                    if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
-                      return 1;
-                    } else {
-                      return -1;
-                    }
-                  })
-                  .map(
-                    ({
-                      id,
-                      name,
-                      namePrefix,
-                      nameSuffix,
-                      suffix,
-                      augmented,
-                      type,
-                      tier,
-                    }: DopeItemApiResponse) => {
-                      return (
-                        // @ts-ignore
-                        <DopeItem
-                          key={id}
-                          name={name}
-                          namePrefix={namePrefix}
-                          nameSuffix={nameSuffix}
-                          suffix={suffix}
-                          augmented={augmented}
-                          type={type}
-                          color={DopeLegendColors[tier]}
-                          isExpanded={true}
-                          tier={tier}
-                          showRarity={true}
-                        />
-                      );
-                    },
-                  )}
+                {sortedHustlerItems.map(
+                  ({
+                    id,
+                    name,
+                    namePrefix,
+                    nameSuffix,
+                    suffix,
+                    augmented,
+                    type,
+                    tier,
+                  }: DopeItemApiResponse) => {
+                    return (
+                      // @ts-ignore
+                      <DopeItem
+                        key={id}
+                        name={name}
+                        namePrefix={namePrefix}
+                        nameSuffix={nameSuffix}
+                        suffix={suffix}
+                        augmented={augmented}
+                        type={type}
+                        color={DopeLegendColors[tier]}
+                        isExpanded={true}
+                        tier={tier}
+                        showRarity={true}
+                      />
+                    );
+                  },
+                )}
               </PanelBody>
             </PanelContainer>
-          </Stack>
+            {sortedHustlerItems.map((item: DopeItemApiResponse) => {
+              return <GearCard item={item} key={item.id} />
+            })}
+          </Grid>
         </Stack>
       )}
     </AppWindow>
