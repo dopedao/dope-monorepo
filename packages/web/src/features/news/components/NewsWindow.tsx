@@ -15,14 +15,13 @@ interface NewsWindowProps {
   allPosts: PostType[];
   posX?: number;
   posY?: number;
+  onClose?: () => void;
 }
 
 const NewsWindow = ({ allPosts, posX, posY, ...props }: NewsWindowProps) => (
   <DesktopWindow
     title="The Daily Dope"
     width={768}
-    posX={posX}
-    posY={posY}
     hideWalletAddress
     {...props}
   >

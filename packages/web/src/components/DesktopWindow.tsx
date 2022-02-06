@@ -40,6 +40,7 @@ export type DesktopWindowProps = {
   loadingBalance?: boolean;
   children: ReactNode;
   onResize?: () => void;
+  onClose?: () => void;
   onMoved?: (position: any) => void;
   posX?: number;
   posY?: number;
@@ -108,6 +109,7 @@ const DesktopWindow = ({
   children,
   onResize,
   onMoved,
+  onClose,
   scrollable,
   posX = 0,
   posY = 0,
@@ -152,9 +154,7 @@ const DesktopWindow = ({
   const shouldBeDraggable = !isTouchDevice() && !isFullScreen && browserWidth > 768;
 
   useEffect(() => {
-    if (onResize) {
-      onResize();
-    }
+    if (onResize) onResize();
   }, [isFullScreen, onResize]);
 
   const handleStop = () => {
@@ -174,7 +174,6 @@ const DesktopWindow = ({
     const windows = document.getElementsByClassName(
       'desktopWindow',
     ) as HTMLCollectionOf<HTMLElement>;
-    console.log(windows);
     for (let i = 0; i < windows.length; i++) {
       windows[i].style.zIndex = '0';
     }
@@ -209,6 +208,7 @@ const DesktopWindow = ({
             loadingBalance={loading}
             windowRef={windowRef?.current}
             hideWalletAddress={hideWalletAddress}
+            onClose={onClose}
           >
             {titleChildren}
           </DesktopWindowTitleBar>

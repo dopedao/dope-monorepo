@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { PageWrapper } from 'ui/styles/components';
 import Head from 'components/Head';
 import AboutWindow from 'components/AboutWindow';
+import Cookies from 'js-cookie';
 
 // For News
 import NewsWindow from 'features/news/components/NewsWindow';
@@ -13,12 +14,27 @@ const IndexWrapper = styled(PageWrapper)`
 `;
 
 const IndexPage = ({ allPosts }: { allPosts: PostType[] }) => {
+
   return (
     <IndexWrapper>
       <Head />
-      {/* <StickyNoteHustlerMint /> */}
-      <AboutWindow posX={128} posY={-32} />
-      <NewsWindow allPosts={allPosts} posX={0} posY={0} />
+      {Cookies.get('aboutWindowVisible') !== 'false' && 
+        <AboutWindow 
+          posX={128} posY={-32} 
+          onClose={() => 
+            Cookies.set('aboutWindowVisible', 'false', { expires: 3})
+          } 
+        /> 
+      }
+      {Cookies.get('newsWindowVisible') !== 'false' && 
+        <NewsWindow 
+          allPosts={allPosts} 
+          posX={0} posY={0}
+          onClose={() => 
+            Cookies.set('newsWindowVisible', 'false', { expires: 3})
+          } 
+        /> 
+      }
     </IndexWrapper>
   );
 };
