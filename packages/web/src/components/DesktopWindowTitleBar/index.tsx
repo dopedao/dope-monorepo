@@ -15,6 +15,7 @@ type WindowTitleBarProps = {
   isTouchDevice: boolean;
   isFullScreen: boolean;
   toggleFullScreen(): void;
+  onClose?: () => void;
   balance?: string;
   loadingBalance?: boolean;
   children: React.ReactNode;
@@ -27,6 +28,7 @@ const DesktopWindowTitleBar = ({
   isTouchDevice,
   isFullScreen,
   toggleFullScreen,
+  onClose,
   children,
   windowRef,
   hideWalletAddress = false,
@@ -45,6 +47,9 @@ const DesktopWindowTitleBar = ({
   }, [paper, account]);
 
   const closeWindow = (): void => {
+    // Allows us to call other logic to persist changes
+    // if we have windows that appear multiple times…like on the Desktop Home
+    if (onClose) onClose();
     if (router.pathname === '/' && windowRef) {
       // Close desktop window if one is open by default on home page
       windowRef.style.display = 'none';
