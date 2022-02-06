@@ -197,106 +197,98 @@ const Flex = () => {
       />
       {isLoading && <LoadingBlock />}
       {!isLoading && itemIds && (
-        <Stack>
-          <StackedResponsiveContainer
+        <Grid
+          templateColumns="repeat(auto-fit, minmax(240px, 1fr))"
+          gap="16px"
+          justifyContent="center"
+          alignItems="stretch"
+          width="100%"
+          padding="32px"
+          paddingTop="8px"
+        >
+          <PanelContainer
             css={css`
-              padding-bottom: 8px !important;
+              grid-column: unset;
+              ${media.tablet`
+                grid-column: 1 / 3;
+              `}
             `}
           >
-            <PanelContainer
-              css={css`
-                flex: 2 !important;
-              `}
-            >
-              <MugshotContainer>
-                <HustlerTitle>
-                  {hustlerConfig.name}
-                  <br />
-                  {getRandomDate('01/01/1980', '01/01/2020')}
-                </HustlerTitle>
-                <HustlerImage>{renderHustler(1)}</HustlerImage>
-              </MugshotContainer>
-            </PanelContainer>
-            <PanelContainer
-              css={css`
-                flex: 1 !important;
-              `}
-            >
-              <PanelBody>
-                <Grid
-                  templateRows="repeat(2, 1fr)"
-                  gap="8"
-                  justifyContent="center"
-                  alignItems="stretch"
-                  width="100%"
-                >
-                  <GridItem
-                    display="flex"
-                    justifyContent="center"
-                    background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
-                  >
-                    <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
-                  </GridItem>
-                  <GridItem minWidth="256px">
-                    <Image src={onChainImage} alt={hustlerConfig.name} />
-                  </GridItem>
-                </Grid>
-              </PanelBody>
-            </PanelContainer>
-          </StackedResponsiveContainer>
-          <Grid
-            templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
-            gap="16px"
-            justifyContent="center"
-            alignItems="stretch"
-            width="100%"
-            padding="32px"
-            paddingTop="8px"
-          >
-            <PanelContainer>
-              <ProfileCardHeader>Equipped Gear</ProfileCardHeader>
-              <PanelBody
-                css={css`
-                  background-color: var(--gray-800);
-                  flex: 2;
-                `}
+            <MugshotContainer>
+              <HustlerTitle>
+                {hustlerConfig.name}
+                <br />
+                {getRandomDate('01/01/1980', '01/01/2020')}
+              </HustlerTitle>
+              <HustlerImage>{renderHustler(1)}</HustlerImage>
+            </MugshotContainer>
+          </PanelContainer>
+          <PanelContainer>
+            <PanelBody>
+              <Grid
+                templateRows="repeat(2, 1fr)"
+                gap="8"
+                justifyContent="center"
+                alignItems="stretch"
+                width="100%"
               >
-                {sortedHustlerItems.map(
-                  ({
-                    id,
-                    name,
-                    namePrefix,
-                    nameSuffix,
-                    suffix,
-                    augmented,
-                    type,
-                    tier,
-                  }: DopeItemApiResponse) => {
-                    return (
-                      // @ts-ignore
-                      <DopeItem
-                        key={id}
-                        name={name}
-                        namePrefix={namePrefix}
-                        nameSuffix={nameSuffix}
-                        suffix={suffix}
-                        augmented={augmented}
-                        type={type}
-                        color={DopeLegendColors[tier]}
-                        isExpanded={true}
-                        tier={tier}
-                        showRarity={true}
-                      />
-                    );
-                  },
-                )}
-              </PanelBody>
-            </PanelContainer>
-            {sortedHustlerItems.map((item: DopeItemApiResponse) => {
-              return <GearCard item={item} key={item.id} />
-            })}
-          </Grid>
-        </Stack>
+                <GridItem
+                  display="flex"
+                  justifyContent="center"
+                  background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
+                >
+                  <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
+                </GridItem>
+                <GridItem minWidth="256px">
+                  <Image src={onChainImage} alt={hustlerConfig.name} />
+                </GridItem>
+              </Grid>
+            </PanelBody>
+          </PanelContainer>
+          <PanelContainer>
+            <ProfileCardHeader>Equipped Gear</ProfileCardHeader>
+            <PanelBody
+              css={css`
+                background-color: var(--gray-800);
+                flex: 2;
+              `}
+            >
+              {sortedHustlerItems.map(
+                ({
+                  id,
+                  name,
+                  namePrefix,
+                  nameSuffix,
+                  suffix,
+                  augmented,
+                  type,
+                  tier,
+                }: DopeItemApiResponse) => {
+                  return (
+                    // @ts-ignore
+                    <DopeItem
+                      key={id}
+                      name={name}
+                      namePrefix={namePrefix}
+                      nameSuffix={nameSuffix}
+                      suffix={suffix}
+                      augmented={augmented}
+                      type={type}
+                      color={DopeLegendColors[tier]}
+                      isExpanded={true}
+                      tier={tier}
+                      showRarity={true}
+                    />
+                  );
+                },
+              )}
+            </PanelBody>
+          </PanelContainer>
+          {sortedHustlerItems.map((item: DopeItemApiResponse) => {
+            return <GearCard item={item} key={item.id} />
+          })}
+        </Grid>
+
       )}
     </AppWindow>
   );
