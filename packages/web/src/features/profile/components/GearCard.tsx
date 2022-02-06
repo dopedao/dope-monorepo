@@ -4,7 +4,7 @@ import GearFooter from "./GearFooter";
 import PanelBody from "components/PanelBody";
 import ProfileCard from "features/profile/components/ProfileCard";
 import ProfileCardHeader from "features/profile/components/ProfileCardHeader";
-
+import ItemCount from "./ItemCount";
 import { Item, Maybe } from 'generated/graphql';
 
 type GearItem = Pick<Item, 'id' | 'count' | 'fullname' | 'name' | 'svg' | 'suffix' | 'type'> & {
@@ -33,11 +33,11 @@ const GearCard = ({item, balance, showEquipFooter = false}: {item: GearItem, bal
           <div
             css={css`
               padding-right: 16px;
-              color: var(--gray-500);
+              color: var(--new-year-red);
             `}
             title="You have this many in inventory"
           >
-            x{balance}
+            <ItemCount count={balance} />
           </div>
         }
       </ProfileCardHeader>
