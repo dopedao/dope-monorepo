@@ -29,7 +29,7 @@ const GearCard = ({item, balance, showEquipFooter = false}: {item: GearItem, bal
     <ProfileCard>
       <ProfileCardHeader>
         <div>{item.name}</div>
-        { balance && 
+        { balance && balance > 1 && 
           <div
             css={css`
               padding-right: 16px;
