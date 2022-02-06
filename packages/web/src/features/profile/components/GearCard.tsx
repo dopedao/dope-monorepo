@@ -12,7 +12,9 @@ type GearItem = Pick<Item, 'id' | 'count' | 'fullname' | 'name' | 'svg' | 'suffi
 };;
 
 const getImageSrc = (item: GearItem): string => {
-  return item.svg || item.base?.svg || '';
+  if (item.svg) return item.svg;
+  if (item.base?.svg) return item.base.svg;
+  return '/images/icon/dope-smiley.svg';
 };
 
 const getOrigin = (suffix?: string | null): string => {
@@ -22,6 +24,7 @@ const getOrigin = (suffix?: string | null): string => {
 };
 
 const GearCard = ({item, balance, showEquipFooter = false}: {item: GearItem, balance?: number, showEquipFooter?: boolean}) => {
+
   return (
     <ProfileCard>
       <ProfileCardHeader>
@@ -40,7 +43,14 @@ const GearCard = ({item, balance, showEquipFooter = false}: {item: GearItem, bal
       </ProfileCardHeader>
       <PanelBody>
         <Stack>
-          <Image borderRadius="md" src={getImageSrc(item)} alt={item.name} />
+          <Image 
+            borderRadius="md" 
+            src={getImageSrc(item)} 
+            alt={item.name} 
+            css={css`
+              ${getImageSrc(item).includes('/icon') ? 'opacity:0.1' : ''}
+            `}
+          />
           <span>Type: {item.type}</span>
           <span>Origin: {getOrigin(item.suffix)}</span>
           <span

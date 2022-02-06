@@ -21,6 +21,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
         sex
         viewbox
@@ -35,6 +36,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
         accessory {
           id
@@ -46,6 +48,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
         svg
         body {
@@ -70,6 +73,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
         hand {
           id
@@ -81,6 +85,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
         weapon {
           id
@@ -92,6 +97,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
         clothes {
           id
@@ -103,6 +109,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
         vehicle {
           id
@@ -114,6 +121,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
         waist {
           id
@@ -125,6 +133,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
         foot {
           id
@@ -136,6 +145,7 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
         }
       }
     }
