@@ -240,7 +240,7 @@ const Flex = () => {
             paddingTop="0 !important"
           >
             <PanelContainer>
-              <PanelTitleHeader>Gear</PanelTitleHeader>
+              <PanelTitleHeader>Equipped Gear</PanelTitleHeader>
               <PanelBody
                 css={css`
                   background-color: var(--gray-800);
