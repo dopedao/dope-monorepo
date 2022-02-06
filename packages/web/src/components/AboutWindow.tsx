@@ -161,6 +161,8 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 * DOPEWARS.GG produced by [tarrence](https://twitter.com/tarrenceva) and [facesof.eth](https://twitter.com/facesOfEth)
 * Character pixel artwork by [Mr Fax](https://twitter.com/Mr_faxu)
 * Game Artwork and Maps by [HPMNK](https://twitter.com/HPMNK_One)
+* Blockchain wizardry by [tarrence](https://twitter.com/tarrenceva)
+* Starnket gaming infrastructure by [perama](https://twitter.com/eth_worm)
 * Art direction by [facesof.eth](https://twitter.com/facesOfEth)
 * DOPE TV and DOPE MUSIC produced by [Shecky Green](https://twitter.com/SheckyGreen)
 * Chiptunes by [Baron Von Future](https://twitter.com/baronvonfuture)
