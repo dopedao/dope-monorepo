@@ -19,8 +19,8 @@ const SearchFilterContext = createContext<SearchFilterContextProps>({} as Search
 
 const SearchFilterProvider = ({ children }: SearchFilterProps) => {
   const [searchValue, setSearchValue] = useState<string>('');
-  const [orderBy, setOrderBy] = useState<SearchOrderField>(SearchOrderField.Greatness);
-  const [filterBy, setFilterBy] = useState<FILTERS>('All');
+  const [orderBy, setOrderBy] = useState<SearchOrderField>(SearchOrderField.SalePrice);
+  const [filterBy, setFilterBy] = useState<FILTERS>('Has Unclaimed Gear');
   const [viewCompactCards, setViewCompactCards] = useState(isTouchDevice());
 
   return (
