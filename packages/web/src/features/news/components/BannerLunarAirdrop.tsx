@@ -1,13 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
 import { css } from '@emotion/react';
-import { useRouter } from 'next/router';
 import { Link } from '@chakra-ui/layout';
 import { Stack, Box, Button, Image } from '@chakra-ui/react';
 import Countdown from 'react-countdown';
+import { getRandomNumber } from 'utils/utils';
 
 const BannerLunarAirDrop = () => {
-  const router = useRouter();
-  const currentPageIsGangsta = router.pathname == '/gangsta-party';
+  const gifName = (() => {
+    const path = '/images/lunar_new_year_2022';
+    const images = [
+      'accessories_women_animate.gif',
+      'accessories_men_animate.gif',
+      'hongbao_animated.gif',
+      'mask-roulette_4.gif'
+    ];
+    return `${path}/${images[getRandomNumber(0,images.length-1)]}`;
+  })();
 
   return (
     <Stack
@@ -19,7 +27,7 @@ const BannerLunarAirDrop = () => {
     >
       <Link href="/lunar-new-year" flex="1">
         <Image
-          src="/images/lunar_new_year_2022/accessories_men_animate.gif"
+          src={gifName}
           alt="Airdrop Instructions"
           width="100%"
           css={css`
