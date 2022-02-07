@@ -43,6 +43,7 @@ type ItemEntityData struct {
 
 type PlayerJoinClientData struct {
 	Id         string  `json:"id"`
+	HustlerId  string  `json:"hustlerId"`
 	Name       string  `json:"name"`
 	CurrentMap string  `json:"current_map"`
 	X          float32 `json:"x"`
@@ -51,6 +52,7 @@ type PlayerJoinClientData struct {
 
 type PlayerJoinData struct {
 	Name       string  `json:"name"`
+	HustlerId  string  `json:"hustlerId"`
 	CurrentMap string  `json:"current_map"`
 	X          float32 `json:"x"`
 	Y          float32 `json:"y"`

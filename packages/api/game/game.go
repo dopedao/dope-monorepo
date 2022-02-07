@@ -51,6 +51,7 @@ func (g *Game) Start(ctx context.Context) {
 
 				playersData = append(playersData, PlayerJoinClientData{
 					Id:         otherPlayer.Id.String(),
+					HustlerId:  otherPlayer.hustlerId,
 					Name:       otherPlayer.name,
 					CurrentMap: otherPlayer.currentMap,
 					X:          otherPlayer.x,
@@ -166,6 +167,7 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 
 	joinData, err := json.Marshal(PlayerJoinClientData{
 		Id:         player.Id.String(),
+		HustlerId:  player.hustlerId,
 		Name:       player.name,
 		CurrentMap: player.currentMap,
 		X:          player.x,
@@ -197,6 +199,7 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 		game: g,
 
 		Id:         uuid.New(),
+		hustlerId:  data.HustlerId,
 		currentMap: data.CurrentMap,
 		name:       data.Name,
 		x:          data.X,

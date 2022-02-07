@@ -14,6 +14,7 @@ type Player struct {
 	game *Game
 
 	Id         uuid.UUID
+	hustlerId  string
 	name       string
 	currentMap string
 	direction  string
