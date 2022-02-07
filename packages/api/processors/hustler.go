@@ -32,6 +32,7 @@ var (
 	componentsAddr = common.HexToAddress("0xe03C4eb2a0a797766a5DB708172e04f6A970DC7f")
 	hustlerAddr    = common.HexToAddress("0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E")
 
+	maskSlot      = big.NewInt(0)
 	viewboxSlot   = big.NewInt(1)
 	bodySlot      = big.NewInt(2)
 	orderSlot     = big.NewInt(3)
@@ -372,19 +373,51 @@ func refreshEquipment(ctx context.Context, eth interface {
 		return fmt.Errorf("unmarshalling metadata: %w", err)
 	}
 
-	if err := tx.Hustler.Update().
+	u := tx.Hustler.Update().
 		Where(hustler.IDEQ(id)).
-		SetWeaponID(slots.Weapon.String()).
-		SetClothesID(slots.Clothes.String()).
-		SetVehicleID(slots.Vehicle.String()).
-		SetWaistID(slots.Waist.String()).
-		SetFootID(slots.Foot.String()).
-		SetHandID(slots.Hand.String()).
-		SetDrugID(slots.Drug.String()).
-		SetNeckID(slots.Neck.String()).
-		SetRingID(slots.Ring.String()).
-		SetSvg(parsed.Image).
-		SetAccessoryID(slots.Accessory.String()).Exec(ctx); err != nil {
+		SetSvg(parsed.Image)
+
+	if slots.Weapon != nil {
+		u = u.SetWeaponID(slots.Weapon.String())
+	}
+
+	if slots.Clothes != nil {
+		u = u.SetClothesID(slots.Clothes.String())
+	}
+
+	if slots.Vehicle != nil {
+		u = u.SetVehicleID(slots.Vehicle.String())
+	}
+
+	if slots.Waist != nil {
+		u = u.SetWaistID(slots.Waist.String())
+	}
+
+	if slots.Foot != nil {
+		u = u.SetFootID(slots.Foot.String())
+	}
+
+	if slots.Hand != nil {
+		u = u.SetHandID(slots.Hand.String())
+	}
+
+	if slots.Drug != nil {
+		u = u.SetDrugID(slots.Drug.String())
+	}
+
+	if slots.Neck != nil {
+		u = u.SetNeckID(slots.Neck.String())
+	}
+
+	if slots.Ring != nil {
+		u = u.SetRingID(slots.Ring.String())
+	}
+
+	if slots.Accessory != nil {
+		u = u.SetAccessoryID(slots.Accessory.String())
+	}
+
+	if err := u.Exec(ctx); err != nil {
 		return fmt.Errorf("updating equipment: %w", err)
 	}
 
@@ -408,68 +441,99 @@ func equipmentSlots(ctx context.Context, eth interface {
 	ethereum.ChainStateReader
 	ethereum.TransactionReader
 }, id string, address common.Address, blockNumber *big.Int) (*Slots, error) {
-	weapon, err := equipmentSlot(ctx, eth, id, address, weaponSlot, blockNumber)
+	slots := &Slots{}
+
+	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
+		[]string{"uint256", "uint256"},
+		[]interface{}{
+			id,
+			"19",
+		},
+	))
+
+	mask, err := eth.StorageAt(
+		ctx,
+		address,
+		common.BytesToHash(
+			new(big.Int).Add(metadataKey, maskSlot).Bytes(),
+		),
+		blockNumber)
 	if err != nil {
-		return nil, fmt.Errorf("getting weapon from storage: %w", err)
+		return nil, fmt.Errorf("getting mask from storage: %w", err)
 	}
 
-	clothes, err := equipmentSlot(ctx, eth, id, address, clothesSlot, blockNumber)
-	if err != nil {
-		return nil, fmt.Errorf("getting clothes from storage: %w", err)
+	// Little endian
+	if mask[31-8]&1 != 0 {
+		slots.Weapon, err = equipmentSlot(ctx, eth, id, address, weaponSlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting weapon from storage: %w", err)
+		}
 	}
 
-	vehicle, err := equipmentSlot(ctx, eth, id, address, vehicleSlot, blockNumber)
-	if err != nil {
-		return nil, fmt.Errorf("getting vehicle from storage: %w", err)
+	if mask[31-8]&2 != 0 {
+		slots.Clothes, err = equipmentSlot(ctx, eth, id, address, clothesSlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting clothes from storage: %w", err)
+		}
 	}
 
-	waist, err := equipmentSlot(ctx, eth, id, address, waistSlot, blockNumber)
-	if err != nil {
-		return nil, fmt.Errorf("getting waist from storage: %w", err)
+	if mask[31-8]&4 != 0 {
+		slots.Vehicle, err = equipmentSlot(ctx, eth, id, address, vehicleSlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting vehicle from storage: %w", err)
+		}
 	}
 
-	foot, err := equipmentSlot(ctx, eth, id, address, footSlot, blockNumber)
-	if err != nil {
-		return nil, fmt.Errorf("getting foot from storage: %w", err)
+	if mask[31-8]&8 != 0 {
+		slots.Waist, err = equipmentSlot(ctx, eth, id, address, waistSlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting waist from storage: %w", err)
+		}
 	}
 
-	hand, err := equipmentSlot(ctx, eth, id, address, handSlot, blockNumber)
-	if err != nil {
-		return nil, fmt.Errorf("getting hand from storage: %w", err)
+	if mask[31-8]&16 != 0 {
+		slots.Foot, err = equipmentSlot(ctx, eth, id, address, footSlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting foot from storage: %w", err)
+		}
 	}
 
-	drug, err := equipmentSlot(ctx, eth, id, address, drugSlot, blockNumber)
-	if err != nil {
-		return nil, fmt.Errorf("getting drug from storage: %w", err)
+	if mask[31-8]&32 != 0 {
+		slots.Hand, err = equipmentSlot(ctx, eth, id, address, handSlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting hand from storage: %w", err)
+		}
 	}
 
-	neck, err := equipmentSlot(ctx, eth, id, address, neckSlot, blockNumber)
-	if err != nil {
-		return nil, fmt.Errorf("getting neck from storage: %w", err)
+	if mask[31-8]&64 != 0 {
+		slots.Drug, err = equipmentSlot(ctx, eth, id, address, drugSlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting drug from storage: %w", err)
+		}
 	}
 
-	ring, err := equipmentSlot(ctx, eth, id, address, ringSlot, blockNumber)
-	if err != nil {
-		return nil, fmt.Errorf("getting ring from storage: %w", err)
+	if mask[31-8]&128 != 0 {
+		slots.Neck, err = equipmentSlot(ctx, eth, id, address, neckSlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting neck from storage: %w", err)
+		}
 	}
 
-	accessory, err := equipmentSlot(ctx, eth, id, address, accessorySlot, blockNumber)
-	if err != nil {
-		return nil, fmt.Errorf("getting accessory from storage: %w", err)
+	if mask[31-9]&1 != 0 {
+		slots.Ring, err = equipmentSlot(ctx, eth, id, address, ringSlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting ring from storage: %w", err)
+		}
 	}
 
-	return &Slots{
-		Weapon:    weapon,
-		Clothes:   clothes,
-		Vehicle:   vehicle,
-		Waist:     waist,
-		Foot:      foot,
-		Hand:      hand,
-		Drug:      drug,
-		Neck:      neck,
-		Ring:      ring,
-		Accessory: accessory,
-	}, nil
+	if mask[31-9]&2 != 0 {
+		slots.Accessory, err = equipmentSlot(ctx, eth, id, address, accessorySlot, blockNumber)
+		if err != nil {
+			return nil, fmt.Errorf("getting accessory from storage: %w", err)
+		}
+	}
+
+	return slots, nil
 }
 
 func equipmentSlot(ctx context.Context, eth interface {
@@ -477,10 +541,7 @@ func equipmentSlot(ctx context.Context, eth interface {
 	ethereum.TransactionReader
 }, id string, address common.Address, slot *big.Int, blockNumber *big.Int) (*big.Int, error) {
 	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
-		// types
 		[]string{"uint256", "uint256"},
-
-		// values
 		[]interface{}{
 			id,
 			"19",
