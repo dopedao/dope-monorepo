@@ -40,6 +40,11 @@ func sprite(ctx context.Context, h *ent.Hustler, slot, sex string) string {
 	v := reflect.Indirect(r).FieldByName(slot)
 	item := v.Interface().(*ent.Item)
 
+	if item == nil {
+		log.Warn().Msgf("No item: %s", slot)
+		return ""
+	}
+
 	if item.Sprite.Female == "" && item.Edges.Base == nil {
 		log.Warn().Msgf("No sprite for item: %s", item.ID)
 		return ""
