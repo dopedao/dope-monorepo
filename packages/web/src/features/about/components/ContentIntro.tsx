@@ -3,7 +3,7 @@ const ContentIntro = () => {
   const content = `
 Dope Wars is a fully decentralized, community driven, play-to-earn gaming metaverse project inspired by hip-hop culture. Our unique fully-customizable avatars in web3 stand for the values and principles we stand for with our carbon avatars.
 
-We're bootstrapping a modern-day GTA-inspired metaverse and series of games built by our decentralized game studio on the Ethereum blockchain, [inspired by the classic Drugwars game](https://www.youtube.com/watch?v=3rg7rOfcdo8) that many of us played through the years.
+We're bootstrapping a modern-day GTA-inspired metaverse and series of games built by our decentralized game studio on the Ethereum blockchain, [inspired by the classic Drugwars game](https://www.youtube.com/watch?v=3rg7rOfcdo8) that many of us played growing up.
 
 Our open environment allows developers and contributors to produce their own limitless games for the Dope Wars NFT holders.
 
