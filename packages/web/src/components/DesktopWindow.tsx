@@ -59,12 +59,14 @@ const WindowWrapper = styled.div<{
   padding: 0;
   background: ${({ background }) => background};
   border: 2px solid #000;
-  filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
+  box-shadow: 8px 8px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
   overflow-x: hidden;
   position: absolute;
+  max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
+  max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
   &.floating {
     position: absolute;
     ${media.phone`
@@ -89,8 +91,6 @@ const WindowWrapper = styled.div<{
       width: 80%;
       margin: auto;
       margin-top: 32px;
-      max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
-      max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
     }
   }
 `;

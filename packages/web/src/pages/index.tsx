@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { PageWrapper } from 'ui/styles/components';
 import Head from 'components/Head';
-import AboutWindow from 'components/AboutWindow';
+import AboutWindow from 'features/about/components/AboutWindow';
 import Cookies from 'js-cookie';
 
 // For News
