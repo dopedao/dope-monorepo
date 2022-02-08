@@ -99,6 +99,7 @@ const MarketFilterBar = ({
           variant="filterBar"
           onChange={handleStatusChange}
           value={filterBy}
+          fontSize="xs"
         >
           <option disabled>Status…</option>
           {statusKeys.map((value, index) => (
@@ -107,7 +108,13 @@ const MarketFilterBar = ({
         </Select>
       </div>
       <div>
-        <Select size="sm" variant="filterBar" onChange={handleSortChange} value={orderBy}>
+        <Select 
+          size="sm" 
+          fontSize="xs"
+          variant="filterBar" 
+          onChange={handleSortChange} 
+          value={orderBy}
+        >
           <option disabled>Sort By…</option>
           {sortKeys.map(({ label, value }, index) => (
             <option key={`${value}-${index}`} value={value}>

@@ -18,6 +18,9 @@ export const Container = styled.div`
   }
   ${media.tablet`
     flex-flow: row;
+    div:first-of-type {
+      flex: 1 1 50%;
+    }
   `}
   div.toggleButton {
     min-width: 32px;
