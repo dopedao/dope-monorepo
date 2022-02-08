@@ -30,8 +30,8 @@ const Container = styled.div`
 
 const TunnelEntrance = styled.div`
   position: relative;
-  background: #353338 url(/images/about/roadmap-entrance.png) center / 800px 235px no-repeat;
-  height: 235px;
+  background: #353338 url(/images/about/roadmap-entrance.png) bottom / 800px 235px no-repeat;
+  height: 300px;
   width: 100%;
   padding: 32px;
   h2 {
@@ -39,11 +39,11 @@ const TunnelEntrance = styled.div`
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0%);
-    top: 15%;
+    top: 30%;
     width: 85%;
     ${media.tablet`
-      top: 10%;
-      width: 60%;
+      top: 20%;
+      width: 66%;
     `}
   }
 `;

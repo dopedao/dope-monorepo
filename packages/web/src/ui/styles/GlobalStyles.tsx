@@ -231,11 +231,14 @@ export default function GlobalStyles() {
         .markdown {
           background-color: var(--gray-00);
           overflow-y: scroll;
-          font-size: 1.125em;
+          font-size: 1.33em;
           width: 100%;
           justify-content: center;
           padding: 32px;
           max-width: 640px;
+          ${media.tablet`
+            font-size: 1.125em;
+          `}
           .markdown {
             max-width: 640px;
           }
