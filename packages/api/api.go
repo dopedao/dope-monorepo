@@ -290,6 +290,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
+	r.HandleFunc("/wallets/{address}/hustlers", resources.WalletHustlersHandler(client))
 	r.HandleFunc("/hustlers/{id}/sprites", resources.HustlerSpritesHandler(client))
 	r.HandleFunc("/hustlers/{id}/sprites/composite.png", resources.HustlerSpritesCompositeHandler(client, static))
 

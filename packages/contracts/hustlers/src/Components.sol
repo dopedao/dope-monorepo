@@ -28,6 +28,7 @@ import '../lib/openzeppelin-contracts/contracts/access/Ownable.sol';
 
 import './MetadataUtils.sol';
 
+// [2, 6, 8, 5, 1, 3, 4, 7, 0, 9]
 library ComponentTypes {
     uint8 internal constant WEAPON = 0x0;
     uint8 internal constant CLOTHES = 0x1;

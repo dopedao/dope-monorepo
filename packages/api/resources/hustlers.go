@@ -33,13 +33,28 @@ type Sprites struct {
 	Weapon    string `json:"weapon"`
 }
 
-func sprite(h *ent.Hustler, slot, sex string) string {
+func sprite(ctx context.Context, h *ent.Hustler, slot, sex string) string {
+	_, log := base.LogFor(ctx)
+
 	r := reflect.ValueOf(h.Edges)
 	v := reflect.Indirect(r).FieldByName(slot)
 	item := v.Interface().(*ent.Item)
 
-	if item.Sprite.Female == "" {
+	if item == nil {
+		log.Warn().Msgf("No item: %s", slot)
+		return ""
+	}
+
+	if item.Sprite.Female == "" && item.Edges.Base == nil {
+		log.Warn().Msgf("No sprite for item: %s", item.ID)
+		return ""
+	} else if item.Sprite.Female == "" {
 		item = item.Edges.Base
+	}
+
+	if item.Sprite.Female == "" {
+		log.Warn().Msgf("No sprite for item: %s", item.ID)
+		return ""
 	}
 
 	r2 := reflect.ValueOf(item.Sprite)
@@ -82,19 +97,24 @@ func sprites(ctx context.Context, id string, client *ent.Client) (*Sprites, erro
 		return nil, err
 	}
 
-	return &Sprites{
-		Body:  h.Edges.Body.Sprite,
-		Beard: h.Edges.Beard.Sprite,
-		Hair:  h.Edges.Hair.Sprite,
-		// Accessory: sprite(h, "Accessory", h.Sex.String()),
-		Clothes: sprite(h, "Clothes", h.Sex.String()),
-		Foot:    sprite(h, "Foot", h.Sex.String()),
-		Hand:    sprite(h, "Hand", h.Sex.String()),
-		Neck:    sprite(h, "Neck", h.Sex.String()),
-		Ring:    sprite(h, "Ring", h.Sex.String()),
-		Waist:   sprite(h, "Waist", h.Sex.String()),
-		Weapon:  sprite(h, "Weapon", h.Sex.String()),
-	}, nil
+	s := &Sprites{
+		Body:      h.Edges.Body.Sprite,
+		Hair:      h.Edges.Hair.Sprite,
+		Accessory: sprite(ctx, h, "Accessory", h.Sex.String()),
+		Clothes:   sprite(ctx, h, "Clothes", h.Sex.String()),
+		Foot:      sprite(ctx, h, "Foot", h.Sex.String()),
+		Hand:      sprite(ctx, h, "Hand", h.Sex.String()),
+		Neck:      sprite(ctx, h, "Neck", h.Sex.String()),
+		Ring:      sprite(ctx, h, "Ring", h.Sex.String()),
+		Waist:     sprite(ctx, h, "Waist", h.Sex.String()),
+		Weapon:    sprite(ctx, h, "Weapon", h.Sex.String()),
+	}
+
+	if h.Edges.Beard != nil {
+		s.Beard = h.Edges.Beard.Sprite
+	}
+
+	return s, nil
 }
 
 func HustlerSpritesHandler(client *ent.Client) func(http.ResponseWriter, *http.Request) {
