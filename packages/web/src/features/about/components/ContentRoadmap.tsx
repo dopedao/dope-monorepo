@@ -40,9 +40,10 @@ const TunnelEntrance = styled.div`
     left: 50%;
     transform: translate(-50%, 0%);
     top: 15%;
-    width: 90%;
+    width: 85%;
     ${media.tablet`
-      width: 66%;
+      top: 10%;
+      width: 60%;
     `}
   }
 `;
