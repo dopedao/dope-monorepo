@@ -39,12 +39,16 @@ const TunnelEntrance = styled.div`
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0%);
-    top: 30%;
+    top: 20%;
     width: 85%;
     ${media.tablet`
-      top: 20%;
-      width: 66%;
+      top: 25%;
+      width: 70%;
     `}
+    img {
+      image-rendering: pixelated;
+      width:100%;
+    }
   }
 `;
 
@@ -87,7 +91,7 @@ const ContentRoadmap = () => (
       </RoadmapItem>
       <RoadmapItem
         title="$PAPER"
-        imageUrl="/images/about/PAPER_front.png"
+        imageUrl="/images/about/paper-animate.gif"
         imageAlt="$PAPER ERC20 Token"
         date="Q3 2021"
         complete
