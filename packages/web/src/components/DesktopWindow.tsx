@@ -66,8 +66,6 @@ const WindowWrapper = styled.div<{
   overflow-x: hidden;
   position: absolute;
   &.floating {
-    max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
-    max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
     position: absolute;
     ${media.phone`
       width: 100%;
@@ -77,20 +75,22 @@ const WindowWrapper = styled.div<{
       left: 0;
       right: 0;
     `}
-    ${media.tablet`
+    @media (min-width: ${returnBreakpoint('tablet')}) {
       width: 80%;
       height: 90%;
       margin: 0;
       top: 32px;
       right: 96px;
       left: unset;
-    `}
+    }
     @media (min-width: ${returnBreakpoint('laptop')}) {
       top: 32px;
       left: 96px;
       width: 80%;
       margin: auto;
       margin-top: 32px;
+      max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
+      max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
     }
   }
 `;

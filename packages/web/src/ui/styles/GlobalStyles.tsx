@@ -224,7 +224,7 @@ export default function GlobalStyles() {
           background-color: rgba(255, 252, 63, 0.5);
         }
         /* CUSTOM */
-        .button, button {
+        .button {
           ${buttonStyle};
         }
 

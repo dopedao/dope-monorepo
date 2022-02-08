@@ -13,6 +13,7 @@ const Container = styled.div`
     margin-bottom: 96px;
   `}
   .imageBox {
+    position: relative;
     border:4px solid black;
     box-shadow: 4px 4px rgba(0, 0, 0, 0.1);
     // image-rendering: pixelated;
