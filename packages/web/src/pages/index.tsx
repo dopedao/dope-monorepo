@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { PageWrapper } from 'ui/styles/components';
 import Head from 'components/Head';
-import AboutWindow from 'components/AboutWindow';
+import AboutWindow from 'features/about/components/AboutWindow';
 import Cookies from 'js-cookie';
 
 // For News
@@ -20,7 +20,7 @@ const IndexPage = ({ allPosts }: { allPosts: PostType[] }) => {
       <Head />
       {Cookies.get('aboutWindowVisible') !== 'false' && 
         <AboutWindow 
-          posX={128} posY={-32} 
+          posX={128} posY={-48} 
           onClose={() => 
             Cookies.set('aboutWindowVisible', 'false', { expires: 3})
           } 
@@ -29,7 +29,7 @@ const IndexPage = ({ allPosts }: { allPosts: PostType[] }) => {
       {Cookies.get('newsWindowVisible') !== 'false' && 
         <NewsWindow 
           allPosts={allPosts} 
-          posX={0} posY={0}
+          posX={0} posY={32}
           onClose={() => 
             Cookies.set('newsWindowVisible', 'false', { expires: 3})
           } 

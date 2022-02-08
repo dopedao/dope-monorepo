@@ -59,7 +59,7 @@ const WindowWrapper = styled.div<{
   padding: 0;
   background: ${({ background }) => background};
   border: 2px solid #000;
-  filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
+  box-shadow: 8px 8px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
@@ -75,14 +75,14 @@ const WindowWrapper = styled.div<{
       left: 0;
       right: 0;
     `}
-    ${media.tablet`
+    @media (min-width: ${returnBreakpoint('tablet')}) {
       width: 80%;
       height: 90%;
       margin: 0;
       top: 32px;
       right: 96px;
       left: unset;
-    `}
+    }
     @media (min-width: ${returnBreakpoint('laptop')}) {
       top: 32px;
       left: 96px;
