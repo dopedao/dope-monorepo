@@ -65,13 +65,13 @@ const ContentRoadmap = () => (
     <Road>
       <RoadmapItem
         title="DOPE NFT"
-        imageUrl="/images/dope-nft-1.svg"
+        imageUrl="/images/about/dope-nft-1.svg"
         imageAlt="Dope NFT #1"
         date="Q3 2021"
       />
       <RoadmapItem
         title="$PAPER"
-        imageUrl="/images/PAPER_front.png"
+        imageUrl="/images/about/PAPER_front.png"
         imageAlt="$PAPER ERC20 Token"
         date="Q3 2021"
       />
