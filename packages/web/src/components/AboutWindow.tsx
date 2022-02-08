@@ -1,71 +1,8 @@
-import ReactMarkdown from 'react-markdown';
-import styled from '@emotion/styled';
 import DesktopWindow from 'components/DesktopWindow';
 import { Button, Link } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { Stack } from '@chakra-ui/react';
-
-const TextBody = styled.div`
-  background-color: var(--gray-00);
-  flex: 1;
-  overflow-y: scroll;
-  padding: 32px;
-  padding-bottom: 0;
-  font-size: 1.125em;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  .markdown {
-    max-width: 680px;
-  }
-  p,
-  div,
-  h2,
-  h3,
-  h4,
-  em,
-  strong,
-  bold,
-  ul,
-  li,
-  a {
-    font-family: Courier, monospace !important;
-  }
-
-  h2,
-  h3,
-  h4 {
-    font-weight: 600;
-  }
-  h2,
-  h3 {
-    margin-top: 32px;
-    margin-bottom: 16px;
-  }
-  h4 {
-    margin-bottom: 8px;
-  }
-  img[src*='#float-left'] {
-    width: 50%;
-    float: left;
-    margin: 16px;
-    margin-left: 0;
-  }
-  img[src*='#full-bleed'] {
-    width: 100%;
-    margin-bottom: 16px;
-    margin-top: 16px;
-  }
-  hr {
-    border-top: 2px dashed #bfb9bd;
-    margin-top: 32px;
-    margin-bottom: 32px;
-  }
-  ul {
-    list-style-type: square;
-    margin-left: 1.5em;
-  }
-`;
+import PanelFooter from 'components/PanelFooter';
+import MarkdownText from 'components/MarkdownText';
 
 const Content = `
 ![Dope Wars](/images/Logo-Dimension.png)
@@ -184,25 +121,14 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 `;
 
 const BuyNow = () => (
-  <div
-    css={css`
-      padding: 16px;
-      background-color: var(--gray-300);
-      border-top: 2px solid black;
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      width: 100%;
-      height: 96px;
-    `}
-  >
+  <PanelFooter>
     <Link href="/news" passHref>
-      <Button>Read The Daily Dope</Button>
+      <Button>Latest Announcements</Button>
     </Link>
     <Link href="/swap-meet" passHref>
       <Button variant="primary">Get a Hustler</Button>
     </Link>
-  </div>
+  </PanelFooter>
 );
 
 const AboutWindow = ({ ...props }) => {
@@ -213,13 +139,10 @@ const AboutWindow = ({ ...props }) => {
       width="640px"
       hideWalletAddress
       {...props}
+      scrollable
     >
-      <Stack height="100%" gap="0">
-        <TextBody className="markdownContainer">
-          <ReactMarkdown className="markdown">{Content}</ReactMarkdown>
-        </TextBody>
-        <BuyNow />
-      </Stack>
+      <MarkdownText text={Content} css={css`flex:1;`} />
+      <BuyNow />
     </DesktopWindow>
   );
 };
