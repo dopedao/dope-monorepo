@@ -194,13 +194,13 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            Stake your DOPE and PAPER tokens to earn STREETCRED – then use that to purchase our metaverse territories that will help you in game.
+            Stake your DOPE and PAPER tokens to earn STREETCRED – then use that to purchase our metaverse territories that will help you in game…with your GANG.
           </p>
           <p>
-            TURF is an expansion of DOPE and is designed to act as a location lego for the Dope Wars ecosystem. It uses the existing DOPE item locations for Cities values, while providing more granular locations by also including Districts, Hoods and Plots.  
+            TURF is a proposed expansion of DOPE and is designed to act as a multi-player location lego for the Dope Wars ecosystem. It uses the existing DOPE item locations for Cities, while providing more granular locations by also including Districts, Hoods and Plots.  
           </p>
           <p>
-            <a href="https://www.notion.so/dope-wars/DIP-24-The-Hustle-TURF-10be2b8155004341b13fa3c836d7daf7" target="wiki">Our proposal allows for enhanced game mechanics</a> and a blueprint of land ownership rights for the Dope Wars Metaverse.
+            <a href="https://www.notion.so/dope-wars/DIP-24-The-Hustle-TURF-10be2b8155004341b13fa3c836d7daf7" target="wiki">Our proposal  allows for enhanced game mechanics</a> and a blueprint of land ownership rights for the Dope Wars Metaverse.
           </p>
         </>
       </RoadmapItem>
