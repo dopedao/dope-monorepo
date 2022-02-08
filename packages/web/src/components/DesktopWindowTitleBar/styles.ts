@@ -25,7 +25,7 @@ export const RightColumn = styled.div`
   align-items: center;
 
   div:first-child {
-    @media (max-width: 680px) {
+    @media (max-width: 640px) {
       display: none;
     }
   }
@@ -33,7 +33,7 @@ export const RightColumn = styled.div`
   span {
     margin: 0 12px;
 
-    @media (max-width: 680px) {
+    @media (max-width: 640px) {
       display: none;
     }
   }

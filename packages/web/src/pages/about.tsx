@@ -1,5 +1,5 @@
 import Head from 'components/Head';
-import AboutWindow from 'components/AboutWindow';
+import AboutWindow from 'features/about/components/AboutWindow';
 
 export default function About() {
   return (
