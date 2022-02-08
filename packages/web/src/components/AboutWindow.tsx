@@ -1,18 +1,28 @@
 import DesktopWindow from 'components/DesktopWindow';
 import { Button, Link } from '@chakra-ui/react';
-import { css } from '@emotion/react';
 import PanelFooter from 'components/PanelFooter';
 import MarkdownText from 'components/MarkdownText';
 
-const Content = `
+
+const ContentIntro = () => {
+  const content = `
 ![Dope Wars](/images/Logo-Dimension.png)
 
-The DOPE WARS community is [producing one of the first play-to-earn crypto games](https://dope-wars.notion.site/DIP-4-RYO-v1-c65d88de9abe49c08afa60d69a6cb1bc) on the Ethereum, Optimism, and [StarkNet](https://starkware.co/) blockchains, inspired by the classic TI-83 game we played instead of doing math homework.
+## Vision
 
-DOPE WARS is also an ongoing NFT art project and experiment in decentralized project governance using a [DAO](https://ethereum.org/en/dao/).
+Dope Wars is a fully decentralized, community driven, play-to-earn gaming metaverse project inspired by hip-hop culture. We believe in a fully decentralized world and our unique fully-customizable avatars in web3 stand for the values and principles we stand for with our carbon avatars.
 
-----
+We're building a modern-day GTA-inspired metaverse and series of games on the Ethereum blockchain, [inspired by the classic Drugwars game](https://www.youtube.com/watch?v=3rg7rOfcdo8) that many of us played through the years.
 
+We aim to create an open environment that allows developers and contributors to produce their own limitless games for the Dope Wars NFT holders.
+
+Dope Wars is also an ongoing NFT art project and experiment in decentralized project governance using a [DAO](https://ethereum.org/en/dao/).
+  `
+  return <MarkdownText text={content} />
+};
+
+const ContentAssets = () => {
+  const content = `
 ### For more
 Including how to purchase your first DOPE NFT, how to get involved with the project, or what "the game" will be like
 
@@ -64,9 +74,13 @@ To see if your DOPE NFT is eligible please connect your wallet in DOPEWARS.EXE a
 The supply of paper is currently fixed at 1 billion, and while this can be increased with a DAO governance vote – the current consensus is that this won’t be necessary. When details of the economy in-game and in the broader ecosystem get closer to the end of the design stage the DAO may remove the ability to increase the supply of $PAPER from the contract entirely.
 
 👉 [What WOLF CRYPTO has to say about DOPE WARS + $PAPER](https://wolfcrypto.medium.com/dope-wars-paper-tldr-90d23fa6acb3) 👈
+  `
+  return <MarkdownText text={content} />
+}
 
-----
 
+const ContentAbout = () => {
+  const content = `
 ## About this site
 
 Our first project is to provide a portal for the DOPE WARS ecosystem right here. Additional experiences like the game will be hosted here.
@@ -116,9 +130,11 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 ### Voting
 
 - [On-Chain DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
-- [Heat Check Voting with Snapshot](https://snapshot.org/#/dopedao.eth)
+- [Heat Check Voting with Snapshot](https://snapshot.org/#/dopedao.eth)    
+  `;
+  return <MarkdownText text={content} />
+}
 
-`;
 
 const BuyNow = () => (
   <PanelFooter>
@@ -141,7 +157,11 @@ const AboutWindow = ({ ...props }) => {
       {...props}
       scrollable
     >
-      <MarkdownText text={Content} css={css`flex:1;`} />
+      <div>
+        <ContentIntro />
+        <ContentAssets />
+        <ContentAbout />
+      </div>
       <BuyNow />
     </DesktopWindow>
   );

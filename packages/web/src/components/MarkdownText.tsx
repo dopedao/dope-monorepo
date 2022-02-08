@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from '@emotion/styled';
 
@@ -67,9 +66,9 @@ const MarkdownDiv = styled.div`
   }
 `;
 
-const MarkdownText = ({text, css}: {text: string, css?: string}) => (
-  <MarkdownDiv css={css}>
-    <ReactMarkdown>
+const MarkdownText = ({text}: {text: string}) => (
+  <MarkdownDiv>
+    <ReactMarkdown linkTarget="_blank">
       {text}
     </ReactMarkdown>
   </MarkdownDiv>
