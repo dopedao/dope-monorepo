@@ -55,15 +55,20 @@ export default class Preload extends Scene {
     networkHandler.connect();
     
     const onConnection = () => {
-      // we dont want to launch the game scene again and again when the connection is lost and restored 
-      networkHandler.emitter.removeListener(NetworkEvents.CONNECTED, onConnection);
-      
       // handle messages
       networkHandler.listenMessages();
-      // start game scene
-      this.scene.start('GameScene');
+
+      // get hustlers before starting game
+      fetch(`https://api.dopewars.gg/wallets/${(window?.ethereum as any)?.selectedAddress}/hustlers`).then(res => {
+        res.json().then(data => {
+          // start game scene
+          this.scene.start('GameScene', {
+            hustlerData: data,
+          });
+        })
+      });
     }
 
-    networkHandler.on(NetworkEvents.CONNECTED, onConnection);
+    networkHandler.once(NetworkEvents.CONNECTED, onConnection);
   }
 }

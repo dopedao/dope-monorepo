@@ -21,6 +21,11 @@ export default class NetworkHandler
         this.emitter.on(event, callback, context);
     }
 
+    once(event: string, callback: Function, context?: any)
+    {
+        this.emitter.once(event, callback, context);
+    }
+
     connect()
     {
         if (this.connection?.readyState === WebSocket.OPEN)

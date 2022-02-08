@@ -70,19 +70,20 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         
         if (hustlerId)
         {
-            if (!this.scene.textures.exists("hustler_" + hustlerId))
-            {
-                this.scene.load.spritesheet(`hustler_${hustlerId}`, `https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`, { frameWidth: 30, frameHeight: 60 });
-                this.scene.load.once(Phaser.Loader.Events.FILE_COMPLETE, () => {
-                    createHustlerAnimations(this.scene.anims, "hustler_" + hustlerId);
-                    this.setTexture("hustler_" + hustlerId);
-                });
+            const key = "hustler_" + hustlerId;
 
+            if (!this.scene.textures.exists(key))
+            {
+                this.scene.load.spritesheet(key, `https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`, { frameWidth: 30, frameHeight: 60 });
+                this.scene.load.once('filecomplete-spritesheet-' + key, () => {
+                    createHustlerAnimations(this.scene.anims, key);
+                    this.setTexture(key);
+                });
                 this.scene.load.start();
             }
             else
             {
-                this.setTexture("hustler_" + hustlerId);
+                this.setTexture(key);
             }
         }
 

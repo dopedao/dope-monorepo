@@ -16,6 +16,7 @@ import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/net
 import Hustler, { Direction } from 'game/entities/Hustler';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import { getShortAddress } from 'utils/utils';
+import Items from 'game/constants/Items';
 
 
 export default class GameScene extends Scene {
@@ -44,8 +45,132 @@ export default class GameScene extends Scene {
     });
   }
 
-  async preload() {
-    this.hustlerData = await (await fetch(`https://api.dopewars.gg/wallets/${(window?.ethereum as any).selectedAddress}/hustlers`)).json();
+  init(data: { hustlerData: any })
+  {
+    this.hustlerData = data.hustlerData;
+  }
+
+  create() {
+    console.log(this.hustlerData);
+    // create item entities when need 
+    this.handleItemEntities();
+    // handle camera effects
+    this.handleCamera();
+
+    // create all of the animations
+    new GameAnimations(this.anims).create();
+
+    // on click pathfinding
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer)
+        return;
+      
+      // run asynchronously
+      setTimeout(() => {
+        const citizenToTalkTo = this.citizens.find(citizen => citizen.shouldFollowPath && citizen.getBounds().contains(pointer.worldX, pointer.worldY));
+
+        this.player.navigator.moveTo(
+          pointer.worldX,
+          pointer.worldY, 
+          citizenToTalkTo ? () => {
+            if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
+            {
+              citizenToTalkTo?.onInteraction(this.player);
+              EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
+            }
+          } : undefined);
+      });
+    });
+
+    // create map and entities
+    this._mapHelper = new MapHelper(this);
+    this.mapHelper.createMap('NYCHood2');
+    this.mapHelper.createEntities();
+    this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
+    
+    // citizens
+    this.citizens.push(new Citizen(
+      this.matter.world, 
+      100, 200, 
+      "30", 
+      "Michel", "Arpenteur",
+      [new Conversation("Welcome to Dope City!")],
+      undefined,
+      //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
+      true
+    ));
+
+    this.citizens.push(new Citizen(
+      this.matter.world, 
+      100, 300, 
+      "12", 
+      "Michel", "Arpenteur",
+      [new Conversation("Welcome to Dope City!")],
+      undefined,
+      //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
+      true
+    ));
+
+    this.itemEntities.push(new ItemEntity(this.matter.world, 100, 200, 'lol', new Item('item_test', 'jsp'), (item: Item) => {
+      this.player.inventory.remove(item, true);
+    }));
+
+    // TODO when map update: create player directly from map data
+    this.player = new Player(this.matter.world, 90, 200, this.hustlerData?.length > 0 ? this.hustlerData[0].id : undefined, this.hustlerData?.length > 0 ? this.hustlerData[0].name : undefined);
+    this.player.currentMap = this.mapHelper.mapReader.level.identifier;
+
+    const camera = this.cameras.main;
+
+    // make the camera follow the player
+    camera.setZoom(this.zoom, this.zoom);
+    camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
+
+    const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
+    this.cameras.main.setBounds(map.displayLayers[0].x, map.displayLayers[0].y, map.displayLayers[0].width, map.displayLayers[0].height);
+
+    this.handleNetwork();
+
+    this.scene.launch('UIScene', { player: this.player });
+  }
+
+  update(time: number, delta: number) {
+    this.player.update();
+    this.hustlers.forEach(hustler => hustler.update());
+    this.citizens.forEach(citizen => citizen.update());
+    this.itemEntities.forEach(itemEntity => itemEntity.update());
+
+    // update map 
+    const level = this.mapHelper.mapReader.ldtk.levels.find(l => l.identifier === this.player.currentMap)!;
+    const centerMapPos = new Phaser.Math.Vector2((level.worldX + (level.worldX + level.pxWid)) / 2, (level.worldY + (level.worldY + level.pxHei)) / 2);
+    const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
+
+    // check to load new maps
+    // east
+    if (playerPos.x - centerMapPos.x > level.pxWid / 4)
+      this._checkDir(level, 'e', true);
+    // north
+    else if (playerPos.y - centerMapPos.y < -(level.pxHei / 4))
+      this._checkDir(level, 'n', true);
+    // west
+    else if (playerPos.x - centerMapPos.x < -(level.pxWid / 4))
+      this._checkDir(level, 'w', true);
+    // south
+    else if (playerPos.y - centerMapPos.y > level.pxHei / 4)
+      this._checkDir(level, 's', true);
+
+    // check in which map we're in
+    // east
+    if (playerPos.x - centerMapPos.x > level.pxWid / 2)
+      this._checkDir(level, 'e', false);
+    // north
+    else if (playerPos.y - centerMapPos.y < -(level.pxHei / 2))
+      this._checkDir(level, 'n', false);
+    // west
+    else if (playerPos.x - centerMapPos.x < -(level.pxWid / 2))
+      this._checkDir(level, 'w', false);
+    // south
+    else if (playerPos.y - centerMapPos.y > level.pxHei / 2)
+      this._checkDir(level, 's', false);
   }
 
   handleItemEntities()
@@ -111,6 +236,11 @@ export default class GameScene extends Scene {
         this.hustlers[this.hustlers.length - 1].setData('id', data.id);
         this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
       });
+      // initiate all item entities
+      data.itemEntities.forEach(iData => {
+        this.itemEntities.push(new ItemEntity(this.matter.world, iData.x, iData.y, iData.item, Items[iData.item]));
+        this.itemEntities[this.itemEntities.length - 1].setData('id', iData.id);
+      });
 
       // register listeners
       // instantiate a new hustler on player join 
@@ -124,14 +254,7 @@ export default class GameScene extends Scene {
           this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
         }
 
-        if (!this.textures.exists('hustler_' + data.hustlerId))
-        {
-          this.load.spritesheet('hustler_' + data.hustlerId, `https://api.dopewars.gg/hustlers/${data.hustlerId}/sprites/composite.png`, { frameWidth: 30, frameHeight: 60 });
-          this.load.once(Phaser.Loader.Events.FILE_COMPLETE, initializeHustler);   
-          this.load.start();
-        }
-        else 
-          initializeHustler();
+        initializeHustler();
       });
       // update map
       networkHandler.on(NetworkEvents.SERVER_PLAYER_UPDATE_MAP, (data: DataTypes[NetworkEvents.SERVER_PLAYER_UPDATE_MAP]) => {
@@ -187,135 +310,6 @@ export default class GameScene extends Scene {
           hustler.currentMap = data.current_map;
       });
     });
-  }
-
-  create() {
-    console.log(this.hustlerData);
-    // create item entities when need 
-    this.handleItemEntities();
-    // handle camera effects
-    this.handleCamera();
-
-    // create all of the animations
-    new GameAnimations(this.anims).create();
-
-    // on click pathfinding
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer)
-        return;
-      
-      // run asynchronously
-      setTimeout(() => {
-        const citizenToTalkTo = this.citizens.find(citizen => citizen.shouldFollowPath && citizen.getBounds().contains(pointer.worldX, pointer.worldY));
-
-        this.player.navigator.moveTo(
-          pointer.worldX,
-          pointer.worldY, 
-          citizenToTalkTo ? () => {
-            if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
-            {
-              citizenToTalkTo?.onInteraction(this.player);
-              EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
-            }
-          } : undefined);
-      });
-    });
-
-    // create map and entities
-    this._mapHelper = new MapHelper(this);
-    this.mapHelper.createMap('NYCHood2');
-    this.mapHelper.createEntities();
-    this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
-    
-    // citizens
-    this.citizens.push(new Citizen(
-      this.matter.world, 
-      100, 200, 
-      "0", 
-      "Michel", "Arpenteur",
-      [new Conversation("Welcome to Dope City!")],
-      undefined,
-      //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
-      true
-    ));
-
-    this.itemEntities.push(new ItemEntity(this.matter.world, 100, 200, 'lol', new Item('item_test', 'jsp'), (item: Item) => {
-      this.player.inventory.remove(item, true);
-    }));
-
-    // TODO when map update: create player directly from map data
-    if (this.hustlerData?.length === 0)
-      this.player = new Player(this.matter.world, 90, 200);
-    else
-    {
-      this.load.spritesheet('hustler_' + this.hustlerData, `https://api.dopewars.gg/hustlers/${this.hustlerData[0].id}/sprites/composite.png`, { frameWidth: 30, frameHeight: 60 });
-      this.load.once(Phaser.Loader.Events.FILE_COMPLETE, () => {
-        this.player = new Player(this.matter.world, 90, 200, this.hustlerData[0].id, this.hustlerData[0].name);
-      });
-      this.load.start();
-    }
-
-    this.player.currentMap = this.mapHelper.mapReader.level.identifier;
-    // if (window.ethereum && (window.ethereum as any).selectedAddress)
-    // {
-    //     const address = (window.ethereum as any).selectedAddress;
-    //     const ens = new ENS({ provider: window.ethereum, ensAddress: getEnsAddress(1) });
-
-    //     this.player.setName((await ens.getName(address)).name ?? getShortAddress(address));
-    // }
-
-    const camera = this.cameras.main;
-
-    // make the camera follow the player
-    camera.setZoom(this.zoom, this.zoom);
-    camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
-
-    const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
-    this.cameras.main.setBounds(map.displayLayers[0].x, map.displayLayers[0].y, map.displayLayers[0].width, map.displayLayers[0].height);
-
-    this.handleNetwork();
-
-    this.scene.launch('UIScene', { player: this.player });
-  }
-
-  update(time: number, delta: number) {
-    this.player.update();
-    this.hustlers.forEach(hustler => hustler.update());
-    this.citizens.forEach(citizen => citizen.update());
-    this.itemEntities.forEach(itemEntity => itemEntity.update());
-
-    // update map 
-    const level = this.mapHelper.mapReader.ldtk.levels.find(l => l.identifier === this.player.currentMap)!;
-    const centerMapPos = new Phaser.Math.Vector2((level.worldX + (level.worldX + level.pxWid)) / 2, (level.worldY + (level.worldY + level.pxHei)) / 2);
-    const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
-
-    // check to load new maps
-    // east
-    if (playerPos.x - centerMapPos.x > level.pxWid / 4)
-      this._checkDir(level, 'e', true);
-    // north
-    else if (playerPos.y - centerMapPos.y < -(level.pxHei / 4))
-      this._checkDir(level, 'n', true);
-    // west
-    else if (playerPos.x - centerMapPos.x < -(level.pxWid / 4))
-      this._checkDir(level, 'w', true);
-    // south
-    else if (playerPos.y - centerMapPos.y > level.pxHei / 4)
-      this._checkDir(level, 's', true);
-
-    // check in which map we're in
-    // east
-    if (playerPos.x - centerMapPos.x > level.pxWid / 2)
-      this._checkDir(level, 'e', false);
-    // north
-    else if (playerPos.y - centerMapPos.y < -(level.pxHei / 2))
-      this._checkDir(level, 'n', false);
-    // west
-    else if (playerPos.x - centerMapPos.x < -(level.pxWid / 2))
-      this._checkDir(level, 'w', false);
-    // south
-    else if (playerPos.y - centerMapPos.y > level.pxHei / 2)
-      this._checkDir(level, 's', false);
   }
 
   private _checkDir(level: Level, dir: string, patchMap: boolean)
