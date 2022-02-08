@@ -172,7 +172,7 @@ const ContentRoadmap = () => (
             alignItems="center" 
             justifyContent="center"
           >
-            <HustlerSpriteSheetWalk id={getRandomNumber(0,500)} /> 
+            <HustlerSpriteSheetWalk id={getRandomNumber(0,500).toString()} /> 
           </Box>
         }
         date="Q1 2022"
