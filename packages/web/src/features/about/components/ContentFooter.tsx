@@ -2,6 +2,32 @@ import MarkdownText from "components/MarkdownText";
 
 const ContentFooter = () => {
   const content = `
+## FAQ
+
+----
+
+### How does the DAO work?
+To fund the DOPE DAO treasury we've established a 5% royalty payment on each sale, held by the DAO until released by community vote.
+
+Community members draft [proposals](https://dope-wars.notion.site/626df3ff9e4d47da98ea23abc4b6e7a7?v=6350c7a1a9ba4a1c953c8cc4f9a0f062) to use these funds on projects that are then voted on by DOPE NFT holders. This governance structure is how we're able to continue building the DOPE WARS ecosystem with a loose collection of shifting contributors.
+
+----
+
+### What is the supply of $PAPER?
+
+The supply of paper is currently fixed at 1 billion, and while this can be increased with a DAO governance vote – the current consensus is that this won’t be necessary. When details of the economy in-game and in the broader ecosystem get closer to the end of the design stage the DAO may remove the ability to increase the supply of $PAPER from the contract entirely.
+
+👉 [What WOLF CRYPTO has to say about DOPE WARS + $PAPER](https://wolfcrypto.medium.com/dope-wars-paper-tldr-90d23fa6acb3) 👈
+
+----
+
+### For more
+Including how to purchase your first DOPE NFT, how to get involved with the project, or what "the game" will be like
+
+👉 [Please see our Wiki and Players Guide](http://wiki.dopedao.org)
+
+----
+
 ## About this site
 
 Our first project is to provide a portal for the DOPE WARS ecosystem right here. Additional experiences like the game will be hosted here.
@@ -9,11 +35,6 @@ Our first project is to provide a portal for the DOPE WARS ecosystem right here.
 You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have purchased.
 
 [Claim Gear, create a Hustler](https://dope-wars.notion.site/Dope-Wars-Ignition-e92fd2b6efeb4e4991c7df98f5553283), and trade individual Gear with other players to equip your Hustler in our [SWAP MEET](/swap-meet).
-
-----
-
-### The DOPE DAO is supported by gamers like you
-[Purchase DOPE on OpenSea](https://opensea.io/collection/dope-v4) to claim your votes on DOPE DAO proposals and play the upcoming game.
 
 ----
 

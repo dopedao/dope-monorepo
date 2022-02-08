@@ -2,7 +2,6 @@ import { Button, Link } from '@chakra-ui/react';
 import DesktopWindow from 'components/DesktopWindow';
 import PanelFooter from 'components/PanelFooter';
 import ContentIntro from 'features/about/components/ContentIntro';
-import ContentAssets from 'features/about/components/ContentAssets';
 import ContentFooter from 'features/about/components/ContentFooter';
 import ContentRoadmap from 'features/about/components/ContentRoadmap';
 import ReactPlayer from 'react-player';
@@ -51,7 +50,6 @@ const AboutWindow = ({ ...props }) => {
         />
         <ContentIntro />
         <ContentRoadmap />
-        <ContentAssets />
         <ContentFooter />
       </div>
       <PanelFooter css={css`position:sticky;bottom:0px;width:100%;padding-right:24px;`}>

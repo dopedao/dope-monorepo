@@ -65,9 +65,9 @@ const WindowWrapper = styled.div<{
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
   overflow-x: hidden;
   position: absolute;
-  max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
-  max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
   &.floating {
+    max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
+    max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
     position: absolute;
     ${media.phone`
       width: 100%;
