@@ -186,8 +186,7 @@ export default function GlobalStyles() {
           cursor: pointer;
           cursor: hand;
         }
-        a.textLink,
-        .markdownContainer a {
+        a.textLink {
           text-decoration: underline !important;
           color: var(--primary) !important;
         }
@@ -225,7 +224,7 @@ export default function GlobalStyles() {
           background-color: rgba(255, 252, 63, 0.5);
         }
         /* CUSTOM */
-        .button {
+        .button, button {
           ${buttonStyle};
         }
       `}
