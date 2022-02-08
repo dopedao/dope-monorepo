@@ -92,7 +92,7 @@ export default class PathNavigator
         if (this.target)
         {
             // set as not moving
-            this.hustler.model.updateSprites(true);
+            // this.hustler.model.updateSprites(true);
             this.hustler.moveDirection = Direction.None;
             this.target = undefined;
         }
@@ -161,14 +161,14 @@ export default class PathNavigator
         {
             this.hustler.moveDirection = Direction.North;
             this.hustler.setVelocityY(-Hustler.DEFAULT_VELOCITY);
-            this.hustler.model.updateSprites(true);
+            // this.hustler.model.updateSprites(true);
             willMoveFlag = true;
         }
         else if (down)
         {
             this.hustler.moveDirection = Direction.South;
             this.hustler.setVelocityY(Hustler.DEFAULT_VELOCITY);
-            this.hustler.model.updateSprites(true);
+            // this.hustler.model.updateSprites(true);
             willMoveFlag = true;
         }
         
@@ -176,14 +176,14 @@ export default class PathNavigator
         {
             this.hustler.moveDirection = Direction.West;
             this.hustler.setVelocityX(-Hustler.DEFAULT_VELOCITY);
-            this.hustler.model.updateSprites(true);
+            // this.hustler.model.updateSprites(true);
             willMoveFlag = true;
         }
         else if (right)
         {
             this.hustler.moveDirection = Direction.East;
             this.hustler.setVelocityX(Hustler.DEFAULT_VELOCITY);
-            this.hustler.model.updateSprites(true);
+            // this.hustler.model.updateSprites(true);
             willMoveFlag = true;
         }
 

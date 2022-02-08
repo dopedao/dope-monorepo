@@ -64,7 +64,7 @@ export default class PlayerController
         {
             this.player.moveDirection = Direction.North;
             this.player.setVelocityY(-Hustler.DEFAULT_VELOCITY);
-            this.player.model.updateSprites(true);
+            // this.player.model.updateSprites(true);
 
             willMoveFlag = true;
         }
@@ -72,7 +72,7 @@ export default class PlayerController
         {
             this.player.moveDirection = Direction.South;
             this.player.setVelocityY(Hustler.DEFAULT_VELOCITY);
-            this.player.model.updateSprites(true);
+            // this.player.model.updateSprites(true);
 
             willMoveFlag = true;
         }
@@ -80,7 +80,7 @@ export default class PlayerController
         {
             this.player.moveDirection = Direction.West;
             this.player.setVelocityX(-Hustler.DEFAULT_VELOCITY);
-            this.player.model.updateSprites(true);
+            // this.player.model.updateSprites(true);
 
             willMoveFlag = true;
         }
@@ -88,7 +88,7 @@ export default class PlayerController
         {
             this.player.moveDirection = Direction.East;
             this.player.setVelocityX(Hustler.DEFAULT_VELOCITY);
-            this.player.model.updateSprites(true);
+            // this.player.model.updateSprites(true);
 
             willMoveFlag = true;
         }
@@ -113,7 +113,7 @@ export default class PlayerController
             this.player.moveDirection = Direction.None;
 
             this.player.setVelocity(0, 0);
-            this.player.model.updateSprites(true);        
+            // this.player.model.updateSprites(true);        
         }
     }
 }

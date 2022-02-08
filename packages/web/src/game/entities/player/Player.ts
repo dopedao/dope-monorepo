@@ -40,9 +40,9 @@ export default class Player extends Hustler
 
     get busy() { return this._busy; }
 
-    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, inventory?: Inventory, quests?: Array<Quest>)
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, hustlerId?: string, name?: string, inventory?: Inventory, quests?: Array<Quest>)
     {
-        super(world, x, y, model);
+        super(world, x, y, hustlerId, name);
 
         this._inventory = inventory ?? new Inventory();
         this._questManager = new QuestManager(this, quests);

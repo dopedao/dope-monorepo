@@ -62,6 +62,7 @@ interface DataTypes
     },
     [NetworkEvents.SERVER_PLAYER_JOIN]: {
         id: string,
+        hustlerId: string,
         name: string,
         current_map: string,
         x: number,
@@ -86,6 +87,7 @@ interface DataTypes
     // From client to server
     [NetworkEvents.CLIENT_PLAYER_JOIN]: {
         name: string,
+        hustlerId: string,
         current_map: string,
         x: number,
         y: number,

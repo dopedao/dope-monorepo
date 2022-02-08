@@ -19,6 +19,8 @@ import { getShortAddress } from 'utils/utils';
 
 
 export default class GameScene extends Scene {
+  private hustlerData: any;
+
   private player!: Player;
   // other players
   private hustlers: Array<Hustler> = [];
@@ -40,6 +42,10 @@ export default class GameScene extends Scene {
     super({
       key: 'GameScene',
     });
+  }
+
+  async preload() {
+    this.hustlerData = await (await fetch(`https://api.dopewars.gg/wallets/${(window?.ethereum as any).selectedAddress}/hustlers`)).json();
   }
 
   handleItemEntities()
@@ -89,6 +95,7 @@ export default class GameScene extends Scene {
     // register player
     networkHandler.sendMessage(UniversalEventNames.PLAYER_JOIN, {
       name: this.player.name,
+      hustlerId: this.player.hustlerId,
       current_map: this.player.currentMap,
       x: this.player.x,
       y: this.player.y,
@@ -100,8 +107,7 @@ export default class GameScene extends Scene {
 
       // initiate all players
       data.players.forEach(data => {
-        this.hustlers.push(new Hustler(this.matter.world, data.x, data.y, new HustlerModel(Base.Male)));
-        this.hustlers[this.hustlers.length - 1].setName(data.name);
+        this.hustlers.push(new Hustler(this.matter.world, data.x, data.y, data.hustlerId, data.name));
         this.hustlers[this.hustlers.length - 1].setData('id', data.id);
         this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
       });
@@ -112,10 +118,20 @@ export default class GameScene extends Scene {
         if (data.id === this.player.getData('id'))
           return;
         
-        this.hustlers.push(new Hustler(this.matter.world, data.x, data.y, new HustlerModel(Base.Male)));
-        this.hustlers[this.hustlers.length - 1].setName(data.name);
-        this.hustlers[this.hustlers.length - 1].setData('id', data.id);
-        this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
+        const initializeHustler = () => {
+          this.hustlers.push(new Hustler(this.matter.world, data.x, data.y, data.hustlerId, data.name));
+          this.hustlers[this.hustlers.length - 1].setData('id', data.id);
+          this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
+        }
+
+        if (!this.textures.exists('hustler_' + data.hustlerId))
+        {
+          this.load.spritesheet('hustler_' + data.hustlerId, `https://api.dopewars.gg/hustlers/${data.hustlerId}/sprites/composite.png`, { frameWidth: 30, frameHeight: 60 });
+          this.load.once(Phaser.Loader.Events.FILE_COMPLETE, initializeHustler);   
+          this.load.start();
+        }
+        else 
+          initializeHustler();
       });
       // update map
       networkHandler.on(NetworkEvents.SERVER_PLAYER_UPDATE_MAP, (data: DataTypes[NetworkEvents.SERVER_PLAYER_UPDATE_MAP]) => {
@@ -173,7 +189,8 @@ export default class GameScene extends Scene {
     });
   }
 
-  async create(): Promise<void> {
+  create() {
+    console.log(this.hustlerData);
     // create item entities when need 
     this.handleItemEntities();
     // handle camera effects
@@ -214,7 +231,7 @@ export default class GameScene extends Scene {
     this.citizens.push(new Citizen(
       this.matter.world, 
       100, 200, 
-      new HustlerModel(Base.Male), 
+      "0", 
       "Michel", "Arpenteur",
       [new Conversation("Welcome to Dope City!")],
       undefined,
@@ -227,26 +244,25 @@ export default class GameScene extends Scene {
     }));
 
     // TODO when map update: create player directly from map data
-    const sex = Math.floor(Math.random() * (Object.keys(Base).length / 2));
-    this.player = new Player(this.matter.world, 90, 200, new HustlerModel(
-      sex,
-      Math.floor(Math.random() * (Object.keys(Hair).length / 2)), 
-      sex == Base.Male ? Math.floor(Math.random() * (Object.keys(Beard).length / 2)) : undefined, 
-      [Math.floor(Math.random() * (Object.keys(Clothes).length / 2))], 
-      Math.floor(Math.random() * (Object.keys(Feet).length / 2)), 
-      Math.floor(Math.random() * (Object.keys(Hands).length / 2)), 
-      Math.floor(Math.random() * (Object.keys(Waist).length / 2)), 
-      Math.floor(Math.random() * (Object.keys(Necklace).length / 2)), 
-      Math.floor(Math.random() * (Object.keys(Ring).length / 2))));
+    if (this.hustlerData?.length === 0)
+      this.player = new Player(this.matter.world, 90, 200);
+    else
+    {
+      this.load.spritesheet('hustler_' + this.hustlerData, `https://api.dopewars.gg/hustlers/${this.hustlerData[0].id}/sprites/composite.png`, { frameWidth: 30, frameHeight: 60 });
+      this.load.once(Phaser.Loader.Events.FILE_COMPLETE, () => {
+        this.player = new Player(this.matter.world, 90, 200, this.hustlerData[0].id, this.hustlerData[0].name);
+      });
+      this.load.start();
+    }
 
     this.player.currentMap = this.mapHelper.mapReader.level.identifier;
-    if (window.ethereum && (window.ethereum as any).selectedAddress)
-    {
-        const address = (window.ethereum as any).selectedAddress;
-        const ens = new ENS({ provider: window.ethereum, ensAddress: getEnsAddress(1) });
+    // if (window.ethereum && (window.ethereum as any).selectedAddress)
+    // {
+    //     const address = (window.ethereum as any).selectedAddress;
+    //     const ens = new ENS({ provider: window.ethereum, ensAddress: getEnsAddress(1) });
 
-        this.player.setName((await ens.getName(address)).name ?? getShortAddress(address));
-    }
+    //     this.player.setName((await ens.getName(address)).name ?? getShortAddress(address));
+    // }
 
     const camera = this.cameras.main;
 
@@ -262,7 +278,7 @@ export default class GameScene extends Scene {
     this.scene.launch('UIScene', { player: this.player });
   }
 
-  update(time: number, delta: number): void {
+  update(time: number, delta: number) {
     this.player.update();
     this.hustlers.forEach(hustler => hustler.update());
     this.citizens.forEach(citizen => citizen.update());

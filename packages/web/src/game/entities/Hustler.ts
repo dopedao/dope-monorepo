@@ -1,3 +1,4 @@
+import { createHustlerAnimations } from "game/anims/HustlerAnimations";
 import HustlerAnimator from "game/anims/HustlerAnimator";
 import { Base, Categories, CharacterCategories, SpritesMap } from "game/constants/Sprites";
 import HustlerModel from "game/gfx/models/HustlerModel";
@@ -30,7 +31,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     // level identifier of the map
     private _currentMap!: string;
 
-    private _model: HustlerModel;
+    private _hustlerId?: string;
+    // private _model: HustlerModel;
 
     private _animator: HustlerAnimator;
     private _navigator: PathNavigator;
@@ -38,10 +40,12 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     private _hitboxSensor: MatterJS.BodyType;
     private hoverText?: BBCodeText;
 
+    get hustlerId() { return this._hustlerId; }
+
     get currentMap() { return this._currentMap; }
     set currentMap(value: string) { this._currentMap = value; }
 
-    get model() { return this._model; }
+    // get model() { return this._model; }
     get animator() { return this._animator; }
     get navigator() { return this._navigator; }
 
@@ -60,14 +64,33 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     get collider() { return this.body; }
     get hitboxSensor() { return this._hitboxSensor; }
 
-    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, model: HustlerModel, frame?: number)
+    constructor(world: Phaser.Physics.Matter.World, x: number, y: number, hustlerId?: string, name?: string, frame?: number)
     {
-        super(world, x, y, SpritesMap[Categories.Character][model.base][CharacterCategories.Base], frame);
-
-        this.name = "Hustler";
+        super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
         
-        this._model = model;
-        this._model.hustler = this;
+        if (hustlerId)
+        {
+            if (!this.scene.textures.exists("hustler_" + hustlerId))
+            {
+                this.scene.load.spritesheet(`hustler_${hustlerId}`, `https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`, { frameWidth: 30, frameHeight: 60 });
+                this.scene.load.once(Phaser.Loader.Events.FILE_COMPLETE, () => {
+                    createHustlerAnimations(this.scene.anims, "hustler_" + hustlerId);
+                    this.setTexture("hustler_" + hustlerId);
+                });
+
+                this.scene.load.start();
+            }
+            else
+            {
+                this.setTexture("hustler_" + hustlerId);
+            }
+        }
+
+        this.name = name ?? "Hustler";
+        this._hustlerId = hustlerId;
+        
+        // this._model = model;
+        // this._model.hustler = this;
 
         // add to the scene, to be drawn
         world.scene.add.existing(this);
@@ -106,7 +129,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this.setFixedRotation();
 
         // create sub sprites
-        this._model.createSprites();
+        // this._model.createSprites();
 
         // display name on hover
         const uiScene = this.scene.scene.get('UIScene') as UIScene;
@@ -161,9 +184,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         
 
         this.play(this.texture.key + this._lastDirection);
-        this.model.updateSprites(false, this._lastDirection);
+        // this.model.updateSprites(false, this._lastDirection);
         
-        this.model.stopSpritesAnim(false);
+        // this.model.stopSpritesAnim(false);
         this.stop();
     }
 
@@ -177,7 +200,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     setVisible(value: boolean)
     {
         super.setVisible(value);
-        this._model.setVisible(value);
+        // this._model.setVisible(value);
         return this;
     }
 
@@ -187,7 +210,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         // update hitbox sensor scale
         (Phaser.Physics.Matter as any).Matter.Body.scale(this._hitboxSensor, x, y ?? x);
         // update model scale
-        this._model.setScale(x, y);
+        // this._model.setScale(x, y);
         return this;
     }
 
@@ -195,7 +218,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     {
         super.setDepth(value);
         // update model depth
-        this._model.setDepth(value);
+        // this._model.setDepth(value);
         return this;
     }
 
@@ -203,14 +226,14 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     {
         super.setPosition(x, y);
         // update model position
-        this._model?.updateSprites(true);
+        // this._model?.updateSprites(true);
         
         return this;
     }
 
     destroyRuntime(fromScene?: boolean)
     {
-        this._model.destroyRuntime(fromScene);
+        // this._model.destroyRuntime(fromScene);
         this.scene.matter.world.remove(this._hitboxSensor);
         super.destroy(fromScene);
     }
