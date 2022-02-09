@@ -88,9 +88,17 @@ const ContentRoadmap = () => (
         date="Q3 2021"
         complete
       >
-        <p>
-          <a href="https://opensea.io/collection/dope-v4" target="opensea">8,000 randomized, limited-edition NFT bundles</a> of $PAPER and Gear were released September 2021 during a fair-mint, costing only gas. Each ERC-721 NFT allows you to build a Hustler character to be used in our upcoming games, and provides an equal Governance Vote on Proposals from the DAO.
-        </p>
+        <>
+          <p>
+            <a href="https://opensea.io/collection/dope-v4" target="opensea">8,000 randomized, limited-edition NFT bundles</a> of $PAPER and Gear were released September 2021 during a fair-mint, costing only gas. 
+          </p>
+          <p>
+            The NFT community responded to our new idea of building a hip-hop gaming metaverse from the ground up by funding our project with over $1M USD in royalties over the first few weeks of sales.
+          </p>
+          <p>
+            Each ERC-721 DOPE NFT allows you to build a Hustler character to be used in our upcoming games, and provides an equal Governance Vote on Proposals from the DAO.
+          </p>
+        </>
       </RoadmapItem>
       <RoadmapItem
         title="$PAPER"
