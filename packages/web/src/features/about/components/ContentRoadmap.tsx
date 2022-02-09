@@ -31,7 +31,7 @@ const Container = styled.div`
 const TunnelEntrance = styled.div`
   position: relative;
   background: #353338 url(/images/about/roadmap-entrance.png) bottom / 800px 235px no-repeat;
-  height: 300px;
+  height: 225px;
   width: 100%;
   padding: 32px;
   h2 {
@@ -50,6 +50,9 @@ const TunnelEntrance = styled.div`
       width:100%;
     }
   }
+  ${media.tablet`
+    height: 300px;
+  `}
 `;
 
 const Road = styled.div`
