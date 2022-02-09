@@ -121,15 +121,8 @@ const Flex = () => {
   useEffect(() => {
     if (data?.hustlers.edges?.[0]?.node) {
       const h = data.hustlers.edges[0].node;
-      console.log(h);
-      setHustlerConfig({
-        ...hustlerConfig,
-        name: h?.name || '',
-        title: h?.title || '',
-        sex: (h?.sex.toLowerCase() || 'male') as HustlerSex,
-        body: getBodyIndexFromMetadata(h?.body?.id),
-      });
-      setHustlerItems([
+      let ids : Array<BigNumber> = [];
+      let items = [
         h.clothes,
         h.drug,
         h.foot,
@@ -140,20 +133,24 @@ const Flex = () => {
         h.vehicle,
         h.waist,
         h.weapon,
-      ]);
+      ];
+      items = items.filter((item)=> {
+        if(item != null) {
+          ids.push(BigNumber.from(item.id))
+          return item;
+        }
+        return false;
+      });
+      setHustlerItems(items);
+      setItemIds(ids);
       if (h?.svg) setOnChainImage(h?.svg);
-      setItemIds([
-        BigNumber.from(h.vehicle?.id),
-        BigNumber.from(h.drug?.id),
-        BigNumber.from(h.clothes?.id),
-        BigNumber.from(h.waist?.id),
-        BigNumber.from(h.foot?.id),
-        BigNumber.from(h.ring?.id),
-        BigNumber.from(h.hand?.id),
-        BigNumber.from(h.weapon?.id),
-        BigNumber.from(h.neck?.id),
-        BigNumber.from(h.accessory?.id),
-      ]);
+      setHustlerConfig({
+        ...hustlerConfig,
+        name: h?.name || '',
+        title: h?.title || '',
+        sex: (h?.sex.toLowerCase() || 'male') as HustlerSex,
+        body: getBodyIndexFromMetadata(h?.body?.id),
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, hustlerId]);
