@@ -116,7 +116,9 @@ export default class GameScene extends Scene {
     }));
 
     // TODO when map update: create player directly from map data
-    this.player = new Player(this.matter.world, 90, 200, this.hustlerData?.length > 0 ? this.hustlerData[0].id : undefined, this.hustlerData?.length > 0 ? this.hustlerData[0].name : undefined);
+    this.player = new Player(this.matter.world, 90, 200, 
+      this.hustlerData?.length > 0 ? this.hustlerData[0].id : undefined, 
+      this.hustlerData?.length > 0 ? this.hustlerData[0].name : undefined);
     this.player.currentMap = this.mapHelper.mapReader.level.identifier;
 
     const camera = this.cameras.main;

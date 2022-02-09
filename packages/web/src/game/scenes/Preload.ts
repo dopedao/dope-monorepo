@@ -4,6 +4,7 @@ import manifest from '../../../public/game/manifest.json';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
 import { NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
+import { ethers } from 'ethers';
 
 export default class Preload extends Scene {
   private downloadedSize: number = 0;
@@ -59,7 +60,7 @@ export default class Preload extends Scene {
       networkHandler.listenMessages();
 
       // get hustlers before starting game
-      fetch(`https://api.dopewars.gg/wallets/${(window?.ethereum as any)?.selectedAddress}/hustlers`).then(res => {
+      fetch(`https://api.dopewars.gg/wallets/${ethers.utils.getAddress((window?.ethereum as any)?.selectedAddress)}/hustlers`).then(res => {
         res.json().then(data => {
           // start game scene
           this.scene.start('GameScene', {
