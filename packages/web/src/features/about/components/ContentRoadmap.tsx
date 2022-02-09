@@ -123,9 +123,14 @@ const ContentRoadmap = () => (
         date="Q4 2021"
         complete
       >
-        <p>
-          <a href="https://dope-wars.notion.site/Dope-Gear-Guide-bab6001d5af2469f8790d8a1f156b3f4" target="wiki">Gear are interchangeable pieces of equipment</a> that live on the L2 Optimism blockchain as ERC-1155 tokens. They are created by Claiming an original DOPE NFT. This Claim process produces 9 separate NFT items that can be traded and equipped independently of one another, using our custom marketplace for low gas fees.
-        </p>
+        <>
+          <p>
+            <a href="https://dope-wars.notion.site/Dope-Gear-Guide-bab6001d5af2469f8790d8a1f156b3f4" target="wiki">Gear are interchangeable pieces of equipment</a> that live on the L2 Optimism blockchain as ERC-1155 tokens. They are created by Claiming an original DOPE NFT. This Claim process produces 9 separate NFT items that can be traded and equipped independently of one another, using our custom marketplace for low gas fees.
+          </p>
+          <p>
+            Gear is tradeable on our <a href="/swap-meet-gear">Swap Meet</a> and on 3rd party marketplaces like <a href="https://quixotic.io/collection/opt/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110" target="quix">Quixotic</a>.
+          </p>
+        </>
       </RoadmapItem>
       <RoadmapItem
         title="Hustlers"
@@ -134,9 +139,14 @@ const ContentRoadmap = () => (
         date="Q4 2021"
         complete
       >
-        <p>
-          <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a" target="wiki">Hustlers</a> are bleeding edge, fully-customizable in-game characters and profile pictures created by Claiming Gear from an original DOPE NFT then minting a Hustler NFT on the Optimism L2 network for low gas fees. All Hustler artwork is stored on the blockchain and can be changed at any time using our <a href="/swap-meet">Swap Meet</a>. 
-        </p>
+        <>
+          <p>
+            <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a" target="wiki">Hustlers</a> are bleeding edge, fully-customizable in-game characters and profile pictures created by Claiming Gear from an original DOPE NFT then minting a Hustler NFT on the Optimism L2 network for low gas fees. All Hustler artwork is stored on the blockchain and can be changed at any time using our <a href="/swap-meet">Swap Meet</a>. 
+          </p>
+          <p>
+            Hustlers will soon be tradeable on our <a href="/swap-meet-hustlers">Swap Meet</a>, but are available now to be traded on <a href="https://quixotic.io/collection/opt/0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E?attributes=&tab=0&query=" target="quix">Quixotic</a>.
+          </p>
+        </>
       </RoadmapItem>
       <RoadmapItem
         title="Lunar New Year Airdrop"
