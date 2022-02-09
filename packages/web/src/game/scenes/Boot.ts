@@ -68,7 +68,7 @@ export default class Boot extends Scene {
     networkHandler.emitter.on(NetworkEvents.SERVER_PLAYER_JOIN, (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => this._log(`Player ${data.id} joined`));
     networkHandler.emitter.on(NetworkEvents.SERVER_PLAYER_LEAVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_LEAVE]) => this._log(`Player ${data.id} left`));
     networkHandler.emitter.on(NetworkEvents.SERVER_PLAYER_MOVE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_MOVE]) => this._log(`Player ${data.id} moved`));
-    networkHandler.emitter.on(NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => this._log(`Player ${data.author} said: ${data.message}`));
+    // networkHandler.emitter.on(NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE, (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => this._log(`Player ${data.author} said: ${data.message}`));
   }
 
   private _logEvents()

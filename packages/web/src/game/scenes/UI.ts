@@ -55,9 +55,6 @@ export default class UIScene extends Scene {
 
     // react component for inputing message content
     public sendMessageInput?: ComponentManager;
-    // can the player open it?
-    // false during timeout
-    public canOpenMessageInput = true;
     // player precedent messages
     public precedentMessages: string[] = new Array();
 
@@ -65,7 +62,8 @@ export default class UIScene extends Scene {
     public inventoryComponent?: ComponentManager;
     public currentInteraction?: Interaction;
 
-    private chatMessageBoxes: Map<Hustler, Toast> = new Map(); 
+    // max 3 toasts
+    private chatMessageBoxes: Map<Hustler, Array<Toast>> = new Map(); 
 
     constructor() {
       super({
@@ -104,10 +102,12 @@ export default class UIScene extends Scene {
         }
 
         // console.log(this.chatMessageBoxes.length);
-        this.chatMessageBoxes.forEach((chatToast, hustler) =>
-            chatToast.setPosition(
-                (hustler.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom, 
-                ((hustler.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom) - (hustler.displayHeight * 1.5) - (chatToast.displayHeight / 2)));
+        this.chatMessageBoxes.forEach((chatToasts, hustler) =>
+            chatToasts.forEach((chatToast, i) => 
+                chatToast.setPosition(
+                    (hustler.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom, 
+                    ((hustler.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom) - (hustler.displayHeight * 1.8) - ((chatToast.displayHeight * 1.2) * i))
+            ))
     }
 
     private _handleEvents()
@@ -152,17 +152,13 @@ export default class UIScene extends Scene {
         const chatKey = this.input.keyboard.addKey('T');
 
         chatKey.on(Phaser.Input.Keyboard.Events.UP, () => {
-            if (this.player.busy)
-                return;
-            if (!this.canOpenMessageInput)
+            if (this.sendMessageInput || this.player.busy || (this.chatMessageBoxes.get(this.player)?.length ?? 0) > 2)
                 return;
             
             // prevent player from moving
             this.player.scene.input.keyboard.enabled = false;
             // prevent phaser from "blocking" some keys (for typing in chat)
             this.player.scene.input.keyboard.disableGlobalCapture();
-            // prevent player from opening another messageinput
-            this.canOpenMessageInput = false;
 
             this.sendMessageInput = this.add.reactDom(ChatType, { precedentMessages: this.precedentMessages });
 
@@ -189,8 +185,6 @@ export default class UIScene extends Scene {
                     EventHandler.emitter().emit(Events.CHAT_MESSAGE, this.player, text);
                     NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_CHAT_MESSAGE, { message: text });
                 }
-                else 
-                    this.canOpenMessageInput = true;
             });
         });
         
@@ -213,16 +207,20 @@ export default class UIScene extends Scene {
 
     private _handleMisc()
     {
-        const messageDuration = {
-            in: 500,
-            hold: 3500,
-            out: 500
-        };
-
         EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string) => {
-            this.chatMessageBoxes.set(hustler, this.rexUI.add.toast({
+            const messageDuration = {
+                in: 500,
+                hold: 3500 + (text.length * 50),
+                out: 500
+            };
+
+            let chatToasts = this.chatMessageBoxes.get(hustler);
+            if (!chatToasts)
+                this.chatMessageBoxes.set(hustler, new Array());
+
+            this.chatMessageBoxes.get(hustler)!.push(this.rexUI.add.toast({
                 background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 10, 0xffffff, 0.4),
-                text: getBBcodeText(this, 200, 0, 0, 10).setText(text),
+                text: getBBcodeText(this, 200, 0, 0, 10, '18px').setText(text),
                 space: {
                     left: 5,
                     right: 5,
@@ -231,7 +229,7 @@ export default class UIScene extends Scene {
                 },
                 duration: messageDuration
             }));
-            const chatMessage = this.chatMessageBoxes.get(hustler)!;
+            const chatMessage = this.chatMessageBoxes.get(hustler)![this.chatMessageBoxes.get(hustler)!.length - 1];
             // show message
             chatMessage.showMessage(text);
 
@@ -239,12 +237,8 @@ export default class UIScene extends Scene {
             // timeout for duration of message
             setTimeout(() => {
                 chatMessage.destroy();
-                this.chatMessageBoxes.delete(hustler);
-
-                // let player open message input again
-                // after the duration
-                if (hustler === this.player)
-                    this.canOpenMessageInput = true;
+                // remove chat message toast from array
+                this.chatMessageBoxes.get(hustler)?.splice(this.chatMessageBoxes.get(hustler)!.indexOf(chatMessage), 1);
             }, Object.values(messageDuration).reduce((a, b) => a + b, 0));
         });
     }
