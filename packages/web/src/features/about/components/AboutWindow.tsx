@@ -14,7 +14,6 @@ const AboutWindow = ({ ...props }) => {
       background="#efefee"
       width="800px"
       hideWalletAddress
-      scrollable
       {...props}
     >
       <div css={css`
