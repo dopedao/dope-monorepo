@@ -1,13 +1,11 @@
-import { FC } from "react"
-import { Flex } from "@chakra-ui/react"
+import { FC } from 'react';
+import { Flex } from '@chakra-ui/react';
 
 type ItemCountProps = {
-  count: number
-}
+  count: number;
+};
 
-const ItemCount: FC<ItemCountProps> = ({
-  count,
-}) => {
+const ItemCount: FC<ItemCountProps> = ({ count }) => {
   return (
     <Flex
       align="center"
@@ -21,7 +19,7 @@ const ItemCount: FC<ItemCountProps> = ({
     >
       {count}
     </Flex>
-  )
-}
+  );
+};
 
-export default ItemCount
+export default ItemCount;

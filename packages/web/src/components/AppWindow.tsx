@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core';
 import AppWindowFooter from 'components/AppWindowFooter';
 import ConnectWallet from 'components/ConnectWallet';
 import DesktopWindow from 'components/DesktopWindow';
-import {SearchFilterProvider} from 'components/SearchFilter';
+import { SearchFilterProvider } from 'components/SearchFilter';
 
 export interface AppWindowProps {
   background?: string;
@@ -30,7 +30,11 @@ const getBodyPadding = () => {
   return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
 };
 
-const AppWindowBody = styled.div<{ scrollable: boolean; padBody: boolean; background: string | undefined }>`
+const AppWindowBody = styled.div<{
+  scrollable: boolean;
+  padBody: boolean;
+  background: string | undefined;
+}>`
   position: relative;
   height: 100%;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
@@ -51,7 +55,7 @@ export default function AppWindow({
   footer,
   onlyFullScreen,
   fullScreen,
-  background
+  background,
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
@@ -69,7 +73,12 @@ export default function AppWindow({
         {requiresWalletConnection && !account ? (
           <ConnectWallet />
         ) : (
-          <AppWindowBody className="appWindowBody" background={background} scrollable={scrollable} padBody={padBody}>
+          <AppWindowBody
+            className="appWindowBody"
+            background={background}
+            scrollable={scrollable}
+            padBody={padBody}
+          >
             {children}
           </AppWindowBody>
         )}

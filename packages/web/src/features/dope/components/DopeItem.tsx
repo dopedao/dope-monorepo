@@ -27,7 +27,7 @@ const Bullet = ({ color }: BulletProps) => (
       margin-right: 8px;
       background-color: ${color};
       // necessary when 'align-items: top' to ensure proper alignment with text
-      margin-top: 4px; 
+      margin-top: 4px;
     `}
   ></div>
 );
@@ -42,17 +42,16 @@ const Item = ({
   color,
   tier,
   isExpanded,
-  showRarity
+  showRarity,
 }: ItemProps) => (
   <div
     css={css`
-      display: ${ isExpanded ? 'flex' : 'inline-block' };
+      display: ${isExpanded ? 'flex' : 'inline-block'};
       align-items: top;
       font-size: var(--text-small);
-      ${isExpanded && 
-        `border-top: 1px solid rgba(255,255,255,0.1);
-         padding-top:4px;`
-      }
+      ${isExpanded &&
+      `border-top: 1px solid rgba(255,255,255,0.1);
+         padding-top:4px;`}
     `}
   >
     <Bullet color={color} />
@@ -78,12 +77,12 @@ const Item = ({
             `}
           >
             {namePrefix ? `${namePrefix} ${nameSuffix} ` : ' '}
-            {suffix} 
+            {suffix}
           </div>
         </>
       )}
     </div>
-    { isExpanded && 
+    {isExpanded && (
       <div
         css={css`
           color: #888;
@@ -93,9 +92,11 @@ const Item = ({
           width: 25%;
         `}
       >
-        {`${showRarity && tier?.toLowerCase() !== 'common' ? tier?.toString().replace('_', ' ') : ''} ${type}`}
+        {`${
+          showRarity && tier?.toLowerCase() !== 'common' ? tier?.toString().replace('_', ' ') : ''
+        } ${type}`}
       </div>
-    }
+    )}
   </div>
 );
 

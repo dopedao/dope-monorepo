@@ -1,15 +1,14 @@
-import { Accordion } from '@chakra-ui/react'
+import { Accordion } from '@chakra-ui/react';
 
-import Section from "./Section"
+import Section from './Section';
 import Dopes from './Dopes';
 import Gear from './Gear';
 import Hustlers from './Hustlers';
 
-import useQueryParam from 'utils/use-query-param';
+import useQueryParam from 'hooks/use-query-param';
 const SECTIONS = ['Hustlers', 'Gear', 'Dope'];
 
 const Profile = () => {
-
   const [section, setSection] = useQueryParam('section', SECTIONS[0]);
 
   return (
@@ -17,10 +16,10 @@ const Profile = () => {
       allowToggle
       background="#fff"
       defaultIndex={SECTIONS.findIndex(val => val === section)}
-      onChange={(idx) => { 
+      onChange={idx => {
         if (idx == -1) return;
         const sectionIdx = Array.isArray(idx) ? idx[0] : idx;
-        setSection(SECTIONS[sectionIdx]); 
+        setSection(SECTIONS[sectionIdx]);
       }}
     >
       <Section>
@@ -33,7 +32,7 @@ const Profile = () => {
         <Dopes />
       </Section>
     </Accordion>
-  )
-}
+  );
+};
 
 export default Profile;

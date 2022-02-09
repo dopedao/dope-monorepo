@@ -34,7 +34,8 @@ const DesktopIconList = () => {
             const hasAgreed = window.localStorage.getItem('tos');
             if (hasAgreed === 'true') {
               openLocalRoute('/inventory');
-            } else {``
+            } else {
+              ``;
               openLocalRoute('/terms-of-service');
             }
           }}
@@ -44,15 +45,11 @@ const DesktopIconList = () => {
           label="The Daily Dope"
           clickAction={() => openLocalRoute('/news')}
         />
-        <DesktopIcon
-          icon="file"
-          label="About"
-          clickAction={() => openLocalRoute('/about')}
-        />
+        <DesktopIcon icon="file" label="About" clickAction={() => openLocalRoute('/about')} />
         {/* <DesktopIcon icon="todo" label="GAME" clickAction={() => openLocalRoute('/game')} /> */}
         <DesktopIcon icon="tv" label="Dope TV" clickAction={() => openLocalRoute('/dope-tv')} />
         {/* <DesktopIcon icon="file" label="News" clickAction={() => openLocalRoute('/news')} /> */}
-        <DesktopIcon icon="winamp" label="Dope Amp" clickAction={() => setShowWebAmp(true)} />      
+        <DesktopIcon icon="winamp" label="Dope Amp" clickAction={() => setShowWebAmp(true)} />
         <DesktopIcon
           icon="paper-bill-desktop"
           label="Get $PAPER"

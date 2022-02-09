@@ -1342,7 +1342,7 @@ export type HustlerQueryVariables = Exact<{
 }>;
 
 
-export type HustlerQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', edges?: Array<{ __typename?: 'HustlerEdge', node?: { __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type HustlerQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', edges?: Array<{ __typename?: 'HustlerEdge', node?: { __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined, body?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, type: BodyPartType, sex: BodyPartSex, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type HustlersWalletQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
@@ -1695,6 +1695,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
         sex
         viewbox
@@ -1709,6 +1710,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
         accessory {
           id
@@ -1720,6 +1722,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
         svg
         body {
@@ -1744,6 +1747,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
         hand {
           id
@@ -1755,6 +1759,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
         weapon {
           id
@@ -1766,6 +1771,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
         clothes {
           id
@@ -1777,6 +1783,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
         vehicle {
           id
@@ -1788,6 +1795,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
         waist {
           id
@@ -1799,6 +1807,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
         foot {
           id
@@ -1810,6 +1819,7 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
         }
       }
     }

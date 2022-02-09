@@ -55,7 +55,9 @@ const MintTo = ({
 
   return (
     <PanelContainer>
-      <PanelTitleHeader onClick={() => setMintTo(false)}>Mint to Different Address</PanelTitleHeader>
+      <PanelTitleHeader onClick={() => setMintTo(false)}>
+        Mint to Different Address
+      </PanelTitleHeader>
       <PanelBody>
         <p>Send this Hustler to a friend, or another wallet?</p>
         <Input

@@ -10,10 +10,11 @@ type RowProps = {
 
 type StatusIconProps = {
   status: boolean;
-}
+};
 
 const DopeStatus = ({ content, status }: RowProps) => (
-  <div className="small"
+  <div
+    className="small"
     css={css`
       display: flex;
       padding: 6px;
@@ -22,34 +23,29 @@ const DopeStatus = ({ content, status }: RowProps) => (
       border-radius: 2px;
     `}
   >
-    {content == 'paper' ? 
+    {content == 'paper' ? (
       <>
         <StatusIcon status={status} />
-        <span> 
-          { status ? "Can Claim $PAPER" : "No $PAPER To Claim" }
-        </span>
+        <span>{status ? 'Can Claim $PAPER' : 'No $PAPER To Claim'}</span>
       </>
-    :
+    ) : (
       <>
         <StatusIcon status={status} />
-        <span>
-          { status ? "Can Claim Gear & Initiate Hustler" : "No Gear To Claim"}
-        </span>
+        <span>{status ? 'Can Claim Gear & Initiate Hustler' : 'No Gear To Claim'}</span>
       </>
-    }
+    )}
   </div>
 );
 
-const StatusIcon = ({status} : StatusIconProps) => (
+const StatusIcon = ({ status }: StatusIconProps) => (
   <Image
     css={css`
       display: block;
       margin-right: 4px;
     `}
-    src={status ? iconPath+'/check-sm.svg' : iconPath+'/circle-slash.svg' }
-    alt={status ? 'Yes' : 'No' }
+    src={status ? iconPath + '/check-sm.svg' : iconPath + '/circle-slash.svg'}
+    alt={status ? 'Yes' : 'No'}
   />
 );
-
 
 export default DopeStatus;

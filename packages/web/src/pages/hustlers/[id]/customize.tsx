@@ -94,7 +94,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
           metadata.drugs,
           metadata.neck,
           metadata.ring,
-          metadata.accessory
+          metadata.accessory,
         ];
 
         setItemIds(fetchedItemIds);
@@ -170,7 +170,6 @@ const Hustlers = () => {
       setShowNetworkAlert(true);
     }
   }, []);
-
 
   return (
     <AppWindow padBody={false} navbar={<Nav />} requiresWalletConnection={true}>

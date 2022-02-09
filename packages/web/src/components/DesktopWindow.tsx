@@ -1,3 +1,14 @@
+/**
+ * DesktopWindow is the base for most of our containers within the app.
+ * It contains complex logic to display itself intelligently on
+ * phones, tablets, and laptops.
+ *
+ * When not a touch device, we allow dragging of windows.
+ * On a touch device, we try to display as a full-screen content window,
+ * which generally feels like a higher quality experience there.
+ *
+ * 🙃
+ */
 import { ReactNode, useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import styled from '@emotion/styled';
@@ -8,6 +19,7 @@ import { returnBreakpoint } from 'ui/styles/breakpoints';
 import { isTouchDevice } from 'utils/utils';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
+import useBrowserWidth from 'hooks/use-browser-width';
 
 type Position = {
   x: number;
@@ -21,42 +33,60 @@ export type DesktopWindowProps = {
   background?: string;
   fullScreen?: boolean;
   onlyFullScreen?: boolean;
-  scrollable?: boolean,
+  scrollable?: boolean;
   fullScreenHandler?: (fullScreen: boolean) => void;
   titleChildren?: ReactNode;
   balance?: string;
   loadingBalance?: boolean;
   children: ReactNode;
   onResize?: () => void;
+  onClose?: () => void;
   onMoved?: (position: any) => void;
+  posX?: number;
+  posY?: number;
+  hideWalletAddress?: boolean;
 };
 
-const WindowWrapper = styled.div<{ scrollable?: boolean; width: number | string; height: number | string; background: string }>`
+const WindowWrapper = styled.div<{
+  scrollable?: boolean;
+  width: number | string;
+  height: number | string;
+  background: string;
+}>`
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-  background: ${({ background }) => (background)};
+  background: ${({ background }) => background};
   border: 2px solid #000;
-  filter: drop-shadow(8px 8px rgba(0, 0, 0, 0.15));
+  box-shadow: 8px 8px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
   overflow-x: hidden;
+  position: absolute;
   &.floating {
+    position: absolute;
     ${media.phone`
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      `}
-    ${media.tablet`
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      `}
-      @media (min-width: ${returnBreakpoint('laptop')}) {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+    `}
+    @media (min-width: ${returnBreakpoint('tablet')}) {
       width: 80%;
       height: 90%;
+      margin: 0;
+      top: 32px;
+      right: 96px;
+      left: unset;
+    }
+    @media (min-width: ${returnBreakpoint('laptop')}) {
+      top: 32px;
+      left: 96px;
+      width: 80%;
       margin: auto;
       margin-top: 32px;
       max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
@@ -70,7 +100,7 @@ const DesktopWindow = ({
   // Default size of the window is 1024 x 768.
   // Smaller devices default to "full screen".
   width = 1024,
-  height = 768,
+  height = "90%",
   background,
   fullScreen,
   onlyFullScreen,
@@ -79,10 +109,15 @@ const DesktopWindow = ({
   children,
   onResize,
   onMoved,
+  onClose,
   scrollable,
+  posX = 0,
+  posY = 0,
+  hideWalletAddress = false,
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const windowRef = useRef<HTMLDivElement>(null);
+  const browserWidth = useBrowserWidth();
   const { data, isFetching: loading } = useWalletQuery(
     {
       where: {
@@ -99,8 +134,8 @@ const DesktopWindow = ({
   const toggleFullScreen = () =>
     fullScreenHandler ? fullScreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen);
   const [windowPosition, setWindowPosition] = useState<Position>({
-    x: 0,
-    y: 0,
+    x: posX || 0,
+    y: posY || 0,
   });
 
   const updatePosition = (transformStyle: string) => {
@@ -116,12 +151,10 @@ const DesktopWindow = ({
     }
   };
 
-  const shouldBeDraggable = !isTouchDevice() && !isFullScreen;
+  const shouldBeDraggable = !isTouchDevice() && !isFullScreen && browserWidth > 768;
 
   useEffect(() => {
-    if (onResize) {
-      onResize();
-    }
+    if (onResize) onResize();
   }, [isFullScreen, onResize]);
 
   const handleStop = () => {
@@ -136,6 +169,17 @@ const DesktopWindow = ({
     }
   };
 
+  // Set zIndex to ensure we can have more than one DesktopWindow open at a time
+  const focusWindow = () => {
+    const windows = document.getElementsByClassName(
+      'desktopWindow',
+    ) as HTMLCollectionOf<HTMLElement>;
+    for (let i = 0; i < windows.length; i++) {
+      windows[i].style.zIndex = '0';
+    }
+    if (windowRef?.current) windowRef.current.style.zIndex = '50';
+  };
+
   return (
     <ConditionalWrapper
       condition={shouldBeDraggable}
@@ -145,13 +189,14 @@ const DesktopWindow = ({
         </Draggable>
       )}
     >
-      <WindowWrapper 
-        ref={windowRef} 
-        className={isFullScreen ? '' : 'floating'} 
-        height={height} 
-        width={width} 
-        background={ background && background.length > 0 ? background : '#a8a9ae' }
-        scrollable={ scrollable }
+      <WindowWrapper
+        ref={windowRef}
+        className={`desktopWindow ${isFullScreen ? '' : 'floating'}`}
+        height={height}
+        width={width}
+        background={background && background.length > 0 ? background : '#a8a9ae'}
+        scrollable={scrollable}
+        onClick={focusWindow}
       >
         {!onlyFullScreen && (
           <DesktopWindowTitleBar
@@ -162,6 +207,8 @@ const DesktopWindow = ({
             balance={data?.wallets?.edges![0]?.node?.paper}
             loadingBalance={loading}
             windowRef={windowRef?.current}
+            hideWalletAddress={hideWalletAddress}
+            onClose={onClose}
           >
             {titleChildren}
           </DesktopWindowTitleBar>

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
- //background-color: #a8a9ae;
+//background-color: #a8a9ae;
 const HustlerContainer = styled.div<{ bgColor: string }>`
   background-color: ${({ bgColor }) => bgColor};
   height: 100%;

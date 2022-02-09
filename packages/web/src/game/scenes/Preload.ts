@@ -8,7 +8,7 @@ export default class Preload extends Scene {
 
   constructor() {
     super({
-      key: 'PreloadScene'
+      key: 'PreloadScene',
     });
   }
 
@@ -26,12 +26,12 @@ export default class Preload extends Scene {
       this.progressBar.setProgress(this.downloadedSize / manifest.totalSize);
     });
 
-    const assetList: {[key:string]: {[key:string]: any}} = manifest.assets;
+    const assetList: { [key: string]: { [key: string]: any } } = manifest.assets;
 
     // read our manifest.json file
     totalSize = manifest.totalSize;
     Object.keys(assetList).forEach((fileType: string) => {
-      Object.keys(assetList[fileType]).forEach((key) => {
+      Object.keys(assetList[fileType]).forEach(key => {
         const assetVars = assetList[fileType][key];
 
         if (fileType === 'spritesheet') {

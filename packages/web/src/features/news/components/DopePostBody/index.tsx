@@ -23,6 +23,17 @@ const Body = styled.div`
   }
 `;
 
+// Allow for posts using Excerpt or Body content
+const getPostSnippet = (post: PostType) => {
+  let snippet = '';
+  if (post.excerpt && post.excerpt.length > 0) {
+    snippet = post.excerpt;
+  } else if (post.content && post.content.length > 0) {
+    snippet = post.content;
+  }
+  return truncate(snippet);
+};
+
 type DopePostBodyProps = { posts: PostType[]; hasMore: boolean };
 
 const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
@@ -73,7 +84,7 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
                       </Text>
                     </Link>
                   </Box>
-                  <Text fontSize="md">{truncate(post.excerpt)}</Text>
+                  <Text fontSize="md">{getPostSnippet(post)}</Text>
                 </>
               );
             })}
@@ -105,7 +116,17 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
             </Link>
           </Box>
           <Box maxW="427px" margin="0 auto">
-            <Image src={heroPost.coverImage} alt={`Cover Image for ${heroPost.title}`} />
+            <Link href={`/news/${heroPost.slug}`} passHref>
+              <Image
+                src={heroPost.coverImage}
+                alt={`Cover Image for ${heroPost.title}`}
+                css={css`
+                  filter: saturate(0);
+                  cursor: pointer;
+                  cursor: hand;
+                `}
+              />
+            </Link>
             {heroPost.coverImageText && (
               <Text padding="10px" textTransform="uppercase">
                 {heroPost.coverImageText}
@@ -114,13 +135,7 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
           </Box>
           <Flex justifyContent="center" padding="0 20px 20px 20px">
             <Box maxW="200px" w="full" paddingRight="10px">
-              <Text fontSize="md">{truncate(heroPost.excerpt)}</Text>
-            </Box>
-            <Box maxW="200px" w="full" paddingLeft="10px">
-              <Text fontSize="md">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor inventore qui quia
-                cupiditate commodi voluptas magni molestias cumque,
-              </Text>
+              <Text fontSize="md">{getPostSnippet(heroPost)}</Text>
             </Box>
           </Flex>
           {middlePosts.map(post => (
@@ -148,7 +163,7 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
                   </Text>
                 </Link>
               </Box>
-              <Text fontSize="md">{truncate(post.excerpt)}</Text>
+              <Text fontSize="md">{getPostSnippet(post)}</Text>
             </Box>
           ))}
         </MiddlePosts>
@@ -180,7 +195,7 @@ const DopePostBody = ({ posts, hasMore }: DopePostBodyProps) => {
                     </Text>
                   </Link>
                 </Box>
-                <Text fontSize="md">{truncate(post.excerpt)}</Text>
+                <Text fontSize="md">{getPostSnippet(post)}</Text>
               </>
             );
           })}

@@ -68,6 +68,9 @@ export default extendTheme({
           fontSize: 'var(--text-small)',
           fontWeight: '400',
           color: 'white',
+          _hover: {
+            textDecoration: 'none',
+          },
         },
         solid: {
           background: '#EDEFEE',
@@ -83,6 +86,7 @@ export default extendTheme({
           _hover: {
             backgroundColor: 'var(--hover-bg)',
             color: '#fff',
+            textDecoration: 'none',
           },
           _disabled: {
             _hover: {
@@ -117,11 +121,13 @@ export default extendTheme({
           _hover: {
             backgroundColor: '#000',
             color: '#fff',
+            textDecoration: 'none',
           },
           _disabled: {
             _hover: {
               backgroundColor: '#000 !important',
               color: '#fff',
+              textDecoration: 'none',
             },
           },
         },
@@ -141,6 +147,7 @@ export default extendTheme({
           _hover: {
             backgroundColor: '#000',
             color: '#fff',
+            textDecoration: 'none',
           },
           _disabled: {
             _hover: {

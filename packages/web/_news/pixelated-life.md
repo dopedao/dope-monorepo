@@ -5,8 +5,8 @@ coverImage: '/images/news/post1.png'
 coverImageText: 'bye world - dope wiki archive'
 date: '2021-09-16T23:00:00.000Z'
 author:
-  name: Smakosh
-  picture: '/images/authors/smakosh.jpg'
+  name: Bikemaker
+  picture: '/images/icon/dope-smiley.svg'
 ogImage:
   url: '/images/news/post1.png'
 ---

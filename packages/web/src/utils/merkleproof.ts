@@ -23,7 +23,7 @@ const merkleTree = new MerkleTree(
   Object.entries(config.airdrop).map(([address, tokens]) =>
     generateLeaf(
       ethers.utils.getAddress(address),
-      ethers.utils.parseUnits(tokens.toString(), config.decimals).toString()
+      ethers.utils.parseUnits(tokens.toString(), config.decimals).toString(),
     ),
   ),
   // Hashing function

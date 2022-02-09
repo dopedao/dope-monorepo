@@ -1,10 +1,10 @@
-import RenderFromDopeId from "./RenderFromDopeId";
-import { getRandomHustler } from "utils/HustlerConfig";
-import { ZOOM_WINDOWS } from "utils/HustlerConfig";
+import RenderFromDopeId from './RenderFromDopeId';
+import { getRandomHustler } from 'utils/HustlerConfig';
+import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
 
-const RenderFromDopeIdOnly = ({id}: {id: string}) => {
-  const hustlerConfig = getRandomHustler({dopeId: id});
-  return(
+const RenderFromDopeIdOnly = ({ id }: { id: string }) => {
+  const hustlerConfig = getRandomHustler({ dopeId: id });
+  return (
     <RenderFromDopeId
       bgColor={hustlerConfig.bgColor}
       body={hustlerConfig.body}
