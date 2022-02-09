@@ -151,10 +151,10 @@ export default class UIScene extends Scene {
     {
         const chatKey = this.input.keyboard.addKey('T');
 
-        chatKey.on(Phaser.Input.Keyboard.Events.UP, () => {
+        const openChatInput = () => {
             if (this.sendMessageInput || this.player.busy || (this.chatMessageBoxes.get(this.player)?.length ?? 0) > 2)
-                return;
-            
+            return;
+        
             // prevent player from moving
             this.player.scene.input.keyboard.enabled = false;
             // prevent phaser from "blocking" some keys (for typing in chat)
@@ -163,6 +163,8 @@ export default class UIScene extends Scene {
             this.sendMessageInput = this.add.reactDom(ChatType, { precedentMessages: this.precedentMessages });
 
             this.sendMessageInput.events.on('chat_submit', (text: string) => {
+                text = text.trim();
+
                 if (text.length > 150)
                 {
                     this.toast({
@@ -186,8 +188,9 @@ export default class UIScene extends Scene {
                     NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_CHAT_MESSAGE, { message: text });
                 }
             });
-        });
-        
+        };
+
+        chatKey.on(Phaser.Input.Keyboard.Events.UP, openChatInput);        
     }
 
     private _handleInteractions()

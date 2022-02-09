@@ -51,7 +51,6 @@ export default class GameScene extends Scene {
   }
 
   create() {
-    console.log(this.hustlerData);
     // create item entities when need 
     this.handleItemEntities();
     // handle camera effects
