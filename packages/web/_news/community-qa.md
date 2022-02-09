@@ -12,4 +12,4 @@ ogImage:
   url: '/images/news/post1.png'
 ---
 
-Hosted by bellgloom, this first Community Q&A introduced team members and provided an overview of project milestones and upcoming development projections. Tarrence, Penguin Wizard, facesof.eth, Winston Wolfe, and Shecky Green were also in attendance, along with dozens of other community members.
+This first Community Q&A introduced team members and provided an overview of project milestones and upcoming development projections. Tarrence, Penguin Wizard, facesof.eth, Winston Wolfe, and Shecky Green were also in attendance, along with dozens of other community members.
