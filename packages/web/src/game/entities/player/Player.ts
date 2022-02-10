@@ -62,6 +62,11 @@ export default class Player extends Hustler
         // setTimeout prevents depth changing too fast
         // and causing player render stutter
         this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => this.setDepth(this._baseDepth));
+
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
+            // make player look at npc
+            this.lookAt(citizen.x, citizen.y);
+        });
     }
 
     toggleInventory()
@@ -102,8 +107,6 @@ export default class Player extends Hustler
                     return;
                 // call onInteraction method of citizen
                 otherGameObject.onInteraction(this);
-                // make player look at npc
-                this.lookAt(otherGameObject.x, otherGameObject.y);
 
                 EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, otherGameObject);
 
