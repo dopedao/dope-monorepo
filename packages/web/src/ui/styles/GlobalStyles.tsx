@@ -52,6 +52,12 @@ export default function GlobalStyles() {
           --overlay-light: rgba(0, 0, 0, 0.35);
           --border-black: 1px solid var(--black);
           --border-light: 1px solid #dbdbdb;
+          --hustler-background-offwhite: #EDEFEE;
+          --hustler-background-blue: #97ADCC;
+          --hustler-background-gray: #434345;
+          --hustler-background-yellow: #F1D8AB;
+          --hustler-background-pink: #F2C4C5;
+          --hustler-background-green: #B6CCC3;
 
           /* FONTS */
           --font-a: ChicagoFLF, Dope, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,

@@ -25,6 +25,10 @@ export const getRandomDate = (date1: string) => {
   return new Date(getRandomNumber(time1, time2)).toLocaleDateString();
 };
 
+export const getRandomArrayElement = (arr:any[]) => {
+  return arr[getRandomNumber(0, arr.length - 1)];
+}
+
 export const hexColorToBase16 = (color: string) => color.replace('#', '0x') + 'ff';
 
 export const formatLargeNumber = (num: number) => {
