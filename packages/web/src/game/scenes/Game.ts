@@ -67,17 +67,34 @@ export default class GameScene extends Scene {
       // run asynchronously
       setTimeout(() => {
         const citizenToTalkTo = this.citizens.find(citizen => citizen.shouldFollowPath && citizen.getBounds().contains(pointer.worldX, pointer.worldY));
+        const itemToPickUp = this.itemEntities.find(item => item.getBounds().contains(pointer.worldX, pointer.worldY));
 
-        this.player.navigator.moveTo(
-          pointer.worldX,
-          pointer.worldY, 
-          citizenToTalkTo ? () => {
-            if (new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
-            {
-              citizenToTalkTo?.onInteraction(this.player);
-              EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
-            }
-          } : undefined);
+        if (citizenToTalkTo && new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) < 100)
+        {
+          citizenToTalkTo?.onInteraction(this.player);
+          EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
+        }
+        else if (itemToPickUp && new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(itemToPickUp)) < 100)
+        {
+          itemToPickUp?.onPickup();
+          EventHandler.emitter().emit(Events.PLAYER_INVENTORY_ADD_ITEM, itemToPickUp?.item, true);
+        }
+        else 
+          this.player.navigator.moveTo(
+            pointer.worldX,
+            pointer.worldY, 
+            () => {
+              if (citizenToTalkTo && new Phaser.Math.Vector2(this.player).distance(citizenToTalkTo) < 100)
+              {
+                citizenToTalkTo?.onInteraction(this.player);
+                EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
+              }
+              else if (itemToPickUp && new Phaser.Math.Vector2(this.player).distance(itemToPickUp) < 100)
+              {
+                itemToPickUp?.onPickup();
+                EventHandler.emitter().emit(Events.PLAYER_INVENTORY_ADD_ITEM, itemToPickUp.item, true);
+              }
+            });
       });
     });
 
