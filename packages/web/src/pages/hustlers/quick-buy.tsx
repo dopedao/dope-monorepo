@@ -66,6 +66,10 @@ const QuickBuyHustler = () => {
     }
   }, [unclaimedDope, isLoading]);
 
+  useEffect(() => {
+    setBgColor(getRandomArrayElement(DEFAULT_BG_COLORS));
+  }, [currentDopeIndex])
+
   const currentDope = unclaimedDopeArr[currentDopeIndex];
 
   return(
