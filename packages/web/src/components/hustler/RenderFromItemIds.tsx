@@ -9,7 +9,7 @@ import { useHustler, useSwapMeet } from 'hooks/contracts';
 import { buildSVG } from 'utils/svg-builder';
 
 export interface HustlerRenderProps {
-  bgColor?: string;
+bgColor?: string;
   body?: number;
   facialHair?: number;
   hair?: number;
@@ -128,6 +128,7 @@ const RenderFromItemIds = ({
       ratio={1}
       css={css`
         height: 100%;
+        width: 100%;
         overflow: hidden;
         svg {
           width: 100%;

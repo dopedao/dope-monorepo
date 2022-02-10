@@ -1,12 +1,14 @@
-import { Box, Button, Image } from "@chakra-ui/react";
+import { Box, Button, Image, Table, Tr, Td } from "@chakra-ui/react";
 import { DEFAULT_BG_COLORS } from "utils/HustlerConfig";
 import { getRandomArrayElement } from "utils/utils";
+import { ethers } from "ethers";
 import AppWindow from "components/AppWindow";
 import DopeCard from "features/dope/components/DopeCard";
 import StackedResponsiveContainer from "components/StackedResponsiveContainer";
 import LoadingBlock from "components/LoadingBlock";
 import RenderFromDopeIdOnly from "components/hustler/RenderFromDopeIdOnly";
 import {useState, useEffect} from 'react';
+import { css } from "@emotion/react";
 import { 
   useSearchDopeQuery, 
   OrderDirection,
@@ -14,6 +16,14 @@ import {
   SearchType
 } from 'generated/graphql';
 import { consoleSandbox } from "@sentry/utils";
+
+const getRandomBgColor = () => {
+  // Remove first item which is dark grey color
+  // So we have a predictable canvas color to design on.
+  return getRandomArrayElement(
+    DEFAULT_BG_COLORS.slice(1,DEFAULT_BG_COLORS.length)
+  );
+}
 
 const QuickBuyHustler = () => {
   const {
@@ -35,9 +45,11 @@ const QuickBuyHustler = () => {
     }
   );
   const isLoading = searchStatus === 'loading';
-  const [bgColor, setBgColor] = useState(getRandomArrayElement(DEFAULT_BG_COLORS));
+  const [bgColor, setBgColor] = useState(getRandomBgColor());
   const [unclaimedDopeArr, setUnclaimedDopeArr] = useState<any>([]);
   const [currentDopeIndex, setCurrentDopeIndex] = useState(0);
+  const [currentDope, setCurrentDope] = useState<any>();
+  const [showHustler, setShowHustler] = useState(true);
   
   const decrementIndex = () => {
     let index = currentDopeIndex;
@@ -54,6 +66,12 @@ const QuickBuyHustler = () => {
     setCurrentDopeIndex(index);
   };
 
+  const getCurrentPrice = () => {
+    const activeListings = currentDope.listings?.filter((l:any) => l?.active);
+    const price = activeListings?.[0]?.inputs?.[0]?.amount;
+    return `${ethers.utils.formatEther(price || 0)} Ξ`
+  }
+
   useEffect(() => {
     if(unclaimedDope?.search?.edges) {
       // Have to filter array for things that have "node" property
@@ -67,10 +85,61 @@ const QuickBuyHustler = () => {
   }, [unclaimedDope, isLoading]);
 
   useEffect(() => {
-    setBgColor(getRandomArrayElement(DEFAULT_BG_COLORS));
-  }, [currentDopeIndex])
+    setBgColor(getRandomBgColor());
+    setCurrentDope(unclaimedDopeArr[currentDopeIndex]);
+  }, [currentDopeIndex, unclaimedDopeArr])
 
-  const currentDope = unclaimedDopeArr[currentDopeIndex];
+  const CarouselButtons = () => (
+    <Box
+      display="flex"
+      justifyContent="stretch"
+      gap="8px"
+      >
+      <Button 
+        flex="1"
+        onClick={decrementIndex}
+        disabled={currentDopeIndex <= 0}
+      >
+        <Image 
+          src="/images/icon/arrow-back.svg" 
+          alt="Previous" 
+          width="16px"
+          marginRight="8px;"
+        />
+        Previous
+      </Button>
+      <Button 
+        flex="1"
+        onClick={incrementIndex} 
+        disabled={currentDopeIndex >= unclaimedDopeArr.length-1}
+      >
+        Next
+        <Image 
+          src="/images/icon/arrow-forward.svg" 
+          alt="Next" 
+          width="16px" 
+          marginLeft="8px;"
+        />
+      </Button>
+    </Box>
+  );
+
+  const QuickBuyFooter = () => (
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="flex-start"
+      gap="8px"
+      >
+      <CarouselButtons />
+      <Button onClick={() => setShowHustler(!showHustler) }>
+        {showHustler ? 'Show Equipment' : 'Show Hustler' }
+      </Button>
+      <Button variant="primary">
+        Customize
+      </Button>
+    </Box>
+  );
 
   return(
     <AppWindow 
@@ -79,45 +148,67 @@ const QuickBuyHustler = () => {
       background={bgColor}
     >
       <StackedResponsiveContainer>
-        {isLoading && <LoadingBlock maxRows={5} /> }
-        {!isLoading && unclaimedDopeArr.length > 0 && <>
+        {(isLoading || !currentDope) && <LoadingBlock maxRows={5} /> }
+        {!isLoading && currentDope && <>
           <Box 
-            flex="1 !important"
+            flex="3 !important"
             display="flex"
-            justifyContent="stretch"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            gap="8px"
           >
-            <DopeCard
-              key={currentDope.id}
-              dope={currentDope}
-              buttonBar="for-marketplace"
-              isExpanded={true}
-              showPreviewButton={false}
-              showCollapse
-            />
+            {showHustler && 
+              <RenderFromDopeIdOnly id={currentDope.id} /> 
+            }
+            {!showHustler &&
+              <DopeCard
+                key={currentDope.id}
+                dope={currentDope}
+                isExpanded={true}
+                showPreviewButton={false}
+                buttonBar={null}
+                showCollapse
+              />
+            }
           </Box>
           <Box
             display="flex"
             flexDirection="column"
-            alignItems="stretch"
+            justifyContent="center"
             gap="16px"
           >
-            <RenderFromDopeIdOnly id={currentDope.id} />
-            <Box
-            flex="1 !important"
-            display="flex"
-            justifyContent="space-between"
-            onSelect={() => {return false}}
-            >
-              <Button onClick={decrementIndex}>
-                <Image src="/images/icon/arrow-back.svg" alt="Previous" />
-              </Button>
-              <Button variant="primary">
-                Quick Buy Hustler
-              </Button>
-              <Button onClick={incrementIndex}>
-                <Image src="/images/icon/arrow-forward.svg" alt="Next" />
-              </Button>
+            <Box padding="8px">
+              <h2>Get a Hustler Now</h2>
+              <hr className="onColor" />
+              <p>
+                Hustlers are the NFT in-game characters of Dope Wars, who can own up to 10 different pieces of NFT Gear.
+              </p>
+              <p>
+                Swoop a fully equipped DOPE NFT and Hustler right now using our streamlined process.
+              </p>
+              <Box>
+                <Table css={css`
+                  * {
+                    border: 2px solid rgba(0,0,0,0.15);
+                    border-left: 0;
+                    border-right: 0;
+                  }
+                `}>
+                  <Tr>
+                    <Td>You&nbsp;receive</Td>
+                    <Td>10 NFTs</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Estimated&nbsp;Total</Td>
+                    <Td>
+                      {getCurrentPrice()}
+                    </Td>
+                  </Tr>
+                </Table>
+              </Box>
             </Box>
+            <QuickBuyFooter />
           </Box>
         </>}
       </StackedResponsiveContainer>

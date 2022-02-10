@@ -35,8 +35,11 @@ const DopeCardBody = ({
   buttonBar,
   dope,
   isExpanded,
-  showPreviewButton = true
-}: Pick<DopeCardProps, 'dope' | 'buttonBar'> & { isExpanded: boolean, showPreviewButton?: boolean }) => {
+  showPreviewButton = true,
+}: Pick<DopeCardProps, 'dope' | 'buttonBar'> & { 
+  isExpanded: boolean, 
+  showPreviewButton?: boolean,
+}) => {
   const [isPreviewShown, setPreviewShown] = useState(false);
   const [isRarityVisible, setRarityVisible] = useState(false);
   const hustlerItemsRef = useRef<HTMLDivElement>(null);

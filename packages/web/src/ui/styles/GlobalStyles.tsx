@@ -234,6 +234,12 @@ export default function GlobalStyles() {
           ${buttonStyle};
         }
 
+        hr.onColor {
+          border-top: 2px solid rgba(0,0,0,0.15);
+          margin-top: 8px;
+          margin-bottom: 16px;
+        }
+
         .markdown {
           background-color: var(--gray-00);
           overflow-y: scroll;

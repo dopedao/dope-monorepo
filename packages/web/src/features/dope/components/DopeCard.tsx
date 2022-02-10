@@ -60,11 +60,12 @@ export type DopeItemApiResponse = {
 };
 
 export type DopeCardProps = {
-  buttonBar: 'for-marketplace' | 'for-owner';
+  buttonBar: 'for-marketplace' | 'for-owner' | null;
   dope: DopeItemApiResponse;
   isExpanded?: boolean;
   showCollapse?: boolean;
   showPreviewButton?: boolean;
+  showStatus?: boolean;
 };
 
 const DopeCard = ({ 
@@ -72,7 +73,7 @@ const DopeCard = ({
   dope, 
   isExpanded = true, 
   showCollapse = false, 
-  showPreviewButton = true 
+  showPreviewButton = true,
   }: DopeCardProps) => {
   return (
     <PanelContainer
