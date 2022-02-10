@@ -5,6 +5,7 @@ import AppWindow from "components/AppWindow";
 import DopeCard from "features/dope/components/DopeCard";
 import StackedResponsiveContainer from "components/StackedResponsiveContainer";
 import LoadingBlock from "components/LoadingBlock";
+import RenderFromDopeIdOnly from "components/hustler/RenderFromDopeIdOnly";
 import {useState, useEffect} from 'react';
 import { 
   useSearchDopeQuery, 
@@ -65,6 +66,8 @@ const QuickBuyHustler = () => {
     }
   }, [unclaimedDope, isLoading]);
 
+  const currentDope = unclaimedDopeArr[currentDopeIndex];
+
   return(
     <AppWindow 
       title="Quick Buy Hustler" 
@@ -80,8 +83,8 @@ const QuickBuyHustler = () => {
             justifyContent="stretch"
           >
             <DopeCard
-              key={unclaimedDopeArr[currentDopeIndex].id}
-              dope={unclaimedDopeArr[currentDopeIndex]}
+              key={currentDope.id}
+              dope={currentDope}
               buttonBar="for-marketplace"
               isExpanded={true}
               showPreviewButton={false}
@@ -89,20 +92,28 @@ const QuickBuyHustler = () => {
             />
           </Box>
           <Box
-           flex="1 !important"
-           display="flex"
-           justifyContent="space-between"
-           onSelect={() => {return false}}
+            display="flex"
+            flexDirection="column"
+            alignItems="stretch"
+            gap="16px"
           >
-            <Button onClick={decrementIndex}>
-              <Image src="/images/icon/arrow-back.svg" alt="Previous" />
-            </Button>
-            <Button variant="primary">
-              Quick Buy Hustler
-            </Button>
-            <Button onClick={incrementIndex}>
-              <Image src="/images/icon/arrow-forward.svg" alt="Next" />
-            </Button>
+            <RenderFromDopeIdOnly id={currentDope.id} />
+            <Box
+            flex="1 !important"
+            display="flex"
+            justifyContent="space-between"
+            onSelect={() => {return false}}
+            >
+              <Button onClick={decrementIndex}>
+                <Image src="/images/icon/arrow-back.svg" alt="Previous" />
+              </Button>
+              <Button variant="primary">
+                Quick Buy Hustler
+              </Button>
+              <Button onClick={incrementIndex}>
+                <Image src="/images/icon/arrow-forward.svg" alt="Next" />
+              </Button>
+            </Box>
           </Box>
         </>}
       </StackedResponsiveContainer>
