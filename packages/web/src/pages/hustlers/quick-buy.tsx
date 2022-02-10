@@ -196,7 +196,13 @@ const QuickBuyHustler = () => {
                 `}>
                   <Tr>
                     <Td>You&nbsp;receive</Td>
-                    <Td>10 NFTs</Td>
+                    <Td>
+                      1 DOPE
+                      <br/>
+                      1 Hustler
+                      <br/>
+                      9 Gear
+                    </Td>
                   </Tr>
                   <Tr>
                     <Td>Estimated&nbsp;Total</Td>
