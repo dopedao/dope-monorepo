@@ -158,9 +158,7 @@ const QuickBuyHustler = () => {
             alignItems="center"
             gap="8px"
           >
-            {showHustler && 
-              <RenderFromDopeIdOnly id={currentDope.id} /> 
-            }
+            {showHustler && <RenderFromDopeIdOnly id={currentDope.id} />}
             {!showHustler &&
               <DopeCard
                 key={currentDope.id}
@@ -171,6 +169,11 @@ const QuickBuyHustler = () => {
                 showCollapse
               />
             }
+            <div className="smallest">
+              <a href="/swap-meet" css={css`border-bottom:1px solid black`}>
+                See more DOPE on our Swap Meet
+              </a>
+            </div>
           </Box>
           <Box
             display="flex"
