@@ -190,8 +190,8 @@ const QuickBuyHustler = () => {
               <Box>
                 <Table css={css`
                   * {
-                    border-top: 2px solid rgba(0,0,0,0.15);
-                    border-bottom: 2px solid rgba(0,0,0,0.15);
+                    border-top: 2px solid rgba(0,0,0,0.15) !important;
+                    border-bottom: 2px solid rgba(0,0,0,0.15) !important;
                   }
                 `}>
                   <Tr>
