@@ -13,7 +13,7 @@ export interface HustlerRenderProps {
   body?: number;
   facialHair?: number;
   hair?: number;
-  itemIds: BigNumber[];
+  itemRles: string[];
   name?: string;
   renderName?: boolean;
   sex?: HustlerSex;
@@ -29,7 +29,7 @@ const RenderFromItemIds = ({
   body,
   facialHair,
   hair,
-  itemIds,
+  itemRles,
   name = '',
   renderName = false,
   sex,
@@ -40,20 +40,10 @@ const RenderFromItemIds = ({
   isVehicle = false,
 }: HustlerRenderProps) => {
   const resolution = useMemo(() => (isVehicle ? 160 : 64), [isVehicle]);
-  const [itemRles, setItemRles] = useState<string[]>([]);
-  const [vehicleRle, setVehicleRle] = useState<string>();
   const [bodyRles, setBodyRles] = useState<string[]>([]);
 
-  const swapmeet = useSwapMeet();
+  // const swapmeet = useSwapMeet();
   const hustlers = useHustler();
-
-  useEffect(() => {
-    const sexIndex = sex && sex == 'female' ? 1 : 0;
-    Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(rles => {
-      setVehicleRle(rles[0]);
-      setItemRles(rles.slice(1));
-    });
-  }, [itemIds, sex, swapmeet]);
 
   useEffect(() => {
     /**
@@ -72,14 +62,7 @@ const RenderFromItemIds = ({
     const facialHairParams: [number, number] = [4, facialHair ?? 0];
 
     if (!hustlers) return;
-    // DEBUG INFO for when contract call fails.
-    // Was tracking down bug that happens on Rinkeby.
-    // console.log('body');
-    // console.log(bodyParams);
-    // console.log('hair');
-    // console.log(hairParams);
-    // console.log('facial hair');
-    // console.log(facialHairParams);
+
     const promises = [hustlers.bodyRle(...bodyParams), hustlers.bodyRle(...hairParams)];
     // No female beards for now because they're unsupported
     if (sex == 'male' && facialHair) {
@@ -96,17 +79,20 @@ const RenderFromItemIds = ({
 
       const title = renderName && ogTitle && Number(dopeId) < 500 ? ogTitle : '';
       const subtitle = renderName ? name : '';
-      const rles = [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles];
 
-      if (isVehicle && vehicleRle) {
-        rles.unshift(vehicleRle);
+      let rles = [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles];
+
+      if (!isVehicle) {
+        rles = rles.slice(0, -1);
+      } else {
+        rles.unshift(rles[rles.length - 1]);
+        rles = rles.slice(0, -1);
       }
 
       return buildSVG(rles, bgColor, textColor, title, subtitle, zoomWindow, resolution);
     }
   }, [
     itemRles,
-    vehicleRle,
     bodyRles,
     name,
     textColor,
