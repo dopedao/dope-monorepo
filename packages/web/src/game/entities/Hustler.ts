@@ -31,7 +31,11 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     // level identifier of the map
     private _currentMap!: string;
 
+    // hustler id optimism (for spritesheet, name, etc.)
     private _hustlerId?: string;
+    // shadow object
+    private _shadow: Phaser.GameObjects.Ellipse;
+
     // private _model: HustlerModel;
 
     private _animator: HustlerAnimator;
@@ -95,6 +99,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
         // add to the scene, to be drawn
         world.scene.add.existing(this);
+
+        this._shadow = this.scene.add.ellipse(this.x, this.y + (this.height / 5), this.width * 0.8, this.height / 5, 0x000000, 0.2);
 
         // create main body
         const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
@@ -201,6 +207,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     setVisible(value: boolean)
     {
         super.setVisible(value);
+        this._shadow.setVisible(value);
         // this._model.setVisible(value);
         return this;
     }
@@ -208,6 +215,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     setScale(x: number, y?: number)
     {
         super.setScale(x, y);
+        this._shadow.setScale(x, y);
         // update hitbox sensor scale
         (Phaser.Physics.Matter as any).Matter.Body.scale(this._hitboxSensor, x, y ?? x);
         // update model scale
@@ -218,6 +226,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     setDepth(value: number)
     {
         super.setDepth(value);
+        this._shadow.setDepth(value - 1);
         // update model depth
         // this._model.setDepth(value);
         return this;
@@ -226,6 +235,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     setPosition(x?: number, y?: number, z?: number, w?: number)
     {
         super.setPosition(x, y);
+        this._shadow?.setPosition(x, y  ? y + (this.height / 5) : undefined);
         // update model position
         // this._model?.updateSprites(true);
         
@@ -245,6 +255,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         this.hoverText?.setPosition(
             (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
             ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.5) * this.scene.cameras.main.zoom));
+
+        this._shadow.setPosition(this.x, this.y + (this.height / 5));
 
         // update animation frames
         this.animator.update();
