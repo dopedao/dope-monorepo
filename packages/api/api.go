@@ -294,6 +294,10 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.HandleFunc("/hustlers/{id}/sprites", resources.HustlerSpritesHandler(client))
 	r.HandleFunc("/hustlers/{id}/sprites/composite.png", resources.HustlerSpritesCompositeHandler(client, static))
 
+	// World Wide Webb spec https://worldwidewebb.notion.site/Integration-Guide-101cbdbfefad415ead7b41369ce66858
+	r.HandleFunc("/collection/{id}.png", resources.HustlerSpritesCompositeHandler(client, static))
+	r.HandleFunc("/address/{address}", resources.WalletHustlersHandler(client))
+
 	if index {
 		ctx, cancel := context.WithCancel(ctx)
 
@@ -328,5 +332,5 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 		})
 	}
 
-	return cors.Default().Handler(r), nil
+	return cors.AllowAll().Handler(r), nil
 }
