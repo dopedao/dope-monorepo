@@ -106,7 +106,7 @@ export default class UIScene extends Scene {
             chatToasts.forEach((chatToast, i) => 
                 chatToast.setPosition(
                     (hustler.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom, 
-                    ((hustler.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom) - (hustler.displayHeight * 1.8) - ((chatToast.displayHeight * 1.2) * i))
+                    ((hustler.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom) - (hustler.displayHeight * 1.8) - ((chatToast.displayHeight * 1.2) * ((chatToasts.length - 1) - i)))
             ))
     }
 
