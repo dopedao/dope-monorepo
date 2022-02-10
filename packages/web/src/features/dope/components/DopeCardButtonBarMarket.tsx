@@ -1,29 +1,46 @@
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
-import { ethers } from 'ethers';
+import { Link } from '@chakra-ui/layout';
 
 import { DopeCardProps } from './DopeCard';
-
-const viewOnOpenSea = (tokenId: string): void => {
-  const baseOpenSeaUrl = 'https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723';
-  const url = `${baseOpenSeaUrl}/${tokenId}`;
-  window.open(url, 'dopeWarsList')?.focus();
-};
+import { useRouter } from 'next/router';
 
 type DopeCardButtonBarMarketProps = Pick<DopeCardProps, 'dope'>;
 
 const DopeCardButtonBarMarket = ({ dope }: DopeCardButtonBarMarketProps) => {
   const isOnSale = !!dope.listings?.[0]?.inputs?.[0]?.amount;
-  return isOnSale ? (
-    <Button
-      onClick={() => viewOnOpenSea(dope.id)}
+  const router = useRouter();
+
+  return isOnSale && !dope.opened ? (
+    <div
       css={css`
-        float: right;
+        padding: 16px;
+        padding-top: 0px;
+        width: 100%;
       `}
-      variant={isOnSale ? 'primary' : 'solid'}
     >
-      Mint Hustler
-    </Button>
+      <Button
+        css={css`
+          width: 100%;
+        `}
+        variant="primary"
+        onClick={() => {
+          router.push(
+            {
+              pathname: `/hustlers/${dope.id}/initiate`,
+              query: {
+                isPurchase: true,
+              },
+            },
+            {
+              pathname: `/hustlers/${dope.id}/initiate`,
+            },
+          );
+        }}
+      >
+        Mint Hustler
+      </Button>
+    </div>
   ) : null;
 };
 export default DopeCardButtonBarMarket;
