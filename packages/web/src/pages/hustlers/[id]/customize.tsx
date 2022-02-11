@@ -1,17 +1,16 @@
 //CUSTOMIZE
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
-import { BigNumber } from 'ethers';
 import styled from '@emotion/styled';
 import { Button } from '@chakra-ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
-import { Hustler, useHustlerQuery, useWalletQuery } from 'generated/graphql';
+import { HustlerQuery, useHustlerQuery, useWalletQuery } from 'generated/graphql';
 import { getRandomHustler } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
-import { useFetchMetadata } from 'hooks/contracts';
 import { useSwitchOptimism } from 'hooks/web3';
+import { useHustlerRles } from 'hooks/render';
 import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
 import Head from 'components/Head';
@@ -45,67 +44,38 @@ const ContentLoading = () => (
   </Container>
 );
 
-type HustlerEditProps = {
-  hustler: Hustler;
-};
+const HustlerEdit = ({ data }: { data: HustlerQuery }) => {
+  const hustler = data?.hustlers.edges?.[0]?.node;
 
-const HustlerEdit = ({ hustler }: HustlerEditProps) => {
   const router = useRouter();
   const hustlerId = router.query.id;
   const [isLoading, setLoading] = useState(true);
-  const [itemIds, setItemIds] = useState<BigNumber[]>();
   const [ogTitle, setOgTitle] = useState('');
   const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
 
-  const fetchMetadata = useFetchMetadata();
+  const itemRles = useHustlerRles(hustler);
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const metadata = await fetchMetadata(BigNumber.from(hustler.id));
+    if (!hustler) {
+      // error occured
+      return;
+    }
 
-        if (!metadata) {
-          // error occured
-          return;
-        }
-
-        setHustlerConfig(
-          getRandomHustler({
-            renderName: Boolean(hustler.name && hustler.name.length > 0),
-            name: metadata.name,
-            dopeId: hustler.id,
-            sex: metadata.body[0].eq(0) ? 'male' : 'female',
-            textColor: `#${metadata.color.slice(2, -2)}`,
-            bgColor: `#${metadata.background.slice(2, -2).toUpperCase()}`,
-            body: metadata.body[1],
-            hair: metadata.body[2],
-            facialHair: metadata.body[3],
-          }),
-        );
-        setOgTitle(hustler.title || metadata.ogTitle);
-
-        const fetchedItemIds = [
-          metadata.vehicle,
-          metadata.weapon,
-          metadata.clothes,
-          metadata.waist,
-          metadata.foot,
-          metadata.hand,
-          metadata.drugs,
-          metadata.neck,
-          metadata.ring,
-          metadata.accessory,
-        ];
-
-        setItemIds(fetchedItemIds);
-        setLoading(false);
-      } catch (error) {
-        router.push('/404');
-      }
-    };
-
-    fetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setHustlerConfig(
+      getRandomHustler({
+        renderName: Boolean(hustler.name && hustler.name.length > 0),
+        name: hustler.name ? hustler.name : '',
+        dopeId: hustler.id,
+        sex: hustler.sex === 'MALE' ? 'male' : 'female',
+        textColor: hustler.color ? '#' + hustler.color : undefined,
+        bgColor: hustler.background ? '#' + hustler.background : undefined,
+        body: hustler.body?.id ? parseInt(hustler.body.id.split('-')[2]) : undefined,
+        hair: hustler.hair?.id ? parseInt(hustler.hair.id.split('-')[2]) : undefined,
+        facialHair: hustler.beard?.id ? parseInt(hustler.beard.id.split('-')[2]) : undefined,
+      }),
+    );
+    setOgTitle(hustler.title || '');
+    setLoading(false);
   }, [hustler]);
 
   return isLoading ? (
@@ -116,7 +86,7 @@ const HustlerEdit = ({ hustler }: HustlerEditProps) => {
         config={hustlerConfig}
         setHustlerConfig={setHustlerConfig}
         ogTitle={ogTitle}
-        itemIds={itemIds}
+        itemRles={itemRles}
         hustlerId={hustlerId?.toString()}
         isCustomize
       />
@@ -151,7 +121,7 @@ const Hustlers = () => {
       enabled: !!account,
     },
   );
-  const { data, isFetching: loading } = useHustlerQuery(
+  const { data, isFetching } = useHustlerQuery(
     {
       where: {
         id: String(router.query.id),
@@ -177,10 +147,10 @@ const Hustlers = () => {
       {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
         <DialogSwitchNetwork networkName="Optimism" />
       )}
-      {walletLoading || loading || !data?.hustlers.edges?.[0]?.node || !router.isReady ? (
+      {walletLoading || isFetching || !data?.hustlers.edges?.[0]?.node || !router.isReady ? (
         <ContentLoading />
       ) : (
-        <HustlerEdit hustler={data.hustlers.edges[0].node} />
+        <HustlerEdit data={data} />
       )}
     </AppWindow>
   );

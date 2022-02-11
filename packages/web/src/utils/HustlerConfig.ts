@@ -64,10 +64,10 @@ export const getRandomHustler = ({
 }: Partial<HustlerCustomization>): HustlerCustomization => {
   return {
     bgColor: bgColor || DEFAULT_BG_COLORS[getRandomNumber(0, DEFAULT_BG_COLORS.length - 1)],
-    body: body || getRandomNumber(0, MAX_BODIES),
+    body: body !== undefined ? body : getRandomNumber(0, MAX_BODIES),
     dopeId: dopeId || getRandomHustlerId(),
-    facialHair: facialHair || getRandomNumber(0, MAX_FACIAL_HAIR),
-    hair: hair || getRandomNumber(0, MAX_HAIR),
+    facialHair: facialHair !== undefined ? facialHair : getRandomNumber(0, MAX_FACIAL_HAIR),
+    hair: hair !== undefined ? hair : getRandomNumber(0, MAX_HAIR),
     name: name || HUSTLER_NAMES[getRandomNumber(0, HUSTLER_NAMES.length - 1)],
     renderName: renderName || false,
     sex: sex || (HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex),

@@ -44,7 +44,7 @@ const ConfigurationControls = ({
   goBackToInitialStep,
 }: ConfigureHustlerProps) => {
   const [showTextColor, setShowTextColor] = useState(false);
-  const [showNameControls, setShowNameControls] = useState(false);
+  const [enableNameVisible, setEnableNameVisible] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { chainId } = useOptimism();
@@ -60,7 +60,7 @@ const ConfigurationControls = ({
 
   useEffect(() => {
     setShowTextColor(config.renderName === true);
-    setShowNameControls(config.zoomWindow == ZOOM_WINDOWS[0]);
+    setEnableNameVisible(config.zoomWindow == ZOOM_WINDOWS[0]);
   }, [config]);
 
   const customizeHustler = useCallback(async () => {
@@ -158,7 +158,11 @@ const ConfigurationControls = ({
       <ControlsBody>
         <Stack spacing={4}>
           {/* Title controls only make sense when zoomed out fully */}
-          {showNameControls && <NameControls config={config} setHustlerConfig={setHustlerConfig} />}
+          <NameControls 
+            config={config} 
+            setHustlerConfig={setHustlerConfig} 
+            enableNameVisible={enableNameVisible}
+          />
           {showTextColor && (
             <PanelColorSelector
               title="Text Color"

@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
-import { BigNumber } from 'ethers';
+import { useMemo } from 'react';
 import RenderFromItemIds, { HustlerRenderProps } from 'components/hustler/RenderFromItemIds';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
-import { useSwapMeet } from 'hooks/contracts';
+import { useRenderDopeQuery } from 'generated/graphql';
 
-interface RenderFromDopeIdProps extends Omit<HustlerRenderProps, 'itemIds'> {
+interface RenderFromDopeIdProps extends Omit<HustlerRenderProps, 'itemRles'> {
   id: string;
   ogTitle?: string;
 }
@@ -23,41 +22,46 @@ const RenderFromDopeId = ({
   ogTitle,
   isVehicle,
 }: RenderFromDopeIdProps) => {
-  const [itemIds, setItemIds] = useState<BigNumber[]>();
+  const { data, isFetching } = useRenderDopeQuery({
+    where: {
+      id,
+    },
+  });
 
-  const swapmeet = useSwapMeet();
+  const itemRles = useMemo<string[] | undefined>(
+    () =>
+      data?.dopes?.edges?.at(0)?.node?.items?.reduce((prev, item) => {
+        if (item.rles) {
+          return sex == 'male' ? [...prev, item.rles.male] : [...prev, item.rles.female];
+        } else if (item.base?.rles) {
+          return sex == 'male' ? [...prev, item.base.rles.male] : [...prev, item.base.rles.female];
+        }
+        return prev;
+      }, [] as string[]),
+    [data, sex],
+  );
 
-  useEffect(() => {
-    if (id) {
-      swapmeet
-        .itemIds(id)
-        .then(ids =>
-          setItemIds([ids[2], ids[6], ids[8], ids[5], ids[1], ids[3], ids[4], ids[7], ids[0]]),
-        );
-    }
-  }, [swapmeet, id]);
-
-  if (itemIds) {
-    return (
-      <RenderFromItemIds
-        bgColor={bgColor}
-        body={body}
-        facialHair={facialHair}
-        hair={hair}
-        itemIds={itemIds}
-        name={name}
-        renderName={renderName}
-        sex={sex}
-        textColor={textColor}
-        zoomWindow={zoomWindow}
-        ogTitle={ogTitle}
-        dopeId={id}
-        isVehicle={isVehicle}
-      />
-    );
-  } else {
+  if (isFetching || !itemRles) {
     return <LoadingBlockSquareCentered />;
   }
+
+  return (
+    <RenderFromItemIds
+      bgColor={bgColor}
+      body={body}
+      facialHair={facialHair}
+      hair={hair}
+      itemRles={itemRles}
+      name={name}
+      renderName={renderName}
+      sex={sex}
+      textColor={textColor}
+      zoomWindow={zoomWindow}
+      ogTitle={ogTitle}
+      dopeId={id}
+      isVehicle={isVehicle}
+    />
+  );
 };
 
 export default RenderFromDopeId;

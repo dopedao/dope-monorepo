@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { HustlerSex, DEFAULT_BG_COLORS, ZoomWindow } from 'utils/HustlerConfig';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
-import { useHustler, useSwapMeet } from 'hooks/contracts';
+import { useHustler } from 'hooks/contracts';
 import { buildSVG } from 'utils/svg-builder';
 
 export interface HustlerRenderProps {
@@ -13,7 +13,7 @@ export interface HustlerRenderProps {
   body?: number;
   facialHair?: number;
   hair?: number;
-  itemIds: BigNumber[];
+  itemRles: string[];
   name?: string;
   renderName?: boolean;
   sex?: HustlerSex;
@@ -29,7 +29,7 @@ const RenderFromItemIds = ({
   body,
   facialHair,
   hair,
-  itemIds,
+  itemRles,
   name = '',
   renderName = false,
   sex,
@@ -40,22 +40,14 @@ const RenderFromItemIds = ({
   isVehicle = false,
 }: HustlerRenderProps) => {
   const resolution = useMemo(() => (isVehicle ? 160 : 64), [isVehicle]);
-  const [itemRles, setItemRles] = useState<string[]>([]);
-  const [vehicleRle, setVehicleRle] = useState<string>();
   const [bodyRles, setBodyRles] = useState<string[]>([]);
-
-  const swapmeet = useSwapMeet();
+  // const swapmeet = useSwapMeet();
   const hustlers = useHustler();
 
   useEffect(() => {
-    const sexIndex = sex && sex == 'female' ? 1 : 0;
-    Promise.all(itemIds.map(id => swapmeet.tokenRle(id, sexIndex))).then(rles => {
-      setVehicleRle(rles[0]);
-      setItemRles(rles.slice(1));
-    });
-  }, [itemIds, sex, swapmeet]);
-
-  useEffect(() => {
+    let isMounted = true;
+    if (!hustlers) return;
+    if (!sex && !body && !hair) return;
     /**
      * Maps our understanding of layers to what's in the smart contract
      * Generates parameters we can then spread and assign to hustlers.bodyRle
@@ -71,22 +63,14 @@ const RenderFromItemIds = ({
     const hairParams: [number, number] = [sex && sex == 'female' ? 3 : 2, hair ?? 0];
     const facialHairParams: [number, number] = [4, facialHair ?? 0];
 
-    if (!hustlers) return;
-    // DEBUG INFO for when contract call fails.
-    // Was tracking down bug that happens on Rinkeby.
-    // console.log('body');
-    // console.log(bodyParams);
-    // console.log('hair');
-    // console.log(hairParams);
-    // console.log('facial hair');
-    // console.log(facialHairParams);
     const promises = [hustlers.bodyRle(...bodyParams), hustlers.bodyRle(...hairParams)];
-    // No female beards for now because they're unsupported
+    // No female beards
     if (sex == 'male' && facialHair) {
       promises.push(hustlers.bodyRle(...facialHairParams));
     }
+    Promise.all(promises).then((value) => {if (isMounted) setBodyRles(value)});
 
-    Promise.all(promises).then(setBodyRles);
+    return () => {isMounted = false};
   }, [hustlers, sex, body, hair, facialHair]);
 
   const svg = useMemo(() => {
@@ -96,17 +80,20 @@ const RenderFromItemIds = ({
 
       const title = renderName && ogTitle && Number(dopeId) < 500 ? ogTitle : '';
       const subtitle = renderName ? name : '';
-      const rles = [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles];
 
-      if (isVehicle && vehicleRle) {
-        rles.unshift(vehicleRle);
+      let rles = [hustlerShadowHex, drugShadowHex, ...bodyRles, ...itemRles];
+
+      if (!isVehicle) {
+        rles = rles.slice(0, -1);
+      } else {
+        rles.unshift(rles[rles.length - 1]);
+        rles = rles.slice(0, -1);
       }
 
       return buildSVG(rles, bgColor, textColor, title, subtitle, zoomWindow, resolution);
     }
   }, [
     itemRles,
-    vehicleRle,
     bodyRles,
     name,
     textColor,
@@ -135,7 +122,11 @@ const RenderFromItemIds = ({
         }
       `}
     >
-      {svg && <div dangerouslySetInnerHTML={{ __html: svg }} />}
+      {svg && 
+        <div 
+          dangerouslySetInnerHTML={{ __html: svg }} 
+        />
+      }
     </AspectRatio>
   );
 };
