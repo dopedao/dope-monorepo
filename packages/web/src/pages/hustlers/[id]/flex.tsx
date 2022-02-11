@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { getRandomDate } from 'utils/utils';
-import { getRandomHustler, HustlerSex } from 'utils/HustlerConfig';
+import { HustlerSex, HustlerCustomization } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
 import { PHRASES } from 'features/news/components/DopePostHeader/index';
 import { Share } from 'react-twitter-widgets';
@@ -99,7 +99,7 @@ const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
 const Flex = () => {
   const router = useRouter();
   const { id: hustlerId } = router.query;
-  const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
+  const [hustlerConfig, setHustlerConfig] = useState({} as Partial<HustlerCustomization>);
   const [onChainImage, setOnChainImage] = useState('');
 
   const { data, isFetching: isLoading } = useHustlerQuery(
@@ -160,9 +160,9 @@ const Flex = () => {
       <RenderFromItemIds
         bgColor={hustlerConfig.bgColor}
         body={hustlerConfig.body}
+        itemRles={itemRles}
         facialHair={hustlerConfig.facialHair}
         hair={hustlerConfig.hair}
-        itemRles={itemRles}
         name={hustlerConfig.name}
         renderName={hustlerConfig.renderName}
         sex={hustlerConfig.sex}

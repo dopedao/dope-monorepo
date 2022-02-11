@@ -1,6 +1,7 @@
 //SVGBUILDER
 // Forked from: https://github.com/nounsDAO/nouns-monorepo/blob/master/packages/nouns-sdk/src/image/types.ts
 
+import { Time } from 'phaser';
 import { ZoomWindow } from 'utils/HustlerConfig';
 
 export interface ImageBounds {
@@ -65,6 +66,7 @@ export const buildSVG = (
   resolution: number = 64,
   htmlId: string = 'dynamicBuiltSvg',
 ): string => {
+  console.log(`Building SVG ${new Date()}`)
   const step = 320 / resolution;
   const svgWithoutEndTag = parts.reduce((result, part, i) => {
     let offset = undefined;
