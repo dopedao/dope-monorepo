@@ -60,14 +60,17 @@ export default class Preload extends Scene {
       networkHandler.listenMessages();
 
       // get hustlers before starting game
-      fetch(`https://api.dopewars.gg/wallets/${ethers.utils.getAddress((window?.ethereum as any)?.selectedAddress)}/hustlers`).then(res => {
-        res.json().then(data => {
-          // start game scene
-          this.scene.start('GameScene', {
-            hustlerData: data,
-          });
-        })
-      });
+      if ((window?.ethereum as any)?.selectedAddress)
+        fetch(`https://api.dopewars.gg/wallets/${ethers.utils.getAddress((window?.ethereum as any)?.selectedAddress)}/hustlers`).then(res => {
+          res.json().then(data => {
+            // start game scene
+            this.scene.start('GameScene', {
+              hustlerData: data,
+            });
+          })
+        });
+      else
+        this.scene.start('GameScene');
     }
 
     networkHandler.once(NetworkEvents.CONNECTED, onConnection);
