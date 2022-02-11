@@ -66,7 +66,6 @@ export const buildSVG = (
   resolution: number = 64,
   htmlId: string = 'dynamicBuiltSvg',
 ): string => {
-  console.log(`Building SVG ${new Date()}`)
   const step = 320 / resolution;
   const svgWithoutEndTag = parts.reduce((result, part, i) => {
     let offset = undefined;
