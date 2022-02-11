@@ -251,6 +251,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     destroyRuntime(fromScene?: boolean)
     {
         // this._model.destroyRuntime(fromScene);
+        this._shadow.destroy();
         this.scene.matter.world.remove(this._hitboxSensor);
         super.destroy(fromScene);
     }
