@@ -131,12 +131,12 @@ const QuickBuyHustler = () => {
       justifyContent="flex-start"
       gap="8px"
       >
+      <Button variant="primary">
+        Customize
+      </Button>
       <CarouselButtons />
       <Button onClick={() => setShowHustler(!showHustler) }>
         {showHustler ? 'Show Equipment' : 'Show Hustler' }
-      </Button>
-      <Button variant="primary">
-        Customize
       </Button>
     </Box>
   );
@@ -203,17 +203,17 @@ const QuickBuyHustler = () => {
                   }
                 `}>
                   <Tr>
-                    <Td>You&nbsp;receive</Td>
+                    <Td className="noWrap">NFTs you receive</Td>
                     <Td>
-                      1 DOPE DAO Vote
+                      DOPE #{currentDope.id}
                       <br/>
                       1 Hustler
                       <br/>
                       9 Gear
                     </Td>
                   </Tr>
-                  <Tr>
-                    <Td>Estimated&nbsp;Total</Td>
+                  <Tr className="noWrap">
+                    <Td>Estimated Total</Td>
                     <Td>
                       {getCurrentPrice()}
                     </Td>

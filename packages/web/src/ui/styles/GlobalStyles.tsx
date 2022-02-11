@@ -234,6 +234,10 @@ export default function GlobalStyles() {
           ${buttonStyle};
         }
 
+        .noWrap {
+          white-space: nowrap;
+        }
+
         hr.onColor {
           border-top: 2px solid rgba(0,0,0,0.15);
           margin-top: 8px;
