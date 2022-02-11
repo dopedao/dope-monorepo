@@ -4,7 +4,7 @@ import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { getRandomDate } from 'utils/utils';
 import { HustlerSex, HustlerCustomization } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
-import { PHRASES } from 'features/news/components/DopePostHeader/index';
+import { PHRASES } from 'features/news/components/NewsHeader';
 import { Share } from 'react-twitter-widgets';
 import { Button, Grid, GridItem, Image } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
