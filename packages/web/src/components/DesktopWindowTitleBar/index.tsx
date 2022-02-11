@@ -41,9 +41,13 @@ const DesktopWindowTitleBar = ({
   const paper = usePaper();
 
   useEffect(() => {
+    let isMounted = true;
     if (account) {
-      paper.balanceOf(account).then(setBalance);
+      paper.balanceOf(account).then((value) => {
+        if (isMounted) setBalance(value);
+      });
     }
+    return () => {isMounted = false};
   }, [paper, account]);
 
   const closeWindow = (): void => {
@@ -59,9 +63,9 @@ const DesktopWindowTitleBar = ({
   };
 
   useEffect(() => {
+    let isMounted = true;
     // No sense to do this work if no wallet address shown
     if (hideWalletAddress) return;
-
     const getEns = async () => {
       if (!account) {
         return null;
@@ -78,7 +82,9 @@ const DesktopWindowTitleBar = ({
       }
     };
 
-    getEns();
+    if (isMounted) getEns();
+    // Cleanup
+    return () => {isMounted = false}
   }, [account, library, hideWalletAddress]);
 
   return (

@@ -1,15 +1,15 @@
-import { css } from "@emotion/react";
-import { Image, Stack } from "@chakra-ui/react";
-import GearFooter from "./GearFooter";
-import PanelBody from "components/PanelBody";
-import ProfileCard from "features/profile/components/ProfileCard";
-import ProfileCardHeader from "features/profile/components/ProfileCardHeader";
-import ItemCount from "./ItemCount";
+import { css } from '@emotion/react';
+import { Image, Stack } from '@chakra-ui/react';
+import GearFooter from './GearFooter';
+import PanelBody from 'components/PanelBody';
+import ProfileCard from 'features/profile/components/ProfileCard';
+import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
+import ItemCount from './ItemCount';
 import { Item, Maybe } from 'generated/graphql';
 
 type GearItem = Pick<Item, 'id' | 'count' | 'fullname' | 'name' | 'svg' | 'suffix' | 'type'> & {
   base?: Maybe<Pick<Item, 'svg'>>;
-};;
+};
 
 const getImageSrc = (item: GearItem): string => {
   if (item.svg) return item.svg;
@@ -23,13 +23,20 @@ const getOrigin = (suffix?: string | null): string => {
   return origin;
 };
 
-const GearCard = ({item, balance, showEquipFooter = false}: {item: GearItem, balance?: number, showEquipFooter?: boolean}) => {
-
+const GearCard = ({
+  item,
+  balance,
+  showEquipFooter = false,
+}: {
+  item: GearItem;
+  balance?: number;
+  showEquipFooter?: boolean;
+}) => {
   return (
     <ProfileCard>
       <ProfileCardHeader>
         <div>{item.name}</div>
-        { balance && balance > 1 && 
+        {balance && balance > 1 && (
           <div
             css={css`
               padding-right: 16px;
@@ -39,14 +46,14 @@ const GearCard = ({item, balance, showEquipFooter = false}: {item: GearItem, bal
           >
             <ItemCount count={balance} />
           </div>
-        }
+        )}
       </ProfileCardHeader>
       <PanelBody>
         <Stack>
-          <Image 
-            borderRadius="md" 
-            src={getImageSrc(item)} 
-            alt={item.name} 
+          <Image
+            borderRadius="md"
+            src={getImageSrc(item)}
+            alt={item.name}
             css={css`
               ${getImageSrc(item).includes('/icon') ? 'opacity:0.1' : ''}
             `}
@@ -65,6 +72,6 @@ const GearCard = ({item, balance, showEquipFooter = false}: {item: GearItem, bal
       {showEquipFooter && <GearFooter id={item.id} />}
     </ProfileCard>
   );
-}
+};
 
 export default GearCard;

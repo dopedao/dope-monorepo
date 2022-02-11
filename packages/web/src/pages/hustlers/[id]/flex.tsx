@@ -1,17 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
-import { BigNumber } from 'ethers';
 import { css } from '@emotion/react';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { getRandomDate } from 'utils/utils';
-import { getRandomHustler, HustlerSex } from 'utils/HustlerConfig';
-import { Item as DopeItemApiResponse } from 'generated/graphql';
-import { ITEM_ORDER } from 'features/dope/components/DopeCardBody';
+import { HustlerSex, HustlerCustomization } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
-import { PHRASES } from 'features/news/components/DopePostHeader/index'
+import { PHRASES } from 'features/news/components/DopePostHeader/index';
 import { Share } from 'react-twitter-widgets';
-import { Stack, Button, Grid, GridItem, Image } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { useHustlerQuery } from 'generated/graphql';
+import { Button, Grid, GridItem, Image } from '@chakra-ui/react';
+import { useEffect, useMemo, useState } from 'react';
+import { Item, useHustlerQuery } from 'generated/graphql';
 import { useRouter } from 'next/router';
 import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
 import AppWindow from 'components/AppWindow';
@@ -25,9 +22,9 @@ import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
-import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
 import GearCard from 'features/profile/components/GearCard';
+import { useHustlerRles } from 'hooks/render';
 
 const Nav = () => (
   <AppWindowNavBar>
@@ -102,10 +99,8 @@ const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
 const Flex = () => {
   const router = useRouter();
   const { id: hustlerId } = router.query;
-  const [itemIds, setItemIds] = useState<BigNumber[]>();
-  const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
+  const [hustlerConfig, setHustlerConfig] = useState({} as Partial<HustlerCustomization>);
   const [onChainImage, setOnChainImage] = useState('');
-  const [hustlerItems, setHustlerItems] = useState<any>([]);
 
   const { data, isFetching: isLoading } = useHustlerQuery(
     {
@@ -118,52 +113,56 @@ const Flex = () => {
     },
   );
 
+  const itemRles = useHustlerRles(data?.hustlers.edges?.at(0)?.node);
+  const items = useMemo<Item[]>(() => {
+    const hustler = data?.hustlers.edges?.[0]?.node;
+    if (hustler) {
+      // Order matters
+
+      return [
+        hustler.weapon,
+        hustler.vehicle,
+        hustler.drug,
+        hustler.clothes,
+        hustler.hand,
+        hustler.waist,
+        hustler.foot,
+        hustler.neck,
+        hustler.ring,
+        hustler.accessory,
+      ].filter(i => !!i) as Item[];
+    }
+
+    return [];
+  }, [data]);
+
   useEffect(() => {
     if (data?.hustlers.edges?.[0]?.node) {
       const h = data.hustlers.edges[0].node;
-      let ids : Array<BigNumber> = [];
-      let items = [
-        h.clothes,
-        h.drug,
-        h.foot,
-        h.hand,
-        h.neck,
-        h.ring,
-        h.accessory,
-        h.vehicle,
-        h.waist,
-        h.weapon,
-      ];
-      items = items.filter((item)=> {
-        if(item != null) {
-          ids.push(BigNumber.from(item.id))
-          return item;
-        }
-        return false;
-      });
-      setHustlerItems(items);
-      setItemIds(ids);
+
       if (h?.svg) setOnChainImage(h?.svg);
       setHustlerConfig({
         ...hustlerConfig,
         name: h?.name || '',
         title: h?.title || '',
         sex: (h?.sex.toLowerCase() || 'male') as HustlerSex,
-        body: getBodyIndexFromMetadata(h?.body?.id),
+        body: h.body?.id ? parseInt(h.body.id.split('-')[2]) : 0,
+        hair: h.hair?.id ? parseInt(h.hair.id.split('-')[2]) : 0,
+        facialHair: h.beard?.id ? parseInt(h.beard.id.split('-')[2]) : 0,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, hustlerId]);
 
   const renderHustler = (zoomWindowIndex: 0 | 1 | 2 | 3) => {
-    if (!itemIds) return;
+    if (!itemRles) return;
     return (
       <RenderFromItemIds
         bgColor={hustlerConfig.bgColor}
         body={hustlerConfig.body}
+        itemRles={itemRles}
         facialHair={hustlerConfig.facialHair}
         hair={hustlerConfig.hair}
-        itemIds={itemIds}
         name={hustlerConfig.name}
         renderName={hustlerConfig.renderName}
         sex={hustlerConfig.sex}
@@ -176,16 +175,6 @@ const Flex = () => {
     );
   };
 
-  const sortedHustlerItems = hustlerItems.sort(
-    function (a: DopeItemApiResponse, b: DopeItemApiResponse) {
-      if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
-        return 1;
-      } else {
-        return -1;
-      }
-    }
-  );
-
   return (
     <AppWindow padBody={true} navbar={<Nav />} scrollable>
       <Head
@@ -193,7 +182,7 @@ const Flex = () => {
         ogImage={`https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`}
       />
       {isLoading && <LoadingBlock />}
-      {!isLoading && itemIds && (
+      {!isLoading && itemRles && (
         <Grid
           templateColumns="repeat(auto-fit, minmax(240px, 1fr))"
           gap="16px"
@@ -250,42 +239,29 @@ const Flex = () => {
                 flex: 2;
               `}
             >
-              {sortedHustlerItems.map(
-                ({
-                  id,
-                  name,
-                  namePrefix,
-                  nameSuffix,
-                  suffix,
-                  augmented,
-                  type,
-                  tier,
-                }: DopeItemApiResponse) => {
-                  return (
-                    // @ts-ignore
-                    <DopeItem
-                      key={id}
-                      name={name}
-                      namePrefix={namePrefix}
-                      nameSuffix={nameSuffix}
-                      suffix={suffix}
-                      augmented={augmented}
-                      type={type}
-                      color={DopeLegendColors[tier]}
-                      isExpanded={true}
-                      tier={tier}
-                      showRarity={true}
-                    />
-                  );
-                },
-              )}
+              {items?.map(({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
+                return (
+                  <DopeItem
+                    key={id}
+                    name={name}
+                    namePrefix={namePrefix}
+                    nameSuffix={nameSuffix}
+                    suffix={suffix}
+                    augmented={augmented}
+                    type={type}
+                    color={DopeLegendColors[tier]}
+                    isExpanded={true}
+                    tier={tier}
+                    showRarity={true}
+                  />
+                );
+              })}
             </PanelBody>
           </PanelContainer>
-          {sortedHustlerItems.map((item: DopeItemApiResponse) => {
-            return <GearCard item={item} key={item.id} />
+          {items?.map(item => {
+            return <GearCard item={item} key={item.id} />;
           })}
         </Grid>
-
       )}
     </AppWindow>
   );
