@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"image"
 	"image/draw"
 	"image/png"
@@ -98,8 +99,8 @@ func sprites(ctx context.Context, id string, client *ent.Client) (*Sprites, erro
 	}
 
 	s := &Sprites{
-		Body:      h.Edges.Body.Sprite,
-		Hair:      h.Edges.Hair.Sprite,
+		Body:      fmt.Sprintf("https://static.dopewars.gg/%s/body/0.png", strings.ToLower(h.Sex.String())),
+		Hair:      fmt.Sprintf("https://static.dopewars.gg/%s/hair/0.png", strings.ToLower(h.Sex.String())),
 		Accessory: sprite(ctx, h, "Accessory", h.Sex.String()),
 		Clothes:   sprite(ctx, h, "Clothes", h.Sex.String()),
 		Foot:      sprite(ctx, h, "Foot", h.Sex.String()),
@@ -108,6 +109,14 @@ func sprites(ctx context.Context, id string, client *ent.Client) (*Sprites, erro
 		Ring:      sprite(ctx, h, "Ring", h.Sex.String()),
 		Waist:     sprite(ctx, h, "Waist", h.Sex.String()),
 		Weapon:    sprite(ctx, h, "Weapon", h.Sex.String()),
+	}
+
+	if h.Edges.Body != nil {
+		s.Body = h.Edges.Body.Sprite
+	}
+
+	if h.Edges.Hair != nil {
+		s.Hair = h.Edges.Hair.Sprite
 	}
 
 	if h.Edges.Beard != nil {
@@ -193,80 +202,98 @@ func HustlerSpritesCompositeHandler(client *ent.Client, static *storage.BucketHa
 			return
 		}
 
-		hair, err := readSprite(ctx, static, s.Hair)
-		if err != nil {
-			log.Err(err).Msgf("Getting hustler hair with id: %s", s.Hair)
-			http.Error(w, "unexpected error", http.StatusInternalServerError)
-			return
-		}
-
-		// accessory, err := readSprite(ctx, static, s.Accessory)
-		// if err != nil {
-		// 	log.Err(err).Msgf("Getting hustler accessory with id: %s", id)
-		// 	http.Error(w, "unexpected error", http.StatusInternalServerError)
-		// 	return
-		// }
-
-		clothes, err := readSprite(ctx, static, s.Clothes)
-		if err != nil {
-			log.Err(err).Msgf("Getting hustler clothes with id: %s", s.Clothes)
-			http.Error(w, "unexpected error", http.StatusInternalServerError)
-			return
-		}
-
-		foot, err := readSprite(ctx, static, s.Foot)
-		if err != nil {
-			log.Err(err).Msgf("Getting hustler foot with id: %s", s.Foot)
-			http.Error(w, "unexpected error", http.StatusInternalServerError)
-			return
-		}
-
-		hand, err := readSprite(ctx, static, s.Hand)
-		if err != nil {
-			log.Err(err).Msgf("Getting hustler hand with id: %s", s.Hand)
-			http.Error(w, "unexpected error", http.StatusInternalServerError)
-			return
-		}
-
-		neck, err := readSprite(ctx, static, s.Neck)
-		if err != nil {
-			log.Err(err).Msgf("Getting hustler neck with id: %s", s.Neck)
-			http.Error(w, "unexpected error", http.StatusInternalServerError)
-			return
-		}
-
-		ring, err := readSprite(ctx, static, s.Ring)
-		if err != nil {
-			log.Err(err).Msgf("Getting hustler ring with id: %s", s.Ring)
-			http.Error(w, "unexpected error", http.StatusInternalServerError)
-			return
-		}
-
-		waist, err := readSprite(ctx, static, s.Waist)
-		if err != nil {
-			log.Err(err).Msgf("Getting hustler waist with id: %s", s.Waist)
-			http.Error(w, "unexpected error", http.StatusInternalServerError)
-			return
-		}
-
-		weapon, err := readSprite(ctx, static, s.Weapon)
-		if err != nil {
-			log.Err(err).Msgf("Getting hustler weapon with id: %s", s.Weapon)
-			http.Error(w, "unexpected error", http.StatusInternalServerError)
-			return
-		}
-
 		composited := &notOpaqueRGBA{image.NewRGBA(body.Bounds())}
 		draw.Draw(composited, body.Bounds(), body, image.Point{0, 0}, draw.Over)
-		draw.Draw(composited, hair.Bounds(), hair, image.Point{0, 0}, draw.Over)
-		draw.Draw(composited, clothes.Bounds(), clothes, image.Point{0, 0}, draw.Over)
-		draw.Draw(composited, hand.Bounds(), hand, image.Point{0, 0}, draw.Over)
-		draw.Draw(composited, neck.Bounds(), neck, image.Point{0, 0}, draw.Over)
-		draw.Draw(composited, foot.Bounds(), foot, image.Point{0, 0}, draw.Over)
-		draw.Draw(composited, ring.Bounds(), ring, image.Point{0, 0}, draw.Over)
-		draw.Draw(composited, waist.Bounds(), waist, image.Point{0, 0}, draw.Over)
-		draw.Draw(composited, weapon.Bounds(), weapon, image.Point{0, 0}, draw.Over)
-		// draw.Draw(composited, accessory.Bounds(), accessory, image.Point{0, 0}, draw.Over)
+
+		if s.Hair != "" {
+			hair, err := readSprite(ctx, static, s.Hair)
+			if err != nil {
+				log.Err(err).Msgf("Getting hustler hair with id: %s", s.Hair)
+				http.Error(w, "unexpected error", http.StatusInternalServerError)
+				return
+			}
+			draw.Draw(composited, hair.Bounds(), hair, image.Point{0, 0}, draw.Over)
+		}
+
+		if s.Accessory != "" {
+			accessory, err := readSprite(ctx, static, s.Accessory)
+			if err != nil {
+				log.Err(err).Msgf("Getting hustler accessory with id: %s", id)
+				http.Error(w, "unexpected error", http.StatusInternalServerError)
+				return
+			}
+			draw.Draw(composited, accessory.Bounds(), accessory, image.Point{0, 0}, draw.Over)
+		}
+
+		if s.Clothes != "" {
+			clothes, err := readSprite(ctx, static, s.Clothes)
+			if err != nil {
+				log.Err(err).Msgf("Getting hustler clothes with id: %s", s.Clothes)
+				http.Error(w, "unexpected error", http.StatusInternalServerError)
+				return
+			}
+			draw.Draw(composited, clothes.Bounds(), clothes, image.Point{0, 0}, draw.Over)
+		}
+
+		if s.Foot != "" {
+			foot, err := readSprite(ctx, static, s.Foot)
+			if err != nil {
+				log.Err(err).Msgf("Getting hustler foot with id: %s", s.Foot)
+				http.Error(w, "unexpected error", http.StatusInternalServerError)
+				return
+			}
+			draw.Draw(composited, foot.Bounds(), foot, image.Point{0, 0}, draw.Over)
+		}
+
+		if s.Hand != "" {
+			hand, err := readSprite(ctx, static, s.Hand)
+			if err != nil {
+				log.Err(err).Msgf("Getting hustler hand with id: %s", s.Hand)
+				http.Error(w, "unexpected error", http.StatusInternalServerError)
+				return
+			}
+			draw.Draw(composited, hand.Bounds(), hand, image.Point{0, 0}, draw.Over)
+		}
+
+		if s.Neck != "" {
+			neck, err := readSprite(ctx, static, s.Neck)
+			if err != nil {
+				log.Err(err).Msgf("Getting hustler neck with id: %s", s.Neck)
+				http.Error(w, "unexpected error", http.StatusInternalServerError)
+				return
+			}
+			draw.Draw(composited, neck.Bounds(), neck, image.Point{0, 0}, draw.Over)
+		}
+
+		if s.Ring != "" {
+			ring, err := readSprite(ctx, static, s.Ring)
+			if err != nil {
+				log.Err(err).Msgf("Getting hustler ring with id: %s", s.Ring)
+				http.Error(w, "unexpected error", http.StatusInternalServerError)
+				return
+			}
+			draw.Draw(composited, ring.Bounds(), ring, image.Point{0, 0}, draw.Over)
+		}
+
+		if s.Waist != "" {
+			waist, err := readSprite(ctx, static, s.Waist)
+			if err != nil {
+				log.Err(err).Msgf("Getting hustler waist with id: %s", s.Waist)
+				http.Error(w, "unexpected error", http.StatusInternalServerError)
+				return
+			}
+			draw.Draw(composited, waist.Bounds(), waist, image.Point{0, 0}, draw.Over)
+		}
+
+		if s.Weapon != "" {
+			weapon, err := readSprite(ctx, static, s.Weapon)
+			if err != nil {
+				log.Err(err).Msgf("Getting hustler weapon with id: %s", s.Weapon)
+				http.Error(w, "unexpected error", http.StatusInternalServerError)
+				return
+			}
+			draw.Draw(composited, weapon.Bounds(), weapon, image.Point{0, 0}, draw.Over)
+		}
 
 		buffer := new(bytes.Buffer)
 		if err := png.Encode(buffer, composited); err != nil {
