@@ -42,7 +42,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     private _navigator: PathNavigator;
 
     private _hitboxSensor: MatterJS.BodyType;
-    private hoverText?: BBCodeText;
+    private _hoverText?: BBCodeText;
+
+    get hoverText() { return this._hoverText; }
 
     get hustlerId() { return this._hustlerId; }
 
@@ -142,15 +144,19 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         const uiScene = this.scene.scene.get('UIScene') as UIScene;
         this.setInteractive({ useHandCursor: true });
         this.on('pointerover', () => {
-            this.hoverText = uiScene.rexUI.add.BBCodeText(0, 0, this.name, {
+            this._hoverText = uiScene.rexUI.add.BBCodeText(0, 0, `[stroke=black]${this.name}[/stroke]`, {
                 fontFamily: 'Dope',
-                fontSize: '20px',
-                color: '#ffffff'
+                fontSize: '18px',
+                color: '#9fff9f',
+                fixedWidth: this.displayWidth * 2,
+                stroke: '#000000',
+                strokeThickness: 5,
             });
+            this._hoverText.alpha = 0.8;
         });
         this.on('pointerout', () => {
-            this.hoverText?.destroy();
-            this.hoverText = undefined;
+            this._hoverText?.destroy();
+            this._hoverText = undefined;
         });
 
         // create navigator
@@ -252,9 +258,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
     update()
     {
         // make hovertext follow us
-        this.hoverText?.setPosition(
-            (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
-            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.5) * this.scene.cameras.main.zoom));
+        this._hoverText?.setPosition(
+            (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this._hoverText.displayWidth / 2), 
+            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.3) * this.scene.cameras.main.zoom));
 
         this._shadow.setPosition(this.x, this.y + (this.height / 5));
 

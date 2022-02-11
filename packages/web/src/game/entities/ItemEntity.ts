@@ -35,14 +35,18 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite
 
         this.setDepth(30);
 
+        const uiScene = this.scene.scene.get('UIScene') as UIScene;
         this.setInteractive({ useHandCursor: true });
         this.on('pointerover', () => {
-            const uiScene = this.scene.scene.get('UIScene') as UIScene;
-            this.hoverText = uiScene.rexUI.add.BBCodeText(0, 0, this.item.name, {
+            this.hoverText = uiScene.rexUI.add.BBCodeText(0, 0, `[stroke=black]${this.item.name}[/stroke]`, {
                 fontFamily: 'Dope',
-                fontSize: '20px',
-                color: '#ffffff'
+                fontSize: '18px',
+                color: '#9f9fff',
+                fixedWidth: this.displayWidth * 3,
+                stroke: '#000000',
+                strokeThickness: 5,
             });
+            this.hoverText.alpha = 0.8;
         });
         this.on('pointerout', () => {
             this.hoverText?.destroy();
@@ -66,8 +70,9 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite
 
     update()
     {
+        // make hover text follow us
         this.hoverText?.setPosition(
             (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom - (this.hoverText.displayWidth / 2), 
-            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.5) * this.scene.cameras.main.zoom));
+            ((this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom) - ((this.displayHeight / 1.3) * this.scene.cameras.main.zoom));
     }
 }

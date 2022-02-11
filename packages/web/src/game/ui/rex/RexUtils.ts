@@ -98,7 +98,7 @@ export const getBuiltInText = (scene: UIScene, wrapWidth: number, fixedWidth: nu
 export const getBBcodeText = (scene: UIScene, wrapWidth: number, fixedWidth: number, fixedHeight: number, maxLines?: number, fontSize?: string) => {
     return scene.rexUI.add.BBCodeText(0, 0, '', {
         fontFamily: 'Dope',
-
+        
         fixedWidth: fixedWidth,
         fixedHeight: fixedHeight,
 
