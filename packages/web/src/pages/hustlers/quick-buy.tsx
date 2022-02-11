@@ -182,13 +182,18 @@ const QuickBuyHustler = () => {
             gap="16px"
           >
             <Box padding="8px">
-              <h2>Get a Hustler Now</h2>
+              <h2>
+                Get a Hustler Now
+              </h2>
               <hr className="onColor" />
               <p>
-                Hustlers are the NFT in-game characters of Dope Wars, who can own up to 10 different pieces of NFT Gear.
+                Hustlers are the in-game characters of Dope Wars who can own up to 10 different pieces of NFT Gear.
               </p>
               <p>
-                Swoop a fully equipped DOPE NFT and Hustler right now using our streamlined process.
+                DOPE Gear comes directly from our DOPE NFT tokens that live on Ethereum by claiming it.
+              </p>
+              <p>
+                Get a fully-equipped Dope Wars character kit and DAO voting token using this streamlined process right now.
               </p>
               <Box>
                 <Table css={css`
@@ -200,7 +205,7 @@ const QuickBuyHustler = () => {
                   <Tr>
                     <Td>You&nbsp;receive</Td>
                     <Td>
-                      1 DOPE
+                      1 DOPE DAO Vote
                       <br/>
                       1 Hustler
                       <br/>
