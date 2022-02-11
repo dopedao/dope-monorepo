@@ -70,11 +70,6 @@ const PLUGS = [
     suffix: 'The ETH Worm',
   },
   {
-    link: 'https://twitter.com/bellgloom',
-    name: 'Bellgloom',
-    prefix: 'The Last Word',
-  },
-  {
     link: 'https://twitter.com/_541va_',
     name: 'M1',
     prefix: 'Stickman',
