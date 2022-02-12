@@ -11,7 +11,7 @@ const SwapMeet = () => (
     navbar={<DopeWarsExeNav />}
     title="Swap Meet"
   >
-    <Head title="SWAP MEET" />
+    <Head title="Gear" />
     <ComingSoonDialog title="We're working on it" icon="construction">
       <p>
         Soon™️ you&apos;ll be able to buy, sell, and trade Gear with your homies and the opps. Right

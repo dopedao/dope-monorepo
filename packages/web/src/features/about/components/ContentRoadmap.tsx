@@ -162,7 +162,7 @@ const ContentRoadmap = () => (
           <p>新年好</p>
         </>
       </RoadmapItem>
-      <SectionHeader>Coming Soon™️</SectionHeader>
+      <SectionHeader>Coming Soon™</SectionHeader>
       <RoadmapItem
         title="Swap Meet"
         imageUrl="/images/about/swap-meet-preview.png"
