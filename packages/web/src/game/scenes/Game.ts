@@ -1,17 +1,3 @@
-import {
-  Base,
-  Beard,
-  Clothes,
-  Feet,
-  Hair,
-  Hands,
-  Mask,
-  Necklace,
-  Ring,
-  SpritesMap,
-  Waist,
-  Weapons,
-} from 'game/constants/Sprites';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import GameAnimations from 'game/anims/GameAnimations';
 import { Scene, Cameras, Tilemaps } from 'phaser';
@@ -77,7 +63,7 @@ export default class GameScene extends Scene {
       if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer) return;
 
       // run asynchronously
-      setTimeout(() => {
+      new Promise(() => {
         const citizenToTalkTo = this.citizens.find(
           citizen =>
             citizen.shouldFollowPath &&
