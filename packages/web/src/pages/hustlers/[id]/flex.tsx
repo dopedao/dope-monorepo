@@ -113,7 +113,7 @@ const Flex = () => {
     },
   );
 
-  const itemRles = useHustlerRles(data?.hustlers?.edges?.at(0)?.node);
+  const itemRles = useHustlerRles(data?.hustlers?.edges?.[0]?.node);
   const items = useMemo<Item[]>(() => {
     const hustler = data?.hustlers?.edges?.[0]?.node;
     if (hustler) {

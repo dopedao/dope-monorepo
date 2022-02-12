@@ -29,8 +29,8 @@ const RenderFromDopeId = ({
   });
 
   const itemRles = useMemo<string[] | undefined>(
-    () =>
-      data?.dopes?.edges?.at(0)?.node?.items?.reduce((prev, item) => {
+    () => 
+      data?.dopes?.edges?.[0]?.node?.items?.reduce((prev, item) => {
         if (item.rles) {
           return sex == 'male' ? [...prev, item.rles.male] : [...prev, item.rles.female];
         } else if (item.base?.rles) {
@@ -44,7 +44,6 @@ const RenderFromDopeId = ({
   if (isFetching || !itemRles) {
     return <LoadingBlockSquareCentered />;
   }
-
   return (
     <RenderFromItemIds
       bgColor={bgColor}
