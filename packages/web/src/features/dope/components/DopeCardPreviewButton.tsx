@@ -8,7 +8,7 @@ type PreviewProps = {
   disabled: boolean;
 };
 
-const PreviewHustler = ({ isPreviewShown, togglePreview, disabled }: PreviewProps) => (
+const DopeCardPreviewButton = ({ isPreviewShown, togglePreview, disabled }: PreviewProps) => (
   <button
     onClick={() => {
       (disabled
@@ -67,4 +67,4 @@ const PreviewHustler = ({ isPreviewShown, togglePreview, disabled }: PreviewProp
   </button>
 );
 
-export default PreviewHustler;
+export default DopeCardPreviewButton;
