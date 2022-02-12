@@ -11,10 +11,10 @@ const BannerLunarAirDrop = () => {
     const images = [
       'accessories_women_animate.gif',
       'accessories_men_animate.gif',
-      'mask-roulette_4.gif'
+      'mask-roulette_4.gif',
     ];
-    return `${path}/${images[getRandomNumber(0,images.length-1)]}`;
-  }
+    return `${path}/${images[getRandomNumber(0, images.length - 1)]}`;
+  };
 
   return (
     <Stack

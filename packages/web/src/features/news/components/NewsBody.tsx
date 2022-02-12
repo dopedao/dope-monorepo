@@ -59,11 +59,9 @@ const NewsBody = ({ posts, hasMore }: DopePostBodyProps) => {
         {Boolean(leftPosts.length) && (
           <LeftPosts flex={3} padding="0 10px">
             {leftPosts.map((post, index) => {
-              return <NewsClipping 
-                key={post.slug} 
-                post={post} 
-                titleSize={index == 0 ? 'xl' : 'md'}
-              />
+              return (
+                <NewsClipping key={post.slug} post={post} titleSize={index == 0 ? 'xl' : 'md'} />
+              );
             })}
           </LeftPosts>
         )}
@@ -74,23 +72,20 @@ const NewsBody = ({ posts, hasMore }: DopePostBodyProps) => {
           borderRight={{ md: '1px solid black' }}
           borderLeft={{ md: '1px solid black' }}
         >
-          <NewsClipping 
-            key={heroPost.slug} 
-            post={heroPost}
-            showImage
-            titleSize="4xl"
-          />
+          <NewsClipping key={heroPost.slug} post={heroPost} showImage titleSize="4xl" />
           {middlePosts.map(post => (
             <NewsClipping key={post.slug} post={post} titleSize="xl" />
           ))}
         </MiddlePosts>
         <RightPosts flex={{ base: 1, md: 3 }} padding={{ base: '0 4px', md: '0 10px' }}>
           {rightPosts.map((post, index) => {
-            return <NewsClipping 
-              key={post.slug} 
-              post={post} 
-              titleSize={index == 0 && !isTabletOrMobile ? 'md' : 'xl'} 
-            />
+            return (
+              <NewsClipping
+                key={post.slug}
+                post={post}
+                titleSize={index == 0 && !isTabletOrMobile ? 'md' : 'xl'}
+              />
+            );
           })}
         </RightPosts>
       </Flex>

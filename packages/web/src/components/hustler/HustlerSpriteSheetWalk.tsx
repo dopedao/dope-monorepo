@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
 const backgroundSize = 2400;
-const frameWidth = backgroundSize/16;
-const frameHeight = backgroundSize/8;
+const frameWidth = backgroundSize / 16;
+const frameHeight = backgroundSize / 8;
 
 // Standalone hustler animation test
 
@@ -14,7 +14,7 @@ const HustlerSpriteSheetWalk = styled.div<{ id?: string }>`
   image-rendering: pixelated;
   @keyframes walk {
     0% {
-      background-position: ${-(backgroundSize/2)}px 0;
+      background-position: ${-(backgroundSize / 2)}px 0;
     }
     100 % {
       background-position: 0 0;

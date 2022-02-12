@@ -28,16 +28,23 @@ const SwapMeet = () => (
     background="#fff"
   >
     <Head title="Merch" />
-    <div css={css`padding:16px`}>
-      <h2 css={css`text-align:center;`}>Soon™</h2>
-      <br/>
+    <div
+      css={css`
+        padding: 16px;
+      `}
+    >
+      <h2
+        css={css`
+          text-align: center;
+        `}
+      >
+        Soon™
+      </h2>
+      <br />
       <CardContainer>
         {MERCH_IMAGES.map((filename, index) => (
           <PanelContainer key={`merch-${index}`}>
-            <Image 
-              src={`/images/merch/${filename}`} 
-              alt={filename} 
-            />
+            <Image src={`/images/merch/${filename}`} alt={filename} />
           </PanelContainer>
         ))}
       </CardContainer>

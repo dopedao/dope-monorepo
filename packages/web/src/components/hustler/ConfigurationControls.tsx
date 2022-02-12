@@ -158,9 +158,9 @@ const ConfigurationControls = ({
       <ControlsBody>
         <Stack spacing={4}>
           {/* Title controls only make sense when zoomed out fully */}
-          <NameControls 
-            config={config} 
-            setHustlerConfig={setHustlerConfig} 
+          <NameControls
+            config={config}
+            setHustlerConfig={setHustlerConfig}
             enableNameVisible={enableNameVisible}
           />
           {showTextColor && (
