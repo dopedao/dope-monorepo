@@ -58,7 +58,7 @@ export const PHRASES = [
 ];
 
 
-const DopePostHeader = ({
+const NewsHeader = ({
   $paper = 20,
   description = PHRASES[getRandomNumber(0,PHRASES.length-1)],
   location = 'DOPECITY',
@@ -117,11 +117,10 @@ const DopePostHeader = ({
         textTransform="uppercase"
         padding="4px"
         color="#000"
-        fontWeight="bold"
         fontSize="xs"
       >{`${location} ${format(date ? new Date(date) : new Date(), 'MMMM Y')}`}</Text>
     </Box>
   </Wrapper>
 );
 
-export default DopePostHeader;
+export default NewsHeader;

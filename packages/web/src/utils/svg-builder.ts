@@ -1,6 +1,7 @@
 //SVGBUILDER
 // Forked from: https://github.com/nounsDAO/nouns-monorepo/blob/master/packages/nouns-sdk/src/image/types.ts
 
+import { Time } from 'phaser';
 import { ZoomWindow } from 'utils/HustlerConfig';
 
 export interface ImageBounds {
