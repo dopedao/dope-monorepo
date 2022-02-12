@@ -1,6 +1,6 @@
 import Dialog, { DialogProps } from './Dialog';
 
-const constructionBackground = `
+export const constructionBackground = `
   #000000 url('/images/desktop/construction-truck.png') center center / contain repeat-y fixed
 `;
 
