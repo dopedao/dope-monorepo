@@ -113,12 +113,11 @@ const Flex = () => {
     },
   );
 
-  const itemRles = useHustlerRles(data?.hustlers.edges?.at(0)?.node);
+  const itemRles = useHustlerRles(data?.hustlers?.edges?.[0]?.node);
   const items = useMemo<Item[]>(() => {
-    const hustler = data?.hustlers.edges?.[0]?.node;
+    const hustler = data?.hustlers?.edges?.[0]?.node;
     if (hustler) {
       // Order matters
-
       return [
         hustler.weapon,
         hustler.vehicle,
@@ -137,8 +136,8 @@ const Flex = () => {
   }, [data]);
 
   useEffect(() => {
-    if (data?.hustlers.edges?.[0]?.node) {
-      const h = data.hustlers.edges[0].node;
+    if (data?.hustlers?.edges?.[0]?.node) {
+      const h = data?.hustlers?.edges?.[0].node;
 
       if (h?.svg) setOnChainImage(h?.svg);
       setHustlerConfig({
