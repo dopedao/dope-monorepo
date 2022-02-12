@@ -222,6 +222,7 @@ const Flex = () => {
                   display="flex"
                   justifyContent="center"
                   background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
+                  paddingTop="24px"
                 >
                   <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
                 </GridItem>
