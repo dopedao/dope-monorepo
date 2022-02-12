@@ -12,7 +12,7 @@ export default class Preload extends Scene {
 
   constructor() {
     super({
-      key: 'PreloadScene'
+      key: 'PreloadScene',
     });
   }
 
@@ -21,22 +21,25 @@ export default class Preload extends Scene {
     let totalSize: number;
     this.progressBar = new ProgressBar(this, 0.5, 0.66, manifest.totalSize);
     let currentFile: string = '';
-    
+
     this.load.on('fileprogress', (file: any) => {
       const previousLoad = file.previousLoad || 0;
 
       this.downloadedSize += file.bytesLoaded - previousLoad;
       file.previousLoad = file.bytesLoaded;
 
-      this.progressBar!.setProgress(this.downloadedSize / manifest.totalSize, "Loading " + currentFile + "...");
+      this.progressBar!.setProgress(
+        this.downloadedSize / manifest.totalSize,
+        'Loading ' + currentFile + '...',
+      );
     });
 
-    const assetList: {[key:string]: {[key:string]: any}} = manifest.assets;
+    const assetList: { [key: string]: { [key: string]: any } } = manifest.assets;
 
     // read our manifest.json file
     totalSize = manifest.totalSize;
     Object.keys(assetList).forEach((fileType: string) => {
-      Object.keys(assetList[fileType]).forEach((key) => {
+      Object.keys(assetList[fileType]).forEach(key => {
         currentFile = key;
         const assetVars = assetList[fileType][key];
 
@@ -54,24 +57,27 @@ export default class Preload extends Scene {
   create(): void {
     const networkHandler = NetworkHandler.getInstance();
     networkHandler.connect();
-    
+
     const onConnection = () => {
       // handle messages
       networkHandler.listenMessages();
 
       // get hustlers before starting game
       if ((window?.ethereum as any)?.selectedAddress)
-        fetch(`https://api.dopewars.gg/wallets/${ethers.utils.getAddress((window?.ethereum as any)?.selectedAddress)}/hustlers`).then(res => {
+        fetch(
+          `https://api.dopewars.gg/wallets/${ethers.utils.getAddress(
+            (window?.ethereum as any)?.selectedAddress,
+          )}/hustlers`,
+        ).then(res => {
           res.json().then(data => {
             // start game scene
             this.scene.start('GameScene', {
               hustlerData: data,
             });
-          })
+          });
         });
-      else
-        this.scene.start('GameScene');
-    }
+      else this.scene.start('GameScene');
+    };
 
     networkHandler.once(NetworkEvents.CONNECTED, onConnection);
   }

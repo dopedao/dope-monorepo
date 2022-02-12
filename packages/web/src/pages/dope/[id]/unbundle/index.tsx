@@ -104,8 +104,8 @@ const Approve = () => {
             isApproved={isPaperApproved}
             onApprove={approved => setIsPaperApproved(approved)}
           >
-            We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of your
-            DOPE NFT #{dopeId}.
+            We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of your DOPE NFT
+            #{dopeId}.
           </ApprovePaper>
           <MintTo
             mintTo={mintTo}

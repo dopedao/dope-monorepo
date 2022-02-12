@@ -19,7 +19,7 @@ const DopeCardButtonBarOwner = ({ dope }: DopeCardButtonBarOwnerProps) => {
       <div></div>
       {paper && (
         <Button
-          disabled={ dope.claimed }
+          disabled={dope.claimed}
           onClick={async () => {
             await paper.claimById(dope.id);
           }}
@@ -27,14 +27,13 @@ const DopeCardButtonBarOwner = ({ dope }: DopeCardButtonBarOwnerProps) => {
           Claim $PAPER
         </Button>
       )}
-      <Button 
-        onClick={() => router.push(`/dope/${dope.id}/unbundle`)}
-        disabled={ dope.opened }
-      >
+      <Button onClick={() => router.push(`/dope/${dope.id}/unbundle`)} disabled={dope.opened}>
         Claim Gear
       </Button>
       <Link href={`/hustlers/${dope.id}/initiate`} passHref>
-        <Button variant="primary" disabled={ dope.opened }>Initiate Hustler</Button>
+        <Button variant="primary" disabled={dope.opened}>
+          Initiate Hustler
+        </Button>
       </Link>
     </PanelFooter>
   );

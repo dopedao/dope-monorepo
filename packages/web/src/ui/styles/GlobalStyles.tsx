@@ -34,13 +34,13 @@ export default function GlobalStyles() {
           /* COLORS */
           --black: #000;
           --white: #fff;
-          --gray-00: #EDEFEE;
-          --gray-100: #DEDEDD;
-          --gray-200: #BFB9BD;
-          --gray-300: #A8A9AE;
+          --gray-00: #edefee;
+          --gray-100: #dededd;
+          --gray-200: #bfb9bd;
+          --gray-300: #a8a9ae;
           --gray-400: #878783;
           --gray-500: #767674;
-          --gray-600: #5D5354;
+          --gray-600: #5d5354;
           --gray-700: #434345;
           --gray-800: #202221;
           --gray-900: #141011;
@@ -53,8 +53,8 @@ export default function GlobalStyles() {
           --border-light: 1px solid #dbdbdb;
 
           /* FONTS */
-          --font-a: ChicagoFLF, Dope, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-            Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+          --font-a: ChicagoFLF, Dope, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+            Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
           --font-b: Courier, monospace;
 
           /* SPACING */
@@ -191,10 +191,12 @@ export default function GlobalStyles() {
         }
         a.primary {
           color: var(--primary);
-        },
+        }
+        ,
         a.underline {
           text-decoration: underline !important;
-        },
+        }
+        ,
         p,
         ol,
         ul {

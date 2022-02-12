@@ -12,7 +12,7 @@ const DopeCardItems = styled.div<{ isExpanded: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  height: ${({ isExpanded }) => isExpanded ? 'auto' : '60px'};
+  height: ${({ isExpanded }) => (isExpanded ? 'auto' : '60px')};
 `;
 
 export default DopeCardItems;

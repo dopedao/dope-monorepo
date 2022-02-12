@@ -10,7 +10,6 @@ import { AmountType, ItemTier, ItemType } from 'generated/graphql';
 
 const iconPath = '/images/icon';
 
-
 export type DopeCardProps = {
   buttonBar: 'for-marketplace' | 'for-owner';
   dope: {
@@ -66,7 +65,6 @@ export type DopeCardProps = {
 };
 
 const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: DopeCardProps) => {
-
   return (
     <PanelContainer
       key={`dope-card_${dope.id}`}
@@ -93,7 +91,7 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: 
           DOPE #{dope.id}
         </div>
         <div
-            css={css`
+          css={css`
             padding: 0px 8px;
             width: 48px;
           `}
@@ -109,9 +107,7 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: 
         <DopeCardTitleCost dope={dope} />
       </PanelTitleBarFlex>
       <DopeCardBody dope={dope} isExpanded={isExpanded} />
-      { buttonBar === 'for-owner' && 
-        <DopeCardButtonBarOwner dope={dope} />
-      }
+      {buttonBar === 'for-owner' && <DopeCardButtonBarOwner dope={dope} />}
     </PanelContainer>
   );
 };

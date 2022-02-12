@@ -12,7 +12,8 @@ export const PanelFooter = styled.div`
   div {
     flex-grow: 1;
   }
-  * > button, div {
+  * > button,
+  div {
     margin-right: 10px;
     &:last-of-type {
       margin-right: 0;

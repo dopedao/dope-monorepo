@@ -21,7 +21,7 @@ const RenderFromDopeId = ({
   textColor,
   zoomWindow,
   ogTitle,
-  isVehicle
+  isVehicle,
 }: RenderFromDopeIdProps) => {
   const [itemIds, setItemIds] = useState<BigNumber[]>();
 
@@ -29,9 +29,11 @@ const RenderFromDopeId = ({
 
   useEffect(() => {
     if (id) {
-      swapmeet.itemIds(id).then(ids =>
-        setItemIds([ids[2], ids[6], ids[8], ids[5], ids[1], ids[3], ids[4], ids[7], ids[0]]),
-      );
+      swapmeet
+        .itemIds(id)
+        .then(ids =>
+          setItemIds([ids[2], ids[6], ids[8], ids[5], ids[1], ids[3], ids[4], ids[7], ids[0]]),
+        );
     }
   }, [swapmeet, id]);
 
