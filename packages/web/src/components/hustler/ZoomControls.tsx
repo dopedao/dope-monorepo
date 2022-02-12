@@ -31,6 +31,7 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
       isVehicle,
       renderName: renderName,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected, isVehicle]);
 
   return (

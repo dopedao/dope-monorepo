@@ -6,19 +6,19 @@ import (
 	"net/http"
 	"strings"
 
+	"cloud.google.com/go/storage"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/schema"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/gorilla/websocket"
+	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
-	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/game"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
+	"github.com/dopedao/dope-monorepo/packages/api/resources"
 )
 
 const ts_migation = `
@@ -253,16 +253,7 @@ CREATE UNIQUE INDEX search_index_pk ON search_index using btree(id);
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);
 `
 
-var (
-	wsUpgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true },
-	}
-	gameState = game.NewGame()
-)
-
-func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string) (http.Handler, error) {
+func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, index bool, openseaApiKey, network string) (http.Handler, error) {
 	client := ent.NewClient(ent.Driver(drv))
 
 	if index {
@@ -291,7 +282,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 
 	srv := handler.NewDefaultServer(graph.NewSchema(client))
 
-	r := http.NewServeMux()
+	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(`{"success":true}`))
@@ -299,34 +290,13 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
-	// run game server loop in the background
-	go gameState.Start(ctx)
+	r.HandleFunc("/wallets/{address}/hustlers", resources.WalletHustlersHandler(client))
+	r.HandleFunc("/hustlers/{id}/sprites", resources.HustlerSpritesHandler(client))
+	r.HandleFunc("/hustlers/{id}/sprites/composite.png", resources.HustlerSpritesCompositeHandler(client, static))
 
-	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
-		_, log := base.LogFor(ctx)
-
-		wsConn, err := wsUpgrader.Upgrade(w, r, nil)
-
-		if err != nil {
-			log.Err(err).Msg("failed to upgrade websocket")
-			return
-		}
-
-		// close the connection when the function returns
-		defer wsConn.Close()
-
-		// handle messages
-		gameState.Handle(ctx, wsConn)
-
-		// if the connection is closed, dispatch player leave
-		player := gameState.Players.PlayerByConn(ctx, wsConn)
-		if player != nil {
-			data := game.IdData{
-				Id: player.Id.String(),
-			}
-			gameState.HandlePlayerLeave(ctx, wsConn, data)
-		}
-	})
+	// World Wide Webb spec https://worldwidewebb.notion.site/Integration-Guide-101cbdbfefad415ead7b41369ce66858
+	r.HandleFunc("/collection/{id}.png", resources.HustlerSpritesCompositeHandler(client, static))
+	r.HandleFunc("/address/{address}", resources.WalletHustlersHandler(client))
 
 	if index {
 		ctx, cancel := context.WithCancel(ctx)
@@ -346,6 +316,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 					engine := engine.NewEthereum(ctx, client, c)
 					go engine.Sync(ctx)
 				case engine.OpenseaConfig:
+					c.APIKey = openseaApiKey
 					opensea := engine.NewOpensea(client, c)
 					go opensea.Sync(ctx)
 				}
@@ -361,5 +332,5 @@ func NewServer(ctx context.Context, drv *sql.Driver, index bool, network string)
 		})
 	}
 
-	return cors.Default().Handler(r), nil
+	return cors.AllowAll().Handler(r), nil
 }

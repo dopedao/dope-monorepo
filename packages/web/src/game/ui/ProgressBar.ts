@@ -45,15 +45,16 @@ export default class ProgressBar {
     });
     this.loadingText.setOrigin(0, 1);
 
-    x: this.x + this.width - this.lineWidth,
-      (this.percentText = scene.make.text({
-        y: this.loadingText.y,
-        text: '0%',
-        style: {
-          ...textStyle,
-          align: 'right',
-        },
-      }));
+    
+    this.percentText = scene.make.text({
+      x: this.x + this.width - this.lineWidth,
+      y: this.loadingText.y,
+      text: '0%',
+      style: {
+        ...textStyle,
+        align: 'right',
+      },
+    });
     this.percentText.setOrigin(1, 1);
 
     const totalBytesText = scene.make.text({

@@ -1,8 +1,7 @@
-import { ethers, Signer, BigNumber, BigNumberish, PopulatedTransaction, BaseContract, CallOverrides } from "ethers";
-import { BytesLike } from "@ethersproject/bytes";
-import { Listener, Provider } from "@ethersproject/providers";
+import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, PopulatedTransaction, Signer, utils } from "ethers";
 import { FunctionFragment, Result } from "@ethersproject/abi";
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
+import { Listener, Provider } from "@ethersproject/providers";
+import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export declare type ParamsStruct = {
     resolution: BigNumberish;
     color: BytesLike;
@@ -43,7 +42,7 @@ export declare type ParamsStructOutput = [
     attributes: string;
     parts: string[];
 };
-export interface MetadataBuilderInterface extends ethers.utils.Interface {
+export interface MetadataBuilderInterface extends utils.Interface {
     functions: {
         "attributes(bytes[])": FunctionFragment;
         "contractURI(string,string)": FunctionFragment;

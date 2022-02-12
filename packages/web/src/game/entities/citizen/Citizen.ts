@@ -1,8 +1,4 @@
 import HustlerModel from 'game/gfx/models/HustlerModel';
-import GameScene from 'game/scenes/Game';
-import UIScene from 'game/scenes/UI';
-import { getBBcodeText } from 'game/ui/rex/RexUtils';
-import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
 import Hustler from '../Hustler';
 import Player from '../player/Player';
 import Conversation from './Conversation';

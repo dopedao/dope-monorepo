@@ -47,6 +47,7 @@ export default function GlobalStyles() {
           --bg-color: #000;
           --hover-bg: #434345;
           --primary: #3523fe;
+          --new-year-red: #e02514;
           --overlay: rgba(0, 0, 0, 0.85);
           --overlay-light: rgba(0, 0, 0, 0.35);
           --border-black: 1px solid var(--black);
@@ -177,6 +178,7 @@ export default function GlobalStyles() {
           font-size: var(--text-02) !important;
         }
         h4 {
+          font-size: var(--text-01) !important;
           font-weight: 400 !important;
         }
         a {
@@ -184,13 +186,16 @@ export default function GlobalStyles() {
           cursor: pointer;
           cursor: hand;
         }
-        a.textLink,
-        .markdownContainer a {
+        a.textLink {
           text-decoration: underline !important;
           color: var(--primary) !important;
         }
         a.primary {
           color: var(--primary);
+        }
+        ,
+        a.cny {
+          color: var(--new-year-red);
         }
         ,
         a.underline {
@@ -221,6 +226,74 @@ export default function GlobalStyles() {
         /* CUSTOM */
         .button {
           ${buttonStyle};
+        }
+
+        .markdown {
+          background-color: var(--gray-00);
+          overflow-y: scroll;
+          font-size: 1.33em;
+          width: 100%;
+          justify-content: center;
+          padding: 32px;
+          max-width: 640px;
+          ${media.tablet`
+            font-size: 1.125em;
+          `}
+          .markdown {
+            max-width: 640px;
+          }
+          p,
+          div,
+          h2,
+          h3,
+          h4,
+          em,
+          strong,
+          bold,
+          ul,
+          li,
+          a {
+            font-family: Courier, monospace !important;
+          }
+
+          a {
+            text-decoration: underline !important;
+            color: var(--primary) !important;
+          }
+
+          h2,
+          h3,
+          h4 {
+            font-weight: 600;
+          }
+          h2,
+          h3 {
+            margin-top: 16px;
+            margin-bottom: 16px;
+          }
+          h4 {
+            margin-bottom: 8px;
+          }
+          img[src*='#float-left'] {
+            width: 50%;
+            float: left;
+            margin: 16px;
+            margin-left: 0;
+          }
+          img[src*='#full-bleed'] {
+            width: 100%;
+            margin-bottom: 16px;
+            margin-top: 16px;
+          }
+          hr {
+            border-top: 2px dashed #bfb9bd;
+            margin-top: 32px;
+            margin-bottom: 32px;
+          }
+          ul {
+            list-style-type: square;
+            margin-left: 1.5em;
+          }
         }
       `}
     />

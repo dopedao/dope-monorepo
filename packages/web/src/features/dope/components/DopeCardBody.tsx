@@ -13,7 +13,7 @@ import DopeStatus from 'features/dope/components/DopeStatus';
 import RenderFromDopeIdOnly from 'components/hustler/RenderFromDopeIdOnly';
 import HustlerContainer from 'components/hustler/HustlerContainer';
 
-const ITEM_ORDER = [
+export const ITEM_ORDER = [
   'WEAPON',
   'VEHICLE',
   'DRUGS',
@@ -32,9 +32,10 @@ const FinePrint = styled.div`
 `;
 
 const DopeCardBody = ({
+  buttonBar,
   dope,
   isExpanded,
-}: Pick<DopeCardProps, 'dope'> & { isExpanded: boolean }) => {
+}: Pick<DopeCardProps, 'dope' | 'buttonBar'> & { isExpanded: boolean }) => {
   const [isPreviewShown, setPreviewShown] = useState(false);
   const [isRarityVisible, setRarityVisible] = useState(false);
   const hustlerItemsRef = useRef<HTMLDivElement>(null);
@@ -63,7 +64,7 @@ const DopeCardBody = ({
       css={css`
         flex: 1;
         background: #fff;
-        padding: 8px;
+        padding: 16px;
         overflow-y: ${isExpanded ? 'auto' : 'hidden'};
         border-radius: 4px;
         display: flex;
@@ -184,8 +185,12 @@ const DopeCardBody = ({
           disabled={dope.opened}
         />
       )}
-      <DopeStatus content={'hustler'} status={!dope.opened} />
-      <DopeStatus content={'paper'} status={!dope.claimed} />
+      {buttonBar === 'for-marketplace' && (
+        <>
+          <DopeStatus content={'hustler'} status={!dope.opened} />
+          <DopeStatus content={'paper'} status={!dope.claimed} />
+        </>
+      )}
     </div>
   );
 };

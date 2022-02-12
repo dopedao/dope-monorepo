@@ -8,7 +8,6 @@ import InfiniteScroll from 'react-infinite-scroller';
 import WebAmpPlayer from 'components/WebAmpPlayer';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import LoadingBlock from 'components/LoadingBlock';
-import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
 import LoadingState from 'features/swap-meet/components/LoadingState';
 
 const Container = styled.div`
@@ -110,7 +109,6 @@ const GangstaParty = () => {
           )
         )}
         <WebAmpPlayer />
-        <StickyNoteHustlerMint />
       </ScreenSaver>
       <HStack
         m={4}
@@ -124,7 +122,7 @@ const GangstaParty = () => {
         <Link href="/" passHref>
           <Button>Back to DOPE WARS</Button>
         </Link>
-        <Link href="/hustlers" passHref>
+        <Link href="/inventory" passHref>
           <Button>Peep Your Squad</Button>
         </Link>
         <Link href="/dope" passHref>

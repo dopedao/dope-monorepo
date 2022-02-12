@@ -15,17 +15,18 @@ require (
 	github.com/rs/zerolog v1.26.0
 	github.com/vektah/gqlparser/v2 v2.2.0
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9
-	github.com/withtally/synceth v0.0.10
+	github.com/withtally/synceth v0.0.11
 )
 
 require (
 	cloud.google.com/go/secretmanager v1.0.0
-	github.com/google/uuid v1.3.0
-	github.com/gorilla/websocket v1.4.2
+	cloud.google.com/go/storage v1.20.0
+	github.com/gorilla/mux v1.8.0
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	github.com/spf13/pflag v1.0.5
 	github.com/yfuruyama/crzerolog v0.3.0
-	google.golang.org/genproto v0.0.0-20210921142501-181ce0d877f6
+	google.golang.org/api v0.66.0
+	google.golang.org/genproto v0.0.0-20220201184016-50beb8ab5c44
 )
 
 replace entgo.io/contrib => github.com/tarrencev/contrib v0.0.0-20220114171150-7eb36888a822

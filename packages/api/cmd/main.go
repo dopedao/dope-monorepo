@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"cloud.google.com/go/storage"
 	"entgo.io/ent/dialect/sql"
 
 	"entgo.io/ent/dialect"
@@ -19,6 +20,7 @@ import (
 
 var listen = pflag.String("listen", "8080", "server listen port")
 var pgConnstring = common.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
+var openseaApiKey = common.SecretEnv("OPENSEA", "plaintext://")
 var network = os.Getenv("NETWORK")
 var index = os.Getenv("INDEX")
 
@@ -32,12 +34,24 @@ func main() {
 		log.Fatal().Err(err).Msgf("Getting postgres connection string.") //nolint:gocritic
 	}
 
+	openseaApiKey, err := openseaApiKey.Value()
+	if err != nil {
+		log.Fatal().Err(err).Msgf("Getting opensea api key.") //nolint:gocritic
+	}
+
 	db, err := sql.Open(dialect.Postgres, pgConnstringSecret)
 	if err != nil {
 		log.Fatal().Err(err).Msgf("Connecting to db.") //nolint:gocritic
 	}
 
-	srv, err := api.NewServer(log.WithContext(context.Background()), db, index == "True", network)
+	ctx := context.Background()
+
+	s, err := storage.NewClient(ctx)
+	if err != nil {
+		log.Fatal().Err(err).Msgf("Creating storage client.") //nolint:gocritic
+	}
+
+	srv, err := api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), index == "True", openseaApiKey, network)
 	if err != nil {
 		log.Fatal().Err(err).Msgf("Creating server.") //nolint:gocritic
 	}

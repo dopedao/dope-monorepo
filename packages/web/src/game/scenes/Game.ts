@@ -119,7 +119,8 @@ export default class GameScene extends Scene {
                 true,
               );
             }
-          });
+          },
+        );
       });
     });
 

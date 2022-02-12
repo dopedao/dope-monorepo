@@ -16,7 +16,13 @@ export const zeroPad = (i: number) => {
 };
 
 export const getRandomNumber = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+export const getRandomDate = (date1: string) => {
+  const time1 = new Date(date1).getTime();
+  const time2 = new Date().getTime();
+  return new Date(getRandomNumber(time1, time2)).toLocaleDateString();
 };
 
 export const hexColorToBase16 = (color: string) => color.replace('#', '0x') + 'ff';

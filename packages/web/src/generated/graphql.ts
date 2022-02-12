@@ -167,6 +167,22 @@ export type BodyPartWhereInput = {
   sexIn?: InputMaybe<Array<BodyPartSex>>;
   sexNEQ?: InputMaybe<BodyPartSex>;
   sexNotIn?: InputMaybe<Array<BodyPartSex>>;
+  /** sprite field predicates */
+  sprite?: InputMaybe<Scalars['String']>;
+  spriteContains?: InputMaybe<Scalars['String']>;
+  spriteContainsFold?: InputMaybe<Scalars['String']>;
+  spriteEqualFold?: InputMaybe<Scalars['String']>;
+  spriteGT?: InputMaybe<Scalars['String']>;
+  spriteGTE?: InputMaybe<Scalars['String']>;
+  spriteHasPrefix?: InputMaybe<Scalars['String']>;
+  spriteHasSuffix?: InputMaybe<Scalars['String']>;
+  spriteIn?: InputMaybe<Array<Scalars['String']>>;
+  spriteIsNil?: InputMaybe<Scalars['Boolean']>;
+  spriteLT?: InputMaybe<Scalars['String']>;
+  spriteLTE?: InputMaybe<Scalars['String']>;
+  spriteNEQ?: InputMaybe<Scalars['String']>;
+  spriteNotIn?: InputMaybe<Array<Scalars['String']>>;
+  spriteNotNil?: InputMaybe<Scalars['Boolean']>;
   /** type field predicates */
   type?: InputMaybe<BodyPartType>;
   typeIn?: InputMaybe<Array<BodyPartType>>;
@@ -556,6 +572,7 @@ export type HustlerWhereInput = {
 export type Item = Node & {
   __typename?: 'Item';
   augmented?: Maybe<Scalars['Boolean']>;
+  base?: Maybe<Item>;
   count: Scalars['Int'];
   fullname: Scalars['String'];
   greatness: Scalars['Int'];
@@ -800,6 +817,7 @@ export type Listing = Node & {
   active: Scalars['Boolean'];
   id: Scalars['ID'];
   inputs: Array<Maybe<Amount>>;
+  order?: Maybe<OpenSeaOrder>;
   outputs: Array<Maybe<Amount>>;
   source?: Maybe<Source>;
 };
@@ -864,6 +882,32 @@ export type Node = {
   id: Scalars['ID'];
 };
 
+export type OpenSeaOrder = {
+  __typename?: 'OpenSeaOrder';
+  calldata: Scalars['Bytes'];
+  currentPrice: Scalars['String'];
+  exchange: Scalars['Address'];
+  expirationTime: Scalars['Long'];
+  extra: Scalars['String'];
+  feeMethod: Scalars['Int'];
+  feeRecipient: Scalars['String'];
+  howToCall: Scalars['Int'];
+  listingTime: Scalars['Long'];
+  maker: Scalars['Address'];
+  makerProtocolFee: Scalars['String'];
+  makerRelayerFee: Scalars['String'];
+  r: Scalars['Bytes'];
+  replacementPattern: Scalars['Bytes'];
+  s: Scalars['Bytes'];
+  saleKind: Scalars['Int'];
+  salt: Scalars['String'];
+  side: Scalars['Int'];
+  staticExtradata: Scalars['Bytes'];
+  staticTarget: Scalars['String'];
+  target: Scalars['Address'];
+  v: Scalars['Int'];
+};
+
 export enum OrderDirection {
   Asc = 'ASC',
   Desc = 'DESC',
@@ -886,6 +930,7 @@ export type Query = {
   node?: Maybe<Node>;
   nodes: Array<Maybe<Node>>;
   search: SearchConnection;
+  walletItems: WalletItemsConnection;
   wallets: WalletConnection;
 };
 
@@ -941,6 +986,15 @@ export type QuerySearchArgs = {
   orderBy?: InputMaybe<SearchOrder>;
   query: Scalars['String'];
   where?: InputMaybe<SearchWhereInput>;
+};
+
+export type QueryWalletItemsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WalletItemsOrder>;
+  where?: InputMaybe<WalletItemsWhereInput>;
 };
 
 export type QueryWalletsArgs = {
@@ -1180,6 +1234,23 @@ export type WalletItems = Node & {
   id: Scalars['ID'];
   item: Item;
   wallet: Wallet;
+};
+
+export type WalletItemsConnection = {
+  __typename?: 'WalletItemsConnection';
+  edges?: Maybe<Array<Maybe<WalletItemsEdge>>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type WalletItemsEdge = {
+  __typename?: 'WalletItemsEdge';
+  cursor: Scalars['Cursor'];
+  node?: Maybe<WalletItems>;
+};
+
+export type WalletItemsOrder = {
+  direction: OrderDirection;
 };
 
 /**
@@ -1614,6 +1685,22 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
@@ -1629,6 +1716,22 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
@@ -1644,29 +1747,28 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
-                    body?:
-                      | {
-                          __typename?: 'BodyPart';
-                          id: string;
-                          type: BodyPartType;
-                          sex: BodyPartSex;
-                          rle: string;
-                        }
-                      | null
-                      | undefined;
-                    beard?:
-                      | {
-                          __typename?: 'BodyPart';
-                          id: string;
-                          type: BodyPartType;
-                          sex: BodyPartSex;
-                          rle: string;
-                        }
-                      | null
-                      | undefined;
+                    body?: { __typename?: 'BodyPart'; id: string; rle: string } | null | undefined;
+                    hair?: { __typename?: 'BodyPart'; id: string; rle: string } | null | undefined;
+                    beard?: { __typename?: 'BodyPart'; id: string; rle: string } | null | undefined;
                     drug?:
                       | {
                           __typename?: 'Item';
@@ -1679,6 +1781,22 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
@@ -1694,6 +1812,22 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
@@ -1709,6 +1843,22 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
@@ -1724,6 +1874,22 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
@@ -1739,6 +1905,22 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
@@ -1754,6 +1936,22 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
@@ -1769,6 +1967,22 @@ export type HustlerQuery = {
                           greatness: number;
                           count: number;
                           fullname: string;
+                          svg?: string | null | undefined;
+                          rles?:
+                            | { __typename?: 'RLEs'; male: string; female: string }
+                            | null
+                            | undefined;
+                          base?:
+                            | {
+                                __typename?: 'Item';
+                                svg?: string | null | undefined;
+                                rles?:
+                                  | { __typename?: 'RLEs'; male: string; female: string }
+                                  | null
+                                  | undefined;
+                              }
+                            | null
+                            | undefined;
                         }
                       | null
                       | undefined;
@@ -1811,6 +2025,218 @@ export type HustlersWalletQuery = {
                       background?: string | null | undefined;
                       age: any;
                       svg?: string | null | undefined;
+                    }>;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+};
+
+export type ItemQueryVariables = Exact<{
+  where?: InputMaybe<ItemWhereInput>;
+}>;
+
+export type ItemQuery = {
+  __typename?: 'Query';
+  items: {
+    __typename?: 'ItemConnection';
+    edges?:
+      | Array<
+          | {
+              __typename?: 'ItemEdge';
+              node?:
+                | {
+                    __typename?: 'Item';
+                    id: string;
+                    fullname: string;
+                    svg?: string | null | undefined;
+                    base?:
+                      | { __typename?: 'Item'; svg?: string | null | undefined }
+                      | null
+                      | undefined;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+};
+
+export type ProfileDopesQueryVariables = Exact<{
+  where?: InputMaybe<DopeWhereInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['Cursor']>;
+}>;
+
+export type ProfileDopesQuery = {
+  __typename?: 'Query';
+  dopes: {
+    __typename?: 'DopeConnection';
+    totalCount: number;
+    edges?:
+      | Array<
+          | {
+              __typename?: 'DopeEdge';
+              node?:
+                | {
+                    __typename?: 'Dope';
+                    id: string;
+                    rank: number;
+                    score: number;
+                    claimed: boolean;
+                    opened: boolean;
+                    items: Array<{
+                      __typename?: 'Item';
+                      id: string;
+                      fullname: string;
+                      type: ItemType;
+                      name: string;
+                      tier: ItemTier;
+                      greatness: number;
+                      count: number;
+                    }>;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: any | null | undefined; hasNextPage: boolean };
+  };
+};
+
+export type ProfileHustlersQueryVariables = Exact<{
+  where?: InputMaybe<HustlerWhereInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['Cursor']>;
+}>;
+
+export type ProfileHustlersQuery = {
+  __typename?: 'Query';
+  hustlers: {
+    __typename?: 'HustlerConnection';
+    totalCount: number;
+    edges?:
+      | Array<
+          | {
+              __typename?: 'HustlerEdge';
+              node?:
+                | {
+                    __typename?: 'Hustler';
+                    id: string;
+                    name?: string | null | undefined;
+                    svg?: string | null | undefined;
+                    title?: string | null | undefined;
+                    type: HustlerType;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: any | null | undefined; hasNextPage: boolean };
+  };
+};
+
+export type ProfileGearQueryVariables = Exact<{
+  where?: InputMaybe<WalletItemsWhereInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['Cursor']>;
+}>;
+
+export type ProfileGearQuery = {
+  __typename?: 'Query';
+  walletItems: {
+    __typename?: 'WalletItemsConnection';
+    totalCount: number;
+    edges?:
+      | Array<
+          | {
+              __typename?: 'WalletItemsEdge';
+              node?:
+                | {
+                    __typename?: 'WalletItems';
+                    id: string;
+                    balance: any;
+                    item: {
+                      __typename?: 'Item';
+                      id: string;
+                      count: number;
+                      fullname: string;
+                      name: string;
+                      svg?: string | null | undefined;
+                      suffix?: string | null | undefined;
+                      type: ItemType;
+                      base?:
+                        | { __typename?: 'Item'; svg?: string | null | undefined }
+                        | null
+                        | undefined;
+                    };
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: any | null | undefined; hasNextPage: boolean };
+  };
+};
+
+export type RenderDopeQueryVariables = Exact<{
+  where?: InputMaybe<DopeWhereInput>;
+}>;
+
+export type RenderDopeQuery = {
+  __typename?: 'Query';
+  dopes: {
+    __typename?: 'DopeConnection';
+    totalCount: number;
+    edges?:
+      | Array<
+          | {
+              __typename?: 'DopeEdge';
+              cursor: any;
+              node?:
+                | {
+                    __typename?: 'Dope';
+                    id: string;
+                    items: Array<{
+                      __typename?: 'Item';
+                      id: string;
+                      rles?:
+                        | { __typename?: 'RLEs'; female: string; male: string }
+                        | null
+                        | undefined;
+                      base?:
+                        | {
+                            __typename?: 'Item';
+                            id: string;
+                            rles?:
+                              | { __typename?: 'RLEs'; female: string; male: string }
+                              | null
+                              | undefined;
+                          }
+                        | null
+                        | undefined;
                     }>;
                   }
                 | null
@@ -1873,6 +2299,7 @@ export type SearchDopeQuery = {
                       | Array<
                           | {
                               __typename?: 'Listing';
+                              active: boolean;
                               inputs: Array<
                                 | {
                                     __typename?: 'Amount';
@@ -2251,7 +2678,6 @@ export const HustlerDocument = `
         color
         background
         age
-        background
         neck {
           id
           type
@@ -2262,6 +2688,18 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         sex
         viewbox
@@ -2276,6 +2714,18 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         accessory {
           id
@@ -2287,18 +2737,30 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         svg
         body {
           id
-          type
-          sex
+          rle
+        }
+        hair {
+          id
           rle
         }
         beard {
           id
-          type
-          sex
           rle
         }
         drug {
@@ -2311,6 +2773,18 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         hand {
           id
@@ -2322,6 +2796,18 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         weapon {
           id
@@ -2333,6 +2819,18 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         clothes {
           id
@@ -2344,6 +2842,18 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         vehicle {
           id
@@ -2355,6 +2865,18 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         waist {
           id
@@ -2366,6 +2888,18 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         foot {
           id
@@ -2377,6 +2911,18 @@ export const HustlerDocument = `
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
       }
     }
@@ -2452,6 +2998,249 @@ export const useInfiniteHustlersWalletQuery = <TData = HustlersWalletQuery, TErr
   );
 };
 
+export const ItemDocument = `
+    query Item($where: ItemWhereInput) {
+  items(where: $where) {
+    edges {
+      node {
+        id
+        fullname
+        svg
+        base {
+          svg
+        }
+      }
+    }
+  }
+}
+    `;
+export const useItemQuery = <TData = ItemQuery, TError = unknown>(
+  variables?: ItemQueryVariables,
+  options?: UseQueryOptions<ItemQuery, TError, TData>,
+) =>
+  useQuery<ItemQuery, TError, TData>(
+    variables === undefined ? ['Item'] : ['Item', variables],
+    useFetchData<ItemQuery, ItemQueryVariables>(ItemDocument).bind(null, variables),
+    options,
+  );
+export const useInfiniteItemQuery = <TData = ItemQuery, TError = unknown>(
+  variables?: ItemQueryVariables,
+  options?: UseInfiniteQueryOptions<ItemQuery, TError, TData>,
+) => {
+  const query = useFetchData<ItemQuery, ItemQueryVariables>(ItemDocument);
+  return useInfiniteQuery<ItemQuery, TError, TData>(
+    variables === undefined ? ['Item.infinite'] : ['Item.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
+
+export const ProfileDopesDocument = `
+    query ProfileDopes($where: DopeWhereInput, $first: Int, $after: Cursor) {
+  dopes(where: $where, first: $first, after: $after) {
+    totalCount
+    edges {
+      node {
+        id
+        id
+        rank
+        score
+        claimed
+        opened
+        items {
+          id
+          fullname
+          type
+          name
+          tier
+          greatness
+          count
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}
+    `;
+export const useProfileDopesQuery = <TData = ProfileDopesQuery, TError = unknown>(
+  variables?: ProfileDopesQueryVariables,
+  options?: UseQueryOptions<ProfileDopesQuery, TError, TData>,
+) =>
+  useQuery<ProfileDopesQuery, TError, TData>(
+    variables === undefined ? ['ProfileDopes'] : ['ProfileDopes', variables],
+    useFetchData<ProfileDopesQuery, ProfileDopesQueryVariables>(ProfileDopesDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteProfileDopesQuery = <TData = ProfileDopesQuery, TError = unknown>(
+  variables?: ProfileDopesQueryVariables,
+  options?: UseInfiniteQueryOptions<ProfileDopesQuery, TError, TData>,
+) => {
+  const query = useFetchData<ProfileDopesQuery, ProfileDopesQueryVariables>(ProfileDopesDocument);
+  return useInfiniteQuery<ProfileDopesQuery, TError, TData>(
+    variables === undefined ? ['ProfileDopes.infinite'] : ['ProfileDopes.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
+
+export const ProfileHustlersDocument = `
+    query ProfileHustlers($where: HustlerWhereInput, $first: Int, $after: Cursor) {
+  hustlers(where: $where, first: $first, after: $after) {
+    totalCount
+    edges {
+      node {
+        id
+        name
+        svg
+        title
+        type
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}
+    `;
+export const useProfileHustlersQuery = <TData = ProfileHustlersQuery, TError = unknown>(
+  variables?: ProfileHustlersQueryVariables,
+  options?: UseQueryOptions<ProfileHustlersQuery, TError, TData>,
+) =>
+  useQuery<ProfileHustlersQuery, TError, TData>(
+    variables === undefined ? ['ProfileHustlers'] : ['ProfileHustlers', variables],
+    useFetchData<ProfileHustlersQuery, ProfileHustlersQueryVariables>(ProfileHustlersDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteProfileHustlersQuery = <TData = ProfileHustlersQuery, TError = unknown>(
+  variables?: ProfileHustlersQueryVariables,
+  options?: UseInfiniteQueryOptions<ProfileHustlersQuery, TError, TData>,
+) => {
+  const query = useFetchData<ProfileHustlersQuery, ProfileHustlersQueryVariables>(
+    ProfileHustlersDocument,
+  );
+  return useInfiniteQuery<ProfileHustlersQuery, TError, TData>(
+    variables === undefined
+      ? ['ProfileHustlers.infinite']
+      : ['ProfileHustlers.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
+
+export const ProfileGearDocument = `
+    query ProfileGear($where: WalletItemsWhereInput, $first: Int, $after: Cursor) {
+  walletItems(where: $where, first: $first, after: $after) {
+    totalCount
+    edges {
+      node {
+        id
+        balance
+        item {
+          id
+          count
+          fullname
+          name
+          svg
+          suffix
+          type
+          base {
+            svg
+          }
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}
+    `;
+export const useProfileGearQuery = <TData = ProfileGearQuery, TError = unknown>(
+  variables?: ProfileGearQueryVariables,
+  options?: UseQueryOptions<ProfileGearQuery, TError, TData>,
+) =>
+  useQuery<ProfileGearQuery, TError, TData>(
+    variables === undefined ? ['ProfileGear'] : ['ProfileGear', variables],
+    useFetchData<ProfileGearQuery, ProfileGearQueryVariables>(ProfileGearDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteProfileGearQuery = <TData = ProfileGearQuery, TError = unknown>(
+  variables?: ProfileGearQueryVariables,
+  options?: UseInfiniteQueryOptions<ProfileGearQuery, TError, TData>,
+) => {
+  const query = useFetchData<ProfileGearQuery, ProfileGearQueryVariables>(ProfileGearDocument);
+  return useInfiniteQuery<ProfileGearQuery, TError, TData>(
+    variables === undefined ? ['ProfileGear.infinite'] : ['ProfileGear.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
+
+export const RenderDopeDocument = `
+    query RenderDope($where: DopeWhereInput) {
+  dopes(where: $where) {
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        items {
+          id
+          rles {
+            female
+            male
+          }
+          base {
+            id
+            rles {
+              female
+              male
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useRenderDopeQuery = <TData = RenderDopeQuery, TError = unknown>(
+  variables?: RenderDopeQueryVariables,
+  options?: UseQueryOptions<RenderDopeQuery, TError, TData>,
+) =>
+  useQuery<RenderDopeQuery, TError, TData>(
+    variables === undefined ? ['RenderDope'] : ['RenderDope', variables],
+    useFetchData<RenderDopeQuery, RenderDopeQueryVariables>(RenderDopeDocument).bind(
+      null,
+      variables,
+    ),
+    options,
+  );
+export const useInfiniteRenderDopeQuery = <TData = RenderDopeQuery, TError = unknown>(
+  variables?: RenderDopeQueryVariables,
+  options?: UseInfiniteQueryOptions<RenderDopeQuery, TError, TData>,
+) => {
+  const query = useFetchData<RenderDopeQuery, RenderDopeQueryVariables>(RenderDopeDocument);
+  return useInfiniteQuery<RenderDopeQuery, TError, TData>(
+    variables === undefined ? ['RenderDope.infinite'] : ['RenderDope.infinite', variables],
+    metaData => query({ ...variables, ...(metaData.pageParam ?? {}) }),
+    options,
+  );
+};
+
 export const SearchDopeDocument = `
     query SearchDope($query: String!, $after: Cursor, $first: Int, $before: Cursor, $last: Int, $orderBy: SearchOrder, $where: SearchWhereInput) {
   search(
@@ -2486,6 +3275,7 @@ export const SearchDopeDocument = `
             }
           }
           listings {
+            active
             inputs {
               amount
               id

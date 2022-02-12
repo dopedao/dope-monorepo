@@ -21,6 +21,8 @@ type BodyPart struct {
 	Sex bodypart.Sex `json:"sex,omitempty"`
 	// Rle holds the value of the "rle" field.
 	Rle string `json:"rle,omitempty"`
+	// Sprite holds the value of the "sprite" field.
+	Sprite string `json:"sprite,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BodyPartQuery when eager-loading is set.
 	Edges BodyPartEdges `json:"edges"`
@@ -71,7 +73,7 @@ func (*BodyPart) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case bodypart.FieldID, bodypart.FieldType, bodypart.FieldSex, bodypart.FieldRle:
+		case bodypart.FieldID, bodypart.FieldType, bodypart.FieldSex, bodypart.FieldRle, bodypart.FieldSprite:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type BodyPart", columns[i])
@@ -111,6 +113,12 @@ func (bp *BodyPart) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field rle", values[i])
 			} else if value.Valid {
 				bp.Rle = value.String
+			}
+		case bodypart.FieldSprite:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field sprite", values[i])
+			} else if value.Valid {
+				bp.Sprite = value.String
 			}
 		}
 	}
@@ -161,6 +169,8 @@ func (bp *BodyPart) String() string {
 	builder.WriteString(fmt.Sprintf("%v", bp.Sex))
 	builder.WriteString(", rle=")
 	builder.WriteString(bp.Rle)
+	builder.WriteString(", sprite=")
+	builder.WriteString(bp.Sprite)
 	builder.WriteByte(')')
 	return builder.String()
 }

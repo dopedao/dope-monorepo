@@ -82,7 +82,7 @@ export default class PlayerController {
     } else if (this.mainKeys.right.isDown || this.arrows.right.isDown) {
       this.player.moveDirection = Direction.East;
       this.player.setVelocityX(Hustler.DEFAULT_VELOCITY);
-      // this.player.model.updateSprites(true);
+      // tshis.player.model.updateSprites(true);
 
       willMoveFlag = true;
     }

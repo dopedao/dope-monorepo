@@ -1,12 +1,27 @@
 import { extendTheme } from '@chakra-ui/react';
+import { withTheme } from '@emotion/react';
 
 const desktopImageCss = [
-  "#000000 url('/images/desktop/TONY.gif') center center / contain repeat-y fixed",
-  "#d10913 url('/images/desktop/LAMBO.png') center center / cover repeat-y fixed",
-  "#5f3084 url('/images/desktop/PAPER.png') center / 512px repeat",
+  // "#000000 url('/images/desktop/TONY.gif') center center / contain repeat-y fixed",
+  // "#d10913 url('/images/desktop/LAMBO.png') center center / cover repeat-y fixed",
+  // "#1d261c url('/images/desktop/limo-chopper.png') center / cover repeat-y",
+  // "#5f3084 url('/images/desktop/PAPER.png') center / 512px repeat",
+  // "#202221 url('/images/hustler/street_scene.png') center / cover no-repeat fixed",
   "#202221 url('/images/dope-wars-stacked-logo.png') center / 400px no-repeat fixed",
   "#202221 url('/images/dope-wars-smiley.png') center / 400px no-repeat fixed",
-  "#1d261c url('/images/desktop/limo-chopper.png') center / cover repeat-y",
+  "#000 url('/images/desktop/the-crew.jpg') center / cover no-repeat fixed",
+  "#000000 url('/images/desktop/cny/dragon_dance.jpg') center center / contain repeat fixed",
+  "#202221 url('/images/desktop/cny/dragon.jpg') center / contain repeat-y fixed",
+  "#202221 url('/images/desktop/cny/kid_car.jpg') center / cover repeat fixed",
+  "#202221 url('/images/desktop/cny/tiger.jpg') center / contain repeat-x",
+  "#202221 url('/images/desktop/cny/fireworks_2.png') center / 1024px repeat",
+  "#202221 url('/images/desktop/cny/fireworks_1.gif') center / 512px repeat",
+  "#202221 url('/images/desktop/cny/dragon_hanging.png') center / 512px repeat",
+  "#202221 url('/images/desktop/cny/lanterns.png') center / cover repeat",
+  "#202221 url('/images/desktop/cny/lanterns_2.png') center / contain repeat",
+  "#202221 url('/images/desktop/cny/lanterns_3.png') center / cover repeat",
+  "#202221 url('/images/desktop/cny/overhead.png') center / cover repeat",
+  "#000 url('/images/desktop/cny/chinatown_illustration.jpg') center / contain repeat-y fixed",
 ];
 const randomImageIndex = Math.floor(Math.random() * desktopImageCss.length);
 const randomDesktopImageCss = desktopImageCss[randomImageIndex];
@@ -47,11 +62,15 @@ export default extendTheme({
     },
     Button: {
       variants: {
-        back: {
+        navBar: {
           display: 'flex',
-          gap: '0.25em',
+          gap: '8px',
           fontSize: 'var(--text-small)',
           fontWeight: '400',
+          color: 'white',
+          _hover: {
+            textDecoration: 'none',
+          },
         },
         solid: {
           background: '#EDEFEE',
@@ -67,6 +86,7 @@ export default extendTheme({
           _hover: {
             backgroundColor: 'var(--hover-bg)',
             color: '#fff',
+            textDecoration: 'none',
           },
           _disabled: {
             _hover: {
@@ -84,6 +104,33 @@ export default extendTheme({
           width: 'auto',
           display: 'inline-block',
         },
+        cny: {
+          backgroundColor: 'var(--new-year-red)',
+          color: '#ffffff',
+          textShadow: '1px 1px 0px rgba(0, 0, 0, 0.66)',
+          border: '2px solid #000000',
+          borderRadius: '4px',
+          padding: '8px 12px',
+          height: '32px',
+          boxShadow:
+            'inset -1px -1px 0px rgba(0, 0, 0, 0.25), inset 1px 1px 0px rgba(255, 255, 255, 0.25)',
+          fontSize: '1em',
+          lineHeight: '1em',
+          fontWeight: '400',
+          width: '100%',
+          _hover: {
+            backgroundColor: '#000',
+            color: '#fff',
+            textDecoration: 'none',
+          },
+          _disabled: {
+            _hover: {
+              backgroundColor: '#000 !important',
+              color: '#fff',
+              textDecoration: 'none',
+            },
+          },
+        },
         primary: {
           backgroundColor: 'var(--primary)',
           color: '#ffffff',
@@ -100,9 +147,11 @@ export default extendTheme({
           _hover: {
             backgroundColor: '#000',
             color: '#fff',
+            textDecoration: 'none',
           },
           _disabled: {
             _hover: {
+              backgroundColor: '#000 !important',
               color: '#000',
             },
           },

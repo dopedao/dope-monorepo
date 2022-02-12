@@ -1,4 +1,4 @@
-import { Button, Spinner } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -13,6 +13,7 @@ import {
 } from 'utils/HustlerConfig';
 import PanelFooter from 'components/PanelFooter';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
+import SpinnerMessage from 'components/SpinnerMessage';
 
 const NoDopeMessage = () => {
   const caution = (
@@ -113,10 +114,7 @@ const InitiationFooterDopeContent = ({
   if (loading) {
     return (
       <PanelFooter>
-        <SpinnerContainer>
-          <Spinner size="xs" />
-          Finding DOPE in your wallet with Gear
-        </SpinnerContainer>
+        <SpinnerMessage text="Finding DOPE in your wallet with Gear" />
       </PanelFooter>
     );
   } else if (!loading && !data?.wallets.edges![0]?.node?.dopes) {
@@ -167,13 +165,6 @@ const SubPanelForm = styled.div`
   background-color: #ffffff;
   select {
     border-bottom: 1px solid #dededd;
-  }
-`;
-
-const SpinnerContainer = styled.div`
-  border: 0px;
-  .chakra-spinner {
-    margin: 0 0.5em;
   }
 `;
 

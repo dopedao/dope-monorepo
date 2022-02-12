@@ -1090,6 +1090,20 @@ func SvgContainsFold(v string) predicate.Item {
 	})
 }
 
+// SpriteIsNil applies the IsNil predicate on the "sprite" field.
+func SpriteIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldSprite)))
+	})
+}
+
+// SpriteNotNil applies the NotNil predicate on the "sprite" field.
+func SpriteNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldSprite)))
+	})
+}
+
 // HasWallets applies the HasEdge predicate on the "wallets" edge.
 func HasWallets() predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {

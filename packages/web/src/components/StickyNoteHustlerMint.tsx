@@ -18,7 +18,7 @@ const StickyNoteHustlerMint = () => {
   const currentPageIsGangsta = router.pathname == '/gangsta-party';
 
   return (
-    <StickyNote maxWidth="312px">
+    <StickyNote>
       <h3>
         <Link href="/hustlers/initiate" variation="primary">
           <a className="primary">👉 Initiate Your Hustler 👈</a>

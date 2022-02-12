@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 const DopeCardItems = styled.div<{ isExpanded: boolean }>`
-  background-color: #202221;
+  background-color: var(--gray-800);
   padding: 16px;
   border-top: 2px solid #000;
   border-left: 2px solid #000;
