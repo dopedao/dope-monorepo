@@ -1,23 +1,26 @@
 import styled from '@emotion/styled';
 
+const backgroundSize = 2400;
+const frameWidth = backgroundSize/16;
+const frameHeight = backgroundSize/8;
+
+// Standalone hustler animation test
+
 const HustlerSpriteSheetWalk = styled.div<{ id?: string }>`
-  height: 256px;
-  width: 128px;
+  width: ${frameWidth}px;
+  height: ${frameHeight}px;
   background: url('https://api.dopewars.gg/hustlers/${({ id }) => id}/sprites/composite.png');
-  background-size: 1140px;
-  background-position: 0px 0px;
+  background-size: auto 800%;
   image-rendering: pixelated;
-  @keyframes sprite {
+  @keyframes walk {
     0% {
-      background-position: 0px 0px;
+      background-position: ${-(backgroundSize/2)}px 0;
     }
-    100% {
-      background-position: 1140px 0px;
+    100 % {
+      background-position: 0 0;
     }
   }
-  animation-name: sprite;
-  animation-duration: 0.8s;
-  animation-timing-function: steps(8);
-  animation-iteration-count: infinite;
+  animation-name: walk;
+  animation: walk 1s steps(8, start) infinite;
 `;
 export default HustlerSpriteSheetWalk;
