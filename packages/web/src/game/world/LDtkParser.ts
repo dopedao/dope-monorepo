@@ -301,7 +301,8 @@ export class LDtkMapPack {
   entityLayer?: LayerInstance;
 
   bgColor?: string;
-  gfx?: Phaser.GameObjects.GameObject;
+  gfx?: Phaser.GameObjects.Shape;
+  otherGfx?: Phaser.GameObjects.Shape;
   settings?: FieldInstance[];
 
   constructor(levelIdentifier: string) {

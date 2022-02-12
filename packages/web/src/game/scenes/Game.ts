@@ -16,6 +16,8 @@ import Hustler, { Direction } from 'game/entities/Hustler';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import { getShortAddress } from 'utils/utils';
 import Items from 'game/constants/Items';
+import { SiweMessage } from 'siwe';
+import { ethers } from 'ethers';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -66,7 +68,7 @@ export default class GameScene extends Scene {
       new Promise(() => {
         const citizenToTalkTo = this.citizens.find(
           citizen =>
-            citizen.shouldFollowPath &&
+            citizen.shouldFollowPath && citizen.conversations.length !== 0 &&
             citizen.getBounds().contains(pointer.worldX, pointer.worldY),
         );
         const itemToPickUp = this.itemEntities.find(item =>
@@ -125,7 +127,25 @@ export default class GameScene extends Scene {
         '30',
         'Michel',
         'Arpenteur',
-        [new Conversation('Welcome to Dope City!')],
+        [new Conversation('Welcome to Dope City!', () => {
+          const selectedAddress = (window.ethereum as any)?.selectedAddress;
+          if (selectedAddress)
+          {
+            const siweMessage = new SiweMessage({
+              domain: window.location.hostname,
+              address: selectedAddress,
+              uri: origin,
+              version: '1',
+              chainId: 1
+            });
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            provider.getSigner().signMessage(siweMessage.prepareMessage()).then(signedMessage => console.log(signedMessage)).catch(err => console.log(err));
+
+            return true;
+          }
+
+          return false;
+        })],
         undefined,
         //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
         true,
@@ -135,7 +155,7 @@ export default class GameScene extends Scene {
     this.citizens.push(
       new Citizen(
         this.matter.world,
-        70,
+        45,
         300,
         '12',
         'Michel',
@@ -177,12 +197,7 @@ export default class GameScene extends Scene {
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
     const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
-    this.cameras.main.setBounds(
-      map.displayLayers[0].x,
-      map.displayLayers[0].y,
-      map.displayLayers[0].width,
-      map.displayLayers[0].height,
-    );
+    map.otherGfx?.setVisible(false);
 
     this.handleNetwork();
 
@@ -395,14 +410,12 @@ export default class GameScene extends Scene {
       const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
       if (this.loadedMaps.find(m => m === lvl.identifier)) {
         if (!patchMap && n.dir === dir) {
+          this.mapHelper.loadedMaps.get(this.player.currentMap)!.otherGfx?.setVisible(true);
+
           this.player.currentMap = lvl.identifier;
           const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
-          this.cameras.main.setBounds(
-            map.displayLayers[0].x,
-            map.displayLayers[0].y,
-            map.displayLayers[0].width,
-            map.displayLayers[0].height,
-          );
+          
+          map.otherGfx?.setVisible(false);
 
           this.hustlers
             .filter(h => h.currentMap === this.player.currentMap)

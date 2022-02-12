@@ -47,11 +47,11 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
         plugin: phaserReact,
         start: true,
       },
-      {
-        key: 'rexPixelationPipeline',
-        plugin: PixelationPipelinePlugin,
-        start: true,
-      },
+      // {
+      //   key: 'rexPixelationPipeline',
+      //   plugin: PixelationPipelinePlugin,
+      //   start: true,
+      // },
     ],
     scene: [
       // ig ui
