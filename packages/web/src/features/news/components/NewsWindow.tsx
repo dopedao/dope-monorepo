@@ -19,12 +19,7 @@ interface NewsWindowProps {
 }
 
 const NewsWindow = ({ allPosts, posX, posY, ...props }: NewsWindowProps) => (
-  <DesktopWindow
-    title="The Daily Dope"
-    width={768}
-    hideWalletAddress
-    {...props}
-  >
+  <DesktopWindow title="The Daily Dope" width={768} hideWalletAddress {...props}>
     <Container>
       <BannerLunarAirDrop />
       <DopeNewsCast posts={allPosts} />

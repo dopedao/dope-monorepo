@@ -1,4 +1,4 @@
-import MarkdownText from "components/MarkdownText";
+import MarkdownText from 'components/MarkdownText';
 const ContentIntro = () => {
   const content = `
 Dope Wars is a fully decentralized, community driven, play-to-earn gaming metaverse project inspired by hip-hop culture. Our unique fully-customizable avatars in web3 stand for the values and principles we stand for with our carbon avatars.
@@ -8,8 +8,8 @@ We're bootstrapping a modern-day GTA-inspired metaverse and series of games buil
 Our open environment allows developers and contributors to produce their own limitless games for the Dope Wars NFT holders.
 
 Dope Wars is also an ongoing NFT art project and experiment in decentralized project finance and governance using a [DAO](https://ethereum.org/en/dao/). We have no VC funding. All of our treasury's revenue comes from royalties of NFT sales.
-  `
-  return <MarkdownText text={content} />
+  `;
+  return <MarkdownText text={content} />;
 };
 
 export default ContentIntro;

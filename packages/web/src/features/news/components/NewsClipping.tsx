@@ -1,8 +1,8 @@
-import { Box, Text, Image } from "@chakra-ui/react";
-import { css } from "@emotion/react";
+import { Box, Text, Image } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 import { PostType } from 'features/news/types';
 import { truncate } from 'utils/truncateString';
-import Link from "next/link";
+import Link from 'next/link';
 
 // Allow for posts using Excerpt or Body content
 const getPostSnippet = (post: PostType) => {
@@ -17,13 +17,13 @@ const getPostSnippet = (post: PostType) => {
 
 type Props = {
   post: PostType;
-  titleSize?: 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';  
+  titleSize?: 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
   showImage?: boolean;
 };
 
-const NewsClipping = ({post, titleSize='md', showImage=false}: Props) => {
-  const isLargerTitle = (titleSize != 'md');
-  return(
+const NewsClipping = ({ post, titleSize = 'md', showImage = false }: Props) => {
+  const isLargerTitle = titleSize != 'md';
+  return (
     <Box
       borderBottom="1px solid black"
       padding={isLargerTitle ? '24px 0' : '8px 0'}
@@ -46,7 +46,7 @@ const NewsClipping = ({post, titleSize='md', showImage=false}: Props) => {
           >
             {post.title}
           </Text>
-          { showImage &&
+          {showImage && (
             <Image
               src={post.coverImage}
               alt={`Cover Image for ${post.title}`}
@@ -56,26 +56,23 @@ const NewsClipping = ({post, titleSize='md', showImage=false}: Props) => {
                 cursor: hand;
               `}
             />
-          }
+          )}
         </div>
       </Link>
       <Text
         css={css`
-          font-size: var(--text-smallest)
+          font-size: var(--text-smallest);
         `}
       >
-        {new Date(post.date).toLocaleDateString(
-          'en-us',
-          {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-          }
-        )}
+        {new Date(post.date).toLocaleDateString('en-us', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })}
       </Text>
       <Text fontSize="md">{getPostSnippet(post)}</Text>
     </Box>
-  )
-}
+  );
+};
 
 export default NewsClipping;

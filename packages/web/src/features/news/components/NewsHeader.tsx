@@ -54,26 +54,19 @@ export const PHRASES = [
   'Always trending #1 on DEXTOOLS',
   'The talk of Crypto Twitter',
   'Doing shit different because we can',
-  'We heard p2e metaverse games are going to be big'
+  'We heard p2e metaverse games are going to be big',
 ];
-
 
 const NewsHeader = ({
   $paper = 20,
-  description = PHRASES[getRandomNumber(0,PHRASES.length-1)],
+  description = PHRASES[getRandomNumber(0, PHRASES.length - 1)],
   location = 'DOPECITY',
   date,
 }: DopePostHeaderProps) => (
   <Wrapper>
     <Flex padding="12px 0">
       <TitleWrapper>
-        <Text
-          color="#000"
-          fontWeight="normal"
-          marginBottom={0}
-          paddingBottom={0}
-          as="h1"
-        >
+        <Text color="#000" fontWeight="normal" marginBottom={0} paddingBottom={0} as="h1">
           The Daily Dope
         </Text>
         <Description>
@@ -85,7 +78,9 @@ const NewsHeader = ({
               width="80%"
               padding={0}
               paddingLeft=".5em"
-            >{description}</Text>
+            >
+              {description}
+            </Text>
           </Flex>
         </Description>
       </TitleWrapper>
@@ -96,7 +91,7 @@ const NewsHeader = ({
         <Flex height="100%" align="center" justify="center" gap="0">
           <div>
             <Text fontSize="md" paddingBottom="0px" textTransform="uppercase">
-              { new Date().getHours() > 12 ? 'Evening' : 'Morning' } EDITION
+              {new Date().getHours() > 12 ? 'Evening' : 'Morning'} EDITION
             </Text>
             <Text
               fontSize="sm"

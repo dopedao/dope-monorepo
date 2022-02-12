@@ -1,12 +1,7 @@
 import { FC, useMemo } from 'react';
 import { Button, HStack } from '@chakra-ui/react';
 import { useWeb3React } from '@web3-react/core';
-import {
-  Item,
-  Maybe,
-  useInfiniteProfileGearQuery,
-  WalletItems,
-} from 'generated/graphql';
+import { Item, Maybe, useInfiniteProfileGearQuery, WalletItems } from 'generated/graphql';
 import CardContainer from './CardContainer';
 import GearCard from './GearCard';
 import ItemCount from './ItemCount';
@@ -88,10 +83,10 @@ const GearWrapper: FC = () => {
           <CardContainer>
             {gearData.walletItems.map(walletItem => {
               return (
-                <GearCard 
-                  key={walletItem.id} 
-                  item={walletItem.item} 
-                  balance={walletItem.balance} 
+                <GearCard
+                  key={walletItem.id}
+                  item={walletItem.item}
+                  balance={walletItem.balance}
                   showEquipFooter
                 />
               );

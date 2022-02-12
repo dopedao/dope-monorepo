@@ -11,7 +11,7 @@ const SwapMeet = () => (
     navbar={<DopeWarsExeNav />}
     title="Swap Meet"
   >
-    <Head title="SWAP MEET" />
+    <Head title="Hustlers" />
     <ComingSoonDialog title="We're working on it" icon="construction">
       <p>
         Soon™️ you&apos;ll be able to add new Hustlers to your Squad. Build the biggest crew and get

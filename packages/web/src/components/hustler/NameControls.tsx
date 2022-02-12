@@ -8,7 +8,11 @@ import { css } from '@emotion/react';
 const NAME_MAX_LENGTH = 20;
 const FIELD_SPACING = '16px';
 
-const NameControls = ({ config, setHustlerConfig, enableNameVisible = false }: ConfigureHustlerProps & {enableNameVisible?: boolean}) => {
+const NameControls = ({
+  config,
+  setHustlerConfig,
+  enableNameVisible = false,
+}: ConfigureHustlerProps & { enableNameVisible?: boolean }) => {
   const [errorName, setErrorName] = useState<string | undefined>(undefined);
   const [hustlerName, setHustlerName] = useState(config.name ?? '');
   const [nameFieldDirty, setNameFieldDirty] = useState(false);
@@ -66,7 +70,7 @@ const NameControls = ({ config, setHustlerConfig, enableNameVisible = false }: C
             {errorName && <FormErrorMessage>{errorName}</FormErrorMessage>}
           </FormControl>
           <FormControl display="flex" alignItems="center" width="30%">
-            {enableNameVisible &&
+            {enableNameVisible && (
               <>
                 <Checkbox
                   id="render-name"
@@ -89,8 +93,7 @@ const NameControls = ({ config, setHustlerConfig, enableNameVisible = false }: C
                   Visible
                 </FormLabel>
               </>
-            }
-
+            )}
           </FormControl>
         </HStack>
       </Stack>

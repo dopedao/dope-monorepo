@@ -16,30 +16,34 @@ const AboutWindow = ({ ...props }) => {
       hideWalletAddress
       {...props}
     >
-      <div css={css`
-        overflow-y:auto;
-        overflow-x: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content:stretch;
-      `}>
-        <div css={css`
-          flex:1;
+      <div
+        css={css`
+          overflow-y: auto;
+          overflow-x: hidden;
           display: flex;
           flex-direction: column;
-          align-items: center;
-          width: 100%;
-          .react-player__preview {
-            background-size: 80% 80% !important;
-            background-repeat: no-repeat;
-            align-items: end !important;
-            padding: 32px;
-          }
-        `}>
-          <ReactPlayer 
+          justify-content: stretch;
+        `}
+      >
+        <div
+          css={css`
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            .react-player__preview {
+              background-size: 80% 80% !important;
+              background-repeat: no-repeat;
+              align-items: end !important;
+              padding: 32px;
+            }
+          `}
+        >
+          <ReactPlayer
             // light='/images/icon/dope-smiley.svg'
-            light='/images/Logo-Plain.svg'
-            url="https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-moving-bricks.mp4" 
+            light="/images/Logo-Plain.svg"
+            url="https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-moving-bricks.mp4"
             width="100%"
             controls
             playing
@@ -47,9 +51,11 @@ const AboutWindow = ({ ...props }) => {
               background: black;
             `}
             playIcon={
-              <Button 
-                variant="cny" 
-                css={css`width:auto;`}
+              <Button
+                variant="cny"
+                css={css`
+                  width: auto;
+                `}
               >
                 Enter the murderverse
               </Button>
@@ -59,7 +65,13 @@ const AboutWindow = ({ ...props }) => {
           <ContentRoadmap />
           <ContentFooter />
         </div>
-        <PanelFooter css={css`position:sticky;bottom:0;padding-right:16px;`}>
+        <PanelFooter
+          css={css`
+            position: sticky;
+            bottom: 0;
+            padding-right: 16px;
+          `}
+        >
           <Link href="/news" passHref>
             <Button>Latest Announcements</Button>
           </Link>
