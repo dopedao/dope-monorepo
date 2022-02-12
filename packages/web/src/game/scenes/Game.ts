@@ -107,7 +107,7 @@ export default class GameScene extends Scene {
     // citizens
     this.citizens.push(new Citizen(
       this.matter.world, 
-      100, 200, 
+      70, 200, 
       "30", 
       "Michel", "Arpenteur",
       [new Conversation("Welcome to Dope City!")],
@@ -118,7 +118,7 @@ export default class GameScene extends Scene {
 
     this.citizens.push(new Citizen(
       this.matter.world, 
-      100, 300, 
+      70, 300, 
       "12", 
       "Michel", "Arpenteur",
       [new Conversation("Welcome to Dope City!")],

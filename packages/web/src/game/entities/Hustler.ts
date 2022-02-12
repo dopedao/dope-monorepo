@@ -72,7 +72,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
 
     constructor(world: Phaser.Physics.Matter.World, x: number, y: number, hustlerId?: string, name?: string, frame?: number)
     {
-        super(world, x, y, SpritesMap[Categories.Character][Base.Male][CharacterCategories.Base], frame);
+        super(world, x, y, "male_base", frame);
         
         if (hustlerId)
         {
@@ -144,10 +144,13 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         const uiScene = this.scene.scene.get('UIScene') as UIScene;
         this.setInteractive({ useHandCursor: true });
         this.on('pointerover', () => {
+            // if this hustler is of instance player
+            const isPlayer = (this as any).controller !== undefined;
+
             this._hoverText = uiScene.rexUI.add.BBCodeText(0, 0, `[stroke=black]${this.name}[/stroke]`, {
                 fontFamily: 'Dope',
                 fontSize: '18px',
-                color: '#9fff9f',
+                color: isPlayer ? '#ffffff' : '#9fff9f',
                 fixedWidth: this.displayWidth * 2,
                 stroke: '#000000',
                 strokeThickness: 5,
@@ -194,13 +197,12 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite
         {
             this._lastDirection  = Direction.West;
         }
-        
 
         this.play(this.texture.key + this._lastDirection);
-        // this.model.updateSprites(false, this._lastDirection);
-        
-        // this.model.stopSpritesAnim(false);
         this.stop();
+        // console.log(this.anims);
+        // console.log(this.texture.key + this._lastDirection);
+        // this.setFrame(this.texture.key + this._lastDirection);
     }
 
     // setOrigin(x: number, y?: number)
