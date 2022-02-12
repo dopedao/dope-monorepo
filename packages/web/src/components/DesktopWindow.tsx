@@ -100,7 +100,7 @@ const DesktopWindow = ({
   // Default size of the window is 1024 x 768.
   // Smaller devices default to "full screen".
   width = 1024,
-  height = "90%",
+  height = '90%',
   background,
   fullScreen,
   onlyFullScreen,

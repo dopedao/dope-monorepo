@@ -68,9 +68,13 @@ const RenderFromItemIds = ({
     if (sex == 'male' && facialHair) {
       promises.push(hustlers.bodyRle(...facialHairParams));
     }
-    Promise.all(promises).then((value) => {if (isMounted) setBodyRles(value)});
+    Promise.all(promises).then(value => {
+      if (isMounted) setBodyRles(value);
+    });
 
-    return () => {isMounted = false};
+    return () => {
+      isMounted = false;
+    };
   }, [hustlers, sex, body, hair, facialHair]);
 
   const svg = useMemo(() => {
@@ -122,11 +126,7 @@ const RenderFromItemIds = ({
         }
       `}
     >
-      {svg && 
-        <div 
-          dangerouslySetInnerHTML={{ __html: svg }} 
-        />
-      }
+      {svg && <div dangerouslySetInnerHTML={{ __html: svg }} />}
     </AspectRatio>
   );
 };

@@ -108,11 +108,11 @@ const MarketFilterBar = ({
         </Select>
       </div>
       <div>
-        <Select 
-          size="sm" 
+        <Select
+          size="sm"
           fontSize="xs"
-          variant="filterBar" 
-          onChange={handleSortChange} 
+          variant="filterBar"
+          onChange={handleSortChange}
           value={orderBy}
         >
           <option disabled>Sort By…</option>

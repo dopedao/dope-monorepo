@@ -1,4 +1,4 @@
-import MarkdownText from "components/MarkdownText";
+import MarkdownText from 'components/MarkdownText';
 
 const ContentFooter = () => {
   const content = `
@@ -74,7 +74,7 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 - [On-Chain DAO Governance with Tally](https://www.withtally.com/governance/dopeWars)
 - [Heat Check Voting with Snapshot](https://snapshot.org/#/dopedao.eth)    
   `;
-  return <MarkdownText text={content} />
-}
+  return <MarkdownText text={content} />;
+};
 
 export default ContentFooter;

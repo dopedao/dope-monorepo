@@ -1,7 +1,7 @@
-import { css } from "@emotion/react";
-import { Image } from "@chakra-ui/react";
-import { media } from "ui/styles/mixins";
-import styled from "@emotion/styled";
+import { css } from '@emotion/react';
+import { Image } from '@chakra-ui/react';
+import { media } from 'ui/styles/mixins';
+import styled from '@emotion/styled';
 import { ReactNode } from 'react';
 
 const Container = styled.div`
@@ -38,8 +38,7 @@ const Container = styled.div`
       .contentBox { 
         float: left; 
       }
-    `
-  }
+    `}
 `;
 
 const TitleContainer = styled.h3`
@@ -53,7 +52,7 @@ const Date = styled.div`
   font-size: var(--text-00) !important;
   padding: 8px 16px;
   padding-top: 0px;
-`
+`;
 const Content = styled.div`
   padding: 0px 16px;
   * {
@@ -76,33 +75,43 @@ interface Props {
   children?: ReactNode;
 }
 
-const RoadmapItem = ({title, imageReplacement, imageUrl, imageAlt, date, complete, children}: Props) => {
-  return(
+const RoadmapItem = ({
+  title,
+  imageReplacement,
+  imageUrl,
+  imageAlt,
+  date,
+  complete,
+  children,
+}: Props) => {
+  return (
     <Container>
       <div className="imageBox">
         {imageReplacement && imageReplacement}
         {imageUrl && imageAlt && <Image src={imageUrl} alt={imageAlt} width="100%" />}
-        {complete && 
-          <Image 
-            src="/images/icon/check.svg" 
-            alt="Completed" 
+        {complete && (
+          <Image
+            src="/images/icon/check.svg"
+            alt="Completed"
             position="absolute"
             marginTop="-32px"
             marginLeft="8px"
             opacity="0.5"
           />
-        }
+        )}
       </div>
       <div className="contentBox">
         <TitleContainer>{title}</TitleContainer>
-        <Content>
-          {children}
-        </Content>
+        <Content>{children}</Content>
         <Date>{date}</Date>
       </div>
-      <div css={css`clear:both;`}></div>
+      <div
+        css={css`
+          clear: both;
+        `}
+      ></div>
     </Container>
   );
-}
+};
 
 export default RoadmapItem;

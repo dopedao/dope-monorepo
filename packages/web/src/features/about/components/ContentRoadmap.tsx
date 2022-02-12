@@ -1,10 +1,10 @@
-import { css } from "@emotion/react";
-import { Box, Image } from "@chakra-ui/react";
-import { media } from "ui/styles/mixins";
+import { css } from '@emotion/react';
+import { Box, Image } from '@chakra-ui/react';
+import { media } from 'ui/styles/mixins';
 import RoadmapItem from 'features/about/components/RoadmapItem';
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
-import { getRandomNumber } from "utils/utils";
+import { getRandomNumber } from 'utils/utils';
 
 const Container = styled.div`
   background: var(--gray-800);
@@ -20,8 +20,8 @@ const Container = styled.div`
     font-size: var(--text-04) !important;
     text-transform: uppercase;
   }
-  * { 
-    // font-family: Courier, monospace !important; 
+  * {
+    // font-family: Courier, monospace !important;
   }
   display: flex;
   flex-direction: column;
@@ -47,7 +47,7 @@ const TunnelEntrance = styled.div`
     `}
     img {
       image-rendering: pixelated;
-      width:100%;
+      width: 100%;
     }
   }
   ${media.tablet`
@@ -56,7 +56,7 @@ const TunnelEntrance = styled.div`
 `;
 
 const Road = styled.div`
-  background: #878E8E url(/images/about/roadmap-tile.png) center / 800px 324px repeat-y;
+  background: #878e8e url(/images/about/roadmap-tile.png) center / 800px 324px repeat-y;
   min-height: 200px;
   padding: 16px 0px;
 `;
@@ -64,19 +64,16 @@ const Road = styled.div`
 const SectionHeader = styled.h3`
   text-transform: uppercase;
   font-size: var(--text-04) !important;
-  text-shadow: 4px 4px rgba(0,0,0,0.5);
+  text-shadow: 4px 4px rgba(0, 0, 0, 0.5);
   color: white;
   margin: 40px 0;
-`
+`;
 
 const ContentRoadmap = () => (
   <Container>
     <TunnelEntrance>
       <h2>
-        <Image 
-          src="/images/masthead/roadmap.svg" 
-          alt="Roadmap"
-        />
+        <Image src="/images/masthead/roadmap.svg" alt="Roadmap" />
       </h2>
     </TunnelEntrance>
     <Road>
@@ -90,13 +87,19 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            <a href="https://opensea.io/collection/dope-v4" target="opensea">8,000 randomized, limited-edition NFT bundles</a> of $PAPER and Gear were released September 2021 during a fair-mint, costing only gas. 
+            <a href="https://opensea.io/collection/dope-v4" target="opensea">
+              8,000 randomized, limited-edition NFT bundles
+            </a>{' '}
+            of $PAPER and Gear were released September 2021 during a fair-mint, costing only gas.
           </p>
           <p>
-            The NFT community responded to our new idea of building a hip-hop gaming metaverse from the ground up by funding our project with over $1M USD in royalties over the first few weeks of sales.
+            The NFT community responded to our new idea of building a hip-hop gaming metaverse from
+            the ground up by funding our project with over $1M USD in royalties over the first few
+            weeks of sales.
           </p>
           <p>
-            Each ERC-721 DOPE NFT allows you to build a Hustler character to be used in our upcoming games, and provides an equal Governance Vote on Proposals from the DAO.
+            Each ERC-721 DOPE NFT allows you to build a Hustler character to be used in our upcoming
+            games, and provides an equal Governance Vote on Proposals from the DAO.
           </p>
         </>
       </RoadmapItem>
@@ -109,10 +112,15 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            <a href="https://www.coingecko.com/en/coins/dope-wars-paper" target="coingecko">PAPER is an Ethereum ERC-20 token</a>, and the in-game currency of Dope Wars.
+            <a href="https://www.coingecko.com/en/coins/dope-wars-paper" target="coingecko">
+              PAPER is an Ethereum ERC-20 token
+            </a>
+            , and the in-game currency of Dope Wars.
           </p>
           <p>
-            PAPER was originally distributed through a claimable amount of 125,000 per DOPE NFT. Each NFT allows a claim of 125,000 $PAPER once and only once — and regardless of the current holder the NFT does not allow for more than one claim. 
+            PAPER was originally distributed through a claimable amount of 125,000 per DOPE NFT.
+            Each NFT allows a claim of 125,000 $PAPER once and only once — and regardless of the
+            current holder the NFT does not allow for more than one claim.
           </p>
         </>
       </RoadmapItem>
@@ -125,10 +133,27 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            <a href="https://dope-wars.notion.site/Dope-Gear-Guide-bab6001d5af2469f8790d8a1f156b3f4" target="wiki">Gear are interchangeable pieces of equipment</a> that live on the L2 Optimism blockchain as ERC-1155 tokens. They are created by Claiming an original DOPE NFT. This Claim process produces 9 separate NFT items that can be traded and equipped independently of one another, using our custom marketplace for low gas fees.
+            <a
+              href="https://dope-wars.notion.site/Dope-Gear-Guide-bab6001d5af2469f8790d8a1f156b3f4"
+              target="wiki"
+            >
+              Gear are interchangeable pieces of equipment
+            </a>{' '}
+            that live on the L2 Optimism blockchain as ERC-1155 tokens. They are created by Claiming
+            an original DOPE NFT. This Claim process produces 9 separate NFT items that can be
+            traded and equipped independently of one another, using our custom marketplace for low
+            gas fees.
           </p>
           <p>
-            Gear is tradeable on our <a href="/swap-meet-gear">Swap Meet</a> and on 3rd party marketplaces like <a href="https://quixotic.io/collection/opt/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110" target="quix">Quixotic</a>.
+            Gear is tradeable on our <a href="/swap-meet-gear">Swap Meet</a> and on 3rd party
+            marketplaces like{' '}
+            <a
+              href="https://quixotic.io/collection/opt/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"
+              target="quix"
+            >
+              Quixotic
+            </a>
+            .
           </p>
         </>
       </RoadmapItem>
@@ -141,10 +166,27 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a" target="wiki">Hustlers</a> are bleeding edge, fully-customizable in-game characters and profile pictures created by Claiming Gear from an original DOPE NFT then minting a Hustler NFT on the Optimism L2 network for low gas fees. All Hustler artwork is stored on the blockchain and can be changed at any time using our <a href="/swap-meet">Swap Meet</a>. 
+            <a
+              href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a"
+              target="wiki"
+            >
+              Hustlers
+            </a>{' '}
+            are bleeding edge, fully-customizable in-game characters and profile pictures created by
+            Claiming Gear from an original DOPE NFT then minting a Hustler NFT on the Optimism L2
+            network for low gas fees. All Hustler artwork is stored on the blockchain and can be
+            changed at any time using our <a href="/swap-meet">Swap Meet</a>.
           </p>
           <p>
-            Hustlers will soon be tradeable on our <a href="/swap-meet-hustlers">Swap Meet</a>, but are available now to be traded on <a href="https://quixotic.io/collection/opt/0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E?attributes=&tab=0&query=" target="quix">Quixotic</a>.
+            Hustlers will soon be tradeable on our <a href="/swap-meet-hustlers">Swap Meet</a>, but
+            are available now to be traded on{' '}
+            <a
+              href="https://quixotic.io/collection/opt/0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E?attributes=&tab=0&query="
+              target="quix"
+            >
+              Quixotic
+            </a>
+            .
           </p>
         </>
       </RoadmapItem>
@@ -157,7 +199,12 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            Feb 1st — Feb 15th <a href="/lunar-new-year">we&apos;re celebrating the Lunar New Year with a free Gear Accessory drop from Chinatown</a>. All Hustlers created before January 31st, 2022 were eligible.
+            Feb 1st — Feb 15th{' '}
+            <a href="/lunar-new-year">
+              we&apos;re celebrating the Lunar New Year with a free Gear Accessory drop from
+              Chinatown
+            </a>
+            . All Hustlers created before January 31st, 2022 were eligible.
           </p>
           <p>新年好</p>
         </>
@@ -171,10 +218,13 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            Buy, sell, and trade DOPE, Hustlers, Gear, and more on our Dope Wars Marketplace, or <a href="/swap-meet">Swap Meet</a>. Powered by the L2 Optimism network, all transactions will happen quickly with almost nothing spent in gas fees.
+            Buy, sell, and trade DOPE, Hustlers, Gear, and more on our Dope Wars Marketplace, or{' '}
+            <a href="/swap-meet">Swap Meet</a>. Powered by the L2 Optimism network, all transactions
+            will happen quickly with almost nothing spent in gas fees.
           </p>
           <p>
-            All transactions on our Swap Meet will feed 5% royalties to the DAO treasury, which enables us to continue funding this project with no VC investment.
+            All transactions on our Swap Meet will feed 5% royalties to the DAO treasury, which
+            enables us to continue funding this project with no VC investment.
           </p>
         </>
       </RoadmapItem>
@@ -185,29 +235,39 @@ const ContentRoadmap = () => (
         date="Q1 2022"
       >
         <p>
-          <a href="https://twitter.com/DJGREENLANTERN">DJ Green Lantern</a> will release an original hip-hop mixtape specifically made for Dope Wars that will be launched in-game and on Twitch. In addition, a 5-track EP is being produced with top name artists in the rap game; produced by <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source Magazine.
+          <a href="https://twitter.com/DJGREENLANTERN">DJ Green Lantern</a> will release an original
+          hip-hop mixtape specifically made for Dope Wars that will be launched in-game and on
+          Twitch. In addition, a 5-track EP is being produced with top name artists in the rap game;
+          produced by <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source
+          Magazine.
         </p>
       </RoadmapItem>
       <RoadmapItem
         title="WEB3 Integration + More"
-        imageReplacement={ 
-          <Box 
+        imageReplacement={
+          <Box
             background="#767674 url(/images/tile/chainlink.png) center / 512px repeat"
-            display="flex" 
-            alignItems="center" 
+            display="flex"
+            alignItems="center"
             justifyContent="center"
           >
-            <HustlerSpriteSheetWalk id={getRandomNumber(0,500).toString()} /> 
+            <HustlerSpriteSheetWalk id={getRandomNumber(0, 500).toString()} />
           </Box>
         }
         date="Q1 2022"
       >
         <>
           <p>
-            Using your Dope Wars Hustler as an in-game character, jump into the action on <a href="https://www.webb.game/" target="webb">Worldwide Webb</a> – an interoperable pixel metaverse.
+            Using your Dope Wars Hustler as an in-game character, jump into the action on{' '}
+            <a href="https://www.webb.game/" target="webb">
+              Worldwide Webb
+            </a>{' '}
+            – an interoperable pixel metaverse.
           </p>
           <p>
-            Purchasing a Dope Wars Hustler gives you access to a pluggable game character that we are working to place in multiple game environments. Some of those produced by us and others that have yet to be dreamed up.
+            Purchasing a Dope Wars Hustler gives you access to a pluggable game character that we
+            are working to place in multiple game environments. Some of those produced by us and
+            others that have yet to be dreamed up.
           </p>
         </>
       </RoadmapItem>
@@ -219,13 +279,22 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            Stake your DOPE and PAPER tokens to earn STREETCRED – then use that to purchase our metaverse territories that will help you in game…with your GANG.
+            Stake your DOPE and PAPER tokens to earn STREETCRED – then use that to purchase our
+            metaverse territories that will help you in game…with your GANG.
           </p>
           <p>
-            TURF is a proposed expansion of DOPE and is designed to act as a multi-player location lego for the Dope Wars ecosystem. It uses the existing DOPE item locations for Cities, while providing more granular locations by also including Districts, Hoods and Plots.  
+            TURF is a proposed expansion of DOPE and is designed to act as a multi-player location
+            lego for the Dope Wars ecosystem. It uses the existing DOPE item locations for Cities,
+            while providing more granular locations by also including Districts, Hoods and Plots.
           </p>
           <p>
-            <a href="https://www.notion.so/dope-wars/DIP-24-The-Hustle-TURF-10be2b8155004341b13fa3c836d7daf7" target="wiki">Our proposal  allows for enhanced game mechanics</a> and a blueprint of land ownership rights for the Dope Wars Metaverse.
+            <a
+              href="https://www.notion.so/dope-wars/DIP-24-The-Hustle-TURF-10be2b8155004341b13fa3c836d7daf7"
+              target="wiki"
+            >
+              Our proposal allows for enhanced game mechanics
+            </a>{' '}
+            and a blueprint of land ownership rights for the Dope Wars Metaverse.
           </p>
         </>
       </RoadmapItem>
@@ -237,10 +306,23 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            Inspired by the classic games of yesterday, we&apos;re adapting the classic gameplay of drug arbitrage and launching it all on the zero-knowledge proof blockchain <a href="https://starkware.co/starknet/">Starknet</a>.
+            Inspired by the classic games of yesterday, we&apos;re adapting the classic gameplay of
+            drug arbitrage and launching it all on the zero-knowledge proof blockchain{' '}
+            <a href="https://starkware.co/starknet/">Starknet</a>.
           </p>
           <p>
-            <a href="https://github.com/dopedao/ryo" target="github">Our giga-brain shadow coder Perama has already made amazing progress on the game engine</a> which has been under construction for months, and <a href="https://www.notion.so/dope-wars/DIP-17-RYO-Dev-Fund-f1648d8befbc4ff394e134a7fed340b6" target="wiki">co-funded by the StarkWare team</a>.
+            <a href="https://github.com/dopedao/ryo" target="github">
+              Our giga-brain shadow coder Perama has already made amazing progress on the game
+              engine
+            </a>{' '}
+            which has been under construction for months, and{' '}
+            <a
+              href="https://www.notion.so/dope-wars/DIP-17-RYO-Dev-Fund-f1648d8befbc4ff394e134a7fed340b6"
+              target="wiki"
+            >
+              co-funded by the StarkWare team
+            </a>
+            .
           </p>
         </>
       </RoadmapItem>
