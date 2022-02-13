@@ -15,21 +15,25 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
     forceSetTimeOut: true,
   },
   parent: 'game-parent',
-  backgroundColor: 0x383838,
+  backgroundColor: 0x000000,
   dom: {
     createContainer: true,
   },
+  // scale: {
+  //   width: '100%',
+  //   height: '100%',
+  //   mode: Phaser.Scale.FIT,
+  //   fullscreenTarget: 'game-parent',
+  // },
   scale: {
-    width: '100%',
-    height: '100%',
-    mode: Phaser.Scale.FIT,
-    fullscreenTarget: 'game-parent',
+    mode: Phaser.Scale.NONE
   },
   physics: {
     default: 'matter',
     matter: {
       debug: true,
       gravity: { y: 0 },
+      //enableSleeping: true,
     },
   },
   render: {
@@ -43,11 +47,11 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
         plugin: phaserReact,
         start: true,
       },
-      {
-        key: 'rexPixelationPipeline',
-        plugin: PixelationPipelinePlugin,
-        start: true,
-      },
+      // {
+      //   key: 'rexPixelationPipeline',
+      //   plugin: PixelationPipelinePlugin,
+      //   start: true,
+      // },
     ],
     scene: [
       // ig ui

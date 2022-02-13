@@ -2678,6 +2678,7 @@ __metadata:
     react-twitter-widgets: ^1.10.0
     remark: ^14.0.2
     remark-html: ^15.0.1
+    siwe: ^1.1.0
     ts-jest: ^27.0.5
     ts-node: ^10.2.1
     typechain: ^5.1.2
@@ -6653,6 +6654,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stablelib/binary@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@stablelib/binary@npm:1.0.1"
+  dependencies:
+    "@stablelib/int": ^1.0.1
+  checksum: dca9b98eb1f56a4002b5b9e7351fbc49f3d8616af87007c01e833bd763ac89214eb5f3b7e18673c91ce59d4a0e4856a2eb661ace33d39f17fb1ad267271fccd8
+  languageName: node
+  linkType: hard
+
+"@stablelib/int@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@stablelib/int@npm:1.0.1"
+  checksum: 65bfbf50a382eea70c68e05366bf379cfceff8fbc076f1c267ef2f2411d7aed64fd140c415cb6c29f19a3910d3b8b7805d4b32ad5721a5007a8e744a808c7ae3
+  languageName: node
+  linkType: hard
+
+"@stablelib/random@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@stablelib/random@npm:1.0.1"
+  dependencies:
+    "@stablelib/binary": ^1.0.1
+    "@stablelib/wipe": ^1.0.1
+  checksum: f63275079a588dab1594949996dbd564f3754d313368be8c70c06eea9c9a4fba9059962dcd114cafcca48b3b73707774ce8af2c94b7be79b662cde35d0049846
+  languageName: node
+  linkType: hard
+
+"@stablelib/wipe@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@stablelib/wipe@npm:1.0.1"
+  checksum: 287802eb146810a46ba72af70b82022caf83a8aeebde23605f5ee0decf64fe2b97a60c856e43b6617b5801287c30cfa863cfb0469e7fcde6f02d143cf0c6cbf4
+  languageName: node
+  linkType: hard
+
 "@stencil/core@npm:^2.4.0":
   version: 2.12.1
   resolution: "@stencil/core@npm:2.12.1"
@@ -9873,6 +9907,13 @@ __metadata:
     normalize-path: ^3.0.0
     picomatch: ^2.0.4
   checksum: 985163db2292fac9e5a1e072bf99f1b5baccf196e4de25a0b0b81865ebddeb3b3eb4480734ef0a2ac8c002845396b91aa89121f5b84f93981a4658164a9ec6e9
+  languageName: node
+  linkType: hard
+
+"apg-js@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "apg-js@npm:4.1.1"
+  checksum: 7c5948265578d790586eba78d05e1cb053f9db1e77458741db8d235d64dc7edaecb7a3d7b6ec1d7f2ed9208a858d376d4c707700f8723e082ccd9f694d8ecbc4
   languageName: node
   linkType: hard
 
@@ -30563,6 +30604,17 @@ resolve@~1.20.0:
   version: 1.0.5
   resolution: "sisteransi@npm:1.0.5"
   checksum: aba6438f46d2bfcef94cf112c835ab395172c75f67453fe05c340c770d3c402363018ae1ab4172a1026a90c47eaccf3af7b6ff6fa749a680c2929bd7fa2b37a4
+  languageName: node
+  linkType: hard
+
+"siwe@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "siwe@npm:1.1.0"
+  dependencies:
+    "@stablelib/random": ^1.0.1
+    apg-js: ^4.1.1
+    ethers: ^5.5.1
+  checksum: 3202388b37db305ca0c9e01df9b62a537234435276dfa989c3c6e54c6b2ed9173d49d49119e1d1337954243dfff5a5d26642b72a59a9f5c60fbb35173209de7b
   languageName: node
   linkType: hard
 
