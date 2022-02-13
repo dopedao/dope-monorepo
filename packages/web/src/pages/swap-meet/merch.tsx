@@ -1,8 +1,7 @@
-import { constructionBackground } from 'components/ComingSoonDialog';
+import { Box, Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { Image } from '@chakra-ui/react';
+import { media } from 'ui/styles/mixins';
 import AppWindow from 'components/AppWindow';
-import CardContainer from 'features/profile/components/CardContainer';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
 import PanelContainer from 'components/PanelContainer';
@@ -41,13 +40,24 @@ const SwapMeet = () => (
         Soon™
       </h2>
       <br />
-      <CardContainer>
+      <Box
+        css={css`
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          grid-column-gap: 10px;
+          grid-row-gap: 16px;
+          // Screen > Tablet display items side by side
+          ${media.tablet`
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          `}
+        `}
+      >
         {MERCH_IMAGES.map((filename, index) => (
           <PanelContainer key={`merch-${index}`}>
             <Image src={`/images/merch/${filename}`} alt={filename} />
           </PanelContainer>
         ))}
-      </CardContainer>
+      </Box>
     </div>
   </AppWindow>
 );
