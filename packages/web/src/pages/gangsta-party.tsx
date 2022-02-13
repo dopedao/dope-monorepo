@@ -1,5 +1,4 @@
 import { Button, HStack } from '@chakra-ui/react';
-import { css } from '@emotion/react';
 import { media } from 'ui/styles/mixins';
 import { useInfiniteAllHustlersQuery } from 'generated/graphql';
 import Head from 'components/Head';
@@ -7,12 +6,8 @@ import InfiniteScroll from 'react-infinite-scroller';
 import Link from 'next/link';
 import LoadingBlock from 'components/LoadingBlock';
 import LoadingState from 'features/swap-meet/components/LoadingState';
-import PanelContainer from 'components/PanelContainer';
-import PanelTitleBar from 'components/PanelTitleBar';
-import PanelBody from 'components/PanelBody';
-import RenderFromChain from 'components/hustler/RenderFromChain';
 import styled from '@emotion/styled';
-import WebAmpPlayer from 'components/WebAmpPlayer';
+import HustlerProfileCard from 'components/hustler/HustlerProfileCard';
 
 const Container = styled.div`
   position: absolute;
@@ -91,32 +86,8 @@ const GangstaParty = () => {
                 <div className="hustlerGrid">
                   {data?.pages.map(group =>
                     group.hustlers.edges!.map(hustler => {
-                      if (!hustler?.node!.svg) {
-                        return null;
-                      }
-                      return (
-                        <PanelContainer key={hustler.node.id}>
-                          <PanelTitleBar centered>
-                            {parseInt(hustler.node.id) < 500 && 'OG'} 
-                            &nbsp;
-                            {hustler.node.name}
-                          </PanelTitleBar>
-                          <PanelBody>
-                            <a 
-                              href={`/hustlers/${hustler.node.id}/flex`} 
-                              css={css`width:100%;display:block;`}
-                            >
-                              <RenderFromChain
-                                data={{
-                                  image: hustler.node.svg,
-                                  name: hustler.node.name,
-                                }}
-                                id={hustler.node.id}
-                              />
-                            </a>
-                          </PanelBody>
-                        </PanelContainer>
-                      );
+                      if (!hustler?.node!.svg) return null;
+                      return <HustlerProfileCard hustler={hustler.node} />
                     }),
                   )}
                 </div>
@@ -124,7 +95,6 @@ const GangstaParty = () => {
             </Container>
           )
         )}
-        <WebAmpPlayer />
       </ScreenSaver>
       <HStack
         m={4}
