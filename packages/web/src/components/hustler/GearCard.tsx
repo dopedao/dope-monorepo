@@ -8,7 +8,8 @@ import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 import CartIcon from 'ui/svg/Cart';
 
-const GearCard = ({gear}: {gear: Partial<Item>}) => {
+// This should be Partial<Item> but I couldn't get it working…
+const GearCard = ({gear}: {gear: any}) => {
 
   const quixPrefix = 'https://quixotic.io/collection/gear?query=';
   const svg = (gear.base?.svg ? gear.base.svg : gear.svg);

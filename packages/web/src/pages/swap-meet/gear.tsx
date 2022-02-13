@@ -96,7 +96,7 @@ const SwapMeetGear = () => {
                 <div className="gearGrid">
                   {data?.pages.map(group =>
                     group.items.edges!.map(item => {
-                      if (!item?.node!) return null;
+                      if (!item?.node?.id) return null;
                       return <GearCard key={item.node.id} gear={item.node} />
                     }),
                   )}
