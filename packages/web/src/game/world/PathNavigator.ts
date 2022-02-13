@@ -57,7 +57,7 @@ export default class PathNavigator {
       moveTile.y,
       this.grid.clone(),
     );
-    // if there is no path, return
+
     if (path.length === 0) {
       // try finding a path from one of the neighbours of the target tile
       this.grid
@@ -73,6 +73,7 @@ export default class PathNavigator {
           if (path.length > 0) return;
         });
 
+      // still no path found, return
       if (path.length === 0) return;
     }
 

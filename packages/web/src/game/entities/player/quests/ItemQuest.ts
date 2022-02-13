@@ -11,17 +11,17 @@ export default class ItemQuest extends Quest {
     return this._item;
   }
 
-  constructor(
-    questManager: QuestManager,
-    questReferer: Citizen,
-    item: Item,
+  constructor(  
     name: string,
     description: string,
+    item: Item,
+    questManager: QuestManager,
+    questReferer?: Citizen,
     start?: () => void,
     complete?: () => void,
     isActive?: boolean,
   ) {
-    super(questManager, questReferer, name, description, start, complete, isActive);
+    super(name, description, questManager, questReferer, start, complete, isActive);
 
     this._item = item;
   }

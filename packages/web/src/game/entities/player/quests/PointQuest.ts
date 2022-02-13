@@ -13,16 +13,16 @@ export default class PointQuest extends Quest {
   }
 
   constructor(
-    questManager: QuestManager,
-    questReferer: Citizen,
-    zone: Zone,
     name: string,
     description: string,
+    zone: Zone,
+    questManager: QuestManager,
+    questReferer?: Citizen,
     start?: () => void,
     complete?: () => void,
     isActive?: boolean,
   ) {
-    super(questManager, questReferer, name, description, start, complete, isActive);
+    super(name, description, questManager, questReferer, start, complete, isActive);
 
     this._zone = zone;
   }

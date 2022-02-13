@@ -18,6 +18,8 @@ import { getShortAddress } from 'utils/utils';
 import Items from 'game/constants/Items';
 import { SiweMessage } from 'siwe';
 import { ethers } from 'ethers';
+import PointQuest from 'game/entities/player/quests/PointQuest';
+import Zone from 'game/world/Zone';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -127,25 +129,43 @@ export default class GameScene extends Scene {
         '30',
         'Michel',
         'Arpenteur',
-        [new Conversation('Welcome to Dope City!', () => {
-          const selectedAddress = (window.ethereum as any)?.selectedAddress;
-          if (selectedAddress)
-          {
-            const siweMessage = new SiweMessage({
-              domain: window.location.hostname,
-              address: selectedAddress,
-              uri: origin,
-              version: '1',
-              chainId: 1
-            });
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            provider.getSigner().signMessage(siweMessage.prepareMessage()).then(signedMessage => console.log(signedMessage)).catch(err => console.log(err));
+        [
+          // fake completed quest
+          new Conversation('Hey! Welcome to Dopecity!', () => EventHandler.emitter().emit(Events.PLAYER_QUEST_COMPLETE, { name: 'Welcome to Dopecity', })),
+          new Conversation('Before doing anything else, you should start by going to the local store and getting yourself a phone to connect your wallet! A wallet is like your ID, you can\'t do anything without it.', () => {
+            this.player.questManager.addQuest(new PointQuest(
+              'Get out of your cavern',
+              'Go to the local store and get yourself a phone',
+              new Zone(this.matter.add.circle(3681, 360, 30, { isStatic: true }), this),
+              this.player.questManager,
+              this.citizens[this.citizens.length - 2],
+              undefined,
+              () => {
+                this.player.inventory.add(new Item('iBroken', 'A shady looking phone'));
+              }
+            ));
+            return false;
+          }),
+          new Conversation('Cool! Now that you got yourself a phone, you can try connecting your wallet. Hmmmm let me take a look. So you go there... uhh you click on that yeah... then top right... and uhh... yeah sign the message now.', () => {
+            const selectedAddress = (window.ethereum as any)?.selectedAddress;
+            if (selectedAddress)
+            {
+              const siweMessage = new SiweMessage({
+                domain: window.location.hostname,
+                address: selectedAddress,
+                uri: origin,
+                version: '1',
+                chainId: 1
+              });
+              const provider = new ethers.providers.Web3Provider(window.ethereum);
+              provider.getSigner().signMessage(siweMessage.prepareMessage()).then(signedMessage => console.log(signedMessage)).catch(err => console.log(err));
 
-            return true;
-          }
+              return true;
+            }
 
-          return false;
-        })],
+            return false;
+          })
+        ],
         undefined,
         //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
         true,

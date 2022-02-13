@@ -8,7 +8,7 @@ export default class Quest {
   readonly name: string;
   readonly description: string;
   protected _isActive: boolean = true;
-  protected questReferer: Citizen;
+  protected questReferer?: Citizen;
 
   private startCallback?: () => void;
   private completeCallback?: () => void;
@@ -22,10 +22,10 @@ export default class Quest {
   }
 
   constructor(
-    questManager: QuestManager,
-    questReferer: Citizen,
     name: string,
     description: string,
+    questManager: QuestManager,
+    questReferer?: Citizen,
     start?: () => void,
     complete?: () => void,
     isActive?: boolean,
@@ -49,6 +49,10 @@ export default class Quest {
   }
 
   onComplete() {
+    // shift conversations
+    console.log(this.questReferer);
+    this.questReferer?.conversations.shift();
+
     EventHandler.emitter().emit(Events.PLAYER_QUEST_COMPLETE, this);
 
     if (this.completeCallback) this.completeCallback();
