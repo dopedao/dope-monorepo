@@ -1352,6 +1352,18 @@ export type AllHustlersQueryVariables = Exact<{
 
 export type AllHustlersQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'HustlerEdge', cursor: any, node?: { __typename?: 'Hustler', id: string, name?: string | null | undefined, type: HustlerType, title?: string | null | undefined, color?: string | null | undefined, background?: string | null | undefined, age: any, svg?: string | null | undefined, sex: HustlerSex } | null | undefined } | null | undefined> | null | undefined } };
 
+export type AllItemsQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['Cursor']>;
+  first?: InputMaybe<Scalars['Int']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ItemOrder>;
+  where?: InputMaybe<ItemWhereInput>;
+}>;
+
+
+export type AllItemsQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', name: string, id: string, fullname: string, greatness: number, svg?: string | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
 export type DopesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -1496,6 +1508,64 @@ export const useInfiniteAllHustlersQuery = <
     const query = useFetchData<AllHustlersQuery, AllHustlersQueryVariables>(AllHustlersDocument)
     return useInfiniteQuery<AllHustlersQuery, TError, TData>(
       variables === undefined ? ['AllHustlers.infinite'] : ['AllHustlers.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const AllItemsDocument = `
+    query AllItems($after: Cursor, $first: Int, $before: Cursor, $last: Int, $orderBy: ItemOrder, $where: ItemWhereInput) {
+  items(
+    after: $after
+    first: $first
+    before: $before
+    last: $last
+    orderBy: $orderBy
+    where: $where
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      node {
+        name
+        id
+        fullname
+        greatness
+        svg
+        base {
+          svg
+        }
+      }
+    }
+  }
+}
+    `;
+export const useAllItemsQuery = <
+      TData = AllItemsQuery,
+      TError = unknown
+    >(
+      variables?: AllItemsQueryVariables,
+      options?: UseQueryOptions<AllItemsQuery, TError, TData>
+    ) =>
+    useQuery<AllItemsQuery, TError, TData>(
+      variables === undefined ? ['AllItems'] : ['AllItems', variables],
+      useFetchData<AllItemsQuery, AllItemsQueryVariables>(AllItemsDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteAllItemsQuery = <
+      TData = AllItemsQuery,
+      TError = unknown
+    >(
+      variables?: AllItemsQueryVariables,
+      options?: UseInfiniteQueryOptions<AllItemsQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<AllItemsQuery, AllItemsQueryVariables>(AllItemsDocument)
+    return useInfiniteQuery<AllItemsQuery, TError, TData>(
+      variables === undefined ? ['AllItems.infinite'] : ['AllItems.infinite', variables],
       (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
     )};

@@ -6,6 +6,7 @@ import {
   SearchType,
   useInfiniteSearchDopeQuery,
 } from 'generated/graphql';
+import { HStack, Button } from '@chakra-ui/react';
 import DopeCard from 'features/dope/components/DopeCard';
 import LoadingState from 'features/swap-meet/components/LoadingState';
 import EmptyState from 'features/swap-meet/components/EmptyState';
@@ -73,6 +74,19 @@ const MarketList = () => {
   const isLoading = searchStatus === 'loading';
   return (
     <>
+      <HStack
+        margin="0"
+        gridGap={1}
+        width="100%"
+        justifyContent="start"
+        padding="16px"
+        background="white"
+        borderBottom="2px solid black"
+      >
+        <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d97ecd4b61ef4189964cd67f230c91c5" target="wiki">
+          <Button>DOPE NFT FAQ</Button>
+        </a>
+      </HStack>
       {isLoading ? (
         <LoadingState />
       ) : Boolean(!searchResult?.pages.length) ? (

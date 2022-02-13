@@ -7,7 +7,6 @@ const Container = styled.div`
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  background-color: #fff;
   padding: 16px 16px;
   .dopeGrid {
     display: grid;
