@@ -7,7 +7,6 @@ const PanelTitleBar = styled.div<{ centered?: boolean | undefined }>`
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   font-size: var(--text-00);
-  line-height: 1.25em;
   position: 'sticky';
   padding: 8px;
   text-align: ${({ centered }) => (centered ? 'center' : 'unset')};

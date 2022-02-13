@@ -19,7 +19,7 @@ const MERCH = {
   'Dope Pocket Tee': 'tee-pocket-smiley.png',
 };
 
-const SwapMeet = () => (
+const SwapMeetMerch = () => (
   <AppWindow
     scrollable
     height="90vh"
@@ -55,7 +55,7 @@ const SwapMeet = () => (
       >
         {Object.entries(MERCH).map(([title, filename]) => (
           <PanelContainer key={`merch-${title}`}>
-            <PanelTitleBar centered>
+            <PanelTitleBar centered css={css`line-height:1.25em;`}>
               {title}
             </PanelTitleBar>
             <Image src={`/images/merch/${filename}`} alt={filename} />
@@ -66,4 +66,4 @@ const SwapMeet = () => (
   </AppWindow>
 );
 
-export default SwapMeet;
+export default SwapMeetMerch;
