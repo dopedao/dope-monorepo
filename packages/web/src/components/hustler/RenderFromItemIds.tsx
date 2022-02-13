@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { AspectRatio } from '@chakra-ui/layout';
-import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { HustlerSex, DEFAULT_BG_COLORS, ZoomWindow } from 'utils/HustlerConfig';
