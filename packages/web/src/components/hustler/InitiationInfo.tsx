@@ -75,6 +75,7 @@ const InitiationInfo = () => {
             </li>
           </ul>
         </PanelBody>
+        <div></div>
       </PanelContainer>
       <Alert
         status="info"

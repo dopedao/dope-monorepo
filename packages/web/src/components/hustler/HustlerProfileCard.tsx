@@ -6,7 +6,7 @@ import PanelContainer from 'components/PanelContainer';
 import PanelTitleBar from 'components/PanelTitleBar';
 import RenderFromChain from 'components/hustler/RenderFromChain';
 
-const HustlerProfileCard = ({hustler}: {hustler: Hustler}) => {
+const HustlerProfileCard = ({hustler}: {hustler: Partial<Hustler>}) => {
 
   if (!hustler.svg) return <LoadingBlock />;
   return(

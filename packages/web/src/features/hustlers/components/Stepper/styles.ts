@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
 import { returnBreakpoint } from 'ui/styles/breakpoints';
 
-export const Wrapper = styled.div`
-  position: fixed;
+export const StepContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;

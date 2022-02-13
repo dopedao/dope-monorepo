@@ -9,6 +9,7 @@ import Approve from 'features/hustlers/modules/Approve';
 import Finalize from 'features/hustlers/modules/Finalize';
 import Stepper from 'features/hustlers/components/Stepper';
 import HustlerContainer from 'components/hustler/HustlerContainer';
+import { Box } from '@chakra-ui/react';
 
 export type StepsProps = {
   hustlerConfig: HustlerCustomization;
@@ -48,10 +49,17 @@ const Steps = () => {
   };
 
   return (
-    <>
+    <Box 
+      display="flex" 
+      flexDirection="column" 
+      alignItems="center" 
+      justifyContent="center" 
+      width="100%" 
+      height="100%"
+    >
       <Stepper />
       <HustlerContainer bgColor="transparent">{stepToRender()}</HustlerContainer>
-    </>
+    </Box>
   );
 };
 
