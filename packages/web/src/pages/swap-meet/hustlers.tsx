@@ -3,7 +3,7 @@ import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import ComingSoonDialog from 'components/ComingSoonDialog';
 
-const SwapMeet = () => (
+const SwapMeetHustlers = () => (
   <AppWindow
     padBody={false}
     scrollable={false}
@@ -21,4 +21,4 @@ const SwapMeet = () => (
   </AppWindow>
 );
 
-export default SwapMeet;
+export default SwapMeetHustlers;

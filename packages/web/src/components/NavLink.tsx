@@ -1,4 +1,4 @@
-import React, { Children } from 'react';
+import React, { Children, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import cx from 'classnames';
 import Link, { LinkProps } from 'next/link';
@@ -17,11 +17,26 @@ export const NavLink = ({ children, activeClassName = 'active', ...props }: NavL
 
   const className = cx(childClassName, activePath, { [activeClassName]: isActive });
 
+  const tabRef = useRef<HTMLDivElement>(null);
+
+  // On mobile, scroll selected tab into view
+  useEffect(() => {
+    if (isActive && tabRef?.current) {
+      tabRef.current.scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+        inline: 'end',
+      })
+    }
+  }, [isActive, tabRef]);
+
   return (
-    <Link {...props}>
-      {React.cloneElement(child, {
-        className: className || null,
-      })}
-    </Link>
+    <div ref={tabRef}>
+      <Link {...props}>
+        {React.cloneElement(child, {
+          className: className || null
+        })}
+      </Link>
+    </div>
   );
 };
