@@ -32,7 +32,7 @@ const formatType = (type: HustlerType): string => {
 const HustlerFooter = ({ id }: { id: string }) => (
   <PanelFooter>
     <div></div>
-    <Link href={`/hustlers/${id}/flex`} passHref>
+    <Link href={`/hustlers/${id}`} passHref>
       <Button>Flex</Button>
     </Link>
     <Link href={`/hustlers/${id}/customize`} passHref>
@@ -116,7 +116,7 @@ const Hustlers = () => {
                   <PanelBody>
                     {svg && (
                       <AspectRatio ratio={1}>
-                        <Link href={`/hustlers/${id}/flex`} passHref>
+                        <Link href={`/hustlers/${id}`} passHref>
                           <Image
                             alt={name || 'Hustler'}
                             borderRadius="md"
