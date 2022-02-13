@@ -64,6 +64,9 @@ const SwapMeetHustlers = () => {
         <Link href="/hustlers/initiate" passHref>
           <Button variant="primary">Mint a Hustler</Button>
         </Link>
+        <a href="https://quixotic.io/collection/hustlers?attributes=attribute%3DClass%3AOriginal+Gangsta&query=" target="quix">
+          <Button variant="primary">Buy an OG</Button>
+        </a>
       </HStack>
       <Box>
         {isLoading ? (
