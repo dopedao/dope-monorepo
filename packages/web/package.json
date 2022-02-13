@@ -60,7 +60,8 @@
     "react-table": "^7.7.0",
     "react-twitter-widgets": "^1.10.0",
     "remark": "^14.0.2",
-    "remark-html": "^15.0.1"
+    "remark-html": "^15.0.1",
+    "siwe": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",

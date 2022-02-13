@@ -4,8 +4,7 @@ import Player from '../player/Player';
 import Conversation from './Conversation';
 
 export default class Citizen extends Hustler {
-  readonly name: string;
-  readonly description: string;
+  readonly description?: string;
   conversations: Conversation[] = new Array();
 
   // the path that the citizen is currently following
@@ -19,24 +18,22 @@ export default class Citizen extends Hustler {
   // should continue following the path
   // if false, the citizen will not follow its path and move until its true
   shouldFollowPath: boolean = true;
-
   lastPointTimestamp?: number;
 
   constructor(
     world: Phaser.Physics.Matter.World,
     x: number,
     y: number,
-    model: HustlerModel,
-    name: string,
-    description: string,
+    hustlerId?: string,
+    name?: string,
+    description?: string,
     conversations?: Conversation[],
     path?: (Phaser.Math.Vector2 | number)[],
     repeatPath?: boolean,
     shouldFollowPath?: boolean,
   ) {
-    super(world, x, y, model);
+    super(world, x, y, hustlerId, name);
 
-    this.name = name;
     this.description = description;
 
     if (conversations) this.conversations = conversations;
