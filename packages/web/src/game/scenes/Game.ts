@@ -140,7 +140,8 @@ export default class GameScene extends Scene {
               this.player.questManager,
               this.citizens[this.citizens.length - 2],
               undefined,
-              () => {
+              (quest: any) => {
+                quest.zone.destroy();
                 this.player.inventory.add(new Item('iBroken', 'A shady looking phone'));
               }
             ));
@@ -158,7 +159,9 @@ export default class GameScene extends Scene {
                 chainId: 1
               });
               const provider = new ethers.providers.Web3Provider(window.ethereum);
-              provider.getSigner().signMessage(siweMessage.prepareMessage()).then(signedMessage => console.log(signedMessage)).catch(err => console.log(err));
+              provider.getSigner().signMessage(siweMessage.prepareMessage())
+                .then(signedMessage => this.citizens[this.citizens.length - 2].conversations.push(new Conversation(`You signed: ${signedMessage}`)))
+                .catch(err => this.citizens[this.citizens.length - 2].conversations.push(new Conversation(`Error signing: ${err.code}`)));
 
               return true;
             }

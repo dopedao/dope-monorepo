@@ -10,8 +10,8 @@ export default class Quest {
   protected _isActive: boolean = true;
   protected questReferer?: Citizen;
 
-  private startCallback?: () => void;
-  private completeCallback?: () => void;
+  private startCallback?: (quest: Quest) => void;
+  private completeCallback?: (quest: Quest) => void;
 
   get isActive() {
     return this._isActive;
@@ -26,8 +26,8 @@ export default class Quest {
     description: string,
     questManager: QuestManager,
     questReferer?: Citizen,
-    start?: () => void,
-    complete?: () => void,
+    start?: (quest: Quest) => void,
+    complete?: (quest: Quest) => void,
     isActive?: boolean,
   ) {
     this.questManager = questManager;
@@ -45,16 +45,15 @@ export default class Quest {
   onStart() {
     EventHandler.emitter().emit(Events.PLAYER_QUEST_START, this);
 
-    if (this.startCallback) this.startCallback();
+    if (this.startCallback) this.startCallback(this);
   }
 
   onComplete() {
     // shift conversations
-    console.log(this.questReferer);
     this.questReferer?.conversations.shift();
 
     EventHandler.emitter().emit(Events.PLAYER_QUEST_COMPLETE, this);
 
-    if (this.completeCallback) this.completeCallback();
+    if (this.completeCallback) this.completeCallback(this);
   }
 }

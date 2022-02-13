@@ -17,8 +17,8 @@ export default class ItemQuest extends Quest {
     item: Item,
     questManager: QuestManager,
     questReferer?: Citizen,
-    start?: () => void,
-    complete?: () => void,
+    start?: (quest: Quest) => void,
+    complete?: (quest: Quest) => void,
     isActive?: boolean,
   ) {
     super(name, description, questManager, questReferer, start, complete, isActive);

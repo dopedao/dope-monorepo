@@ -3,6 +3,7 @@ import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import Item from 'game/entities/player/inventory/Item';
 import ItemQuest from './ItemQuest';
 import QuestManager from '../managers/QuestManager';
+import Quest from './Quest';
 
 export default class BringItemQuest extends ItemQuest {
   // if picked up item during quest "lifetime"
@@ -21,8 +22,8 @@ export default class BringItemQuest extends ItemQuest {
     item: Item,
     questManager: QuestManager,
     questReferer: Citizen,
-    start?: () => void,
-    complete?: () => void,
+    start?: (quest: Quest) => void,
+    complete?: (quest: Quest) => void,
     isActive?: boolean,
   ) { super(name, description, item, questManager, questReferer, start, complete, isActive); };
 

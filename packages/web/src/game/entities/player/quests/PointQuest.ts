@@ -18,8 +18,8 @@ export default class PointQuest extends Quest {
     zone: Zone,
     questManager: QuestManager,
     questReferer?: Citizen,
-    start?: () => void,
-    complete?: () => void,
+    start?: (quest: Quest) => void,
+    complete?: (quest: Quest) => void,
     isActive?: boolean,
   ) {
     super(name, description, questManager, questReferer, start, complete, isActive);
