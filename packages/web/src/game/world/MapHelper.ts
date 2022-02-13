@@ -31,7 +31,8 @@ export default class MapHelper {
     this.map.otherGfx = this.scene.add.rectangle(
         this.mapReader.level.worldX, this.mapReader.level.worldY,
         this.mapReader.level.pxWid, this.mapReader.level.pxHei,
-        0x000000, 0.85)
+        0x000000, 0.9)
+        .setData('max_alpha', 0.9)
         .setDepth(1000)
         .setOrigin(0, 0);
 

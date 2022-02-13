@@ -40,12 +40,12 @@ export default class PathNavigator {
     const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.x, this.hustler.y);
     const moveTile = map.collideLayer.worldToTileXY(x, y);
 
-    // point not inside of map, just teleport hustler directly to the target
+    // point not inside of map, return
     if (
       !this.grid.isInside(hustlerTile.x, hustlerTile.y) ||
       !this.grid.isInside(moveTile.x, moveTile.y)
     ) {
-      this.hustler.setPosition(x, y);
+      console.warn('Move to point outside of pathfinder map');
       return;
     }
 

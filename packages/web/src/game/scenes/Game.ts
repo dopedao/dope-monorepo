@@ -197,7 +197,7 @@ export default class GameScene extends Scene {
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
     const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
-    map.otherGfx?.setVisible(false);
+    map.otherGfx?.setAlpha(0);
 
     this.handleNetwork();
 
@@ -410,16 +410,46 @@ export default class GameScene extends Scene {
       const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
       if (this.loadedMaps.find(m => m === lvl.identifier)) {
         if (!patchMap && n.dir === dir) {
-          this.mapHelper.loadedMaps.get(this.player.currentMap)!.otherGfx?.setVisible(true);
+          // slowly increase alpha to max_alpha
+          const otherMap = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
+          if (otherMap.otherGfx) {
+            // cancel any previous running fading
+            if (otherMap.otherGfx.getData('fading'))
+              clearInterval(otherMap.otherGfx.getData('fading'));
+
+            const fadeIn = setInterval(() => {
+              otherMap.otherGfx!.alpha += 0.01;
+              if (otherMap.otherGfx!.alpha >= otherMap.otherGfx!.getData('max_alpha'))
+              {
+                otherMap.otherGfx!.alpha = otherMap.otherGfx!.getData('max_alpha');
+                otherMap.otherGfx!.setData('fading', undefined);
+                clearInterval(fadeIn);
+              }
+            });
+            // id of the fadeIn interval
+            otherMap.otherGfx!.setData('fading', fadeIn);
+          }
 
           this.player.currentMap = lvl.identifier;
           const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
           
-          map.otherGfx?.setVisible(false);
+          // slowly decrease alpha to 0
+          if (map.otherGfx) {
+            // cancel any previous running fading
+            if (map.otherGfx.getData('fading'))
+              clearInterval(map.otherGfx.getData('fading'));
 
-          this.hustlers
-            .filter(h => h.currentMap === this.player.currentMap)
-            .forEach(h => h.setVisible(true));
+            const fadeOut = setInterval(() => {
+              map.otherGfx!.alpha -= 0.01;
+              if (map.otherGfx!.alpha <= 0) {
+                map.otherGfx!.setData('fading', undefined);
+                map.otherGfx!.alpha = 0;
+                clearInterval(fadeOut);
+              }
+            });
+            // id of the fadeOut interval 
+            map.otherGfx!.setData('fading', fadeOut);
+          }
 
           if (NetworkHandler.getInstance().connected)
             NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_MAP, {
@@ -427,6 +457,7 @@ export default class GameScene extends Scene {
               x: this.player.x,
               y: this.player.y,
             });
+
           this.hustlers.forEach(h => {
             // hide/show hustlers if in current map
             h.setVisible(h.currentMap === this.player.currentMap);
