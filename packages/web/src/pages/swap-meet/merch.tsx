@@ -5,18 +5,19 @@ import AppWindow from 'components/AppWindow';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
 import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
 
-const MERCH_IMAGES = [
-  'beanie-stacking.png',
-  'beanie-ak.png',
-  'beanie-sellers.png',
-  'hat-smiley.png',
-  'hat-stacked.png',
-  'hoodie.png',
-  'tee.png',
-  'tee-smiley.png',
-  'tee-pocket-smiley.png',
-];
+const MERCH = {
+  'Stacking $PAPER Beanie': 'beanie-stacking.png',
+  'AK+1 Beanie': 'beanie-ak.png',
+  'Sellers Get Rekt Beanie': 'beanie-sellers.png',
+  'Dope Hat Smiley': 'hat-smiley.png',
+  'Dope Hat Stacked': 'hat-stacked.png',
+  'Dope Pullover Hoodie': 'hoodie.png',
+  'Dope Stacked Tee': 'tee.png',
+  'Dope Smiley Tee': 'tee-smiley.png',
+  'Dope Pocket Tee': 'tee-pocket-smiley.png',
+};
 
 const SwapMeet = () => (
   <AppWindow
@@ -52,8 +53,11 @@ const SwapMeet = () => (
           `}
         `}
       >
-        {MERCH_IMAGES.map((filename, index) => (
-          <PanelContainer key={`merch-${index}`}>
+        {Object.entries(MERCH).map(([title, filename]) => (
+          <PanelContainer key={`merch-${title}`}>
+            <PanelTitleBar centered>
+              {title}
+            </PanelTitleBar>
             <Image src={`/images/merch/${filename}`} alt={filename} />
           </PanelContainer>
         ))}
