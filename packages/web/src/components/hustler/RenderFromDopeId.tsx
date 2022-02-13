@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import RenderFromItemIds, { HustlerRenderProps } from 'components/hustler/RenderFromItemIds';
 import LoadingBlockSquareCentered from 'components/LoadingBlockSquareCentered';
 import { useRenderDopeQuery } from 'generated/graphql';
+import { useDopeRles } from 'hooks/render';
 
 interface RenderFromDopeIdProps extends Omit<HustlerRenderProps, 'itemRles'> {
   id: string;
@@ -28,22 +29,12 @@ const RenderFromDopeId = ({
     },
   });
 
-  const itemRles = useMemo<string[] | undefined>(
-    () => 
-      data?.dopes?.edges?.[0]?.node?.items?.reduce((prev, item) => {
-        if (item.rles) {
-          return sex == 'male' ? [...prev, item.rles.male] : [...prev, item.rles.female];
-        } else if (item.base?.rles) {
-          return sex == 'male' ? [...prev, item.base.rles.male] : [...prev, item.base.rles.female];
-        }
-        return prev;
-      }, [] as string[]),
-    [data, sex],
-  );
+  const itemRles = useDopeRles(sex, data?.dopes?.edges?.[0]?.node);
 
   if (isFetching || !itemRles) {
     return <LoadingBlockSquareCentered />;
   }
+
   return (
     <RenderFromItemIds
       bgColor={bgColor}
