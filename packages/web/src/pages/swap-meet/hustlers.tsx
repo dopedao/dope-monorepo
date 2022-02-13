@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import { Button, HStack } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
-import { useInfiniteAllHustlersQuery } from 'generated/graphql';
+import { OrderDirection, useInfiniteAllHustlersQuery } from 'generated/graphql';
 import AppWindow from 'components/AppWindow';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
@@ -28,7 +28,7 @@ const Container = styled.div`
 const SwapMeetHustlers = () => {
   const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllHustlersQuery(
     {
-      first: 9,
+      first: 18
     },
     {
       getNextPageParam: lastPage => {
@@ -46,9 +46,9 @@ const SwapMeetHustlers = () => {
   return (
     <AppWindow
       padBody={false}
-      scrollable={false}
+      scrollable={true}
       height="90vh"
-      navbar={<DopeWarsExeNav />}
+      navbar={<DopeWarsExeNav hideFilterBar />}
       title="Swap Meet"
     >
       <Head title="Hustlers" />

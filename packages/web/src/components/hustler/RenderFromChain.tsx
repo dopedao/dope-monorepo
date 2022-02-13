@@ -14,11 +14,10 @@ type Metadata = {
 };
 
 type HustlerItemProps = {
-  id: string;
   data: Metadata;
 };
 
-const RenderFromChain = ({ data, id }: HustlerItemProps) => (
+const RenderFromChain = ({ data }: HustlerItemProps) => (
   <AspectRatio ratio={1}>
     <Image
       css={css`

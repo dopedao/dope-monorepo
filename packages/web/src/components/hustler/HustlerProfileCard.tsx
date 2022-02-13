@@ -1,21 +1,35 @@
 import { css } from '@emotion/react';
 import { Hustler } from 'generated/graphql';
+import DopeCardTitleButton from 'features/dope/components/DopeCardTitleButton';
 import LoadingBlock from 'components/LoadingBlock';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
-import PanelTitleBar from 'components/PanelTitleBar';
+import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
 import RenderFromChain from 'components/hustler/RenderFromChain';
+import CartIcon from 'ui/svg/Cart';
 
 const HustlerProfileCard = ({hustler}: {hustler: Partial<Hustler>}) => {
 
-  if (!hustler.svg) return <LoadingBlock />;
+  const quixPrefix = 'https://quixotic.io/asset/opt/0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E';
+
+  if (!hustler.svg || !hustler.id) return <LoadingBlock />;
   return(
     <PanelContainer key={hustler.id}>
-      <PanelTitleBar centered>
-        {parseInt(hustler.id) < 500 && 'OG'} 
-        &nbsp;
-        {hustler.name}
-      </PanelTitleBar>
+      <PanelTitleBarFlex>
+        <div>
+          {parseInt(hustler.id) < 500 && 'OG'} 
+          &nbsp;
+          {hustler.name}
+        </div>
+        <DopeCardTitleButton css={css`width:50px;`}>
+          <a 
+            href={`${quixPrefix}/${hustler.id}`}
+            target="quix"
+          >
+            <CartIcon color="white" width={20} height={20} />
+          </a>
+        </DopeCardTitleButton>
+      </PanelTitleBarFlex>
       <PanelBody>
         <a 
           href={`/hustlers/${hustler.id}/flex`} 
@@ -26,7 +40,6 @@ const HustlerProfileCard = ({hustler}: {hustler: Partial<Hustler>}) => {
               image: hustler.svg,
               name: hustler.name,
             }}
-            id={hustler.id}
           />
         </a>
       </PanelBody>

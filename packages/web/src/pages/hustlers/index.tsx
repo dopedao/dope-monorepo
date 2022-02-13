@@ -157,7 +157,6 @@ const Hustlers = () => {
                         image: svg,
                         name,
                       }}
-                      id={id}
                     />
                   </a>
                 </Link>
