@@ -1,4 +1,6 @@
-import EventHandler, { Events } from 'game/handlers/EventHandler';
+import EventHandler, { Events } from 'game/handlers/events/EventHandler';
+import NetworkHandler from 'game/handlers/network/NetworkHandler';
+import { UniversalEventNames } from 'game/handlers/network/types';
 import Citizen from '../citizen/Citizen';
 import Hustler, { Direction } from '../Hustler';
 import Player from './Player';
@@ -8,6 +10,10 @@ export default class PlayerController {
   private arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
 
   private _player: Player;
+
+  // send move message each MOVE_TICKRATE ms (if moving)
+  static readonly MOVE_TICKRATE = 1 / 2;
+
   get player() {
     return this._player;
   }
@@ -23,13 +29,30 @@ export default class PlayerController {
       right: Phaser.Input.Keyboard.KeyCodes.D,
       // inventory
       tab: Phaser.Input.Keyboard.KeyCodes.TAB,
+      // interaction
+      e: Phaser.Input.Keyboard.KeyCodes.E,
     }) as Phaser.Types.Input.Keyboard.CursorKeys;
+
+    // for (let i = 0; i < 4; i++)
+    // {
+    //     ((this.arrows as any)[Object.keys(this.arrows)[i]] as Phaser.Input.Keyboard.Key).onUp((e: KeyboardEvent) => {
+    //         if (NetworkHandler.getInstance().connected)
+    //             NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+    //                 x: this.player.x,
+    //                 y: this.player.y,
+    //                 direction: this.player.moveDirection,
+    //             })
+    //     });
+    // }
   }
 
   update() {
     if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).tab)) this.player.toggleInventory();
 
-    if (Phaser.Input.Keyboard.JustUp(this.arrows.space))
+    if (
+      Phaser.Input.Keyboard.JustUp(this.arrows.space) ||
+      Phaser.Input.Keyboard.JustUp((this.mainKeys as any).e)
+    )
       // check interact sensor
       this.player.tryInteraction();
 
@@ -40,26 +63,26 @@ export default class PlayerController {
     if (this.mainKeys.up.isDown || this.arrows.up.isDown) {
       this.player.moveDirection = Direction.North;
       this.player.setVelocityY(-Hustler.DEFAULT_VELOCITY);
-      this.player.model.updateSprites(true);
+      // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
     } else if (this.mainKeys.down.isDown || this.arrows.down.isDown) {
       this.player.moveDirection = Direction.South;
       this.player.setVelocityY(Hustler.DEFAULT_VELOCITY);
-      this.player.model.updateSprites(true);
+      // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
     }
     if (this.mainKeys.left.isDown || this.arrows.left.isDown) {
       this.player.moveDirection = Direction.West;
       this.player.setVelocityX(-Hustler.DEFAULT_VELOCITY);
-      this.player.model.updateSprites(true);
+      // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
     } else if (this.mainKeys.right.isDown || this.arrows.right.isDown) {
       this.player.moveDirection = Direction.East;
       this.player.setVelocityX(Hustler.DEFAULT_VELOCITY);
-      this.player.model.updateSprites(true);
+      // tshis.player.model.updateSprites(true);
 
       willMoveFlag = true;
     }
@@ -83,7 +106,7 @@ export default class PlayerController {
       this.player.moveDirection = Direction.None;
 
       this.player.setVelocity(0, 0);
-      this.player.model.updateSprites(true);
+      // this.player.model.updateSprites(true);
     }
   }
 }

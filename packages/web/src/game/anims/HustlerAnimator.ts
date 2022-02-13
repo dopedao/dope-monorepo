@@ -14,11 +14,11 @@ export default class HustlerAnimator {
         this.hustler.anims.setCurrentFrame(this.hustler.anims.currentAnim.getLastFrame());
       this.hustler.stopAfterDelay(100);
 
-      this.hustler.model.stopSpritesAnim();
+      // this.hustler.model.stopSpritesAnim();
       return;
     }
 
     this.hustler.play(this.hustler.texture.key + this.hustler.moveDirection, true);
-    this.hustler.model.updateSprites(false, this.hustler.moveDirection);
+    // this.hustler.model.updateSprites(true, this.hustler.moveDirection);
   }
 }

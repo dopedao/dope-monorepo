@@ -1,5 +1,5 @@
 import Hustler from 'game/entities/Hustler';
-import EventHandler from 'game/handlers/EventHandler';
+import EventHandler from 'game/handlers/events/EventHandler';
 
 export default class Zone {
   private _body: MatterJS.BodyType;
