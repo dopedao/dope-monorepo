@@ -1,5 +1,4 @@
-import { Box } from '@chakra-ui/react';
-import { Button, HStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Image } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import { OrderDirection, useInfiniteAllHustlersQuery } from 'generated/graphql';
 import AppWindow from 'components/AppWindow';
@@ -66,6 +65,11 @@ const SwapMeetHustlers = () => {
         </Link>
         <a href="https://quixotic.io/collection/hustlers?attributes=attribute%3DClass%3AOriginal+Gangsta&query=" target="quix">
           <Button variant="primary">Buy an OG</Button>
+        </a>
+        <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a" target="wiki">
+          <Button>
+            Hustler FAQ
+          </Button>
         </a>
       </HStack>
       <Box>

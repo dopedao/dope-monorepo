@@ -6,7 +6,7 @@ type SectionProps = {
 };
 
 const Section: FC<SectionProps> = ({ children }) => {
-  return <AccordionItem borderBottom="2px">{children}</AccordionItem>;
+  return <AccordionItem borderBottom="0">{children}</AccordionItem>;
 };
 
 export default Section;

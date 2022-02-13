@@ -11,6 +11,7 @@ const LoadingBlock = ({ maxRows = 20, color = 'black' }: { maxRows?: number; col
   const rows = [];
 
   const Container = styled.div`
+    padding: 16px 0px;
     height: 100%;
     flex-direction: column;
     & > div {
