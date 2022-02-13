@@ -13,10 +13,7 @@ export default function GameBody(props: { gameConfig?: Phaser.Types.Core.GameCon
       ...(props.gameConfig ?? defaultGameConfig),
       // sets rendering mode to canvas to prevent antialiasing on webkit devices
       // temporary fix
-      type:
-        typeof (window as any).webkitConvertPointFromNodeToPage === 'function'
-          ? Phaser.CANVAS
-          : Phaser.AUTO,
+      // type: typeof (window as any).webkitConvertPointFromNodeToPage === 'function' ? Phaser.CANVAS : Phaser.AUTO
     },
     gameRef,
   );

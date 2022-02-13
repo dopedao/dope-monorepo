@@ -19,8 +19,8 @@ export const createHustlerAnimations = (
   anims.create({
     key: key + '_left',
     frames: anims.generateFrameNumbers(key, {
-      start: 15,
-      end: 8,
+      start: 39,
+      end: 32,
     }),
     frameRate: Hustler.DEFAULT_VELOCITY / scale,
     repeat: -1,
@@ -29,8 +29,8 @@ export const createHustlerAnimations = (
   anims.create({
     key: key + '_front',
     frames: anims.generateFrameNumbers(key, {
-      start: 23,
-      end: 16,
+      start: 55,
+      end: 48,
     }),
     frameRate: Hustler.DEFAULT_VELOCITY / scale,
     repeat: -1,
@@ -39,8 +39,8 @@ export const createHustlerAnimations = (
   anims.create({
     key: key + '_back',
     frames: anims.generateFrameNumbers(key, {
-      start: 31,
-      end: 24,
+      start: 23,
+      end: 16,
     }),
     frameRate: Hustler.DEFAULT_VELOCITY / scale,
     repeat: -1,
