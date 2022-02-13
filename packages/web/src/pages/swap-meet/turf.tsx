@@ -15,7 +15,7 @@ const SwapMeetTurf = () => (
     <ComingSoonDialog 
       title="Turf Coming Soon" 
       icon="construction"
-      backgroundCss="#000000 url('/images/about/turf.png') center center / contain repeat-y fixed"
+      backgroundCss="#000000 url('/images/game/map/nyc-hustler-walk.gif') center bottom / cover no-repeat fixed"
     >
       <p>
         Currently under discussion – TURF is our next step towards evolving the Dope Wars metaverse by adding land ownership that affects gameplay.
