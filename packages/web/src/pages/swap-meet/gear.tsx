@@ -14,13 +14,10 @@ const Container = styled.div`
   .gearGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-column-gap: 32px;
-    grid-row-gap: 32px;
+    grid-column-gap: 16px;
+    grid-row-gap: 16px;
   }
   padding: 16px;
-  ${media.tablet`
-    padding: 32px;
-  `}
 `;
 
 const SwapMeetGear = () => {
