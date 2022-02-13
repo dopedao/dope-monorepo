@@ -1,4 +1,4 @@
-import { Box, Image } from '@chakra-ui/react';
+import { Box, Image, HStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { media } from 'ui/styles/mixins';
 import AppWindow from 'components/AppWindow';
@@ -25,24 +25,30 @@ const SwapMeetMerch = () => (
     height="90vh"
     navbar={<DopeWarsExeNav hideFilterBar />}
     title="Swap Meet"
-    background="#fff"
   >
     <Head title="Merch" />
-    <div
-      css={css`
-        padding: 16px;
-      `}
-    >
-      <h2
-        css={css`
-          text-align: center;
-        `}
+    <div>
+      <HStack
+        margin="0"
+        gridGap={1}
+        width="100%"
+        justifyContent="start"
+        padding="16px"
+        background="white"
+        borderBottom="2px solid black"
       >
-        Soon™
-      </h2>
-      <br />
+        <h2
+          css={css`
+            text-align: center;
+            flex: 1;
+          `}
+        >
+          Soon™
+        </h2>   
+      </HStack>
       <Box
         css={css`
+          padding: 16px;
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
           grid-column-gap: 10px;
