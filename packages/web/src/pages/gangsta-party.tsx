@@ -1,14 +1,18 @@
 import { Button, HStack } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 import { media } from 'ui/styles/mixins';
-import Link from 'next/link';
-import styled from '@emotion/styled';
 import { useInfiniteAllHustlersQuery } from 'generated/graphql';
 import Head from 'components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
-import WebAmpPlayer from 'components/WebAmpPlayer';
-import RenderFromChain from 'components/hustler/RenderFromChain';
+import Link from 'next/link';
 import LoadingBlock from 'components/LoadingBlock';
 import LoadingState from 'features/swap-meet/components/LoadingState';
+import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
+import PanelBody from 'components/PanelBody';
+import RenderFromChain from 'components/hustler/RenderFromChain';
+import styled from '@emotion/styled';
+import WebAmpPlayer from 'components/WebAmpPlayer';
 
 const Container = styled.div`
   position: absolute;
@@ -22,7 +26,7 @@ const Container = styled.div`
   overflow-x: hidden;
   .hustlerGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-column-gap: 32px;
     grid-row-gap: 64px;
   }
@@ -44,7 +48,7 @@ const ScreenSaver = styled.div`
 const GangstaParty = () => {
   const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllHustlersQuery(
     {
-      first: 100,
+      first: 9,
     },
     {
       getNextPageParam: lastPage => {
@@ -80,7 +84,7 @@ const GangstaParty = () => {
                   })
                 }
                 hasMore={hasNextPage}
-                loader={<LoadingBlock key="loading-block-2" />}
+                loader={<LoadingBlock color="white" key="loading-block-2" />}
                 useWindow={false}
                 className="dopeGrid"
               >
@@ -90,16 +94,28 @@ const GangstaParty = () => {
                       if (!hustler?.node!.svg) {
                         return null;
                       }
-
                       return (
-                        <RenderFromChain
-                          data={{
-                            image: hustler.node.svg,
-                            name: hustler.node.name,
-                          }}
-                          id={hustler.node.id}
-                          key={hustler.node.id}
-                        />
+                        <PanelContainer key={hustler.node.id}>
+                          <PanelTitleBar centered>
+                            {parseInt(hustler.node.id) < 500 && 'OG'} 
+                            &nbsp;
+                            {hustler.node.name}
+                          </PanelTitleBar>
+                          <PanelBody>
+                            <a 
+                              href={`/hustlers/${hustler.node.id}/flex`} 
+                              css={css`width:100%;display:block;`}
+                            >
+                              <RenderFromChain
+                                data={{
+                                  image: hustler.node.svg,
+                                  name: hustler.node.name,
+                                }}
+                                id={hustler.node.id}
+                              />
+                            </a>
+                          </PanelBody>
+                        </PanelContainer>
                       );
                     }),
                   )}
@@ -122,7 +138,7 @@ const GangstaParty = () => {
         <Link href="/" passHref>
           <Button>Back to DOPE WARS</Button>
         </Link>
-        <Link href="/inventory" passHref>
+        <Link href="/inventory?section=Hustlers" passHref>
           <Button>Peep Your Squad</Button>
         </Link>
         <Link href="/dope" passHref>

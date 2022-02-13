@@ -31,11 +31,11 @@ const Nav = () => (
     <Link href="/inventory?section=Hustlers" passHref>
       <Button variant="navBar">Your Hustlers</Button>
     </Link>
-    {/* <Link href="/gangsta-party" passHref>
+    <Link href="/gangsta-party" passHref>
       <Button variant="navBar">
-        Gangsta Party
+        All Hustlers
       </Button>
-    </Link> */}
+    </Link>
     <div
       css={css`
         position: absolute;
