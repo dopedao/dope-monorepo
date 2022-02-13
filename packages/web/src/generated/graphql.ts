@@ -1429,7 +1429,7 @@ export type RenderDopeQueryVariables = Exact<{
 }>;
 
 
-export type RenderDopeQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, items: Array<{ __typename?: 'Item', id: string, rles?: { __typename?: 'RLEs', female: string, male: string } | null | undefined, base?: { __typename?: 'Item', id: string, rles?: { __typename?: 'RLEs', female: string, male: string } | null | undefined } | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
+export type RenderDopeQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, items: Array<{ __typename?: 'Item', id: string, type: ItemType, rles?: { __typename?: 'RLEs', female: string, male: string } | null | undefined, base?: { __typename?: 'Item', id: string, rles?: { __typename?: 'RLEs', female: string, male: string } | null | undefined } | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type SearchDopeQueryVariables = Exact<{
   query: Scalars['String'];
@@ -2206,6 +2206,7 @@ export const RenderDopeDocument = `
         id
         items {
           id
+          type
           rles {
             female
             male
