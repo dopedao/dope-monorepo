@@ -7,7 +7,14 @@ type SectionHeaderProps = {
 
 const SectionHeader: FC<SectionHeaderProps> = ({ children }) => {
   return (
-    <AccordionButton justifyContent="space-between" p={4} _focus={{ boxShadow: 'none' }}>
+    <AccordionButton 
+      background="white" 
+      justifyContent="space-between" 
+      borderBottom="2px solid black"
+      p={4} 
+      _focus={{ boxShadow: 'none' }}
+      _hover={{ background: 'white' }}
+    >
       {children}
       <AccordionIcon />
     </AccordionButton>

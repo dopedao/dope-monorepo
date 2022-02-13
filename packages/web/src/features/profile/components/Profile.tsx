@@ -14,7 +14,6 @@ const Profile = () => {
   return (
     <Accordion
       allowToggle
-      background="#fff"
       defaultIndex={SECTIONS.findIndex(val => val === section)}
       onChange={idx => {
         if (idx == -1) return;

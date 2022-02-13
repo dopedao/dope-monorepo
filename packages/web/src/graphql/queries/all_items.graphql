@@ -1,12 +1,12 @@
-query AllHustlers(
+query AllItems(
   $after: Cursor
   $first: Int
   $before: Cursor
   $last: Int
-  $orderBy: HustlerOrder
-  $where: HustlerWhereInput
+  $orderBy: ItemOrder
+  $where: ItemWhereInput
 ) {
-  hustlers(
+  items(
     after: $after
     first: $first
     before: $before
@@ -22,17 +22,15 @@ query AllHustlers(
       endCursor
     }
     edges {
-      cursor
       node {
-        id
         name
-        type
-        title
-        color
-        background
-        age
+        id
+        fullname
+        greatness
         svg
-        sex
+        base {
+          svg
+        }
       }
     }
   }
