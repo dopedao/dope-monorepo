@@ -1,25 +1,25 @@
-import { constructionBackground } from 'components/ComingSoonDialog';
+import { Box, Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { Image } from '@chakra-ui/react';
+import { media } from 'ui/styles/mixins';
 import AppWindow from 'components/AppWindow';
-import CardContainer from 'features/profile/components/CardContainer';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Head from 'components/Head';
 import PanelContainer from 'components/PanelContainer';
+import PanelTitleBar from 'components/PanelTitleBar';
 
-const MERCH_IMAGES = [
-  'beanie-stacking.png',
-  'beanie-ak.png',
-  'beanie-sellers.png',
-  'hat-smiley.png',
-  'hat-stacked.png',
-  'hoodie.png',
-  'tee.png',
-  'tee-smiley.png',
-  'tee-pocket-smiley.png',
-];
+const MERCH = {
+  'Stacking $PAPER Beanie': 'beanie-stacking.png',
+  'AK+1 Beanie': 'beanie-ak.png',
+  'Sellers Get Rekt Beanie': 'beanie-sellers.png',
+  'Dope Hat Smiley': 'hat-smiley.png',
+  'Dope Hat Stacked': 'hat-stacked.png',
+  'Dope Pullover Hoodie': 'hoodie.png',
+  'Dope Stacked Tee': 'tee.png',
+  'Dope Smiley Tee': 'tee-smiley.png',
+  'Dope Pocket Tee': 'tee-pocket-smiley.png',
+};
 
-const SwapMeet = () => (
+const SwapMeetMerch = () => (
   <AppWindow
     scrollable
     height="90vh"
@@ -41,15 +41,29 @@ const SwapMeet = () => (
         Soon™
       </h2>
       <br />
-      <CardContainer>
-        {MERCH_IMAGES.map((filename, index) => (
-          <PanelContainer key={`merch-${index}`}>
+      <Box
+        css={css`
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          grid-column-gap: 10px;
+          grid-row-gap: 16px;
+          // Screen > Tablet display items side by side
+          ${media.tablet`
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          `}
+        `}
+      >
+        {Object.entries(MERCH).map(([title, filename]) => (
+          <PanelContainer key={`merch-${title}`}>
+            <PanelTitleBar centered css={css`line-height:1.25em;`}>
+              {title}
+            </PanelTitleBar>
             <Image src={`/images/merch/${filename}`} alt={filename} />
           </PanelContainer>
         ))}
-      </CardContainer>
+      </Box>
     </div>
   </AppWindow>
 );
 
-export default SwapMeet;
+export default SwapMeetMerch;
