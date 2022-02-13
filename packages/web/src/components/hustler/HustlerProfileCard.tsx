@@ -32,7 +32,7 @@ const HustlerProfileCard = ({hustler}: {hustler: Partial<Hustler>}) => {
       </PanelTitleBarFlex>
       <PanelBody>
         <a 
-          href={`/hustlers/${hustler.id}/flex`} 
+          href={`/hustlers/${hustler.id}`} 
           css={css`width:100%;display:block;`}
         >
           <RenderFromChain
