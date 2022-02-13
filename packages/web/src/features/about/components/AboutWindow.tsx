@@ -63,7 +63,7 @@ const AboutWindow = ({ ...props }) => {
                   width: auto;
                 `}
               >
-                Enter the murderverse…
+                Enter the murderverse
               </Button>
             }
           />
