@@ -6,6 +6,12 @@ import ContentFooter from 'features/about/components/ContentFooter';
 import ContentRoadmap from 'features/about/components/ContentRoadmap';
 import ReactPlayer from 'react-player';
 import { css } from '@emotion/react';
+import { getRandomArrayElement } from 'utils/utils';
+
+const VIDEOS = [
+  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-wars-trailer-nono.mp4',
+  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-moving-bricks.mp4'
+]
 
 const AboutWindow = ({ ...props }) => {
   return (
@@ -43,7 +49,7 @@ const AboutWindow = ({ ...props }) => {
           <ReactPlayer
             // light='/images/icon/dope-smiley.svg'
             light="/images/Logo-Plain.svg"
-            url="https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-moving-bricks.mp4"
+            url={getRandomArrayElement(VIDEOS)}
             width="100%"
             controls
             playing
@@ -57,7 +63,7 @@ const AboutWindow = ({ ...props }) => {
                   width: auto;
                 `}
               >
-                Enter the murderverse
+                Enter the murderverse…
               </Button>
             }
           />
