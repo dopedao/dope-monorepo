@@ -46,6 +46,8 @@ export default class PathNavigator {
       !this.grid.isInside(moveTile.x, moveTile.y)
     ) {
       console.warn('Move to point outside of pathfinder map');
+      if (this.onCancel)
+        this.onCancel();
       return;
     }
 
