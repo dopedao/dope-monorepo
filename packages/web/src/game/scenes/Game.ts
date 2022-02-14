@@ -131,8 +131,14 @@ export default class GameScene extends Scene {
         'Arpenteur',
         [
           // fake completed quest
-          new Conversation('Hey! Welcome to Dopecity!', () => EventHandler.emitter().emit(Events.PLAYER_QUEST_COMPLETE, { name: 'Welcome to Dopecity', })),
-          new Conversation('Before doing anything else, you should start by going to the local store and getting yourself a phone to connect your wallet! A wallet is like your ID, you can\'t do anything without it.', () => {
+          new Conversation([
+            {
+              text: 'Hey! Welcome to Dopecity!',
+              onEnd: () => EventHandler.emitter().emit(Events.PLAYER_QUEST_COMPLETE, { name: 'Welcome to Dopecity', })
+            },
+            {
+              text: 'Before doing anything else, you should start by going to the local store and getting yourself a phone to connect your wallet! A wallet is like your ID, you can\'t do anything without it.',
+            }], () => {
             this.player.questManager.addQuest(new PointQuest(
               'Get out of your cavern',
               'Go to the local store and get yourself a phone',
@@ -147,7 +153,10 @@ export default class GameScene extends Scene {
             ));
             return false;
           }),
-          new Conversation('Cool! Now that you got yourself a phone, you can try connecting your wallet. Hmmmm let me take a look. So you go there... uhh you click on that yeah... then top right... and uhh... yeah sign the message now.', () => {
+          new Conversation(
+            {
+              text: 'Cool! Now that you got yourself a phone, you can try connecting your wallet. Hmmmm let me take a look. So you go there... uhh you click on that yeah... then top right... and uhh... yeah sign the message now.',
+            }, () => {
             const selectedAddress = (window.ethereum as any)?.selectedAddress;
             if (selectedAddress)
             {
@@ -160,8 +169,8 @@ export default class GameScene extends Scene {
               });
               const provider = new ethers.providers.Web3Provider(window.ethereum);
               provider.getSigner().signMessage(siweMessage.prepareMessage())
-                .then(signedMessage => this.citizens[this.citizens.length - 2].conversations.push(new Conversation(`You signed: ${signedMessage}`)))
-                .catch(err => this.citizens[this.citizens.length - 2].conversations.push(new Conversation(`Error signing: ${err.code}`)));
+                .then(signedMessage => this.citizens[this.citizens.length - 2].conversations.push(new Conversation({text: `You signed: ${signedMessage}`})))
+                .catch(err => this.citizens[this.citizens.length - 2].conversations.push(new Conversation({text: `Error: ${err}`})));
 
               return true;
             }
@@ -183,7 +192,7 @@ export default class GameScene extends Scene {
         '12',
         'Michel',
         'Arpenteur',
-        [new Conversation('Welcome to Dope City!')],
+        [new Conversation({text: 'Welcome to Dope City!'})],
         undefined,
         //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
         true,

@@ -304,21 +304,29 @@ export default class UIScene extends Scene {
       // get upcoming conversation
       const conv: Conversation = citizen.conversations[0];
 
-      const textBox = new DialogueTextBox(this, 500, 500, 65)
-        .start(conv.text, 50)
-        // called only when the interaction is COMPLETE
-        // will not be called if the gameobject is destroyed in any way
+      let index = 0;
+      const textBox = new DialogueTextBox(this, 500, 500, 65);
+      textBox.start(conv.texts[index].text, conv.texts[index].typingSpeed ?? 50)
         .on('complete', () => {
-          textBox.destroy();
-          this.currentInteraction = undefined;
+          if (conv.texts[index].onEnd)
+            conv.texts[index].onEnd!();
 
-          // TODO: Move somewhere else, maybe in the Citizen class?
-          citizen.onInteractionFinish();
-          EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_FINISH, citizen, false);
+          if (index === conv.texts.length - 1) {
+            textBox.destroy();
+            this.currentInteraction = undefined;
 
-          // if the conversation is not marked as complete, push it to the array again
-          if (conv.onFinish) if (conv.onFinish()) citizen.conversations.shift();
-        });
+            // TODO: Move somewhere else, maybe in the Citizen class?
+            citizen.onInteractionFinish();
+            EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_FINISH, citizen, false);
+
+            // if the conversation is not marked as complete, push it to the array again
+            if (conv.onFinish) if (conv.onFinish()) citizen.conversations.shift();
+
+            return;
+          }
+          textBox.start(conv.texts[++index].text, 50);
+        })
+
       this.currentInteraction = { citizen, textBox, maxDistance: 100 };
 
       // Chat bubbles
