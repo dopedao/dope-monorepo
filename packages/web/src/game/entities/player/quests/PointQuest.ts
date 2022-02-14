@@ -40,10 +40,6 @@ export default class PointQuest extends Quest {
   onComplete() {
     super.onComplete();
 
-    // unsubscribe from event when quest is completed
-    this.zone.body.setOnCollideWith(
-      this.questManager.player.hitboxSensor as MatterJS.BodyType,
-      () => undefined,
-    );
+    this.zone.destroy();
   }
 }

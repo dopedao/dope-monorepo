@@ -146,8 +146,7 @@ export default class GameScene extends Scene {
               this.player.questManager,
               this.citizens[this.citizens.length - 2],
               undefined,
-              (quest: any) => {
-                quest.zone.destroy();
+              () => {
                 this.player.inventory.add(new Item('iBroken', 'A shady looking phone'));
               }
             ));
