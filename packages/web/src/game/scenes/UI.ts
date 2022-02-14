@@ -324,7 +324,9 @@ export default class UIScene extends Scene {
 
             return;
           }
-          textBox.start(conv.texts[++index].text, 50);
+
+          index++;
+          textBox.start(conv.texts[index].text, conv.texts[index].typingSpeed ?? 50);
         })
 
       this.currentInteraction = { citizen, textBox, maxDistance: 100 };
