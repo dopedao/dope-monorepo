@@ -30,7 +30,7 @@ export default class InteractCitizenQuest extends Quest {
     onStart(): void {
         super.onStart();
 
-        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, this._handleCitizenEvent);
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, this._handleCitizenEvent, this);
     }
 
     onComplete() {
@@ -40,6 +40,7 @@ export default class InteractCitizenQuest extends Quest {
         EventHandler.emitter().removeListener(
           Events.PLAYER_CITIZEN_INTERACT_FINISH,
           this._handleCitizenEvent,
+          this
         );
     }
 }

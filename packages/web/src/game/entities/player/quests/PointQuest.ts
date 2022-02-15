@@ -39,7 +39,5 @@ export default class PointQuest extends Quest {
 
   onComplete() {
     super.onComplete();
-
-    this.zone.destroy();
   }
 }

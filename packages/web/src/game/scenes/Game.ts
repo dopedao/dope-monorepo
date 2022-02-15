@@ -20,6 +20,7 @@ import { SiweMessage } from 'siwe';
 import { ethers } from 'ethers';
 import PointQuest from 'game/entities/player/quests/PointQuest';
 import Zone from 'game/world/Zone';
+import InteractCitizenQuest from 'game/entities/player/quests/InteractCitizenQuest';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -139,15 +140,36 @@ export default class GameScene extends Scene {
             {
               text: 'Before doing anything else, you should start by going to the local store and getting yourself a phone to connect your wallet! A wallet is like your ID, you can\'t do anything without it.',
             }], () => {
-            this.player.questManager.addQuest(new PointQuest(
+            this.player.questManager.addQuest(new InteractCitizenQuest(
               'Get out of your cavern',
               'Go to the local store and get yourself a phone',
-              new Zone(this.matter.add.circle(3681, 360, 30, { isStatic: true }), this),
+              this.citizens[this.citizens.push(new Citizen(this.matter.world, 3681, 390, '1001', "Alice", undefined, [
+                new Conversation([
+                  {
+                    text: "Hey! I'm Bob, the store owner. I'm glad you're here!",
+                  },
+                  {
+                    text: "Here's a phone to connect your wallet. It's a little bit of a pain to use but it's better than nothing.",
+                    onEnd: () => this.player.inventory.add(new Item('iBroken', 'A shady looking phone'))
+                  },
+                  {
+                    text: "Anyway, hit me up if you need anything else. I'm always here to help.",
+                    typingSpeed: 70,
+                  }
+              ])])) - 1],
               this.player.questManager,
-              this.citizens[this.citizens.length - 2],
+              this.citizens[this.citizens.length - 3],
               undefined,
-              () => {
-                this.player.inventory.add(new Item('iBroken', 'A shady looking phone'));
+              (quest: Quest) => {
+                const getRidOfCitizen = setInterval(() => {
+                  const citizen = (quest as InteractCitizenQuest).citizen;
+                  if (this.cameras.main.cull([citizen]).length === 0)
+                  {
+                    this.citizens.splice(this.citizens.indexOf(citizen), 1);
+                    citizen.destroyRuntime();
+                    clearInterval(getRidOfCitizen);
+                  }
+                });
               }
             ));
             return false;
@@ -168,8 +190,8 @@ export default class GameScene extends Scene {
               });
               const provider = new ethers.providers.Web3Provider(window.ethereum);
               provider.getSigner().signMessage(siweMessage.prepareMessage())
-                .then(signedMessage => this.citizens[this.citizens.length - 2].conversations.push(new Conversation({text: `You signed: ${signedMessage}`})))
-                .catch(err => this.citizens[this.citizens.length - 2].conversations.push(new Conversation({text: `Error: ${err}`})));
+                .then(signedMessage => this.citizens[this.citizens.length - 3].conversations.push(new Conversation({text: `You signed: ${signedMessage}`})))
+                .catch(err => this.citizens[this.citizens.length - 3].conversations.push(new Conversation({text: `Error: ${err}`})));
 
               return true;
             }

@@ -50,6 +50,7 @@ export default class Quest {
 
   onComplete() {
     // shift conversations
+    // TODO: Move that elsewehre...
     this.questReferer?.conversations.shift();
 
     EventHandler.emitter().emit(Events.PLAYER_QUEST_COMPLETE, this);

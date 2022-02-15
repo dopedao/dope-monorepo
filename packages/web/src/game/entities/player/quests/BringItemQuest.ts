@@ -65,6 +65,7 @@ export default class BringItemQuest extends ItemQuest {
     EventHandler.emitter().removeListener(
       Events.PLAYER_CITIZEN_INTERACT_FINISH,
       this._handleCitizenEvent,
+      this
     );
   }
 }
