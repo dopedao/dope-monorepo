@@ -23,11 +23,6 @@ const DesktopIconList = () => {
       {showWebAmp && <WebAmpPlayer onClose={() => setShowWebAmp(false)} />}
       <IconGrid>
         <DesktopIcon
-          icon="hongbao"
-          label="新年好"
-          clickAction={() => openLocalRoute('/lunar-new-year')}
-        />
-        <DesktopIcon
           icon="dopewars-exe"
           label="Swap Meet"
           clickAction={() => {
