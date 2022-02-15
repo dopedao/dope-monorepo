@@ -1,7 +1,7 @@
 import useHustler from 'features/hustlers/hooks/useHustler';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 import ChevronRight from 'ui/svg/ChevronRight';
-import { Wrapper, Item, Button } from './styles';
+import { StepContainer, Item, Button } from './styles';
 
 const STEPS = [
   {
@@ -69,7 +69,7 @@ const Stepper = () => {
   };
 
   return (
-    <Wrapper>
+    <StepContainer>
       {STEPS.map(({ step, title }, i) => (
         <>
           <Item key={`item-${i}`}>
@@ -85,7 +85,7 @@ const Stepper = () => {
           {step < 2 && <ChevronRight key={`chevron-${i}`} />}
         </>
       ))}
-    </Wrapper>
+    </StepContainer>
   );
 };
 

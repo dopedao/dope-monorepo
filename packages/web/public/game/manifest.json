@@ -1,0 +1,76 @@
+{
+    "assetRoot":"assets",
+    "totalSize": 17903178,
+    "assets": {
+        "spritesheet": {
+            "male_base": {
+              "file": "https://static.dopewars.gg/male/body/1.png",
+              "frameConfig": {
+                "frameWidth": 30,
+                "frameHeight": 60
+              },
+              "size": 8543
+            }
+        },
+        "image": {
+            "tileset_vegetation_tree": {
+                "file":"./game/MAP/DW_Vegetation_Trees.png",
+                "size": 14290
+            },
+            "tileset_ground_main": {
+                "file":"./game/MAP/DW_Tileset_Grounds_WebModular.png",
+                "size": 28752
+            },
+            "tileset_building_modular": {
+                "file":"./game/MAP/Dw_Tileset_BuildingsModular.png",
+                "size": 23589
+            },
+            "tileset_props_main": {
+                "file":"./game/MAP/dw_Props_PreProtoSetV1.png",
+                "size": 202808
+            },
+            "tileset_buildings_preprotosetv1": {
+                "file":"./game/MAP/dw_Buildings_PreProtoSetV1_TileAbsolute.png",
+                "size": 208661
+            },
+            "tileset_building_nycpack1": {
+                "file":"./game/MAP/dw_Buildings_PreProtoSetV2_TileAbsolute.png",
+                "size": 321197
+            },
+            "tileset_ground_autotiles": {
+                "file":"./game/MAP/DW_Tileset_GrassStreet.png",
+                "size": 16861
+            },
+            "tileset_vegetation_general": {
+                "file":"./game/MAP/dw_Props_Vegetation.png",
+                "size": 34088
+            },
+            "tileset_vegetation_main": {
+                "file": "./game/MAP/DW_Props_VegetationSheet.png",
+                "size": 103952
+            },
+            "tileset_vegetation_small": {
+                "file":"./game/MAP/DW_Props_Vegetation_Small.png",
+                "size": 9713
+            },
+            "tileset_vegetation_medium": {
+                "file":"./game/MAP/DW_Props_Vegetation_Medium.png",
+                "size": 3860
+            },
+            "tileset_props_telephonewire": {
+                "file": "./game/MAP/dw_Props_TelephonePoleWire.png",
+                "size": 10197
+            },
+            "tileset_fx_lightsources": {
+                "file": "./game/MAP/Tileset_FX_Lightsources.png",
+                "size": 14232
+            }
+        },
+        "json": {
+            "map": {
+                "file": "./game/MAP/LDTK/DopeWars_LD_V3/DopeWars_LD_V4.ldtk",
+                "size": 16902435
+            }
+        }
+    }
+}

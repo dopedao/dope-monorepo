@@ -1,5 +1,19 @@
 import { useMemo } from 'react';
-import { Hustler, HustlerSex, Item } from 'generated/graphql';
+import { Hustler, Item, ItemType } from 'generated/graphql';
+import { HustlerSex } from 'utils/HustlerConfig';
+
+const order = [
+  ItemType.Clothes,
+  ItemType.Weapon,
+  ItemType.Waist,
+  ItemType.Foot,
+  ItemType.Hand,
+  ItemType.Drugs,
+  ItemType.Neck,
+  ItemType.Ring,
+  ItemType.Accessory,
+  ItemType.Vehcile,
+];
 
 type Rles = Pick<Item, 'rles'> & {
   base?: Pick<Item, 'rles'> | null;
@@ -10,12 +24,10 @@ function getRle(sex: HustlerSex, item?: Rles | null) {
     return '';
   }
 
-  const sex_ = sex === 'MALE' ? 'male' : 'female';
-
-  if (item.rles && item.rles[sex_] !== '') {
-    return item.rles[sex_];
-  } else if (item.base?.rles && item.base?.rles[sex_] !== '') {
-    return item.base.rles[sex_];
+  if (item.rles && item.rles[sex] !== '') {
+    return item.rles[sex];
+  } else if (item.base?.rles && item.base?.rles[sex] !== '') {
+    return item.base.rles[sex];
   }
 
   return '';
@@ -39,17 +51,33 @@ export const useHustlerRles = (
 ) =>
   useMemo(() => {
     if (hustler) {
+      const sex = hustler.sex === 'MALE' ? 'male' : 'female';
+
       return [
-        getRle(hustler.sex, hustler.clothes),
-        getRle(hustler.sex, hustler.weapon),
-        getRle(hustler.sex, hustler.waist),
-        getRle(hustler.sex, hustler.foot),
-        getRle(hustler.sex, hustler.hand),
-        getRle(hustler.sex, hustler.drug),
-        getRle(hustler.sex, hustler.neck),
-        getRle(hustler.sex, hustler.ring),
-        getRle(hustler.sex, hustler.accessory),
-        getRle(hustler.sex, hustler.vehicle),
+        getRle(sex, hustler.clothes),
+        getRle(sex, hustler.weapon),
+        getRle(sex, hustler.waist),
+        getRle(sex, hustler.foot),
+        getRle(sex, hustler.hand),
+        getRle(sex, hustler.drug),
+        getRle(sex, hustler.neck),
+        getRle(sex, hustler.ring),
+        getRle(sex, hustler.accessory),
+        getRle(sex, hustler.vehicle),
       ];
     }
   }, [hustler]);
+
+export const useDopeRles = (
+  sex?: HustlerSex,
+  dope?: {
+    items: (Pick<Item, 'type'> & Rles)[];
+  } | null,
+) =>
+  useMemo(() => {
+    if (sex && dope) {
+      return dope.items
+        ?.sort((a, b) => (order.indexOf(a.type) < order.indexOf(b.type) ? 1 : -1))
+        .reduce((prev, item) => [...prev, getRle(sex, item)], [] as string[]);
+    }
+  }, [sex, dope]);

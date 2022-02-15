@@ -1,18 +1,18 @@
-import AppWindowOptimism from 'components/AppWindowOptimism';
+import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import Profile from 'features/profile/components/Profile';
 
 const ProfilePage = () => {
   return (
-    <AppWindowOptimism
+    <AppWindow
       padBody={false}
       navbar={<DopeWarsExeNav hideFilterBar />}
       requiresWalletConnection
     >
       <Head />
       <Profile />
-    </AppWindowOptimism>
+    </AppWindow>
   );
 };
 

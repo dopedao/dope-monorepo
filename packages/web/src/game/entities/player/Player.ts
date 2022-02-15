@@ -1,12 +1,18 @@
 import HustlerModel from 'game/gfx/models/HustlerModel';
-import EventHandler, { Events } from 'game/handlers/EventHandler';
-import Inventory from 'game/inventory/Inventory';
-import QuestManager from 'game/managers/QuestManager';
-import Quest from 'game/quests/Quest';
+import EventHandler, { Events } from 'game/handlers/events/EventHandler';
+import Inventory from 'game/entities/player/inventory/Inventory';
+import QuestManager from 'game/entities/player/managers/QuestManager';
+import Quest from 'game/entities/player/quests/Quest';
 import Citizen from '../citizen/Citizen';
 import Hustler, { Direction } from '../Hustler';
 import ItemEntity from '../ItemEntity';
 import PlayerController from './PlayerController';
+import ENS, { getEnsAddress } from '@ensdomains/ensjs';
+import UIScene from 'game/scenes/UI';
+import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
+import { getShortAddress } from 'utils/utils';
+import NetworkHandler from 'game/handlers/network/NetworkHandler';
+import { UniversalEventNames } from 'game/handlers/network/types';
 
 export default class Player extends Hustler {
   private controller: PlayerController;
@@ -18,6 +24,11 @@ export default class Player extends Hustler {
 
   private _inventoryOpen: boolean = false;
   private _busy: boolean = false;
+
+  private _lastMoveTimestamp: number = 0;
+  private _wasMoving: boolean = false;
+
+  private readonly _baseDepth: number;
 
   get interactSensor() {
     return this._interactSensor;
@@ -42,23 +53,37 @@ export default class Player extends Hustler {
     world: Phaser.Physics.Matter.World,
     x: number,
     y: number,
-    model: HustlerModel,
+    hustlerId?: string,
+    name?: string,
     inventory?: Inventory,
     quests?: Array<Quest>,
   ) {
-    super(world, x, y, model);
+    super(world, x, y, hustlerId, name);
 
     this._inventory = inventory ?? new Inventory();
     this._questManager = new QuestManager(this, quests);
 
     // create interact sensor
-    this._interactSensor = this.scene.matter.add.rectangle(x + 40, y - 40, 40, this.height, {
-      isSensor: true,
-    });
+    this._interactSensor = this.scene.matter.add.rectangle(
+      x + this.displayWidth,
+      y - this.displayHeight / 4,
+      this.displayWidth,
+      this.displayHeight / 2,
+      {
+        isSensor: true,
+      },
+    );
 
     // create controller
     this.controller = new PlayerController(this);
     this._handleEvents();
+
+    this._baseDepth = this.depth;
+
+    this.hitboxSensor.onCollideActiveCallback = this.updateDepth;
+    // setTimeout prevents depth changing too fast
+    // and causing player render stutter
+    this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => this.setDepth(this._baseDepth));
   }
 
   toggleInventory() {
@@ -80,7 +105,7 @@ export default class Player extends Hustler {
 
     let flag = false;
 
-    const onOverlap = (interactSensor: MatterJS.Body, other: MatterJS.Body) => {
+    const overlap = (interactSensor: MatterJS.Body, other: MatterJS.Body) => {
       const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType)
         .gameObject;
       if (otherGameObject instanceof Citizen) {
@@ -91,8 +116,6 @@ export default class Player extends Hustler {
         if (!(otherGameObject as Citizen).shouldFollowPath) return;
         // call onInteraction method of citizen
         otherGameObject.onInteraction(this);
-        // make player look at npc
-        this.lookAt(otherGameObject.x, otherGameObject.y);
 
         EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, otherGameObject);
 
@@ -107,13 +130,13 @@ export default class Player extends Hustler {
     };
 
     // check interact sensor
-    this.scene.matter.overlap(this._interactSensor, undefined, onOverlap);
+    this.scene.matter.overlap(this._interactSensor, undefined, overlap);
 
     // prevent double interaction
     if (flag) return;
 
     // check hitbox
-    this.scene.matter.overlap(this.hitboxSensor, undefined, onOverlap);
+    this.scene.matter.overlap(this.hitboxSensor, undefined, overlap);
   }
 
   updateSensorPosition() {
@@ -122,69 +145,92 @@ export default class Player extends Hustler {
       if (this.lastDirection === Direction.South) {
         (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, {
           x: this.x,
-          y: this.y + 75,
+          y: this.y + this.displayHeight / 1.5,
         });
       } else if (this.lastDirection === Direction.North) {
         (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, {
           x: this.x,
-          y: this.y - 85,
+          y: this.y - this.displayHeight / 1.1,
         });
       } else if (this.lastDirection === Direction.West) {
         (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, {
-          x: this.x - 40,
-          y: this.y - 40,
+          x: this.x - this.displayWidth,
+          y: this.y - this.displayHeight / 4,
         });
       } else if (this.lastDirection === Direction.East) {
         (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, {
-          x: this.x + 40,
-          y: this.y - 40,
+          x: this.x + this.displayWidth,
+          y: this.y - this.displayHeight / 4,
         });
       }
     }
   }
 
-  updateDepth(player: MatterJS.Body, other: MatterJS.Body) {
-    const playerBodyType: MatterJS.BodyType = player as MatterJS.BodyType;
-    let otherBodyType: MatterJS.BodyType = other as MatterJS.BodyType;
+  updateDepth(pair: MatterJS.IPair) {
+    let playerHitbox: MatterJS.BodyType;
+    let otherHitbox: MatterJS.BodyType;
+
+    if ((pair.bodyB as MatterJS.BodyType).gameObject instanceof Player) {
+      playerHitbox = pair.bodyB as MatterJS.BodyType;
+      otherHitbox = pair.bodyA as MatterJS.BodyType;
+    } else {
+      playerHitbox = pair.bodyA as MatterJS.BodyType;
+      otherHitbox = pair.bodyB as MatterJS.BodyType;
+    }
+
+    // ignore collision with hustler collider
+    if (otherHitbox.gameObject instanceof Player) return;
 
     // if the overlapped has a parent body, use it instead for calculating delta Y
-    if (otherBodyType.parent) otherBodyType = otherBodyType.parent;
+    if (otherHitbox.parent) otherHitbox = otherHitbox.parent;
 
-    if (otherBodyType.position.y - playerBodyType.position.y < 0)
-      playerBodyType.gameObject.setDepth(2);
-    else playerBodyType.gameObject.setDepth(0);
+    if (otherHitbox.position.y - playerHitbox.position.y < 0)
+      playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 20);
+    else playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 20);
   }
 
   private _handleEvents() {
     EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT, (citizen: Citizen) => {
       this._busy = true;
+      // make player look at npc
+      this.lookAt(citizen.x, citizen.y);
     });
-    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_CANCEL, (citizen: Citizen) => {
-      this._busy = false;
-    });
-    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, (citizen: Citizen) => {
+    EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, (citizen: Citizen) => {
       this._busy = false;
     });
   }
 
   update(): void {
     super.update();
+    // update interaction box sensor position
     this.updateSensorPosition();
-
-    // this.questManager.update();
-
-    // update depth depending other bodies
-    const overlapped = this.scene.matter.overlap(
-      this.body as MatterJS.BodyType,
-      undefined,
-      this.updateDepth,
-    );
-    // reset depth if not overlapped
-    if (this.depth !== 2 && !overlapped) {
-      this.setDepth(2);
-    }
 
     // takes input and update player
     this.controller.update();
+
+    if (this.moveDirection !== Direction.None) {
+      if (Date.now() - this._lastMoveTimestamp > PlayerController.MOVE_TICKRATE * 1000) {
+        this._lastMoveTimestamp = Date.now();
+
+        if (NetworkHandler.getInstance().connected)
+          NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+            x: this.x,
+            y: this.y,
+            direction: this.moveDirection,
+          });
+      }
+      this._wasMoving = true;
+    }
+
+    if (this.moveDirection === Direction.None && this._wasMoving) {
+      if (NetworkHandler.getInstance().connected)
+        NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+          x: this.x,
+          y: this.y,
+          direction: this.moveDirection,
+        });
+      this._lastMoveTimestamp = 0;
+      this._wasMoving = false;
+    }
   }
 }

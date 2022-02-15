@@ -8,7 +8,7 @@ import { Link } from '@chakra-ui/layout';
 import styled from '@emotion/styled';
 import DopeCardItems from 'features/dope/components/DopeCardItems';
 import DopeItem from 'features/dope/components/DopeItem';
-import DopePreviewButton from 'features/dope/components/DopeCardPreviewButton';
+import DopeCardPreviewButton from 'features/dope/components/DopeCardPreviewButton';
 import DopeStatus from 'features/dope/components/DopeStatus';
 import RenderFromDopeIdOnly from 'components/hustler/RenderFromDopeIdOnly';
 import HustlerContainer from 'components/hustler/HustlerContainer';
@@ -182,8 +182,9 @@ const DopeCardBody = ({
           </div>
         )}
       </DopeCardItems>
-      {showPreviewButton && isExpanded && (
-        <DopePreviewButton
+      {isExpanded && (
+        <DopeCardPreviewButton
+
           togglePreview={togglePreview}
           isPreviewShown={isPreviewShown}
           disabled={dope.opened}

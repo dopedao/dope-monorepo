@@ -86,7 +86,6 @@ const WebAmpPlayer = ({ onClose }: Props) => {
       });
       // Returns a promise indicating when it's done loading.
       webamp.renderWhenReady(containerEl.current);
-      webamp.play();
       if (onClose) webamp.onClose(() => onClose());
       previousWebAmp.current = webamp;
     };

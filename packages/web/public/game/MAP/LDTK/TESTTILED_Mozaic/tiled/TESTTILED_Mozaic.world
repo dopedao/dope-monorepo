@@ -1,0 +1,4 @@
+{
+	"maps": [{ "fileName": "Mosaic_demo.tmx", "x": 0, "y": 64 }],
+	"type": "world"
+}

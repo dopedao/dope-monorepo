@@ -300,7 +300,7 @@ const ContentRoadmap = () => (
       </RoadmapItem>
       <RoadmapItem
         title="P2E Game on Starknet"
-        imageUrl="/images/about/dope-wars-pvp-fight.png"
+        imageUrl="/images/game/classic-mode.png"
         imageAlt="Play To Earn Game on Starknet"
         date="Q2-Q4 2022"
       >

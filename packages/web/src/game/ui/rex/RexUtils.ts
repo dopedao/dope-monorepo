@@ -97,18 +97,20 @@ export const getBuiltInText = (
   wrapWidth: number,
   fixedWidth: number,
   fixedHeight: number,
+  maxLines?: number,
 ) => {
-  return scene.add
-    .text(0, 0, '', {
-      font: 'Dope',
+  return scene.add.text(0, 0, '', {
+    font: 'Dope',
 
-      fontSize: '20px',
-      wordWrap: {
-        width: wrapWidth,
-      },
-      maxLines: 3,
-    })
-    .setFixedSize(fixedWidth, fixedHeight);
+    fixedWidth: fixedWidth,
+    fixedHeight: fixedHeight,
+
+    fontSize: '20px',
+    wordWrap: {
+      width: wrapWidth,
+    },
+    maxLines: maxLines ?? 3,
+  });
 };
 
 export const getBBcodeText = (
@@ -116,6 +118,8 @@ export const getBBcodeText = (
   wrapWidth: number,
   fixedWidth: number,
   fixedHeight: number,
+  maxLines?: number,
+  fontSize?: string,
 ) => {
   return scene.rexUI.add.BBCodeText(0, 0, '', {
     fontFamily: 'Dope',
@@ -123,12 +127,12 @@ export const getBBcodeText = (
     fixedWidth: fixedWidth,
     fixedHeight: fixedHeight,
 
-    fontSize: '20px',
+    fontSize: fontSize ?? '20px',
     wrap: {
       mode: 'word',
       width: wrapWidth,
     },
-    maxLines: 3,
+    maxLines: maxLines ?? 3,
   });
 };
 

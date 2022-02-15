@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Stack, Image, HStack, Button } from '@chakra-ui/react';
 import { AspectRatio } from '@chakra-ui/layout';
 import { useWeb3React } from '@web3-react/core';
@@ -32,7 +32,7 @@ const formatType = (type: HustlerType): string => {
 const HustlerFooter = ({ id }: { id: string }) => (
   <PanelFooter>
     <div></div>
-    <Link href={`/hustlers/${id}/flex`} passHref>
+    <Link href={`/hustlers/${id}`} passHref>
       <Button>Flex</Button>
     </Link>
     <Link href={`/hustlers/${id}/customize`} passHref>
@@ -41,7 +41,7 @@ const HustlerFooter = ({ id }: { id: string }) => (
   </PanelFooter>
 );
 
-const Hustlers: FC = () => {
+const Hustlers = () => {
   const { account } = useWeb3React();
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileHustlersQuery(
@@ -116,7 +116,7 @@ const Hustlers: FC = () => {
                   <PanelBody>
                     {svg && (
                       <AspectRatio ratio={1}>
-                        <Link href={`/hustlers/${id}/flex`} passHref>
+                        <Link href={`/hustlers/${id}`} passHref>
                           <Image
                             alt={name || 'Hustler'}
                             borderRadius="md"
