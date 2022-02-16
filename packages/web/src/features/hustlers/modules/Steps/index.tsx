@@ -4,7 +4,6 @@ import { getRandomHustler, HustlerCustomization } from 'utils/HustlerConfig';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
 import useHustler from 'features/hustlers/hooks/useHustler';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
-import Begin from 'features/hustlers/modules/Begin';
 import Approve from 'features/hustlers/modules/Approve';
 import Finalize from 'features/hustlers/modules/Finalize';
 import Stepper from 'features/hustlers/components/Stepper';
@@ -33,7 +32,9 @@ const Steps = () => {
     switch (hustler.currentStep) {
       case 1:
         return <Approve hustlerConfig={hustlerConfig} setHustlerConfig={setHustlerConfig} />;
-      case 1.5:
+      case 2:
+        return <Finalize />;
+      default:
         return (
           <ConfigureHustler
             config={hustlerConfig}
@@ -41,10 +42,6 @@ const Steps = () => {
             goBackToInitialStep={goBackToInitialStep}
           />
         );
-      case 2:
-        return <Finalize />;
-      default:
-        return <Begin hustlerConfig={hustlerConfig} setHustlerConfig={setHustlerConfig} />;
     }
   };
 
