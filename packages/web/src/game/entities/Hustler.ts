@@ -108,8 +108,10 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
         this.scene.load.once('filecomplete-spritesheet-' + key, () => {
           createHustlerAnimations(this.scene.anims, key);
           this.setTexture(key);
+          this.active = true;
         });
         this.scene.load.start();
+        this.active = false;
       } else {
         this.setTexture(key);
       }
