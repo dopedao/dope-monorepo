@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { HustlerCustomization } from 'utils/HustlerConfig';
@@ -50,6 +49,7 @@ const ConfigureHustler = ({
         min-height: 500px;
         background-color: var(--gray-00);
         gap: 16px;
+        flex: 2 !important;
       `}
     >
       <HustlerCard bgColor={config.bgColor}>
