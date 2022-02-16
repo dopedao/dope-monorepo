@@ -199,19 +199,43 @@ const QuickBuyHustler = () => {
               </p>
               <Box>
                 <Table css={css`
-                  * {
+                  td {
+                    padding: 16px 0;
                     border-top: 2px solid rgba(0,0,0,0.15) !important;
                     border-bottom: 2px solid rgba(0,0,0,0.15) !important;
+                    vertical-align: top;
+                  }
+                  dl {
+                    width: 100%;
+                    dt {
+                      width: 100%;
+                      display: flex;
+                      justify-content: space-between;
+                      gap: 4px;
+                      margin-bottom: .5em;
+                      img {
+                        opacity: 0.5;
+                      }
+                    }
                   }
                 `}>
                   <Tr>
                     <Td className="noWrap">NFTs you receive</Td>
                     <Td>
-                      DOPE #{currentDope.id}
-                      <br/>
-                      1 Hustler
-                      <br/>
-                      9 Gear
+                      <dl>
+                        <dt>
+                          DOPE #{currentDope.id}
+                          <Image src="/images/icon/ethereum.svg" width="16px" alt="This asset lives on Ethereum Mainnet" />
+                        </dt>
+                        <dt>
+                          1 Hustler
+                          <Image src="/images/icon/optimism.svg" width="16px" alt="This asset lives on Optimism" />
+                        </dt>
+                        <dt>
+                          9 Gear
+                          <Image src="/images/icon/optimism.svg" width="16px" alt="This asset lives on Optimism" />
+                        </dt>
+                      </dl>
                     </Td>
                   </Tr>
                   <Tr className="noWrap">
