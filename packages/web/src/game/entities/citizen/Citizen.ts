@@ -27,7 +27,7 @@ export default class Citizen extends Hustler {
     hustlerId?: string,
     name?: string,
     description?: string,
-    conversations?: Conversation[],
+    conversations?: Conversation[] | Conversation,
     path?: (Phaser.Math.Vector2 | number)[],
     repeatPath?: boolean,
     shouldFollowPath?: boolean,
@@ -36,7 +36,7 @@ export default class Citizen extends Hustler {
 
     this.description = description;
 
-    if (conversations) this.conversations = conversations;
+    if (conversations) conversations instanceof Array ? this.conversations = conversations : [ conversations ];
     if (path) this.path = path;
     if (repeatPath) this.repeatPath = repeatPath;
     if (shouldFollowPath) this.shouldFollowPath = shouldFollowPath;

@@ -21,6 +21,7 @@ import { ethers } from 'ethers';
 import PointQuest from 'game/entities/player/quests/PointQuest';
 import Zone from 'game/world/Zone';
 import InteractCitizenQuest from 'game/entities/player/quests/InteractCitizenQuest';
+import UIScene, { chakraToastStyle, toastStyle } from './UI';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -190,8 +191,19 @@ export default class GameScene extends Scene {
               });
               const provider = new ethers.providers.Web3Provider(window.ethereum);
               provider.getSigner().signMessage(siweMessage.prepareMessage())
-                .then(signedMessage => this.citizens[this.citizens.length - 3].conversations.push(new Conversation({text: `You signed: ${signedMessage}`})))
-                .catch(err => this.citizens[this.citizens.length - 3].conversations.push(new Conversation({text: `Error: ${err}`})));
+                .then(signedMessage => {
+                  this.citizens[this.citizens.length - 2].conversations.push(new Conversation({text: `Nice, your wallet is now connected! You can truly enjoy Dopecity now!`}));
+
+                })
+                .catch(err => {
+                  this.citizens[this.citizens.length - 2].conversations.push(new Conversation({text: `Oh weird uhmm... something wrong seemed to happen. Try reconnecting your wallet?`}));
+                  (this.scene.get('UIScene') as UIScene).toast({
+                    ...chakraToastStyle,
+                    title: `Something went wrong while signing the message`,
+                    description: err.message,
+                    status: 'error',
+                  });
+                });
 
               return true;
             }
