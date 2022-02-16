@@ -67,6 +67,7 @@ export type DopeCardProps = {
 };
 
 const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: DopeCardProps) => {
+  console.log(dope)
   return (
     <PanelContainer
       key={`dope-card_${dope.id}`}
