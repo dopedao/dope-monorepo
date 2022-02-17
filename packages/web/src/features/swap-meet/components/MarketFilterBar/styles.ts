@@ -2,9 +2,6 @@ import { media } from 'ui/styles/mixins';
 import styled from '@emotion/styled';
 
 export const Container = styled.div`
-  padding: 10px;
-  background-color: #fff;
-  border-bottom: 2px solid black;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
