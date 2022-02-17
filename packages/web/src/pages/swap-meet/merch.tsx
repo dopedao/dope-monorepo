@@ -23,7 +23,7 @@ const SwapMeetMerch = () => (
   <AppWindow
     scrollable
     height="90vh"
-    navbar={<DopeWarsExeNav hideFilterBar />}
+    navbar={<DopeWarsExeNav />}
     title="Swap Meet"
   >
     <Head title="Merch" />

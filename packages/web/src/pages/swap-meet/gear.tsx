@@ -47,7 +47,7 @@ const SwapMeetGear = () => {
       padBody={false}
       scrollable={true}
       height="90vh"
-      navbar={<DopeWarsExeNav hideFilterBar />}
+      navbar={<DopeWarsExeNav />}
       title="Swap Meet"
     >
       <Head title="Gear" />
