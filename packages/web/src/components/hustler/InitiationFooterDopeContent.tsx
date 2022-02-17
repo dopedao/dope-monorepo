@@ -129,7 +129,6 @@ const InitiationFooterDopeContent = ({
         <SubPanelForm>
           <Select
             size="sm"
-            variant="filterBar"
             onChange={handleDopeChange}
             value={hustlerConfig.dopeId}
           >

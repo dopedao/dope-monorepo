@@ -2,8 +2,6 @@ import { media } from 'ui/styles/mixins';
 import styled from '@emotion/styled';
 
 export const Container = styled.div`
-  padding: 10px;
-  background-color: #202221;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -22,42 +20,35 @@ export const Container = styled.div`
       flex: 1 1 50%;
     }
   `}
-  div.toggleButton {
+  .toggleButton {
     min-width: 32px;
     max-width: 32px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid #000;
-    border-radius: 5px;
+    border-radius: 4px;
     white-space: nowrap;
-    background-color: #434345;
+    border: 2px solid #000;
+    padding: 4px;
+    img {
+      height: 18px;
+      width: 18px;
+    }
   }
-  ,
-  div.toggleButton img {
-    height: 18px;
-    width: 18px;
-  }
-  ,
   .search {
-    color: #878783;
+    // color: #878783;
+    // background-color: #141011;
     border: 2px solid #000;
     cursor: text;
-    border-radius: 5px;
-    background-color: #141011;
+    border-radius: 4px;
     box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.25), inset -1px -1px 0px rgba(255, 255, 255, 0.25);
   }
-  ,
   select {
-    color: #fff;
     border: 2px solid #000;
     cursor: pointer;
-    border-radius: 5px;
-    background-color: #434345;
+    border-radius: 4px;
   }
-  ,
   select option {
-    background-color: #434345;
   }
 `;

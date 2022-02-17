@@ -44,27 +44,27 @@ const SwapMeetHustlers = () => {
       padBody={false}
       scrollable={true}
       height="90vh"
-      navbar={<DopeWarsExeNav hideFilterBar />}
+      navbar={<DopeWarsExeNav />}
       title="Swap Meet"
     >
       <Head title="Hustlers" />
       <HStack
+        justifyContent="start"
         margin="0"
         gridGap={1}
         width="100%"
-        justifyContent="start"
         padding="16px"
         background="white"
         borderBottom="2px solid black"
       >
         <Link href="/hustlers/initiate" passHref>
-          <Button variant="primary">Mint a Hustler</Button>
+          <Button variant="primary" fontSize="xs">Mint a Hustler</Button>
         </Link>
         <a href="https://quixotic.io/collection/hustlers?attributes=attribute%3DClass%3AOriginal+Gangsta&query=" target="quix">
-          <Button variant="primary">Buy an OG</Button>
+          <Button variant="primary" fontSize="xs">Buy an OG</Button>
         </a>
         <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a" target="wiki">
-          <Button>
+          <Button fontSize="xs">
             Hustler FAQ
           </Button>
         </a>
