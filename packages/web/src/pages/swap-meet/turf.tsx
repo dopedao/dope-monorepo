@@ -8,7 +8,7 @@ const SwapMeetTurf = () => (
     padBody={false}
     scrollable={false}
     height="90vh"
-    navbar={<DopeWarsExeNav hideFilterBar />}
+    navbar={<DopeWarsExeNav />}
     title="Swap Meet"
   >
     <Head title="TURF" />

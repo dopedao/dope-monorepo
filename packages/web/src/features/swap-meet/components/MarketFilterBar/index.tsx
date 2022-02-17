@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from 'react';
-import { Input, Select } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { Stack, Button, Input, Image, Select } from '@chakra-ui/react';
 import { SearchOrderField } from 'generated/graphql';
 import { Container } from './styles';
 import { FILTERS } from 'features/swap-meet/modules/MarketList';
@@ -81,52 +80,65 @@ const MarketFilterBar = ({
   const icon = compactSwitchOn ? 'expand' : 'collapse';
 
   return (
-    <Container>
-      <div>
-        <Input
-          className="search"
-          placeholder="Search…"
-          size="sm"
-          variant="filterBar"
-          onChange={handleSearchChange}
-          value={searchValueParm}
-        />
-      </div>
-      <div>
-        <Select
-          className="status"
-          size="sm"
-          variant="filterBar"
-          onChange={handleStatusChange}
-          value={filterBy}
-          fontSize="xs"
+    <Stack
+      margin="0"
+      gridGap={1}
+      width="100%"
+      padding="16px"
+      background="white"
+      borderBottom="2px solid black"
+      direction={['column', 'column', 'row']}
+    >
+      <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d97ecd4b61ef4189964cd67f230c91c5" target="wiki">
+        <Button fontSize="xs">DOPE NFT FAQ</Button>
+      </a>
+      <Container>
+        <div>
+          <Input
+            className="search"
+            placeholder="Search…"
+            size="sm"
+            onChange={handleSearchChange}
+            value={searchValueParm}
+          />
+        </div>
+        <div>
+          <Select
+            className="status"
+            size="sm"
+            onChange={handleStatusChange}
+            value={filterBy}
+            fontSize="xs"
+          >
+            <option disabled>Status…</option>
+            {statusKeys.map((value, index) => (
+              <option key={`${value}-${index}`}>{value}</option>
+            ))}
+          </Select>
+        </div>
+        <div>
+          <Select
+            size="sm"
+            fontSize="xs"
+            onChange={handleSortChange}
+            value={orderBy}
+          >
+            <option disabled>Sort By…</option>
+            {sortKeys.map(({ label, value }, index) => (
+              <option key={`${value}-${index}`} value={value}>
+                {label}
+              </option>
+            ))}
+          </Select>
+        </div>
+        <Button 
+          className="toggleButton" 
+          onClick={() => setViewCompactCards(prevState => !prevState)}
         >
-          <option disabled>Status…</option>
-          {statusKeys.map((value, index) => (
-            <option key={`${value}-${index}`}>{value}</option>
-          ))}
-        </Select>
-      </div>
-      <div>
-        <Select
-          size="sm"
-          fontSize="xs"
-          variant="filterBar"
-          onChange={handleSortChange}
-          value={orderBy}
-        >
-          <option disabled>Sort By…</option>
-          {sortKeys.map(({ label, value }, index) => (
-            <option key={`${value}-${index}`} value={value}>
-              {label}
-            </option>
-          ))}
-        </Select>
-      </div>
-      <div className="toggleButton" onClick={() => setViewCompactCards(prevState => !prevState)}>
-        <img alt="toggle" src={`${iconPath}/${icon}.svg`} />
-      </div>
-    </Container>
+          <Image alt="toggle" src={`${iconPath}/${icon}.svg`} />
+        </Button>
+      </Container>
+    </Stack>
   );
 };
 export default MarketFilterBar;
