@@ -7,10 +7,11 @@ const ProfilePage = () => {
   return (
     <AppWindow
       padBody={false}
+      scrollable
       navbar={<DopeWarsExeNav />}
       requiresWalletConnection
     >
-      <Head />
+      <Head title="YOUR INVENTORY" />
       <Profile />
     </AppWindow>
   );
