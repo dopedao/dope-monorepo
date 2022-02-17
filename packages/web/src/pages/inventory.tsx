@@ -7,7 +7,7 @@ const ProfilePage = () => {
   return (
     <AppWindow
       padBody={false}
-      navbar={<DopeWarsExeNav hideFilterBar />}
+      navbar={<DopeWarsExeNav />}
       requiresWalletConnection
     >
       <Head />

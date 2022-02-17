@@ -53,7 +53,6 @@ const GearFooter = ({ id }: { id: string }) => {
     <PanelFooter>
       <Select
         size="sm"
-        variant="filterBar"
         onChange={({ target }) => setSelected(target.value)}
         value={selected}
       >
