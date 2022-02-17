@@ -239,11 +239,10 @@ const Flex = () => {
                 flex: 2;
               `}
             >
-              {items?.map(({ id, fullname, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
+              {items?.map(({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
                 return (
                   <DopeItem
                     key={id}
-                    fullname={fullname}
                     name={name}
                     namePrefix={namePrefix}
                     nameSuffix={nameSuffix}
