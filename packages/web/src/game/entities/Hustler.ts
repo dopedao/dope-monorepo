@@ -2,6 +2,7 @@ import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
 import HustlerAnimator from 'game/anims/HustlerAnimator';
 import { Base, Categories, CharacterCategories, SpritesMap } from 'game/constants/Sprites';
 import HustlerModel from 'game/gfx/models/HustlerModel';
+import OutlinePipeline from 'game/gfx/pipelines/OutlinePipeline';
 import UIScene from 'game/scenes/UI';
 import PathNavigator from 'game/world/PathNavigator';
 import PF from 'pathfinding';

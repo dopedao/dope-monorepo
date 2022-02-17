@@ -86,6 +86,8 @@ export default class UIScene extends Scene {
       y: this.sys.game.canvas.height / 2,
       radius: this.sys.game.canvas.width / 3,
     });
+    this.joyStick.base.removeFromDisplayList();
+    this.joyStick.thumb.removeFromDisplayList();
     // this.toaster = this.add.reactDom(Toaster);
     this._handleEvents();
   }

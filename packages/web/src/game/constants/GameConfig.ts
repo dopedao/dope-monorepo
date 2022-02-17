@@ -7,6 +7,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 import UIScene from 'game/scenes/UI';
+import OutlinePipeline from 'game/gfx/pipelines/OutlinePipeline';
 
 export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
   title: 'proto',
@@ -32,7 +33,7 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
   physics: {
     default: 'matter',
     matter: {
-      debug: true,
+      debug: false,
       gravity: { y: 0 },
       //enableSleeping: true,
     },
