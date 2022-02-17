@@ -42,4 +42,4 @@ jobs:
       - name: Install
         run: yarn
       - name: Run tests
-        run: yarn web test
+        run: yarn web test --passWithNoTests
