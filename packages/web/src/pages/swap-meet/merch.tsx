@@ -23,7 +23,7 @@ const SwapMeetMerch = () => (
   <AppWindow
     scrollable
     height="90vh"
-    navbar={<DopeWarsExeNav hideFilterBar />}
+    navbar={<DopeWarsExeNav />}
     title="Swap Meet"
   >
     <Head title="Merch" />
@@ -55,7 +55,7 @@ const SwapMeetMerch = () => (
           grid-row-gap: 16px;
           // Screen > Tablet display items side by side
           ${media.tablet`
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           `}
         `}
       >
