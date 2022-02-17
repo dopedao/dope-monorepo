@@ -79,6 +79,8 @@ export default class UIScene extends Scene {
   }
 
   create(): void {
+    // TODO: find alternative
+    this.input.setGlobalTopOnly(false);
     this.joyStick = (this.plugins.get('rexVirtualJoystick') as VirtualJoyStickPlugin).add(this, {
       x: this.sys.game.canvas.width / 2,
       y: this.sys.game.canvas.height / 2,

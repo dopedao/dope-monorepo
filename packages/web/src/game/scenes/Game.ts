@@ -69,7 +69,7 @@ export default class GameScene extends Scene {
     new GameAnimations(this.anims).create();
 
     // on click pathfinding
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+    this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
       if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer) return;
 
       // run asynchronously
