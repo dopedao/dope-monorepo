@@ -66,8 +66,7 @@ export type DopeCardProps = {
   showCollapse?: boolean;
 };
 
-const DopeCard = ({ buttonBar, dope, isExpanded = true, showCollapse = false }: DopeCardProps) => {
-  console.log(dope)
+const DopeCard = ({ buttonBar, dope, isExpanded = true }: DopeCardProps) => {
   return (
     <PanelContainer
       key={`dope-card_${dope.id}`}

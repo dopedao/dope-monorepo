@@ -41,12 +41,10 @@ const PageLoadingIndicator = () => {
     });
 
     const handleStart = (url: string) => {
-      console.log(`Starting URL transition ${url}`);
       document.body.classList.add('wait');
       setIsLoading(true);
     };
     const handleComplete = (url: string) => {
-      console.log(`Completed ${url}`);
       document.body.classList.remove('wait');
       setIsLoading(false);
     };

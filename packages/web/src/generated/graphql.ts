@@ -1404,7 +1404,7 @@ export type ProfileDopesQueryVariables = Exact<{
 }>;
 
 
-export type ProfileDopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, tier: ItemTier, greatness: number, count: number }> } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
+export type ProfileDopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, tier: ItemTier, greatness: number, count: number, suffix?: string | null | undefined }> } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
 
 export type ProfileHustlersQueryVariables = Exact<{
   where?: InputMaybe<HustlerWhereInput>;
@@ -2059,6 +2059,7 @@ export const ProfileDopesDocument = `
           tier
           greatness
           count
+          suffix
         }
       }
     }
