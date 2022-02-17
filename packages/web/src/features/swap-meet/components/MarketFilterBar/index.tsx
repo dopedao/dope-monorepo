@@ -82,7 +82,7 @@ const MarketFilterBar = ({
   return (
     <Stack
       margin="0"
-      gridGap={1}
+      spacing="8px"
       width="100%"
       padding="16px"
       background="white"
