@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from 'react';
-import { Stack, Button, Input, Image, Select } from '@chakra-ui/react';
+import { Stack, Button, InputGroup, InputRightElement, Input, Image, Select } from '@chakra-ui/react';
 import { SearchOrderField } from 'generated/graphql';
 import { Container } from './styles';
 import { FILTERS } from 'features/swap-meet/modules/MarketList';
@@ -45,9 +45,9 @@ const MarketFilterBar = ({
 }: MarketFilterBarProps) => {
   const [sortBy, setSortBy] = useQueryParam('sort_by', sortKeys[1].value);
   const [status, setStatus] = useQueryParam('status', statusKeys[2]);
-  const [searchValueParm, setSearchValueParam] = useQueryParam('q', '');
+  const [searchValueParam, setSearchValueParam] = useQueryParam('q', '');
 
-  const debouncedSearchValue = useDebounce<string>(searchValueParm, 250);
+  const debouncedSearchValue = useDebounce<string>(searchValueParam, 250);
 
   useEffect(() => {
     setSearchValue(debouncedSearchValue);
@@ -82,7 +82,7 @@ const MarketFilterBar = ({
   return (
     <Stack
       margin="0"
-      gridGap={1}
+      spacing="8px"
       width="100%"
       padding="16px"
       background="white"
@@ -93,15 +93,26 @@ const MarketFilterBar = ({
         <Button fontSize="xs">DOPE NFT FAQ</Button>
       </a>
       <Container>
-        <div>
+        <InputGroup>
           <Input
             className="search"
             placeholder="Search…"
             size="sm"
             onChange={handleSearchChange}
-            value={searchValueParm}
+            value={searchValueParam}
+            _focus={{boxShadow: "0"}}
           />
-        </div>
+          { searchValueParam !== '' && <InputRightElement height="100%">
+            <Image 
+              width="16px" 
+              src="/images/icon/circle-clear-input.svg" 
+              alt="Search" 
+              onClick={() => setSearchValueParam('')}
+              cursor="pointer"
+            />
+          </InputRightElement>
+          }
+        </InputGroup>
         <div>
           <Select
             className="status"
