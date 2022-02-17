@@ -137,13 +137,12 @@ const DopeCardBody = ({
                     return -1;
                   }
                 })
-                .map(({ id, name, fullname, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
+                .map(({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
                   return (
                     // @ts-ignore
                     <DopeItem
                       key={id}
                       name={name}
-                      fullname={fullname}
                       namePrefix={namePrefix}
                       nameSuffix={nameSuffix}
                       suffix={suffix}
