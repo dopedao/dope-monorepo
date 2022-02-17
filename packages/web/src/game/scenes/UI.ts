@@ -20,6 +20,8 @@ import { NetworkEvents, UniversalEventNames } from 'game/handlers/network/types'
 import Hustler from 'game/entities/Hustler';
 import { toast } from '@chakra-ui/react';
 import ConnectionLostWindow from 'game/ui/react/components/ConnectionLostWindow';
+import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
+import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 
 interface Interaction {
   citizen: Citizen;
@@ -48,6 +50,9 @@ export const chakraToastStyle: UseToastOptions = {
 
 export default class UIScene extends Scene {
   public rexUI!: RexUIPlugin;
+
+  public joyStick!: VirtualJoyStick;
+
   public toaster!: ComponentManager;
   public toast = createStandaloneToast();
 
@@ -74,6 +79,11 @@ export default class UIScene extends Scene {
   }
 
   create(): void {
+    this.joyStick = (this.plugins.get('rexVirtualJoystick') as VirtualJoyStickPlugin).add(this, {
+      x: this.sys.game.canvas.width / 2,
+      y: this.sys.game.canvas.height / 2,
+      radius: this.sys.game.canvas.width / 3,
+    });
     // this.toaster = this.add.reactDom(Toaster);
     this._handleEvents();
   }

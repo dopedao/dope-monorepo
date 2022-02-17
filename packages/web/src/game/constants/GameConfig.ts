@@ -5,6 +5,7 @@ import Preload from '../scenes/Preload';
 import phaserReact from 'phaser3-react';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
+import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 import UIScene from 'game/scenes/UI';
 
 export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
@@ -47,6 +48,11 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
         plugin: phaserReact,
         start: true,
       },
+      {
+        key: 'rexVirtualJoystick',
+        plugin: VirtualJoystickPlugin,
+        start: true
+      }
       // {
       //   key: 'rexPixelationPipeline',
       //   plugin: PixelationPipelinePlugin,

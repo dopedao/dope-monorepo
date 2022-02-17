@@ -22,6 +22,10 @@ import PointQuest from 'game/entities/player/quests/PointQuest';
 import Zone from 'game/world/Zone';
 import InteractCitizenQuest from 'game/entities/player/quests/InteractCitizenQuest';
 import UIScene, { chakraToastStyle, toastStyle } from './UI';
+import VirtualJoystick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
+import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
+import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
+
 
 export default class GameScene extends Scene {
   private hustlerData: any;

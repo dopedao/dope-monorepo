@@ -1,6 +1,8 @@
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
 import { UniversalEventNames } from 'game/handlers/network/types';
+import UIScene from 'game/scenes/UI';
+import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 import Citizen from '../citizen/Citizen';
 import Hustler, { Direction } from '../Hustler';
 import Player from './Player';
@@ -8,7 +10,6 @@ import Player from './Player';
 export default class PlayerController {
   private mainKeys!: Phaser.Types.Input.Keyboard.CursorKeys;
   private arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
-
   private _player: Player;
 
   // send move message each MOVE_TICKRATE ms (if moving)
@@ -47,6 +48,7 @@ export default class PlayerController {
   }
 
   update() {
+    // set joyStickKeys when UIScene joystick is initialized
     if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).tab)) this.player.toggleInventory();
 
     if (
@@ -59,27 +61,29 @@ export default class PlayerController {
     // get rid of previous velocity if pathfinder is not active
     if (!this.player.navigator.target) this.player.setVelocity(0);
 
+    const joyStick: VirtualJoyStick | undefined = (this.player.scene.scene.get('UIScene') as UIScene).joyStick;
+
     let willMoveFlag = false;
-    if (this.mainKeys.up.isDown || this.arrows.up.isDown) {
+    if (this.mainKeys.up.isDown || this.arrows.up.isDown || joyStick?.up) {
       this.player.moveDirection = Direction.North;
       this.player.setVelocityY(-Hustler.DEFAULT_VELOCITY);
       // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
-    } else if (this.mainKeys.down.isDown || this.arrows.down.isDown) {
+    } else if (this.mainKeys.down.isDown || this.arrows.down.isDown || joyStick?.down) {
       this.player.moveDirection = Direction.South;
       this.player.setVelocityY(Hustler.DEFAULT_VELOCITY);
       // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
     }
-    if (this.mainKeys.left.isDown || this.arrows.left.isDown) {
+    if (this.mainKeys.left.isDown || this.arrows.left.isDown || joyStick?.left) {
       this.player.moveDirection = Direction.West;
       this.player.setVelocityX(-Hustler.DEFAULT_VELOCITY);
       // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
-    } else if (this.mainKeys.right.isDown || this.arrows.right.isDown) {
+    } else if (this.mainKeys.right.isDown || this.arrows.right.isDown || joyStick?.right) {
       this.player.moveDirection = Direction.East;
       this.player.setVelocityX(Hustler.DEFAULT_VELOCITY);
       // tshis.player.model.updateSprites(true);
