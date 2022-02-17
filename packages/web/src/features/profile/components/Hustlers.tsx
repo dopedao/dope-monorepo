@@ -41,7 +41,7 @@ const HustlerFooter = ({ id }: { id: string }) => (
   </PanelFooter>
 );
 
-const Hustlers = () => {
+const Hustlers = ({searchValue}: {searchValue: string}) => {
   const { account } = useWeb3React();
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileHustlersQuery(
@@ -52,6 +52,7 @@ const Hustlers = () => {
             id: account,
           },
         ],
+        nameContains: searchValue
       },
       first: 50,
     },
@@ -139,7 +140,7 @@ const Hustlers = () => {
             {hasNextPage && <Button onClick={() => fetchNextPage()}>Load more</Button>}
           </CardContainer>
         ) : (
-          <span>This wallet does not have any Hustlers</span>
+          <span>No Hustlers found</span>
         )}
       </SectionContent>
     </>

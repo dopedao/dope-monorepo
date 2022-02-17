@@ -21,7 +21,7 @@ type DopeData = {
   totalCount: number;
 };
 
-const Dopes: FC = () => {
+const Dopes = ({searchValue}: {searchValue: string}) => {
   const { account } = useWeb3React();
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileDopesQuery(
@@ -32,6 +32,11 @@ const Dopes: FC = () => {
             id: account,
           },
         ],
+        hasItemsWith: [
+          {
+            nameContains: searchValue
+          }
+        ]
       },
       first: 50,
     },
@@ -91,7 +96,7 @@ const Dopes: FC = () => {
             </CardContainer>
           </>
         ) : (
-          <span>This wallet does not have any Dope</span>
+          <span>No DOPE found</span>
         )}
       </SectionContent>
     </>
