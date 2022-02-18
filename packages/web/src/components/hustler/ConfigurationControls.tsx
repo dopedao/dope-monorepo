@@ -41,7 +41,7 @@ const ConfigurationControls = ({
   config,
   setHustlerConfig,
   isCustomize,
-  goBackToInitialStep,
+  handleFinishConfiguration,
 }: ConfigureHustlerProps) => {
   const [showTextColor, setShowTextColor] = useState(false);
   const [enableNameVisible, setEnableNameVisible] = useState(false);
@@ -210,7 +210,7 @@ const ConfigurationControls = ({
         ) : (
           <Button
             type="button"
-            onClick={goBackToInitialStep}
+            onClick={handleFinishConfiguration}
             variant="primary"
             isLoading={loading}
             loadingText="Processing..."

@@ -113,7 +113,7 @@ const QuickBuyHustler = () => {
 
   const QuickBuyFooter = () => (
     <Box display="flex" flexDirection="column" justifyContent="flex-start" gap="8px">
-      <Link href={`/hustlers/${currentDope.id}/initiate`} passHref>
+      <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy`} passHref>
         <Button variant="primary">Customize</Button>
       </Link>
       <CarouselButtons />
@@ -124,7 +124,7 @@ const QuickBuyHustler = () => {
   );
 
   return (
-    <AppWindow title="Quick Buy Hustler" height={740} background={bgColor}>
+    <AppWindow title="Welcome To The Streets" height={740} background={bgColor}>
       <StackedResponsiveContainer>
         {(isLoading || !currentDope) && <LoadingBlock maxRows={5} />}
         {!isLoading && currentDope && (
@@ -163,7 +163,7 @@ const QuickBuyHustler = () => {
             </Box>
             <Box display="flex" flexDirection="column" justifyContent="center" gap="16px">
               <Box padding="8px">
-                <h2>Get a Hustler Now</h2>
+                <h2>Get Hooked On DOPE</h2>
                 <hr className="onColor" />
                 <p>
                   Hustlers are the in-game characters of Dope Wars who can own up to 10 different

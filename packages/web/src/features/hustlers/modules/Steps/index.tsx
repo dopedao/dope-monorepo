@@ -24,7 +24,7 @@ const Steps = () => {
     getRandomHustler({ dopeId: String(router.query.id) }),
   );
 
-  const goBackToInitialStep = () => {
+  const handleFinishConfiguration = () => {
     dispatch({ type: 'GO_TO_APPROVE_STEP' });
   };
 
@@ -39,7 +39,7 @@ const Steps = () => {
           <ConfigureHustler
             config={hustlerConfig}
             setHustlerConfig={setHustlerConfig}
-            goBackToInitialStep={goBackToInitialStep}
+            handleFinishConfiguration={handleFinishConfiguration}
           />
         );
     }
