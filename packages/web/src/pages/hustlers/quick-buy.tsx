@@ -1,6 +1,6 @@
 import { Box, Button, Image, Table, Tr, Td } from '@chakra-ui/react';
 import { DEFAULT_BG_COLORS } from 'utils/HustlerConfig';
-import { getRandomArrayElement } from 'utils/utils';
+import { getRandomArrayElement, getRandomNumber } from 'utils/utils';
 import { BigNumber, ethers } from 'ethers';
 import AppWindow from 'components/AppWindow';
 import DopeCard from 'features/dope/components/DopeCard';
@@ -51,11 +51,13 @@ const QuickBuyHustler = () => {
 
   const unclaimedDopeArr = useMemo(() => {
     if (unclaimedDope?.search?.edges) {
-      // Have to filter array for things that have "node" property
-      // which are the DOPE objects we want
-      return unclaimedDope.search.edges?.map(dope => {
+      const arr = unclaimedDope.search.edges?.map(dope => {
         if (dope && dope.node) return dope.node;
       });
+      setCurrentDopeIndex(getRandomNumber(0,arr.length-1));
+      // Have to filter array for things that have "node" property
+      // which are the DOPE objects we want
+      return arr;
     }
     return [];
   }, [unclaimedDope]);
