@@ -20,6 +20,7 @@ import PanelColorSelector from 'components/PanelColorSelector';
 import PanelFooter from 'components/PanelFooter';
 import SexSelector from 'components/hustler/SexSelector';
 import styled from '@emotion/styled';
+import useHustler from 'features/hustlers/hooks/useHustler';
 
 const ControlsWrapper = styled.div`
   background-color: white;
@@ -49,6 +50,8 @@ const ConfigurationControls = ({
   const [loading, setLoading] = useState(false);
   const { chainId } = useOptimism();
   const { library, chainId: web3ReactChainId } = useWeb3React();
+
+  const hustlerContext = useHustler();
 
   const hustlers = useMemo(
     () =>
@@ -208,15 +211,17 @@ const ConfigurationControls = ({
             Save Configuration
           </Button>
         ) : (
-          <Button
-            type="button"
-            onClick={handleFinishConfiguration}
-            variant="primary"
-            isLoading={loading}
-            loadingText="Processing..."
-          >
-            Finish Configuration
-          </Button>
+          <>
+            <Button
+              type="button"
+              onClick={handleFinishConfiguration}
+              variant="primary"
+              isLoading={loading}
+              loadingText="Processing..."
+            >
+              Finish Configuration
+            </Button>
+          </>
         )}
       </PanelFooter>
     </ControlsWrapper>

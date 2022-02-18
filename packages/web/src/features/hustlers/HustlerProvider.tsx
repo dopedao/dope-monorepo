@@ -5,7 +5,6 @@ import type { DispatchHustler, HustlerState, HustlerActions } from 'features/hus
 type HustlerProviderProps = {
   children: ReactNode;
   initialHustlerData?: HustlerState;
-  fromQuickBuy?: boolean;
 };
 
 export const HustlerContext = createContext<HustlerState | undefined>(undefined);
@@ -13,8 +12,7 @@ export const HustlerDispatchContext = createContext<DispatchHustler | undefined>
 
 const HustlerProvider = ({ 
   children, 
-  initialHustlerData, 
-  fromQuickBuy,
+  initialHustlerData
 }: HustlerProviderProps) => {
   const [hustler, dispatchHustler] = useReducer<Reducer<HustlerState, HustlerActions>>(
     HustlerReducer,

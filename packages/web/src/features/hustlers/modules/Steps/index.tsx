@@ -25,13 +25,19 @@ const Steps = () => {
   );
 
   const handleFinishConfiguration = () => {
-    dispatch({ type: 'GO_TO_APPROVE_STEP' });
+    if (hustler.isQuickBuy) {
+      dispatch({ type: 'GO_TO_QUICK_BUY_APPROVE_STEP' })
+    } else {
+      dispatch({ type: 'GO_TO_APPROVE_STEP' });
+    }
   };
 
   const stepToRender = () => {
     switch (hustler.currentStep) {
       case 1:
         return <Approve hustlerConfig={hustlerConfig} setHustlerConfig={setHustlerConfig} />;
+      case 1.5:
+        return <p>This should be the quick-buy final step</p>;
       case 2:
         return <Finalize />;
       default:
