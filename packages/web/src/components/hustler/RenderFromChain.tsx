@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/image';
 import { AspectRatio } from '@chakra-ui/layout';
 
-
 type Metadata = {
   image: string;
   name?: string | null | undefined;

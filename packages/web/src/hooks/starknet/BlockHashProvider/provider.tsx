@@ -1,23 +1,18 @@
-import React from "react";
-import { useStarknet } from "../StarknetProvider";
-import { BlockHashContext } from "./context";
+import React from 'react';
+import { useStarknet } from '../StarknetProvider';
+import { BlockHashContext } from './context';
 
 interface BlockHashProviderProps {
   children: React.ReactNode;
   interval?: number;
 }
 
-export function BlockHashProvider({
-  interval,
-  children,
-}: BlockHashProviderProps): JSX.Element {
+export function BlockHashProvider({ interval, children }: BlockHashProviderProps): JSX.Element {
   const { library } = useStarknet();
-  const [blockHash, setBlockHash] = React.useState<string | undefined>(
-    undefined
-  );
+  const [blockHash, setBlockHash] = React.useState<string | undefined>(undefined);
 
   const fetchBlockHash = React.useCallback(() => {
-    library.getBlock().then((block) => {
+    library.getBlock().then(block => {
       setBlockHash(block.block_hash);
     });
   }, [library]);
@@ -30,7 +25,5 @@ export function BlockHashProvider({
     return () => clearInterval(intervalId);
   }, [interval, fetchBlockHash]);
 
-  return (
-    <BlockHashContext.Provider value={blockHash} children={children} />
-  );
+  return <BlockHashContext.Provider value={blockHash} children={children} />;
 }

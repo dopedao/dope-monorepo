@@ -52,12 +52,12 @@ export default function GlobalStyles() {
           --overlay-light: rgba(0, 0, 0, 0.35);
           --border-black: 1px solid var(--black);
           --border-light: 1px solid #dbdbdb;
-          --hustler-background-offwhite: #EDEFEE;
-          --hustler-background-blue: #97ADCC;
+          --hustler-background-offwhite: #edefee;
+          --hustler-background-blue: #97adcc;
           --hustler-background-gray: #434345;
-          --hustler-background-yellow: #F1D8AB;
-          --hustler-background-pink: #F2C4C5;
-          --hustler-background-green: #B6CCC3;
+          --hustler-background-yellow: #f1d8ab;
+          --hustler-background-pink: #f2c4c5;
+          --hustler-background-green: #b6ccc3;
 
           /* FONTS */
           --font-a: ChicagoFLF, Dope, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
@@ -239,7 +239,7 @@ export default function GlobalStyles() {
         }
 
         hr.onColor {
-          border-top: 2px solid rgba(0,0,0,0.15);
+          border-top: 2px solid rgba(0, 0, 0, 0.15);
           margin-top: 8px;
           margin-bottom: 16px;
         }

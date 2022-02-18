@@ -36,9 +36,9 @@ const DopeCardBody = ({
   dope,
   isExpanded,
   showPreviewButton = true,
-}: Pick<DopeCardProps, 'dope' | 'buttonBar'> & { 
-  isExpanded: boolean, 
-  showPreviewButton?: boolean,
+}: Pick<DopeCardProps, 'dope' | 'buttonBar'> & {
+  isExpanded: boolean;
+  showPreviewButton?: boolean;
 }) => {
   const [isPreviewShown, setPreviewShown] = useState(false);
   const [isRarityVisible, setRarityVisible] = useState(false);
@@ -184,7 +184,6 @@ const DopeCardBody = ({
       </DopeCardItems>
       {isExpanded && (
         <DopeCardPreviewButton
-
           togglePreview={togglePreview}
           isPreviewShown={isPreviewShown}
           disabled={dope.opened}

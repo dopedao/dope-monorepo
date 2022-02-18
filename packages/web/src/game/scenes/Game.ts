@@ -68,7 +68,8 @@ export default class GameScene extends Scene {
       new Promise(() => {
         const citizenToTalkTo = this.citizens.find(
           citizen =>
-            citizen.shouldFollowPath && citizen.conversations.length !== 0 &&
+            citizen.shouldFollowPath &&
+            citizen.conversations.length !== 0 &&
             citizen.getBounds().contains(pointer.worldX, pointer.worldY),
         );
         const itemToPickUp = this.itemEntities.find(item =>
@@ -107,8 +108,7 @@ export default class GameScene extends Scene {
                 true,
               );
             }
-          },
-        );
+          });
       });
     });
 
@@ -127,25 +127,30 @@ export default class GameScene extends Scene {
         '30',
         'Michel',
         'Arpenteur',
-        [new Conversation('Welcome to Dope City!', () => {
-          const selectedAddress = (window.ethereum as any)?.selectedAddress;
-          if (selectedAddress)
-          {
-            const siweMessage = new SiweMessage({
-              domain: window.location.hostname,
-              address: selectedAddress,
-              uri: origin,
-              version: '1',
-              chainId: 1
-            });
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            provider.getSigner().signMessage(siweMessage.prepareMessage()).then(signedMessage => console.log(signedMessage)).catch(err => console.log(err));
+        [
+          new Conversation('Welcome to Dope City!', () => {
+            const selectedAddress = (window.ethereum as any)?.selectedAddress;
+            if (selectedAddress) {
+              const siweMessage = new SiweMessage({
+                domain: window.location.hostname,
+                address: selectedAddress,
+                uri: origin,
+                version: '1',
+                chainId: 1,
+              });
+              const provider = new ethers.providers.Web3Provider(window.ethereum);
+              provider
+                .getSigner()
+                .signMessage(siweMessage.prepareMessage())
+                .then(signedMessage => console.log(signedMessage))
+                .catch(err => console.log(err));
 
-            return true;
-          }
+              return true;
+            }
 
-          return false;
-        })],
+            return false;
+          }),
+        ],
         undefined,
         //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
         true,
@@ -414,7 +419,7 @@ export default class GameScene extends Scene {
 
           this.player.currentMap = lvl.identifier;
           const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
-          
+
           map.otherGfx?.setVisible(false);
 
           this.hustlers

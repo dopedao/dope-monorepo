@@ -1,13 +1,13 @@
-import { AddTransactionResponse } from "starknet";
-import { StoredTransactionsState, StoredTransaction } from "./model";
+import { AddTransactionResponse } from 'starknet';
+import { StoredTransactionsState, StoredTransaction } from './model';
 
 interface AddTransaction {
-  type: "ADD_TRANSACTION";
+  type: 'ADD_TRANSACTION';
   payload: AddTransactionResponse;
 }
 
 interface UpdateTransactions {
-  type: "UPDATE_TRANSACTIONS";
+  type: 'UPDATE_TRANSACTIONS';
   payload: StoredTransaction[];
 }
 
@@ -15,10 +15,10 @@ type Action = AddTransaction | UpdateTransactions;
 
 export function transactionsReducer(
   state: StoredTransactionsState,
-  action: Action
+  action: Action,
 ): StoredTransactionsState {
   switch (action.type) {
-    case "ADD_TRANSACTION": {
+    case 'ADD_TRANSACTION': {
       const storedTx = {
         hash: action.payload.transaction_hash,
         code: action.payload.code,
@@ -27,7 +27,7 @@ export function transactionsReducer(
       };
       return [storedTx, ...state];
     }
-    case "UPDATE_TRANSACTIONS": {
+    case 'UPDATE_TRANSACTIONS': {
       return action.payload;
     }
   }

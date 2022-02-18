@@ -8,7 +8,7 @@ import { useHustler } from 'hooks/contracts';
 import { buildSVG } from 'utils/svg-builder';
 
 export interface HustlerRenderProps {
-bgColor?: string;
+  bgColor?: string;
   body?: number;
   facialHair?: number;
   hair?: number;
@@ -72,7 +72,7 @@ const RenderFromItemIds = ({
     Promise.all(promises).then(value => {
       if (isMounted) {
         setBodyRles(value);
-        setIsLoading(false)
+        setIsLoading(false);
       }
     });
 
@@ -129,8 +129,8 @@ const RenderFromItemIds = ({
       `}
     >
       <>
-        {(!svg || isLoading) && <LoadingBlockSquareCentered /> }
-        {(svg && !isLoading) && <div dangerouslySetInnerHTML={{ __html: svg }} />}
+        {(!svg || isLoading) && <LoadingBlockSquareCentered />}
+        {svg && !isLoading && <div dangerouslySetInnerHTML={{ __html: svg }} />}
       </>
     </AspectRatio>
   );

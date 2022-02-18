@@ -16,7 +16,7 @@ const InitiatePage = () => {
 
   useEffect(() => {
     let isMounted = true;
-    if(!dopeId) return;
+    if (!dopeId) return;
     init.isOpened(BigNumber.from(dopeId)).then(value => {
       if (isMounted) setIsOpened(value);
     });
@@ -32,27 +32,19 @@ const InitiatePage = () => {
       title="Initiate Your Hustler"
       padBody={false}
     >
-      {isOpened === true &&
-        <Dialog
-          title="Hustler already initiated"
-          icon="dope-smiley-sad"
-        >
-          <p>
-            DOPE #{dopeId} has already been Claimed.
-          </p>
-          <Button onClick={() => router.back() }>
-            Go Back
-          </Button>
+      {isOpened === true && (
+        <Dialog title="Hustler already initiated" icon="dope-smiley-sad">
+          <p>DOPE #{dopeId} has already been Claimed.</p>
+          <Button onClick={() => router.back()}>Go Back</Button>
         </Dialog>
-      }
-      {isOpened === false &&
+      )}
+      {isOpened === false && (
         <HustlerProvider>
           <Steps />
         </HustlerProvider>
-      }
-
+      )}
     </AppWindowEthereum>
   );
-}
+};
 
 export default InitiatePage;
