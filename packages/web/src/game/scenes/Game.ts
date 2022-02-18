@@ -69,8 +69,12 @@ export default class GameScene extends Scene {
     new GameAnimations(this.anims).create();
 
     // on click pathfinding
+    let last = 0;
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
       if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer) return;
+      
+      if (Date.now() - last < 1000) return;
+      last = Date.now();
 
       // run asynchronously
       new Promise(() => {

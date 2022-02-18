@@ -80,10 +80,19 @@ export default class Player extends Hustler {
 
     this._baseDepth = this.depth;
 
+    // this.hitboxSensor.onCollideCallback = () => (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
+    //   quality: 0.05
+    // });
+
     this.hitboxSensor.onCollideActiveCallback = this.updateDepth;
+
     // setTimeout prevents depth changing too fast
     // and causing player render stutter
-    this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => this.setDepth(this._baseDepth));
+    this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => {
+      this.setDepth(this._baseDepth);
+
+      // (this.scene.plugins.get('rexOutlinePipeline') as any).remove(this);
+    });
   }
 
   toggleInventory() {
@@ -184,7 +193,7 @@ export default class Player extends Hustler {
     // if the overlapped has a parent body, use it instead for calculating delta Y
     if (otherHitbox.parent) otherHitbox = otherHitbox.parent;
 
-    if (otherHitbox.position.y - playerHitbox.position.y < 0)
+    if (otherHitbox.position.y - playerHitbox.position.y < 10)
       playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 20);
     else playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 20);
   }
@@ -196,7 +205,7 @@ export default class Player extends Hustler {
       this.lookAt(citizen.x, citizen.y);
     });
     EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, (citizen: Citizen) => {
-      this._busy = false;
+      setTimeout(() => {this._busy = false;}, 200);
     });
   }
 

@@ -2,7 +2,6 @@ import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
 import HustlerAnimator from 'game/anims/HustlerAnimator';
 import { Base, Categories, CharacterCategories, SpritesMap } from 'game/constants/Sprites';
 import HustlerModel from 'game/gfx/models/HustlerModel';
-import OutlinePipeline from 'game/gfx/pipelines/OutlinePipeline';
 import UIScene from 'game/scenes/UI';
 import PathNavigator from 'game/world/PathNavigator';
 import PF from 'pathfinding';
@@ -174,7 +173,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
 
     // prevent angular momentum from rotating our body
     this.setFixedRotation();
-
+  
     // create sub sprites
     // this._model.createSprites();
 
@@ -194,10 +193,16 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
         strokeThickness: 5,
       });
       this._hoverText.alpha = 0.8;
+
+      (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
+        quality: 0.05
+      });
     });
     this.on('pointerout', () => {
       this._hoverText?.destroy();
       this._hoverText = undefined;
+
+      (this.scene.plugins.get('rexOutlinePipeline') as any).remove(this);
     });
 
     // create navigator

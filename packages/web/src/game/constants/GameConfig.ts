@@ -7,7 +7,8 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 import UIScene from 'game/scenes/UI';
-import OutlinePipeline from 'game/gfx/pipelines/OutlinePipeline';
+import OutlinePipelinePlugin from 'phaser3-rex-plugins/plugins/outlinepipeline-plugin.js';
+
 
 export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
   title: 'proto',
@@ -53,6 +54,11 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
         key: 'rexVirtualJoystick',
         plugin: VirtualJoystickPlugin,
         start: true
+      },
+      {
+        key: 'rexOutlinePipeline',
+        plugin: OutlinePipelinePlugin,
+        start: true
       }
       // {
       //   key: 'rexPixelationPipeline',
@@ -69,5 +75,5 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
       },
     ],
   },
-  scene: [Boot, Preload, GameScene, UIScene],
+  scene: [Boot, Preload, GameScene, UIScene]
 };
