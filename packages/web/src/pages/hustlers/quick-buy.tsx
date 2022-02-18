@@ -14,6 +14,7 @@ import {
   OrderDirection,
   SearchOrderField,
   SearchType,
+  SearchDopeQuery,
 } from 'generated/graphql';
 import { useOneClickInitiator } from 'hooks/contracts';
 import Link from 'next/link';
@@ -53,15 +54,18 @@ const QuickBuyHustler = () => {
     if (unclaimedDope?.search?.edges) {
       // Have to filter array for things that have "node" property
       // which are the DOPE objects we want
-      return unclaimedDope.search.edges?.map(dope => {
-        if (dope && dope.node) return dope.node;
-      });
+      return unclaimedDope.search.edges?.reduce((prev, dope) => {
+        if (dope && dope.node && dope.node.__typename === 'Dope') {
+          return [...prev, dope.node];
+        }
+        return prev;
+      }, [] as any);
     }
     return [];
   }, [unclaimedDope]);
 
   const currentDope = useMemo(
-    () => unclaimedDopeArr[currentDopeIndex],
+    () => unclaimedDopeArr && unclaimedDopeArr[currentDopeIndex],
     [unclaimedDopeArr, currentDopeIndex],
   );
 
@@ -92,7 +96,7 @@ const QuickBuyHustler = () => {
     return `${(+ethers.utils.formatEther(
       price && paperPrice ? BigNumber.from(price).add(paperPrice) : 0,
     )).toFixed(4)} Ξ`;
-  }, [currentDope?.listings, paperPrice]);
+  }, [currentDope, paperPrice]);
 
   const CarouselButtons = () => (
     <Box display="flex" justifyContent="stretch" gap="8px">
@@ -137,17 +141,35 @@ const QuickBuyHustler = () => {
               alignItems="center"
               gap="8px"
             >
-              <Box width="100%" height="100%">
-                {showHustler && <RenderFromDopeIdOnly id={currentDope.id} />}
+              <Box width="100%" height="100%" position="relative">
+                <div
+                  css={css`
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    top: 0;
+                    right: 0;
+                    opacity: ${showHustler ? '1' : '0'};
+                  `}
+                >
+                  <RenderFromDopeIdOnly id={currentDope.id} />
+                </div>
+
                 {!showHustler && (
-                  <DopeCard
-                    key={currentDope.id}
-                    dope={currentDope}
-                    isExpanded={true}
-                    buttonBar={null}
-                    showCollapse
-                    hidePreviewButton
-                  />
+                  <div
+                    css={css`
+                      margin-top: 25px;
+                    `}
+                  >
+                    <DopeCard
+                      key={currentDope.id}
+                      dope={currentDope}
+                      isExpanded={true}
+                      buttonBar={null}
+                      showCollapse
+                      hidePreviewButton
+                    />
+                  </div>
                 )}
               </Box>
               <div className="smallest">

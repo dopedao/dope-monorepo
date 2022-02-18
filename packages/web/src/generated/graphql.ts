@@ -2167,23 +2167,12 @@ export type SearchDopeQuery = {
               __typename?: 'SearchEdge';
               node?:
                 | {
-                    __typename?: 'Dope';
+                    __typename: 'Dope';
                     id: string;
                     claimed: boolean;
                     opened: boolean;
                     score: number;
                     rank: number;
-                    lastSale?:
-                      | {
-                          __typename?: 'Listing';
-                          inputs: Array<
-                            | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
-                            | null
-                            | undefined
-                          >;
-                        }
-                      | null
-                      | undefined;
                     listings?:
                       | Array<
                           | {
@@ -3091,18 +3080,12 @@ export const SearchDopeDocument = `
     edges {
       node {
         ... on Dope {
+          __typename
           id
           claimed
           opened
           score
           rank
-          lastSale {
-            inputs {
-              amount
-              id
-              type
-            }
-          }
           listings {
             id
             active
