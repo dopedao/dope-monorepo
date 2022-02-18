@@ -11,8 +11,9 @@ import Steps from 'features/hustlers/modules/Steps';
 const InitiatePage = () => {
   const init = useInitiator();
   const router = useRouter();
-  const { id: dopeId } = router.query;
-  const [isOpened, setIsOpened] = useState();
+  const { id: dopeId, quickBuy } = router.query;
+  const [isOpened, setIsOpened] = useState(false);
+  const fromQuickBuy = typeof quickBuy !== 'undefined';
 
   useEffect(() => {
     let isMounted = true;
