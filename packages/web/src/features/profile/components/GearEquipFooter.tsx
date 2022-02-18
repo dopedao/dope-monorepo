@@ -8,7 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 import { utils } from 'ethers';
 import PanelFooter from 'components/PanelFooter';
 
-const GearFooter = ({ id }: { id: string }) => {
+const GearEquipFooter = ({ id }: { id: string }) => {
   const { account } = useWeb3React();
   const { chainId } = useOptimism();
   const [selected, setSelected] = useState<string>();
@@ -70,4 +70,4 @@ const GearFooter = ({ id }: { id: string }) => {
   );
 };
 
-export default GearFooter;
+export default GearEquipFooter;

@@ -1,11 +1,12 @@
 import { css } from '@emotion/react';
 import { Image, Stack } from '@chakra-ui/react';
-import GearFooter from './GearFooter';
+import GearEquipFooter from './GearEquipFooter';
 import PanelBody from 'components/PanelBody';
 import ProfileCard from 'features/profile/components/ProfileCard';
 import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import ItemCount from './ItemCount';
 import { Item, Maybe } from 'generated/graphql';
+import GearUnEquipFooter from './GearUnequipFooter';
 
 type GearItem = Pick<Item, 'id' | 'count' | 'fullname' | 'name' | 'svg' | 'suffix' | 'type'> & {
   base?: Maybe<Pick<Item, 'svg'>>;
@@ -27,10 +28,12 @@ const GearCard = ({
   item,
   balance,
   showEquipFooter = false,
+  showUnEquipFooter = false,
 }: {
   item: GearItem;
   balance?: number;
   showEquipFooter?: boolean;
+  showUnEquipFooter?: boolean;
 }) => {
   return (
     <ProfileCard>
@@ -69,7 +72,8 @@ const GearCard = ({
           </span>
         </Stack>
       </PanelBody>
-      {showEquipFooter && <GearFooter id={item.id} />}
+      {showEquipFooter && <GearEquipFooter id={item.id} />}
+      {showUnEquipFooter && <GearUnEquipFooter id={item.id} />}
     </ProfileCard>
   );
 };
