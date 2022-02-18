@@ -64,7 +64,7 @@ export type DopeCardProps = {
   dope: DopeItemApiResponse;
   isExpanded?: boolean;
   showCollapse?: boolean;
-  showPreviewButton?: boolean;
+  hidePreviewButton?: boolean;
   showStatus?: boolean;
 };
 
@@ -73,7 +73,7 @@ const DopeCard = ({
   dope, 
   isExpanded = true, 
   showCollapse = false, 
-  showPreviewButton = true,
+  hidePreviewButton = false,
   }: DopeCardProps) => {
   return (
     <PanelContainer
@@ -122,7 +122,7 @@ const DopeCard = ({
         buttonBar={buttonBar} 
         dope={dope} 
         isExpanded={isExpanded} 
-        showPreviewButton={showPreviewButton}
+        hidePreviewButton={hidePreviewButton}
       />
       {buttonBar === 'for-owner' && <DopeCardButtonBarOwner dope={dope} />}
     </PanelContainer>

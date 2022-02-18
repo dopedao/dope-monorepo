@@ -168,9 +168,9 @@ const QuickBuyHustler = () => {
                 key={currentDope.id}
                 dope={currentDope}
                 isExpanded={true}
-                showPreviewButton={false}
                 buttonBar={null}
                 showCollapse
+                hidePreviewButton
               />
             }
             </Box>
