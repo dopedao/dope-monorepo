@@ -8,6 +8,7 @@ import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import ItemCount from './ItemCount';
 import { Item, Maybe } from 'generated/graphql';
 import { BigNumberish, utils } from 'ethers';
+import { Table, Tr, Td } from '@chakra-ui/react';
 
 type GearItem = Pick<Item, 'id' | 'count' | 'fullname' | 'name' | 'svg' | 'suffix' | 'type'> & {
   base?: Maybe<Pick<Item, 'svg'>>;
@@ -64,15 +65,20 @@ const GearCard = ({
               ${getImageSrc(item).includes('/icon') ? 'opacity:0.1' : ''}
             `}
           />
-          <span>Type: {item.type}</span>
-          <span>Origin: {getOrigin(item.suffix)}</span>
-          <span
-            css={css`
-              height: 2.5em;
-            `}
-          >
-            Title: {item.fullname}
-          </span>
+          <Table variant="small">
+            <Tr>
+              <Td>Type:</Td>
+              <Td>{item.type}</Td>
+            </Tr>
+            <Tr>
+              <Td>Origin:</Td>
+              <Td>{getOrigin(item.suffix)}</Td>
+            </Tr>
+            <Tr>
+              <Td>Title: </Td>
+              <Td>{item.fullname}</Td>
+            </Tr>
+          </Table>
         </Stack>
       </PanelBody>
       {showEquipFooter && <GearEquipFooter id={item.id} />}
