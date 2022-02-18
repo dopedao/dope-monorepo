@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Button, Stack, Table, Tr, Td, Alert, AlertIcon } from '@chakra-ui/react';
+import { Box, Button, Stack, Table, Tr, Td, Alert, AlertIcon } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
@@ -13,11 +13,14 @@ import HustlerPanel from 'components/hustler/HustlerPanel';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
-import PanelTitleBar from 'components/PanelTitleBar';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 import { useInitiator, usePaper } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
+
+import useHustler from '../hooks/useHustler';
+// hustler.isQuickBuy
 
 const Approve = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
   const { account } = useWeb3React();
@@ -30,7 +33,8 @@ const Approve = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
   const dispatchHustler = useDispatchHustler();
   const initiator = useInitiator();
   const paper = usePaper();
-
+  const hustler = useHustler();
+  
   useEffect(() => {
     if (account) {
       paper
@@ -131,66 +135,67 @@ const Approve = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
     },
     [hustlerConfig, setHustlerConfig],
   );
-
   return (
     <>
       <Head title="Approve spend" />
       <StackedResponsiveContainer>
-        <Stack>
-          <PanelContainer justifyContent="flex-start">
-            <PanelTitleBar>Cost of Initiation</PanelTitleBar>
-            <PanelBody>
-              <Table>
-                <Tr>
-                  <Td></Td>
-                  <Td textAlign="right">1</Td>
-                  <Td>DOPE NFT</Td>
-                </Tr>
-                <Tr>
-                  <Td></Td>
-                  <Td textAlign="right">12,500</Td>
-                  <Td>$PAPER</Td>
-                </Tr>
-              </Table>
-            </PanelBody>
-          </PanelContainer>
-          {!hasEnoughPaper && (
-            <Alert status="error">
-              <AlertIcon />
-              Not enough $PAPER
-            </Alert>
-          )}
-          <ApprovePaper
-            address={initiator.address}
-            isApproved={isPaperApproved}
-            onApprove={approved => setIsPaperApproved(approved)}
-          >
-            We need you to allow our Swap Meet to spend 12,500 $PAPER for the unbundling of your
-            DOPE NFT #{hustlerConfig.dopeId}.
-          </ApprovePaper>
-          <MintTo
-            mintTo={mintTo}
-            setMintTo={setMintTo}
-            mintAddress={hustlerConfig.mintAddress}
-            setMintAddress={setMintAddress}
+        <Box flex="2 !important">
+          <HustlerPanel
+            hustlerConfig={hustlerConfig}
           />
-        </Stack>
-        <HustlerPanel
-          hustlerConfig={hustlerConfig}
-          footer={
-            <PanelFooter
-              css={css`
-                padding: 1em;
-                position: relative;
-              `}
+        </Box>
+        <Stack>
+          {!isPaperApproved &&
+            <ApprovePaper
+              address={initiator.address}
+              isApproved={isPaperApproved}
+              onApprove={approved => setIsPaperApproved(approved)}
             >
-              <div></div>
-              <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
-                ✨ Mint Hustler ✨
-              </Button>
-            </PanelFooter>
+              We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of DOPE NFT #{hustlerConfig.dopeId}.
+            </ApprovePaper> 
           }
-        />
+          {isPaperApproved && 
+            <PanelContainer justifyContent="flex-start">
+              <PanelTitleHeader>Cost of Initiation</PanelTitleHeader>
+              <PanelBody>
+                {!hasEnoughPaper && (
+                  <Alert status="error">
+                    <AlertIcon />
+                    Not enough $PAPER
+                  </Alert>
+                )}
+                <Table>
+                  <Tr>
+                    <Td></Td>
+                    <Td textAlign="right">1</Td>
+                    <Td>DOPE NFT</Td>
+                  </Tr>
+                  <Tr>
+                    <Td></Td>
+                    <Td textAlign="right">12,500</Td>
+                    <Td>$PAPER</Td>
+                  </Tr>
+                </Table>
+              </PanelBody>
+              <PanelFooter
+                css={css`
+                  padding: 1em;
+                  position: relative;
+                `}
+              >
+                <MintTo
+                  mintTo={mintTo}
+                  setMintTo={setMintTo}
+                  mintAddress={hustlerConfig.mintAddress}
+                  setMintAddress={setMintAddress}
+                />
+                <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
+                  ✨ Mint Hustler ✨
+                </Button>
+              </PanelFooter>
+            </PanelContainer>
+          }
+        </Stack>
       </StackedResponsiveContainer>
     </>
   );

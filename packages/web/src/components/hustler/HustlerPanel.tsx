@@ -1,9 +1,8 @@
 import { css } from '@emotion/react';
 import { HustlerCustomization } from 'utils/HustlerConfig';
 import PanelContainer from 'components/PanelContainer';
-import PanelTitleBar from 'components/PanelTitleBar';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
-import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
 
 interface Props {
   hustlerConfig: HustlerCustomization;
@@ -15,11 +14,12 @@ const HustlerPanel = ({ hustlerConfig, footer }: Props) => {
     <PanelContainer
       css={css`
         min-height: 400px;
+        height: 100%;
         flex: 1 !important;
         background-color: ${hustlerConfig.bgColor};
       `}
     >
-      <PanelTitleBar>Hustler</PanelTitleBar>
+      <PanelTitleHeader>Your New Hustler</PanelTitleHeader>
       <RenderFromDopeId
         bgColor={hustlerConfig.bgColor}
         body={hustlerConfig.body}
