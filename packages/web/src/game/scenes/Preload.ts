@@ -5,6 +5,7 @@ import NetworkHandler from 'game/handlers/network/NetworkHandler';
 import { NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import { ethers } from 'ethers';
+import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
 
 export default class Preload extends Scene {
   private downloadedSize: number = 0;
@@ -55,6 +56,10 @@ export default class Preload extends Scene {
 
   // start gamescene after preload
   create(): void {
+    if (this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) {
+      this.game.renderer.pipelines.add('skewQuad', new SkewQuad(this.game));
+    }
+
     const networkHandler = NetworkHandler.getInstance();
     networkHandler.connect();
 

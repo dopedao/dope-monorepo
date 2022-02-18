@@ -56,16 +56,26 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
           fontFamily: 'Dope',
           fontSize: '18px',
           color: '#9f9fff',
-          fixedWidth: this.displayWidth * 3,
-          stroke: '#000000',
-          strokeThickness: 5,
+          // fixedWidth: this.displayWidth * 3,
+          // stroke: '#000000',
+          // strokeThickness: 5,
         },
       );
       this.hoverText.alpha = 0.8;
+
+      (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
+        thickness: 2,
+      });
+      (this.scene.plugins.get('rexOutlinePipeline') as any).add(this.hoverText, {
+        outlineColor: 0x000000,
+        thickness: 2,
+      });
     });
     this.on('pointerout', () => {
       this.hoverText?.destroy();
       this.hoverText = undefined;
+
+      (this.scene.plugins.get('rexOutlinePipeline') as any).remove(this);
     });
   }
 

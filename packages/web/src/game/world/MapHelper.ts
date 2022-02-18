@@ -30,11 +30,15 @@ export default class MapHelper {
     // will be visible when the player is outside of the map
     this.map.otherGfx = this.scene.add.rectangle(
         this.mapReader.level.worldX, this.mapReader.level.worldY,
-        this.mapReader.level.pxWid, this.mapReader.level.pxHei,
+        this.mapReader.level.pxWid + 0, this.mapReader.level.pxHei + 0,
         0x000000, 0.9)
         .setData('max_alpha', 0.9)
         .setDepth(1000)
         .setOrigin(0, 0);
+    // (this.scene.plugins.get('rexKawaseBlurPipeline') as any).add(this.map.otherGfx, {
+    //   blur: 30,
+    //   quality: 5
+    // });
 
     // enable collisions for all tiles that have index 1
     this.map.collideLayer?.setCollision(1);

@@ -8,6 +8,9 @@ import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipe
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 import UIScene from 'game/scenes/UI';
 import OutlinePipelinePlugin from 'phaser3-rex-plugins/plugins/outlinepipeline-plugin.js';
+import DropShadowPipelinePlugin from 'phaser3-rex-plugins/plugins/dropshadowpipeline-plugin.js';
+import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
+import KawaseBlurPipelinePlugin from 'phaser3-rex-plugins/plugins/kawaseblurpipeline-plugin.js';
 
 
 export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
@@ -41,6 +44,7 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
   },
   render: {
     pixelArt: true,
+    // pipeline: { SkewQuad } as any
   },
   plugins: {
     global: [
@@ -59,7 +63,17 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
         key: 'rexOutlinePipeline',
         plugin: OutlinePipelinePlugin,
         start: true
-      }
+      },
+      {
+        key: 'rexDropShadowPipeline',
+        plugin: DropShadowPipelinePlugin,
+        start: true
+      },
+      {
+        key: 'rexKawaseBlurPipeline',
+        plugin: KawaseBlurPipelinePlugin,
+        start: true
+      },
       // {
       //   key: 'rexPixelationPipeline',
       //   plugin: PixelationPipelinePlugin,

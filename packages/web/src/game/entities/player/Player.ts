@@ -193,7 +193,7 @@ export default class Player extends Hustler {
     // if the overlapped has a parent body, use it instead for calculating delta Y
     if (otherHitbox.parent) otherHitbox = otherHitbox.parent;
 
-    if (otherHitbox.position.y - playerHitbox.position.y < 10)
+    if (otherHitbox.position.y - playerHitbox.position.y < 20)
       playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 20);
     else playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 20);
   }
