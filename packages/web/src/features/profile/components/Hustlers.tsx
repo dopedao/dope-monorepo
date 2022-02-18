@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Stack, Image, HStack, Button } from '@chakra-ui/react';
+import { Stack, Image, HStack, Button, Table, Tr, Td } from '@chakra-ui/react';
 import { AspectRatio } from '@chakra-ui/layout';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
@@ -127,10 +127,24 @@ const Hustlers = ({searchValue}: {searchValue: string}) => {
                         </Link>
                       </AspectRatio>
                     )}
-                    <Stack mt={4}>
-                      <span>Name: {name}</span>
-                      <span>{title ? `Title: ${title}` : '\u00A0'}</span>
-                    </Stack>
+                    <Table variant="small">
+                      <Tr>
+                        <Td>Name:</Td>
+                        <Td>{name}</Td>
+                      </Tr>
+                      {title && 
+                        <Tr>
+                          <Td>Title:</Td>
+                          <Td>{title}</Td>
+                        </Tr>
+                      }
+                      {/* For spacing if no OG title */}
+                      {!title &&
+                        <Tr>
+                          <Td colSpan={2}>&nbsp;</Td>
+                        </Tr>
+                      }
+                    </Table>
                   </PanelBody>
                   <HustlerFooter id={id} />
                 </ProfileCard>
