@@ -137,7 +137,7 @@ const Approve = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
       <Head title="Approve spend" />
       <StackedResponsiveContainer>
         <Stack>
-          <PanelContainer>
+          <PanelContainer justifyContent="flex-start">
             <PanelTitleBar>Cost of Initiation</PanelTitleBar>
             <PanelBody>
               <Table>

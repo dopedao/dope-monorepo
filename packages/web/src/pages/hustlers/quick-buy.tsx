@@ -26,7 +26,7 @@ const getRandomBgColor = () => {
 const QuickBuyHustler = () => {
   const { data: unclaimedDope, status: searchStatus } = useSearchDopeQuery({
     query: '',
-    first: 25,
+    first: 50,
     orderBy: {
       field: SearchOrderField.SalePrice,
       direction: OrderDirection.Asc,
@@ -112,7 +112,9 @@ const QuickBuyHustler = () => {
 
   const QuickBuyFooter = () => (
     <Box display="flex" flexDirection="column" justifyContent="flex-start" gap="8px">
-      <Button variant="primary">Customize</Button>
+      <Link href={`/hustlers/${currentDope.id}/initiate`} passHref>
+        <Button variant="primary">Customize</Button>
+      </Link>
       <CarouselButtons />
       <Button onClick={() => setShowHustler(!showHustler)}>
         {showHustler ? 'Show Equipment' : 'Show Hustler'}
@@ -141,9 +143,9 @@ const QuickBuyHustler = () => {
                     key={currentDope.id}
                     dope={currentDope}
                     isExpanded={true}
-                    showPreviewButton={false}
                     buttonBar={null}
                     showCollapse
+                    hidePreviewButton
                   />
                 )}
               </Box>
