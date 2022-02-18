@@ -1,7 +1,8 @@
 import { Box, Button, Image, Table, Tr, Td } from "@chakra-ui/react";
 import { DEFAULT_BG_COLORS } from "utils/HustlerConfig";
-import { getRandomArrayElement } from "utils/utils";
+import { getRandomArrayElement, getRandomNumber } from "utils/utils";
 import { ethers } from "ethers";
+import Link from "next/link";
 import AppWindow from "components/AppWindow";
 import DopeCard from "features/dope/components/DopeCard";
 import StackedResponsiveContainer from "components/StackedResponsiveContainer";
@@ -32,7 +33,7 @@ const QuickBuyHustler = () => {
   } = useSearchDopeQuery(
     {
       query: '',
-      first: 25,
+      first: 50,
       orderBy: {
         field: SearchOrderField.SalePrice,
         direction: OrderDirection.Asc,
@@ -47,7 +48,7 @@ const QuickBuyHustler = () => {
   const isLoading = searchStatus === 'loading';
   const [bgColor, setBgColor] = useState(getRandomBgColor());
   const [unclaimedDopeArr, setUnclaimedDopeArr] = useState<any>([]);
-  const [currentDopeIndex, setCurrentDopeIndex] = useState(0);
+  const [currentDopeIndex, setCurrentDopeIndex] = useState(getRandomNumber(0,49));
   const [currentDope, setCurrentDope] = useState<any>();
   const [showHustler, setShowHustler] = useState(true);
   
@@ -131,9 +132,11 @@ const QuickBuyHustler = () => {
       justifyContent="flex-start"
       gap="8px"
       >
-      <Button variant="primary">
-        Customize
-      </Button>
+      <Link href={`/hustlers/${currentDope.id}/initiate`} passHref>
+        <Button variant="primary">
+          Customize
+        </Button>
+      </Link>
       <CarouselButtons />
       <Button onClick={() => setShowHustler(!showHustler) }>
         {showHustler ? 'Show Equipment' : 'Show Hustler' }
