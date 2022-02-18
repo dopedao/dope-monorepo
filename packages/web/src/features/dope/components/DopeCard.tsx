@@ -68,13 +68,13 @@ export type DopeCardProps = {
   showStatus?: boolean;
 };
 
-const DopeCard = ({ 
-  buttonBar, 
-  dope, 
-  isExpanded = true, 
-  showCollapse = false, 
+const DopeCard = ({
+  buttonBar,
+  dope,
+  isExpanded = true,
+  showCollapse = false,
   hidePreviewButton = false,
-  }: DopeCardProps) => {
+}: DopeCardProps) => {
   return (
     <PanelContainer
       key={`dope-card_${dope.id}`}
@@ -118,10 +118,10 @@ const DopeCard = ({
         </div>
         <DopeCardTitleCost dope={dope} />
       </PanelTitleBarFlex>
-      <DopeCardBody 
-        buttonBar={buttonBar} 
-        dope={dope} 
-        isExpanded={isExpanded} 
+      <DopeCardBody
+        buttonBar={buttonBar}
+        dope={dope}
+        isExpanded={isExpanded}
         hidePreviewButton={hidePreviewButton}
       />
       {buttonBar === 'for-owner' && <DopeCardButtonBarOwner dope={dope} />}

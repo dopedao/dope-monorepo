@@ -27,34 +27,29 @@ const MintTo = ({
   }, [isContract, setMintTo]);
 
   if (!mintTo && !isContract) {
-    return (
-      <Button onClick={() => setMintTo(true)}>
-        Send Hustler to a friend?
-      </Button>
-    );
+    return <Button onClick={() => setMintTo(true)}>Send Hustler to a friend?</Button>;
   }
 
   return (
-    <PanelContainer justifyContent='flex-start'>
+    <PanelContainer justifyContent="flex-start">
       <PanelTitleBarFlex onClick={() => setMintTo(false)}>
         <span>Mint to Different Address</span>
-        <Image 
-          src="/images/icon/circle-clear-input.svg" 
-          alt="close" 
+        <Image
+          src="/images/icon/circle-clear-input.svg"
+          alt="close"
           width="16px"
           marginRight="8px"
           cursor="pointer"
         />
       </PanelTitleBarFlex>
       <PanelBody>
-        {!isContract &&
-          <p>Send this Hustler to a friend, or another wallet?</p>
-        }
-        {isContract && 
+        {!isContract && <p>Send this Hustler to a friend, or another wallet?</p>}
+        {isContract && (
           <p>
-            It looks like you are using a contract wallet. Please set the optimism address you want your hustler minted to.
+            It looks like you are using a contract wallet. Please set the optimism address you want
+            your hustler minted to.
           </p>
-        }
+        )}
         <Input
           placeholder="0x…"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMintAddress(e.target.value)}

@@ -51,11 +51,7 @@ const GearFooter = ({ id }: { id: string }) => {
 
   return (
     <PanelFooter>
-      <Select
-        size="sm"
-        onChange={({ target }) => setSelected(target.value)}
-        value={selected}
-      >
+      <Select size="sm" onChange={({ target }) => setSelected(target.value)} value={selected}>
         <option disabled>Equip to…</option>
         {data?.wallets.edges![0]?.node?.hustlers.map(({ id, title, name }) => (
           <option key={id} value={id}>

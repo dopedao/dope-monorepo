@@ -1,4 +1,4 @@
-import { AddTransactionResponse, Status, TransactionStatus } from "starknet";
+import { AddTransactionResponse, Status, TransactionStatus } from 'starknet';
 
 export interface StoredTransaction {
   code: Status | TransactionStatus;
@@ -16,5 +16,5 @@ export interface TransactionsProviderState {
 
 export const TRANSACTIONS_PROVIDER_INITIAL_STATE: TransactionsProviderState = {
   transactions: [],
-  addTransaction: (_tx) => undefined,
+  addTransaction: _tx => undefined,
 };

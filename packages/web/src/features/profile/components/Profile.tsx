@@ -38,18 +38,19 @@ const Profile = () => {
             borderRadius="4px"
             onChange={handleSearchChange}
             value={searchValue}
-            _focus={{boxShadow: "0"}}
+            _focus={{ boxShadow: '0' }}
           />
-          { searchValue !== '' && <InputRightElement height="100%">
-            <Image 
-              width="16px" 
-              src="/images/icon/circle-clear-input.svg" 
-              alt="Search" 
-              onClick={() => setSearchValue('')}
-              cursor="pointer"
-            />
-          </InputRightElement>
-          }
+          {searchValue !== '' && (
+            <InputRightElement height="100%">
+              <Image
+                width="16px"
+                src="/images/icon/circle-clear-input.svg"
+                alt="Search"
+                onClick={() => setSearchValue('')}
+                cursor="pointer"
+              />
+            </InputRightElement>
+          )}
         </InputGroup>
       </Stack>
       <Accordion

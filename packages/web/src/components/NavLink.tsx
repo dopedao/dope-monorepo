@@ -26,7 +26,7 @@ export const NavLink = ({ children, activeClassName = 'active', ...props }: NavL
         behavior: 'auto',
         block: 'center',
         inline: 'end',
-      })
+      });
     }
   }, [isActive, tabRef]);
 
@@ -34,7 +34,7 @@ export const NavLink = ({ children, activeClassName = 'active', ...props }: NavL
     <div ref={tabRef}>
       <Link {...props}>
         {React.cloneElement(child, {
-          className: className || null
+          className: className || null,
         })}
       </Link>
     </div>

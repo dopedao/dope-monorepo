@@ -16,7 +16,9 @@ const ComingSoonDialog = ({
   return (
     <Dialog
       backgroundCss={backgroundCss}
-      css={css`image-rendering:pixelated`}
+      css={css`
+        image-rendering: pixelated;
+      `}
       title={title}
       className={className}
       onClose={onClose}

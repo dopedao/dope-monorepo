@@ -13,14 +13,14 @@ type StatusIconProps = {
   status: boolean;
 };
 
-const StatusContainer = styled.div<{status?: boolean;}>`
-font-size: (--text-small);
-display: flex;
-padding: 6px;
-background-color: ${({status}) => (status ? '#9BFFCB' : '#DEDEDD')};
-margin-top: 8px;
-border-radius: 2px;
-`
+const StatusContainer = styled.div<{ status?: boolean }>`
+  font-size: (--text-small);
+  display: flex;
+  padding: 6px;
+  background-color: ${({ status }) => (status ? '#9BFFCB' : '#DEDEDD')};
+  margin-top: 8px;
+  border-radius: 2px;
+`;
 const DopeStatus = ({ content, status }: RowProps) => (
   <StatusContainer status={status}>
     {content == 'paper' ? (
