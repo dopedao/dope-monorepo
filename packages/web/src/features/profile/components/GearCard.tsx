@@ -1,12 +1,13 @@
 import { css } from '@emotion/react';
 import { Image, Stack } from '@chakra-ui/react';
 import GearEquipFooter from './GearEquipFooter';
+import GearUnEquipFooter from './GearUnEquipFooter';
 import PanelBody from 'components/PanelBody';
 import ProfileCard from 'features/profile/components/ProfileCard';
 import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import ItemCount from './ItemCount';
 import { Item, Maybe } from 'generated/graphql';
-import GearUnEquipFooter from './GearUnequipFooter';
+import { BigNumberish, utils } from 'ethers';
 
 type GearItem = Pick<Item, 'id' | 'count' | 'fullname' | 'name' | 'svg' | 'suffix' | 'type'> & {
   base?: Maybe<Pick<Item, 'svg'>>;
@@ -29,11 +30,13 @@ const GearCard = ({
   balance,
   showEquipFooter = false,
   showUnEquipFooter = false,
+  hustlerId
 }: {
   item: GearItem;
   balance?: number;
   showEquipFooter?: boolean;
   showUnEquipFooter?: boolean;
+  hustlerId?: BigNumberish;
 }) => {
   return (
     <ProfileCard>
@@ -73,7 +76,9 @@ const GearCard = ({
         </Stack>
       </PanelBody>
       {showEquipFooter && <GearEquipFooter id={item.id} />}
-      {showUnEquipFooter && <GearUnEquipFooter id={item.id} />}
+      {showUnEquipFooter && hustlerId && 
+        <GearUnEquipFooter id={item.id} hustlerId={hustlerId} />
+      }
     </ProfileCard>
   );
 };

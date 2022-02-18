@@ -1,24 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
 import { css } from '@emotion/react';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
-import { HustlerSex, HustlerCustomization } from 'utils/HustlerConfig';
-import { media } from 'ui/styles/mixins';
 import { Grid, GridItem, Image } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { HustlerSex, HustlerCustomization } from 'utils/HustlerConfig';
 import { Item, useHustlerQuery } from 'generated/graphql';
+import { media } from 'ui/styles/mixins';
+import { useEffect, useMemo, useState } from 'react';
+import { useHustler } from 'hooks/contracts';
+import { useHustlerRles } from 'hooks/render';
 import { useRouter } from 'next/router';
+import { useWeb3React } from '@web3-react/core';
 import AppWindow from 'components/AppWindow';
 import DopeItem from 'features/dope/components/DopeItem';
+import GearCard from 'features/profile/components/GearCard';
 import Head from 'components/Head';
+import HustlerFlexNavBar from 'features/hustlers/components/HustlerFlexNavBar';
+import HustlerMugShot from 'features/hustlers/components/HustlerMugShot';
 import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
 import LoadingBlock from 'components/LoadingBlock';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
-import GearCard from 'features/profile/components/GearCard';
-import { useHustlerRles } from 'hooks/render';
-import HustlerFlexNavBar from 'features/hustlers/components/HustlerFlexNavBar';
-import HustlerMugShot from 'features/hustlers/components/HustlerMugShot';
+import { BigNumber } from 'ethers';
 
 // We receive things like 'FEMALE-BODY-2' from the API
 const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
@@ -28,15 +31,32 @@ const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
 };
 
 const Flex = () => {
+  const hustler = useHustler();
   const router = useRouter();
-  const { id: hustlerId } = router.query;
+  const { account } = useWeb3React();
+
   const [hustlerConfig, setHustlerConfig] = useState({} as Partial<HustlerCustomization>);
   const [onChainImage, setOnChainImage] = useState('');
+  const { id: hustlerId } = router.query;
 
   const [
     isOwnedByConnectedAccount, setIsOwnedByConnectedAccount
   ] = useState(false);
 
+  // Check Contract see if this Hustler is owned by connected Account
+  useEffect(() => {
+    let isMounted = true;
+    if (hustler && account && hustlerId && isMounted) {
+      hustler.balanceOf(account, hustlerId.toString()).then(value => {
+        setIsOwnedByConnectedAccount(value.eq(1));
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [hustler, account, hustlerId]);
+
+  // Grab Hustler info from API
   const { data, isFetching: isLoading } = useHustlerQuery(
     {
       where: {
@@ -189,6 +209,7 @@ const Flex = () => {
               item={item} 
               key={item.id} 
               showUnEquipFooter={isOwnedByConnectedAccount}
+              hustlerId={BigNumber.from(hustlerId)}
             />;
           })}
         </Grid>
