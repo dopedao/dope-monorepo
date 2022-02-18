@@ -13,6 +13,7 @@ const InitiatePage = () => {
   const router = useRouter();
   const { id: dopeId, quickBuy } = router.query;
   const [isOpened, setIsOpened] = useState(false);
+
   const fromQuickBuy = typeof quickBuy !== 'undefined';
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const InitiatePage = () => {
         </Dialog>
       )}
       {isOpened === false && (
-        <HustlerProvider>
+        <HustlerProvider fromQuickBuy={fromQuickBuy}>
           <Steps />
         </HustlerProvider>
       )}
