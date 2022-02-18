@@ -88,7 +88,9 @@ const QuickBuyHustler = () => {
   const currentPrice = useMemo(() => {
     const activeListings = currentDope?.listings?.filter((l: any) => l?.active);
     const price = BigNumber.from(activeListings?.[0]?.inputs?.[0]?.amount);
-    return `${(+ethers.utils.formatEther(price && paperPrice ? price.add(paperPrice) : 0)).toFixed(4)} Ξ`;
+    return `${(+ethers.utils.formatEther(price && paperPrice ? price.add(paperPrice) : 0)).toFixed(
+      4,
+    )} Ξ`;
   }, [currentDope?.listings, paperPrice]);
 
   const CarouselButtons = () => (
