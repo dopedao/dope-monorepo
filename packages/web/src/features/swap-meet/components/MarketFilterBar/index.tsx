@@ -1,6 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from 'react';
-import { Stack, Button, InputGroup, InputRightElement, Input, Image, Select } from '@chakra-ui/react';
+import {
+  Stack,
+  Button,
+  InputGroup,
+  InputRightElement,
+  Input,
+  Image,
+  Select,
+} from '@chakra-ui/react';
 import { SearchOrderField } from 'generated/graphql';
 import { Container } from './styles';
 import { FILTERS } from 'features/swap-meet/modules/MarketList';
@@ -89,7 +97,10 @@ const MarketFilterBar = ({
       borderBottom="2px solid black"
       direction={['column', 'column', 'row']}
     >
-      <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d97ecd4b61ef4189964cd67f230c91c5" target="wiki">
+      <a
+        href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d97ecd4b61ef4189964cd67f230c91c5"
+        target="wiki"
+      >
         <Button fontSize="xs">DOPE NFT FAQ</Button>
       </a>
       <Container>
@@ -100,18 +111,19 @@ const MarketFilterBar = ({
             size="sm"
             onChange={handleSearchChange}
             value={searchValueParam}
-            _focus={{boxShadow: "0"}}
+            _focus={{ boxShadow: '0' }}
           />
-          { searchValueParam !== '' && <InputRightElement height="100%">
-            <Image 
-              width="16px" 
-              src="/images/icon/circle-clear-input.svg" 
-              alt="Search" 
-              onClick={() => setSearchValueParam('')}
-              cursor="pointer"
-            />
-          </InputRightElement>
-          }
+          {searchValueParam !== '' && (
+            <InputRightElement height="100%">
+              <Image
+                width="16px"
+                src="/images/icon/circle-clear-input.svg"
+                alt="Search"
+                onClick={() => setSearchValueParam('')}
+                cursor="pointer"
+              />
+            </InputRightElement>
+          )}
         </InputGroup>
         <div>
           <Select
@@ -128,12 +140,7 @@ const MarketFilterBar = ({
           </Select>
         </div>
         <div>
-          <Select
-            size="sm"
-            fontSize="xs"
-            onChange={handleSortChange}
-            value={orderBy}
-          >
+          <Select size="sm" fontSize="xs" onChange={handleSortChange} value={orderBy}>
             <option disabled>Sort By…</option>
             {sortKeys.map(({ label, value }, index) => (
               <option key={`${value}-${index}`} value={value}>
@@ -142,8 +149,8 @@ const MarketFilterBar = ({
             ))}
           </Select>
         </div>
-        <Button 
-          className="toggleButton" 
+        <Button
+          className="toggleButton"
           onClick={() => setViewCompactCards(prevState => !prevState)}
         >
           <Image alt="toggle" src={`${iconPath}/${icon}.svg`} />

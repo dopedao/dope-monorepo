@@ -6,46 +6,45 @@ import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
 import styled from '@emotion/styled';
 
 const HustlerTitle = styled.h1`
-font-family: Dope !important;
-position: absolute;
-left: 50%;
-transform: translate(-50%, 0%);
-bottom: 0;
-z-index: 2;
-padding: 16px 32px;
-text-align: center;
-color: white;
-background-color: black;
-border: 4px solid white;
+  font-family: Dope !important;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  bottom: 0;
+  z-index: 2;
+  padding: 16px 32px;
+  text-align: center;
+  color: white;
+  background-color: black;
+  border: 4px solid white;
 `;
 const HustlerImage = styled.div`
-position: absolute;
-left: 50%;
-transform: translate(-50%, 0);
-width: 100%;
-padding: 0 15%;
-bottom: 0px;
-right: 0px;
-top: 0px;
-${media.tablet`
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 100%;
+  padding: 0 15%;
+  bottom: 0px;
+  right: 0px;
+  top: 0px;
+  ${media.tablet`
   padding: 0 5%;
   width: 100%;
 `}
 `;
 const MugshotContainer = styled.div`
-position: relative;
-height: 100%;
-min-height: 400px;
-background: #f2f2f2 url(/images/hustler/mugshot_bg.png) center center / contain no-repeat;
+  position: relative;
+  height: 100%;
+  min-height: 400px;
+  background: #f2f2f2 url(/images/hustler/mugshot_bg.png) center center / contain no-repeat;
 `;
 
 interface Props {
-  hustlerConfig: Partial<HustlerCustomization>,
-  itemRles: string[]
+  hustlerConfig: Partial<HustlerCustomization>;
+  itemRles: string[];
 }
 
-const HustlerMugShot = ({hustlerConfig, itemRles}: Props) => {
-
+const HustlerMugShot = ({ hustlerConfig, itemRles }: Props) => {
   const renderHustler = (zoomWindowIndex: 0 | 1 | 2 | 3) => {
     if (!itemRles) return;
     return (
@@ -77,6 +76,6 @@ const HustlerMugShot = ({hustlerConfig, itemRles}: Props) => {
       <HustlerImage>{renderHustler(1)}</HustlerImage>
     </MugshotContainer>
   );
-}
+};
 
 export default HustlerMugShot;

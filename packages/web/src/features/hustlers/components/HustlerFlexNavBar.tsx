@@ -11,9 +11,7 @@ const HustlerFlexNavBar = () => (
       <Button variant="navBar">Your Hustlers</Button>
     </Link>
     <Link href="/gangsta-party" passHref>
-      <Button variant="navBar">
-        All Hustlers
-      </Button>
+      <Button variant="navBar">All Hustlers</Button>
     </Link>
     <div
       css={css`

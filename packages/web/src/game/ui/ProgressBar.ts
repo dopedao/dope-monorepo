@@ -45,7 +45,6 @@ export default class ProgressBar {
     // });
     // this.loadingText.setOrigin(0, 1);
 
-    
     // this.percentText = scene.make.text({
     //   x: this.x + this.width - this.lineWidth,
     //   y: this.loadingText.y,

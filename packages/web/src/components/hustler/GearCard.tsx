@@ -9,23 +9,21 @@ import RenderFromChain from 'components/hustler/RenderFromChain';
 import CartIcon from 'ui/svg/Cart';
 
 // This should be Partial<Item> but I couldn't get it working…
-const GearCard = ({gear}: {gear: any}) => {
-
+const GearCard = ({ gear }: { gear: any }) => {
   const quixPrefix = 'https://quixotic.io/collection/gear?query=';
-  const svg = (gear.base?.svg ? gear.base.svg : gear.svg);
+  const svg = gear.base?.svg ? gear.base.svg : gear.svg;
 
   if (!svg || !gear.id) return <LoadingBlock />;
-  return(
+  return (
     <PanelContainer key={gear.id}>
       <PanelTitleBarFlex>
-        <div>
-          {gear.name}
-        </div>
-        <DopeCardTitleButton css={css`width:50px;`}>
-          <a 
-            href={`${quixPrefix}${encodeURIComponent(gear.name || '')}`}
-            target="quix"
-          >
+        <div>{gear.name}</div>
+        <DopeCardTitleButton
+          css={css`
+            width: 50px;
+          `}
+        >
+          <a href={`${quixPrefix}${encodeURIComponent(gear.name || '')}`} target="quix">
             <CartIcon color="white" width={20} height={20} />
           </a>
         </DopeCardTitleButton>
@@ -39,7 +37,7 @@ const GearCard = ({gear}: {gear: any}) => {
         />
       </PanelBody>
     </PanelContainer>
-  )
-}
+  );
+};
 
 export default GearCard;
