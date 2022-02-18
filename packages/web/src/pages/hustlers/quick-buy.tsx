@@ -1,6 +1,6 @@
 import { Box, Button, Image, Table, Tr, Td } from '@chakra-ui/react';
 import { DEFAULT_BG_COLORS } from 'utils/HustlerConfig';
-import { getRandomArrayElement } from 'utils/utils';
+import { getRandomArrayElement, getRandomNumber } from 'utils/utils';
 import { BigNumber, ethers } from 'ethers';
 import AppWindow from 'components/AppWindow';
 import DopeCard from 'features/dope/components/DopeCard';
@@ -54,15 +54,18 @@ const QuickBuyHustler = () => {
     if (unclaimedDope?.search?.edges) {
       // Have to filter array for things that have "node" property
       // which are the DOPE objects we want
-      return unclaimedDope.search.edges?.reduce((prev, dope) => {
+      const dopes = unclaimedDope.search.edges?.reduce((prev, dope) => {
         if (dope && dope.node && dope.node.__typename === 'Dope') {
           return [...prev, dope.node];
         }
         return prev;
       }, [] as any);
+
+      setCurrentDopeIndex(getRandomNumber(0, dopes.length - 1));
+      return dopes;
     }
     return [];
-  }, [unclaimedDope]);
+  }, [setCurrentDopeIndex, unclaimedDope]);
 
   const currentDope = useMemo(
     () => unclaimedDopeArr && unclaimedDopeArr[currentDopeIndex],
@@ -117,7 +120,7 @@ const QuickBuyHustler = () => {
 
   const QuickBuyFooter = () => (
     <Box display="flex" flexDirection="column" justifyContent="flex-start" gap="8px">
-      <Link href={`/hustlers/${currentDope.id}/initiate`} passHref>
+      <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy`} passHref>
         <Button variant="primary">Customize</Button>
       </Link>
       <CarouselButtons />
@@ -128,7 +131,7 @@ const QuickBuyHustler = () => {
   );
 
   return (
-    <AppWindow title="Quick Buy Hustler" height={740} background={bgColor}>
+    <AppWindow title="Welcome To The Streets" height={740} background={bgColor}>
       <StackedResponsiveContainer>
         {(isLoading || !currentDope) && <LoadingBlock maxRows={5} />}
         {!isLoading && currentDope && (
@@ -185,7 +188,7 @@ const QuickBuyHustler = () => {
             </Box>
             <Box display="flex" flexDirection="column" justifyContent="center" gap="16px">
               <Box padding="8px">
-                <h2>Get a Hustler Now</h2>
+                <h2>Get Hooked On DOPE</h2>
                 <hr className="onColor" />
                 <p>
                   Hustlers are the in-game characters of Dope Wars who can own up to 10 different

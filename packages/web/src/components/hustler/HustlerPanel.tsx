@@ -30,8 +30,8 @@ const HustlerPanel = ({ hustlerConfig, footer }: Props) => {
         renderName={hustlerConfig.renderName}
         sex={hustlerConfig.sex}
         textColor={hustlerConfig.textColor}
-        zoomWindow={ZOOM_WINDOWS[2]}
-        isVehicle={true}
+        zoomWindow={hustlerConfig.zoomWindow}
+        isVehicle={hustlerConfig.isVehicle}
       />
       {footer}
     </PanelContainer>

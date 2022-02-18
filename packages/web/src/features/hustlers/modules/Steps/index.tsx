@@ -24,14 +24,20 @@ const Steps = () => {
     getRandomHustler({ dopeId: String(router.query.id) }),
   );
 
-  const goBackToInitialStep = () => {
-    dispatch({ type: 'GO_TO_APPROVE_STEP' });
+  const handleFinishConfiguration = () => {
+    if (hustler.isQuickBuy) {
+      dispatch({ type: 'GO_TO_QUICK_BUY_APPROVE_STEP' })
+    } else {
+      dispatch({ type: 'GO_TO_APPROVE_STEP' });
+    }
   };
 
   const stepToRender = () => {
     switch (hustler.currentStep) {
       case 1:
         return <Approve hustlerConfig={hustlerConfig} setHustlerConfig={setHustlerConfig} />;
+      case 1.5:
+        return <p>This should be the quick-buy final step</p>;
       case 2:
         return <Finalize />;
       default:
@@ -39,7 +45,7 @@ const Steps = () => {
           <ConfigureHustler
             config={hustlerConfig}
             setHustlerConfig={setHustlerConfig}
-            goBackToInitialStep={goBackToInitialStep}
+            handleFinishConfiguration={handleFinishConfiguration}
           />
         );
     }

@@ -7,12 +7,14 @@ import AppWindowEthereum from 'components/AppWindowEthereum';
 import Dialog from 'components/Dialog';
 import HustlerProvider from 'features/hustlers/HustlerProvider';
 import Steps from 'features/hustlers/modules/Steps';
+import { INITIAL_STATE } from 'features/hustlers/hustlerReducer';
 
 const InitiatePage = () => {
   const init = useInitiator();
   const router = useRouter();
-  const { id: dopeId } = router.query;
-  const [isOpened, setIsOpened] = useState();
+  const { id: dopeId, quickBuy } = router.query;
+  const isQuickBuy = typeof quickBuy !== 'undefined';
+  const [isOpened, setIsOpened] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -39,7 +41,9 @@ const InitiatePage = () => {
         </Dialog>
       )}
       {isOpened === false && (
-        <HustlerProvider>
+        <HustlerProvider 
+          initialHustlerData={Object.assign(INITIAL_STATE, {isQuickBuy: isQuickBuy})}
+        >
           <Steps />
         </HustlerProvider>
       )}

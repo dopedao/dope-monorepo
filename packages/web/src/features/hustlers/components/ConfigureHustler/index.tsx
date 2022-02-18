@@ -20,7 +20,7 @@ export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   ogTitle?: string;
   itemRles?: string[];
   hustlerId?: string;
-  goBackToInitialStep?: () => void;
+  handleFinishConfiguration?: () => void;
   isCustomize?: boolean;
 };
 
@@ -41,7 +41,7 @@ const ConfigureHustler = ({
   ogTitle,
   hustlerId,
   itemRles,
-  goBackToInitialStep,
+  handleFinishConfiguration,
 }: ConfigureHustlerProps) => (
   <StackedResponsiveContainer>
     <PanelContainer
@@ -118,7 +118,7 @@ const ConfigureHustler = ({
     <ConfigurationControls
       config={config}
       setHustlerConfig={setHustlerConfig}
-      goBackToInitialStep={goBackToInitialStep}
+      handleFinishConfiguration={handleFinishConfiguration}
       isCustomize={isCustomize}
     />
   </StackedResponsiveContainer>

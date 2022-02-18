@@ -36,10 +36,6 @@ const Stepper = () => {
         if (hustler.isCustomizeDone && hustler.isApprovalDone) {
           return false;
         }
-      case 3:
-        if (hustler.isCustomizeDone && hustler.isApprovalDone) {
-          return false;
-        }
       default:
         return true;
     }
@@ -56,10 +52,6 @@ const Stepper = () => {
           return dispatchHustler({ type: 'GO_TO_APPROVE_STEP' });
         }
       case 2:
-        if (hustler.isCustomizeDone && hustler.isApprovalDone) {
-          return dispatchHustler({ type: 'GO_TO_APPROVE_STEP' });
-        }
-      case 3:
         if (hustler.isCustomizeDone && hustler.isApprovalDone) {
           return dispatchHustler({ type: 'GO_TO_APPROVE_STEP' });
         }
