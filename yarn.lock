@@ -58,6 +58,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@argent/get-starknet@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "@argent/get-starknet@npm:1.1.3"
+  peerDependencies:
+    starknet: ^2.5.0
+  checksum: b5164ff11e109382c89d52777f3b033de35b0fccbcc56cb49bfa9b65835dcf9b079bae1efa2fd6c5e9dbc7c2bcdaf59b97d348b34d6beb3aeb86efffec172417
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:7.10.4":
   version: 7.10.4
   resolution: "@babel/code-frame@npm:7.10.4"
@@ -2603,6 +2612,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@dopewars/web@workspace:packages/web"
   dependencies:
+    "@argent/get-starknet": ^1.1.3
     "@babel/core": ^7.16.7
     "@chakra-ui/react": ^1.6.7
     "@emotion/babel-plugin": ^11.3.0
@@ -2679,10 +2689,12 @@ __metadata:
     remark: ^14.0.2
     remark-html: ^15.0.1
     siwe: ^1.1.0
+    starknet: ^2.5.0
     ts-jest: ^27.0.5
     ts-node: ^10.2.1
     typechain: ^5.1.2
     typescript: ^4.5.4
+    use-deep-compare-effect: ^1.8.1
     usehooks-ts: ^1.0.3
   languageName: unknown
   linkType: soft
@@ -5904,6 +5916,20 @@ __metadata:
   version: 11.1.3
   resolution: "@next/swc-win32-x64-msvc@npm:11.1.3"
   checksum: ec66706e74e8366bc1e541d84a3c344a490bf873a49c71f6a4b0cae84e0fba9f0eed99d3cb5e9b877d595355640dfe846b9df0d50dfd27cb152f4530db4479dd
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:^0.5.7":
+  version: 0.5.9
+  resolution: "@noble/hashes@npm:0.5.9"
+  checksum: 71a8e0d13a47243a66f6b68035b29335e49a2786193c4ecd3f8e967214fdfb3d0d000b1d0e2374ee28e3d7794a484453c632e7fa75275c7cda3771fcb657d946
+  languageName: node
+  linkType: hard
+
+"@noble/secp256k1@npm:^1.4.0":
+  version: 1.5.0
+  resolution: "@noble/secp256k1@npm:1.5.0"
+  checksum: d0c89e1c20401343f5ac943e512cdf141cd11c71793a53da45f55f1ef1cfcfb1563f45afbf20af0ffea60752c137ae857fae30cbb893dddcbf487039fde4035d
   languageName: node
   linkType: hard
 
@@ -10496,6 +10522,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^0.23.0":
+  version: 0.23.0
+  resolution: "axios@npm:0.23.0"
+  dependencies:
+    follow-redirects: ^1.14.4
+  checksum: 879f61022bd825da2a7ebb72410bc528683ba54c140436baa0b924b7cab02ec0919fe64a04a546f482a75f5fd570b77884f9826764a95f2fd88265e61dcb70db
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^2.2.0":
   version: 2.2.0
   resolution: "axobject-query@npm:2.2.0"
@@ -14938,7 +14973,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dequal@npm:^2.0.0":
+"dequal@npm:^2.0.0, dequal@npm:^2.0.2":
   version: 2.0.2
   resolution: "dequal@npm:2.0.2"
   checksum: 86c7a2c59f7b0797ed397c74b5fcdb744e48fc19440b70ad6ac59f57550a96b0faef3f1cfd5760ec5e6d3f7cb101f634f1f80db4e727b1dc8389bf62d977c0a0
@@ -15512,7 +15547,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elliptic@npm:6.5.4, elliptic@npm:^6.4.0, elliptic@npm:^6.5.2, elliptic@npm:^6.5.3":
+"elliptic@npm:6.5.4, elliptic@npm:^6.4.0, elliptic@npm:^6.5.2, elliptic@npm:^6.5.3, elliptic@npm:^6.5.4":
   version: 6.5.4
   resolution: "elliptic@npm:6.5.4"
   dependencies:
@@ -16560,6 +16595,17 @@ __metadata:
     secp256k1: ^4.0.1
     setimmediate: ^1.0.5
   checksum: 54bae7a4a96bd81398cdc35c91cfcc74339f71a95ed1b5b694663782e69e8e3afd21357de3b8bac9ff4877fd6f043601e200a7ad9133d94be6fd7d898ee0a449
+  languageName: node
+  linkType: hard
+
+"ethereum-cryptography@npm:^0.2.0":
+  version: 0.2.5
+  resolution: "ethereum-cryptography@npm:0.2.5"
+  dependencies:
+    "@noble/hashes": ^0.5.7
+    "@noble/secp256k1": ^1.4.0
+    micro-base: ^0.10.1
+  checksum: 4111c9260398a092e4e52e0953e0fa89ec4f2ebb9cbe77767764a5334e943c0f0e8045d491df93d95edfdbe8e5197b22363bd8052f974df3f2ebc0edf6994b51
   languageName: node
   linkType: hard
 
@@ -17782,6 +17828,16 @@ __metadata:
     debug:
       optional: true
   checksum: 7fcdb089a733d2aa39041880790e9f772df009fcd0b243fee7e10acf0e14a8dab5208cf79eb1de35b9cc6033d4dde7f95becadfaa360c50d460b4c730b375e80
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.14.4":
+  version: 1.14.7
+  resolution: "follow-redirects@npm:1.14.7"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: f6d03e5e30877431065bca0d1b2e3db93949eb799d368a5c07ea8a4b71205f0349a3f8f0191bf13a07c93885522834dca1dc8e527dc99a772c6911fba24edc5f
   languageName: node
   linkType: hard
 
@@ -22200,6 +22256,15 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
+"json-bigint@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "json-bigint@npm:1.0.0"
+  dependencies:
+    bignumber.js: ^9.0.0
+  checksum: c67bb93ccb3c291e60eb4b62931403e378906aab113ec1c2a8dd0f9a7f065ad6fd9713d627b732abefae2e244ac9ce1721c7a3142b2979532f12b258634ce6f6
+  languageName: node
+  linkType: hard
+
 "json-buffer@npm:3.0.0":
   version: 3.0.0
   resolution: "json-buffer@npm:3.0.0"
@@ -24388,6 +24453,13 @@ fsevents@~2.1.1:
   version: 1.1.2
   resolution: "methods@npm:1.1.2"
   checksum: 0917ff4041fa8e2f2fda5425a955fe16ca411591fbd123c0d722fcf02b73971ed6f764d85f0a6f547ce49ee0221ce2c19a5fa692157931cecb422984f1dcd13a
+  languageName: node
+  linkType: hard
+
+"micro-base@npm:^0.10.1":
+  version: 0.10.2
+  resolution: "micro-base@npm:0.10.2"
+  checksum: 4fcc9fb80cca021c5157e63d76188e3742a8f1ac5a90b1022a34cd715bf8ab19bbd82b71b908f0cf1cf6983d39533fe1aef4f24f2c0b09ec9d862fdaf5bf26ab
   languageName: node
   linkType: hard
 
@@ -26826,6 +26898,13 @@ fsevents@~2.1.1:
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
   checksum: 1be2bfa1f807608c7538afa15d6f25baa523c30ec870a3228a89579e474a4d992f4293859524e46d5d87fd30fa17c5edf34dbef0671251d9749820b488660b16
+  languageName: node
+  linkType: hard
+
+"pako@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "pako@npm:2.0.4"
+  checksum: 82b9b0b99dd830c9103856a6dbd10f0cb2c8c32b9768184727ea381a99666de9a47a069d2e6efe6acf09336f363956b50835c196ef9311b34b7274d420eb0d88
   languageName: node
   linkType: hard
 
@@ -31211,6 +31290,24 @@ resolve@~1.20.0:
   languageName: node
   linkType: hard
 
+"starknet@npm:^2.5.0":
+  version: 2.7.1
+  resolution: "starknet@npm:2.7.1"
+  dependencies:
+    axios: ^0.23.0
+    bn.js: ^5.2.0
+    elliptic: ^6.5.4
+    ethereum-cryptography: ^0.2.0
+    hash.js: ^1.1.7
+    json-bigint: ^1.0.0
+    minimalistic-assert: ^1.0.1
+    pako: ^2.0.4
+    superstruct: ^0.15.3
+    url-join: ^4.0.1
+  checksum: 354b33ca649ebe077e43cc74d7d9cc91c4379789339ec1baad9afd7235a64b608e7c153f1283d94f554bdfc82c24b0f07c62aeede8341b2836bdebc43281343c
+  languageName: node
+  linkType: hard
+
 "state-toggle@npm:^1.0.0":
   version: 1.0.3
   resolution: "state-toggle@npm:1.0.3"
@@ -31761,6 +31858,13 @@ resolve@~1.20.0:
   version: 1.1.0
   resolution: "super-split@npm:1.1.0"
   checksum: 33c9d7cca56b1258d3d857f482ed8d5c349f97dcd82b70dad3948cdf4a1998cdb53ea28c70a62f1997c5d20a1ae6c1dbcc3a5e273cf0a116bde6895f4d5bfc17
+  languageName: node
+  linkType: hard
+
+"superstruct@npm:^0.15.3":
+  version: 0.15.3
+  resolution: "superstruct@npm:0.15.3"
+  checksum: b39a2caf28fd9e3f968f4aab504ea6646a2efe59609cc034ef9afef87cd84505b270683ad2bf609e6358ce36f09aab1cbacd4a5286706c28194597d91b31a453
   languageName: node
   linkType: hard
 
@@ -33629,6 +33733,13 @@ resolve@~1.20.0:
   languageName: node
   linkType: hard
 
+"url-join@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "url-join@npm:4.0.1"
+  checksum: f74e868bf25dbc8be6a8d7237d4c36bb5b6c62c72e594d5ab1347fe91d6af7ccd9eb5d621e30152e4da45c2e9a26bec21390e911ab54a62d4d82e76028374ee5
+  languageName: node
+  linkType: hard
+
 "url-loader@npm:^4.1.1":
   version: 4.1.1
   resolution: "url-loader@npm:4.1.1"
@@ -33728,6 +33839,18 @@ resolve@~1.20.0:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0
   checksum: 27238fef7184bfdd4be24901188d3f5fe641536a7aee0f7b435166d3c0bc958b7d84c4c512c4737422a623b07ca7ee95f5eca2fa3ea52722fcc66bc367bd32bc
+  languageName: node
+  linkType: hard
+
+"use-deep-compare-effect@npm:^1.8.1":
+  version: 1.8.1
+  resolution: "use-deep-compare-effect@npm:1.8.1"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+    dequal: ^2.0.2
+  peerDependencies:
+    react: ">=16.13"
+  checksum: 2b9b6291df3f772f44d259b352e5d998963ccee0db2efeb76bb05525d928064aeeb69bb0dee5a5e428fea7cf3db67c097a770ebd30caa080662b565f6ef02b2e
   languageName: node
   linkType: hard
 
