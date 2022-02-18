@@ -127,11 +127,7 @@ const InitiationFooterDopeContent = ({
     return (
       <div>
         <SubPanelForm>
-          <Select
-            size="sm"
-            onChange={handleDopeChange}
-            value={hustlerConfig.dopeId}
-          >
+          <Select size="sm" onChange={handleDopeChange} value={hustlerConfig.dopeId}>
             <option disabled>YOUR DOPE</option>
             {bundledDope &&
               bundledDope.map(dopeNft => (

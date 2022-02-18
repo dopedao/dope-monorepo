@@ -31,7 +31,7 @@ const GearCard = ({
   balance,
   showEquipFooter = false,
   showUnEquipFooter = false,
-  hustlerId
+  hustlerId,
 }: {
   item: GearItem;
   balance?: number;
@@ -82,9 +82,7 @@ const GearCard = ({
         </Stack>
       </PanelBody>
       {showEquipFooter && <GearEquipFooter id={item.id} />}
-      {showUnEquipFooter && hustlerId && 
-        <GearUnEquipFooter id={item.id} hustlerId={hustlerId} />
-      }
+      {showUnEquipFooter && hustlerId && <GearUnEquipFooter id={item.id} hustlerId={hustlerId} />}
     </ProfileCard>
   );
 };

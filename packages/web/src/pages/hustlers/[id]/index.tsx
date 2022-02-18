@@ -39,9 +39,7 @@ const Flex = () => {
   const [onChainImage, setOnChainImage] = useState('');
   const { id: hustlerId } = router.query;
 
-  const [
-    isOwnedByConnectedAccount, setIsOwnedByConnectedAccount
-  ] = useState(false);
+  const [isOwnedByConnectedAccount, setIsOwnedByConnectedAccount] = useState(false);
 
   // Check Contract see if this Hustler is owned by connected Account
   useEffect(() => {
@@ -205,12 +203,14 @@ const Flex = () => {
             </PanelBody>
           </PanelContainer>
           {items?.map(item => {
-            return <GearCard 
-              item={item} 
-              key={item.id} 
-              showUnEquipFooter={isOwnedByConnectedAccount}
-              hustlerId={BigNumber.from(hustlerId)}
-            />;
+            return (
+              <GearCard
+                item={item}
+                key={item.id}
+                showUnEquipFooter={isOwnedByConnectedAccount}
+                hustlerId={BigNumber.from(hustlerId)}
+              />
+            );
           })}
         </Grid>
       )}

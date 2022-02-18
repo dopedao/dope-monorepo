@@ -41,7 +41,7 @@ const HustlerFooter = ({ id }: { id: string }) => (
   </PanelFooter>
 );
 
-const Hustlers = ({searchValue}: {searchValue: string}) => {
+const Hustlers = ({ searchValue }: { searchValue: string }) => {
   const { account } = useWeb3React();
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileHustlersQuery(
@@ -52,7 +52,7 @@ const Hustlers = ({searchValue}: {searchValue: string}) => {
             id: account,
           },
         ],
-        nameContains: searchValue
+        nameContains: searchValue,
       },
       first: 50,
     },
@@ -132,18 +132,18 @@ const Hustlers = ({searchValue}: {searchValue: string}) => {
                         <Td>Name:</Td>
                         <Td>{name}</Td>
                       </Tr>
-                      {title && 
+                      {title && (
                         <Tr>
                           <Td>Title:</Td>
                           <Td>{title}</Td>
                         </Tr>
-                      }
+                      )}
                       {/* For spacing if no OG title */}
-                      {!title &&
+                      {!title && (
                         <Tr>
                           <Td colSpan={2}>&nbsp;</Td>
                         </Tr>
-                      }
+                      )}
                     </Table>
                   </PanelBody>
                   <HustlerFooter id={id} />

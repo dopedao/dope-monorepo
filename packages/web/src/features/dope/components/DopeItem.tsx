@@ -50,7 +50,8 @@ const Item = ({
       align-items: top;
       line-height: 1.25em;
       font-size: var(--text-small);
-      ${isExpanded && `
+      ${isExpanded &&
+      `
         border-top: 1px solid rgba(255,255,255,0.1);
         padding-top:4px;
         padding-bottom: 4px;
@@ -63,7 +64,7 @@ const Item = ({
         color: ${color};
       `}
     >
-      { name }
+      {name}
       {isExpanded && (
         <>
           <span

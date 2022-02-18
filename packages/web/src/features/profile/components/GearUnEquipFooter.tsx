@@ -6,21 +6,15 @@ import { useWeb3React } from '@web3-react/core';
 import { BigNumberish } from 'ethers';
 import PanelFooter from 'components/PanelFooter';
 
-const GearUnEquipFooter = ({ id, hustlerId }: 
-  { id: string, hustlerId: BigNumberish }
-) => {
+const GearUnEquipFooter = ({ id, hustlerId }: { id: string; hustlerId: BigNumberish }) => {
   const { account } = useWeb3React();
   const { chainId } = useOptimism();
 
   const hustler = useHustler();
   const unEquip = useCallback(() => {
-    hustler.unequip(
-      hustlerId, 
-      [
-        // need proper slot id here…not sure how to get it
-      ]
-    );
-    
+    hustler.unequip(hustlerId, [
+      // need proper slot id here…not sure how to get it
+    ]);
   }, [hustler, hustlerId]);
 
   return (
