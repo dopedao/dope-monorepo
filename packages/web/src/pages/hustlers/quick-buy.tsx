@@ -16,6 +16,7 @@ import {
   SearchType,
 } from 'generated/graphql';
 import { useOneClickInitiator } from 'hooks/contracts';
+import Link from 'next/link';
 
 const getRandomBgColor = () => {
   // Remove first item which is dark grey color
@@ -87,10 +88,10 @@ const QuickBuyHustler = () => {
 
   const currentPrice = useMemo(() => {
     const activeListings = currentDope?.listings?.filter((l: any) => l?.active);
-    const price = BigNumber.from(activeListings?.[0]?.inputs?.[0]?.amount);
-    return `${(+ethers.utils.formatEther(price && paperPrice ? price.add(paperPrice) : 0)).toFixed(
-      4,
-    )} Ξ`;
+    const price = activeListings?.[0]?.inputs?.[0]?.amount;
+    return `${(+ethers.utils.formatEther(
+      price && paperPrice ? BigNumber.from(price).add(paperPrice) : 0,
+    )).toFixed(4)} Ξ`;
   }, [currentDope?.listings, paperPrice]);
 
   const CarouselButtons = () => (
