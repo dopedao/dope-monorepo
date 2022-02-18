@@ -20,7 +20,7 @@ type GearData = {
   totalCount: number;
 };
 
-const GearWrapper: FC = () => {
+const GearWrapper = ({searchValue}: {searchValue: string}) => {
   const { account } = useWeb3React();
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileGearQuery(
@@ -28,6 +28,9 @@ const GearWrapper: FC = () => {
       where: {
         hasWalletWith: [{ id: account }],
         balanceGT: '0',
+        hasItemWith: [{
+          nameContains: searchValue
+        }]
       },
       first: 50,
     },
@@ -95,7 +98,7 @@ const GearWrapper: FC = () => {
             {hasNextPage && <Button onClick={() => fetchNextPage()}>Load more</Button>}
           </CardContainer>
         ) : (
-          <span>This wallet does not have any Gear</span>
+          <span>No Gear found</span>
         )}
       </SectionContent>
     </>

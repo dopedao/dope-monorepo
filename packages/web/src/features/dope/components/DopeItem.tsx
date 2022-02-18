@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 
 export type ItemProps = {
   name: string;
-  fullname: string;
   namePrefix?: string | null;
   nameSuffix?: string | null;
   suffix?: string | null;
@@ -35,7 +34,6 @@ const Bullet = ({ color }: BulletProps) => (
 
 const Item = ({
   name,
-  fullname,
   namePrefix,
   nameSuffix,
   suffix,
@@ -65,7 +63,7 @@ const Item = ({
         color: ${color};
       `}
     >
-      {isExpanded && (showRarity ? fullname : name)}
+      { name }
       {isExpanded && (
         <>
           <span
