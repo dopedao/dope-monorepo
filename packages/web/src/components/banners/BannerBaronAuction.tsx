@@ -54,7 +54,6 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
               `}
             >
               Baron Davis &amp; Last Prisoner Project
-              <br/>
               Charity Auction
             </h3>
             <Box className="smallest" color="rgba(255,255,255,0.75)">
