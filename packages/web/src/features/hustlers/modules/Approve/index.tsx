@@ -16,7 +16,7 @@ import PanelFooter from 'components/PanelFooter';
 import PanelTitleBar from 'components/PanelTitleBar';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
-import { useInitiator, usePaper } from 'hooks/contracts';
+import { useDopeInitiator, useInitiator, usePaper } from 'hooks/contracts';
 import { useIsContract } from 'hooks/web3';
 
 const Approve = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {

@@ -1,64 +1,46 @@
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
-import { ethers } from 'ethers';
+import { Link } from '@chakra-ui/layout';
 
 import { DopeCardProps } from './DopeCard';
-
-const viewOnOpenSea = (tokenId: string): void => {
-  const baseOpenSeaUrl = 'https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723';
-  const url = `${baseOpenSeaUrl}/${tokenId}`;
-  window.open(url, 'dopeWarsList')?.focus();
-};
-
-const ContextSensitiveButton = ({ dope }: DopeCardButtonBarMarketProps) => {
-  const isOnSale = !!dope.listings?.[0]?.inputs?.[0]?.amount;
-  const price = dope.listings?.[0]?.inputs?.[0]?.amount;
-  const unit = dope.listings?.[0]?.inputs[0]?.type;
-  return (
-    <Button
-      onClick={() => viewOnOpenSea(dope.id)}
-      css={css`
-        float: right;
-      `}
-      variant={isOnSale ? 'primary' : 'solid'}
-    >
-      {isOnSale ? `Buy for ${ethers.utils.formatEther(price)} ${unit}` : 'View'}
-    </Button>
-  );
-};
-
-const LastSaleOrNever = ({ dope }: DopeCardButtonBarMarketProps) => {
-  const lastSalePrice = dope.lastSale?.inputs?.[0]?.amount;
-  const unit = dope.lastSale?.inputs?.[0]?.type;
-  if (lastSalePrice)
-    return (
-      <span
-        css={css`
-          white-space: nowrap;
-        `}
-      >
-        Last {ethers.utils.formatEther(lastSalePrice)} {unit}
-      </span>
-    );
-  return <></>;
-};
+import { useRouter } from 'next/router';
 
 type DopeCardButtonBarMarketProps = Pick<DopeCardProps, 'dope'>;
 
 const DopeCardButtonBarMarket = ({ dope }: DopeCardButtonBarMarketProps) => {
-  return (
-    <>
-      <div
+  const isOnSale = !!dope.listings?.[0]?.inputs?.[0]?.amount;
+  const router = useRouter();
+
+  return isOnSale && !dope.opened ? (
+    <div
+      css={css`
+        padding: 16px;
+        padding-top: 0px;
+        width: 100%;
+      `}
+    >
+      <Button
         css={css`
-          text-align: center;
+          width: 100%;
         `}
+        variant="primary"
+        onClick={() => {
+          router.push(
+            {
+              pathname: `/hustlers/${dope.id}/initiate`,
+              query: {
+                isPurchase: true,
+              },
+            },
+            {
+              pathname: `/hustlers/${dope.id}/initiate`,
+            },
+          );
+        }}
       >
-        <LastSaleOrNever dope={dope} />
-      </div>
-      <div>
-        <ContextSensitiveButton dope={dope} />
-      </div>
-    </>
-  );
+        Mint Hustler
+      </Button>
+    </div>
+  ) : null;
 };
 export default DopeCardButtonBarMarket;

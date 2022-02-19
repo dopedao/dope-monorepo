@@ -4,6 +4,7 @@ import {
   CrossDomainMessenger__factory,
   Controller__factory,
   Paper__factory,
+  DopeInitiator__factory,
   Initiator__factory,
   Hustler__factory,
   SwapMeet__factory,
@@ -19,6 +20,15 @@ export const useInitiator = () => {
 
   return useMemo(
     () => Initiator__factory.connect(NETWORK[chainId].contracts.initiator, provider),
+    [chainId, provider],
+  );
+};
+
+export const useDopeInitiator = () => {
+  const { chainId, provider } = useEthereum();
+
+  return useMemo(
+    () => DopeInitiator__factory.connect(NETWORK[chainId].contracts.initiator, provider),
     [chainId, provider],
   );
 };

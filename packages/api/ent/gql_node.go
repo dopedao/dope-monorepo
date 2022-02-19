@@ -840,7 +840,7 @@ func (l *Listing) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     l.ID,
 		Type:   "Listing",
-		Fields: make([]*Field, 2),
+		Fields: make([]*Field, 3),
 		Edges:  make([]*Edge, 4),
 	}
 	var buf []byte
@@ -858,6 +858,14 @@ func (l *Listing) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[1] = &Field{
 		Type:  "listing.Source",
 		Name:  "source",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(l.Order); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "json.RawMessage",
+		Name:  "order",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{

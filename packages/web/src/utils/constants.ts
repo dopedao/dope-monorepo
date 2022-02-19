@@ -8,6 +8,7 @@ export const NETWORK = {
       dope: '0x8707276df042e89669d69a177d3da7dc78bd8723',
       paper: '0x7ae1d57b58fa6411f32948314badd83583ee0e8c',
       initiator: '0x7aa8e897d712CFB9C7cb6B37634A1C4d21181c8B',
+      dopeinitator: '0xa92c2ae3e1caa57b254f5675e77dc38f4e336e60',
     },
     rpc: 'https://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj',
     ws: 'wss://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj',
