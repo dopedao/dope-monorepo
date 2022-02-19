@@ -14,9 +14,9 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
 
-	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/game"
@@ -256,6 +256,15 @@ CREATE UNIQUE INDEX search_index_pk ON search_index using btree(id);
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);
 `
 
+var (
+	wsUpgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin:     func(r *http.Request) bool { return true },
+	}
+	gameState = game.NewGame()
+)
+
 func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, index bool, openseaApiKey, network string) (http.Handler, error) {
 	client := ent.NewClient(ent.Driver(drv))
 
@@ -292,6 +301,25 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	})
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
+
+	// run game server loop in the background
+	go gameState.Start(ctx)
+
+	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
+		wsConn, err := wsUpgrader.Upgrade(w, r, nil)
+
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("501 - Could not upgrade to websocket connection"))
+			return
+		}
+
+		// close the connection when the function returns
+		defer wsConn.Close()
+
+		// handle messages
+		gameState.Handle(r.Context(), wsConn)
+	})
 
 	r.HandleFunc("/wallets/{address}/hustlers", resources.WalletHustlersHandler(client))
 	r.HandleFunc("/hustlers/{id}/sprites", resources.HustlerSpritesHandler(client))
