@@ -96,7 +96,7 @@ export default class ProgressBar {
 
     this.percentText.setText(Math.min(100, Math.round(progress * 100)) + '%');
     // this.downloadedText.text = this.formatBytes(this.totalFileSize * progress);
-    if (loadingText) this.loadingText.setText(loadingText).setOrigin(0, 1);
+    if (loadingText) this.loadingText.setText(loadingText);
   }
 
   private formatBytes(bytes: number): string {

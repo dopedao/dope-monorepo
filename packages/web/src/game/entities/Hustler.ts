@@ -338,7 +338,3 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     });
   }
 }
-function DropShadowPostFx(DropShadowPostFx: any) {
-  throw new Error('Function not implemented.');
-}
-

@@ -73,7 +73,7 @@ export default class GameScene extends Scene {
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
       if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer) return;
       
-      if (Date.now() - last < 1000) return;
+      if (Date.now() - last < 600) return;
       last = Date.now();
 
       // run asynchronously
