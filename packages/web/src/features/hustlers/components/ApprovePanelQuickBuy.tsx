@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { Button, Table, Tr, Td } from '@chakra-ui/react';
 import { css } from '@emotion/react';
@@ -40,16 +40,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
     oneclick.callStatic.estimate(unbundleCost.add(paperAmount)).then(setPaperCost);
   }, [oneclick, unbundleCost, paperAmount]);
 
-  const canMint = false;
-  const onMintHustler = useCallback(async () => {
-    if (!account) {
-      return;
-    }
-
-    const config = createConfig(hustlerConfig);
-
-    const { dopeId, mintAddress } = hustlerConfig;
-
+  const order = useMemo(() => {
     if (
       !data ||
       !data.dopes ||
@@ -58,15 +49,26 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
       !data.dopes.edges[0]!.node ||
       !data.dopes.edges[0]!.node.listings ||
       !(data.dopes.edges[0]!.node.listings.length > 0) ||
-      !data.dopes.edges[0]!.node.listings[0]!.order ||
-      !paperAmount ||
-      !paperCost
+      !data.dopes.edges[0]!.node.listings[0]!.order
     ) {
       return;
     }
 
-    const order = data.dopes.edges[0]?.node.listings[0]?.order!;
-    const value = BigNumber.from(order.currentPrice).add(paperCost);
+    return data.dopes.edges[0]?.node.listings[0]?.order!;
+  }, [data]);
+
+  const total = useMemo(() => {
+    if (!order || !paperCost) return;
+    return BigNumber.from(order.currentPrice).add(paperCost);
+  }, [order, paperCost]);
+
+  const onMintHustler = useCallback(async () => {
+    if (!account || !order || !paperAmount || !paperCost || !total) {
+      return;
+    }
+
+    const config = createConfig(hustlerConfig);
+    const { dopeId, mintAddress } = hustlerConfig;
 
     oneclick.initiate(
       {
@@ -93,9 +95,9 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
       paperCost,
       paperAmount,
       Math.ceil(Date.now() / 1000 + 600),
-      { value },
+      { value: total },
     );
-  }, [data, hustlerConfig, account, oneclick, paperCost, paperAmount]);
+  }, [order, total, hustlerConfig, account, oneclick, paperCost, paperAmount]);
 
   return (
     <PanelContainer justifyContent="flex-start">
@@ -109,7 +111,12 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
           </Tr>
           <Tr>
             <Td></Td>
-            <Td textAlign="right">{unbundleCost && formatEther(unbundleCost)}</Td>
+            <Td textAlign="right">
+              {unbundleCost &&
+                parseInt(formatEther(unbundleCost), 10).toLocaleString(undefined, {
+                  minimumFractionDigits: 0,
+                })}
+            </Td>
             <Td>$PAPER</Td>
           </Tr>
         </Table>
