@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
-import { Box, Button, Image, Table, Tr, Td } from '@chakra-ui/react';
+import { Box, Button, Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
 import { StepsProps } from 'features/hustlers/modules/Steps';
@@ -9,11 +9,9 @@ import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleHeader from 'components/PanelTitleHeader';
 import { useOneClickInitiator, useInitiator } from 'hooks/contracts';
-import { createConfig, ZOOM_WINDOWS } from 'utils/HustlerConfig';
+import { createConfig } from 'utils/HustlerConfig';
 import { useDopeListingQuery } from 'generated/graphql';
-import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
-import { formatEther, parseEther } from 'ethers/lib/utils';
-import { ReceiptItem, DopeDot, DopeLofi } from './ReceiptItem';
+import { ReceiptItem } from './ReceiptItem';
 import ReceiptItemDope from './ReceiptItemDope';
 import ReceiptItemHustler from './ReceiptItemHustler';
 
