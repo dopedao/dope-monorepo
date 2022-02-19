@@ -74,6 +74,17 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 
 func LogoutHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		session, err := store.Get(r, "session")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
+		if session.Values["siwe"] == nil {
+			http.Error(w, "not logged in", http.StatusUnauthorized)
+			return
+		}
+
+		session.Options.MaxAge = -1
 	}
 }
