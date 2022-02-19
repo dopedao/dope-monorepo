@@ -151,6 +151,18 @@ export default extendTheme({
 
     Table: {
       variants: {
+        small: {
+          table: {
+            fontSize: 'var(--text-small)',
+            width: '100%',
+          },
+          td: {
+            padding: '2px',
+            _first: {
+              width: '25%',
+            },
+          },
+        },
         dope: {
           table: {
             borderCollapse: 'separate',
