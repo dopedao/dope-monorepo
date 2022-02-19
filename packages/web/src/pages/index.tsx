@@ -35,7 +35,7 @@ const IndexPage = () => {
       )} */}
       {Cookies.get('bannerVisible') !== 'false' && (
         <DesktopWindow
-          title="DOPE CHARITY AUCTION"
+          title="…"
           background="#053c6e"
           width="800px"
           height="auto !important"

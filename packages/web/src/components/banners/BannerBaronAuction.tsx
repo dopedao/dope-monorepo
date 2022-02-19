@@ -47,8 +47,10 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
             <h3
               css={css`
                 margin-bottom: 8px !important;
-                padding-bottom: 4px;
+                padding-bottom: 8px;
                 border-bottom: 2px solid rgba(255,255,255,0.2);
+                font-size: var(--text-04) !important;
+                line-height: 1.25em;
               `}
             >
               Baron Davis &amp; Last Prisoner Project
