@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 const DOMAIN = "(?<domain>([^?#]*)) wants you to sign in with your Ethereum account:"
@@ -109,6 +111,25 @@ func (m *SiweMessage) Validate(signature string) bool {
 	// false if it fails
 	if m.Address == "" {
 		return false
+	}
+
+	address, err := crypto.Ecrecover([]byte(m.ToMessage()), []byte(signature))
+	if err != nil {
+		return false
+	}
+
+	if string(address) != m.Address {
+		return false
+	}
+
+	if m.ExpirationTime != "" {
+		expirationTime, err := time.Parse(time.RFC3339, m.ExpirationTime)
+		if err != nil {
+			return false
+		}
+		if time.Now().After(expirationTime) {
+			return false
+		}
 	}
 
 	return true
