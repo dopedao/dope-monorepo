@@ -5,15 +5,15 @@ import sys
 types = {
     # "weapons": 0,
     # "clothes": 1,
-    # "vehicles": 2,
+    "vehicles": 2,
     # "waist": 3,
     # "shoes": 4,
     # "hands": 5,
     # "drugs": 6,
     # "neck": 7,
     # "rings": 8,
-    # "accessories": 9,
-    "cny": 10,
+    "accessories": 9,
+    # "cny": 10,
 }
 
 abi = [

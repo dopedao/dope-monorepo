@@ -99,15 +99,22 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 					for _, so := range asset.SellOrders {
 						onSale := !so.Cancelled && !so.Finalized
+						mashalled, err := json.Marshal(so)
+						if err != nil {
+							return fmt.Errorf("marshalling opensea order: %v+", err)
+						}
+
 						if err := tx.Listing.
 							Create().
 							SetID(so.OrderHash).
 							SetSource(listing.SourceOPENSEA).
 							SetActive(onSale).
 							SetDopeID(asset.TokenID).
+							SetOrder(mashalled).
 							OnConflictColumns(listing.FieldID).
 							Update(func(o *ent.ListingUpsert) {
 								o.SetActive(onSale)
+								o.SetOrder(mashalled)
 							}).
 							Exec(ctx); err != nil {
 							return fmt.Errorf("upserting to listing: %w", err)

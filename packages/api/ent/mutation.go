@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"sync"
@@ -7307,6 +7308,7 @@ type ListingMutation struct {
 	id                    *string
 	active                *bool
 	source                *listing.Source
+	_order                *json.RawMessage
 	clearedFields         map[string]struct{}
 	dope                  *string
 	cleareddope           bool
@@ -7497,6 +7499,55 @@ func (m *ListingMutation) OldSource(ctx context.Context) (v listing.Source, err 
 // ResetSource resets all changes to the "source" field.
 func (m *ListingMutation) ResetSource() {
 	m.source = nil
+}
+
+// SetOrder sets the "order" field.
+func (m *ListingMutation) SetOrder(jm json.RawMessage) {
+	m._order = &jm
+}
+
+// Order returns the value of the "order" field in the mutation.
+func (m *ListingMutation) Order() (r json.RawMessage, exists bool) {
+	v := m._order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrder returns the old "order" field's value of the Listing entity.
+// If the Listing object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ListingMutation) OldOrder(ctx context.Context) (v json.RawMessage, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrder: %w", err)
+	}
+	return oldValue.Order, nil
+}
+
+// ClearOrder clears the value of the "order" field.
+func (m *ListingMutation) ClearOrder() {
+	m._order = nil
+	m.clearedFields[listing.FieldOrder] = struct{}{}
+}
+
+// OrderCleared returns if the "order" field was cleared in this mutation.
+func (m *ListingMutation) OrderCleared() bool {
+	_, ok := m.clearedFields[listing.FieldOrder]
+	return ok
+}
+
+// ResetOrder resets all changes to the "order" field.
+func (m *ListingMutation) ResetOrder() {
+	m._order = nil
+	delete(m.clearedFields, listing.FieldOrder)
 }
 
 // SetDopeID sets the "dope" edge to the Dope entity by id.
@@ -7704,12 +7755,15 @@ func (m *ListingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ListingMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 3)
 	if m.active != nil {
 		fields = append(fields, listing.FieldActive)
 	}
 	if m.source != nil {
 		fields = append(fields, listing.FieldSource)
+	}
+	if m._order != nil {
+		fields = append(fields, listing.FieldOrder)
 	}
 	return fields
 }
@@ -7723,6 +7777,8 @@ func (m *ListingMutation) Field(name string) (ent.Value, bool) {
 		return m.Active()
 	case listing.FieldSource:
 		return m.Source()
+	case listing.FieldOrder:
+		return m.Order()
 	}
 	return nil, false
 }
@@ -7736,6 +7792,8 @@ func (m *ListingMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldActive(ctx)
 	case listing.FieldSource:
 		return m.OldSource(ctx)
+	case listing.FieldOrder:
+		return m.OldOrder(ctx)
 	}
 	return nil, fmt.Errorf("unknown Listing field %s", name)
 }
@@ -7758,6 +7816,13 @@ func (m *ListingMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSource(v)
+		return nil
+	case listing.FieldOrder:
+		v, ok := value.(json.RawMessage)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrder(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Listing field %s", name)
@@ -7788,7 +7853,11 @@ func (m *ListingMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *ListingMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(listing.FieldOrder) {
+		fields = append(fields, listing.FieldOrder)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -7801,6 +7870,11 @@ func (m *ListingMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *ListingMutation) ClearField(name string) error {
+	switch name {
+	case listing.FieldOrder:
+		m.ClearOrder()
+		return nil
+	}
 	return fmt.Errorf("unknown Listing nullable field %s", name)
 }
 
@@ -7813,6 +7887,9 @@ func (m *ListingMutation) ResetField(name string) error {
 		return nil
 	case listing.FieldSource:
 		m.ResetSource()
+		return nil
+	case listing.FieldOrder:
+		m.ResetOrder()
 		return nil
 	}
 	return fmt.Errorf("unknown Listing field %s", name)

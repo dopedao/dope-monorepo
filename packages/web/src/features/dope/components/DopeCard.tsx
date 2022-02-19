@@ -125,6 +125,7 @@ const DopeCard = ({
         hidePreviewButton={hidePreviewButton}
       />
       {buttonBar === 'for-owner' && <DopeCardButtonBarOwner dope={dope} />}
+      {buttonBar === 'for-marketplace' && <DopeCardButtonBarMarket dope={dope} />}
     </PanelContainer>
   );
 };

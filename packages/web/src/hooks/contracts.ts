@@ -4,6 +4,7 @@ import {
   CrossDomainMessenger__factory,
   Controller__factory,
   Paper__factory,
+  DopeInitiator__factory,
   Initiator__factory,
   Hustler__factory,
   SwapMeet__factory,
