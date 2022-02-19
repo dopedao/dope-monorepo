@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-type ItemProps = {
+export type ItemProps = {
   name: string;
   namePrefix?: string | null;
   nameSuffix?: string | null;
@@ -27,7 +27,7 @@ const Bullet = ({ color }: BulletProps) => (
       margin-right: 8px;
       background-color: ${color};
       // necessary when 'align-items: top' to ensure proper alignment with text
-      margin-top: 4px; 
+      margin-top: 4px;
     `}
   ></div>
 );
@@ -42,17 +42,19 @@ const Item = ({
   color,
   tier,
   isExpanded,
-  showRarity
+  showRarity,
 }: ItemProps) => (
   <div
     css={css`
-      display: ${ isExpanded ? 'flex' : 'inline-block' };
+      display: ${isExpanded ? 'flex' : 'inline-block'};
       align-items: top;
+      line-height: 1.25em;
       font-size: var(--text-small);
-      ${isExpanded && 
-        `border-top: 1px solid rgba(255,255,255,0.1);
-         padding-top:4px;`
-      }
+      ${isExpanded && `
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top:4px;
+        padding-bottom: 4px;
+      `}
     `}
   >
     <Bullet color={color} />
@@ -61,7 +63,7 @@ const Item = ({
         color: ${color};
       `}
     >
-      {isExpanded && name}
+      { name }
       {isExpanded && (
         <>
           <span
@@ -78,24 +80,26 @@ const Item = ({
             `}
           >
             {namePrefix ? `${namePrefix} ${nameSuffix} ` : ' '}
-            {suffix} 
+            {suffix}
           </div>
         </>
       )}
     </div>
-    { isExpanded && 
+    {isExpanded && (
       <div
         css={css`
           color: #888;
           margin-left: auto;
           font-size: var(--text-small);
           text-align: right;
-          width: 96px;
+          width: 25%;
         `}
       >
-        {`${showRarity && tier?.toLowerCase() !== 'common' ? tier?.toString().replace('_', ' ') : ''} ${type}`}
+        {`${
+          showRarity && tier?.toLowerCase() !== 'common' ? tier?.toString().replace('_', ' ') : ''
+        } ${type}`}
       </div>
-    }
+    )}
   </div>
 );
 

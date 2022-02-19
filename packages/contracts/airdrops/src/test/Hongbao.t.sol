@@ -57,52 +57,80 @@ contract ContractTest is DSTest {
         );
 
         hongbao = new Hongbao(
-            hex"a25e638f7339b4d85c818aa7541dd818040e35aebdb605f6edaf450270f99cc8"
+            hex"8755580928908cf73580a9e83798a50c9b3e64dbebafd543c956482e52620e6f"
         );
+        hongbao.unpause();
 
         vm.deal(alice, 1e22);
     }
 
-    function testMintShouldGiveBase() public {
+    function testMintShouldGiveTiger() public {
         vm.startPrank(alice);
         paper.approve(address(hongbao), type(uint256).max);
         hongbao.mint();
 
-        uint256 want = TokenId.toId([1, 10, 65, 5, 0], 0x9);
+        vm.roll(0); // rolls 117
+        uint256 want = TokenId.toId([7, 20, 65, 21, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
     }
 
-    function testMintShouldGiveZodiacAndBigTiger() public {
+    function testMintShouldGiveBigTiger() public {
         vm.startPrank(alice);
         paper.approve(address(hongbao), type(uint256).max);
 
         vm.roll(0); // rolls 117
-        hongbao.mint{value: 783e16}();
-        uint256 want = TokenId.toId([1, 10, 6, 5, 0], 0x9);
-        assertEq(swapmeet.balanceOf(alice, want), 1);
-
-        want = TokenId.toId([1, 10, 65, 10, 0], 0x9);
+        hongbao.mint{value: 883e15}();
+        uint256 want = TokenId.toId([7, 20, 6, 21, 0], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
     }
 
-    function testMintShouldGiveZodiacAndNotoriousTiger() public {
+    function testMintShouldRollNotoriousTiger() public {
         vm.startPrank(alice);
         paper.approve(address(hongbao), type(uint256).max);
 
         vm.roll(0); // rolls 117
-        hongbao.mint{value: 878e16}();
-        uint256 want = TokenId.toId([1, 10, 20, 5, 1], 0x9);
-        assertEq(swapmeet.balanceOf(alice, want), 1);
-
-        want = TokenId.toId([1, 10, 65, 10, 0], 0x9);
+        hongbao.mint{value: 978e15}();
+        uint256 want = TokenId.toId([7, 20, 20, 21, 1], 0x9);
         assertEq(swapmeet.balanceOf(alice, want), 1);
         assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
         assertEq(paper.balanceOf(address(hongbao)), 5000e18);
     }
 
-    function testClaim() public {}
+    function testMintShouldGiveNotoriousTigerForETH() public {
+        vm.startPrank(alice);
+        paper.approve(address(hongbao), type(uint256).max);
+
+        vm.roll(0); // rolls 117
+        hongbao.mint{value: 1e18}();
+        uint256 want = TokenId.toId([7, 20, 20, 21, 1], 0x9);
+        assertEq(swapmeet.balanceOf(alice, want), 1);
+        assertEq(paper.balanceOf(alice), 1e28 - 5000e18);
+        assertEq(paper.balanceOf(address(hongbao)), 5000e18);
+    }
+
+    function testAliceClaim() public {
+        vm.startPrank(alice);
+        bytes32[] memory proof = new bytes32[](1);
+        proof[
+            0
+        ] = hex"bc0e852a7915bd27e3227aafbcbe696f90bb18322af32ad162665b50400d1361";
+
+        hongbao.claim(5, proof);
+
+        vm.expectRevert(abi.encodeWithSignature("Claimed()"));
+        hongbao.claim(5, proof);
+    }
+
+    function testBoosts() public {
+        vm.startPrank(alice);
+        paper.approve(address(hongbao), type(uint256).max);
+
+        for (uint256 i = 0; i < 150; i += 1) {
+            hongbao.mint{value: i * 1e16}();
+        }
+    }
 }

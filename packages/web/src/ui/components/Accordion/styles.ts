@@ -14,5 +14,5 @@ export const Header = styled.div`
   font-size: var(--text-00);
   position: 'sticky';
   text-align: center;
-  padding: 5px 12px;
+  padding: 6px 12px;
 `;

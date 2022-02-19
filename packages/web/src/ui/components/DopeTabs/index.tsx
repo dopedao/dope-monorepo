@@ -18,6 +18,7 @@ const DopeTabs = ({ tabs }: DopeTabsProps) => {
       <TabList padding="8px 8px 0 8px" backgroundColor="#222222">
         {tabs.map(tab => (
           <Tab
+            key={tab.number}
             marginRight="8px"
             maxWidth="239px"
             width="100%"

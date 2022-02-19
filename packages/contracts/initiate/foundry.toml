@@ -1,0 +1,7 @@
+[default]
+src = 'src'
+out = 'out'
+libs = ['lib']
+remappings = ['ds-test/=lib/ds-test/src/', 'uniswap-v3-periphery/=lib/uniswap-v3-periphery/contracts/']
+
+# See more config options https://github.com/gakonst/foundry/tree/master/config

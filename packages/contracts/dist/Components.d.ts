@@ -1,9 +1,8 @@
-import { ethers, Signer, BigNumber, BigNumberish, PopulatedTransaction, BaseContract, ContractTransaction, Overrides, CallOverrides } from "ethers";
-import { BytesLike } from "@ethersproject/bytes";
+import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, ContractTransaction, Overrides, PopulatedTransaction, Signer, utils } from "ethers";
+import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
-import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
-export interface ComponentsInterface extends ethers.utils.Interface {
+import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
+export interface ComponentsInterface extends utils.Interface {
     functions: {
         "accessories(uint256)": FunctionFragment;
         "addComponent(uint8,string)": FunctionFragment;
@@ -143,137 +142,9 @@ export interface Components extends BaseContract {
         footArmor(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
         handArmor(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
         items(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[
-            [
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ]
-            ]
+            [number, number, number, number, number][]
         ] & {
-            items_: [
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ],
-                [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number
-                ]
-            ];
+            items_: [number, number, number, number, number][];
         }>;
         name(componentType: BigNumberish, idx: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
         namePrefixes(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
@@ -311,71 +182,7 @@ export interface Components extends BaseContract {
     drugs(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
     footArmor(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
     handArmor(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    items(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[
-        [
-            number,
-            number,
-            number,
-            number,
-            number
-        ],
-        [
-            number,
-            number,
-            number,
-            number,
-            number
-        ],
-        [
-            number,
-            number,
-            number,
-            number,
-            number
-        ],
-        [
-            number,
-            number,
-            number,
-            number,
-            number
-        ],
-        [
-            number,
-            number,
-            number,
-            number,
-            number
-        ],
-        [
-            number,
-            number,
-            number,
-            number,
-            number
-        ],
-        [
-            number,
-            number,
-            number,
-            number,
-            number
-        ],
-        [
-            number,
-            number,
-            number,
-            number,
-            number
-        ],
-        [
-            number,
-            number,
-            number,
-            number,
-            number
-        ]
-    ]>;
+    items(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[number, number, number, number, number][]>;
     name(componentType: BigNumberish, idx: BigNumberish, overrides?: CallOverrides): Promise<string>;
     namePrefixes(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
     nameSuffixes(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
@@ -410,71 +217,7 @@ export interface Components extends BaseContract {
         drugs(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
         footArmor(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
         handArmor(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        items(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[
-            [
-                number,
-                number,
-                number,
-                number,
-                number
-            ],
-            [
-                number,
-                number,
-                number,
-                number,
-                number
-            ],
-            [
-                number,
-                number,
-                number,
-                number,
-                number
-            ],
-            [
-                number,
-                number,
-                number,
-                number,
-                number
-            ],
-            [
-                number,
-                number,
-                number,
-                number,
-                number
-            ],
-            [
-                number,
-                number,
-                number,
-                number,
-                number
-            ],
-            [
-                number,
-                number,
-                number,
-                number,
-                number
-            ],
-            [
-                number,
-                number,
-                number,
-                number,
-                number
-            ],
-            [
-                number,
-                number,
-                number,
-                number,
-                number
-            ]
-        ]>;
+        items(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[number, number, number, number, number][]>;
         name(componentType: BigNumberish, idx: BigNumberish, overrides?: CallOverrides): Promise<string>;
         namePrefixes(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
         nameSuffixes(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;

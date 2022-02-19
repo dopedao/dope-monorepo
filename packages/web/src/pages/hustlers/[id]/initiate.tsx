@@ -1,9 +1,9 @@
 import Steps from 'features/hustlers/modules/Steps';
 import HustlerProvider from 'features/hustlers/HustlerProvider';
-import AppWindow from 'components/AppWindow';
+import AppWindowEthereum from 'components/AppWindowEthereum';
 
 const InitiatePage = () => (
-  <AppWindow
+  <AppWindowEthereum
     requiresWalletConnection={true}
     scrollable={true}
     title="Initiate Your Hustler"
@@ -12,7 +12,7 @@ const InitiatePage = () => (
     <HustlerProvider>
       <Steps />
     </HustlerProvider>
-  </AppWindow>
+  </AppWindowEthereum>
 );
 
 export default InitiatePage;

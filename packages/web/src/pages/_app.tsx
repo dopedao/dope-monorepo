@@ -6,6 +6,9 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Hydrate } from 'react-query/hydration';
+import { BlockHashProvider } from '../hooks/starknet/BlockHashProvider';
+import { StarknetProvider } from '../hooks/starknet/StarknetProvider';
+import { TransactionsProvider } from '../hooks/starknet/TransactionsProvider';
 
 import DesktopIconList from 'components/DesktopIconList';
 import GlobalStyles from 'ui/styles/GlobalStyles';
@@ -48,11 +51,17 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
             <Web3ReactProvider getLibrary={getLibrary}>
-              <main>
-                <PageLoadingIndicator />
-                <DesktopIconList />
-                <Component {...pageProps} />
-              </main>
+              <StarknetProvider>
+                <BlockHashProvider>
+                  <TransactionsProvider>
+                    <main>
+                      <PageLoadingIndicator />
+                      <DesktopIconList />
+                      <Component {...pageProps} />
+                    </main>
+                  </TransactionsProvider>
+                </BlockHashProvider>
+              </StarknetProvider>
             </Web3ReactProvider>
             {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
           </Hydrate>

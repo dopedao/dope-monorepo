@@ -1,17 +1,58 @@
 import styled from '@emotion/styled';
 import { PageWrapper } from 'ui/styles/components';
 import Head from 'components/Head';
-import StickyNoteHustlerMint from 'components/StickyNoteHustlerMint';
+import AboutWindow from 'features/about/components/AboutWindow';
+import Cookies from 'js-cookie';
+
+// For News
+import NewsWindow from 'features/news/components/NewsWindow';
+import { PostType } from 'features/news/types';
+import { getAllPosts } from 'utils/lib';
 
 const IndexWrapper = styled(PageWrapper)`
   max-width: var(--content-width-xl);
 `;
 
-const IndexPage = () => (
-  <IndexWrapper>
-    <Head />
-    <StickyNoteHustlerMint />
-  </IndexWrapper>
-);
-
+const IndexPage = ({ allPosts }: { allPosts: PostType[] }) => {
+  return (
+    <IndexWrapper>
+      <Head />
+      {Cookies.get('aboutWindowVisible') !== 'false' && (
+        <AboutWindow
+          posX={128}
+          posY={-48}
+          onClose={() => Cookies.set('aboutWindowVisible', 'false', { expires: 3 })}
+        />
+      )}
+      {Cookies.get('newsWindowVisible') !== 'false' && (
+        <NewsWindow
+          allPosts={allPosts}
+          posX={0}
+          posY={32}
+          onClose={() => Cookies.set('newsWindowVisible', 'false', { expires: 3 })}
+        />
+      )}
+    </IndexWrapper>
+  );
+};
 export default IndexPage;
+
+// Server-side rendered with Next.js so that
+// we gather our news posts from the filesystem on server.
+export const getStaticProps = async () => {
+  const allPosts = getAllPosts([
+    'title',
+    'date',
+    'slug',
+    'author',
+    'coverImage',
+    'coverImageText',
+    'excerpt',
+    'location',
+    'description',
+  ]);
+
+  return {
+    props: { allPosts },
+  };
+};

@@ -1,0 +1,26 @@
+query RenderDope($where: DopeWhereInput) {
+  dopes(where: $where) {
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        items {
+          id
+          type
+          rles {
+            female
+            male
+          }
+          base {
+            id
+            rles {
+              female
+              male
+            }
+          }
+        }
+      }
+    }
+  }
+}

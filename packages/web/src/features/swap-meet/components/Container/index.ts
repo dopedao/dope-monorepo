@@ -4,10 +4,9 @@ import { media } from 'ui/styles/mixins';
 const Container = styled.div`
   // Important the immediate parent container for InfiniteScroll
   // is scrollable so it works properly.
-  height: 100%;
+  min-height: 100%;
   overflow-y: scroll;
-  overflow-x: hidden;
-  background-color: #fff;
+  // overflow-x: hidden;
   padding: 16px 16px;
   .dopeGrid {
     display: grid;

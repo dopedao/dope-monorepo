@@ -12,13 +12,14 @@ import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
 import ZoomControls from 'components/hustler/ZoomControls';
-import SVGToImage from 'react-svg-to-image';
 import Link from 'next/link';
+
+import svgtopng from './svg-to-png';
 
 export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   config: HustlerCustomization;
   ogTitle?: string;
-  itemIds?: BigNumber[];
+  itemRles?: string[];
   hustlerId?: string;
   goBackToInitialStep?: () => void;
   isCustomize?: boolean;
@@ -40,7 +41,7 @@ const ConfigureHustler = ({
   isCustomize,
   ogTitle,
   hustlerId,
-  itemIds,
+  itemRles,
   goBackToInitialStep,
 }: ConfigureHustlerProps) => (
   <StackedResponsiveContainer>
@@ -52,13 +53,13 @@ const ConfigureHustler = ({
       `}
     >
       <HustlerCard bgColor={config.bgColor}>
-        {isCustomize && itemIds ? (
+        {isCustomize && itemRles ? (
           <RenderFromItemIds
             bgColor={config.bgColor}
             body={config.body}
             facialHair={config.facialHair}
             hair={config.hair}
-            itemIds={itemIds}
+            itemRles={itemRles}
             name={config.name}
             renderName={config.renderName}
             sex={config.sex}
@@ -86,30 +87,31 @@ const ConfigureHustler = ({
         )}
       </HustlerCard>
       <PanelFooter>
-        { isCustomize && itemIds &&
+        {isCustomize && itemRles && (
           <>
-          <Button
-            onClick={() => {
-              SVGToImage(
-                'svg#dynamicBuiltSvg',  
-                `dope-wars-hustler-${config.name?.replace(' ', '_')}`, 
-                { download: true }
-              );
-            }}
-          >
-            <Image src="/images/icon/download.svg" alt="Download" />
-          </Button>
-          <Link 
-            href={`https://community.dopewars.gg/collectibles/new?hustler_id=${hustlerId}`} 
-            passHref>
+            <Button
+              onClick={() => {
+                svgtopng(
+                  'svg#dynamicBuiltSvg',
+                  `dope-wars-hustler-${config.name?.replace(' ', '_')}`,
+                  config.bgColor,
+                );
+              }}
+            >
+              <Image src="/images/icon/download.svg" alt="Download" />
+            </Button>
+            <Link
+              href={`https://community.dopewars.gg/collectibles/new?hustler_id=${hustlerId}`}
+              passHref
+            >
               <a target="rebel">
                 <Button>
                   <Image src="/images/icon/camera.svg" alt="Mint a Mugshot" height="40px" />
                 </Button>
               </a>
-          </Link>
+            </Link>
           </>
-        }
+        )}
         <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
       </PanelFooter>
     </PanelContainer>

@@ -164,7 +164,7 @@ func (h *BasePaperProcessor) ProcessElement(p interface{}) func(context.Context,
 			return cb, nil
 
 		}
-		return nil, nil
+		return func(*ent.Tx) error { return nil }, nil
 	}
 }
 
@@ -188,27 +188,27 @@ func (h *BasePaperProcessor) Initialize(ctx context.Context, start uint64, tx *e
 }
 
 func (h *BasePaperProcessor) ProcessApproval(ctx context.Context, e PaperApproval) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BasePaperProcessor) ProcessDelegateChanged(ctx context.Context, e PaperDelegateChanged) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BasePaperProcessor) ProcessDelegateVotesChanged(ctx context.Context, e PaperDelegateVotesChanged) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BasePaperProcessor) ProcessOwnershipTransferred(ctx context.Context, e PaperOwnershipTransferred) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BasePaperProcessor) ProcessSnapshot(ctx context.Context, e PaperSnapshot) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BasePaperProcessor) ProcessTransfer(ctx context.Context, e PaperTransfer) (func(tx *ent.Tx) error, error) {
-	return nil, nil
+	return func(tx *ent.Tx) error { return nil }, nil
 }
 
 func (h *BasePaperProcessor) mustEmbedBasePaperProcessor() {}

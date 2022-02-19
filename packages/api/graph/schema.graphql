@@ -65,6 +65,7 @@ type Item implements Node {
   count: Int!
   rles: RLEs
   svg: String
+  base: Item
 }
 
 type WalletItems implements Node {
@@ -208,6 +209,14 @@ type Query {
     orderBy: ItemOrder
     where: ItemWhereInput
   ): ItemConnection!
+  walletItems(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: WalletItemsOrder
+    where: WalletItemsWhereInput
+  ): WalletItemsConnection!
   hustlers(
     after: Cursor
     first: Int

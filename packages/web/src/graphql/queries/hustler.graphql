@@ -10,7 +10,6 @@ query Hustler($where: HustlerWhereInput) {
         color
         background
         age
-        background
         neck {
           id
           type
@@ -21,6 +20,18 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         sex
         viewbox
@@ -35,6 +46,18 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         accessory {
           id
@@ -46,18 +69,30 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         svg
         body {
           id
-          type
-          sex
+          rle
+        }
+        hair {
+          id
           rle
         }
         beard {
           id
-          type
-          sex
           rle
         }
         drug {
@@ -70,6 +105,18 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         hand {
           id
@@ -81,6 +128,18 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         weapon {
           id
@@ -92,6 +151,18 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         clothes {
           id
@@ -103,6 +174,18 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         vehicle {
           id
@@ -114,6 +197,18 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         waist {
           id
@@ -125,6 +220,18 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
         foot {
           id
@@ -136,6 +243,18 @@ query Hustler($where: HustlerWhereInput) {
           greatness
           count
           fullname
+          svg
+          rles {
+            male
+            female
+          }
+          base {
+            svg
+            rles {
+              male
+              female
+            }
+          }
         }
       }
     }

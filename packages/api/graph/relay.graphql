@@ -127,3 +127,18 @@ type SearchEdge {
   node: SearchResult
   cursor: Cursor!
 }
+
+type WalletItemsConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [WalletItemsEdge]
+}
+
+type WalletItemsEdge {
+  node: WalletItems
+  cursor: Cursor!
+}
+
+input WalletItemsOrder {
+  direction: OrderDirection!
+}

@@ -1,4 +1,4 @@
-import React, { Children } from 'react';
+import React, { Children, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import cx from 'classnames';
 import Link, { LinkProps } from 'next/link';
@@ -8,21 +8,35 @@ type NavLinkProps = React.PropsWithChildren<LinkProps> & {
 };
 
 export const NavLink = ({ children, activeClassName = 'active', ...props }: NavLinkProps) => {
-  const { asPath } = useRouter();
+  const { pathname } = useRouter();
   const child = Children.only(children) as React.ReactElement;
   const childClassName = child.props.className || '';
 
-  const isActive = asPath === props.href || asPath === props.as;
-  const pathName = `${asPath}`.split('/')[1];
-  const activePath = pathName === '' ? 'index' : pathName;
+  const isActive = pathname === props.href || pathname === props.as;
+  const activePath = pathname === '' ? 'index' : pathname;
 
   const className = cx(childClassName, activePath, { [activeClassName]: isActive });
 
+  const tabRef = useRef<HTMLDivElement>(null);
+
+  // On mobile, scroll selected tab into view
+  useEffect(() => {
+    if (isActive && tabRef?.current) {
+      tabRef.current.scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+        inline: 'end',
+      })
+    }
+  }, [isActive, tabRef]);
+
   return (
-    <Link {...props}>
-      {React.cloneElement(child, {
-        className: className || null,
-      })}
-    </Link>
+    <div ref={tabRef}>
+      <Link {...props}>
+        {React.cloneElement(child, {
+          className: className || null
+        })}
+      </Link>
+    </div>
   );
 };
