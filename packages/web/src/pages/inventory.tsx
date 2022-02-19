@@ -5,12 +5,7 @@ import Profile from 'features/profile/components/Profile';
 
 const ProfilePage = () => {
   return (
-    <AppWindow
-      padBody={false}
-      scrollable
-      navbar={<DopeWarsExeNav />}
-      requiresWalletConnection
-    >
+    <AppWindow padBody={false} scrollable navbar={<DopeWarsExeNav />} requiresWalletConnection>
       <Head title="YOUR INVENTORY" />
       <Profile />
     </AppWindow>

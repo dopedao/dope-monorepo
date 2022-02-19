@@ -1,11 +1,14 @@
 import { css } from '@emotion/react';
 import { Image, Stack } from '@chakra-ui/react';
-import GearFooter from './GearFooter';
+import GearEquipFooter from './GearEquipFooter';
+import GearUnEquipFooter from './GearUnEquipFooter';
 import PanelBody from 'components/PanelBody';
 import ProfileCard from 'features/profile/components/ProfileCard';
 import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import ItemCount from './ItemCount';
 import { Item, Maybe } from 'generated/graphql';
+import { BigNumberish, utils } from 'ethers';
+import { Table, Tr, Td } from '@chakra-ui/react';
 
 type GearItem = Pick<Item, 'id' | 'count' | 'fullname' | 'name' | 'svg' | 'suffix' | 'type'> & {
   base?: Maybe<Pick<Item, 'svg'>>;
@@ -27,10 +30,14 @@ const GearCard = ({
   item,
   balance,
   showEquipFooter = false,
+  showUnEquipFooter = false,
+  hustlerId,
 }: {
   item: GearItem;
   balance?: number;
   showEquipFooter?: boolean;
+  showUnEquipFooter?: boolean;
+  hustlerId?: BigNumberish;
 }) => {
   return (
     <ProfileCard>
@@ -58,18 +65,29 @@ const GearCard = ({
               ${getImageSrc(item).includes('/icon') ? 'opacity:0.1' : ''}
             `}
           />
-          <span>Type: {item.type}</span>
-          <span>Origin: {getOrigin(item.suffix)}</span>
-          <span
-            css={css`
-              height: 2.5em;
-            `}
-          >
-            Title: {item.fullname}
-          </span>
+          <Table variant="small">
+            <Tr>
+              <Td>Type:</Td>
+              <Td>{item.type}</Td>
+            </Tr>
+            <Tr>
+              <Td>Origin:</Td>
+              <Td>{getOrigin(item.suffix)}</Td>
+            </Tr>
+            <Tr>
+              <Td>Title: </Td>
+              <Td>{item.fullname}</Td>
+            </Tr>
+          </Table>
         </Stack>
       </PanelBody>
-      {showEquipFooter && <GearFooter id={item.id} />}
+      {showEquipFooter && <GearEquipFooter id={item.id} />}
+      {showUnEquipFooter && hustlerId && 
+        <GearUnEquipFooter 
+          id={item.id} 
+          type={item.type}
+          hustlerId={hustlerId} 
+        />}
     </ProfileCard>
   );
 };
