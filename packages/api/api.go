@@ -291,6 +291,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
+	r.HandleFunc("/authentication/nonce", authentication.NonceHandler())
 	r.HandleFunc("/authentication/login", authentication.LoginHandler())
 	r.HandleFunc("/authentication/logout", authentication.LogoutHandler())
 
