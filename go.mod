@@ -23,6 +23,7 @@ require (
 	cloud.google.com/go/storage v1.20.0
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/gorilla/websocket v1.4.2
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	github.com/spf13/pflag v1.0.5

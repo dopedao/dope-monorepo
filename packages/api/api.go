@@ -15,6 +15,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
+	"github.com/dopedao/dope-monorepo/packages/api/authentication"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
@@ -289,6 +290,9 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	})
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
+
+	r.HandleFunc("/authentication/login", authentication.LoginHandler())
+	r.HandleFunc("/authentication/logout", authentication.LogoutHandler())
 
 	r.HandleFunc("/wallets/{address}/hustlers", resources.WalletHustlersHandler(client))
 	r.HandleFunc("/hustlers/{id}/sprites", resources.HustlerSpritesHandler(client))
