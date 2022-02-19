@@ -53,8 +53,8 @@ const decodeImage = (image: string, offset?: string): DecodedImage => {
 /**
  * Given RLE parts, palette colors, and a background color, build an SVG image.
  * @param parts The RLE part datas
- * @param paletteColors The hex palette colors
- * @param bgColor The hex background color
+ * @param paletteColors The  palette colors
+ * @param bgColor The  background color
  */
 export const buildSVG = (
   parts: string[],
@@ -80,14 +80,14 @@ export const buildSVG = (
 
     rects.forEach(rect => {
       const [length, colorIndex] = rect;
-      const hexColor = palettes[paletteIndex][colorIndex].substring(2);
+      const Color = palettes[paletteIndex][colorIndex].substring(2);
 
       // Do not push rect if transparent
       if (colorIndex !== 0) {
         svgRects.push(
           `<rect width="${length * step}" height="${step}" x="${currentX * step}" y="${
             currentY * step
-          }" fill="#${hexColor}" />`,
+          }" fill="#${Color}" />`,
         );
       }
 
@@ -1105,4 +1105,7 @@ export const palettes = [
     '0xc4c4c4ff',
     '0xffffffff',
   ],
+  [
+    '5a90d1ff','4670a3ff','112c4dff','f3ebeeff','183d6bff','223136ff','415d66ff','628b99ff','555555ff','666666ff','111111ff','060606ff','282828ff','090303da','8c837fda','0c0c0cff','78716bda','8d837fda','433735da','060202da','89837cda','88827bda','040202da','959595ff','767676ff','76716bda','131313ff','646464ff','4f4f4fff','ccccccff','161616ff','870101ff','f0f0f0ff','878787ff','ad0202ff','c20303ff','a7a7a7ff','717171ff','a30202ff','a50202ff','720101ff','9ea7afff','000000ff','010302ff','8e92a1ff','a10202ff','700101ff','5c5e69ff','42464fff','95a0a8ff','6b7076ff','282a31ff','666a70ff','020202ff','00000047','c9e1e9ff','a6a19db0','291f1cb0','726866b0','a8a19eb0','2d211fb0','55555fff','3e657fff','93bfceff','5494b0ff','e0e7e9ff','c6cbcdff','989591b0','64c0dcff','d1d8daff','427089ff','85959bff','919da4ff','6b767dff','39444cff','3c464dff','bcd7d5ff','666769ff','5e8096ff','b3b5b5ff','8e8e8fff','606061ff','487e96ff','fff0edff','9fa8a9ff','a8aeacff','ffffffff','575158ff','6e6364ff','b0bbbcff','909798ff','2b4b55ff','a3b1b3ff','8d9ea0ff','b5d3dfff','878e90ff','767d80ff','616266ff','bbc6d3ff','929499ff','2b3f53ff','72757cff','000302ff','243027ff','000601ff','ccd6dfff','a3abb2ff','000902ff','1d2320ff','000300ff'
+  ]
 ];
