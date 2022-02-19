@@ -1,93 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
 import { css } from '@emotion/react';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
-import { getRandomDate } from 'utils/utils';
+import { Grid, GridItem, Image } from '@chakra-ui/react';
 import { HustlerSex, HustlerCustomization } from 'utils/HustlerConfig';
-import { media } from 'ui/styles/mixins';
-import { PHRASES } from 'features/news/components/NewsHeader';
-import { Share } from 'react-twitter-widgets';
-import { Button, Grid, GridItem, Image } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
 import { Item, useHustlerQuery } from 'generated/graphql';
+import { media } from 'ui/styles/mixins';
+import { useEffect, useMemo, useState } from 'react';
+import { useHustler } from 'hooks/contracts';
+import { useHustlerRles } from 'hooks/render';
 import { useRouter } from 'next/router';
-import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
+import { useWeb3React } from '@web3-react/core';
 import AppWindow from 'components/AppWindow';
-import AppWindowNavBar from 'components/AppWindowNavBar';
 import DopeItem from 'features/dope/components/DopeItem';
+import GearCard from 'features/profile/components/GearCard';
 import Head from 'components/Head';
+import HustlerFlexNavBar from 'features/hustlers/components/HustlerFlexNavBar';
+import HustlerMugShot from 'features/hustlers/components/HustlerMugShot';
 import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
-import Link from 'next/link';
 import LoadingBlock from 'components/LoadingBlock';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
-import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
-import styled from '@emotion/styled';
-import GearCard from 'features/profile/components/GearCard';
-import { useHustlerRles } from 'hooks/render';
-
-const Nav = () => (
-  <AppWindowNavBar>
-    <Link href="/inventory?section=Hustlers" passHref>
-      <Button variant="navBar">Your Hustlers</Button>
-    </Link>
-    <Link href="/gangsta-party" passHref>
-      <Button variant="navBar">
-        All Hustlers
-      </Button>
-    </Link>
-    <div
-      css={css`
-        position: absolute;
-        right: 16px;
-        bottom: 8px;
-      `}
-    >
-      <Share
-        url={typeof window !== 'undefined' ? window?.location.toString() : 'https://dopewars.gg'}
-        options={{
-          text: `${
-            PHRASES[Math.floor(Math.random() * PHRASES.length)]
-          } \n#hustlerFollowHustler @TheDopeWars`,
-        }}
-      />
-    </div>
-  </AppWindowNavBar>
-);
-
-const HustlerTitle = styled.h1`
-  font-family: Dope !important;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0%);
-  bottom: 0;
-  z-index: 2;
-  padding: 16px 32px;
-  text-align: center;
-  color: white;
-  background-color: black;
-  border: 4px solid white;
-`;
-const HustlerImage = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
-  width: 100%;
-  padding: 0 15%;
-  bottom: 0px;
-  right: 0px;
-  top: 0px;
-  ${media.tablet`
-    padding: 0 5%;
-    width: 100%;
-  `}
-`;
-const MugshotContainer = styled.div`
-  position: relative;
-  height: 100%;
-  min-height: 400px;
-  background: #f2f2f2 url(/images/hustler/mugshot_bg.png) center center / contain no-repeat;
-`;
+import { BigNumber } from 'ethers';
 
 // We receive things like 'FEMALE-BODY-2' from the API
 const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
@@ -97,11 +31,30 @@ const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
 };
 
 const Flex = () => {
+  const hustler = useHustler();
   const router = useRouter();
-  const { id: hustlerId } = router.query;
+  const { account } = useWeb3React();
+
   const [hustlerConfig, setHustlerConfig] = useState({} as Partial<HustlerCustomization>);
   const [onChainImage, setOnChainImage] = useState('');
+  const { id: hustlerId } = router.query;
 
+  const [isOwnedByConnectedAccount, setIsOwnedByConnectedAccount] = useState(false);
+
+  // Check Contract see if this Hustler is owned by connected Account
+  useEffect(() => {
+    let isMounted = true;
+    if (hustler && account && hustlerId && isMounted) {
+      hustler.balanceOf(account, hustlerId.toString()).then(value => {
+        setIsOwnedByConnectedAccount(value.eq(1));
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [hustler, account, hustlerId]);
+
+  // Grab Hustler info from API
   const { data, isFetching: isLoading } = useHustlerQuery(
     {
       where: {
@@ -113,7 +66,27 @@ const Flex = () => {
     },
   );
 
+  // Set Hustler Config and SVG Image after data returns
+  useEffect(() => {
+    if (data?.hustlers?.edges?.[0]?.node) {
+      const h = data?.hustlers?.edges?.[0].node;
+
+      if (h?.svg) setOnChainImage(h?.svg);
+      setHustlerConfig({
+        ...hustlerConfig,
+        name: h?.name || '',
+        title: h?.title || '',
+        sex: (h?.sex.toLowerCase() || 'male') as HustlerSex,
+        body: h.body?.id ? parseInt(h.body.id.split('-')[2]) : 0,
+        hair: h.hair?.id ? parseInt(h.hair.id.split('-')[2]) : 0,
+        facialHair: h.beard?.id ? parseInt(h.beard.id.split('-')[2]) : 0,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, hustlerId]);
+
   const itemRles = useHustlerRles(data?.hustlers?.edges?.[0]?.node);
+
   const items = useMemo<Item[]>(() => {
     const hustler = data?.hustlers?.edges?.[0]?.node;
     if (hustler) {
@@ -131,7 +104,6 @@ const Flex = () => {
         hustler.accessory,
       ].filter(i => !!i) as Item[];
     }
-
     return [];
   }, [data]);
 
@@ -153,29 +125,8 @@ const Flex = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, hustlerId]);
 
-  const renderHustler = (zoomWindowIndex: 0 | 1 | 2 | 3) => {
-    if (!itemRles) return;
-    return (
-      <RenderFromItemIds
-        bgColor={hustlerConfig.bgColor}
-        body={hustlerConfig.body}
-        itemRles={itemRles}
-        facialHair={hustlerConfig.facialHair}
-        hair={hustlerConfig.hair}
-        name={hustlerConfig.name}
-        renderName={hustlerConfig.renderName}
-        sex={hustlerConfig.sex}
-        textColor={hustlerConfig.textColor}
-        zoomWindow={ZOOM_WINDOWS[zoomWindowIndex]}
-        ogTitle={hustlerConfig.title}
-        dopeId={hustlerConfig.dopeId}
-        isVehicle={zoomWindowIndex >= 2}
-      />
-    );
-  };
-
   return (
-    <AppWindow padBody={true} navbar={<Nav />} scrollable>
+    <AppWindow padBody={true} navbar={<HustlerFlexNavBar />} scrollable>
       <Head
         title={`Dope Wars Hustler Flex`}
         ogImage={`https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`}
@@ -199,14 +150,7 @@ const Flex = () => {
               `}
             `}
           >
-            <MugshotContainer>
-              <HustlerTitle>
-                {hustlerConfig.name}
-                <br />
-                {getRandomDate('01/01/1980')}
-              </HustlerTitle>
-              <HustlerImage>{renderHustler(1)}</HustlerImage>
-            </MugshotContainer>
+            <HustlerMugShot hustlerConfig={hustlerConfig} itemRles={itemRles} />
           </PanelContainer>
           <PanelContainer>
             <PanelBody>
@@ -259,7 +203,14 @@ const Flex = () => {
             </PanelBody>
           </PanelContainer>
           {items?.map(item => {
-            return <GearCard item={item} key={item.id} />;
+            return (
+              <GearCard
+                item={item}
+                key={item.id}
+                showUnEquipFooter={isOwnedByConnectedAccount}
+                hustlerId={BigNumber.from(hustlerId)}
+              />
+            );
           })}
         </Grid>
       )}

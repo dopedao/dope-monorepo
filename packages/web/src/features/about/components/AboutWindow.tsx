@@ -10,8 +10,8 @@ import { getRandomArrayElement } from 'utils/utils';
 
 const VIDEOS = [
   'https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-wars-trailer-nono.mp4',
-  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-moving-bricks.mp4'
-]
+  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-moving-bricks.mp4',
+];
 
 const AboutWindow = ({ ...props }) => {
   return (
