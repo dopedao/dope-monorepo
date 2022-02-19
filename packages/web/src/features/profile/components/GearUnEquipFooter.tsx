@@ -1,9 +1,9 @@
 import { Button } from '@chakra-ui/react';
 import { useState, useCallback, useMemo } from 'react';
 import { useHustler } from 'hooks/contracts';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumberish } from 'ethers';
 import PanelFooter from 'components/PanelFooter';
+import { useNetworkCheckOptimism } from 'hooks/web3';
 
 const SLOTS = [
   'WEAPON',
@@ -23,15 +23,12 @@ const GearUnEquipFooter = (
   { id: string; type: string; hustlerId: BigNumberish }
 ) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { account, chainId } = useWeb3React();
-
-  const onProperNetwork = useMemo(() => {
-    return !(account && chainId !== 10 && chainId !== 69);
-  }, [account, chainId]);
+  
+  const isConnectedToOptimism = useNetworkCheckOptimism();
 
   const hustler = useHustler();
   const unEquip = useCallback(() => {
-    if(!onProperNetwork) {
+    if(!isConnectedToOptimism) {
       alert("Please switch your network to Optimism to Remove Gear");
       return;
     }
@@ -46,7 +43,7 @@ const GearUnEquipFooter = (
       })
       .finally(() => setIsLoading(false)
     );
-  }, [hustler, type, hustlerId]);
+  }, [hustler, type, hustlerId, isConnectedToOptimism]);
 
   return (
     <PanelFooter>
