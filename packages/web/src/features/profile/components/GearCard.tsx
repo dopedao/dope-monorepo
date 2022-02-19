@@ -82,7 +82,12 @@ const GearCard = ({
         </Stack>
       </PanelBody>
       {showEquipFooter && <GearEquipFooter id={item.id} />}
-      {showUnEquipFooter && hustlerId && <GearUnEquipFooter id={item.id} hustlerId={hustlerId} />}
+      {showUnEquipFooter && hustlerId && 
+        <GearUnEquipFooter 
+          id={item.id} 
+          type={item.type}
+          hustlerId={hustlerId} 
+        />}
     </ProfileCard>
   );
 };
