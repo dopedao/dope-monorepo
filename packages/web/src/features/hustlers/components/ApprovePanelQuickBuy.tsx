@@ -153,7 +153,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
         `}
       >
         <div></div>
-        <Button variant="primary" onClick={onMintHustler}>
+        <Button variant="primary" onClick={onMintHustler} autoFocus>
           ✨ Mint Hustler ✨
         </Button>
       </PanelFooter>

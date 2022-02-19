@@ -33,6 +33,8 @@ const InitiatePage = () => {
       scrollable={true}
       title="Initiate Your Hustler"
       padBody={false}
+      onlyFullScreen
+      fullScreen
     >
       {isOpened === true && (
         <Dialog title="Hustler already initiated" icon="dope-smiley-sad">

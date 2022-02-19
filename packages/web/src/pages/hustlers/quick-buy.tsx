@@ -7,7 +7,7 @@ import DopeCard from 'features/dope/components/DopeCard';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import LoadingBlock from 'components/LoadingBlock';
 import RenderFromDopeIdOnly from 'components/hustler/RenderFromDopeIdOnly';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { css } from '@emotion/react';
 import {
   useSearchDopeQuery,
@@ -121,7 +121,7 @@ const QuickBuyHustler = () => {
   const QuickBuyFooter = () => (
     <Box display="flex" flexDirection="column" justifyContent="flex-start" gap="8px">
       <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy`} passHref>
-        <Button variant="primary">Customize</Button>
+        <Button variant="primary" autoFocus>Customize</Button>
       </Link>
       <CarouselButtons />
       <Button onClick={() => setShowHustler(!showHustler)}>
@@ -131,7 +131,7 @@ const QuickBuyHustler = () => {
   );
 
   return (
-    <AppWindow title="Welcome To The Streets" height={740} background={bgColor}>
+    <AppWindow title="Welcome To The Streets" onlyFullScreen fullScreen background={bgColor}>
       <StackedResponsiveContainer>
         {(isLoading || !currentDope) && <LoadingBlock maxRows={5} />}
         {!isLoading && currentDope && (

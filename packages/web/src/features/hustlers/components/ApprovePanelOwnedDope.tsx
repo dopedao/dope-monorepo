@@ -116,7 +116,7 @@ const ApprovePanelOwnedDope = ({hustlerConfig, setHustlerConfig}: StepsProps) =>
               mintAddress={hustlerConfig.mintAddress}
               setMintAddress={setMintAddress}
             />
-            <Button variant="primary" onClick={mintHustler} disabled={!canMint}>
+            <Button variant="primary" onClick={mintHustler} disabled={!canMint} autoFocus>
               ✨ Mint Hustler ✨
             </Button>
           </PanelFooter>
