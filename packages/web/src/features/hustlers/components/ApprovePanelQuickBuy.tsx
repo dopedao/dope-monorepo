@@ -37,7 +37,10 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
 
   useEffect(() => {
     if (!unbundleCost) return;
-    oneclick.callStatic.estimate(unbundleCost.add(paperAmount)).then(setPaperCost);
+    oneclick.callStatic
+      .estimate(unbundleCost.add(paperAmount))
+      // Allow 5% slippage
+      .then(cost => setPaperCost(cost.add(cost.div(100).mul(5))));
   }, [oneclick, unbundleCost, paperAmount]);
 
   const order = useMemo(() => {
