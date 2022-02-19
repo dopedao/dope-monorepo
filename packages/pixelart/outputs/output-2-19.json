@@ -1,0 +1,709 @@
+{
+    "partcolors": [
+        "",
+        "0xe1e1e121",
+        "0xe1e1e12e",
+        "0xe1e1e146",
+        "0xe1e1e13f",
+        "0xe1e1e139",
+        "0xe1e1e14e",
+        "0xe1e1e157",
+        "0xe1e1e161",
+        "0xe1e1e186",
+        "0xe1e1e178",
+        "0xe1e1e16c",
+        "0xe1e1e1a6",
+        "0xdededeff",
+        "0x8f2f03ff",
+        "0xe1e1e1ce",
+        "0x0d1114ff",
+        "0x262626ff",
+        "0x343434ff",
+        "0xd6b14bff",
+        "0xf8ce58ff",
+        "0x7c672aff",
+        "0x1a1507ff",
+        "0xccc7bcff",
+        "0xe0dbceff",
+        "0xf7f1e4ff",
+        "0x8a0015ff",
+        "0xb4001bff",
+        "0x000000ff",
+        "0x3d3d3dff",
+        "0x051438ff",
+        "0x012c54ff",
+        "0xffdb38ff",
+        "0xad3737ff",
+        "0xcc4141ff",
+        "0xd6b82fff",
+        "0x4e251fff",
+        "0xa35521ff",
+        "0xba6125ff",
+        "0xd36d2bff",
+        "0x66541eff",
+        "0xc9a599ff",
+        "0xebc1b3ff",
+        "0x75abd1ff",
+        "0x82bee8ff",
+        "0x808080ff",
+        "0x402c25ff",
+        "0xd0d1d2bf",
+        "0x585651ff",
+        "0x000000cc",
+        "0x252d33ff",
+        "0x495563ff",
+        "0x0d0d0dff",
+        "0x1c1c1cff",
+        "0x990017ff",
+        "0xb3001bff",
+        "0xcc001fff",
+        "0x0000009e",
+        "0xfcc02eff",
+        "0x6e6b65a7",
+        "0x404040ff",
+        "0x616161ff",
+        "0xc81721ff",
+        "0xff3225ff",
+        "0xfcfcfcff",
+        "0x999999ff",
+        "0x38473eff",
+        "0x678271ff",
+        "0xf3ebee11",
+        "0xf3ebee02",
+        "0xf3ebee21",
+        "0xf3ebee25",
+        "0xf3ebee2c",
+        "0xf3ebee30",
+        "0xf3ebee01",
+        "0xf3ebee1f",
+        "0xf3ebee24",
+        "0xf3ebee28",
+        "0xf3ebee34",
+        "0xf3ebee35",
+        "0xf3ebee39",
+        "0xf3ebee05",
+        "0xf3ebee20",
+        "0xf3ebee0d",
+        "0xf3ebee0c",
+        "0xf3ebee5b",
+        "0xf3ebee54",
+        "0xf3ebee4d",
+        "0xf3ebee44",
+        "0xf3ebee3d",
+        "0xf3ebee70",
+        "0xd9d2d5ff",
+        "0x333333ff",
+        "0x151f26ff",
+        "0x212f3bff",
+        "0xf3ebeeff",
+        "0xc2bcbeff",
+        "0x06090dff",
+        "0x162232ff",
+        "0x757294ff",
+        "0x595670ff",
+        "0x514f66ff",
+        "0x1a1a1aff",
+        "0x121212ff",
+        "0x79808cff",
+        "0xa0aabacc",
+        "0x4670a3ff",
+        "0x5a90d1ff",
+        "0xc7d7d9ff",
+        "0x51a6b0ff",
+        "0x0e3ec2ff",
+        "0x0f46dbff",
+        "0x1251ffff",
+        "0xe4e810ff",
+        "0xe05a5aff",
+        "0xfbff12ff",
+        "0x5ae06eff",
+        "0x595959ff",
+        "0x6b4723ff",
+        "0x8f5f2fff",
+        "0x1a206aff",
+        "0x222c90ff",
+        "0xb38c00ff",
+        "0x91bfb6e6",
+        "0xc41a1aff",
+        "0xf7fa34ff",
+        "0xd41c1cff"
+    ],
+    "parts": [
+        [
+            {
+                "name": "30065491977-cigarrete-mouth",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x07062a0f22060001010100060001010102030001030104030503000106040003000307020005000108020003000109010a010b02000300010c0400020d010e010f0400"
+            }
+        ],
+        [
+            {
+                "name": "92250327405059047433-ski-mask",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070924101f010001100111011201000110011102120111011001110312011104000110021201110112011104120100011102120100"
+            }
+        ],
+        [
+            {
+                "name": "1209128736895681903919113-CUSTOM-facesofeth",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070925101e0200021301140200010002130314010002130115021401150114021301160214011601140213051401000113011601150116011401000200011302140200"
+            }
+        ],
+        [
+            {
+                "name": "60130131977-helmet-white",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070825101e020001170218011901000100011701180419011a011b011c011d021c011d021e011d031c011d021f041c011d01170118041c011d01000117011804190300021801190100"
+            }
+        ],
+        [
+            {
+                "name": "8590262281-food-happy-meal",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x07212a28250120010001200200010001200100012001000121042201210422012302220120012201210220022201210422"
+            }
+        ],
+        [
+            {
+                "name": "1208962713665778087297033-CUSTOM-mrfax",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070825101e0100012403000124010001000224012501260124010001000124012501260127012501000100012501260327010001250126012801270125012801270125012602270125022701000129022a0124012a01000300022a0200"
+            }
+        ],
+        [
+            {
+                "name": "458761-facemask-covid-mask-blue",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070d24101f012b0100012b012c01000100022b022c0200012b012c0100"
+            }
+        ],
+        [
+            {
+                "name": "786441-headphones",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0708250d1e0200011c021202000100011c030001120100011c06000112011c0400011c021c0400011c"
+            }
+        ],
+        [
+            {
+                "name": "65545-hat-fitted-hat-black",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0708250b1f0100031002000310012d0110010002100412"
+            }
+        ],
+        [
+            {
+                "name": "9-glasses-big",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070b250e1f0100022e0100022e012e022f012e022f0100022f0100022f"
+            }
+        ],
+        [
+            {
+                "name": "166024355919687581705-glasses-dark",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070c250e1f01300231013002310100023101000231"
+            }
+        ],
+        [
+            {
+                "name": "73014509577-hat-flat-cap",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0709250c1e0100023202330200023204330100013201000532"
+            }
+        ],
+        [
+            {
+                "name": "38655164425-thief-mask",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070b240e1f0100013403350134010002350100010001340335"
+            }
+        ],
+        [
+            {
+                "name": "68719607817-headband-bandana",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0709240c1e0200031c01000100051c011c0512"
+            }
+        ],
+        [
+            {
+                "name": "221368528751836069897-helmet-red",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070825101e02000136023701380100010001360137043801360137011c011d011c021d0136011c011d021c021d0136041c021d01360137031c021d01000136013704380300023701380100"
+            }
+        ],
+        [
+            {
+                "name": "147580145052048949257-glasses-snoop",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070c250e200239013a0239023901000239"
+            }
+        ],
+        [
+            {
+                "name": "21474836489-glasses-thin",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070c250d200231013b0231"
+            }
+        ],
+        [
+            {
+                "name": "77309870089-facemask-covid-mask-black",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070d24101f013c0100013c013d01000100023c023d0200013c013d0100"
+            }
+        ],
+        [
+            {
+                "name": "1209073410455777583759369-CUSTOM-cryptosausage",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070425111c023e0700013e013f013e023f04000100013e043f03000100013e053f02000100023e043f02000200023e043f01000300013e043f01000300013a01400141013a014001410300013e01400141013f014001410300013e043f01000300013e013f023e013f01000300013e043f01000300013e043f0100"
+            }
+        ],
+        [
+            {
+                "name": "4294967305-galsses-eye-patch",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070b240d1f0512010002120200"
+            }
+        ],
+        [
+            {
+                "name": "55834902537-paper",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x07212924250142010002420142024301420442"
+            }
+        ],
+        [
+            {
+                "name": "720905-cigarrete-hand",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x071530222509000144010008000145014601000700014701480149014a0600014b014c03000700014d014a02000700014b014d02000500014e014f0150014f02000500014f015104000500014f0149015203000400014a015301540148030003000155015601570158015903000300015a0700015b0100015b015c0700"
+            }
+        ],
+        [
+            {
+                "name": "18461099349061861385-facemask-bandana-mask",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070d24101f035d025e0100025d025e0200015d015e0100"
+            }
+        ],
+        [
+            {
+                "name": "129129460345845383177-hat-fitted-hat-white",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0708250b1f0100035f0200055f0100025f0460"
+            }
+        ],
+        [
+            {
+                "name": "184470536996199137289-hat_mafia",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0708250b1e020001610262020001000161046201000761"
+            }
+        ],
+        [
+            {
+                "name": "64425164809-flower-1",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0708210b1e016301640163016401650164016301640163"
+            }
+        ],
+        [
+            {
+                "name": "38654771209-hat_r",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0709240d1e020001660212010001000266031201000266031201660500"
+            }
+        ],
+        [
+            {
+                "name": "25769934857-headband-black",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070b240d1e01000267035c01670500"
+            }
+        ],
+        [
+            {
+                "name": "17179869193-glasses-nerd",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070c250e1f01680269016802690100026901000269"
+            }
+        ],
+        [
+            {
+                "name": "1209110290151659733647369-headband_baron davis_charlotte",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070a240b1f026a036b"
+            }
+        ],
+        [
+            {
+                "name": "332046459932187951113-flower-2",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0708210c1d0100026c0100016c026d016c016c026d016c0100026c0100"
+            }
+        ],
+        [
+            {
+                "name": "239810206280259272713-hat-propeller-hat",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0706250b1f0100016e016f017002000200013c030001000170017101720200016f0171027301720100016f01710474"
+            }
+        ],
+        [
+            {
+                "name": "313604782390878666761-glasses-VR",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x070b250e1f01000134036601000134013c037501660100013403660100"
+            }
+        ],
+        [
+            {
+                "name": "8590000137-hat_cow-boy",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0708260b1d020002760100017601770200020003760277020004760577"
+            }
+        ],
+        [
+            {
+                "name": "18459129011339526153-combo_police",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0709260e1e04780479010003780179017a017901000300057801000130027b0130027b01000200027b0100027b0100"
+            }
+        ],
+        [
+            {
+                "name": "34359803913-hat-mcd-cap",
+                "gender": "men",
+                "category": "accessories",
+                "data": "0x0708260c1f0100047c0200027c017d017e017d0200017c017d017e017d017e017d0100017c027e047c"
+            }
+        ],
+        [
+            {
+                "name": "8590262281-food-happy-meal-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x07212928240120010001200200010001200100012001000121042201210422012302220120012201210220022201210422"
+            }
+        ],
+        [
+            {
+                "name": "17179869193-glasses-nerd-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070e25101f01680269016802690100026901000269"
+            }
+        ],
+        [
+            {
+                "name": "1209128736895681903919113-CUSTOM-facesofeth-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070b25121e0200021301140200010002130314010002130115021401150114021301160214011601140213051401000113011601150116011401000200011302140200"
+            }
+        ],
+        [
+            {
+                "name": "458761-facemask-covid-mask-blue-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070f24121f012b0100012b012c01000100022b022c0200012b012c0100"
+            }
+        ],
+        [
+            {
+                "name": "21474836489-glasses-thin-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070e250f200231013b0231"
+            }
+        ],
+        [
+            {
+                "name": "1209073410455777583759369-CUSTOM-cryptosausage-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070625131c023e0700013e013f013e023f04000100013e043f03000100013e053f02000100023e043f02000200023e043f01000300013e043f01000300013a01400141013a014001410300013e01400141013f014001410300013e043f01000300013e013f023e013f01000300013e043f01000300013e043f0100"
+            }
+        ],
+        [
+            {
+                "name": "77309870089-facemask-covid-mask-black-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070f24121f013c0100013c013d01000100023c023d0200013c013d0100"
+            }
+        ],
+        [
+            {
+                "name": "18459129011339526153-combo_police-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070b26101e04780479010003780179017a017901000300057801000130027b0130027b01000200027b0100027b0100"
+            }
+        ],
+        [
+            {
+                "name": "786441-headphones-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a250f1e0200011c021202000100011c030001120100011c06000112011c0400011c021c0400011c"
+            }
+        ],
+        [
+            {
+                "name": "147580145052048949257-glasses-snoop-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070e2510200239013a0239023901000239"
+            }
+        ],
+        [
+            {
+                "name": "64425164809-flower-1-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a210d1e016301640163016401650164016301640163"
+            }
+        ],
+        [
+            {
+                "name": "720905-cigarrete-hand-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x07152f222409000144010008000145014601000700014701480149014a0600014b014c03000700014d014a02000700014b014d02000500014e014f0150014f02000500014f015104000500014f0149015203000400014a015301540148030003000155015601570158015903000300015a0700015b0100015b015c0700"
+            }
+        ],
+        [
+            {
+                "name": "73014509577-hat-flat-cap-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070b250e1e0100023202330200023204330100013201000532"
+            }
+        ],
+        [
+            {
+                "name": "332046459932187951113-flower-2-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a210e1d0100026c0100016c026d016c016c026d016c0100026c0100"
+            }
+        ],
+        [
+            {
+                "name": "184470536996199137289-hat_mafia-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a250d1e020001610262020001000161046201000761"
+            }
+        ],
+        [
+            {
+                "name": "1208962713665778087297033-CUSTOM-mrfax-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a25121e0100012403000124010001000224012501260124010001000124012501260127012501000100012501260327010001250126012801270125012801270125012602270125022701000129022a0124012a01000300022a0200"
+            }
+        ],
+        [
+            {
+                "name": "60130131977-helmet-white-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a25121e020001170218011901000100011701180419011a011b011c011d021c011d021e011d031c011d021f041c011d01170118041c011d01000117011804190300021801190100"
+            }
+        ],
+        [
+            {
+                "name": "4294967305-galsses-eye-patch-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070d240f1f0512010002120200"
+            }
+        ],
+        [
+            {
+                "name": "166024355919687581705-glasses-dark-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070e25101f01300231013002310100023101000231"
+            }
+        ],
+        [
+            {
+                "name": "38655164425-thief-mask-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070d24101f0100013403350134010002350100010001340335"
+            }
+        ],
+        [
+            {
+                "name": "9-glasses-big-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070d25101f0100022e0100022e012e022f012e022f0100022f0100022f"
+            }
+        ],
+        [
+            {
+                "name": "129129460345845383177-hat-fitted-hat-white-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a250d1f0100035f0200055f0100025f0460"
+            }
+        ],
+        [
+            {
+                "name": "55834902537-paper-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x07212824240142010002420142024301420442"
+            }
+        ],
+        [
+            {
+                "name": "92250327405059047433-ski-mask-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070b24121f010001100111011201000110011102120111011001110312011104000110021201110112011104120100011102120100"
+            }
+        ],
+        [
+            {
+                "name": "8590000137-hat_cow-girl-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a260d1d020002760100017601770200020003760277020004760577"
+            }
+        ],
+        [
+            {
+                "name": "25769934857-headband-black-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070d240f1e01000267035c01670500"
+            }
+        ],
+        [
+            {
+                "name": "1209110290151659733647369-headband_baron davis_charlotte-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070c240d1f026a036b"
+            }
+        ],
+        [
+            {
+                "name": "239810206280259272713-hat-propeller-hat-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x0708250d1f0100016e016f017002000200013c030001000170017101720200016f0171027301720100016f01710474"
+            }
+        ],
+        [
+            {
+                "name": "34359803913-hat-mcd-cap-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a260e1f0100047c0200027c017d017e017d0200017c017d017e017d017e017d0100017c027e047c"
+            }
+        ],
+        [
+            {
+                "name": "65545-hat-fitted-hat-black-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a250d1f0100031002000310012d0110010002100412"
+            }
+        ],
+        [
+            {
+                "name": "18461099349061861385-facemask-bandana-mask-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070f24121f035d025e0100025d025e0200015d015e0100"
+            }
+        ],
+        [
+            {
+                "name": "38654771209-hat_r-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070b240f1e020001660212010001000266031201000266031201660500"
+            }
+        ],
+        [
+            {
+                "name": "68719607817-headband-bandana-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070b240e1e0200031c01000100051c011c0512"
+            }
+        ],
+        [
+            {
+                "name": "30065491977-cigarrete-mouth-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x07082a1122060001010100060001010102030001030104030503000106040003000307020005000108020003000109010a010b02000300010c0400020d010e010f0400"
+            }
+        ],
+        [
+            {
+                "name": "221368528751836069897-helmet-red-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070a25121e02000136023701380100010001360137043801360137011c011d011c021d0136011c011d021c021d0136041c021d01360137031c021d01000136013704380300023701380100"
+            }
+        ],
+        [
+            {
+                "name": "313604782390878666761-glasses-VR-w",
+                "gender": "girls",
+                "category": "accessories",
+                "data": "0x070d25101f01000134036601000134013c037501660100013403660100"
+            }
+        ]
+    ]
+}
