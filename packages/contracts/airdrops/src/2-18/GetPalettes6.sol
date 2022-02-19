@@ -1,6 +1,7 @@
 
 pragma solidity ^0.8.0;
-
+// Accessory + Custom Item Palettes Feb 18th 2020
+// Baron Davis, etc
 contract GetPalettes {
     function getPalletes() external returns (bytes4[] memory) {
         bytes4[] memory palette = new bytes4[](111);
