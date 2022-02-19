@@ -112,6 +112,7 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true }: DopeCardProps) => {
       </PanelTitleBarFlex>
       <DopeCardBody buttonBar={buttonBar} dope={dope} isExpanded={isExpanded} />
       {buttonBar === 'for-owner' && <DopeCardButtonBarOwner dope={dope} />}
+      {buttonBar === 'for-marketplace' && <DopeCardButtonBarMarket dope={dope} />}
     </PanelContainer>
   );
 };

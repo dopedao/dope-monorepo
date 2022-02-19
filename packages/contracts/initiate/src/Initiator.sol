@@ -43,42 +43,75 @@ contract Initiator {
         ERC20(0x7aE1D57b58fA6411F32948314BadD83583eE0e8C);
     uint24 private immutable fee = 10000;
 
-    struct OpenSeaOrder {
-        address[14] addrs;
-        uint256[18] uints;
-        uint8[8] feeMethodsSidesKindsHowToCalls;
-        bytes calldataBuy;
+    struct Order {
+        address maker;
+        uint8 vs;
+        bytes32[2] rss;
+        uint256 fee;
+        uint256 price;
+        uint256 expiration;
+        uint256 listing;
+        uint256 salt;
         bytes calldataSell;
-        bytes replacementPatternBuy;
-        bytes replacementPatternSell;
-        bytes staticExtradataBuy;
-        bytes staticExtradataSell;
-        uint8[2] vs;
-        bytes32[5] rssMetadata;
+        bytes calldataBuy;
     }
 
     constructor() {
         PAPER.approve(address(initiator), type(uint256).max);
     }
 
-    function buy(uint256 openseaEth, OpenSeaOrder memory order) internal {
+    function buy(uint256 openseaEth, Order calldata order) internal {
         wyvern.atomicMatch_{value: openseaEth}(
-            order.addrs,
-            order.uints,
-            order.feeMethodsSidesKindsHowToCalls,
+            [
+                address(wyvern),
+                address(this),
+                order.maker,
+                0x0000000000000000000000000000000000000000,
+                address(DOPE),
+                0x0000000000000000000000000000000000000000,
+                0x0000000000000000000000000000000000000000,
+                address(wyvern),
+                order.maker,
+                0x0000000000000000000000000000000000000000,
+                0x5b3256965e7C3cF26E11FCAf296DfC8807C01073,
+                address(DOPE),
+                0x0000000000000000000000000000000000000000,
+                0x0000000000000000000000000000000000000000
+            ],
+            [
+                order.fee, // makerRelayerFee
+                0, // takerRelayerFee
+                0, // makerProtocolFee
+                0, // takerProtocolFee
+                order.price, // basePrice
+                0, // Auction extra parameter
+                0, // listingTime
+                0, // expirationTime
+                0, // salt
+                order.fee,
+                0,
+                0,
+                0,
+                order.price,
+                0,
+                order.listing,
+                order.expiration,
+                order.salt
+            ],
+            [1, 0, 0, 0, 1, 1, 0, 0],
             order.calldataBuy,
             order.calldataSell,
-            order.replacementPatternBuy,
-            order.replacementPatternSell,
-            order.staticExtradataBuy,
-            order.staticExtradataSell,
-            order.vs,
-            order.rssMetadata
+            hex"00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            hex"000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000",
+            "",
+            "",
+            [0, order.vs],
+            [bytes32(0x0), 0x0, order.rss[0], order.rss[1], 0x0]
         );
     }
 
     function initiate(
-        OpenSeaOrder memory order,
+        Order calldata order,
         uint256 id,
         IHustlerActions.SetMetadata calldata meta,
         address to,

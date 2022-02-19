@@ -45,6 +45,17 @@ query SearchDope(
               id
               type
             }
+            order {
+              feeMethod
+              side
+              saleKind
+              howToCall
+              calldata
+              replacementPattern
+              staticTarget
+              staticExtradata
+              extra
+            }
           }
           items {
             id

@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -32,6 +33,18 @@ func (lu *ListingUpdate) Where(ps ...predicate.Listing) *ListingUpdate {
 // SetActive sets the "active" field.
 func (lu *ListingUpdate) SetActive(b bool) *ListingUpdate {
 	lu.mutation.SetActive(b)
+	return lu
+}
+
+// SetOrder sets the "order" field.
+func (lu *ListingUpdate) SetOrder(jm json.RawMessage) *ListingUpdate {
+	lu.mutation.SetOrder(jm)
+	return lu
+}
+
+// ClearOrder clears the value of the "order" field.
+func (lu *ListingUpdate) ClearOrder() *ListingUpdate {
+	lu.mutation.ClearOrder()
 	return lu
 }
 
@@ -241,6 +254,19 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: listing.FieldActive,
 		})
 	}
+	if value, ok := lu.mutation.Order(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: listing.FieldOrder,
+		})
+	}
+	if lu.mutation.OrderCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: listing.FieldOrder,
+		})
+	}
 	if lu.mutation.DopeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -441,6 +467,18 @@ type ListingUpdateOne struct {
 // SetActive sets the "active" field.
 func (luo *ListingUpdateOne) SetActive(b bool) *ListingUpdateOne {
 	luo.mutation.SetActive(b)
+	return luo
+}
+
+// SetOrder sets the "order" field.
+func (luo *ListingUpdateOne) SetOrder(jm json.RawMessage) *ListingUpdateOne {
+	luo.mutation.SetOrder(jm)
+	return luo
+}
+
+// ClearOrder clears the value of the "order" field.
+func (luo *ListingUpdateOne) ClearOrder() *ListingUpdateOne {
+	luo.mutation.ClearOrder()
 	return luo
 }
 
@@ -672,6 +710,19 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 			Type:   field.TypeBool,
 			Value:  value,
 			Column: listing.FieldActive,
+		})
+	}
+	if value, ok := luo.mutation.Order(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: listing.FieldOrder,
+		})
+	}
+	if luo.mutation.OrderCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: listing.FieldOrder,
 		})
 	}
 	if luo.mutation.DopeCleared() {

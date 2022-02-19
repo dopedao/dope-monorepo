@@ -96,11 +96,9 @@ var configs = map[string]Configs{
 				Processor:  new(processors.HustlerProcessor),
 			},
 		},
-	},
-	// engine.OpenseaConfig{
-	// 	URL:      "https://api.opensea.io",
-	// 	Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
-	// 	Interval: time.Minute * 20,
-	// }
-	},
+	}, engine.OpenseaConfig{
+		URL:      "https://api.opensea.io",
+		Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
+		Interval: time.Minute * 600,
+	}},
 }

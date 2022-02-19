@@ -160,6 +160,20 @@ func SourceNotIn(vs ...Source) predicate.Listing {
 	})
 }
 
+// OrderIsNil applies the IsNil predicate on the "order" field.
+func OrderIsNil() predicate.Listing {
+	return predicate.Listing(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldOrder)))
+	})
+}
+
+// OrderNotNil applies the NotNil predicate on the "order" field.
+func OrderNotNil() predicate.Listing {
+	return predicate.Listing(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldOrder)))
+	})
+}
+
 // HasDope applies the HasEdge predicate on the "dope" edge.
 func HasDope() predicate.Listing {
 	return predicate.Listing(func(s *sql.Selector) {
