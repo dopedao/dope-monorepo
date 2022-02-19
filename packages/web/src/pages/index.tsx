@@ -18,13 +18,13 @@ const IndexPage = () => {
   return (
     <IndexWrapper>
       <Head />
-      {Cookies.get('aboutWindowVisible') !== 'false' && (
+      {/* {Cookies.get('aboutWindowVisible') !== 'false' && (
         <AboutWindow
           posX={64}
           posY={-16}
           onClose={() => Cookies.set('aboutWindowVisible', 'false', { expires: 3 })}
         />
-      )}
+      )} */}
       {/* {Cookies.get('newsWindowVisible') !== 'false' && (
         <NewsWindow
           allPosts={allPosts}
