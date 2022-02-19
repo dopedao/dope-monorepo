@@ -234,7 +234,7 @@ const toHex = (num: number) => {
   return '0x' + num.toString(16);
 };
 
-const useswitchNetwork = async (
+const useSwitchNetwork = async (
   account: string | null | undefined,
   nextChainId: 1 | 10 | 42 | 69,
   currentChainId: number | undefined,
@@ -288,7 +288,7 @@ export const useSwitchEthereum = (
   }
 
   return useMemo(
-    () => useswitchNetwork(account, ethChainId, chainId),
+    () => useSwitchNetwork(account, ethChainId, chainId),
     [account, chainId, ethChainId],
   );
 };
@@ -307,7 +307,28 @@ export const useSwitchOptimism = (
   }
 
   return useMemo(
-    () => useswitchNetwork(account, optimismChainId, chainId),
+    () => useSwitchNetwork(account, optimismChainId, chainId),
     [account, chainId, optimismChainId],
   );
 };
+
+export const useNetworkCheck = () => {
+  const { account, chainId } = useWeb3React();
+
+  const onProperNetwork = useMemo(() => {
+    return !(account && chainId !== 1 && chainId !== 42);
+  }, [account, chainId]);
+
+  return onProperNetwork;
+}
+
+export const useNetworkCheckOptimism = () => {
+  const { account, chainId } = useWeb3React();
+
+  const onProperNetwork = useMemo(() => {
+    return !(account && chainId !== 10 && chainId !== 69);
+  }, [account, chainId]);
+
+  return onProperNetwork;
+}
+

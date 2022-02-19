@@ -1,7 +1,7 @@
 import { Button, Select } from '@chakra-ui/react';
 import { NETWORK } from 'utils/constants';
 import { useHustlersWalletQuery } from 'generated/graphql';
-import { useOptimism } from 'hooks/web3';
+import { useOptimism, useNetworkCheckOptimism } from 'hooks/web3';
 import { useState, useEffect, useCallback } from 'react';
 import { useSwapMeet } from 'hooks/contracts';
 import { useWeb3React } from '@web3-react/core';
@@ -24,6 +24,7 @@ const GearEquipFooter = ({ id }: { id: string }) => {
   );
 
   const swapmeet = useSwapMeet();
+  const isConnectedToOptimism = useNetworkCheckOptimism();
 
   useEffect(() => {
     if (
@@ -38,6 +39,10 @@ const GearEquipFooter = ({ id }: { id: string }) => {
   }, [data]);
 
   const equip = useCallback(() => {
+    if(!isConnectedToOptimism) {
+      alert("Please switch your network to Optimism to Equip Gear");
+      return;
+    }
     const sig = '0xbe3d1e89';
     const abi = new utils.AbiCoder();
     swapmeet.safeTransferFrom(
@@ -47,7 +52,7 @@ const GearEquipFooter = ({ id }: { id: string }) => {
       1,
       abi.encode(['bytes4', 'uint256'], [sig, selected]),
     );
-  }, [account, swapmeet, chainId, id, selected]);
+  }, [account, swapmeet, chainId, id, selected, isConnectedToOptimism]);
 
   return (
     <PanelFooter>

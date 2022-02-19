@@ -9,7 +9,7 @@ import { useWeb3React } from '@web3-react/core';
 import { HustlerQuery, useHustlerQuery, useWalletQuery } from 'generated/graphql';
 import { getRandomHustler } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
-import { useSwitchOptimism } from 'hooks/web3';
+import { useSwitchOptimism, useNetworkCheckOptimism } from 'hooks/web3';
 import { useHustlerRles } from 'hooks/render';
 import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
@@ -131,6 +131,8 @@ const Hustlers = () => {
       enabled: !!account && router.isReady && !!String(router.query.id),
     },
   );
+
+  const isConnectedToOptimism = useNetworkCheckOptimism();
   useSwitchOptimism(chainId, account);
 
   useEffect(() => {
@@ -144,7 +146,7 @@ const Hustlers = () => {
   return (
     <AppWindow padBody={false} navbar={<Nav />} requiresWalletConnection={true}>
       <Head title="Customize Hustler" />
-      {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
+      {!isConnectedToOptimism && showNetworkAlert && (
         <DialogSwitchNetwork networkName="Optimism" />
       )}
       {walletLoading || isFetching || !data?.hustlers.edges?.[0]?.node || !router.isReady ? (
