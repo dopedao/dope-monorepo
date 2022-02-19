@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
-import { Button, Table, Tr, Td } from '@chakra-ui/react';
+import { Box, Button, Image, Table, Tr, Td } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
 import { StepsProps } from 'features/hustlers/modules/Steps';
@@ -9,9 +9,13 @@ import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleHeader from 'components/PanelTitleHeader';
 import { useOneClickInitiator, useInitiator } from 'hooks/contracts';
-import { createConfig } from 'utils/HustlerConfig';
+import { createConfig, ZOOM_WINDOWS } from 'utils/HustlerConfig';
 import { useDopeListingQuery } from 'generated/graphql';
+import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import { formatEther, parseEther } from 'ethers/lib/utils';
+import { ReceiptItem, DopeDot, DopeLofi } from './ReceiptItem';
+import ReceiptItemDope from './ReceiptItemDope';
+import ReceiptItemHustler from './ReceiptItemHustler';
 
 const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
   const { account } = useWeb3React();
@@ -104,25 +108,45 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
 
   return (
     <PanelContainer justifyContent="flex-start">
-      <PanelTitleHeader>Quick Buy Hustler</PanelTitleHeader>
+      <PanelTitleHeader>You Are Receiving</PanelTitleHeader>
       <PanelBody>
-        <Table>
-          <Tr>
-            <Td></Td>
-            <Td textAlign="right">1</Td>
-            <Td>DOPE NFT #{hustlerConfig.dopeId}</Td>
-          </Tr>
-          <Tr>
-            <Td></Td>
-            <Td textAlign="right">
-              {unbundleCost &&
-                parseInt(formatEther(unbundleCost), 10).toLocaleString(undefined, {
-                  minimumFractionDigits: 0,
-                })}
-            </Td>
-            <Td>$PAPER</Td>
-          </Tr>
-        </Table>
+          <ReceiptItemDope hustlerConfig={hustlerConfig} />
+          <ReceiptItemHustler hustlerConfig={hustlerConfig} />
+        {/* PAPER */}
+        {/* <ReceiptItem>
+          <Box display="flex" alignItems="center" justifyContent="center">
+            <Image
+              src="/images/icon/wallet.svg" alt="Wallet"
+            />
+          </Box>
+          <Box flex="1">
+            {unbundleCost &&
+              parseInt(formatEther(unbundleCost), 10).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+            })}
+            &nbsp;
+            $PAPER
+          </Box>
+          <Box>
+            <Image
+              src="/images/icon/ethereum.svg"
+              width="16px"
+              alt="This asset lives on Ethereum Mainnet"
+            />
+          </Box>
+        </ReceiptItem> */}
+        {/* GEAR */}
+        <ReceiptItem>
+          <Box display="flex" alignItems="center" justifyContent="center" background="var(--gray-100)" color="black" borderRadius="4px">9</Box>
+          <Box flex="1">DOPE Gear NFTs</Box>
+          <Box>
+            <Image
+              src="/images/icon/optimism.svg"
+              width="16px"
+              alt="This asset lives on Optimism"
+            />
+          </Box>
+        </ReceiptItem>
       </PanelBody>
       <PanelFooter
         css={css`

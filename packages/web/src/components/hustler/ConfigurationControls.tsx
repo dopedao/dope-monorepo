@@ -18,6 +18,7 @@ import HairSelector from 'components/hustler/HairSelector';
 import NameControls from 'components/hustler/NameControls';
 import PanelColorSelector from 'components/PanelColorSelector';
 import PanelFooter from 'components/PanelFooter';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 import SexSelector from 'components/hustler/SexSelector';
 import styled from '@emotion/styled';
 import useHustler from 'features/hustlers/hooks/useHustler';
@@ -158,6 +159,7 @@ const ConfigurationControls = ({
 
   return (
     <ControlsWrapper>
+      <PanelTitleHeader>Customize</PanelTitleHeader>
       <ControlsBody>
         <Stack spacing={4}>
           {/* Title controls only make sense when zoomed out fully */}
