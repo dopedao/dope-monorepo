@@ -84,3 +84,12 @@ export ETH_RPC_URL=https://opt-kovan.g.alchemy.com/v2/xk92V0tX0bnpMmUp7e6tetGWYg
 # Celebratory Chicken Mask from Chinatown       [7,20,65,30,0]  553420618170672545801
 # Big Tiger Mask from Chinatown                 [7,20,6,21,0]   387383314483660652553
 # Notorious Tiger Mask from Chinatown           [7,20,20,21,1]  1209313206869762509307913
+
+# Faces:        Father of the Game Hitman Mask from Oakland       [7,20,20,21,1]
+# MrFax:        King of the Street Baron Mask from Murdertown     [7,20,20,21,1]
+# Sausage:      Gang Leader Outlaw Mask from Big Smoke            [7,20,20,21,1]
+
+# Accessories:
+# Cop Glasses:  Crooked Cop Feared Glasses
+# Eye Patch:    Glasses from the Backwoods
+# 
