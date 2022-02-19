@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 const DopeCardTitleButton = styled.div`
   width: 96px;
@@ -11,8 +11,7 @@ const DopeCardTitleButton = styled.div`
   background-color: #202221;
   border-left: 1px solid #000;
   color: #fff;
-  box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset,
-    1px 1px 0px rgba(255, 255, 255, 0.25) inset;
+  box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset, 1px 1px 0px rgba(255, 255, 255, 0.25) inset;
   border-top-right-radius: 4px;
   a {
     width: 100%;
@@ -25,6 +24,6 @@ const DopeCardTitleButton = styled.div`
     display: flex;
     justify-content: center;
   }
-`
+`;
 
 export default DopeCardTitleButton;

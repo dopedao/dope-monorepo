@@ -20,7 +20,7 @@ type GearData = {
   totalCount: number;
 };
 
-const GearWrapper = ({searchValue}: {searchValue: string}) => {
+const GearWrapper = ({ searchValue }: { searchValue: string }) => {
   const { account } = useWeb3React();
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileGearQuery(
@@ -28,9 +28,11 @@ const GearWrapper = ({searchValue}: {searchValue: string}) => {
       where: {
         hasWalletWith: [{ id: account }],
         balanceGT: '0',
-        hasItemWith: [{
-          nameContains: searchValue
-        }]
+        hasItemWith: [
+          {
+            nameContains: searchValue,
+          },
+        ],
       },
       first: 50,
     },

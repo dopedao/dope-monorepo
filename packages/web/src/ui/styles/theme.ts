@@ -12,7 +12,6 @@ const desktopImageCss = [
   "#000 url('/images/desktop/the-crew.jpg') center / cover no-repeat fixed",
   "#333 url('/images/game/map/full.png') center / cover no-repeat fixed",
   "#333 url('/images/game/map/nyc-hustler-walk.gif') center / cover no-repeat fixed",
-
 ];
 const randomImageIndex = Math.floor(Math.random() * desktopImageCss.length);
 const randomDesktopImageCss = desktopImageCss[randomImageIndex];
@@ -152,6 +151,18 @@ export default extendTheme({
 
     Table: {
       variants: {
+        small: {
+          table: {
+            fontSize: 'var(--text-small)',
+            width: '100%',
+          },
+          td: {
+            padding: '2px',
+            _first: {
+              width: '25%',
+            },
+          },
+        },
         dope: {
           table: {
             borderCollapse: 'separate',

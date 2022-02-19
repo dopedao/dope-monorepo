@@ -13,7 +13,19 @@ import ItemCount from './ItemCount';
 import LoadingBlock from 'components/LoadingBlock';
 
 type ProfileDope = Pick<Dope, 'id' | 'claimed' | 'opened' | 'rank' | 'score'> & {
-  items: Pick<Item, 'id' | 'fullname' | 'type' | 'name' | 'tier' | 'greatness' | 'count' | 'suffix' | 'namePrefix' | 'nameSuffix'>[];
+  items: Pick<
+    Item,
+    | 'id'
+    | 'fullname'
+    | 'type'
+    | 'name'
+    | 'tier'
+    | 'greatness'
+    | 'count'
+    | 'suffix'
+    | 'namePrefix'
+    | 'nameSuffix'
+  >[];
 };
 
 type DopeData = {
@@ -21,7 +33,7 @@ type DopeData = {
   totalCount: number;
 };
 
-const Dopes = ({searchValue}: {searchValue: string}) => {
+const Dopes = ({ searchValue }: { searchValue: string }) => {
   const { account } = useWeb3React();
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileDopesQuery(
     {
@@ -33,9 +45,9 @@ const Dopes = ({searchValue}: {searchValue: string}) => {
         ],
         hasItemsWith: [
           {
-            nameContains: searchValue
-          }
-        ]
+            nameContains: searchValue,
+          },
+        ],
       },
       first: 50,
     },
