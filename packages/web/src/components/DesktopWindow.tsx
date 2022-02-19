@@ -77,7 +77,7 @@ const WindowWrapper = styled.div<{
     `}
     @media (min-width: ${returnBreakpoint('tablet')}) {
       width: 80%;
-      height: 90%;
+      height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
       margin: 0;
       top: 32px;
       right: 96px;
