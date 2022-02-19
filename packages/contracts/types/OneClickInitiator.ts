@@ -18,16 +18,16 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export type OrderStruct = {
-  undefined: string;
-  undefined: BigNumberish;
-  undefined: [BytesLike, BytesLike];
-  undefined: BigNumberish;
-  undefined: BigNumberish;
-  undefined: BigNumberish;
-  undefined: BigNumberish;
-  undefined: BigNumberish;
-  undefined: BytesLike;
-  undefined: BytesLike;
+  maker: string;
+  vs: BigNumberish;
+  rss: [BytesLike, BytesLike];
+  fee: BigNumberish;
+  price: BigNumberish;
+  expiration: BigNumberish;
+  listing: BigNumberish;
+  salt: BigNumberish;
+  calldataSell: BytesLike;
+  calldataBuy: BytesLike;
 };
 
 export type OrderStructOutput = [
@@ -41,17 +41,28 @@ export type OrderStructOutput = [
   BigNumber,
   string,
   string
-];
+] & {
+  maker: string;
+  vs: number;
+  rss: [string, string];
+  fee: BigNumber;
+  price: BigNumber;
+  expiration: BigNumber;
+  listing: BigNumber;
+  salt: BigNumber;
+  calldataSell: string;
+  calldataBuy: string;
+};
 
 export type SetMetadataStruct = {
-  undefined: BytesLike;
-  undefined: BytesLike;
-  undefined: BytesLike;
-  undefined: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
-  undefined: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
-  undefined: BigNumberish[];
-  undefined: BytesLike;
-  undefined: string;
+  color: BytesLike;
+  background: BytesLike;
+  options: BytesLike;
+  viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+  body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+  order: BigNumberish[];
+  mask: BytesLike;
+  name: string;
 };
 
 export type SetMetadataStructOutput = [
@@ -63,7 +74,16 @@ export type SetMetadataStructOutput = [
   number[],
   string,
   string
-];
+] & {
+  color: string;
+  background: string;
+  options: string;
+  viewbox: [number, number, number, number];
+  body: [number, number, number, number];
+  order: number[];
+  mask: string;
+  name: string;
+};
 
 export interface OneClickInitiatorInterface extends utils.Interface {
   functions: {

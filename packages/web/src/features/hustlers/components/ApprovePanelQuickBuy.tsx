@@ -1,18 +1,55 @@
-import { Button, Stack, Table, Tr, Td, Alert, AlertIcon } from '@chakra-ui/react';
+import { Button, Stack, Table, Tr, Td } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { useWeb3React } from '@web3-react/core';
 import { StepsProps } from 'features/hustlers/modules/Steps';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleHeader from 'components/PanelTitleHeader';
+import { useOneClickInitiator } from 'hooks/contracts';
+import { createConfig } from 'utils/HustlerConfig';
+import { OrderStruct, SetMetadataStruct } from '@dopewars/contracts/dist/OneClickInitiator';
+import { useDopeListingQuery } from 'generated/graphql';
 
-const ApprovePanelQuickBuy = ({hustlerConfig, setHustlerConfig}: StepsProps) => {
+const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
+  const { account } = useWeb3React();
+  const { data, isFetching } = useDopeListingQuery(
+    {
+      where: {
+        id: hustlerConfig.dopeId,
+      },
+    },
+    {
+      enabled: !!account,
+    },
+  );
+
   const canMint = false;
+  const oneclick = useOneClickInitiator();
   const mintHustler = () => {
-    // tarrence to fill this in …maybe stuff from ApprovePanelOwnedDope
-  };
+    if (!account) {
+      return;
+    }
 
-  return(
+    const config = createConfig(hustlerConfig);
+
+    const { dopeId, mintAddress } = hustlerConfig;
+    let order: OrderStruct = {
+      maker,
+    };
+
+    oneclick.initiate(
+      order,
+      dopeId,
+      config as unknown as SetMetadataStruct,
+      mintAddress ? mintAddress : account,
+      0,
+      0,
+      0,
+      0,
+    );
+  };
+  return (
     <PanelContainer justifyContent="flex-start">
       <PanelTitleHeader>Quick Buy Hustler</PanelTitleHeader>
       <PanelBody>
@@ -42,6 +79,6 @@ const ApprovePanelQuickBuy = ({hustlerConfig, setHustlerConfig}: StepsProps) => 
       </PanelFooter>
     </PanelContainer>
   );
-}
+};
 
 export default ApprovePanelQuickBuy;

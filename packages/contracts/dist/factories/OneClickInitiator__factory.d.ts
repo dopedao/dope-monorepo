@@ -30,6 +30,7 @@ export declare class OneClickInitiator__factory {
             name: string;
             type: string;
             components: {
+                name: string;
                 type: string;
             }[];
         } | {
@@ -37,6 +38,15 @@ export declare class OneClickInitiator__factory {
             name: string;
             type: string;
             components?: undefined;
+        } | {
+            components: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            internalType: string;
+            name: string;
+            type: string;
         })[];
         outputs: never[];
         stateMutability: string;
