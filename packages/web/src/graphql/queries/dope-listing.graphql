@@ -11,6 +11,7 @@ query DopeListing($where: DopeWhereInput) {
             v
             r
             s
+            makerRelayerFee
             makerProtocolFee
             currentPrice
             expirationTime

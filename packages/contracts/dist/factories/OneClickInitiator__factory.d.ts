@@ -29,24 +29,20 @@ export declare class OneClickInitiator__factory {
             internalType: string;
             name: string;
             type: string;
-            components: {
+            components: ({
+                internalType: string;
                 name: string;
                 type: string;
-            }[];
+            } | {
+                name: string;
+                type: string;
+                internalType?: undefined;
+            })[];
         } | {
             internalType: string;
             name: string;
             type: string;
             components?: undefined;
-        } | {
-            components: {
-                internalType: string;
-                name: string;
-                type: string;
-            }[];
-            internalType: string;
-            name: string;
-            type: string;
         })[];
         outputs: never[];
         stateMutability: string;

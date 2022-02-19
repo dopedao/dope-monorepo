@@ -1369,7 +1369,7 @@ export type DopeListingQueryVariables = Exact<{
 }>;
 
 
-export type DopeListingQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, listings?: Array<{ __typename?: 'Listing', order?: { __typename?: 'OpenSeaOrder', maker: any, v: number, r: any, s: any, makerProtocolFee: string, currentPrice: string, expirationTime: any, listingTime: any, salt: string, calldata: any } | null | undefined } | null | undefined> | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type DopeListingQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, listings?: Array<{ __typename?: 'Listing', order?: { __typename?: 'OpenSeaOrder', maker: any, v: number, r: any, s: any, makerRelayerFee: string, makerProtocolFee: string, currentPrice: string, expirationTime: any, listingTime: any, salt: string, calldata: any } | null | undefined } | null | undefined> | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type DopesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1591,6 +1591,7 @@ export const DopeListingDocument = `
             v
             r
             s
+            makerRelayerFee
             makerProtocolFee
             currentPrice
             expirationTime

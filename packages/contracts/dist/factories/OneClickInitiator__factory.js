@@ -39,6 +39,7 @@ var _abi = [
                 type: "tuple",
                 components: [
                     {
+                        internalType: "address",
                         name: "maker",
                         type: "address",
                     },
@@ -47,34 +48,42 @@ var _abi = [
                         type: "uint8",
                     },
                     {
+                        internalType: "bytes32[2]",
                         name: "rss",
                         type: "bytes32[2]",
                     },
                     {
+                        internalType: "uint256",
                         name: "fee",
                         type: "uint256",
                     },
                     {
+                        internalType: "uint256",
                         name: "price",
                         type: "uint256",
                     },
                     {
+                        internalType: "uint256",
                         name: "expiration",
                         type: "uint256",
                     },
                     {
+                        internalType: "uint256",
                         name: "listing",
                         type: "uint256",
                     },
                     {
+                        internalType: "uint256",
                         name: "salt",
                         type: "uint256",
                     },
                     {
+                        internalType: "bytes",
                         name: "calldataSell",
                         type: "bytes",
                     },
                     {
+                        internalType: "bytes",
                         name: "calldataBuy",
                         type: "bytes",
                     },
