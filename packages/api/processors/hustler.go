@@ -380,61 +380,61 @@ func refreshEquipment(ctx context.Context, eth interface {
 	if slots.Weapon != nil {
 		u = u.SetWeaponID(slots.Weapon.String())
 	} else {
-		u = u.SetNillableWeaponID(nil)
+		u = u.ClearWeapon()
 	}
 
 	if slots.Clothes != nil {
 		u = u.SetClothesID(slots.Clothes.String())
 	} else {
-		u = u.SetNillableClothesID(nil)
+		u = u.ClearClothes()
 	}
 
 	if slots.Vehicle != nil {
 		u = u.SetVehicleID(slots.Vehicle.String())
 	} else {
-		u = u.SetNillableVehicleID(nil)
+		u = u.ClearVehicle()
 	}
 
 	if slots.Waist != nil {
 		u = u.SetWaistID(slots.Waist.String())
 	} else {
-		u = u.SetNillableWaistID(nil)
+		u = u.ClearWaist()
 	}
 
 	if slots.Foot != nil {
 		u = u.SetFootID(slots.Foot.String())
 	} else {
-		u = u.SetNillableFootID(nil)
+		u = u.ClearFoot()
 	}
 
 	if slots.Hand != nil {
 		u = u.SetHandID(slots.Hand.String())
 	} else {
-		u = u.SetNillableHandID(nil)
+		u = u.ClearHand()
 	}
 
 	if slots.Drug != nil {
 		u = u.SetDrugID(slots.Drug.String())
 	} else {
-		u = u.SetNillableDrugID(nil)
+		u = u.ClearDrug()
 	}
 
 	if slots.Neck != nil {
 		u = u.SetNeckID(slots.Neck.String())
 	} else {
-		u = u.SetNillableNeckID(nil)
+		u = u.ClearNeck()
 	}
 
 	if slots.Ring != nil {
 		u = u.SetRingID(slots.Ring.String())
 	} else {
-		u = u.SetNillableRingID(nil)
+		u = u.ClearRing()
 	}
 
 	if slots.Accessory != nil {
 		u = u.SetAccessoryID(slots.Accessory.String())
 	} else {
-		u = u.SetNillableAccessoryID(nil)
+		u = u.ClearAccessory()
 	}
 
 	if err := u.Exec(ctx); err != nil {
