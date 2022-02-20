@@ -57,7 +57,7 @@ const SwapMeetHustlers = () => {
         background="white"
         borderBottom="2px solid black"
       >
-        <Link href="/hustlers/initiate" passHref>
+        <Link href="/hustlers/quick-buy" passHref>
           <Button variant="primary" fontSize="xs">
             Mint a Hustler
           </Button>
