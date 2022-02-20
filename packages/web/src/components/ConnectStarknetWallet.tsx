@@ -6,7 +6,7 @@ import Head from './Head';
 import { useStarknet } from '@starknet-react/core';
 
 const ConnectStarknetWallet = () => {
-  const { account, hasStarknet, connectBrowserWallet } = useStarknet();
+  const { hasStarknet, connectBrowserWallet } = useStarknet();
 
   return (
     <>

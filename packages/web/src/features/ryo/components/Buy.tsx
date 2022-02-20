@@ -9,9 +9,11 @@ import ContainerHeader from './ContainerHeader';
 import DrugQuantityGauge from './DrugQuantityGauge';
 import { buildIconSVG } from 'utils/svg-builder';
 import { css } from '@emotion/react';
+import { useDopeWarsContract } from 'hooks/contracts';
 
 const Buy = () => {
   const router = useRouter();
+  const dopewars = useDopeWarsContract();
   const { drugId } = router.query;
 
   const { data } = useDrugQuery(
@@ -55,7 +57,6 @@ const Buy = () => {
             dangerouslySetInnerHTML={{ __html: buildIconSVG([rle]) }}
           />
         )}
-
         <ContainerFooter>
           <span>{drug?.name}</span>
         </ContainerFooter>
