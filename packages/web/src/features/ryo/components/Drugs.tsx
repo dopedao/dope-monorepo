@@ -15,6 +15,7 @@ import { useDrugsQuery } from 'generated/graphql'
 import { useMemo } from 'react'
 
 type Drug = {
+  id: string
   name: string
   cost: number
   quantity: number
@@ -34,6 +35,7 @@ const Drugs = () => {
       return [
         ...result,
         {
+          id: node.id,
           name: node?.name,
           cost: 10,
           quantity: 1,
@@ -92,7 +94,7 @@ const DrugRow = ({
       {isExpanded && (
         <Tr background={background}>
           <Td>
-            <NavLink href="/roll-your-own/buy">
+            <NavLink href={`/roll-your-own/buy/${drug.id}`}>
               <Button color="black">
                 Buy
               </Button>
@@ -100,7 +102,7 @@ const DrugRow = ({
           </Td>
           <Td />
           <Td>
-            <NavLink href="/roll-your-own/sell">
+            <NavLink href={`/roll-your-own/sell/${drug.id}`}>
               <Button color="black">
                 SELL
               </Button>

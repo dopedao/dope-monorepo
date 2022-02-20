@@ -620,7 +620,7 @@ export enum ItemType {
   Hand = 'HAND',
   Neck = 'NECK',
   Ring = 'RING',
-  Vehicle = 'VEHICLE',
+  Vehcile = 'VEHCILE',
   Waist = 'WAIST',
   Weapon = 'WEAPON'
 }
@@ -1340,10 +1340,17 @@ export type WalletWhereInput = {
   paperNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
 };
 
+export type DrugQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type DrugQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, name: string, rles?: { __typename?: 'RLEs', male: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
 export type DrugsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DrugsQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', name: string, rles?: { __typename?: 'RLEs', male: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type DrugsQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, name: string, rles?: { __typename?: 'RLEs', male: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type AllHustlersQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1464,12 +1471,55 @@ export type WalletQueryVariables = Exact<{
 export type WalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> }> } | null | undefined } | null | undefined> | null | undefined } };
 
 
+export const DrugDocument = `
+    query Drug($id: ID) {
+  items(where: {type: DRUGS, hasBase: false, id: $id}) {
+    totalCount
+    edges {
+      node {
+        id
+        name
+        rles {
+          male
+        }
+      }
+    }
+  }
+}
+    `;
+export const useDrugQuery = <
+      TData = DrugQuery,
+      TError = unknown
+    >(
+      variables?: DrugQueryVariables,
+      options?: UseQueryOptions<DrugQuery, TError, TData>
+    ) =>
+    useQuery<DrugQuery, TError, TData>(
+      variables === undefined ? ['Drug'] : ['Drug', variables],
+      useFetchData<DrugQuery, DrugQueryVariables>(DrugDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteDrugQuery = <
+      TData = DrugQuery,
+      TError = unknown
+    >(
+      variables?: DrugQueryVariables,
+      options?: UseInfiniteQueryOptions<DrugQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<DrugQuery, DrugQueryVariables>(DrugDocument)
+    return useInfiniteQuery<DrugQuery, TError, TData>(
+      variables === undefined ? ['Drug.infinite'] : ['Drug.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
 export const DrugsDocument = `
     query Drugs {
   items(where: {type: DRUGS, hasBase: false}) {
     totalCount
     edges {
       node {
+        id
         name
         rles {
           male

@@ -1,9 +1,33 @@
-import { Box, Button, Link } from "@chakra-ui/react"
+import { Box, Button } from "@chakra-ui/react"
 import { NavLink } from "components/NavLink"
+import { useDrugQuery } from "generated/graphql"
+import { useRouter } from "next/router"
+import { useMemo } from "react"
 import Container from "./Container"
+import ContainerFooter from "./ContainerFooter"
 import ContainerHeader from "./ContainerHeader"
+import DrugQuantityGauge from "./DrugQuantityGauge"
 
 const Buy = () => {
+  const router = useRouter()
+  const { drugId } = router.query
+
+  const { data } = useDrugQuery({
+    id: drugId as string,
+  }, {
+    enabled: !!drugId,
+  })
+
+  const drug = useMemo(() => {
+    if (!data?.items.edges) return
+
+    const [drugItem] = data.items.edges
+
+    if (!drugItem?.node) return
+
+    return drugItem.node
+  }, [data])
+
   return (
     <Box>
       <NavLink href="/roll-your-own">
@@ -13,9 +37,16 @@ const Buy = () => {
       </NavLink>
       <Container>
         <ContainerHeader>
-          <span color="white">BUY</span>
+          <span>BUY</span>
         </ContainerHeader>
+
+        {/* DRUG svg goes here */}
+
+        <ContainerFooter>
+          <span>{drug?.name}</span>
+        </ContainerFooter>
       </Container>
+      <DrugQuantityGauge gaugeColor="#22B617" />
     </Box>
   )
 }
