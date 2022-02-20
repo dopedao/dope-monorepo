@@ -12,7 +12,7 @@ import { INITIAL_STATE } from 'features/hustlers/hustlerReducer';
 const InitiatePage = () => {
   const init = useInitiator();
   const router = useRouter();
-  const { id: dopeId, quickBuy } = router.query;
+  const { id: dopeId, quickBuy, estimatedAmount } = router.query;
   const isQuickBuy = typeof quickBuy !== 'undefined';
   const [isOpened, setIsOpened] = useState(false);
 
@@ -44,7 +44,11 @@ const InitiatePage = () => {
       )}
       {isOpened === false && (
         <HustlerProvider 
-          initialHustlerData={Object.assign(INITIAL_STATE, {isQuickBuy: isQuickBuy})}
+          initialHustlerData={
+            Object.assign(INITIAL_STATE, 
+              {isQuickBuy: isQuickBuy, estimatedAmount: parseFloat(estimatedAmount)}
+            )
+          }
         >
           <Steps />
         </HustlerProvider>

@@ -98,7 +98,7 @@ const QuickBuyHustler = () => {
     const price = activeListings?.[0]?.inputs?.[0]?.amount;
     return `${(+ethers.utils.formatEther(
       price && paperPrice ? BigNumber.from(price).add(paperPrice) : 0,
-    )).toFixed(4)} Ξ`;
+    )).toFixed(4)}`;
   }, [currentDope, paperPrice]);
 
   const CarouselButtons = () => (
@@ -120,7 +120,7 @@ const QuickBuyHustler = () => {
 
   const QuickBuyFooter = () => (
     <Box display="flex" flexDirection="column" justifyContent="flex-start" gap="8px">
-      <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy`} passHref>
+      <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy&estimatedAmount=${currentPrice}`} passHref>
         <Button variant="primary" autoFocus>Customize</Button>
       </Link>
       <CarouselButtons />
@@ -264,7 +264,7 @@ const QuickBuyHustler = () => {
                     </Tr>
                     <Tr className="noWrap">
                       <Td>Estimated Total</Td>
-                      <Td>{currentPrice}</Td>
+                      <Td>{currentPrice} Ξ</Td>
                     </Tr>
                   </Table>
                 </Box>

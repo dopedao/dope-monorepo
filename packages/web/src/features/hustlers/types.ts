@@ -1,3 +1,5 @@
+import { number } from "starknet";
+
 export type HustlerActions =
   | { type: 'SET_QUICK_BUY' }
   | { type: 'GO_TO_CUSTOMIZE_STEP' }
@@ -13,6 +15,7 @@ export type HustlerState = {
   isQuickBuy: boolean;
   isApprovalDone: boolean;
   isFinalizeDone: boolean;
+  estimatedAmount?: number;
 };
 
 export type DispatchHustler = (action: HustlerActions) => void;

@@ -26,6 +26,8 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
 
   const { deactivate } = useWeb3React();
   const router = useRouter();
+  const { estimatedAmount } = router.query;
+
   const handleQuitButton = useCallback(() => {
     deactivate();
     router.replace('/hustlers/quick-buy');
@@ -115,8 +117,29 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
 
   return (
     <PanelContainer justifyContent="flex-start">
-      <PanelTitleHeader>You Are Receiving</PanelTitleHeader>
+      <PanelTitleHeader>Transaction Details</PanelTitleHeader>
       <PanelBody>
+          <h4>You Pay</h4>
+          <hr className="onColor" />
+          <ReceiptItem css={css`border-bottom:0;margin-bottom:1em;`}>
+            <Box display="flex" alignItems="center" justifyContent="center">
+              <Image
+                src="/images/icon/wallet.svg" alt="Wallet"
+              />
+            </Box>
+            <Box flex="1">
+              { estimatedAmount } Ξ
+            </Box>
+            <Box>
+            <Image
+              src="/images/icon/ethereum.svg"
+              width="16px"
+              alt="Mainnet"
+            />
+          </Box>
+          </ReceiptItem>
+          <h4>You Receive</h4>
+          <hr className="onColor" />
           <ReceiptItemDope hustlerConfig={hustlerConfig} />
           <ReceiptItemHustler hustlerConfig={hustlerConfig} />
         {/* PAPER */}
