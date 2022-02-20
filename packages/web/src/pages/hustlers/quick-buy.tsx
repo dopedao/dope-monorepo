@@ -109,7 +109,7 @@ const QuickBuyHustler = () => {
         Prev
       </Button>
       <Button flex="2" onClick={() => setShowHustler(!showHustler)}>
-        {showHustler ? 'Show Equipment' : 'Show Hustler'}
+        {showHustler ? 'Show Gear' : 'Show Hustler'}
       </Button>
       <Button
         flex="1"
