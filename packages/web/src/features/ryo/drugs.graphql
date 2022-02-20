@@ -1,5 +1,5 @@
 query Drugs {
-  items(where: {type: DRUGS, hasBase: false}) {
+  items(where: { type: DRUGS, hasBase: false }) {
     totalCount
     edges {
       node {
@@ -7,6 +7,11 @@ query Drugs {
         name
         rles {
           male
+        }
+        base {
+          rles {
+            male
+          }
         }
       }
     }

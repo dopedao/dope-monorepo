@@ -1350,7 +1350,7 @@ export type DrugQuery = { __typename?: 'Query', items: { __typename?: 'ItemConne
 export type DrugsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DrugsQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, name: string, rles?: { __typename?: 'RLEs', male: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type DrugsQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, name: string, rles?: { __typename?: 'RLEs', male: string } | null | undefined, base?: { __typename?: 'Item', rles?: { __typename?: 'RLEs', male: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type AllHustlersQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1523,6 +1523,11 @@ export const DrugsDocument = `
         name
         rles {
           male
+        }
+        base {
+          rles {
+            male
+          }
         }
       }
     }
