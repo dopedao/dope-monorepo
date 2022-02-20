@@ -206,7 +206,7 @@ const QuickBuyHustler = () => {
                 </p>
                 <p>
                   They can own up to 10 different
-                  pieces of NFT Gear, which will be useful in a series of games currently under development.
+                  pieces of interchangeable NFT Gear, which will be useful in a series of games currently under development.
                 </p>
                 <p>
                   Dope Gear comes directly from un-claimed Dope NFT tokens, which sold out in September 2021.
