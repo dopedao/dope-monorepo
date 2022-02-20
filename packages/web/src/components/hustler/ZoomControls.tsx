@@ -18,10 +18,11 @@ const ZoomContainer = styled.div`
 `;
 
 const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
-  const [selected, setSelected] = useState(1);
-  const [isVehicle, setIsVehicle] = useState(config.isVehicle);
+  const [selected, setSelected] = useState(2);
+  const [isVehicle, setIsVehicle] = useState(true);
 
   useEffect(() => {
+    if(!selected) return;
     let renderName = config.renderName;
     // for mugshots doesn't make sense to render name, because it gets cut off.
     if (selected == 1 || selected == 2) renderName = false;

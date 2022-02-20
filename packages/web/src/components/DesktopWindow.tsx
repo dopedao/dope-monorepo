@@ -82,6 +82,8 @@ const WindowWrapper = styled.div<{
       top: 32px;
       right: 96px;
       left: unset;
+      max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
+      max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
     }
     @media (min-width: ${returnBreakpoint('laptop')}) {
       top: 32px;

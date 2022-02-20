@@ -1,6 +1,7 @@
 // For storing state relating to initiating a hustler
 import { Dispatch, SetStateAction } from 'react';
 import { BigNumber } from 'ethers';
+import { SetMetadataStruct } from '@dopewars/contracts/dist/Initiator';
 import { getRandomNumber } from 'utils/utils';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
 import { HUSTLER_NAMES } from 'utils/hustler-names';
@@ -90,4 +91,60 @@ export const randomizeHustlerAttributes = (
     ...randomHustler,
     dopeId,
   });
+};
+export const createConfig = (config: HustlerCustomization): SetMetadataStruct => {
+  const { body, bgColor, facialHair, hair, name, renderName, sex, textColor, zoomWindow } = config;
+
+  const setname = name ? name : '';
+  const color = '0x' + textColor.slice(1) + 'ff';
+  const background = '0x' + bgColor.slice(1) + 'ff';
+  const bodyParts: [BigNumber, BigNumber, BigNumber, BigNumber] = [
+    sex == 'male' ? BigNumber.from(0) : BigNumber.from(1),
+    BigNumber.from(body),
+    BigNumber.from(hair),
+    sex == 'male' ? BigNumber.from(facialHair) : BigNumber.from(0),
+  ];
+
+  let bitoptions = 0;
+
+  if (renderName) {
+    // title
+    bitoptions += 10;
+    // name
+    bitoptions += 100;
+  }
+
+  const options =
+    '0x' +
+    parseInt('' + bitoptions, 2)
+      .toString(16)
+      .padStart(4, '0');
+
+  let bitmask = 11110110;
+  if (setname.length > 0) {
+    bitmask += 1;
+  }
+
+  if (zoomWindow[0].gt(0) || zoomWindow[0].gt(1) || zoomWindow[0].gt(2) || zoomWindow[0].gt(3)) {
+    bitmask += 1000;
+  }
+
+  const mask =
+    '0x' +
+    parseInt('' + bitmask, 2)
+      .toString(16)
+      .padStart(4, '0');
+
+  const metadata: SetMetadataStruct = {
+    name: setname,
+    color,
+    background,
+    options,
+    viewbox: zoomWindow,
+    body: bodyParts,
+    order: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    mask,
+  };
+
+  return metadata;
 };

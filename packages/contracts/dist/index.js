@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SwapMeet__factory = exports.Paper__factory = exports.MetadataBuilder__factory = exports.Loot__factory = exports.Initiator__factory = exports.Hustler__factory = exports.Hongbao__factory = exports.DopeInitiator__factory = exports.CrossDomainMessenger__factory = exports.Controller__factory = exports.Components__factory = void 0;
+exports.SwapMeet__factory = exports.Paper__factory = exports.OneClickInitiator__factory = exports.MetadataBuilder__factory = exports.Loot__factory = exports.Initiator__factory = exports.Hustler__factory = exports.Hongbao__factory = exports.DopeInitiator__factory = exports.CrossDomainMessenger__factory = exports.Controller__factory = exports.Components__factory = void 0;
 var Components__factory_1 = require("./factories/Components__factory");
 Object.defineProperty(exports, "Components__factory", { enumerable: true, get: function () { return Components__factory_1.Components__factory; } });
 var Controller__factory_1 = require("./factories/Controller__factory");
@@ -19,6 +19,8 @@ var Loot__factory_1 = require("./factories/Loot__factory");
 Object.defineProperty(exports, "Loot__factory", { enumerable: true, get: function () { return Loot__factory_1.Loot__factory; } });
 var MetadataBuilder__factory_1 = require("./factories/MetadataBuilder__factory");
 Object.defineProperty(exports, "MetadataBuilder__factory", { enumerable: true, get: function () { return MetadataBuilder__factory_1.MetadataBuilder__factory; } });
+var OneClickInitiator__factory_1 = require("./factories/OneClickInitiator__factory");
+Object.defineProperty(exports, "OneClickInitiator__factory", { enumerable: true, get: function () { return OneClickInitiator__factory_1.OneClickInitiator__factory; } });
 var Paper__factory_1 = require("./factories/Paper__factory");
 Object.defineProperty(exports, "Paper__factory", { enumerable: true, get: function () { return Paper__factory_1.Paper__factory; } });
 var SwapMeet__factory_1 = require("./factories/SwapMeet__factory");

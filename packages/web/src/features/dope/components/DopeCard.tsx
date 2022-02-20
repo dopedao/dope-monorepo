@@ -60,13 +60,21 @@ export type DopeItemApiResponse = {
 };
 
 export type DopeCardProps = {
-  buttonBar: 'for-marketplace' | 'for-owner';
+  buttonBar: 'for-marketplace' | 'for-owner' | null;
   dope: DopeItemApiResponse;
   isExpanded?: boolean;
   showCollapse?: boolean;
+  hidePreviewButton?: boolean;
+  showStatus?: boolean;
 };
 
-const DopeCard = ({ buttonBar, dope, isExpanded = true }: DopeCardProps) => {
+const DopeCard = ({
+  buttonBar,
+  dope,
+  isExpanded = true,
+  showCollapse = false,
+  hidePreviewButton = false,
+}: DopeCardProps) => {
   return (
     <PanelContainer
       key={`dope-card_${dope.id}`}
@@ -110,7 +118,12 @@ const DopeCard = ({ buttonBar, dope, isExpanded = true }: DopeCardProps) => {
         </div>
         <DopeCardTitleCost dope={dope} />
       </PanelTitleBarFlex>
-      <DopeCardBody buttonBar={buttonBar} dope={dope} isExpanded={isExpanded} />
+      <DopeCardBody
+        buttonBar={buttonBar}
+        dope={dope}
+        isExpanded={isExpanded}
+        hidePreviewButton={hidePreviewButton}
+      />
       {buttonBar === 'for-owner' && <DopeCardButtonBarOwner dope={dope} />}
       {buttonBar === 'for-marketplace' && <DopeCardButtonBarMarket dope={dope} />}
     </PanelContainer>

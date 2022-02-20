@@ -10,6 +10,7 @@ import {
   SwapMeet__factory,
   Components__factory,
   Hongbao__factory,
+  OneClickInitiator__factory,
 } from '@dopewars/contracts/dist';
 import { ethers, BigNumber } from 'ethers';
 import { NETWORK } from 'utils/constants';
@@ -24,11 +25,11 @@ export const useInitiator = () => {
   );
 };
 
-export const useDopeInitiator = () => {
+export const useOneClickInitiator = () => {
   const { chainId, provider } = useEthereum();
 
   return useMemo(
-    () => DopeInitiator__factory.connect(NETWORK[chainId].contracts.initiator, provider),
+    () => OneClickInitiator__factory.connect(NETWORK[chainId].contracts.oneclick, provider),
     [chainId, provider],
   );
 };
