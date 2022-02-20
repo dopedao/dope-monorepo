@@ -261,7 +261,7 @@ const UnbundleSuccess = () => {
         width="100%"
         justifyContent="end"
       >
-        <Link href="/dope" passHref>
+        <Link href="/inventory?section=Dope" passHref>
           <Button variant="primary">Unbundle More</Button>
         </Link>
       </HStack>
