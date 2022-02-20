@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const Container = styled.div`
+const ContainerFooter = styled.div`
   // Important the immediate parent container for InfiniteScroll
   // is scrollable so it works properly.
   height: 100%;
@@ -18,4 +18,4 @@ const Container = styled.div`
   }
 `;
 
-export default Container;
+export default ContainerFooter;
