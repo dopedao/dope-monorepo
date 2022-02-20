@@ -31,8 +31,9 @@ func NonceHandler() func(http.ResponseWriter, *http.Request) {
 		nonce := siwe.GenerateNonce()
 
 		session.Values["nonce"] = nonce
+		session.Save(r, w)
 
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(200)
 		w.Write([]byte(nonce))
 	}
@@ -60,6 +61,7 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 			return
 		}
 
+		// verify that signature is valid and time constraint is met
 		if err := siweMessage.Verify(signature); err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
@@ -71,6 +73,12 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 			return
 		}
 
+		// verify that nonce in signed message corresponds to nonce in session
+		if siweMessage.Nonce != session.Values["nonce"] {
+			http.Error(w, "invalid nonce", http.StatusUnauthorized)
+			return
+		}
+
 		if siweMessage.ExpirationTime != nil {
 			session.Options.MaxAge = int(time.Until(*siweMessage.ExpirationTime).Seconds())
 		}
@@ -79,6 +87,7 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 		session.Save(r, w)
 
 		w.WriteHeader(200)
+		w.Header().Set("Content-Type", "text/plain")
 		w.Write([]byte("OK"))
 	}
 }
@@ -97,6 +106,7 @@ func AuthorizedHandler() func(http.ResponseWriter, *http.Request) {
 		}
 
 		w.WriteHeader(200)
+		w.Header().Set("Content-Type", "text/plain")
 		w.Write([]byte("OK"))
 	}
 }
@@ -116,5 +126,9 @@ func LogoutHandler() func(http.ResponseWriter, *http.Request) {
 
 		session.Options.MaxAge = -1
 		session.Save(r, w)
+
+		w.WriteHeader(200)
+		w.Header().Set("Content-Type", "text/plain")
+		w.Write([]byte("OK"))
 	}
 }
