@@ -62,6 +62,7 @@ export const getRandomHustler = ({
   renderName,
   textColor,
   zoomWindow,
+  isVehicle,
 }: Partial<HustlerCustomization>): HustlerCustomization => {
   return {
     bgColor: bgColor || DEFAULT_BG_COLORS[getRandomNumber(0, DEFAULT_BG_COLORS.length - 1)],
@@ -73,8 +74,8 @@ export const getRandomHustler = ({
     renderName: renderName || false,
     sex: sex || (HUSTLER_SEXES[getRandomNumber(0, 1)] as HustlerSex),
     textColor: textColor || '#000000',
-    zoomWindow: zoomWindow || ZOOM_WINDOWS[0],
-    isVehicle: false,
+    zoomWindow: zoomWindow || ZOOM_WINDOWS[2],
+    isVehicle: isVehicle || true,
   };
 };
 

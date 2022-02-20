@@ -197,7 +197,7 @@ const ConfigurationControls = ({
         </Stack>
       </ControlsBody>
       <PanelFooter>
-        <DisconnectAndQuitButton />
+        {!isCustomize && <DisconnectAndQuitButton />}
         <div></div>
         <Button onClick={() => randomizeHustlerAttributes(config.dopeId, setHustlerConfig)}>
           Randomize
