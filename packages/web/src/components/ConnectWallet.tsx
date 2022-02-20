@@ -47,7 +47,7 @@ const ConnectWallet = () => {
             `}
           >
             <Button onClick={() => onClick('MetaMask')}>MetaMask</Button>
-            <Button onClick={() => onClick('WalletConnect')}>WalletConnect</Button>
+            <Button onClick={() => onClick('WalletConnect')} autoFocus>WalletConnect</Button>
           </div>
         </div>
       </Dialog>
