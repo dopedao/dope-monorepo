@@ -18,29 +18,18 @@ const ZoomContainer = styled.div`
 `;
 
 const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
-  const [selected, setSelected] = useState(2);
-  const [isVehicle, setIsVehicle] = useState(true);
-
-  useEffect(() => {
-    if(!selected) return;
-    let renderName = config.renderName;
-    // for mugshots doesn't make sense to render name, because it gets cut off.
-    if (selected == 1 || selected == 2) renderName = false;
-    setHustlerConfig({
-      ...config,
-      zoomWindow: ZOOM_WINDOWS[selected],
-      isVehicle,
-      renderName: renderName,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected, isVehicle]);
+  const selected = ZOOM_WINDOWS.indexOf(config.zoomWindow);
 
   return (
     <ZoomContainer>
       <Button
         onClick={() => {
-          setSelected(1);
-          setIsVehicle(false);
+          setHustlerConfig({
+            ...config,
+            zoomWindow: ZOOM_WINDOWS[1],
+            isVehicle: false,
+            renderName: false,
+          });
         }}
         borderTopRightRadius="0"
         borderBottomRightRadius="0"
@@ -53,8 +42,12 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
       </Button>
       <Button
         onClick={() => {
-          setSelected(0);
-          setIsVehicle(false);
+          setHustlerConfig({
+            ...config,
+            zoomWindow: ZOOM_WINDOWS[0],
+            isVehicle: false,
+            renderName: config.renderName,
+          });
         }}
         borderRadius="0"
         borderLeft="unset"
@@ -68,8 +61,12 @@ const ZoomControls = ({ config, setHustlerConfig }: ConfigureHustlerProps) => {
       </Button>
       <Button
         onClick={() => {
-          setSelected(2);
-          setIsVehicle(true);
+          setHustlerConfig({
+            ...config,
+            zoomWindow: ZOOM_WINDOWS[2],
+            isVehicle: true,
+            renderName: false,
+          });
         }}
         borderTopLeftRadius="0"
         borderBottomLeftRadius="0"
