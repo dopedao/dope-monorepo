@@ -88,7 +88,6 @@ export const buildIconSVG = (
     result += svgRects.join('');
     return result;
   }, `<svg width="320px" height="320px" viewBox="230 245 240 290">`);
-
   return `${svgWithoutEndTag}</svg>`;
 };
 

@@ -1345,7 +1345,7 @@ export type DrugQueryVariables = Exact<{
 }>;
 
 
-export type DrugQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, name: string, rles?: { __typename?: 'RLEs', male: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type DrugQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, name: string, rles?: { __typename?: 'RLEs', male: string } | null | undefined, base?: { __typename?: 'Item', rles?: { __typename?: 'RLEs', male: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type DrugsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1481,6 +1481,11 @@ export const DrugDocument = `
         name
         rles {
           male
+        }
+        base {
+          rles {
+            male
+          }
         }
       }
     }
