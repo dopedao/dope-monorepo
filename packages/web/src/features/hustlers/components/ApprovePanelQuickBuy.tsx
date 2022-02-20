@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { Box, Button, Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useWeb3React } from '@web3-react/core';
@@ -15,6 +15,7 @@ import { ReceiptItem } from './ReceiptItem';
 import ReceiptItemDope from './ReceiptItemDope';
 import ReceiptItemHustler from './ReceiptItemHustler';
 import { useRouter } from 'next/router';
+import SpinnerMessage from 'components/SpinnerMessage';
 
 const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
   const { account } = useWeb3React();
@@ -22,7 +23,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
   const initiator = useInitiator();
   const [unbundleCost, setUnbundleCost] = useState<BigNumber>();
   const [paperCost, setPaperCost] = useState<BigNumber>();
-  const [paperAmount, setPaperAmount] = useState<BigNumber>(BigNumber.from(0));
+  const [paperAmount, setPaperAmount] = useState<BigNumber>(BigNumber.from(utils.parseEther('10000')));
 
   const { deactivate } = useWeb3React();
   const router = useRouter();
@@ -78,10 +79,11 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
     return BigNumber.from(order.currentPrice).add(paperCost);
   }, [order, paperCost]);
 
+  const canMint = (account && order && paperAmount && paperCost && total);
+  console.log([account, order, paperAmount, paperCost, total]);
   const onMintHustler = useCallback(async () => {
-    if (!account || !order || !paperAmount || !paperCost || !total) {
-      return;
-    }
+    
+    if (!canMint) return;
 
     const config = createConfig(hustlerConfig);
     const { dopeId, mintAddress } = hustlerConfig;
@@ -119,31 +121,30 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
     <PanelContainer justifyContent="flex-start">
       <PanelTitleHeader>Transaction Details</PanelTitleHeader>
       <PanelBody>
-          <h4>You Pay</h4>
-          <hr className="onColor" />
-          <ReceiptItem css={css`border-bottom:0;margin-bottom:1em;`}>
-            <Box display="flex" alignItems="center" justifyContent="center">
-              <Image
-                src="/images/icon/wallet.svg" alt="Wallet"
-              />
-            </Box>
-            <Box flex="1">
-              { estimatedAmount } Ξ
-            </Box>
-            <Box>
+        <h4>You Pay</h4>
+        <hr className="onColor" />
+        <ReceiptItem css={css`border-bottom:0;margin-bottom:1em;`}>
+          <Box display="flex" alignItems="center" justifyContent="center">
             <Image
-              src="/images/icon/ethereum.svg"
-              width="16px"
-              alt="Mainnet"
+              src="/images/icon/wallet.svg" alt="Wallet"
             />
           </Box>
-          </ReceiptItem>
-          <h4>You Receive</h4>
-          <hr className="onColor" />
-          <ReceiptItemDope hustlerConfig={hustlerConfig} />
-          <ReceiptItemHustler hustlerConfig={hustlerConfig} />
+          <Box flex="1">
+            { estimatedAmount } Ξ
+          </Box>
+          <Box>
+          <Image
+            src="/images/icon/ethereum.svg"
+            width="16px"
+            alt="Mainnet"
+          />
+        </Box>
+        </ReceiptItem>
+        <h4>You Receive</h4>
+        <hr className="onColor" />
+        <ReceiptItemDope hustlerConfig={hustlerConfig} />
         {/* PAPER */}
-        {/* <ReceiptItem>
+        <ReceiptItem>
           <Box display="flex" alignItems="center" justifyContent="center">
             <Image
               src="/images/icon/wallet.svg" alt="Wallet"
@@ -151,7 +152,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
           </Box>
           <Box flex="1">
             {unbundleCost &&
-              parseInt(formatEther(unbundleCost), 10).toLocaleString(undefined, {
+              parseInt(utils.formatEther(unbundleCost), 10).toLocaleString(undefined, {
                 minimumFractionDigits: 0,
             })}
             &nbsp;
@@ -164,7 +165,8 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
               alt="This asset lives on Ethereum Mainnet"
             />
           </Box>
-        </ReceiptItem> */}
+        </ReceiptItem>
+        <ReceiptItemHustler hustlerConfig={hustlerConfig} />
         {/* GEAR */}
         <ReceiptItem>
           <Box display="flex" alignItems="center" justifyContent="center" background="var(--gray-100)" color="black" borderRadius="4px">9</Box>
@@ -185,8 +187,9 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
         `}
       >
         <Button onClick={handleQuitButton}>Disconnect &amp; Cancel</Button>
-        <Button variant="primary" onClick={onMintHustler} autoFocus>
-          ✨ Mint Hustler ✨
+        <Button variant="primary" onClick={onMintHustler} disabled={!canMint} autoFocus>
+          {!canMint && <SpinnerMessage text="Getting everything ready" />}
+          {canMint && '✨ Mint Hustler ✨'}
         </Button>
       </PanelFooter>
     </PanelContainer>

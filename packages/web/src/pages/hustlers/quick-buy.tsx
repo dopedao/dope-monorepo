@@ -44,6 +44,7 @@ const QuickBuyHustler = () => {
   const [currentDopeIndex, setCurrentDopeIndex] = useState(0);
   const [showHustler, setShowHustler] = useState(true);
   const [paperPrice, setPaperPrice] = useState<BigNumber>();
+  
   const oneclick = useOneClickInitiator();
 
   useEffect(() => {
@@ -89,7 +90,7 @@ const QuickBuyHustler = () => {
 
   useEffect(() => {
     if (oneclick) {
-      oneclick.callStatic.estimate(ethers.utils.parseUnits('12500', 18)).then(setPaperPrice);
+      oneclick.callStatic.estimate(ethers.utils.parseUnits('22500', 18)).then(setPaperPrice);
     }
   }, [oneclick]);
 
@@ -232,11 +233,19 @@ const QuickBuyHustler = () => {
                     `}
                   >
                     <Tr>
-                      <Td className="noWrap">NFTs you receive</Td>
+                      <Td className="noWrap">You receive</Td>
                       <Td>
                         <dl>
                           <dt>
                             DOPE #{currentDope.id}
+                            <Image
+                              src="/images/icon/ethereum.svg"
+                              width="16px"
+                              alt="This asset lives on Ethereum Mainnet"
+                            />
+                          </dt>
+                          <dt>
+                            10,000 $PAPER
                             <Image
                               src="/images/icon/ethereum.svg"
                               width="16px"
