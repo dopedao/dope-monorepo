@@ -150,12 +150,12 @@ const Flex = () => {
               `}
             `}
           >
-            <HustlerMugShot hustlerConfig={hustlerConfig} itemRles={itemRles} />
+            <Image src={onChainImage} alt={hustlerConfig.name} />
           </PanelContainer>
           <PanelContainer>
             <PanelBody>
               <Grid
-                templateRows="repeat(2, 1fr)"
+                templateRows="2fr 1fr"
                 gap="8"
                 justifyContent="center"
                 alignItems="stretch"
@@ -170,7 +170,7 @@ const Flex = () => {
                   <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
                 </GridItem>
                 <GridItem minWidth="256px">
-                  <Image src={onChainImage} alt={hustlerConfig.name} />
+                  <HustlerMugShot hustlerConfig={hustlerConfig} itemRles={itemRles} />
                 </GridItem>
               </Grid>
             </PanelBody>
