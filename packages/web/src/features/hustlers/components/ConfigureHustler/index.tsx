@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { HustlerCustomization } from 'utils/HustlerConfig';
@@ -21,7 +20,7 @@ export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   ogTitle?: string;
   itemRles?: string[];
   hustlerId?: string;
-  goBackToInitialStep?: () => void;
+  handleFinishConfiguration?: () => void;
   isCustomize?: boolean;
 };
 
@@ -42,7 +41,7 @@ const ConfigureHustler = ({
   ogTitle,
   hustlerId,
   itemRles,
-  goBackToInitialStep,
+  handleFinishConfiguration,
 }: ConfigureHustlerProps) => (
   <StackedResponsiveContainer>
     <PanelContainer
@@ -50,6 +49,7 @@ const ConfigureHustler = ({
         min-height: 500px;
         background-color: var(--gray-00);
         gap: 16px;
+        flex: 2 !important;
       `}
     >
       <HustlerCard bgColor={config.bgColor}>
@@ -118,7 +118,7 @@ const ConfigureHustler = ({
     <ConfigurationControls
       config={config}
       setHustlerConfig={setHustlerConfig}
-      goBackToInitialStep={goBackToInitialStep}
+      handleFinishConfiguration={handleFinishConfiguration}
       isCustomize={isCustomize}
     />
   </StackedResponsiveContainer>

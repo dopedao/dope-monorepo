@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/image';
+import styled from '@emotion/styled';
 
 const iconPath = '/images/icon';
 
@@ -12,17 +13,16 @@ type StatusIconProps = {
   status: boolean;
 };
 
+const StatusContainer = styled.div<{ status?: boolean }>`
+  font-size: (--text-small);
+  display: flex;
+  padding: 6px;
+  background-color: ${({ status }) => (status ? '#9BFFCB' : '#DEDEDD')};
+  margin-top: 8px;
+  border-radius: 2px;
+`;
 const DopeStatus = ({ content, status }: RowProps) => (
-  <div
-    className="small"
-    css={css`
-      display: flex;
-      padding: 6px;
-      background-color: ${status ? '#9BFFCB' : '#DEDEDD'};
-      margin-top: 8px;
-      border-radius: 2px;
-    `}
-  >
+  <StatusContainer status={status}>
     {content == 'paper' ? (
       <>
         <StatusIcon status={status} />
@@ -34,7 +34,7 @@ const DopeStatus = ({ content, status }: RowProps) => (
         <span>{status ? 'Can Claim Gear & Initiate Hustler' : 'No Gear To Claim'}</span>
       </>
     )}
-  </div>
+  </StatusContainer>
 );
 
 const StatusIcon = ({ status }: StatusIconProps) => (

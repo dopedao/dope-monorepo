@@ -39,12 +39,14 @@ const RenderFromItemIds = ({
   isVehicle = false,
 }: HustlerRenderProps) => {
   const resolution = useMemo(() => (isVehicle ? 160 : 64), [isVehicle]);
+  const [isLoading, setIsLoading] = useState(true);
   const [bodyRles, setBodyRles] = useState<string[]>([]);
   // const swapmeet = useSwapMeet();
   const hustlers = useHustler();
 
   useEffect(() => {
     let isMounted = true;
+    setIsLoading(true);
     if (!hustlers) return;
     if (!sex && !body && !hair) return;
     /**
@@ -68,7 +70,10 @@ const RenderFromItemIds = ({
       promises.push(hustlers.bodyRle(...facialHairParams));
     }
     Promise.all(promises).then(value => {
-      if (isMounted) setBodyRles(value);
+      if (isMounted) {
+        setBodyRles(value);
+        setIsLoading(false);
+      }
     });
 
     return () => {
@@ -108,9 +113,6 @@ const RenderFromItemIds = ({
     isVehicle,
     resolution,
   ]);
-
-  if (!svg) return <LoadingBlockSquareCentered />;
-
   return (
     // Need to set overflow hidden so whole container doesn't scroll
     // and cause flexbox layout to shift.
@@ -118,6 +120,7 @@ const RenderFromItemIds = ({
       ratio={1}
       css={css`
         height: 100%;
+        width: 100%;
         overflow: hidden;
         svg {
           width: 100%;
@@ -125,7 +128,10 @@ const RenderFromItemIds = ({
         }
       `}
     >
-      {svg && <div dangerouslySetInnerHTML={{ __html: svg }} />}
+      <>
+        {(!svg || isLoading) && <LoadingBlockSquareCentered />}
+        {svg && !isLoading && <div dangerouslySetInnerHTML={{ __html: svg }} />}
+      </>
     </AspectRatio>
   );
 };

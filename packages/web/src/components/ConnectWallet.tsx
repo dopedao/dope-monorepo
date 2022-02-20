@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
 import { Button } from '@chakra-ui/button';
+import { useRouter } from 'next/router';
 import ConnectWalletSVG from 'ui/svg/ConnectWallet';
 import Dialog from 'components/Dialog';
 import Head from './Head';
@@ -8,6 +9,7 @@ import useWeb3Provider from 'hooks/web3';
 
 const ConnectWallet = () => {
   const { connect } = useWeb3Provider();
+  const router = useRouter();
 
   const onClick = useCallback(
     async (w: 'MetaMask' | 'WalletConnect') => {
@@ -47,7 +49,8 @@ const ConnectWallet = () => {
             `}
           >
             <Button onClick={() => onClick('MetaMask')}>MetaMask</Button>
-            <Button onClick={() => onClick('WalletConnect')}>WalletConnect</Button>
+            <Button onClick={() => onClick('WalletConnect')} autoFocus>WalletConnect</Button>
+            <Button onClick={() => router.back()} backgroundColor="black" color="white">Go Back</Button>
           </div>
         </div>
       </Dialog>
