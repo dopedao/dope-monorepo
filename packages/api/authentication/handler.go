@@ -31,6 +31,8 @@ func NonceHandler() func(http.ResponseWriter, *http.Request) {
 		nonce := siwe.GenerateNonce()
 
 		session.Values["nonce"] = nonce
+		// user has 30 seconds to use nonce until it's not valid anymore
+		session.Options.MaxAge = 30
 		session.Save(r, w)
 
 		w.Header().Set("Content-Type", "text/plain")
