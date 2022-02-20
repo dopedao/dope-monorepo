@@ -83,6 +83,8 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 
 		if siweMessage.ExpirationTime != nil {
 			session.Options.MaxAge = int(time.Until(*siweMessage.ExpirationTime).Seconds())
+		} else {
+			session.Options.MaxAge = 0
 		}
 
 		session.Values["siwe"] = body.Message
