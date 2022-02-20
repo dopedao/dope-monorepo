@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import {
   CrossDomainMessenger__factory,
@@ -15,10 +15,6 @@ import {
 import { ethers, BigNumber } from 'ethers';
 import { NETWORK } from 'utils/constants';
 import { useEthereum, useOptimism } from 'hooks/web3';
-import { Contract, Abi } from 'starknet';
-import { useStarknet } from '@starknet-react/core';
-
-import DOPEWARS from '../abi/01_DopeWars.json';
 
 export const useInitiator = () => {
   const { chainId, provider } = useEthereum();
@@ -247,20 +243,3 @@ export const useFetchMetadata = () => {
     }
   };
 };
-
-const ADDRESS = '0x06ab912fbcc27c3f6ed4d998f2cc56fc65ab4fa6796259fc1855a099b0c92804';
-
-/**
- * Load the DopeWars contract.
- * @returns The `DopeWars` contract or undefined.
- */
-export function useDopeWarsContract(): Contract | undefined {
-  const { library } = useStarknet();
-  const [contract, setContract] = useState<Contract | undefined>(undefined);
-
-  useEffect(() => {
-    setContract(new Contract(DOPEWARS as Abi[], ADDRESS, library));
-  }, [library]);
-
-  return contract;
-}
