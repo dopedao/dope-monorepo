@@ -62,7 +62,7 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
             </Box>
             <br />
             <p className="smaller">
-              Imagine sitting in a cell for years, decades, or even for life, convicted of an activity that is no longer a crime while thousands of other people build intergenerational wealth doing exactly the same thing.
+              Imagine sitting in a cell for years, decades, or even for life, convicted of an activity that is no longer a crime; while thousands of other people build intergenerational wealth doing exactly the same thing.
             </p>
             <p>
               Over 40,000 cannabis prisoners face this situation today in the United States alone, while countless others languish in jails and prisons worldwide.
