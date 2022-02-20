@@ -1,8 +1,9 @@
-import { Box, Button } from "@chakra-ui/react"
-import { NavLink } from "components/NavLink"
+import { Box } from "@chakra-ui/react"
+import { css } from "@emotion/react"
 import { useDrugQuery } from "generated/graphql"
 import { useRouter } from "next/router"
 import { useMemo } from "react"
+import { buildIconSVG } from "utils/svg-builder"
 import Container from "./Container"
 import ContainerFooter from "./ContainerFooter"
 import ContainerHeader from "./ContainerHeader"
@@ -28,19 +29,27 @@ const Sell = () => {
     return drugItem.node
   }, [data])
 
+  const rle = drug?.rles?.male ? drug?.rles?.male : drug?.base?.rles?.male;
+
   return (
     <Box>
-      <NavLink href="/roll-your-own">
-        <Button>
-          Back
-        </Button>
-      </NavLink>
       <Container>
         <ContainerHeader>
           <span>Sell</span>
         </ContainerHeader>
 
-        {/* DRUG svg goes here */}
+        {rle && (
+          <div
+            css={css`
+              display: flex;
+              justify-content: center;
+              width: 100%;
+              height: 100%;
+              overflow: hidden;
+            }`}
+            dangerouslySetInnerHTML={{ __html: buildIconSVG([rle]) }}
+          />
+        )}
 
         <ContainerFooter>
           <span>{drug?.name}</span>

@@ -72,7 +72,7 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
   return (
     <>
       <Tr background={background} cursor="pointer" onClick={() => setIsExpanded.toggle()}>
-        <Td>
+        <Td {...CELL_PROPS}>
           {drug.rle && (
             <div
               css={css`
@@ -99,6 +99,7 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
               <Button color="black">Buy</Button>
             </NavLink>
           </Td>
+          <Td />
           <Td />
           <Td>
             <NavLink href={`/roll-your-own/sell/${drug.id}`}>

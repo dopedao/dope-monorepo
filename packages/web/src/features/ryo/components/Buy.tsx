@@ -1,5 +1,4 @@
-import { Box, Button } from '@chakra-ui/react';
-import { NavLink } from 'components/NavLink';
+import { Box } from '@chakra-ui/react';
 import { useDrugQuery } from 'generated/graphql';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
@@ -9,7 +8,7 @@ import ContainerHeader from './ContainerHeader';
 import DrugQuantityGauge from './DrugQuantityGauge';
 import { buildIconSVG } from 'utils/svg-builder';
 import { css } from '@emotion/react';
-import { useDopeWarsContract } from 'hooks/contracts';
+import { useDopeWarsContract } from 'hooks/contracts/roll-your-own';
 
 const Buy = () => {
   const router = useRouter();
@@ -39,9 +38,6 @@ const Buy = () => {
 
   return (
     <Box>
-      <NavLink href="/roll-your-own">
-        <Button>Back</Button>
-      </NavLink>
       <Container>
         <ContainerHeader>
           <span>BUY</span>
@@ -50,10 +46,12 @@ const Buy = () => {
         {rle && (
           <div
             css={css`
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-        }`}
+              display: flex;
+              justify-content: center;
+              width: 100%;
+              height: 100%;
+              overflow: hidden;
+            }`}
             dangerouslySetInnerHTML={{ __html: buildIconSVG([rle]) }}
           />
         )}

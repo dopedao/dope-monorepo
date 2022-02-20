@@ -1,20 +1,34 @@
 import { Flex, HStack } from "@chakra-ui/react"
+import { ReactNode } from "react"
 
-const GameWindowHeader = () => {
+export const GameWindowHeaderHustlerProfile = () => {
+  return (
+    <HStack>
+      <span>Avatar</span>
+      <span>Username</span>
+    </HStack>
+  )
+}
+
+export const GameWindowHeaderAchievements = () => {
+  return (
+    <HStack>
+      <span>CASH</span>
+      <span>$0</span>
+    </HStack>
+  )
+}
+
+const GameWindowHeader = ({
+  children,
+}: { children: ReactNode }) => {
   return (
     <Flex
       color="white"
       justify="space-between"
       p={4}
     >
-      <HStack>
-        <span>Avatar</span>
-        <span>Username</span>
-      </HStack>
-      <HStack>
-        <span>CASH</span>
-        <span>$0</span>
-      </HStack>
+      {children}
     </Flex>
   )
 }

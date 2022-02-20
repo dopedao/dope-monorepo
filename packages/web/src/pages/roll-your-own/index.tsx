@@ -3,14 +3,20 @@ import { StarknetProvider } from '@starknet-react/core';
 
 import GameWindow from 'features/ryo/components/GameWindow';
 import Drugs from 'features/ryo/components/Drugs';
-import GameWindowHeader from 'features/ryo/components/GameWindowHeader';
+import GameWindowHeader, {
+  GameWindowHeaderAchievements,
+  GameWindowHeaderHustlerProfile,
+} from 'features/ryo/components/GameWindowHeader';
 
 const RYO = () => (
   <>
     <Head title="Roll Your Own" />
     <StarknetProvider>
       <GameWindow>
-        <GameWindowHeader />
+        <GameWindowHeader>
+          <GameWindowHeaderAchievements />
+          <GameWindowHeaderHustlerProfile />
+        </GameWindowHeader>
         <Drugs />
       </GameWindow>
     </StarknetProvider>
