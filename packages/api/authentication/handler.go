@@ -28,7 +28,7 @@ func NonceHandler() func(http.ResponseWriter, *http.Request) {
 			return
 		}
 
-		nonce := String(12)
+		nonce := siwe.GenerateNonce()
 
 		session.Values["nonce"] = nonce
 
