@@ -103,10 +103,13 @@ const QuickBuyHustler = () => {
   }, [currentDope, paperPrice]);
 
   const CarouselButtons = () => (
-    <Box display="flex" justifyContent="stretch" gap="8px">
+    <Box display="flex" justifyContent="space-between" gap="8px" width="100%">
       <Button flex="1" onClick={decrementIndex} disabled={currentDopeIndex <= 0}>
         <Image src="/images/icon/arrow-back.svg" alt="Previous" width="16px" marginRight="8px;" />
         Previous
+      </Button>
+      <Button flex="1" onClick={() => setShowHustler(!showHustler)}>
+        {showHustler ? 'Show Equipment' : 'Show Hustler'}
       </Button>
       <Button
         flex="1"
@@ -124,10 +127,6 @@ const QuickBuyHustler = () => {
       <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy&estimatedAmount=${currentPrice}`} passHref>
         <Button variant="primary" autoFocus>Customize</Button>
       </Link>
-      <CarouselButtons />
-      <Button onClick={() => setShowHustler(!showHustler)}>
-        {showHustler ? 'Show Equipment' : 'Show Hustler'}
-      </Button>
     </Box>
   );
 
@@ -149,7 +148,17 @@ const QuickBuyHustler = () => {
               alignItems="center"
               gap="8px"
             >
-              <Box width="100%" height="100%" position="relative">
+              {/* <div className="smallest">
+                <a
+                  href="/swap-meet"
+                  css={css`
+                    border-bottom: 1px solid black;
+                  `}
+                >
+                  See more DOPE on our Swap Meet
+                </a>
+              </div> */}
+              <Box width="100%" height="100%" position="relative" minHeight="350px">
                 <div
                   css={css`
                     position: absolute;
@@ -180,40 +189,33 @@ const QuickBuyHustler = () => {
                   </div>
                 )}
               </Box>
-              <div className="smallest">
-                <a
-                  href="/swap-meet"
-                  css={css`
-                    border-bottom: 1px solid black;
-                  `}
-                >
-                  See more DOPE on our Swap Meet
-                </a>
-              </div>
+              <CarouselButtons />
             </Box>
             <Box display="flex" flexDirection="column" justifyContent="center" gap="16px">
-              <Box padding="8px">
+              <Box flex="1"></Box>
+              <Box padding="8px" flex="2">
                 <h2>Get Hooked On DOPE</h2>
                 <hr className="onColor" />
                 <p>
-                  Hustlers are the in-game characters of Dope Wars who can own up to 10 different
-                  pieces of NFT Gear.
+                  Hustlers are the in-game characters of Dope Wars.
                 </p>
                 <p>
-                  DOPE Gear comes directly from our DOPE NFT tokens that live on Ethereum by
-                  claiming it.
+                  They can own up to 10 different
+                  pieces of NFT Gear, which will be useful in a series of games currently under development.
                 </p>
                 <p>
-                  Get a fully-equipped Dope Wars character kit and DAO voting token using this
-                  streamlined process right now.
+                  Dope Gear comes directly from un-claimed Dope NFT tokens, which sold out in September 2021.
+                </p>
+                <p>
+                  Get a fully-equipped Dope Wars setup by purchasing a floor DOPE NFT right now.
                 </p>
                 <Box>
                   <Table
                     css={css`
                       td {
                         padding: 16px 0;
-                        border-top: 2px solid rgba(0, 0, 0, 0.15) !important;
-                        border-bottom: 2px solid rgba(0, 0, 0, 0.15) !important;
+                        border-top: 2px solid rgba(0, 0, 0, 0.15);
+                        border-bottom: 2px solid rgba(0, 0, 0, 0.15);
                         vertical-align: top;
                       }
                       dl {
@@ -271,12 +273,13 @@ const QuickBuyHustler = () => {
                       </Td>
                     </Tr>
                     <Tr className="noWrap">
-                      <Td>Estimated Total</Td>
-                      <Td>{currentPrice} Ξ</Td>
+                      <Td borderBottom="0 !important">Estimated Total</Td>
+                      <Td borderBottom="0 !important">{currentPrice} Ξ</Td>
                     </Tr>
                   </Table>
                 </Box>
               </Box>
+              <Box flex="1"></Box>
               <QuickBuyFooter />
             </Box>
           </>
