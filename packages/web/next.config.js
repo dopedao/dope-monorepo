@@ -19,6 +19,11 @@ const nextConfig = {
         source: '/hustlers/:id/flex',
         destination: '/hustlers/:id',
         permanent: true,
+      },
+      {
+        source: '/dope',
+        destination: '/inventory?section=Dope',
+        permanent: true,
       }
     ]
   }
