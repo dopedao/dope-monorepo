@@ -106,9 +106,9 @@ const QuickBuyHustler = () => {
     <Box display="flex" justifyContent="space-between" gap="8px" width="100%">
       <Button flex="1" onClick={decrementIndex} disabled={currentDopeIndex <= 0}>
         <Image src="/images/icon/arrow-back.svg" alt="Previous" width="16px" marginRight="8px;" />
-        Previous
+        Prev
       </Button>
-      <Button flex="1" onClick={() => setShowHustler(!showHustler)}>
+      <Button flex="2" onClick={() => setShowHustler(!showHustler)}>
         {showHustler ? 'Show Equipment' : 'Show Hustler'}
       </Button>
       <Button
@@ -125,7 +125,9 @@ const QuickBuyHustler = () => {
   const QuickBuyFooter = () => (
     <Box display="flex" flexDirection="column" justifyContent="flex-start" gap="8px">
       <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy&estimatedAmount=${currentPrice}`} passHref>
-        <Button variant="primary" autoFocus>Customize</Button>
+        <Button 
+          // autoFocus
+          variant="primary">Customize</Button>
       </Link>
     </Box>
   );
