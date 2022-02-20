@@ -16,6 +16,8 @@ const InitiatePage = () => {
   const isQuickBuy = typeof quickBuy !== 'undefined';
   const [isOpened, setIsOpened] = useState(false);
 
+  const safeEstimatedAmount = (typeof estimatedAmount == 'string' ? parseFloat(estimatedAmount) : '');
+
   useEffect(() => {
     let isMounted = true;
     if (!dopeId) return;
@@ -46,7 +48,7 @@ const InitiatePage = () => {
         <HustlerProvider 
           initialHustlerData={
             Object.assign(INITIAL_STATE, 
-              {isQuickBuy: isQuickBuy, estimatedAmount: parseFloat(estimatedAmount)}
+              {isQuickBuy: isQuickBuy, estimatedAmount: safeEstimatedAmount}
             )
           }
         >
