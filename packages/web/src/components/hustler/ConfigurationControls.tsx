@@ -21,7 +21,6 @@ import PanelFooter from 'components/PanelFooter';
 import PanelTitleHeader from 'components/PanelTitleHeader';
 import SexSelector from 'components/hustler/SexSelector';
 import styled from '@emotion/styled';
-import useHustler from 'features/hustlers/hooks/useHustler';
 import DisconnectAndQuitButton from 'features/hustlers/components/DisconnectAndQuitButton';
 
 const ControlsWrapper = styled.div`
@@ -52,8 +51,6 @@ const ConfigurationControls = ({
   const [loading, setLoading] = useState(false);
   const { chainId } = useOptimism();
   const { library, chainId: web3ReactChainId } = useWeb3React();
-
-  const hustlerContext = useHustler();
 
   const hustlers = useMemo(
     () =>
