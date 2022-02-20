@@ -83,6 +83,9 @@ export const buttonStyle = css`
   box-shadow: -1px -1px 0px rgba(0, 0, 0, 0.25) inset, 1px 1px 0px rgba(255, 255, 255, 0.25) inset,
     0px 0px 2px rgba(0, 0, 0, 0.25);
   text-decoration: none !important;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   ${media.hover`
     text-decoration: none !important;
   `}
