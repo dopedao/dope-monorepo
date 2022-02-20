@@ -220,7 +220,7 @@ const ConfigurationControls = ({
               variant="primary"
               isLoading={loading}
               loadingText="Processing..."
-              autoFocus
+              // autoFocus
             >
               Finish Configuration
             </Button>

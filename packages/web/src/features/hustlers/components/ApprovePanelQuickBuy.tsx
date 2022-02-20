@@ -190,7 +190,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
       >
         <DisconnectAndQuitButton />
         <Button 
-          autoFocus 
+          // autoFocus 
           disabled={!canMint} 
           isLoading={isPurchasing}
           onClick={onMintHustler} 
