@@ -35,7 +35,6 @@ const InitiatePage = () => {
       scrollable={true}
       title="Initiate Your Hustler"
       padBody={false}
-      onlyFullScreen
       fullScreen
     >
       {isOpened === true && (

@@ -22,6 +22,7 @@ import PanelTitleHeader from 'components/PanelTitleHeader';
 import SexSelector from 'components/hustler/SexSelector';
 import styled from '@emotion/styled';
 import useHustler from 'features/hustlers/hooks/useHustler';
+import DisconnectAndQuitButton from 'features/hustlers/components/DisconnectAndQuitButton';
 
 const ControlsWrapper = styled.div`
   background-color: white;
@@ -199,6 +200,8 @@ const ConfigurationControls = ({
         </Stack>
       </ControlsBody>
       <PanelFooter>
+        <DisconnectAndQuitButton />
+        <div></div>
         <Button onClick={() => randomizeHustlerAttributes(config.dopeId, setHustlerConfig)}>
           Randomize
         </Button>

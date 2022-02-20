@@ -134,7 +134,6 @@ const QuickBuyHustler = () => {
   return (
     <AppWindow 
       title="Welcome To The Streets" 
-      onlyFullScreen 
       fullScreen 
       background={bgColor}
     >

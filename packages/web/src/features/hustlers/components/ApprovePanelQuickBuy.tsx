@@ -16,23 +16,19 @@ import ReceiptItemDope from './ReceiptItemDope';
 import ReceiptItemHustler from './ReceiptItemHustler';
 import { useRouter } from 'next/router';
 import SpinnerMessage from 'components/SpinnerMessage';
+import DisconnectAndQuitButton from './DisconnectAndQuitButton';
 
 const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
+  const router = useRouter();
   const { account } = useWeb3React();
   const oneclick = useOneClickInitiator();
   const initiator = useInitiator();
   const [unbundleCost, setUnbundleCost] = useState<BigNumber>();
   const [paperCost, setPaperCost] = useState<BigNumber>();
   const [paperAmount, setPaperAmount] = useState<BigNumber>(BigNumber.from(utils.parseEther('10000')));
+  const [isPurchasing, setIsPurchasing] = useState(false);
 
-  const { deactivate } = useWeb3React();
-  const router = useRouter();
   const { estimatedAmount } = router.query;
-
-  const handleQuitButton = useCallback(() => {
-    deactivate();
-    router.replace('/hustlers/quick-buy');
-  }, [deactivate]);
 
   const { data, isFetching } = useDopeListingQuery(
     {
@@ -87,7 +83,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
 
     const config = createConfig(hustlerConfig);
     const { dopeId, mintAddress } = hustlerConfig;
-
+    setIsPurchasing(true);
     oneclick.initiate(
       {
         maker: order.maker,
@@ -114,8 +110,14 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
       paperAmount,
       Math.ceil(Date.now() / 1000 + 600),
       { value: total },
-    );
-  }, [order, total, hustlerConfig, account, oneclick, paperCost, paperAmount]);
+    )
+    .then(
+      () => router.replace('/hustlers/mint-success')
+    )
+    .finally(
+      () => setIsPurchasing(false)
+    )
+  }, [order, total, hustlerConfig, account, oneclick, paperCost, paperAmount, router, canMint]);
 
   return (
     <PanelContainer justifyContent="flex-start">
@@ -186,8 +188,15 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
           position: relative;
         `}
       >
-        <Button onClick={handleQuitButton}>Disconnect &amp; Cancel</Button>
-        <Button variant="primary" onClick={onMintHustler} disabled={!canMint} autoFocus>
+        <DisconnectAndQuitButton />
+        <Button 
+          autoFocus 
+          disabled={!canMint} 
+          isLoading={isPurchasing}
+          onClick={onMintHustler} 
+          variant="primary" 
+          loadingText="Minting…"
+        >
           {!canMint && <SpinnerMessage text="Getting everything ready" />}
           {canMint && '✨ Mint Hustler ✨'}
         </Button>

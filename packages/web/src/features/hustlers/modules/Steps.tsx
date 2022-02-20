@@ -1,6 +1,6 @@
 import { Dispatch, useState, SetStateAction, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { getRandomHustler, HustlerCustomization } from 'utils/HustlerConfig';
+import { ZOOM_WINDOWS, getRandomHustler, HustlerCustomization } from 'utils/HustlerConfig';
 import ConfigureHustler from 'features/hustlers/components/ConfigureHustler';
 import Approve from 'features/hustlers/modules/Approve';
 import Finalize from 'features/hustlers/modules/Finalize';
@@ -21,7 +21,7 @@ const Steps = () => {
   const hustler = useHustler();
   const dispatch = useDispatchHustler();
   const [hustlerConfig, setHustlerConfig] = useState(
-    getRandomHustler({ dopeId: String(router.query.id) }),
+    getRandomHustler({ dopeId: String(router.query.id), zoomWindow: ZOOM_WINDOWS[2], isVehicle: true }),
   );
 
   const handleFinishConfiguration = () => {
