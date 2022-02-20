@@ -131,7 +131,12 @@ const QuickBuyHustler = () => {
   );
 
   return (
-    <AppWindow title="Welcome To The Streets" onlyFullScreen fullScreen background={bgColor}>
+    <AppWindow 
+      title="Welcome To The Streets" 
+      onlyFullScreen 
+      fullScreen 
+      background={bgColor}
+    >
       <StackedResponsiveContainer>
         {(isLoading || !currentDope) && <LoadingBlock maxRows={5} />}
         {!isLoading && currentDope && (

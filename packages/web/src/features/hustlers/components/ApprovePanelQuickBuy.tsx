@@ -14,6 +14,7 @@ import { useDopeListingQuery } from 'generated/graphql';
 import { ReceiptItem } from './ReceiptItem';
 import ReceiptItemDope from './ReceiptItemDope';
 import ReceiptItemHustler from './ReceiptItemHustler';
+import { useRouter } from 'next/router';
 
 const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
   const { account } = useWeb3React();
@@ -22,6 +23,14 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
   const [unbundleCost, setUnbundleCost] = useState<BigNumber>();
   const [paperCost, setPaperCost] = useState<BigNumber>();
   const [paperAmount, setPaperAmount] = useState<BigNumber>(BigNumber.from(0));
+
+  const { deactivate } = useWeb3React();
+  const router = useRouter();
+  const handleQuitButton = useCallback(() => {
+    deactivate();
+    router.replace('/hustlers/quick-buy');
+  }, [deactivate]);
+
   const { data, isFetching } = useDopeListingQuery(
     {
       where: {
@@ -152,7 +161,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
           position: relative;
         `}
       >
-        <div></div>
+        <Button onClick={handleQuitButton}>Disconnect &amp; Cancel</Button>
         <Button variant="primary" onClick={onMintHustler} autoFocus>
           ✨ Mint Hustler ✨
         </Button>
