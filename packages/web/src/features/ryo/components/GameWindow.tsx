@@ -1,26 +1,47 @@
-import AppWindow from "components/AppWindow";
-import { ReactNode } from "react";
 import { useStarknet } from '@starknet-react/core';
+import { AppWindowProps, AppWindowBody } from 'components/AppWindow';
+import ConnectStarknetWallet from 'components/ConnectStarknetWallet';
+import DesktopWindow from 'components/DesktopWindow';
+import AppWindowFooter from 'components/AppWindowFooter';
 
 const GameWindow = ({
+  title,
+  padBody = true,
+  scrollable = true,
+  width,
+  height,
   children,
-}: {
-  children: ReactNode
-}) => {
+  footer,
+  onlyFullScreen,
+  fullScreen,
+  background,
+}: AppWindowProps) => {
   const { account } = useStarknet();
-  console.log(account);
 
   return (
-    <AppWindow
-      scrollable
-      background='#202221'
-      padBody={false}
-      height="90vh"
-      title="Roll your own"
+    <DesktopWindow
+      title={title || 'DOPE WARS'}
+      width={width}
+      height={height}
+      onlyFullScreen={onlyFullScreen}
+      fullScreen={fullScreen}
+      background={background}
     >
-      {children}
-    </AppWindow>
-  )
-}
+      {!account ? (
+        <ConnectStarknetWallet />
+      ) : (
+        <AppWindowBody
+          className="appWindowBody"
+          background={background}
+          scrollable={scrollable}
+          padBody={padBody}
+        >
+          {children}
+        </AppWindowBody>
+      )}
+      <AppWindowFooter>{footer}</AppWindowFooter>
+    </DesktopWindow>
+  );
+};
 
-export default GameWindow
+export default GameWindow;

@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
+import { StarknetProvider } from '@starknet-react/core';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Hydrate } from 'react-query/hydration';
@@ -51,13 +52,15 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
             <Web3ReactProvider getLibrary={getLibrary}>
-              <FullScreenProvider>
-                <main>
-                  <PageLoadingIndicator />
-                  <DesktopIconList />
-                  <Component {...pageProps} />
-                </main>
-              </FullScreenProvider>
+              <StarknetProvider>
+                <FullScreenProvider>
+                  <main>
+                    <PageLoadingIndicator />
+                    <DesktopIconList />
+                    <Component {...pageProps} />
+                  </main>
+                </FullScreenProvider>
+              </StarknetProvider>
             </Web3ReactProvider>
             {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
           </Hydrate>

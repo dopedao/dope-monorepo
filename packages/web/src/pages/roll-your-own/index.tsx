@@ -7,11 +7,9 @@ import Drugs from 'features/ryo/components/Drugs';
 const RYO = () => (
   <>
     <Head title="Roll Your Own" />
-    <StarknetProvider>
-      <GameWindow>
-        <Drugs />
-      </GameWindow>
-    </StarknetProvider>
+    <GameWindow>
+      <Drugs />
+    </GameWindow>
   </>
 );
 

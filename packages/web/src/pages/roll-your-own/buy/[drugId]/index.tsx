@@ -6,11 +6,9 @@ import GameWindow from 'features/ryo/components/GameWindow';
 const RYO = () => (
   <>
     <Head title="Roll Your Own" />
-    <StarknetProvider>
-      <GameWindow>
-        <Buy />
-      </GameWindow>
-    </StarknetProvider>
+    <GameWindow>
+      <Buy />
+    </GameWindow>
   </>
 );
 
