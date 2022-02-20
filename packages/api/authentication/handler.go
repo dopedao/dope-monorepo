@@ -12,12 +12,10 @@ import (
 	"github.com/jiulongw/siwe-go"
 )
 
-type LoginBody struct {
-	Message   string `json:"message"`
-	Signature string `json:"signature"`
-}
-
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
+// seconds
+const MAX_NONCE_AGE = 30
 
 // Generates a nonce for the session
 func NonceHandler() func(http.ResponseWriter, *http.Request) {
@@ -32,7 +30,7 @@ func NonceHandler() func(http.ResponseWriter, *http.Request) {
 
 		session.Values["nonce"] = nonce
 		// user has 30 seconds to use nonce until it's not valid anymore
-		session.Options.MaxAge = 30
+		session.Options.MaxAge = MAX_NONCE_AGE
 		session.Save(r, w)
 
 		w.Header().Set("Content-Type", "text/plain")
@@ -45,9 +43,7 @@ func NonceHandler() func(http.ResponseWriter, *http.Request) {
 func LoginHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body LoginBody
-
-		err := json.NewDecoder(r.Body).Decode(&body)
-		if err != nil {
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -57,7 +53,15 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		signature, err := hex.DecodeString(body.Signature[2:])
+
+		// parse hex signature into a sequence of bytes
+		// ignore 0x if starting with it
+		var signature []byte
+		if body.Signature[0:2] != "0x" {
+			signature, err = hex.DecodeString(body.Signature)
+		} else {
+			signature, err = hex.DecodeString(body.Signature[2:])
+		}
 		if err != nil {
 			http.Error(w, fmt.Sprintf("invalid signature: %s", err.Error()), http.StatusBadRequest)
 			return
