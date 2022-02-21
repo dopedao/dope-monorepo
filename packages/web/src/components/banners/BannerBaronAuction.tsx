@@ -58,7 +58,7 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
             </h3>
             <Box className="smallest" color="rgba(255,255,255,0.75)">
               {/* Ends in <Countdown date={new Date('02/26/2022')} /> */}
-              Auction begins in <Countdown date={new Date('02/21/2022 17:00:00')} />
+              Auction begins in <Countdown date={new Date('02/23/2022 17:00:00')} />
             </Box>
             <br />
             <p className="smaller">
