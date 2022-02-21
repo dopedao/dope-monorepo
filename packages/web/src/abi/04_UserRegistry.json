@@ -15,10 +15,6 @@
             {
                 "name": "user_id",
                 "type": "felt"
-            },
-            {
-                "name": "starknet_pubkey",
-                "type": "felt"
             }
         ],
         "name": "get_user_info",
@@ -55,7 +51,7 @@
     {
         "inputs": [
             {
-                "name": "starknet_pubkey",
+                "name": "user_id",
                 "type": "felt"
             },
             {
@@ -64,12 +60,7 @@
             }
         ],
         "name": "register_user",
-        "outputs": [
-            {
-                "name": "user_id",
-                "type": "felt"
-            }
-        ],
+        "outputs": [],
         "type": "function"
     },
     {

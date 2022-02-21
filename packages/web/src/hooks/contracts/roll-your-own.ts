@@ -60,7 +60,7 @@ export function useDopeWarsContract(): Contract | undefined {
     setContract(
       new Contract(
         DOPEWARS as Abi[],
-        '0x0036e62e336e0bb1b26b036d4f92025f4682040bf77f6b38eb6837b0ada8bfa2',
+        '0x02e819f964b0e31300bb97c7571d4fc2d3952837ad4826bb7d252603741d3805',
         library,
       ),
     );
@@ -81,7 +81,7 @@ export function useLocationOwnedContract(): Contract | undefined {
     setContract(
       new Contract(
         LocationOwned as Abi[],
-        '0x005e07fea9b12b155d9c4651a5a1c5aa7c3e6cd5099c5ecf7d6af1518ee62ca4',
+        '0x02a43a37fb3c24859e460483f39b94279a47cd3856849399e5deec406305bbfb',
         library,
       ),
     );
@@ -102,7 +102,7 @@ export function useUserOwnedContract(): Contract | undefined {
     setContract(
       new Contract(
         UserOwned as Abi[],
-        '0x03a286c81e087aedc0a7a54fdd4da90a681f51bee3310a58423d019926f11a0c',
+        '0x020468fd2c028f56c30cdc807848d25eaa027076302ace30d722ef7400e4afbc',
         library,
       ),
     );
@@ -123,7 +123,7 @@ export function useUserRegistryContract(): Contract | undefined {
     setContract(
       new Contract(
         UserRegistry as Abi[],
-        '0x00559805d11dd8b96baca171027442d8725d82ed65d9096384d265683f1ff0db',
+        '0x023c010a16d330407bec66548a71f9cf3c8d7c16dcc74a79e67ea80efb04890c',
         library,
       ),
     );
