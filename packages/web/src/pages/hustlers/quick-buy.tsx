@@ -9,6 +9,7 @@ import LoadingBlock from 'components/LoadingBlock';
 import RenderFromDopeIdOnly from 'components/hustler/RenderFromDopeIdOnly';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { css } from '@emotion/react';
+import { media } from 'ui/styles/mixins';
 import {
   useSearchDopeQuery,
   OrderDirection,
@@ -138,7 +139,12 @@ const QuickBuyHustler = () => {
       fullScreen 
       background={bgColor}
     >
-      <StackedResponsiveContainer>
+      <StackedResponsiveContainer css={css`
+        padding: 16px !important;
+        ${media.tablet`
+          padding: 64px !important;
+        `}
+      `}>
         {(isLoading || !currentDope) && <LoadingBlock maxRows={5} />}
         {!isLoading && currentDope && (
           <>

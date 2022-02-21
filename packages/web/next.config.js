@@ -24,6 +24,11 @@ const nextConfig = {
         source: '/dope',
         destination: '/inventory?section=Dope',
         permanent: true,
+      },
+      {
+        source: '/mint',
+        destination: '/hustlers/quick-buy',
+        permanent: false,
       }
     ]
   }
