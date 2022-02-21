@@ -154,7 +154,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
           </Box>
           <Box flex="1">
             {unbundleCost &&
-              parseInt(utils.formatEther(unbundleCost), 10).toLocaleString(undefined, {
+              parseInt(utils.formatEther(paperAmount), 10).toLocaleString(undefined, {
                 minimumFractionDigits: 0,
             })}
             &nbsp;
