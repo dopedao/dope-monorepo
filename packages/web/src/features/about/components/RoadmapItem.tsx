@@ -6,12 +6,9 @@ import { ReactNode } from 'react';
 
 const Container = styled.div`
   clear: both;
-  margin: 32px;
+  margin: 0px 32px;
   background: rgba(0,0,0,0.9);
-  margin-bottom: 32px;
-  ${media.tablet`
-    margin-bottom: 96px;
-  `}
+  max-width: 60em;
   .imageBox {
     position: relative;
     border:4px solid black;
