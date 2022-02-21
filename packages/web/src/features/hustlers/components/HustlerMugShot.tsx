@@ -8,8 +8,8 @@ import styled from '@emotion/styled';
 const HustlerTitle = styled.h1`
   font-family: Dope !important;
   position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0%);
+  // left: 50%;
+  // transform: translate(-50%, 0%);
   bottom: 0;
   z-index: 2;
   padding: 16px 32px;
@@ -19,9 +19,9 @@ const HustlerTitle = styled.h1`
   border: 4px solid white;
 `;
 const HustlerImage = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
+  // position: absolute;
+  // left: 50%;
+  // transform: translate(-50%, 0);
   width: 100%;
   padding: 0 15%;
   bottom: 0px;
@@ -34,9 +34,9 @@ const HustlerImage = styled.div`
 `;
 const MugshotContainer = styled.div`
   position: relative;
-  height: 100%;
-  min-height: 400px;
-  background: #f2f2f2 url(/images/hustler/mugshot_bg.png) center center / contain no-repeat;
+  // height: 100%;
+  // min-height: 400px;
+  // background: #f2f2f2 url(/images/hustler/mugshot_bg.png) center center / contain no-repeat;
 `;
 
 interface Props {
@@ -66,16 +66,17 @@ const HustlerMugShot = ({ hustlerConfig, itemRles }: Props) => {
     );
   };
 
-  return (
-    <MugshotContainer>
-      <HustlerTitle>
-        {hustlerConfig.name}
-        <br />
-        {getRandomDate('01/01/1980')}
-      </HustlerTitle>
-      <HustlerImage>{renderHustler(1)}</HustlerImage>
-    </MugshotContainer>
-  );
+  return <HustlerImage>{renderHustler(1)}</HustlerImage>;
+
+  // return (
+  //   {/*<MugshotContainer>
+  //      <HustlerTitle>
+  //       {hustlerConfig.name}
+  //       <br />
+  //       {getRandomDate('01/01/1980')}
+  //     </HustlerTitle> */}
+  //   {//</MugshotContainer>}
+  // );
 };
 
 export default HustlerMugShot;
