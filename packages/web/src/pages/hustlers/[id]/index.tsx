@@ -116,6 +116,7 @@ const Flex = () => {
         ...hustlerConfig,
         name: h?.name || '',
         title: h?.title || '',
+        bgColor: `#${h?.background}`,
         sex: (h?.sex.toLowerCase() || 'male') as HustlerSex,
         body: h.body?.id ? parseInt(h.body.id.split('-')[2]) : 0,
         hair: h.hair?.id ? parseInt(h.hair.id.split('-')[2]) : 0,
@@ -145,17 +146,21 @@ const Flex = () => {
           <PanelContainer
             css={css`
               grid-column: unset;
+              background-color: ${hustlerConfig.bgColor};
+              padding: 16px;
+              display: flex;
+              align-items: center;
               ${media.tablet`
                 grid-column: 1 / 3;
               `}
             `}
           >
-            <HustlerMugShot hustlerConfig={hustlerConfig} itemRles={itemRles} />
+            <Image src={onChainImage} alt={hustlerConfig.name} flex="1" />
           </PanelContainer>
           <PanelContainer>
             <PanelBody>
               <Grid
-                templateRows="repeat(2, 1fr)"
+                templateRows="2fr 1fr"
                 gap="8"
                 justifyContent="center"
                 alignItems="stretch"
@@ -164,13 +169,13 @@ const Flex = () => {
                 <GridItem
                   display="flex"
                   justifyContent="center"
+                  alignItems="flex-end"
                   background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
-                  paddingTop="24px"
                 >
                   <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
                 </GridItem>
                 <GridItem minWidth="256px">
-                  <Image src={onChainImage} alt={hustlerConfig.name} />
+                  <HustlerMugShot hustlerConfig={hustlerConfig} itemRles={itemRles} />
                 </GridItem>
               </Grid>
             </PanelBody>
