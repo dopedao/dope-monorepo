@@ -86,19 +86,26 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
               In the spirit of Doing Good, ALL PROCEEDS from the auction will be donated to The Last Prisoner Project.
             </p>
           </Box>
-          <Stack direction={['column', 'row', 'row']} alignItems="center">
-            <Link href="" width={['100%', 'auto']} passHref>
-              <Button disabled color="black">
+          <Stack direction={['column', 'row', 'row']} alignItems="stretch" justifyContent="center">
+            <Link href="" passHref flex={1}>
+              <Button disabled color="black" width="100%">
                 Place a Bid
               </Button>
             </Link>
             <Link 
-              width={['100%', 'auto']} 
               href="https://www.lastprisonerproject.org/" 
               target="lpp" 
               passHref
+              flex={1}
             >
-              <Button color="black">About the Last Prisoner Project</Button>
+              <Button width="100%" color="black">About Last Prisoner Project</Button>
+            </Link>
+            <Link 
+              href="/about" 
+              passHref
+              flex={1}
+            >
+              <Button width="100%" color="black">About Dope Wars</Button>
             </Link>
           </Stack>
         </Box>
