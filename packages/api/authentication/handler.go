@@ -97,6 +97,11 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 			session.Options.MaxAge = 0
 		}
 
+		// destroy nonce session to prevent
+		// nonce reuse after successful login
+		nonceSession.Options.MaxAge = -1
+		nonceSession.Save(r, w)
+
 		session.Values["siwe"] = body.Message
 		session.Save(r, w)
 
