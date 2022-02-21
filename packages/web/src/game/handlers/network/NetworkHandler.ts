@@ -1,3 +1,7 @@
+import { ethers } from 'ethers';
+import defaultNetworkConfig from 'game/constants/NetworkConfig';
+import { _ } from 'gear-rarity/dist/image-140bf8ec';
+import { SiweMessage } from 'siwe';
 import { DataTypes, NetworkEvents, UniversalEventNames } from './types';
 
 export default class NetworkHandler {
@@ -7,6 +11,7 @@ export default class NetworkHandler {
   private connection?: WebSocket;
 
   private _connected: boolean = false;
+  private _loggedIn: boolean = false;
 
   get connected() {
     return this._connected;
@@ -24,6 +29,49 @@ export default class NetworkHandler {
     this.emitter.once(event, callback, context);
   }
 
+  async login(): Promise<boolean> {
+    if (!window.ethereum)
+    {
+      throw new Error('No ethereum provider found');
+    }
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const nonce = await (await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authNoncePath)).text();
+    const message = new SiweMessage({
+      address: await provider.getSigner().getAddress(),
+      domain: window.location.host,
+      statement: "Signature of this message will only be used for authentication.",
+      uri: window.location.origin,
+      version: '1',
+      chainId: await provider.getSigner().getChainId(),
+      nonce
+    }).prepareMessage();
+
+    const signature = await provider.getSigner().signMessage(message);
+    const login = await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authLoginPath, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ signature, message })
+    });
+
+    if (login.status !== 200)
+      return false;
+    
+    this._loggedIn = true;
+    return true;
+  }
+
+  async logout() {
+    this._loggedIn = false;
+    await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authLogoutPath, {
+      credentials: 'include'
+    });
+  }
+
   connect() {
     if (this.connection?.readyState === WebSocket.OPEN) {
       console.warn('Already connected to server');
@@ -31,7 +79,7 @@ export default class NetworkHandler {
     }
 
     this.connection = new WebSocket(
-      `wss://involvement-terror-cowboy-specializing.trycloudflare.com/game/ws`,
+      defaultNetworkConfig.wsUri,
     );
 
     this.connection.onopen = () => {
