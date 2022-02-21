@@ -7,7 +7,7 @@ import LocationOwned from '../../abi/02_LocationOwned.json';
 import UserOwned from '../../abi/03_UserOwned.json';
 import UserRegistry from '../../abi/04_UserRegistry.json';
 
-const MAP_RYO_ITEM_ID = {
+const RYO_ITEM_IDS = {
   // weed
   6: 1,
   // cocaine
@@ -46,6 +46,28 @@ const MAP_RYO_ITEM_ID = {
   1114118: 18,
   // adderall
   1179654: 19,
+};
+
+const RYO_LOCATIONS = {
+  'The Bayou': ['Upriver', 'Highground', 'Platoon', 'Old Bridge'],
+  Atlanta: ['Oakland City', 'West End', 'Grove Park', 'Adamsville'],
+  Compton: ['Sunny Cove', 'Leland', 'Downtown', 'Sherman Oaks'],
+  Oakland: ['Eastmont', 'Webster', 'Claremont', 'Piedmont'],
+  SOMA: ['South brach', 'Yerba buena', 'Rincon Hill', 'Central'],
+  'Hong Kong': ['Kowloon', 'Central District', 'Lan Kwai Fong', 'Tai Tam'],
+  London: ['Westminster', 'Cambde', 'Kensington', 'Knightsbridge'],
+  Chicago: ['Englewood', 'West Garfield Park', 'Lincoln Park', 'Beverly'],
+  Brooklyn: ['Brownsville', 'Bushwick', 'Fort Greene', 'Brooklyn Heights'],
+  Detroit: ['Van Steuban', 'Warrendale', 'Fiskorn', 'Palmer Woods'],
+  'Mob Town': ['Grove Park', 'Riverside', 'Canton', 'Berea'],
+  Murdertown: ['Pike Creek', 'Highland', 'Downtown', 'Wooster'],
+  'Sin City': ['Sacred Oaks', 'The Docks', 'Central', 'Old Town'],
+  'Big Smoke': ['Old Bridge', 'Dock Lands', 'Central', 'High Rise'],
+  'The Backwoods': ['Old Town', 'Deep North', 'Hillside', 'West Rim'],
+  'The Big Easy': ['Central City', 'Saint Roch', 'Audoubon', 'Uptown'],
+  Queens: ['Long Island City', 'Ridgewood', 'Rochdale', 'Howard Beach'],
+  BedStuy: ['Bedford', 'Stuyvesant Heights', 'Ocean Hill', 'Central'],
+  Buffalo: ['Parkside', 'North Park', 'Kenfield', 'Emerson'],
 };
 
 /**

@@ -21,7 +21,7 @@ const Lobby = () => {
     <div>
       Lobby
       {isRegistered ? (
-        <Link href="/roll-your-own/1" passHref>
+        <Link href="/roll-your-own/1/location/brooklyn" passHref>
           <Button>Play</Button>
         </Link>
       ) : (

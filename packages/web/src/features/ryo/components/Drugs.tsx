@@ -2,6 +2,7 @@ import { Button, Table, Thead, Tbody, Tr, Th, Td, Box, useBoolean, Link } from '
 import { NavLink } from 'components/NavLink';
 import { useDrugsQuery } from 'generated/graphql';
 import { useMemo } from 'react';
+import { useRouter } from 'next/router';
 import { buildIconSVG } from 'utils/svg-builder';
 import { css } from '@emotion/react';
 
@@ -61,6 +62,8 @@ const Drugs = () => {
 export default Drugs;
 
 const DrugRow = ({ drug }: { drug: Drug }) => {
+  const router = useRouter();
+  const { roundId, locationId } = router.query;
   const [isExpanded, setIsExpanded] = useBoolean();
 
   const CELL_PROPS = {
@@ -95,14 +98,14 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
       {isExpanded && (
         <Tr background={background}>
           <Td>
-            <NavLink href={`/roll-your-own/buy/${drug.id}`}>
+            <NavLink href={`/roll-your-own/${roundId}/location/${locationId}/buy/${drug.id}`}>
               <Button color="black">Buy</Button>
             </NavLink>
           </Td>
           <Td />
           <Td />
           <Td>
-            <NavLink href={`/roll-your-own/sell/${drug.id}`}>
+            <NavLink href={`/roll-your-own/${roundId}/location/${locationId}/sell/${drug.id}`}>
               <Button color="black">SELL</Button>
             </NavLink>
           </Td>
