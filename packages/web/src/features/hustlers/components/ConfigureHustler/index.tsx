@@ -12,8 +12,7 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
 import ZoomControls from 'components/hustler/ZoomControls';
 import Link from 'next/link';
-
-import svgtopng from './svg-to-png';
+import PngDownloadButton from '../PngDownloadButton';
 
 export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   config: HustlerCustomization;
@@ -89,24 +88,18 @@ const ConfigureHustler = ({
       <PanelFooter>
         {isCustomize && itemRles && (
           <>
-            <Button
-              onClick={() => {
-                svgtopng(
-                  'svg#dynamicBuiltSvg',
-                  `dope-wars-hustler-${config.name?.replace(' ', '_')}`,
-                  config.bgColor,
-                );
-              }}
-            >
-              <Image src="/images/icon/download.svg" alt="Download" />
-            </Button>
+            <PngDownloadButton hustlerConfig={config} />
             <Link
               href={`https://community.dopewars.gg/collectibles/new?hustler_id=${hustlerId}`}
               passHref
             >
               <a target="rebel">
                 <Button>
-                  <Image src="/images/icon/camera.svg" alt="Mint a Mugshot" height="40px" />
+                  <Image 
+                    src="/images/icon/camera.svg" 
+                    alt="Mint a Mugshot" 
+                    height="40px" 
+                  />
                 </Button>
               </a>
             </Link>
