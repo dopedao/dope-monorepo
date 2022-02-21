@@ -20,7 +20,7 @@ const MAX_NONCE_AGE = 30
 // Generates a nonce for the session
 func NonceHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		session, err := store.Get(r, "session")
+		session, err := store.Get(r, "nonce")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -73,15 +73,21 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 			return
 		}
 
-		session, err := store.Get(r, "session")
+		nonceSession, err := store.Get(r, "nonce")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		// verify that nonce in signed message corresponds to nonce in session
-		if siweMessage.Nonce != session.Values["nonce"] {
+		if siweMessage.Nonce != nonceSession.Values["nonce"] {
 			http.Error(w, "invalid nonce", http.StatusUnauthorized)
+			return
+		}
+
+		session, err := store.Get(r, "session")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
