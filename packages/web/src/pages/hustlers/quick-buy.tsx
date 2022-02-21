@@ -215,10 +215,10 @@ const QuickBuyHustler = () => {
                   pieces of interchangeable NFT Gear, which will be useful in a series of games currently under development.
                 </p>
                 <p>
-                  Dope Gear comes directly from un-claimed Dope NFT tokens, which sold out in September 2021.
+                  Dope Gear comes directly from unclaimed floor-priced Dope NFT tokens, which sold out in September 2021.
                 </p>
                 <p>
-                  Get a fully-equipped Dope Wars setup by purchasing a floor DOPE NFT right now.
+                  Get a fully equipped Dope Wars setup now.
                 </p>
                 <Box>
                   <Table
