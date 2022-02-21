@@ -208,10 +208,10 @@ const QuickBuyHustler = () => {
                 <h2>Get Hooked On DOPE</h2>
                 <hr className="onColor" />
                 <p>
-                  Hustlers are the in-game characters of Dope Wars.
+                <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a" target="wiki" className="underline">Hustlers</a> are the in-game characters of <a href="/about" className="underline" target="about">Dope Wars</a>.
                 </p>
                 <p>
-                  They can own up to 10 different
+                  Hustlers can own up to 10 different
                   pieces of interchangeable NFT Gear, which will be useful in a series of games currently under development.
                 </p>
                 <p>
