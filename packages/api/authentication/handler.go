@@ -29,13 +29,18 @@ func NonceHandler() func(http.ResponseWriter, *http.Request) {
 		nonce := siwe.GenerateNonce()
 
 		session.Values["nonce"] = nonce
-		// user has 30 seconds to use nonce until it's not valid anymore
+		// user has [MAX_NONCE_AGE] seconds to use nonce until it's not valid anymore
 		session.Options.MaxAge = MAX_NONCE_AGE
-		session.Save(r, w)
+		if err := session.Save(r, w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(200)
-		w.Write([]byte(nonce))
+		// send back nonce + its max age
+		// [nonce] [max-age]
+		w.Write([]byte(fmt.Sprintf("%s %d", nonce, session.Options.MaxAge)))
 	}
 }
 
@@ -100,10 +105,16 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 		// destroy nonce session to prevent
 		// nonce reuse after successful login
 		nonceSession.Options.MaxAge = -1
-		nonceSession.Save(r, w)
+		if err := session.Save(r, w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		session.Values["siwe"] = body.Message
-		session.Save(r, w)
+		if err := session.Save(r, w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		w.WriteHeader(200)
 		w.Header().Set("Content-Type", "text/plain")
@@ -144,7 +155,10 @@ func LogoutHandler() func(http.ResponseWriter, *http.Request) {
 		}
 
 		session.Options.MaxAge = -1
-		session.Save(r, w)
+		if err := session.Save(r, w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		w.WriteHeader(200)
 		w.Header().Set("Content-Type", "text/plain")
