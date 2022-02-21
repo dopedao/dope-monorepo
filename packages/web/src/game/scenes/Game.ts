@@ -152,7 +152,7 @@ export default class GameScene extends Scene {
             this.player.questManager.addQuest(new InteractCitizenQuest(
               'Get out of your cavern',
               'Go to the local store and get yourself a phone',
-              this.citizens[this.citizens.push(new Citizen(this.matter.world, 3681, 390, '1001', "Alice", undefined, [
+              this.citizens[this.citizens.push(new Citizen(this.matter.world, 70, 300, '1001', "Alice", undefined, [
                 new Conversation([
                   {
                     text: "Hey! I'm Bob, the store owner. I'm glad you're here!",
@@ -165,7 +165,7 @@ export default class GameScene extends Scene {
                     text: "Anyway, hit me up if you need anything else. I'm always here to help.",
                     typingSpeed: 70,
                   }
-              ])])) - 1],
+              ], () => true)])) - 1],
               this.player.questManager,
               this.citizens[this.citizens.length - 3],
               undefined,
@@ -187,37 +187,25 @@ export default class GameScene extends Scene {
             {
               text: 'Cool! Now that you got yourself a phone, you can try connecting your wallet. Hmmmm let me take a look. So you go there... uhh you click on that yeah... then top right... and uhh... yeah sign the message now.',
             }, () => {
-            const selectedAddress = (window.ethereum as any)?.selectedAddress;
-            if (selectedAddress)
-            {
-              const siweMessage = new SiweMessage({
-                domain: window.location.hostname,
-                address: selectedAddress,
-                uri: origin,
-                version: '1',
-                chainId: 1
-              });
-              const provider = new ethers.providers.Web3Provider(window.ethereum);
-              provider.getSigner().signMessage(siweMessage.prepareMessage())
-                .then(signedMessage => {
-                  this.citizens[this.citizens.length - 2].conversations.push(new Conversation({text: `Nice, your wallet is now connected! You can truly enjoy Dopecity now!`}));
-
-                })
-                .catch(err => {
-                  this.citizens[this.citizens.length - 2].conversations.push(new Conversation({text: `Oh weird uhmm... something wrong seemed to happen. Try reconnecting your wallet?`}));
+              NetworkHandler.getInstance().login()
+                .then(() => {
                   (this.scene.get('UIScene') as UIScene).toast({
                     ...chakraToastStyle,
-                    title: `Something went wrong while signing the message`,
-                    description: err.message,
+                    title: 'Wallet connected',
+                    status: 'success',
+                  });
+                })
+                .catch((reason) => {
+                  console.log(reason);
+                  (this.scene.get('UIScene') as UIScene).toast({
+                    ...chakraToastStyle,
+                    title: 'Sign in failed',
+                    description: reason.message ?? reason,
                     status: 'error',
                   });
-                });
-
+                })
               return true;
-            }
-
-            return false;
-          })
+            })
         ],
         undefined,
         //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],

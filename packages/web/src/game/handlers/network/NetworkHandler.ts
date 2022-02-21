@@ -29,15 +29,15 @@ export default class NetworkHandler {
     this.emitter.once(event, callback, context);
   }
 
-  async login(): Promise<boolean> {
+  async login() {
     if (!window.ethereum)
     {
-      throw new Error('No ethereum provider found');
+      Promise.reject('No ethereum provider found');
     }
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    const nonce = await (await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authNoncePath)).text();
+    const nonce = await (await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authNoncePath, { credentials: 'include' })).text();
     const message = new SiweMessage({
       address: await provider.getSigner().getAddress(),
       domain: window.location.host,
@@ -59,10 +59,10 @@ export default class NetworkHandler {
     });
 
     if (login.status !== 200)
-      return false;
+      Promise.reject(await login.text());
     
     this._loggedIn = true;
-    return true;
+    Promise.resolve();
   }
 
   async logout() {
