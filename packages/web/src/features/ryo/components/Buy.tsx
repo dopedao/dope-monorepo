@@ -1,7 +1,7 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Flex, HStack, Stack } from '@chakra-ui/react';
 import { useDrugQuery } from 'generated/graphql';
 import { useRouter } from 'next/router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Container from './Container';
 import ContainerFooter from './ContainerFooter';
 import ContainerHeader from './ContainerHeader';
@@ -36,6 +36,15 @@ const Buy = () => {
 
   const rle = drug?.rles?.male ? drug?.rles?.male : drug?.base?.rles?.male;
 
+  const currentAmount = 0
+  const cash = 100
+  const cost = 10
+
+  const [buyAmount, setBuyAmount] = useState(0)
+
+  const totalPurchase = buyAmount * cost
+  const fillPercentage = totalPurchase / cash * 100
+
   return (
     <Box>
       <Container>
@@ -56,10 +65,42 @@ const Buy = () => {
           />
         )}
         <ContainerFooter>
-          <span>{drug?.name}</span>
+          <Flex justify="space-between">
+            <HStack>
+              <span>{drug?.name}</span>
+              <Box
+                background="#434345"
+                borderRadius="full"
+                py={0.5}
+                px={2}
+              >
+                <span>${cost}</span>
+              </Box>
+            </HStack>
+            <HStack>
+              <Box>
+                {currentAmount}
+              </Box>
+              <Box color="#22B617">
+                + {buyAmount}
+              </Box>
+            </HStack>
+          </Flex>
         </ContainerFooter>
       </Container>
-      <DrugQuantityGauge gaugeColor="#22B617" />
+      <Stack>
+        <Box textAlign="center">
+          Buy ({buyAmount}) for ${totalPurchase}
+        </Box>
+        <DrugQuantityGauge
+          fillPercentage={fillPercentage}
+          gaugeColor="#22B617"
+          shouldDisableDecrease={buyAmount === 0}
+          shouldDisableIncrease={totalPurchase >= cash}
+          onClickDecrease={() => setBuyAmount(prev => prev - 1)}
+          onClickIncrease={() => setBuyAmount(prev => prev + 1)}
+        />
+      </Stack>
     </Box>
   );
 };

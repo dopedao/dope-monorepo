@@ -1,8 +1,8 @@
-import { Box } from "@chakra-ui/react"
+import { Box, Flex, HStack } from "@chakra-ui/react"
 import { css } from "@emotion/react"
 import { useDrugQuery } from "generated/graphql"
 import { useRouter } from "next/router"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { buildIconSVG } from "utils/svg-builder"
 import Container from "./Container"
 import ContainerFooter from "./ContainerFooter"
@@ -31,6 +31,15 @@ const Sell = () => {
 
   const rle = drug?.rles?.male ? drug?.rles?.male : drug?.base?.rles?.male;
 
+  const currentAmount = 10
+  const cash = 100
+  const cost = 10
+
+  const [sellAmount, setSellAmount] = useState(0)
+
+  const totalSale = sellAmount * cost
+  const fillPercentage = totalSale / cash * 100
+
   return (
     <Box>
       <Container>
@@ -52,10 +61,40 @@ const Sell = () => {
         )}
 
         <ContainerFooter>
-          <span>{drug?.name}</span>
+          <Flex justify="space-between">
+            <HStack>
+              <span>{drug?.name}</span>
+              <Box
+                background="#434345"
+                borderRadius="full"
+                py={0.5}
+                px={2}
+              >
+                <span>${cost}</span>
+              </Box>
+            </HStack>
+            <HStack>
+              <Box>
+                {currentAmount}
+              </Box>
+              <Box color="#FF2828">
+                - {sellAmount}
+              </Box>
+            </HStack>
+          </Flex>
         </ContainerFooter>
       </Container>
-      <DrugQuantityGauge gaugeColor="#FF2828" />
+      <Box textAlign="center">
+        Sell ({sellAmount}) for ${totalSale}
+      </Box>
+      <DrugQuantityGauge
+        fillPercentage={fillPercentage}
+        gaugeColor="#FF2828"
+        shouldDisableDecrease={sellAmount === 0}
+        shouldDisableIncrease={sellAmount >= currentAmount}
+        onClickDecrease={() => setSellAmount(prev => prev - 1)}
+        onClickIncrease={() => setSellAmount(prev => prev + 1)}
+      />
     </Box>
   )
 }
