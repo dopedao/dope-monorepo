@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import defaultNetworkConfig from 'game/constants/NetworkConfig';
 import { _ } from 'gear-rarity/dist/image-140bf8ec';
+import Cookies from 'js-cookie';
 import { SiweMessage } from 'siwe';
 import { DataTypes, NetworkEvents, UniversalEventNames } from './types';
 
@@ -37,11 +38,14 @@ export default class NetworkHandler {
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    const nonce = await (await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authNoncePath, { credentials: 'include' })).text();
+    // [nonce] [age]
+    const nonceData = await (await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authNoncePath, { credentials: 'include' })).text();
+    const [ nonce, nonceAge ] = nonceData.split(' ');
+
     const message = new SiweMessage({
       address: await provider.getSigner().getAddress(),
       domain: window.location.host,
-      statement: "Signature of this message will only be used for authentication.",
+      statement: `Signature of this message will only be used for authentication.\nYou have ${nonceAge} seconds to sign this message.`,
       uri: window.location.origin,
       version: '1',
       chainId: await provider.getSigner().getChainId(),
