@@ -195,6 +195,22 @@ const ContentRoadmap = () => (
         </>
       </RoadmapItem>
       <RoadmapItem
+        title="Mugshots"
+        imageUrl="/images/about/roadmap-mugshot-baron.png"
+        imageAlt="Dope Wars Mugshot"
+        date="Q1 2022"
+      >
+        <p>
+          <a href="https://community.dopewars.gg/mugshots">Dope Wars Mugshots</a> are photo snapshots of Hustlers from the Dope Wars metaverse represented as ERC-721 tokens on Ethereum Mainnet.
+        </p>
+        <p>
+          Our Hustler NFTs are so cutting-edge that apps like OpenSea and Rainbow won't support them for some time. Mugshots are a casual and fun way to bring pictures of your Hustlers to Mainnet via a simple NFT token.
+        </p>
+        <p>
+          You can feature your Mugshots in common wallets and websites. Your friends, family, and that crush will finally see how gangster NFTs, Dope Wars, and you really are. As Twitter and others add verified NFT profile photos you'll be able to use your Mugshots and command internet respect. You can also sell Mugshots of your dopest Hustlers on popular exchanges.
+        </p>
+      </RoadmapItem>
+      <RoadmapItem
         title="Lunar New Year Airdrop"
         imageUrl="/images/lunar_new_year_2022/hongbao_animated.gif"
         imageAlt="Free Accessory Airdrop"
@@ -213,25 +229,6 @@ const ContentRoadmap = () => (
           <p>新年好</p>
         </>
       </RoadmapItem>
-      <SectionHeader>Coming Soon™</SectionHeader>
-      <RoadmapItem
-        title="Swap Meet"
-        imageUrl="/images/about/swap-meet-preview.png"
-        imageAlt="In-game Hustler Characters"
-        date="Q1 2022"
-      >
-        <>
-          <p>
-            Buy, sell, and trade DOPE, Hustlers, Gear, and more on our Dope Wars Marketplace, or{' '}
-            <a href="/swap-meet">Swap Meet</a>. Powered by the L2 Optimism network, all transactions
-            will happen quickly with almost nothing spent in gas fees.
-          </p>
-          <p>
-            All transactions on our Swap Meet will feed 5% royalties to the DAO treasury, which
-            enables us to continue funding this project with no VC investment.
-          </p>
-        </>
-      </RoadmapItem>
       <RoadmapItem
         title="DOPE Mixtape by DJ Green Lantern &amp; Original Dope Wars EP"
         imageUrl="/images/about/dope-mixtape.png"
@@ -246,6 +243,7 @@ const ContentRoadmap = () => (
           Magazine.
         </p>
       </RoadmapItem>
+      <SectionHeader>Coming Soon™</SectionHeader>
       <RoadmapItem
         title="WEB3 Integration + More"
         imageReplacement={
@@ -276,6 +274,52 @@ const ContentRoadmap = () => (
         </>
       </RoadmapItem>
       <RoadmapItem
+        title="P2E Game on Starknet"
+        imageUrl="/images/game/classic-mode.png"
+        imageAlt="Play To Earn Game on Starknet"
+        date="Q1-Q4 2022"
+      >
+        <>
+          <p>
+            Inspired by the classic games of yesterday, we&apos;re adapting the classic gameplay of
+            drug arbitrage and launching it all on the zero-knowledge proof blockchain{' '}
+            <a href="https://starkware.co/starknet/">Starknet</a>.
+          </p>
+          <p>
+            <a href="https://github.com/dopedao/ryo" target="github">
+              Our giga-brain shadow coder Perama has already made amazing progress on the game
+              engine
+            </a>{' '}
+            which has been under construction for months, and{' '}
+            <a
+              href="https://www.notion.so/dope-wars/DIP-17-RYO-Dev-Fund-f1648d8befbc4ff394e134a7fed340b6"
+              target="wiki"
+            >
+              co-funded by the StarkWare team
+            </a>
+            .
+          </p>
+        </>
+      </RoadmapItem>
+      <RoadmapItem
+        title="Swap Meet"
+        imageUrl="/images/about/swap-meet-preview.png"
+        imageAlt="In-game Hustler Characters"
+        date="Q1 2022"
+      >
+        <>
+          <p>
+            Buy, sell, and trade DOPE, Hustlers, Gear, and more on our Dope Wars Marketplace, or{' '}
+            <a href="/swap-meet">Swap Meet</a>. Powered by the L2 Optimism network, all transactions
+            will happen quickly with almost nothing spent in gas fees.
+          </p>
+          <p>
+            All transactions on our Swap Meet will feed 5% royalties to the DAO treasury, which
+            enables us to continue funding this project with no VC investment.
+          </p>
+        </>
+      </RoadmapItem>
+      <RoadmapItem
         title="TURF"
         imageUrl="/images/about/turf.png"
         imageAlt="In-game Hustler Characters"
@@ -299,34 +343,6 @@ const ContentRoadmap = () => (
               Our proposal allows for enhanced game mechanics
             </a>{' '}
             and a blueprint of land ownership rights for the Dope Wars Metaverse.
-          </p>
-        </>
-      </RoadmapItem>
-      <RoadmapItem
-        title="P2E Game on Starknet"
-        imageUrl="/images/game/classic-mode.png"
-        imageAlt="Play To Earn Game on Starknet"
-        date="Q2-Q4 2022"
-      >
-        <>
-          <p>
-            Inspired by the classic games of yesterday, we&apos;re adapting the classic gameplay of
-            drug arbitrage and launching it all on the zero-knowledge proof blockchain{' '}
-            <a href="https://starkware.co/starknet/">Starknet</a>.
-          </p>
-          <p>
-            <a href="https://github.com/dopedao/ryo" target="github">
-              Our giga-brain shadow coder Perama has already made amazing progress on the game
-              engine
-            </a>{' '}
-            which has been under construction for months, and{' '}
-            <a
-              href="https://www.notion.so/dope-wars/DIP-17-RYO-Dev-Fund-f1648d8befbc4ff394e134a7fed340b6"
-              target="wiki"
-            >
-              co-funded by the StarkWare team
-            </a>
-            .
           </p>
         </>
       </RoadmapItem>
