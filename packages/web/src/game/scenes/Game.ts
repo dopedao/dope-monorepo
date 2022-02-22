@@ -25,6 +25,7 @@ import UIScene, { chakraToastStyle, toastStyle } from './UI';
 import VirtualJoystick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
 import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
 import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
+import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
 
 
 export default class GameScene extends Scene {
@@ -396,7 +397,20 @@ export default class GameScene extends Scene {
               this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
             };
 
-            initializeHustler();
+            if (!data.hustlerId) {
+              initializeHustler();
+              return;
+            }
+
+            const spritesheetKey = 'hustler_' + data.hustlerId;
+            this.load.spritesheet(spritesheetKey, `https://api.dopewars.gg/hustlers/${data.hustlerId}/sprites/composite.png`, {
+              frameWidth: 30, frameHeight: 60 
+            });
+            this.load.once('filecomplete-spritesheet-' + spritesheetKey, () => {
+              createHustlerAnimations(this.anims, spritesheetKey);
+              initializeHustler();
+            });
+            this.load.start();
           },
         );
         // update map

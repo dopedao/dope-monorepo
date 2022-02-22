@@ -6,6 +6,7 @@ import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
 import UIScene from 'game/scenes/UI';
 import PathNavigator from 'game/world/PathNavigator';
 import PF from 'pathfinding';
+import { Animations, Types } from 'phaser';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
 
 export enum Direction {
@@ -239,6 +240,16 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     // handle animations
     this._animator = new HustlerAnimator(this);
   }
+
+  // we override it to control wether or not we can call the play
+  // animation method
+  // play(key: string | Animations.Animation | Types.Animations.PlayAnimationConfig, ignoreIfPlaying?: boolean) {
+  //   if (!this.active)
+  //     return this;
+
+  //   super.play(key, ignoreIfPlaying);
+  //   return this;
+  // }
 
   // sets correct sprite facing towards point
   lookAt(x: number, y: number) {

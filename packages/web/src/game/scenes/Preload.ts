@@ -6,6 +6,7 @@ import { NetworkEvents, UniversalEventNames } from 'game/handlers/network/types'
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import { ethers } from 'ethers';
 import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
+import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
 
 export default class Preload extends Scene {
   private downloadedSize: number = 0;
@@ -75,10 +76,30 @@ export default class Preload extends Scene {
           )}/hustlers`,
         ).then(res => {
           res.json().then(data => {
-            // start game scene
-            this.scene.start('GameScene', {
-              hustlerData: data,
+            // if has no hustlers, just 
+            // start game scene directly
+            if (data.length === 0) {
+              this.scene.start('GameScene', {
+                hustlerData: data,
+              });
+              return;
+            }
+            
+            // if has hustler, preload hustler animations
+            // then start game scene
+            const key = 'hustler_' + data[0].id;
+            this.load.spritesheet(
+              key,
+              `https://api.dopewars.gg/hustlers/${data[0].id}/sprites/composite.png`,
+              { frameWidth: 30, frameHeight: 60 },
+            );
+            this.load.once('filecomplete-spritesheet-' + key, () => {
+              createHustlerAnimations(this.anims, key);
+              this.scene.start('GameScene', {
+                hustlerData: data,
+              });
             });
+            this.load.start();
           });
         });
       else this.scene.start('GameScene');
