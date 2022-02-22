@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { Button, Stack, Table, Tbody, Tr, Td } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
@@ -28,42 +28,48 @@ const Approve = () => {
   const [canMint, setCanMint] = useState(false);
   const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
   const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
+  const [paperCost, setPaperCost] = useState<BigNumber>();
 
   const initiator = useInitiator();
   const paper = usePaper();
 
   // Check if DOPE already opened and prevent usage
-  const init = useInitiator();
   const [isOpened, setIsOpened] = useState(false);
   useEffect(() => {
-    let isMounted = true;
     if (!dopeId) return;
-    init.isOpened(BigNumber.from(dopeId)).then(value => {
+    let isMounted = true;
+    initiator.isOpened(BigNumber.from(dopeId)).then(value => {
       if (isMounted) setIsOpened(value);
     });
-    return () => {
-      isMounted = false;
-    };
-  }, [init, dopeId]);
+    return () => { isMounted = false };
+  }, [initiator, dopeId]);
 
+  // Set PAPER cost based on contract amount due to "halvening"
+  useEffect(() => {
+    let isMounted = true;
+    initiator.cost().then(setPaperCost);
+    return () => { isMounted = false };
+  }, [initiator]);
+
+  if(paperCost) console.log(utils.formatEther(paperCost));
 
   useEffect(() => {
-    if (account) {
+    if (account && paperCost) {
       paper
         .balanceOf(account)
-        .then(balance => setHasEnoughPaper(balance.gte('12500000000000000000000')));
+        .then(balance => setHasEnoughPaper(balance.gte(paperCost)));
     }
-  }, [account, paper]);
+  }, [account, paper, paperCost]);
 
   useEffect(() => {
-    if (account) {
+    if (account && paperCost) {
       paper
         .allowance(account, initiator.address)
         .then((allowance: BigNumber) =>
-          setIsPaperApproved(allowance.gte('12500000000000000000000')),
+          setIsPaperApproved(allowance.gte(paperCost)),
         );
     }
-  }, [account, initiator.address, paper]);
+  }, [account, initiator.address, paper, paperCost]);
 
   useEffect(() => {
     if (isPaperApproved && hasEnoughPaper && (!mintTo || (mintTo && mintAddress))) {
@@ -111,7 +117,10 @@ const Approve = () => {
                   </Tr>
                   <Tr>
                     <Td></Td>
-                    <Td textAlign="right">12,500</Td>
+                    <Td textAlign="right">
+                      {/* Don't want decimal */}
+                      { paperCost ? utils.formatEther(paperCost).split('.')[0] : '...' }
+                    </Td>
                     <Td>$PAPER</Td>
                   </Tr>
                 </Tbody>
