@@ -51,8 +51,6 @@ const Approve = () => {
     return () => { isMounted = false };
   }, [initiator]);
 
-  if(paperCost) console.log(utils.formatEther(paperCost));
-
   useEffect(() => {
     if (account && paperCost) {
       paper
@@ -118,8 +116,10 @@ const Approve = () => {
                   <Tr>
                     <Td></Td>
                     <Td textAlign="right">
-                      {/* Don't want decimal */}
-                      { paperCost ? utils.formatEther(paperCost).split('.')[0] : '...' }
+                      {paperCost &&
+                        parseInt(utils.formatEther(paperCost), 10).toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                      })}
                     </Td>
                     <Td>$PAPER</Td>
                   </Tr>
@@ -145,12 +145,11 @@ const Approve = () => {
         <PanelContainer
           css={css`
             min-height: 400px;
-            background-color: #000;
+            background-color: #333;
           `}
         >
           <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
-          <RenderFromDopeId id={dopeId} isVehicle={true} zoomWindow={ZOOM_WINDOWS[3]} />
-
+          <RenderFromDopeId id={dopeId} isVehicle={true} zoomWindow={ZOOM_WINDOWS[2]} />
           <PanelFooter>
             <div className="smallest">This only claims gear, it does not create a Hustler</div>
             <Button variant="primary" onClick={unbundleDope} disabled={!canMint}>
