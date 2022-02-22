@@ -122,25 +122,6 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 	}
 }
 
-func AuthorizedHandler() func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		session, err := store.Get(r, "session")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if session.Values["siwe"] == nil {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		w.WriteHeader(200)
-		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte("OK"))
-	}
-}
-
 func LogoutHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		session, err := store.Get(r, "session")
