@@ -18,8 +18,10 @@ import HairSelector from 'components/hustler/HairSelector';
 import NameControls from 'components/hustler/NameControls';
 import PanelColorSelector from 'components/PanelColorSelector';
 import PanelFooter from 'components/PanelFooter';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 import SexSelector from 'components/hustler/SexSelector';
 import styled from '@emotion/styled';
+import DisconnectAndQuitButton from 'features/hustlers/components/DisconnectAndQuitButton';
 
 const ControlsWrapper = styled.div`
   background-color: white;
@@ -41,7 +43,7 @@ const ConfigurationControls = ({
   config,
   setHustlerConfig,
   isCustomize,
-  goBackToInitialStep,
+  handleFinishConfiguration,
 }: ConfigureHustlerProps) => {
   const [showTextColor, setShowTextColor] = useState(false);
   const [enableNameVisible, setEnableNameVisible] = useState(false);
@@ -155,6 +157,7 @@ const ConfigurationControls = ({
 
   return (
     <ControlsWrapper>
+      <PanelTitleHeader>Customize</PanelTitleHeader>
       <ControlsBody>
         <Stack spacing={4}>
           {/* Title controls only make sense when zoomed out fully */}
@@ -194,6 +197,8 @@ const ConfigurationControls = ({
         </Stack>
       </ControlsBody>
       <PanelFooter>
+        {!isCustomize && <DisconnectAndQuitButton />}
+        <div></div>
         <Button onClick={() => randomizeHustlerAttributes(config.dopeId, setHustlerConfig)}>
           Randomize
         </Button>
@@ -208,15 +213,18 @@ const ConfigurationControls = ({
             Save Configuration
           </Button>
         ) : (
-          <Button
-            type="button"
-            onClick={goBackToInitialStep}
-            variant="primary"
-            isLoading={loading}
-            loadingText="Processing..."
-          >
-            Finish Configuration
-          </Button>
+          <>
+            <Button
+              type="button"
+              onClick={handleFinishConfiguration}
+              variant="primary"
+              isLoading={loading}
+              loadingText="Processing..."
+              // autoFocus
+            >
+              Finish Configuration
+            </Button>
+          </>
         )}
       </PanelFooter>
     </ControlsWrapper>

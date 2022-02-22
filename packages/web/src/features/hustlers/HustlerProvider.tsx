@@ -10,12 +10,14 @@ type HustlerProviderProps = {
 export const HustlerContext = createContext<HustlerState | undefined>(undefined);
 export const HustlerDispatchContext = createContext<DispatchHustler | undefined>(undefined);
 
-const HustlerProvider = ({ children, initialHustlerData }: HustlerProviderProps) => {
+const HustlerProvider = ({ 
+  children, 
+  initialHustlerData
+}: HustlerProviderProps) => {
   const [hustler, dispatchHustler] = useReducer<Reducer<HustlerState, HustlerActions>>(
     HustlerReducer,
     initialHustlerData || INITIAL_STATE,
   );
-
   return (
     <HustlerContext.Provider value={hustler}>
       <HustlerDispatchContext.Provider value={dispatchHustler}>

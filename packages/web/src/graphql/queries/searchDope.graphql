@@ -26,24 +26,30 @@ query SearchDope(
     edges {
       node {
         ... on Dope {
+          __typename
           id
           claimed
           opened
           score
           rank
-          lastSale {
-            inputs {
-              amount
-              id
-              type
-            }
-          }
           listings {
+            id
             active
             inputs {
               amount
               id
               type
+            }
+            order {
+              feeMethod
+              side
+              saleKind
+              howToCall
+              calldata
+              replacementPattern
+              staticTarget
+              staticExtradata
+              extra
             }
           }
           items {

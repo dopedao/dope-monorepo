@@ -1364,6 +1364,13 @@ export type AllItemsQueryVariables = Exact<{
 
 export type AllItemsQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', name: string, id: string, fullname: string, greatness: number, svg?: string | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
+export type DopeListingQueryVariables = Exact<{
+  where?: InputMaybe<DopeWhereInput>;
+}>;
+
+
+export type DopeListingQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, listings?: Array<{ __typename?: 'Listing', order?: { __typename?: 'OpenSeaOrder', maker: any, v: number, r: any, s: any, makerRelayerFee: string, makerProtocolFee: string, currentPrice: string, expirationTime: any, listingTime: any, salt: string, calldata: any } | null | undefined } | null | undefined> | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
 export type DopesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -1442,7 +1449,7 @@ export type SearchDopeQueryVariables = Exact<{
 }>;
 
 
-export type SearchDopeQuery = { __typename?: 'Query', search: { __typename?: 'SearchConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'SearchEdge', node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, lastSale?: { __typename?: 'Listing', inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined, listings?: Array<{ __typename?: 'Listing', active: boolean, inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined> | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> | null | undefined } };
+export type SearchDopeQuery = { __typename?: 'Query', search: { __typename?: 'SearchConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'SearchEdge', node?: { __typename: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, listings?: Array<{ __typename?: 'Listing', id: string, active: boolean, inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined>, order?: { __typename?: 'OpenSeaOrder', feeMethod: number, side: number, saleKind: number, howToCall: number, calldata: any, replacementPattern: any, staticTarget: string, staticExtradata: any, extra: string } | null | undefined } | null | undefined> | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> | null | undefined } };
 
 export type WalletQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
@@ -1566,6 +1573,60 @@ export const useInfiniteAllItemsQuery = <
     const query = useFetchData<AllItemsQuery, AllItemsQueryVariables>(AllItemsDocument)
     return useInfiniteQuery<AllItemsQuery, TError, TData>(
       variables === undefined ? ['AllItems.infinite'] : ['AllItems.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const DopeListingDocument = `
+    query DopeListing($where: DopeWhereInput) {
+  dopes(where: $where) {
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        listings {
+          order {
+            maker
+            v
+            r
+            s
+            makerRelayerFee
+            makerProtocolFee
+            currentPrice
+            expirationTime
+            listingTime
+            salt
+            calldata
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useDopeListingQuery = <
+      TData = DopeListingQuery,
+      TError = unknown
+    >(
+      variables?: DopeListingQueryVariables,
+      options?: UseQueryOptions<DopeListingQuery, TError, TData>
+    ) =>
+    useQuery<DopeListingQuery, TError, TData>(
+      variables === undefined ? ['DopeListing'] : ['DopeListing', variables],
+      useFetchData<DopeListingQuery, DopeListingQueryVariables>(DopeListingDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteDopeListingQuery = <
+      TData = DopeListingQuery,
+      TError = unknown
+    >(
+      variables?: DopeListingQueryVariables,
+      options?: UseInfiniteQueryOptions<DopeListingQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<DopeListingQuery, DopeListingQueryVariables>(DopeListingDocument)
+    return useInfiniteQuery<DopeListingQuery, TError, TData>(
+      variables === undefined ? ['DopeListing.infinite'] : ['DopeListing.infinite', variables],
       (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
     )};
@@ -2272,24 +2333,30 @@ export const SearchDopeDocument = `
     edges {
       node {
         ... on Dope {
+          __typename
           id
           claimed
           opened
           score
           rank
-          lastSale {
-            inputs {
-              amount
-              id
-              type
-            }
-          }
           listings {
+            id
             active
             inputs {
               amount
               id
               type
+            }
+            order {
+              feeMethod
+              side
+              saleKind
+              howToCall
+              calldata
+              replacementPattern
+              staticTarget
+              staticExtradata
+              extra
             }
           }
           items {

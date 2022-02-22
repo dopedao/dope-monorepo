@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Button, Input } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { Button, Input, Image } from '@chakra-ui/react';
 import { useWeb3React } from '@web3-react/core';
 import { useIsContract } from 'hooks/web3';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
-import PanelTitleHeader from 'components/PanelTitleHeader';
+import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
 
 const MintTo = ({
   mintTo,
@@ -27,39 +27,29 @@ const MintTo = ({
   }, [isContract, setMintTo]);
 
   if (!mintTo && !isContract) {
-    return (
-      <Button variant="linkBlack" onClick={() => setMintTo(true)}>
-        Send Hustler to a friend?
-      </Button>
-    );
+    return <Button onClick={() => setMintTo(true)}>Send Hustler to a friend?</Button>;
   }
 
-  if (isContract) {
-    return (
-      <PanelContainer>
-        <PanelTitleHeader>Mint to Different Address</PanelTitleHeader>
-        <PanelBody>
+  return (
+    <PanelContainer justifyContent="flex-start">
+      <PanelTitleBarFlex onClick={() => setMintTo(false)}>
+        <span>Mint to Different Address</span>
+        <Image
+          src="/images/icon/circle-clear-input.svg"
+          alt="close"
+          width="16px"
+          marginRight="8px"
+          cursor="pointer"
+        />
+      </PanelTitleBarFlex>
+      <PanelBody>
+        {!isContract && <p>Send this Hustler to a friend, or another wallet?</p>}
+        {isContract && (
           <p>
             It looks like you are using a contract wallet. Please set the optimism address you want
             your hustler minted to.
           </p>
-          <Input
-            placeholder="0x…"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMintAddress(e.target.value)}
-            value={mintAddress}
-          />
-        </PanelBody>
-      </PanelContainer>
-    );
-  }
-
-  return (
-    <PanelContainer>
-      <PanelTitleHeader onClick={() => setMintTo(false)}>
-        Mint to Different Address
-      </PanelTitleHeader>
-      <PanelBody>
-        <p>Send this Hustler to a friend, or another wallet?</p>
+        )}
         <Input
           placeholder="0x…"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMintAddress(e.target.value)}

@@ -7,9 +7,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
 import { HustlerQuery, useHustlerQuery, useWalletQuery } from 'generated/graphql';
-import { getRandomHustler } from 'utils/HustlerConfig';
+import { getRandomHustler, HustlerCustomization, ZOOM_WINDOWS } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
-import { useSwitchOptimism } from 'hooks/web3';
+import { useSwitchOptimism, useNetworkCheckOptimism } from 'hooks/web3';
 import { useHustlerRles } from 'hooks/render';
 import AppWindow from 'components/AppWindow';
 import AppWindowNavBar from 'components/AppWindowNavBar';
@@ -51,7 +51,7 @@ const HustlerEdit = ({ data }: { data: HustlerQuery }) => {
   const hustlerId = router.query.id;
   const [isLoading, setLoading] = useState(true);
   const [ogTitle, setOgTitle] = useState('');
-  const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
+  const [hustlerConfig, setHustlerConfig] = useState<HustlerCustomization>(getRandomHustler({}));
 
   const itemRles = useHustlerRles(hustler);
 
@@ -72,6 +72,8 @@ const HustlerEdit = ({ data }: { data: HustlerQuery }) => {
         body: hustler.body?.id ? parseInt(hustler.body.id.split('-')[2]) : undefined,
         hair: hustler.hair?.id ? parseInt(hustler.hair.id.split('-')[2]) : undefined,
         facialHair: hustler.beard?.id ? parseInt(hustler.beard.id.split('-')[2]) : undefined,
+        zoomWindow: ZOOM_WINDOWS[2], 
+        isVehicle: true
       }),
     );
     setOgTitle(hustler.title || '');
@@ -131,6 +133,8 @@ const Hustlers = () => {
       enabled: !!account && router.isReady && !!String(router.query.id),
     },
   );
+
+  const isConnectedToOptimism = useNetworkCheckOptimism();
   useSwitchOptimism(chainId, account);
 
   useEffect(() => {
@@ -144,7 +148,7 @@ const Hustlers = () => {
   return (
     <AppWindow padBody={false} navbar={<Nav />} requiresWalletConnection={true}>
       <Head title="Customize Hustler" />
-      {account && chainId !== 10 && chainId !== 69 && showNetworkAlert && (
+      {!isConnectedToOptimism && showNetworkAlert && (
         <DialogSwitchNetwork networkName="Optimism" />
       )}
       {walletLoading || isFetching || !data?.hustlers.edges?.[0]?.node || !router.isReady ? (

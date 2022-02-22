@@ -1,9 +1,10 @@
+import { useMemo } from 'react';
 import RenderFromDopeId from './RenderFromDopeId';
 import { getRandomHustler } from 'utils/HustlerConfig';
 import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
 
 const RenderFromDopeIdOnly = ({ id }: { id: string }) => {
-  const hustlerConfig = getRandomHustler({ dopeId: id });
+  const hustlerConfig = useMemo(() => getRandomHustler({ dopeId: id }), [id]);
   return (
     <RenderFromDopeId
       bgColor={hustlerConfig.bgColor}

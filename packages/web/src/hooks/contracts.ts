@@ -4,11 +4,13 @@ import {
   CrossDomainMessenger__factory,
   Controller__factory,
   Paper__factory,
+  DopeInitiator__factory,
   Initiator__factory,
   Hustler__factory,
   SwapMeet__factory,
   Components__factory,
   Hongbao__factory,
+  OneClickInitiator__factory,
 } from '@dopewars/contracts/dist';
 import { ethers, BigNumber } from 'ethers';
 import { NETWORK } from 'utils/constants';
@@ -19,6 +21,15 @@ export const useInitiator = () => {
 
   return useMemo(
     () => Initiator__factory.connect(NETWORK[chainId].contracts.initiator, provider),
+    [chainId, provider],
+  );
+};
+
+export const useOneClickInitiator = () => {
+  const { chainId, provider } = useEthereum();
+
+  return useMemo(
+    () => OneClickInitiator__factory.connect(NETWORK[chainId].contracts.oneclick, provider),
     [chainId, provider],
   );
 };

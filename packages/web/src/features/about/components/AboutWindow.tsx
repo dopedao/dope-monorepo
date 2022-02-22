@@ -10,8 +10,8 @@ import { getRandomArrayElement } from 'utils/utils';
 
 const VIDEOS = [
   'https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-wars-trailer-nono.mp4',
-  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-moving-bricks.mp4'
-]
+  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/dope-moving-bricks.mp4',
+];
 
 const AboutWindow = ({ ...props }) => {
   return (
@@ -78,11 +78,12 @@ const AboutWindow = ({ ...props }) => {
             padding-right: 16px;
           `}
         >
+          <div></div>
           <Link href="/news" passHref>
             <Button>Latest Announcements</Button>
           </Link>
-          <Link href="/swap-meet" passHref>
-            <Button variant="primary">Get a Hustler</Button>
+          <Link href="/mint" passHref>
+            <Button variant="primary">Mint a Hustler</Button>
           </Link>
         </PanelFooter>
       </div>

@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -20,6 +21,8 @@ type Listing struct {
 	Active bool `json:"active,omitempty"`
 	// Source holds the value of the "source" field.
 	Source listing.Source `json:"source,omitempty"`
+	// Order holds the value of the "order" field.
+	Order json.RawMessage `json:"order,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ListingQuery when eager-loading is set.
 	Edges         ListingEdges `json:"edges"`
@@ -92,6 +95,8 @@ func (*Listing) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case listing.FieldOrder:
+			values[i] = new([]byte)
 		case listing.FieldActive:
 			values[i] = new(sql.NullBool)
 		case listing.FieldID, listing.FieldSource:
@@ -130,6 +135,14 @@ func (l *Listing) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
 			} else if value.Valid {
 				l.Source = listing.Source(value.String)
+			}
+		case listing.FieldOrder:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field order", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &l.Order); err != nil {
+					return fmt.Errorf("unmarshal field order: %w", err)
+				}
 			}
 		case listing.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -190,6 +203,8 @@ func (l *Listing) String() string {
 	builder.WriteString(fmt.Sprintf("%v", l.Active))
 	builder.WriteString(", source=")
 	builder.WriteString(fmt.Sprintf("%v", l.Source))
+	builder.WriteString(", order=")
+	builder.WriteString(fmt.Sprintf("%v", l.Order))
 	builder.WriteByte(')')
 	return builder.String()
 }

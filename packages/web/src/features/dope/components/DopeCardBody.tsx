@@ -35,7 +35,11 @@ const DopeCardBody = ({
   buttonBar,
   dope,
   isExpanded,
-}: Pick<DopeCardProps, 'dope' | 'buttonBar'> & { isExpanded: boolean }) => {
+  hidePreviewButton = false,
+}: Pick<DopeCardProps, 'dope' | 'buttonBar'> & {
+  isExpanded: boolean;
+  hidePreviewButton?: boolean;
+}) => {
   const [isPreviewShown, setPreviewShown] = useState(false);
   const [isRarityVisible, setRarityVisible] = useState(false);
   const hustlerItemsRef = useRef<HTMLDivElement>(null);
@@ -158,7 +162,7 @@ const DopeCardBody = ({
             </div>
             <div className="slide" ref={hustlerPreviewRef}>
               <HustlerContainer bgColor="transparent">
-                {isPreviewShown && <RenderFromDopeIdOnly id={dope.id} />}
+                {!hidePreviewButton && isPreviewShown && <RenderFromDopeIdOnly id={dope.id} />}
                 <FinePrint>
                   Hustler must be Initiated as a separate NFT.
                   <br />
@@ -178,7 +182,7 @@ const DopeCardBody = ({
           </div>
         )}
       </DopeCardItems>
-      {isExpanded && (
+      {!hidePreviewButton && isExpanded && (
         <DopeCardPreviewButton
           togglePreview={togglePreview}
           isPreviewShown={isPreviewShown}

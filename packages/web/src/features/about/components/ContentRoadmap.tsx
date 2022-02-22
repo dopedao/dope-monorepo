@@ -56,9 +56,13 @@ const TunnelEntrance = styled.div`
 `;
 
 const Road = styled.div`
-  background: #878e8e url(/images/about/roadmap-tile.png) center / 800px 324px repeat-y;
+  background: #878e8e url(/images/about/roadmap-tile.png) center / 800px 324px repeat;
   min-height: 200px;
   padding: 16px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
 `;
 
 const SectionHeader = styled.h3`

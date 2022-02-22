@@ -9,8 +9,7 @@ import sys
 typ = sys.argv[1]
 fmeta = sys.argv[2]
 
-f = open("../outputs/"+fmeta, "r")
-meta = json.load(f)
+meta = {}
 
 colors = OrderedDict()
 if 'partcolors' in meta:
@@ -19,7 +18,7 @@ if 'partcolors' in meta:
 else:
     colors[""] = True
 
-for file in glob.glob("../imgs/"+typ+"/*.png"):
+for file in glob.glob("../imgs/"+typ+"/**/*.png"):
     img = image.imread(file)
     a = np.where(img[:, :, 3] != 0)
 
