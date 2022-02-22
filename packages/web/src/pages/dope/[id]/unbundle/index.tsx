@@ -1,21 +1,22 @@
-import { useEffect, useState } from 'react';
-import { css } from '@emotion/react';
-import { Button, Stack, Table, Tbody, Tr, Td } from '@chakra-ui/react';
-import router, { useRouter } from 'next/router';
 import { BigNumber } from 'ethers';
-import { useWeb3React } from '@web3-react/core';
+import { Button, Stack, Table, Tbody, Tr, Td } from '@chakra-ui/react';
+import { css } from '@emotion/react';
+import { useEffect, useState } from 'react';
 import { useInitiator, usePaper, useSwapMeet } from 'hooks/contracts';
+import { useWeb3React } from '@web3-react/core';
+import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
+import ApprovePaper from 'components/panels/ApprovePaper';
+import AppWindowEthereum from 'components/AppWindowEthereum';
+import Dialog from 'components/Dialog';
 import Head from 'components/Head';
+import MintTo from 'components/panels/MintTo';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleHeader from 'components/PanelTitleHeader';
-import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
-import ApprovePaper from 'components/panels/ApprovePaper';
-import MintTo from 'components/panels/MintTo';
 import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
-import AppWindowEthereum from 'components/AppWindowEthereum';
-import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
+import router, { useRouter } from 'next/router';
+import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
 const Approve = () => {
   const { account } = useWeb3React();
@@ -30,6 +31,21 @@ const Approve = () => {
 
   const initiator = useInitiator();
   const paper = usePaper();
+
+  // Check if DOPE already opened and prevent usage
+  const init = useInitiator();
+  const [isOpened, setIsOpened] = useState(false);
+  useEffect(() => {
+    let isMounted = true;
+    if (!dopeId) return;
+    init.isOpened(BigNumber.from(dopeId)).then(value => {
+      if (isMounted) setIsOpened(value);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [init, dopeId]);
+
 
   useEffect(() => {
     if (account) {
@@ -65,9 +81,22 @@ const Approve = () => {
       .then(() => router.replace('/dope/unbundle-success'));
   };
 
+  if (isOpened === true) {  
+    return (
+      <AppWindowEthereum padBody={false} title="Claim DOPE Gear">
+        <Dialog title="Sorry…" icon="dope-smiley-sad">
+          <p>Gear has already been claimed from DOPE #{dopeId}. Please try another NFT.</p>
+          <Button onClick={() => router.back()}>Go Back</Button>
+        </Dialog>
+      </AppWindowEthereum>
+    )
+  }
+
+
   return (
     <AppWindowEthereum requiresWalletConnection={true} padBody={false} title="Claim DOPE Gear">
-      <Head title="Approve spend" />
+      <Head title="Claim Gear" />
+
       <StackedResponsiveContainer>
         <Stack>
           <PanelContainer>
