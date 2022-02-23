@@ -34,6 +34,7 @@ export default class NetworkHandler {
     if (!window.ethereum)
     {
       Promise.reject('No ethereum provider found');
+      return;
     }
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -45,7 +46,7 @@ export default class NetworkHandler {
     const message = new SiweMessage({
       address: await provider.getSigner().getAddress(),
       domain: window.location.host,
-      statement: `Signature of this message will only be used for authentication.\nYou have ${nonceAge} seconds to sign this message.`,
+      statement: `Signature of this message will only be used for authentication. You have ${nonceAge} seconds to sign this message.`,
       uri: window.location.origin,
       version: '1',
       chainId: await provider.getSigner().getChainId(),
@@ -63,7 +64,10 @@ export default class NetworkHandler {
     });
 
     if (login.status !== 200)
+    {
       Promise.reject(await login.text());
+      return;
+    }
     
     this._loggedIn = true;
     Promise.resolve();
