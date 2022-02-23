@@ -21,8 +21,8 @@ const GameWindow = ({
   return (
     <DesktopWindow
       title={title || 'DOPE WARS'}
-      width={width}
-      height={height}
+      width={width || 375}
+      height={height || 667}
       onlyFullScreen={onlyFullScreen}
       fullScreen={fullScreen}
       background={background}

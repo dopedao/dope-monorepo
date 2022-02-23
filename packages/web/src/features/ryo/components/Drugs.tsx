@@ -1,4 +1,4 @@
-import { Button, Table, Thead, Tbody, Tr, Th, Td, Box, useBoolean, Link } from '@chakra-ui/react';
+import { Button, Table, Thead, Tbody, Tr, Th, Td, Box, useBoolean } from '@chakra-ui/react';
 import { NavLink } from 'components/NavLink';
 import { useDrugsQuery } from 'generated/graphql';
 import { useMemo } from 'react';
@@ -39,7 +39,7 @@ const Drugs = () => {
   }, [data]);
 
   return (
-    <Box p={10}>
+    <Box px={3}>
       <Table size="sm" color="white">
         <Thead>
           <Tr>
@@ -79,10 +79,10 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
           {drug.rle && (
             <div
               css={css`
-          width: 32px;
-          height: 32px;
-          overflow: hidden;
-        }`}
+                width: 32px;
+                height: 32px;
+                overflow: hidden;
+              }`}
               dangerouslySetInnerHTML={{ __html: buildIconSVG([drug.rle]) }}
             />
           )}
@@ -97,16 +97,14 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
       </Tr>
       {isExpanded && (
         <Tr background={background}>
-          <Td>
+          <Td colSpan={2}>
             <NavLink href={`/roll-your-own/${roundId}/location/${locationId}/buy/${drug.id}`}>
-              <Button color="black">Buy</Button>
+              <Button color="black" w="full">Buy</Button>
             </NavLink>
           </Td>
-          <Td />
-          <Td />
-          <Td>
+          <Td colSpan={2}>
             <NavLink href={`/roll-your-own/${roundId}/location/${locationId}/sell/${drug.id}`}>
-              <Button color="black">SELL</Button>
+              <Button color="black" w="full">SELL</Button>
             </NavLink>
           </Td>
         </Tr>

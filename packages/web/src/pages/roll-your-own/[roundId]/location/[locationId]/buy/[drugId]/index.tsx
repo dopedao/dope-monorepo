@@ -13,7 +13,7 @@ const RYO = () => (
     <Head title="Roll Your Own" />
     <GameWindow>
       <GameWindowHeader>
-        <NavLink href="/roll-your-own">
+        <NavLink href="/roll-your-own/1/location/brooklyn">
           <Button variant="unstyled">
             <HStack color="black">
               <ArrowBack />

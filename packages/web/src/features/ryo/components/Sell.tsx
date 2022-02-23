@@ -1,4 +1,4 @@
-import { Box, Flex, HStack } from "@chakra-ui/react"
+import { Box, Button, Flex, HStack, Stack } from "@chakra-ui/react"
 import { css } from "@emotion/react"
 import { useDrugQuery } from "generated/graphql"
 import { useRouter } from "next/router"
@@ -84,17 +84,22 @@ const Sell = () => {
           </Flex>
         </ContainerFooter>
       </Container>
-      <Box textAlign="center">
-        Sell ({sellAmount}) for ${totalSale}
-      </Box>
-      <DrugQuantityGauge
-        fillPercentage={fillPercentage}
-        gaugeColor="#FF2828"
-        shouldDisableDecrease={sellAmount === 0}
-        shouldDisableIncrease={sellAmount >= currentAmount}
-        onClickDecrease={() => setSellAmount(prev => prev - 1)}
-        onClickIncrease={() => setSellAmount(prev => prev + 1)}
-      />
+      <Stack>
+        <Box textAlign="center">
+          Sell ({sellAmount}) for ${totalSale}
+        </Box>
+        <DrugQuantityGauge
+          fillPercentage={fillPercentage}
+          gaugeColor="#FF2828"
+          shouldDisableDecrease={sellAmount === 0}
+          shouldDisableIncrease={sellAmount >= currentAmount}
+          onClickDecrease={() => setSellAmount(prev => prev - 1)}
+          onClickIncrease={() => setSellAmount(prev => prev + 1)}
+        />
+      </Stack>
+      <Flex justify="center" mt={10}>
+        <Button variant="primary">Sell ({sellAmount})</Button>
+      </Flex>
     </Box>
   )
 }

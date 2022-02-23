@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Stack } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Stack } from '@chakra-ui/react';
 import { useDrugQuery } from 'generated/graphql';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
@@ -101,6 +101,9 @@ const Buy = () => {
           onClickIncrease={() => setBuyAmount(prev => prev + 1)}
         />
       </Stack>
+      <Flex justify="center" mt={10}>
+        <Button variant="primary">Buy ({buyAmount})</Button>
+      </Flex>
     </Box>
   );
 };
