@@ -295,6 +295,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 
 	r.HandleFunc("/authentication/nonce", authentication.NonceHandler())
 	r.HandleFunc("/authentication/login", authentication.LoginHandler())
+	r.HandleFunc("/authentication/sid", authentication.SidHandler())
 	r.HandleFunc("/authentication/logout", authentication.LogoutHandler())
 
 	r.HandleFunc("/wallets/{address}/hustlers", resources.WalletHustlersHandler(client))
