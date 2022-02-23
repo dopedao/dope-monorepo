@@ -132,87 +132,88 @@ export default class GameScene extends Scene {
     this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
 
     // citizens
-    this.citizens.push(
-      new Citizen(
-        this.matter.world,
-        70,
-        200,
-        '30',
-        'Michel',
-        'Arpenteur',
-        [
-          // fake completed quest
-          new Conversation([
-            {
-              text: 'Hey! Welcome to Dopecity!',
-              onEnd: () => EventHandler.emitter().emit(Events.PLAYER_QUEST_COMPLETE, { name: 'Welcome to Dopecity', })
-            },
-            {
-              text: 'Before doing anything else, you should start by going to the local store and getting yourself a phone to connect your wallet! A wallet is like your ID, you can\'t do anything without it.',
-            }], () => {
-            this.player.questManager.addQuest(new InteractCitizenQuest(
-              'Get out of your cavern',
-              'Go to the local store and get yourself a phone',
-              this.citizens[this.citizens.push(new Citizen(this.matter.world, 70, 300, '1001', "Alice", undefined, [
-                new Conversation([
-                  {
-                    text: "Hey! I'm Bob, the store owner. I'm glad you're here!",
-                  },
-                  {
-                    text: "Here's a phone to connect your wallet. It's a little bit of a pain to use but it's better than nothing.",
-                    onEnd: () => this.player.inventory.add(new Item('iBroken', 'A shady looking phone'))
-                  },
-                  {
-                    text: "Anyway, hit me up if you need anything else. I'm always here to help.",
-                    typingSpeed: 70,
-                  }
-              ], () => true)])) - 1],
-              this.player.questManager,
-              this.citizens[this.citizens.length - 3],
-              undefined,
-              (quest: Quest) => {
-                const getRidOfCitizen = setInterval(() => {
-                  const citizen = (quest as InteractCitizenQuest).citizen;
-                  if (this.cameras.main.cull([citizen]).length === 0)
-                  {
-                    this.citizens.splice(this.citizens.indexOf(citizen), 1);
-                    citizen.destroyRuntime();
-                    clearInterval(getRidOfCitizen);
-                  }
-                });
-              }
-            ));
-            return false;
-          }),
-          new Conversation(
-            {
-              text: 'Cool! Now that you got yourself a phone, you can try connecting your wallet. Hmmmm let me take a look. So you go there... uhh you click on that yeah... then top right... and uhh... yeah sign the message now.',
-            }, () => {
-              NetworkHandler.getInstance().login()
-                .then(() => {
-                  (this.scene.get('UIScene') as UIScene).toast({
-                    ...chakraToastStyle,
-                    title: 'Wallet connected',
-                    status: 'success',
+    if (!NetworkHandler.getInstance().authenticator.loggedIn)
+      this.citizens.push(
+        new Citizen(
+          this.matter.world,
+          70,
+          200,
+          '30',
+          'Michel',
+          'Arpenteur',
+          [
+            // fake completed quest
+            new Conversation([
+              {
+                text: 'Hey! Welcome to Dopecity!',
+                onEnd: () => EventHandler.emitter().emit(Events.PLAYER_QUEST_COMPLETE, { name: 'Welcome to Dopecity', })
+              },
+              {
+                text: 'Before doing anything else, you should start by going to the local store and getting yourself a phone to connect your wallet! A wallet is like your ID, you can\'t do anything without it.',
+              }], () => {
+              this.player.questManager.addQuest(new InteractCitizenQuest(
+                'Get out of your cavern',
+                'Go to the local store and get yourself a phone',
+                this.citizens[this.citizens.push(new Citizen(this.matter.world, 70, 300, '1001', "Alice", undefined, [
+                  new Conversation([
+                    {
+                      text: "Hey! I'm Bob, the store owner. I'm glad you're here!",
+                    },
+                    {
+                      text: "Here's a phone to connect your wallet. It's a little bit of a pain to use but it's better than nothing.",
+                      onEnd: () => this.player.inventory.add(new Item('iBroken', 'A shady looking phone'))
+                    },
+                    {
+                      text: "Anyway, hit me up if you need anything else. I'm always here to help.",
+                      typingSpeed: 70,
+                    }
+                ], () => true)])) - 1],
+                this.player.questManager,
+                this.citizens[this.citizens.length - 3],
+                undefined,
+                (quest: Quest) => {
+                  const getRidOfCitizen = setInterval(() => {
+                    const citizen = (quest as InteractCitizenQuest).citizen;
+                    if (this.cameras.main.cull([citizen]).length === 0)
+                    {
+                      this.citizens.splice(this.citizens.indexOf(citizen), 1);
+                      citizen.destroyRuntime();
+                      clearInterval(getRidOfCitizen);
+                    }
                   });
-                })
-                .catch((reason) => {
-                  console.log(reason);
-                  (this.scene.get('UIScene') as UIScene).toast({
-                    ...chakraToastStyle,
-                    title: 'Sign in failed',
-                    description: reason.message ?? reason,
-                    status: 'error',
-                  });
-                })
-              return true;
-            })
-        ],
-        undefined,
-        //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
-        true,
-      ),
-    );
+                }
+              ));
+              return false;
+            }),
+            new Conversation(
+              {
+                text: 'Cool! Now that you got yourself a phone, you can try connecting your wallet. Hmmmm let me take a look. So you go there... uhh you click on that yeah... then top right... and uhh... yeah sign the message now.',
+              }, () => {
+                NetworkHandler.getInstance().authenticator.login()
+                  .then(() => {
+                    (this.scene.get('UIScene') as UIScene).toast({
+                      ...chakraToastStyle,
+                      title: 'Wallet connected',
+                      status: 'success',
+                    });
+                  })
+                  .catch((reason) => {
+                    console.log(reason);
+                    (this.scene.get('UIScene') as UIScene).toast({
+                      ...chakraToastStyle,
+                      title: 'Sign in failed',
+                      description: reason.message ?? reason,
+                      status: 'error',
+                    });
+                  })
+                return true;
+              })
+          ],
+          undefined,
+          //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
+          true,
+        ),
+      );
 
     this.citizens.push(
       new Citizen(

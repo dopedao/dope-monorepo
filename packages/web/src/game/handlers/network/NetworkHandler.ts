@@ -3,23 +3,28 @@ import defaultNetworkConfig from 'game/constants/NetworkConfig';
 import { _ } from 'gear-rarity/dist/image-140bf8ec';
 import Cookies from 'js-cookie';
 import { SiweMessage } from 'siwe';
+import Authenticator from './Authenticator';
 import { DataTypes, NetworkEvents, UniversalEventNames } from './types';
 
 export default class NetworkHandler {
   private static instance: NetworkHandler;
 
+  private _authenticator: Authenticator;
+
   public emitter: Phaser.Events.EventEmitter;
   private connection?: WebSocket;
 
   private _connected: boolean = false;
-  private _loggedIn: boolean = false;
 
   get connected() {
     return this._connected;
   }
 
-  constructor() {
+  get authenticator() { return this._authenticator; }
+
+  constructor(authenticator?: Authenticator) {
     this.emitter = new Phaser.Events.EventEmitter();
+    this._authenticator = authenticator || new Authenticator();
   }
 
   on(event: string, callback: Function, context?: any) {
@@ -28,56 +33,6 @@ export default class NetworkHandler {
 
   once(event: string, callback: Function, context?: any) {
     this.emitter.once(event, callback, context);
-  }
-
-  async login() {
-    if (!window.ethereum)
-    {
-      Promise.reject('No ethereum provider found');
-      return;
-    }
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-    // [nonce] [age]
-    const nonceData = await (await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authNoncePath, { credentials: 'include' })).text();
-    const [ nonce, nonceAge ] = nonceData.split(' ');
-
-    const message = new SiweMessage({
-      address: await provider.getSigner().getAddress(),
-      domain: window.location.host,
-      statement: `Signature of this message will only be used for authentication. You have ${nonceAge} seconds to sign this message.`,
-      uri: window.location.origin,
-      version: '1',
-      chainId: await provider.getSigner().getChainId(),
-      nonce
-    }).prepareMessage();
-
-    const signature = await provider.getSigner().signMessage(message);
-    const login = await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authLoginPath, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ signature, message })
-    });
-
-    if (login.status !== 200)
-    {
-      Promise.reject(await login.text());
-      return;
-    }
-    
-    this._loggedIn = true;
-    Promise.resolve();
-  }
-
-  async logout() {
-    this._loggedIn = false;
-    await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authLogoutPath, {
-      credentials: 'include'
-    });
   }
 
   connect() {

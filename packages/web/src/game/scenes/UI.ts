@@ -234,6 +234,12 @@ export default class UIScene extends Scene {
   }
 
   private _handleMisc() {
+    // re-position joystick when window is resized (center)
+    this.scale.on(Phaser.Scale.Events.RESIZE, (size: Phaser.Structs.Size) => {
+      this.joyStick.setPosition(size.width / 2, size.height / 2);
+      // TODO: resize radius
+    })
+
     EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string) => {
       const messageDuration = {
         in: 500,
