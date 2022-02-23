@@ -1,0 +1,169 @@
+[
+  {
+    "type": "constructor",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "name": "estimate",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "paper",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "initiate",
+    "inputs": [
+      {
+        "internalType": "struct Initiator.Order",
+        "name": "order",
+        "type": "tuple",
+        "components": [
+          {
+            "internalType": "address",
+            "name": "maker",
+            "type": "address"
+          },
+          {
+            "name": "vs",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes32[2]",
+            "name": "rss",
+            "type": "bytes32[2]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "listing",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "salt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "calldataSell",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "calldataBuy",
+            "type": "bytes"
+          }
+        ]
+      },
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bytes4",
+            "name": "color",
+            "type": "bytes4"
+          },
+          {
+            "internalType": "bytes4",
+            "name": "background",
+            "type": "bytes4"
+          },
+          {
+            "internalType": "bytes2",
+            "name": "options",
+            "type": "bytes2"
+          },
+          {
+            "internalType": "uint8[4]",
+            "name": "viewbox",
+            "type": "uint8[4]"
+          },
+          {
+            "internalType": "uint8[4]",
+            "name": "body",
+            "type": "uint8[4]"
+          },
+          {
+            "internalType": "uint8[10]",
+            "name": "order",
+            "type": "uint8[10]"
+          },
+          {
+            "internalType": "bytes2",
+            "name": "mask",
+            "type": "bytes2"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IHustlerActions.SetMetadata",
+        "name": "meta",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "openseaEth",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "paperEth",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "paperOut",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "deadline",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "receive"
+  }
+]

@@ -51,6 +51,12 @@ export default extendTheme({
       },
     },
     Button: {
+      baseStyle: {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        position: 'relative',
+      },
       variants: {
         navBar: {
           display: 'flex',

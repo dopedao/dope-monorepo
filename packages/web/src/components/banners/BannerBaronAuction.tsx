@@ -58,11 +58,11 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
             </h3>
             <Box className="smallest" color="rgba(255,255,255,0.75)">
               {/* Ends in <Countdown date={new Date('02/26/2022')} /> */}
-              Auction begins in <Countdown date={new Date('02/21/2022')} />
+              Auction begins in <Countdown date={new Date('02/23/2022 17:00:00')} />
             </Box>
             <br />
             <p className="smaller">
-              Imagine sitting in a cell for years, decades, or even for life, convicted of an activity that is no longer a crime while thousands of other people build intergenerational wealth doing exactly the same thing.
+              Imagine sitting in a cell for years, decades, or even for life, convicted of an activity that is no longer a crime; while thousands of other people build intergenerational wealth doing exactly the same thing.
             </p>
             <p>
               Over 40,000 cannabis prisoners face this situation today in the United States alone, while countless others languish in jails and prisons worldwide.
@@ -86,19 +86,26 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
               In the spirit of Doing Good, ALL PROCEEDS from the auction will be donated to The Last Prisoner Project.
             </p>
           </Box>
-          <Stack direction={['column', 'row', 'row']} alignItems="center">
-            <Link href="" width={['100%', 'auto']} passHref>
-              <Button disabled color="black">
+          <Stack direction={['column', 'row', 'row']} alignItems="stretch" justifyContent="center">
+            <Link href="" passHref flex={1}>
+              <Button disabled color="black" width="100%">
                 Place a Bid
               </Button>
             </Link>
             <Link 
-              width={['100%', 'auto']} 
               href="https://www.lastprisonerproject.org/" 
               target="lpp" 
               passHref
+              flex={1}
             >
-              <Button color="black">About the Last Prisoner Project</Button>
+              <Button width="100%" color="black">About Last Prisoner Project</Button>
+            </Link>
+            <Link 
+              href="/about" 
+              passHref
+              flex={1}
+            >
+              <Button width="100%" color="black">About Dope Wars</Button>
             </Link>
           </Stack>
         </Box>

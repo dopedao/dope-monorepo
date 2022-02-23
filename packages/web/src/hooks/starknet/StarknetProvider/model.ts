@@ -1,4 +1,4 @@
-import { defaultProvider, ProviderInterface } from "starknet";
+import { defaultProvider, ProviderInterface } from 'starknet';
 
 export interface StarknetState {
   account?: string;

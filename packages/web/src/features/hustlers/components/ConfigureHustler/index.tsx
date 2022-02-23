@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
 import { Button } from '@chakra-ui/button';
 import { css } from '@emotion/react';
 import { HustlerCustomization } from 'utils/HustlerConfig';
@@ -13,15 +12,14 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
 import ZoomControls from 'components/hustler/ZoomControls';
 import Link from 'next/link';
-
-import svgtopng from './svg-to-png';
+import PngDownloadButton from '../PngDownloadButton';
 
 export type ConfigureHustlerProps = Pick<StepsProps, 'setHustlerConfig'> & {
   config: HustlerCustomization;
   ogTitle?: string;
   itemRles?: string[];
   hustlerId?: string;
-  goBackToInitialStep?: () => void;
+  handleFinishConfiguration?: () => void;
   isCustomize?: boolean;
 };
 
@@ -42,7 +40,7 @@ const ConfigureHustler = ({
   ogTitle,
   hustlerId,
   itemRles,
-  goBackToInitialStep,
+  handleFinishConfiguration,
 }: ConfigureHustlerProps) => (
   <StackedResponsiveContainer>
     <PanelContainer
@@ -50,6 +48,7 @@ const ConfigureHustler = ({
         min-height: 500px;
         background-color: var(--gray-00);
         gap: 16px;
+        flex: 2 !important;
       `}
     >
       <HustlerCard bgColor={config.bgColor}>
@@ -89,24 +88,18 @@ const ConfigureHustler = ({
       <PanelFooter>
         {isCustomize && itemRles && (
           <>
-            <Button
-              onClick={() => {
-                svgtopng(
-                  'svg#dynamicBuiltSvg',
-                  `dope-wars-hustler-${config.name?.replace(' ', '_')}`,
-                  config.bgColor,
-                );
-              }}
-            >
-              <Image src="/images/icon/download.svg" alt="Download" />
-            </Button>
+            <PngDownloadButton hustlerConfig={config} />
             <Link
               href={`https://community.dopewars.gg/collectibles/new?hustler_id=${hustlerId}`}
               passHref
             >
               <a target="rebel">
                 <Button>
-                  <Image src="/images/icon/camera.svg" alt="Mint a Mugshot" height="40px" />
+                  <Image 
+                    src="/images/icon/camera.svg" 
+                    alt="Mint a Mugshot" 
+                    height="40px" 
+                  />
                 </Button>
               </a>
             </Link>
@@ -118,7 +111,7 @@ const ConfigureHustler = ({
     <ConfigurationControls
       config={config}
       setHustlerConfig={setHustlerConfig}
-      goBackToInitialStep={goBackToInitialStep}
+      handleFinishConfiguration={handleFinishConfiguration}
       isCustomize={isCustomize}
     />
   </StackedResponsiveContainer>

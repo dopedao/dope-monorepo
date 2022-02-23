@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
 import { HustlerQuery, useHustlerQuery, useWalletQuery } from 'generated/graphql';
-import { getRandomHustler } from 'utils/HustlerConfig';
+import { getRandomHustler, HustlerCustomization, ZOOM_WINDOWS } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
 import { useSwitchOptimism, useNetworkCheckOptimism } from 'hooks/web3';
 import { useHustlerRles } from 'hooks/render';
@@ -51,7 +51,7 @@ const HustlerEdit = ({ data }: { data: HustlerQuery }) => {
   const hustlerId = router.query.id;
   const [isLoading, setLoading] = useState(true);
   const [ogTitle, setOgTitle] = useState('');
-  const [hustlerConfig, setHustlerConfig] = useState(getRandomHustler({}));
+  const [hustlerConfig, setHustlerConfig] = useState<HustlerCustomization>(getRandomHustler({}));
 
   const itemRles = useHustlerRles(hustler);
 
@@ -72,6 +72,8 @@ const HustlerEdit = ({ data }: { data: HustlerQuery }) => {
         body: hustler.body?.id ? parseInt(hustler.body.id.split('-')[2]) : undefined,
         hair: hustler.hair?.id ? parseInt(hustler.hair.id.split('-')[2]) : undefined,
         facialHair: hustler.beard?.id ? parseInt(hustler.beard.id.split('-')[2]) : undefined,
+        zoomWindow: ZOOM_WINDOWS[2], 
+        isVehicle: true
       }),
     );
     setOgTitle(hustler.title || '');

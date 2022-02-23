@@ -2,6 +2,7 @@ import type { HustlerState, HustlerActions } from 'features/hustlers/types';
 
 export const INITIAL_STATE: HustlerState = {
   currentStep: 0,
+  isQuickBuy: false,
   isCustomizeDone: false,
   isApprovalDone: false,
   isFinalizeDone: false,
@@ -9,6 +10,11 @@ export const INITIAL_STATE: HustlerState = {
 
 const HustlerReducer = (hustler: typeof INITIAL_STATE, action: HustlerActions): HustlerState => {
   switch (action.type) {
+    case 'SET_QUICK_BUY':
+      return {
+        ...hustler,
+        isQuickBuy: true,
+      };
     case 'GO_TO_CUSTOMIZE_STEP':
       return {
         ...hustler,
@@ -19,11 +25,6 @@ const HustlerReducer = (hustler: typeof INITIAL_STATE, action: HustlerActions): 
         ...hustler,
         currentStep: 1,
         isCustomizeDone: true,
-      };
-    case 'GO_TO_CONFIGURE_STEP':
-      return {
-        ...hustler,
-        currentStep: 1.5,
       };
     case 'GO_TO_FINALIZE_STEP':
       return {

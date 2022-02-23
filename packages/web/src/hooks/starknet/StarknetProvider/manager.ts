@@ -1,7 +1,7 @@
-import React from "react";
-import { getStarknet } from "@argent/get-starknet";
-import { StarknetState } from "./model";
-import { defaultProvider, ProviderInterface } from "starknet";
+import React from 'react';
+import { getStarknet } from '@argent/get-starknet';
+import { StarknetState } from './model';
+import { defaultProvider, ProviderInterface } from 'starknet';
 
 interface StarknetManagerState {
   account?: string;
@@ -9,26 +9,23 @@ interface StarknetManagerState {
 }
 
 interface SetAccount {
-  type: "set_account";
+  type: 'set_account';
   account: string;
 }
 
 interface SetProvider {
-  type: "set_provider";
+  type: 'set_provider';
   provider: ProviderInterface;
 }
 
 type Action = SetAccount | SetProvider;
 
-function reducer(
-  state: StarknetManagerState,
-  action: Action
-): StarknetManagerState {
+function reducer(state: StarknetManagerState, action: Action): StarknetManagerState {
   switch (action.type) {
-    case "set_account": {
+    case 'set_account': {
       return { ...state, account: action.account };
     }
-    case "set_provider": {
+    case 'set_provider': {
       return { ...state, library: action.provider };
     }
     default: {
@@ -47,9 +44,9 @@ export function useStarknetManager(): StarknetState {
 
   const connectBrowserWallet = React.useCallback(async () => {
     const [account] = await starknet.enable();
-    dispatch({ type: "set_account", account });
+    dispatch({ type: 'set_account', account });
     if (starknet.signer) {
-      dispatch({ type: "set_provider", provider: starknet.signer });
+      dispatch({ type: 'set_provider', provider: starknet.signer });
     }
   }, [starknet]);
 

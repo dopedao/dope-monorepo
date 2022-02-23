@@ -6,12 +6,9 @@ import { ReactNode } from 'react';
 
 const Container = styled.div`
   clear: both;
-  margin: 32px;
-  background: rgba(0,0,0,0.75);
-  margin-bottom: 32px;
-  ${media.tablet`
-    margin-bottom: 96px;
-  `}
+  margin: 0px 32px;
+  background: rgba(0,0,0,0.9);
+  max-width: 60em;
   .imageBox {
     position: relative;
     border:4px solid black;
@@ -32,13 +29,14 @@ const Container = styled.div`
       float:right;
     `}
   }
-  &:nth-of-type(2n){
-    ${media.tablet`
-      .imageBox { float:right; }
-      .contentBox { 
-        float: left; 
-      }
-    `}
+  // &:nth-of-type(2n) {
+  //   ${media.tablet`
+  //     .imageBox { float:right; }
+  //     .contentBox { 
+  //       float: left; 
+  //     }
+  //   `}
+  // }
 `;
 
 const TitleContainer = styled.h3`

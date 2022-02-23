@@ -9,9 +9,7 @@ type DisconnectWalletProps = {
 };
 
 const DisconnectWallet = ({ onClose }: DisconnectWalletProps) => {
-  const { account } = useWeb3React();
-  const { deactivate } = useWeb3React();
-
+  const { account, deactivate } = useWeb3React();
   const onClickDisconnect = useCallback(() => {
     deactivate();
     onClose();
