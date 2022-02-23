@@ -12,7 +12,7 @@ import (
 	"github.com/jiulongw/siwe-go"
 )
 
-var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+var Store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
 // seconds
 const MAX_NONCE_AGE = 30
@@ -20,7 +20,7 @@ const MAX_NONCE_AGE = 30
 // Generates a nonce for the session
 func NonceHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		session, err := store.Get(r, "nonce")
+		session, err := Store.Get(r, "nonce")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -78,7 +78,7 @@ func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		nonceSession, err := store.Get(r, "nonce")
+		nonceSession, err := Store.Get(r, "nonce")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -90,7 +90,7 @@ func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		session, err := store.Get(r, "session")
+		session, err := Store.Get(r, "session")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -124,7 +124,7 @@ func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
 
 func LogoutHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		session, err := store.Get(r, "session")
+		session, err := Store.Get(r, "session")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

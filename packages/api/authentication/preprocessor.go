@@ -15,7 +15,7 @@ type authWalletCtxKey struct{}
 func PreProcessor(client *ent.Client) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			session, err := store.Get(r, "session")
+			session, err := Store.Get(r, "session")
 			// we could check if the session is new to know
 			// if the user is authenticated or not but lets check
 			// if siwe signed message is present instead
@@ -32,16 +32,15 @@ func PreProcessor(client *ent.Client) func(http.Handler) http.Handler {
 				return
 			}
 
-			// set siwe message as data for now
 			ctx := context.WithValue(r.Context(), authWalletCtxKey{}, wallet)
-
 			r = r.WithContext(ctx)
+
 			next.ServeHTTP(w, r)
 		})
 	}
 }
 
-// ForContext finds the user from the context. REQUIRES Middleware to have run.
+// get wallet for context
 func ForContext(ctx context.Context) *ent.Wallet {
 	raw, _ := ctx.Value(authWalletCtxKey{}).(*ent.Wallet)
 	return raw
