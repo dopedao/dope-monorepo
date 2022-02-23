@@ -29,10 +29,6 @@ const Approve = () => {
 
   const [mintTo, setMintTo] = useState<boolean>(false);
   const [mintAddress, setMintAddress] = useState<string>('');
-  const [canMint, setCanMint] = useState(false);
-  const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
-  const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
-  const [paperCost, setPaperCost] = useState<BigNumber>();
 
   const initiator = useInitiator();
   const paper = usePaper();
@@ -49,12 +45,15 @@ const Approve = () => {
   }, [initiator, dopeId]);
 
   // Set PAPER cost based on contract amount due to "halvening"
+  const [paperCost, setPaperCost] = useState<BigNumber>();
   useEffect(() => {
     let isMounted = true;
     initiator.cost().then(setPaperCost);
     return () => { isMounted = false };
   }, [initiator]);
 
+  // Do we have enough PAPER?
+  const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
   useEffect(() => {
     if (account && paperCost) {
       paper
@@ -63,6 +62,8 @@ const Approve = () => {
     }
   }, [account, paper, paperCost]);
 
+  // Is PAPER approved?
+  const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
   useEffect(() => {
     if (account && paperCost) {
       paper
@@ -73,6 +74,8 @@ const Approve = () => {
     }
   }, [account, initiator.address, paper, paperCost]);
 
+  // Can we MINT based on above?
+  const [canMint, setCanMint] = useState(false);
   useEffect(() => {
     if (isPaperApproved && hasEnoughPaper && (!mintTo || (mintTo && mintAddress))) {
       setCanMint(true);
@@ -119,18 +122,23 @@ const Approve = () => {
 
       <StackedResponsiveContainer>
         <Stack flex="2 !important">
-          <PanelContainer>
-            <PanelTitleHeader>Transaction Details</PanelTitleHeader>
-            <PanelBody>
-              <h4>You Pay</h4>
-              <hr className="onColor" />
-              <ReceiptItemDope dopeId={dopeId} />
-              <ReceiptItemPaper amount={paperCost} hideUnderline />
-              <br/>
-              <h4>You Receive</h4>
-              <hr className="onColor" />
-              <ReceiptItemGear hideUnderline />
-            </PanelBody>
+          <PanelContainer
+            css={css`
+              min-height: 400px;
+              background-color: #333;
+              flex: 2;
+            `}
+          >
+            <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
+            {isFetching && <LoadingBlock /> }
+            {!isFetching && dope &&
+              <DopeCardBody
+                dope={dope}
+                isExpanded={true}
+                hidePreviewButton={true}
+                showDopeClaimStatus={false}
+              />
+            }
           </PanelContainer>
           <ApprovePaper
             address={initiator.address}
@@ -147,23 +155,22 @@ const Approve = () => {
             setMintAddress={setMintAddress}
           />
         </Stack>
-        <PanelContainer
-          css={css`
-            min-height: 400px;
-            background-color: #333;
-            flex: 2;
-          `}
-        >
-          <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
-          {isFetching && <LoadingBlock /> }
-          {!isFetching && dope &&
-            <DopeCardBody
-              dope={dope}
-              isExpanded={true}
-              hidePreviewButton={true}
-              showDopeClaimStatus={false}
-            />
-          }
+        <PanelContainer>
+          <PanelTitleHeader>Transaction Details</PanelTitleHeader>
+          <PanelBody>
+            <h4>You Use</h4>
+            <hr className="onColor" />
+            <ReceiptItemDope dopeId={dopeId} hideUnderline />
+            <br/>
+            <h4>You Pay</h4>
+            <hr className="onColor" />
+
+            <ReceiptItemPaper amount={paperCost} hideUnderline />
+            <br/>
+            <h4>You Receive</h4>
+            <hr className="onColor" />
+            <ReceiptItemGear hideUnderline />
+          </PanelBody>
           <PanelFooter>
             <div className="smallest" css={css`text-align:right;padding:0 8px;`}>
               This only claims gear.

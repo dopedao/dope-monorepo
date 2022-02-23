@@ -3,19 +3,21 @@ import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
 import { useCallback } from "react";
 
-const DisconnectAndQuitButton = () => {
+const DisconnectAndQuitButton = (
+  {returnToPath = '/hustlers/quick-buy'}: {returnToPath?: string}
+) => {
   const { deactivate } = useWeb3React();
   const router = useRouter();
   
   const handleQuitButton = useCallback(() => {
     deactivate();
-    router.replace('/hustlers/quick-buy');
-  }, [deactivate, router]);
+    router.replace(returnToPath);
+  }, [deactivate, returnToPath, router]);
 
   return(
     <Button 
       onClick={handleQuitButton}>
-        Disconnect &amp; Cancel
+        Cancel Mint
     </Button>
   );
 }
