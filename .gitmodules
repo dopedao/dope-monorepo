@@ -16,3 +16,6 @@
 [submodule "packages/contracts/initiate/lib/forge-std"]
 	path = packages/contracts/initiate/lib/forge-std
 	url = https://github.com/brockelmore/forge-std
+[submodule "packages/contracts/streetcred/lib/rollcall"]
+	path = packages/contracts/streetcred/lib/rollcall
+	url = https://github.com/withtally/rollcall
