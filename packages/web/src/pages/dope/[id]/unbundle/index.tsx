@@ -4,7 +4,6 @@ import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { useInitiator, usePaper, useSwapMeet } from 'hooks/contracts';
 import { useWeb3React } from '@web3-react/core';
-import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
 import ApprovePaper from 'components/panels/ApprovePaper';
 import AppWindowEthereum from 'components/AppWindowEthereum';
 import Dialog from 'components/Dialog';
@@ -14,9 +13,11 @@ import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleHeader from 'components/PanelTitleHeader';
-import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
 import router, { useRouter } from 'next/router';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
+import DopeCardBody from 'features/dope/components/DopeCardBody';
+import { useDopesQuery } from 'generated/graphql';
+import LoadingBlock from 'components/LoadingBlock';
 
 const Approve = () => {
   const { account } = useWeb3React();
@@ -85,6 +86,19 @@ const Approve = () => {
       .then(() => router.replace('/dope/unbundle-success'));
   };
 
+
+  const { data, isFetching } = useDopesQuery(
+    {
+      where: {
+        id: dopeId,
+      },
+    },
+    {
+      enabled: !!account,
+    },
+  );
+  const dope = data?.dopes?.edges?.[0]?.node
+
   if (isOpened === true) {  
     return (
       <AppWindowEthereum padBody={false} title="Claim DOPE Gear">
@@ -95,8 +109,7 @@ const Approve = () => {
       </AppWindowEthereum>
     )
   }
-
-
+  
   return (
     <AppWindowEthereum requiresWalletConnection={true} padBody={false} title="Claim DOPE Gear">
       <Head title="Claim Gear" />
@@ -149,7 +162,15 @@ const Approve = () => {
           `}
         >
           <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
-          <RenderFromDopeId id={dopeId} isVehicle={true} zoomWindow={ZOOM_WINDOWS[2]} />
+          {isFetching && <LoadingBlock /> }
+          {!isFetching && dope &&
+            <DopeCardBody
+              dope={dope}
+              isExpanded={true}
+              hidePreviewButton={true}
+              showDopeClaimStatus={false}
+            />
+          }
           <PanelFooter>
             <div className="smallest">This only claims gear, it does not create a Hustler</div>
             <Button variant="primary" onClick={unbundleDope} disabled={!canMint}>
