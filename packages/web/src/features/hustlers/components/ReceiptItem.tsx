@@ -1,11 +1,15 @@
 import styled from "@emotion/styled"
 
-export const ReceiptItem = styled.div`
+export const ReceiptItem = styled.div<{
+  hideUnderline?: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 2px solid var(--gray-00);
+  border-bottom-style: solid;
+  border-bottom-color: var(--gray-00);
+  border-bottom-width: ${({ hideUnderline }) => (hideUnderline ? '0' : '2px')};
   div:first-child {
     width: 32px;
     height: 32px;
