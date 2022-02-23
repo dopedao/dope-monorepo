@@ -122,6 +122,26 @@ func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Returns SID of session if user is logged in
+func SidHandler() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		session, err := Store.Get(r, "session")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if session.Values["siwe"] == nil {
+			http.Error(w, "not logged in", http.StatusUnauthorized)
+			return
+		}
+
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(200)
+		w.Write([]byte(session.ID))
+	}
+}
+
 func LogoutHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		session, err := Store.Get(r, "session")
