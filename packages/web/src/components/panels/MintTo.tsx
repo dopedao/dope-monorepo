@@ -5,6 +5,7 @@ import { useIsContract } from 'hooks/web3';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
+import { css } from '@emotion/react';
 
 const MintTo = ({
   mintTo,
@@ -27,13 +28,13 @@ const MintTo = ({
   }, [isContract, setMintTo]);
 
   if (!mintTo && !isContract) {
-    return <Button onClick={() => setMintTo(true)}>Send Hustler to a friend?</Button>;
+    return <Button onClick={() => setMintTo(true)}>Send to a friend?</Button>;
   }
 
   return (
-    <PanelContainer justifyContent="flex-start">
+    <PanelContainer justifyContent="flex-start" css={css`max-height:180px;`}>
       <PanelTitleBarFlex onClick={() => setMintTo(false)}>
-        <span>Mint to Different Address</span>
+        <span>Send to Different Address</span>
         <Image
           src="/images/icon/circle-clear-input.svg"
           alt="close"
@@ -43,11 +44,10 @@ const MintTo = ({
         />
       </PanelTitleBarFlex>
       <PanelBody>
-        {!isContract && <p>Send this Hustler to a friend, or another wallet?</p>}
+        {!isContract && <p>Send to a friend, or another wallet?</p>}
         {isContract && (
           <p>
-            It looks like you are using a contract wallet. Please set the optimism address you want
-            your hustler minted to.
+            It looks like you are using a contract wallet. Please set the Optimism address you want these items sent to.
           </p>
         )}
         <Input
