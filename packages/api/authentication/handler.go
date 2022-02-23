@@ -18,7 +18,7 @@ var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 const MAX_NONCE_AGE = 30
 
 // Generates a nonce for the session
-func NonceHandler() func(http.ResponseWriter, *http.Request) {
+func NonceHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		session, err := store.Get(r, "nonce")
 		if err != nil {
@@ -45,7 +45,7 @@ func NonceHandler() func(http.ResponseWriter, *http.Request) {
 }
 
 // Validates signed payload with nonce
-func LoginHandler() func(http.ResponseWriter, *http.Request) {
+func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body LoginBody
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -122,7 +122,7 @@ func LoginHandler() func(http.ResponseWriter, *http.Request) {
 	}
 }
 
-func LogoutHandler() func(http.ResponseWriter, *http.Request) {
+func LogoutHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		session, err := store.Get(r, "session")
 		if err != nil {

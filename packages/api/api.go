@@ -284,6 +284,8 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	srv := handler.NewDefaultServer(graph.NewSchema(client))
 
 	r := mux.NewRouter()
+	r.Use(authentication.PreProcessor(client))
+
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(`{"success":true}`))
