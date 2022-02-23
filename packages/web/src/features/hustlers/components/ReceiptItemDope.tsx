@@ -1,9 +1,12 @@
 import { HustlerCustomization } from "utils/HustlerConfig";
 import { ReceiptItem, DopeLofi } from "./ReceiptItem";
 import { Box, Image } from "@chakra-ui/react";
-const ReceiptItemDope = ({dopeId}: {dopeId: string}) => {
+const ReceiptItemDope = (
+  {dopeId, hideUnderline}: 
+  {dopeId: string, hideUnderline?: boolean}
+) => {
   return(
-    <ReceiptItem>
+    <ReceiptItem hideUnderline={hideUnderline}>
       <DopeLofi>
         • • • • • • • • •
       </DopeLofi>

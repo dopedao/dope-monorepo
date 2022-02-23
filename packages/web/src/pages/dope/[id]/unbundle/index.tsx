@@ -20,6 +20,7 @@ import { useDopesQuery } from 'generated/graphql';
 import LoadingBlock from 'components/LoadingBlock';
 import ReceiptItemDope from 'features/hustlers/components/ReceiptItemDope';
 import ReceiptItemPaper from 'features/hustlers/components/ReceiptItemPaper';
+import ReceiptItemGear from 'features/hustlers/components/ReceiptItemGear';
 
 const Approve = () => {
   const { account } = useWeb3React();
@@ -119,10 +120,16 @@ const Approve = () => {
       <StackedResponsiveContainer>
         <Stack flex="2 !important">
           <PanelContainer>
-            <PanelTitleHeader>Cost of Unbundling</PanelTitleHeader>
+            <PanelTitleHeader>Transaction Details</PanelTitleHeader>
             <PanelBody>
+              <h4>You Pay</h4>
+              <hr className="onColor" />
               <ReceiptItemDope dopeId={dopeId} />
-              <ReceiptItemPaper amount={paperCost} />
+              <ReceiptItemPaper amount={paperCost} hideUnderline />
+              <br/>
+              <h4>You Receive</h4>
+              <hr className="onColor" />
+              <ReceiptItemGear hideUnderline />
             </PanelBody>
           </PanelContainer>
           <ApprovePaper

@@ -15,6 +15,7 @@ import { ReceiptItem } from './ReceiptItem';
 import ReceiptItemDope from './ReceiptItemDope';
 import ReceiptItemHustler from './ReceiptItemHustler';
 import ReceiptItemPaper from './ReceiptItemPaper';
+import ReceiptItemGear from './ReceiptItemGear';
 import { useRouter } from 'next/router';
 import SpinnerMessage from 'components/SpinnerMessage';
 import DisconnectAndQuitButton from './DisconnectAndQuitButton';
@@ -148,18 +149,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
         <ReceiptItemDope dopeId={hustlerConfig.dopeId} />
         <ReceiptItemPaper amount={paperAmount} />
         <ReceiptItemHustler hustlerConfig={hustlerConfig} />
-        {/* GEAR */}
-        <ReceiptItem>
-          <Box display="flex" alignItems="center" justifyContent="center" background="var(--gray-100)" color="black" borderRadius="4px">9</Box>
-          <Box flex="1">DOPE Gear NFTs</Box>
-          <Box>
-            <Image
-              src="/images/icon/optimism.svg"
-              width="16px"
-              alt="This asset lives on Optimism"
-            />
-          </Box>
-        </ReceiptItem>
+        <ReceiptItemGear hideUnderline />
       </PanelBody>
       <PanelFooter
         css={css`

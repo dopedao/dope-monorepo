@@ -1,11 +1,14 @@
 import { HustlerCustomization, ZOOM_WINDOWS } from "utils/HustlerConfig";
-import { ReceiptItem, DopeLofi } from "./ReceiptItem";
+import { ReceiptItem } from "./ReceiptItem";
 import { Box, Image } from "@chakra-ui/react";
 import RenderFromDopeId from "components/hustler/RenderFromDopeId";
 
-const ReceiptItemHustler = ({hustlerConfig}: {hustlerConfig: HustlerCustomization;}) => {
+const ReceiptItemHustler = (
+  {hustlerConfig, hideUnderline}: 
+  {hustlerConfig: HustlerCustomization, hideUnderline?: boolean;}
+) => {
   return(
-    <ReceiptItem>
+    <ReceiptItem hideUnderline={hideUnderline}>
       <Box>
         <Box border="2px solid var(--gray-100)" overflow="hidden" borderRadius="4px">
           <RenderFromDopeId
