@@ -17,6 +17,10 @@ var Store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 // seconds
 const MAX_NONCE_AGE = 30
 
+func IsAuthenticated(session *sessions.Session) bool {
+	return session.Values["siwe"] != nil
+}
+
 // Generates a nonce for the session
 func NonceHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -131,7 +135,7 @@ func SidHandler() func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if session.Values["siwe"] == nil {
+		if !IsAuthenticated(session) {
 			http.Error(w, "not logged in", http.StatusUnauthorized)
 			return
 		}
@@ -150,7 +154,7 @@ func LogoutHandler() func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if session.Values["siwe"] == nil {
+		if !IsAuthenticated(session) {
 			http.Error(w, "not logged in", http.StatusUnauthorized)
 			return
 		}
