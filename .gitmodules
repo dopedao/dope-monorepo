@@ -19,3 +19,6 @@
 [submodule "packages/contracts/streetcred/lib/rollcall"]
 	path = packages/contracts/streetcred/lib/rollcall
 	url = https://github.com/withtally/rollcall
+[submodule "packages/contracts/streetcred/lib/openzeppelin-contracts"]
+	path = packages/contracts/streetcred/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
