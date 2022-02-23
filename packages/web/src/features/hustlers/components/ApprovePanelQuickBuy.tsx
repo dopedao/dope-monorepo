@@ -14,6 +14,7 @@ import { useDopeListingQuery } from 'generated/graphql';
 import { ReceiptItem } from './ReceiptItem';
 import ReceiptItemDope from './ReceiptItemDope';
 import ReceiptItemHustler from './ReceiptItemHustler';
+import ReceiptItemPaper from './ReceiptItemPaper';
 import { useRouter } from 'next/router';
 import SpinnerMessage from 'components/SpinnerMessage';
 import DisconnectAndQuitButton from './DisconnectAndQuitButton';
@@ -144,30 +145,8 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
         </ReceiptItem>
         <h4>You Receive</h4>
         <hr className="onColor" />
-        <ReceiptItemDope hustlerConfig={hustlerConfig} />
-        {/* PAPER */}
-        <ReceiptItem>
-          <Box display="flex" alignItems="center" justifyContent="center">
-            <Image
-              src="/images/icon/wallet.svg" alt="Wallet"
-            />
-          </Box>
-          <Box flex="1">
-            {unbundleCost &&
-              parseInt(utils.formatEther(paperAmount), 10).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-            })}
-            &nbsp;
-            $PAPER
-          </Box>
-          <Box>
-            <Image
-              src="/images/icon/ethereum.svg"
-              width="16px"
-              alt="This asset lives on Ethereum Mainnet"
-            />
-          </Box>
-        </ReceiptItem>
+        <ReceiptItemDope dopeId={hustlerConfig.dopeId} />
+        <ReceiptItemPaper amount={paperAmount} />
         <ReceiptItemHustler hustlerConfig={hustlerConfig} />
         {/* GEAR */}
         <ReceiptItem>

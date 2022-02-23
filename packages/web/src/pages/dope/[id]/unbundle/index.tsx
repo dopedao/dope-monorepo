@@ -18,6 +18,8 @@ import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import DopeCardBody from 'features/dope/components/DopeCardBody';
 import { useDopesQuery } from 'generated/graphql';
 import LoadingBlock from 'components/LoadingBlock';
+import ReceiptItemDope from 'features/hustlers/components/ReceiptItemDope';
+import ReceiptItemPaper from 'features/hustlers/components/ReceiptItemPaper';
 
 const Approve = () => {
   const { account } = useWeb3React();
@@ -115,29 +117,12 @@ const Approve = () => {
       <Head title="Claim Gear" />
 
       <StackedResponsiveContainer>
-        <Stack>
+        <Stack flex="2 !important">
           <PanelContainer>
             <PanelTitleHeader>Cost of Unbundling</PanelTitleHeader>
             <PanelBody>
-              <Table>
-                <Tbody>
-                  <Tr>
-                    <Td></Td>
-                    <Td textAlign="right">1</Td>
-                    <Td>DOPE NFT</Td>
-                  </Tr>
-                  <Tr>
-                    <Td></Td>
-                    <Td textAlign="right">
-                      {paperCost &&
-                        parseInt(utils.formatEther(paperCost), 10).toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                      })}
-                    </Td>
-                    <Td>$PAPER</Td>
-                  </Tr>
-                </Tbody>
-              </Table>
+              <ReceiptItemDope dopeId={dopeId} />
+              <ReceiptItemPaper amount={paperCost} />
             </PanelBody>
           </PanelContainer>
           <ApprovePaper
@@ -159,6 +144,7 @@ const Approve = () => {
           css={css`
             min-height: 400px;
             background-color: #333;
+            flex: 2;
           `}
         >
           <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
@@ -172,7 +158,11 @@ const Approve = () => {
             />
           }
           <PanelFooter>
-            <div className="smallest">This only claims gear, it does not create a Hustler</div>
+            <div className="smallest" css={css`text-align:right;padding:0 8px;`}>
+              This only claims gear.
+              <br/>
+              It does not mint a Hustler.
+            </div>
             <Button variant="primary" onClick={unbundleDope} disabled={!canMint}>
               🔓 Claim Gear 🔓
             </Button>
