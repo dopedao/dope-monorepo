@@ -1,7 +1,7 @@
 import { Box, Button, Flex, HStack, Stack } from '@chakra-ui/react';
 import { useDrugQuery } from 'generated/graphql';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Container from './Container';
 import ContainerFooter from './ContainerFooter';
 import ContainerHeader from './ContainerHeader';

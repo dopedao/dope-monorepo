@@ -12,6 +12,7 @@ import DesktopIconList from 'components/DesktopIconList';
 import GlobalStyles from 'ui/styles/GlobalStyles';
 import PageLoadingIndicator from 'components/PageLoadingIndicator';
 import theme from 'ui/styles/theme';
+import RollYourOwnProvider from 'features/ryo/context';
 
 import GoogleAnalytics from 'components/GoogleAnalytics';
 
@@ -44,7 +45,14 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function CreateDopeApp({ Component, pageProps }: AppProps) {
+export default function CreateDopeApp({ Component, pageProps, router }: AppProps) {
+  const { pathname } = router;
+
+  // Will probably want a better solution to conditionally
+  // wrap components with providers when we have more of them.
+  // This should be ok for now.
+  const shouldIncludeRollYourOwn = pathname.includes('/roll-your-own');
+
   return (
     <>
       <GlobalStyles />
@@ -53,13 +61,21 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
           <Hydrate state={pageProps.dehydratedState}>
             <Web3ReactProvider getLibrary={getLibrary}>
               <StarknetProvider>
-                <FullScreenProvider>
-                  <main>
-                    <PageLoadingIndicator />
-                    <DesktopIconList />
-                    <Component {...pageProps} />
-                  </main>
-                </FullScreenProvider>
+                <RollYourOwnProvider>
+                  <FullScreenProvider>
+                    <main>
+                      <PageLoadingIndicator />
+                      <DesktopIconList />
+                      {shouldIncludeRollYourOwn ? (
+                        <RollYourOwnProvider>
+                          <Component {...pageProps} />
+                        </RollYourOwnProvider>
+                      ) : (
+                        <Component {...pageProps} />
+                      )}
+                    </main>
+                  </FullScreenProvider>
+                </RollYourOwnProvider>
               </StarknetProvider>
             </Web3ReactProvider>
             {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
