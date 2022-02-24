@@ -1,6 +1,2 @@
-forge-std/=lib/rollcall/lib/forge-optimism/lib/forge-std/src/
-ds-test/=lib/rollcall/lib/ds-test/src/
-openzeppelin-contracts/=lib/rollcall/lib/openzeppelin-contracts/
+openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/
 rollcall/=lib/rollcall/src/
-lib/=lib/rollcall/src/lib/
-forge-optimism/=lib/rollcall/lib/forge-optimism/src/
