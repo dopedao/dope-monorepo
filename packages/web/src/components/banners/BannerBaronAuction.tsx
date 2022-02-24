@@ -57,8 +57,8 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
               Charity Auction
             </h3>
             <Box className="smallest" color="rgba(255,255,255,0.75)">
-              {/* Ends in <Countdown date={new Date('02/26/2022')} /> */}
-              Auction begins in <Countdown date={new Date('02/23/2022 17:00:00')} />
+              Ends in <Countdown date={new Date('03/02/2022 07:00')} />
+              {/* Auction begins in <Countdown date={new Date('02/23/2022 17:00:00')} /> */}
             </Box>
             <br />
             <p className="smaller">
@@ -87,8 +87,8 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
             </p>
           </Box>
           <Stack direction={['column', 'row', 'row']} alignItems="stretch" justifyContent="center">
-            <Link href="" passHref flex={1}>
-              <Button disabled color="black" width="100%">
+            <Link href="https://opensea.io/assets/0x2dd79b3e8a8b9e7afe4e1843282383f7704499e4/197" target="bid" passHref flex={1}>
+              <Button variant="cny" width="100%">
                 Place a Bid
               </Button>
             </Link>
