@@ -41,19 +41,16 @@ export default class Authenticator {
         }
     
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-    
-        // [nonce] [age]
-        const nonceData = await (await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authNoncePath, { credentials: 'include' })).text();
-        const [ nonce, nonceAge ] = nonceData.split(' ');
+        const latestBlock = (await provider.getBlockNumber()).toString();
     
         const message = new SiweMessage({
           address: await provider.getSigner().getAddress(),
           domain: window.location.host,
-          statement: `Signature of this message will only be used for authentication. You have ${nonceAge} seconds to sign this message.`,
+          statement: `Signature of this message will only be used for authentication. You have 5 minutes to sign this message.`,
           uri: window.location.origin,
           version: '1',
           chainId: await provider.getSigner().getChainId(),
-          nonce
+          nonce: latestBlock
         }).prepareMessage();
     
         const signature = await provider.getSigner().signMessage(message);
