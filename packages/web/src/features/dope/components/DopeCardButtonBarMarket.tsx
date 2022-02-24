@@ -29,11 +29,8 @@ const DopeCardButtonBarMarket = ({ dope }: DopeCardButtonBarMarketProps) => {
             {
               pathname: `/hustlers/${dope.id}/initiate`,
               query: {
-                isPurchase: true,
+                quickBuy: true,
               },
-            },
-            {
-              pathname: `/hustlers/${dope.id}/initiate`,
             },
           );
         }}

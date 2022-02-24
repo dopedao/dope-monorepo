@@ -1,21 +1,26 @@
-import { useEffect, useState } from 'react';
-import { css } from '@emotion/react';
+import { BigNumber, utils } from 'ethers';
 import { Button, Stack, Table, Tbody, Tr, Td } from '@chakra-ui/react';
-import router, { useRouter } from 'next/router';
-import { BigNumber } from 'ethers';
-import { useWeb3React } from '@web3-react/core';
+import { css } from '@emotion/react';
+import { useEffect, useState } from 'react';
 import { useInitiator, usePaper, useSwapMeet } from 'hooks/contracts';
+import { useWeb3React } from '@web3-react/core';
+import ApprovePaper from 'components/panels/ApprovePaper';
+import AppWindowEthereum from 'components/AppWindowEthereum';
+import Dialog from 'components/Dialog';
 import Head from 'components/Head';
+import MintTo from 'components/panels/MintTo';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import PanelTitleHeader from 'components/PanelTitleHeader';
+import router, { useRouter } from 'next/router';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
-import ApprovePaper from 'components/panels/ApprovePaper';
-import MintTo from 'components/panels/MintTo';
-import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
-import AppWindowEthereum from 'components/AppWindowEthereum';
-import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
+import DopeCardBody from 'features/dope/components/DopeCardBody';
+import { useDopesQuery } from 'generated/graphql';
+import LoadingBlock from 'components/LoadingBlock';
+import ReceiptItemDope from 'features/hustlers/components/ReceiptItemDope';
+import ReceiptItemPaper from 'features/hustlers/components/ReceiptItemPaper';
+import ReceiptItemGear from 'features/hustlers/components/ReceiptItemGear';
 
 const Approve = () => {
   const { account } = useWeb3React();
@@ -24,31 +29,53 @@ const Approve = () => {
 
   const [mintTo, setMintTo] = useState<boolean>(false);
   const [mintAddress, setMintAddress] = useState<string>('');
-  const [canMint, setCanMint] = useState(false);
-  const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
-  const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
 
   const initiator = useInitiator();
   const paper = usePaper();
 
+  // Check if DOPE already opened and prevent usage
+  const [isOpened, setIsOpened] = useState(false);
   useEffect(() => {
-    if (account) {
+    if (!dopeId) return;
+    let isMounted = true;
+    initiator.isOpened(BigNumber.from(dopeId)).then(value => {
+      if (isMounted) setIsOpened(value);
+    });
+    return () => { isMounted = false };
+  }, [initiator, dopeId]);
+
+  // Set PAPER cost based on contract amount due to "halvening"
+  const [paperCost, setPaperCost] = useState<BigNumber>();
+  useEffect(() => {
+    let isMounted = true;
+    initiator.cost().then(setPaperCost);
+    return () => { isMounted = false };
+  }, [initiator]);
+
+  // Do we have enough PAPER?
+  const [hasEnoughPaper, setHasEnoughPaper] = useState<boolean>();
+  useEffect(() => {
+    if (account && paperCost) {
       paper
         .balanceOf(account)
-        .then(balance => setHasEnoughPaper(balance.gte('12500000000000000000000')));
+        .then(balance => setHasEnoughPaper(balance.gte(paperCost)));
     }
-  }, [account, paper]);
+  }, [account, paper, paperCost]);
 
+  // Is PAPER approved?
+  const [isPaperApproved, setIsPaperApproved] = useState<boolean>();
   useEffect(() => {
-    if (account) {
+    if (account && paperCost) {
       paper
         .allowance(account, initiator.address)
         .then((allowance: BigNumber) =>
-          setIsPaperApproved(allowance.gte('12500000000000000000000')),
+          setIsPaperApproved(allowance.gte(paperCost)),
         );
     }
-  }, [account, initiator.address, paper]);
+  }, [account, initiator.address, paper, paperCost]);
 
+  // Can we MINT based on above?
+  const [canMint, setCanMint] = useState(false);
   useEffect(() => {
     if (isPaperApproved && hasEnoughPaper && (!mintTo || (mintTo && mintAddress))) {
       setCanMint(true);
@@ -65,29 +92,53 @@ const Approve = () => {
       .then(() => router.replace('/dope/unbundle-success'));
   };
 
+
+  const { data, isFetching } = useDopesQuery(
+    {
+      where: {
+        id: dopeId,
+      },
+    },
+    {
+      enabled: !!account,
+    },
+  );
+  const dope = data?.dopes?.edges?.[0]?.node
+
+  if (isOpened === true) {  
+    return (
+      <AppWindowEthereum padBody={false} title="Claim DOPE Gear">
+        <Dialog title="Sorry…" icon="dope-smiley-sad">
+          <p>Gear has already been claimed from DOPE #{dopeId}. Please try another NFT.</p>
+          <Button onClick={() => router.back()}>Go Back</Button>
+        </Dialog>
+      </AppWindowEthereum>
+    )
+  }
+  
   return (
     <AppWindowEthereum requiresWalletConnection={true} padBody={false} title="Claim DOPE Gear">
-      <Head title="Approve spend" />
+      <Head title="Claim Gear" />
+
       <StackedResponsiveContainer>
-        <Stack>
-          <PanelContainer>
-            <PanelTitleHeader>Cost of Unbundling</PanelTitleHeader>
-            <PanelBody>
-              <Table>
-                <Tbody>
-                  <Tr>
-                    <Td></Td>
-                    <Td textAlign="right">1</Td>
-                    <Td>DOPE NFT</Td>
-                  </Tr>
-                  <Tr>
-                    <Td></Td>
-                    <Td textAlign="right">12,500</Td>
-                    <Td>$PAPER</Td>
-                  </Tr>
-                </Tbody>
-              </Table>
-            </PanelBody>
+        <Stack flex="2 !important">
+          <PanelContainer
+            css={css`
+              min-height: 400px;
+              background-color: #333;
+              flex: 2;
+            `}
+          >
+            <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
+            {isFetching && <LoadingBlock /> }
+            {!isFetching && dope &&
+              <DopeCardBody
+                dope={dope}
+                isExpanded={true}
+                hidePreviewButton={true}
+                showDopeClaimStatus={false}
+              />
+            }
           </PanelContainer>
           <ApprovePaper
             address={initiator.address}
@@ -104,17 +155,28 @@ const Approve = () => {
             setMintAddress={setMintAddress}
           />
         </Stack>
-        <PanelContainer
-          css={css`
-            min-height: 400px;
-            background-color: #000;
-          `}
-        >
-          <PanelTitleHeader>Gear You&apos;re Claiming</PanelTitleHeader>
-          <RenderFromDopeId id={dopeId} isVehicle={true} zoomWindow={ZOOM_WINDOWS[3]} />
+        <PanelContainer>
+          <PanelTitleHeader>Transaction Details</PanelTitleHeader>
+          <PanelBody>
+            <h4>You Use</h4>
+            <hr className="onColor" />
+            <ReceiptItemDope dopeId={dopeId} hideUnderline />
+            <br/>
+            <h4>You Pay</h4>
+            <hr className="onColor" />
 
+            <ReceiptItemPaper amount={paperCost} hideUnderline />
+            <br/>
+            <h4>You Receive</h4>
+            <hr className="onColor" />
+            <ReceiptItemGear hideUnderline />
+          </PanelBody>
           <PanelFooter>
-            <div className="smallest">This only claims gear, it does not create a Hustler</div>
+            <div className="smallest" css={css`text-align:right;padding:0 8px;`}>
+              This only claims gear.
+              <br/>
+              It does not mint a Hustler.
+            </div>
             <Button variant="primary" onClick={unbundleDope} disabled={!canMint}>
               🔓 Claim Gear 🔓
             </Button>

@@ -14,21 +14,20 @@ import { useDopeListingQuery } from 'generated/graphql';
 import { ReceiptItem } from './ReceiptItem';
 import ReceiptItemDope from './ReceiptItemDope';
 import ReceiptItemHustler from './ReceiptItemHustler';
+import ReceiptItemPaper from './ReceiptItemPaper';
+import ReceiptItemGear from './ReceiptItemGear';
 import { useRouter } from 'next/router';
 import SpinnerMessage from 'components/SpinnerMessage';
 import DisconnectAndQuitButton from './DisconnectAndQuitButton';
+import { resolve } from 'node:path/win32';
+import { rejects } from 'node:assert';
 
 const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
   const router = useRouter();
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
   const oneclick = useOneClickInitiator();
   const initiator = useInitiator();
-  const [unbundleCost, setUnbundleCost] = useState<BigNumber>();
-  const [paperCost, setPaperCost] = useState<BigNumber>();
-  const [paperAmount, setPaperAmount] = useState<BigNumber>(BigNumber.from(utils.parseEther('10000')));
-  const [isPurchasing, setIsPurchasing] = useState(false);
 
-  const { estimatedAmount } = router.query;
 
   const { data, isFetching } = useDopeListingQuery(
     {
@@ -41,10 +40,23 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
     },
   );
 
+  const [ethBalance, setEthBalance] = useState<BigNumber>(BigNumber.from(0));
+  useEffect(() => {
+    if (!library) return;
+    library.getBalance(account).then((balance: any) => {
+      console.log('ETH Balance ' + utils.formatEther(balance));
+      setEthBalance(balance);
+    });
+  }, [library]);
+  
+
+  const [unbundleCost, setUnbundleCost] = useState<BigNumber>();
   useEffect(() => {
     initiator.cost().then(setUnbundleCost);
   }, [initiator]);
 
+  const paperAmount = BigNumber.from(utils.parseEther('10000'))
+  const [paperCost, setPaperCost] = useState<BigNumber>();
   useEffect(() => {
     if (!unbundleCost) return;
     oneclick.callStatic
@@ -75,11 +87,21 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
     return BigNumber.from(order.currentPrice).add(paperCost);
   }, [order, paperCost]);
 
-  const canMint = (account && order && paperAmount && paperCost && total);
-  console.log([account, order, paperAmount, paperCost, total]);
+
+  const [canMint, setCanMint] = useState(false);
+  useEffect(() => {
+    //console.log([account, order, paperAmount, paperCost, total]);
+    if(account && order && paperAmount && paperCost && total) {
+      setCanMint(ethBalance >= total);
+    } else {
+      setCanMint(false);
+    }
+  }, [account, order, paperAmount, paperCost, total]);
+
+
+  const [isPurchasing, setIsPurchasing] = useState(false);
   const onMintHustler = useCallback(async () => {
-    
-    if (!canMint) return;
+    if (!account || !paperCost || !order || !canMint) return;
 
     const config = createConfig(hustlerConfig);
     const { dopeId, mintAddress } = hustlerConfig;
@@ -111,6 +133,13 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
       Math.ceil(Date.now() / 1000 + 600),
       { value: total },
     )
+    .catch(
+      (e) => {
+        console.log(e.code);
+        if(e.code == 'INSUFFICIENT_FUNDS') alert("Your ETH balance is too low to Mint this Hustler.\nPlease increase your balance and try again.");
+        throw e;
+      }
+    )
     .then(
       () => router.replace('/hustlers/mint-success')
     )
@@ -132,7 +161,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
             />
           </Box>
           <Box flex="1">
-            { estimatedAmount } Ξ
+            { total ? parseFloat(utils.formatEther(total)).toFixed(4) : '…' } Ξ
           </Box>
           <Box>
           <Image
@@ -144,43 +173,10 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
         </ReceiptItem>
         <h4>You Receive</h4>
         <hr className="onColor" />
-        <ReceiptItemDope hustlerConfig={hustlerConfig} />
-        {/* PAPER */}
-        <ReceiptItem>
-          <Box display="flex" alignItems="center" justifyContent="center">
-            <Image
-              src="/images/icon/wallet.svg" alt="Wallet"
-            />
-          </Box>
-          <Box flex="1">
-            {unbundleCost &&
-              parseInt(utils.formatEther(paperAmount), 10).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-            })}
-            &nbsp;
-            $PAPER
-          </Box>
-          <Box>
-            <Image
-              src="/images/icon/ethereum.svg"
-              width="16px"
-              alt="This asset lives on Ethereum Mainnet"
-            />
-          </Box>
-        </ReceiptItem>
+        <ReceiptItemDope dopeId={hustlerConfig.dopeId} />
+        <ReceiptItemPaper amount={paperAmount} />
         <ReceiptItemHustler hustlerConfig={hustlerConfig} />
-        {/* GEAR */}
-        <ReceiptItem>
-          <Box display="flex" alignItems="center" justifyContent="center" background="var(--gray-100)" color="black" borderRadius="4px">9</Box>
-          <Box flex="1">DOPE Gear NFTs</Box>
-          <Box>
-            <Image
-              src="/images/icon/optimism.svg"
-              width="16px"
-              alt="This asset lives on Optimism"
-            />
-          </Box>
-        </ReceiptItem>
+        <ReceiptItemGear hideUnderline />
       </PanelBody>
       <PanelFooter
         css={css`
@@ -197,8 +193,9 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
           variant="primary" 
           loadingText="Minting…"
         >
-          {!canMint && <SpinnerMessage text="Getting everything ready" />}
+          {isPurchasing && <SpinnerMessage text="Getting everything ready" />}
           {canMint && '✨ Mint Hustler ✨'}
+          {!canMint && 'Not enough ETH to mint'}
         </Button>
       </PanelFooter>
     </PanelContainer>

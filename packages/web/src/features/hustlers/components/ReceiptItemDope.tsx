@@ -1,13 +1,16 @@
 import { HustlerCustomization } from "utils/HustlerConfig";
 import { ReceiptItem, DopeLofi } from "./ReceiptItem";
 import { Box, Image } from "@chakra-ui/react";
-const ReceiptItemDope = ({hustlerConfig}: {hustlerConfig: HustlerCustomization;}) => {
+const ReceiptItemDope = (
+  {dopeId, hideUnderline}: 
+  {dopeId: string, hideUnderline?: boolean}
+) => {
   return(
-    <ReceiptItem>
+    <ReceiptItem hideUnderline={hideUnderline}>
       <DopeLofi>
         • • • • • • • • •
       </DopeLofi>
-      <Box flex="1">DOPE NFT #{hustlerConfig.dopeId}</Box>
+      <Box flex="1">DOPE NFT #{dopeId}</Box>
       <Box>
         <Image
           src="/images/icon/ethereum.svg"
