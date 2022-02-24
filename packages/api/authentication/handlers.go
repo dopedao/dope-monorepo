@@ -1,55 +1,30 @@
 package authentication
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"net/http"
-	"os"
+	"strconv"
 	"time"
 
-	"github.com/gorilla/sessions"
+	"github.com/dopedao/dope-monorepo/packages/api/middleware"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/jiulongw/siwe-go"
 )
 
-var Store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-
 // seconds
-const MAX_NONCE_AGE = 30
+const MAX_BLOCK_AGE = 60 * 5
 
-func IsAuthenticated(session *sessions.Session) bool {
-	return session.Values["siwe"] != nil
+type LoginBody struct {
+	Message   string `json:"message"`
+	Signature string `json:"signature"`
 }
 
-// Generates a nonce for the session
-func NonceHandler() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		session, err := Store.Get(r, "nonce")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		nonce := siwe.GenerateNonce()
-
-		session.Values["nonce"] = nonce
-		// user has [MAX_NONCE_AGE] seconds to use nonce until it's not valid anymore
-		session.Options.MaxAge = MAX_NONCE_AGE
-		if err := session.Save(r, w); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "text/plain")
-		w.WriteHeader(200)
-		// send back nonce + its max age
-		// [nonce] [max-age]
-		w.Write([]byte(fmt.Sprintf("%s %d", nonce, session.Options.MaxAge)))
-	}
-}
-
-// Validates signed payload with nonce
-func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
+// Validates signed payload with latest block number
+// Block has to maximum 30 seconds old
+func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body LoginBody
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -65,12 +40,7 @@ func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
 
 		// parse hex signature into a sequence of bytes
 		// ignore 0x if starting with it
-		var signature []byte
-		if body.Signature[0:2] != "0x" {
-			signature, err = hex.DecodeString(body.Signature)
-		} else {
-			signature, err = hex.DecodeString(body.Signature[2:])
-		}
+		signature, err := hexutil.Decode(body.Signature)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("invalid signature: %s", err.Error()), http.StatusBadRequest)
 			return
@@ -82,19 +52,28 @@ func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		nonceSession, err := Store.Get(r, "nonce")
+		// siwe message nonce is a block number
+		// check if its valid and maximum 30 seconds old
+		blockNumber, err := strconv.ParseInt(siweMessage.Nonce, 10, 64)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("invalid block number: %s", err.Error()), http.StatusBadRequest)
+			return
+		}
+
+		block, err := client.BlockByNumber(r.Context(), big.NewInt(blockNumber))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		// verify that nonce in signed message corresponds to nonce in session
-		if siweMessage.Nonce != nonceSession.Values["nonce"] {
-			http.Error(w, "invalid nonce", http.StatusUnauthorized)
+		// if block timestamp is more than [MAX_BLOCK_AGE] seconds old, reject
+		if time.Now().Sub(time.Unix(int64(block.Time()), 0)) > MAX_BLOCK_AGE {
+			http.Error(w, fmt.Sprintf("block %v outdated: age has to be less than %v seconds", blockNumber, MAX_BLOCK_AGE), http.StatusUnauthorized)
 			return
 		}
 
-		session, err := Store.Get(r, "session")
+		sc := middleware.SessionFor(r.Context())
+		session, err := sc.Get(middleware.Key)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -106,15 +85,8 @@ func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
 			session.Options.MaxAge = 0
 		}
 
-		// destroy nonce session to prevent
-		// nonce reuse after successful login
-		nonceSession.Options.MaxAge = -1
-		if err := session.Save(r, w); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		session.Values["siwe"] = body.Message
+		middleware.SetWallet(r.Context(), siweMessage.Address.String())
+		middleware.SetSiwe(r.Context(), *siweMessage)
 		if err := session.Save(r, w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -126,47 +98,13 @@ func LoginHandler() func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Returns SID of session if user is logged in
-func SidHandler() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		session, err := Store.Get(r, "session")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if !IsAuthenticated(session) {
-			http.Error(w, "not logged in", http.StatusUnauthorized)
-			return
-		}
-
-		w.Header().Set("Content-Type", "text/plain")
-		w.WriteHeader(200)
-		w.Write([]byte(session.ID))
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	if err := middleware.Clear(r.Context()); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-}
 
-func LogoutHandler() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		session, err := Store.Get(r, "session")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if !IsAuthenticated(session) {
-			http.Error(w, "not logged in", http.StatusUnauthorized)
-			return
-		}
-
-		session.Options.MaxAge = -1
-		if err := session.Save(r, w); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.WriteHeader(200)
-		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte("OK"))
-	}
+	w.WriteHeader(200)
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte("OK"))
 }
