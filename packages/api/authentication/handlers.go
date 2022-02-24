@@ -67,7 +67,7 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		}
 
 		// if block timestamp is more than [MAX_BLOCK_AGE] seconds old, reject
-		if time.Now().Sub(time.Unix(int64(block.Time()), 0)) > MAX_BLOCK_AGE {
+		if math.Abs(time.Now().UTC().Unix() - int64(block.Time()) > MAX_BLOCK_AGE {
 			http.Error(w, fmt.Sprintf("block %v outdated: age has to be less than %v seconds", blockNumber, MAX_BLOCK_AGE), http.StatusUnauthorized)
 			return
 		}
