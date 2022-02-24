@@ -26,7 +26,8 @@ const GameWindowHeader = ({
     <Flex
       color="white"
       justify="space-between"
-      p={4}
+      pt={3}
+      px={3}
     >
       {children}
     </Flex>
