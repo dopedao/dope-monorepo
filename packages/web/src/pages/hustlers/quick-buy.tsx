@@ -97,9 +97,9 @@ const QuickBuyHustler = () => {
 
   const currentPrice = useMemo(() => {
     const activeListings = currentDope?.listings?.filter((l: any) => l?.active);
-    const price = activeListings?.[0]?.inputs?.[0]?.amount;
+    const listingPrice = activeListings?.[0]?.inputs?.[0]?.amount;
     return `${(+ethers.utils.formatEther(
-      price && paperPrice ? BigNumber.from(price).add(paperPrice) : 0,
+      listingPrice && paperPrice ? BigNumber.from(listingPrice).add(paperPrice) : 0,
     )).toFixed(4)}`;
   }, [currentDope, paperPrice]);
 
@@ -125,7 +125,7 @@ const QuickBuyHustler = () => {
 
   const QuickBuyFooter = () => (
     <Box display="flex" flexDirection="column" justifyContent="flex-start" gap="8px">
-      <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy&estimatedAmount=${currentPrice}`} passHref>
+      <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy`} passHref>
         <Button 
           // autoFocus
           variant="primary">Customize</Button>
