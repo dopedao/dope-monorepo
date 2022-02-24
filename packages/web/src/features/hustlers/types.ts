@@ -15,7 +15,6 @@ export type HustlerState = {
   isQuickBuy: boolean;
   isApprovalDone: boolean;
   isFinalizeDone: boolean;
-  estimatedAmount?: number;
 };
 
 export type DispatchHustler = (action: HustlerActions) => void;
