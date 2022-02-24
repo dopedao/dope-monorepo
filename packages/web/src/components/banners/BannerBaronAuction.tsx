@@ -77,13 +77,13 @@ const BannerBaronAuction = ({hideBorderBottom = false}: {hideBorderBottom?: bool
               Details
             </h4>
             <p>
-              With the help of NBA superstar <a href="https://twitter.com/BaronDavis" className="underline" target="promo">Baron Davis</a> and <a href="https://www.morethanus.io/" target="promo" className="underline">More Than Us</a>, we are helping <a href="https://lastprisonerproject.org" target="promo" className="underline">The Last Prisoner Project</a> by auctioning off a <a href="/swap-meet/hustlers" className="underline" target="promo">Dope Wars Hustler</a> in his likeness. The auction begins Sunday, February 20th and runs for seven days. 
+              With the help of NBA superstar <a href="https://twitter.com/BaronDavis" className="underline" target="promo">Baron Davis</a> and <a href="https://www.morethanus.io/" target="promo" className="underline">More Than Us</a>, we are helping <a href="https://lastprisonerproject.org" target="promo" className="underline">The Last Prisoner Project</a> by auctioning off a <a href="/swap-meet/hustlers" className="underline" target="promo">Dope Wars Hustler</a> in his likeness.
             </p>
             <p>
               This Hustler contains ✨ ONE OF A KIND ✨ Dope Wars Gear, including a &quot;Lowrider From The Big Easy&quot;, and &quot;Basketball Jersey from the Bayou&quot;.
             </p>
             <p>
-              In the spirit of Doing Good, ALL PROCEEDS from the auction will be donated to The Last Prisoner Project.
+              In the spirit of Doing Good, ALL PROCEEDS from the auction will be donated to The Last Prisoner Project. By bidding on the auction you receive a Dope Wars Mugshot, and the Hustler with all gear!
             </p>
           </Box>
           <Stack direction={['column', 'row', 'row']} alignItems="stretch" justifyContent="center">
