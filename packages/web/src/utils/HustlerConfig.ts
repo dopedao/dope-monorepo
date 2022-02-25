@@ -96,7 +96,7 @@ export const randomizeHustlerAttributes = (
 export const createConfig = (config: HustlerCustomization): SetMetadataStruct => {
   const { body, bgColor, facialHair, hair, name, renderName, sex, textColor, zoomWindow } = config;
 
-  const setname = name ? name : '';
+  const setname = name ? name.replaceAll(`"`, `'`) : '';
   const color = '0x' + textColor.slice(1) + 'ff';
   const background = '0x' + bgColor.slice(1) + 'ff';
   const bodyParts: [BigNumber, BigNumber, BigNumber, BigNumber] = [
