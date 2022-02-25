@@ -13,7 +13,7 @@ const Key = "session"
 
 type sessionContextKey struct{}
 
-var Store = NewFilesystemStore("", []byte("session_secret"))
+var Store = NewCookieStore([]byte("session_secret"))
 var sessionCtxKey = &sessionContextKey{}
 
 type SessionContext struct {
@@ -30,8 +30,8 @@ func (sc *SessionContext) Save(ss *sessions.Session) error {
 	return sc.S.Save(sc.R, sc.W, ss)
 }
 
-func NewFilesystemStore(path string, keyPairs ...[]byte) sessions.Store {
-	store := sessions.NewFilesystemStore("", keyPairs...)
+func NewCookieStore(keyPairs ...[]byte) sessions.Store {
+	store := sessions.NewCookieStore(keyPairs...)
 
 	store.Options.Path = "/"
 
@@ -44,16 +44,6 @@ func WithStore(ctx context.Context, s sessions.Store, r *http.Request, w http.Re
 
 func SessionFor(ctx context.Context) SessionContext {
 	return ctx.Value(sessionCtxKey).(SessionContext)
-}
-
-func ID(ctx context.Context) (string, error) {
-	sc := SessionFor(ctx)
-	session, err := sc.Get(Key)
-	if err != nil {
-		return "", err
-	}
-
-	return session.ID, nil
 }
 
 func IsAuthenticated(ctx context.Context) bool {

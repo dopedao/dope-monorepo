@@ -23,7 +23,7 @@ type LoginBody struct {
 }
 
 // Validates signed payload with latest block number
-// Block has to maximum 30 seconds old
+// Block has to maximum [MAX_BLOCK_AGE] old
 func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body LoginBody
@@ -53,7 +53,6 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		}
 
 		// siwe message nonce is a block number
-		// check if its valid and maximum 30 seconds old
 		blockNumber, err := strconv.ParseInt(siweMessage.Nonce, 10, 64)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("invalid block number: %s", err.Error()), http.StatusBadRequest)
@@ -94,20 +93,20 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 
 		w.WriteHeader(200)
 		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte(session.ID))
+		w.Write([]byte("OK"))
 	}
 }
 
-func SidHandler(w http.ResponseWriter, r *http.Request) {
-	sid, err := middleware.ID(r.Context())
+func AuthenticatedHandler(w http.ResponseWriter, r *http.Request) {
+	wallet, err := middleware.Wallet(r.Context())
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte(sid))
+	w.Write([]byte(wallet))
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
