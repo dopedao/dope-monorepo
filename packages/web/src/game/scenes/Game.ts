@@ -115,12 +115,10 @@ export default class GameScene extends Scene {
               itemToPickUp &&
               new Phaser.Math.Vector2(this.player).distance(itemToPickUp) < 100
             ) {
-              itemToPickUp?.onPickup();
-              EventHandler.emitter().emit(
-                Events.PLAYER_INVENTORY_ADD_ITEM,
-                itemToPickUp.item,
-                true,
-              );
+              if (NetworkHandler.getInstance().authenticator.loggedIn && this.player.inventory.add(itemToPickUp.item, true))
+                NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+                  id: itemToPickUp.getData('id'),
+                })
             }
           },
         );
@@ -228,19 +226,6 @@ export default class GameScene extends Scene {
         undefined,
         //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
         true,
-      ),
-    );
-
-    this.itemEntities.push(
-      new ItemEntity(
-        this.matter.world,
-        100,
-        200,
-        'lol',
-        new Item('item_test', 'jsp'),
-        (item: Item) => {
-          this.player.inventory.remove(item, true);
-        },
       ),
     );
 
