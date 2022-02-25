@@ -14,30 +14,48 @@ type WebAmpTrack = {
   duration: number;
 };
 
-const BUCKET_URL = 'https://dope-wars-gg.s3.us-west-1.amazonaws.com/';
+const BUCKET_URL = 'https://dope-wars-gg.s3.us-west-1.amazonaws.com/audio/';
 const TRACKS = [
   {
-    title: '2_of_Amerikas_Most_Wanted.mp3',
+    artist: 'DJ Green Lantern',
+    title: 'Dope Wars Mix Vol 1',
+    url: 'dope-wars_green-lantern-mix-vol-1.mp3',
+    duration: 3520, // 58:40
+  },
+  {
+    artist: '@baronvonfuture',
+    title: '2 Of Amerikas Most Wanted',
+    url: '2_of_Amerikas_Most_Wanted.mp3',
     duration: 213, // 3:33
   },
   {
-    title: 'Shook_Ones_Pt_2.mp3',
+    artist: '@baronvonfuture',
+    title: 'Shook Ones Pt2',
+    url: 'Shook_Ones_Pt_2.mp3',
     duration: 122, // 2:02
   },
   {
-    title: 'Aint_Nuthin_But_a_G_thang.mp3',
+    artist: '@baronvonfuture',
+    title: 'Aint Nuthin But a G thang',
+    url: 'Aint_Nuthin_But_a_G_thang.mp3',
     duration: 249, // 4:09
   },
   {
-    title: 'CREAM_WuTang.mp3',
+    artist: '@baronvonfuture',
+    title: 'CREAM',
+    url: 'CREAM_WuTang.mp3',
     duration: 192, // 3:12
   },
   {
-    title: 'BIG_POPPA.mp3',
+    artist: '@baronvonfuture',
+    title: 'BIG POPPA',
+    url: 'BIG_POPPA.mp3',
     duration: 288, // 4:48
   },
   {
-    title: 'So_Fresh_So_Clean.mp3',
+    artist: '@baronvonfuture',
+    title: 'So Fresh So Clean',
+    url: 'So_Fresh_So_Clean.mp3',
     duration: 238, // 3:58
   },
 ];
@@ -47,10 +65,10 @@ const playerTracks: WebAmpTrack[] = [];
 TRACKS.forEach(track => {
   playerTracks.push({
     metaData: {
-      artist: '@baronvonfuture',
       title: track.title,
+      artist: track.artist,
     },
-    url: BUCKET_URL + track.title,
+    url: BUCKET_URL +  track.url,
     duration: track.duration,
   });
 });
