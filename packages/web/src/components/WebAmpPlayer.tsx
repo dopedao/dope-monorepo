@@ -100,7 +100,7 @@ const WebAmpPlayer = ({ onClose }: Props) => {
       const webamp = new Webamp({
         initialTracks: playerTracks,
         // more available here - https://skins.webamp.org/
-        initialSkin: { url: '/webamp_skins/OS8_AMP-Teal.wsz' },
+        initialSkin: { url: '/webamp_skins/dope-amp.wsz' },
       });
       // Returns a promise indicating when it's done loading.
       webamp.renderWhenReady(containerEl.current);
