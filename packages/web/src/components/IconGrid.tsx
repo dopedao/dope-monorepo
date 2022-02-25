@@ -4,21 +4,19 @@ import styled from '@emotion/styled';
 const IconGrid = styled.div`
   position: fixed;
   z-index: 0;
-  bottom: 0px;
   left: 0px;
   top: 16px;
   display: flex;
   // Default
   width: auto;
-  height: 100%;
-  flex-flow: column wrap;
-  justify-content: flex-start;
+  flex-flow: row wrap;
+  justify-content: center;
   align-items: flex-start;
-  gap: 8px;
-  padding: 8px;
+  gap: 32px;
+  padding: 32px;
   ${media.tablet`
-    gap: 16px;
-    padding: 16px;
+    justify-content: flex-start;
+    width: 50%;
   `}
   ${media.laptop`
     gap: 32px;
