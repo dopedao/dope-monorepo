@@ -253,7 +253,7 @@ const ContentRoadmap = () => (
           Currently, an original music EP is being produced with top name artists in the rap game with help from DOPE DAO member <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source Magazine.
         </p>
         <p>
-          <a href="https://www.twitch.tv/videos/1406868852" target="roadmap">WATCH THE MIX</a>
+          <a href="https://soundcloud.com/djgreenlantern/dj-green-lantern-dope-wars-mix" target="roadmap">LISTEN TO THE MIX</a>
         </p>
       </RoadmapItem>
       <SectionHeader>Coming Soon™</SectionHeader>
