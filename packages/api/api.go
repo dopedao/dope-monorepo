@@ -308,8 +308,12 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
-	r.HandleFunc("/authentication/login", authentication.LoginHandler(ethClient))
-	r.HandleFunc("/authentication/logout", authentication.LogoutHandler)
+	authRouter := r.PathPrefix("/authentication").Subrouter()
+	authRouter.Use(authentication.CORS())
+
+	authRouter.HandleFunc("/login", authentication.LoginHandler(ethClient))
+	authRouter.HandleFunc("/authenticated", authentication.AuthenticatedHandler)
+	authRouter.HandleFunc("/logout", authentication.LogoutHandler)
 
 	r.HandleFunc("/wallets/{address}/hustlers", resources.WalletHustlersHandler(client))
 	r.HandleFunc("/hustlers/{id}/sprites", resources.HustlerSpritesHandler(client))
