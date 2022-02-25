@@ -9,10 +9,14 @@ const SocialLinks = () => {
   };
 
   return (
-    <DesktopWindow title="Other Stuff" width={640}>
+    <DesktopWindow title="Other Stuff" width={600} height={800} scrollable hideWalletAddress>
       <IconGrid
         css={css`
           top: 32px;
+          width: 100% !important;
+          padding: 32px !important;
+          gap: 48px !important;
+          justify-content: center !important;
         `}
       >
         <DesktopIcon
