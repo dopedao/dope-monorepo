@@ -247,7 +247,10 @@ const ContentRoadmap = () => (
         date="Q1 2022"
       >
         <p>
-          <a href="https://twitter.com/DJGREENLANTERN">DJ Green Lantern</a> dropped an exclusive original hip-hop mix specifically made for Dope Wars that was launched in-game and streamed live on Twitch. In addition, a 5-track EP is being produced with top name artists in the rap game; with help from <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source Magazine.
+          The world famous <a href="https://twitter.com/DJGREENLANTERN">DJ Green Lantern</a> dropped an exclusive original, certified hip-hop mix specifically made for Dope Wars that was launched in-game and streamed live on Twitch.
+        </p>
+        <p>
+          Currently, an original music EP is being produced with top name artists in the rap game with help from DOPE DAO member <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source Magazine.
         </p>
         <p>
           <a href="https://www.twitch.tv/videos/1406868852" target="roadmap">WATCH THE MIX</a>
