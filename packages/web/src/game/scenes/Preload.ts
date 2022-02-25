@@ -7,6 +7,8 @@ import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import { ethers } from 'ethers';
 import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
 import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
+import defaultNetworkConfig from 'game/constants/NetworkConfig';
+import UIScene, { chakraToastStyle } from './UI';
 
 export default class Preload extends Scene {
   private downloadedSize: number = 0;
@@ -62,7 +64,38 @@ export default class Preload extends Scene {
     }
 
     const networkHandler = NetworkHandler.getInstance();
-    networkHandler.connect();
+    
+    fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authAuthenticatedPath, { credentials: 'include' })
+      .then(res => {
+        if (res.status !== 200) {
+          (this.scene.get('UIScene') as UIScene).toast({
+            ...chakraToastStyle,
+            title: 'Login needed',
+            description: 'Please sign the message to authenticate',
+            status: 'warning'
+          });
+          networkHandler.authenticator.login()
+            .then(() => {
+              networkHandler.connect();
+              (this.scene.get('UIScene') as UIScene).toast({
+                ...chakraToastStyle,
+                title: 'Logged in',
+                status: 'success',
+              });
+            })
+            .catch(err => {
+              (this.scene.get('UIScene') as UIScene).toast({
+                ...chakraToastStyle,
+                title: 'Login failed',
+                description: err.message,
+                status: 'error',
+              });
+            })
+          return;
+        }
+
+        networkHandler.connect();
+      })
 
     const onConnection = () => {
       // handle messages
