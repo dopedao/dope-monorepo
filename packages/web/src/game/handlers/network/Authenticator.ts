@@ -36,8 +36,7 @@ export default class Authenticator {
     async login() {
         if (!window.ethereum)
         {
-          Promise.reject('No ethereum provider found');
-          return;
+          return Promise.reject('No ethereum provider found');
         }
     
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -65,13 +64,12 @@ export default class Authenticator {
     
         if (login.status !== 200)
         {
-          Promise.reject(await login.text());
-          return;
+          console.log('rejected');
+          return Promise.reject(await login.text());
         }
         
         this._loggedIn = true;
         this._sid = await login.text();
-        Promise.resolve();
     }
     
     async logout() {

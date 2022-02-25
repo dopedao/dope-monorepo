@@ -157,7 +157,7 @@ export default class GameScene extends Scene {
                 this.citizens[this.citizens.push(new Citizen(this.matter.world, 70, 300, '1001', "Alice", undefined, [
                   new Conversation([
                     {
-                      text: "Hey! I'm Bob, the store owner. I'm glad you're here!",
+                      text: "Hey! I'm Alice, the store owner. I'm glad you're here!",
                     },
                     {
                       text: "Here's a phone to connect your wallet. It's a little bit of a pain to use but it's better than nothing.",
@@ -198,7 +198,6 @@ export default class GameScene extends Scene {
                     });
                   })
                   .catch((reason) => {
-                    console.log(reason);
                     (this.scene.get('UIScene') as UIScene).toast({
                       ...chakraToastStyle,
                       title: 'Sign in failed',
