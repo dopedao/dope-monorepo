@@ -4,6 +4,8 @@ import Player from './player/Player';
 import UIScene from 'game/scenes/UI';
 import { getBBcodeText } from 'game/ui/rex/RexUtils';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
+import NetworkHandler from 'game/handlers/network/NetworkHandler';
+import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
 
 // Item entity class for items on ground
 export default class ItemEntity extends Phaser.Physics.Matter.Sprite {

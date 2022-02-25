@@ -131,8 +131,10 @@ export default class Player extends Hustler {
         flag = true;
       } else if (otherGameObject instanceof ItemEntity) {
         // if item succesfully picked up
-        if (this.inventory.add((otherGameObject as ItemEntity).item, true))
-          (otherGameObject as ItemEntity).onPickup();
+        if (NetworkHandler.getInstance().authenticator.loggedIn && this.inventory.add(otherGameObject.item, true))
+            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+              id: otherGameObject.getData('id'),
+            })
 
         flag = true;
       }

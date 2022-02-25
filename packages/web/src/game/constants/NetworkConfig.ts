@@ -7,7 +7,7 @@ const defaultNetworkConfig = {
     authUri: "https://involvement-terror-cowboy-specializing.trycloudflare.com/authentication",
     authNoncePath: "/nonce",
     authLoginPath: "/login",
-    authSidPath: "/sid",
+    authAuthenticatedPath: "/authenticated",
     authLogoutPath: "/logout",
 };
 

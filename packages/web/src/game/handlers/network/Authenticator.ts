@@ -4,10 +4,8 @@ import { SiweMessage } from "siwe";
 
 export default class Authenticator {
     private _loggedIn: boolean;
-    private _sid?: string;
 
     get loggedIn() { return this._loggedIn; }
-    get sid() { return this._sid; }
 
     constructor() {
         this._loggedIn = false;
@@ -16,21 +14,15 @@ export default class Authenticator {
     }
 
     private async _intrinsicUpdateState() {
-        const sidRes = await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authSidPath, { credentials: 'include' });
+        const sidRes = await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authAuthenticatedPath, { credentials: 'include' });
 
         if (sidRes.status !== 200)
         {
             this._loggedIn = false;
-            this._sid = undefined;
             return;
         }
 
-        const sid = await sidRes.text();
-        if (sid.length > 0)
-        {
-            this._sid = sid;
-            this._loggedIn = true;
-        }
+        this._loggedIn = true;
     }
 
     async login() {
@@ -63,21 +55,19 @@ export default class Authenticator {
         });
     
         if (login.status !== 200)
-        {
-          console.log('rejected');
           return Promise.reject(await login.text());
-        }
         
         this._loggedIn = true;
-        this._sid = await login.text();
     }
     
     async logout() {
-        this._loggedIn = false;
-        this._sid = undefined;
+      const res = await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authLogoutPath, {
+          credentials: 'include'
+      });
 
-        await fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authLogoutPath, {
-            credentials: 'include'
-        });
+      if (res.status !== 200)
+        return Promise.reject(await res.text());
+
+      this._loggedIn = false;
     }
 }

@@ -99,8 +99,10 @@ export default class GameScene extends Scene {
           itemToPickUp &&
           new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(itemToPickUp)) < 100
         ) {
-          itemToPickUp?.onPickup();
-          EventHandler.emitter().emit(Events.PLAYER_INVENTORY_ADD_ITEM, itemToPickUp?.item, true);
+          if (NetworkHandler.getInstance().authenticator.loggedIn && this.player.inventory.add(itemToPickUp.item, true))
+            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+              id: itemToPickUp.getData('id'),
+            })
         } else
           this.player.navigator.moveTo(pointer.worldX, pointer.worldY, () => {
             if (
@@ -475,6 +477,12 @@ export default class GameScene extends Scene {
             const hustler = this.hustlers.find(h => h.getData('id') === data.id);
             if (hustler) hustler.currentMap = data.current_map;
           },
+        );
+        networkHandler.on(
+          NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY,
+          (data: DataTypes[NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY]) => {
+            this.itemEntities.find(i => i.getData('id') === data.id)?.onPickup();
+          }
         );
       },
     );
