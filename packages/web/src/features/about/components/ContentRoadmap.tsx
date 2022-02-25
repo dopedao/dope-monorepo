@@ -241,9 +241,9 @@ const ContentRoadmap = () => (
         </>
       </RoadmapItem>
       <RoadmapItem
-        title="DOPE Mixtape by DJ Green Lantern &amp; Original Dope Wars EP"
-        imageUrl="/images/about/dope-mixtape.png"
-        imageAlt="In-game Hustler Characters"
+        title="DOPE Mix Volume 1 by DJ Green Lantern &amp; Original Dope Wars EP"
+        imageUrl="/images/news/green-lantern-dope-mix-vol-1.jpeg"
+        imageAlt="DOPE Mix Volume 1"
         date="Q1 2022"
       >
         <p>
