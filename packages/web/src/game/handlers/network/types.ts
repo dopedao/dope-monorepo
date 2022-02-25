@@ -5,6 +5,7 @@ enum UniversalEventNames {
   PLAYER_CHAT_MESSAGE = 'player_chat_message',
   PLAYER_UPDATE_MAP = 'player_update_map',
   PLAYER_PICKUP_ITEMENTITY = 'player_pickup_itementity',
+  ITEMENTITY_DESTROY = 'itementity_destroy',
 }
 
 enum NetworkEvents {
@@ -22,7 +23,7 @@ enum NetworkEvents {
   SERVER_PLAYER_MOVE = 'server_player_move',
   SERVER_PLAYER_CHAT_MESSAGE = 'server_player_chat_message',
   SERVER_PLAYER_UPDATE_MAP = 'server_player_update_map',
-  SERVER_PLAYER_PICKUP_ITEMENTITY = 'server_player_pickup_itementity',
+  SERVER_ITEMENTITY_DESTROY = 'server_itementity_destroy',
 
   // From client to server
   CLIENT_PLAYER_JOIN = 'client_player_join',
@@ -81,7 +82,7 @@ interface DataTypes {
     x: number;
     y: number;
   };
-  [NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY]: {
+  [NetworkEvents.SERVER_ITEMENTITY_DESTROY]: {
     id: string;
   };
 

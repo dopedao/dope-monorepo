@@ -479,8 +479,8 @@ export default class GameScene extends Scene {
           },
         );
         networkHandler.on(
-          NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY,
-          (data: DataTypes[NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY]) => {
+          NetworkEvents.SERVER_ITEMENTITY_DESTROY,
+          (data: DataTypes[NetworkEvents.SERVER_ITEMENTITY_DESTROY]) => {
             this.itemEntities.find(i => i.getData('id') === data.id)?.onPickup();
           }
         );
