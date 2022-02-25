@@ -1,5 +1,4 @@
-import { css } from '@emotion/react';
-import { Box, Image } from '@chakra-ui/react';
+import { Button, Box, Image } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import RoadmapItem from 'features/about/components/RoadmapItem';
 import styled from '@emotion/styled';
@@ -105,6 +104,9 @@ const ContentRoadmap = () => (
             Each ERC-721 DOPE NFT allows you to build a Hustler character to be used in our upcoming
             games, and provides an equal Governance Vote on Proposals from the DAO.
           </p>
+          <p>
+            <a href="/swap-meet" target="roadmap">BUY DOPE NFT</a>
+          </p>
         </>
       </RoadmapItem>
       <RoadmapItem
@@ -125,6 +127,9 @@ const ContentRoadmap = () => (
             PAPER was originally distributed through a claimable amount of 125,000 per DOPE NFT.
             Each NFT allows a claim of 125,000 $PAPER once and only once — and regardless of the
             current holder the NFT does not allow for more than one claim.
+          </p>
+          <p>
+            <a href="https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483" target="roadmap">BUY $PAPER</a>
           </p>
         </>
       </RoadmapItem>
@@ -159,6 +164,9 @@ const ContentRoadmap = () => (
             </a>
             .
           </p>
+          <p>
+            <a href="https://quixotic.io/collection/opt/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110" target="roadmap">BUY GEAR</a>
+          </p>
         </>
       </RoadmapItem>
       <RoadmapItem
@@ -191,6 +199,9 @@ const ContentRoadmap = () => (
               Quixotic
             </a>
             .
+          </p>
+          <p>
+            <a href="/mint" target="roadmap">MINT A HUSTLER</a>
           </p>
         </>
       </RoadmapItem>
@@ -236,11 +247,10 @@ const ContentRoadmap = () => (
         date="Q1 2022"
       >
         <p>
-          <a href="https://twitter.com/DJGREENLANTERN">DJ Green Lantern</a> will release an original
-          hip-hop mixtape specifically made for Dope Wars that will be launched in-game and on
-          Twitch. In addition, a 5-track EP is being produced with top name artists in the rap game;
-          produced by <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source
-          Magazine.
+          <a href="https://twitter.com/DJGREENLANTERN">DJ Green Lantern</a> dropped an exclusive original hip-hop mix specifically made for Dope Wars that was launched in-game and streamed live on Twitch. In addition, a 5-track EP is being produced with top name artists in the rap game; with help from <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source Magazine.
+        </p>
+        <p>
+          <a href="https://www.twitch.tv/videos/1406868852" target="roadmap">WATCH THE MIX</a>
         </p>
       </RoadmapItem>
       <SectionHeader>Coming Soon™</SectionHeader>

@@ -47,9 +47,9 @@ const TitleContainer = styled.h3`
 `;
 
 const Date = styled.div`
-  font-size: var(--text-00) !important;
-  padding: 8px 16px;
-  padding-top: 0px;
+  font-size: 12px !important;
+  padding: 6px 8px;
+  float: right;
 `;
 const Content = styled.div`
   padding: 0px 16px;
@@ -99,9 +99,11 @@ const RoadmapItem = ({
         )}
       </div>
       <div className="contentBox">
-        <TitleContainer>{title}</TitleContainer>
+        <TitleContainer>
+          {title}
+          <Date>{date}</Date>
+        </TitleContainer>
         <Content>{children}</Content>
-        <Date>{date}</Date>
       </div>
       <div
         css={css`
