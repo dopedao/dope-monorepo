@@ -309,6 +309,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.Handle("/query", srv)
 
 	r.HandleFunc("/authentication/login", authentication.LoginHandler(ethClient))
+	r.HandleFunc("/authentication/sid", authentication.SidHandler)
 	r.HandleFunc("/authentication/logout", authentication.LogoutHandler)
 
 	r.HandleFunc("/wallets/{address}/hustlers", resources.WalletHustlersHandler(client))

@@ -94,20 +94,20 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 
 		w.WriteHeader(200)
 		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte("OK"))
+		w.Write([]byte(session.ID))
 	}
 }
 
-func AuthenticatedHandler(w http.ResponseWriter, r *http.Request) {
-	authenticated := middleware.IsAuthenticated(r.Context())
-	if !authenticated {
-		http.Error(w, "not authenticated", http.StatusUnauthorized)
+func SidHandler(w http.ResponseWriter, r *http.Request) {
+	sid, err := middleware.ID(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte("OK"))
+	w.Write([]byte(sid))
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
