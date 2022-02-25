@@ -13,7 +13,7 @@ import GearCard from 'components/hustler/GearCard';
 const Container = styled.div`
   .gearGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     grid-column-gap: 16px;
     grid-row-gap: 16px;
   }
