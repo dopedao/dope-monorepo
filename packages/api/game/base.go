@@ -11,7 +11,6 @@ import (
 
 func NewGame() *Game {
 	return &Game{
-		// tick each 1/60th of a second
 		Ticker:     time.NewTicker(time.Second / 5),
 		Register:   make(chan *Player),
 		Unregister: make(chan *Player),
@@ -30,13 +29,13 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) {
 		}
 
 		var msg BaseMessage
-		if err := conn.ReadJSON(&msg); err != nil {
+    if err := conn.ReadJSON(&msg); err != nil {
 			// facing a close error, we need to stop handling messages
 			if _, ok := err.(*websocket.CloseError); ok {
 				return
 			}
 
-			// we can directly use writejson here
+			// we need to use writejson here
 			// because player is not yet registered
 			conn.WriteJSON(generateErrorMessage(500, "could not read json"))
 			continue

@@ -45,12 +45,12 @@ const SwapMeetMerch = () => (
         css={css`
           padding: 16px;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
           grid-column-gap: 10px;
           grid-row-gap: 16px;
           // Screen > Tablet display items side by side
           ${media.tablet`
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
           `}
         `}
       >

@@ -10,7 +10,7 @@ const Container = styled.div`
   padding: 16px 16px;
   .dopeGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-column-gap: 10px;
     grid-row-gap: 16px;
   }

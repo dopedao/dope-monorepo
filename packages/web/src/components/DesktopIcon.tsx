@@ -19,16 +19,8 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
       cursor: pointer;
       cursor: hand;
       // Default
-      width: 96px;
-      height: 96px;
-      ${media.tablet`
-          width: 128px;
-          height: 128px;
-        `}
-      ${media.laptop`
-          width: 128px;
-          height: 128px;
-        `}
+      width: 128px;
+      height: 128px;
     `}
   >
     <div
@@ -40,17 +32,9 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
         align-items: center;
         margin-bottom: 8px;
         // Default
-        width: 48px;
-        height: 48px;
-        ${media.tablet`
-            width: 54px;
-            height: 54px;
-          `}
-        ${media.laptop`
-            width: 64px;
-            height: 64px;
-          `}
-          img {
+        width: 64px;
+        height: 64px;
+        img {
           display: block;
         }
       `}

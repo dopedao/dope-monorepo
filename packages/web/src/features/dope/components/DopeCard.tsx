@@ -10,6 +10,32 @@ import { AmountType, ItemTier, ItemType } from 'generated/graphql';
 
 const iconPath = '/images/icon';
 
+export type DopeItemArray = Array<{
+  __typename?: 'Item';
+  id: string;
+  fullname: string;
+  type: ItemType;
+  name: string;
+  namePrefix?: string | null | undefined;
+  nameSuffix?: string | null | undefined;
+  suffix?: string | null | undefined;
+  augmented?: boolean | null | undefined;
+  tier: ItemTier;
+  greatness: number;
+  count: number;
+}>;
+
+export type DopeListingArray = Array<{
+  __typename?: 'Listing';
+  id: string;
+  active: boolean;
+  inputs: Array<
+    | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
+    | null
+    | undefined
+  >;
+}>
+
 export type DopeItemApiResponse = {
   __typename?: 'Dope';
   id: string;
@@ -27,40 +53,14 @@ export type DopeItemApiResponse = {
     | null
     | undefined;
   listings?:
-    | Array<
-        | {
-            __typename?: 'Listing';
-            id: string;
-            active: boolean;
-            inputs: Array<
-              | { __typename?: 'Amount'; amount: any; id: string; type: AmountType }
-              | null
-              | undefined
-            >;
-          }
-        | null
-        | undefined
-      >
+    | DopeListingArray
     | null
     | undefined;
-  items?: Array<{
-    __typename?: 'Item';
-    id: string;
-    fullname: string;
-    type: ItemType;
-    name: string;
-    namePrefix?: string | null | undefined;
-    nameSuffix?: string | null | undefined;
-    suffix?: string | null | undefined;
-    augmented?: boolean | null | undefined;
-    tier: ItemTier;
-    greatness: number;
-    count: number;
-  }>;
+  items?: DopeItemArray;
 };
 
 export type DopeCardProps = {
-  buttonBar: 'for-marketplace' | 'for-owner' | null;
+  buttonBar?: 'for-marketplace' | 'for-owner' | null;
   dope: DopeItemApiResponse;
   isExpanded?: boolean;
   showCollapse?: boolean;
@@ -69,7 +69,7 @@ export type DopeCardProps = {
 };
 
 const DopeCard = ({
-  buttonBar,
+  buttonBar = null,
   dope,
   isExpanded = true,
   showCollapse = false,
@@ -119,10 +119,10 @@ const DopeCard = ({
         <DopeCardTitleCost dope={dope} />
       </PanelTitleBarFlex>
       <DopeCardBody
-        buttonBar={buttonBar}
         dope={dope}
         isExpanded={isExpanded}
         hidePreviewButton={hidePreviewButton}
+        showDopeClaimStatus={buttonBar === 'for-marketplace'}
       />
       {buttonBar === 'for-owner' && <DopeCardButtonBarOwner dope={dope} />}
       {buttonBar === 'for-marketplace' && <DopeCardButtonBarMarket dope={dope} />}

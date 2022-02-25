@@ -1,5 +1,4 @@
-import { css } from '@emotion/react';
-import { Box, Image } from '@chakra-ui/react';
+import { Button, Box, Image } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import RoadmapItem from 'features/about/components/RoadmapItem';
 import styled from '@emotion/styled';
@@ -105,6 +104,9 @@ const ContentRoadmap = () => (
             Each ERC-721 DOPE NFT allows you to build a Hustler character to be used in our upcoming
             games, and provides an equal Governance Vote on Proposals from the DAO.
           </p>
+          <p>
+            <a href="/swap-meet" target="roadmap">BUY DOPE NFT</a>
+          </p>
         </>
       </RoadmapItem>
       <RoadmapItem
@@ -125,6 +127,9 @@ const ContentRoadmap = () => (
             PAPER was originally distributed through a claimable amount of 125,000 per DOPE NFT.
             Each NFT allows a claim of 125,000 $PAPER once and only once — and regardless of the
             current holder the NFT does not allow for more than one claim.
+          </p>
+          <p>
+            <a href="https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483" target="roadmap">BUY $PAPER</a>
           </p>
         </>
       </RoadmapItem>
@@ -159,6 +164,9 @@ const ContentRoadmap = () => (
             </a>
             .
           </p>
+          <p>
+            <a href="https://quixotic.io/collection/opt/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110" target="roadmap">BUY GEAR</a>
+          </p>
         </>
       </RoadmapItem>
       <RoadmapItem
@@ -192,7 +200,26 @@ const ContentRoadmap = () => (
             </a>
             .
           </p>
+          <p>
+            <a href="/mint" target="roadmap">MINT A HUSTLER</a>
+          </p>
         </>
+      </RoadmapItem>
+      <RoadmapItem
+        title="Mugshots"
+        imageUrl="/images/about/roadmap-mugshot-baron.png"
+        imageAlt="Dope Wars Mugshot"
+        date="Q1 2022"
+      >
+        <p>
+          <a href="https://community.dopewars.gg/mugshots">Dope Wars Mugshots</a> are photo snapshots of Hustlers from the Dope Wars metaverse represented as ERC-721 tokens on Ethereum Mainnet.
+        </p>
+        <p>
+          Our Hustler NFTs are so cutting-edge that apps like OpenSea and Rainbow won't support them for some time. Mugshots are a casual and fun way to bring pictures of your Hustlers to Mainnet via a simple NFT token.
+        </p>
+        <p>
+          You can feature your Mugshots in common wallets and websites. Your friends, family, and that crush will finally see how gangster NFTs, Dope Wars, and you really are. As Twitter and others add verified NFT profile photos you'll be able to use your Mugshots and command internet respect. You can also sell Mugshots of your dopest Hustlers on popular exchanges.
+        </p>
       </RoadmapItem>
       <RoadmapItem
         title="Lunar New Year Airdrop"
@@ -213,39 +240,23 @@ const ContentRoadmap = () => (
           <p>新年好</p>
         </>
       </RoadmapItem>
-      <SectionHeader>Coming Soon™</SectionHeader>
       <RoadmapItem
-        title="Swap Meet"
-        imageUrl="/images/about/swap-meet-preview.png"
-        imageAlt="In-game Hustler Characters"
-        date="Q1 2022"
-      >
-        <>
-          <p>
-            Buy, sell, and trade DOPE, Hustlers, Gear, and more on our Dope Wars Marketplace, or{' '}
-            <a href="/swap-meet">Swap Meet</a>. Powered by the L2 Optimism network, all transactions
-            will happen quickly with almost nothing spent in gas fees.
-          </p>
-          <p>
-            All transactions on our Swap Meet will feed 5% royalties to the DAO treasury, which
-            enables us to continue funding this project with no VC investment.
-          </p>
-        </>
-      </RoadmapItem>
-      <RoadmapItem
-        title="DOPE Mixtape by DJ Green Lantern &amp; Original Dope Wars EP"
-        imageUrl="/images/about/dope-mixtape.png"
-        imageAlt="In-game Hustler Characters"
+        title="DOPE Mix Volume 1 by DJ Green Lantern &amp; Original Dope Wars EP"
+        imageUrl="/images/news/green-lantern-dope-mix-vol-1.jpeg"
+        imageAlt="DOPE Mix Volume 1"
         date="Q1 2022"
       >
         <p>
-          <a href="https://twitter.com/DJGREENLANTERN">DJ Green Lantern</a> will release an original
-          hip-hop mixtape specifically made for Dope Wars that will be launched in-game and on
-          Twitch. In addition, a 5-track EP is being produced with top name artists in the rap game;
-          produced by <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source
-          Magazine.
+          The world famous <a href="https://twitter.com/DJGREENLANTERN">DJ Green Lantern</a> dropped an exclusive original, certified hip-hop mix specifically made for Dope Wars that was launched in-game and streamed live on Twitch.
+        </p>
+        <p>
+          Currently, an original music EP is being produced with top name artists in the rap game with help from DOPE DAO member <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source Magazine.
+        </p>
+        <p>
+          <a href="https://www.twitch.tv/videos/1406868852" target="roadmap">WATCH THE MIX</a>
         </p>
       </RoadmapItem>
+      <SectionHeader>Coming Soon™</SectionHeader>
       <RoadmapItem
         title="WEB3 Integration + More"
         imageReplacement={
@@ -276,6 +287,52 @@ const ContentRoadmap = () => (
         </>
       </RoadmapItem>
       <RoadmapItem
+        title="P2E Game on Starknet"
+        imageUrl="/images/game/classic-mode.png"
+        imageAlt="Play To Earn Game on Starknet"
+        date="Q1-Q4 2022"
+      >
+        <>
+          <p>
+            Inspired by the classic games of yesterday, we&apos;re adapting the classic gameplay of
+            drug arbitrage and launching it all on the zero-knowledge proof blockchain{' '}
+            <a href="https://starkware.co/starknet/">Starknet</a>.
+          </p>
+          <p>
+            <a href="https://github.com/dopedao/ryo" target="github">
+              Our giga-brain shadow coder Perama has already made amazing progress on the game
+              engine
+            </a>{' '}
+            which has been under construction for months, and{' '}
+            <a
+              href="https://www.notion.so/dope-wars/DIP-17-RYO-Dev-Fund-f1648d8befbc4ff394e134a7fed340b6"
+              target="wiki"
+            >
+              co-funded by the StarkWare team
+            </a>
+            .
+          </p>
+        </>
+      </RoadmapItem>
+      <RoadmapItem
+        title="Swap Meet"
+        imageUrl="/images/about/swap-meet-preview.png"
+        imageAlt="In-game Hustler Characters"
+        date="Q1 2022"
+      >
+        <>
+          <p>
+            Buy, sell, and trade DOPE, Hustlers, Gear, and more on our Dope Wars Marketplace, or{' '}
+            <a href="/swap-meet">Swap Meet</a>. Powered by the L2 Optimism network, all transactions
+            will happen quickly with almost nothing spent in gas fees.
+          </p>
+          <p>
+            All transactions on our Swap Meet will feed 5% royalties to the DAO treasury, which
+            enables us to continue funding this project with no VC investment.
+          </p>
+        </>
+      </RoadmapItem>
+      <RoadmapItem
         title="TURF"
         imageUrl="/images/about/turf.png"
         imageAlt="In-game Hustler Characters"
@@ -299,34 +356,6 @@ const ContentRoadmap = () => (
               Our proposal allows for enhanced game mechanics
             </a>{' '}
             and a blueprint of land ownership rights for the Dope Wars Metaverse.
-          </p>
-        </>
-      </RoadmapItem>
-      <RoadmapItem
-        title="P2E Game on Starknet"
-        imageUrl="/images/game/classic-mode.png"
-        imageAlt="Play To Earn Game on Starknet"
-        date="Q2-Q4 2022"
-      >
-        <>
-          <p>
-            Inspired by the classic games of yesterday, we&apos;re adapting the classic gameplay of
-            drug arbitrage and launching it all on the zero-knowledge proof blockchain{' '}
-            <a href="https://starkware.co/starknet/">Starknet</a>.
-          </p>
-          <p>
-            <a href="https://github.com/dopedao/ryo" target="github">
-              Our giga-brain shadow coder Perama has already made amazing progress on the game
-              engine
-            </a>{' '}
-            which has been under construction for months, and{' '}
-            <a
-              href="https://www.notion.so/dope-wars/DIP-17-RYO-Dev-Fund-f1648d8befbc4ff394e134a7fed340b6"
-              target="wiki"
-            >
-              co-funded by the StarkWare team
-            </a>
-            .
           </p>
         </>
       </RoadmapItem>

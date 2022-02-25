@@ -10,14 +10,14 @@ import Steps from 'features/hustlers/modules/Steps';
 import { INITIAL_STATE } from 'features/hustlers/hustlerReducer';
 
 const InitiatePage = () => {
-  const init = useInitiator();
+
   const router = useRouter();
-  const { id: dopeId, quickBuy, estimatedAmount } = router.query;
+  const { id: dopeId, quickBuy } = router.query;
   const isQuickBuy = typeof quickBuy !== 'undefined';
+
+  // Check if DOPE already opened and prevent usage
+  const init = useInitiator();
   const [isOpened, setIsOpened] = useState(false);
-
-  const safeEstimatedAmount = (typeof estimatedAmount == 'string' ? parseFloat(estimatedAmount) : '');
-
   useEffect(() => {
     let isMounted = true;
     if (!dopeId) return;
@@ -39,7 +39,7 @@ const InitiatePage = () => {
     >
       {isOpened === true && (
         <Dialog title="Hustler already initiated" icon="dope-smiley-sad">
-          <p>DOPE #{dopeId} has already been Claimed.</p>
+          <p>Gear has already been claimed from DOPE #{dopeId}. Please try another NFT.</p>
           <Button onClick={() => router.back()}>Go Back</Button>
         </Dialog>
       )}
@@ -47,7 +47,7 @@ const InitiatePage = () => {
         <HustlerProvider 
           initialHustlerData={
             Object.assign(INITIAL_STATE, 
-              {isQuickBuy: isQuickBuy, estimatedAmount: safeEstimatedAmount}
+              {isQuickBuy: isQuickBuy}
             )
           }
         >
