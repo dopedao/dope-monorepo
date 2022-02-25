@@ -67,7 +67,7 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		}
 
 		// if block timestamp is more than [MAX_BLOCK_AGE] seconds old, reject
-		if math.Abs(time.Now().UTC().Unix() - int64(block.Time()) > MAX_BLOCK_AGE {
+		if time.Now().UTC().Unix()-int64(block.Time()) > MAX_BLOCK_AGE {
 			http.Error(w, fmt.Sprintf("block %v outdated: age has to be less than %v seconds", blockNumber, MAX_BLOCK_AGE), http.StatusUnauthorized)
 			return
 		}
@@ -96,6 +96,18 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		w.Header().Set("Content-Type", "text/plain")
 		w.Write([]byte("OK"))
 	}
+}
+
+func AuthenticatedHandler(w http.ResponseWriter, r *http.Request) {
+	authenticated := middleware.IsAuthenticated(r.Context())
+	if !authenticated {
+		http.Error(w, "not authenticated", http.StatusUnauthorized)
+		return
+	}
+
+	w.WriteHeader(200)
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte("OK"))
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
