@@ -24,15 +24,16 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) {
 
 	for {
 		// ignore if player is already registered
+		// when a player is registered, it uses its own read and write pumps
 		if g.PlayerByConn(conn) != nil {
 			continue
 		}
 
 		var msg BaseMessage
-    if err := conn.ReadJSON(&msg); err != nil {
+		if err := conn.ReadJSON(&msg); err != nil {
 			// facing a close error, we need to stop handling messages
 			if _, ok := err.(*websocket.CloseError); ok {
-				return
+				break
 			}
 
 			// we need to use writejson here

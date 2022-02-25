@@ -15,7 +15,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/gorilla/mux"
-  "github.com/gorilla/websocket"
+	"github.com/gorilla/websocket"
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/rs/cors"
 
@@ -319,17 +319,20 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
-
 	// run game server loop in the background
 	go gameState.Start(ctx)
 
-  // ws endpoint
+	// ws endpoint
 	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
-		wsConn, err := wsUpgrader.Upgrade(w, r, nil)
+		// check if authenticated
+		if !middleware.IsAuthenticated(r.Context()) {
+			http.Error(w, "not authenticated", http.StatusUnauthorized)
+			return
+		}
 
+		wsConn, err := wsUpgrader.Upgrade(w, r, nil)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("501 - Could not upgrade to websocket connection"))
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -340,7 +343,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 		gameState.Handle(r.Context(), wsConn)
 	})
 
-  // auth
+	// auth
 	authRouter := r.PathPrefix("/authentication").Subrouter()
 	authRouter.Use(authentication.CORS())
 
