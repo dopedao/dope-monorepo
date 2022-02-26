@@ -347,6 +347,14 @@ export default class GameScene extends Scene {
       y: this.player.y,
     });
 
+    networkHandler.on(NetworkEvents.ERROR, (data: DataTypes[NetworkEvents.ERROR]) => {
+      // TODO: login scene or something like that
+      if (data.code === 401)
+      {
+        this.scene.pause(this);
+      }
+    });
+
     // wait on handshake
     networkHandler.on(
       NetworkEvents.PLAYER_HANDSHAKE,

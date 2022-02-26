@@ -16,7 +16,7 @@ import { createStandaloneToast, UseToastOptions } from '@chakra-ui/react';
 import { ToastOptions } from 'react-hot-toast/dist/core/types';
 import GameScene from './Game';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
-import { NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
+import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
 import Hustler from 'game/entities/Hustler';
 import { toast } from '@chakra-ui/react';
 import ConnectionLostWindow from 'game/ui/react/components/ConnectionLostWindow';
@@ -162,6 +162,15 @@ export default class UIScene extends Scene {
 
       // display connection lost window
       // this.add.reactDom(ConnectionLostWindow);
+    });
+
+    NetworkHandler.getInstance().on(NetworkEvents.ERROR, (data: DataTypes[NetworkEvents.ERROR]) => {
+      this.toast({
+        ...chakraToastStyle,
+        title: 'Error ' + data.code,
+        description: data.message,
+        status: 'error',
+      })
     });
   }
 
