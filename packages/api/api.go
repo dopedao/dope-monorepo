@@ -345,7 +345,12 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 
 	// auth
 	authRouter := r.PathPrefix("/authentication").Subrouter()
-	authRouter.Use(authentication.CORS())
+	authCors := cors.New(cors.Options{
+		AllowedOrigins:   []string{"https://dopewars.gg", "http://localhost:3000"},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	})
+	authRouter.Use(authCors.Handler)
 
 	authRouter.HandleFunc("/login", authentication.LoginHandler(ethClient))
 	authRouter.HandleFunc("/authenticated", authentication.AuthenticatedHandler)
@@ -393,5 +398,22 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 		})
 	}
 
-	return cors.AllowAll().Handler(r), nil
+	return cors.New(cors.Options{
+		// from cors.AllowAll()
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{
+			http.MethodHead,
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodPut,
+			http.MethodPatch,
+			http.MethodDelete,
+		},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: false,
+
+		// + we need this to let our subroutes handle options requests with
+		// their custom cors options
+		OptionsPassthrough: true,
+	}).Handler(r), nil
 }

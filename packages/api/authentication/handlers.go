@@ -11,7 +11,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/middleware"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/gorilla/handlers"
 	"github.com/jiulongw/siwe-go"
 )
 
@@ -21,14 +20,6 @@ const MAX_BLOCK_AGE = 60 * 5
 type LoginBody struct {
 	Message   string `json:"message"`
 	Signature string `json:"signature"`
-}
-
-func CORS() func(http.Handler) http.Handler {
-	headersOk := handlers.AllowedHeaders([]string{"*"})
-	originsOk := handlers.AllowedOrigins([]string{"https://dopewars.gg"})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "POST"})
-	credentialsOk := handlers.AllowCredentials()
-	return handlers.CORS(headersOk, originsOk, methodsOk, credentialsOk)
 }
 
 // Validates signed payload with latest block number
