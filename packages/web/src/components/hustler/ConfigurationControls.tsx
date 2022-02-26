@@ -133,7 +133,7 @@ const ConfigurationControls = ({
     if (hustlers) {
       try {
         const transaction = await hustlers.setMetadata(BigNumber.from(dopeId), {
-          name: setname,
+          name: setname.replaceAll(`"`, `'`),
           color,
           background,
           options,
