@@ -127,9 +127,9 @@ func (p *Player) readPump(ctx context.Context) {
 				}
 
 				p.game.ItemEntities = append(p.game.ItemEntities[:i], p.game.ItemEntities[i+1:]...)
-				// broadcast the item entity removal to all players
+				// broadcast the item entity pickup
 				p.game.Broadcast <- BaseMessage{
-					Event: "itementity_destroy",
+					Event: "player_pickup_itementity",
 					Data: msg.Data,
 				}
 				break
