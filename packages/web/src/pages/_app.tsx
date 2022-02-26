@@ -15,6 +15,8 @@ import GlobalStyles from 'ui/styles/GlobalStyles';
 import PageLoadingIndicator from 'components/PageLoadingIndicator';
 import theme from 'ui/styles/theme';
 
+import GoogleAnalytics from 'components/GoogleAnalytics';
+
 // Error tracking and tracing from Sentry.io
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
@@ -55,6 +57,7 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
                 <BlockHashProvider>
                   <TransactionsProvider>
                     <main>
+                      <GoogleAnalytics />
                       <PageLoadingIndicator />
                       <DesktopIconList />
                       <Component {...pageProps} />
