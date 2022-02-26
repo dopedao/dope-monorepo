@@ -3,9 +3,14 @@ package game
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/middleware"
 	"github.com/gorilla/websocket"
 )
 
@@ -18,7 +23,7 @@ func NewGame() *Game {
 	}
 }
 
-func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) {
+func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.Conn) {
 	ctx, log := base.LogFor(ctx)
 	log.Info().Msgf("New connection from ", conn.RemoteAddr().String())
 
@@ -50,6 +55,19 @@ func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) {
 				// we can directly use writejson here
 				// because player is not yet registered
 				conn.WriteJSON(generateErrorMessage(500, "could not unmarshal player_join data"))
+				continue
+			}
+
+			// check if authenticated wallet contains used hustler
+			walletAddress, err := middleware.Wallet(ctx)
+			if err != nil {
+				conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get wallet"))
+				continue
+			}
+
+			has, err := client.Hustler.Query().Where(hustler.HasWalletWith(wallet.IDEQ(walletAddress))).Count(ctx)
+			if err != nil || has == 0 {
+				conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get hustler"))
 				continue
 			}
 
