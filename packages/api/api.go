@@ -12,12 +12,18 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/gorilla/mux"
+	"github.com/hashicorp/go-retryablehttp"
 	"github.com/rs/cors"
 
+	"github.com/dopedao/dope-monorepo/packages/api/authentication"
+	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
+	"github.com/dopedao/dope-monorepo/packages/api/middleware"
 	"github.com/dopedao/dope-monorepo/packages/api/resources"
 )
 
@@ -254,7 +260,17 @@ CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);
 `
 
 func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, index bool, openseaApiKey, network string) (http.Handler, error) {
+	_, log := base.LogFor(ctx)
 	client := ent.NewClient(ent.Driver(drv))
+
+	retryableHTTPClient := retryablehttp.NewClient()
+	retryableHTTPClient.Logger = nil
+	// 0 = ethconfig
+	c, err := rpc.DialHTTPWithClient(configs[network][0].(engine.EthConfig).RPC, retryableHTTPClient.StandardClient())
+	if err != nil {
+		log.Fatal().Msg("Dialing ethereum rpc.") //nolint:gocritic
+	}
+	ethClient := ethclient.NewClient(c)
 
 	if index {
 		// Run the auto migration tool.
@@ -283,12 +299,21 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	srv := handler.NewDefaultServer(graph.NewSchema(client))
 
 	r := mux.NewRouter()
+	r.Use(middleware.Session(middleware.Store))
+
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(`{"success":true}`))
 	})
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
+
+	authRouter := r.PathPrefix("/authentication").Subrouter()
+	authRouter.Use(authentication.CORS())
+
+	authRouter.HandleFunc("/login", authentication.LoginHandler(ethClient))
+	authRouter.HandleFunc("/authenticated", authentication.AuthenticatedHandler)
+	authRouter.HandleFunc("/logout", authentication.LogoutHandler)
 
 	r.HandleFunc("/wallets/{address}/hustlers", resources.WalletHustlersHandler(client))
 	r.HandleFunc("/hustlers/{id}/sprites", resources.HustlerSpritesHandler(client))

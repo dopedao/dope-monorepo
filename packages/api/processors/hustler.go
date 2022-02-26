@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
@@ -136,6 +137,7 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.Hustle
 }
 
 func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e bindings.HustlerMetadataUpdate) (func(tx *ent.Tx) error, error) {
+	ctx, log := base.LogFor(ctx)
 	meta, err := p.Contract.Metadata(nil, e.Id)
 	if err != nil {
 		return nil, fmt.Errorf("hustler: getting metadata: %w", err)
@@ -153,7 +155,8 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e bindings
 
 	var parsed Metadata
 	if err := json.Unmarshal(decoded, &parsed); err != nil {
-		return nil, fmt.Errorf("unmarshalling metadata: %w", err)
+		log.Err(err).Str("txn", e.Raw.TxHash.Hex()).Msg("Unmarshalling metadata")
+		return nil, nil
 	}
 
 	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
