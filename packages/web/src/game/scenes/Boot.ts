@@ -16,6 +16,7 @@ export default class Boot extends Scene {
 
   preload(): void {
     // do some preload boot stuff
+    this.load.svg('dopewars', '/images/Logo-Plain.svg');
   }
 
   create(): void {

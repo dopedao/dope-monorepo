@@ -11,6 +11,7 @@ import defaultNetworkConfig from 'game/constants/NetworkConfig';
 import UIScene, { chakraToastStyle } from './UI';
 
 export default class Preload extends Scene {
+  private dopewars!: Phaser.GameObjects.Image;
   private downloadedSize: number = 0;
   private progressBar: ProgressBar | undefined;
 
@@ -44,7 +45,7 @@ export default class Preload extends Scene {
     totalSize = manifest.totalSize;
     Object.keys(assetList).forEach((fileType: string) => {
       Object.keys(assetList[fileType]).forEach(key => {
-        currentFile = key;
+        currentFile = `${fileType}/${key}`;
         const assetVars = assetList[fileType][key];
 
         if (fileType === 'spritesheet') {
@@ -55,6 +56,9 @@ export default class Preload extends Scene {
         }
       });
     });
+
+    this.dopewars = this.add.image(this.sys.game.canvas.width / 2,  this.progressBar.y - (this.progressBar.height * 1.5), 'dopewars');
+    this.dopewars.setScale(0.5);
   }
 
   // start gamescene after preload

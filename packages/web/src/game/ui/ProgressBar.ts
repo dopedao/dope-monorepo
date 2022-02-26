@@ -5,16 +5,21 @@ const MB = 1024 * 1024;
 export default class ProgressBar {
   private track: GameObjects.Graphics;
   private progressBar: GameObjects.Graphics;
-  private x: number;
-  private y: number;
-  private width: number;
-  private height: number;
+  private _x: number;
+  private _y: number;
+  private _width: number;
+  private _height: number;
   private lineWidth: number;
   private loadingText: GameObjects.Text;
   private percentText: GameObjects.Text;
   // private downloadedText: GameObjects.Text;
   private totalFileSize: number;
   private progressBarShape: { x: number; y: number; maxWidth: number; height: number };
+
+  get x() { return this._x; }
+  get y() { return this._y; }
+  get width() { return this._width; }
+  get height() { return this._height; }
 
   constructor(scene: Scene, x: number, y: number, totalFileSize: number) {
     this.totalFileSize = totalFileSize;
@@ -24,22 +29,22 @@ export default class ProgressBar {
     const screenWidth = scene.game.scale.displaySize.width;
     const screenHeight = scene.game.scale.displaySize.height;
 
-    this.width = Math.min(500, screenWidth * 0.8);
-    this.lineWidth = this.width * 0.02;
-    this.height = this.lineWidth * 7;
+    this._width = Math.min(500, screenWidth * 0.8);
+    this.lineWidth = this._width * 0.02;
+    this._height = this.lineWidth * 7;
 
-    this.x = screenWidth * x - this.width / 2;
-    this.y = screenHeight * y - this.height / 2;
+    this._x = screenWidth * x - this._width / 2;
+    this._y = screenHeight * y - this._height / 2;
 
     const textStyle = {
-      fontSize: '26px',
+      fontSize: '20px',
       fontFamily: 'Dope',
       color: '#ffffff',
     };
 
     this.loadingText = scene.make.text({
-      x: this.x + this.lineWidth,
-      y: this.y - this.lineWidth,
+      x: this._x + this.lineWidth,
+      y: this._y - this.lineWidth,
       text: 'Loading...',
       style: textStyle,
     });
@@ -47,7 +52,7 @@ export default class ProgressBar {
 
     
     this.percentText = scene.make.text({
-      x: this.x + this.width - this.lineWidth,
+      x: this._x + this._width - this.lineWidth,
       y: this.loadingText.y,
       text: '0%',
       style: {
@@ -76,9 +81,9 @@ export default class ProgressBar {
     // this.downloadedText.setOrigin(1, 0);
 
     this.progressBarShape = {
-      x: this.x + this.lineWidth,
-      y: this.y + this.lineWidth * 2,
-      maxWidth: this.width - 4 * this.lineWidth,
+      x: this._x + this.lineWidth,
+      y: this._y + this.lineWidth * 2,
+      maxWidth: this._width - 4 * this.lineWidth,
       height: this.lineWidth * 1.2,
     };
   }

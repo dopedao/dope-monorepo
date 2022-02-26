@@ -24,7 +24,7 @@ export default class NetworkHandler {
 
   constructor(authenticator?: Authenticator) {
     this.emitter = new Phaser.Events.EventEmitter();
-    this._authenticator = authenticator || new Authenticator();
+    this._authenticator = authenticator || new Authenticator(this);
   }
 
   on(event: string, callback: Function, context?: any) {
@@ -115,7 +115,7 @@ export default class NetworkHandler {
         this.emitter.emit(NetworkEvents.SERVER_PLAYER_UPDATE_MAP, payload.data);
         break;
       case UniversalEventNames.ITEMENTITY_DESTROY:
-        this.emitter.emit(NetworkEvents.SERVER_ITEMENTITY_DESTROY, payload.data);
+        this.emitter.emit(NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY, payload.data);
         break;
     }
   }

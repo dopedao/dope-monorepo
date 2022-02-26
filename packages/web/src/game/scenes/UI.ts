@@ -114,19 +114,38 @@ export default class UIScene extends Scene {
     }
 
     // console.log(this.chatMessageBoxes.length);
-    this.chatMessageBoxes.forEach((chatToasts, hustler) =>
-      chatToasts.forEach((chatToast, i) =>
-        chatToast.setPosition(
-          (hustler.x - this.player.scene.cameras.main.worldView.x) *
-            this.player.scene.cameras.main.zoom,
-          (hustler.y - this.player.scene.cameras.main.worldView.y) *
-            this.player.scene.cameras.main.zoom -
-            hustler.displayHeight * 1.8 -
-            chatToast.displayHeight * 1.2 * (chatToasts.length - 1 - i) -
-            (hustler.hoverText ? hustler.hoverText.displayHeight * 1.2 : 0),
-        ),
-      ),
-    );
+    // this.chatMessageBoxes.forEach((chatToasts, hustler) =>
+    //   chatToasts.forEach((chatToast, i) =>
+    //     chatToast.setPosition(
+    //       (hustler.x - this.player.scene.cameras.main.worldView.x) *
+    //         this.player.scene.cameras.main.zoom,
+    //       (hustler.y - this.player.scene.cameras.main.worldView.y) *
+    //         this.player.scene.cameras.main.zoom -
+    //         hustler.displayHeight * 1.8 -
+    //         chatToast.displayHeight * 1.2 * (chatToasts.length - 1 - i) -
+    //         (hustler.hoverText ? hustler.hoverText.displayHeight * 1.2 : 0),
+    //     ),
+    //   ),
+    // );
+    this.chatMessageBoxes.forEach((chatToasts, hustler) => chatToasts.forEach((chatToast, i) => {
+      let x = (hustler.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom;
+      let y = (hustler.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom;
+
+      y -= hustler.displayHeight * 1.8;
+      y -= chatToast.displayHeight / 2;
+
+      this.chatMessageBoxes.get(hustler)?.forEach((otherChatToast, j) => {
+        if (j >= i)
+          return;
+        
+        y -= otherChatToast.displayHeight * 1.1;
+      });
+
+      if (hustler.hoverText)
+        y -= hustler.hoverText.displayHeight * 1.2;
+
+      chatToast.setPosition(x, y);
+    }));
   }
 
   private _handleEvents() {
