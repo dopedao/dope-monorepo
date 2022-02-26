@@ -59,17 +59,20 @@ func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.C
 			}
 
 			// check if authenticated wallet contains used hustler
-			walletAddress, err := middleware.Wallet(ctx)
-			if err != nil {
-				conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get wallet"))
-				continue
+			if data.HustlerId != "" {
+				walletAddress, err := middleware.Wallet(ctx)
+				if err != nil {
+					conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get wallet"))
+					continue
+				}
+				
+				associatedAddress, err := client.Wallet.Query().Where(wallet.HasHustlersWith(hustler.IDEQ(data.HustlerId))).OnlyID(ctx)
+				if err != nil || associatedAddress != walletAddress {
+					conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get hustler"))
+					continue
+				}
 			}
-
-			has, err := client.Hustler.Query().Where(hustler.HasWalletWith(wallet.IDEQ(walletAddress))).Count(ctx)
-			if err != nil || has == 0 {
-				conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get hustler"))
-				continue
-			}
+			
 
 			g.HandlePlayerJoin(ctx, conn, data)
 		}
