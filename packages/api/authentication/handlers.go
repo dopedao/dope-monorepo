@@ -85,7 +85,7 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		}
 
 		middleware.SetWallet(r.Context(), siweMessage.Address.String())
-		middleware.SetSiwe(r.Context(), *siweMessage)
+		middleware.SetSiwe(r.Context(), body.Message)
 		if err := session.Save(r, w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
