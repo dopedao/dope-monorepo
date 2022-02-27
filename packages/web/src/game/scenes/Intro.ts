@@ -2,6 +2,7 @@ import IntroStepper from "game/ui/react/components/IntroStepper";
 
 export default class IntroScene extends Phaser.Scene {
     private hustlerData?: any;
+    private loggedIn?: boolean; 
     private background!: Phaser.GameObjects.Image;
 
     constructor() {
@@ -10,6 +11,7 @@ export default class IntroScene extends Phaser.Scene {
     
     init(data: any) {
         this.hustlerData = data.hustlerData;
+        this.loggedIn = data.loggedIn;
     }
     
     preload() {
@@ -23,19 +25,16 @@ export default class IntroScene extends Phaser.Scene {
             hustlerData: this.hustlerData
         });
 
-        // this.cameras.main.on(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => this.scene.start('GameScene', {
-        //     hustlerData: this.hustlerData
-        // }));
-        // this.scene.transition()
+        const transitionDuration = 1000;
         comp.events.on('game', () => {
             this.scene.transition({
-                target: 'GameScene',
-                duration: 2000,
+                target: this.loggedIn ? 'GameScene' : 'LoginScene',
+                duration: transitionDuration,
                 data: {
                     hustlerData: this.hustlerData
                 },
             });
-            this.cameras.main.fadeOut(2000);
+            this.cameras.main.fadeOut(transitionDuration);
         });
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
             comp.destroy();

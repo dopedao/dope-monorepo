@@ -91,5 +91,5 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
       },
     ],
   },
-  scene: [Boot, Preload, GameScene, UIScene, IntroScene]
+  scene: [Boot, Preload, GameScene, UIScene, LoginScene, IntroScene]
 };

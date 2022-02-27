@@ -35,10 +35,10 @@ export default class NetworkHandler {
     this.emitter.once(event, callback, context);
   }
 
-  connect() {
+  connect(): this {
     if (this.connection?.readyState === WebSocket.OPEN) {
       console.warn('Already connected to server');
-      return;
+      return this;
     }
 
     this.connection = new WebSocket(
@@ -53,6 +53,7 @@ export default class NetworkHandler {
       this._connected = false;
       this.emitter.emit(NetworkEvents.DISCONNECTED);
     };
+    return this;
   }
 
   disconnect() {

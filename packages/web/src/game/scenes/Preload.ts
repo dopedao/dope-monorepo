@@ -68,84 +68,100 @@ export default class Preload extends Scene {
       this.game.renderer.pipelines.add('skewQuad', new SkewQuad(this.game));
     }
 
-    const networkHandler = NetworkHandler.getInstance();
-    
-    fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authAuthenticatedPath, { credentials: 'include' })
-      .then(res => {
-        if (res.status !== 200) {
-          (this.scene.get('UIScene') as UIScene).toast({
-            ...chakraToastStyle,
-            title: 'Login needed',
-            description: 'Please sign the message to authenticate',
-            status: 'warning'
-          });
-          networkHandler.authenticator.login()
-            .then(() => {
-              networkHandler.connect();
-              (this.scene.get('UIScene') as UIScene).toast({
-                ...chakraToastStyle,
-                title: 'Logged in',
-                status: 'success',
-              });
-            })
-            .catch(err => {
-              (this.scene.get('UIScene') as UIScene).toast({
-                ...chakraToastStyle,
-                title: 'Login failed',
-                description: err.message,
-                status: 'error',
-              });
-            })
-          return;
-        }
+    if (!(window?.ethereum as any)?.selectedAddress) {
+      this.startGame();
+      return;
+    }
 
-        networkHandler.connect();
-      })
+    fetch(`https://api.dopewars.gg/wallets/${ethers.utils.getAddress(
+      (window?.ethereum as any)?.selectedAddress,
+    )}/hustlers`).then(res => res.json()).then(hustlers => {
+      fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authAuthenticatedPath, { credentials: 'include' })
+        .then(res => {
+          const loggedIn = res.status === 200;
 
-    const onConnection = () => {
-      // handle messages
-      networkHandler.listenMessages();
-
-      // get hustlers before starting game
-      if ((window?.ethereum as any)?.selectedAddress)
-        fetch(
-          `https://api.dopewars.gg/wallets/${ethers.utils.getAddress(
-            (window?.ethereum as any)?.selectedAddress,
-          )}/hustlers`,
-        ).then(res => {
-          res.json().then(data => {
-            // if has no hustlers, just 
-            // start game scene directly
-            if (data.length === 0) {
-              this.startGame(data);
-              return;
-            }
-            
-            // if has hustler, preload hustler animations
-            // then start game scene
-            const key = 'hustler_' + data[0].id;
-            this.load.spritesheet(
-              key,
-              `https://api.dopewars.gg/hustlers/${data[0].id}/sprites/composite.png`,
-              { frameWidth: 30, frameHeight: 60 },
-            );
-            this.load.once('filecomplete-spritesheet-' + key, () => {
-              createHustlerAnimations(this.anims, key);
-              this.startGame(data);
-            });
-            this.load.start();
-          });
+          this.startGame(hustlers, loggedIn);
         });
-      else this.startGame();
-    };
+    });
 
-    networkHandler.once(NetworkEvents.CONNECTED, onConnection);
+    // const networkHandler = NetworkHandler.getInstance();
+    // fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authAuthenticatedPath, { credentials: 'include' })
+    //   .then(res => {
+    //     if (res.status !== 200) {
+    //       (this.scene.get('UIScene') as UIScene).toast({
+    //         ...chakraToastStyle,
+    //         title: 'Login needed',
+    //         description: 'Please sign the message to authenticate',
+    //         status: 'warning'
+    //       });
+    //       networkHandler.authenticator.login()
+    //         .then(() => {
+    //           networkHandler.connect();
+    //           (this.scene.get('UIScene') as UIScene).toast({
+    //             ...chakraToastStyle,
+    //             title: 'Logged in',
+    //             status: 'success',
+    //           });
+    //         })
+    //         .catch(err => {
+    //           (this.scene.get('UIScene') as UIScene).toast({
+    //             ...chakraToastStyle,
+    //             title: 'Login failed',
+    //             description: err.message,
+    //             status: 'error',
+    //           });
+    //         })
+    //       return;
+    //     }
+
+    //     networkHandler.connect();
+    //   });
+
+    // const onConnection = () => {
+    //   // handle messages
+    //   networkHandler.listenMessages();
+
+    //   // get hustlers before starting game
+    //   if ((window?.ethereum as any)?.selectedAddress)
+    //     fetch(
+    //       `https://api.dopewars.gg/wallets/${ethers.utils.getAddress(
+    //         (window?.ethereum as any)?.selectedAddress,
+    //       )}/hustlers`,
+    //     ).then(res => {
+    //       res.json().then(data => {
+    //         // if has no hustlers, just 
+    //         // start game scene directly
+    //         if (data.length === 0) {
+    //           this.startGame(data);
+    //           return;
+    //         }
+            
+    //         // if has hustler, preload hustler animations
+    //         // then start game scene
+    //         const key = 'hustler_' + data[0].id;
+    //         this.load.spritesheet(
+    //           key,
+    //           `https://api.dopewars.gg/hustlers/${data[0].id}/sprites/composite.png`,
+    //           { frameWidth: 30, frameHeight: 60 },
+    //         );
+    //         this.load.once('filecomplete-spritesheet-' + key, () => {
+    //           createHustlerAnimations(this.anims, key);
+    //           this.startGame(data);
+    //         });
+    //         this.load.start();
+    //       });
+    //     });
+    //   else this.startGame();
+    // };
+
+    // networkHandler.once(NetworkEvents.CONNECTED, onConnection);
   }
 
-  startGame(hustlerData?: any) {
+  startGame(hustlerData?: any, loggedIn?: boolean) {
     const firstTime = (localStorage.getItem('gameLoyal') ?? 'false') !== 'true';
-    this.scene.start(firstTime ? 'IntroScene' : 'GameScene', {
+    this.scene.start(firstTime ? 'IntroScene' : loggedIn ? 'GameScene' : 'LoginScene', {
       hustlerData,
+      loggedIn
     });
   }
 }
