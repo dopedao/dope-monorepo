@@ -9,6 +9,7 @@ import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
 import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
 import defaultNetworkConfig from 'game/constants/NetworkConfig';
 import UIScene, { chakraToastStyle } from './UI';
+import { throws } from 'assert';
 
 export default class Preload extends Scene {
   private dopewars!: Phaser.GameObjects.Image;
@@ -116,9 +117,7 @@ export default class Preload extends Scene {
             // if has no hustlers, just 
             // start game scene directly
             if (data.length === 0) {
-              this.scene.start('GameScene', {
-                hustlerData: data,
-              });
+              this.startGame(data);
               return;
             }
             
@@ -132,16 +131,21 @@ export default class Preload extends Scene {
             );
             this.load.once('filecomplete-spritesheet-' + key, () => {
               createHustlerAnimations(this.anims, key);
-              this.scene.start('GameScene', {
-                hustlerData: data,
-              });
+              this.startGame(data);
             });
             this.load.start();
           });
         });
-      else this.scene.start('GameScene');
+      else this.startGame();
     };
 
     networkHandler.once(NetworkEvents.CONNECTED, onConnection);
+  }
+
+  startGame(hustlerData?: any) {
+    const firstTime = (localStorage.getItem('gameLoyal') ?? 'false') !== 'true';
+    this.scene.start(firstTime ? 'IntroScene' : 'GameScene', {
+      hustlerData,
+    });
   }
 }
