@@ -69,7 +69,7 @@ const DesktopIconList = () => {
         <DesktopIcon icon="winamp" label="Dope Amp" clickAction={() => setShowWebAmp(true)} />
         <DesktopIcon
           icon="folder"
-          label="Other Stuff"
+          label="Other Links"
           clickAction={() => openLocalRoute('/other-stuff')}
         />
       </IconGrid>
