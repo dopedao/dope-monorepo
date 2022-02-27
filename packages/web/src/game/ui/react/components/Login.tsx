@@ -81,7 +81,7 @@ export default function Login(props: Props) {
                                 Sign
                             </Button>
                         </ListItem>
-                        <ListItem>Your wallet provider will popup a dialog and you will need to press `Confirm`</ListItem>
+                        <ListItem>Your wallet provider will popup a dialog and you will need to press `Sign`</ListItem>
                         <ListItem>
                             Wait for this to show as logged in
                             <HStack style={{

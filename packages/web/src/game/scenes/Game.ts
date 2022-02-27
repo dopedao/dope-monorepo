@@ -61,8 +61,8 @@ export default class GameScene extends Scene {
     this.hustlerData = data.hustlerData;
 
     // first time playing the game?
-    // if ((window.localStorage.getItem('gameFirstTime') ?? 'false') !== 'true')
-    //   window.localStorage.setItem('gameLoyal', 'true');
+    if ((window.localStorage.getItem('gameFirstTime') ?? 'false') !== 'true')
+      window.localStorage.setItem('gameLoyal', 'true');
   }
 
   create() {

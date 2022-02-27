@@ -105,7 +105,7 @@ export default function IntroStepper(props: Props) {
                     borderRadius: "7px",
                 }}>
                 {
-                    props.hustlerData ? 
+                    props.hustlerData?.length > 0 ? 
                         <HasHustler 
                             manager={props.manager} 
                             hustlerData={props.hustlerData}
