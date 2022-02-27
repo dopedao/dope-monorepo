@@ -136,19 +136,19 @@ export default class Preload extends Scene {
     //           return;
     //         }
             
-    //         // if has hustler, preload hustler animations
-    //         // then start game scene
-    //         const key = 'hustler_' + data[0].id;
-    //         this.load.spritesheet(
-    //           key,
-    //           `https://api.dopewars.gg/hustlers/${data[0].id}/sprites/composite.png`,
-    //           { frameWidth: 30, frameHeight: 60 },
-    //         );
-    //         this.load.once('filecomplete-spritesheet-' + key, () => {
-    //           createHustlerAnimations(this.anims, key);
-    //           this.startGame(data);
-    //         });
-    //         this.load.start();
+            // // if has hustler, preload hustler animations
+            // // then start game scene
+            // const key = 'hustler_' + data[0].id;
+            // this.load.spritesheet(
+            //   key,
+            //   `https://api.dopewars.gg/hustlers/${data[0].id}/sprites/composite.png`,
+            //   { frameWidth: 30, frameHeight: 60 },
+            // );
+            // this.load.once('filecomplete-spritesheet-' + key, () => {
+            //   createHustlerAnimations(this.anims, key);
+            //   this.startGame(data);
+            // });
+            // this.load.start();
     //       });
     //     });
     //   else this.startGame();
@@ -159,9 +159,41 @@ export default class Preload extends Scene {
 
   startGame(hustlerData?: any, loggedIn?: boolean) {
     const firstTime = (localStorage.getItem('gameLoyal') ?? 'false') !== 'true';
-    this.scene.start(firstTime ? 'IntroScene' : loggedIn ? 'GameScene' : 'LoginScene', {
-      hustlerData,
-      loggedIn
-    });
+    const scene = firstTime ? 'IntroScene' : loggedIn ? 'GameScene' : 'LoginScene';
+
+    const startScene = () => {
+      if (hustlerData[0])
+      {
+        const key = 'hustler_' + hustlerData[0].id;
+        this.load.spritesheet(
+          key,
+          `https://api.dopewars.gg/hustlers/${hustlerData[0].id}/sprites/composite.png`,
+          { frameWidth: 30, frameHeight: 60 },
+        );
+        this.load.once('filecomplete-spritesheet-' + key, () => {
+          createHustlerAnimations(this.anims, key);
+          this.scene.start(scene, {
+            hustlerData,
+            loggedIn
+          });
+        });
+        this.load.start();
+  
+        return;
+      }
+      this.scene.start(scene, {
+        hustlerData,
+        loggedIn
+      });
+    }
+
+    if (scene === 'GameScene') {
+      NetworkHandler.getInstance().connect().once(NetworkEvents.CONNECTED, () => {
+        startScene();
+      });
+      return;
+    }
+
+    startScene();
   }
 }

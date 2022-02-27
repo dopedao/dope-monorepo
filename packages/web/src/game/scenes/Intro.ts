@@ -1,3 +1,5 @@
+import NetworkHandler from "game/handlers/network/NetworkHandler";
+import { NetworkEvents } from "game/handlers/network/types";
 import IntroStepper from "game/ui/react/components/IntroStepper";
 
 export default class IntroScene extends Phaser.Scene {
@@ -27,14 +29,23 @@ export default class IntroScene extends Phaser.Scene {
 
         const transitionDuration = 1000;
         comp.events.on('game', () => {
-            this.scene.transition({
-                target: this.loggedIn ? 'GameScene' : 'LoginScene',
-                duration: transitionDuration,
-                data: {
-                    hustlerData: this.hustlerData
-                },
-            });
-            this.cameras.main.fadeOut(transitionDuration);
+            const scene = this.loggedIn ? 'GameScene' : 'LoginScene'; 
+            const transitionToScene = () => {
+                this.scene.transition({
+                    target: scene,
+                    duration: transitionDuration,
+                    data: {
+                        hustlerData: this.hustlerData
+                    },
+                });
+                this.cameras.main.fadeOut(transitionDuration);
+            }
+            
+            if (scene === 'GameScene') {
+                NetworkHandler.getInstance().connect().once(NetworkEvents.CONNECTED, () => transitionToScene());
+                return;
+            }
+            transitionToScene();
         });
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
             comp.destroy();
