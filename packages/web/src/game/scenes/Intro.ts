@@ -38,7 +38,8 @@ export default class IntroScene extends Phaser.Scene {
                         hustlerData: this.hustlerData
                     },
                 });
-                this.cameras.main.fadeOut(transitionDuration);
+                if (scene === 'GameScene')
+                    this.cameras.main.fadeOut(transitionDuration);
             }
             
             if (scene === 'GameScene') {
