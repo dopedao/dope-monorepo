@@ -1,15 +1,21 @@
-import { Button, Center, ChakraProvider, Container, Heading, HStack, Select, Spacer, Text, VStack } from "@chakra-ui/react";
+import { Button, Center, ChakraProvider, Container, Heading, HStack, Select, Spacer, Spinner, Text, VStack } from "@chakra-ui/react";
 import HustlerProfileCard from "components/hustler/HustlerProfileCard";
 import RenderFromChain from "components/hustler/RenderFromChain";
 import { ComponentManager } from "phaser3-react/src/manager";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import theme from "ui/styles/theme";
 import Image from "next/image";
+import { CSSProperties } from "react";
 
 interface Props {
   manager: ComponentManager;
   hustlerData: any;
 }
+
+const footerButtonsStyle: CSSProperties = {
+    position: "relative",
+    top: "30px"
+};
 
 const NoHustler = (props: Props) => {
     return (
@@ -35,11 +41,8 @@ const NoHustler = (props: Props) => {
                 Once you have a hustler, you can directly use it and play with it in the game.
                 You can also have multiple hustlers and collect gear!
             </Text>
-            <HStack style={{
-                position: "relative",
-                top: "30px"
-            }}>
-                <Button>
+            <HStack style={footerButtonsStyle}>
+                <Button onClick={() => props.manager.events.emit('game')}>
                     DGAF
                 </Button>
                 <Button>
@@ -51,7 +54,7 @@ const NoHustler = (props: Props) => {
 }
 
 const HasHustler = (props: Props) => {
-    const [ hustlerId, setHustlerId ] = React.useState(0);
+    const [ hustlerId, setHustlerId ] = useState(0);
 
     return (
         <VStack>
@@ -67,8 +70,8 @@ const HasHustler = (props: Props) => {
             </Select>
             <br />
             <img alt="" src={props.hustlerData[hustlerId].svg} />
-            <HStack>
-                <Button>
+            <HStack style={footerButtonsStyle}>
+                <Button onClick={() => props.manager.events.emit('game')}>
                     DGAF
                 </Button>
                 <Button>
@@ -80,13 +83,19 @@ const HasHustler = (props: Props) => {
 }
 
 export default function IntroStepper(props: Props) {
+    const [ loading, setLoading ] = useState(false);
+    
+    useEffect(() => {
+        props.manager.events.on('game', () => setLoading(true));
+    }, []);
+
     return (
         <ChakraProvider theme={theme}>
             <Center style={{
                 height: "100vh",
                 backdropFilter: "brightness(50%)",
             }}>
-                <Container style={{
+                {loading ? <Spinner size="xl" color="white" /> : <Container style={{
                     padding: "1rem",
                     borderStyle: "solid",
                     boxShadow: "0px 0px 15px rgba(0,0,0,1)",
@@ -106,7 +115,7 @@ export default function IntroStepper(props: Props) {
                             hustlerData={props.hustlerData}
                         />
                 }
-                </Container>
+                </Container>}
             </Center>
         </ChakraProvider>
     );
