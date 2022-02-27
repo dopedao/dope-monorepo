@@ -12,6 +12,7 @@ import DropShadowPipelinePlugin from 'phaser3-rex-plugins/plugins/dropshadowpipe
 import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
 import KawaseBlurPipelinePlugin from 'phaser3-rex-plugins/plugins/kawaseblurpipeline-plugin.js';
 import IntroScene from 'game/scenes/Intro';
+import LoginScene from 'game/scenes/Login';
 
 
 export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
