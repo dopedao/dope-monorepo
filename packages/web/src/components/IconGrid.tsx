@@ -12,8 +12,8 @@ const IconGrid = styled.div`
   flex-flow: row wrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 32px;
-  padding: 32px;
+  gap: 24px;
+  padding: 24px;
   ${media.tablet`
     justify-content: flex-start;
     width: 50%;
