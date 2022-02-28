@@ -18,11 +18,30 @@ type Player struct {
 	name       string
 	currentMap string
 	direction  string
-	x          float32
-	y          float32
+	position   Vec2
 
 	// messages sent to player
 	Send chan BaseMessage
+}
+
+func NewPlayer(conn *websocket.Conn, game *Game, id uuid.UUID, hustlerId string, name string, currentMap string, x float32, y float32) *Player {
+	p := &Player{
+		conn: conn,
+		game: game,
+
+		Id:         id,
+		hustlerId:  hustlerId,
+		name:       name,
+		currentMap: currentMap,
+		position:   Vec2{X: x, Y: y},
+
+		Send: make(chan BaseMessage),
+	}
+
+	go p.readPump(context.Background())
+	go p.writePump(context.Background())
+
+	return p
 }
 
 func (p *Player) readPump(ctx context.Context) {
@@ -59,8 +78,8 @@ func (p *Player) readPump(ctx context.Context) {
 				break
 			}
 
-			p.x = data.X
-			p.y = data.Y
+			p.position.X = data.X
+			p.position.Y = data.Y
 			p.direction = data.Direction
 		case "player_update_map":
 			var data PlayerUpdateMapData
@@ -70,14 +89,14 @@ func (p *Player) readPump(ctx context.Context) {
 			}
 
 			p.currentMap = data.CurrentMap
-			p.x = data.X
-			p.y = data.Y
+			p.position.X = data.X
+			p.position.Y = data.Y
 
 			broadcastedData, err := json.Marshal(PlayerUpdateMapClientData{
-				Id: p.Id.String(),
+				Id:         p.Id.String(),
 				CurrentMap: data.CurrentMap,
-				X: data.X,
-				Y: data.Y,
+				X:          data.X,
+				Y:          data.Y,
 			})
 			if err != nil {
 				p.Send <- generateErrorMessage(500, "could not marshal map update data")
@@ -155,5 +174,16 @@ func (p *Player) writePump(ctx context.Context) {
 
 			p.conn.WriteJSON(msg)
 		}
+	}
+}
+
+func (p *Player) Serialize() PlayerJoinClientData {
+	return PlayerJoinClientData{
+		Id:         p.Id.String(),
+		HustlerId:  p.hustlerId,
+		Name:       p.name,
+		CurrentMap: p.currentMap,
+		X:          p.position.X,
+		Y:          p.position.Y,
 	}
 }

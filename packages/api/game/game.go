@@ -37,44 +37,8 @@ func (g *Game) Start(ctx context.Context) {
 		case player := <-g.Register:
 			g.Players = append(g.Players, player)
 
-			// read incoming messages
-			go player.readPump(ctx)
-			// write outgoing messages
-			go player.writePump(ctx)
-
-			// players data
-			playersData := []PlayerJoinClientData{}
-			for _, otherPlayer := range g.Players {
-				if player.Id == otherPlayer.Id {
-					continue
-				}
-
-				playersData = append(playersData, PlayerJoinClientData{
-					Id:         otherPlayer.Id.String(),
-					HustlerId:  otherPlayer.hustlerId,
-					Name:       otherPlayer.name,
-					CurrentMap: otherPlayer.currentMap,
-					X:          otherPlayer.x,
-					Y:          otherPlayer.y,
-				})
-			}
-			// item entities data
-			itemEntitiesData := []ItemEntityData{}
-			for _, itemEntity := range(g.ItemEntities) {
-				itemEntitiesData = append(itemEntitiesData, ItemEntityData{
-					Id: itemEntity.id.String(),
-					Item: itemEntity.item,
-					X: itemEntity.x,
-					Y: itemEntity.y,
-				})
-			}
-
 			// handshake data, player ID & game state info
-			handShakeData, err := json.Marshal(HandshakeData{
-				Id:      player.Id.String(),
-				Players: playersData,
-				ItemEntities: itemEntitiesData,
-			})
+			handShakeData, err := json.Marshal(g.GenerateHandshakeData(player))
 			if err != nil {
 				player.Send <- generateErrorMessage(500, "could not marshal handshake data")
 				return
@@ -84,6 +48,8 @@ func (g *Game) Start(ctx context.Context) {
 				Event: "player_handshake",
 				Data:  handShakeData,
 			}
+
+			g.DispatchPlayerJoin(ctx, player)
 
 			log.Info().Msgf("player joined: %s | %s", player.Id, player.name)
 		case player := <-g.Unregister:
@@ -122,8 +88,8 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 
 			players = append(players, PlayerMoveData{
 				Id:        otherPlayer.Id.String(),
-				X:         otherPlayer.x,
-				Y:         otherPlayer.y,
+				X:         otherPlayer.position.X,
+				Y:         otherPlayer.position.Y,
 				Direction: otherPlayer.direction,
 			})
 		}
@@ -142,6 +108,15 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 			Data:  data,
 		}
 	}
+}
+
+func (g *Game) ItemEntityByUUID(uuid uuid.UUID) *ItemEntity {
+	for _, itemEntity := range g.ItemEntities {
+		if itemEntity.id == uuid {
+			return itemEntity
+		}
+	}
+	return nil
 }
 
 func (g *Game) PlayerByUUID(uuid uuid.UUID) *Player {
@@ -170,8 +145,8 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 		HustlerId:  player.hustlerId,
 		Name:       player.name,
 		CurrentMap: player.currentMap,
-		X:          player.x,
-		Y:          player.y,
+		X:          player.position.X,
+		Y:          player.position.Y,
 	})
 	if err != nil {
 		log.Err(err).Msgf("could not marshal join data for player: %s | %s", player.Id, player.name)
@@ -194,22 +169,7 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 		return
 	}
 
-	player := &Player{
-		conn: conn,
-		game: g,
-
-		Id:         uuid.New(),
-		hustlerId:  data.HustlerId,
-		currentMap: data.CurrentMap,
-		name:       data.Name,
-		x:          data.X,
-		y:          data.Y,
-
-		Send: make(chan BaseMessage, 256),
-	}
-
-	g.Register <- player
-	g.DispatchPlayerJoin(ctx, player)
+	g.Register <- NewPlayer(conn, g, uuid.New(), data.HustlerId, data.Name, data.CurrentMap, data.X, data.Y)
 }
 
 func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
@@ -224,6 +184,54 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 		Event: "player_leave",
 		Data:  leaveData,
 	}
+}
+
+func (g *Game) RemoveItemEntity(itemEntity *ItemEntity) {
+	for i, entity := range g.ItemEntities {
+		if entity == itemEntity {
+			g.ItemEntities = append(g.ItemEntities[:i], g.ItemEntities[i+1:]...)
+			break
+		}
+	}
+}
+
+func (g *Game) GenerateHandshakeData(player *Player) HandshakeData {
+	itemEntitiesData := g.GenerateItemEntitiesData()
+	playersData := g.GeneratePlayersData()
+
+	// remove this player from the players data
+	for i, p := range playersData {
+		if p.Id == player.Id.String() {
+			playersData = append(playersData[:i], playersData[i+1:]...)
+			break
+		}
+	}
+
+	return HandshakeData{
+		Id:           player.Id.String(),
+		Players:      playersData,
+		ItemEntities: itemEntitiesData,
+	}
+}
+
+func (g *Game) GenerateItemEntitiesData() []ItemEntityData {
+	itemEntitiesData := []ItemEntityData{}
+
+	for _, itemEntity := range g.ItemEntities {
+		itemEntitiesData = append(itemEntitiesData, itemEntity.Serialize())
+	}
+
+	return itemEntitiesData
+}
+
+func (g *Game) GeneratePlayersData() []PlayerJoinClientData {
+	playersData := []PlayerJoinClientData{}
+
+	for _, player := range g.Players {
+		playersData = append(playersData, player.Serialize())
+	}
+
+	return playersData
 }
 
 // func (g *Game) DispatchPlayerMove(ctx context.Context, player *Player) {
