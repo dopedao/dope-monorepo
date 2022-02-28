@@ -10,12 +10,17 @@ const GoogleAnalytics = () => <>
   />
   <Script strategy="lazyOnload" id="google-analytics-config">
     {`
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', ${STREAM_MEASUREMENT_ID}, {
-        page_path: window.location.pathname,
-      });
+      try {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', ${STREAM_MEASUREMENT_ID}, {
+          page_path: window.location.pathname,
+        });
+      } catch(e) {
+        console.log('Google Analytics load error');
+        console.log(e);
+      }
     `}
   </Script>
 </>;
