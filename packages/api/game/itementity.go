@@ -10,11 +10,11 @@ type ItemEntity struct {
 	position Vec2
 }
 
-func NewItemEntity(item string, position Vec2) *ItemEntity {
+func NewItemEntity(item string, x float32, y float32) *ItemEntity {
 	return &ItemEntity{
 		id:       uuid.New(),
 		item:     item,
-		position: position,
+		position: Vec2{X: x, Y: y},
 	}
 }
 
