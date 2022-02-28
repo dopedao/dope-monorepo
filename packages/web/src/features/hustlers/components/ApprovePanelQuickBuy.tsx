@@ -47,7 +47,7 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
       console.log('ETH Balance ' + utils.formatEther(balance));
       setEthBalance(balance);
     });
-  }, [library]);
+  }, [account, library]);
   
 
   const [unbundleCost, setUnbundleCost] = useState<BigNumber>();
@@ -92,11 +92,12 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
   useEffect(() => {
     //console.log([account, order, paperAmount, paperCost, total]);
     if(account && order && paperAmount && paperCost && total) {
-      setCanMint(ethBalance >= total);
+      console.log(ethBalance)
+      setCanMint(ethBalance.gte(total));
     } else {
       setCanMint(false);
     }
-  }, [account, order, paperAmount, paperCost, total]);
+  }, [account, order, paperAmount, paperCost, setCanMint, ethBalance, total]);
 
 
   const [isPurchasing, setIsPurchasing] = useState(false);
