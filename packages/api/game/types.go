@@ -4,15 +4,20 @@ import (
 	"encoding/json"
 )
 
+type Vec2 struct {
+	X float32
+	Y float32
+}
+
 type BaseMessage struct {
 	Event string          `json:"event"`
 	Data  json.RawMessage `json:"data"`
 }
 
 type HandshakeData struct {
-	Id		string                 `json:"id"`
-	Players		[]PlayerJoinClientData `json:"players"`
-	ItemEntities	[]ItemEntityData       `json:"itemEntities"`
+	Id           string                 `json:"id"`
+	Players      []PlayerJoinClientData `json:"players"`
+	ItemEntities []ItemEntityData       `json:"itemEntities"`
 }
 
 type TickData struct {
@@ -35,10 +40,10 @@ type ChatMessageClientData struct {
 }
 
 type ItemEntityData struct {
-	Id	string  `json:"id"`
-	Item	string  `json:"item"`
-	X	float32 `json:"x"`
-	Y	float32 `json:"y"`
+	Id   string  `json:"id"`
+	Item string  `json:"item"`
+	X    float32 `json:"x"`
+	Y    float32 `json:"y"`
 }
 
 type PlayerJoinClientData struct {
@@ -59,16 +64,16 @@ type PlayerJoinData struct {
 }
 
 type PlayerUpdateMapData struct {
-	CurrentMap	string  `json:"current_map"`
-	X		float32 `json:"x"`
-	Y		float32 `json:"y"`
+	CurrentMap string  `json:"current_map"`
+	X          float32 `json:"x"`
+	Y          float32 `json:"y"`
 }
 
 type PlayerUpdateMapClientData struct {
-	Id		string `json:"id"`
-	CurrentMap	string `json:"current_map"`
-	X		float32 `json:"x"`
-	Y		float32 `json:"y"`
+	Id         string  `json:"id"`
+	CurrentMap string  `json:"current_map"`
+	X          float32 `json:"x"`
+	Y          float32 `json:"y"`
 }
 
 type PlayerMoveData struct {

@@ -140,18 +140,23 @@ func (p *Player) readPump(ctx context.Context) {
 			json.Unmarshal(msg.Data, &data)
 
 			// search for item entity and remove it + broadcast its removal to all players
-			for i, itemEntity := range(p.game.ItemEntities) {
-				if (itemEntity.id.String() != data.Id) {
-					continue
-				}
-
-				p.game.ItemEntities = append(p.game.ItemEntities[:i], p.game.ItemEntities[i+1:]...)
-				// broadcast the item entity pickup
-				p.game.Broadcast <- BaseMessage{
-					Event: "player_pickup_itementity",
-					Data: msg.Data,
-				}
+			parsedId, err := uuid.Parse(data.Id)
+			if err != nil {
+				p.Send <- generateErrorMessage(500, "could not parse item entity id")
 				break
+			}
+
+			itemEntity := p.game.ItemEntityByUUID(parsedId)
+			if itemEntity == nil {
+				p.Send <- generateErrorMessage(500, "could not find item entity")
+				break
+			}
+
+			p.game.RemoveItemEntity(itemEntity)
+
+			p.game.Broadcast <- BaseMessage{
+				Event: "player_remove_itementity",
+				Data:  msg.Data,
 			}
 
 			// TODO: confirm item entitiy pickup by addingf item to players inventory
