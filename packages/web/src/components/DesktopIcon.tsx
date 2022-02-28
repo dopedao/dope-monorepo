@@ -18,8 +18,8 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
       flex-direction: column;
       cursor: pointer;
       cursor: hand;
-      width: 96px;
-      height: 96px;
+      width: 88px;
+      height: 88px;
       ${media.tablet`
         width: 128px;
         height: 128px;
@@ -55,7 +55,12 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
         background-color: #000;
         color: #fff;
         text-align: center;
-        padding: 4px 8px;
+        padding: 4px;
+        font-size: var(--text-small);
+        ${media.tablet`
+          font-size: var(--text-00);
+          padding: 4px 8px;
+        `}
       `}
     >
       {label}

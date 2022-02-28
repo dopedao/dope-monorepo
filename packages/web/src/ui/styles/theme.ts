@@ -1,28 +1,13 @@
 import { extendTheme } from '@chakra-ui/react';
 import { withTheme } from '@emotion/react';
 
-const desktopImageCss = [
-  "#000000 url('/images/desktop/TONY.gif') center center / contain repeat-y fixed",
-  "#d10913 url('/images/desktop/LAMBO.png') center center / cover repeat-y fixed",
-  "#1d261c url('/images/desktop/limo-chopper.png') center / cover repeat-y",
-  "#5f3084 url('/images/desktop/PAPER.png') center / 512px repeat",
-  "#202221 url('/images/hustler/street_scene.png') center / cover no-repeat fixed",
-  "#202221 url('/images/dope-wars-stacked-logo.png') center / 400px no-repeat fixed",
-  "#202221 url('/images/dope-wars-smiley.png') center / 400px no-repeat fixed",
-  "#000 url('/images/desktop/the-crew.jpg') center / cover no-repeat fixed",
-  "#333 url('/images/game/map/full.png') center / cover no-repeat fixed",
-  "#333 url('/images/game/map/nyc-hustler-walk.gif') center / cover no-repeat fixed",
-];
-const randomImageIndex = Math.floor(Math.random() * desktopImageCss.length);
-const randomDesktopImageCss = desktopImageCss[randomImageIndex];
-
 export default extendTheme({
   styles: {
-    global: {
-      body: {
-        background: randomDesktopImageCss,
-      },
-    },
+    // global: {
+    //   body: {
+    //     background: randomDesktopImageCss,
+    //   },
+    // },
   },
   colors: {
     transparent: 'transparent',

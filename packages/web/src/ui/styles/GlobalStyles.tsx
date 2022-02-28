@@ -2,6 +2,22 @@ import { Global, css } from '@emotion/react';
 import { media, buttonStyle } from './mixins';
 import { returnBreakpoint } from './breakpoints';
 
+
+const desktopImageCss = [
+  "#000000 url('/images/desktop/TONY.gif') center center / contain repeat-y fixed",
+  "#d10913 url('/images/desktop/LAMBO.png') center center / cover repeat-y fixed",
+  "#1d261c url('/images/desktop/limo-chopper.png') center / cover repeat-y",
+  "#5f3084 url('/images/desktop/PAPER.png') center / 512px repeat",
+  "#202221 url('/images/hustler/street_scene.png') center / cover no-repeat fixed",
+  "#202221 url('/images/dope-wars-stacked-logo.png') center / 400px no-repeat fixed",
+  "#202221 url('/images/dope-wars-smiley.png') center / 400px no-repeat fixed",
+  "#000 url('/images/desktop/the-crew.jpg') center / cover no-repeat fixed",
+  "#333 url('/images/game/map/full.png') center / cover no-repeat fixed",
+  "#333 url('/images/game/map/nyc-hustler-walk.gif') center / cover no-repeat fixed",
+];
+const randomImageIndex = Math.floor(Math.random() * desktopImageCss.length);
+const randomDesktopImageCss = desktopImageCss[randomImageIndex];
+
 export default function GlobalStyles() {
   return (
     <Global
@@ -30,6 +46,8 @@ export default function GlobalStyles() {
             src: url('/fonts/Dope-Regular.ttf');
             font-style: normal;
           }
+
+          --desktop-background-image: ${randomDesktopImageCss};
 
           /* COLORS */
           --black: #000;
@@ -86,8 +104,7 @@ export default function GlobalStyles() {
           --content-width-lg: ${returnBreakpoint('desktop')};
           --content-width-xl: ${returnBreakpoint('xl')};
         }
-
-        /* MEDIA QUERY MIXIN */
+        
         ${media.laptop`
           :root {
             --base-unit: 10px;
@@ -119,10 +136,11 @@ export default function GlobalStyles() {
         }
 
         body {
-          background-color: var(--bg-color);
+          background: #202221 url('/images/dope-wars-stacked-logo.png') top / 400px no-repeat fixed !important;
           font-size: 12px;
           ${media.tablet`
             font-size: 14px;
+            background: var(--desktop-background-image) !important;
           `}
         }
 
