@@ -42,6 +42,8 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 
 - [Starkwhale Podcast](https://soundcloud.com/user-315822963/starkpods-episode-001?si=f667a4b446204c76abe75fc0ad8d6366&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)  
   02.2022
+- [GM or GFM? An insider look into an organic beast: DOPE WARS DAO.](https://medium.com/@Taniela.taki/gm-or-gfm-1f23464f72)  
+  12.2021
 - [WOLF CRYPTO on DOPE WARS + $PAPER](https://wolfcrypto.medium.com/dope-wars-paper-tldr-90d23fa6acb3)  
   10.2021
 - [Motherboard / VICE](https://www.vice.com/en/article/akgp8e/people-are-spending-millions-of-dollars-on-loot-for-games-that-dont-exist)  
