@@ -1,4 +1,4 @@
-import { ChakraProvider, Center, Spinner, Container, VStack, Heading, Text, List, ListIcon, ListItem, UnorderedList, Button, useToast, HStack, createStandaloneToast, UseToastOptions } from "@chakra-ui/react";
+import { ChakraProvider, Center, Link, Spinner, Container, VStack, Heading, Text, List, ListIcon, ListItem, UnorderedList, Button, useToast, HStack, createStandaloneToast, UseToastOptions } from "@chakra-ui/react";
 import Authenticator from "game/handlers/network/Authenticator";
 import { ComponentManager } from "phaser3-react/src/manager";
 import { useEffect, useState } from "react";
@@ -16,13 +16,52 @@ interface Props {
     authenticator: Authenticator;
 }
 
+const NoWalletProvider = (props: {
+    hasWallet: boolean;
+}) => <Container style={{
+        padding: "1rem",
+        borderStyle: "solid",
+        boxShadow: "0px 0px 15px rgba(0,0,0,1)",
+        borderColor: "black",
+        borderWidth: "0px",
+        backgroundColor: "white",
+        borderRadius: "7px",
+    }}>
+        <VStack>
+            <Heading>
+                No wallet provider found
+            </Heading>
+            <br />
+            <Text>
+                To login into the game, you need a wallet provider. One of our personal favorites is Metamask, it acts as an extension to your browser and is pretty intuitive.
+                You can download it by visiting their <Link href="https://metamask.io/" isExternal color='blue.500'>website</Link>
+            </Text>
+            <HStack style={{
+                paddingLeft: "1rem",
+                paddingRight: "1rem",
+            }}>
+                {props.hasWallet ? <CheckIcon /> : <Spinner color='red.500' />}
+                <Text style={{
+                    paddingTop: "1rem",
+                }}>{props.hasWallet ? 'Wallet detected' : 'Wallet not detected'}</Text>
+            </HStack>
+        </VStack>
+</Container>;
+
 export default function Login(props: Props) {
     const toast = createStandaloneToast(theme);
 
     const [ loading, setLoading ] = useState(false);
+    const [ hasWallet, setHasWallet ] = useState(false);
     const [ loggedIn, setLoggedIn ] = useState(false);
 
     useEffect(() => {
+        setInterval(() => {
+            const wallet = (window?.ethereum as any)?.selectedAddress !== null;
+            if (wallet !== hasWallet) {
+                setHasWallet(wallet);
+            }
+        }, 100);
         props.manager.events.on('loggedIn', () => setLoading(true));
     }, []);
 
@@ -54,7 +93,7 @@ export default function Login(props: Props) {
                 height: "100vh",
                 backdropFilter: "brightness(50%)",
             }}>
-                {loading ? <Spinner size="xl" color="white" /> : <Container style={{
+                {loading ? <Spinner size="xl" color="white" /> : !hasWallet ? <NoWalletProvider hasWallet={hasWallet} /> : <Container style={{
                     padding: "1rem",
                     borderStyle: "solid",
                     boxShadow: "0px 0px 15px rgba(0,0,0,1)",

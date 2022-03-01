@@ -162,7 +162,7 @@ export default class Preload extends Scene {
     const scene = firstTime ? 'IntroScene' : loggedIn ? 'GameScene' : 'LoginScene';
 
     const startScene = () => {
-      if (hustlerData[0])
+      if (hustlerData?.length > 0)
       {
         const key = 'hustler_' + hustlerData[0].id;
         this.load.spritesheet(
