@@ -155,7 +155,7 @@ func (p *Player) readPump(ctx context.Context) {
 			p.game.RemoveItemEntity(itemEntity)
 
 			p.game.Broadcast <- BaseMessage{
-				Event: "player_remove_itementity",
+				Event: "player_pickup_itementity",
 				Data:  msg.Data,
 			}
 
