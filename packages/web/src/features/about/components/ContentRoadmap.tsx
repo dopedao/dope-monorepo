@@ -319,7 +319,7 @@ const ContentRoadmap = () => (
         title="Swap Meet"
         imageUrl="/images/about/swap-meet-preview.png"
         imageAlt="In-game Hustler Characters"
-        date="Q1 2022"
+        date="Q2 2022"
       >
         <>
           <p>
