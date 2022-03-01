@@ -115,7 +115,7 @@ export default class NetworkHandler {
       case UniversalEventNames.PLAYER_UPDATE_MAP:
         this.emitter.emit(NetworkEvents.SERVER_PLAYER_UPDATE_MAP, payload.data);
         break;
-      case UniversalEventNames.ITEMENTITY_DESTROY:
+      case UniversalEventNames.PLAYER_PICKUP_ITEMENTITY:
         this.emitter.emit(NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY, payload.data);
         break;
     }
