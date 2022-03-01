@@ -352,14 +352,16 @@ export default class UIScene extends Scene {
       // get upcoming conversation
       const conv: Conversation = citizen.conversations[0];
 
-      let index = 0;
       const textBox = new DialogueTextBox(this, 500, 500, 65);
-      textBox.start(conv.texts[index].text, conv.texts[index].typingSpeed ?? 50)
-        .on('complete', () => {
-          if (conv.texts[index].onEnd)
-            conv.texts[index].onEnd!();
+      const text = conv.texts.shift();
+      if (!text) return;
 
-          if (index === conv.texts.length - 1) {
+      textBox.start(text.text, text.typingSpeed ?? 50)
+        .on('complete', () => {
+          if (text.onEnd)
+            text.onEnd!();
+
+          if (conv.texts.length === 0) {
             textBox.destroy();
             this.currentInteraction = undefined;
 
@@ -373,8 +375,8 @@ export default class UIScene extends Scene {
             return;
           }
 
-          index++;
-          textBox.start(conv.texts[index].text, conv.texts[index].typingSpeed ?? 50);
+          const nextText = conv.texts.shift();
+          textBox.start(nextText!.text, nextText!.typingSpeed ?? 50);
         })
 
       this.currentInteraction = { citizen, textBox, maxDistance: 100 };
