@@ -130,6 +130,38 @@ type Hustler implements Node {
   accessory: Item
 }
 
+type Position {
+  x: Float!
+  y: Float!
+}
+
+"""
+A definition of a players quest. 
+Actual quest is stored in the registry.
+"""
+type GameHustlerQuest {
+  # TODO: enum?
+  quest: String!
+  completed: Boolean!
+}
+
+"""
+A definition of a players quest. 
+Actual quest is stored in the registry.
+"""
+type GameHustlerItem {
+  item: String!
+  count: Int!
+}
+
+type GameHustler implements Node {
+  id: ID!
+  hustler: Hustler!
+  lastPosition: Position!
+  inventory: [GameHustlerItem!]!
+  quests: [GameHustlerQuest!]!
+}
+
 type Listing implements Node {
   id: ID!
   source: Source
