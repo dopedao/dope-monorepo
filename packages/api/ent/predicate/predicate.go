@@ -18,6 +18,9 @@ type Dope func(*sql.Selector)
 // Event is the predicate function for event builders.
 type Event func(*sql.Selector)
 
+// GameHustler is the predicate function for gamehustler builders.
+type GameHustler func(*sql.Selector)
+
 // Hustler is the predicate function for hustler builders.
 type Hustler func(*sql.Selector)
 

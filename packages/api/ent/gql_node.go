@@ -13,6 +13,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
@@ -326,6 +327,59 @@ func (e *Event) Node(ctx context.Context) (node *Node, err error) {
 		Type:  "time.Time",
 		Name:  "updated_at",
 		Value: string(buf),
+	}
+	return node, nil
+}
+
+func (gh *GameHustler) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     gh.ID,
+		Type:   "GameHustler",
+		Fields: make([]*Field, 4),
+		Edges:  make([]*Edge, 1),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(gh.LastPosition); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "schema.Position",
+		Name:  "lastPosition",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(gh.Quests); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "[]schema.GameHustlerQuest",
+		Name:  "quests",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(gh.Items); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "[]schema.GameHustlerItem",
+		Name:  "items",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(gh.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
+		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "Hustler",
+		Name: "hustlers",
+	}
+	err = gh.QueryHustlers().
+		Select(hustler.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
 	}
 	return node, nil
 }
@@ -1226,6 +1280,15 @@ func (c *Client) noder(ctx context.Context, table string, id string) (Noder, err
 			return nil, err
 		}
 		return n, nil
+	case gamehustler.Table:
+		n, err := c.GameHustler.Query().
+			Where(gamehustler.ID(id)).
+			CollectFields(ctx, "GameHustler").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
 	case hustler.Table:
 		n, err := c.Hustler.Query().
 			Where(hustler.ID(id)).
@@ -1405,6 +1468,19 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		nodes, err := c.Event.Query().
 			Where(event.IDIn(ids...)).
 			CollectFields(ctx, "Event").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case gamehustler.Table:
+		nodes, err := c.GameHustler.Query().
+			Where(gamehustler.IDIn(ids...)).
+			CollectFields(ctx, "GameHustler").
 			All(ctx)
 		if err != nil {
 			return nil, err

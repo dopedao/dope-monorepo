@@ -109,6 +109,26 @@ func (e *EventQuery) collectField(ctx *graphql.OperationContext, field graphql.C
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (gh *GameHustlerQuery) CollectFields(ctx context.Context, satisfies ...string) *GameHustlerQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		gh = gh.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return gh
+}
+
+func (gh *GameHustlerQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *GameHustlerQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "hustlers":
+			gh = gh.WithHustlers(func(query *HustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
+	return gh
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (h *HustlerQuery) CollectFields(ctx context.Context, satisfies ...string) *HustlerQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		h = h.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)

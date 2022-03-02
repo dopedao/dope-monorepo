@@ -12,6 +12,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
@@ -43,6 +44,7 @@ func columnChecker(table string) func(string) error {
 		bodypart.Table:    bodypart.ValidColumn,
 		dope.Table:        dope.ValidColumn,
 		event.Table:       event.ValidColumn,
+		gamehustler.Table: gamehustler.ValidColumn,
 		hustler.Table:     hustler.ValidColumn,
 		item.Table:        item.ValidColumn,
 		listing.Table:     listing.ValidColumn,

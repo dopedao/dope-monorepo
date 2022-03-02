@@ -13,6 +13,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
@@ -39,6 +40,8 @@ type Client struct {
 	Dope *DopeClient
 	// Event is the client for interacting with the Event builders.
 	Event *EventClient
+	// GameHustler is the client for interacting with the GameHustler builders.
+	GameHustler *GameHustlerClient
 	// Hustler is the client for interacting with the Hustler builders.
 	Hustler *HustlerClient
 	// Item is the client for interacting with the Item builders.
@@ -70,6 +73,7 @@ func (c *Client) init() {
 	c.BodyPart = NewBodyPartClient(c.config)
 	c.Dope = NewDopeClient(c.config)
 	c.Event = NewEventClient(c.config)
+	c.GameHustler = NewGameHustlerClient(c.config)
 	c.Hustler = NewHustlerClient(c.config)
 	c.Item = NewItemClient(c.config)
 	c.Listing = NewListingClient(c.config)
@@ -114,6 +118,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		BodyPart:    NewBodyPartClient(cfg),
 		Dope:        NewDopeClient(cfg),
 		Event:       NewEventClient(cfg),
+		GameHustler: NewGameHustlerClient(cfg),
 		Hustler:     NewHustlerClient(cfg),
 		Item:        NewItemClient(cfg),
 		Listing:     NewListingClient(cfg),
@@ -143,6 +148,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		BodyPart:    NewBodyPartClient(cfg),
 		Dope:        NewDopeClient(cfg),
 		Event:       NewEventClient(cfg),
+		GameHustler: NewGameHustlerClient(cfg),
 		Hustler:     NewHustlerClient(cfg),
 		Item:        NewItemClient(cfg),
 		Listing:     NewListingClient(cfg),
@@ -183,6 +189,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.BodyPart.Use(hooks...)
 	c.Dope.Use(hooks...)
 	c.Event.Use(hooks...)
+	c.GameHustler.Use(hooks...)
 	c.Hustler.Use(hooks...)
 	c.Item.Use(hooks...)
 	c.Listing.Use(hooks...)
@@ -710,6 +717,112 @@ func (c *EventClient) GetX(ctx context.Context, id string) *Event {
 // Hooks returns the client hooks.
 func (c *EventClient) Hooks() []Hook {
 	return c.hooks.Event
+}
+
+// GameHustlerClient is a client for the GameHustler schema.
+type GameHustlerClient struct {
+	config
+}
+
+// NewGameHustlerClient returns a client for the GameHustler from the given config.
+func NewGameHustlerClient(c config) *GameHustlerClient {
+	return &GameHustlerClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `gamehustler.Hooks(f(g(h())))`.
+func (c *GameHustlerClient) Use(hooks ...Hook) {
+	c.hooks.GameHustler = append(c.hooks.GameHustler, hooks...)
+}
+
+// Create returns a create builder for GameHustler.
+func (c *GameHustlerClient) Create() *GameHustlerCreate {
+	mutation := newGameHustlerMutation(c.config, OpCreate)
+	return &GameHustlerCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of GameHustler entities.
+func (c *GameHustlerClient) CreateBulk(builders ...*GameHustlerCreate) *GameHustlerCreateBulk {
+	return &GameHustlerCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for GameHustler.
+func (c *GameHustlerClient) Update() *GameHustlerUpdate {
+	mutation := newGameHustlerMutation(c.config, OpUpdate)
+	return &GameHustlerUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *GameHustlerClient) UpdateOne(gh *GameHustler) *GameHustlerUpdateOne {
+	mutation := newGameHustlerMutation(c.config, OpUpdateOne, withGameHustler(gh))
+	return &GameHustlerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *GameHustlerClient) UpdateOneID(id string) *GameHustlerUpdateOne {
+	mutation := newGameHustlerMutation(c.config, OpUpdateOne, withGameHustlerID(id))
+	return &GameHustlerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for GameHustler.
+func (c *GameHustlerClient) Delete() *GameHustlerDelete {
+	mutation := newGameHustlerMutation(c.config, OpDelete)
+	return &GameHustlerDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *GameHustlerClient) DeleteOne(gh *GameHustler) *GameHustlerDeleteOne {
+	return c.DeleteOneID(gh.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *GameHustlerClient) DeleteOneID(id string) *GameHustlerDeleteOne {
+	builder := c.Delete().Where(gamehustler.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &GameHustlerDeleteOne{builder}
+}
+
+// Query returns a query builder for GameHustler.
+func (c *GameHustlerClient) Query() *GameHustlerQuery {
+	return &GameHustlerQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a GameHustler entity by its id.
+func (c *GameHustlerClient) Get(ctx context.Context, id string) (*GameHustler, error) {
+	return c.Query().Where(gamehustler.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *GameHustlerClient) GetX(ctx context.Context, id string) *GameHustler {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryHustlers queries the hustlers edge of a GameHustler.
+func (c *GameHustlerClient) QueryHustlers(gh *GameHustler) *HustlerQuery {
+	query := &HustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := gh.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustler.Table, gamehustler.FieldID, id),
+			sqlgraph.To(hustler.Table, hustler.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, gamehustler.HustlersTable, gamehustler.HustlersColumn),
+		)
+		fromV = sqlgraph.Neighbors(gh.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *GameHustlerClient) Hooks() []Hook {
+	return c.hooks.GameHustler
 }
 
 // HustlerClient is a client for the Hustler schema.

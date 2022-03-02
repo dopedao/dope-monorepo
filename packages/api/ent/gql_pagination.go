@@ -19,6 +19,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
@@ -1210,6 +1211,276 @@ func (e *Event) ToEdge(order *EventOrder) *EventEdge {
 	return &EventEdge{
 		Node:   e,
 		Cursor: order.Field.toCursor(e),
+	}
+}
+
+// GameHustlerEdge is the edge representation of GameHustler.
+type GameHustlerEdge struct {
+	Node   *GameHustler `json:"node"`
+	Cursor Cursor       `json:"cursor"`
+}
+
+// GameHustlerConnection is the connection containing edges to GameHustler.
+type GameHustlerConnection struct {
+	Edges      []*GameHustlerEdge `json:"edges"`
+	PageInfo   PageInfo           `json:"pageInfo"`
+	TotalCount int                `json:"totalCount"`
+}
+
+// GameHustlerPaginateOption enables pagination customization.
+type GameHustlerPaginateOption func(*gameHustlerPager) error
+
+// WithGameHustlerOrder configures pagination ordering.
+func WithGameHustlerOrder(order *GameHustlerOrder) GameHustlerPaginateOption {
+	if order == nil {
+		order = DefaultGameHustlerOrder
+	}
+	o := *order
+	return func(pager *gameHustlerPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultGameHustlerOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithGameHustlerFilter configures pagination filter.
+func WithGameHustlerFilter(filter func(*GameHustlerQuery) (*GameHustlerQuery, error)) GameHustlerPaginateOption {
+	return func(pager *gameHustlerPager) error {
+		if filter == nil {
+			return errors.New("GameHustlerQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type gameHustlerPager struct {
+	order  *GameHustlerOrder
+	filter func(*GameHustlerQuery) (*GameHustlerQuery, error)
+}
+
+func newGameHustlerPager(opts []GameHustlerPaginateOption) (*gameHustlerPager, error) {
+	pager := &gameHustlerPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultGameHustlerOrder
+	}
+	return pager, nil
+}
+
+func (p *gameHustlerPager) applyFilter(query *GameHustlerQuery) (*GameHustlerQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *gameHustlerPager) toCursor(gh *GameHustler) Cursor {
+	return p.order.Field.toCursor(gh)
+}
+
+func (p *gameHustlerPager) applyCursors(query *GameHustlerQuery, after, before *Cursor) *GameHustlerQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultGameHustlerOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *gameHustlerPager) applyOrder(query *GameHustlerQuery, reverse bool) *GameHustlerQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultGameHustlerOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultGameHustlerOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to GameHustler.
+func (gh *GameHustlerQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...GameHustlerPaginateOption,
+) (*GameHustlerConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newGameHustlerPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if gh, err = pager.applyFilter(gh); err != nil {
+		return nil, err
+	}
+
+	conn := &GameHustlerConnection{Edges: []*GameHustlerEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := gh.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := gh.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	gh = pager.applyCursors(gh, after, before)
+	gh = pager.applyOrder(gh, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		gh = gh.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		gh = gh.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := gh.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *GameHustler
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *GameHustler {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *GameHustler {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*GameHustlerEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &GameHustlerEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+var (
+	// GameHustlerOrderFieldCreatedAt orders GameHustler by created_at.
+	GameHustlerOrderFieldCreatedAt = &GameHustlerOrderField{
+		field: gamehustler.FieldCreatedAt,
+		toCursor: func(gh *GameHustler) Cursor {
+			return Cursor{
+				ID:    gh.ID,
+				Value: gh.CreatedAt,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f GameHustlerOrderField) String() string {
+	var str string
+	switch f.field {
+	case gamehustler.FieldCreatedAt:
+		str = "CREATED_AT"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f GameHustlerOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *GameHustlerOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("GameHustlerOrderField %T must be a string", v)
+	}
+	switch str {
+	case "CREATED_AT":
+		*f = *GameHustlerOrderFieldCreatedAt
+	default:
+		return fmt.Errorf("%s is not a valid GameHustlerOrderField", str)
+	}
+	return nil
+}
+
+// GameHustlerOrderField defines the ordering field of GameHustler.
+type GameHustlerOrderField struct {
+	field    string
+	toCursor func(*GameHustler) Cursor
+}
+
+// GameHustlerOrder defines the ordering of GameHustler.
+type GameHustlerOrder struct {
+	Direction OrderDirection         `json:"direction"`
+	Field     *GameHustlerOrderField `json:"field"`
+}
+
+// DefaultGameHustlerOrder is the default ordering of GameHustler.
+var DefaultGameHustlerOrder = &GameHustlerOrder{
+	Direction: OrderDirectionAsc,
+	Field: &GameHustlerOrderField{
+		field: gamehustler.FieldID,
+		toCursor: func(gh *GameHustler) Cursor {
+			return Cursor{ID: gh.ID}
+		},
+	},
+}
+
+// ToEdge converts GameHustler into GameHustlerEdge.
+func (gh *GameHustler) ToEdge(order *GameHustlerOrder) *GameHustlerEdge {
+	if order == nil {
+		order = DefaultGameHustlerOrder
+	}
+	return &GameHustlerEdge{
+		Node:   gh,
+		Cursor: order.Field.toCursor(gh),
 	}
 }
 
