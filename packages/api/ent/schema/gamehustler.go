@@ -14,11 +14,15 @@ type Position struct {
 	y float32
 }
 
+// Definition of a game hustler's quest.
+// Actual quest is stored in the game registry. Quest `string` is the quest's ID.
 type GameHustlerQuest struct {
 	quest     string
 	completed bool
 }
 
+// Definition of a game hustler's item.
+// Actual item is stored in the game registry. Item `string` is the item's ID.
 type GameHustlerItem struct {
 	item  string
 	count int
