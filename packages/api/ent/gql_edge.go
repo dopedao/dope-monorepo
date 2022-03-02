@@ -84,6 +84,14 @@ func (d *Dope) Index(ctx context.Context) (*Search, error) {
 	return result, MaskNotFound(err)
 }
 
+func (gh *GameHustler) Hustlers(ctx context.Context) (*Hustler, error) {
+	result, err := gh.Edges.HustlersOrErr()
+	if IsNotLoaded(err) {
+		result, err = gh.QueryHustlers().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (h *Hustler) Wallet(ctx context.Context) (*Wallet, error) {
 	result, err := h.Edges.WalletOrErr()
 	if IsNotLoaded(err) {

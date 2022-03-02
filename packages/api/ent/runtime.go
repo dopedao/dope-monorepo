@@ -8,6 +8,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
@@ -51,6 +52,12 @@ func init() {
 	event.DefaultUpdatedAt = eventDescUpdatedAt.Default.(func() time.Time)
 	// event.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	event.UpdateDefaultUpdatedAt = eventDescUpdatedAt.UpdateDefault.(func() time.Time)
+	gamehustlerFields := schema.GameHustler{}.Fields()
+	_ = gamehustlerFields
+	// gamehustlerDescCreatedAt is the schema descriptor for created_at field.
+	gamehustlerDescCreatedAt := gamehustlerFields[4].Descriptor()
+	// gamehustler.DefaultCreatedAt holds the default value on creation for the created_at field.
+	gamehustler.DefaultCreatedAt = gamehustlerDescCreatedAt.Default.(func() time.Time)
 	hustlerFields := schema.Hustler{}.Fields()
 	_ = hustlerFields
 	// hustlerDescViewbox is the schema descriptor for viewbox field.

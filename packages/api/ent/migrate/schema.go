@@ -105,6 +105,29 @@ var (
 			},
 		},
 	}
+	// GameHustlersColumns holds the columns for the "game_hustlers" table.
+	GameHustlersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "last_position", Type: field.TypeJSON},
+		{Name: "quests", Type: field.TypeJSON},
+		{Name: "items", Type: field.TypeJSON},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "game_hustler_hustlers", Type: field.TypeString, Nullable: true},
+	}
+	// GameHustlersTable holds the schema information for the "game_hustlers" table.
+	GameHustlersTable = &schema.Table{
+		Name:       "game_hustlers",
+		Columns:    GameHustlersColumns,
+		PrimaryKey: []*schema.Column{GameHustlersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "game_hustlers_hustlers_hustlers",
+				Columns:    []*schema.Column{GameHustlersColumns[5]},
+				RefColumns: []*schema.Column{HustlersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// HustlersColumns holds the columns for the "hustlers" table.
 	HustlersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
@@ -400,6 +423,7 @@ var (
 		BodyPartsTable,
 		DopesTable,
 		EventsTable,
+		GameHustlersTable,
 		HustlersTable,
 		ItemsTable,
 		ListingsTable,
@@ -416,6 +440,7 @@ func init() {
 	AmountsTable.ForeignKeys[1].RefTable = ListingsTable
 	DopesTable.ForeignKeys[0].RefTable = ListingsTable
 	DopesTable.ForeignKeys[1].RefTable = WalletsTable
+	GameHustlersTable.ForeignKeys[0].RefTable = HustlersTable
 	HustlersTable.ForeignKeys[0].RefTable = BodyPartsTable
 	HustlersTable.ForeignKeys[1].RefTable = BodyPartsTable
 	HustlersTable.ForeignKeys[2].RefTable = BodyPartsTable

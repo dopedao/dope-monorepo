@@ -61,6 +61,19 @@ func (f EventFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 	return f(ctx, mv)
 }
 
+// The GameHustlerFunc type is an adapter to allow the use of ordinary
+// function as GameHustler mutator.
+type GameHustlerFunc func(context.Context, *ent.GameHustlerMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f GameHustlerFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.GameHustlerMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GameHustlerMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The HustlerFunc type is an adapter to allow the use of ordinary
 // function as Hustler mutator.
 type HustlerFunc func(context.Context, *ent.HustlerMutation) (ent.Value, error)

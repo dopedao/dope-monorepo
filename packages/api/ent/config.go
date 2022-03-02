@@ -28,6 +28,7 @@ type hooks struct {
 	BodyPart    []ent.Hook
 	Dope        []ent.Hook
 	Event       []ent.Hook
+	GameHustler []ent.Hook
 	Hustler     []ent.Hook
 	Item        []ent.Hook
 	Listing     []ent.Hook
