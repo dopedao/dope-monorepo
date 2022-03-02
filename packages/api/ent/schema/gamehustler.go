@@ -28,6 +28,16 @@ type GameHustlerItem struct {
 	count int
 }
 
+// Definition of a relation between a game hustler and a citizen.
+// Citizen `string` is the citizen's ID. Stored in the game registry.
+// Conversation is the conversation's index of the citizen.
+// Text is the index of the text in the conversation.
+type GameHustlerCitizen struct {
+	citizen      string
+	conversation int
+	text         int
+}
+
 // Hustler holds the schema definition for the Hustler entity.
 type GameHustler struct {
 	ent.Schema
@@ -37,6 +47,7 @@ func (GameHustler) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.JSON("lastPosition", Position{}),
+		field.JSON("relations", []GameHustlerCitizen{}),
 		field.JSON("quests", []GameHustlerQuest{}),
 		field.JSON("items", []GameHustlerItem{}),
 		field.Time("created_at").
