@@ -135,20 +135,11 @@ type Position {
   y: Float!
 }
 
-"""
-A definition of a players quest. 
-Actual quest is stored in the registry.
-"""
 type GameHustlerQuest {
-  # TODO: enum?
   quest: String!
   completed: Boolean!
 }
 
-"""
-A definition of a players quest. 
-Actual quest is stored in the registry.
-"""
 type GameHustlerItem {
   item: String!
   count: Int!
