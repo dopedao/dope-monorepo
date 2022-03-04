@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import DesktopWindow from 'components/DesktopWindow';
 import { PostType } from 'features/news/types';
 import DopeNewsCast from 'features/news/components/DopeNewsCast';
-import BannerBaronAuction from 'components/banners/BannerBaronAuction';
 
 const Container = styled.div`
   height: 100%;
@@ -20,7 +19,6 @@ interface NewsWindowProps {
 const NewsWindow = ({ allPosts, posX, posY, ...props }: NewsWindowProps) => (
   <DesktopWindow title="The Daily Dope" width={768} hideWalletAddress {...props}>
     <Container>
-      <BannerBaronAuction />
       <DopeNewsCast posts={allPosts} />
     </Container>
   </DesktopWindow>
