@@ -55,7 +55,6 @@ export const useHustlerRles = (
 
       return [
         getRle(sex, hustler.clothes),
-        getRle(sex, hustler.weapon),
         getRle(sex, hustler.waist),
         getRle(sex, hustler.foot),
         getRle(sex, hustler.hand),
@@ -63,6 +62,7 @@ export const useHustlerRles = (
         getRle(sex, hustler.neck),
         getRle(sex, hustler.ring),
         getRle(sex, hustler.accessory),
+        getRle(sex, hustler.weapon),
         getRle(sex, hustler.vehicle),
       ];
     }
