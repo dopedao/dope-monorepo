@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 
 import PanelBody from 'components/PanelBody';
-import { Hustler, HustlerType, useInfiniteProfileHustlersQuery } from 'generated/graphql';
+import { Hustler, HustlerType, Maybe, useInfiniteProfileHustlersQuery } from 'generated/graphql';
 
 import ItemCount from './ItemCount';
 import ProfileCardHeader from './ProfileCardHeader';
@@ -130,7 +130,7 @@ const Hustlers = ({ searchValue }: { searchValue: string }) => {
                     <Table variant="small">
                       <Tr>
                         <Td>Name:</Td>
-                        <Td>{name}</Td>
+                        <Td>{name?.trim().length !== 0 ? name : `Hustler #${id}`}</Td>
                       </Tr>
                       {title && (
                         <Tr>
