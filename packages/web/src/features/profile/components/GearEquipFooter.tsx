@@ -60,7 +60,7 @@ const GearEquipFooter = ({ id }: { id: string }) => {
         <option disabled>Equip to…</option>
         {data?.wallets.edges![0]?.node?.hustlers.map(({ id, title, name }) => (
           <option key={id} value={id}>
-            {title} {name}
+            {title} {name?.trim().length !== 0 ? name : `Hustler #${id}`}
           </option>
         ))}
       </Select>
