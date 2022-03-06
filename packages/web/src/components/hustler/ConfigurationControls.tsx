@@ -124,6 +124,8 @@ const ConfigurationControls = ({
     // 4-7: Bodyparts
     // 8: Layer order
     let bitmask = 111110110;
+    
+    // If anything in the name box at all, set it
     if (setname.length > 0) {
       bitmask += 1;
     }
@@ -138,6 +140,9 @@ const ConfigurationControls = ({
       parseInt('' + bitmask, 2)
         .toString(16)
         .padStart(4, '0');
+
+    console.log(bitmask);
+    console.log(`bitmask: ${mask}`);
 
     if (hustlers) {
       try {
@@ -163,11 +168,13 @@ const ConfigurationControls = ({
           //   'RING',
           //   'ACCESSORY'
           // ];
-          order: [2, 6, 8, 5, 1, 3, 4, 7, 0, 9],
+          order: [2, 6, 8, 5, 1, 3, 4, 7, 0, 9].map(i => BigNumber.from(i)),
         });
         await transaction.wait();
       } catch (error) {
+        setLoading(false);
         console.error(error);
+        return;
       }
       setLoading(false);
       router.push({
