@@ -60,7 +60,7 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 * Blockchain wizardry by [tarrence](https://twitter.com/tarrenceva)
 * Starknet gigabrain infrastructure by [perama](https://twitter.com/eth_worm)
 * Game Artwork and Maps by [HPMNK](https://twitter.com/HPMNK_One)
-* MMORPG game dev by Larko
+* MMORPG game dev by [Larko](https://twitter.com/aym_dm)
 * Art direction by [facesof.eth](https://twitter.com/facesOfEth)
 * DOPE TV and DOPE MUSIC produced by [Shecky Green](https://twitter.com/SheckyGreen)
 * Chiptunes by [Baron Von Future](https://twitter.com/baronvonfuture)
