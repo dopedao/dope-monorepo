@@ -12,7 +12,7 @@ const order = [
   ItemType.Ring,
   ItemType.Accessory,
   ItemType.Weapon,
-  ItemType.Vehcile,
+  ItemType.Vehicle,
 ];
 
 type Rles = Pick<Item, 'rles'> & {
