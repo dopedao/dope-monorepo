@@ -4,7 +4,6 @@ import { HustlerSex } from 'utils/HustlerConfig';
 
 const order = [
   ItemType.Clothes,
-  ItemType.Weapon,
   ItemType.Waist,
   ItemType.Foot,
   ItemType.Hand,
@@ -12,6 +11,7 @@ const order = [
   ItemType.Neck,
   ItemType.Ring,
   ItemType.Accessory,
+  ItemType.Weapon,
   ItemType.Vehcile,
 ];
 

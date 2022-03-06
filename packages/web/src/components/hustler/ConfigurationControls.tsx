@@ -140,18 +140,31 @@ const ConfigurationControls = ({
           viewbox: zoomWindow,
           body: bodyParts,
           mask,
-          order: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          // SLOTS order as defined in HustlerMetadata.sol
+          // Human readable…
+          // const SLOTS = [
+          //   'WEAPON',
+          //   'CLOTHES',
+          //   'VEHICLE',
+          //   'WAIST',
+          //   'FOOT',
+          //   'HAND',
+          //   'DRUGS',
+          //   'NECK',
+          //   'RING',
+          //   'ACCESSORY'
+          // ];
+          order: [2, 6, 8, 5, 1, 3, 4, 7, 0, 9],
         });
         await transaction.wait();
-        setLoading(false);
-        router.push({
-          pathname: '/inventory',
-          search: `?section=Hustlers`,
-        });
       } catch (error) {
         console.error(error);
-        setLoading(false);
       }
+      setLoading(false);
+      router.push({
+        pathname: '/inventory',
+        search: `?section=Hustlers`,
+      });
     }
   }, [chainId, hustlers, config, router, web3ReactChainId]);
 
