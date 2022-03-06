@@ -115,11 +115,20 @@ const ConfigurationControls = ({
         .toString(16)
         .padStart(4, '0');
 
-    let bitmask = 11110110;
+    // Bitmask controls configuration options we're allowed to set 
+    // in Hustler.sol
+    // 0: Name
+    // 1: Color
+    // 2: Background Color
+    // 3: Viewbox
+    // 4-7: Bodyparts
+    // 8: Layer order
+    let bitmask = 111110110;
     if (setname.length > 0) {
       bitmask += 1;
     }
 
+    // Viewbox / Zoomwindow
     if (zoomWindow[0].gt(0) || zoomWindow[0].gt(1) || zoomWindow[0].gt(2) || zoomWindow[0].gt(3)) {
       bitmask += 1000;
     }
