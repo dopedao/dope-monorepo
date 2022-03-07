@@ -120,8 +120,6 @@ interface DataTypes {
     incConversations?: boolean;
     // conversation texts
     incTexts?: boolean;
-    // to reset texts when conversation is finished
-    resetTexts?: boolean;
   };
 }
 
