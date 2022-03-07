@@ -3,6 +3,14 @@ import Hustler from '../Hustler';
 import Player from '../player/Player';
 import Conversation from './Conversation';
 
+interface PathPoint {
+  position: Phaser.Math.Vector2;
+  // time to wait before going to the next point (ms)
+  wait?: number;
+
+  onMoved?: () => void;
+}
+
 export default class Citizen extends Hustler {
   readonly description?: string;
   conversations: Conversation[] = new Array();
@@ -11,7 +19,7 @@ export default class Citizen extends Hustler {
   // Vector2 is used for tile coordinates,
   // and number is used for the number of seconds that the citizen has to wait before going to the
   // next point
-  path: (Phaser.Math.Vector2 | number)[] = new Array();
+  path: Array<PathPoint> = new Array();
   // repeat path
   repeatPath: boolean = false;
 
@@ -24,11 +32,12 @@ export default class Citizen extends Hustler {
     world: Phaser.Physics.Matter.World,
     x: number,
     y: number,
+    currentMap?: string,
     hustlerId?: string,
     name?: string,
     description?: string,
     conversations?: Conversation[] | Conversation,
-    path?: (Phaser.Math.Vector2 | number)[],
+    path?: Array<PathPoint>,
     repeatPath?: boolean,
     shouldFollowPath?: boolean,
   ) {
@@ -36,6 +45,7 @@ export default class Citizen extends Hustler {
 
     this.description = description;
 
+    if (currentMap) this.currentMap = currentMap;
     if (conversations) conversations instanceof Array ? this.conversations = conversations : [ conversations ];
     if (path) this.path = path;
     if (repeatPath) this.repeatPath = repeatPath;
@@ -70,9 +80,7 @@ export default class Citizen extends Hustler {
       const nextPoint = this.path.shift();
 
       if (nextPoint) {
-        if (nextPoint instanceof Phaser.Math.Vector2)
-          this.navigator.moveTo(nextPoint.x, nextPoint.y);
-        else if (typeof nextPoint === 'number') {
+        if (nextPoint.wait) {
           if (!this.lastPointTimestamp) {
             this.lastPointTimestamp = Date.now();
 
@@ -82,7 +90,7 @@ export default class Citizen extends Hustler {
             return;
           } else {
             const timePassed = Date.now() - this.lastPointTimestamp;
-            if (timePassed < nextPoint * 1000) {
+            if (timePassed < nextPoint.wait) {
               // NOTE: this is a hack to make the citizen wait for a certain amount of time before going to the next point
               // wait there's really an unshift method???
               this.path.unshift(nextPoint);
@@ -92,6 +100,8 @@ export default class Citizen extends Hustler {
             this.lastPointTimestamp = undefined;
           }
         }
+
+        this.navigator.moveTo(nextPoint.position.x, nextPoint.position.y, nextPoint.onMoved);
 
         // if repeatpath is enabled, we push our shifted point (first point in this case) back to the end of the path
         if (this.repeatPath) this.path.push(nextPoint);

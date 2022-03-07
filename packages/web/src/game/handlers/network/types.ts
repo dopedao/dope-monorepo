@@ -5,7 +5,9 @@ enum UniversalEventNames {
   PLAYER_CHAT_MESSAGE = 'player_chat_message',
   PLAYER_UPDATE_MAP = 'player_update_map',
   PLAYER_PICKUP_ITEMENTITY = 'player_pickup_itementity',
-  ITEMENTITY_DESTROY = 'itementity_destroy',
+  // updates the state of a citizen to the players perspective
+  // the index of the conversations he has with the citizen etc...
+  PLAYER_UPDATE_CITIZEN_STATE = 'player_update_citizen_state',
 }
 
 enum NetworkEvents {
@@ -32,6 +34,7 @@ enum NetworkEvents {
   CLIENT_PLAYER_CHAT_MESSAGE = 'client_player_chat_message',
   CLIENT_PLAYER_UPDATE_MAP = 'client_player_update_map',
   CLIENT_PLAYER_PICKUP_ITEMENTITY = 'client_player_pickup_itementity',
+  CLIENT_PLAYER_UPDATE_CITIZEN_STATE = 'client_player_update_citizen_state',
 }
 
 interface DataTypes {
@@ -111,6 +114,14 @@ interface DataTypes {
   };
   [NetworkEvents.CLIENT_PLAYER_PICKUP_ITEMENTITY]: {
     id: string;
+  };
+  [NetworkEvents.CLIENT_PLAYER_UPDATE_CITIZEN_STATE]: {
+    id: string;
+    incConversations?: boolean;
+    // conversation texts
+    incTexts?: boolean;
+    // to reset texts when conversation is finished
+    resetTexts?: boolean;
   };
 }
 

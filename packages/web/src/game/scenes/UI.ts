@@ -369,11 +369,23 @@ export default class UIScene extends Scene {
             citizen.onInteractionFinish();
             EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_FINISH, citizen, false);
 
-            // if the conversation is not marked as complete, push it to the array again
-            if (conv.onFinish) if (conv.onFinish()) citizen.conversations.shift();
+            citizen.conversations.shift();
+            // TODO: move else where
+            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
+              id: citizen.getData('id'),
+              incConversations: true 
+            });
+
+            if (conv.onFinish) conv.onFinish();
 
             return;
           }
+
+          // TODO: Fire up end text event and move somewhere else, maybe in network handler?
+          NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
+            id: citizen.getData('id'),
+            incTexts: true 
+          });
 
           const nextText = conv.texts.shift();
           textBox.start(nextText!.text, nextText!.typingSpeed ?? 50);

@@ -23,15 +23,25 @@ export default class PathNavigator {
   }
 
   moveTo(x: number, y: number, onMoved?: () => void, onCancel?: () => void) {
+    if (!this.hustler.currentMap)
+      console.warn('Cannot initiate path finding without a current map');
+
     // the game scene used map
     const map = (this.hustler.scene as GameScene).mapHelper.loadedMaps.get(this.hustler.currentMap);
     if (!map || !map.collideLayer) {
-      console.warn('No collide layer found');
+      console.warn('No collide layer found for: ' + this.hustler.currentMap);
       return;
     }
 
     // retrieve grid data from layer (defined in maphelper)
-    this.grid = (map.collideLayer.getData('pf_grid') as PF.Grid).clone();
+    const gridData = map.collideLayer.getData('pf_grid') as PF.Grid;
+    if (!gridData) 
+    {
+      console.warn('No grid data found for: ' + this.hustler.currentMap);
+      return;
+    }
+
+    this.grid = gridData.clone();
 
     this.onMoved = onMoved;
     this.onCancel = onCancel;
@@ -45,7 +55,7 @@ export default class PathNavigator {
       !this.grid.isInside(hustlerTile.x, hustlerTile.y) ||
       !this.grid.isInside(moveTile.x, moveTile.y)
     ) {
-      console.warn('Move to point outside of pathfinder map');
+      console.warn('Point outside of current map: ' + this.hustler.currentMap);
       if (this.onCancel)
         this.onCancel();
       return;

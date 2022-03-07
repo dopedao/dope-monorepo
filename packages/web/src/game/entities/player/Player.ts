@@ -53,6 +53,7 @@ export default class Player extends Hustler {
     world: Phaser.Physics.Matter.World,
     x: number,
     y: number,
+    currentMap: string,
     hustlerId?: string,
     name?: string,
     inventory?: Inventory,
@@ -74,6 +75,7 @@ export default class Player extends Hustler {
       },
     );
 
+    this.currentMap = currentMap;
     // create controller
     this.controller = new PlayerController(this);
     this._handleEvents();

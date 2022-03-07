@@ -134,6 +134,7 @@ export default class GameScene extends Scene {
     this._mapHelper = new MapHelper(this);
     this.mapHelper.createMap('NY_Bushwick_Basket');
     this.mapHelper.createEntities();
+    this.mapHelper.createCollisions();
     this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
 
     this.citizens.push(
@@ -141,12 +142,19 @@ export default class GameScene extends Scene {
         this.matter.world,
         45,
         300,
+        this.mapHelper.mapReader.level.identifier,
         '12',
         'Michel',
         'Arpenteur',
-        [new Conversation({text: 'Welcome to Dope City!'})],
-        undefined,
-        //[ this.mapHelper.map.collideLayer?.worldToTileXY(new Phaser.Math.Vector2(400, 300).x, new Phaser.Math.Vector2(400, 300).y), 20, this.mapHelper.map.collideLayer!.worldToTileXY(new Phaser.Math.Vector2(700, 600).x, new Phaser.Math.Vector2(700, 600).y)],
+        [
+          new Conversation([{text: 'Conversation 1: Text 1'}, {text: 'Conversation 1: Text 2'}, {text: 'Conversation 1: Text 3'}]), 
+          new Conversation([{text: 'Conversation 2: Text 1'}, {text: 'Conversation 2: Text 2'}, {text: 'Conversation 2: Text 3'}]),  
+        ],
+        [
+          { position: new Phaser.Math.Vector2(200, 300), wait: 3000 },
+          { position: new Phaser.Math.Vector2(400, 200) },
+        ],
+        true,
         true,
       ),
     );
@@ -156,10 +164,10 @@ export default class GameScene extends Scene {
       this.matter.world,
       500,
       200,
+      this.mapHelper.mapReader.level.identifier,
       this.hustlerData?.length > 0 ? this.hustlerData[0].id : undefined,
       this.hustlerData?.length > 0 ? this.hustlerData[0].name : undefined,
     );
-    this.player.currentMap = this.mapHelper.mapReader.level.identifier;
 
     const camera = this.cameras.main;
 
@@ -491,6 +499,7 @@ export default class GameScene extends Scene {
 
       if (n.dir === dir) {
         this.mapHelper.createMap(lvl.identifier);
+        this.mapHelper.createCollisions();
         this.mapHelper.createEntities();
         this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
       }
