@@ -96,7 +96,8 @@ const ConfigurationControls = ({
       sex == 'male' ? BigNumber.from(facialHair) : BigNumber.from(0),
     ];
 
-    let bitoptions = 0;
+
+    let bitoptions = 1000;
 
     if (isVehicle) {
       bitoptions += 1;
@@ -154,8 +155,10 @@ const ConfigurationControls = ({
           viewbox: zoomWindow,
           body: bodyParts,
           mask,
-          // SLOTS order as defined in HustlerMetadata.sol
+          // SLOTS order as defined in Components.sol:33
+          //
           // Human readable…
+          //
           // const SLOTS = [
           //   'WEAPON',
           //   'CLOTHES',
