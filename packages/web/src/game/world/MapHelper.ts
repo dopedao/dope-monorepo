@@ -35,15 +35,15 @@ export default class MapHelper {
         .setData('max_alpha', 0.9)
         .setDepth(1000)
         .setOrigin(0, 0);
-    // (this.scene.plugins.get('rexKawaseBlurPipeline') as any).add(this.map.otherGfx, {
-    //   blur: 30,
-    //   quality: 5
-    // });
 
+    this.loadedMaps.set(this.mapReader.level.identifier, this.map);
+  }
+
+  createCollisions() {
     // enable collisions for all tiles that have index 1
     this.map.collideLayer?.setCollision(1);
 
-    // matterjs collisions
+    // create matterjs collisions from collidelayer
     if (this.map.collideLayer) {
       const grid = new PF.Grid(
         this.map.collideLayer.layer.data.map(row => row.map(tile => tile.index)),
@@ -140,8 +140,6 @@ export default class MapHelper {
         }
       }
     }
-
-    this.loadedMaps.set(this.mapReader.level.identifier, this.map);
   }
 
   createEntities() {
@@ -163,13 +161,13 @@ export default class MapHelper {
               frameId,
               0,
               // x
-              entity.__tile.srcRect[0],
+              entity.__tile.x,
               // y
-              entity.__tile.srcRect[1],
+              entity.__tile.y,
               // width
-              entity.__tile.srcRect[2],
+              entity.__tile.w,
               // height
-              entity.__tile.srcRect[3],
+              entity.__tile.h,
             )
           : // use existing frame
             this.scene.textures.get(tileset.identifier.toLowerCase()).get(frameId);

@@ -132,7 +132,7 @@ export default class GameScene extends Scene {
 
     // create map and entities
     this._mapHelper = new MapHelper(this);
-    this.mapHelper.createMap('NYCHood2');
+    this.mapHelper.createMap('NY_Bushwick_Basket');
     this.mapHelper.createEntities();
     this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
 
@@ -154,7 +154,7 @@ export default class GameScene extends Scene {
     // TODO when map update: create player directly from map data
     this.player = new Player(
       this.matter.world,
-      90,
+      500,
       200,
       this.hustlerData?.length > 0 ? this.hustlerData[0].id : undefined,
       this.hustlerData?.length > 0 ? this.hustlerData[0].name : undefined,
@@ -192,22 +192,24 @@ export default class GameScene extends Scene {
     const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
 
     // check to load new maps
-    // east
-    if (playerPos.x - centerMapPos.x > level.pxWid / 4) this._checkDir(level, 'e', true);
-    // north
-    else if (playerPos.y - centerMapPos.y < -(level.pxHei / 4)) this._checkDir(level, 'n', true);
     // west
-    else if (playerPos.x - centerMapPos.x < -(level.pxWid / 4)) this._checkDir(level, 'w', true);
+    if (playerPos.x - centerMapPos.x < -(level.pxWid / 4)) this._checkDir(level, 'w', true);
+    // east
+    else if (playerPos.x - centerMapPos.x > level.pxWid / 4) this._checkDir(level, 'e', true);
+    // north
+    if (playerPos.y - centerMapPos.y < -(level.pxHei / 4)) this._checkDir(level, 'n', true);
     // south
     else if (playerPos.y - centerMapPos.y > level.pxHei / 4) this._checkDir(level, 's', true);
+    
+    
 
     // check in which map we're in
-    // east
-    if (playerPos.x - centerMapPos.x > level.pxWid / 2) this._checkDir(level, 'e', false);
-    // north
-    else if (playerPos.y - centerMapPos.y < -(level.pxHei / 2)) this._checkDir(level, 'n', false);
     // west
-    else if (playerPos.x - centerMapPos.x < -(level.pxWid / 2)) this._checkDir(level, 'w', false);
+    if (playerPos.x - centerMapPos.x < -(level.pxWid / 2)) this._checkDir(level, 'w', false);
+    // east
+    else if (playerPos.x - centerMapPos.x > level.pxWid / 2) this._checkDir(level, 'e', false);
+    // north
+    if (playerPos.y - centerMapPos.y < -(level.pxHei / 2)) this._checkDir(level, 'n', false);
     // south
     else if (playerPos.y - centerMapPos.y > level.pxHei / 2) this._checkDir(level, 's', false);
   }
