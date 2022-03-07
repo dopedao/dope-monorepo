@@ -12,7 +12,9 @@ contract StreetCred is ERC20, ERC20Permit, L2ERC20Votes, AccessControl {
     bytes32 public constant BURNER_ROLE = keccak256('BURNER_ROLE');
     bytes32 public constant TRANSFERRER_ROLE = keccak256('TRANSFERRER_ROLE');
 
-    constructor() ERC20('Streetcred', 'STREETCRED') ERC20Permit('Streetcred') {}
+    constructor() ERC20('Streetcred', 'STREETCRED') ERC20Permit('Streetcred') {
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    }
 
     function mint(address _to, uint256 _amount) public virtual onlyRole(MINTER_ROLE) {
         _mint(_to, _amount);
