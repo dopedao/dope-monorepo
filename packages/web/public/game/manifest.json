@@ -12,6 +12,12 @@
               "size": 8543
             }
         },
+        "json": {
+            "map": {
+                "file": "./game/MAP/LDTK/DopeWars_LD_V7.json",
+                "size": 65457409
+            }
+        },
         "image": {
             "tileset_building_nycpack1": {
                 "file": "./game/MAP/DW_Buildings_MegaSheet1.png",
@@ -40,12 +46,6 @@
             "tileset_fx_shadowbase": {
                 "file": "./game/MAP/DW_FX_ShadowPaint.png",
                 "size": 336
-            }
-        },
-        "json": {
-            "map": {
-                "file": "./game/MAP/LDTK/DopeWars_LD_V7.json",
-                "size": 65457409
             }
         }
     }
