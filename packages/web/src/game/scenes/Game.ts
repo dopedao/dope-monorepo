@@ -304,7 +304,15 @@ export default class GameScene extends Scene {
       // TODO: login scene or something like that
       if (data.code === 401)
       {
-        this.scene.pause(this);
+        (this.scene.get('UIScene') as UIScene).toast({
+          ...chakraToastStyle,
+          status: 'error',
+          title: 'Unauthorized',
+        })
+        networkHandler.authenticator.logout()
+          .then(() => {
+            this.scene.start('LoginScene');
+          });
       }
     });
 
