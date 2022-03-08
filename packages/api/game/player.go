@@ -161,6 +161,17 @@ func (p *Player) readPump(ctx context.Context) {
 
 			// TODO: confirm item entitiy pickup by addingf item to players inventory
 			log.Info().Msgf("player %s | %s picked up item entity: %s", p.Id, p.name, data.Id)
+		case "player_update_citizen_state":
+			var data CitizenUpdateStateData
+			if err := json.Unmarshal(msg.Data, &data); err != nil {
+				p.Send <- generateErrorMessage(500, "could not unmarshal citizen update state data")
+				break
+			}
+
+			// TODO: update citizen state in db player data
+			// check citizen in registry with corresponding id, conversation and text index
+			// for item/quest to add
+			log.Info().Msgf("player %s | %s updated citizen state: %s", p.Id, p.name, data.Id)
 		case "player_leave":
 			// see defer
 			return

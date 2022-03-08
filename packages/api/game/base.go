@@ -8,6 +8,7 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/middleware"
@@ -65,14 +66,20 @@ func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.C
 					conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get wallet"))
 					continue
 				}
-				
+
 				associatedAddress, err := client.Wallet.Query().Where(wallet.HasHustlersWith(hustler.IDEQ(data.HustlerId))).OnlyID(ctx)
 				if err != nil || associatedAddress != walletAddress {
 					conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get hustler"))
 					continue
 				}
 			}
-			
+
+			// get game hustler from hustler
+			_, err := client.GameHustler.Query().Where(gamehustler.HasHustlersWith(hustler.IDEQ(data.HustlerId))).Only(ctx)
+			if err != nil {
+				conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get hustler"))
+				continue
+			}
 
 			g.HandlePlayerJoin(ctx, conn, data)
 		}

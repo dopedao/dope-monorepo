@@ -83,6 +83,15 @@ type PlayerMoveData struct {
 	Direction string  `json:"direction"`
 }
 
+type CitizenUpdateStateData struct {
+	// citizen id
+	Id string `json:"id"`
+	// increment conversation index
+	IncrementConversations bool `json:"incConversations"`
+	// increment text index
+	IncrementTexts bool `json:"incTexts"`
+}
+
 type IdData struct {
 	Id string `json:"id"`
 }
