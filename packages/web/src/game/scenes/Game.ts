@@ -132,6 +132,14 @@ export default class GameScene extends Scene {
       });
     });
 
+    this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: Array<Phaser.GameObjects.GameObject>, deltaX: number, deltaY: number) => {
+      if (this.player.busy) return;
+      const targetZoom = this.cameras.main.zoom + (deltaY < 0 ? 0.2 : -0.2);
+      if (targetZoom < 1 || targetZoom > 5) return;
+
+      this.cameras.main.zoomTo(targetZoom, 500, 'Quad.easeInOut');
+    });
+
     // create map and entities
     this._mapHelper = new MapHelper(this);
     this.mapHelper.createMap('NY_Bushwick_Basket');
