@@ -3,6 +3,8 @@ import { Scene, GameObjects } from 'phaser';
 const MB = 1024 * 1024;
 
 export default class ProgressBar {
+  private scene: Scene;
+
   private track: GameObjects.Graphics;
   private progressBar: GameObjects.Graphics;
   private _x: number;
@@ -22,6 +24,8 @@ export default class ProgressBar {
   get height() { return this._height; }
 
   constructor(scene: Scene, x: number, y: number, totalFileSize: number) {
+    this.scene = scene;
+
     this.totalFileSize = totalFileSize;
     this.track = scene.add.graphics();
     this.progressBar = scene.add.graphics();
@@ -91,13 +95,14 @@ export default class ProgressBar {
   setProgress(progress: number, loadingText?: string): void {
     this.progressBar.clear();
 
-    this.progressBar.fillStyle(0x3d8f3d);
+    this.progressBar.fillStyle(0x3d8f3d * progress);
     this.progressBar.fillRect(
       this.progressBarShape.x,
       this.progressBarShape.y,
       this.progressBarShape.maxWidth * progress,
       this.progressBarShape.height,
     );
+    // this.progressBar.strokeRect(this.progressBarShape.x, this.progressBarShape.y, this.progressBarShape.maxWidth, this.progressBarShape.height);
 
     this.percentText.setText(Math.min(100, Math.round(progress * 100)) + '%');
     // this.downloadedText.text = this.formatBytes(this.totalFileSize * progress);

@@ -64,6 +64,8 @@ export default class Preload extends Scene {
 
   // start gamescene after preload
   create(): void {
+    this.progressBar!.setProgress(1, 'Loading complete. Starting game...');
+
     if (this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) {
       this.game.renderer.pipelines.add('skewQuad', new SkewQuad(this.game));
     }
@@ -109,6 +111,7 @@ export default class Preload extends Scene {
   
         return;
       }
+
       this.scene.start(scene, {
         hustlerData,
         loggedIn
