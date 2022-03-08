@@ -31,6 +31,9 @@ export default class IntroScene extends Phaser.Scene {
         comp.events.on('game', () => {
             const scene = this.loggedIn ? 'GameScene' : 'LoginScene'; 
             const transitionToScene = () => {
+                if (scene === 'GameScene')
+                    this.cameras.main.fadeOut(transitionDuration);
+                
                 this.scene.transition({
                     target: scene,
                     duration: transitionDuration,
@@ -38,8 +41,6 @@ export default class IntroScene extends Phaser.Scene {
                         hustlerData: this.hustlerData
                     },
                 });
-                if (scene === 'GameScene')
-                    this.cameras.main.fadeOut(transitionDuration);
             }
             
             if (scene === 'GameScene') {

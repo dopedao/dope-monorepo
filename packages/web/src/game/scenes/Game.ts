@@ -77,16 +77,21 @@ export default class GameScene extends Scene {
   }
 
   create() {
-    // shutdown ui scene on game scene shutdown
+    // create item entities when need
+    const stopHandleItemEntities = this.handleItemEntities();
+    // handle camera effects
+    const stopHandleCamera = this._handleCamera();
+
+    // clean
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
+      // unsubscribe from listeners
+      stopHandleItemEntities();
+      stopHandleCamera();
+      // shutdown ui scene on game scene shutdown
       this.scene.stop('UIScene');
     });
 
-    // create item entities when need
-    this.handleItemEntities();
-    // handle camera effects
-    this.handleCamera();
-
+    
     // create all of the animations
     new GameAnimations(this.anims).create();
 
@@ -176,26 +181,33 @@ export default class GameScene extends Scene {
   }
 
   handleItemEntities() {
-    EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, (item: Item, drop: boolean) => {
-      if (drop)
-        this.itemEntities.push(
-          new ItemEntity(
-            this.matter.world,
-            this.player.x,
-            this.player.y,
-            'item_' + item.name,
-            item,
-          ),
-        );
-      console.log(this.itemEntities);
-    });
-    EventHandler.emitter().on(Events.ITEM_ENTITY_DESTROYED, (itemEntity: ItemEntity) => {
+    const onRemoveItem = (item: Item, drop: boolean) => {
+      if (!drop) return;
+
+      this.itemEntities.push(
+        new ItemEntity(
+          this.matter.world,
+          this.player.x,
+          this.player.y,
+          'item_' + item.name,
+          item,
+        ),
+      );
+    }
+
+    const onItemEntityDestroyed = (itemEntity: ItemEntity) =>
       this.itemEntities.splice(this.itemEntities.indexOf(itemEntity), 1);
-      console.log(this.itemEntities);
-    });
+    
+    EventHandler.emitter().on(Events.PLAYER_INVENTORY_REMOVE_ITEM, onRemoveItem);
+    EventHandler.emitter().on(Events.ITEM_ENTITY_DESTROYED, onItemEntityDestroyed);
+
+    return () => {
+      EventHandler.emitter().off(Events.PLAYER_INVENTORY_REMOVE_ITEM, onRemoveItem);
+      EventHandler.emitter().off(Events.ITEM_ENTITY_DESTROYED, onItemEntityDestroyed);
+    }
   }
 
-  handleCamera() {
+  private _handleCamera() {
     // to use for important events
     // this.cameras.main.shake(700, 0.001);
     // this.cameras.main.flash(800, 0xff, 0xff, 0xff);
@@ -214,11 +226,10 @@ export default class GameScene extends Scene {
     EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, cancelFocus);
 
     // remove event listeners
-    // return () => {
-    //   EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT, focusCitizen);
-    //   EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT_COMPLETE, cancelFocus);
-    //   EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT_CANCEL, cancelFocus);
-    // }
+    return () => {
+      EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT, focusCitizen);
+      EventHandler.emitter().removeListener(Events.PLAYER_CITIZEN_INTERACT_FINISH, cancelFocus);
+    };
   }
 
   private _handleInputs() {
@@ -309,8 +320,12 @@ export default class GameScene extends Scene {
           status: 'error',
           title: 'Unauthorized',
         })
+        networkHandler.disconnect();
         networkHandler.authenticator.logout()
           .then(() => {
+            this.scene.start('LoginScene');
+          })
+          .catch(() => {
             this.scene.start('LoginScene');
           });
       }
@@ -530,6 +545,10 @@ export default class GameScene extends Scene {
         this.mapHelper.createMap(lvl.identifier);
         this.mapHelper.createCollisions();
         this.mapHelper.createEntities();
+        // new Promise(() => {
+        //   this.mapHelper.createMap(lvl.identifier);
+        // }).then(() => this.mapHelper.createCollisions())
+        //   .then(() => this.mapHelper.createEntities());
         this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
       }
     });
