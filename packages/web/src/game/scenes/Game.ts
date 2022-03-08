@@ -65,80 +65,6 @@ export default class GameScene extends Scene {
     // first time playing the game?
     if ((window.localStorage.getItem('gameFirstTime') ?? 'false') !== 'true')
       window.localStorage.setItem('gameLoyal', 'true');
-  }
-
-  create() {
-    // create item entities when need
-    this.handleItemEntities();
-    // handle camera effects
-    this.handleCamera();
-
-    // create all of the animations
-    new GameAnimations(this.anims).create();
-
-    // on click pathfinding
-    let last = 0;
-    this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
-      if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer) return;
-      
-      if (Date.now() - last < 600) return;
-      last = Date.now();
-
-      // run asynchronously
-      new Promise(() => {
-        const citizenToTalkTo = this.citizens.find(
-          citizen =>
-            citizen.shouldFollowPath && citizen.conversations.length !== 0 &&
-            citizen.getBounds().contains(pointer.worldX, pointer.worldY),
-        );
-        const itemToPickUp = this.itemEntities.find(item =>
-          item.getBounds().contains(pointer.worldX, pointer.worldY),
-        );
-
-        if (
-          citizenToTalkTo &&
-          new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) <
-            100
-        ) {
-          citizenToTalkTo?.onInteraction(this.player);
-          EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
-        } else if (
-          itemToPickUp &&
-          new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(itemToPickUp)) < 100
-        ) {
-          if (NetworkHandler.getInstance().authenticator.loggedIn && this.player.inventory.add(itemToPickUp.item, true))
-            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
-              id: itemToPickUp.getData('id'),
-            })
-        } else
-          this.player.navigator.moveTo(pointer.worldX, pointer.worldY, () => {
-            if (
-              citizenToTalkTo &&
-              new Phaser.Math.Vector2(this.player).distance(citizenToTalkTo) < 100
-            ) {
-              citizenToTalkTo?.onInteraction(this.player);
-              EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
-            } else if (
-              itemToPickUp &&
-              new Phaser.Math.Vector2(this.player).distance(itemToPickUp) < 100
-            ) {
-              if (NetworkHandler.getInstance().authenticator.loggedIn && this.player.inventory.add(itemToPickUp.item, true))
-                NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
-                  id: itemToPickUp.getData('id'),
-                })
-            }
-          },
-        );
-      });
-    });
-
-    this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: Array<Phaser.GameObjects.GameObject>, deltaX: number, deltaY: number) => {
-      if (this.player.busy) return;
-      const targetZoom = this.cameras.main.zoom + (deltaY < 0 ? 0.2 : -0.2);
-      if (targetZoom < 1 || targetZoom > 5) return;
-
-      this.cameras.main.zoomTo(targetZoom, 500, 'Quad.easeInOut');
-    });
 
     // create map and entities
     this._mapHelper = new MapHelper(this);
@@ -146,6 +72,23 @@ export default class GameScene extends Scene {
     this.mapHelper.createEntities();
     this.mapHelper.createCollisions();
     this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
+
+    NetworkHandler.getInstance().listenMessages();
+  }
+
+  create() {
+    // shutdown ui scene on game scene shutdown
+    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.scene.stop('UIScene');
+    });
+
+    // create item entities when need
+    this.handleItemEntities();
+    // handle camera effects
+    this.handleCamera();
+
+    // create all of the animations
+    new GameAnimations(this.anims).create();
 
     this.citizens.push(
       new Citizen(
@@ -188,7 +131,7 @@ export default class GameScene extends Scene {
     const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
     map.otherGfx?.setAlpha(0);
 
-    this.handleNetwork();
+    this._handleNetwork();
 
     this.scene.launch('UIScene', { player: this.player });
   }
@@ -278,7 +221,75 @@ export default class GameScene extends Scene {
     // }
   }
 
-  handleNetwork() {
+  private _handleInputs() {
+    // handle mouse on click
+    // pathfinding & interact with objects / npcs
+    let last = 0;
+    this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+      if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer) return;
+      
+      if (Date.now() - last < 600) return;
+      last = Date.now();
+
+      // run asynchronously
+      new Promise(() => {
+        const citizenToTalkTo = this.citizens.find(
+          citizen =>
+            citizen.shouldFollowPath && citizen.conversations.length !== 0 &&
+            citizen.getBounds().contains(pointer.worldX, pointer.worldY),
+        );
+        const itemToPickUp = this.itemEntities.find(item =>
+          item.getBounds().contains(pointer.worldX, pointer.worldY),
+        );
+
+        if (
+          citizenToTalkTo &&
+          new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) <
+            100
+        ) {
+          citizenToTalkTo?.onInteraction(this.player);
+          EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
+        } else if (
+          itemToPickUp &&
+          new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(itemToPickUp)) < 100
+        ) {
+          if (NetworkHandler.getInstance().authenticator.loggedIn && this.player.inventory.add(itemToPickUp.item, true))
+            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+              id: itemToPickUp.getData('id'),
+            })
+        } else
+          this.player.navigator.moveTo(pointer.worldX, pointer.worldY, () => {
+            if (
+              citizenToTalkTo &&
+              new Phaser.Math.Vector2(this.player).distance(citizenToTalkTo) < 100
+            ) {
+              citizenToTalkTo?.onInteraction(this.player);
+              EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
+            } else if (
+              itemToPickUp &&
+              new Phaser.Math.Vector2(this.player).distance(itemToPickUp) < 100
+            ) {
+              if (NetworkHandler.getInstance().authenticator.loggedIn && this.player.inventory.add(itemToPickUp.item, true))
+                NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+                  id: itemToPickUp.getData('id'),
+                })
+            }
+          },
+        );
+      });
+    });
+
+    // zoom with scroll wheel
+    this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: Array<Phaser.GameObjects.GameObject>, deltaX: number, deltaY: number) => {
+      if (this.player.busy) return;
+      const targetZoom = this.cameras.main.zoom + (deltaY < 0 ? 0.2 : -0.2);
+      if (targetZoom < 1 || targetZoom > 5) return;
+
+      this.cameras.main.zoomTo(targetZoom, 500, 'Quad.easeInOut');
+    });
+  }
+
+  private _handleNetwork() {
     const networkHandler = NetworkHandler.getInstance();
     // register player
     networkHandler.sendMessage(UniversalEventNames.PLAYER_JOIN, {
