@@ -81,6 +81,9 @@ export default class GameScene extends Scene {
     const stopHandleItemEntities = this.handleItemEntities();
     // handle camera effects
     const stopHandleCamera = this._handleCamera();
+    // handle inputs
+    // we dont need to unsubscribe because we're listening to scene specific events
+    this._handleInputs();
 
     // clean
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -243,7 +246,7 @@ export default class GameScene extends Scene {
       last = Date.now();
 
       // run asynchronously
-      new Promise(() => {
+      setTimeout(() => {
         const citizenToTalkTo = this.citizens.find(
           citizen =>
             citizen.shouldFollowPath && citizen.conversations.length !== 0 &&
@@ -368,10 +371,10 @@ export default class GameScene extends Scene {
               this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
             };
 
-            if (!data.hustlerId) {
+            if (!data.hustlerId || this.textures.exists('hustler_' + data.hustlerId)) {
               initializeHustler();
               return;
-            }
+            }            
 
             const spritesheetKey = 'hustler_' + data.hustlerId;
             this.load.spritesheet(spritesheetKey, `https://api.dopewars.gg/hustlers/${data.hustlerId}/sprites/composite.png`, {
@@ -388,9 +391,8 @@ export default class GameScene extends Scene {
         networkHandler.on(
           NetworkEvents.SERVER_PLAYER_UPDATE_MAP,
           (data: DataTypes[NetworkEvents.SERVER_PLAYER_UPDATE_MAP]) => {
-            if (data.id === this.player.getData('id')) return;
-
             const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
+            
             if (hustler) {
               hustler.currentMap = data.current_map;
               hustler.setVisible(hustler.currentMap === this.player.currentMap);
@@ -412,8 +414,6 @@ export default class GameScene extends Scene {
         networkHandler.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => {
           // update players positions
           data.players.forEach(p => {
-            if (p.id === this.player.getData('id')) return;
-
             const hustler = this.hustlers.find(h => h.getData('id') === p.id);
             if (
               hustler &&
@@ -432,19 +432,11 @@ export default class GameScene extends Scene {
         networkHandler.on(
           NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE,
           (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => {
-            if (data.author === this.player.getData('id')) return;
-
-            const hustler = this.hustlers.find(h => h.getData('id') === data.author);
-            if (hustler) {
+            // check if sent by player otherwise look through hustlers (other players)
+            const hustler = this.player.getData('id') === data.author ? this.player : this.hustlers.find(h => h.getData('id') === data.author);
+            
+            if (hustler)
               EventHandler.emitter().emit(Events.CHAT_MESSAGE, hustler, data.message);
-            }
-          },
-        );
-        networkHandler.on(
-          NetworkEvents.SERVER_PLAYER_UPDATE_MAP,
-          (data: DataTypes[NetworkEvents.SERVER_PLAYER_UPDATE_MAP]) => {
-            const hustler = this.hustlers.find(h => h.getData('id') === data.id);
-            if (hustler) hustler.currentMap = data.current_map;
           },
         );
         networkHandler.on(
