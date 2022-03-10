@@ -4,7 +4,7 @@ import Player from 'game/entities/player/Player';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import Item from 'game/entities/player/inventory/Item';
 import Quest from 'game/entities/player/quests/Quest';
-import ChatType from 'game/ui/react/components/ChatType';
+import ChatType, { DisplayMessage } from 'game/ui/react/components/ChatType';
 import InventoryComponent from 'game/ui/react/components/InventoryComponent';
 import DialogueTextBox from 'game/ui/rex/DialogueTextBox';
 import { getBBcodeText, getBuiltInText } from 'game/ui/rex/RexUtils';
@@ -12,7 +12,7 @@ import { Scene } from 'phaser';
 import { ComponentManager } from 'phaser3-react/src/manager';
 import Toast from 'phaser3-rex-plugins/templates/ui/toast/Toast';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
-import { createStandaloneToast, UseToastOptions } from '@chakra-ui/react';
+import { createStandaloneToast, RenderProps, UseToastOptions } from '@chakra-ui/react';
 import { ToastOptions } from 'react-hot-toast/dist/core/types';
 import GameScene from './Game';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
@@ -22,6 +22,9 @@ import { toast } from '@chakra-ui/react';
 import ConnectionLostWindow from 'game/ui/react/components/ConnectionLostWindow';
 import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
 import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
+import theme from 'ui/styles/theme';
+import React from 'react';
+import { ToastBar } from 'react-hot-toast'; 
 
 interface Interaction {
   citizen: Citizen;
@@ -54,7 +57,7 @@ export default class UIScene extends Scene {
   public joyStick!: VirtualJoyStick;
 
   public toaster!: ComponentManager;
-  public toast = createStandaloneToast();
+  public toast = createStandaloneToast(theme);
 
   // react component for inputing message content
   public sendMessageInput?: ComponentManager;
@@ -67,6 +70,9 @@ export default class UIScene extends Scene {
 
   // max 3 toasts
   private chatMessageBoxes: Map<Hustler, Array<Toast>> = new Map();
+
+  // hustler name: messages
+  private messagesStore: Array<DisplayMessage> = new Array();
 
   constructor() {
     super({
@@ -113,20 +119,7 @@ export default class UIScene extends Scene {
       }
     }
 
-    // console.log(this.chatMessageBoxes.length);
-    // this.chatMessageBoxes.forEach((chatToasts, hustler) =>
-    //   chatToasts.forEach((chatToast, i) =>
-    //     chatToast.setPosition(
-    //       (hustler.x - this.player.scene.cameras.main.worldView.x) *
-    //         this.player.scene.cameras.main.zoom,
-    //       (hustler.y - this.player.scene.cameras.main.worldView.y) *
-    //         this.player.scene.cameras.main.zoom -
-    //         hustler.displayHeight * 1.8 -
-    //         chatToast.displayHeight * 1.2 * (chatToasts.length - 1 - i) -
-    //         (hustler.hoverText ? hustler.hoverText.displayHeight * 1.2 : 0),
-    //     ),
-    //   ),
-    // );
+    
     this.chatMessageBoxes.forEach((chatToasts, hustler) => chatToasts.forEach((chatToast, i) => {
       let x = (hustler.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom;
       let y = (hustler.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom;
@@ -134,12 +127,9 @@ export default class UIScene extends Scene {
       y -= hustler.displayHeight * 1.8;
       y -= chatToast.displayHeight / 2;
 
-      this.chatMessageBoxes.get(hustler)?.forEach((otherChatToast, j) => {
-        if (j >= i)
-          return;
-        
-        y -= otherChatToast.displayHeight * 1.1;
-      });
+      // offset by total width of precedent toasts
+      for (let j = 0; j < i; j++)
+        y -= chatToasts[j].displayHeight * 1.1;
 
       if (hustler.hoverText)
         y -= hustler.hoverText.displayHeight * 1.2;
@@ -211,6 +201,7 @@ export default class UIScene extends Scene {
 
       this.sendMessageInput = this.add.reactDom(ChatType, {
         precedentMessages: this.precedentMessages,
+        messagesStore: this.messagesStore,
       });
 
       this.sendMessageInput.events.on('chat_submit', (text: string) => {
@@ -233,7 +224,6 @@ export default class UIScene extends Scene {
 
         if (text.length > 0) {
           this.precedentMessages.unshift(text);
-          EventHandler.emitter().emit(Events.CHAT_MESSAGE, this.player, text);
           NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_CHAT_MESSAGE, {
             message: text,
           });
@@ -268,7 +258,18 @@ export default class UIScene extends Scene {
       // TODO: resize radius
     })
 
-    EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string) => {
+    EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string) => {      
+      const displayMessage: DisplayMessage = {
+        author: hustler.name,
+        message: text,
+      };
+      // add to store
+      this.messagesStore.push(displayMessage);
+      // if chattype component is open, dispatch event to update it
+      if (this.sendMessageInput) this.sendMessageInput.events.emit('chat_message', displayMessage);
+
+      
+      // display message IG 
       const messageDuration = {
         in: 500,
         hold: 3500 + text.length * 50,
