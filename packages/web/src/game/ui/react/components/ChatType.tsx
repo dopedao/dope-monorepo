@@ -15,6 +15,14 @@ interface Props {
   messagesStore: DisplayMessage[];
 }
 
+// check if element is inside of container
+const isVisible = (ele: HTMLElement, container: HTMLElement) => {
+  const { bottom, height, top } = ele.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+
+  return top <= containerRect.top ? containerRect.top - top <= height : bottom - containerRect.bottom <= height;
+};
+
 export default function ChatType(props: Props) {
   const [inputText, setInputText] = React.useState('');
   const [messages, setMessages] = React.useState(props.messagesStore);
@@ -27,10 +35,15 @@ export default function ChatType(props: Props) {
   });
 
   useEffect(() => {
-    if (messagesListRef.current) (messagesListRef.current as any).scrollTo(0, (messagesListRef.current as any).scrollHeight);
     props.manager.events.on('chat_message', (message: DisplayMessage) => {
       setMessages([...messages, message]);
-      if (newMessageRef.current) (newMessageRef.current as any).hidden = false;
+      const lastMessageEl = ((messagesListRef.current as unknown) as HTMLUListElement)?.lastElementChild as HTMLLIElement;
+      if (newMessageRef.current && 
+        lastMessageEl && 
+        lastMessageEl?.parentElement?.parentElement && 
+        !isVisible(lastMessageEl, lastMessageEl?.parentElement?.parentElement)
+        ) 
+        (newMessageRef.current as any).hidden = false;
     });
   }, []);
 
