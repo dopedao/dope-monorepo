@@ -15,7 +15,7 @@ interface Props {
   messagesStore: DisplayMessage[];
 }
 
-// check if element is inside of container
+// check if element is inside of container rect
 const isVisible = (ele: HTMLElement, container: HTMLElement) => {
   const { bottom, height, top } = ele.getBoundingClientRect();
   const containerRect = container.getBoundingClientRect();
@@ -112,7 +112,7 @@ export default function ChatType(props: Props) {
                   behavior: 'smooth',
                 });
             }}>
-              New message
+              ⬇️ New message
           </Button>
           <Center>
             <InputGroup width="90%" size="md">
