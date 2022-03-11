@@ -355,7 +355,7 @@ export default class UIScene extends Scene {
       const conv: Conversation = citizen.conversations[0];
 
       const textBox = new DialogueTextBox(this, 500, 500, 65);
-      const text = conv.texts.shift();
+      const text = conv.texts[0];
       if (!text) return;
 
       textBox.start(text.text, text.typingSpeed ?? 50)
@@ -389,7 +389,8 @@ export default class UIScene extends Scene {
             incTexts: true 
           });
 
-          const nextText = conv.texts.shift();
+          conv.texts.shift();
+          const nextText = conv.texts[0];
           textBox.start(nextText!.text, nextText!.typingSpeed ?? 50);
         })
 
