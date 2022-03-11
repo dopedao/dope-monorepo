@@ -211,6 +211,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
         // stroke: '#000000',
         // strokeThickness: 5,
       });
+      this._hoverText.setScale(this.scene.cameras.main.zoom / 3);
       this._hoverText.alpha = 0.8;
 
       (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
@@ -335,6 +336,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
       (this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom -
         (this.displayHeight / 1.3) * this.scene.cameras.main.zoom,
     );
+    if (this._hoverText && this._hoverText.scale !== this.scene.cameras.main.zoom / 3)
+      this._hoverText.setScale(this.scene.cameras.main.zoom / 3);
 
     this._shadow?.setPosition(this.x, this.y);
 
