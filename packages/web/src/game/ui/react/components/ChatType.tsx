@@ -24,8 +24,9 @@ const isVisible = (ele: HTMLElement, container: HTMLElement) => {
 };
 
 export default function ChatType(props: Props) {
-  const [inputText, setInputText] = React.useState('');
-  const [messages, setMessages] = React.useState(props.messagesStore);
+  const [ unreadMessages, setUnreadMessages ] = React.useState(0);
+  const [ inputText, setInputText ] = React.useState('');
+  const [ messages, setMessages ] = React.useState(props.messagesStore);
 
   const messageTooLongRef = React.useRef<HTMLButtonElement>(null);
   const newMessageRef = React.useRef<HTMLButtonElement>(null);
@@ -36,17 +37,12 @@ export default function ChatType(props: Props) {
   });
 
   useEffect(() => {
-    let count = 0;
     props.manager.events.on('chat_message', (message: DisplayMessage) => {
-      setMessages([...messages, message]);
+      setMessages(m => [...m, message]);
       const lastMessageEl = messagesListRef.current?.lastElementChild as HTMLLIElement;
-      if (newMessageRef.current && 
-        lastMessageEl && 
-        lastMessageEl?.parentElement?.parentElement && 
-        !isVisible(lastMessageEl, lastMessageEl?.parentElement?.parentElement)
-        )
-        newMessageRef!.current!.textContent = `⬇️ New message (${++count})`;
-        newMessageRef!.current!.hidden = false;
+      if (newMessageRef.current && lastMessageEl && 
+        lastMessageEl?.parentElement?.parentElement && !isVisible(lastMessageEl, lastMessageEl?.parentElement?.parentElement)) 
+        setUnreadMessages(u => u + 1);
     });
   }, []);
 
@@ -101,7 +97,7 @@ export default function ChatType(props: Props) {
           }}>
             <List ref={messagesListRef} spacing={-2} style={{
             }}>
-              {props.messagesStore.map((message, i) => <ListItem key={i}>
+              {messages.map((message, i) => <ListItem key={i}>
                   <Text style={{
                     color: 'white',
                   }}>
@@ -114,14 +110,15 @@ export default function ChatType(props: Props) {
           <Button ref={messageTooLongRef} variant="cny" hidden={inputText.length <= 150} onClick={() => setInputText(inputText.substring(0, 150))}>
             ❌ Message too long
           </Button>
-          <Button ref={newMessageRef} variant="primary" hidden={true} onClick={() => {
+          <Button ref={newMessageRef} variant="primary" hidden={unreadMessages === 0} onClick={() => {
+              setUnreadMessages(0);
               if (newMessageRef.current) (newMessageRef.current as any).hidden = true;
               if (messagesListRef.current)
                 (messagesListRef.current as HTMLOListElement).lastElementChild?.scrollIntoView({
                   behavior: 'smooth',
                 });
             }}>
-              ⬇️ New message
+              ⬇️ New message ({unreadMessages})
           </Button>
           <Center>
             <InputGroup width="90%" size="md">
