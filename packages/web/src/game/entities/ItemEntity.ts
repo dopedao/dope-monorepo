@@ -63,6 +63,7 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
           // strokeThickness: 5,
         },
       );
+      this.hoverText.setScale(this.scene.cameras.main.zoom / 3);
       this.hoverText.alpha = 0.8;
 
       (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
@@ -101,5 +102,7 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
       (this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom -
         (this.displayHeight / 1.3) * this.scene.cameras.main.zoom,
     );
+    if (this.hoverText && this.hoverText.scale !== this.scene.cameras.main.zoom / 3)
+      this.hoverText.setScale(this.scene.cameras.main.zoom / 3);
   }
 }
