@@ -64,26 +64,26 @@ export default class PlayerController {
     const joyStick: VirtualJoyStick | undefined = (this.player.scene.scene.get('UIScene') as UIScene).joyStick;
 
     let willMoveFlag = false;
-    if (this.mainKeys.up.isDown || this.arrows.up.isDown || (joyStick?.up && !this._player.busy)) {
+    if (this.mainKeys.up.isDown || this.arrows.up.isDown || joyStick?.up) {
       this.player.moveDirection = Direction.North;
       this.player.setVelocityY(-Hustler.DEFAULT_VELOCITY);
       // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
-    } else if (this.mainKeys.down.isDown || this.arrows.down.isDown || (joyStick?.down && !this._player.busy)) {
+    } else if (this.mainKeys.down.isDown || this.arrows.down.isDown || joyStick?.down) {
       this.player.moveDirection = Direction.South;
       this.player.setVelocityY(Hustler.DEFAULT_VELOCITY);
       // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
     }
-    if (this.mainKeys.left.isDown || this.arrows.left.isDown || (joyStick?.left && !this._player.busy)) {
+    if (this.mainKeys.left.isDown || this.arrows.left.isDown || joyStick?.left) {
       this.player.moveDirection = Direction.West;
       this.player.setVelocityX(-Hustler.DEFAULT_VELOCITY);
       // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
-    } else if (this.mainKeys.right.isDown || this.arrows.right.isDown || (joyStick?.right && !this._player.busy)) {
+    } else if (this.mainKeys.right.isDown || this.arrows.right.isDown || joyStick?.right) {
       this.player.moveDirection = Direction.East;
       this.player.setVelocityX(Hustler.DEFAULT_VELOCITY);
       // tshis.player.model.updateSprites(true);
