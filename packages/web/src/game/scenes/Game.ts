@@ -296,10 +296,11 @@ export default class GameScene extends Scene {
     // zoom with scroll wheel
     this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: Array<Phaser.GameObjects.GameObject>, deltaX: number, deltaY: number) => {
       if (this.player.busy) return;
-      const targetZoom = this.cameras.main.zoom + (deltaY < 0 ? 0.2 : -0.2);
-      if (targetZoom < 1 || targetZoom > 5) return;
+      const targetZoom = this.cameras.main.zoom + (deltaY > 0 ? -0.4 : 0.4);
+      if (targetZoom < 0.4 || targetZoom > 10) return;
 
-      this.cameras.main.zoomTo(targetZoom, 500, 'Quad.easeInOut');
+      // this.cameras.main.setZoom(targetZoom);
+      this.cameras.main.zoomTo(targetZoom, 200, 'Sine.easeInOut');
     });
   }
 
