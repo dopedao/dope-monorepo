@@ -146,8 +146,8 @@ export default class GameScene extends Scene {
 
   update(time: number, delta: number) {
     this.player.update();
-    this.hustlers.forEach(hustler => hustler.update());
-    this.citizens.forEach(citizen => citizen.update());
+    this.hustlers.forEach(hustler => hustler.currentMap === this.player.currentMap ? hustler.update() : {});
+    this.citizens.forEach(citizen => citizen.currentMap === this.player.currentMap ? citizen.update() : {});
     this.itemEntities.forEach(itemEntity => itemEntity.update());
 
     // update map
