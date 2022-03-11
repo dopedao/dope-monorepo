@@ -4,7 +4,7 @@ import Player from 'game/entities/player/Player';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import Item from 'game/entities/player/inventory/Item';
 import Quest from 'game/entities/player/quests/Quest';
-import ChatType, { DisplayMessage } from 'game/ui/react/components/ChatType';
+import ChatType from 'game/ui/react/components/ChatType';
 import InventoryComponent from 'game/ui/react/components/InventoryComponent';
 import DialogueTextBox from 'game/ui/rex/DialogueTextBox';
 import { getBBcodeText, getBuiltInText } from 'game/ui/rex/RexUtils';
@@ -72,7 +72,7 @@ export default class UIScene extends Scene {
   private chatMessageBoxes: Map<Hustler, Array<Toast>> = new Map();
 
   // hustler name: messages
-  private messagesStore: Array<DisplayMessage> = new Array();
+  private messagesStore: Array<DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]> = new Array();
 
   constructor() {
     super({
