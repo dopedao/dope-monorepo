@@ -4,8 +4,11 @@ import DesktopWindow from 'components/DesktopWindow';
 import Phaser from 'phaser';
 import { useGame } from 'hooks/useGame';
 import { defaultGameConfig } from 'game/constants/GameConfig';
+import { useWeb3React } from '@web3-react/core';
+import ConnectWallet from './ConnectWallet';
 
 export default function GameBody(props: { gameConfig?: Phaser.Types.Core.GameConfig }) {
+  const { account } = useWeb3React();
   const gameRef = useRef<HTMLDivElement>(null);
 
   const game = useGame(
@@ -50,11 +53,11 @@ export default function GameBody(props: { gameConfig?: Phaser.Types.Core.GameCon
         }
       }}
     >
-      <div
+      {!account ? <ConnectWallet /> : <div
         id="game-parent"
         style={{ overflow: 'hidden', width: '100%', height: '100%' }}
         ref={gameRef}
-      ></div>
+      ></div>}
     </DesktopWindow>
   );
 }
