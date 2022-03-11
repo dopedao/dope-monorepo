@@ -146,6 +146,9 @@ export default class GameScene extends Scene {
 
   update(time: number, delta: number) {
     this.player.update();
+
+    // dont update hustlers/citizens that are not in the same map
+    // as the player.
     this.hustlers.forEach(hustler => hustler.currentMap === this.player.currentMap ? hustler.update() : {});
     this.citizens.forEach(citizen => citizen.currentMap === this.player.currentMap ? citizen.update() : {});
     this.itemEntities.forEach(itemEntity => itemEntity.update());
@@ -503,9 +506,20 @@ export default class GameScene extends Scene {
               y: this.player.y,
             });
 
-          this.hustlers.forEach(h => {
+          const updateHustlerMap = (h: Hustler) => {
             // hide/show hustlers if in current map
             h.setVisible(h.currentMap === this.player.currentMap);
+            // cancel path/velocity if not same map
+            if (h.currentMap !== this.player.currentMap)
+            {
+              h.navigator.cancel();
+              h.setVelocity(0);
+            }
+          }
+
+          this.citizens.forEach(c => updateHustlerMap(c));
+          this.hustlers.forEach(h => {
+            updateHustlerMap(h);
 
             if (h.currentMap === this.player.currentMap) {
               // constantly check if hustler has to move to a new position on map change and if yes
