@@ -207,15 +207,6 @@ export default class UIScene extends Scene {
       this.sendMessageInput.events.on('chat_submit', (text: string) => {
         text = text.trim();
 
-        if (text.length > 150) {
-          this.toast({
-            ...chakraToastStyle,
-            title: 'Message too long',
-            status: 'warning',
-          });
-          return;
-        }
-
         // reset to default
         this.player.scene.input.keyboard.enabled = true;
         this.player.scene.input.keyboard.enableGlobalCapture();
