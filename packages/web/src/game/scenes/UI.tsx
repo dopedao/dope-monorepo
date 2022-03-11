@@ -363,6 +363,7 @@ export default class UIScene extends Scene {
           if (text.onEnd)
             text.onEnd!();
 
+          conv.texts.shift();
           if (conv.texts.length === 0) {
             textBox.destroy();
             this.currentInteraction = undefined;
@@ -389,7 +390,7 @@ export default class UIScene extends Scene {
             incTexts: true 
           });
 
-          conv.texts.shift();
+          
           const nextText = conv.texts[0];
           textBox.start(nextText!.text, nextText!.typingSpeed ?? 50);
         })
