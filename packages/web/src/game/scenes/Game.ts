@@ -296,7 +296,7 @@ export default class GameScene extends Scene {
     // zoom with scroll wheel
     this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: Array<Phaser.GameObjects.GameObject>, deltaX: number, deltaY: number) => {
       if (this.player.busy) return;
-      const targetZoom = this.cameras.main.zoom + (deltaY > 0 ? -0.4 : 0.4);
+      const targetZoom = this.cameras.main.zoom + (deltaY > 0 ? -0.25 : 0.25);
       if (targetZoom < 0.4 || targetZoom > 10) return;
 
       // this.cameras.main.setZoom(targetZoom);
@@ -437,7 +437,7 @@ export default class GameScene extends Scene {
             const hustler = this.player.getData('id') === data.author ? this.player : this.hustlers.find(h => h.getData('id') === data.author);
             
             if (hustler)
-              EventHandler.emitter().emit(Events.CHAT_MESSAGE, hustler, data.message);
+              EventHandler.emitter().emit(Events.CHAT_MESSAGE, hustler, data.message, data.timestamp);
           },
         );
         networkHandler.on(

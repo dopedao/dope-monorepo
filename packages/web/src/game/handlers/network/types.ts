@@ -40,7 +40,7 @@ enum NetworkEvents {
 interface DataTypes {
   // Data coming from server
   [NetworkEvents.TICK]: {
-    tick: bigint;
+    tick: number;
     players: Array<DataTypes[NetworkEvents.SERVER_PLAYER_MOVE]>;
   };
   [NetworkEvents.ERROR]: {
@@ -61,6 +61,8 @@ interface DataTypes {
     message: string;
     // author id
     author: string;
+    // timestamp
+    timestamp: number;
   };
   [NetworkEvents.SERVER_PLAYER_JOIN]: {
     id: string;

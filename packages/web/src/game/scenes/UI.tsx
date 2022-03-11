@@ -119,23 +119,28 @@ export default class UIScene extends Scene {
       }
     }
 
-    
-    this.chatMessageBoxes.forEach((chatToasts, hustler) => chatToasts.forEach((chatToast, i) => {
-      let x = (hustler.x - this.player.scene.cameras.main.worldView.x) * this.player.scene.cameras.main.zoom;
-      let y = (hustler.y - this.player.scene.cameras.main.worldView.y) * this.player.scene.cameras.main.zoom;
+    const offsetSpacing = 2;
+    const playerCamera = this.player.scene.cameras.main;
+    this.chatMessageBoxes.forEach((chatToasts, hustler) => {
+      let offsetHeight = 0;
+      for (let i = chatToasts.length - 1; i >= 0; i--) {
+        const chatToast = chatToasts[i];
+        offsetHeight += (chatToast.displayHeight) + offsetSpacing;
 
-      y -= hustler.displayHeight * 1.8;
-      y -= chatToast.displayHeight / 2;
+        let x = (hustler.x - playerCamera.worldView.x) * playerCamera.zoom;
+        let y = (hustler.y - playerCamera.worldView.y) * playerCamera.zoom;
 
-      // offset by total width of precedent toasts
-      for (let j = 0; j < i; j++)
-        y -= chatToasts[j].displayHeight * 1.1;
+        y -= this.player.displayHeight * (playerCamera.zoom / 2);
+        y -= offsetHeight;
 
-      if (hustler.hoverText)
-        y -= hustler.hoverText.displayHeight * 1.2;
+        if (hustler.hoverText)
+          y -= hustler.hoverText.displayHeight * 2;
 
-      chatToast.setPosition(x, y);
-    }));
+        chatToast.setPosition(x, y);
+        if (chatToast.scale !== playerCamera.zoom / 3)
+          chatToast.setScale(playerCamera.zoom / 3);
+      }
+    });
   }
 
   private _handleEvents() {
@@ -194,6 +199,7 @@ export default class UIScene extends Scene {
       )
         return;
 
+      this.player.busy = true;
       // prevent player from moving
       this.player.scene.input.keyboard.enabled = false;
       // prevent phaser from "blocking" some keys (for typing in chat)
@@ -213,6 +219,7 @@ export default class UIScene extends Scene {
         this.player.scene.input.keyboard.enableGlobalCapture();
         this.sendMessageInput?.destroy();
         this.sendMessageInput = undefined;
+        this.player.busy = false;
 
         if (text.length > 0) {
           // TODO: kinda heavy. maybe just push to end of array and reverse it?
@@ -251,15 +258,16 @@ export default class UIScene extends Scene {
       // TODO: resize radius
     })
 
-    EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string) => {      
-      const displayMessage: DisplayMessage = {
+    EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string, timestamp?: number) => {      
+      const messageData: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE] = {
         author: hustler.name,
         message: text,
+        timestamp: timestamp ?? Date.now(),
       };
       // add to store
-      this.messagesStore.push(displayMessage);
+      this.messagesStore.push(messageData);
       // if chattype component is open, dispatch event to update it
-      if (this.sendMessageInput) this.sendMessageInput.events.emit('chat_message', displayMessage);
+      if (this.sendMessageInput) this.sendMessageInput.events.emit('chat_message', messageData);
 
       
       // display message IG 

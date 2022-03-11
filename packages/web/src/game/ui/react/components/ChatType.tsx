@@ -1,18 +1,14 @@
-import { InputGroup, InputRightElement, Button, Input, ChakraProvider, Container, Stack, Center, Spacer, Text, List, ListItem, AbsoluteCenter } from '@chakra-ui/react';
+import { InputGroup, InputRightElement, Button, Input, ChakraProvider, Container, Stack, Center, Spacer, Text, List, ListItem, AbsoluteCenter, HStack } from '@chakra-ui/react';
+import { DataTypes, NetworkEvents } from 'game/handlers/network/types';
 import { ComponentManager } from 'phaser3-react/src/manager';
 import React, { useEffect } from 'react';
 import { FormEvent } from 'react';
 import theme from 'ui/styles/theme';
 
-export interface DisplayMessage {
-  author: string;
-  message: string;
-}
-
 interface Props {
   manager: ComponentManager;
   precedentMessages: string[];
-  messagesStore: DisplayMessage[];
+  messagesStore: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE][];
 }
 
 // check if element is inside of container rect
@@ -37,7 +33,7 @@ export default function ChatType(props: Props) {
   });
 
   useEffect(() => {
-    props.manager.events.on('chat_message', (message: DisplayMessage) => {
+    props.manager.events.on('chat_message', (message: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => {
       setMessages(m => [...m, message]);
       const lastMessageEl = messagesListRef.current?.lastElementChild as HTMLLIElement;
       if (newMessageRef.current && lastMessageEl && 
@@ -98,11 +94,22 @@ export default function ChatType(props: Props) {
             <List ref={messagesListRef} spacing={-2} style={{
             }}>
               {messages.map((message, i) => <ListItem key={i}>
-                  <Text style={{
-                    color: 'white',
+                  <HStack style={{
+                    opacity: '0.8'
                   }}>
-                    {message.author}: {message.message}
-                  </Text>
+                    <Text style={{
+                      color: 'white',
+                    }}>
+                      {message.author}: {message.message}
+                    </Text>
+                    <Spacer />
+                    <Text style={{
+                      color: 'grey',
+                      fontSize: '0.6rem',
+                    }}>
+                      {new Date(message.timestamp * 1000).toLocaleString()}
+                    </Text>
+                  </HStack>
               </ListItem>)}
             </List>
           </div>

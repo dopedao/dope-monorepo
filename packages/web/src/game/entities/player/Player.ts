@@ -49,6 +49,10 @@ export default class Player extends Hustler {
     return this._busy;
   }
 
+  set busy(value: boolean) {
+    this._busy = value;
+  }
+
   constructor(
     world: Phaser.Physics.Matter.World,
     x: number,
