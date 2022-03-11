@@ -205,6 +205,7 @@ export default class UIScene extends Scene {
       });
 
       this.sendMessageInput.events.on('chat_submit', (text: string) => {
+        // NOTE: trim on ui comp?
         text = text.trim();
 
         // reset to default
@@ -214,6 +215,7 @@ export default class UIScene extends Scene {
         this.sendMessageInput = undefined;
 
         if (text.length > 0) {
+          // TODO: kinda heavy. maybe just push to end of array and reverse it?
           this.precedentMessages.unshift(text);
           NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_CHAT_MESSAGE, {
             message: text,
