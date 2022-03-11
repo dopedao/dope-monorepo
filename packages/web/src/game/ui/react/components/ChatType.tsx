@@ -27,25 +27,33 @@ export default function ChatType(props: Props) {
   const [inputText, setInputText] = React.useState('');
   const [messages, setMessages] = React.useState(props.messagesStore);
 
-  const newMessageRef = React.useRef(null);
-  const messagesListRef = React.useRef(null);
+  const messageTooLongRef = React.useRef<HTMLButtonElement>(null);
+  const newMessageRef = React.useRef<HTMLButtonElement>(null);
+  const messagesListRef = React.useRef<HTMLUListElement>(null);
 
   let state = React.useRef({
     i: -1,
   });
 
   useEffect(() => {
+    let count = 0;
     props.manager.events.on('chat_message', (message: DisplayMessage) => {
       setMessages([...messages, message]);
-      const lastMessageEl = ((messagesListRef.current as unknown) as HTMLUListElement)?.lastElementChild as HTMLLIElement;
+      const lastMessageEl = messagesListRef.current?.lastElementChild as HTMLLIElement;
       if (newMessageRef.current && 
         lastMessageEl && 
         lastMessageEl?.parentElement?.parentElement && 
         !isVisible(lastMessageEl, lastMessageEl?.parentElement?.parentElement)
-        ) 
-        (newMessageRef.current as any).hidden = false;
+        )
+        newMessageRef!.current!.textContent = `⬇️ New message (${++count})`;
+        newMessageRef!.current!.hidden = false;
     });
   }, []);
+
+  useEffect(() => {
+    if (messageTooLongRef.current)
+      messageTooLongRef.current.hidden = inputText.length <= 150;
+  }, [inputText]);
 
   const handleInputKey = (e: string) => {
     if (e === 'Enter') handleSubmit(inputText);
@@ -67,6 +75,9 @@ export default function ChatType(props: Props) {
   };
 
   const handleSubmit = (content: string) => {
+    if (content.length > 150)
+      return;
+
     props.manager.events.emit('chat_submit', content);
   };
 
@@ -105,6 +116,9 @@ export default function ChatType(props: Props) {
             </List>
           </div>
           <Spacer />
+          <Button ref={messageTooLongRef} variant="cny" hidden={true} onClick={() => setInputText(inputText.substring(0, 150))}>
+            ❌ Message too long
+          </Button>
           <Button ref={newMessageRef} variant="primary" hidden={true} onClick={() => {
               if (newMessageRef.current) (newMessageRef.current as any).hidden = true;
               if (messagesListRef.current)
