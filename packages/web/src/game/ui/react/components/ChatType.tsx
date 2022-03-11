@@ -107,19 +107,39 @@ export default function ChatType(props: Props) {
             </List>
           </div>
           <Spacer />
-          <Button ref={messageTooLongRef} variant="cny" hidden={inputText.length <= 150} onClick={() => setInputText(inputText.substring(0, 150))}>
-            ❌ Message too long
-          </Button>
-          <Button ref={newMessageRef} variant="primary" hidden={unreadMessages === 0} onClick={() => {
-              setUnreadMessages(0);
-              if (newMessageRef.current) (newMessageRef.current as any).hidden = true;
-              if (messagesListRef.current)
-                (messagesListRef.current as HTMLOListElement).lastElementChild?.scrollIntoView({
-                  behavior: 'smooth',
-                });
-            }}>
+          <Center>
+            <Button 
+                  ref={messageTooLongRef} 
+                  style={{
+                    marginRight: '1%',
+                    marginTop: '-10%'
+                  }}
+                  variant="primary"
+                  backgroundColor="red.600"
+                  hidden={inputText.length <= 150} 
+                  onClick={() => setInputText(inputText.substring(0, 150))}
+                >
+                ❌ Message too long
+            </Button>
+            <Button 
+              ref={newMessageRef} 
+              style={{
+                marginTop: '-10%',
+              }}
+              variant="primary" 
+              hidden={unreadMessages === 0} 
+              onClick={() => {
+                setUnreadMessages(0);
+                if (newMessageRef.current) (newMessageRef.current as any).hidden = true;
+                if (messagesListRef.current)
+                  (messagesListRef.current as HTMLOListElement).lastElementChild?.scrollIntoView({
+                    behavior: 'smooth',
+                  });
+              }}
+            >
               ⬇️ New message ({unreadMessages})
-          </Button>
+            </Button>
+          </Center>
           <Center>
             <InputGroup width="90%" size="md">
               <Input
