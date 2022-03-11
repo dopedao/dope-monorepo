@@ -50,11 +50,6 @@ export default function ChatType(props: Props) {
     });
   }, []);
 
-  useEffect(() => {
-    if (messageTooLongRef.current)
-      messageTooLongRef.current.hidden = inputText.length <= 150;
-  }, [inputText]);
-
   const handleInputKey = (e: string) => {
     if (e === 'Enter') handleSubmit(inputText);
     else if (e === 'Escape')
@@ -116,7 +111,7 @@ export default function ChatType(props: Props) {
             </List>
           </div>
           <Spacer />
-          <Button ref={messageTooLongRef} variant="cny" hidden={true} onClick={() => setInputText(inputText.substring(0, 150))}>
+          <Button ref={messageTooLongRef} variant="cny" hidden={inputText.length <= 150} onClick={() => setInputText(inputText.substring(0, 150))}>
             ❌ Message too long
           </Button>
           <Button ref={newMessageRef} variant="primary" hidden={true} onClick={() => {
