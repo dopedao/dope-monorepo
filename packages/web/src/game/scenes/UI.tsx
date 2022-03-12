@@ -12,7 +12,7 @@ import { Scene } from 'phaser';
 import { ComponentManager } from 'phaser3-react/src/manager';
 import Toast from 'phaser3-rex-plugins/templates/ui/toast/Toast';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
-import { createStandaloneToast, RenderProps, UseToastOptions } from '@chakra-ui/react';
+import { ChakraProvider, createStandaloneToast, RenderProps, Spinner, UseToastOptions } from '@chakra-ui/react';
 import { ToastOptions } from 'react-hot-toast/dist/core/types';
 import GameScene from './Game';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
@@ -59,6 +59,8 @@ export default class UIScene extends Scene {
   public toaster!: ComponentManager;
   public toast = createStandaloneToast(theme);
 
+  // loading component, undefined if not visible
+  private loadingSpinner?: ComponentManager;
   // react component for inputing message content
   public sendMessageInput?: ComponentManager;
   // player precedent messages
@@ -82,6 +84,23 @@ export default class UIScene extends Scene {
 
   init(data: { player: Player }) {
     this.player = data.player;
+  }
+
+  toggleLoading(loading: boolean) {
+    console.log(loading && !this.loadingSpinner);
+    if (loading && !this.loadingSpinner)
+      this.loadingSpinner = this.add.reactDom(() => <ChakraProvider theme={theme}>
+        <Spinner size="xl" color="white" style={{
+          position: 'absolute',
+          bottom: '5%',
+          right: '5%',
+          boxShadow: '0px 0px 60px black',
+        }} />
+      </ChakraProvider>);
+    else if (!loading && this.loadingSpinner) {
+      this.loadingSpinner.destroy();
+      this.loadingSpinner = undefined;
+    }
   }
 
   create(): void {
