@@ -107,7 +107,7 @@ const ConfigurationControls = ({
       // title
       bitoptions |= 0b10;
       // name
-      bitoptions += 0b100;
+      bitoptions |= 0b100;
     }
 
     const options =
@@ -133,7 +133,7 @@ const ConfigurationControls = ({
 
     // Viewbox / Zoomwindow
     if (zoomWindow[0].gt(0) || zoomWindow[0].gt(1) || zoomWindow[0].gt(2) || zoomWindow[0].gt(3)) {
-      bitmask |= 0b100;
+      bitmask |= 0b1000;
     }
 
     const mask =
@@ -144,6 +144,7 @@ const ConfigurationControls = ({
 
     console.log(bitmask);
     console.log(`bitmask: ${mask}`);
+    console.log(options);
 
     if (hustlers) {
       try {
