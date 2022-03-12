@@ -97,22 +97,22 @@ const ConfigurationControls = ({
     ];
 
 
-    let bitoptions = 1000;
+    let bitoptions = 0b1000;
 
     if (isVehicle) {
-      bitoptions += 1;
+      bitoptions |= 0b1;
     }
 
     if (renderName) {
       // title
-      bitoptions += 10;
+      bitoptions |= 0b10;
       // name
-      bitoptions += 100;
+      bitoptions += 0b100;
     }
 
     const options =
       '0x' +
-      parseInt('' + bitoptions, 2)
+      bitoptions
         .toString(16)
         .padStart(4, '0');
 
@@ -124,21 +124,21 @@ const ConfigurationControls = ({
     // 3: Viewbox
     // 4-7: Bodyparts
     // 8: Layer order
-    let bitmask = 111110110;
+    let bitmask = 0b111110110;
     
     // If anything in the name box at all, set it
     if (setname.length > 0) {
-      bitmask += 1;
+      bitmask |= 0b1;
     }
 
     // Viewbox / Zoomwindow
     if (zoomWindow[0].gt(0) || zoomWindow[0].gt(1) || zoomWindow[0].gt(2) || zoomWindow[0].gt(3)) {
-      bitmask += 1000;
+      bitmask |= 0b100;
     }
 
     const mask =
       '0x' +
-      parseInt('' + bitmask, 2)
+        bitmask
         .toString(16)
         .padStart(4, '0');
 
