@@ -46,6 +46,14 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 			return
 		}
 
+		// temporary fix for ledger devices (last byte has to be either 0x1b or 0x1c) but 
+		// signed messages using a ledger end with 0x01/0x00
+		v := signature[len(signature) - 1]
+		if !(v >= 27 && v <= 28) {
+			signature[len(signature) - 1] += 0x1b
+		}
+		
+		
 		// verify that signature is valid and time constraint is met
 		if err := siweMessage.Verify(signature); err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
