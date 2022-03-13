@@ -34,12 +34,16 @@ const NoHustler = (props: Props) => {
             You can either purchase one off the market by searching for an unbundled Dope, or mint yourself one but without any gear.`,
             children: <>
                 <HStack width="100%">
-                    <Button variant="primary" width="32">
-                        Quick buy
-                    </Button>
-                    <Button variant="cny" width="32">
-                        Mint    
-                    </Button>
+                    <a href="/swap-meet/hustlers">
+                        <Button variant="primary" width="32">
+                            Swap meet
+                        </Button>
+                    </a>
+                    <a href="/hustlers/quick-buy">
+                        <Button variant="cny" width="32">
+                            Mint
+                        </Button>
+                    </a>
                 </HStack>
                 <br/>
                 <Text>
