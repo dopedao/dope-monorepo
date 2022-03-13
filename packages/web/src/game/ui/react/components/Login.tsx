@@ -1,9 +1,5 @@
 import { ChakraProvider, Center, Link, Spinner, Container, VStack, Heading, Text, List, ListIcon, ListItem, UnorderedList, Button, useToast, HStack, createStandaloneToast, UseToastOptions } from "@chakra-ui/react";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React, Web3ReactProvider } from "@web3-react/core";
-import account from "aws-sdk/clients/account";
 import Authenticator from "game/handlers/network/Authenticator";
-import useWeb3Provider from "hooks/web3";
 import { ComponentManager } from "phaser3-react/src/manager";
 import { useCallback, useEffect, useState } from "react";
 import theme from "ui/styles/theme";
@@ -31,6 +27,16 @@ export default function Login(props: Props) {
     }, []);
 
     const login = () => {
+        if ((window.ethereum as any).chainId !== '0x1') {
+            toast({
+                title: "Wrong network",
+                description: "Please switch to the main Ethereum network",
+                status: "error",
+                ...toastStyle,
+            });
+            return;
+        }
+
         props.authenticator.login()
             .then(() => {
                 setLoggedIn(true)
@@ -44,8 +50,8 @@ export default function Login(props: Props) {
             .catch((err) => {
                 setLoggedIn(false);
                 toast({
-                    title: "Error " + err.code,
-                    description: err.message,
+                    title: "Error " + (err.code ?? ""),
+                    description: err.message ?? err,
                     status: "error",
                     ...toastStyle
                 });
