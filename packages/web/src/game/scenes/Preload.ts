@@ -88,7 +88,7 @@ export default class Preload extends Scene {
   }
 
   startGame(hustlerData?: any, loggedIn?: boolean) {
-    const firstTime = (localStorage.getItem('gameLoyal') ?? 'false') !== 'true';
+    const firstTime = (localStorage.getItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`) ?? 'false') !== 'true';
     const scene = firstTime ? 'IntroScene' : loggedIn ? 'GameScene' : 'LoginScene';
 
     const startScene = () => {

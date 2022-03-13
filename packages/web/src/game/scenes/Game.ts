@@ -58,13 +58,14 @@ export default class GameScene extends Scene {
 
   init(data: { hustlerData: any }) {
     // TOOD: selected hustler data (first for now)
-    this.hustlerData = data.hustlerData;
+    const selectedHustler = localStorage.getItem(`gameSelectedHustler_${(window.ethereum as any).selectedAddress}`);
+    this.hustlerData = data.hustlerData.find((hustler: any) => hustler.id === selectedHustler) ?? data.hustlerData[0];
   }
 
   preload() {
     // first time playing the game?
-    if ((window.localStorage.getItem('gameFirstTime') ?? 'false') !== 'true')
-      window.localStorage.setItem('gameLoyal', 'true');
+    if ((window.localStorage.getItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`) ?? 'false') !== 'true')
+      window.localStorage.setItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`, 'true');
 
     // create map and entities
     this._mapHelper = new MapHelper(this);
@@ -126,8 +127,8 @@ export default class GameScene extends Scene {
       500,
       200,
       this.mapHelper.mapReader.level.identifier,
-      this.hustlerData?.length > 0 ? this.hustlerData[0].id : undefined,
-      this.hustlerData?.length > 0 ? this.hustlerData[0].name : undefined,
+      this.hustlerData?.id,
+      this.hustlerData?.name
     );
 
     const camera = this.cameras.main;
