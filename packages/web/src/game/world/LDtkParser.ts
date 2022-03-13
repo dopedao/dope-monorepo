@@ -136,6 +136,16 @@ export class LdtkReader {
           }
         }
       });
+
+      // go through each tile and check if they are used,
+      // if not, clean them up and free memory
+      newLayer.layer.data.forEach((tiles, i) => tiles.forEach((tile, j) => {
+        if (tile.index === -1)
+        {
+          newLayer.layer.data[i][j].destroy();
+          delete newLayer.layer.data[i][j];
+        }
+      }));
     });
 
     layer.gridTiles.forEach(t => {
