@@ -116,6 +116,8 @@ const ConfigurationControls = ({
         .toString(16)
         .padStart(4, '0');
 
+    console.log(`Options: ${options}`);
+
     // Bitmask controls configuration options we're allowed to set 
     // in Hustler.sol
     // 0: Name
@@ -133,7 +135,7 @@ const ConfigurationControls = ({
 
     // Viewbox / Zoomwindow
     if (zoomWindow[0].gt(0) || zoomWindow[0].gt(1) || zoomWindow[0].gt(2) || zoomWindow[0].gt(3)) {
-      bitmask |= 0b1000;
+      bitmask |= 0b100;
     }
 
     const mask =
@@ -144,7 +146,16 @@ const ConfigurationControls = ({
 
     console.log(bitmask);
     console.log(`bitmask: ${mask}`);
-    console.log(options);
+
+    // ORDER SLOTS order as defined in Components.sol:33
+    // const SLOTS = [
+    //   'WEAPON', 'CLOTHES', 'VEHICLE', 'WAIST', 'FOOT', 'HAND', 'DRUGS', 
+    //   'NECK', 'RING', 'ACCESSORY' ];
+
+    // BUG IN SMART CONTRACT!!! 
+    // Order isn't passed properly in HustlerMetadata.sol:174
+    // so this actually has no effect on the outcome of the on-chain image.
+    const order = [2, 6, 8, 5, 1, 3, 4, 7, 9, 0].map(i => BigNumber.from(i));
 
     if (hustlers) {
       try {
@@ -155,24 +166,8 @@ const ConfigurationControls = ({
           options,
           viewbox: zoomWindow,
           body: bodyParts,
+          order,
           mask,
-          // SLOTS order as defined in Components.sol:33
-          //
-          // Human readable…
-          //
-          // const SLOTS = [
-          //   'WEAPON',
-          //   'CLOTHES',
-          //   'VEHICLE',
-          //   'WAIST',
-          //   'FOOT',
-          //   'HAND',
-          //   'DRUGS',
-          //   'NECK',
-          //   'RING',
-          //   'ACCESSORY'
-          // ];
-          order: [2, 6, 8, 5, 1, 3, 4, 7, 0, 9].map(i => BigNumber.from(i)),
         });
         await transaction.wait();
       } catch (error) {
