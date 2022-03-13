@@ -12,71 +12,115 @@ interface Props {
   hustlerData: any;
 }
 
+interface Page {
+    heading: string;
+    text: string;
+    children?: React.ReactNode;
+    onNext?: () => void;
+}
+
 const footerButtonsStyle: CSSProperties = {
     position: "relative",
     top: "30px"
 };
 
 const NoHustler = (props: Props) => {
+    const [ page, setPage ] = useState(0);
+
+    const pages: Array<Page> = [
+        {
+            heading: "Hey, seems like it's your first time here! Let's get you up and running with the basics.",
+            text: `Doesn't seem like you have a hustler, you don't necessarly need one to get into the game but you won't be able to do much without one. 
+            You can either purchase one off the market by searching for an unbundled Dope, or mint yourself one but without any gear.`,
+            children: <>
+                <HStack width="100%">
+                    <Button variant="primary" width="32">
+                        Quick buy
+                    </Button>
+                    <Button variant="cny" width="32">
+                        Mint    
+                    </Button>
+                </HStack>
+                <br/>
+                <Text>
+                    Once you have a hustler, you can directly use it and play with it in the game.
+                    You can also have multiple hustlers and collect gear!
+                </Text>
+            </>,
+        }
+    ]
+
     return (
         <VStack>
             <Heading>
-                Hey, seems like it&apos;s your first time here! Let&apos;s get you up and running with the basics.
+                {pages[page].heading}
             </Heading>
             <br/>
             <Text paddingBottom="-16">
-                Doesn&apos;t seem like you have a hustler, you don&apos;t necessarly need one to get into the game but you won&apos;t be able to do much without one. 
-                You can either purchase one off the market by searching for an unbundled Dope, or mint yourself one but without any gear.
+                {pages[page].text}
             </Text>
-            <HStack width="100%">
-                <Button variant="primary" width="32">
-                    Quick buy
-                </Button>
-                <Button variant="cny" width="32">
-                    Mint    
-                </Button>
-            </HStack>
-            <br/>
-            <Text>
-                Once you have a hustler, you can directly use it and play with it in the game.
-                You can also have multiple hustlers and collect gear!
-            </Text>
+            {pages[page].children}
             <HStack style={footerButtonsStyle}>
                 <Button onClick={() => props.manager.events.emit('game')}>
-                    DGAF
+                    {page === pages.length - 1 ? "Finish" : "DGAF"}
                 </Button>
-                <Button>
+                {page < pages.length - 1 ? <Button>
                     Next
-                </Button>
+                </Button> : undefined}
             </HStack>
         </VStack>
     );
 }
 
 const HasHustler = (props: Props) => {
-    const [ hustlerId, setHustlerId ] = useState(0);
+    const [ page, setPage ] = useState(0);
+    const [ hustlerIndex, setHustlerIndex ] = useState(0);
+
+    useEffect(() => {
+        localStorage.setItem(`gameSelectedHustler_${(window.ethereum as any).selectedAddress}`, props.hustlerData[hustlerIndex].id);
+    }, [hustlerIndex, props.hustlerData]);
+
+    const pages: Array<Page> = [
+        {
+            heading: "Hey, seems like it's your first time here! Let's get you up and running with the basics.",
+            text: `Cool, you seem to already have a hustler, let's get you and your hustler set up.
+            Which hustler do you wanna play with?`,
+            children: <>
+                <Select onChange={(e) => setHustlerIndex(Number.parseInt(e.target.value))}>
+                    {props.hustlerData.map((hustler: any, i: number) => <option key={i} value={i}>{hustler.id} {hustler.name ? " - " + hustler.name : ""}</option>)}
+                </Select><br /><img alt="" src={props.hustlerData[hustlerIndex].svg} />
+            </>,
+        }
+    ]
+
+    const handleNext = () => {
+        pages[page].onNext && pages[page].onNext!();
+        if (page === pages.length - 1)
+        {
+            props.manager.events.emit('game');
+            return;
+        }
+
+        setPage(page + 1);
+    } 
 
     return (
         <VStack>
             <Heading>
-                Hey, seems like it&apos;s your first time here! Let&apos;s get you up and running with the basics.
+                {pages[page].heading}
             </Heading>
             <br />
             <Text>
-                Cool, you seem to already have a hustler, let&apos;s get you and your hustler set up.
+                {pages[page].text}
             </Text>
-            <Select onChange={(e) => setHustlerId(Number.parseInt(e.target.value))}>
-                {props.hustlerData.map((hustler: any, i: number) => <option key={i} value={i}>{hustler.id}</option>)}
-            </Select>
-            <br />
-            <img alt="" src={props.hustlerData[hustlerId].svg} />
+            {pages[page].children}
             <HStack style={footerButtonsStyle}>
                 <Button onClick={() => props.manager.events.emit('game')}>
-                    DGAF
+                    {page === pages.length - 1 ? "Finish" : "DGAF"}
                 </Button>
-                <Button>
+                {page < pages.length - 1 ? <Button>
                     Next
-                </Button>
+                </Button> : undefined}
             </HStack>
         </VStack>
     );
