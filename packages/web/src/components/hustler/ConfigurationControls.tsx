@@ -96,39 +96,55 @@ const ConfigurationControls = ({
       sex == 'male' ? BigNumber.from(facialHair) : BigNumber.from(0),
     ];
 
-    let bitoptions = 0;
+
+    let bitoptions = 0b1000;
 
     if (isVehicle) {
-      bitoptions += 1;
+      bitoptions |= 0b1;
     }
 
     if (renderName) {
       // title
-      bitoptions += 10;
+      bitoptions |= 0b10;
       // name
-      bitoptions += 100;
+      bitoptions |= 0b100;
     }
 
     const options =
       '0x' +
-      parseInt('' + bitoptions, 2)
+      bitoptions
         .toString(16)
         .padStart(4, '0');
 
-    let bitmask = 11110110;
+    // Bitmask controls configuration options we're allowed to set 
+    // in Hustler.sol
+    // 0: Name
+    // 1: Color
+    // 2: Background Color
+    // 3: Viewbox
+    // 4-7: Bodyparts
+    // 8: Layer order
+    let bitmask = 0b111110110;
+    
+    // If anything in the name box at all, set it
     if (setname.length > 0) {
-      bitmask += 1;
+      bitmask |= 0b1;
     }
 
+    // Viewbox / Zoomwindow
     if (zoomWindow[0].gt(0) || zoomWindow[0].gt(1) || zoomWindow[0].gt(2) || zoomWindow[0].gt(3)) {
-      bitmask += 1000;
+      bitmask |= 0b1000;
     }
 
     const mask =
       '0x' +
-      parseInt('' + bitmask, 2)
+        bitmask
         .toString(16)
         .padStart(4, '0');
+
+    console.log(bitmask);
+    console.log(`bitmask: ${mask}`);
+    console.log(options);
 
     if (hustlers) {
       try {
@@ -140,18 +156,35 @@ const ConfigurationControls = ({
           viewbox: zoomWindow,
           body: bodyParts,
           mask,
-          order: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          // SLOTS order as defined in Components.sol:33
+          //
+          // Human readable…
+          //
+          // const SLOTS = [
+          //   'WEAPON',
+          //   'CLOTHES',
+          //   'VEHICLE',
+          //   'WAIST',
+          //   'FOOT',
+          //   'HAND',
+          //   'DRUGS',
+          //   'NECK',
+          //   'RING',
+          //   'ACCESSORY'
+          // ];
+          order: [2, 6, 8, 5, 1, 3, 4, 7, 0, 9].map(i => BigNumber.from(i)),
         });
         await transaction.wait();
-        setLoading(false);
-        router.push({
-          pathname: '/inventory',
-          search: `?section=Hustlers`,
-        });
       } catch (error) {
-        console.error(error);
         setLoading(false);
+        console.error(error);
+        return;
       }
+      setLoading(false);
+      router.push({
+        pathname: '/inventory',
+        search: `?section=Hustlers`,
+      });
     }
   }, [chainId, hustlers, config, router, web3ReactChainId]);
 
