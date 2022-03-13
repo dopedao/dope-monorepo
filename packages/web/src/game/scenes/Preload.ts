@@ -75,14 +75,20 @@ export default class Preload extends Scene {
       return;
     }
 
+    const address = ethers.utils.getAddress((window?.ethereum as any)?.selectedAddress);
     fetch(`https://api.dopewars.gg/wallets/${ethers.utils.getAddress(
-      (window?.ethereum as any)?.selectedAddress,
+      address,
     )}/hustlers`).then(res => res.json()).then(hustlers => {
       fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authAuthenticatedPath, { credentials: 'include' })
         .then(res => {
-          const loggedIn = res.status === 200;
+          let loggedIn = res.status === 200;
 
-          this.startGame(hustlers, loggedIn);
+          res.text().then(text => {
+            // text = checksum address
+            loggedIn &&= text === address;
+
+            this.startGame(hustlers, loggedIn);
+          });
         });
     });
   }
