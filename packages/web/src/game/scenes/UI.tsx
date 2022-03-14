@@ -141,6 +141,12 @@ export default class UIScene extends Scene {
     const offsetSpacing = 2;
     const playerCamera = this.player.scene.cameras.main;
     this.chatMessageBoxes.forEach((chatToasts, hustler) => {
+      if (!hustler.active) {
+        chatToasts.forEach((toast) => toast.destroy());
+        this.chatMessageBoxes.delete(hustler);
+        return;
+      }
+
       let offsetHeight = 0;
       for (let i = chatToasts.length - 1; i >= 0; i--) {
         const chatToast = chatToasts[i];
