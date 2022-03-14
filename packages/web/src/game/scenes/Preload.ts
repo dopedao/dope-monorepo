@@ -107,7 +107,7 @@ export default class Preload extends Scene {
           { frameWidth: 30, frameHeight: 60 },
         );
         this.load.once('filecomplete-spritesheet-' + key, () => {
-          createHustlerAnimations(this.anims, key);
+          createHustlerAnimations(this, key);
           this.scene.start(scene, {
             hustlerData,
             loggedIn

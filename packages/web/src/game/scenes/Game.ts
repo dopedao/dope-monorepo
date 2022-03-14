@@ -4,7 +4,7 @@ import { Scene, Cameras, Tilemaps } from 'phaser';
 import Player from 'game/entities/player/Player';
 import Citizen from 'game/entities/citizen/Citizen';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
-import Conversation from 'game/entities/citizen/Conversation';
+import Conversation, { Text } from 'game/entities/citizen/Conversation';
 import Item from 'game/entities/player/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';
 import MapHelper from 'game/world/MapHelper';
@@ -17,7 +17,6 @@ import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import { getShortAddress } from 'utils/utils';
 import Items from 'game/constants/Items';
 import { SiweMessage } from 'siwe';
-import { ethers } from 'ethers';
 import PointQuest from 'game/entities/player/quests/PointQuest';
 import Zone from 'game/world/Zone';
 import InteractCitizenQuest from 'game/entities/player/quests/InteractCitizenQuest';
@@ -97,7 +96,7 @@ export default class GameScene extends Scene {
 
     
     // create all of the animations
-    new GameAnimations(this.anims).create();
+    new GameAnimations(this).create();
 
     this.citizens.push(
       new Citizen(
@@ -399,7 +398,7 @@ export default class GameScene extends Scene {
               frameWidth: 30, frameHeight: 60 
             });
             this.load.once('filecomplete-spritesheet-' + spritesheetKey, () => {
-              createHustlerAnimations(this.anims, spritesheetKey);
+              createHustlerAnimations(this, spritesheetKey);
               initializeHustler();
             });
             this.load.start();
