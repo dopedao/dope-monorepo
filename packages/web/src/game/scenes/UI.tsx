@@ -8,7 +8,7 @@ import ChatType from 'game/ui/react/components/ChatType';
 import InventoryComponent from 'game/ui/react/components/InventoryComponent';
 import DialogueTextBox from 'game/ui/rex/DialogueTextBox';
 import { getBBcodeText, getBuiltInText } from 'game/ui/rex/RexUtils';
-import { Scene } from 'phaser';
+import { GameObjects, Scene } from 'phaser';
 import { ComponentManager } from 'phaser3-react/src/manager';
 import Toast from 'phaser3-rex-plugins/templates/ui/toast/Toast';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
@@ -25,6 +25,7 @@ import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 import theme from 'ui/styles/theme';
 import React from 'react';
 import { ToastBar } from 'react-hot-toast'; 
+import Palette from 'game/constants/Palette';
 
 interface Interaction {
   citizen: Citizen;
@@ -379,14 +380,16 @@ export default class UIScene extends Scene {
       // get upcoming conversation
       const conv: Conversation = citizen.conversations[0];
 
-      const textBox = new DialogueTextBox(this, 500, 500, 65);
-      const text = conv.texts[0];
+      const icon = this.add.image(0, 0, citizen.texture.key, citizen.texture.key + '_icon').setScale(3);
+      icon.setOrigin(0, -0.5);
+      const textBox = new DialogueTextBox(this, 500, 500, 65, icon);
+      let text = conv.texts[0];
       if (!text) return;
 
-      textBox.start(text.text, text.typingSpeed ?? 50)
-        .on('complete', () => {
+      textBox.start(text.text, text.typingSpeed ?? 50, text.choices)
+        .on('complete', (selectedChoice: string) => {
           if (text.onEnd)
-            text.onEnd!();
+            text.onEnd!(text, conv, selectedChoice);
 
           conv.texts.shift();
           if (conv.texts.length === 0) {
@@ -415,9 +418,8 @@ export default class UIScene extends Scene {
             incTexts: true 
           });
 
-          
-          const nextText = conv.texts[0];
-          textBox.start(nextText!.text, nextText!.typingSpeed ?? 50);
+          text = conv.texts[0];
+          textBox.start(text!.text, text!.typingSpeed ?? 50, text.choices);
         })
 
       this.currentInteraction = { citizen, textBox, maxDistance: 100 };

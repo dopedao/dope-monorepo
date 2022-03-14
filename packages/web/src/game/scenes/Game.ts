@@ -106,11 +106,24 @@ export default class GameScene extends Scene {
         300,
         this.mapHelper.mapReader.level.identifier,
         '12',
-        'Michel',
-        'Arpenteur',
+        'Jimmy',
+        'Crackhead',
         [
-          new Conversation([{text: 'Conversation 1: Text 1'}, {text: 'Conversation 1: Text 2'}, {text: 'Conversation 1: Text 3'}]), 
-          new Conversation([{text: 'Conversation 2: Text 1'}, {text: 'Conversation 2: Text 2'}, {text: 'Conversation 2: Text 3'}]),  
+          new Conversation([
+            {
+              text: "Hey, I'm Jimmy! How are you doing?",
+              choices: [
+                'I\'m fine, thanks!',
+                'Sadge',
+              ],
+              onEnd: (text: Text, conversation: Conversation, choice?: string) => {
+                const index = text.choices!.indexOf(choice!);
+                conversation.texts.push({
+                  text: index === 0 ? 'Glad to hear that!' : 'Ah, sorry to hear that!',
+                })
+              }
+            }
+          ])
         ],
         [
           { position: new Phaser.Math.Vector2(200, 300), wait: 3000 },

@@ -1,7 +1,8 @@
-interface Text {
+export interface Text {
   text: string;
+  choices?: Array<string>;
   typingSpeed?: number;
-  onEnd?: () => void;
+  onEnd?: (text: Text, conversation: Conversation, selectedChoice?: string) => void;
 }
 
 export default class Conversation {
