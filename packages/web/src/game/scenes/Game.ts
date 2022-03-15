@@ -115,10 +115,9 @@ export default class GameScene extends Scene {
                 'I\'m fine, thanks!',
                 'Sadge',
               ],
-              onEnd: (text: Text, conversation: Conversation, choice?: string) => {
-                const index = text.choices!.indexOf(choice!);
+              onEnd: (text: Text, conversation: Conversation, choice?: number) => {
                 conversation.texts.push({
-                  text: index === 0 ? 'Glad to hear that!' : 'Ah, sorry to hear that!',
+                  text: choice === 0 ? 'Glad to hear that!' : 'Ah, sorry to hear that!',
                 })
               }
             }

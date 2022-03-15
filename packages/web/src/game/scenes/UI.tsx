@@ -380,14 +380,24 @@ export default class UIScene extends Scene {
       // get upcoming conversation
       const conv: Conversation = citizen.conversations[0];
 
+      // const icon = this.rexUI.add.label({
+      //   orientation: 'y',
+      //   icon: this.add.image(0, 0, citizen.texture.key, citizen.texture.key + '_icon').setScale(3),
+      //   text: getBBcodeText(this, 0, 0, 0, 0, '10px')
+      //   .setText(citizen.name)
+      //   .setXOffset(-10)
+      //   // .setOrigin(-0.5, 0.5)
+      //   .setColor(Palette.COLOR_DARK)
+      // });
       const icon = this.add.image(0, 0, citizen.texture.key, citizen.texture.key + '_icon').setScale(3);
       icon.setOrigin(0, -0.5);
+      // icon.layout();
       const textBox = new DialogueTextBox(this, 500, 500, 65, icon);
       let text = conv.texts[0];
       if (!text) return;
 
       textBox.start(text.text, text.typingSpeed ?? 50, text.choices)
-        .on('complete', (selectedChoice: string) => {
+        .on('complete', (selectedChoice: number) => {
           if (text.onEnd)
             text.onEnd!(text, conv, selectedChoice);
 
