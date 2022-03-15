@@ -220,8 +220,7 @@ export default class UIScene extends Scene {
     const openChatInput = () => {
       if (
         this.sendMessageInput ||
-        this.player.busy ||
-        (this.chatMessageBoxes.get(this.player)?.length ?? 0) > 2
+        this.player.busy
       )
         return;
 
@@ -234,6 +233,7 @@ export default class UIScene extends Scene {
       this.sendMessageInput = this.add.reactDom(ChatType, {
         precedentMessages: this.precedentMessages,
         messagesStore: this.messagesStore,
+        chatMessageBoxes: this.chatMessageBoxes.get(this.player),
       });
 
       this.sendMessageInput.events.on('chat_submit', (text: string) => {
