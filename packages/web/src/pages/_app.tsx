@@ -15,9 +15,12 @@ import GlobalStyles from 'ui/styles/GlobalStyles';
 import PageLoadingIndicator from 'components/PageLoadingIndicator';
 import theme from 'ui/styles/theme';
 
+import GoogleAnalytics from 'components/GoogleAnalytics';
+
 // Error tracking and tracing from Sentry.io
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
+import { FullScreenProvider } from 'hooks/FullScreenProvider';
 Sentry.init({
   dsn: 'https://b8e63fda3aef4e8e8c96109550d5ae4c@o1012827.ingest.sentry.io/5978399',
   integrations: [new Integrations.BrowserTracing()],
@@ -54,11 +57,14 @@ export default function CreateDopeApp({ Component, pageProps }: AppProps) {
               <StarknetProvider>
                 <BlockHashProvider>
                   <TransactionsProvider>
-                    <main>
-                      <PageLoadingIndicator />
-                      <DesktopIconList />
-                      <Component {...pageProps} />
-                    </main>
+                    <FullScreenProvider>
+                      <main>
+                        <GoogleAnalytics />
+                        <PageLoadingIndicator />
+                        <DesktopIconList />
+                        <Component {...pageProps} />
+                      </main>
+                    </FullScreenProvider>
                   </TransactionsProvider>
                 </BlockHashProvider>
               </StarknetProvider>

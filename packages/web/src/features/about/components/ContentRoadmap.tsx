@@ -245,6 +245,7 @@ const ContentRoadmap = () => (
         imageUrl="/images/news/green-lantern-dope-mix-vol-1.jpeg"
         imageAlt="DOPE Mix Volume 1"
         date="Q1 2022"
+        complete
       >
         <p>
           The world famous <a href="https://twitter.com/DJGREENLANTERN">DJ Green Lantern</a> dropped an exclusive original, certified hip-hop mix specifically made for Dope Wars that was launched in-game and streamed live on Twitch.
@@ -253,7 +254,7 @@ const ContentRoadmap = () => (
           Currently, an original music EP is being produced with top name artists in the rap game with help from DOPE DAO member <a href="https://twitter.com/SheckyGreen">Shecky Green</a> of The Source Magazine.
         </p>
         <p>
-          <a href="https://www.twitch.tv/videos/1406868852" target="roadmap">WATCH THE MIX</a>
+          <a href="https://soundcloud.com/djgreenlantern/dj-green-lantern-dope-wars-mix" target="roadmap">LISTEN TO THE MIX</a>
         </p>
       </RoadmapItem>
       <SectionHeader>Coming Soon™</SectionHeader>
@@ -318,7 +319,7 @@ const ContentRoadmap = () => (
         title="Swap Meet"
         imageUrl="/images/about/swap-meet-preview.png"
         imageAlt="In-game Hustler Characters"
-        date="Q1 2022"
+        date="Q2 2022"
       >
         <>
           <p>

@@ -20,6 +20,7 @@ import { isTouchDevice } from 'utils/utils';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
 import useBrowserWidth from 'hooks/use-browser-width';
+import { useFullScreen } from 'hooks/FullScreenProvider';
 
 type Position = {
   x: number;
@@ -132,9 +133,11 @@ const DesktopWindow = ({
   );
   // Controls if window is full-screen or not on desktop.
   // Small devices should always be full-screen.
-  const [isFullScreen, setIsFullScreen] = useState(fullScreen || false);
-  const toggleFullScreen = () =>
-    fullScreenHandler ? fullScreenHandler(!isFullScreen) : setIsFullScreen(!isFullScreen);
+  // const [isFullScreen, setIsFullScreen] = useState(fullScreen || false);
+  const fullScreenHook = useFullScreen();
+  const toggleFullScreen = () =>{
+    fullScreenHandler ? fullScreenHandler(!fullScreenHook?.isFullScreen) : fullScreenHook?.setIsFullScreen(!fullScreenHook?.isFullScreen);
+  }
   const [windowPosition, setWindowPosition] = useState<Position>({
     x: posX || 0,
     y: posY || 0,
@@ -153,11 +156,11 @@ const DesktopWindow = ({
     }
   };
 
-  const shouldBeDraggable = !isTouchDevice() && !isFullScreen && browserWidth > 768;
+  const shouldBeDraggable = !isTouchDevice() && !fullScreenHook?.isFullScreen && browserWidth > 768;
 
   useEffect(() => {
     if (onResize) onResize();
-  }, [isFullScreen, onResize]);
+  }, [fullScreenHook?.isFullScreen, onResize]);
 
   const handleStop = () => {
     const el = document.querySelector('.floating');
@@ -193,7 +196,7 @@ const DesktopWindow = ({
     >
       <WindowWrapper
         ref={windowRef}
-        className={`desktopWindow ${isFullScreen ? '' : 'floating'}`}
+        className={`desktopWindow ${fullScreenHook?.isFullScreen ? '' : 'floating'}`}
         height={height}
         width={width}
         background={background && background.length > 0 ? background : '#a8a9ae'}
@@ -204,7 +207,7 @@ const DesktopWindow = ({
           <DesktopWindowTitleBar
             title={title}
             isTouchDevice={isTouchDevice()}
-            isFullScreen={isFullScreen}
+            isFullScreen={fullScreenHook?.isFullScreen || false}
             toggleFullScreen={toggleFullScreen}
             balance={data?.wallets?.edges![0]?.node?.paper}
             loadingBalance={loading}

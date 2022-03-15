@@ -4,7 +4,6 @@ import { HustlerSex } from 'utils/HustlerConfig';
 
 const order = [
   ItemType.Clothes,
-  ItemType.Weapon,
   ItemType.Waist,
   ItemType.Foot,
   ItemType.Hand,
@@ -12,7 +11,8 @@ const order = [
   ItemType.Neck,
   ItemType.Ring,
   ItemType.Accessory,
-  ItemType.Vehcile,
+  ItemType.Weapon,
+  ItemType.Vehicle,
 ];
 
 type Rles = Pick<Item, 'rles'> & {
@@ -55,7 +55,6 @@ export const useHustlerRles = (
 
       return [
         getRle(sex, hustler.clothes),
-        getRle(sex, hustler.weapon),
         getRle(sex, hustler.waist),
         getRle(sex, hustler.foot),
         getRle(sex, hustler.hand),
@@ -63,6 +62,7 @@ export const useHustlerRles = (
         getRle(sex, hustler.neck),
         getRle(sex, hustler.ring),
         getRle(sex, hustler.accessory),
+        getRle(sex, hustler.weapon),
         getRle(sex, hustler.vehicle),
       ];
     }

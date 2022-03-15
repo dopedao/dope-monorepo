@@ -12,10 +12,11 @@ const SocialLinks = () => {
     <DesktopWindow title="Other Stuff" width={600} height={800} scrollable hideWalletAddress>
       <IconGrid
         css={css`
-          top: 32px;
+          position: relative;
+          top: 64px;
+          // Override media queries in base component
           width: 100% !important;
-          padding: 32px !important;
-          gap: 48px !important;
+          align-items: center !important;
           justify-content: center !important;
         `}
       >

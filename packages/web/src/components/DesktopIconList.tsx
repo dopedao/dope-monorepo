@@ -22,6 +22,7 @@ const DesktopIconList = () => {
     <>
       {showWebAmp && <WebAmpPlayer onClose={() => setShowWebAmp(false)} />}
       <IconGrid>
+        <DesktopIcon icon="file" label="READ ME FIRST" clickAction={() => openLocalRoute('/about')} />
         <DesktopIcon
           icon="dopewars-exe"
           label="Swap Meet"
@@ -58,7 +59,6 @@ const DesktopIconList = () => {
             )
           }
         />
-        <DesktopIcon icon="file" label="About" clickAction={() => openLocalRoute('/about')} />
         <DesktopIcon
           icon="newspaper"
           label="The Daily Dope"
@@ -69,7 +69,7 @@ const DesktopIconList = () => {
         <DesktopIcon icon="winamp" label="Dope Amp" clickAction={() => setShowWebAmp(true)} />
         <DesktopIcon
           icon="folder"
-          label="Other Stuff"
+          label="Other Links"
           clickAction={() => openLocalRoute('/other-stuff')}
         />
       </IconGrid>
