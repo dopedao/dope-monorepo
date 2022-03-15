@@ -2,7 +2,7 @@ export interface Text {
   text: string;
   choices?: Array<string>;
   typingSpeed?: number;
-  onEnd?: (text: Text, conversation: Conversation, selectedChoice?: string) => void;
+  onEnd?: (text: Text, conversation: Conversation, selectedChoice?: number) => void;
 }
 
 export default class Conversation {

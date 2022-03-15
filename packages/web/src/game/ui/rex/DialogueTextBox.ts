@@ -16,7 +16,7 @@ interface TextBoxConfig {
 
 export default class DialogueTextBox extends TextBox {
   private choices?: Buttons;
-  private selectedChoice?: string;
+  private selectedChoice?: number;
 
   constructor(
     scene: UIScene,
@@ -86,14 +86,14 @@ export default class DialogueTextBox extends TextBox {
           text: getBBcodeText(this.scene as UIScene, 0, 0, 0).setColor(Palette.COLOR_DARK).setText(choice).setAlpha(0.4),
         })),
         background: (this.scene as UIScene).rexUI.add.roundRectangle(0, 0, 0, 0, 5, Palette.COLOR_LIGHT).setAlpha(0.4),
-      }).on('button.over', (button: Label) => button.text !== this.selectedChoice && (button.getElement('text') as BBCodeText)?.setAlpha(1))
-        .on('button.out', (button: Label) => button.text !== this.selectedChoice && (button.getElement('text') as BBCodeText)?.setAlpha(0.4))
+      }).on('button.over', (button: Label) => this.choices!.buttons.indexOf(button) !== this.selectedChoice && (button.getElement('text') as BBCodeText)?.setAlpha(1))
+        .on('button.out', (button: Label) => this.choices!.buttons.indexOf(button) !== this.selectedChoice && (button.getElement('text') as BBCodeText)?.setAlpha(0.4))
         .on('button.click', (button: Label) => {
           // visually unselect all buttons
           this.choices?.forEachButtton((button: GameObjects.GameObject) => ((button as any)?.getElement('text') as any)?.setAlpha(0.4));
           // visually select this button
           (button.getElement('text') as BBCodeText)?.setAlpha(1);
-          this.selectedChoice = button.text;
+          this.selectedChoice = this.choices!.buttons.indexOf(button);
         });
       this.add(this.choices).layout();
     }
@@ -131,15 +131,16 @@ export default class DialogueTextBox extends TextBox {
       this.stop(true);
     } else {
       if (this.isLastPage) {
-        if (this.choices && !this.selectedChoice)
+        const tmp = this.selectedChoice;
+        if (this.choices && this.selectedChoice === undefined)
           return;
-        else if (this.choices && this.selectedChoice) {
+        else if (this.choices && this.selectedChoice !== undefined) {
           this.choices.destroy();
           this.choices = undefined;
           this.selectedChoice = undefined;
         }
 
-        this.emit('complete', this.selectedChoice);
+        this.emit('complete', tmp);
         return;
       }
       this.typeNextPage();
