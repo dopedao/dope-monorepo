@@ -7,8 +7,8 @@ export default class PathNavigator {
   private hustler: Hustler;
   private pathFinder: PF.Finder;
 
-  private onMoved?: () => void;
-  private onCancel?: () => void;
+  private onMoved?: (navigator: this) => void;
+  private onCancel?: (navigator: this) => void;
 
   private grid!: PF.Grid;
 
@@ -22,7 +22,7 @@ export default class PathNavigator {
     this.pathFinder = pathFinder;
   }
 
-  moveTo(x: number, y: number, onMoved?: () => void, onCancel?: () => void) {
+  moveTo(x: number, y: number, onMoved?: (navigator: this) => void, onCancel?: (navigator: this) => void) {
     if (!this.hustler.currentMap)
       console.warn('Cannot initiate path finding without a current map');
 
@@ -57,7 +57,7 @@ export default class PathNavigator {
     ) {
       console.warn('Point outside of current map: ' + this.hustler.currentMap);
       if (this.onCancel)
-        this.onCancel();
+        this.onCancel(this);
       return;
     }
 
@@ -105,7 +105,7 @@ export default class PathNavigator {
     this.path = [];
     this.stop();
 
-    if (this.onCancel) this.onCancel();
+    if (this.onCancel) this.onCancel(this);
   }
 
   stop() {
@@ -153,7 +153,7 @@ export default class PathNavigator {
         // stop pathfinding
         this.stop();
         if (this.onMoved) {
-          this.onMoved();
+          this.onMoved(this);
           // set callback to undefined, so that it does not called again
           this.onMoved = undefined;
         }

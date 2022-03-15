@@ -284,18 +284,19 @@ export default class UIScene extends Scene {
       // TODO: resize radius
     })
 
-    EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string, timestamp?: number) => {      
-      const messageData: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE] = {
-        author: hustler.name,
-        message: text,
-        timestamp: timestamp ?? Date.now(),
-      };
-      // add to store
-      this.messagesStore.push(messageData);
-      // if chattype component is open, dispatch event to update it
-      if (this.sendMessageInput) this.sendMessageInput.events.emit('chat_message', messageData);
+    EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string, timestamp?: number, addToChat?: boolean) => {      
+      if (addToChat) {
+        const messageData: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE] = {
+          author: hustler.name,
+          message: text,
+          timestamp: timestamp ?? Date.now(),
+        };
+        // add to store
+        this.messagesStore.push(messageData);
+        // if chattype component is open, dispatch event to update it
+        if (this.sendMessageInput) this.sendMessageInput.events.emit('chat_message', messageData);
+      }
 
-      
       // display message IG 
       const messageDuration = {
         in: 500,
@@ -303,10 +304,9 @@ export default class UIScene extends Scene {
         out: 500,
       };
 
-      let chatToasts = this.chatMessageBoxes.get(hustler);
-      if (!chatToasts) this.chatMessageBoxes.set(hustler, new Array());
+      let chatToasts = this.chatMessageBoxes.get(hustler) ?? this.chatMessageBoxes.set(hustler, new Array()).get(hustler)!;
 
-      this.chatMessageBoxes.get(hustler)!.push(
+      chatToasts.push(
         this.rexUI.add.toast({
           background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 10, 0xffffff, 0.4),
           text: getBBcodeText(this, 200, 0, 0, 10, '18px').setText(text),
@@ -319,8 +319,7 @@ export default class UIScene extends Scene {
           duration: messageDuration,
         }),
       );
-      const chatMessage =
-        this.chatMessageBoxes.get(hustler)![this.chatMessageBoxes.get(hustler)!.length - 1];
+      const chatMessage = chatToasts[chatToasts.length - 1];
       // show message
       chatMessage.showMessage(text);
 
@@ -330,9 +329,7 @@ export default class UIScene extends Scene {
         () => {
           chatMessage.destroy();
           // remove chat message toast from array
-          this.chatMessageBoxes
-            .get(hustler)
-            ?.splice(this.chatMessageBoxes.get(hustler)!.indexOf(chatMessage), 1);
+          chatToasts.splice(chatToasts.indexOf(chatMessage), 1);
         },
         Object.values(messageDuration).reduce((a, b) => a + b, 0),
       );
