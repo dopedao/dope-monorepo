@@ -1,12 +1,15 @@
 import { InputGroup, InputRightElement, Button, Input, ChakraProvider, Container, Stack, Center, Spacer, Text, List, ListItem, AbsoluteCenter, HStack } from '@chakra-ui/react';
+import { Hustler } from '@dopewars/contracts';
 import { DataTypes, NetworkEvents } from 'game/handlers/network/types';
 import { ComponentManager } from 'phaser3-react/src/manager';
+import Toast from 'phaser3-rex-plugins/templates/ui/toast/Toast';
 import React, { useEffect } from 'react';
 import { FormEvent } from 'react';
 import theme from 'ui/styles/theme';
 
 interface Props {
   manager: ComponentManager;
+  chatMessageBoxes?: Array<Toast>;
   precedentMessages: string[];
   messagesStore: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE][];
 }
@@ -23,9 +26,8 @@ export default function ChatType(props: Props) {
   const [ unreadMessages, setUnreadMessages ] = React.useState(0);
   const [ inputText, setInputText ] = React.useState('');
   const [ messages, setMessages ] = React.useState(props.messagesStore);
+  const [ canSendMessage, setCanSendMessage ] = React.useState((props.chatMessageBoxes?.length ?? 0) < 3);
 
-  const messageTooLongRef = React.useRef<HTMLButtonElement>(null);
-  const newMessageRef = React.useRef<HTMLButtonElement>(null);
   const messagesListRef = React.useRef<HTMLUListElement>(null);
 
   let state = React.useRef({
@@ -36,14 +38,18 @@ export default function ChatType(props: Props) {
     props.manager.events.on('chat_message', (message: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => {
       setMessages(m => [...m, message]);
       const lastMessageEl = messagesListRef.current?.lastElementChild as HTMLLIElement;
-      if (newMessageRef.current && lastMessageEl && 
+      if (lastMessageEl && 
         lastMessageEl?.parentElement?.parentElement && !isVisible(lastMessageEl, lastMessageEl?.parentElement?.parentElement)) 
         setUnreadMessages(u => u + 1);
     });
+
+    // constantly check chatMessageBoxes size and if it's less than 3, set canSendMessage to true
+    const interval = setInterval(() => setCanSendMessage((props.chatMessageBoxes?.length ?? 0) < 3));
+    return () => clearInterval(interval);
   }, []);
 
   const handleInputKey = (e: string) => {
-    if (e === 'Enter') handleSubmit(inputText);
+    if (e === 'Enter' && canSendMessage) handleSubmit(inputText);
     else if (e === 'Escape')
       // send "nothing", chat will get closed & message will not get sent
       handleSubmit('');
@@ -116,7 +122,6 @@ export default function ChatType(props: Props) {
           <Spacer />
           <Center>
             <Button 
-                  ref={messageTooLongRef} 
                   style={{
                     marginRight: '1%',
                     marginTop: '-10%'
@@ -129,15 +134,14 @@ export default function ChatType(props: Props) {
                 ❌ Message too long
             </Button>
             <Button 
-              ref={newMessageRef} 
               style={{
                 marginTop: '-10%',
               }}
               variant="primary" 
               hidden={unreadMessages === 0} 
-              onClick={() => {
+              onClick={(e) => {
                 setUnreadMessages(0);
-                if (newMessageRef.current) (newMessageRef.current as any).hidden = true;
+                e.currentTarget.hidden = true;
                 if (messagesListRef.current)
                   (messagesListRef.current as HTMLOListElement).lastElementChild?.scrollIntoView({
                     behavior: 'smooth',
@@ -165,7 +169,7 @@ export default function ChatType(props: Props) {
                 }}
               />
               <InputRightElement width="4.5rem" style={{ paddingRight: '2%' }}>
-                <Button h="1.75rem" size="sm" onClick={() => handleSubmit(inputText)}>
+                <Button h="1.75rem" size="sm" disabled={!canSendMessage} onClick={() => handleSubmit(inputText)}>
                   Send
                 </Button>
               </InputRightElement>
