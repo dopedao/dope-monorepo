@@ -8,31 +8,36 @@ interface PathPoint {
   // time to wait before going to the next point (ms)
   wait?: number;
 
-  onMoved?: () => void;
+  onMoved?: (hustler: Hustler) => void;
+}
+
+interface PathPointSnapshot extends PathPoint {
+  // time when the point was reached
+  timestamp: number;
 }
 
 export default class Citizen extends Hustler {
   readonly description?: string;
   conversations: Conversation[] = new Array();
 
+
+  // TODO: move everything path related to navigator?
+
   // the path that the citizen is currently following
-  // Vector2 is used for tile coordinates,
-  // and number is used for the number of seconds that the citizen has to wait before going to the
-  // next point
   path: Array<PathPoint> = new Array();
   // repeat path
   repeatPath: boolean = false;
-
   // should continue following the path
   // if false, the citizen will not follow its path and move until its true
   shouldFollowPath: boolean = true;
-  lastPointTimestamp?: number;
+  // last point has gone through
+  lastPoint?: PathPointSnapshot;
 
   constructor(
     world: Phaser.Physics.Matter.World,
     x: number,
     y: number,
-    currentMap?: string,
+    currentMap: string,
     hustlerId?: string,
     name?: string,
     description?: string,
@@ -72,40 +77,28 @@ export default class Citizen extends Hustler {
     super.update();
 
     // if the citizen has no target currently, check if he has a next point and move to it
-    // or, if lastPointTimestamp is set, check if the time has passed and move to the next point
-    if (
-      this.shouldFollowPath &&
-      (!this.navigator.target || (this.lastPointTimestamp && !this.navigator.target))
-    ) {
-      const nextPoint = this.path.shift();
-
-      if (nextPoint) {
-        if (nextPoint.wait) {
-          if (!this.lastPointTimestamp) {
-            this.lastPointTimestamp = Date.now();
-
-            // put back time to array, so that we know how much to wait before going
-            // to the next point
-            this.path.unshift(nextPoint);
-            return;
-          } else {
-            const timePassed = Date.now() - this.lastPointTimestamp;
-            if (timePassed < nextPoint.wait) {
-              // NOTE: this is a hack to make the citizen wait for a certain amount of time before going to the next point
-              // wait there's really an unshift method???
-              this.path.unshift(nextPoint);
-              return;
-            }
-
-            this.lastPointTimestamp = undefined;
-          }
-        }
-
-        this.navigator.moveTo(nextPoint.position.x, nextPoint.position.y, nextPoint.onMoved);
-
-        // if repeatpath is enabled, we push our shifted point (first point in this case) back to the end of the path
-        if (this.repeatPath) this.path.push(nextPoint);
+    // or, if lastPointTimestamp & wait are set, check if the time has passed and move to the next point
+    // TODO: check for path lenght in if instead of shifting and checking if undefined?
+    if (this.shouldFollowPath && !this.navigator.target) (() => {
+      // stall until delta time reaches the wait time
+      if (this.lastPoint?.wait) {
+        const timePassed = Date.now() - this.lastPoint.timestamp;
+        if (timePassed < this.lastPoint.wait) return;
       }
-    }
+
+      const nextPoint = this.path.shift();
+      if (!nextPoint) return;
+    
+      this.navigator.moveTo(nextPoint.position.x, nextPoint.position.y, () => {
+        if (nextPoint.onMoved) nextPoint.onMoved(this);
+        this.lastPoint = {
+          ...nextPoint,
+          timestamp: Date.now(),
+        };
+      });
+
+      // if repeatpath is enabled, we push our shifted point (first point in this case) back to the end of the path
+      if (this.repeatPath) this.path.push(nextPoint);
+    })();
   }
 }
