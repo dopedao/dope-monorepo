@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import theme from "ui/styles/theme";
 import Image from "next/image";
 import { CSSProperties } from "react";
+import Link from "next/link";
 
 interface Props {
   manager: ComponentManager;
@@ -54,6 +55,17 @@ const NoHustler = (props: Props) => {
         }
     ]
 
+    const handleNext = () => {
+        pages[page].onNext && pages[page].onNext!();
+        if (page === pages.length - 1)
+        {
+            props.manager.events.emit('game');
+            return;
+        }
+
+        setPage(page + 1);
+    }
+
     return (
         <VStack>
             <Heading>
@@ -68,7 +80,7 @@ const NoHustler = (props: Props) => {
                 <Button onClick={() => props.manager.events.emit('game')}>
                     {page === pages.length - 1 ? "Finish" : "DGAF"}
                 </Button>
-                {page < pages.length - 1 ? <Button>
+                {page < pages.length - 1 ? <Button onClick={handleNext}>
                     Next
                 </Button> : undefined}
             </HStack>
@@ -92,9 +104,14 @@ const HasHustler = (props: Props) => {
             children: <>
                 <Select onChange={(e) => setHustlerIndex(Number.parseInt(e.target.value))}>
                     {props.hustlerData.map((hustler: any, i: number) => <option key={i} value={i}>{hustler.id} {hustler.name ? " - " + hustler.name : ""}</option>)}
-                </Select><br /><img alt="" src={props.hustlerData[hustlerIndex].svg} />
+                </Select><br /><object type="image/svg+xml" data={props.hustlerData[hustlerIndex].svg} />
             </>,
-        }
+        },
+        // {
+        //     heading: "Where do you wanna start out your journey?",
+        //     text: `There are many cities available in the game, you can visit 'em all whenever you want but you can
+        //     choose one to start with.`
+        // }
     ]
 
     const handleNext = () => {
@@ -106,7 +123,7 @@ const HasHustler = (props: Props) => {
         }
 
         setPage(page + 1);
-    } 
+    }
 
     return (
         <VStack>
@@ -122,7 +139,10 @@ const HasHustler = (props: Props) => {
                 <Button onClick={() => props.manager.events.emit('game')}>
                     {page === pages.length - 1 ? "Finish" : "DGAF"}
                 </Button>
-                {page < pages.length - 1 ? <Button>
+                {page > 0 ? <Button onClick={() => setPage(page - 1)}>
+                    Go back
+                </Button> : undefined}
+                {page < pages.length - 1 ? <Button onClick={handleNext}>
                     Next
                 </Button> : undefined}
             </HStack>

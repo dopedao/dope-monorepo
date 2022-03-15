@@ -99,6 +99,11 @@ export default function ChatType(props: Props) {
           }}>
             <List ref={messagesListRef} spacing={-2} style={{
             }}>
+              <Text style={{
+                color: 'blueviolet',
+              }}>
+                Welcome to the Dopeverse!
+              </Text>
               {messages.map((message, i) => <ListItem key={i}>
                   <HStack style={{
                     opacity: '0.8'
