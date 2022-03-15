@@ -25,6 +25,7 @@ import VirtualJoystick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
 import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
 import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
 import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
+import PathNavigator from 'game/world/PathNavigator';
 
 
 export default class GameScene extends Scene {
@@ -124,8 +125,10 @@ export default class GameScene extends Scene {
           ])
         ],
         [
-          { position: new Phaser.Math.Vector2(200, 300), wait: 3000 },
+          { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
           { position: new Phaser.Math.Vector2(400, 200) },
+          { position: new Phaser.Math.Vector2(800, 100), wait: 8000, onMoved: (hustler: Hustler) => hustler.say('I can\'t be walking around indefinitely...') },
+          { position: new Phaser.Math.Vector2(100, 500) },
         ],
         true,
         true,
@@ -451,8 +454,7 @@ export default class GameScene extends Scene {
             // check if sent by player otherwise look through hustlers (other players)
             const hustler = this.player.getData('id') === data.author ? this.player : this.hustlers.find(h => h.getData('id') === data.author);
             
-            if (hustler)
-              EventHandler.emitter().emit(Events.CHAT_MESSAGE, hustler, data.message, data.timestamp);
+            hustler?.say(data.message, data.timestamp, true);
           },
         );
         networkHandler.on(
