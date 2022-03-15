@@ -3,6 +3,7 @@ import HustlerAnimator from 'game/anims/HustlerAnimator';
 import { Base, Categories, CharacterCategories, SpritesMap } from 'game/constants/Sprites';
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
+import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import UIScene from 'game/scenes/UI';
 import PathNavigator from 'game/world/PathNavigator';
 import PF from 'pathfinding';
@@ -251,6 +252,12 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
   //   super.play(key, ignoreIfPlaying);
   //   return this;
   // }
+
+  // text box on top of hustler
+  // will not trigger a server request
+  say(text: string, timestamp?: number, addToChat?: boolean) {
+    EventHandler.emitter().emit(Events.CHAT_MESSAGE, this, text, timestamp, addToChat);
+  }
 
   // sets correct sprite facing towards point
   lookAt(x: number, y: number) {
