@@ -620,7 +620,7 @@ export enum ItemType {
   Hand = 'HAND',
   Neck = 'NECK',
   Ring = 'RING',
-  Vehcile = 'VEHCILE',
+  Vehicle = 'VEHICLE',
   Waist = 'WAIST',
   Weapon = 'WEAPON'
 }

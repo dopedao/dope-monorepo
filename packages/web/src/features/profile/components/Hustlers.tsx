@@ -130,7 +130,7 @@ const Hustlers = ({ searchValue }: { searchValue: string }) => {
                     <Table variant="small">
                       <Tr>
                         <Td>Name:</Td>
-                        <Td>{name}</Td>
+                        <Td>{name?.trim().length !== 0 ? name : `Hustler #${id}`}</Td>
                       </Tr>
                       {title && (
                         <Tr>
