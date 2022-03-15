@@ -5,6 +5,7 @@ import Link, { LinkProps } from 'next/link';
 
 type NavLinkProps = React.PropsWithChildren<LinkProps> & {
   activeClassName?: string;
+  saveFullScreen?: boolean;
 };
 
 export const NavLink = ({ children, activeClassName = 'active', ...props }: NavLinkProps) => {
@@ -29,6 +30,10 @@ export const NavLink = ({ children, activeClassName = 'active', ...props }: NavL
       });
     }
   }, [isActive, tabRef]);
+
+  useEffect(()=>{
+    
+  }, [props.saveFullScreen])
 
   return (
     <div ref={tabRef}>
