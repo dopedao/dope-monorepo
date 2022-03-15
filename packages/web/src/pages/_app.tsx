@@ -20,7 +20,7 @@ import GoogleAnalytics from 'components/GoogleAnalytics';
 // Error tracking and tracing from Sentry.io
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import { FullScreenProvider } from 'hooks/starknet/FullScreenProvider';
+import { FullScreenProvider } from 'hooks/FullScreenProvider';
 Sentry.init({
   dsn: 'https://b8e63fda3aef4e8e8c96109550d5ae4c@o1012827.ingest.sentry.io/5978399',
   integrations: [new Integrations.BrowserTracing()],

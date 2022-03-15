@@ -20,7 +20,7 @@ import { isTouchDevice } from 'utils/utils';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
 import useBrowserWidth from 'hooks/use-browser-width';
-import { useFullScreen } from 'hooks/starknet/FullScreenProvider';
+import { useFullScreen } from 'hooks/FullScreenProvider';
 
 type Position = {
   x: number;
