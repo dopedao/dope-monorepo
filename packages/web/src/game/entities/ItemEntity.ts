@@ -40,6 +40,7 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
         height: this.height,
       },
       {
+        label: 'hitboxSensor',
         isStatic: true,
         isSensor: true,
       },

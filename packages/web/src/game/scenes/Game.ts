@@ -102,7 +102,7 @@ export default class GameScene extends Scene {
     this.citizens.push(
       new Citizen(
         this.matter.world,
-        45,
+        100,
         300,
         this.mapHelper.mapReader.level.identifier,
         '12',
@@ -256,58 +256,61 @@ export default class GameScene extends Scene {
   private _handleInputs() {
     // handle mouse on click
     // pathfinding & interact with objects / npcs
+    const delta = 400;
     let last = 0;
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
       if (this.player.busy || !this.canUseMouse || !this.mapHelper.map.collideLayer) return;
       
-      if (Date.now() - last < 600) return;
+      if (Date.now() - last < delta) return;
       last = Date.now();
 
       // run asynchronously
       setTimeout(() => {
         const citizenToTalkTo = this.citizens.find(
-          citizen =>
-            citizen.shouldFollowPath && citizen.conversations.length !== 0 &&
+          citizen => citizen.conversations.length !== 0 && 
             citizen.getBounds().contains(pointer.worldX, pointer.worldY),
         );
         const itemToPickUp = this.itemEntities.find(item =>
           item.getBounds().contains(pointer.worldX, pointer.worldY),
         );
 
-        if (
-          citizenToTalkTo &&
-          new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) <
-            100
-        ) {
-          citizenToTalkTo?.onInteraction(this.player);
-          EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
-        } else if (
-          itemToPickUp &&
-          new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(itemToPickUp)) < 100
-        ) {
-          if (NetworkHandler.getInstance().authenticator.loggedIn && this.player.inventory.add(itemToPickUp.item, true))
-            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
-              id: itemToPickUp.getData('id'),
-            })
-        } else
-          this.player.navigator.moveTo(pointer.worldX, pointer.worldY, () => {
-            if (
-              citizenToTalkTo &&
-              new Phaser.Math.Vector2(this.player).distance(citizenToTalkTo) < 100
-            ) {
-              citizenToTalkTo?.onInteraction(this.player);
-              EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
-            } else if (
-              itemToPickUp &&
-              new Phaser.Math.Vector2(this.player).distance(itemToPickUp) < 100
-            ) {
-              if (NetworkHandler.getInstance().authenticator.loggedIn && this.player.inventory.add(itemToPickUp.item, true))
-                NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
-                  id: itemToPickUp.getData('id'),
-                })
+        let interacted = false;
+        const checkInteraction = () => {
+          if (!citizenToTalkTo && !itemToPickUp) return;
+
+          if (
+            citizenToTalkTo &&
+            new Phaser.Math.Vector2(this.player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) <
+              100
+          ) {
+            citizenToTalkTo?.onInteraction(this.player);
+            EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
+            interacted = true;
+          } else if (
+            itemToPickUp &&
+            new Phaser.Math.Vector2(this.player).distance(itemToPickUp) < 100
+          ) {
+            if (!NetworkHandler.getInstance().authenticator.loggedIn) {
+              // TODO: unauthenticated event?
+              EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
+                ...chakraToastStyle,
+                title: 'Unauthenticated',
+                description: 'You need to be logged in to interact with items.',
+                status: 'warning',
+              });
+            } else {
+              NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+                id: itemToPickUp.getData('id'),
+              });
             }
-          },
-        );
+            interacted = true;
+          }
+        }
+
+        checkInteraction();
+        if (interacted) return;
+        
+        this.player.navigator.moveTo(pointer.worldX, pointer.worldY, checkInteraction);
       });
     });
 
@@ -337,11 +340,11 @@ export default class GameScene extends Scene {
       // TODO: login scene or something like that
       if (data.code === 401)
       {
-        (this.scene.get('UIScene') as UIScene).toast({
+        EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
           ...chakraToastStyle,
           status: 'error',
           title: 'Unauthorized',
-        })
+        });
         networkHandler.disconnect();
         networkHandler.authenticator.logout()
           .then(() => {
