@@ -8,7 +8,7 @@ import Hustler, { Direction } from '../Hustler';
 import ItemEntity from '../ItemEntity';
 import PlayerController from './PlayerController';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
-import UIScene from 'game/scenes/UI';
+import UIScene, { chakraToastStyle } from 'game/scenes/UI';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
 import { getShortAddress } from 'utils/utils';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
@@ -118,36 +118,44 @@ export default class Player extends Hustler {
   tryInteraction() {
     if (this.busy) return;
 
-    let flag = false;
-
     const overlap = (interactSensor: MatterJS.Body, other: MatterJS.Body) => {
+      // check if busy again, needed in case of double overlapping
+      if (this.busy) return;
+
       const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType)
         .gameObject;
       if (otherGameObject instanceof Citizen) {
         // if has no conversations, dont emit interaction
         if ((otherGameObject as Citizen).conversations.length === 0) return;
-        // prevent setTimeout in onInteractionFinish
-        // from setting shouldFollowPath back to true again when in interaction
-        if (!(otherGameObject as Citizen).shouldFollowPath) return;
+        
+        // TODO: move call to on PLAYER_CITIZEN_INTERACT event?
         // call onInteraction method of citizen
         otherGameObject.onInteraction(this);
-
         EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, otherGameObject);
-
-        flag = true;
       } else if (otherGameObject instanceof ItemEntity) {
-        // if item succesfully picked up
-        if (NetworkHandler.getInstance().authenticator.loggedIn && this.inventory.add(otherGameObject.item, true))
-            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
-              id: otherGameObject.getData('id'),
-            })
+        if (!NetworkHandler.getInstance().authenticator.loggedIn) {
+          // TODO: unauthenticated event?
+          EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
+            ...chakraToastStyle,
+            title: 'Unauthenticated',
+            description: 'You need to be logged in to interact with items.',
+            status: 'warning',
+          });
+          return;
+        }
 
-        flag = true;
+        // server will send us back a handshake message if everything goes accordingly
+        // and we can handle the pick up of the item
+        NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+          id: otherGameObject.getData('id'),
+        })
       }
     };
 
     // check interact sensor
-    this.scene.matter.overlap(this._interactSensor, undefined, overlap);
+    // ignores colliders
+    const flag = this.scene.matter.overlap(this._interactSensor, undefined, overlap, 
+      (interactSensor: MatterJS.Body, other: MatterJS.Body) => (other as MatterJS.BodyType).label !== 'collider');
 
     // prevent double interaction
     if (flag) return;
@@ -212,6 +220,7 @@ export default class Player extends Hustler {
       // make player look at npc
       this.lookAt(citizen.x, citizen.y);
     });
+    // TODO: ?
     EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, (citizen: Citizen) => {
       setTimeout(() => {this._busy = false;}, 200);
     });

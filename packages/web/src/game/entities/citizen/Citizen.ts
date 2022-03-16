@@ -20,6 +20,7 @@ export default class Citizen extends Hustler {
   readonly description?: string;
   conversations: Conversation[] = new Array();
 
+  private busy: boolean = false;
 
   // TODO: move everything path related to navigator?
 
@@ -27,9 +28,15 @@ export default class Citizen extends Hustler {
   path: Array<PathPoint> = new Array();
   // repeat path
   repeatPath: boolean = false;
+
   // should continue following the path
   // if false, the citizen will not follow its path and move until its true
   shouldFollowPath: boolean = true;
+  // should we set back follow path to true 
+  // after an interaction has finished?
+  // if shouldFollowPath is defaulted to false, it wont be set to true once an interaction is over
+  private shouldSetFollowPath: boolean = false;
+
   // last point has gone through
   lastPoint?: PathPointSnapshot;
 
@@ -59,9 +66,13 @@ export default class Citizen extends Hustler {
 
   // called when npc enters in an interaction
   onInteraction(player: Player) {
+    if (this.shouldFollowPath)
+      this.shouldSetFollowPath = true;
+
     this.shouldFollowPath = false;
     this.navigator.cancel();
     this.lookAt(player.x, player.y);
+    this.busy = true;
   }
 
   // called when the interaction is over
@@ -69,8 +80,12 @@ export default class Citizen extends Hustler {
     // delay before npc starts following his path again
     const delay = 5000;
     setTimeout(() => {
+      if (this.busy || !this.shouldSetFollowPath) return;
+
       this.shouldFollowPath = true;
+      this.shouldSetFollowPath = false;
     }, delay);
+    this.busy = false;
   }
 
   update() {
