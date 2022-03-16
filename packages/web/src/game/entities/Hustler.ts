@@ -263,28 +263,29 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
   lookAt(x: number, y: number) {
     const angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
 
+    // see. https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Unit_circle_angles_color.svg/2048px-Unit_circle_angles_color.svg.png
+    
+    // north
+    if (angle >= -(3 * Math.PI) / 4 && angle <= -Math.PI / 4) {
+      this._lastDirection = Direction.North;
+    }
     // east
-    if (angle >= -Phaser.Math.TAU && angle <= Phaser.Math.TAU) {
+    else if (angle <= Math.PI / 4 || angle <= -(3 * Math.PI) / 4) {
       this._lastDirection = Direction.East;
     }
     // south
-    else if (angle >= 0 && angle <= Math.PI) {
+    else if (angle >= Math.PI / 4 && angle <= (3 * Math.PI) / 4) {
       this._lastDirection = Direction.South;
     }
-    // north
-    else if (angle <= 0 && angle >= -Math.PI) {
-      this._lastDirection = Direction.North;
-    }
     // west
-    if (angle <= -Phaser.Math.TAU || angle >= Phaser.Math.PI2) {
+    else if (angle >= (3 * Math.PI) / 4 || angle <= -(3 * Math.PI) / 4) {
       this._lastDirection = Direction.West;
     }
-
+    
     this.play(this.texture.key + this._lastDirection);
     this.stop();
-    // console.log(this.anims);
-    // console.log(this.texture.key + this._lastDirection);
-    // this.setFrame(this.texture.key + this._lastDirection);
+
+    return this;
   }
 
   // setOrigin(x: number, y?: number)
