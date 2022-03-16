@@ -27,11 +27,11 @@ export default class Citizen extends Hustler {
   // the path that the citizen is currently following
   path: Array<PathPoint> = new Array();
   // repeat path
-  repeatPath: boolean = false;
+  repeatPath: boolean;
 
   // should continue following the path
   // if false, the citizen will not follow its path and move until its true
-  shouldFollowPath: boolean = true;
+  shouldFollowPath: boolean;
   // should we set back follow path to true 
   // after an interaction has finished?
   // if shouldFollowPath is defaulted to false, it wont be set to true once an interaction is over
@@ -50,8 +50,8 @@ export default class Citizen extends Hustler {
     description?: string,
     conversations?: Conversation[] | Conversation,
     path?: Array<PathPoint>,
-    repeatPath?: boolean,
-    shouldFollowPath?: boolean,
+    repeatPath: boolean = false,
+    shouldFollowPath: boolean = true,
   ) {
     super(world, x, y, hustlerId, name);
 
@@ -60,8 +60,9 @@ export default class Citizen extends Hustler {
     if (currentMap) this.currentMap = currentMap;
     if (conversations) conversations instanceof Array ? this.conversations = conversations : [ conversations ];
     if (path) this.path = path;
-    if (repeatPath) this.repeatPath = repeatPath;
-    if (shouldFollowPath) this.shouldFollowPath = shouldFollowPath;
+    
+    this.repeatPath = repeatPath;
+    this.shouldFollowPath = shouldFollowPath;
   }
 
   // called when npc enters in an interaction
