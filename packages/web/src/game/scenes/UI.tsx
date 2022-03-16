@@ -278,6 +278,10 @@ export default class UIScene extends Scene {
   }
 
   private _handleMisc() {
+    EventHandler.emitter().on(Events.SHOW_NOTIFICAION, (toast: UseToastOptions) => {
+      this.toast(toast);
+    });
+
     // re-position joystick when window is resized (center)
     this.scale.on(Phaser.Scale.Events.RESIZE, (size: Phaser.Structs.Size) => {
       this.joyStick.setPosition(size.width / 2, size.height / 2);
