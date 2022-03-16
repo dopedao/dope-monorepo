@@ -24,12 +24,12 @@ type Player struct {
 	Send chan BaseMessage
 }
 
-func NewPlayer(conn *websocket.Conn, game *Game, id uuid.UUID, hustlerId string, name string, currentMap string, x float32, y float32) *Player {
+func NewPlayer(conn *websocket.Conn, game *Game, hustlerId string, name string, currentMap string, x float32, y float32) *Player {
 	p := &Player{
 		conn: conn,
 		game: game,
 
-		Id:         id,
+		Id:         uuid.New(),
 		hustlerId:  hustlerId,
 		name:       name,
 		currentMap: currentMap,

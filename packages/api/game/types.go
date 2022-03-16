@@ -90,6 +90,8 @@ type CitizenUpdateStateData struct {
 	IncrementConversations bool `json:"incConversations"`
 	// increment text index
 	IncrementTexts bool `json:"incTexts"`
+	// choice index if applicable
+	Choice int `json:"choice"`
 }
 
 type IdData struct {

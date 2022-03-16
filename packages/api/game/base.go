@@ -15,9 +15,11 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+const TICKRATE = time.Second / 5
+
 func NewGame() *Game {
 	return &Game{
-		Ticker:     time.NewTicker(time.Second / 5),
+		Ticker:     time.NewTicker(TICKRATE),
 		Register:   make(chan *Player),
 		Unregister: make(chan *Player),
 		Broadcast:  make(chan BaseMessage),

@@ -169,7 +169,7 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 		return
 	}
 
-	g.Register <- NewPlayer(conn, g, uuid.New(), data.HustlerId, data.Name, data.CurrentMap, data.X, data.Y)
+	g.Register <- NewPlayer(conn, g, data.HustlerId, data.Name, data.CurrentMap, data.X, data.Y)
 }
 
 func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
