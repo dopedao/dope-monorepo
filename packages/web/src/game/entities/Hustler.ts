@@ -269,18 +269,19 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     if (angle >= -(3 * Math.PI) / 4 && angle <= -Math.PI / 4) {
       this._lastDirection = Direction.North;
     }
-    // east
-    else if (angle <= Math.PI / 4 || angle <= -(3 * Math.PI) / 4) {
-      this._lastDirection = Direction.East;
+    // west
+    else if (angle >= (3 * Math.PI) / 4 || angle <= -(3 * Math.PI) / 4) {
+      this._lastDirection = Direction.West;
     }
     // south
     else if (angle >= Math.PI / 4 && angle <= (3 * Math.PI) / 4) {
       this._lastDirection = Direction.South;
     }
-    // west
-    else if (angle >= (3 * Math.PI) / 4 || angle <= -(3 * Math.PI) / 4) {
-      this._lastDirection = Direction.West;
+    // east
+    else if (angle >= -Math.PI / 4 || angle <= Math.PI / 4) {
+      this._lastDirection = Direction.East;
     }
+    
     
     this.play(this.texture.key + this._lastDirection);
     this.stop();
