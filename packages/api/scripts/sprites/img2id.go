@@ -1,3 +1,13 @@
+// This script takes input sprite files from our animation team and
+// renames them into a format that can be used for generating sprite sheets
+// on our API.
+//
+// Some images are incorrectly named and need to be renamed,
+// some duplicate items don't have a sprite in the provided files so
+// need to be manually duplicated, items with "nothing" like barefoot
+// need to be manually created from the transparent layer.
+//
+
 package main
 
 import (
