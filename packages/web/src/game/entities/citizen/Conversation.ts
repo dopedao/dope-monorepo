@@ -17,4 +17,12 @@ export default class Conversation {
 
     this.onFinish = onFinish;
   }
+
+  add(...texts: Text[]) {
+    this.texts.push(...texts);
+  }
+
+  get(index: number): Text {
+    return this.texts[index];
+  }
 }
