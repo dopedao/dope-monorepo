@@ -12,10 +12,10 @@ export default function Settings(props: { manager: ComponentManager }) {
     }
 
     useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyDown);
 
         return () => {
-            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyDown);
         }
     })
 
