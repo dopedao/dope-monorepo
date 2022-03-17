@@ -26,6 +26,7 @@ import theme from 'ui/styles/theme';
 import React from 'react';
 import { ToastBar } from 'react-hot-toast'; 
 import Palette from 'game/constants/Palette';
+import Settings from 'game/ui/react/components/Settings';
 
 interface Interaction {
   citizen: Citizen;
@@ -215,20 +216,44 @@ export default class UIScene extends Scene {
   }
 
   private _handleInputs() {
+    const toggleInputs = (mouse?: boolean) => {
+      // prevent player from moving
+      if (mouse) this.player.scene.input.mouse.enabled = false;
+      this.player.scene.input.keyboard.enabled = false;
+      if (mouse) this.input.mouse.enabled = false;
+      this.input.keyboard.enabled = false;
+      // prevent phaser from "blocking" some keys (for typing in chat)
+      this.player.scene.input.keyboard.disableGlobalCapture();
+      this.input.keyboard.disableGlobalCapture();
+
+      return () => {
+        // reset to default
+        if (mouse) this.player.scene.input.mouse.enabled = true;
+        this.player.scene.input.keyboard.enabled = true;
+        this.player.scene.input.keyboard.enableGlobalCapture();
+        setTimeout(() => {
+          // will prevent key events like ESC for other components to register as soon
+          // as the chat input is closed. 
+          // TODO: find a better solution?
+          if (mouse) this.input.mouse.enabled = true;
+          this.input.keyboard.enabled = true;
+          this.input.keyboard.enableGlobalCapture();
+        }, 100);
+
+        return toggleInputs;
+      }
+    }
+
     const chatKey = this.input.keyboard.addKey('T');
+    const settingsKey = this.input.keyboard.addKey('ESC');
 
     const openChatInput = () => {
-      if (
-        this.sendMessageInput ||
-        this.player.busy
-      )
+      if (this.player.busy || this.sendMessageInput)
         return;
 
       this.player.busy = true;
-      // prevent player from moving
-      this.player.scene.input.keyboard.enabled = false;
-      // prevent phaser from "blocking" some keys (for typing in chat)
-      this.player.scene.input.keyboard.disableGlobalCapture();
+      
+      const inputs = toggleInputs();
 
       this.sendMessageInput = this.add.reactDom(ChatType, {
         precedentMessages: this.precedentMessages,
@@ -237,15 +262,15 @@ export default class UIScene extends Scene {
       });
 
       this.sendMessageInput.events.on('chat_submit', (text: string) => {
-        // NOTE: trim on ui comp?
-        text = text.trim();
-
-        // reset to default
-        this.player.scene.input.keyboard.enabled = true;
-        this.player.scene.input.keyboard.enableGlobalCapture();
         this.sendMessageInput?.destroy();
         this.sendMessageInput = undefined;
         this.player.busy = false;
+
+        // NOTE: trim on ui comp?
+        text = text.trim();
+
+        // turn back on inputs
+        inputs();
 
         if (text.length > 0) {
           // TODO: kinda heavy. maybe just push to end of array and reverse it?
@@ -257,22 +282,37 @@ export default class UIScene extends Scene {
       });
     };
 
+    const openSettings = () => {
+      if (this.sendMessageInput) return;
+
+      const settings = this.add.reactDom(Settings);
+
+      const inputs = toggleInputs(true);
+
+      settings.events.on('close', () => {
+        settings.destroy();
+
+        inputs();
+      });
+    };
+
+    // handle player inventory open
+    // EventHandler.emitter().on(Events.PLAYER_INVENTORY_OPEN, () => {
+    //   this.inventoryComponent = this.add.reactDom(InventoryComponent, {
+    //     inventory: this.player.inventory,
+    //     quests: this.player.questManager.quests,
+    //   });
+    // });
+    // EventHandler.emitter().on(Events.PLAYER_INVENTORY_CLOSE, () => {
+    //   this.inventoryComponent?.destroy();
+    //   this.inventoryComponent = undefined;
+    // });
+
     chatKey.on(Phaser.Input.Keyboard.Events.UP, openChatInput);
+    settingsKey.on(Phaser.Input.Keyboard.Events.UP, openSettings);
   }
 
   private _handleInteractions() {
-    // handle player inventory open
-    EventHandler.emitter().on(Events.PLAYER_INVENTORY_OPEN, () => {
-      this.inventoryComponent = this.add.reactDom(InventoryComponent, {
-        inventory: this.player.inventory,
-        quests: this.player.questManager.quests,
-      });
-    });
-    EventHandler.emitter().on(Events.PLAYER_INVENTORY_CLOSE, () => {
-      this.inventoryComponent?.destroy();
-      this.inventoryComponent = undefined;
-    });
-
     this._handleNpcInteractions();
     this._handleItemInteractions();
   }
