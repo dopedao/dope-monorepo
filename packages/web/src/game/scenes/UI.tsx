@@ -235,10 +235,11 @@ export default class UIScene extends Scene {
           // will prevent key events like ESC for other components to register as soon
           // as the chat input is closed. 
           // TODO: find a better solution?
+          // NOTE: a solution would be to stop event propagation in the component handling inputs?
           if (mouse) this.input.mouse.enabled = true;
           this.input.keyboard.enabled = true;
           this.input.keyboard.enableGlobalCapture();
-        }, 100);
+        }, 200);
 
         return toggleInputs;
       }
@@ -282,7 +283,7 @@ export default class UIScene extends Scene {
       });
     };
 
-    const openSettings = () => {
+    const openSettings = (e: Phaser.Input.Keyboard.Key) => {
       if (this.sendMessageInput) return;
 
       const settings = this.add.reactDom(Settings);

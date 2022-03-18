@@ -6,7 +6,6 @@ import { useEffect } from "react";
 export default function Settings(props: { manager: ComponentManager }) {
 
     const handleKeyDown = (e: KeyboardEvent) => {
-        console.log(e);
         if (e.key === "Escape")
             props.manager.events.emit('close');
     }

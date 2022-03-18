@@ -3,7 +3,7 @@ import { Hustler } from '@dopewars/contracts';
 import { DataTypes, NetworkEvents } from 'game/handlers/network/types';
 import { ComponentManager } from 'phaser3-react/src/manager';
 import Toast from 'phaser3-rex-plugins/templates/ui/toast/Toast';
-import React, { useEffect } from 'react';
+import React, { useEffect, KeyboardEvent } from 'react';
 import { FormEvent } from 'react';
 import theme from 'ui/styles/theme';
 
@@ -48,16 +48,16 @@ export default function ChatType(props: Props) {
     return () => clearInterval(interval);
   }, []);
 
-  const handleInputKey = (e: string) => {
-    if (e === 'Enter' && canSendMessage) handleSubmit(inputText);
-    else if (e === 'Escape')
+  const handleInputKey = (e: KeyboardEvent) => {
+    if (e.key === 'Enter' && canSendMessage) handleSubmit(inputText);
+    else if (e.key === 'Escape')
       // send "nothing", chat will get closed & message will not get sent
       handleSubmit('');
-    else if (e === 'ArrowUp') {
+    else if (e.key === 'ArrowUp') {
       state.current.i = ++state.current.i % props.precedentMessages.length;
       const precedentMessage = props.precedentMessages[state.current.i];
       if (precedentMessage) setInputText(precedentMessage);
-    } else if (e === 'ArrowDown') {
+    } else if (e.key === 'ArrowDown') {
       // rolling window, wrap around
       state.current.i = --state.current.i % props.precedentMessages.length;
       if (state.current.i < 0) state.current.i = props.precedentMessages.length - 1;
@@ -168,7 +168,7 @@ export default function ChatType(props: Props) {
                 textColor="#f5f5f5"
                 value={inputText}
                 onChange={({ target }) => setInputText(target.value)}
-                onKeyDown={e => handleInputKey(e.key)}
+                onKeyDown={handleInputKey}
                 style={{
                   backgroundColor: 'rgba(0, 0, 0, 0.3)',
                 }}

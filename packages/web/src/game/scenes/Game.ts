@@ -117,16 +117,27 @@ export default class GameScene extends Scene {
                 'Sadge',
               ],
               onEnd: (text: Text, conversation: Conversation, choice?: number) => {
+                if (choice === 0)
+                {
+                  conversation.add({
+                    text: 'I\'m glad to hear that!',
+                  });
+                  return;
+                }
+
                 conversation.texts.push({
-                  text: choice === 0 ? 'Glad to hear that!' : 'Ah, sorry to hear that!',
-                })
+                    text: 'Not the answer I was looking for...',
+                    typingSpeed: 20,
+                  },
+                  text
+                );
               }
             }
           ])
         ],
         [
           { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
-          { position: new Phaser.Math.Vector2(400, 200) },
+          { position: new Phaser.Math.Vector2(405, 200) },
           { position: new Phaser.Math.Vector2(800, 100), wait: 8000, onMoved: (hustler: Hustler) => hustler.say('I can\'t be walking around indefinitely...') },
           { position: new Phaser.Math.Vector2(100, 500) },
         ],
@@ -347,12 +358,9 @@ export default class GameScene extends Scene {
         });
         networkHandler.disconnect();
         networkHandler.authenticator.logout()
-          .then(() => {
-            this.scene.start('LoginScene');
+          .finally(() => {
+            this.scene.start('LoginScene', this.hustlerData);
           })
-          .catch(() => {
-            this.scene.start('LoginScene');
-          });
       }
     });
 

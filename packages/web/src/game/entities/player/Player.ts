@@ -192,6 +192,8 @@ export default class Player extends Hustler {
   }
 
   updateDepth(pair: MatterJS.IPair) {
+    const diff = 5;
+
     let playerHitbox: MatterJS.BodyType;
     let otherHitbox: MatterJS.BodyType;
 
@@ -209,9 +211,9 @@ export default class Player extends Hustler {
     // if the overlapped has a parent body, use it instead for calculating delta Y
     if (otherHitbox.parent) otherHitbox = otherHitbox.parent;
 
-    if (otherHitbox.position.y - playerHitbox.position.y < 20)
-      playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 20);
-    else playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 20);
+    if (otherHitbox.position.y - playerHitbox.position.y < 5)
+      playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 5);
+    else playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 5);
   }
 
   private _handleEvents() {
