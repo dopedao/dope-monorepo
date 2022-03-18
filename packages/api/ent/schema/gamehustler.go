@@ -14,14 +14,26 @@ type Position struct {
 	y float32
 }
 
+// Definition of a game hustler's quest.
+// Actual quest is stored in the game registry. Quest `string` is the quest's ID.
 type GameHustlerQuest struct {
 	quest     string
 	completed bool
 }
 
+// Definition of a game hustler's item.
 type GameHustlerItem struct {
-	item  string
-	count int
+	item string
+}
+
+// Definition of a relation between a game hustler and a citizen.
+// Citizen `string` is the citizen's ID. Stored in the game registry.
+// Conversation is the conversation's id of the citizen.
+// Text is the id of the text in the conversation.
+type GameHustlerCitizen struct {
+	citizen      string
+	conversation string
+	text         string
 }
 
 // Hustler holds the schema definition for the Hustler entity.
@@ -33,6 +45,7 @@ func (GameHustler) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.JSON("lastPosition", Position{}),
+		field.JSON("relations", []GameHustlerCitizen{}),
 		field.JSON("quests", []GameHustlerQuest{}),
 		field.JSON("items", []GameHustlerItem{}),
 		field.Time("created_at").
