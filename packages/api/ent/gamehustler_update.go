@@ -35,6 +35,12 @@ func (ghu *GameHustlerUpdate) SetLastPosition(s schema.Position) *GameHustlerUpd
 	return ghu
 }
 
+// SetRelations sets the "relations" field.
+func (ghu *GameHustlerUpdate) SetRelations(shc []schema.GameHustlerCitizen) *GameHustlerUpdate {
+	ghu.mutation.SetRelations(shc)
+	return ghu
+}
+
 // SetQuests sets the "quests" field.
 func (ghu *GameHustlerUpdate) SetQuests(shq []schema.GameHustlerQuest) *GameHustlerUpdate {
 	ghu.mutation.SetQuests(shq)
@@ -156,6 +162,13 @@ func (ghu *GameHustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gamehustler.FieldLastPosition,
 		})
 	}
+	if value, ok := ghu.mutation.Relations(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: gamehustler.FieldRelations,
+		})
+	}
 	if value, ok := ghu.mutation.Quests(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
@@ -227,6 +240,12 @@ type GameHustlerUpdateOne struct {
 // SetLastPosition sets the "lastPosition" field.
 func (ghuo *GameHustlerUpdateOne) SetLastPosition(s schema.Position) *GameHustlerUpdateOne {
 	ghuo.mutation.SetLastPosition(s)
+	return ghuo
+}
+
+// SetRelations sets the "relations" field.
+func (ghuo *GameHustlerUpdateOne) SetRelations(shc []schema.GameHustlerCitizen) *GameHustlerUpdateOne {
+	ghuo.mutation.SetRelations(shc)
 	return ghuo
 }
 
@@ -373,6 +392,13 @@ func (ghuo *GameHustlerUpdateOne) sqlSave(ctx context.Context) (_node *GameHustl
 			Type:   field.TypeJSON,
 			Value:  value,
 			Column: gamehustler.FieldLastPosition,
+		})
+	}
+	if value, ok := ghuo.mutation.Relations(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: gamehustler.FieldRelations,
 		})
 	}
 	if value, ok := ghuo.mutation.Quests(); ok {
