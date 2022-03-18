@@ -31,6 +31,12 @@ func (ghc *GameHustlerCreate) SetLastPosition(s schema.Position) *GameHustlerCre
 	return ghc
 }
 
+// SetRelations sets the "relations" field.
+func (ghc *GameHustlerCreate) SetRelations(shc []schema.GameHustlerCitizen) *GameHustlerCreate {
+	ghc.mutation.SetRelations(shc)
+	return ghc
+}
+
 // SetQuests sets the "quests" field.
 func (ghc *GameHustlerCreate) SetQuests(shq []schema.GameHustlerQuest) *GameHustlerCreate {
 	ghc.mutation.SetQuests(shq)
@@ -164,6 +170,9 @@ func (ghc *GameHustlerCreate) check() error {
 	if _, ok := ghc.mutation.LastPosition(); !ok {
 		return &ValidationError{Name: "lastPosition", err: errors.New(`ent: missing required field "GameHustler.lastPosition"`)}
 	}
+	if _, ok := ghc.mutation.Relations(); !ok {
+		return &ValidationError{Name: "relations", err: errors.New(`ent: missing required field "GameHustler.relations"`)}
+	}
 	if _, ok := ghc.mutation.Quests(); !ok {
 		return &ValidationError{Name: "quests", err: errors.New(`ent: missing required field "GameHustler.quests"`)}
 	}
@@ -217,6 +226,14 @@ func (ghc *GameHustlerCreate) createSpec() (*GameHustler, *sqlgraph.CreateSpec) 
 			Column: gamehustler.FieldLastPosition,
 		})
 		_node.LastPosition = value
+	}
+	if value, ok := ghc.mutation.Relations(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: gamehustler.FieldRelations,
+		})
+		_node.Relations = value
 	}
 	if value, ok := ghc.mutation.Quests(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -328,6 +345,18 @@ func (u *GameHustlerUpsert) UpdateLastPosition() *GameHustlerUpsert {
 	return u
 }
 
+// SetRelations sets the "relations" field.
+func (u *GameHustlerUpsert) SetRelations(v []schema.GameHustlerCitizen) *GameHustlerUpsert {
+	u.Set(gamehustler.FieldRelations, v)
+	return u
+}
+
+// UpdateRelations sets the "relations" field to the value that was provided on create.
+func (u *GameHustlerUpsert) UpdateRelations() *GameHustlerUpsert {
+	u.SetExcluded(gamehustler.FieldRelations)
+	return u
+}
+
 // SetQuests sets the "quests" field.
 func (u *GameHustlerUpsert) SetQuests(v []schema.GameHustlerQuest) *GameHustlerUpsert {
 	u.Set(gamehustler.FieldQuests, v)
@@ -428,6 +457,20 @@ func (u *GameHustlerUpsertOne) SetLastPosition(v schema.Position) *GameHustlerUp
 func (u *GameHustlerUpsertOne) UpdateLastPosition() *GameHustlerUpsertOne {
 	return u.Update(func(s *GameHustlerUpsert) {
 		s.UpdateLastPosition()
+	})
+}
+
+// SetRelations sets the "relations" field.
+func (u *GameHustlerUpsertOne) SetRelations(v []schema.GameHustlerCitizen) *GameHustlerUpsertOne {
+	return u.Update(func(s *GameHustlerUpsert) {
+		s.SetRelations(v)
+	})
+}
+
+// UpdateRelations sets the "relations" field to the value that was provided on create.
+func (u *GameHustlerUpsertOne) UpdateRelations() *GameHustlerUpsertOne {
+	return u.Update(func(s *GameHustlerUpsert) {
+		s.UpdateRelations()
 	})
 }
 
@@ -703,6 +746,20 @@ func (u *GameHustlerUpsertBulk) SetLastPosition(v schema.Position) *GameHustlerU
 func (u *GameHustlerUpsertBulk) UpdateLastPosition() *GameHustlerUpsertBulk {
 	return u.Update(func(s *GameHustlerUpsert) {
 		s.UpdateLastPosition()
+	})
+}
+
+// SetRelations sets the "relations" field.
+func (u *GameHustlerUpsertBulk) SetRelations(v []schema.GameHustlerCitizen) *GameHustlerUpsertBulk {
+	return u.Update(func(s *GameHustlerUpsert) {
+		s.SetRelations(v)
+	})
+}
+
+// UpdateRelations sets the "relations" field to the value that was provided on create.
+func (u *GameHustlerUpsertBulk) UpdateRelations() *GameHustlerUpsertBulk {
+	return u.Update(func(s *GameHustlerUpsert) {
+		s.UpdateRelations()
 	})
 }
 

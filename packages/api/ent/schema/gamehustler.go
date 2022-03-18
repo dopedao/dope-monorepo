@@ -10,22 +10,21 @@ import (
 )
 
 type Position struct {
-	x float32
-	y float32
+	X float32
+	Y float32
 }
 
 // Definition of a game hustler's quest.
 // Actual quest is stored in the game registry. Quest `string` is the quest's ID.
 type GameHustlerQuest struct {
-	quest     string
-	completed bool
+	Quest     string
+	Completed bool
 }
 
 // Definition of a game hustler's item.
 // Actual item is stored in the game registry. Item `string` is the item's ID.
 type GameHustlerItem struct {
-	item  string
-	count int
+	Item string
 }
 
 // Definition of a relation between a game hustler and a citizen.
@@ -33,9 +32,9 @@ type GameHustlerItem struct {
 // Conversation is the conversation's index of the citizen.
 // Text is the index of the text in the conversation.
 type GameHustlerCitizen struct {
-	citizen      string
-	conversation int
-	text         int
+	Citizen      string
+	Conversation string
+	Text         string
 }
 
 // Hustler holds the schema definition for the Hustler entity.
