@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
@@ -161,7 +162,7 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 	}
 }
 
-func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data PlayerJoinData) {
+func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data PlayerJoinData, gameHustler *ent.GameHustler) {
 	if data.CurrentMap == "" {
 		// we can directly use writejson here
 		// because player is not yet registered

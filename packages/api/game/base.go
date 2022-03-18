@@ -77,13 +77,16 @@ func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.C
 			}
 
 			// get game hustler from hustler
-			_, err := client.GameHustler.Query().Where(gamehustler.HasHustlersWith(hustler.IDEQ(data.HustlerId))).Only(ctx)
+			gameHustler, err := client.GameHustler.Query().Where(gamehustler.HasHustlersWith(hustler.IDEQ(data.HustlerId))).Only(ctx)
 			if err != nil {
-				conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get hustler"))
-				continue
+				gameHustler, err = client.GameHustler.Create().SetHustlersID(data.HustlerId).Save(ctx)
+				if err != nil {
+					conn.WriteJSON(generateErrorMessage(500, "could not create game hustler"))
+					continue
+				}
 			}
 
-			g.HandlePlayerJoin(ctx, conn, data)
+			g.HandlePlayerJoin(ctx, conn, data, gameHustler)
 		}
 	}
 }
