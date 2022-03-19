@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 )
 
@@ -25,9 +24,6 @@ type GameHustlerQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.GameHustler
-	// eager-loading edges.
-	withHustlers *HustlerQuery
-	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -62,28 +58,6 @@ func (ghq *GameHustlerQuery) Unique(unique bool) *GameHustlerQuery {
 func (ghq *GameHustlerQuery) Order(o ...OrderFunc) *GameHustlerQuery {
 	ghq.order = append(ghq.order, o...)
 	return ghq
-}
-
-// QueryHustlers chains the current query on the "hustlers" edge.
-func (ghq *GameHustlerQuery) QueryHustlers() *HustlerQuery {
-	query := &HustlerQuery{config: ghq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ghq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := ghq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(gamehustler.Table, gamehustler.FieldID, selector),
-			sqlgraph.To(hustler.Table, hustler.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, gamehustler.HustlersTable, gamehustler.HustlersColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(ghq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // First returns the first GameHustler entity from the query.
@@ -262,27 +236,15 @@ func (ghq *GameHustlerQuery) Clone() *GameHustlerQuery {
 		return nil
 	}
 	return &GameHustlerQuery{
-		config:       ghq.config,
-		limit:        ghq.limit,
-		offset:       ghq.offset,
-		order:        append([]OrderFunc{}, ghq.order...),
-		predicates:   append([]predicate.GameHustler{}, ghq.predicates...),
-		withHustlers: ghq.withHustlers.Clone(),
+		config:     ghq.config,
+		limit:      ghq.limit,
+		offset:     ghq.offset,
+		order:      append([]OrderFunc{}, ghq.order...),
+		predicates: append([]predicate.GameHustler{}, ghq.predicates...),
 		// clone intermediate query.
 		sql:  ghq.sql.Clone(),
 		path: ghq.path,
 	}
-}
-
-// WithHustlers tells the query-builder to eager-load the nodes that are connected to
-// the "hustlers" edge. The optional arguments are used to configure the query builder of the edge.
-func (ghq *GameHustlerQuery) WithHustlers(opts ...func(*HustlerQuery)) *GameHustlerQuery {
-	query := &HustlerQuery{config: ghq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	ghq.withHustlers = query
-	return ghq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -291,7 +253,7 @@ func (ghq *GameHustlerQuery) WithHustlers(opts ...func(*HustlerQuery)) *GameHust
 // Example:
 //
 //	var v []struct {
-//		LastPosition schema.Position `json:"lastPosition,omitempty"`
+//		LastPosition schema.Position `json:"last_position,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -318,7 +280,7 @@ func (ghq *GameHustlerQuery) GroupBy(field string, fields ...string) *GameHustle
 // Example:
 //
 //	var v []struct {
-//		LastPosition schema.Position `json:"lastPosition,omitempty"`
+//		LastPosition schema.Position `json:"last_position,omitempty"`
 //	}
 //
 //	client.GameHustler.Query().
@@ -348,19 +310,9 @@ func (ghq *GameHustlerQuery) prepareQuery(ctx context.Context) error {
 
 func (ghq *GameHustlerQuery) sqlAll(ctx context.Context) ([]*GameHustler, error) {
 	var (
-		nodes       = []*GameHustler{}
-		withFKs     = ghq.withFKs
-		_spec       = ghq.querySpec()
-		loadedTypes = [1]bool{
-			ghq.withHustlers != nil,
-		}
+		nodes = []*GameHustler{}
+		_spec = ghq.querySpec()
 	)
-	if ghq.withHustlers != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, gamehustler.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &GameHustler{config: ghq.config}
 		nodes = append(nodes, node)
@@ -371,7 +323,6 @@ func (ghq *GameHustlerQuery) sqlAll(ctx context.Context) ([]*GameHustler, error)
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
-		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, ghq.driver, _spec); err != nil {
@@ -380,36 +331,6 @@ func (ghq *GameHustlerQuery) sqlAll(ctx context.Context) ([]*GameHustler, error)
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-
-	if query := ghq.withHustlers; query != nil {
-		ids := make([]string, 0, len(nodes))
-		nodeids := make(map[string][]*GameHustler)
-		for i := range nodes {
-			if nodes[i].game_hustler_hustlers == nil {
-				continue
-			}
-			fk := *nodes[i].game_hustler_hustlers
-			if _, ok := nodeids[fk]; !ok {
-				ids = append(ids, fk)
-			}
-			nodeids[fk] = append(nodeids[fk], nodes[i])
-		}
-		query.Where(hustler.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "game_hustler_hustlers" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.Hustlers = n
-			}
-		}
-	}
-
 	return nodes, nil
 }
 

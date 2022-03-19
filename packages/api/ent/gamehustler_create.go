@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
 
@@ -25,7 +24,7 @@ type GameHustlerCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetLastPosition sets the "lastPosition" field.
+// SetLastPosition sets the "last_position" field.
 func (ghc *GameHustlerCreate) SetLastPosition(s schema.Position) *GameHustlerCreate {
 	ghc.mutation.SetLastPosition(s)
 	return ghc
@@ -67,25 +66,6 @@ func (ghc *GameHustlerCreate) SetNillableCreatedAt(t *time.Time) *GameHustlerCre
 func (ghc *GameHustlerCreate) SetID(s string) *GameHustlerCreate {
 	ghc.mutation.SetID(s)
 	return ghc
-}
-
-// SetHustlersID sets the "hustlers" edge to the Hustler entity by ID.
-func (ghc *GameHustlerCreate) SetHustlersID(id string) *GameHustlerCreate {
-	ghc.mutation.SetHustlersID(id)
-	return ghc
-}
-
-// SetNillableHustlersID sets the "hustlers" edge to the Hustler entity by ID if the given value is not nil.
-func (ghc *GameHustlerCreate) SetNillableHustlersID(id *string) *GameHustlerCreate {
-	if id != nil {
-		ghc = ghc.SetHustlersID(*id)
-	}
-	return ghc
-}
-
-// SetHustlers sets the "hustlers" edge to the Hustler entity.
-func (ghc *GameHustlerCreate) SetHustlers(h *Hustler) *GameHustlerCreate {
-	return ghc.SetHustlersID(h.ID)
 }
 
 // Mutation returns the GameHustlerMutation object of the builder.
@@ -168,7 +148,7 @@ func (ghc *GameHustlerCreate) defaults() {
 // check runs all checks and user-defined validators on the builder.
 func (ghc *GameHustlerCreate) check() error {
 	if _, ok := ghc.mutation.LastPosition(); !ok {
-		return &ValidationError{Name: "lastPosition", err: errors.New(`ent: missing required field "GameHustler.lastPosition"`)}
+		return &ValidationError{Name: "last_position", err: errors.New(`ent: missing required field "GameHustler.last_position"`)}
 	}
 	if _, ok := ghc.mutation.Relations(); !ok {
 		return &ValidationError{Name: "relations", err: errors.New(`ent: missing required field "GameHustler.relations"`)}
@@ -259,26 +239,6 @@ func (ghc *GameHustlerCreate) createSpec() (*GameHustler, *sqlgraph.CreateSpec) 
 		})
 		_node.CreatedAt = value
 	}
-	if nodes := ghc.mutation.HustlersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   gamehustler.HustlersTable,
-			Columns: []string{gamehustler.HustlersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.game_hustler_hustlers = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	return _node, _spec
 }
 
@@ -333,13 +293,13 @@ type (
 	}
 )
 
-// SetLastPosition sets the "lastPosition" field.
+// SetLastPosition sets the "last_position" field.
 func (u *GameHustlerUpsert) SetLastPosition(v schema.Position) *GameHustlerUpsert {
 	u.Set(gamehustler.FieldLastPosition, v)
 	return u
 }
 
-// UpdateLastPosition sets the "lastPosition" field to the value that was provided on create.
+// UpdateLastPosition sets the "last_position" field to the value that was provided on create.
 func (u *GameHustlerUpsert) UpdateLastPosition() *GameHustlerUpsert {
 	u.SetExcluded(gamehustler.FieldLastPosition)
 	return u
@@ -446,14 +406,14 @@ func (u *GameHustlerUpsertOne) Update(set func(*GameHustlerUpsert)) *GameHustler
 	return u
 }
 
-// SetLastPosition sets the "lastPosition" field.
+// SetLastPosition sets the "last_position" field.
 func (u *GameHustlerUpsertOne) SetLastPosition(v schema.Position) *GameHustlerUpsertOne {
 	return u.Update(func(s *GameHustlerUpsert) {
 		s.SetLastPosition(v)
 	})
 }
 
-// UpdateLastPosition sets the "lastPosition" field to the value that was provided on create.
+// UpdateLastPosition sets the "last_position" field to the value that was provided on create.
 func (u *GameHustlerUpsertOne) UpdateLastPosition() *GameHustlerUpsertOne {
 	return u.Update(func(s *GameHustlerUpsert) {
 		s.UpdateLastPosition()
@@ -735,14 +695,14 @@ func (u *GameHustlerUpsertBulk) Update(set func(*GameHustlerUpsert)) *GameHustle
 	return u
 }
 
-// SetLastPosition sets the "lastPosition" field.
+// SetLastPosition sets the "last_position" field.
 func (u *GameHustlerUpsertBulk) SetLastPosition(v schema.Position) *GameHustlerUpsertBulk {
 	return u.Update(func(s *GameHustlerUpsert) {
 		s.SetLastPosition(v)
 	})
 }
 
-// UpdateLastPosition sets the "lastPosition" field to the value that was provided on create.
+// UpdateLastPosition sets the "last_position" field to the value that was provided on create.
 func (u *GameHustlerUpsertBulk) UpdateLastPosition() *GameHustlerUpsertBulk {
 	return u.Update(func(s *GameHustlerUpsert) {
 		s.UpdateLastPosition()

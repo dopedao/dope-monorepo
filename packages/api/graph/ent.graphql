@@ -1004,8 +1004,4 @@ input GameHustlerWhereInput {
   idGTE: ID
   idLT: ID
   idLTE: ID
-  
-  """hustlers edge predicates"""
-  hasHustlers: Boolean
-  hasHustlersWith: [HustlerWhereInput!]
 }
