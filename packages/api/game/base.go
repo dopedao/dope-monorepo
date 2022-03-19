@@ -8,7 +8,6 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
@@ -78,7 +77,7 @@ func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.C
 			}
 
 			// get game hustler from hustler
-			gameHustler, err := client.GameHustler.Query().Where(gamehustler.IDEQ(data.HustlerId)).Only(ctx)
+			gameHustler, err := client.GameHustler.Get(ctx, data.HustlerId)
 			if err != nil {
 				gameHustler, err = client.GameHustler.Create().
 					SetID(data.HustlerId).
