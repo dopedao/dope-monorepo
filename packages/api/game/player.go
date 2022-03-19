@@ -38,9 +38,6 @@ func NewPlayer(conn *websocket.Conn, game *Game, hustlerId string, name string, 
 		Send: make(chan BaseMessage),
 	}
 
-	go p.readPump(context.Background())
-	go p.writePump(context.Background())
-
 	return p
 }
 

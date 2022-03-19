@@ -38,6 +38,9 @@ func (g *Game) Start(ctx context.Context) {
 		case player := <-g.Register:
 			g.Players = append(g.Players, player)
 
+			go player.readPump(ctx)
+			go player.writePump(ctx)
+
 			// handshake data, player ID & game state info
 			handShakeData, err := json.Marshal(g.GenerateHandshakeData(player))
 			if err != nil {
@@ -141,17 +144,9 @@ func (g *Game) PlayerByConn(conn *websocket.Conn) *Player {
 func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 	_, log := base.LogFor(ctx)
 
-	joinData, err := json.Marshal(PlayerJoinClientData{
-		Id:         player.Id.String(),
-		HustlerId:  player.hustlerId,
-		Name:       player.name,
-		CurrentMap: player.currentMap,
-		X:          player.position.X,
-		Y:          player.position.Y,
-	})
+	joinData, err := json.Marshal(player.Serialize())
 	if err != nil {
 		log.Err(err).Msgf("could not marshal join data for player: %s | %s", player.Id, player.name)
-		player.Send <- generateErrorMessage(500, "could not marshal join data")
 		return
 	}
 
