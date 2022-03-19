@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
@@ -29,7 +28,7 @@ func (ghu *GameHustlerUpdate) Where(ps ...predicate.GameHustler) *GameHustlerUpd
 	return ghu
 }
 
-// SetLastPosition sets the "lastPosition" field.
+// SetLastPosition sets the "last_position" field.
 func (ghu *GameHustlerUpdate) SetLastPosition(s schema.Position) *GameHustlerUpdate {
 	ghu.mutation.SetLastPosition(s)
 	return ghu
@@ -53,34 +52,9 @@ func (ghu *GameHustlerUpdate) SetItems(shi []schema.GameHustlerItem) *GameHustle
 	return ghu
 }
 
-// SetHustlersID sets the "hustlers" edge to the Hustler entity by ID.
-func (ghu *GameHustlerUpdate) SetHustlersID(id string) *GameHustlerUpdate {
-	ghu.mutation.SetHustlersID(id)
-	return ghu
-}
-
-// SetNillableHustlersID sets the "hustlers" edge to the Hustler entity by ID if the given value is not nil.
-func (ghu *GameHustlerUpdate) SetNillableHustlersID(id *string) *GameHustlerUpdate {
-	if id != nil {
-		ghu = ghu.SetHustlersID(*id)
-	}
-	return ghu
-}
-
-// SetHustlers sets the "hustlers" edge to the Hustler entity.
-func (ghu *GameHustlerUpdate) SetHustlers(h *Hustler) *GameHustlerUpdate {
-	return ghu.SetHustlersID(h.ID)
-}
-
 // Mutation returns the GameHustlerMutation object of the builder.
 func (ghu *GameHustlerUpdate) Mutation() *GameHustlerMutation {
 	return ghu.mutation
-}
-
-// ClearHustlers clears the "hustlers" edge to the Hustler entity.
-func (ghu *GameHustlerUpdate) ClearHustlers() *GameHustlerUpdate {
-	ghu.mutation.ClearHustlers()
-	return ghu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -183,41 +157,6 @@ func (ghu *GameHustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gamehustler.FieldItems,
 		})
 	}
-	if ghu.mutation.HustlersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   gamehustler.HustlersTable,
-			Columns: []string{gamehustler.HustlersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ghu.mutation.HustlersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   gamehustler.HustlersTable,
-			Columns: []string{gamehustler.HustlersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ghu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{gamehustler.Label}
@@ -237,7 +176,7 @@ type GameHustlerUpdateOne struct {
 	mutation *GameHustlerMutation
 }
 
-// SetLastPosition sets the "lastPosition" field.
+// SetLastPosition sets the "last_position" field.
 func (ghuo *GameHustlerUpdateOne) SetLastPosition(s schema.Position) *GameHustlerUpdateOne {
 	ghuo.mutation.SetLastPosition(s)
 	return ghuo
@@ -261,34 +200,9 @@ func (ghuo *GameHustlerUpdateOne) SetItems(shi []schema.GameHustlerItem) *GameHu
 	return ghuo
 }
 
-// SetHustlersID sets the "hustlers" edge to the Hustler entity by ID.
-func (ghuo *GameHustlerUpdateOne) SetHustlersID(id string) *GameHustlerUpdateOne {
-	ghuo.mutation.SetHustlersID(id)
-	return ghuo
-}
-
-// SetNillableHustlersID sets the "hustlers" edge to the Hustler entity by ID if the given value is not nil.
-func (ghuo *GameHustlerUpdateOne) SetNillableHustlersID(id *string) *GameHustlerUpdateOne {
-	if id != nil {
-		ghuo = ghuo.SetHustlersID(*id)
-	}
-	return ghuo
-}
-
-// SetHustlers sets the "hustlers" edge to the Hustler entity.
-func (ghuo *GameHustlerUpdateOne) SetHustlers(h *Hustler) *GameHustlerUpdateOne {
-	return ghuo.SetHustlersID(h.ID)
-}
-
 // Mutation returns the GameHustlerMutation object of the builder.
 func (ghuo *GameHustlerUpdateOne) Mutation() *GameHustlerMutation {
 	return ghuo.mutation
-}
-
-// ClearHustlers clears the "hustlers" edge to the Hustler entity.
-func (ghuo *GameHustlerUpdateOne) ClearHustlers() *GameHustlerUpdateOne {
-	ghuo.mutation.ClearHustlers()
-	return ghuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -414,41 +328,6 @@ func (ghuo *GameHustlerUpdateOne) sqlSave(ctx context.Context) (_node *GameHustl
 			Value:  value,
 			Column: gamehustler.FieldItems,
 		})
-	}
-	if ghuo.mutation.HustlersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   gamehustler.HustlersTable,
-			Columns: []string{gamehustler.HustlersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ghuo.mutation.HustlersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   gamehustler.HustlersTable,
-			Columns: []string{gamehustler.HustlersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: hustler.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &GameHustler{config: ghuo.config}
 	_spec.Assign = _node.assignValues

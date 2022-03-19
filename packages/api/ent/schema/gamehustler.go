@@ -5,7 +5,6 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
-	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -44,7 +43,7 @@ type GameHustler struct {
 func (GameHustler) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
-		field.JSON("lastPosition", Position{}),
+		field.JSON("last_position", Position{}),
 		field.JSON("relations", []GameHustlerCitizen{}),
 		field.JSON("quests", []GameHustlerQuest{}),
 		field.JSON("items", []GameHustlerItem{}),
@@ -58,9 +57,5 @@ func (GameHustler) Fields() []ent.Field {
 }
 
 func (GameHustler) Edges() []ent.Edge {
-	return []ent.Edge{
-		edge.To("hustlers", Hustler.Type).
-			Unique().
-			Annotations(entgql.Bind()),
-	}
+	return []ent.Edge{}
 }
