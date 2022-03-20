@@ -53,8 +53,6 @@ func (g *Game) Start(ctx context.Context) {
 				Data:  handShakeData,
 			}
 
-			g.DispatchPlayerJoin(ctx, player)
-
 			log.Info().Msgf("player joined: %s | %s", player.Id, player.name)
 		case player := <-g.Unregister:
 			for i, p := range g.Players {
@@ -165,7 +163,9 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 		return
 	}
 
-	g.Register <- NewPlayer(conn, g, data.HustlerId, data.Name, data.CurrentMap, data.X, data.Y)
+	player := NewPlayer(conn, g, data.HustlerId, data.Name, data.CurrentMap, data.X, data.Y)
+	g.Register <- player
+	g.DispatchPlayerJoin(ctx, player)
 }
 
 func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
