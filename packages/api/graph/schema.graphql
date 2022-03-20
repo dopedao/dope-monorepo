@@ -131,6 +131,7 @@ type Hustler implements Node {
 }
 
 type Position {
+  currentMap: String!
   x: Float!
   y: Float!
 }
