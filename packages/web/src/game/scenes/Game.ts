@@ -20,16 +20,20 @@ import { SiweMessage } from 'siwe';
 import PointQuest from 'game/entities/player/quests/PointQuest';
 import Zone from 'game/world/Zone';
 import InteractCitizenQuest from 'game/entities/player/quests/InteractCitizenQuest';
-import UIScene, { chakraToastStyle, toastStyle } from './UI';
+import UIScene, { chakraToastStyle, loadingSpinner, toastStyle } from './UI';
 import VirtualJoystick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
 import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
 import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
 import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
 import PathNavigator from 'game/world/PathNavigator';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
+import { ComponentManager } from 'phaser3-react/src/manager';
 
 
 export default class GameScene extends Scene {
   private hustlerData: any;
+
+  private initialized = false;
 
   private player!: Player;
   // other players
@@ -37,6 +41,8 @@ export default class GameScene extends Scene {
   // npcs
   private citizens: Citizen[] = new Array();
   private itemEntities: ItemEntity[] = new Array();
+
+  private loadingSpinner?: ComponentManager;
 
   // level identifiers of the current loaded maps
   private loadedMaps: string[] = new Array();
@@ -62,19 +68,13 @@ export default class GameScene extends Scene {
     this.hustlerData = data.hustlerData.find((hustler: any) => hustler.id === selectedHustler) ?? data.hustlerData[0];
   }
 
-  preload() {
+  async preload() {
+    const networkHandler = NetworkHandler.getInstance();
+    networkHandler.listenMessages();
+
     // first time playing the game?
     if ((window.localStorage.getItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`) ?? 'false') !== 'true')
       window.localStorage.setItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`, 'true');
-
-    // create map and entities
-    this._mapHelper = new MapHelper(this);
-    this.mapHelper.createMap('NY_Bushwick_Basket');
-    this.mapHelper.createEntities();
-    this.mapHelper.createCollisions();
-    this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
-
-    NetworkHandler.getInstance().listenMessages();
   }
 
   create() {
@@ -94,17 +94,125 @@ export default class GameScene extends Scene {
       // shutdown ui scene on game scene shutdown
       this.scene.stop('UIScene');
     });
-
     
     // create all of the animations
     new GameAnimations(this).create();
 
+    // register player
+    NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_JOIN, {
+      name: this.hustlerData?.name ?? 'Hustler',
+      hustlerId: this.hustlerData?.id ?? '',
+    });
+
+    // if we dont receive a handshake, an error instead
+    const onHandshakeError = (data: DataTypes[NetworkEvents.ERROR]) => {
+      // TODO: login scene or something like that
+      if (Math.floor(data.code / 100) === 4)
+      {
+        NetworkHandler.getInstance().disconnect();
+        NetworkHandler.getInstance().authenticator.logout()
+          .finally(() => {
+            this.scene.start('LoginScene', this.hustlerData);
+          })
+      }
+    };
+    NetworkHandler.getInstance().once(NetworkEvents.ERROR, onHandshakeError);
+
+    // initialize game on handshake
+    NetworkHandler.getInstance().once(
+      NetworkEvents.PLAYER_HANDSHAKE,
+      (data: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) => {
+        NetworkHandler.getInstance().emitter.off(NetworkEvents.ERROR, onHandshakeError);
+
+        // create map and entities
+        this._mapHelper = new MapHelper(this);
+        this.mapHelper.createMap(data.current_map);
+        this.mapHelper.createEntities();
+        this.mapHelper.createCollisions();
+        this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
+
+        this.player = new Player(
+          this.matter.world,
+          data.x, data.y,
+          data.current_map,
+          this.hustlerData?.id ?? '',
+          this.hustlerData?.name ?? 'Hustler',
+        );
+        this.player.setData('id', data.id);
+
+        // initiate all players
+        data.players.forEach(data => {
+          this.hustlers.push(
+            new Hustler(this.matter.world, data.x, data.y, data.hustlerId, data.name),
+          );
+          this.hustlers[this.hustlers.length - 1].setData('id', data.id);
+          this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
+        });
+        // initiate all item entities
+        data.itemEntities.forEach(iData => {
+          this.itemEntities.push(
+            new ItemEntity(this.matter.world, iData.x, iData.y, iData.item, Items[iData.item]),
+          );
+          this.itemEntities[this.itemEntities.length - 1].setData('id', iData.id);
+        });
+
+        this.initializeGame();
+    });
+
+    this.loadingSpinner = this.add.reactDom(loadingSpinner);
+  }
+
+  update(time: number, delta: number) {
+    if (!this.initialized) return;
+
+    this.player.update();
+
+    // dont update hustlers/citizens that are not in the same map
+    // as the player.
+    this.hustlers.forEach(hustler => hustler.currentMap === this.player.currentMap ? hustler.update() : {});
+    this.citizens.forEach(citizen => citizen.currentMap === this.player.currentMap ? citizen.update() : {});
+    this.itemEntities.forEach(itemEntity => itemEntity.update());
+
+    // update map
+    const level = this.mapHelper.mapReader.ldtk.levels.find(
+      l => l.identifier === this.player.currentMap,
+    )!;
+    const centerMapPos = new Phaser.Math.Vector2(
+      (level.worldX + (level.worldX + level.pxWid)) / 2,
+      (level.worldY + (level.worldY + level.pxHei)) / 2,
+    );
+    const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
+
+    // check to load new maps
+    // west
+    if (playerPos.x - centerMapPos.x < -(level.pxWid / 4)) this._checkDir(level, 'w', true);
+    // east
+    else if (playerPos.x - centerMapPos.x > level.pxWid / 4) this._checkDir(level, 'e', true);
+    // north
+    if (playerPos.y - centerMapPos.y < -(level.pxHei / 4)) this._checkDir(level, 'n', true);
+    // south
+    else if (playerPos.y - centerMapPos.y > level.pxHei / 4) this._checkDir(level, 's', true);
+    
+    
+
+    // check in which map we're in
+    // west
+    if (playerPos.x - centerMapPos.x < -(level.pxWid / 2)) this._checkDir(level, 'w', false);
+    // east
+    else if (playerPos.x - centerMapPos.x > level.pxWid / 2) this._checkDir(level, 'e', false);
+    // north
+    if (playerPos.y - centerMapPos.y < -(level.pxHei / 2)) this._checkDir(level, 'n', false);
+    // south
+    else if (playerPos.y - centerMapPos.y > level.pxHei / 2) this._checkDir(level, 's', false);
+  }
+
+  initializeGame() {
     this.citizens.push(
       new Citizen(
         this.matter.world,
         100,
         300,
-        this.mapHelper.mapReader.level.identifier,
+        "NY_Bushwick_Basket",
         '12',
         'Jimmy',
         'Crackhead',
@@ -146,16 +254,6 @@ export default class GameScene extends Scene {
       ),
     );
 
-    // TODO when map update: create player directly from map data
-    this.player = new Player(
-      this.matter.world,
-      500,
-      200,
-      this.mapHelper.mapReader.level.identifier,
-      this.hustlerData?.id,
-      this.hustlerData?.name
-    );
-
     const camera = this.cameras.main;
 
     // make the camera follow the player
@@ -166,50 +264,12 @@ export default class GameScene extends Scene {
     map.otherGfx?.setAlpha(0);
 
     this._handleNetwork();
-
+    
     this.scene.launch('UIScene', { player: this.player });
-  }
 
-  update(time: number, delta: number) {
-    this.player.update();
-
-    // dont update hustlers/citizens that are not in the same map
-    // as the player.
-    this.hustlers.forEach(hustler => hustler.currentMap === this.player.currentMap ? hustler.update() : {});
-    this.citizens.forEach(citizen => citizen.currentMap === this.player.currentMap ? citizen.update() : {});
-    this.itemEntities.forEach(itemEntity => itemEntity.update());
-
-    // update map
-    const level = this.mapHelper.mapReader.ldtk.levels.find(
-      l => l.identifier === this.player.currentMap,
-    )!;
-    const centerMapPos = new Phaser.Math.Vector2(
-      (level.worldX + (level.worldX + level.pxWid)) / 2,
-      (level.worldY + (level.worldY + level.pxHei)) / 2,
-    );
-    const playerPos = new Phaser.Math.Vector2(this.player.x, this.player.y);
-
-    // check to load new maps
-    // west
-    if (playerPos.x - centerMapPos.x < -(level.pxWid / 4)) this._checkDir(level, 'w', true);
-    // east
-    else if (playerPos.x - centerMapPos.x > level.pxWid / 4) this._checkDir(level, 'e', true);
-    // north
-    if (playerPos.y - centerMapPos.y < -(level.pxHei / 4)) this._checkDir(level, 'n', true);
-    // south
-    else if (playerPos.y - centerMapPos.y > level.pxHei / 4) this._checkDir(level, 's', true);
-    
-    
-
-    // check in which map we're in
-    // west
-    if (playerPos.x - centerMapPos.x < -(level.pxWid / 2)) this._checkDir(level, 'w', false);
-    // east
-    else if (playerPos.x - centerMapPos.x > level.pxWid / 2) this._checkDir(level, 'e', false);
-    // north
-    if (playerPos.y - centerMapPos.y < -(level.pxHei / 2)) this._checkDir(level, 'n', false);
-    // south
-    else if (playerPos.y - centerMapPos.y > level.pxHei / 2) this._checkDir(level, 's', false);
+    this.initialized = true;
+    this.loadingSpinner?.destroy();
+    this.loadingSpinner = undefined;
   }
 
   handleItemEntities() {
@@ -338,143 +398,94 @@ export default class GameScene extends Scene {
 
   private _handleNetwork() {
     const networkHandler = NetworkHandler.getInstance();
-    // register player
-    networkHandler.sendMessage(UniversalEventNames.PLAYER_JOIN, {
-      name: this.player.name,
-      hustlerId: this.player.hustlerId,
-      current_map: this.player.currentMap,
-      x: this.player.x,
-      y: this.player.y,
-    });
 
-    networkHandler.on(NetworkEvents.ERROR, (data: DataTypes[NetworkEvents.ERROR]) => {
-      // TODO: login scene or something like that
-      if (data.code === 401)
-      {
-        EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
-          ...chakraToastStyle,
-          status: 'error',
-          title: 'Unauthorized',
-        });
-        networkHandler.disconnect();
-        networkHandler.authenticator.logout()
-          .finally(() => {
-            this.scene.start('LoginScene', this.hustlerData);
-          })
-      }
-    });
-
-    // wait on handshake
+    // register listeners
+    // instantiate a new hustler on player join
     networkHandler.on(
-      NetworkEvents.PLAYER_HANDSHAKE,
-      (data: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) => {
-        this.player.setData('id', data.id);
+      NetworkEvents.SERVER_PLAYER_JOIN,
+      (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => {
+        if (data.id === this.player.getData('id')) return;
 
-        // initiate all players
-        data.players.forEach(data => {
+        const initializeHustler = () => {
           this.hustlers.push(
             new Hustler(this.matter.world, data.x, data.y, data.hustlerId, data.name),
           );
           this.hustlers[this.hustlers.length - 1].setData('id', data.id);
           this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
+        };
+
+        if (!data.hustlerId || this.textures.exists('hustler_' + data.hustlerId)) {
+          initializeHustler();
+          return;
+        }            
+
+        const spritesheetKey = 'hustler_' + data.hustlerId;
+        this.load.spritesheet(spritesheetKey, `https://api.dopewars.gg/hustlers/${data.hustlerId}/sprites/composite.png`, {
+          frameWidth: 30, frameHeight: 60 
         });
-        // initiate all item entities
-        data.itemEntities.forEach(iData => {
-          this.itemEntities.push(
-            new ItemEntity(this.matter.world, iData.x, iData.y, iData.item, Items[iData.item]),
-          );
-          this.itemEntities[this.itemEntities.length - 1].setData('id', iData.id);
+        this.load.once('filecomplete-spritesheet-' + spritesheetKey, () => {
+          createHustlerAnimations(this, spritesheetKey);
+          initializeHustler();
         });
-
-        // register listeners
-        // instantiate a new hustler on player join
-        networkHandler.on(
-          NetworkEvents.SERVER_PLAYER_JOIN,
-          (data: DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]) => {
-            if (data.id === this.player.getData('id')) return;
-
-            const initializeHustler = () => {
-              this.hustlers.push(
-                new Hustler(this.matter.world, data.x, data.y, data.hustlerId, data.name),
-              );
-              this.hustlers[this.hustlers.length - 1].setData('id', data.id);
-              this.hustlers[this.hustlers.length - 1].currentMap = data.current_map;
-            };
-
-            if (!data.hustlerId || this.textures.exists('hustler_' + data.hustlerId)) {
-              initializeHustler();
-              return;
-            }            
-
-            const spritesheetKey = 'hustler_' + data.hustlerId;
-            this.load.spritesheet(spritesheetKey, `https://api.dopewars.gg/hustlers/${data.hustlerId}/sprites/composite.png`, {
-              frameWidth: 30, frameHeight: 60 
-            });
-            this.load.once('filecomplete-spritesheet-' + spritesheetKey, () => {
-              createHustlerAnimations(this, spritesheetKey);
-              initializeHustler();
-            });
-            this.load.start();
-          },
-        );
-        // update map
-        networkHandler.on(
-          NetworkEvents.SERVER_PLAYER_UPDATE_MAP,
-          (data: DataTypes[NetworkEvents.SERVER_PLAYER_UPDATE_MAP]) => {
-            const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
-            
-            if (hustler) {
-              hustler.currentMap = data.current_map;
-              hustler.setVisible(hustler.currentMap === this.player.currentMap);
-              hustler.setPosition(data.x, data.y);
-            }
-          },
-        );
-        // remove hustler on player leave
-        networkHandler.on(
-          NetworkEvents.SERVER_PLAYER_LEAVE,
-          (data: DataTypes[NetworkEvents.SERVER_PLAYER_LEAVE]) => {
-            const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
-            if (hustler) {
-              hustler.destroyRuntime();
-              this.hustlers.splice(this.hustlers.indexOf(hustler), 1);
-            }
-          },
-        );
-        networkHandler.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => {
-          // update players positions
-          data.players.forEach(p => {
-            const hustler = this.hustlers.find(h => h.getData('id') === p.id);
-            if (
-              hustler &&
-              !hustler.navigator.target &&
-              new Phaser.Math.Vector2(hustler.x, hustler.y).distance(
-                new Phaser.Math.Vector2(p.x, p.y),
-              ) > 5
-            ) {
-              hustler.navigator.moveTo(p.x, p.y, undefined, () => {
-                // if hustler has been stuck, just teleport him to new position
-                hustler.setPosition(p.x, p.y);
-              });
-            }
-          });
-        });
-        networkHandler.on(
-          NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE,
-          (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => {
-            // check if sent by player otherwise look through hustlers (other players)
-            const hustler = this.player.getData('id') === data.author ? this.player : this.hustlers.find(h => h.getData('id') === data.author);
-            
-            hustler?.say(data.message, data.timestamp, true);
-          },
-        );
-        networkHandler.on(
-          NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY,
-          (data: DataTypes[NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY]) => {
-            this.itemEntities.find(i => i.getData('id') === data.id)?.onPickup();
-          }
-        );
+        this.load.start();
       },
+    );
+    // update map
+    networkHandler.on(
+      NetworkEvents.SERVER_PLAYER_UPDATE_MAP,
+      (data: DataTypes[NetworkEvents.SERVER_PLAYER_UPDATE_MAP]) => {
+        const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
+        
+        if (hustler) {
+          hustler.currentMap = data.current_map;
+          hustler.setVisible(hustler.currentMap === this.player.currentMap);
+          hustler.setPosition(data.x, data.y);
+        }
+      },
+    );
+    // remove hustler on player leave
+    networkHandler.on(
+      NetworkEvents.SERVER_PLAYER_LEAVE,
+      (data: DataTypes[NetworkEvents.SERVER_PLAYER_LEAVE]) => {
+        const hustler = this.hustlers.find(hustler => hustler.getData('id') === data.id);
+        if (hustler) {
+          hustler.destroyRuntime();
+          this.hustlers.splice(this.hustlers.indexOf(hustler), 1);
+        }
+      },
+    );
+    networkHandler.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => {
+      // update players positions
+      data.players.forEach(p => {
+        const hustler = this.hustlers.find(h => h.getData('id') === p.id);
+        if (
+          hustler &&
+          !hustler.navigator.target &&
+          new Phaser.Math.Vector2(hustler.x, hustler.y).distance(
+            new Phaser.Math.Vector2(p.x, p.y),
+          ) > 5
+        ) {
+          hustler.navigator.moveTo(p.x, p.y, undefined, () => {
+            // if hustler has been stuck, just teleport him to new position
+            hustler.setPosition(p.x, p.y);
+          });
+        }
+      });
+    });
+    networkHandler.on(
+      NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE,
+      (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => {
+        // check if sent by player otherwise look through hustlers (other players)
+        const hustler = this.player.getData('id') === data.author ? this.player : this.hustlers.find(h => h.getData('id') === data.author);
+        
+        hustler?.say(data.message, data.timestamp, true);
+      },
+    );
+    networkHandler.on(
+      NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY,
+      (data: DataTypes[NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY]) => {
+        this.itemEntities.find(i => i.getData('id') === data.id)?.onPickup();
+      }
     );
   }
 

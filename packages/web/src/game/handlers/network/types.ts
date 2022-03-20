@@ -49,6 +49,10 @@ interface DataTypes {
   };
   [NetworkEvents.PLAYER_HANDSHAKE]: {
     id: string;
+    current_map: string;
+    x: number;
+    y: number;
+    
     players: Array<DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]>;
     itemEntities: Array<{
       id: string;
@@ -95,9 +99,6 @@ interface DataTypes {
   [NetworkEvents.CLIENT_PLAYER_JOIN]: {
     name: string;
     hustlerId: string;
-    current_map: string;
-    x: number;
-    y: number;
   };
   // no data is needed for leaving, only event
   [NetworkEvents.CLIENT_PLAYER_LEAVE]: null;

@@ -53,6 +53,15 @@ export const chakraToastStyle: UseToastOptions = {
   position: 'bottom-right',
 };
 
+export const loadingSpinner = () => <ChakraProvider theme={theme}>
+  <Spinner size="xl" color="white" style={{
+    position: 'absolute',
+    bottom: '5%',
+    right: '5%',
+    boxShadow: '0px 0px 60px black',
+  }} />
+</ChakraProvider>;
+
 export default class UIScene extends Scene {
   public rexUI!: RexUIPlugin;
 
@@ -61,8 +70,6 @@ export default class UIScene extends Scene {
   public toaster!: ComponentManager;
   public toast = createStandaloneToast(theme);
 
-  // loading component, undefined if not visible
-  private loadingSpinner?: ComponentManager;
   // react component for inputing message content
   public sendMessageInput?: ComponentManager;
   // player precedent messages
@@ -86,23 +93,6 @@ export default class UIScene extends Scene {
 
   init(data: { player: Player }) {
     this.player = data.player;
-  }
-
-  toggleLoading(loading: boolean) {
-    console.log(loading && !this.loadingSpinner);
-    if (loading && !this.loadingSpinner)
-      this.loadingSpinner = this.add.reactDom(() => <ChakraProvider theme={theme}>
-        <Spinner size="xl" color="white" style={{
-          position: 'absolute',
-          bottom: '5%',
-          right: '5%',
-          boxShadow: '0px 0px 60px black',
-        }} />
-      </ChakraProvider>);
-    else if (!loading && this.loadingSpinner) {
-      this.loadingSpinner.destroy();
-      this.loadingSpinner = undefined;
-    }
   }
 
   create(): void {
