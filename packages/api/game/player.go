@@ -35,7 +35,8 @@ func NewPlayer(conn *websocket.Conn, game *Game, hustlerId string, name string, 
 		currentMap: currentMap,
 		position:   Vec2{X: x, Y: y},
 
-		Send: make(chan BaseMessage),
+		// CHANNEL HAS TO BE BUFFERED
+		Send: make(chan BaseMessage, 256),
 	}
 
 	return p
@@ -48,6 +49,7 @@ func (p *Player) readPump(ctx context.Context) {
 		data, _ := json.Marshal(IdData{
 			Id: p.Id.String(),
 		})
+
 		p.game.Unregister <- p
 		p.game.Broadcast <- BaseMessage{
 			Event: "player_leave",
