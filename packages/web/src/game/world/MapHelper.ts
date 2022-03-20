@@ -10,7 +10,7 @@ export default class MapHelper {
   map!: LDtkMapPack;
   entities: Phaser.GameObjects.GameObject[] = new Array();
 
-  loadedMaps: Map<string, LDtkMapPack> = new Map();
+  loadedMaps: { [key: string]: LDtkMapPack } = {};
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -36,7 +36,7 @@ export default class MapHelper {
         .setDepth(1000)
         .setOrigin(0, 0);
 
-    this.loadedMaps.set(this.mapReader.level.identifier, this.map);
+    this.loadedMaps[this.mapReader.level.identifier] = this.map;
   }
 
   createCollisions() {

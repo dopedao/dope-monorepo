@@ -27,7 +27,7 @@ export default class PathNavigator {
       console.warn('Cannot initiate path finding without a current map');
 
     // the game scene used map
-    const map = (this.hustler.scene as GameScene).mapHelper.loadedMaps.get(this.hustler.currentMap);
+    const map = (this.hustler.scene as GameScene).mapHelper.loadedMaps[this.hustler.currentMap];
     if (!map || !map.collideLayer) {
       console.warn('No collide layer found for: ' + this.hustler.currentMap);
       return;
@@ -118,9 +118,7 @@ export default class PathNavigator {
   }
 
   update() {
-    const collideLayer = (this.hustler.scene as GameScene).mapHelper.loadedMaps.get(
-      this.hustler.currentMap,
-    )?.collideLayer;
+    const collideLayer = (this.hustler.scene as GameScene).mapHelper.loadedMaps[this.hustler.currentMap].collideLayer;
 
     let dx = 0;
     let dy = 0;

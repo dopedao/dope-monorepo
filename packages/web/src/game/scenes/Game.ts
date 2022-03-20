@@ -44,8 +44,6 @@ export default class GameScene extends Scene {
 
   private loadingSpinner?: ComponentManager;
 
-  // level identifiers of the current loaded maps
-  private loadedMaps: string[] = new Array();
   private _mapHelper!: MapHelper;
 
   public canUseMouse: boolean = true;
@@ -129,7 +127,6 @@ export default class GameScene extends Scene {
         this.mapHelper.createMap(data.current_map);
         this.mapHelper.createEntities();
         this.mapHelper.createCollisions();
-        this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
 
         this.player = new Player(
           this.matter.world,
@@ -260,7 +257,7 @@ export default class GameScene extends Scene {
     camera.setZoom(this.zoom, this.zoom);
     camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
 
-    const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
+    const map = this.mapHelper.loadedMaps[this.player.currentMap];
     map.otherGfx?.setAlpha(0);
 
     this._handleNetwork();
@@ -492,10 +489,10 @@ export default class GameScene extends Scene {
   private _checkDir(level: Level, dir: string, patchMap: boolean) {
     level.__neighbours.forEach(n => {
       const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
-      if (this.loadedMaps.find(m => m === lvl.identifier)) {
+      if (Object.keys(this.mapHelper.loadedMaps).find(m => m === lvl.identifier)) {
         if (!patchMap && n.dir === dir) {
           // slowly increase alpha to max_alpha
-          const otherMap = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
+          const otherMap = this.mapHelper.loadedMaps[this.player.currentMap]!;
           if (otherMap.otherGfx) {
             // cancel any previous running fading
             if (otherMap.otherGfx.getData('fading'))
@@ -515,7 +512,7 @@ export default class GameScene extends Scene {
           }
 
           this.player.currentMap = lvl.identifier;
-          const map = this.mapHelper.loadedMaps.get(this.player.currentMap)!;
+          const map = this.mapHelper.loadedMaps[this.player.currentMap]!;
           
           // slowly decrease alpha to 0
           if (map.otherGfx) {
@@ -592,7 +589,6 @@ export default class GameScene extends Scene {
         //   this.mapHelper.createMap(lvl.identifier);
         // }).then(() => this.mapHelper.createCollisions())
         //   .then(() => this.mapHelper.createEntities());
-        this.loadedMaps.push(this.mapHelper.mapReader.level.identifier);
       }
     });
   }
