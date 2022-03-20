@@ -121,6 +121,15 @@ func (g *Game) ItemEntityByUUID(uuid uuid.UUID) *ItemEntity {
 	return nil
 }
 
+func (g *Game) PlayerByHustlerID(id string) *Player {
+	for _, player := range g.Players {
+		if player.hustlerId == id {
+			return player
+		}
+	}
+	return nil
+}
+
 func (g *Game) PlayerByUUID(uuid uuid.UUID) *Player {
 	for _, player := range g.Players {
 		if player.Id == uuid {

@@ -65,6 +65,12 @@ func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.C
 			// and get data from db
 			var gameHustler *ent.GameHustler = nil
 			if data.HustlerId != "" {
+				// 2 players cannot have the same hustler id
+				if g.PlayerByHustlerID(data.HustlerId) != nil {
+					conn.WriteJSON(generateErrorMessage(409, "an instance of this hustler is already in the game"))
+					continue
+				}
+
 				walletAddress, err := middleware.Wallet(ctx)
 				if err != nil {
 					conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get wallet"))
