@@ -320,7 +320,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.Handle("/query", srv)
 
 	// run game server loop in the background
-	go gameState.Start(ctx)
+	go gameState.Start(ctx, client)
 
 	// ws endpoint
 	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
