@@ -19,14 +19,18 @@ const TICKRATE = time.Second / 5
 
 func NewGame() *Game {
 	return &Game{
-		Ticker:     time.NewTicker(TICKRATE),
+		Ticker: time.NewTicker(TICKRATE),
+		SpawnPosition: schema.Position{
+			X: 500, Y: 200,
+			CurrentMap: "NY_Bushwick_Basket",
+		},
 		Register:   make(chan *Player),
 		Unregister: make(chan *Player),
 		Broadcast:  make(chan BaseMessage),
 	}
 }
 
-func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.Conn) {
+func (g *Game) Handle(ctx context.Context, client *ent.Client, conn *websocket.Conn) {
 	ctx, log := base.LogFor(ctx)
 	log.Info().Msgf("New connection from ", conn.RemoteAddr().String())
 
@@ -88,9 +92,8 @@ func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.C
 				if err != nil {
 					gameHustler, err = client.GameHustler.Create().
 						SetID(data.HustlerId).
-						SetLastPosition(schema.Position{
-							X: data.X, Y: data.Y,
-						}).
+						// TODO: define spawn position constant
+						SetLastPosition(g.SpawnPosition).
 						SetQuests([]schema.GameHustlerQuest{}).
 						SetRelations([]schema.GameHustlerCitizen{}).
 						SetItems([]schema.GameHustlerItem{}).
@@ -102,7 +105,7 @@ func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.C
 				}
 			}
 
-			g.HandlePlayerJoin(ctx, conn, data, gameHustler)
+			g.HandlePlayerJoin(ctx, conn, client, gameHustler)
 		}
 	}
 }

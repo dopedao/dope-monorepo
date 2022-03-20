@@ -340,7 +340,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 		defer wsConn.Close()
 
 		// handle messages
-		gameState.Handle(client, r.Context(), wsConn)
+		gameState.Handle(r.Context(), client, wsConn)
 	})
 
 	// auth

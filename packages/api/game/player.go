@@ -192,8 +192,8 @@ func (p *Player) writePump(ctx context.Context) {
 	}
 }
 
-func (p *Player) Serialize() PlayerJoinClientData {
-	return PlayerJoinClientData{
+func (p *Player) Serialize() PlayerData {
+	return PlayerData{
 		Id:         p.Id.String(),
 		HustlerId:  p.hustlerId,
 		Name:       p.name,

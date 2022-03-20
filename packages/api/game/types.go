@@ -15,9 +15,13 @@ type BaseMessage struct {
 }
 
 type HandshakeData struct {
-	Id           string                 `json:"id"`
-	Players      []PlayerJoinClientData `json:"players"`
-	ItemEntities []ItemEntityData       `json:"itemEntities"`
+	Id         string  `json:"id"`
+	CurrentMap string  `json:"current_map"`
+	X          float32 `json:"x"`
+	Y          float32 `json:"y"`
+
+	Players      []PlayerData     `json:"players"`
+	ItemEntities []ItemEntityData `json:"itemEntities"`
 }
 
 type TickData struct {
@@ -46,7 +50,7 @@ type ItemEntityData struct {
 	Y    float32 `json:"y"`
 }
 
-type PlayerJoinClientData struct {
+type PlayerData struct {
 	Id         string  `json:"id"`
 	HustlerId  string  `json:"hustlerId"`
 	Name       string  `json:"name"`
@@ -56,11 +60,8 @@ type PlayerJoinClientData struct {
 }
 
 type PlayerJoinData struct {
-	Name       string  `json:"name"`
-	HustlerId  string  `json:"hustlerId"`
-	CurrentMap string  `json:"current_map"`
-	X          float32 `json:"x"`
-	Y          float32 `json:"y"`
+	Name      string `json:"name"`
+	HustlerId string `json:"hustlerId"`
 }
 
 type PlayerUpdateMapData struct {

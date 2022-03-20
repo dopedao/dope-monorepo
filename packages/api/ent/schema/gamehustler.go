@@ -9,8 +9,9 @@ import (
 )
 
 type Position struct {
-	X float32
-	Y float32
+	CurrentMap string
+	X          float32
+	Y          float32
 }
 
 // Definition of a game hustler's quest.

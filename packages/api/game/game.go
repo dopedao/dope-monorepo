@@ -19,6 +19,8 @@ type Game struct {
 
 	Mutex sync.Mutex
 
+	SpawnPosition schema.Position
+
 	Players      []*Player
 	ItemEntities []*ItemEntity
 
@@ -62,8 +64,9 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 				if err == nil {
 					// update last position
 					gameHustler.Update().SetLastPosition(schema.Position{
-						X: player.position.X,
-						Y: player.position.Y,
+						X:          player.position.X,
+						Y:          player.position.Y,
+						CurrentMap: player.currentMap,
 					}).Save(ctx)
 				} else {
 					log.Err(err).Msgf("could not get game hustler: %s", player.hustlerId)
@@ -179,15 +182,28 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 	}
 }
 
-func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data PlayerJoinData, gameHustler *ent.GameHustler) {
-	if data.CurrentMap == "" {
-		// we can directly use writejson here
-		// because player is not yet registered
-		conn.WriteJSON(generateErrorMessage(422, "current_map is not set"))
-		return
+func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, client *ent.Client, gameHustler *ent.GameHustler) {
+	_, log := base.LogFor(ctx)
+	// if data.CurrentMap == "" {
+	// 	// we can directly use writejson here
+	// 	// because player is not yet registered
+	// 	conn.WriteJSON(generateErrorMessage(422, "current_map is not set"))
+	// 	return
+	// }
+
+	var player *Player = nil
+	if gameHustler != nil {
+		hustler, err := client.Hustler.Get(ctx, gameHustler.ID)
+		if err != nil {
+			log.Err(err).Msgf("could not get hustler: %s", gameHustler.ID)
+			conn.WriteJSON(generateErrorMessage(500, "could not get hustler"))
+			return
+		}
+		player = NewPlayer(conn, g, gameHustler.ID, hustler.Name, gameHustler.LastPosition.CurrentMap, gameHustler.LastPosition.X, gameHustler.LastPosition.Y)
+	} else {
+		player = NewPlayer(conn, g, "", "Hustler", g.SpawnPosition.CurrentMap, g.SpawnPosition.X, g.SpawnPosition.Y)
 	}
 
-	player := NewPlayer(conn, g, data.HustlerId, data.Name, data.CurrentMap, data.X, data.Y)
 	g.Register <- player
 	g.DispatchPlayerJoin(ctx, player)
 }
@@ -228,7 +244,11 @@ func (g *Game) GenerateHandshakeData(player *Player) HandshakeData {
 	}
 
 	return HandshakeData{
-		Id:           player.Id.String(),
+		Id:         player.Id.String(),
+		CurrentMap: player.currentMap,
+		X:          player.position.X,
+		Y:          player.position.Y,
+
 		Players:      playersData,
 		ItemEntities: itemEntitiesData,
 	}
@@ -244,8 +264,8 @@ func (g *Game) GenerateItemEntitiesData() []ItemEntityData {
 	return itemEntitiesData
 }
 
-func (g *Game) GeneratePlayersData() []PlayerJoinClientData {
-	playersData := []PlayerJoinClientData{}
+func (g *Game) GeneratePlayersData() []PlayerData {
+	playersData := []PlayerData{}
 
 	for _, player := range g.Players {
 		playersData = append(playersData, player.Serialize())
