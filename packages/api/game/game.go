@@ -8,6 +8,7 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
@@ -26,7 +27,7 @@ type Game struct {
 	Broadcast  chan BaseMessage
 }
 
-func (g *Game) Start(ctx context.Context) {
+func (g *Game) Start(ctx context.Context, client *ent.Client) {
 	_, log := base.LogFor(ctx)
 
 	log.Info().Msg("starting game")
@@ -55,6 +56,20 @@ func (g *Game) Start(ctx context.Context) {
 
 			log.Info().Msgf("player joined: %s | %s", player.Id, player.name)
 		case player := <-g.Unregister:
+			// save last position if player has a hustler
+			if player.hustlerId != "" {
+				gameHustler, err := client.GameHustler.Get(ctx, player.hustlerId)
+				if err == nil {
+					// update last position
+					gameHustler.Update().SetLastPosition(schema.Position{
+						X: player.position.X,
+						Y: player.position.Y,
+					}).Save(ctx)
+				} else {
+					log.Err(err).Msgf("could not get game hustler: %s", player.hustlerId)
+				}
+			}
+
 			for i, p := range g.Players {
 				if p == player {
 					g.Players = append(g.Players[:i], g.Players[i+1:]...)
