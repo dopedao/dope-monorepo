@@ -62,6 +62,8 @@ func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.C
 			}
 
 			// check if authenticated wallet contains used hustler
+			// and get data from db
+			var gameHustler *ent.GameHustler = nil
 			if data.HustlerId != "" {
 				walletAddress, err := middleware.Wallet(ctx)
 				if err != nil {
@@ -74,23 +76,23 @@ func (g *Game) Handle(client *ent.Client, ctx context.Context, conn *websocket.C
 					conn.WriteJSON(generateErrorMessage(http.StatusUnauthorized, "could not get hustler"))
 					continue
 				}
-			}
 
-			// get game hustler from hustler
-			gameHustler, err := client.GameHustler.Get(ctx, data.HustlerId)
-			if err != nil {
-				gameHustler, err = client.GameHustler.Create().
-					SetID(data.HustlerId).
-					SetLastPosition(schema.Position{
-						X: data.X, Y: data.Y,
-					}).
-					SetQuests([]schema.GameHustlerQuest{}).
-					SetRelations([]schema.GameHustlerCitizen{}).
-					SetItems([]schema.GameHustlerItem{}).
-					Save(ctx)
+				// get game hustler from hustler id
+				gameHustler, err = client.GameHustler.Get(ctx, data.HustlerId)
 				if err != nil {
-					conn.WriteJSON(generateErrorMessage(500, "could not create game hustler"))
-					continue
+					gameHustler, err = client.GameHustler.Create().
+						SetID(data.HustlerId).
+						SetLastPosition(schema.Position{
+							X: data.X, Y: data.Y,
+						}).
+						SetQuests([]schema.GameHustlerQuest{}).
+						SetRelations([]schema.GameHustlerCitizen{}).
+						SetItems([]schema.GameHustlerItem{}).
+						Save(ctx)
+					if err != nil {
+						conn.WriteJSON(generateErrorMessage(500, "could not create game hustler"))
+						continue
+					}
 				}
 			}
 
