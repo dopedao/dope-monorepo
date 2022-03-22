@@ -94,9 +94,6 @@ func (g *Game) Handle(ctx context.Context, client *ent.Client, conn *websocket.C
 						SetID(data.HustlerId).
 						// TODO: define spawn position constant
 						SetLastPosition(g.SpawnPosition).
-						SetQuests([]schema.GameHustlerQuest{}).
-						SetRelations([]schema.GameHustlerCitizen{}).
-						SetItems([]schema.GameHustlerItem{}).
 						Save(ctx)
 					if err != nil {
 						conn.WriteJSON(generateErrorMessage(500, "could not create game hustler"))
