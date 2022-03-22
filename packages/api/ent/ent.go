@@ -13,6 +13,9 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustleritem"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustlerquest"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustlerrelation"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
@@ -40,18 +43,21 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		amount.Table:      amount.ValidColumn,
-		bodypart.Table:    bodypart.ValidColumn,
-		dope.Table:        dope.ValidColumn,
-		event.Table:       event.ValidColumn,
-		gamehustler.Table: gamehustler.ValidColumn,
-		hustler.Table:     hustler.ValidColumn,
-		item.Table:        item.ValidColumn,
-		listing.Table:     listing.ValidColumn,
-		search.Table:      search.ValidColumn,
-		syncstate.Table:   syncstate.ValidColumn,
-		wallet.Table:      wallet.ValidColumn,
-		walletitems.Table: walletitems.ValidColumn,
+		amount.Table:              amount.ValidColumn,
+		bodypart.Table:            bodypart.ValidColumn,
+		dope.Table:                dope.ValidColumn,
+		event.Table:               event.ValidColumn,
+		gamehustler.Table:         gamehustler.ValidColumn,
+		gamehustleritem.Table:     gamehustleritem.ValidColumn,
+		gamehustlerquest.Table:    gamehustlerquest.ValidColumn,
+		gamehustlerrelation.Table: gamehustlerrelation.ValidColumn,
+		hustler.Table:             hustler.ValidColumn,
+		item.Table:                item.ValidColumn,
+		listing.Table:             listing.ValidColumn,
+		search.Table:              search.ValidColumn,
+		syncstate.Table:           syncstate.ValidColumn,
+		wallet.Table:              wallet.ValidColumn,
+		walletitems.Table:         walletitems.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

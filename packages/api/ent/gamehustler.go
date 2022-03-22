@@ -20,14 +20,51 @@ type GameHustler struct {
 	ID string `json:"id,omitempty"`
 	// LastPosition holds the value of the "last_position" field.
 	LastPosition schema.Position `json:"last_position,omitempty"`
-	// Relations holds the value of the "relations" field.
-	Relations []schema.GameHustlerCitizen `json:"relations,omitempty"`
-	// Quests holds the value of the "quests" field.
-	Quests []schema.GameHustlerQuest `json:"quests,omitempty"`
-	// Items holds the value of the "items" field.
-	Items []schema.GameHustlerItem `json:"items,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the GameHustlerQuery when eager-loading is set.
+	Edges GameHustlerEdges `json:"edges"`
+}
+
+// GameHustlerEdges holds the relations/edges for other nodes in the graph.
+type GameHustlerEdges struct {
+	// Relations holds the value of the relations edge.
+	Relations []*GameHustlerRelation `json:"relations,omitempty"`
+	// Items holds the value of the items edge.
+	Items []*GameHustlerItem `json:"items,omitempty"`
+	// Quests holds the value of the quests edge.
+	Quests []*GameHustlerQuest `json:"quests,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [3]bool
+}
+
+// RelationsOrErr returns the Relations value or an error if the edge
+// was not loaded in eager-loading.
+func (e GameHustlerEdges) RelationsOrErr() ([]*GameHustlerRelation, error) {
+	if e.loadedTypes[0] {
+		return e.Relations, nil
+	}
+	return nil, &NotLoadedError{edge: "relations"}
+}
+
+// ItemsOrErr returns the Items value or an error if the edge
+// was not loaded in eager-loading.
+func (e GameHustlerEdges) ItemsOrErr() ([]*GameHustlerItem, error) {
+	if e.loadedTypes[1] {
+		return e.Items, nil
+	}
+	return nil, &NotLoadedError{edge: "items"}
+}
+
+// QuestsOrErr returns the Quests value or an error if the edge
+// was not loaded in eager-loading.
+func (e GameHustlerEdges) QuestsOrErr() ([]*GameHustlerQuest, error) {
+	if e.loadedTypes[2] {
+		return e.Quests, nil
+	}
+	return nil, &NotLoadedError{edge: "quests"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -35,7 +72,7 @@ func (*GameHustler) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case gamehustler.FieldLastPosition, gamehustler.FieldRelations, gamehustler.FieldQuests, gamehustler.FieldItems:
+		case gamehustler.FieldLastPosition:
 			values[i] = new([]byte)
 		case gamehustler.FieldID:
 			values[i] = new(sql.NullString)
@@ -70,30 +107,6 @@ func (gh *GameHustler) assignValues(columns []string, values []interface{}) erro
 					return fmt.Errorf("unmarshal field last_position: %w", err)
 				}
 			}
-		case gamehustler.FieldRelations:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field relations", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &gh.Relations); err != nil {
-					return fmt.Errorf("unmarshal field relations: %w", err)
-				}
-			}
-		case gamehustler.FieldQuests:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field quests", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &gh.Quests); err != nil {
-					return fmt.Errorf("unmarshal field quests: %w", err)
-				}
-			}
-		case gamehustler.FieldItems:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field items", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &gh.Items); err != nil {
-					return fmt.Errorf("unmarshal field items: %w", err)
-				}
-			}
 		case gamehustler.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -103,6 +116,21 @@ func (gh *GameHustler) assignValues(columns []string, values []interface{}) erro
 		}
 	}
 	return nil
+}
+
+// QueryRelations queries the "relations" edge of the GameHustler entity.
+func (gh *GameHustler) QueryRelations() *GameHustlerRelationQuery {
+	return (&GameHustlerClient{config: gh.config}).QueryRelations(gh)
+}
+
+// QueryItems queries the "items" edge of the GameHustler entity.
+func (gh *GameHustler) QueryItems() *GameHustlerItemQuery {
+	return (&GameHustlerClient{config: gh.config}).QueryItems(gh)
+}
+
+// QueryQuests queries the "quests" edge of the GameHustler entity.
+func (gh *GameHustler) QueryQuests() *GameHustlerQuestQuery {
+	return (&GameHustlerClient{config: gh.config}).QueryQuests(gh)
 }
 
 // Update returns a builder for updating this GameHustler.
@@ -130,12 +158,6 @@ func (gh *GameHustler) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", gh.ID))
 	builder.WriteString(", last_position=")
 	builder.WriteString(fmt.Sprintf("%v", gh.LastPosition))
-	builder.WriteString(", relations=")
-	builder.WriteString(fmt.Sprintf("%v", gh.Relations))
-	builder.WriteString(", quests=")
-	builder.WriteString(fmt.Sprintf("%v", gh.Quests))
-	builder.WriteString(", items=")
-	builder.WriteString(fmt.Sprintf("%v", gh.Items))
 	builder.WriteString(", created_at=")
 	builder.WriteString(gh.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')

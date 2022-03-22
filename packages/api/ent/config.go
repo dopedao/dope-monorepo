@@ -24,18 +24,21 @@ type config struct {
 
 // hooks per client, for fast access.
 type hooks struct {
-	Amount      []ent.Hook
-	BodyPart    []ent.Hook
-	Dope        []ent.Hook
-	Event       []ent.Hook
-	GameHustler []ent.Hook
-	Hustler     []ent.Hook
-	Item        []ent.Hook
-	Listing     []ent.Hook
-	Search      []ent.Hook
-	SyncState   []ent.Hook
-	Wallet      []ent.Hook
-	WalletItems []ent.Hook
+	Amount              []ent.Hook
+	BodyPart            []ent.Hook
+	Dope                []ent.Hook
+	Event               []ent.Hook
+	GameHustler         []ent.Hook
+	GameHustlerItem     []ent.Hook
+	GameHustlerQuest    []ent.Hook
+	GameHustlerRelation []ent.Hook
+	Hustler             []ent.Hook
+	Item                []ent.Hook
+	Listing             []ent.Hook
+	Search              []ent.Hook
+	SyncState           []ent.Hook
+	Wallet              []ent.Hook
+	WalletItems         []ent.Hook
 }
 
 // Options applies the options on the config object.

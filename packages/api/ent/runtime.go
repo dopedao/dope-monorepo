@@ -55,7 +55,7 @@ func init() {
 	gamehustlerFields := schema.GameHustler{}.Fields()
 	_ = gamehustlerFields
 	// gamehustlerDescCreatedAt is the schema descriptor for created_at field.
-	gamehustlerDescCreatedAt := gamehustlerFields[5].Descriptor()
+	gamehustlerDescCreatedAt := gamehustlerFields[2].Descriptor()
 	// gamehustler.DefaultCreatedAt holds the default value on creation for the created_at field.
 	gamehustler.DefaultCreatedAt = gamehustlerDescCreatedAt.Default.(func() time.Time)
 	hustlerFields := schema.Hustler{}.Fields()

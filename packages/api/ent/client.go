@@ -14,6 +14,9 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustleritem"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustlerquest"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustlerrelation"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
@@ -42,6 +45,12 @@ type Client struct {
 	Event *EventClient
 	// GameHustler is the client for interacting with the GameHustler builders.
 	GameHustler *GameHustlerClient
+	// GameHustlerItem is the client for interacting with the GameHustlerItem builders.
+	GameHustlerItem *GameHustlerItemClient
+	// GameHustlerQuest is the client for interacting with the GameHustlerQuest builders.
+	GameHustlerQuest *GameHustlerQuestClient
+	// GameHustlerRelation is the client for interacting with the GameHustlerRelation builders.
+	GameHustlerRelation *GameHustlerRelationClient
 	// Hustler is the client for interacting with the Hustler builders.
 	Hustler *HustlerClient
 	// Item is the client for interacting with the Item builders.
@@ -74,6 +83,9 @@ func (c *Client) init() {
 	c.Dope = NewDopeClient(c.config)
 	c.Event = NewEventClient(c.config)
 	c.GameHustler = NewGameHustlerClient(c.config)
+	c.GameHustlerItem = NewGameHustlerItemClient(c.config)
+	c.GameHustlerQuest = NewGameHustlerQuestClient(c.config)
+	c.GameHustlerRelation = NewGameHustlerRelationClient(c.config)
 	c.Hustler = NewHustlerClient(c.config)
 	c.Item = NewItemClient(c.config)
 	c.Listing = NewListingClient(c.config)
@@ -112,20 +124,23 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		Amount:      NewAmountClient(cfg),
-		BodyPart:    NewBodyPartClient(cfg),
-		Dope:        NewDopeClient(cfg),
-		Event:       NewEventClient(cfg),
-		GameHustler: NewGameHustlerClient(cfg),
-		Hustler:     NewHustlerClient(cfg),
-		Item:        NewItemClient(cfg),
-		Listing:     NewListingClient(cfg),
-		Search:      NewSearchClient(cfg),
-		SyncState:   NewSyncStateClient(cfg),
-		Wallet:      NewWalletClient(cfg),
-		WalletItems: NewWalletItemsClient(cfg),
+		ctx:                 ctx,
+		config:              cfg,
+		Amount:              NewAmountClient(cfg),
+		BodyPart:            NewBodyPartClient(cfg),
+		Dope:                NewDopeClient(cfg),
+		Event:               NewEventClient(cfg),
+		GameHustler:         NewGameHustlerClient(cfg),
+		GameHustlerItem:     NewGameHustlerItemClient(cfg),
+		GameHustlerQuest:    NewGameHustlerQuestClient(cfg),
+		GameHustlerRelation: NewGameHustlerRelationClient(cfg),
+		Hustler:             NewHustlerClient(cfg),
+		Item:                NewItemClient(cfg),
+		Listing:             NewListingClient(cfg),
+		Search:              NewSearchClient(cfg),
+		SyncState:           NewSyncStateClient(cfg),
+		Wallet:              NewWalletClient(cfg),
+		WalletItems:         NewWalletItemsClient(cfg),
 	}, nil
 }
 
@@ -143,19 +158,22 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		config:      cfg,
-		Amount:      NewAmountClient(cfg),
-		BodyPart:    NewBodyPartClient(cfg),
-		Dope:        NewDopeClient(cfg),
-		Event:       NewEventClient(cfg),
-		GameHustler: NewGameHustlerClient(cfg),
-		Hustler:     NewHustlerClient(cfg),
-		Item:        NewItemClient(cfg),
-		Listing:     NewListingClient(cfg),
-		Search:      NewSearchClient(cfg),
-		SyncState:   NewSyncStateClient(cfg),
-		Wallet:      NewWalletClient(cfg),
-		WalletItems: NewWalletItemsClient(cfg),
+		config:              cfg,
+		Amount:              NewAmountClient(cfg),
+		BodyPart:            NewBodyPartClient(cfg),
+		Dope:                NewDopeClient(cfg),
+		Event:               NewEventClient(cfg),
+		GameHustler:         NewGameHustlerClient(cfg),
+		GameHustlerItem:     NewGameHustlerItemClient(cfg),
+		GameHustlerQuest:    NewGameHustlerQuestClient(cfg),
+		GameHustlerRelation: NewGameHustlerRelationClient(cfg),
+		Hustler:             NewHustlerClient(cfg),
+		Item:                NewItemClient(cfg),
+		Listing:             NewListingClient(cfg),
+		Search:              NewSearchClient(cfg),
+		SyncState:           NewSyncStateClient(cfg),
+		Wallet:              NewWalletClient(cfg),
+		WalletItems:         NewWalletItemsClient(cfg),
 	}, nil
 }
 
@@ -190,6 +208,9 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Dope.Use(hooks...)
 	c.Event.Use(hooks...)
 	c.GameHustler.Use(hooks...)
+	c.GameHustlerItem.Use(hooks...)
+	c.GameHustlerQuest.Use(hooks...)
+	c.GameHustlerRelation.Use(hooks...)
 	c.Hustler.Use(hooks...)
 	c.Item.Use(hooks...)
 	c.Listing.Use(hooks...)
@@ -804,9 +825,375 @@ func (c *GameHustlerClient) GetX(ctx context.Context, id string) *GameHustler {
 	return obj
 }
 
+// QueryRelations queries the relations edge of a GameHustler.
+func (c *GameHustlerClient) QueryRelations(gh *GameHustler) *GameHustlerRelationQuery {
+	query := &GameHustlerRelationQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := gh.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustler.Table, gamehustler.FieldID, id),
+			sqlgraph.To(gamehustlerrelation.Table, gamehustlerrelation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, gamehustler.RelationsTable, gamehustler.RelationsColumn),
+		)
+		fromV = sqlgraph.Neighbors(gh.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryItems queries the items edge of a GameHustler.
+func (c *GameHustlerClient) QueryItems(gh *GameHustler) *GameHustlerItemQuery {
+	query := &GameHustlerItemQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := gh.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustler.Table, gamehustler.FieldID, id),
+			sqlgraph.To(gamehustleritem.Table, gamehustleritem.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, gamehustler.ItemsTable, gamehustler.ItemsColumn),
+		)
+		fromV = sqlgraph.Neighbors(gh.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryQuests queries the quests edge of a GameHustler.
+func (c *GameHustlerClient) QueryQuests(gh *GameHustler) *GameHustlerQuestQuery {
+	query := &GameHustlerQuestQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := gh.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustler.Table, gamehustler.FieldID, id),
+			sqlgraph.To(gamehustlerquest.Table, gamehustlerquest.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, gamehustler.QuestsTable, gamehustler.QuestsColumn),
+		)
+		fromV = sqlgraph.Neighbors(gh.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *GameHustlerClient) Hooks() []Hook {
 	return c.hooks.GameHustler
+}
+
+// GameHustlerItemClient is a client for the GameHustlerItem schema.
+type GameHustlerItemClient struct {
+	config
+}
+
+// NewGameHustlerItemClient returns a client for the GameHustlerItem from the given config.
+func NewGameHustlerItemClient(c config) *GameHustlerItemClient {
+	return &GameHustlerItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `gamehustleritem.Hooks(f(g(h())))`.
+func (c *GameHustlerItemClient) Use(hooks ...Hook) {
+	c.hooks.GameHustlerItem = append(c.hooks.GameHustlerItem, hooks...)
+}
+
+// Create returns a create builder for GameHustlerItem.
+func (c *GameHustlerItemClient) Create() *GameHustlerItemCreate {
+	mutation := newGameHustlerItemMutation(c.config, OpCreate)
+	return &GameHustlerItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of GameHustlerItem entities.
+func (c *GameHustlerItemClient) CreateBulk(builders ...*GameHustlerItemCreate) *GameHustlerItemCreateBulk {
+	return &GameHustlerItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for GameHustlerItem.
+func (c *GameHustlerItemClient) Update() *GameHustlerItemUpdate {
+	mutation := newGameHustlerItemMutation(c.config, OpUpdate)
+	return &GameHustlerItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *GameHustlerItemClient) UpdateOne(ghi *GameHustlerItem) *GameHustlerItemUpdateOne {
+	mutation := newGameHustlerItemMutation(c.config, OpUpdateOne, withGameHustlerItem(ghi))
+	return &GameHustlerItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *GameHustlerItemClient) UpdateOneID(id string) *GameHustlerItemUpdateOne {
+	mutation := newGameHustlerItemMutation(c.config, OpUpdateOne, withGameHustlerItemID(id))
+	return &GameHustlerItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for GameHustlerItem.
+func (c *GameHustlerItemClient) Delete() *GameHustlerItemDelete {
+	mutation := newGameHustlerItemMutation(c.config, OpDelete)
+	return &GameHustlerItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *GameHustlerItemClient) DeleteOne(ghi *GameHustlerItem) *GameHustlerItemDeleteOne {
+	return c.DeleteOneID(ghi.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *GameHustlerItemClient) DeleteOneID(id string) *GameHustlerItemDeleteOne {
+	builder := c.Delete().Where(gamehustleritem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &GameHustlerItemDeleteOne{builder}
+}
+
+// Query returns a query builder for GameHustlerItem.
+func (c *GameHustlerItemClient) Query() *GameHustlerItemQuery {
+	return &GameHustlerItemQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a GameHustlerItem entity by its id.
+func (c *GameHustlerItemClient) Get(ctx context.Context, id string) (*GameHustlerItem, error) {
+	return c.Query().Where(gamehustleritem.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *GameHustlerItemClient) GetX(ctx context.Context, id string) *GameHustlerItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryHustler queries the hustler edge of a GameHustlerItem.
+func (c *GameHustlerItemClient) QueryHustler(ghi *GameHustlerItem) *GameHustlerQuery {
+	query := &GameHustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ghi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustleritem.Table, gamehustleritem.FieldID, id),
+			sqlgraph.To(gamehustler.Table, gamehustler.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, gamehustleritem.HustlerTable, gamehustleritem.HustlerColumn),
+		)
+		fromV = sqlgraph.Neighbors(ghi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *GameHustlerItemClient) Hooks() []Hook {
+	return c.hooks.GameHustlerItem
+}
+
+// GameHustlerQuestClient is a client for the GameHustlerQuest schema.
+type GameHustlerQuestClient struct {
+	config
+}
+
+// NewGameHustlerQuestClient returns a client for the GameHustlerQuest from the given config.
+func NewGameHustlerQuestClient(c config) *GameHustlerQuestClient {
+	return &GameHustlerQuestClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `gamehustlerquest.Hooks(f(g(h())))`.
+func (c *GameHustlerQuestClient) Use(hooks ...Hook) {
+	c.hooks.GameHustlerQuest = append(c.hooks.GameHustlerQuest, hooks...)
+}
+
+// Create returns a create builder for GameHustlerQuest.
+func (c *GameHustlerQuestClient) Create() *GameHustlerQuestCreate {
+	mutation := newGameHustlerQuestMutation(c.config, OpCreate)
+	return &GameHustlerQuestCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of GameHustlerQuest entities.
+func (c *GameHustlerQuestClient) CreateBulk(builders ...*GameHustlerQuestCreate) *GameHustlerQuestCreateBulk {
+	return &GameHustlerQuestCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for GameHustlerQuest.
+func (c *GameHustlerQuestClient) Update() *GameHustlerQuestUpdate {
+	mutation := newGameHustlerQuestMutation(c.config, OpUpdate)
+	return &GameHustlerQuestUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *GameHustlerQuestClient) UpdateOne(ghq *GameHustlerQuest) *GameHustlerQuestUpdateOne {
+	mutation := newGameHustlerQuestMutation(c.config, OpUpdateOne, withGameHustlerQuest(ghq))
+	return &GameHustlerQuestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *GameHustlerQuestClient) UpdateOneID(id string) *GameHustlerQuestUpdateOne {
+	mutation := newGameHustlerQuestMutation(c.config, OpUpdateOne, withGameHustlerQuestID(id))
+	return &GameHustlerQuestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for GameHustlerQuest.
+func (c *GameHustlerQuestClient) Delete() *GameHustlerQuestDelete {
+	mutation := newGameHustlerQuestMutation(c.config, OpDelete)
+	return &GameHustlerQuestDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *GameHustlerQuestClient) DeleteOne(ghq *GameHustlerQuest) *GameHustlerQuestDeleteOne {
+	return c.DeleteOneID(ghq.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *GameHustlerQuestClient) DeleteOneID(id string) *GameHustlerQuestDeleteOne {
+	builder := c.Delete().Where(gamehustlerquest.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &GameHustlerQuestDeleteOne{builder}
+}
+
+// Query returns a query builder for GameHustlerQuest.
+func (c *GameHustlerQuestClient) Query() *GameHustlerQuestQuery {
+	return &GameHustlerQuestQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a GameHustlerQuest entity by its id.
+func (c *GameHustlerQuestClient) Get(ctx context.Context, id string) (*GameHustlerQuest, error) {
+	return c.Query().Where(gamehustlerquest.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *GameHustlerQuestClient) GetX(ctx context.Context, id string) *GameHustlerQuest {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryHustler queries the hustler edge of a GameHustlerQuest.
+func (c *GameHustlerQuestClient) QueryHustler(ghq *GameHustlerQuest) *GameHustlerQuery {
+	query := &GameHustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ghq.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustlerquest.Table, gamehustlerquest.FieldID, id),
+			sqlgraph.To(gamehustler.Table, gamehustler.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, gamehustlerquest.HustlerTable, gamehustlerquest.HustlerColumn),
+		)
+		fromV = sqlgraph.Neighbors(ghq.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *GameHustlerQuestClient) Hooks() []Hook {
+	return c.hooks.GameHustlerQuest
+}
+
+// GameHustlerRelationClient is a client for the GameHustlerRelation schema.
+type GameHustlerRelationClient struct {
+	config
+}
+
+// NewGameHustlerRelationClient returns a client for the GameHustlerRelation from the given config.
+func NewGameHustlerRelationClient(c config) *GameHustlerRelationClient {
+	return &GameHustlerRelationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `gamehustlerrelation.Hooks(f(g(h())))`.
+func (c *GameHustlerRelationClient) Use(hooks ...Hook) {
+	c.hooks.GameHustlerRelation = append(c.hooks.GameHustlerRelation, hooks...)
+}
+
+// Create returns a create builder for GameHustlerRelation.
+func (c *GameHustlerRelationClient) Create() *GameHustlerRelationCreate {
+	mutation := newGameHustlerRelationMutation(c.config, OpCreate)
+	return &GameHustlerRelationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of GameHustlerRelation entities.
+func (c *GameHustlerRelationClient) CreateBulk(builders ...*GameHustlerRelationCreate) *GameHustlerRelationCreateBulk {
+	return &GameHustlerRelationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for GameHustlerRelation.
+func (c *GameHustlerRelationClient) Update() *GameHustlerRelationUpdate {
+	mutation := newGameHustlerRelationMutation(c.config, OpUpdate)
+	return &GameHustlerRelationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *GameHustlerRelationClient) UpdateOne(ghr *GameHustlerRelation) *GameHustlerRelationUpdateOne {
+	mutation := newGameHustlerRelationMutation(c.config, OpUpdateOne, withGameHustlerRelation(ghr))
+	return &GameHustlerRelationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *GameHustlerRelationClient) UpdateOneID(id string) *GameHustlerRelationUpdateOne {
+	mutation := newGameHustlerRelationMutation(c.config, OpUpdateOne, withGameHustlerRelationID(id))
+	return &GameHustlerRelationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for GameHustlerRelation.
+func (c *GameHustlerRelationClient) Delete() *GameHustlerRelationDelete {
+	mutation := newGameHustlerRelationMutation(c.config, OpDelete)
+	return &GameHustlerRelationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *GameHustlerRelationClient) DeleteOne(ghr *GameHustlerRelation) *GameHustlerRelationDeleteOne {
+	return c.DeleteOneID(ghr.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *GameHustlerRelationClient) DeleteOneID(id string) *GameHustlerRelationDeleteOne {
+	builder := c.Delete().Where(gamehustlerrelation.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &GameHustlerRelationDeleteOne{builder}
+}
+
+// Query returns a query builder for GameHustlerRelation.
+func (c *GameHustlerRelationClient) Query() *GameHustlerRelationQuery {
+	return &GameHustlerRelationQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a GameHustlerRelation entity by its id.
+func (c *GameHustlerRelationClient) Get(ctx context.Context, id string) (*GameHustlerRelation, error) {
+	return c.Query().Where(gamehustlerrelation.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *GameHustlerRelationClient) GetX(ctx context.Context, id string) *GameHustlerRelation {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryHustler queries the hustler edge of a GameHustlerRelation.
+func (c *GameHustlerRelationClient) QueryHustler(ghr *GameHustlerRelation) *GameHustlerQuery {
+	query := &GameHustlerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ghr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustlerrelation.Table, gamehustlerrelation.FieldID, id),
+			sqlgraph.To(gamehustler.Table, gamehustler.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, gamehustlerrelation.HustlerTable, gamehustlerrelation.HustlerColumn),
+		)
+		fromV = sqlgraph.Neighbors(ghr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *GameHustlerRelationClient) Hooks() []Hook {
+	return c.hooks.GameHustlerRelation
 }
 
 // HustlerClient is a client for the Hustler schema.
