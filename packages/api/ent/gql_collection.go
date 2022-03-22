@@ -121,6 +121,66 @@ func (gh *GameHustlerQuery) collectField(ctx *graphql.OperationContext, field gr
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ghi *GameHustlerItemQuery) CollectFields(ctx context.Context, satisfies ...string) *GameHustlerItemQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		ghi = ghi.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return ghi
+}
+
+func (ghi *GameHustlerItemQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *GameHustlerItemQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "hustler":
+			ghi = ghi.WithHustler(func(query *GameHustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
+	return ghi
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ghq *GameHustlerQuestQuery) CollectFields(ctx context.Context, satisfies ...string) *GameHustlerQuestQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		ghq = ghq.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return ghq
+}
+
+func (ghq *GameHustlerQuestQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *GameHustlerQuestQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "hustler":
+			ghq = ghq.WithHustler(func(query *GameHustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
+	return ghq
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ghr *GameHustlerRelationQuery) CollectFields(ctx context.Context, satisfies ...string) *GameHustlerRelationQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		ghr = ghr.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return ghr
+}
+
+func (ghr *GameHustlerRelationQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *GameHustlerRelationQuery {
+	for _, field := range graphql.CollectFields(ctx, field.Selections, satisfies) {
+		switch field.Name {
+		case "hustler":
+			ghr = ghr.WithHustler(func(query *GameHustlerQuery) {
+				query.collectField(ctx, field)
+			})
+		}
+	}
+	return ghr
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (h *HustlerQuery) CollectFields(ctx context.Context, satisfies ...string) *HustlerQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		h = h.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)

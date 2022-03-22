@@ -84,6 +84,54 @@ func (d *Dope) Index(ctx context.Context) (*Search, error) {
 	return result, MaskNotFound(err)
 }
 
+func (gh *GameHustler) Relations(ctx context.Context) ([]*GameHustlerRelation, error) {
+	result, err := gh.Edges.RelationsOrErr()
+	if IsNotLoaded(err) {
+		result, err = gh.QueryRelations().All(ctx)
+	}
+	return result, err
+}
+
+func (gh *GameHustler) Items(ctx context.Context) ([]*GameHustlerItem, error) {
+	result, err := gh.Edges.ItemsOrErr()
+	if IsNotLoaded(err) {
+		result, err = gh.QueryItems().All(ctx)
+	}
+	return result, err
+}
+
+func (gh *GameHustler) Quests(ctx context.Context) ([]*GameHustlerQuest, error) {
+	result, err := gh.Edges.QuestsOrErr()
+	if IsNotLoaded(err) {
+		result, err = gh.QueryQuests().All(ctx)
+	}
+	return result, err
+}
+
+func (ghi *GameHustlerItem) Hustler(ctx context.Context) (*GameHustler, error) {
+	result, err := ghi.Edges.HustlerOrErr()
+	if IsNotLoaded(err) {
+		result, err = ghi.QueryHustler().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (ghq *GameHustlerQuest) Hustler(ctx context.Context) (*GameHustler, error) {
+	result, err := ghq.Edges.HustlerOrErr()
+	if IsNotLoaded(err) {
+		result, err = ghq.QueryHustler().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (ghr *GameHustlerRelation) Hustler(ctx context.Context) (*GameHustler, error) {
+	result, err := ghr.Edges.HustlerOrErr()
+	if IsNotLoaded(err) {
+		result, err = ghr.QueryHustler().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (h *Hustler) Wallet(ctx context.Context) (*Wallet, error) {
 	result, err := h.Edges.WalletOrErr()
 	if IsNotLoaded(err) {

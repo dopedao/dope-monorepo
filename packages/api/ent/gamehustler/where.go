@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 )
 
@@ -172,6 +173,90 @@ func CreatedAtLT(v time.Time) predicate.GameHustler {
 func CreatedAtLTE(v time.Time) predicate.GameHustler {
 	return predicate.GameHustler(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldCreatedAt), v))
+	})
+}
+
+// HasRelations applies the HasEdge predicate on the "relations" edge.
+func HasRelations() predicate.GameHustler {
+	return predicate.GameHustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(RelationsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, RelationsTable, RelationsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRelationsWith applies the HasEdge predicate on the "relations" edge with a given conditions (other predicates).
+func HasRelationsWith(preds ...predicate.GameHustlerRelation) predicate.GameHustler {
+	return predicate.GameHustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(RelationsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, RelationsTable, RelationsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasItems applies the HasEdge predicate on the "items" edge.
+func HasItems() predicate.GameHustler {
+	return predicate.GameHustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ItemsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ItemsTable, ItemsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasItemsWith applies the HasEdge predicate on the "items" edge with a given conditions (other predicates).
+func HasItemsWith(preds ...predicate.GameHustlerItem) predicate.GameHustler {
+	return predicate.GameHustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ItemsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ItemsTable, ItemsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasQuests applies the HasEdge predicate on the "quests" edge.
+func HasQuests() predicate.GameHustler {
+	return predicate.GameHustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(QuestsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, QuestsTable, QuestsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasQuestsWith applies the HasEdge predicate on the "quests" edge with a given conditions (other predicates).
+func HasQuestsWith(preds ...predicate.GameHustlerQuest) predicate.GameHustler {
+	return predicate.GameHustler(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(QuestsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, QuestsTable, QuestsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

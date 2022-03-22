@@ -11,6 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustleritem"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustlerquest"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustlerrelation"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 )
@@ -34,27 +37,117 @@ func (ghu *GameHustlerUpdate) SetLastPosition(s schema.Position) *GameHustlerUpd
 	return ghu
 }
 
-// SetRelations sets the "relations" field.
-func (ghu *GameHustlerUpdate) SetRelations(shc []schema.GameHustlerCitizen) *GameHustlerUpdate {
-	ghu.mutation.SetRelations(shc)
+// AddRelationIDs adds the "relations" edge to the GameHustlerRelation entity by IDs.
+func (ghu *GameHustlerUpdate) AddRelationIDs(ids ...string) *GameHustlerUpdate {
+	ghu.mutation.AddRelationIDs(ids...)
 	return ghu
 }
 
-// SetQuests sets the "quests" field.
-func (ghu *GameHustlerUpdate) SetQuests(shq []schema.GameHustlerQuest) *GameHustlerUpdate {
-	ghu.mutation.SetQuests(shq)
+// AddRelations adds the "relations" edges to the GameHustlerRelation entity.
+func (ghu *GameHustlerUpdate) AddRelations(g ...*GameHustlerRelation) *GameHustlerUpdate {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghu.AddRelationIDs(ids...)
+}
+
+// AddItemIDs adds the "items" edge to the GameHustlerItem entity by IDs.
+func (ghu *GameHustlerUpdate) AddItemIDs(ids ...string) *GameHustlerUpdate {
+	ghu.mutation.AddItemIDs(ids...)
 	return ghu
 }
 
-// SetItems sets the "items" field.
-func (ghu *GameHustlerUpdate) SetItems(shi []schema.GameHustlerItem) *GameHustlerUpdate {
-	ghu.mutation.SetItems(shi)
+// AddItems adds the "items" edges to the GameHustlerItem entity.
+func (ghu *GameHustlerUpdate) AddItems(g ...*GameHustlerItem) *GameHustlerUpdate {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghu.AddItemIDs(ids...)
+}
+
+// AddQuestIDs adds the "quests" edge to the GameHustlerQuest entity by IDs.
+func (ghu *GameHustlerUpdate) AddQuestIDs(ids ...string) *GameHustlerUpdate {
+	ghu.mutation.AddQuestIDs(ids...)
 	return ghu
+}
+
+// AddQuests adds the "quests" edges to the GameHustlerQuest entity.
+func (ghu *GameHustlerUpdate) AddQuests(g ...*GameHustlerQuest) *GameHustlerUpdate {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghu.AddQuestIDs(ids...)
 }
 
 // Mutation returns the GameHustlerMutation object of the builder.
 func (ghu *GameHustlerUpdate) Mutation() *GameHustlerMutation {
 	return ghu.mutation
+}
+
+// ClearRelations clears all "relations" edges to the GameHustlerRelation entity.
+func (ghu *GameHustlerUpdate) ClearRelations() *GameHustlerUpdate {
+	ghu.mutation.ClearRelations()
+	return ghu
+}
+
+// RemoveRelationIDs removes the "relations" edge to GameHustlerRelation entities by IDs.
+func (ghu *GameHustlerUpdate) RemoveRelationIDs(ids ...string) *GameHustlerUpdate {
+	ghu.mutation.RemoveRelationIDs(ids...)
+	return ghu
+}
+
+// RemoveRelations removes "relations" edges to GameHustlerRelation entities.
+func (ghu *GameHustlerUpdate) RemoveRelations(g ...*GameHustlerRelation) *GameHustlerUpdate {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghu.RemoveRelationIDs(ids...)
+}
+
+// ClearItems clears all "items" edges to the GameHustlerItem entity.
+func (ghu *GameHustlerUpdate) ClearItems() *GameHustlerUpdate {
+	ghu.mutation.ClearItems()
+	return ghu
+}
+
+// RemoveItemIDs removes the "items" edge to GameHustlerItem entities by IDs.
+func (ghu *GameHustlerUpdate) RemoveItemIDs(ids ...string) *GameHustlerUpdate {
+	ghu.mutation.RemoveItemIDs(ids...)
+	return ghu
+}
+
+// RemoveItems removes "items" edges to GameHustlerItem entities.
+func (ghu *GameHustlerUpdate) RemoveItems(g ...*GameHustlerItem) *GameHustlerUpdate {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghu.RemoveItemIDs(ids...)
+}
+
+// ClearQuests clears all "quests" edges to the GameHustlerQuest entity.
+func (ghu *GameHustlerUpdate) ClearQuests() *GameHustlerUpdate {
+	ghu.mutation.ClearQuests()
+	return ghu
+}
+
+// RemoveQuestIDs removes the "quests" edge to GameHustlerQuest entities by IDs.
+func (ghu *GameHustlerUpdate) RemoveQuestIDs(ids ...string) *GameHustlerUpdate {
+	ghu.mutation.RemoveQuestIDs(ids...)
+	return ghu
+}
+
+// RemoveQuests removes "quests" edges to GameHustlerQuest entities.
+func (ghu *GameHustlerUpdate) RemoveQuests(g ...*GameHustlerQuest) *GameHustlerUpdate {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghu.RemoveQuestIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -136,26 +229,167 @@ func (ghu *GameHustlerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gamehustler.FieldLastPosition,
 		})
 	}
-	if value, ok := ghu.mutation.Relations(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: gamehustler.FieldRelations,
-		})
+	if ghu.mutation.RelationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.RelationsTable,
+			Columns: []string{gamehustler.RelationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerrelation.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := ghu.mutation.Quests(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: gamehustler.FieldQuests,
-		})
+	if nodes := ghu.mutation.RemovedRelationsIDs(); len(nodes) > 0 && !ghu.mutation.RelationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.RelationsTable,
+			Columns: []string{gamehustler.RelationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerrelation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := ghu.mutation.Items(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: gamehustler.FieldItems,
-		})
+	if nodes := ghu.mutation.RelationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.RelationsTable,
+			Columns: []string{gamehustler.RelationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerrelation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ghu.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.ItemsTable,
+			Columns: []string{gamehustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustleritem.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ghu.mutation.RemovedItemsIDs(); len(nodes) > 0 && !ghu.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.ItemsTable,
+			Columns: []string{gamehustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustleritem.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ghu.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.ItemsTable,
+			Columns: []string{gamehustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustleritem.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ghu.mutation.QuestsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.QuestsTable,
+			Columns: []string{gamehustler.QuestsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerquest.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ghu.mutation.RemovedQuestsIDs(); len(nodes) > 0 && !ghu.mutation.QuestsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.QuestsTable,
+			Columns: []string{gamehustler.QuestsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerquest.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ghu.mutation.QuestsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.QuestsTable,
+			Columns: []string{gamehustler.QuestsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerquest.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ghu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -182,27 +416,117 @@ func (ghuo *GameHustlerUpdateOne) SetLastPosition(s schema.Position) *GameHustle
 	return ghuo
 }
 
-// SetRelations sets the "relations" field.
-func (ghuo *GameHustlerUpdateOne) SetRelations(shc []schema.GameHustlerCitizen) *GameHustlerUpdateOne {
-	ghuo.mutation.SetRelations(shc)
+// AddRelationIDs adds the "relations" edge to the GameHustlerRelation entity by IDs.
+func (ghuo *GameHustlerUpdateOne) AddRelationIDs(ids ...string) *GameHustlerUpdateOne {
+	ghuo.mutation.AddRelationIDs(ids...)
 	return ghuo
 }
 
-// SetQuests sets the "quests" field.
-func (ghuo *GameHustlerUpdateOne) SetQuests(shq []schema.GameHustlerQuest) *GameHustlerUpdateOne {
-	ghuo.mutation.SetQuests(shq)
+// AddRelations adds the "relations" edges to the GameHustlerRelation entity.
+func (ghuo *GameHustlerUpdateOne) AddRelations(g ...*GameHustlerRelation) *GameHustlerUpdateOne {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghuo.AddRelationIDs(ids...)
+}
+
+// AddItemIDs adds the "items" edge to the GameHustlerItem entity by IDs.
+func (ghuo *GameHustlerUpdateOne) AddItemIDs(ids ...string) *GameHustlerUpdateOne {
+	ghuo.mutation.AddItemIDs(ids...)
 	return ghuo
 }
 
-// SetItems sets the "items" field.
-func (ghuo *GameHustlerUpdateOne) SetItems(shi []schema.GameHustlerItem) *GameHustlerUpdateOne {
-	ghuo.mutation.SetItems(shi)
+// AddItems adds the "items" edges to the GameHustlerItem entity.
+func (ghuo *GameHustlerUpdateOne) AddItems(g ...*GameHustlerItem) *GameHustlerUpdateOne {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghuo.AddItemIDs(ids...)
+}
+
+// AddQuestIDs adds the "quests" edge to the GameHustlerQuest entity by IDs.
+func (ghuo *GameHustlerUpdateOne) AddQuestIDs(ids ...string) *GameHustlerUpdateOne {
+	ghuo.mutation.AddQuestIDs(ids...)
 	return ghuo
+}
+
+// AddQuests adds the "quests" edges to the GameHustlerQuest entity.
+func (ghuo *GameHustlerUpdateOne) AddQuests(g ...*GameHustlerQuest) *GameHustlerUpdateOne {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghuo.AddQuestIDs(ids...)
 }
 
 // Mutation returns the GameHustlerMutation object of the builder.
 func (ghuo *GameHustlerUpdateOne) Mutation() *GameHustlerMutation {
 	return ghuo.mutation
+}
+
+// ClearRelations clears all "relations" edges to the GameHustlerRelation entity.
+func (ghuo *GameHustlerUpdateOne) ClearRelations() *GameHustlerUpdateOne {
+	ghuo.mutation.ClearRelations()
+	return ghuo
+}
+
+// RemoveRelationIDs removes the "relations" edge to GameHustlerRelation entities by IDs.
+func (ghuo *GameHustlerUpdateOne) RemoveRelationIDs(ids ...string) *GameHustlerUpdateOne {
+	ghuo.mutation.RemoveRelationIDs(ids...)
+	return ghuo
+}
+
+// RemoveRelations removes "relations" edges to GameHustlerRelation entities.
+func (ghuo *GameHustlerUpdateOne) RemoveRelations(g ...*GameHustlerRelation) *GameHustlerUpdateOne {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghuo.RemoveRelationIDs(ids...)
+}
+
+// ClearItems clears all "items" edges to the GameHustlerItem entity.
+func (ghuo *GameHustlerUpdateOne) ClearItems() *GameHustlerUpdateOne {
+	ghuo.mutation.ClearItems()
+	return ghuo
+}
+
+// RemoveItemIDs removes the "items" edge to GameHustlerItem entities by IDs.
+func (ghuo *GameHustlerUpdateOne) RemoveItemIDs(ids ...string) *GameHustlerUpdateOne {
+	ghuo.mutation.RemoveItemIDs(ids...)
+	return ghuo
+}
+
+// RemoveItems removes "items" edges to GameHustlerItem entities.
+func (ghuo *GameHustlerUpdateOne) RemoveItems(g ...*GameHustlerItem) *GameHustlerUpdateOne {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghuo.RemoveItemIDs(ids...)
+}
+
+// ClearQuests clears all "quests" edges to the GameHustlerQuest entity.
+func (ghuo *GameHustlerUpdateOne) ClearQuests() *GameHustlerUpdateOne {
+	ghuo.mutation.ClearQuests()
+	return ghuo
+}
+
+// RemoveQuestIDs removes the "quests" edge to GameHustlerQuest entities by IDs.
+func (ghuo *GameHustlerUpdateOne) RemoveQuestIDs(ids ...string) *GameHustlerUpdateOne {
+	ghuo.mutation.RemoveQuestIDs(ids...)
+	return ghuo
+}
+
+// RemoveQuests removes "quests" edges to GameHustlerQuest entities.
+func (ghuo *GameHustlerUpdateOne) RemoveQuests(g ...*GameHustlerQuest) *GameHustlerUpdateOne {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ghuo.RemoveQuestIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -308,26 +632,167 @@ func (ghuo *GameHustlerUpdateOne) sqlSave(ctx context.Context) (_node *GameHustl
 			Column: gamehustler.FieldLastPosition,
 		})
 	}
-	if value, ok := ghuo.mutation.Relations(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: gamehustler.FieldRelations,
-		})
+	if ghuo.mutation.RelationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.RelationsTable,
+			Columns: []string{gamehustler.RelationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerrelation.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := ghuo.mutation.Quests(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: gamehustler.FieldQuests,
-		})
+	if nodes := ghuo.mutation.RemovedRelationsIDs(); len(nodes) > 0 && !ghuo.mutation.RelationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.RelationsTable,
+			Columns: []string{gamehustler.RelationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerrelation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := ghuo.mutation.Items(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: gamehustler.FieldItems,
-		})
+	if nodes := ghuo.mutation.RelationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.RelationsTable,
+			Columns: []string{gamehustler.RelationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerrelation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ghuo.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.ItemsTable,
+			Columns: []string{gamehustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustleritem.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ghuo.mutation.RemovedItemsIDs(); len(nodes) > 0 && !ghuo.mutation.ItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.ItemsTable,
+			Columns: []string{gamehustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustleritem.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ghuo.mutation.ItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.ItemsTable,
+			Columns: []string{gamehustler.ItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustleritem.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ghuo.mutation.QuestsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.QuestsTable,
+			Columns: []string{gamehustler.QuestsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerquest.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ghuo.mutation.RemovedQuestsIDs(); len(nodes) > 0 && !ghuo.mutation.QuestsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.QuestsTable,
+			Columns: []string{gamehustler.QuestsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerquest.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ghuo.mutation.QuestsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   gamehustler.QuestsTable,
+			Columns: []string{gamehustler.QuestsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: gamehustlerquest.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &GameHustler{config: ghuo.config}
 	_spec.Assign = _node.assignValues

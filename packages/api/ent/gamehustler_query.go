@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -12,6 +13,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustleritem"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustlerquest"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustlerrelation"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 )
 
@@ -24,6 +28,10 @@ type GameHustlerQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.GameHustler
+	// eager-loading edges.
+	withRelations *GameHustlerRelationQuery
+	withItems     *GameHustlerItemQuery
+	withQuests    *GameHustlerQuestQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +66,72 @@ func (ghq *GameHustlerQuery) Unique(unique bool) *GameHustlerQuery {
 func (ghq *GameHustlerQuery) Order(o ...OrderFunc) *GameHustlerQuery {
 	ghq.order = append(ghq.order, o...)
 	return ghq
+}
+
+// QueryRelations chains the current query on the "relations" edge.
+func (ghq *GameHustlerQuery) QueryRelations() *GameHustlerRelationQuery {
+	query := &GameHustlerRelationQuery{config: ghq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := ghq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := ghq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustler.Table, gamehustler.FieldID, selector),
+			sqlgraph.To(gamehustlerrelation.Table, gamehustlerrelation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, gamehustler.RelationsTable, gamehustler.RelationsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(ghq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryItems chains the current query on the "items" edge.
+func (ghq *GameHustlerQuery) QueryItems() *GameHustlerItemQuery {
+	query := &GameHustlerItemQuery{config: ghq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := ghq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := ghq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustler.Table, gamehustler.FieldID, selector),
+			sqlgraph.To(gamehustleritem.Table, gamehustleritem.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, gamehustler.ItemsTable, gamehustler.ItemsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(ghq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryQuests chains the current query on the "quests" edge.
+func (ghq *GameHustlerQuery) QueryQuests() *GameHustlerQuestQuery {
+	query := &GameHustlerQuestQuery{config: ghq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := ghq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := ghq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamehustler.Table, gamehustler.FieldID, selector),
+			sqlgraph.To(gamehustlerquest.Table, gamehustlerquest.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, gamehustler.QuestsTable, gamehustler.QuestsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(ghq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first GameHustler entity from the query.
@@ -236,15 +310,51 @@ func (ghq *GameHustlerQuery) Clone() *GameHustlerQuery {
 		return nil
 	}
 	return &GameHustlerQuery{
-		config:     ghq.config,
-		limit:      ghq.limit,
-		offset:     ghq.offset,
-		order:      append([]OrderFunc{}, ghq.order...),
-		predicates: append([]predicate.GameHustler{}, ghq.predicates...),
+		config:        ghq.config,
+		limit:         ghq.limit,
+		offset:        ghq.offset,
+		order:         append([]OrderFunc{}, ghq.order...),
+		predicates:    append([]predicate.GameHustler{}, ghq.predicates...),
+		withRelations: ghq.withRelations.Clone(),
+		withItems:     ghq.withItems.Clone(),
+		withQuests:    ghq.withQuests.Clone(),
 		// clone intermediate query.
 		sql:  ghq.sql.Clone(),
 		path: ghq.path,
 	}
+}
+
+// WithRelations tells the query-builder to eager-load the nodes that are connected to
+// the "relations" edge. The optional arguments are used to configure the query builder of the edge.
+func (ghq *GameHustlerQuery) WithRelations(opts ...func(*GameHustlerRelationQuery)) *GameHustlerQuery {
+	query := &GameHustlerRelationQuery{config: ghq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	ghq.withRelations = query
+	return ghq
+}
+
+// WithItems tells the query-builder to eager-load the nodes that are connected to
+// the "items" edge. The optional arguments are used to configure the query builder of the edge.
+func (ghq *GameHustlerQuery) WithItems(opts ...func(*GameHustlerItemQuery)) *GameHustlerQuery {
+	query := &GameHustlerItemQuery{config: ghq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	ghq.withItems = query
+	return ghq
+}
+
+// WithQuests tells the query-builder to eager-load the nodes that are connected to
+// the "quests" edge. The optional arguments are used to configure the query builder of the edge.
+func (ghq *GameHustlerQuery) WithQuests(opts ...func(*GameHustlerQuestQuery)) *GameHustlerQuery {
+	query := &GameHustlerQuestQuery{config: ghq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	ghq.withQuests = query
+	return ghq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -310,8 +420,13 @@ func (ghq *GameHustlerQuery) prepareQuery(ctx context.Context) error {
 
 func (ghq *GameHustlerQuery) sqlAll(ctx context.Context) ([]*GameHustler, error) {
 	var (
-		nodes = []*GameHustler{}
-		_spec = ghq.querySpec()
+		nodes       = []*GameHustler{}
+		_spec       = ghq.querySpec()
+		loadedTypes = [3]bool{
+			ghq.withRelations != nil,
+			ghq.withItems != nil,
+			ghq.withQuests != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &GameHustler{config: ghq.config}
@@ -323,6 +438,7 @@ func (ghq *GameHustlerQuery) sqlAll(ctx context.Context) ([]*GameHustler, error)
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, ghq.driver, _spec); err != nil {
@@ -331,6 +447,94 @@ func (ghq *GameHustlerQuery) sqlAll(ctx context.Context) ([]*GameHustler, error)
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := ghq.withRelations; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*GameHustler)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Relations = []*GameHustlerRelation{}
+		}
+		query.withFKs = true
+		query.Where(predicate.GameHustlerRelation(func(s *sql.Selector) {
+			s.Where(sql.InValues(gamehustler.RelationsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.game_hustler_relations
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "game_hustler_relations" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "game_hustler_relations" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Relations = append(node.Edges.Relations, n)
+		}
+	}
+
+	if query := ghq.withItems; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*GameHustler)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Items = []*GameHustlerItem{}
+		}
+		query.withFKs = true
+		query.Where(predicate.GameHustlerItem(func(s *sql.Selector) {
+			s.Where(sql.InValues(gamehustler.ItemsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.game_hustler_items
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "game_hustler_items" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "game_hustler_items" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Items = append(node.Edges.Items, n)
+		}
+	}
+
+	if query := ghq.withQuests; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*GameHustler)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Quests = []*GameHustlerQuest{}
+		}
+		query.withFKs = true
+		query.Where(predicate.GameHustlerQuest(func(s *sql.Selector) {
+			s.Where(sql.InValues(gamehustler.QuestsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.game_hustler_quests
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "game_hustler_quests" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "game_hustler_quests" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Quests = append(node.Edges.Quests, n)
+		}
+	}
+
 	return nodes, nil
 }
 
