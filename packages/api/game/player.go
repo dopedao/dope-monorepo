@@ -171,7 +171,10 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 				break
 			}
 
-			p.AddItem(ctx, client, itemEntity.item, true)
+			if p.AddItem(ctx, client, itemEntity.item, true) != nil {
+				p.Send <- generateErrorMessage(500, "could not add item to inventory")
+			}
+
 			log.Info().Msgf("player %s | %s picked up item entity: %s", p.Id, p.name, data.Id)
 		case "player_update_citizen_state":
 			var data CitizenUpdateStateData
