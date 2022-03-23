@@ -56,7 +56,9 @@ func (*GameHustlerQuest) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case gamehustlerquest.FieldCompleted:
 			values[i] = new(sql.NullBool)
-		case gamehustlerquest.FieldID, gamehustlerquest.FieldQuest:
+		case gamehustlerquest.FieldID:
+			values[i] = new(sql.NullInt64)
+		case gamehustlerquest.FieldQuest:
 			values[i] = new(sql.NullString)
 		case gamehustlerquest.ForeignKeys[0]: // game_hustler_quests
 			values[i] = new(sql.NullString)
@@ -76,11 +78,11 @@ func (ghq *GameHustlerQuest) assignValues(columns []string, values []interface{}
 	for i := range columns {
 		switch columns[i] {
 		case gamehustlerquest.FieldID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value.Valid {
-				ghq.ID = value.String
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
 			}
+			ghq.ID = string(value.Int64)
 		case gamehustlerquest.FieldQuest:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field quest", values[i])

@@ -119,7 +119,7 @@ var (
 	}
 	// GameHustlerItemsColumns holds the columns for the "game_hustler_items" table.
 	GameHustlerItemsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
+		{Name: "id", Type: field.TypeString, Increment: true},
 		{Name: "item", Type: field.TypeString},
 		{Name: "game_hustler_items", Type: field.TypeString, Nullable: true},
 	}
@@ -139,9 +139,9 @@ var (
 	}
 	// GameHustlerQuestsColumns holds the columns for the "game_hustler_quests" table.
 	GameHustlerQuestsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
+		{Name: "id", Type: field.TypeString, Increment: true},
 		{Name: "quest", Type: field.TypeString},
-		{Name: "completed", Type: field.TypeBool},
+		{Name: "completed", Type: field.TypeBool, Default: false},
 		{Name: "game_hustler_quests", Type: field.TypeString, Nullable: true},
 	}
 	// GameHustlerQuestsTable holds the schema information for the "game_hustler_quests" table.

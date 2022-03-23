@@ -22,6 +22,7 @@ type GameHustler struct {
 
 func (GameHustler) Fields() []ent.Field {
 	return []ent.Field{
+		field.String("id"),
 		field.JSON("last_position", Position{}),
 		field.Time("created_at").
 			Default(time.Now).

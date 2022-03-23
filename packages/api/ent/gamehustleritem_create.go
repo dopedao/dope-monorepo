@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 
-	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -26,12 +25,6 @@ type GameHustlerItemCreate struct {
 // SetItem sets the "item" field.
 func (ghic *GameHustlerItemCreate) SetItem(s string) *GameHustlerItemCreate {
 	ghic.mutation.SetItem(s)
-	return ghic
-}
-
-// SetID sets the "id" field.
-func (ghic *GameHustlerItemCreate) SetID(s string) *GameHustlerItemCreate {
-	ghic.mutation.SetID(s)
 	return ghic
 }
 
@@ -138,13 +131,8 @@ func (ghic *GameHustlerItemCreate) sqlSave(ctx context.Context) (*GameHustlerIte
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(string); ok {
-			_node.ID = id
-		} else {
-			return nil, fmt.Errorf("unexpected GameHustlerItem.ID type: %T", _spec.ID.Value)
-		}
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = string(id)
 	return _node, nil
 }
 
@@ -160,10 +148,6 @@ func (ghic *GameHustlerItemCreate) createSpec() (*GameHustlerItem, *sqlgraph.Cre
 		}
 	)
 	_spec.OnConflict = ghic.conflict
-	if id, ok := ghic.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
 	if value, ok := ghic.mutation.Item(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -258,25 +242,17 @@ func (u *GameHustlerItemUpsert) UpdateItem() *GameHustlerItemUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
 //	client.GameHustlerItem.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(gamehustleritem.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 //
 func (u *GameHustlerItemUpsertOne) UpdateNewValues() *GameHustlerItemUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		if _, exists := u.create.mutation.ID(); exists {
-			s.SetIgnore(gamehustleritem.FieldID)
-		}
-	}))
 	return u
 }
 
@@ -339,11 +315,6 @@ func (u *GameHustlerItemUpsertOne) ExecX(ctx context.Context) {
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
 func (u *GameHustlerItemUpsertOne) ID(ctx context.Context) (id string, err error) {
-	if u.create.driver.Dialect() == dialect.MySQL {
-		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
-		// fields from the database since MySQL does not support the RETURNING clause.
-		return id, errors.New("ent: GameHustlerItemUpsertOne.ID is not supported by MySQL driver. Use GameHustlerItemUpsertOne.Exec instead")
-	}
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -403,6 +374,10 @@ func (ghicb *GameHustlerItemCreateBulk) Save(ctx context.Context) ([]*GameHustle
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
+				if specs[i].ID.Value != nil {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = string(id)
+				}
 				return nodes[i], nil
 			})
 			for i := len(builder.hooks) - 1; i >= 0; i-- {
@@ -490,22 +465,11 @@ type GameHustlerItemUpsertBulk struct {
 //	client.GameHustlerItem.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(gamehustleritem.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 //
 func (u *GameHustlerItemUpsertBulk) UpdateNewValues() *GameHustlerItemUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		for _, b := range u.create.builders {
-			if _, exists := b.mutation.ID(); exists {
-				s.SetIgnore(gamehustleritem.FieldID)
-				return
-			}
-		}
-	}))
 	return u
 }
 

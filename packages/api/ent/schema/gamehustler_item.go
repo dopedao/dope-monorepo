@@ -14,7 +14,6 @@ type GameHustlerItem struct {
 
 func (GameHustlerItem) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id"),
 		field.String("item"),
 	}
 }

@@ -51,3 +51,8 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultCompleted holds the default value on creation for the "completed" field.
+	DefaultCompleted bool
+)

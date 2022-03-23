@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 
-	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -35,9 +34,11 @@ func (ghqc *GameHustlerQuestCreate) SetCompleted(b bool) *GameHustlerQuestCreate
 	return ghqc
 }
 
-// SetID sets the "id" field.
-func (ghqc *GameHustlerQuestCreate) SetID(s string) *GameHustlerQuestCreate {
-	ghqc.mutation.SetID(s)
+// SetNillableCompleted sets the "completed" field if the given value is not nil.
+func (ghqc *GameHustlerQuestCreate) SetNillableCompleted(b *bool) *GameHustlerQuestCreate {
+	if b != nil {
+		ghqc.SetCompleted(*b)
+	}
 	return ghqc
 }
 
@@ -71,6 +72,7 @@ func (ghqc *GameHustlerQuestCreate) Save(ctx context.Context) (*GameHustlerQuest
 		err  error
 		node *GameHustlerQuest
 	)
+	ghqc.defaults()
 	if len(ghqc.hooks) == 0 {
 		if err = ghqc.check(); err != nil {
 			return nil, err
@@ -128,6 +130,14 @@ func (ghqc *GameHustlerQuestCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ghqc *GameHustlerQuestCreate) defaults() {
+	if _, ok := ghqc.mutation.Completed(); !ok {
+		v := gamehustlerquest.DefaultCompleted
+		ghqc.mutation.SetCompleted(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (ghqc *GameHustlerQuestCreate) check() error {
 	if _, ok := ghqc.mutation.Quest(); !ok {
@@ -147,13 +157,8 @@ func (ghqc *GameHustlerQuestCreate) sqlSave(ctx context.Context) (*GameHustlerQu
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(string); ok {
-			_node.ID = id
-		} else {
-			return nil, fmt.Errorf("unexpected GameHustlerQuest.ID type: %T", _spec.ID.Value)
-		}
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = string(id)
 	return _node, nil
 }
 
@@ -169,10 +174,6 @@ func (ghqc *GameHustlerQuestCreate) createSpec() (*GameHustlerQuest, *sqlgraph.C
 		}
 	)
 	_spec.OnConflict = ghqc.conflict
-	if id, ok := ghqc.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
 	if value, ok := ghqc.mutation.Quest(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -287,25 +288,17 @@ func (u *GameHustlerQuestUpsert) UpdateCompleted() *GameHustlerQuestUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
 //	client.GameHustlerQuest.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(gamehustlerquest.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 //
 func (u *GameHustlerQuestUpsertOne) UpdateNewValues() *GameHustlerQuestUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		if _, exists := u.create.mutation.ID(); exists {
-			s.SetIgnore(gamehustlerquest.FieldID)
-		}
-	}))
 	return u
 }
 
@@ -382,11 +375,6 @@ func (u *GameHustlerQuestUpsertOne) ExecX(ctx context.Context) {
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
 func (u *GameHustlerQuestUpsertOne) ID(ctx context.Context) (id string, err error) {
-	if u.create.driver.Dialect() == dialect.MySQL {
-		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
-		// fields from the database since MySQL does not support the RETURNING clause.
-		return id, errors.New("ent: GameHustlerQuestUpsertOne.ID is not supported by MySQL driver. Use GameHustlerQuestUpsertOne.Exec instead")
-	}
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -418,6 +406,7 @@ func (ghqcb *GameHustlerQuestCreateBulk) Save(ctx context.Context) ([]*GameHustl
 	for i := range ghqcb.builders {
 		func(i int, root context.Context) {
 			builder := ghqcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*GameHustlerQuestMutation)
 				if !ok {
@@ -446,6 +435,10 @@ func (ghqcb *GameHustlerQuestCreateBulk) Save(ctx context.Context) ([]*GameHustl
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
+				if specs[i].ID.Value != nil {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = string(id)
+				}
 				return nodes[i], nil
 			})
 			for i := len(builder.hooks) - 1; i >= 0; i-- {
@@ -533,22 +526,11 @@ type GameHustlerQuestUpsertBulk struct {
 //	client.GameHustlerQuest.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(gamehustlerquest.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 //
 func (u *GameHustlerQuestUpsertBulk) UpdateNewValues() *GameHustlerQuestUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		for _, b := range u.create.builders {
-			if _, exists := b.mutation.ID(); exists {
-				s.SetIgnore(gamehustlerquest.FieldID)
-				return
-			}
-		}
-	}))
 	return u
 }
 

@@ -40,6 +40,14 @@ func (ghqu *GameHustlerQuestUpdate) SetCompleted(b bool) *GameHustlerQuestUpdate
 	return ghqu
 }
 
+// SetNillableCompleted sets the "completed" field if the given value is not nil.
+func (ghqu *GameHustlerQuestUpdate) SetNillableCompleted(b *bool) *GameHustlerQuestUpdate {
+	if b != nil {
+		ghqu.SetCompleted(*b)
+	}
+	return ghqu
+}
+
 // SetHustlerID sets the "hustler" edge to the GameHustler entity by ID.
 func (ghqu *GameHustlerQuestUpdate) SetHustlerID(id string) *GameHustlerQuestUpdate {
 	ghqu.mutation.SetHustlerID(id)
@@ -219,6 +227,14 @@ func (ghquo *GameHustlerQuestUpdateOne) SetQuest(s string) *GameHustlerQuestUpda
 // SetCompleted sets the "completed" field.
 func (ghquo *GameHustlerQuestUpdateOne) SetCompleted(b bool) *GameHustlerQuestUpdateOne {
 	ghquo.mutation.SetCompleted(b)
+	return ghquo
+}
+
+// SetNillableCompleted sets the "completed" field if the given value is not nil.
+func (ghquo *GameHustlerQuestUpdateOne) SetNillableCompleted(b *bool) *GameHustlerQuestUpdateOne {
+	if b != nil {
+		ghquo.SetCompleted(*b)
+	}
 	return ghquo
 }
 
