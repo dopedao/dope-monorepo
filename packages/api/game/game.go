@@ -41,7 +41,7 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 		case player := <-g.Register:
 			g.Players = append(g.Players, player)
 
-			go player.readPump(ctx)
+			go player.readPump(ctx, client)
 			go player.writePump(ctx)
 
 			// handshake data, player ID & game state info

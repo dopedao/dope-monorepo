@@ -3,11 +3,18 @@ package game
 import (
 	"context"
 	"encoding/json"
+	"errors"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
+	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
+
+type Quest struct {
+	quest     string
+	completed bool
+}
 
 type Player struct {
 	conn *websocket.Conn
@@ -19,6 +26,9 @@ type Player struct {
 	currentMap string
 	direction  string
 	position   Vec2
+
+	items  []Item
+	quests []Quest
 
 	// messages sent to player
 	Send chan BaseMessage
@@ -42,7 +52,7 @@ func NewPlayer(conn *websocket.Conn, game *Game, hustlerId string, name string, 
 	return p
 }
 
-func (p *Player) readPump(ctx context.Context) {
+func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 	_, log := base.LogFor(ctx)
 
 	defer func() {
@@ -135,6 +145,11 @@ func (p *Player) readPump(ctx context.Context) {
 
 			log.Info().Msgf("player %s | %s sent chat message: %s", p.Id, p.name, data.Message)
 		case "player_pickup_itementity":
+			if p.hustlerId == "" {
+				p.Send <- generateErrorMessage(500, "must have a hustler to pickup items")
+				break
+			}
+
 			var data IdData
 			json.Unmarshal(msg.Data, &data)
 
@@ -151,14 +166,12 @@ func (p *Player) readPump(ctx context.Context) {
 				break
 			}
 
-			p.game.RemoveItemEntity(itemEntity)
-
-			p.game.Broadcast <- BaseMessage{
-				Event: "player_pickup_itementity",
-				Data:  msg.Data,
+			if !p.game.RemoveItemEntity(itemEntity) {
+				p.Send <- generateErrorMessage(500, "could not pickup item entity")
+				break
 			}
 
-			// TODO: confirm item entitiy pickup by addingf item to players inventory
+			p.AddItem(ctx, client, itemEntity.item, true)
 			log.Info().Msgf("player %s | %s picked up item entity: %s", p.Id, p.name, data.Id)
 		case "player_update_citizen_state":
 			var data CitizenUpdateStateData
@@ -190,6 +203,59 @@ func (p *Player) writePump(ctx context.Context) {
 			p.conn.WriteJSON(msg)
 		}
 	}
+}
+
+func (p *Player) AddItem(ctx context.Context, client *ent.Client, item Item, pickup bool) error {
+	if p.hustlerId == "" {
+		return errors.New("player must have a hustler to pickup items")
+	}
+	_, err := client.GameHustlerItem.Create().SetItem(item.item).SetHustlerID(p.hustlerId).Save(ctx)
+	if err != nil {
+		return err
+	}
+
+	p.items = append(p.items, item)
+
+	data, err := json.Marshal(PlayerAddItemClientData{
+		Item:   item.item,
+		Pickup: pickup,
+	})
+	if err != nil {
+		return err
+	}
+
+	p.Send <- BaseMessage{
+		Event: "player_add_item",
+		Data:  data,
+	}
+
+	return nil
+}
+
+func (p *Player) AddQuest(ctx context.Context, client *ent.Client, quest Quest) error {
+	if p.hustlerId == "" {
+		return errors.New("player must have a hustler to have quests")
+	}
+	_, err := client.GameHustlerQuest.Create().SetQuest(quest.quest).SetHustlerID(p.hustlerId).Save(ctx)
+	if err != nil {
+		return err
+	}
+
+	p.quests = append(p.quests, quest)
+
+	data, err := json.Marshal(PlayerAddQuestClientData{
+		Quest: quest.quest,
+	})
+	if err != nil {
+		return err
+	}
+
+	p.Send <- BaseMessage{
+		Event: "player_add_quest",
+		Data:  data,
+	}
+
+	return nil
 }
 
 func (p *Player) Serialize() PlayerData {

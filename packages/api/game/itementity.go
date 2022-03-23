@@ -4,13 +4,17 @@ import (
 	"github.com/google/uuid"
 )
 
+type Item struct {
+	item string
+}
+
 type ItemEntity struct {
 	id       uuid.UUID
-	item     string
+	item     Item
 	position Vec2
 }
 
-func NewItemEntity(item string, x float32, y float32) *ItemEntity {
+func NewItemEntity(item Item, x float32, y float32) *ItemEntity {
 	return &ItemEntity{
 		id:       uuid.New(),
 		item:     item,
@@ -21,7 +25,7 @@ func NewItemEntity(item string, x float32, y float32) *ItemEntity {
 func (i *ItemEntity) Serialize() ItemEntityData {
 	return ItemEntityData{
 		Id:   i.id.String(),
-		Item: i.item,
+		Item: i.item.item,
 		X:    i.position.X,
 		Y:    i.position.Y,
 	}

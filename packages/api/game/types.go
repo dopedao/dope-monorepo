@@ -84,6 +84,15 @@ type PlayerMoveData struct {
 	Direction string  `json:"direction"`
 }
 
+type PlayerAddItemClientData struct {
+	Item   string `json:"item"`
+	Pickup bool   `json:"pickup"`
+}
+
+type PlayerAddQuestClientData struct {
+	Quest string `json:"quest"`
+}
+
 type CitizenUpdateStateData struct {
 	// citizen id
 	Id string `json:"id"`
