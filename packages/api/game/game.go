@@ -242,13 +242,28 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 	}
 }
 
-func (g *Game) RemoveItemEntity(itemEntity *ItemEntity) {
+func (g *Game) RemoveItemEntity(itemEntity *ItemEntity) bool {
+	removed := false
 	for i, entity := range g.ItemEntities {
 		if entity == itemEntity {
 			g.ItemEntities = append(g.ItemEntities[:i], g.ItemEntities[i+1:]...)
+			removed = true
+
+			data, err := json.Marshal(IdData{Id: itemEntity.id.String()})
+			if err != nil {
+				// TODO: print error message
+				break
+			}
+			g.Broadcast <- BaseMessage{
+				Event: "player_pickup_itementity",
+				Data:  data,
+			}
+
 			break
 		}
 	}
+
+	return removed
 }
 
 func (g *Game) GenerateHandshakeData(player *Player) HandshakeData {
