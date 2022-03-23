@@ -15,7 +15,7 @@ func (GameHustlerQuest) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.String("quest"),
-		field.Bool("completed"),
+		field.Bool("completed").Default(false),
 	}
 }
 
