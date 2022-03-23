@@ -199,7 +199,27 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, clien
 			conn.WriteJSON(generateErrorMessage(500, "could not get hustler"))
 			return
 		}
+		// query items and quests
+		items, err := gameHustler.QueryItems().All(ctx)
+		if err != nil {
+			log.Err(err).Msgf("could not get items for hustler: %s", gameHustler.ID)
+			conn.WriteJSON(generateErrorMessage(500, "could not get items for hustler"))
+			return
+		}
+		quests, err := gameHustler.QueryQuests().All(ctx)
+		if err != nil {
+			log.Err(err).Msgf("could not get quests for hustler: %s", gameHustler.ID)
+			conn.WriteJSON(generateErrorMessage(500, "could not get quests for hustler"))
+			return
+		}
+
 		player = NewPlayer(conn, g, gameHustler.ID, hustler.Name, gameHustler.LastPosition.CurrentMap, gameHustler.LastPosition.X, gameHustler.LastPosition.Y)
+		for _, item := range items {
+			player.items = append(player.items, Item{item: item.Item})
+		}
+		for _, quest := range quests {
+			player.quests = append(player.quests, Quest{quest: quest.Quest, completed: quest.Completed})
+		}
 	} else {
 		player = NewPlayer(conn, g, "", "Hustler", g.SpawnPosition.CurrentMap, g.SpawnPosition.X, g.SpawnPosition.Y)
 	}
