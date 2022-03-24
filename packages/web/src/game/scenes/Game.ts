@@ -255,7 +255,7 @@ export default class GameScene extends Scene {
 
     // make the camera follow the player
     camera.setZoom(this.zoom, this.zoom);
-    camera.startFollow(this.player, undefined, 0.05, 0.05, -5, -5);
+    camera.startFollow(this.player, true, 0.05, 0.05, -5, -5);
 
     const map = this.mapHelper.loadedMaps[this.player.currentMap];
     map.otherGfx?.setAlpha(0);
@@ -498,6 +498,7 @@ export default class GameScene extends Scene {
             if (otherMap.otherGfx.getData('fading'))
               clearInterval(otherMap.otherGfx.getData('fading'));
 
+            // TODO: use phaser time events instead
             const fadeIn = setInterval(() => {
               otherMap.otherGfx!.alpha += 0.01;
               if (otherMap.otherGfx!.alpha >= otherMap.otherGfx!.getData('max_alpha'))
@@ -514,6 +515,7 @@ export default class GameScene extends Scene {
           this.player.currentMap = lvl.identifier;
           const map = this.mapHelper.loadedMaps[this.player.currentMap]!;
           
+          // TODO: use phaser time events instead
           // slowly decrease alpha to 0
           if (map.otherGfx) {
             // cancel any previous running fading
@@ -550,6 +552,7 @@ export default class GameScene extends Scene {
             }
           }
 
+          // TODO: use phaser time events instead
           this.citizens.forEach(c => updateHustlerMap(c));
           this.hustlers.forEach(h => {
             updateHustlerMap(h);
