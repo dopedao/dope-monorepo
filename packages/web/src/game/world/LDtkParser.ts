@@ -1,3 +1,5 @@
+import AnimatedTiles from "./AnimatedTiles";
+
 export class LdtkReader {
   json: any;
   scene: Phaser.Scene;
@@ -90,6 +92,16 @@ export class LdtkReader {
 
     map.addTilesetImage(tileset);
 
+    // check if we have custom data - animated tiles
+    const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
+    if (tilesetRef && tilesetRef.customData.length > 0) {
+      tilesetRef.customData.forEach(t => {
+        const data = JSON.parse(t.data);
+        if (data.anim)
+          map.addTilesetImage(data.anim)
+      });
+    }
+
     const orderId =
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length -
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
@@ -105,6 +117,17 @@ export class LdtkReader {
       .setDepth(orderId * 5)
       .setAlpha(layer.__opacity)
       .setVisible(true);
+
+    if (tilesetRef && tilesetRef.customData.length > 0) {
+      tilesetRef.customData.forEach(t => {
+        const data = JSON.parse(t.data);
+        if (data.anim)
+        {
+          const tilesAnim = new AnimatedTiles(this.scene, t.tileId, l, data.anim);
+          tilesAnim.start();
+        }
+      });
+    }
 
     stackLayers.forEach((tiles, i) => {
       if (tiles.length === 0) return;
@@ -188,6 +211,16 @@ export class LdtkReader {
 
     map.addTilesetImage(tileset);
 
+    // check if we have custom data - animated tiles
+    const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
+    if (tilesetRef && tilesetRef.customData.length > 0) {
+      tilesetRef.customData.forEach(t => {
+        const data = JSON.parse(t.data);
+        if (data.anim)
+          map.addTilesetImage(data.anim)
+      });
+    }
+
     const orderId =
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length -
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
@@ -203,6 +236,17 @@ export class LdtkReader {
       .setDepth(orderId * 5)
       .setAlpha(layer.__opacity)
       .setVisible(true);
+
+    if (tilesetRef && tilesetRef.customData.length > 0) {
+      tilesetRef.customData.forEach(t => {
+        const data = JSON.parse(t.data);
+        if (data.anim)
+        {
+          const tilesAnim = new AnimatedTiles(this.scene, t.tileId, l, data.anim);
+          tilesAnim.start();
+        }
+      });
+    }
 
     layer.autoLayerTiles.forEach(t => {
       if (t.f != 0) {
@@ -250,6 +294,16 @@ export class LdtkReader {
 
     if (tileset) map.addTilesetImage(tileset);
 
+    // check if we have custom data - animated tiles
+    const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
+    if (tilesetRef && tilesetRef.customData.length > 0) {
+      tilesetRef.customData.forEach(t => {
+        const data = JSON.parse(t.data);
+        if (data.anim)
+          map.addTilesetImage(data.anim)
+      });
+    }
+
     const orderId =
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length -
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
@@ -265,6 +319,17 @@ export class LdtkReader {
       .setDepth(orderId * 5)
       .setAlpha(layer.__opacity)
       .setVisible(false);
+
+    if (tilesetRef && tilesetRef.customData.length > 0) {
+      tilesetRef.customData.forEach(t => {
+        const data = JSON.parse(t.data);
+        if (data.anim)
+        {
+          const tilesAnim = new AnimatedTiles(this.scene, t.tileId, mapLayer, data.anim);
+          tilesAnim.start();
+        }
+      });
+    }
 
     // if (layer.__identifier !== 'Collisions') {
     //   const ogLayer: Layer = this.ldtk.defs.layers.find(l => l.uid === layer.layerDefUid)!;
@@ -522,9 +587,19 @@ export interface Tileset {
   tags: any[]
   tagsSourceEnumUid: any
   enumTags: any[]
-  customData: any[]
+  customData: CustomData[]
   savedSelections: SavedSelection[]
   cachedPixelData: CachedPixelData
+}
+
+export interface CustomData {
+  tileId: number
+  data: string
+}
+
+export interface AnimationData {
+  // refers to key of the animation (name & json)
+  anim: string
 }
 
 export interface SavedSelection {
