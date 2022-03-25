@@ -15,11 +15,11 @@ const nextConfig = {
         destination: '/swap-meet/hustlers',
         permanent: true,
       },
-      {
-        source: '/hustlers/:id/flex',
-        destination: '/hustlers/:id',
-        permanent: true,
-      },
+      // {
+      //   source: '/hustlers/:id/flex',
+      //   destination: '/hustlers/:id/flex',
+      //   permanent: true,
+      // },
       {
         source: '/dope',
         destination: '/inventory?section=Dope',

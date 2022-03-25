@@ -20,6 +20,7 @@ export interface AppWindowProps {
   width?: number | string;
   onlyFullScreen?: boolean;
   fullScreen?: boolean;
+  subTitle?: string;
 }
 
 const getBodyPadding = () => {
@@ -56,6 +57,7 @@ export default function AppWindow({
   onlyFullScreen,
   fullScreen,
   background,
+  subTitle
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
@@ -69,6 +71,7 @@ export default function AppWindow({
         onlyFullScreen={onlyFullScreen}
         fullScreen={fullScreen}
         background={background}
+        subTitle={subTitle}
       >
         {requiresWalletConnection && !account ? (
           <ConnectWallet />

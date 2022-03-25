@@ -21,6 +21,7 @@ type WindowTitleBarProps = {
   children: React.ReactNode;
   windowRef?: HTMLDivElement | null;
   hideWalletAddress?: boolean;
+  subTitle?: string;
 };
 
 const DesktopWindowTitleBar = ({
@@ -32,6 +33,7 @@ const DesktopWindowTitleBar = ({
   children,
   windowRef,
   hideWalletAddress = false,
+  subTitle
 }: WindowTitleBarProps) => {
   const [ensAddress, setEnsAddress] = useState<string | null>(null);
   const { account, library } = useWeb3React();
@@ -128,6 +130,7 @@ const DesktopWindowTitleBar = ({
                 )}
               </div>
             )}
+            {subTitle && <div style={{marginRight: '12px', width: 'max-content'}}>500k $PAPER | clicksave.eth</div>}
             {!isTouchDevice && (
               <DesktopWindowTitleButton
                 icon={isFullScreen ? 'window-restore' : 'window-maximize'}

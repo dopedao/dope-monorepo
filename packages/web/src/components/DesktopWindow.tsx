@@ -46,6 +46,7 @@ export type DesktopWindowProps = {
   posX?: number;
   posY?: number;
   hideWalletAddress?: boolean;
+  subTitle?: string;
 };
 
 const WindowWrapper = styled.div<{
@@ -117,6 +118,7 @@ const DesktopWindow = ({
   posX = 0,
   posY = 0,
   hideWalletAddress = false,
+  subTitle
 }: DesktopWindowProps) => {
   const { account } = useWeb3React();
   const windowRef = useRef<HTMLDivElement>(null);
@@ -214,6 +216,7 @@ const DesktopWindow = ({
             windowRef={windowRef?.current}
             hideWalletAddress={hideWalletAddress}
             onClose={onClose}
+            subTitle={subTitle}
           >
             {titleChildren}
           </DesktopWindowTitleBar>
