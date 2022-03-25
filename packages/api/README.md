@@ -9,6 +9,7 @@ Install golang and run the api from the repo root:
 ```bash
 # Launch an interactive docker runtime instance
 bin/shell
+
 # Inside the docker image, launch a local postgres instance
 sh -c "bin/pgdev"
 

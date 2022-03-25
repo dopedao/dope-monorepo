@@ -30,4 +30,4 @@ exec docker run -it --rm \
         -w=`pwd` \
         -p=8081:8081 \
         -p=5432:5432 \
-  "$IMG" $@
+      "$IMG" $@
