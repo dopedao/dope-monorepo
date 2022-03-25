@@ -31,16 +31,16 @@ export default class AnimatedTiles {
         const animationTileset = this.layer.tileset.find(t => t.name === this.asepriteName)!;
         const frames = Object.values(this.asepriteAnimation.frames);
 
-        this.scene.events.on(Phaser.Scenes.Events.UPDATE, (time: number, delta: number) => this.updateTiles(time, delta, frames, animationTileset));
+        this.scene.events.on(Phaser.Scenes.Events.PRE_UPDATE, (time: number, delta: number) => this.updateTiles(time, delta, frames, animationTileset));
     }
 
     stop() {
-        this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.updateTiles);
+        this.scene.events.off(Phaser.Scenes.Events.PRE_UPDATE, this.updateTiles);
     }
 
     updateTiles(time: number, delta: number, frames: AnimationFrame[], animationTileset: Phaser.Tilemaps.Tileset) {
-        const dur = frames[this.currentFrame].duration - delta;
-        if (dur <= 0) {
+        frames[this.currentFrame].duration -= delta;
+        if (frames[this.currentFrame].duration <= 0) {
             this.currentFrame++;
             if (this.currentFrame >= frames.length)
                 this.currentFrame = 0;
@@ -59,7 +59,8 @@ export default class AnimatedTiles {
                         Math.floor(frame.frame.y / animationTileset.tileHeight) + y
                     );
 
-                    tile.index = (animationTileset.firstgid - 1) + (frameTilePos.x + (frameTilePos.y * animationTileset.columns));
+                    if (tile)
+                        tile.index = (animationTileset.firstgid - 1) + (frameTilePos.x + (frameTilePos.y * animationTileset.columns));
                 }
             }
         }
