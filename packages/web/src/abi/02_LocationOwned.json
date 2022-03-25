@@ -1,0 +1,122 @@
+[
+    {
+        "inputs": [
+            {
+                "name": "address_of_controller",
+                "type": "felt"
+            }
+        ],
+        "name": "constructor",
+        "outputs": [],
+        "type": "constructor"
+    },
+    {
+        "inputs": [],
+        "name": "update_value",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "location_id",
+                "type": "felt"
+            },
+            {
+                "name": "item_id",
+                "type": "felt"
+            }
+        ],
+        "name": "location_has_item_read",
+        "outputs": [
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "location_id",
+                "type": "felt"
+            },
+            {
+                "name": "item_id",
+                "type": "felt"
+            }
+        ],
+        "name": "location_has_money_read",
+        "outputs": [
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "location_id",
+                "type": "felt"
+            },
+            {
+                "name": "item_id",
+                "type": "felt"
+            },
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "name": "location_has_item_write",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "location_id",
+                "type": "felt"
+            },
+            {
+                "name": "item_id",
+                "type": "felt"
+            },
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "name": "location_has_money_write",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "location_id",
+                "type": "felt"
+            },
+            {
+                "name": "item_id",
+                "type": "felt"
+            }
+        ],
+        "name": "check_market_state",
+        "outputs": [
+            {
+                "name": "item_quantity",
+                "type": "felt"
+            },
+            {
+                "name": "money_quantity",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

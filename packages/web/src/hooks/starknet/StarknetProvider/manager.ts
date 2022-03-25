@@ -35,7 +35,7 @@ function reducer(state: StarknetManagerState, action: Action): StarknetManagerSt
 }
 
 export function useStarknetManager(): StarknetState {
-  const starknet = getStarknet({ showModal: false });
+  const starknet = getStarknet();
   const [state, dispatch] = React.useReducer(reducer, {
     library: defaultProvider,
   });
