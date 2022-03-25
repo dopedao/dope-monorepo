@@ -94,11 +94,7 @@ export default class Player extends Hustler {
 
     // setTimeout prevents depth changing too fast
     // and causing player render stutter
-    this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => {
-      this.setDepth(this._baseDepth);
-
-      // (this.scene.plugins.get('rexOutlinePipeline') as any).remove(this);
-    });
+    this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => this.setDepth(this._baseDepth));
   }
 
   toggleInventory() {
@@ -191,12 +187,13 @@ export default class Player extends Hustler {
     }
   }
 
-  updateDepth(pair: MatterJS.IPair) {
+  updateDepth(pair: MatterJS.ICollisionPair) {
     const diff = 5;
 
     let playerHitbox: MatterJS.BodyType;
     let otherHitbox: MatterJS.BodyType;
 
+    // NOTE: body b is always the player?
     if ((pair.bodyB as MatterJS.BodyType).gameObject instanceof Player) {
       playerHitbox = pair.bodyB as MatterJS.BodyType;
       otherHitbox = pair.bodyA as MatterJS.BodyType;
@@ -211,9 +208,20 @@ export default class Player extends Hustler {
     // if the overlapped has a parent body, use it instead for calculating delta Y
     if (otherHitbox.parent) otherHitbox = otherHitbox.parent;
 
-    if (otherHitbox.position.y - playerHitbox.position.y < 5)
-      playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 5);
-    else playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 5);
+    // console.log(pair);
+    // only update depth if collision normal is vertical
+    // if (pair.collision.normal.x !== 0) return; 
+
+    const player = playerHitbox.gameObject as Player;
+    
+    if (otherHitbox.position.y - playerHitbox.position.y < diff) {
+      if (player.depth !== player._baseDepth + 5)
+        player.setDepth(player._baseDepth + 5);
+    }
+    else {
+      if (player.depth !== player._baseDepth - 5)
+        player.setDepth(player._baseDepth - 5);
+    }
   }
 
   private _handleEvents() {
