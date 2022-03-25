@@ -153,7 +153,7 @@ export default class MapHelper {
       const tileset = this.mapReader.tilesets.find(t => t.uid === entity.__tile.tilesetUid);
       if (!tileset) return;
 
-      const frameId = entity.fieldInstances[0].__value ?? 'default';
+      const frameId = entity.fieldInstances[0]?.__value ?? entity.__identifier + '_default';
       console.log('Try loading existing entity frame. Ignore warning message if there is');
       let frame =
         this.scene.textures.get(tileset.identifier.toLowerCase()).get(frameId).name !== frameId
