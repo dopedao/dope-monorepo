@@ -53,14 +53,14 @@ export default class AnimatedTiles {
         for (const startingTile of this.startingTiles) {
             for (let y = 0; y < frameNumberTiles.y; y++) {
                 for (let x = 0; x < frameNumberTiles.x; x++) {
-                    const tile = this.layer.getTileAt(startingTile.x + x, startingTile.y + y);
+                    const tile = this.layer.getTileAt((startingTile.x) + x, startingTile.y + y);
                     const frameTilePos = new Phaser.Math.Vector2(
                         Math.floor(frame.frame.x / animationTileset.tileWidth) + x,
                         Math.floor(frame.frame.y / animationTileset.tileHeight) + y
                     );
 
                     if (tile)
-                        tile.index = (animationTileset.firstgid - 1) + (frameTilePos.x + (frameTilePos.y * animationTileset.columns));
+                        tile.index = (animationTileset.firstgid) + (frameTilePos.x + (frameTilePos.y * animationTileset.columns));
                 }
             }
         }
