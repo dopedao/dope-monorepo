@@ -1,4 +1,5 @@
-import AnimatedTiles from "./AnimatedTiles";
+import TilesAnimator from "./TilesAnimator";
+import AnimatedTiles from "./TilesAnimator";
 
 export class LdtkReader {
   json: any;
@@ -90,7 +91,7 @@ export class LdtkReader {
       tileHeight: layer.__gridSize,
     });
 
-    map.addTilesetImage(tileset);
+    const mainTileset = map.addTilesetImage(tileset);
 
     // check if we have custom data - animated tiles
     const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
@@ -98,7 +99,10 @@ export class LdtkReader {
       tilesetRef.customData.forEach(t => {
         const data = JSON.parse(t.data);
         if (data.anim)
+        {
           map.addTilesetImage(data.anim)
+            .firstgid = mainTileset.total + 1;
+        }
       });
     }
 
@@ -114,6 +118,7 @@ export class LdtkReader {
       )
       .setName(layer.__identifier)
       .setData('id', orderId)
+      .setData('animators', [])
       .setDepth(orderId * 5)
       .setAlpha(layer.__opacity)
       .setVisible(true);
@@ -124,7 +129,8 @@ export class LdtkReader {
         if (data.anim)
         {
           const tilesAnim = new AnimatedTiles(this.scene, t.tileId, l, data.anim);
-          tilesAnim.start();
+          l.getData('animators').push(tilesAnim);
+          // tilesAnim.start();
         }
       });
     }
@@ -209,7 +215,7 @@ export class LdtkReader {
       tileHeight: layer.__gridSize,
     });
 
-    map.addTilesetImage(tileset);
+    const mainTileset = map.addTilesetImage(tileset);
 
     // check if we have custom data - animated tiles
     const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
@@ -217,7 +223,10 @@ export class LdtkReader {
       tilesetRef.customData.forEach(t => {
         const data = JSON.parse(t.data);
         if (data.anim)
+        {
           map.addTilesetImage(data.anim)
+            .firstgid = mainTileset.total + 1;
+        }
       });
     }
 
@@ -233,6 +242,7 @@ export class LdtkReader {
       )
       .setName(layer.__identifier)
       .setData('id', orderId)
+      .setData('animators', [])
       .setDepth(orderId * 5)
       .setAlpha(layer.__opacity)
       .setVisible(true);
@@ -243,7 +253,8 @@ export class LdtkReader {
         if (data.anim)
         {
           const tilesAnim = new AnimatedTiles(this.scene, t.tileId, l, data.anim);
-          tilesAnim.start();
+          l.getData('animators').push(tilesAnim);
+          // tilesAnim.start();
         }
       });
     }
@@ -292,16 +303,22 @@ export class LdtkReader {
       tileHeight: layer.__gridSize,
     });
 
-    if (tileset) map.addTilesetImage(tileset);
+    let tilesetRef;
+    if (tileset) {
+      const mainTileset = map.addTilesetImage(tileset);
 
-    // check if we have custom data - animated tiles
-    const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
-    if (tilesetRef && tilesetRef.customData.length > 0) {
-      tilesetRef.customData.forEach(t => {
-        const data = JSON.parse(t.data);
-        if (data.anim)
-          map.addTilesetImage(data.anim)
-      });
+      // check if we have custom data - animated tiles
+      tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
+      if (tilesetRef && tilesetRef.customData.length > 0) {
+        tilesetRef.customData.forEach(t => {
+          const data = JSON.parse(t.data);
+          if (data.anim)
+          {
+            map.addTilesetImage(data.anim)
+              .firstgid = mainTileset.total + 1;
+          }
+        });
+      }
     }
 
     const orderId =
@@ -316,6 +333,7 @@ export class LdtkReader {
       )
       .setName(layer.__identifier)
       .setData('id', orderId)
+      .setData('animators', [])
       .setDepth(orderId * 5)
       .setAlpha(layer.__opacity)
       .setVisible(false);
@@ -325,8 +343,9 @@ export class LdtkReader {
         const data = JSON.parse(t.data);
         if (data.anim)
         {
-          const tilesAnim = new AnimatedTiles(this.scene, t.tileId, mapLayer, data.anim);
-          tilesAnim.start();
+          const tilesAnim = new TilesAnimator(this.scene, t.tileId, mapLayer, data.anim);
+          mapLayer.getData('animators').push(tilesAnim);
+          // tilesAnim.start();
         }
       });
     }
