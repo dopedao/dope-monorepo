@@ -16,9 +16,17 @@
             "map": {
                 "file": "./game/MAP/LDTK/DopeWars_LD_V7.json",
                 "size": 65457409
+            },
+            "DW_Animation_FanBigRotate": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.json",
+                "size": 1865
             }
         },
         "image": {
+            "DW_Animation_FanBigRotate": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.png",
+                "size": 3524
+            },
             "tileset_building_nycpack1": {
                 "file": "./game/MAP/DW_Buildings_MegaSheet1.png",
                 "size": 615478
