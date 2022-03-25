@@ -32,3 +32,13 @@ To generate new smart contract bindings, add the abi to `packages/api/contracts/
 ### Updating the schema
 
 Modify the schema in `packages/api/ent/schema` and run `go generate ./...`
+
+### Deploying the API
+
+The Dope Wars API runs on Google Cloud Platform. To deploy, do the following…
+
+```
+gcloud app deploy --appyaml app.mainnet.indexer.yaml
+```
+
+There are two services, the indexer; and the API. The Dope Wars API auto-scales, and the indexer uses a single instance.
