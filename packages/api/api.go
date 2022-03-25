@@ -27,7 +27,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/resources"
 )
 
-const ts_migation = `
+const ts_migration = `
 CREATE MATERIALIZED VIEW search_index AS (
 	WITH dope_agg AS (
 		SELECT
@@ -289,7 +289,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 			return nil, err
 		}
 
-		if _, err := drv.DB().Exec(ts_migation); err != nil {
+		if _, err := drv.DB().Exec(ts_migration); err != nil {
 			if !strings.Contains(err.Error(), "already exists") {
 				return nil, fmt.Errorf("applying ts migration: %w", err)
 			}
