@@ -1,6 +1,8 @@
 set -eu
 DATABASE_URL=postgres://postgres@127.0.0.1:5432/dopewars
 
+command -v pg_ctl >/dev/null 2>&1 || { echo >&2 "Please install postgres for pg_ctl."; exit 1; }
+
 mkdir -p pgdata
 PGDATA=pgdata
 
