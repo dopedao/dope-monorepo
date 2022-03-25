@@ -28,6 +28,7 @@ import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
 import PathNavigator from 'game/world/PathNavigator';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import { ComponentManager } from 'phaser3-react/src/manager';
+import TilesAnimator from 'game/world/TilesAnimator';
 
 
 export default class GameScene extends Scene {
@@ -247,7 +248,7 @@ export default class GameScene extends Scene {
           { position: new Phaser.Math.Vector2(100, 500) },
         ],
         true,
-        true,
+        false,
       ),
     );
 
@@ -258,7 +259,10 @@ export default class GameScene extends Scene {
     camera.startFollow(this.player, true, 0.05, 0.05, -5, -5);
 
     const map = this.mapHelper.loadedMaps[this.player.currentMap];
+    // TODO: update function on map which gets called only when player is in the map
     map.otherGfx?.setAlpha(0);
+    // start tiles animators
+    map.displayLayers.forEach(l => l.getData('animators').forEach((animator: TilesAnimator) => animator.start()));
 
     this._handleNetwork();
     
@@ -490,9 +494,15 @@ export default class GameScene extends Scene {
     level.__neighbours.forEach(n => {
       const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
       if (Object.keys(this.mapHelper.loadedMaps).find(m => m === lvl.identifier)) {
-        if (!patchMap && n.dir === dir) {
-          // slowly increase alpha to max_alpha
+        if (!patchMap && n.dir === dir) {  
+          // map player is currently in
           const otherMap = this.mapHelper.loadedMaps[this.player.currentMap]!;
+          // NOTE: do check directly in tilesanimator update?
+          // stop tiles animations when not in current map
+          otherMap.displayLayers
+            .forEach(l => l.getData('animators')
+              .forEach((animator: TilesAnimator) => animator.stop()));
+          // slowly increase alpha to max_alpha
           if (otherMap.otherGfx) {
             // cancel any previous running fading
             if (otherMap.otherGfx.getData('fading'))
@@ -512,8 +522,15 @@ export default class GameScene extends Scene {
             otherMap.otherGfx!.setData('fading', fadeIn);
           }
 
+          // set current map to the one we are going to
           this.player.currentMap = lvl.identifier;
           const map = this.mapHelper.loadedMaps[this.player.currentMap]!;
+          
+          // NOTE: do check directly in tilesanimator update?
+          // make sure animators are started
+          map.displayLayers
+            .forEach(l => l.getData('animators')
+              .forEach((animator: TilesAnimator) => animator.start()));
           
           // TODO: use phaser time events instead
           // slowly decrease alpha to 0
