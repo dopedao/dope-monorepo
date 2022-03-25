@@ -1,0 +1,19 @@
+query Drug($id: ID) {
+  items(where: { type: DRUGS, hasBase: false, id: $id }) {
+    totalCount
+    edges {
+      node {
+        id
+        name
+        rles {
+          male
+        }
+        base {
+          rles {
+            male
+          }
+        }
+      }
+    }
+  }
+}

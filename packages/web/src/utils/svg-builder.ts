@@ -50,6 +50,47 @@ const decodeImage = (image: string, offset?: string): DecodedImage => {
   };
 };
 
+export const buildIconSVG = (
+  parts: string[],
+  resolution: number = 64,
+): string => {
+  const step = 320 / resolution;
+  const svgWithoutEndTag = parts.reduce((result, part, i) => {
+    let offset = undefined;
+    if (resolution === 160 && i != 0) {
+      offset = '00331D331D';
+    }
+    const svgRects: string[] = [];
+    const { bounds, rects, paletteIndex } = decodeImage(part, offset);
+
+    let currentX = bounds.left;
+    let currentY = bounds.top;
+
+    rects.forEach(rect => {
+      const [length, colorIndex] = rect;
+      const Color = palettes[paletteIndex][colorIndex].substring(2);
+
+      // Do not push rect if transparent
+      if (colorIndex !== 0) {
+        svgRects.push(
+          `<rect width="${length * step}" height="${step}" x="${currentX * step}" y="${
+            currentY * step
+          }" fill="#${Color}" />`,
+        );
+      }
+
+      currentX += length;
+      if (currentX === bounds.right) {
+        currentX = bounds.left;
+        currentY++;
+      }
+    });
+    result += svgRects.join('');
+    return result;
+  }, `<svg width="320px" height="320px" viewBox="230 245 240 290">`);
+  return `${svgWithoutEndTag}</svg>`;
+};
+
 /**
  * Given RLE parts, palette colors, and a background color, build an SVG image.
  * @param parts The RLE part datas
