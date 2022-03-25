@@ -39,6 +39,7 @@ Modify the schema in `packages/api/ent/schema` and run `go generate ./...`
 The Dope Wars API runs on Google Cloud Platform. To deploy, do the following…
 
 ```
+gcloud app deploy --appyaml app.mainnet.api.yaml
 gcloud app deploy --appyaml app.mainnet.indexer.yaml
 ```
 
