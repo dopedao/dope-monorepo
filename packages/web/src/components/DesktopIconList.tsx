@@ -36,11 +36,11 @@ const DesktopIconList = () => {
             }
           }}
         />
-        <DesktopIcon
+<!--         <DesktopIcon
           icon="dope-smiley"
           label="Mint a Hustler"
           clickAction={ () => openLocalRoute('/hustlers/quick-buy') }
-        />
+        /> -->
         <DesktopIcon
           icon="quixotic_circle"
           label="Shop DOPE Gear"
