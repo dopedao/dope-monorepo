@@ -59,55 +59,58 @@ func main() {
 }
 
 func renamePngFile(path string, info fs.FileInfo) {
-	if !info.IsDir() && filepath.Ext(info.Name()) == ".png" {
-		// fmt.Printf("visited file or dir: %q\n", path)
+	if info.IsDir() || filepath.Ext(info.Name()) != ".png" {
+		return
+	}
 
-		split := strings.SplitN(strings.TrimSuffix(strings.ToLower(info.Name()), "_spritesheet.png"), "_", 4)
-		sex := strings.Split(path, "/")[1]
+	// fmt.Printf("visited file or dir: %q\n", path)
 
-		outPath := filepath.Join(*out, sex)
-		if err := os.MkdirAll(outPath, 0755); err != nil {
+	split := strings.SplitN(strings.TrimSuffix(strings.ToLower(info.Name()), "_spritesheet.png"), "_", 4)
+	sex := strings.Split(path, "/")[1]
+
+	outPath := filepath.Join(*out, sex)
+	if err := os.MkdirAll(outPath, 0755); err != nil {
+		log.Fatal(err)
+	}
+
+	typ := strings.ToLower(strings.Split(path, "/")[2])
+
+	if typ == "beards" || typ == "hair" {
+		if typ == "beards" {
+			typ = "beard"
+		}
+
+		i, err := strconv.Atoi(split[3])
+		if err != nil {
 			log.Fatal(err)
 		}
 
-		typ := strings.ToLower(strings.Split(path, "/")[2])
-
-		if typ == "beards" || typ == "hair" {
-			if typ == "beards" {
-				typ = "beard"
-			}
-
-			i, err := strconv.Atoi(split[3])
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			if err := os.MkdirAll(filepath.Join(outPath, typ), 0755); err != nil {
-				log.Fatal(err)
-			}
-
-			if err := os.Rename(path, filepath.Join(outPath, typ, fmt.Sprintf("%d.png", i))); err != nil {
-				log.Fatal(err)
-			}
-			return
+		if err := os.MkdirAll(filepath.Join(outPath, typ), 0755); err != nil {
+			log.Fatal(err)
 		}
-		if 3 >= len(split) {
-			fmt.Printf("Skipping file %v\n", path)
-			return
-		}
-		split = strings.Split(split[3], "_")
-		// No rename if we don't have the third split trait
-		normalized := strings.Join(split, " ")
 
-		for _, item := range items {
-			if normalized == strings.ToLower(item.Name) {
-				if err := os.Rename(path, filepath.Join(outPath, item.ID+".png")); err != nil {
-					log.Fatal(err)
-				}
-				break
+		if err := os.Rename(path, filepath.Join(outPath, typ, fmt.Sprintf("%d.png", i))); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+	if 3 >= len(split) {
+		fmt.Printf("Skipping file %v\n", path)
+		return
+	}
+	split = strings.Split(split[3], "_")
+	// No rename if we don't have the third split trait
+	normalized := strings.Join(split, " ")
+
+	for _, item := range items {
+		if normalized == strings.ToLower(item.Name) {
+			if err := os.Rename(path, filepath.Join(outPath, item.ID+".png")); err != nil {
+				log.Fatal(err)
 			}
+			break
 		}
 	}
+
 }
 
 // Read stored solidity IDs of Hustlers traits
