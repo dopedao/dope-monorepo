@@ -43,21 +43,6 @@ type Item struct {
 
 var in = pflag.String("in", "./in", "sprite folder")
 var out = pflag.String("out", "./out", "output folder")
-
-// Read stored solidity IDs of Hustlers traits
-func readJsonItemIds() []Item {
-	f, err := ioutil.ReadFile("./items.json")
-	if err != nil {
-		log.Fatalf("Reading items: %+v", err) //nolint:gocritic
-	}
-
-	var items []Item
-	if err := json.Unmarshal(f, &items); err != nil {
-		log.Fatalf("Unmarshalling items: %+v", err) //nolint:gocritic
-	}
-	return items
-}
-
 var items = readJsonItemIds()
 
 func main() {
@@ -123,4 +108,18 @@ func renamePngFile(path string, info fs.FileInfo) {
 			}
 		}
 	}
+}
+
+// Read stored solidity IDs of Hustlers traits
+func readJsonItemIds() []Item {
+	f, err := ioutil.ReadFile("./items.json")
+	if err != nil {
+		log.Fatalf("Reading items: %+v", err) //nolint:gocritic
+	}
+
+	var items []Item
+	if err := json.Unmarshal(f, &items); err != nil {
+		log.Fatalf("Unmarshalling items: %+v", err) //nolint:gocritic
+	}
+	return items
 }
