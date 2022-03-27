@@ -1,5 +1,5 @@
 import { Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react"
-import { useStarknet, useStarknetInvoke } from "@starknet-react/core"
+import { useStarknet, useStarknetInvoke, useStarknetCall } from "@starknet-react/core"
 import { NavLink } from "components/NavLink"
 import { useUserRegistryContract } from "hooks/contracts/roll-your-own"
 import { useMemo } from "react"
@@ -12,15 +12,27 @@ const MatchDetails = () => {
   const { account } = useStarknet();
   const registry = useUserRegistryContract();
 
-  const isRegistered = useMemo(
-    () => registry?.call('get_user_info', { user_id: account! }),
-    [account, registry],
-  );
+  // const isRegistered = useMemo(
+  //   () => {
+  //     if (!account || !registry) return false
 
-  const { invoke, data, loading, error } = useStarknetInvoke({
+  //     registry?.call('get_user_info', { user_id: account }).then(console.log).catch((err) => console.log(err))
+  //   },
+  //   [account, registry],
+  // );
+
+  const { data, loading, error } = useStarknetCall({
     contract: registry,
-    method: 'register_user',
-  });
+    method: "get_user_info",
+    args: {
+      user_id: account,
+    }
+  })
+
+  // const { invoke, data, loading, error } = useStarknetInvoke({
+  //   contract: registry,
+  //   method: 'register_user',
+  // });
 
   return (
     <Layout>
@@ -36,7 +48,7 @@ const MatchDetails = () => {
           </Tbody>
         </Table>
       </Container>
-      {isRegistered ? (
+      {/* {isRegistered ? (
         <NavLink href="/roll-your-own/1/location/brooklyn" passHref>
           <Button variant="primary">Play</Button>
         </NavLink>
@@ -46,12 +58,12 @@ const MatchDetails = () => {
           onClick={() =>
             invoke({
               args: { user_id: account, data: '84622096520155505419920978765481155' },
-            })
+            }).then(console.log).catch((err) => console.log(err))
           }
         >
           Join
         </Button>
-      )}
+      )} */}
     </Layout>
   )
 }

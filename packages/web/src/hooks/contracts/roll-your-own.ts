@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Contract, Abi } from 'starknet';
-import { useStarknet } from '@starknet-react/core';
+import { useStarknet, useContract, UseContract } from '@starknet-react/core';
 
 import DOPEWARS from '../../abi/01_DopeWars.json';
 import LocationOwned from '../../abi/02_LocationOwned.json';
@@ -137,19 +137,26 @@ export function useUserOwnedContract(): Contract | undefined {
  * Load the UserRegistry contract.
  * @returns The `UserRegistry` contract or undefined.
  */
-export function useUserRegistryContract(): Contract | undefined {
-  const { library } = useStarknet();
-  const [contract, setContract] = useState<Contract | undefined>(undefined);
+export function useUserRegistryContract(): UseContract | undefined {
+  const contract = useContract({
+    // abi: UserRegistry as Abi[],
+    abi: UserRegistry as Abi,
+    address: '0x023c010a16d330407bec66548a71f9cf3c8d7c16dcc74a79e67ea80efb04890c'
+  })
 
-  useEffect(() => {
-    setContract(
-      new Contract(
-        UserRegistry as Abi[],
-        '0x023c010a16d330407bec66548a71f9cf3c8d7c16dcc74a79e67ea80efb04890c',
-        library,
-      ),
-    );
-  }, [library]);
+  return contract
+  // const { library } = useStarknet();
+  // const [contract, setContract] = useState<Contract | undefined>(undefined);
 
-  return contract;
+  // useEffect(() => {
+  //   setContract(
+  //     new Contract(
+  //       UserRegistry as Abi[],
+  //       '0x023c010a16d330407bec66548a71f9cf3c8d7c16dcc74a79e67ea80efb04890c',
+  //       library,
+  //     ),
+  //   );
+  // }, [library]);
+
+  // return contract;
 }
