@@ -1,5 +1,5 @@
-// Renames sprite files from animation them into a format that
-// maps to IDS in our Swap Meet smart contract.
+// Renames ITEM, HAIR, and BEARD sprite files from animation team
+// into a format that maps to IDS in our Swap Meet smart contract.
 //
 // Output files can can be used for generating sprite sheets
 // on our API when matched with traits from a Hustler.
@@ -15,7 +15,6 @@
 // ./in
 // 		/male
 //    /female
-// ./out
 //
 // Sprite sheets from team are in format of "DW_F_Clothes_Basketball_Jersey_Spritesheet.png"
 
@@ -41,78 +40,6 @@ type Item struct {
 	Type string `json:"type"`
 }
 
-var in = pflag.String("in", "./in", "sprite folder")
-var out = pflag.String("out", "./out", "output folder")
-var items = readJsonItemIds()
-
-func main() {
-	if err := filepath.Walk(*in, func(path string, info fs.FileInfo, err error) error {
-		if err != nil {
-			fmt.Printf("prevent panic by handling failure accessing a path %q: %v\n", path, err)
-			return err
-		}
-		renamePngFile(path, info)
-		return nil
-	}); err != nil {
-		log.Fatalf("walking path: %+v", err) //nolint:gocritic
-	}
-}
-
-func renamePngFile(path string, info fs.FileInfo) {
-	if info.IsDir() || filepath.Ext(info.Name()) != ".png" {
-		return
-	}
-
-	// fmt.Printf("visited file or dir: %q\n", path)
-
-	split := strings.SplitN(strings.TrimSuffix(strings.ToLower(info.Name()), "_spritesheet.png"), "_", 4)
-	sex := strings.Split(path, "/")[1]
-
-	outPath := filepath.Join(*out, sex)
-	if err := os.MkdirAll(outPath, 0755); err != nil {
-		log.Fatal(err)
-	}
-
-	typ := strings.ToLower(strings.Split(path, "/")[2])
-
-	if typ == "beards" || typ == "hair" {
-		if typ == "beards" {
-			typ = "beard"
-		}
-
-		i, err := strconv.Atoi(split[3])
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if err := os.MkdirAll(filepath.Join(outPath, typ), 0755); err != nil {
-			log.Fatal(err)
-		}
-
-		if err := os.Rename(path, filepath.Join(outPath, typ, fmt.Sprintf("%d.png", i))); err != nil {
-			log.Fatal(err)
-		}
-		return
-	}
-	if 3 >= len(split) {
-		fmt.Printf("Skipping file %v\n", path)
-		return
-	}
-	split = strings.Split(split[3], "_")
-	// No rename if we don't have the third split trait
-	normalized := strings.Join(split, " ")
-
-	for _, item := range items {
-		if normalized == strings.ToLower(item.Name) {
-			if err := os.Rename(path, filepath.Join(outPath, item.ID+".png")); err != nil {
-				log.Fatal(err)
-			}
-			break
-		}
-	}
-
-}
-
 // Read stored solidity IDs of Hustlers traits
 func readJsonItemIds() []Item {
 	f, err := ioutil.ReadFile("./items.json")
@@ -125,4 +52,98 @@ func readJsonItemIds() []Item {
 		log.Fatalf("Unmarshalling items: %+v", err) //nolint:gocritic
 	}
 	return items
+}
+
+var in = pflag.String("in", "./in", "sprite folder")
+var out = pflag.String("out", "./out", "output folder")
+var items = readJsonItemIds()
+
+func main() {
+	err := filepath.Walk(*in, func(path string, info fs.FileInfo, err error) error {
+		if err != nil {
+			fmt.Printf("prevent panic by handling failure accessing a path %q: %v\n", path, err)
+			return err
+		}
+		renamePngFile(path, info)
+		return nil
+	})
+	if err != nil {
+		log.Fatalf("walking path: %+v", err) //nolint:gocritic
+	}
+}
+
+func renamePngFile(path string, info fs.FileInfo) {
+	if info.IsDir() || filepath.Ext(info.Name()) != ".png" {
+		return
+	}
+
+	fnameSplit := strings.SplitN(
+		strings.TrimSuffix(strings.ToLower(info.Name()), "_spritesheet.png"),
+		"_",
+		4,
+	)
+	sex := strings.Split(path, "/")[1]
+
+	outPath := filepath.Join(*out, sex)
+	if err := os.MkdirAll(outPath, 0755); err != nil {
+		log.Fatal(err)
+	}
+
+	itemType := fnameSplit[2]
+
+	// Beards and hair are numbered by team on file arrival so need different handling.
+	if itemType == "beard" || itemType == "hair" {
+		i, err := strconv.Atoi(fnameSplit[3])
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if err := os.MkdirAll(filepath.Join(outPath, itemType), 0755); err != nil {
+			log.Fatal(err)
+		}
+
+		if err := os.Rename(path, filepath.Join(outPath, itemType, fmt.Sprintf("%d.png", i))); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
+	// Rings are not named properly
+	if itemType == "ring" && !strings.Contains(fnameSplit[len(fnameSplit)-1], "ring") {
+		fnameSplit[len(fnameSplit)-1] += "_ring"
+	}
+
+	// Necklaces are not named properly
+	if itemType == "necklace" && !strings.Contains(fnameSplit[len(fnameSplit)-1], "chain") {
+		fnameSplit[len(fnameSplit)-1] += "_chain"
+	}
+
+	if 3 >= len(fnameSplit) {
+		fmt.Printf("Skipping unknown file %v\n", path)
+		return
+	}
+	itemSplit := strings.Split(fnameSplit[3], "_")
+
+	nFname := strings.Join(itemSplit, "")
+	nFname = normalizeItemName(nFname)
+
+	for _, item := range items {
+		nItemName := normalizeItemName(item.Name)
+		if nFname == nItemName {
+			if err := os.Rename(path, filepath.Join(outPath, item.ID+".png")); err != nil {
+				log.Fatal(err)
+			}
+			break
+		}
+	}
+
+}
+
+// Lowercase and join names for comparison's sake
+// Animation team sometimes doesn't put correct spaces in between names
+func normalizeItemName(name string) string {
+	var n string
+	n = strings.ToLower(name)
+	n = strings.ReplaceAll(n, " ", "")
+	return n
 }
