@@ -1,3 +1,8 @@
+// Updates the "sprite" field for db tables "items" and "body_parts"
+// which hustlers.go reads to composite the sprite for a Hustler.
+//
+// Without this field updated the proper item sprite will not render
+// on the final sprite sheet.
 package main
 
 import (
