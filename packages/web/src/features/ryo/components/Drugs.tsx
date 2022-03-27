@@ -5,6 +5,9 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { buildIconSVG } from 'utils/svg-builder';
 import { css } from '@emotion/react';
+import { RYO_ITEM_IDS, useLocationOwnedContract } from 'hooks/contracts/roll-your-own';
+import { useStarknetCall } from '@starknet-react/core';
+import { BigNumberish } from 'starknet/dist/utils/number';
 
 type Drug = {
   id: string;
@@ -72,6 +75,25 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
 
   const background = isExpanded ? '#434345' : 'inherit';
 
+  const { contract } = useLocationOwnedContract()
+  const { data, loading, error } = useStarknetCall({
+    contract,
+    method: "check_market_state",
+    args: ["1", RYO_ITEM_IDS[drug.id].toString()],
+  })
+
+  const quantity = useMemo(
+    () => {
+      if (!data) return "0"
+
+      const [itemQuantity, moneyQuantity]: BigNumberish[] = data
+
+      console.log("SUH", itemQuantity.toString(), moneyQuantity.toString())
+      return itemQuantity.toString()
+    },
+    [data]
+  )
+
   return (
     <>
       <Tr background={background} cursor="pointer" onClick={() => setIsExpanded.toggle()}>
@@ -92,7 +114,7 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
           {drug.cost}
         </Td>
         <Td isNumeric {...CELL_PROPS}>
-          {drug.quantity}
+          {quantity}
         </Td>
       </Tr>
       {isExpanded && (

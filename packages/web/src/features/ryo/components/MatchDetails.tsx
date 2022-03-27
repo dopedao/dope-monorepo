@@ -3,6 +3,7 @@ import { useStarknet, useStarknetInvoke, useStarknetCall } from "@starknet-react
 import { NavLink } from "components/NavLink"
 import { useUserRegistryContract } from "hooks/contracts/roll-your-own"
 import { useMemo } from "react"
+import { BigNumberish } from "starknet/dist/utils/number"
 import Container from "./Container"
 import ContainerFooter from "./ContainerFooter"
 import ContainerHeader from "./ContainerHeader"
@@ -10,7 +11,7 @@ import Layout from "./Layout"
 
 const MatchDetails = () => {
   const { account } = useStarknet();
-  const registry = useUserRegistryContract();
+  const { contract } = useUserRegistryContract();
 
   // const isRegistered = useMemo(
   //   () => {
@@ -21,13 +22,22 @@ const MatchDetails = () => {
   //   [account, registry],
   // );
 
-  const { data, loading, error } = useStarknetCall({
-    contract: registry,
+  const { data, loading, error } = useStarknetCall<(string | undefined)[]>({
+    contract,
     method: "get_user_info",
-    args: {
-      user_id: account,
-    }
+    args: [account],
   })
+
+  const isRegistered = useMemo(
+    () => {
+      if (!data) return false
+
+      const [result]: BigNumberish[] = data
+
+      return Boolean(Number(result.toString()))
+    },
+    [data]
+  )
 
   // const { invoke, data, loading, error } = useStarknetInvoke({
   //   contract: registry,
@@ -48,22 +58,22 @@ const MatchDetails = () => {
           </Tbody>
         </Table>
       </Container>
-      {/* {isRegistered ? (
+      {isRegistered ? (
         <NavLink href="/roll-your-own/1/location/brooklyn" passHref>
           <Button variant="primary">Play</Button>
         </NavLink>
       ) : (
         <Button
           variant="primary"
-          onClick={() =>
-            invoke({
-              args: { user_id: account, data: '84622096520155505419920978765481155' },
-            }).then(console.log).catch((err) => console.log(err))
-          }
+          // onClick={() =>
+          //   invoke({
+          //     args: { user_id: account, data: '84622096520155505419920978765481155' },
+          //   }).then(console.log).catch((err) => console.log(err))
+          // }
         >
           Join
         </Button>
-      )} */}
+      )}
     </Layout>
   )
 }

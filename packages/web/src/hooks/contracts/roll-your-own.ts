@@ -7,7 +7,7 @@ import LocationOwned from '../../abi/02_LocationOwned.json';
 import UserOwned from '../../abi/03_UserOwned.json';
 import UserRegistry from '../../abi/04_UserRegistry.json';
 
-const RYO_ITEM_IDS = {
+export const RYO_ITEM_IDS = {
   // weed
   6: 1,
   // cocaine
@@ -95,21 +95,13 @@ export function useDopeWarsContract(): Contract | undefined {
  * Load the LocationOwned contract.
  * @returns The `LocationOwned` contract or undefined.
  */
-export function useLocationOwnedContract(): Contract | undefined {
-  const { library } = useStarknet();
-  const [contract, setContract] = useState<Contract | undefined>(undefined);
+export function useLocationOwnedContract(): UseContract {
+  const contract = useContract({
+    abi: LocationOwned as Abi,
+    address: '0x02a43a37fb3c24859e460483f39b94279a47cd3856849399e5deec406305bbfb'
+  })
 
-  useEffect(() => {
-    setContract(
-      new Contract(
-        LocationOwned as Abi[],
-        '0x02a43a37fb3c24859e460483f39b94279a47cd3856849399e5deec406305bbfb',
-        library,
-      ),
-    );
-  }, [library]);
-
-  return contract;
+  return contract
 }
 
 /**
@@ -137,26 +129,11 @@ export function useUserOwnedContract(): Contract | undefined {
  * Load the UserRegistry contract.
  * @returns The `UserRegistry` contract or undefined.
  */
-export function useUserRegistryContract(): UseContract | undefined {
+export function useUserRegistryContract(): UseContract {
   const contract = useContract({
-    // abi: UserRegistry as Abi[],
     abi: UserRegistry as Abi,
     address: '0x023c010a16d330407bec66548a71f9cf3c8d7c16dcc74a79e67ea80efb04890c'
   })
 
   return contract
-  // const { library } = useStarknet();
-  // const [contract, setContract] = useState<Contract | undefined>(undefined);
-
-  // useEffect(() => {
-  //   setContract(
-  //     new Contract(
-  //       UserRegistry as Abi[],
-  //       '0x023c010a16d330407bec66548a71f9cf3c8d7c16dcc74a79e67ea80efb04890c',
-  //       library,
-  //     ),
-  //   );
-  // }, [library]);
-
-  // return contract;
 }
