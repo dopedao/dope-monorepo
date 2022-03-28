@@ -85,7 +85,7 @@ export default class DialogueTextBox extends TextBox {
         buttons: choices.map(choice => (this.scene as UIScene).rexUI.add.label({
           text: getBBcodeText(this.scene as UIScene, 0, 0, 0).setColor(Palette.COLOR_DARK).setText(choice).setAlpha(0.4),
         })),
-        background: (this.scene as UIScene).rexUI.add.roundRectangle(0, 0, 0, 0, 5, Palette.COLOR_LIGHT).setAlpha(0.4),
+        background: (this.scene as UIScene).rexUI.add.roundRectangle(0, 0, 0, 0, 5, 0x4a4a4a).setAlpha(0.2),
       }).on('button.over', (button: Label) => this.choices!.buttons.indexOf(button) !== this.selectedChoice && (button.getElement('text') as BBCodeText)?.setAlpha(1))
         .on('button.out', (button: Label) => this.choices!.buttons.indexOf(button) !== this.selectedChoice && (button.getElement('text') as BBCodeText)?.setAlpha(0.4))
         .on('button.click', (button: Label) => {
