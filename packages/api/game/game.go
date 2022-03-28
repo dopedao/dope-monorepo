@@ -64,19 +64,18 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			// save last position if player has a hustler
 			if player.hustlerId != "" {
 				gameHustler, err := client.GameHustler.Get(ctx, player.hustlerId)
-				if err == nil {
 				if err != nil {
-				        log.Err(err).Msgf("could not get game hustler: %s", player.hustlerId)
-				        return
-				 }
-					
+					log.Err(err).Msgf("could not get game hustler: %s", player.hustlerId)
+					return
+				}
+
 				// update last position
 				if err := gameHustler.Update().SetLastPosition(schema.Position{
 					X: player.position.X,
 					Y: player.position.Y,
 				}).Exec(ctx); err != nil {
 					log.Err(err).Msgf("saving game hustler: %s", player.hustlerId)
-				        return
+					return
 				}
 			}
 
