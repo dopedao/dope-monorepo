@@ -88,12 +88,22 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 
 			log.Info().Msgf("player left: %s | %s", player.Id, player.name)
 		case msg := <-g.Broadcast:
-			for i, player := range g.Players {
+			for _, player := range g.Players {
 				select {
 				case player.Send <- msg:
 				default:
 					log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.name)
-					g.Players = append(g.Players[:i], g.Players[i+1:]...)
+
+					data, _ := json.Marshal(IdData{
+						Id: player.Id.String(),
+					})
+
+					g.Unregister <- player
+					g.Broadcast <- BaseMessage{
+						Event: "player_leave",
+						Data:  data,
+					}
+
 					close(player.Send)
 				}
 			}
