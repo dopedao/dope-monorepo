@@ -1,5 +1,5 @@
 // Renames ITEM, HAIR, and BEARD sprite files from animation team
-// into a format that maps to IDS in our Swap Meet smart contract.
+// into a format that maps to IDS in our PGSQL Database.
 //
 // Output files can can be used for generating sprite sheets
 // on our API when matched with traits from a Hustler.

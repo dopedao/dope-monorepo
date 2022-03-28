@@ -5,6 +5,8 @@
 #
 # Requires `gsutil` utility which you can learn about here
 # https://cloud.google.com/storage/docs/quickstart-gsutil
+#
+# You also have to be authenticated with gsutil to make this work!
 
 DATE=$(date +%m-%d-%Y)
 BUCKET="gs://dopewars-static"

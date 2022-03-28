@@ -20,16 +20,19 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var bucketUrl = "https://static.dopewars.gg/"
+
 func main() {
 	ctx := context.Background()
 
+	// Database connection client
 	db, err := sql.Open(dialect.Postgres, "postgres://postgres:postgres@localhost:5433?sslmode=disable")
 	if err != nil {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
-
 	client := ent.NewClient(ent.Driver(db))
 
+	// GCP Storage Bucket Client
 	s, err := storage.NewClient(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -37,10 +40,10 @@ func main() {
 
 	query := &storage.Query{Prefix: ""}
 
-	bkt := s.Bucket("dopewars-static")
-	it := bkt.Objects(ctx, query)
+	storageBucket := s.Bucket("dopewars-static")
+	bucketObjects := storageBucket.Objects(ctx, query)
 	for {
-		attrs, err := it.Next()
+		attrs, err := bucketObjects.Next()
 		if err == iterator.Done {
 			break
 		}
@@ -64,9 +67,9 @@ func main() {
 			}
 
 			if split[0] == "male" {
-				item.Sprite.Male = "https://static.dopewars.gg/" + attrs.Name
+				item.Sprite.Male = bucketUrl + attrs.Name
 			} else if split[0] == "female" {
-				item.Sprite.Female = "https://static.dopewars.gg/" + attrs.Name
+				item.Sprite.Female = bucketUrl + attrs.Name
 			}
 
 			if err := client.Item.UpdateOne(item).SetSprite(item.Sprite).Exec(ctx); err != nil {
@@ -79,7 +82,7 @@ func main() {
 				log.Fatal(err)
 			}
 
-			body.Sprite = "https://static.dopewars.gg/" + attrs.Name
+			body.Sprite = bucketUrl + attrs.Name
 
 			if err := client.BodyPart.UpdateOneID(id).SetSprite(body.Sprite).Exec(ctx); err != nil {
 				log.Fatal(err)
