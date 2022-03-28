@@ -308,7 +308,7 @@ export default class GameScene extends Scene {
     // zoom to citizen when talking
     const focusCitizen = (citizen: Citizen) => {
       this.cameras.main.zoomTo(4, 700, 'Sine.easeInOut');
-      this.cameras.main.pan(citizen.x, citizen.y, 700, 'Sine.easeInOut');
+      this.cameras.main.pan((this.player.x + citizen.x) / 2, (this.player.y + citizen.y) / 2, 700, 'Sine.easeInOut');
     };
 
     // cancel zoom
