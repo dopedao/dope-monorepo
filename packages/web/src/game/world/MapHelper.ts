@@ -26,7 +26,16 @@ export default class MapHelper {
       Object.keys(this.scene.textures.list).filter(key => key.startsWith('tileset_')),
     );
 
+
     // overlay the map
+    // day/night time cycle
+    this.map.gfx = this.scene.add.rectangle(
+      this.mapReader.level.worldX, this.mapReader.level.worldY,
+      this.mapReader.level.pxWid + 0, this.mapReader.level.pxHei + 0,
+      0x000000, 0.0)
+      .setData('max_alpha', 0.8)
+      .setDepth(1000)
+      .setOrigin(0, 0);
     // will be visible when the player is outside of the map
     this.map.otherGfx = this.scene.add.rectangle(
         this.mapReader.level.worldX, this.mapReader.level.worldY,

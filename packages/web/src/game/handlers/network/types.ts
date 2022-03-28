@@ -40,6 +40,7 @@ enum NetworkEvents {
 interface DataTypes {
   // Data coming from server
   [NetworkEvents.TICK]: {
+    time: number;
     tick: number;
     players: Array<DataTypes[NetworkEvents.SERVER_PLAYER_MOVE]>;
   };

@@ -456,6 +456,13 @@ export default class GameScene extends Scene {
       },
     );
     networkHandler.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => {
+      const currentMap = this._mapHelper.loadedMaps[this.player.currentMap]; 
+      // sine function imitating day/night cycle
+      // only works with 1440 minutes a day cycle
+      const cursor = 230;
+      const fn = (Math.sin((data.time / cursor) - (Math.PI/2)) + 1) / 2;
+      currentMap.gfx!.fillAlpha = Math.min(1 - fn, currentMap.gfx?.getData('max_alpha') ?? 0.8);
+
       // update players positions
       data.players.forEach(p => {
         const hustler = this.hustlers.find(h => h.getData('id') === p.id);
