@@ -65,14 +65,18 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			if player.hustlerId != "" {
 				gameHustler, err := client.GameHustler.Get(ctx, player.hustlerId)
 				if err == nil {
-					// update last position
-					gameHustler.Update().SetLastPosition(schema.Position{
-						X:          player.position.X,
-						Y:          player.position.Y,
-						CurrentMap: player.currentMap,
-					}).Save(ctx)
-				} else {
-					log.Err(err).Msgf("could not get game hustler: %s", player.hustlerId)
+				if err != nil {
+				        log.Err(err).Msgf("could not get game hustler: %s", player.hustlerId)
+				        return
+				 }
+					
+				// update last position
+				if err := gameHustler.Update().SetLastPosition(schema.Position{
+					X: player.position.X,
+					Y: player.position.Y,
+				}).Exec(ctx); err != nil {
+					log.Err(err).Msgf("saving game hustler: %s", player.hustlerId)
+				        return
 				}
 			}
 
