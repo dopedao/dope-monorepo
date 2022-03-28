@@ -25,6 +25,7 @@ type HandshakeData struct {
 }
 
 type TickData struct {
+	Time    int              `json:"time"`
 	Tick    int64            `json:"tick"`
 	Players []PlayerMoveData `json:"players"`
 }

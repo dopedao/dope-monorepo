@@ -16,6 +16,7 @@ import (
 )
 
 const TICKRATE = time.Second / 5
+const MINUTES_DAY = 24 * 60
 
 func NewGame() *Game {
 	return &Game{

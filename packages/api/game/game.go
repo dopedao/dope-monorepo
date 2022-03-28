@@ -14,7 +14,10 @@ import (
 )
 
 type Game struct {
-	// ticks per second
+	// minutes per day
+	// we wrap around that value
+	// MAX = {MINUTES_DAY}
+	Time   int
 	Ticker *time.Ticker
 
 	Mutex sync.Mutex
@@ -96,6 +99,9 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 }
 
 func (g *Game) tick(ctx context.Context, time time.Time) {
+	// TODO: better way of doing this?
+	g.Time = (g.Time + 1) % MINUTES_DAY
+
 	// for each player, send a tick message
 	for _, player := range g.Players {
 		players := []PlayerMoveData{}
@@ -115,6 +121,7 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 		}
 
 		data, err := json.Marshal(TickData{
+			Time:    g.Time,
 			Tick:    time.UnixMilli(),
 			Players: players,
 		})
