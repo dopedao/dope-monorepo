@@ -71,6 +71,7 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 
 				// update last position
 				if err := gameHustler.Update().SetLastPosition(schema.Position{
+					CurrentMap: player.currentMap,
 					X: player.position.X,
 					Y: player.position.Y,
 				}).Exec(ctx); err != nil {
