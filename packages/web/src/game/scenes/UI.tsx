@@ -110,6 +110,7 @@ export default class UIScene extends Scene {
   }
 
   update(time: number, delta: number): void {
+    // TODO: do this elsewhere? in game scene?
     // if the player moves too far away from the "owner" of the current interaction
     // cancel it.
     if (this.currentInteraction?.textBox instanceof DialogueTextBox) {
@@ -119,6 +120,9 @@ export default class UIScene extends Scene {
         this.currentInteraction.citizen.x,
         this.currentInteraction.citizen.y,
       );
+
+      citizen.lookAt(playerPos.x, playerPos.y);
+      this.player.scene.cameras.main.centerOn((this.player.x + citizenPos.x) / 2, (this.player.y + citizenPos.y) / 2);
 
       if (playerPos.distance(citizenPos) > this.currentInteraction.maxDistance) {
         // onInteractionFinish!!! not complete.
