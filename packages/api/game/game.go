@@ -29,7 +29,7 @@ type Game struct {
 
 	Register   chan *Player
 	Unregister chan *Player
-	Broadcast  chan BaseMessage
+	Broadcast  chan BroadcastMessage
 }
 
 func (g *Game) Start(ctx context.Context, client *ent.Client) {
@@ -87,10 +87,14 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			}
 
 			log.Info().Msgf("player left: %s | %s", player.Id, player.name)
-		case msg := <-g.Broadcast:
+		case br := <-g.Broadcast:
 			for _, player := range g.Players {
+				if br.Condition != nil && !br.Condition(player) {
+					continue
+				}
+
 				select {
-				case player.Send <- msg:
+				case player.Send <- br.Message:
 				default:
 					log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.name)
 
@@ -99,9 +103,11 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 					})
 
 					g.Unregister <- player
-					g.Broadcast <- BaseMessage{
-						Event: "player_leave",
-						Data:  data,
+					g.Broadcast <- BroadcastMessage{
+						Message: BaseMessage{
+							Event: "player_leave",
+							Data:  data,
+						},
 					}
 
 					close(player.Send)
@@ -196,9 +202,14 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 	}
 
 	// tell every other player that this player joined
-	g.Broadcast <- BaseMessage{
-		Event: "player_join",
-		Data:  joinData,
+	g.Broadcast <- BroadcastMessage{
+		Message: BaseMessage{
+			Event: "player_join",
+			Data:  joinData,
+		},
+		Condition: func(otherPlayer *Player) bool {
+			return otherPlayer != player
+		},
 	}
 }
 
@@ -256,9 +267,11 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 	}
 
 	// tell every other player that this player left
-	g.Broadcast <- BaseMessage{
-		Event: "player_leave",
-		Data:  leaveData,
+	g.Broadcast <- BroadcastMessage{
+		Message: BaseMessage{
+			Event: "player_leave",
+			Data:  leaveData,
+		},
 	}
 }
 
@@ -274,9 +287,12 @@ func (g *Game) RemoveItemEntity(itemEntity *ItemEntity) bool {
 				// TODO: print error message
 				break
 			}
-			g.Broadcast <- BaseMessage{
-				Event: "player_pickup_itementity",
-				Data:  data,
+
+			g.Broadcast <- BroadcastMessage{
+				Message: BaseMessage{
+					Event: "player_pickup_itementity",
+					Data:  data,
+				},
 			}
 
 			break

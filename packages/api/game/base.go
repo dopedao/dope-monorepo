@@ -27,7 +27,7 @@ func NewGame() *Game {
 		},
 		Register:   make(chan *Player),
 		Unregister: make(chan *Player),
-		Broadcast:  make(chan BaseMessage),
+		Broadcast:  make(chan BroadcastMessage),
 	}
 }
 
