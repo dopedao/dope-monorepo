@@ -111,6 +111,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
           `https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`,
           { frameWidth: 60, frameHeight: 60 },
         );
+        this.setDisplaySize(60, 60);
         this.scene.load.once('filecomplete-spritesheet-' + key, () => {
           createHustlerAnimations(this.scene, key);
           this.setTexture(key);
@@ -157,7 +158,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
 
     // create main body
     const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
-    const colliderBody = Bodies.rectangle(0, 0, (this.displayWidth / 2) * 0.48, this.displayHeight * 0.35, {
+    const colliderBody = Bodies.rectangle(0, 0, (this.displayWidth / 2) * 0.46, this.displayHeight * 0.35, {
       label: 'collider',
       collisionFilter: {
         group: -69,

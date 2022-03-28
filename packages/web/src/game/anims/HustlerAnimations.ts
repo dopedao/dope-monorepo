@@ -10,7 +10,7 @@ export const createHustlerAnimations = (
 
   // TODO: move elsewhere
   // create icon frame
-  texture.add(key + '_icon', 0, 240 + 10, 10, 35, 24);
+  texture.add(key + '_icon', 0, 15, 240 + 10, 35, 24);
 
   // stand frames
   texture.add(key + '_stand_right', 0, 0, 240, 60, 60);
