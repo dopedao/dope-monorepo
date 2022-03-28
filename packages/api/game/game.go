@@ -118,6 +118,8 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 }
 
 func (g *Game) tick(ctx context.Context, time time.Time) {
+	_, log := base.LogFor(ctx)
+
 	// TODO: better way of doing this?
 	g.Time = (g.Time + 1) % MINUTES_DAY
 
@@ -149,9 +151,27 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 			continue
 		}
 
-		player.Send <- BaseMessage{
+		select {
+		case player.Send <- BaseMessage{
 			Event: "tick",
 			Data:  data,
+		}:
+		default:
+			log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.name)
+
+			data, _ := json.Marshal(IdData{
+				Id: player.Id.String(),
+			})
+
+			g.Unregister <- player
+			g.Broadcast <- BroadcastMessage{
+				Message: BaseMessage{
+					Event: "player_leave",
+					Data:  data,
+				},
+			}
+
+			close(player.Send)
 		}
 	}
 }
