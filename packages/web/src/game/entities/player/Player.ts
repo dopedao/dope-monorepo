@@ -70,9 +70,9 @@ export default class Player extends Hustler {
 
     // create interact sensor
     this._interactSensor = this.scene.matter.add.rectangle(
-      x + this.displayWidth,
+      x + (this.displayWidth / 2),
       y - this.displayHeight / 4,
-      this.displayWidth,
+      this.displayWidth / 2,
       this.displayHeight / 2,
       {
         isSensor: true,
@@ -91,10 +91,7 @@ export default class Player extends Hustler {
     // });
 
     this.hitboxSensor.onCollideActiveCallback = this.updateDepth;
-
-    // setTimeout prevents depth changing too fast
-    // and causing player render stutter
-    this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => this.setDepth(this._baseDepth));
+    this.hitboxSensor.onCollideEndCallback = () => this.setDepth(this._baseDepth);
   }
 
   toggleInventory() {
@@ -175,12 +172,12 @@ export default class Player extends Hustler {
         });
       } else if (this.lastDirection === Direction.West) {
         (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, {
-          x: this.x - this.displayWidth,
+          x: this.x - (this.displayWidth / 2),
           y: this.y - this.displayHeight / 4,
         });
       } else if (this.lastDirection === Direction.East) {
         (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, {
-          x: this.x + this.displayWidth,
+          x: this.x + (this.displayWidth / 2),
           y: this.y - this.displayHeight / 4,
         });
       }
@@ -215,8 +212,8 @@ export default class Player extends Hustler {
     const player = playerHitbox.gameObject as Player;
     
     if (otherHitbox.position.y - playerHitbox.position.y < diff) {
-      if (player.depth !== player._baseDepth + 5)
-        player.setDepth(player._baseDepth + 5);
+      if (player.depth !== player._baseDepth + 10)
+        player.setDepth(player._baseDepth + 10);
     }
     else {
       if (player.depth !== player._baseDepth - 5)

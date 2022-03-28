@@ -98,7 +98,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     y: number,
     hustlerId?: string,
     name?: string,
-    frame?: number,
+    frame?: string | number,
   ) {
     super(world, x, y, 'male_base', frame);
 
@@ -109,7 +109,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
         this.scene.load.spritesheet(
           key,
           `https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`,
-          { frameWidth: 30, frameHeight: 60 },
+          { frameWidth: 60, frameHeight: 60 },
         );
         this.scene.load.once('filecomplete-spritesheet-' + key, () => {
           createHustlerAnimations(this.scene, key);
@@ -149,15 +149,15 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     this._shadow = this.scene.add.ellipse(
       this.x,
       this.y,
-      this.width * 0.76,
-      this.height * 0.2,
+      (this.displayWidth / 2) * 0.76,
+      this.displayHeight * 0.2,
       0x000000,
       0.35,
-    ).setOrigin(0.5, -0.3);
+    ).setOrigin(0.5, -0.35);
 
     // create main body
     const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
-    const colliderBody = Bodies.rectangle(0, 0, this.width * 0.48, this.height * 0.35, {
+    const colliderBody = Bodies.rectangle(0, 0, (this.displayWidth / 2) * 0.48, this.displayHeight * 0.35, {
       label: 'collider',
       collisionFilter: {
         group: -69,
@@ -168,7 +168,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     this._hitboxSensor = this.scene.matter.add.rectangle(
       this.x,
       this.y - this.displayHeight / 5,
-      this.displayWidth * 0.6,
+      (this.displayWidth / 2) * 0.6,
       this.displayHeight * 0.8,
       {
         label: 'hitboxSensor',
@@ -181,21 +181,15 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     );
 
     this.setExistingBody(colliderBody);
-
     this.setPosition(x, y);
-
-    this.setDepth(53);
+    this.setDepth(42);
 
     // offset the hustler texture from the body
-    this.setOrigin(0.5, 0.65);
-    // make it a bit bigger
-    this.setScale(1);
+    this.setOrigin(0.5, 0.75);
+    this.setScale(0.9);
 
     // prevent angular momentum from rotating our body
     this.setFixedRotation();
-  
-    // create sub sprites
-    // this._model.createSprites();
 
     // display name on hover
     const uiScene = this.scene.scene.get('UIScene') as UIScene;

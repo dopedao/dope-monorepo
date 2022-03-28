@@ -49,7 +49,7 @@ export default class GameScene extends Scene {
 
   public canUseMouse: boolean = true;
 
-  readonly zoom: number = 2.5;
+  readonly zoom: number = 3;
 
   get mapHelper() {
     return this._mapHelper;
@@ -389,7 +389,7 @@ export default class GameScene extends Scene {
     // zoom with scroll wheel
     this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: Array<Phaser.GameObjects.GameObject>, deltaX: number, deltaY: number) => {
       if (this.player.busy) return;
-      const targetZoom = this.cameras.main.zoom + (deltaY > 0 ? -0.25 : 0.25);
+      const targetZoom = this.cameras.main.zoom + (deltaY > 0 ? -0.3 : 0.3);
       if (targetZoom < 0.4 || targetZoom > 10) return;
 
       // this.cameras.main.setZoom(targetZoom);
@@ -422,7 +422,7 @@ export default class GameScene extends Scene {
 
         const spritesheetKey = 'hustler_' + data.hustlerId;
         this.load.spritesheet(spritesheetKey, `https://api.dopewars.gg/hustlers/${data.hustlerId}/sprites/composite.png`, {
-          frameWidth: 30, frameHeight: 60 
+          frameWidth: 60, frameHeight: 60 
         });
         this.load.once('filecomplete-spritesheet-' + spritesheetKey, () => {
           createHustlerAnimations(this, spritesheetKey);

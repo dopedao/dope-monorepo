@@ -104,7 +104,7 @@ export default class Preload extends Scene {
         this.load.spritesheet(
           key,
           `https://api.dopewars.gg/hustlers/${hustlerData[0].id}/sprites/composite.png`,
-          { frameWidth: 30, frameHeight: 60 },
+          { frameWidth: 60, frameHeight: 60 },
         );
         this.load.once('filecomplete-spritesheet-' + key, () => {
           createHustlerAnimations(this, key);
