@@ -1,13 +1,29 @@
 set -eu
 DATABASE_URL=postgres://postgres@127.0.0.1:5432/dopewars
 
+DOCKER_PG_PATH="/lib/postgresql/13/bin"
+
+# If we don't have this docker image gives us an error
+# about not being able to run pg_ctl as user postgres
+sudo adduser postgres sudo
+
+# Add path to look when we're running this script inside a Docker image
+export PATH="$PATH:$DOCKER_PG_PATH"
+
+command -v pg_ctl >/dev/null 2>&1 || { echo >&2 "Please install postgres for pg_ctl."; exit 1; }
+
 mkdir -p pgdata
 PGDATA=pgdata
 
-pg_ctl init -D $PGDATA
-pg_ctl start -D $PGDATA -W
+echo "Starting Database"
+su - postgres -c "$DOCKER_PG_PATH/pg_ctl init -D $PGDATA"
+su - postgres -c "$DOCKER_PG_PATH/pg_ctl start -D $PGDATA -W"
 
-psql $DATABASE_URL -c 'CREATE DATABASE "dopewars"'
-psql $DATABASE_URL -c 'CREATE USER postgres SUPERUSER'
+echo "Sleeping to let DB spin up…"
+sleep 10
+
+echo "Creating Database unless it exists"
+psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'dopewars'" | grep -q 1 || psql -U postgres -c "CREATE DATABASE dopewars"
+#psql $DATABASE_URL -c 'CREATE USER postgres SUPERUSER'
 
 export DATABASE_URL=$DATABASE_URL

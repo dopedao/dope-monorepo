@@ -70,6 +70,11 @@
     "type": "WEAPON"
   },
   {
+    "id": "917504",
+    "name": "Brass Knuckle",
+    "type": "WEAPON"
+  },
+  {
     "id": "1114112",
     "name": "Uzi",
     "type": "WEAPON"
@@ -135,6 +140,11 @@
     "type": "WAIST"
   },
   {
+    "id": "983043",
+    "name": "Fanny Belt",
+    "type": "WAIST"
+  },
+  {
     "id": "655363",
     "name": "Pistol Holster",
     "type": "WAIST"
@@ -147,6 +157,11 @@
   {
     "id": "393219",
     "name": "D Ring Belt",
+    "type": "WAIST"
+  },
+  {
+    "id": "393219",
+    "name": "Ring Belt",
     "type": "WAIST"
   },
   {
@@ -315,6 +330,11 @@
     "type": "HAND"
   },
   {
+    "id": "196613",
+    "name": "MMA Gloves",
+    "type": "HAND"
+  },
+  {
     "id": "524293",
     "name": "Leather Gloves",
     "type": "HAND"
@@ -335,6 +355,11 @@
     "type": "HAND"
   },
   {
+    "id": "65541",
+    "name": "Basebal Gloves",
+    "type": "HAND"
+  },
+  {
     "id": "589829",
     "name": "White Gloves",
     "type": "HAND"
@@ -342,6 +367,11 @@
   {
     "id": "851973",
     "name": "Fingerless Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "851973",
+    "name": "Fingerlesst Gloves",
     "type": "HAND"
   },
   {
@@ -360,8 +390,18 @@
     "type": "HAND"
   },
   {
+    "id": "327685",
+    "name": "Nitirile Gloves",
+    "type": "HAND"
+  },
+  {
     "id": "720901",
     "name": "Kevlar Gloves",
+    "type": "HAND"
+  },
+  {
+    "id": "720901",
+    "name": "Kevlart Gloves",
     "type": "HAND"
   },
   {
@@ -382,6 +422,11 @@
   {
     "id": "4",
     "name": "Black Air Force 1s",
+    "type": "FOOT"
+  },
+  {
+    "id": "4",
+    "name": "Black Airforce",
     "type": "FOOT"
   },
   {
@@ -422,6 +467,11 @@
   {
     "id": "196612",
     "name": "Gucci Tennis 84",
+    "type": "FOOT"
+  },
+  {
+    "id": "196612",
+    "name": "Gucci Tenis 84",
     "type": "FOOT"
   },
   {
