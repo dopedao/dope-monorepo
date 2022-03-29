@@ -170,7 +170,9 @@ const Flex = () => {
                   display="flex"
                   justifyContent="center"
                   alignItems="flex-end"
+                  paddingBottom="30px"
                   background="#000 url(/images/lunar_new_year_2022/explosion_city-bg.png) center / contain repeat-x"
+                  overflow="hidden"
                 >
                   <HustlerSpriteSheetWalk id={hustlerId?.toString()} />
                 </GridItem>
