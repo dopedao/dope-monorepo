@@ -1,12 +1,12 @@
 import { Button, Link } from '@chakra-ui/react';
-import { css } from '@emotion/react';
-import ContentFooter from 'features/about/components/ContentFooter';
-import ContentHustlers from './ContentHustlers';
-import ContentIntro from 'features/about/components/ContentIntro';
-import ContentRoadmap from 'features/about/components/ContentRoadmap';
 import DesktopWindow from 'components/DesktopWindow';
 import PanelFooter from 'components/PanelFooter';
+import ContentIntro from 'features/about/components/ContentIntro';
+import ContentFooter from 'features/about/components/ContentFooter';
+import ContentRoadmap from 'features/about/components/ContentRoadmap';
 import ReactPlayer from 'react-player';
+import { css } from '@emotion/react';
+import ContentHustlers from './ContentHustlers';
 
 const VIDEOS = [
   'https://www.youtube.com/watch?v=kvWM2obNMyI',

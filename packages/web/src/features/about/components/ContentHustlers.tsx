@@ -14,18 +14,20 @@ Hustlers unlock multiple game experiences. Better equipped Hustlers have higher 
 [More about Hustlers on our Player's Guide.](https://dope-wars.notion.site/Hustler-Guide-ad81eb1129c2405f8168177ba99774cf)
   `;
   return (
-    <div
-      css={css`
-        .markdown {
-          padding-bottom: 0px !important;
-        }
-      `}
-    >
+    <>
       <Image
         src="/images/hustler/hustler_about_banner.svg"
         alt="Hustlers are your character in Dope Wars"
       />
-      <MarkdownText text={content} />
+      <div
+        css={css`
+          .markdown {
+            padding-bottom: 0px !important;
+          }
+        `}
+      >
+        <MarkdownText text={content} />
+      </div>
       <div
         className="markdown"
         css={css`
@@ -34,7 +36,7 @@ Hustlers unlock multiple game experiences. Better equipped Hustlers have higher 
       >
         <ReactPlayer url="https://www.youtube.com/watch?v=7q5uvmTttzQ" width="100%" controls />
       </div>
-    </div>
+    </>
   );
 };
 
