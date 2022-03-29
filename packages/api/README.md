@@ -7,12 +7,13 @@ The Dope Wars api consists of a golang service that exposes a graphql endpoint. 
 Install golang and run the api from the repo root:
 
 ```bash
-# Launch a runtime instance
+# Launch an interactive docker runtime instance
 bin/shell
-# Launch a local postgres instance
+
+# Inside the docker image, launch a local postgres instance
 sh -c "bin/pgdev"
 
-# Launch the api service
+# Inside docker image launch API
 cd packages/api
 go run cmd/main.go
 ```
@@ -38,6 +39,7 @@ Modify the schema in `packages/api/ent/schema` and run `go generate ./...`
 The Dope Wars API runs on Google Cloud Platform. To deploy, do the following…
 
 ```
+gcloud app deploy --appyaml app.mainnet.api.yaml
 gcloud app deploy --appyaml app.mainnet.indexer.yaml
 ```
 
