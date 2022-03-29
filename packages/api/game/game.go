@@ -14,10 +14,9 @@ import (
 )
 
 type Game struct {
-	// minutes per day
-	// we wrap around that value
-	// MAX = {MINUTES_DAY}
-	Time   int
+	// current time
+	// we wrap around {MINUTES_DAY}
+	Time   float32
 	Ticker *time.Ticker
 
 	Mutex sync.Mutex
@@ -122,7 +121,10 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 	_, log := base.LogFor(ctx)
 
 	// TODO: better way of doing this?
-	g.Time = (g.Time + 1) % MINUTES_DAY
+	if g.Time >= MINUTES_DAY {
+		g.Time = 0
+	}
+	g.Time = (g.Time + 0.5)
 
 	// for each player, send a tick message
 	for _, player := range g.Players {
