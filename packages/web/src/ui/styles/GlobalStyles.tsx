@@ -268,7 +268,7 @@ export default function GlobalStyles() {
           width: 100%;
           justify-content: center;
           padding: 32px;
-          max-width: 640px;
+          max-width: 786px;
           ${media.tablet`
             font-size: 1.125em;
           `}
