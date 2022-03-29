@@ -6,7 +6,7 @@
             "male_base": {
               "file": "https://static.dopewars.gg/male/body/1.png",
               "frameConfig": {
-                "frameWidth": 30,
+                "frameWidth": 60,
                 "frameHeight": 60
               },
               "size": 8543

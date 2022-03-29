@@ -120,6 +120,7 @@ export class LdtkReader {
       .setData('id', orderId)
       .setData('animators', [])
       .setDepth(orderId * 5)
+      .setPipeline('Light2D')
       .setAlpha(layer.__opacity)
       .setVisible(true);
 
@@ -145,6 +146,7 @@ export class LdtkReader {
           this.level.worldX + layer.pxOffsetX,
           this.level.worldY + layer.pxOffsetY,
         )
+        .setPipeline('Light2D')
         .setDepth(l.depth)
         .setVisible(true);
 
@@ -244,6 +246,7 @@ export class LdtkReader {
       .setData('id', orderId)
       .setData('animators', [])
       .setDepth(orderId * 5)
+      .setPipeline('Light2D')
       .setAlpha(layer.__opacity)
       .setVisible(true);
 
@@ -335,6 +338,7 @@ export class LdtkReader {
       .setData('id', orderId)
       .setData('animators', [])
       .setDepth(orderId * 5)
+      .setPipeline('Light2D')
       .setAlpha(layer.__opacity)
       .setVisible(false);
 

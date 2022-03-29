@@ -30,10 +30,10 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import { ComponentManager } from 'phaser3-react/src/manager';
 import TilesAnimator from 'game/world/TilesAnimator';
 
-
 export default class GameScene extends Scene {
   private hustlerData: any;
 
+  // is the game initialized
   private initialized = false;
 
   private player!: Player;
@@ -42,6 +42,9 @@ export default class GameScene extends Scene {
   // npcs
   private citizens: Citizen[] = new Array();
   private itemEntities: ItemEntity[] = new Array();
+
+  private sun?: Phaser.GameObjects.Light;
+  private moon?: Phaser.GameObjects.Light;
 
   private loadingSpinner?: ComponentManager;
 
@@ -256,7 +259,12 @@ export default class GameScene extends Scene {
 
     // make the camera follow the player
     camera.setZoom(this.zoom, this.zoom);
-    camera.startFollow(this.player, true, 0.05, 0.05, -5, -5);
+    camera.startFollow(this.player, true, 0.5, 0.5, -5, -5);
+
+    this.lights.enable();
+    this.sun = this.lights.addLight(-10000, -10000, 100000, 0xfdffdb, 1);
+    this.moon = this.lights.addLight(10000, 10000, 100000, 0xb8beff, 1);
+    // this.lights.setAmbientColor(0xffffff);
 
     const map = this.mapHelper.loadedMaps[this.player.currentMap];
     // TODO: update function on map which gets called only when player is in the map
@@ -459,9 +467,13 @@ export default class GameScene extends Scene {
       const currentMap = this._mapHelper.loadedMaps[this.player.currentMap]; 
       // sine function imitating day/night cycle
       // only works with 1440 minutes a day cycle
+      // TODO: defined in ldtk? along with position of sun
       const cursor = 230;
-      const fn = (Math.sin((data.time / cursor) - (Math.PI/2)) + 1) / 2;
-      currentMap.gfx!.fillAlpha = Math.min(1 - fn, currentMap.gfx?.getData('max_alpha') ?? 0.8);
+      const maxSunIntensity = 300; 
+      const maxMoonIntensity = 50;
+      const fn = (Math.sin((data.time / cursor) - (Math.PI/2)) + 1) / 2;    
+      this.sun?.setIntensity(fn * maxSunIntensity);
+      this.moon?.setIntensity((1 - fn) * maxMoonIntensity);
 
       // update players positions
       data.players.forEach(p => {

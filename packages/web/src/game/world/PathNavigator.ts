@@ -199,61 +199,7 @@ export default class PathNavigator {
         .scale(Hustler.DEFAULT_VELOCITY);
       this.hustler.setVelocity(newVel.x, newVel.y);
     }
-
-    // if stuck in a corner, move in the direction of the other corner
-    // if (willMoveFlag)
-    // {
-    //     if (this.previousPosition)
-    //     {
-    //         if (this.previousPosition.x === this.hustler.x && this.previousPosition.y === this.hustler.y)
-    //         {
-    //             if (this.hustler.direction === Direction.North)
-    //             {
-    //                 this.hustler.direction = Direction.South;
-    //                 this.hustler.setVelocityY(Hustler.DEFAULT_VELOCITY);
-    //                 this.hustler.model.updateSprites(true);
-    //             }
-    //             else if (this.hustler.direction === Direction.South)
-    //             {
-    //                 this.hustler.direction = Direction.North;
-    //                 this.hustler.setVelocityY(-Hustler.DEFAULT_VELOCITY);
-    //                 this.hustler.model.updateSprites(true);
-    //             }
-    //             else if (this.hustler.direction === Direction.West)
-    //             {
-    //                 this.hustler.direction = Direction.East;
-    //                 this.hustler.setVelocityX(Hustler.DEFAULT_VELOCITY);
-    //                 this.hustler.model.updateSprites(true);
-    //             }
-    //             else if (this.hustler.direction === Direction.East)
-    //             {
-    //                 this.hustler.direction = Direction.West;
-    //                 this.hustler.setVelocityX(-Hustler.DEFAULT_VELOCITY);
-    //                 this.hustler.model.updateSprites(true);
-    //             }
-    //         }
-    //     }
-    // }
-
-    // pathfinder stuck
-    // if (willMoveFlag && this.previousPosition && new Phaser.Math.Vector2(this.hustler.x, this.hustler.y).fuzzyEquals(this.previousPosition))
-    // {
-
-    // }
-
+    
     this.previousPosition = new Phaser.Math.Vector2(this.hustler.x, this.hustler.y);
-
-    // if (dir === "")
-    // {
-    //     this.hustler.setVelocity(0, 0);
-    //     this.hustler.model.updateSprites(true);
-    //     // reset to the first frame of the anim
-    //     if (this.hustler.anims.currentAnim && !this.hustler.anims.currentFrame.isLast)
-    //     this.hustler.anims.setCurrentFrame(this.hustler.anims.currentAnim.getLastFrame());
-    //     this.hustler.stopAfterDelay(100);
-
-    //     this.hustler.model.stopSpritesAnim();
-    //     return;
-    // }
   }
 }
