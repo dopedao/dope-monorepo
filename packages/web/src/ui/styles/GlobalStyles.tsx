@@ -2,7 +2,6 @@ import { Global, css } from '@emotion/react';
 import { media, buttonStyle } from './mixins';
 import { returnBreakpoint } from './breakpoints';
 
-
 const desktopImageCss = [
   "#000000 url('/images/desktop/TONY.gif') center center / contain repeat-y fixed",
   "#d10913 url('/images/desktop/LAMBO.png') center center / cover repeat-y fixed",
@@ -104,7 +103,7 @@ export default function GlobalStyles() {
           --content-width-lg: ${returnBreakpoint('desktop')};
           --content-width-xl: ${returnBreakpoint('xl')};
         }
-        
+
         ${media.laptop`
           :root {
             --base-unit: 10px;

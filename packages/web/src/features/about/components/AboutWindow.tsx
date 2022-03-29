@@ -9,11 +9,12 @@ import { css } from '@emotion/react';
 import { getRandomArrayElement } from 'utils/utils';
 
 const VIDEOS = [
-  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/video/dope-wars-trailer-nono.mp4',
-  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/video/dope-moving-bricks.mp4',
-  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/video/dopewars_gg.mp4',
-  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/video/hustlers.mp4',
-  'https://dope-wars-gg.s3-us-west-1.amazonaws.com/video/hustler-chicks.mp4'
+  'https://www.youtube.com/watch?v=kvWM2obNMyI',
+  'https://www.youtube.com/watch?v=bkNF9VdY2-o',
+  'https://www.youtube.com/watch?v=RDZtsWPFFK8',
+  'https://www.youtube.com/watch?v=tScIPitpeDM',
+  'https://www.youtube.com/watch?v=IomJleXItCg',
+  'https://www.youtube.com/watch?v=HXMfLfslvus',
 ];
 
 const AboutWindow = ({ ...props }) => {
@@ -51,8 +52,8 @@ const AboutWindow = ({ ...props }) => {
         >
           <ReactPlayer
             // light='/images/icon/dope-smiley.svg'
-            light="/images/Logo-Plain.svg"
-            url={getRandomArrayElement(VIDEOS)}
+            // light="/images/Logo-Plain.svg"
+            url={VIDEOS}
             width="100%"
             controls
             playing
