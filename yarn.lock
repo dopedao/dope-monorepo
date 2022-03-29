@@ -58,12 +58,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@argent/get-starknet@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "@argent/get-starknet@npm:1.1.3"
+"@argent/get-starknet@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@argent/get-starknet@npm:2.1.1"
   peerDependencies:
     starknet: ^2.5.0
-  checksum: b5164ff11e109382c89d52777f3b033de35b0fccbcc56cb49bfa9b65835dcf9b079bae1efa2fd6c5e9dbc7c2bcdaf59b97d348b34d6beb3aeb86efffec172417
+  checksum: 3d00efe57d5b0411917742825b0374b5d3ea050f97fb7f5bbb2c0b833a37c168d9e65e153e86629bc6f2d702cc215bc834536de3e870610d4aa9bb68053af740
   languageName: node
   linkType: hard
 
@@ -2612,7 +2612,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@dopewars/web@workspace:packages/web"
   dependencies:
-    "@argent/get-starknet": ^1.1.3
+    "@argent/get-starknet": ^2.1.1
     "@babel/core": ^7.16.7
     "@chakra-ui/react": ^1.6.7
     "@emotion/babel-plugin": ^11.3.0
@@ -2632,6 +2632,7 @@ __metadata:
     "@mdx-js/react": ^1.6.22
     "@sentry/react": ^6.17.7
     "@sentry/tracing": ^6.17.7
+    "@starknet-react/core": ^0.4.6
     "@storybook/addon-actions": ^6.4.9
     "@storybook/addon-docs": ^6.4.9
     "@storybook/addon-essentials": ^6.4.9
@@ -2689,7 +2690,7 @@ __metadata:
     remark: ^14.0.2
     remark-html: ^15.0.1
     siwe: ^1.1.0
-    starknet: ^2.5.0
+    starknet: ^2.5.1
     ts-jest: ^27.0.5
     ts-node: ^10.2.1
     typechain: ^5.1.2
@@ -6710,6 +6711,19 @@ __metadata:
   version: 1.0.1
   resolution: "@stablelib/wipe@npm:1.0.1"
   checksum: 287802eb146810a46ba72af70b82022caf83a8aeebde23605f5ee0decf64fe2b97a60c856e43b6617b5801287c30cfa863cfb0469e7fcde6f02d143cf0c6cbf4
+  languageName: node
+  linkType: hard
+
+"@starknet-react/core@npm:^0.4.6":
+  version: 0.4.6
+  resolution: "@starknet-react/core@npm:0.4.6"
+  dependencies:
+    immutable: ^4.0.0
+  peerDependencies:
+    "@argent/get-starknet": ^2.1
+    react: ^16.8 || ^17.0
+    starknet: ^2.5
+  checksum: 33009f49a1953f92c7f2bd22451fcc0712f19046621b14b00413cc540a7eec67f69a23fb06ea9781021c0ea942550f51be965b39f89c511a451d30ec28890dc8
   languageName: node
   linkType: hard
 
@@ -19991,7 +20005,7 @@ fsevents@~2.1.1:
   languageName: node
   linkType: hard
 
-"immutable@npm:^4.0.0-rc.12":
+"immutable@npm:^4.0.0, immutable@npm:^4.0.0-rc.12":
   version: 4.0.0
   resolution: "immutable@npm:4.0.0"
   checksum: 4b5e9181e4d5fa06728a481835ec09c86367e5d03268666c95b522b7644ab891098022e4479a43c4c81a68f2ed82f10751ce5d33e208d7b873b6e7f9dfaf4d87
@@ -31290,9 +31304,9 @@ resolve@~1.20.0:
   languageName: node
   linkType: hard
 
-"starknet@npm:^2.5.0":
-  version: 2.7.1
-  resolution: "starknet@npm:2.7.1"
+"starknet@npm:^2.5.1":
+  version: 2.9.0
+  resolution: "starknet@npm:2.9.0"
   dependencies:
     axios: ^0.23.0
     bn.js: ^5.2.0
@@ -31304,7 +31318,7 @@ resolve@~1.20.0:
     pako: ^2.0.4
     superstruct: ^0.15.3
     url-join: ^4.0.1
-  checksum: 354b33ca649ebe077e43cc74d7d9cc91c4379789339ec1baad9afd7235a64b608e7c153f1283d94f554bdfc82c24b0f07c62aeede8341b2836bdebc43281343c
+  checksum: cf2bb37ba401cbf7486ab8161fb95d65f8c7a21ed0ab0c1512b1efe9e19e53c8a0221986fd9e5622d7bc98b28cf2bd968f2acd2822d04fdc6448031cb36a85d8
   languageName: node
   linkType: hard
 

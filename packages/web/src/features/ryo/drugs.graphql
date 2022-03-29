@@ -1,0 +1,19 @@
+query Drugs {
+  items(where: { type: DRUGS, hasBase: false }) {
+    totalCount
+    edges {
+      node {
+        id
+        name
+        rles {
+          male
+        }
+        base {
+          rles {
+            male
+          }
+        }
+      }
+    }
+  }
+}

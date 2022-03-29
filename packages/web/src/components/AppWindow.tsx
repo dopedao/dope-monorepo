@@ -22,7 +22,7 @@ export interface AppWindowProps {
   fullScreen?: boolean;
 }
 
-const getBodyPadding = () => {
+export const getBodyPadding = () => {
   const defaultBodyPadding = '16px';
   if (typeof window === 'undefined') {
     return defaultBodyPadding;
@@ -30,7 +30,7 @@ const getBodyPadding = () => {
   return window.innerWidth >= getBreakpointWidth('tablet') ? '32px' : defaultBodyPadding;
 };
 
-const AppWindowBody = styled.div<{
+export const AppWindowBody = styled.div<{
   scrollable: boolean;
   padBody: boolean;
   background: string | undefined;
