@@ -1,6 +1,5 @@
-import MarkdownText from 'components/MarkdownText';
-import styled from '@emotion/styled';
 import { css } from '@emotion/react';
+import MarkdownText from 'components/MarkdownText';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 
 const ContentIntro = () => {
