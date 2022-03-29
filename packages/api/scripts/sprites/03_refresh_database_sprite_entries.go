@@ -3,12 +3,22 @@
 //
 // Without this field updated the proper item sprite will not render
 // on the final sprite sheet.
+//
+// AUTH NOTES
+//
+// * For buckets, you have to auth with a json file as spelled out here
+//   https://cloud.google.com/docs/authentication/production
+//
+// * For PGSQL you have to pass the db password to the script as first parameter like
+//   go run 03_refresh_database_sprite_entries.go DBPASSWORD
+//
 package main
 
 import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"cloud.google.com/go/storage"
@@ -24,9 +34,17 @@ var bucketUrl = "https://static.dopewars.gg/"
 
 func main() {
 	ctx := context.Background()
+	var dbPass string
+	if len(os.Args) == 1 {
+		log.Fatal("Pass db password as argument to script")
+		return
+	} else {
+		dbPass = os.Args[1]
+	}
 
 	// Database connection client
-	db, err := sql.Open(dialect.Postgres, "postgres://postgres:postgres@localhost:5433?sslmode=disable")
+	connStr := fmt.Sprintf("postgres://postgres:%s@34.68.66.160:5432?sslmode=disable", dbPass)
+	db, err := sql.Open(dialect.Postgres, connStr)
 	if err != nil {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
