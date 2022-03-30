@@ -1,5 +1,6 @@
 import { Flex, HStack } from "@chakra-ui/react"
 import { ReactNode } from "react"
+import { useRollYourOwn } from "../context"
 
 export const GameWindowHeaderHustlerProfile = () => {
   return (
@@ -11,10 +12,12 @@ export const GameWindowHeaderHustlerProfile = () => {
 }
 
 export const GameWindowHeaderAchievements = () => {
+  const { money } = useRollYourOwn()
+
   return (
     <HStack>
       <span>CASH</span>
-      <span>$0</span>
+      <span>${money?.toString()}</span>
     </HStack>
   )
 }

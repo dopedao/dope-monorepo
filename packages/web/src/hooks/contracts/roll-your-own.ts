@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Contract, Abi } from 'starknet';
-import { useStarknet, useContract, UseContract } from '@starknet-react/core';
+import { Abi } from 'starknet';
+import { useContract, UseContract } from '@starknet-react/core';
 
 import DOPEWARS from '../../abi/01_DopeWars.json';
 import LocationOwned from '../../abi/02_LocationOwned.json';
 import UserOwned from '../../abi/03_UserOwned.json';
 import UserRegistry from '../../abi/04_UserRegistry.json';
 
-export const RYO_ITEM_IDS = {
+export const RYO_ITEM_IDS: {
+  [id: number]: number
+} = {
   // weed
   6: 1,
   // cocaine
@@ -74,21 +75,13 @@ const RYO_LOCATIONS = {
  * Load the DopeWars contract.
  * @returns The `DopeWars` contract or undefined.
  */
-export function useDopeWarsContract(): Contract | undefined {
-  const { library } = useStarknet();
-  const [contract, setContract] = useState<Contract | undefined>(undefined);
+export function useDopeWarsContract(): UseContract {
+  const contract = useContract({
+    abi: DOPEWARS as Abi,
+    address: '0x02e819f964b0e31300bb97c7571d4fc2d3952837ad4826bb7d252603741d3805'
+  })
 
-  useEffect(() => {
-    setContract(
-      new Contract(
-        DOPEWARS as Abi[],
-        '0x02e819f964b0e31300bb97c7571d4fc2d3952837ad4826bb7d252603741d3805',
-        library,
-      ),
-    );
-  }, [library]);
-
-  return contract;
+  return contract
 }
 
 /**
@@ -108,19 +101,11 @@ export function useLocationOwnedContract(): UseContract {
  * Load the UserOwned contract.
  * @returns The `UserOwned` contract or undefined.
  */
-export function useUserOwnedContract(): Contract | undefined {
-  const { library } = useStarknet();
-  const [contract, setContract] = useState<Contract | undefined>(undefined);
-
-  useEffect(() => {
-    setContract(
-      new Contract(
-        UserOwned as Abi[],
-        '0x020468fd2c028f56c30cdc807848d25eaa027076302ace30d722ef7400e4afbc',
-        library,
-      ),
-    );
-  }, [library]);
+export function useUserOwnedContract(): UseContract {
+  const contract = useContract({
+    abi: UserOwned as Abi,
+    address: "0x020468fd2c028f56c30cdc807848d25eaa027076302ace30d722ef7400e4afbc"
+  })
 
   return contract;
 }
