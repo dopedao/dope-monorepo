@@ -142,17 +142,17 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                         (lights.ambientColor.b * 255).toString(16)}
                 />
                 <br/>
-                <Button onClick={() => lights.addLight(player.x, player.y) && forceUpdate()}>
+                <Button onClick={(e) => {
+                    lights.addLight(player.x, player.y);
+                    forceUpdate();
+                }}>
                     Add light
                 </Button>
             </div>
             <br/>
-            <Accordion style={{
-                // display: 'flex',
-                // overflow: 'auto',
-            }}>
+            <Accordion defaultIndex={0}>
                 {
-                    lights.lights.map((light, i) => {
+                    lights.lights.slice().reverse().map((light, i) => {
                         return <AccordionItem key={i}>
                             <h2>
                                 <AccordionButton>
