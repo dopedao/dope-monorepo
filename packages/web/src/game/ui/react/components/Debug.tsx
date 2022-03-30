@@ -6,7 +6,7 @@ import Hustler from "game/entities/Hustler";
 import ItemEntity from "game/entities/ItemEntity";
 import Player from "game/entities/player/Player";
 import { ComponentManager } from "phaser3-react/src/manager";
-import { useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import theme from "ui/styles/theme";
 
 interface DebugData {
@@ -111,10 +111,10 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
 }
 
 const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsManager }) => {
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
+    
     const player = props.player;
     const lights = props.lights;
-
-    console.log(lights);
 
     return (
         <>
@@ -142,12 +142,15 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                         (lights.ambientColor.b * 255).toString(16)}
                 />
                 <br/>
-                <Button onClick={() => lights.addLight(player.x, player.y)}>
+                <Button onClick={() => lights.addLight(player.x, player.y) && forceUpdate()}>
                     Add light
                 </Button>
             </div>
             <br/>
-            <Accordion>
+            <Accordion style={{
+                // display: 'flex',
+                // overflow: 'auto',
+            }}>
                 {
                     lights.lights.map((light, i) => {
                         return <AccordionItem key={i}>
@@ -224,6 +227,8 @@ export default function Debug(props: DebugData) {
     return (
         <ChakraProvider theme={theme}>
             <Container style={{
+                display: 'flex',
+                overflow: 'auto',
                 position: "absolute",
                 top: "2%",
                 right: "2%",
