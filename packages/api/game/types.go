@@ -20,11 +20,11 @@ type BaseMessage struct {
 }
 
 type HandshakeData struct {
-	Id         string  `json:"id"`
-	CurrentMap string  `json:"current_map"`
-	X          float32 `json:"x"`
-	Y          float32 `json:"y"`
-	Relations  []Relation
+	Id         string     `json:"id"`
+	CurrentMap string     `json:"current_map"`
+	X          float32    `json:"x"`
+	Y          float32    `json:"y"`
+	Relations  []Relation `json:"relations"`
 
 	Players      []PlayerData     `json:"players"`
 	ItemEntities []ItemEntityData `json:"itemEntities"`

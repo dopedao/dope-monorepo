@@ -339,7 +339,7 @@ func (g *Game) GenerateHandshakeData(ctx context.Context, client *ent.Client, pl
 		}
 	}
 
-	var relations []Relation
+	relations := make([]Relation, 0)
 	gameJustlerRelations, err := client.GameHustlerRelation.Query().Where(predicate.GameHustlerRelation(gamehustler.HasRelationsWith())).All(ctx)
 	if err == nil {
 		for _, relation := range gameJustlerRelations {
