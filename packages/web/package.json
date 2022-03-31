@@ -18,13 +18,14 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@argent/get-starknet": "^1.1.3",
+    "@argent/get-starknet": "^2.1.1",
     "@chakra-ui/react": "^1.6.7",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@ensdomains/ensjs": "^2.0.1",
     "@ensdomains/react-ens-address": "^0.0.30",
     "@ion-phaser/react": "^1.3.0",
+    "@starknet-react/core": "^0.4.6",
     "@types/js-cookie": "^3.0.1",
     "@types/node": "^16.10.2",
     "@types/pathfinding": "^0.0.5",
@@ -63,7 +64,7 @@
     "remark": "^14.0.2",
     "remark-html": "^15.0.1",
     "siwe": "^1.1.0",
-    "starknet": "^2.5.0",
+    "starknet": "^2.5.1",
     "use-deep-compare-effect": "^1.8.1"
   },
   "devDependencies": {

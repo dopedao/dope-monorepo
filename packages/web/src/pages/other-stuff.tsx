@@ -33,7 +33,7 @@ const SocialLinks = () => {
         <DesktopIcon
           icon="discord"
           label="Discord"
-          clickAction={() => openBrowserTab('https://discord.gg/VFbAX3JzPu')}
+          clickAction={() => openBrowserTab('https://discord.gg/dopewars')}
         />
         <DesktopIcon
           icon="telegram"

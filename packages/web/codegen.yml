@@ -1,6 +1,6 @@
 overwrite: true
 schema: ${NEXT_PUBLIC_DOPEWARS_API:https://testnet.api.dopewars.gg/query}
-documents: "src/graphql/queries/**/*.graphql"
+documents: "src/**/*.graphql"
 generates:
   src/generated/graphql.ts:
     plugins:

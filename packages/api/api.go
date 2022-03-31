@@ -27,7 +27,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/resources"
 )
 
-const ts_migation = `
+const ts_migration = `
 CREATE MATERIALIZED VIEW search_index AS (
 	WITH dope_agg AS (
 		SELECT
@@ -259,7 +259,7 @@ CREATE UNIQUE INDEX search_index_pk ON search_index using btree(id);
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);
 `
 
-func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, index bool, openseaApiKey, network string) (http.Handler, error) {
+func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, isInIndexerMode bool, openseaApiKey, network string) (http.Handler, error) {
 	_, log := base.LogFor(ctx)
 	client := ent.NewClient(ent.Driver(drv))
 
@@ -272,7 +272,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	}
 	ethClient := ethclient.NewClient(c)
 
-	if index {
+	if isInIndexerMode {
 		// Run the auto migration tool.
 		if err := client.Schema.Create(ctx, schema.WithHooks(func(next schema.Creator) schema.Creator {
 			return schema.CreateFunc(func(ctx context.Context, tables ...*schema.Table) error {
@@ -289,7 +289,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 			return nil, err
 		}
 
-		if _, err := drv.DB().Exec(ts_migation); err != nil {
+		if _, err := drv.DB().Exec(ts_migration); err != nil {
 			if !strings.Contains(err.Error(), "already exists") {
 				return nil, fmt.Errorf("applying ts migration: %w", err)
 			}
@@ -323,7 +323,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.HandleFunc("/collection/{id}.png", resources.HustlerSpritesCompositeHandler(client, static))
 	r.HandleFunc("/address/{address}", resources.WalletHustlersHandler(client))
 
-	if index {
+	if isInIndexerMode {
 		ctx, cancel := context.WithCancel(ctx)
 
 		started := false
