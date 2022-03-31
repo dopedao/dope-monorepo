@@ -8,6 +8,8 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -47,7 +49,7 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			go player.writePump(ctx)
 
 			// handshake data, player ID & game state info
-			handShakeData, err := json.Marshal(g.GenerateHandshakeData(player))
+			handShakeData, err := json.Marshal(g.GenerateHandshakeData(ctx, client, player))
 			if err != nil {
 				player.Send <- generateErrorMessage(500, "could not marshal handshake data")
 				return
@@ -71,8 +73,8 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 				// update last position
 				if err := gameHustler.Update().SetLastPosition(schema.Position{
 					CurrentMap: player.currentMap,
-					X: player.position.X,
-					Y: player.position.Y,
+					X:          player.position.X,
+					Y:          player.position.Y,
 				}).Exec(ctx); err != nil {
 					log.Err(err).Msgf("saving game hustler: %s", player.hustlerId)
 					return
@@ -325,7 +327,7 @@ func (g *Game) RemoveItemEntity(itemEntity *ItemEntity) bool {
 	return removed
 }
 
-func (g *Game) GenerateHandshakeData(player *Player) HandshakeData {
+func (g *Game) GenerateHandshakeData(ctx context.Context, client *ent.Client, player *Player) HandshakeData {
 	itemEntitiesData := g.GenerateItemEntitiesData()
 	playersData := g.GeneratePlayersData()
 
@@ -337,11 +339,24 @@ func (g *Game) GenerateHandshakeData(player *Player) HandshakeData {
 		}
 	}
 
+	var relations []Relation
+	gameJustlerRelations, err := client.GameHustlerRelation.Query().Where(predicate.GameHustlerRelation(gamehustler.HasRelationsWith())).All(ctx)
+	if err == nil {
+		for _, relation := range gameJustlerRelations {
+			relations = append(relations, Relation{
+				citizen:      relation.Citizen,
+				conversation: relation.Conversation,
+				text:         relation.Text,
+			})
+		}
+	}
+
 	return HandshakeData{
 		Id:         player.Id.String(),
 		CurrentMap: player.currentMap,
 		X:          player.position.X,
 		Y:          player.position.Y,
+		Relations:  relations,
 
 		Players:      playersData,
 		ItemEntities: itemEntitiesData,

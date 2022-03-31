@@ -24,6 +24,7 @@ type HandshakeData struct {
 	CurrentMap string  `json:"current_map"`
 	X          float32 `json:"x"`
 	Y          float32 `json:"y"`
+	Relations  []Relation
 
 	Players      []PlayerData     `json:"players"`
 	ItemEntities []ItemEntityData `json:"itemEntities"`

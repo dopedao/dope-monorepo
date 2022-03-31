@@ -17,6 +17,12 @@ type Quest struct {
 	completed bool
 }
 
+type Relation struct {
+	citizen      string
+	conversation string
+	text         string
+}
+
 type Player struct {
 	conn *websocket.Conn
 	game *Game
