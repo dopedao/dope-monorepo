@@ -96,13 +96,11 @@ type PlayerAddQuestClientData struct {
 
 type CitizenUpdateStateData struct {
 	// citizen id
-	Id string `json:"id"`
-	// increment conversation index
-	IncrementConversations bool `json:"incConversations"`
-	// increment text index
-	IncrementTexts bool `json:"incTexts"`
-	// choice index if applicable
-	Choice int `json:"choice"`
+	Citizen string `json:"id"`
+	// conversation id
+	Conversation string `json:"conversation"`
+	// text
+	Text string `json:"text"`
 }
 
 type IdData struct {
