@@ -11,7 +11,7 @@ import { css } from '@emotion/react';
 import { RYO_ITEM_IDS, useLocationOwnedContract } from 'hooks/contracts/roll-your-own';
 import { useStarknetCall } from '@starknet-react/core';
 import { BigNumberish, toBN } from 'starknet/dist/utils/number';
-import { useRollYourOwn } from '../context';
+import { BuyOrSell, useRollYourOwn } from '../context';
 
 const Buy = () => {
   const router = useRouter();
@@ -19,7 +19,7 @@ const Buy = () => {
 
   const ryoItemId = RYO_ITEM_IDS[Number(drugId)]
 
-  const { money, ownedItems } = useRollYourOwn()
+  const { money, ownedItems, updateTurn } = useRollYourOwn()
   const [buyQuantity, setBuyQuantity] = useState(0)
 
   const { data: drugData } = useDrugQuery(
@@ -75,6 +75,16 @@ const Buy = () => {
 
     return p1.gt(p2) ? p1.toNumber() : p2.toNumber()
   }, [buyAmount, money, buyQuantity, itemQuantity])
+
+  const handleBuy = () => {
+    updateTurn({
+      buyOrSell: BuyOrSell.Buy,
+      itemId: ryoItemId,
+      amountToGive: buyQuantity,
+    })
+
+    router.push("/roll-your-own/1/location/brooklyn/travel")
+  }
 
   const rle = drug?.rles?.male ? drug?.rles?.male : drug?.base?.rles?.male;
 
@@ -135,7 +145,13 @@ const Buy = () => {
         />
       </Stack>
       <Flex justify="center" mt={10}>
-        <Button variant="primary">Buy ({buyQuantity})</Button>
+        <Button
+          disabled={buyQuantity === 0}
+          variant="primary"
+          onClick={handleBuy}
+        >
+          Buy ({buyQuantity})
+        </Button>
       </Flex>
     </Box>
   );

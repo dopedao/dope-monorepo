@@ -7,7 +7,7 @@ import { useRouter } from "next/router"
 import { useMemo, useState } from "react"
 import { BigNumberish, toBN } from "starknet/dist/utils/number"
 import { buildIconSVG } from "utils/svg-builder"
-import { useRollYourOwn } from "../context"
+import { BuyOrSell, useRollYourOwn } from "../context"
 import Container from "./Container"
 import ContainerFooter from "./ContainerFooter"
 import ContainerHeader from "./ContainerHeader"
@@ -19,7 +19,7 @@ const Sell = () => {
 
   const ryoItemId = RYO_ITEM_IDS[Number(drugId)]
 
-  const { money, ownedItems } = useRollYourOwn()
+  const { ownedItems, updateTurn } = useRollYourOwn()
   const [sellQuantity, setSellQuantity] = useState(0)
 
   const { data } = useDrugQuery({
@@ -72,6 +72,16 @@ const Sell = () => {
 
     return toBN(sellQuantity * 100).div(userOwnedQuantity).toNumber()
   }, [userOwnedQuantity, sellQuantity])
+
+  const handleSell = () => {
+    updateTurn({
+      buyOrSell: BuyOrSell.Sell,
+      itemId: ryoItemId,
+      amountToGive: sellQuantity,
+    })
+
+    router.push("/roll-your-own/1/location/brooklyn/travel")
+  }
   
   const rle = drug?.rles?.male ? drug?.rles?.male : drug?.base?.rles?.male;
 
@@ -133,7 +143,7 @@ const Sell = () => {
         />
       </Stack>
       <Flex justify="center" mt={10}>
-        <Button variant="primary">Sell ({sellQuantity})</Button>
+        <Button variant="primary" onClick={handleSell}>Sell ({sellQuantity})</Button>
       </Flex>
     </Box>
   )

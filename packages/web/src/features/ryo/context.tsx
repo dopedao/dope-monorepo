@@ -1,19 +1,28 @@
-import { useStarknet, useStarknetCall } from "@starknet-react/core"
-import { useUserOwnedContract } from "hooks/contracts/roll-your-own"
+import { useStarknet, useStarknetCall, useStarknetInvoke } from "@starknet-react/core"
+import { useDopeWarsContract, useUserOwnedContract } from "hooks/contracts/roll-your-own"
 import { createContext, ReactNode, useContext, useMemo, useState } from "react"
 import { BigNumberish, toBN } from "starknet/dist/utils/number"
 import BN from "bn.js";
 
-type Game = {
-  round: number
-  cash: number
+export enum BuyOrSell {
+  Buy,
+  Sell,
+}
+
+type Turn = {
+  locationId?: number
+  buyOrSell?: BuyOrSell
+  itemId?: number
+  amountToGive?: number
 }
 
 type RollYourOwn = {
-  game: Game
   money?: BN
   ownedItems: BN[]
-  incrementRound: () => void
+  turn: Turn
+
+  haveTurn: () => void
+  updateTurn: (turn: Turn) => void
 }
 
 const RollYourOwnContext = createContext<RollYourOwn | undefined>(undefined)
@@ -33,49 +42,73 @@ const RollYourOwnProvider = ({
 }: {
   children: ReactNode
 }) => {
-  const [game, setGame] = useState<Game>({
-    round: 0,
-    cash: 0,
-  })
+  const [turn, setTurn] = useState<Turn>({})
 
   const { account } = useStarknet()
-  const { contract } = useUserOwnedContract()
-  const { data } = useStarknetCall({
-    contract,
+  const { contract: userOwnedContract } = useUserOwnedContract()
+  const { contract: dopeWarsContract } = useDopeWarsContract()
+
+  const { data: userStateData } = useStarknetCall({
+    contract: userOwnedContract,
     method: "check_user_state",
     args: [account],
   })
 
+  const { data, error, invoke } = useStarknetInvoke({
+    contract: dopeWarsContract,
+    method: "have_turn",
+  })
+  console.log("data", data, error)
+
   const { money, ownedItems } = useMemo(() => {
-    if (!data) {
+    if (!userStateData) {
       return {
-        // money: toBN(0),
         ownedItems: [],
       }
     }
 
-    const [items]: BigNumberish[][] = data
+    const [items]: BigNumberish[][] = userStateData
     const [money, ...ownedItems] = items
 
     return {
       money: toBN(money),
       ownedItems: ownedItems.map(toBN),
     }
-  }, [data])
+  }, [userStateData])
 
-  const incrementRound = () => {
-    setGame((prev) => ({
+  const updateTurn = (turn: Turn) => {
+    setTurn((prev) => ({
       ...prev,
-      round: prev.round + 1,
+      ...turn,
     }))
   }
 
+  const haveTurn = () => {
+    const {
+      locationId,
+      buyOrSell,
+      itemId,
+      amountToGive,
+    } = turn
+
+    invoke({
+      args: [
+        account,
+        locationId,
+        buyOrSell,
+        itemId,
+        amountToGive,
+      ]
+    })
+  }
+
   const value = useMemo(() => ({
-    game,
     money,
     ownedItems,
-    incrementRound,
-  }), [game, money, ownedItems])
+    turn,
+    haveTurn,
+    updateTurn,
+  }), [money, ownedItems, turn])
 
   return (
     <RollYourOwnContext.Provider value={value}>
