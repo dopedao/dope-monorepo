@@ -9,7 +9,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/ent/gamehustlerrelation"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -340,14 +340,16 @@ func (g *Game) GenerateHandshakeData(ctx context.Context, client *ent.Client, pl
 	}
 
 	relations := make([]Relation, 0)
-	gameJustlerRelations, err := client.GameHustlerRelation.Query().Where(predicate.GameHustlerRelation(gamehustler.HasRelationsWith())).All(ctx)
-	if err == nil {
-		for _, relation := range gameJustlerRelations {
-			relations = append(relations, Relation{
-				citizen:      relation.Citizen,
-				conversation: relation.Conversation,
-				text:         relation.Text,
-			})
+	if player.hustlerId != "" {
+		gameJustlerRelations, err := client.GameHustlerRelation.Query().Where(gamehustlerrelation.HasHustlerWith(gamehustler.IDEQ(player.hustlerId))).All(ctx)
+		if err == nil {
+			for _, relation := range gameJustlerRelations {
+				relations = append(relations, Relation{
+					citizen:      relation.Citizen,
+					conversation: relation.Conversation,
+					text:         relation.Text,
+				})
+			}
 		}
 	}
 
