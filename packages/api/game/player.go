@@ -62,9 +62,11 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 		})
 
 		p.game.Unregister <- p
-		p.game.Broadcast <- BaseMessage{
-			Event: "player_leave",
-			Data:  data,
+		p.game.Broadcast <- BroadcastMessage{
+			Message: BaseMessage{
+				Event: "player_leave",
+				Data:  data,
+			},
 		}
 		// closing p.send will also stop the writepump
 		close(p.Send)
@@ -113,9 +115,11 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 				break
 			}
 
-			p.game.Broadcast <- BaseMessage{
-				Event: "player_update_map",
-				Data:  broadcastedData,
+			p.game.Broadcast <- BroadcastMessage{
+				Message: BaseMessage{
+					Event: "player_update_map",
+					Data:  broadcastedData,
+				},
 			}
 
 			log.Info().Msgf("player %s | %s changed map: %s", p.Id, p.name, data.CurrentMap)
@@ -139,9 +143,11 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 				break
 			}
 
-			p.game.Broadcast <- BaseMessage{
-				Event: "player_chat_message",
-				Data:  broadcastedData,
+			p.game.Broadcast <- BroadcastMessage{
+				Message: BaseMessage{
+					Event: "player_chat_message",
+					Data:  broadcastedData,
+				},
 			}
 
 			log.Info().Msgf("player %s | %s sent chat message: %s", p.Id, p.name, data.Message)

@@ -14,10 +14,9 @@ import (
 )
 
 type Game struct {
-	// minutes per day
-	// we wrap around that value
-	// MAX = {MINUTES_DAY}
-	Time   int
+	// current time
+	// we wrap around {MINUTES_DAY}
+	Time   float32
 	Ticker *time.Ticker
 
 	Mutex sync.Mutex
@@ -29,7 +28,7 @@ type Game struct {
 
 	Register   chan *Player
 	Unregister chan *Player
-	Broadcast  chan BaseMessage
+	Broadcast  chan BroadcastMessage
 }
 
 func (g *Game) Start(ctx context.Context, client *ent.Client) {
@@ -64,15 +63,19 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			// save last position if player has a hustler
 			if player.hustlerId != "" {
 				gameHustler, err := client.GameHustler.Get(ctx, player.hustlerId)
-				if err == nil {
-					// update last position
-					gameHustler.Update().SetLastPosition(schema.Position{
-						X:          player.position.X,
-						Y:          player.position.Y,
-						CurrentMap: player.currentMap,
-					}).Save(ctx)
-				} else {
+				if err != nil {
 					log.Err(err).Msgf("could not get game hustler: %s", player.hustlerId)
+					return
+				}
+
+				// update last position
+				if err := gameHustler.Update().SetLastPosition(schema.Position{
+					CurrentMap: player.currentMap,
+					X: player.position.X,
+					Y: player.position.Y,
+				}).Exec(ctx); err != nil {
+					log.Err(err).Msgf("saving game hustler: %s", player.hustlerId)
+					return
 				}
 			}
 
@@ -84,13 +87,29 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			}
 
 			log.Info().Msgf("player left: %s | %s", player.Id, player.name)
-		case msg := <-g.Broadcast:
-			for i, player := range g.Players {
+		case br := <-g.Broadcast:
+			for _, player := range g.Players {
+				if br.Condition != nil && !br.Condition(player) {
+					continue
+				}
+
 				select {
-				case player.Send <- msg:
+				case player.Send <- br.Message:
 				default:
 					log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.name)
-					g.Players = append(g.Players[:i], g.Players[i+1:]...)
+
+					data, _ := json.Marshal(IdData{
+						Id: player.Id.String(),
+					})
+
+					g.Unregister <- player
+					g.Broadcast <- BroadcastMessage{
+						Message: BaseMessage{
+							Event: "player_leave",
+							Data:  data,
+						},
+					}
+
 					close(player.Send)
 				}
 			}
@@ -99,8 +118,13 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 }
 
 func (g *Game) tick(ctx context.Context, time time.Time) {
+	_, log := base.LogFor(ctx)
+
 	// TODO: better way of doing this?
-	g.Time = (g.Time + 1) % MINUTES_DAY
+	if g.Time >= MINUTES_DAY {
+		g.Time = 0
+	}
+	g.Time = (g.Time + 0.5)
 
 	// for each player, send a tick message
 	for _, player := range g.Players {
@@ -130,9 +154,27 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 			continue
 		}
 
-		player.Send <- BaseMessage{
+		select {
+		case player.Send <- BaseMessage{
 			Event: "tick",
 			Data:  data,
+		}:
+		default:
+			log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.name)
+
+			data, _ := json.Marshal(IdData{
+				Id: player.Id.String(),
+			})
+
+			g.Unregister <- player
+			g.Broadcast <- BroadcastMessage{
+				Message: BaseMessage{
+					Event: "player_leave",
+					Data:  data,
+				},
+			}
+
+			close(player.Send)
 		}
 	}
 }
@@ -183,9 +225,14 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 	}
 
 	// tell every other player that this player joined
-	g.Broadcast <- BaseMessage{
-		Event: "player_join",
-		Data:  joinData,
+	g.Broadcast <- BroadcastMessage{
+		Message: BaseMessage{
+			Event: "player_join",
+			Data:  joinData,
+		},
+		Condition: func(otherPlayer *Player) bool {
+			return otherPlayer != player
+		},
 	}
 }
 
@@ -243,9 +290,11 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 	}
 
 	// tell every other player that this player left
-	g.Broadcast <- BaseMessage{
-		Event: "player_leave",
-		Data:  leaveData,
+	g.Broadcast <- BroadcastMessage{
+		Message: BaseMessage{
+			Event: "player_leave",
+			Data:  leaveData,
+		},
 	}
 }
 
@@ -261,9 +310,12 @@ func (g *Game) RemoveItemEntity(itemEntity *ItemEntity) bool {
 				// TODO: print error message
 				break
 			}
-			g.Broadcast <- BaseMessage{
-				Event: "player_pickup_itementity",
-				Data:  data,
+
+			g.Broadcast <- BroadcastMessage{
+				Message: BaseMessage{
+					Event: "player_pickup_itementity",
+					Data:  data,
+				},
 			}
 
 			break

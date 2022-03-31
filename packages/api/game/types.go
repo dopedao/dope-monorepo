@@ -9,6 +9,11 @@ type Vec2 struct {
 	Y float32
 }
 
+type BroadcastMessage struct {
+	Message   BaseMessage
+	Condition func(p *Player) bool
+}
+
 type BaseMessage struct {
 	Event string          `json:"event"`
 	Data  json.RawMessage `json:"data"`
