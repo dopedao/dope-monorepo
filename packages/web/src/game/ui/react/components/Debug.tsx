@@ -1,12 +1,12 @@
 /* eslint-disable react/no-children-prop */
-import { Accordion, Text, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, ChakraProvider, Container, Input, InputGroup, InputLeftAddon, Tab, TabList, TabPanel, TabPanels, Tabs, HStack, Checkbox, Button } from "@chakra-ui/react";
+import { Accordion, Slider, Text, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, ChakraProvider, Container, Input, InputGroup, InputLeftAddon, Tab, TabList, TabPanel, TabPanels, Tabs, HStack, Checkbox, Button, NumberInputField, Flex, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, SliderFilledTrack, SliderThumb, SliderTrack, VStack } from "@chakra-ui/react";
 import DesktopWindow from "components/DesktopWindow";
 import Citizen from "game/entities/citizen/Citizen";
 import Hustler from "game/entities/Hustler";
 import ItemEntity from "game/entities/ItemEntity";
 import Player from "game/entities/player/Player";
 import { ComponentManager } from "phaser3-react/src/manager";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import theme from "ui/styles/theme";
 
 interface DebugData {
@@ -16,6 +16,66 @@ interface DebugData {
     hustlers: Hustler[];
     itemEntities: ItemEntity[];
     lights: Phaser.GameObjects.LightsManager;
+}
+
+const PositionComponent = (props: {object: any}) => {
+    const [x, setX] = useState(props.object.x);
+    const [y, setY] = useState(props.object.y);
+
+    useEffect(() => {
+        if (x)
+            props.object.x = x;
+        if (y)
+            props.object.y = y;
+    }, [x, y]);
+
+    return (
+        // <VStack>
+        <div>
+            Position XY
+            <Flex>
+                <NumberInput maxW='100px' mr='2rem' value={x} onChange={(s, n) => setX(n)}>
+                    <NumberInputField />
+                    <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                    </NumberInputStepper>
+                </NumberInput>
+                <Slider
+                    flex='1'
+                    focusThumbOnChange={false}
+                    value={x}
+                    onChange={(n) => setX(n)}
+                >
+                    <SliderTrack>
+                    <SliderFilledTrack />
+                    </SliderTrack>
+                    <SliderThumb fontSize='sm' boxSize='32px' children={Math.round(x)} />
+                </Slider>
+            </Flex>
+            <Flex>
+                <NumberInput maxW='100px' mr='2rem' value={y} onChange={(s, n) => setY(n)}>
+                    <NumberInputField />
+                    <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                    </NumberInputStepper>
+                </NumberInput>
+                <Slider
+                    flex='1'
+                    focusThumbOnChange={false}
+                    value={y}
+                    onChange={(n) => setY(n)}
+                >
+                    <SliderTrack>
+                    <SliderFilledTrack />
+                    </SliderTrack>
+                    <SliderThumb fontSize='sm' boxSize='32px' children={Math.round(y)} />
+                </Slider>
+            </Flex>
+        </div>
+        // </VStack>
+    )
 }
 
 const PlayerPanel = (props: {player: Player}) => {
@@ -38,14 +98,7 @@ const PlayerPanel = (props: {player: Player}) => {
                         <Input onChange={(e) => player.name = e.target.value} placeholder={player.name} />
                     </InputGroup>
                     <div>
-                        <InputGroup size="sm">
-                            <InputLeftAddon children='Position X' />
-                            <Input onChange={(e) => player.x = Number.parseInt(e.target.value) ?? 0} placeholder={player.x.toString()} />
-                        </InputGroup>
-                        <InputGroup size="sm">
-                            <InputLeftAddon children='Position Y' />
-                            <Input onChange={(e) => player.y = Number.parseInt(e.target.value) ?? 0} placeholder={player.y.toString()} />
-                        </InputGroup>
+                        <PositionComponent object={player} />
                     </div>
                 </AccordionPanel>
             </AccordionItem>
@@ -74,7 +127,7 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
     const hustlers = props.hustlers;
 
     return (
-        <Accordion>
+        <Accordion allowToggle>
             {hustlers.map((hustler, i) => 
                 <AccordionItem key={i}>
                     <h2>
@@ -93,15 +146,74 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
                             <Input onChange={(e) => hustler.name = e.target.value} placeholder={hustler.name} />
                         </InputGroup>
                         <div>
-                            <InputGroup size="sm">
-                                <InputLeftAddon children='Position X' />
-                                <Input onChange={(e) => hustler.x = Number.parseInt(e.target.value) ?? 0} placeholder={hustler.x.toString()} />
-                            </InputGroup>
-                            <InputGroup size="sm">
-                                <InputLeftAddon children='Position Y' />
-                                <Input onChange={(e) => hustler.y = Number.parseInt(e.target.value) ?? 0} placeholder={hustler.y.toString()} />
-                            </InputGroup>
+                        <PositionComponent object={hustler} />
                         </div>
+                        <br />
+                        <Accordion allowToggle>
+                            {hustler instanceof Citizen ? <div>
+                                <AccordionItem>
+                                <h2>
+                                    <AccordionButton>
+                                        <Box flex='1' textAlign='left'>
+                                            Path
+                                        </Box>
+                                        <AccordionIcon />
+                                    </AccordionButton>
+                                </h2>
+                                <AccordionPanel pb={4}>
+                                        {
+                                            hustler.path.map((p, i) => 
+                                                <div key={i}>
+                                                    PathPoint #{i}
+                                                    <PositionComponent object={p.position} />
+                                                    <br />
+                                                </div>
+                                            )
+                                        }
+                                </AccordionPanel>
+                            </AccordionItem>
+                            <AccordionItem>
+                                <h2>
+                                    <AccordionButton>
+                                        <Box flex='1' textAlign='left'>
+                                            Conversations
+                                        </Box>
+                                        <AccordionIcon />
+                                    </AccordionButton>
+                                </h2>
+                                <AccordionPanel pb={4}>
+                                        {
+                                            hustler.conversations.map((c, i) => 
+                                                <div key={i}>
+                                                    <Accordion>
+                                                        {
+                                                            c.texts.map((t, i) =>
+                                                                <AccordionItem key={i}>
+                                                                    <h2>
+                                                                        <AccordionButton>
+                                                                            <Box flex='1' textAlign='left'>
+                                                                                {t.text}
+                                                                            </Box>
+                                                                            <AccordionIcon />
+                                                                        </AccordionButton>
+                                                                    </h2>
+                                                                    <AccordionPanel pb={4}>
+                                                                        <InputGroup size="sm">
+                                                                            <InputLeftAddon children='Text' />
+                                                                            <Input onChange={(e) => t.text = e.target.value} placeholder={t.text} />
+                                                                        </InputGroup>
+                                                                    </AccordionPanel>
+                                                                </AccordionItem>
+                                                            )
+                                                        }
+                                                    </Accordion>
+                                                </div>
+                                            )
+                                        }
+                                </AccordionPanel>
+                            </AccordionItem>
+                            </div> : {}}
+                        </Accordion>
                     </AccordionPanel>
                 </AccordionItem>
             )}
@@ -121,7 +233,7 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
             <div style={{
                 paddingLeft: '1rem',
             }}>
-                Enabled: <Checkbox defaultChecked={lights.active}/>
+                Enabled: <Checkbox onChange={(e) => lights.active = e.target.checked} defaultChecked={lights.active}/>
                 <br/>
                 Number of lights: {lights.getLightCount()}
                 <br/>
@@ -163,14 +275,7 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                                 </AccordionButton>
                             </h2>
                             <AccordionPanel pb={4}>
-                                <InputGroup size="sm">
-                                    <InputLeftAddon children='Position X' />
-                                    <Input onChange={(e) => light.x = Number.parseInt(e.target.value) ?? 0} placeholder={light.x.toString()} />
-                                </InputGroup>
-                                <InputGroup size="sm">
-                                    <InputLeftAddon children='Position Y' />
-                                    <Input onChange={(e) => light.y = Number.parseInt(e.target.value) ?? 0} placeholder={light.y.toString()} />
-                                </InputGroup>
+                                <PositionComponent object={light}/>
                                 <InputGroup size="sm">
                                     <InputLeftAddon children='Radius' />
                                     <Input onChange={(e) => light.radius = Number.parseInt(e.target.value) ?? 0} placeholder={light.radius.toString()} />
@@ -180,6 +285,7 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                                     <Input onChange={(e) => light.intensity = Number.parseInt(e.target.value) ?? 0} placeholder={light.intensity.toString()} />
                                 </InputGroup>
                                 <br/>
+                                Visible: <Checkbox onChange={(e) => light.visible = e.target.checked} defaultChecked={light.visible}/>
                                 <div>
                                     Color:
                                     <input 
@@ -198,6 +304,13 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                                             (light.color.b * 255).toString(16)}
                                     />
                                 </div>
+                                <br/>
+                                <Button variant="cny" onClick={(e) => {
+                                    lights.removeLight(light);
+                                    forceUpdate();
+                                }}>
+                                    Remove light
+                                </Button>
                             </AccordionPanel>
                         </AccordionItem>
                     })
