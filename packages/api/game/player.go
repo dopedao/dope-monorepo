@@ -13,14 +13,14 @@ import (
 )
 
 type Quest struct {
-	quest     string
-	completed bool
+	Quest     string `json:"quest"`
+	Completed bool   `json:"completed"`
 }
 
 type Relation struct {
-	citizen      string
-	conversation string
-	text         string
+	Citizen      string `json:"citizen"`
+	Conversation string `json:"conversation"`
+	Text         string `json:"text"`
 }
 
 type Player struct {
@@ -287,7 +287,7 @@ func (p *Player) AddQuest(ctx context.Context, client *ent.Client, quest Quest) 
 	if p.hustlerId == "" {
 		return errors.New("player must have a hustler to have quests")
 	}
-	_, err := client.GameHustlerQuest.Create().SetQuest(quest.quest).SetHustlerID(p.hustlerId).Save(ctx)
+	_, err := client.GameHustlerQuest.Create().SetQuest(quest.Quest).SetHustlerID(p.hustlerId).Save(ctx)
 	if err != nil {
 		return err
 	}
@@ -295,7 +295,7 @@ func (p *Player) AddQuest(ctx context.Context, client *ent.Client, quest Quest) 
 	p.quests = append(p.quests, quest)
 
 	data, err := json.Marshal(PlayerAddQuestClientData{
-		Quest: quest.quest,
+		Quest: quest.Quest,
 	})
 	if err != nil {
 		return err

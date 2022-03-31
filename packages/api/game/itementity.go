@@ -5,7 +5,7 @@ import (
 )
 
 type Item struct {
-	item string
+	item string `json:"item"`
 }
 
 type ItemEntity struct {

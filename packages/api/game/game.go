@@ -274,7 +274,7 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, clien
 			player.items = append(player.items, Item{item: item.Item})
 		}
 		for _, quest := range quests {
-			player.quests = append(player.quests, Quest{quest: quest.Quest, completed: quest.Completed})
+			player.quests = append(player.quests, Quest{Quest: quest.Quest, Completed: quest.Completed})
 		}
 	} else {
 		player = NewPlayer(conn, g, "", "Hustler", g.SpawnPosition.CurrentMap, g.SpawnPosition.X, g.SpawnPosition.Y)
@@ -339,16 +339,21 @@ func (g *Game) GenerateHandshakeData(ctx context.Context, client *ent.Client, pl
 		}
 	}
 
-	relations := make([]Relation, 0)
+	relations := make([]json.RawMessage, 0)
 	if player.hustlerId != "" {
 		gameJustlerRelations, err := client.GameHustlerRelation.Query().Where(gamehustlerrelation.HasHustlerWith(gamehustler.IDEQ(player.hustlerId))).All(ctx)
 		if err == nil {
 			for _, relation := range gameJustlerRelations {
-				relations = append(relations, Relation{
-					citizen:      relation.Citizen,
-					conversation: relation.Conversation,
-					text:         relation.Text,
+				data, err := json.Marshal(Relation{
+					Citizen:      relation.Citizen,
+					Conversation: relation.Conversation,
+					Text:         relation.Text,
 				})
+				// TODO: log error
+				if err == nil {
+					relations = append(relations, data)
+				}
+
 			}
 		}
 	}
