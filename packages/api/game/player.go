@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
@@ -177,6 +178,11 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 
 			log.Info().Msgf("player %s | %s picked up item entity: %s", p.Id, p.name, data.Id)
 		case "player_update_citizen_state":
+			if p.hustlerId == "" {
+				p.Send <- generateErrorMessage(500, "must have a hustler to update citizen state")
+				break
+			}
+
 			var data CitizenUpdateStateData
 			if err := json.Unmarshal(msg.Data, &data); err != nil {
 				p.Send <- generateErrorMessage(500, "could not unmarshal citizen update state data")
@@ -186,7 +192,37 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 			// TODO: update citizen state in db player data
 			// check citizen in registry with corresponding id, conversation and text index
 			// for item/quest to add
-			log.Info().Msgf("player %s | %s updated citizen state: %s", p.Id, p.name, data.Id)
+			relation, err := client.GameHustlerRelation.Get(ctx, fmt.Sprintf("%s:%s", p.hustlerId, data.Citizen))
+			if err != nil {
+				if !errors.As(err, &ent.NotFoundError{}) {
+					p.Send <- generateErrorMessage(500, "could not get relation between hustler and citizen")
+					break
+				}
+
+				_, err := client.GameHustlerRelation.Create().
+					SetID(fmt.Sprintf("%s:%s", p.hustlerId, data.Citizen)).
+					SetCitizen(data.Citizen).
+					SetHustlerID(p.hustlerId).
+					SetConversation(data.Conversation).
+					SetText(data.Text).
+					Save(ctx)
+
+				if err != nil {
+					p.Send <- generateErrorMessage(500, "could not create hustler citizen relation")
+				}
+				break
+			}
+
+			_, err = relation.Update().
+				SetConversation(data.Conversation).
+				SetText(data.Text).
+				Save(ctx)
+			if err != nil {
+				p.Send <- generateErrorMessage(500, "could not update relation state")
+				break
+			}
+
+			log.Info().Msgf("player %s | %s updated citizen state: %s", p.Id, p.name, data.Citizen)
 		case "player_leave":
 			// see defer
 			return
