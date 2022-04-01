@@ -1,6 +1,7 @@
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
 import { UniversalEventNames } from 'game/handlers/network/types';
+import GameScene from 'game/scenes/Game';
 import UIScene from 'game/scenes/UI';
 import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 import Citizen from '../citizen/Citizen';
@@ -48,8 +49,7 @@ export default class PlayerController {
   }
 
   update() {
-    // set joyStickKeys when UIScene joystick is initialized
-    if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).tab)) this.player.toggleInventory();
+    // if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).tab)) this.player.toggleInventory();
 
     if (
       Phaser.Input.Keyboard.JustUp(this.arrows.space) ||
@@ -61,7 +61,7 @@ export default class PlayerController {
     // get rid of previous velocity if pathfinder is not active
     if (!this.player.navigator.target) this.player.setVelocity(0);
 
-    const joyStick: VirtualJoyStick | undefined = (this.player.scene.scene.get('UIScene') as UIScene).joyStick;
+    const joyStick: VirtualJoyStick | undefined = (this.player.scene as GameScene).joyStick;
 
     let willMoveFlag = false;
     if (this.mainKeys.up.isDown || this.arrows.up.isDown || joyStick?.up) {

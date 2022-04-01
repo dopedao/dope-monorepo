@@ -20,8 +20,6 @@ import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/net
 import Hustler from 'game/entities/Hustler';
 import { toast } from '@chakra-ui/react';
 import ConnectionLostWindow from 'game/ui/react/components/ConnectionLostWindow';
-import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
-import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 import theme from 'ui/styles/theme';
 import React from 'react';
 import { ToastBar } from 'react-hot-toast'; 
@@ -65,8 +63,6 @@ export const loadingSpinner = () => <ChakraProvider theme={theme}>
 export default class UIScene extends Scene {
   public rexUI!: RexUIPlugin;
 
-  public joyStick!: VirtualJoyStick;
-
   public toaster!: ComponentManager;
   public toast = createStandaloneToast(theme);
 
@@ -96,16 +92,6 @@ export default class UIScene extends Scene {
   }
 
   create(): void {
-    // TODO: find alternative
-    this.input.setGlobalTopOnly(false);
-    this.joyStick = (this.plugins.get('rexVirtualJoystick') as VirtualJoyStickPlugin).add(this, {
-      x: this.sys.game.canvas.width / 2,
-      y: this.sys.game.canvas.height / 2,
-      radius: this.sys.game.canvas.width / 3,
-    });
-    this.joyStick.base.removeFromDisplayList();
-    this.joyStick.thumb.removeFromDisplayList();
-    // this.toaster = this.add.reactDom(Toaster);
     this._handleEvents();
   }
 
@@ -284,6 +270,14 @@ export default class UIScene extends Scene {
 
       const inputs = toggleInputs(true);
 
+      settings.events.on('disconnect', () => {
+        settings.events.emit('close');
+        NetworkHandler.getInstance().disconnect();
+        NetworkHandler.getInstance().authenticator.logout()
+          .finally(() => {
+            // TODO: home page / disconnect page?
+          });
+      })
       settings.events.on('close', () => {
         settings.destroy();
 
@@ -316,12 +310,6 @@ export default class UIScene extends Scene {
     EventHandler.emitter().on(Events.SHOW_NOTIFICAION, (toast: UseToastOptions) => {
       this.toast(toast);
     });
-
-    // re-position joystick when window is resized (center)
-    this.scale.on(Phaser.Scale.Events.RESIZE, (size: Phaser.Structs.Size) => {
-      this.joyStick.setPosition(size.width / 2, size.height / 2);
-      // TODO: resize radius
-    })
 
     EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string, timestamp?: number, addToChat?: boolean) => {      
       if (addToChat) {
@@ -448,10 +436,10 @@ export default class UIScene extends Scene {
 
             citizen.conversations.shift();
             // TODO: move else where
-            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
-              id: citizen.getData('id'),
-              incConversations: true 
-            });
+            // NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
+            //   id: citizen.getData('id'),
+            //   incConversations: true 
+            // });
 
             if (conv.onFinish) conv.onFinish();
 
@@ -459,10 +447,10 @@ export default class UIScene extends Scene {
           }
 
           // TODO: Fire up end text event and move somewhere else, maybe in network handler?
-          NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
-            id: citizen.getData('id'),
-            incTexts: true 
-          });
+          // NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
+          //   id: citizen.getData('id'),
+          //   incTexts: true 
+          // });
 
           text = conv.texts[0];
           textBox.start(text!.text, text!.typingSpeed ?? 50, text.choices);
