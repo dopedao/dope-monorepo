@@ -8,6 +8,7 @@ enum UniversalEventNames {
   // updates the state of a citizen to the players perspective
   // the index of the conversations he has with the citizen etc...
   PLAYER_UPDATE_CITIZEN_STATE = 'player_update_citizen_state',
+  PLAYER_ADD_QUEST = 'player_add_quest',
 }
 
 enum NetworkEvents {
@@ -26,6 +27,7 @@ enum NetworkEvents {
   SERVER_PLAYER_CHAT_MESSAGE = 'server_player_chat_message',
   SERVER_PLAYER_UPDATE_MAP = 'server_player_update_map',
   SERVER_PLAYER_PICKUP_ITEMENTITY = 'server_player_pickup_itementity',
+  SERVER_PLAYER_ADD_QUEST = 'server_player_add_quest',
 
   // From client to server
   CLIENT_PLAYER_JOIN = 'client_player_join',
@@ -95,6 +97,9 @@ interface DataTypes {
   };
   [NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY]: {
     id: string;
+  };
+  [NetworkEvents.SERVER_PLAYER_ADD_QUEST]: {
+    quest: string;
   };
 
   // From client to server
