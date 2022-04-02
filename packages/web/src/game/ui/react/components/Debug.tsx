@@ -161,6 +161,13 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
                                     </AccordionButton>
                                 </h2>
                                 <AccordionPanel pb={4}>
+                                        Repeat path:
+                                        <Checkbox defaultChecked={hustler.repeatPath} onChange={(e) => hustler.repeatPath = e.target.checked} />
+                                        <br />
+                                        Follow path:
+                                        <Checkbox defaultChecked={hustler.shouldFollowPath} onChange={(e) => hustler.shouldFollowPath = e.target.checked} />
+                                        <br />
+                                        <br />
                                         {
                                             hustler.path.map((p, i) => 
                                                 <div key={i}>
@@ -202,6 +209,19 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
                                                                             <InputLeftAddon children='Text' />
                                                                             <Input onChange={(e) => t.text = e.target.value} placeholder={t.text} />
                                                                         </InputGroup>
+                                                                        <Text>
+                                                                            Choices
+                                                                        </Text>
+                                                                        {
+                                                                            t.choices ? t.choices.map((c, i) =>
+                                                                                <div key={i}>
+                                                                                    <InputGroup size="sm">
+                                                                                        <InputLeftAddon children='Text' />
+                                                                                        <Input onChange={(e) => (t.choices!)[i] = e.target.value} placeholder={c} />
+                                                                                    </InputGroup>
+                                                                                </div>
+                                                                            ) : undefined
+                                                                        }
                                                                     </AccordionPanel>
                                                                 </AccordionItem>
                                                             )
@@ -212,7 +232,7 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
                                         }
                                 </AccordionPanel>
                             </AccordionItem>
-                            </div> : {}}
+                            </div> : undefined}
                         </Accordion>
                     </AccordionPanel>
                 </AccordionItem>
