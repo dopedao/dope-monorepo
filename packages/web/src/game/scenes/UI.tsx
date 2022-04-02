@@ -26,6 +26,8 @@ import { ToastBar } from 'react-hot-toast';
 import Palette from 'game/constants/Palette';
 import Settings from 'game/ui/react/components/Settings';
 import Debug from 'game/ui/react/components/Debug';
+import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
+import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
 
 interface Interaction {
   citizen: Citizen;
@@ -63,6 +65,7 @@ export const loadingSpinner = () => <ChakraProvider theme={theme}>
 
 export default class UIScene extends Scene {
   public rexUI!: RexUIPlugin;
+  public joyStick!: VirtualJoyStick;
 
   public toaster!: ComponentManager;
   public toast = createStandaloneToast(theme);
@@ -94,6 +97,22 @@ export default class UIScene extends Scene {
 
   create(): void {
     this._handleEvents();
+
+    // pass input events even when captured by this scene (joystick -> pathfinder)
+    this.input.setGlobalTopOnly(false);
+    this.joyStick = (this.plugins.get('rexVirtualJoystick') as VirtualJoyStickPlugin).add(this, {
+      x: this.sys.game.canvas.width / 2,
+      y: this.sys.game.canvas.height / 2,
+      radius: this.sys.game.canvas.width / 4,
+    });
+    
+
+    // TODO: move somewhere else?
+    // re-position joystick when window is resized (center)
+    this.scale.on(Phaser.Scale.Events.RESIZE, (size: Phaser.Structs.Size) => {
+      this.joyStick.setPosition(size.width / 2, size.height / 2);
+      // TODO: resize radius
+    });
   }
 
   update(time: number, delta: number): void {

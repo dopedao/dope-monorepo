@@ -39,7 +39,7 @@ export default class PlayerController {
     // {
     //     ((this.arrows as any)[Object.keys(this.arrows)[i]] as Phaser.Input.Keyboard.Key).onUp((e: KeyboardEvent) => {
     //         if (NetworkHandler.getInstance().connected)
-    //             NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+    //             NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_MOVE, {
     //                 x: this.player.x,
     //                 y: this.player.y,
     //                 direction: this.player.moveDirection,
@@ -61,7 +61,7 @@ export default class PlayerController {
     // get rid of previous velocity if pathfinder is not active
     if (!this.player.navigator.target) this.player.setVelocity(0);
 
-    const joyStick: VirtualJoyStick | undefined = (this.player.scene as GameScene).joyStick;
+    const joyStick: VirtualJoyStick | undefined = (this._player.scene.scene.get('UIScene') as UIScene).joyStick;
 
     let willMoveFlag = false;
     if (this.mainKeys.up.isDown || this.arrows.up.isDown || joyStick?.up) {

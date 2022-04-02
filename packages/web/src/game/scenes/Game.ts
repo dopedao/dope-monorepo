@@ -53,7 +53,6 @@ export default class GameScene extends Scene {
   private _mapHelper!: MapHelper;
 
   public canUseMouse: boolean = true;
-  public joyStick!: VirtualJoystick;
 
   readonly zoom: number = 3;
 
@@ -90,13 +89,6 @@ export default class GameScene extends Scene {
     // handle inputs
     // we dont need to unsubscribe because we're listening to scene specific events
     this._handleInputs();
-
-    // TODO: move somewhere else?
-    // re-position joystick when window is resized (center)
-    this.scale.on(Phaser.Scale.Events.RESIZE, (size: Phaser.Structs.Size) => {
-      this.joyStick.setPosition(size.width / 2, size.height / 2);
-      // TODO: resize radius
-    })
 
     // clean
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -318,18 +310,6 @@ export default class GameScene extends Scene {
   }
 
   private _handleInputs() {
-
-    this.joyStick = (this.plugins.get('rexVirtualJoystick') as VirtualJoyStickPlugin).add(this, {
-      x: this.sys.game.canvas.width / 2,
-      y: this.sys.game.canvas.height / 2,
-      radius: this.sys.game.canvas.width / 4,
-      fixed: true,
-    });
-
-    // we dont want to show the joystick
-    this.joyStick.base.removeFromDisplayList();
-    this.joyStick.thumb.removeFromDisplayList();
-
     // handle mouse on click
     // pathfinding & interact with objects / npcs
     const delta = 400;
