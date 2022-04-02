@@ -257,7 +257,7 @@ export default class UIScene extends Scene {
         if (text.length > 0) {
           // TODO: kinda heavy. maybe just push to end of array and reverse it?
           this.precedentMessages.unshift(text);
-          NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_CHAT_MESSAGE, {
+          NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_CHAT_MESSAGE, {
             message: text,
           });
         }
@@ -459,7 +459,7 @@ export default class UIScene extends Scene {
 
             citizen.conversations.shift();
             // TODO: move else where
-            // NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
+            // NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
             //   id: citizen.getData('id'),
             //   incConversations: true 
             // });
@@ -470,7 +470,7 @@ export default class UIScene extends Scene {
           }
 
           // TODO: Fire up end text event and move somewhere else, maybe in network handler?
-          // NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
+          // NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
           //   citizen: citizen.getData('id'),
           //   conversation: conv.id,
           // } as DataTypes[NetworkEvents.CLIENT_PLAYER_UPDATE_CITIZEN_STATE]);
