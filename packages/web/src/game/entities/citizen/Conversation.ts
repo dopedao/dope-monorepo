@@ -1,18 +1,22 @@
+import Citizen from "./Citizen";
+
 export interface Text {
   text: string;
   choices?: Array<string>;
   typingSpeed?: number;
-  onEnd?: (text: Text, conversation: Conversation, selectedChoice?: number) => void;
+  onEnd?: (citizen: Citizen, conversation: Conversation, text: Text, selectedChoice?: number) => void;
 }
 
 export default class Conversation {
+  id: string;
   // on that text page end 
   texts: Array<Text>;
 
   // callback when conversation is finished
-  onFinish?: () => boolean;
+  onFinish?: (citizen: Citizen, conversation: this) => void;
 
-  constructor(texts: Array<Text> | Text, onFinish?: () => boolean) {
+  constructor(id: string, texts: Array<Text> | Text, onFinish?: (citizen: Citizen, conversation: Conversation) => void) {
+    this.id = id;
     this.texts = texts instanceof Array ? texts : [ texts ];
 
     this.onFinish = onFinish;

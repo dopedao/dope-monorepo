@@ -25,6 +25,7 @@ import React from 'react';
 import { ToastBar } from 'react-hot-toast'; 
 import Palette from 'game/constants/Palette';
 import Settings from 'game/ui/react/components/Settings';
+import Debug from 'game/ui/react/components/Debug';
 
 interface Interaction {
   citizen: Citizen;
@@ -285,6 +286,28 @@ export default class UIScene extends Scene {
       });
     };
 
+    // TODO: check if debug
+    if (true) {
+      const gameScene = this.player.scene as GameScene;
+
+      const key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
+      key.on(Phaser.Input.Keyboard.Events.UP, () => {
+        const inputs = toggleInputs(true);
+        
+        const debug = this.add.reactDom(Debug, {
+          player: this.player,
+          lights: gameScene.lights,
+          hustlers: (gameScene as any).hustlers.concat((gameScene as any).citizens),
+          itemEntities: (gameScene as any).itemEntities,
+        });
+        debug.events.on('close', () => {
+          inputs();
+
+          debug.destroy();
+        })
+      });
+    };
+
     // handle player inventory open
     // EventHandler.emitter().on(Events.PLAYER_INVENTORY_OPEN, () => {
     //   this.inventoryComponent = this.add.reactDom(InventoryComponent, {
@@ -423,7 +446,7 @@ export default class UIScene extends Scene {
       textBox.start(text.text, text.typingSpeed ?? 50, text.choices)
         .on('complete', (selectedChoice: number) => {
           if (text.onEnd)
-            text.onEnd!(text, conv, selectedChoice);
+            text.onEnd!(citizen, conv, text, selectedChoice);
 
           conv.texts.shift();
           if (conv.texts.length === 0) {
@@ -441,16 +464,16 @@ export default class UIScene extends Scene {
             //   incConversations: true 
             // });
 
-            if (conv.onFinish) conv.onFinish();
+            if (conv.onFinish) conv.onFinish(citizen, conv);
 
             return;
           }
 
           // TODO: Fire up end text event and move somewhere else, maybe in network handler?
           // NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
-          //   id: citizen.getData('id'),
-          //   incTexts: true 
-          // });
+          //   citizen: citizen.getData('id'),
+          //   conversation: conv.id,
+          // } as DataTypes[NetworkEvents.CLIENT_PLAYER_UPDATE_CITIZEN_STATE]);
 
           text = conv.texts[0];
           textBox.start(text!.text, text!.typingSpeed ?? 50, text.choices);

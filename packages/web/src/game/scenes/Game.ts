@@ -415,29 +415,6 @@ export default class GameScene extends Scene {
       });
     });
 
-    if (true) {
-      const key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
-      key.on(Phaser.Input.Keyboard.Events.UP, () => {
-        this.input.keyboard.disableGlobalCapture();
-        this.input.keyboard.enabled = false;
-        this.input.mouse.enabled = false;
-
-        const debug = this.add.reactDom(Debug, {
-          player: this.player,
-          hustlers: this.hustlers.concat(this.citizens),
-          itemEntities: this.itemEntities,
-          lights: this.lights,
-        });
-        debug.events.on('close', () => {
-          this.input.keyboard.enabled = true;
-          this.input.mouse.enabled = true;
-          this.input.keyboard.enableGlobalCapture();
-
-          debug.destroy();
-        })
-      });
-    }
-
     // zoom with scroll wheel
     this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: Array<Phaser.GameObjects.GameObject>, deltaX: number, deltaY: number) => {
       if (this.player.busy) return;
