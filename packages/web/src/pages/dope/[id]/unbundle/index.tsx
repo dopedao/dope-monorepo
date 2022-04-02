@@ -105,7 +105,7 @@ const Approve = () => {
   );
   const dope = data?.dopes?.edges?.[0]?.node
 
-  if (isOpened === true) {  
+  if (isOpened === true) {
     return (
       <AppWindowEthereum padBody={false} title="Claim DOPE Gear">
         <Dialog title="Sorry…" icon="dope-smiley-sad">
@@ -115,7 +115,7 @@ const Approve = () => {
       </AppWindowEthereum>
     )
   }
-  
+
   return (
     <AppWindowEthereum requiresWalletConnection={true} padBody={false} title="Claim DOPE Gear">
       <Head title="Claim Gear" />
@@ -145,7 +145,7 @@ const Approve = () => {
             isApproved={isPaperApproved}
             onApprove={approved => setIsPaperApproved(approved)}
           >
-            We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of your DOPE NFT
+            We need you to allow our Swap Meet to spend <ReceiptItemPaper amount={paperCost} hideUnderline /> to Claim Gear of your DOPE NFT
             #{dopeId}.
           </ApprovePaper>
           <MintTo
