@@ -155,6 +155,7 @@ export default class PathNavigator {
           // set callback to undefined, so that it does not called again
           this.onMoved = undefined;
         }
+        this.onCancel = undefined;
       }
     }
 
