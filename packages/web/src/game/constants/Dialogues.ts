@@ -44,10 +44,48 @@ const Texts: {[key: string]: Text} = {
     "hello_choice_2": {
         text: "Sadge",
     },
+    "name": {
+        text: "What's your name?",
+        choices: ["My name is..."],
+        typingSpeed: 50,
+        onEnd: (citizen: Citizen, conversation: Conversation, text: Text, selectedChoice?: number) => {
+            if (selectedChoice === 0) {
+                conversation.add(Texts["name_choice_1"]);
+
+                if (NetworkHandler.getInstance().connected) {
+                    NetworkHandler.getInstance().send(
+                        UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE,
+                        {
+                            citizen: citizen.getData('id'),
+                            conversation: conversation.id,
+                            text: "name_choice_1",
+                        },
+                    );
+                }
+            }
+        },
+    },
+    "name_choice_1": {
+        text: "Nice to meet you!",
+    },
 };
 
 const Conversations: {[key: string]: Conversation} = {
-    "test": new Conversation("test", [Texts["hello"]])
+    "test": new Conversation("test", Texts["hello"], (citizen: Citizen) => {
+        citizen.conversations.push(Conversations["name"]);
+
+        if (NetworkHandler.getInstance().connected) {
+            NetworkHandler.getInstance().send(
+                UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE,
+                {
+                    citizen: citizen.getData('id'),
+                    conversation: "test2",
+                    text: undefined,
+                },
+            );
+        }
+    }),
+    "test2": new Conversation("test2", Texts["name"]),
 };
 
 function getConversation(id: string, text?: string): Conversation {
