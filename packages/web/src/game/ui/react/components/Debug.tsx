@@ -212,7 +212,7 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
                                         }
                                 </AccordionPanel>
                             </AccordionItem>
-                            </div> : undefined}
+                            </div> : {}}
                         </Accordion>
                     </AccordionPanel>
                 </AccordionItem>
