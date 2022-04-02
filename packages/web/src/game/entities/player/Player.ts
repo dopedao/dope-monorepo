@@ -205,9 +205,9 @@ export default class Player extends Hustler {
     // if the overlapped has a parent body, use it instead for calculating delta Y
     if (otherHitbox.parent) otherHitbox = otherHitbox.parent;
 
-    // console.log(pair);
-    // only update depth if collision normal is vertical
-    // if (pair.collision.normal.x !== 0) return; 
+    // update depth only when collision occurs vertically and not on the sides of the other body
+    if (playerHitbox.position.x < otherHitbox.bounds.min.x 
+      || playerHitbox.position.x > otherHitbox.bounds.max.x) return;
 
     const player = playerHitbox.gameObject as Player;
     
