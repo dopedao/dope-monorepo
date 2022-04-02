@@ -139,7 +139,7 @@ export default class Player extends Hustler {
 
         // server will send us back a handshake message if everything goes accordingly
         // and we can handle the pick up of the item
-        NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+        NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
           id: otherGameObject.getData('id'),
         })
       }
@@ -246,7 +246,7 @@ export default class Player extends Hustler {
         this._lastMoveTimestamp = Date.now();
 
         if (NetworkHandler.getInstance().connected)
-          NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+          NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_MOVE, {
             x: this.x,
             y: this.y,
             direction: this.moveDirection,
@@ -257,7 +257,7 @@ export default class Player extends Hustler {
 
     if (this.moveDirection === Direction.None && this._wasMoving) {
       if (NetworkHandler.getInstance().connected)
-        NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+        NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_MOVE, {
           x: this.x,
           y: this.y,
           direction: this.moveDirection,

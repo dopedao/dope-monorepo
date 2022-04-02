@@ -58,7 +58,7 @@ export default class Citizen extends Hustler {
     this.description = description;
 
     if (currentMap) this.currentMap = currentMap;
-    if (conversations) conversations instanceof Array ? this.conversations = conversations : [ conversations ];
+    if (conversations) this.conversations = conversations instanceof Array ? conversations : [ conversations ];
     if (path) this.path = path;
     
     this.repeatPath = repeatPath;

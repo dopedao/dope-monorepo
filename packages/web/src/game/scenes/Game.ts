@@ -30,6 +30,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import { ComponentManager } from 'phaser3-react/src/manager';
 import TilesAnimator from 'game/world/TilesAnimator';
 import Debug from 'game/ui/react/components/Debug';
+import { Conversations, getConversation, Texts } from 'game/constants/Dialogues';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -74,7 +75,7 @@ export default class GameScene extends Scene {
 
   async preload() {
     const networkHandler = NetworkHandler.getInstance();
-    networkHandler.listenMessages();
+    networkHandler.listen();
 
     // first time playing the game?
     if ((window.localStorage.getItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`) ?? 'false') !== 'true')
@@ -110,7 +111,7 @@ export default class GameScene extends Scene {
     new GameAnimations(this).create();
 
     // register player
-    NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_JOIN, {
+    NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_JOIN, {
       name: this.hustlerData?.name ?? 'Hustler',
       hustlerId: this.hustlerData?.id ?? '',
     });
@@ -166,7 +167,7 @@ export default class GameScene extends Scene {
           this.itemEntities[this.itemEntities.length - 1].setData('id', iData.id);
         });
 
-        this.initializeGame();
+        this.initializeGame(data);
     });
 
     this.loadingSpinner = this.add.reactDom(loadingSpinner);
@@ -216,7 +217,7 @@ export default class GameScene extends Scene {
     else if (playerPos.y - centerMapPos.y > level.pxHei / 2) this._checkDir(level, 's', false);
   }
 
-  initializeGame() {
+  initializeGame(handshakeData: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) {
     this.citizens.push(
       new Citizen(
         this.matter.world,
@@ -226,33 +227,7 @@ export default class GameScene extends Scene {
         '12',
         'Jimmy',
         'Crackhead',
-        [
-          new Conversation([
-            {
-              text: "Hey, I'm Jimmy! How are you doing?",
-              choices: [
-                'I\'m fine, thanks!',
-                'Sadge',
-              ],
-              onEnd: (text: Text, conversation: Conversation, choice?: number) => {
-                if (choice === 0)
-                {
-                  conversation.add({
-                    text: 'I\'m glad to hear that!',
-                  });
-                  return;
-                }
-
-                conversation.texts.push({
-                    text: 'Not the answer I was looking for...',
-                    typingSpeed: 20,
-                  },
-                  text
-                );
-              }
-            }
-          ])
-        ],
+        getConversation(handshakeData.relations?.['test'].conversation, handshakeData.relations?.['test'].text),
         [
           { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
           { position: new Phaser.Math.Vector2(405, 200) },
@@ -261,7 +236,7 @@ export default class GameScene extends Scene {
         ],
         true,
         false,
-      ),
+      ).setData('id', 'test'),
     );
 
     const camera = this.cameras.main;
@@ -400,7 +375,7 @@ export default class GameScene extends Scene {
                 status: 'warning',
               });
             } else {
-              NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+              NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
                 id: itemToPickUp.getData('id'),
               });
             }
@@ -600,7 +575,7 @@ export default class GameScene extends Scene {
           }
 
           if (NetworkHandler.getInstance().connected)
-            NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_UPDATE_MAP, {
+            NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_UPDATE_MAP, {
               current_map: lvl.identifier,
               x: this.player.x,
               y: this.player.y,

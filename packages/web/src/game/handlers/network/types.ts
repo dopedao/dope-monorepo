@@ -53,7 +53,7 @@ interface DataTypes {
     current_map: string;
     x: number;
     y: number;
-    relations: Array<DataTypes[NetworkEvents.CLIENT_PLAYER_UPDATE_CITIZEN_STATE]>,
+    relations: {[citizen: string]: DataTypes[NetworkEvents.CLIENT_PLAYER_UPDATE_CITIZEN_STATE]},
     
     players: Array<DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]>;
     itemEntities: Array<{

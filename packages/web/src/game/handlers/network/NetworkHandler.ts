@@ -65,16 +65,16 @@ export default class NetworkHandler {
     this.connection?.close();
   }
 
-  listenMessages(listen: boolean = true) {
+  listen(listen: boolean = true) {
     if (this.connection)
       this.connection.onmessage = listen
         ? event => {
-            this._handleMessage(event);
+            this._handle(event);
           }
         : null;
   }
 
-  sendMessage(event: UniversalEventNames, data: any) {
+  send(event: UniversalEventNames, data: any) {
     if (this.connection?.readyState !== WebSocket.OPEN) {
       console.error('Cannot send message, connection is not open');
       return;
@@ -87,7 +87,7 @@ export default class NetworkHandler {
   // Handle messages coming from the server
   // and dispatches them through the event emitter as
   // server-type events
-  private _handleMessage(event: MessageEvent) {
+  private _handle(event: MessageEvent) {
     const payload = JSON.parse(event.data);
 
     switch (payload.event) {
