@@ -206,7 +206,8 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 			// for item/quest to add
 			relation, err := client.GameHustlerRelation.Get(ctx, fmt.Sprintf("%s:%s", p.hustlerId, data.Citizen))
 			if err != nil {
-				if _, ok := err.(*ent.NotFoundError); ok {
+				// only proceed if error is of type not found, we'll create a new relation entry
+				if _, ok := err.(*ent.NotFoundError); !ok {
 					p.Send <- generateErrorMessage(500, "could not get relation between hustler and citizen")
 					break
 				}
