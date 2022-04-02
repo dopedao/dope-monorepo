@@ -339,31 +339,31 @@ func (g *Game) GenerateHandshakeData(ctx context.Context, client *ent.Client, pl
 		}
 	}
 
-	relations := make([]json.RawMessage, 0)
+	relations := map[string]Relation{}
 	if player.hustlerId != "" {
 		gameJustlerRelations, err := client.GameHustlerRelation.Query().Where(gamehustlerrelation.HasHustlerWith(gamehustler.IDEQ(player.hustlerId))).All(ctx)
 		if err == nil {
 			for _, relation := range gameJustlerRelations {
-				data, err := json.Marshal(Relation{
-					Citizen:      relation.Citizen,
-					Conversation: relation.Conversation,
-					Text:         relation.Text,
-				})
 				// TODO: log error
 				if err == nil {
-					relations = append(relations, data)
+					relations[relation.Citizen] = Relation{
+						Citizen:      relation.Citizen,
+						Conversation: relation.Conversation,
+						Text:         relation.Text,
+					}
 				}
 
 			}
 		}
 	}
 
+	marshalledRelations, _ := json.Marshal(relations)
 	return HandshakeData{
 		Id:         player.Id.String(),
 		CurrentMap: player.currentMap,
 		X:          player.position.X,
 		Y:          player.position.Y,
-		Relations:  relations,
+		Relations:  marshalledRelations,
 
 		Players:      playersData,
 		ItemEntities: itemEntitiesData,
