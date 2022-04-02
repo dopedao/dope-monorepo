@@ -103,7 +103,7 @@ type PlayerAddQuestClientData struct {
 
 type CitizenUpdateStateData struct {
 	// citizen id
-	Citizen string `json:"id"`
+	Citizen string `json:"citizen"`
 	// conversation id
 	Conversation string `json:"conversation"`
 	// text
