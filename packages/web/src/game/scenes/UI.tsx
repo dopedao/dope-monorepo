@@ -105,7 +105,8 @@ export default class UIScene extends Scene {
       y: this.sys.game.canvas.height / 2,
       radius: this.sys.game.canvas.width / 4,
     });
-    
+    this.joyStick.base.removeFromDisplayList();
+    this.joyStick.thumb.removeFromDisplayList();
 
     // TODO: move somewhere else?
     // re-position joystick when window is resized (center)
