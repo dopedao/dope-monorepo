@@ -20,7 +20,6 @@ export interface AppWindowProps {
   width?: number | string;
   onlyFullScreen?: boolean;
   fullScreen?: boolean;
-  subTitle?: string;
 }
 
 const getBodyPadding = () => {
@@ -40,7 +39,7 @@ const AppWindowBody = styled.div<{
   height: 100%;
   overflow-y: ${({ scrollable }) => (scrollable ? 'scroll' : 'hidden')};
   overflow-x: hidden;
-  background: ${({ background }) => (background ? background : '#a8a9ae')}
+  background: ${({ background }) => (background ? background : '#a8a9ae')};
   padding: ${({ padBody }) => (padBody ? getBodyPadding() : '0px')};
 `;
 
@@ -57,7 +56,6 @@ export default function AppWindow({
   onlyFullScreen,
   fullScreen,
   background,
-  subTitle
 }: AppWindowProps) {
   const { account } = useWeb3React();
 
@@ -71,7 +69,6 @@ export default function AppWindow({
         onlyFullScreen={onlyFullScreen}
         fullScreen={fullScreen}
         background={background}
-        subTitle={subTitle}
       >
         {requiresWalletConnection && !account ? (
           <ConnectWallet />

@@ -4,7 +4,7 @@ import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { Grid, GridItem, Image, Box, Flex, Button } from '@chakra-ui/react';
 import { HustlerSex, HustlerCustomization } from 'utils/HustlerConfig';
 import { Item, useHustlerQuery } from 'generated/graphql';
-import { media } from 'ui/styles/mixins';
+// import { media } from 'ui/styles/mixins';
 import { useEffect, useMemo, useState } from 'react';
 import { useHustler } from 'hooks/contracts';
 import { useHustlerRles } from 'hooks/render';
@@ -18,7 +18,8 @@ import Head from 'components/Head';
 // import HustlerMugShot from 'features/hustlers/components/HustlerMugShot';
 // import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
 import LoadingBlock from 'components/LoadingBlock';
-import useMobile, { returnBreakpoint } from 'ui/styles/breakpoints';
+import { useMediaQuery } from "@chakra-ui/react"
+import { extendTheme } from '@chakra-ui/react'
 // import PanelBody from 'components/PanelBody';
 // import PanelContainer from 'components/PanelContainer';
 // import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
@@ -31,6 +32,15 @@ import useMobile, { returnBreakpoint } from 'ui/styles/breakpoints';
 //   return parseInt(indexFromString);
 // };
 
+const breakpoints = {
+  sm: '320px',
+  md: '768px',
+  lg: '960px',
+  xl: '1200px',
+  '2xl': '1536px',
+}
+const theme = extendTheme({ breakpoints })
+
 const FlexPage = () => {
   const hustler = useHustler();
   const router = useRouter();
@@ -42,7 +52,7 @@ const FlexPage = () => {
 
   const [isOwnedByConnectedAccount, setIsOwnedByConnectedAccount] = useState(false);
 
-  const {isMobile} = useMobile()
+  const [isMobile] = useMediaQuery("(max-width: 768px)")
 
   // Check Contract see if this Hustler is owned by connected Account
   useEffect(() => {
@@ -130,15 +140,16 @@ const FlexPage = () => {
   }, [data, hustlerId]);
 
   return (
-    <AppWindow padBody={true} scrollable title='SWAPMEET.EXE' subTitle='500k $PAPER | clicksave.eth'>
+    <AppWindow padBody={true} scrollable title='SWAPMEET.EXE'>
+      {console.log(hustlerConfig)}
       <Head
         title={`SWAPMEET.EXE`}
         ogImage={`https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`}
       />
       {isLoading && <LoadingBlock />}
       {!isLoading && itemRles && (
-        <Box display="flex" background={"white"} minHeight="100%" p={'5'} flexDirection={isMobile ? 'column' : 'row'}>
-          <Box flex={1} mb={isMobile ? "5" : "0"} width="full" display="flex" flexDirection={"column"}>
+        <Box display="flex" background={"white"} minHeight="100%" p={'5'} flexDirection={{base:'column', md:'row'}}>
+          <Box flex={1} mb={{base:'5', md:'0'}} width="full" display="flex" flexDirection={"column"}>
             <Box display="flex" alignItems="center" justifyContent="space-between" width={'full'} mb="5">
               <Box display="flex" alignItems="center">
                 <Box><Image src="/images/hustler/backIco.svg" alt="back" /></Box>
@@ -164,7 +175,7 @@ const FlexPage = () => {
               <Button width={"100%"}>Transfer</Button>
             </Box>
           </Box>
-          <Box flex={isMobile ? 1 : 2} width="full" ml={isMobile ? "0" : "5"} display={'flex'} flexDirection="column">
+          <Box flex={{base:'2', md:'1'}} width="full" ml={{base:'0', md:'5'}} display={'flex'} flexDirection="column">
             <Box width="full" display={'flex'} mb="5" flexDirection="column" overflow={'hidden'} borderRadius={'3'} border={'1px solid #cfd9d4'}>
               <Box p="2" bgColor="#EDEFEE" display={'flex'} justifyContent="space-between" borderBottom={"1px solid #cfd9d4"}>
                 <Box display='flex'>
@@ -174,31 +185,31 @@ const FlexPage = () => {
                 <Image src="/images/hustler/expanded.svg" />
               </Box>
               <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>NAME</Box>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>NAME</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box>{hustlerConfig.name}</Box>
                 </Box>
               </Box>
               <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>ID</Box>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>ID</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box>{hustlerConfig.dopeId}</Box>
                 </Box>
               </Box>
               <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>TITLE</Box>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>TITLE</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box>{hustlerConfig.title}</Box>
                 </Box>
               </Box>
               <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>RESPECT</Box>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>RESPECT</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box>100</Box>
                 </Box>
               </Box>
               <Box p="2" display={'flex'} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>OWNER</Box>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>OWNER</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Image src="/images/hustler/thumbnail.svg" />
                   <Box ml="2">clicksave.eth (you)</Box>
@@ -214,70 +225,70 @@ const FlexPage = () => {
                 <Image src="/images/hustler/expanded.svg" />
               </Box>
               <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>WEAPON</Box>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>WEAPON</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} border="1px solid black" bgColor={DopeLegendColors[items[ItemType.Weapon].tier]} width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Weapon].name}</Box>
                 </Box>
               </Box>
               <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>VEHICLE</Box>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>VEHICLE</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} border="1px solid black" bgColor={DopeLegendColors[items[ItemType.Vehicle].tier]} width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Vehicle].name}</Box>
                 </Box>
               </Box>
               <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>DRUG</Box>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>DRUG</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} bgColor={DopeLegendColors[items[ItemType.Drug].tier]} border="1px solid black" width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Drug].name}</Box>
                 </Box>
               </Box>
               <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>CLOTHES</Box>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>CLOTHES</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} bgColor={DopeLegendColors[items[ItemType.Clothes].tier]} border="1px solid black" width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Clothes].name}</Box>
                 </Box>
               </Box>
-              <Box p="2" display={'flex'} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>HANDS</Box>
+              <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"}>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>HANDS</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} bgColor={DopeLegendColors[items[ItemType.Hand].tier]} border="1px solid black" width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Hand].name}</Box>
                 </Box>
               </Box>
-              <Box p="2" display={'flex'} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>SHOES</Box>
+              <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"}>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>SHOES</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} bgColor={DopeLegendColors[items[ItemType.Foot].tier]} border="1px solid black" width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Foot].name}</Box>
                 </Box>
               </Box>
-              <Box p="2" display={'flex'} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>NECK</Box>
+              <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"}>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>NECK</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} bgColor={DopeLegendColors[items[ItemType.Neck].tier]} border="1px solid black" width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Neck].name}</Box>
                 </Box>
               </Box>
-              <Box p="2" display={'flex'} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>RING</Box>
+              <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"}>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>RING</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} bgColor={DopeLegendColors[items[ItemType.Ring].tier]} border="1px solid black" width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Ring].name}</Box>
                 </Box>
               </Box>
-              <Box p="2" display={'flex'} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>WAIST</Box>
+              <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"}>
+                <Box color="#919191" flex={{base:'2', md:'1'}}>WAIST</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} bgColor={DopeLegendColors[items[ItemType.Waist].tier]} border="1px solid black" width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Waist].name}</Box>
                 </Box>
               </Box>
-              <Box p="2" display={'flex'} >
-                <Box color="#919191" flex={isMobile ? 2 : 1}>ACCESSORY</Box>
+              <Box p="2" display={'flex'} borderBottom={"1px solid #cfd9d4"} >
+                <Box color="#919191" flex={{base:'2', md:'1'}}>ACCESSORY</Box>
                 <Box display='flex' alignItems="center" flex={5}>
                   <Box borderRadius={999} bgColor={DopeLegendColors[items[ItemType.Accessory].tier]} border="1px solid black" width={"3"} height={"3"}/>
                   <Box ml="2">{items[ItemType.Accessory].name}</Box>
