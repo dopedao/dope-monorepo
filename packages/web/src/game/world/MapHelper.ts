@@ -2,6 +2,7 @@ import { s } from 'gear-rarity/dist/image-140bf8ec';
 import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
 import { LDtkMapPack, LdtkReader } from './LDtkParser';
 import PF, { DiagonalMovement } from 'pathfinding';
+import { AsepriteAnimation } from './AsepriteAnim';
 
 export default class MapHelper {
   mapReader: LdtkReader;
@@ -199,7 +200,33 @@ export default class MapHelper {
           (this.mapReader.level.layerInstances.length -
             this.mapReader.level.layerInstances.indexOf(this.map.entityLayer!)) *
             5,
-        );
+        )
+        .setPipeline('Light2D');
+
+      if (this.scene.cache.json.exists(tileset.identifier.toLowerCase())) {
+        const aseprite: AsepriteAnimation = this.scene.cache.json.get(tileset.identifier.toLowerCase());
+        const frameTag = aseprite.meta.frameTags.find(tag => entity.__identifier.includes(tag.name));
+        let frames = frameTag?.from !== undefined && frameTag?.to !== undefined ? Object.keys(aseprite.frames).slice(frameTag.from, frameTag.to + 1) : Object.keys(aseprite.frames);
+
+        // NOTE: frameId instead of entity identifier as anim key?
+        const anim = this.scene.anims.get(entity.__identifier) ?? this.scene.anims.create({
+          key: entity.__identifier,
+          frames: frames.map(key => {
+            const asepriteFrame = aseprite.frames[key];
+            const frame = this.scene.textures.get(tileset.identifier.toLowerCase()).add(frameId + '_' + key, 0, asepriteFrame.frame.x, asepriteFrame.frame.y, asepriteFrame.frame.w, asepriteFrame.frame.h);
+            return {
+              key: tileset.identifier.toLowerCase(),
+              frame: frame.name,
+              duration: asepriteFrame.duration,
+            };
+          }),
+          repeat: -1,
+          // we dont really care about the framerate
+          // duration of frames is already defined
+        });
+        if (anim)
+          entitySprite.anims.play(anim);
+      }
 
       // create shadow for entity
       // const shadowSprite = this.scene.add.ellipse(entitySprite.x, entitySprite.y + (entitySprite.displayHeight / 3), entitySprite.width, entitySprite.height / 3, 0x565a73, 0.5);
