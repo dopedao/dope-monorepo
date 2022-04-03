@@ -1,7 +1,5 @@
 import EventEmitter from "events";
 
-export type KeyIndicator = number;
-
 export interface PlayerKeys {
     up: number;
     down: number;
@@ -24,8 +22,8 @@ export default class ControlsManager {
     private _emitter: EventEmitter;
 
     private _playerKeys: PlayerKeys;
-    private _settingsKey: KeyIndicator;
-    private _chatKey: KeyIndicator;
+    private _settingsKey: number;
+    private _chatKey: number;
 
     get emitter() {
         return this._emitter;
@@ -49,13 +47,13 @@ export default class ControlsManager {
         this._emitter.emit(ControlsEvents.PLAYER_KEYS_UPDATED, this._playerKeys);
     }
 
-    set settingsKey(key: KeyIndicator) {
+    set settingsKey(key: number) {
         this._settingsKey = key;
         localStorage.setItem('settingsKey', this._settingsKey.toString());
         this._emitter.emit(ControlsEvents.SETTINGS_KEY_UPDATED, this._settingsKey);
     }
 
-    set chatKey(key: KeyIndicator) {
+    set chatKey(key: number) {
         this._chatKey = key;
         localStorage.setItem('chatKey', this._chatKey.toString());
         this._emitter.emit(ControlsEvents.CHAT_KEY_UPDATED, this._chatKey);
@@ -80,6 +78,30 @@ export default class ControlsManager {
 
         this._settingsKey = settingsKey ? Number.parseInt(settingsKey) : Phaser.Input.Keyboard.KeyCodes.ESC;
         this._chatKey = chatKey ? Number.parseInt(chatKey) : Phaser.Input.Keyboard.KeyCodes.T;
+    }
+
+    setKey(key: number, value: number) {
+        // individual keys
+        if (key === this._settingsKey) {
+            this.settingsKey = value;
+            this.emitter.emit(ControlsEvents.SETTINGS_KEY_UPDATED, this.settingsKey);
+            return;
+        } else if (key === this._chatKey) {
+            this.chatKey = value;
+            this.emitter.emit(ControlsEvents.CHAT_KEY_UPDATED, this.chatKey);
+            return;
+        }
+
+
+        // check player keys
+        for (const k of Object.keys(this._playerKeys)) {
+            if ((this._playerKeys as any)[k] === key) {
+                (this._playerKeys as any)[k] = value;
+                this._emitter.emit(ControlsEvents.PLAYER_KEYS_UPDATED, this._playerKeys);
+                localStorage.setItem('playerKeys', JSON.stringify(this._playerKeys));
+                return;
+            }
+        }
     }
 
     // save keys to local storage

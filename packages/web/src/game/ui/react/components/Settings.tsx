@@ -13,22 +13,44 @@ interface Props {
     manager: ComponentManager;
 }
 
-const Key = (props: {keyName: string, keyCode: number}) => <HStack>
-    <Text>
-        {props.keyName}
-    </Text>
-    <Spacer />
-    <Button
-        // backgroundColor="green"
-        // onClick={() => props.onSelect(props.keyCode)}
-        variant="primary"
-    >
-        {keyCodeToChar[props.keyCode]}
-    </Button>
-</HStack>
+const Key = (props: {keyName: string, keyCode: number, selectedKey?: number, onSelect: (key?: number) => void}) => {
+    return (
+        <HStack>
+            <Text>
+                {props.keyName}
+            </Text>
+            <Spacer />
+            <Button
+                // backgroundColor="green"
+                onClick={() => props.onSelect(props.selectedKey === props.keyCode ? undefined : props.keyCode)}
+                variant="primary"
+            >
+                {props.selectedKey === props.keyCode ? 'Type a key' : keyCodeToChar[props.keyCode]}
+            </Button>
+        </HStack>
+    )
+}
 
 const Controls = () => {
+    const [, forceUpdate] = React.useReducer((i) => i + 1, 0);
+    const [ selectedKey, setSelectedKey ] = React.useState<number>();
     const controlsManager = ControlsManager.getInstance();
+    
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (!selectedKey) return;
+            
+            controlsManager.setKey(selectedKey, e.keyCode);
+            setSelectedKey(undefined);
+            forceUpdate();
+            console.log(selectedKey);
+        }
+
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('keydown', onKeyDown);
+        }
+    }, [selectedKey]);
 
     return (
         <div>
@@ -38,30 +60,33 @@ const Controls = () => {
             <SimpleGrid columns={2} spacing={5} paddingBottom="2">
                 {
                     Object.keys(controlsManager.playerKeys).map((key, i) => 
-                        <Key key={i} keyName={key.charAt(0).toUpperCase() + key.slice(1)} keyCode={(controlsManager.playerKeys as any)[key]} />)
+                        <Key key={i} keyName={key.charAt(0).toUpperCase() + key.slice(1)} keyCode={(controlsManager.playerKeys as any)[key]} selectedKey={selectedKey} onSelect={setSelectedKey} />)
                 }
             </SimpleGrid>
             <Text fontSize="2xl" paddingBottom="0px">
                 Misc
             </Text>
             <SimpleGrid columns={2} spacing={5}>
-                <Key keyName="Chat" keyCode={controlsManager.chatKey} />
-                <Key keyName="Settings" keyCode={controlsManager.settingsKey} />
+                <Key keyName="Chat" keyCode={controlsManager.chatKey} selectedKey={selectedKey} onSelect={setSelectedKey} />
+                <Key keyName="Settings" keyCode={controlsManager.settingsKey} selectedKey={selectedKey} onSelect={setSelectedKey} />
             </SimpleGrid>
         </div>
     )
 }
 
-const SettingsPages = {
+const SettingsPages: {[key: string]: React.FunctionComponent} = {
     Controls: Controls,
 }
 
 export default function Settings(props: Props) {
-    const [ openedPage, setOpenedPage ] = React.useState<string>("");
+    const [ openedPage, setOpenedPage ] = React.useState<{
+        name: string,
+        component: React.FunctionComponent,
+    }>();
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape")
-            openedPage ? setOpenedPage("") : props.manager.events.emit('close');
+            openedPage ? setOpenedPage(undefined) : props.manager.events.emit('close');
     }
 
     useEffect(() => {
@@ -87,10 +112,10 @@ export default function Settings(props: Props) {
                         openedPage ? <div>
                             <Center>
                                 <Heading>
-                                    {openedPage}
+                                    {openedPage.name}
                                 </Heading>
                             </Center>
-                            {((SettingsPages as any)[openedPage] as any)()}
+                            {<openedPage.component />}
                         </div> : <VStack>
                         <Heading>
                             Settings
@@ -100,7 +125,9 @@ export default function Settings(props: Props) {
                                 return (
                                     <Button
                                         key={page}
-                                        onClick={() => setOpenedPage(page)}
+                                        onClick={() => setOpenedPage({
+                                            name: page, component: SettingsPages[page]
+                                        })}
                                         variant="primary"
                                         style={{
                                             width: "90%"
