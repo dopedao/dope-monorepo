@@ -94,14 +94,16 @@ export class LdtkReader {
     const mainTileset = map.addTilesetImage(tileset);
 
     // check if we have custom data - animated tiles
+    let gid = mainTileset.total + 1;
     const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
     if (tilesetRef && tilesetRef.customData.length > 0) {
       tilesetRef.customData.forEach(t => {
         const data = JSON.parse(t.data);
         if (data.anim)
         {
-          map.addTilesetImage(data.anim)
-            .firstgid = mainTileset.total + 1;
+          const animTileset = map.addTilesetImage(data.anim);
+          animTileset.firstgid = gid;
+          gid += animTileset.total + 1;
         }
       });
     }
@@ -220,14 +222,16 @@ export class LdtkReader {
     const mainTileset = map.addTilesetImage(tileset);
 
     // check if we have custom data - animated tiles
+    let gid = mainTileset.total + 1;
     const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
     if (tilesetRef && tilesetRef.customData.length > 0) {
       tilesetRef.customData.forEach(t => {
         const data = JSON.parse(t.data);
         if (data.anim)
         {
-          map.addTilesetImage(data.anim)
-            .firstgid = mainTileset.total + 1;
+          const animTileset = map.addTilesetImage(data.anim);
+          animTileset.firstgid = gid;
+          gid += animTileset.total + 1;
         }
       });
     }
@@ -311,14 +315,16 @@ export class LdtkReader {
       const mainTileset = map.addTilesetImage(tileset);
 
       // check if we have custom data - animated tiles
+      let gid = mainTileset.total + 1;
       tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
       if (tilesetRef && tilesetRef.customData.length > 0) {
         tilesetRef.customData.forEach(t => {
           const data = JSON.parse(t.data);
           if (data.anim)
           {
-            map.addTilesetImage(data.anim)
-              .firstgid = mainTileset.total + 1;
+            const animTileset = map.addTilesetImage(data.anim);
+            animTileset.firstgid = gid;
+            gid += animTileset.total + 1;
           }
         });
       }
