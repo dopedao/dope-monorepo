@@ -1,13 +1,28 @@
 #!/bin/bash
 set -eu
-
 IMG=ghcr.io/dopedao/runtime:latest
+
+command -v docker >/dev/null 2>&1 || { echo >&2 "DOCKER is required to run this script. Please install it."; exit 1; }
+
+if [[ -z ${GH_USER+z} ]]; then
+      echo "Set GH_USER env variable to login to github docker repo."
+      exit 1
+fi
+
+if [[ -z ${GH_PAT+z} ]]; then
+      echo "Set GH_PAT (personal access token) env variable to login to ghcr.io"
+      echo "https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry"
+      exit 1
+fi
+
+docker login ghcr.io -u $GH_USER -p $GH_PAT
 
 docker volume create gocache
 
 export GOCACHE=/app/gocache
 export GOMODCACHE=/app/gocache
 
+# Run docker with STDIN open and interactive terminal
 exec docker run -it --rm \
         --mount source=gocache,target=/app/gocache \
         -v $HOME/go/pkg:/root/go/pkg \
@@ -15,4 +30,4 @@ exec docker run -it --rm \
         -w=`pwd` \
         -p=8081:8081 \
         -p=5432:5432 \
-  "$IMG" $@
+      "$IMG" $@
