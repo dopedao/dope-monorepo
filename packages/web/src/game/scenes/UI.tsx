@@ -247,18 +247,6 @@ export default class UIScene extends Scene {
       }
     }
 
-    let chatKey = this.input.keyboard.addKey(ControlsManager.getInstance().chatKey);
-    ControlsManager.getInstance().emitter.on(ControlsEvents.CHAT_KEY_UPDATED, (key: Phaser.Input.Keyboard.Key) => {
-      this.input.keyboard.removeKey(chatKey);
-      chatKey = this.input.keyboard.addKey(key);
-    });
-
-    let settingsKey = this.input.keyboard.addKey(ControlsManager.getInstance().settingsKey);
-    ControlsManager.getInstance().emitter.on(ControlsEvents.SETTINGS_KEY_UPDATED, (key: Phaser.Input.Keyboard.Key) => {
-      this.input.keyboard.removeKey(settingsKey);
-      settingsKey = this.input.keyboard.addKey(key);
-    });
-
     const openChatInput = () => {
       if (this.player.busy || this.sendMessageInput)
         return;
@@ -315,6 +303,20 @@ export default class UIScene extends Scene {
         inputs();
       });
     };
+
+    let chatKey = this.input.keyboard.addKey(ControlsManager.getInstance().chatKey);
+    ControlsManager.getInstance().emitter.on(ControlsEvents.CHAT_KEY_UPDATED, (key: Phaser.Input.Keyboard.Key) => {
+      this.input.keyboard.removeKey(chatKey);
+      chatKey = this.input.keyboard.addKey(key);
+      chatKey.on(Phaser.Input.Keyboard.Events.UP, openChatInput);
+    });
+
+    let settingsKey = this.input.keyboard.addKey(ControlsManager.getInstance().settingsKey);
+    ControlsManager.getInstance().emitter.on(ControlsEvents.SETTINGS_KEY_UPDATED, (key: Phaser.Input.Keyboard.Key) => {
+      this.input.keyboard.removeKey(settingsKey);
+      settingsKey = this.input.keyboard.addKey(key);
+      settingsKey.on(Phaser.Input.Keyboard.Events.UP, openSettings);
+    });
 
     // TODO: check if debug
     if (true) {
