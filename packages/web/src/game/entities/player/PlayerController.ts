@@ -3,13 +3,14 @@ import NetworkHandler from 'game/handlers/network/NetworkHandler';
 import { UniversalEventNames } from 'game/handlers/network/types';
 import GameScene from 'game/scenes/Game';
 import UIScene from 'game/scenes/UI';
+import ControlsManager, { ControlsEvents, PlayerKeys } from 'game/utils/ControlsManager';
 import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 import Citizen from '../citizen/Citizen';
 import Hustler, { Direction } from '../Hustler';
 import Player from './Player';
 
 export default class PlayerController {
-  private mainKeys!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private mainKeys!: {[key: string]: Phaser.Input.Keyboard.Key};
   private arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
   private _player: Player;
 
@@ -24,36 +25,19 @@ export default class PlayerController {
     this._player = player;
 
     this.arrows = player.scene.input.keyboard.createCursorKeys();
-    this.mainKeys = player.scene.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W,
-      down: Phaser.Input.Keyboard.KeyCodes.S,
-      left: Phaser.Input.Keyboard.KeyCodes.A,
-      right: Phaser.Input.Keyboard.KeyCodes.D,
-      // inventory
-      tab: Phaser.Input.Keyboard.KeyCodes.TAB,
-      // interaction
-      e: Phaser.Input.Keyboard.KeyCodes.E,
-    }) as Phaser.Types.Input.Keyboard.CursorKeys;
-
-    // for (let i = 0; i < 4; i++)
-    // {
-    //     ((this.arrows as any)[Object.keys(this.arrows)[i]] as Phaser.Input.Keyboard.Key).onUp((e: KeyboardEvent) => {
-    //         if (NetworkHandler.getInstance().connected)
-    //             NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_MOVE, {
-    //                 x: this.player.x,
-    //                 y: this.player.y,
-    //                 direction: this.player.moveDirection,
-    //             })
-    //     });
-    // }
+    this.mainKeys = player.scene.input.keyboard.addKeys(ControlsManager.getInstance().playerKeys) as {[key: string]: Phaser.Input.Keyboard.Key};
+    ControlsManager.getInstance().emitter.on(ControlsEvents.PLAYER_KEYS_UPDATED, (newKeys: PlayerKeys) => {
+      Object.values(this.mainKeys).forEach((key: Phaser.Input.Keyboard.Key) => this.player.scene.input.keyboard.removeKey(key));
+      this.mainKeys = player.scene.input.keyboard.addKeys(newKeys) as {[key: string]: Phaser.Input.Keyboard.Key};
+    });
   }
 
   update() {
-    // if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).tab)) this.player.toggleInventory();
+    // if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).inventory)) this.player.toggleInventory();
 
     if (
       Phaser.Input.Keyboard.JustUp(this.arrows.space) ||
-      Phaser.Input.Keyboard.JustUp((this.mainKeys as any).e)
+      Phaser.Input.Keyboard.JustUp((this.mainKeys as any).interact)
     )
       // check interact sensor
       this.player.tryInteraction();

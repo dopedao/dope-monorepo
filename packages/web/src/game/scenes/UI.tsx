@@ -28,6 +28,7 @@ import Settings from 'game/ui/react/components/Settings';
 import Debug from 'game/ui/react/components/Debug';
 import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
+import ControlsManager, { ControlsEvents } from 'game/utils/ControlsManager';
 
 interface Interaction {
   citizen: Citizen;
@@ -246,8 +247,17 @@ export default class UIScene extends Scene {
       }
     }
 
-    const chatKey = this.input.keyboard.addKey('T');
-    const settingsKey = this.input.keyboard.addKey('ESC');
+    let chatKey = this.input.keyboard.addKey(ControlsManager.getInstance().chatKey);
+    ControlsManager.getInstance().emitter.on(ControlsEvents.CHAT_KEY_UPDATED, (key: Phaser.Input.Keyboard.Key) => {
+      this.input.keyboard.removeKey(chatKey);
+      chatKey = this.input.keyboard.addKey(key);
+    });
+
+    let settingsKey = this.input.keyboard.addKey(ControlsManager.getInstance().settingsKey);
+    ControlsManager.getInstance().emitter.on(ControlsEvents.SETTINGS_KEY_UPDATED, (key: Phaser.Input.Keyboard.Key) => {
+      this.input.keyboard.removeKey(settingsKey);
+      settingsKey = this.input.keyboard.addKey(key);
+    });
 
     const openChatInput = () => {
       if (this.player.busy || this.sendMessageInput)
