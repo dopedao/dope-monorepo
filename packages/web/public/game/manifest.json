@@ -20,12 +20,92 @@
             "DW_Animation_FanBigRotate": {
                 "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.json",
                 "size": 1865
+            },
+            "animation_props_adssmall": {
+                "file": "./game/MAP/Sheets/DW_Animation_Prop_Advertising Flicker.json",
+                "size": 6596
+            },
+            "animation_props_adsbig": {
+                "file": "./game/MAP/Sheets/DW_Animation_Props_AdvertisingFlicker_Big.json",
+                "size": 10147
+            },
+            "animation_vegetation_bushes": {
+                "file": "./game/MAP/Sheets/DW_Animation_Bushes.json",
+                "size": 2571
+            },
+            "animation_props_rooffanmedium": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanMediumlRotate.json",
+                "size": 1696
+            },
+            "animation_buildings_sportinggood": {
+                "file": "./game/MAP/Sheets/Building_SportingGood(Animated).json",
+                "size": 4917
+            },
+            "animation_props_wallfansmall": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanSmallRotate.json",
+                "size": 1414
+            },
+            "animation_props_wallcamera": {
+                "file": "./game/MAP/Sheets/DW_Animation_CameraRotate.json",
+                "size": 7175
+            },
+            "animation_props_fountain": {
+                "file": "./game/MAP/Sheets/Dw_Animation_Props_Fountain_2.json",
+                "size": 3468
+            },
+            "animation_props_carflag": {
+                "file": "./game/MAP/Sheets/DW_Animation_Prop_CarFlag1.json",
+                "size": 17940
+            },
+            "npc_hobbos": {
+                "file": "./game/MAP/NPCs/DW_NPC_Hobbos.json",
+                "size": 3637
             }
         },
         "image": {
             "DW_Animation_FanBigRotate": {
                 "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.png",
                 "size": 3524
+            },
+            "animation_props_adssmall": {
+                "file": "./game/MAP/Sheets/DW_Animation_Prop_Advertising Flicker.png",
+                "size": 23113
+            },
+            "animation_props_adsbig": {
+                "file": "./game/MAP/Sheets/DW_Animation_Props_AdvertisingFlicker_Big.png",
+                "size": 28303
+            },
+            "animation_vegetation_bushes": {
+                "file": "./game/MAP/Sheets/DW_Animation_Bushes.png",
+                "size": 6985
+            },
+            "animation_props_rooffanmedium": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanMediumlRotate.png",
+                "size": 1207
+            },
+            "animation_buildings_sportinggood": {
+                "file": "./game/MAP/Sheets/Building_SportingGood(Animated).png",
+                "size": 45439
+            },
+            "animation_props_wallfansmall": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanSmallRotate.png",
+                "size": 807
+            },
+            "animation_props_wallcamera": {
+                "file": "./game/MAP/Sheets/DW_Animation_CameraRotate.png",
+                "size": 5733
+            },
+            "animation_props_fountain": {
+                "file": "./game/MAP/Sheets/Dw_Animation_Props_Fountain_2.png",
+                "size": 104906
+            },
+            "animation_props_carflag": {
+                "file": "./game/MAP/Sheets/DW_Animation_Prop_CarFlag1.png",
+                "size": 99653
+            },
+            "npc_hobbos": {
+                "file": "./game/MAP/NPCs/DW_NPC_Hobbos.png",
+                "size": 2611
             },
             "tileset_building_nycpack1": {
                 "file": "./game/MAP/DW_Buildings_MegaSheet1.png",
