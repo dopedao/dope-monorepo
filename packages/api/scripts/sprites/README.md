@@ -2,6 +2,10 @@
 
 This directory contains scripts that help prepare files from our animation team for use in the API. Sprites are [hosted in a static GCP bucket here](https://console.cloud.google.com/storage/browser/dopewars-static/male?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22))&project=dopewars-live&prefix=&forceOnObjectsSortingFiltering=false).
 
+### About scripts
+
+We're using Go to script some of these actions. Because of the way Go needs things named; we have to separate those scripts into folders or receive a compiler error when building for CI.
+
 ## Spritesheet details
 
 ### Mapping human readable names to computer readable names
