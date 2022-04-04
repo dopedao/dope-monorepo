@@ -24,7 +24,7 @@
 #          ETH_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_API_KEY }}
 
 name: Tests
-on: 
+on:
   push:
   pull_request:
     types: [opened]
@@ -43,3 +43,18 @@ jobs:
         run: yarn
       - name: Run tests
         run: yarn web test --passWithNoTests
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v ./...
