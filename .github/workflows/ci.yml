@@ -23,11 +23,14 @@
 #         env:
 #          ETH_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_API_KEY }}
 
-name: Tests
-on: 
+name: CI
+on:
   push:
+    branches:
+      - master
   pull_request:
-    types: [opened]
+    branches:
+      - master
 jobs:
   web:
     runs-on: ubuntu-latest
@@ -39,7 +42,21 @@ jobs:
           envkey_S3_ID: ${{ secrets.S3_ID }}
           envkey_S3_SECRET: ${{ secrets.S3_SECRET }}
           envkey_SECRET_WORD: ${{ secrets.SECRET_WORD }}
-      - name: Install
+      - name: Set up Javascript
         run: yarn
-      - name: Run tests
+      - name: Test Web
         run: yarn web test --passWithNoTests
+      - name: Build Web
+        run: yarn web build
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+      - name: Test Go
+        run: go test -v ./...
+      - name: Build Go
+        run: go build -v ./...
