@@ -24,10 +24,7 @@
 #          ETH_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_API_KEY }}
 
 name: Tests
-on:
-  push:
-  pull_request:
-    types: [opened]
+on: [push, pull_request]
 jobs:
   web:
     runs-on: ubuntu-latest
