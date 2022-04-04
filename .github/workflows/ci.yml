@@ -23,7 +23,7 @@
 #         env:
 #          ETH_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_API_KEY }}
 
-name: CI Test and Build
+name: Continuous Integration
 on: [pull_request]
 jobs:
   web:
