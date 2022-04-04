@@ -1,15 +1,18 @@
 name: API
 on:
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
-    types:
-      - closed
-    paths:
-      - 'packages/api/**'
+#    types:
+#      - closed
+#    paths:
+#      - 'packages/api/**'
 jobs:
   deploy_api:
-    if: github.event.pull_request.merged == true
+#    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
