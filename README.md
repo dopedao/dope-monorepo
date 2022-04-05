@@ -1,4 +1,4 @@
-# dope-monorepo     
+# dope-monorepo      
 
 DOPE DAO contains the web app for https://dopewars.gg and Solidity contracts for generating Hustlers based on `DOPE` NFT tokens and items.
 
