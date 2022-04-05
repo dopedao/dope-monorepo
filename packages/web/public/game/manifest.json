@@ -21,6 +21,10 @@
                 "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.json",
                 "size": 1865
             },
+            "animation_props_firebarrel": {
+                "file": "./game/MAP/Sheets/DW_Animation_FireBarrel.json",
+                "size": 8659
+            },
             "animation_props_adssmall": {
                 "file": "./game/MAP/Sheets/DW_Animation_Prop_Advertising Flicker.json",
                 "size": 6596
@@ -66,6 +70,10 @@
             "DW_Animation_FanBigRotate": {
                 "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.png",
                 "size": 3524
+            },
+            "animation_props_firebarrel": {
+                "file": "./game/MAP/Sheets/DW_Animation_FireBarrel.png",
+                "size": 44027
             },
             "animation_props_adssmall": {
                 "file": "./game/MAP/Sheets/DW_Animation_Prop_Advertising Flicker.png",

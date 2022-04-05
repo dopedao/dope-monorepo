@@ -298,11 +298,11 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                                 <PositionComponent object={light}/>
                                 <InputGroup size="sm">
                                     <InputLeftAddon children='Radius' />
-                                    <Input onChange={(e) => light.radius = Number.parseInt(e.target.value) ?? 0} placeholder={light.radius.toString()} />
+                                    <Input onChange={(e) => light.radius = Number.parseFloat(e.target.value) ?? 0} placeholder={light.radius.toString()} />
                                 </InputGroup>
                                 <InputGroup size="sm">
                                     <InputLeftAddon children='Intensity' />
-                                    <Input onChange={(e) => light.intensity = Number.parseInt(e.target.value) ?? 0} placeholder={light.intensity.toString()} />
+                                    <Input onChange={(e) => light.intensity = Number.parseFloat(e.target.value) ?? 0} placeholder={light.intensity.toString()} />
                                 </InputGroup>
                                 <br/>
                                 Visible: <Checkbox onChange={(e) => light.visible = e.target.checked} defaultChecked={light.visible}/>

@@ -203,6 +203,13 @@ export default class MapHelper {
         )
         .setPipeline('Light2D');
 
+      // search light field, and create light if exists
+      const light = entity.fieldInstances.find(f => f.__identifier === 'light')?.__value;
+      if (light) {
+        const lightData = JSON.parse(light);
+        this.scene.lights.addLight(entitySprite.x, entitySprite.y, lightData.radius, lightData.color, lightData.intensity);
+      }
+
       if (this.scene.cache.json.exists(tileset.identifier.toLowerCase())) {
         const aseprite: AsepriteAnimation = this.scene.cache.json.get(tileset.identifier.toLowerCase());
         const frameTag = aseprite.meta.frameTags.find(tag => entity.__identifier.includes(tag.name));
@@ -223,6 +230,7 @@ export default class MapHelper {
           repeat: -1,
           // we dont really care about the framerate
           // duration of frames is already defined
+          frameRate: 10000,
         });
         if (anim)
           entitySprite.anims.play(anim);

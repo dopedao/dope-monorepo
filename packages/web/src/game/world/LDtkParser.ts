@@ -135,6 +135,14 @@ export class LdtkReader {
           l.getData('animators').push(tilesAnim);
           // tilesAnim.start();
         }
+
+        if (data.light)
+        {
+          l.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+            if (tile.index === t.tileId)
+              this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity);
+          }));
+        }
       });
     }
 
@@ -263,6 +271,14 @@ export class LdtkReader {
           l.getData('animators').push(tilesAnim);
           // tilesAnim.start();
         }
+
+        if (data.light)
+        {
+          l.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+            if (tile.index === t.tileId)
+              this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity);
+          }));
+        }
       });
     }
 
@@ -356,6 +372,14 @@ export class LdtkReader {
           const tilesAnim = new TilesAnimator(this.scene, t.tileId, mapLayer, data.anim);
           mapLayer.getData('animators').push(tilesAnim);
           // tilesAnim.start();
+        }
+
+        if (data.light)
+        {
+          mapLayer.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+            if (tile.index === t.tileId)
+              this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity);
+          }));
         }
       });
     }
