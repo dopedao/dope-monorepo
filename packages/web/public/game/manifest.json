@@ -109,6 +109,7 @@
             },
             "tileset_building_nycpack1": {
                 "file": "./game/MAP/DW_Buildings_MegaSheet1.png",
+                "normal": "./game/MAP/DW_Buildings_MegaSheet1_normal.png",
                 "size": 615478
             },
             "tileset_ground_main": {
@@ -121,6 +122,7 @@
             },
             "tileset_vegetation_main": {
                 "file": "./game/MAP/DW_Props_VegetationSheet.png",
+                "normal": "./game/MAP/DW_Props_VegetationSheet_normal.png",
                 "size": 123329
             },
             "tileset_ground_autotiles": {
