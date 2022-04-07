@@ -329,6 +329,7 @@ export default class UIScene extends Scene {
         const debug = this.add.reactDom(Debug, {
           player: this.player,
           lights: gameScene.lights,
+          map: gameScene.mapHelper.loadedMaps[this.player.currentMap],
           hustlers: (gameScene as any).hustlers.concat((gameScene as any).citizens),
           itemEntities: (gameScene as any).itemEntities,
         });

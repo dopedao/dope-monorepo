@@ -9,7 +9,6 @@ export default class MapHelper {
   scene: Phaser.Scene;
 
   map!: LDtkMapPack;
-  entities: Phaser.GameObjects.GameObject[] = new Array();
 
   loadedMaps: { [key: string]: LDtkMapPack } = {};
 
@@ -179,21 +178,25 @@ export default class MapHelper {
         Math.abs(entity.__pivot[1] - 0.5) * entity.height,
       );
 
-      this.entities.push(
-        this.scene.add.sprite(
-          this.mapReader.level.worldX +
-            this.map.entityLayer!.pxOffsetX +
-            entity.px[0] +
-            pivotOffset.x,
-          this.mapReader.level.worldY +
-            this.map.entityLayer!.pxOffsetY +
-            entity.px[1] +
-            pivotOffset.y,
-          tileset.identifier.toLowerCase(),
-          frame.name,
-        ),
+      const entitySprite = this.scene.matter.add.sprite(
+        this.mapReader.level.worldX +
+          this.map.entityLayer!.pxOffsetX +
+          entity.px[0] +
+          pivotOffset.x,
+        this.mapReader.level.worldY +
+          this.map.entityLayer!.pxOffsetY +
+          entity.px[1] +
+          pivotOffset.y,
+        tileset.identifier.toLowerCase(),
+        frame.name,
+        {
+          // TODO: have these options on ldtk?
+          isStatic: true,
+          isSensor: true,
+        }
       );
-      const entitySprite = this.entities[this.entities.length - 1] as Phaser.GameObjects.Sprite;
+      this.map.entities.push(entitySprite);
+
       entitySprite
         .setName(entity.__identifier)
         .setDepth(
