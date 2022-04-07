@@ -1,0 +1,39 @@
+# Deploys API to mainnet if attempting to merge to master. Will only trigger if
+# a change happened in the api directory, the PR was closed and successfully
+# merged to master. There is no `merged to specific branch` event, so we make
+# these three checks to make up for it.
+name: API Mainnet
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+    paths:
+      - 'packages/api/**'
+jobs:
+  deploy_api:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - uses: 'actions/checkout@v3'
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v0.6.0'
+        with:
+          workload_identity_provider: 'projects/803405501117/locations/global/workloadIdentityPools/automation-pool/providers/automation-provider'
+          service_account: 'automation@dopewars-live.iam.gserviceaccount.com'
+
+      - id: 'deploy-api'
+        uses: 'google-github-actions/deploy-appengine@v0.8.0'
+        with:
+          deliverables: 'app.mainnet.api.yaml'
+
+      - id: 'deploy-indexer'
+        uses: 'google-github-actions/deploy-appengine@v0.8.0'
+        with:
+          deliverables: 'app.mainnet.indexer.yaml'
