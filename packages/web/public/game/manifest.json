@@ -126,6 +126,7 @@
             },
             "tileset_props_main": {
                 "file": "./game/MAP/Dw_Tileset_Props_MegaSheet.png",
+                "normal": "./game/MAP/Dw_Tileset_Props_MegaSheet_normals.png",
                 "size": 572323
             },
             "tileset_vegetation_main": {
