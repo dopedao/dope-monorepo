@@ -45,9 +45,6 @@ export default class GameScene extends Scene {
   private citizens: Citizen[] = new Array();
   private itemEntities: ItemEntity[] = new Array();
 
-  private sun?: Phaser.GameObjects.Light;
-  private moon?: Phaser.GameObjects.Light;
-
   private loadingSpinner?: ComponentManager;
 
   private _mapHelper!: MapHelper;
@@ -238,9 +235,8 @@ export default class GameScene extends Scene {
     camera.startFollow(this.player, true, 0.5, 0.5, -5, -5);
 
     this.lights.enable();
-    this.sun = this.lights.addLight(-10000, -10000, 100000, 0xfdffdb, 1);
-    this.moon = this.lights.addLight(10000, 10000, 100000, 0xb8beff, 1);
-    // this.lights.setAmbientColor(0xffffff);
+    this.lights.setAmbientColor(0xfdffdb);
+    this.lights.addLight(0, 0, 100000, 0xffffff, 0);
 
     const map = this.mapHelper.loadedMaps[this.player.currentMap];
     // TODO: update function on map which gets called only when player is in the map
@@ -452,12 +448,17 @@ export default class GameScene extends Scene {
       // sine function imitating day/night cycle
       // only works with 1440 minutes a day cycle
       // TODO: defined in ldtk? along with position of sun
+      const dayColor = [0xfd, 0xff, 0xdb];
+      const nightColor = [0xb8, 0xbe, 0xff];
+
       const cursor = 230;
       const maxSunIntensity = 300; 
       const maxMoonIntensity = 50;
-      const fn = (Math.sin((data.time / cursor) - (Math.PI/2)) + 1) / 2;    
-      this.sun?.setIntensity(fn * maxSunIntensity);
-      this.moon?.setIntensity((1 - fn) * maxMoonIntensity);
+      const fn = (Math.sin((data.time / cursor) - (Math.PI/2)) + 1) / 2;
+      const color = dayColor.map(color => (Math.round(color * fn)).toString(16)).join('');
+      this.lights.setAmbientColor(Number.parseInt(color, 16) < 272722 ? 
+        Number.parseInt(nightColor.map(color => (Math.round(color * (0.2 - fn))).toString(16)).join(''), 16) : 
+          Number.parseInt(color, 16));
 
       // update players positions
       data.players.forEach(p => {

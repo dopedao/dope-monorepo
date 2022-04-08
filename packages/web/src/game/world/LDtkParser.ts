@@ -41,13 +41,13 @@ export class LdtkReader {
 
       // non auto int grid layer
       if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length === 0) {
-        mappack.intGridLayers.push(this.CreateIntGridLayer(layer, usedTileset));
+        mappack.intGridLayers.push(this.CreateIntGridLayer(layer, mappack, usedTileset));
         // auto int grid layer
       } else if (usedTileset && layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) {
-        mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset));
+        mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset, mappack));
         // tiles layer
       } else if (usedTileset && layer.__type === 'Tiles') {
-        mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset));
+        mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset, mappack));
       }
     });
     mappack.entityLayer = this.level.layerInstances.find(
@@ -58,7 +58,7 @@ export class LdtkReader {
     return mappack;
   }
 
-  CreateTileLayer(layer: LayerInstance, tileset: string): Phaser.Tilemaps.TilemapLayer {
+  CreateTileLayer(layer: LayerInstance, tileset: string, mappack: LDtkMapPack): Phaser.Tilemaps.TilemapLayer {
     let map: Phaser.Tilemaps.Tilemap;
     let csv = new Array(layer.__cHei);
     for (var i = 0; i < csv.length; i++) {
@@ -135,6 +135,14 @@ export class LdtkReader {
           l.getData('animators').push(tilesAnim);
           // tilesAnim.start();
         }
+
+        if (data.light)
+        {
+          l.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+            if (tile.index === t.tileId)
+              mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
+          }));
+        }
       });
     }
 
@@ -198,7 +206,7 @@ export class LdtkReader {
     return l;
   }
 
-  CreateAutoLayer(layer: LayerInstance, tileset: string): Phaser.Tilemaps.TilemapLayer {
+  CreateAutoLayer(layer: LayerInstance, tileset: string, mappack: LDtkMapPack): Phaser.Tilemaps.TilemapLayer {
     let map: Phaser.Tilemaps.Tilemap;
     let csv = new Array(layer.__cHei);
     for (var i = 0; i < csv.length; i++) {
@@ -263,6 +271,14 @@ export class LdtkReader {
           l.getData('animators').push(tilesAnim);
           // tilesAnim.start();
         }
+
+        if (data.light)
+        {
+          l.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+            if (tile.index === t.tileId)
+              mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
+          }));
+        }
       });
     }
 
@@ -297,7 +313,7 @@ export class LdtkReader {
     return x + y * tilesetWidth;
   }
 
-  CreateIntGridLayer(layer: LayerInstance, tileset?: string): Phaser.Tilemaps.TilemapLayer {
+  CreateIntGridLayer(layer: LayerInstance, mappack: LDtkMapPack, tileset?: string): Phaser.Tilemaps.TilemapLayer {
     let map: Phaser.Tilemaps.Tilemap;
     var csv = layer.intGridCsv;
     const newArr = [];
@@ -357,6 +373,14 @@ export class LdtkReader {
           mapLayer.getData('animators').push(tilesAnim);
           // tilesAnim.start();
         }
+
+        if (data.light)
+        {
+          mapLayer.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+            if (tile.index === t.tileId)
+              mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
+          }));
+        }
       });
     }
 
@@ -394,7 +418,9 @@ export class LDtkMapPack {
   displayLayers: Array<Phaser.Tilemaps.TilemapLayer>;
 
   entityLayer?: LayerInstance;
+  entities: Array<Phaser.GameObjects.GameObject>;
 
+  lights: Array<Phaser.GameObjects.Light>;
   bgColor?: string;
   gfx?: Phaser.GameObjects.Shape;
   otherGfx?: Phaser.GameObjects.Shape;
@@ -403,6 +429,8 @@ export class LDtkMapPack {
   constructor(levelIdentifier: string) {
     this.intGridLayers = [];
     this.displayLayers = [];
+    this.lights = [];
+    this.entities = [];
   }
 
   dispose() {
@@ -412,6 +440,8 @@ export class LDtkMapPack {
 
     this.intGridLayers.forEach(l => l.destroy());
     this.displayLayers.forEach(l => l.destroy());
+
+    // dispose of lights?
   }
 }
 

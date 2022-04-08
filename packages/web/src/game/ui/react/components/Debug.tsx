@@ -5,6 +5,7 @@ import Citizen from "game/entities/citizen/Citizen";
 import Hustler from "game/entities/Hustler";
 import ItemEntity from "game/entities/ItemEntity";
 import Player from "game/entities/player/Player";
+import { LDtkMapPack } from "game/world/LDtkParser";
 import { ComponentManager } from "phaser3-react/src/manager";
 import { useEffect, useReducer, useState } from "react";
 import theme from "ui/styles/theme";
@@ -12,6 +13,7 @@ import theme from "ui/styles/theme";
 interface DebugData {
     manager: ComponentManager;
     player: Player;
+    map: LDtkMapPack;
     // other players (hustlers) & citizens
     hustlers: Hustler[];
     itemEntities: ItemEntity[];
@@ -298,11 +300,11 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                                 <PositionComponent object={light}/>
                                 <InputGroup size="sm">
                                     <InputLeftAddon children='Radius' />
-                                    <Input onChange={(e) => light.radius = Number.parseInt(e.target.value) ?? 0} placeholder={light.radius.toString()} />
+                                    <Input onChange={(e) => light.radius = Number.parseFloat(e.target.value) ?? 0} placeholder={light.radius.toString()} />
                                 </InputGroup>
                                 <InputGroup size="sm">
                                     <InputLeftAddon children='Intensity' />
-                                    <Input onChange={(e) => light.intensity = Number.parseInt(e.target.value) ?? 0} placeholder={light.intensity.toString()} />
+                                    <Input onChange={(e) => light.intensity = Number.parseFloat(e.target.value) ?? 0} placeholder={light.intensity.toString()} />
                                 </InputGroup>
                                 <br/>
                                 Visible: <Checkbox onChange={(e) => light.visible = e.target.checked} defaultChecked={light.visible}/>
@@ -340,6 +342,124 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
     )
 }
 
+const WorldPanel = (props: {map: LDtkMapPack}) => {
+    return (
+        <div>
+            <div style={{
+                paddingLeft: '1rem',
+            }}>
+                <Text>
+                    Display Layers: {props.map.displayLayers.length}
+                    <br/>
+                    IntGrid Layers: {props.map.intGridLayers.length}
+                    <br/>
+                    Entities: {props.map.entities.length}
+                </Text>
+            </div>
+            <Accordion>
+                <AccordionItem>
+                    <h2>
+                        <AccordionButton>
+                            <Box flex='1' textAlign='left'>
+                                Display Layers
+                            </Box>
+                            <AccordionIcon />
+                        </AccordionButton>
+                    </h2>
+                    
+                </AccordionItem>
+                <AccordionItem>
+                    <h2>
+                        <AccordionButton>
+                            <Box flex='1' textAlign='left'>
+                                Collide layer
+                            </Box>
+                            <AccordionIcon />
+                        </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4}>
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem>
+                    <h2>
+                        <AccordionButton>
+                            <Box flex='1' textAlign='left'>
+                                IntGrid Layers
+                            </Box>
+                            <AccordionIcon />
+                        </AccordionButton>
+                    </h2>
+                    
+                </AccordionItem>
+                <AccordionItem>
+                    <h2>
+                        <AccordionButton>
+                            <Box flex='1' textAlign='left'>
+                                Entities
+                            </Box>
+                            <AccordionIcon />
+                        </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4}>
+                        <Accordion>
+                            {
+                                props.map.entities.map((entity, i) => {
+                                    return <AccordionItem key={i}>
+                                        <h2>
+                                            <AccordionButton>
+                                                <Box flex='1' textAlign='left'>
+                                                    #{i}: {entity.name}
+                                                </Box>
+                                                <AccordionIcon />
+                                            </AccordionButton>
+                                        </h2>
+                                        <AccordionPanel pb={4}>
+                                            <PositionComponent object={entity}/>
+                                        </AccordionPanel>
+                                    </AccordionItem>
+                                })
+                            }
+                        </Accordion>
+                    </AccordionPanel>
+                </AccordionItem>
+            </Accordion>
+
+        </div>
+    )
+}
+
+const ItemEntitiesPanel = (props: {itemEntities: ItemEntity[]}) => {
+    return (
+        <div>
+            <div style={{
+                paddingLeft: '1rem',
+            }}>
+                <Text>
+                    {props.itemEntities.length}
+                </Text>
+            </div>
+            <Accordion>
+                {
+                    props.itemEntities.map((itemEntity, i) => {
+                        return <AccordionItem key={i}>
+                            <h2>
+                                <AccordionButton>
+                                    <Box flex='1' textAlign='left'>
+                                        #{i}: {itemEntity.name}
+                                    </Box>
+                                    <AccordionIcon />
+                                </AccordionButton>
+                            </h2>
+                            <AccordionPanel pb={4}>
+                                <PositionComponent object={itemEntity}/>
+                            </AccordionPanel>
+                        </AccordionItem>
+                    })
+                }
+            </Accordion>
+        </div>
+    )
+}
 export default function Debug(props: DebugData) {
     const handleKey = (e: KeyboardEvent) => {
         if (e.key === 'Escape')
@@ -388,13 +508,13 @@ export default function Debug(props: DebugData) {
                                 <PlayerPanel player={props.player} />
                             </TabPanel>
                             <TabPanel>
-                                <p>world</p>
+                                <WorldPanel map={props.map} />
                             </TabPanel>
                             <TabPanel>
                                 <HustlersPanel hustlers={props.hustlers} />
                             </TabPanel>
                             <TabPanel>
-                                <p>item entities</p>
+                                <ItemEntitiesPanel itemEntities={props.itemEntities} />
                             </TabPanel>
                             <TabPanel>
                                 <LightsPanel player={props.player} lights={props.lights} />

@@ -51,6 +51,12 @@ export default class Preload extends Scene {
 
         if (fileType === 'spritesheet') {
           this.load[fileType](key, assetVars['file'], assetVars.frameConfig);
+        } else if (fileType === 'image') {
+          this.load[fileType]({
+            key, 
+            url: assetVars['file'], 
+            normalMap: assetVars?.['normal']
+          });
         } else {
           // hack to index LoaderPlugin
           (this.load as any)[fileType](key, assetVars['file']);

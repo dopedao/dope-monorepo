@@ -176,8 +176,8 @@
   "size": { "w": 192, "h": 288 },
   "scale": "1",
   "frameTags": [
-   { "name": "PanelBeach", "from": 0, "to": 10, "direction": "forward" },
-   { "name": "PanelPizza", "from": 11, "to": 20, "direction": "forward" }
+   { "name": "Beach", "from": 0, "to": 10, "direction": "forward" },
+   { "name": "Pizza", "from": 11, "to": 20, "direction": "forward" }
   ],
   "layers": [
    { "name": "Layer 1", "opacity": 255, "blendMode": "normal" },
