@@ -216,7 +216,7 @@ export default class GameScene extends Scene {
         '12',
         'Jimmy',
         'Crackhead',
-        getConversation(handshakeData.relations?.['test'].conversation, handshakeData.relations?.['test'].text),
+        getConversation(handshakeData.relations?.['test']?.conversation, handshakeData.relations?.['test']?.text),
         [
           { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
           { position: new Phaser.Math.Vector2(405, 200) },
