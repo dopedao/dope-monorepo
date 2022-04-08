@@ -387,7 +387,8 @@ export default class UIScene extends Scene {
         if (this.sendMessageInput) this.sendMessageInput.events.emit('chat_message', messageData);
       }
 
-      // display message IG 
+      // display message IG
+      // TODO: dont display if hustler not in camera viewport?
       const messageDuration = {
         in: 500,
         hold: 3500 + text.length * 50,

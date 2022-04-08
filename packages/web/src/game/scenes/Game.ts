@@ -463,8 +463,21 @@ export default class GameScene extends Scene {
       // update players positions
       data.players.forEach(p => {
         const hustler = this.hustlers.find(h => h.getData('id') === p.id);
+        if (!hustler) return;
+
+        // 1.2x bounds to make sure hustler doesnt tp when in viewport 
+        const cameraView = new Phaser.Geom.Rectangle(
+          this.cameras.main.worldView.x - (this.cameras.main.worldView.width * 0.2), 
+          this.cameras.main.worldView.y - (this.cameras.main.worldView.height * 0.2), 
+          this.cameras.main.worldView.width * 1.2, this.cameras.main.worldView.height * 1.2
+        );
+        // if not visible to camera, dont bother doing pathfinding, just tp to position
+        if (!cameraView.contains(hustler.x, hustler.y) && !cameraView.contains(p.x, p.y)) {
+          hustler.setPosition(p.x, p.y);
+          return;
+        }
+
         if (
-          hustler &&
           !hustler.navigator.target &&
           new Phaser.Math.Vector2(hustler.x, hustler.y).distance(
             new Phaser.Math.Vector2(p.x, p.y),
