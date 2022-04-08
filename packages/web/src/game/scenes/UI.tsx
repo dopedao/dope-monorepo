@@ -65,6 +65,8 @@ export const loadingSpinner = () => <ChakraProvider theme={theme}>
 </ChakraProvider>;
 
 export default class UIScene extends Scene {
+  private hustlerData!: any;
+  
   public rexUI!: RexUIPlugin;
   public joyStick!: VirtualJoyStick;
 
@@ -92,8 +94,9 @@ export default class UIScene extends Scene {
     });
   }
 
-  init(data: { player: Player }) {
+  init(data: { player: Player, hustlerData: any }) {
     this.player = data.player;
+    this.hustlerData = data.hustlerData;
   }
 
   create(): void {
@@ -295,6 +298,10 @@ export default class UIScene extends Scene {
         NetworkHandler.getInstance().authenticator.logout()
           .finally(() => {
             // TODO: home page / disconnect page?
+            this.scene.stop('GameScene');
+            this.scene.start('LoginScene', {
+              hustlerData: this.hustlerData
+            });
           });
       })
       settings.events.on('close', () => {

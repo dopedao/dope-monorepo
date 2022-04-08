@@ -69,7 +69,7 @@ export default class GameScene extends Scene {
   init(data: { hustlerData: any }) {
     // TOOD: selected hustler data (first for now)
     const selectedHustler = localStorage.getItem(`gameSelectedHustler_${(window.ethereum as any).selectedAddress}`);
-    this.hustlerData = data.hustlerData.find((hustler: any) => hustler.id === selectedHustler) ?? data.hustlerData[0];
+    this.hustlerData = data.hustlerData instanceof Array ? data.hustlerData.find((hustler: any) => hustler.id === selectedHustler) ?? data.hustlerData[0] : data.hustlerData;
   }
 
   async preload() {
@@ -250,7 +250,7 @@ export default class GameScene extends Scene {
 
     this._handleNetwork();
     
-    this.scene.launch('UIScene', { player: this.player });
+    this.scene.launch('UIScene', { player: this.player, hustlerData: this.hustlerData });
 
     this.initialized = true;
     this.loadingSpinner?.destroy();
