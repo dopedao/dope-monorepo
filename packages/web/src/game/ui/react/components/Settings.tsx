@@ -160,12 +160,15 @@ export default function Settings(props: Props) {
         <ChakraProvider theme={theme}>
             <Center style={{
                 height: "100vh",
-                backdropFilter: "brightness(0.2)",
+                backdropFilter: "brightness(0.3)",
+                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
             }}>
                 <Container style={{
                     backgroundColor: "rgba(255,255,255,0.7)",
                     padding: "1rem",
                     borderRadius: "7px",
+                    maxHeight: "70%",
+                    overflowY: "auto",
                 }}>
                     {
                         openedPage ? <div>
