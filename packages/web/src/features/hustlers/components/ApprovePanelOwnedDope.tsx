@@ -94,7 +94,7 @@ const ApprovePanelOwnedDope = ({hustlerConfig, setHustlerConfig}: StepsProps) =>
           isApproved={isPaperApproved}
           onApprove={approved => setIsPaperApproved(approved)}
         >
-          We need you to allow our Swap Meet to spend 12,500 $PAPER to Claim Gear of DOPE NFT #{hustlerConfig.dopeId}.
+          We need you to allow our Swap Meet to spend <ReceiptItemPaper amount={paperCost} hideUnderline /> to Claim Gear of DOPE NFT #{hustlerConfig.dopeId}.
         </ApprovePaper> 
       }
       {isPaperApproved && 
