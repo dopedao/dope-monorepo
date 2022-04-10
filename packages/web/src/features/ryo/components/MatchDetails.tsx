@@ -13,16 +13,7 @@ const MatchDetails = () => {
   const { account } = useStarknet();
   const { contract } = useUserRegistryContract();
 
-  // const isRegistered = useMemo(
-  //   () => {
-  //     if (!account || !registry) return false
-
-  //     registry?.call('get_user_info', { user_id: account }).then(console.log).catch((err) => console.log(err))
-  //   },
-  //   [account, registry],
-  // );
-
-  const { data, loading, error } = useStarknetCall<(string | undefined)[]>({
+  const { data: userInfoData, loading: userInfoLoading, error: userInfoError } = useStarknetCall<(string | undefined)[]>({
     contract,
     method: "get_user_info",
     args: [account],
@@ -30,19 +21,16 @@ const MatchDetails = () => {
 
   const isRegistered = useMemo(
     () => {
-      if (!data) return false
+      if (!userInfoData) return false
 
-      const [result]: BigNumberish[] = data
+      const [result]: BigNumberish[] = userInfoData
 
       return Boolean(Number(result.toString()))
     },
-    [data]
+    [userInfoData]
   )
 
-  // const { invoke, data, loading, error } = useStarknetInvoke({
-  //   contract: registry,
-  //   method: 'register_user',
-  // });
+  const userRegistry = useUserRegistryContract()
 
   return (
     <Layout>
@@ -65,16 +53,16 @@ const MatchDetails = () => {
       ) : (
         <Button
           variant="primary"
-          // onClick={() =>
-          //   invoke({
-          //     args: { user_id: account, data: '84622096520155505419920978765481155' },
-          //   }).then(console.log).catch((err) => console.log(err))
-          // }
+          onClick={() =>
+            userRegistry.contract?.invoke("register_user", [account, '84622096520155505419920978765481155'])
+              .then(console.log).catch((err) => console.log(err))
+          }
         >
           Join
         </Button>
-      )}
-    </Layout>
+      )
+      }
+    </Layout >
   )
 }
 

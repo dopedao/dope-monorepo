@@ -1,8 +1,8 @@
-import { useStarknet, useStarknetCall, useStarknetInvoke } from "@starknet-react/core"
-import { useDopeWarsContract, useUserOwnedContract } from "hooks/contracts/roll-your-own"
-import { createContext, ReactNode, useContext, useMemo, useState } from "react"
-import { BigNumberish, toBN } from "starknet/dist/utils/number"
-import BN from "bn.js";
+import { useStarknet, useStarknetCall, useStarknetInvoke } from '@starknet-react/core';
+import { useDopeWarsContract, useUserOwnedContract } from 'hooks/contracts/roll-your-own';
+import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { BigNumberish, toBN } from 'starknet/dist/utils/number';
+import BN from 'bn.js';
 
 export enum BuyOrSell {
   Buy,
@@ -10,111 +10,95 @@ export enum BuyOrSell {
 }
 
 type Turn = {
-  locationId?: number
-  buyOrSell?: BuyOrSell
-  itemId?: number
-  amountToGive?: number
-}
+  locationId?: number;
+  buyOrSell?: BuyOrSell;
+  itemId?: number;
+  amountToGive?: number;
+};
 
 type RollYourOwn = {
-  money?: BN
-  ownedItems: BN[]
-  turn: Turn
+  money?: BN;
+  ownedItems: BN[];
+  turn: Turn;
 
-  haveTurn: () => void
-  updateTurn: (turn: Turn) => void
-}
+  haveTurn: () => void;
+  updateTurn: (turn: Turn) => void;
+};
 
-const RollYourOwnContext = createContext<RollYourOwn | undefined>(undefined)
+const RollYourOwnContext = createContext<RollYourOwn | undefined>(undefined);
 
 export const useRollYourOwn = () => {
-  const rollYourOwn = useContext(RollYourOwnContext)
+  const rollYourOwn = useContext(RollYourOwnContext);
 
   if (!rollYourOwn) {
-    throw new Error("RollYourOwnContext must be used within RollYourOwnProvider")
+    throw new Error('RollYourOwnContext must be used within RollYourOwnProvider');
   }
 
-  return rollYourOwn
-}
+  return rollYourOwn;
+};
 
-const RollYourOwnProvider = ({
-  children,
-}: {
-  children: ReactNode
-}) => {
-  const [turn, setTurn] = useState<Turn>({})
+const RollYourOwnProvider = ({ children }: { children: ReactNode }) => {
+  const [turn, setTurn] = useState<Turn>({});
 
-  const { account } = useStarknet()
-  const { contract: userOwnedContract } = useUserOwnedContract()
-  const { contract: dopeWarsContract } = useDopeWarsContract()
+  const { account } = useStarknet();
+  const { contract: userOwnedContract } = useUserOwnedContract();
+  const { contract: dopeWarsContract } = useDopeWarsContract();
 
   const { data: userStateData } = useStarknetCall({
     contract: userOwnedContract,
-    method: "check_user_state",
+    method: 'check_user_state',
     args: [account],
-  })
+  });
 
   const { data, error, invoke } = useStarknetInvoke({
     contract: dopeWarsContract,
-    method: "have_turn",
-  })
-  console.log("data", data, error)
+    method: 'have_turn',
+  });
+  console.log('data', data, error);
 
   const { money, ownedItems } = useMemo(() => {
     if (!userStateData) {
       return {
         ownedItems: [],
-      }
+      };
     }
 
-    const [items]: BigNumberish[][] = userStateData
-    const [money, ...ownedItems] = items
+    const [items]: BigNumberish[][] = userStateData;
+    const [money, ...ownedItems] = items;
 
     return {
       money: toBN(money),
       ownedItems: ownedItems.map(toBN),
-    }
-  }, [userStateData])
+    };
+  }, [userStateData]);
 
   const updateTurn = (turn: Turn) => {
-    setTurn((prev) => ({
+    setTurn(prev => ({
       ...prev,
       ...turn,
-    }))
-  }
+    }));
+  };
 
-  const haveTurn = () => {
-    const {
-      locationId,
-      buyOrSell,
-      itemId,
-      amountToGive,
-    } = turn
+  const haveTurn = useCallback(() => {
+    const { locationId, buyOrSell, itemId, amountToGive } = turn;
 
     invoke({
-      args: [
-        account,
-        locationId,
-        buyOrSell,
-        itemId,
-        amountToGive,
-      ]
-    })
-  }
+      args: [account, locationId, buyOrSell, itemId, amountToGive],
+    });
+  }, [account, invoke, turn]);
 
-  const value = useMemo(() => ({
-    money,
-    ownedItems,
-    turn,
-    haveTurn,
-    updateTurn,
-  }), [money, ownedItems, turn])
+  const value = useMemo(
+    () => ({
+      money,
+      ownedItems,
+      turn,
+      haveTurn,
+      updateTurn,
+    }),
+    [money, ownedItems, haveTurn, turn],
+  );
 
-  return (
-    <RollYourOwnContext.Provider value={value}>
-      {children}
-    </RollYourOwnContext.Provider>
-  )
-}
+  return <RollYourOwnContext.Provider value={value}>{children}</RollYourOwnContext.Provider>;
+};
 
-export default RollYourOwnProvider
+export default RollYourOwnProvider;

@@ -78,7 +78,7 @@ const RYO_LOCATIONS = {
 export function useDopeWarsContract(): UseContract {
   const contract = useContract({
     abi: DOPEWARS as Abi,
-    address: '0x02e819f964b0e31300bb97c7571d4fc2d3952837ad4826bb7d252603741d3805'
+    address: '0x00be7e9dcc9a7baa62a755b9900da235a9eb99a310901c0eca00c3f011cf380d'
   })
 
   return contract
@@ -91,7 +91,7 @@ export function useDopeWarsContract(): UseContract {
 export function useLocationOwnedContract(): UseContract {
   const contract = useContract({
     abi: LocationOwned as Abi,
-    address: '0x02a43a37fb3c24859e460483f39b94279a47cd3856849399e5deec406305bbfb'
+    address: '0x05a70a60046e5a68b6aa462a6b19bbd46c79b519e65c208f634792607d5bb5ad'
   })
 
   return contract
@@ -104,7 +104,7 @@ export function useLocationOwnedContract(): UseContract {
 export function useUserOwnedContract(): UseContract {
   const contract = useContract({
     abi: UserOwned as Abi,
-    address: "0x020468fd2c028f56c30cdc807848d25eaa027076302ace30d722ef7400e4afbc"
+    address: "0x01bc4e832d9f5b7885cb9c0cdcec37b24dea18968a8aec0401ca2d9356cc1edc"
   })
 
   return contract;
@@ -117,7 +117,7 @@ export function useUserOwnedContract(): UseContract {
 export function useUserRegistryContract(): UseContract {
   const contract = useContract({
     abi: UserRegistry as Abi,
-    address: '0x023c010a16d330407bec66548a71f9cf3c8d7c16dcc74a79e67ea80efb04890c'
+    address: '0x04ba64675e055085167fd9011597ff3226cea1836bbc147382df6368e87d5ee5'
   })
 
   return contract
