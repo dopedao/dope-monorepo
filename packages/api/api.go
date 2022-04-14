@@ -58,7 +58,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 			return nil, err
 		}
 
-		ts_migration, err := os.ReadFile("migrations/00_init_search_index.sql")
+		ts_migration, err := os.ReadFile("sql_migrations/00_init_search_index.sql")
 		if err != nil {
 			log.Fatal().Msg("Couldn't read migration file") //nolint:gocritic
 		}
