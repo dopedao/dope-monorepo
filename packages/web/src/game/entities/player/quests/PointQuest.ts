@@ -33,11 +33,17 @@ export default class PointQuest extends Quest {
     // on collide with player sensorHitbox, set this quest as completed
     this.zone.body.setOnCollideWith(
       this.questManager.player.hitboxSensor as MatterJS.BodyType,
-      () => this.questManager.completeQuest(this),
+      () => this.questManager.complete(this),
     );
   }
 
-  onComplete() {
-    super.onComplete();
+  onStop() {
+    super.onStop();
+
+    // remove on collide with player sensorHitbox
+    this.zone.body.setOnCollideWith(
+      this.questManager.player.hitboxSensor as MatterJS.BodyType,
+      () => {},
+    );
   }
 }

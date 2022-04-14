@@ -27,19 +27,12 @@ export default class ItemQuest extends Quest {
   }
 
   protected _handleItemEvent(item: Item) {
-    if (item === this.item) this.questManager.completeQuest(this);
+    if (item === this.item) this.questManager.complete(this);
   }
 
   onStart() {
     super.onStart();
 
-    EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent, this);
-  }
-
-  onComplete() {
-    super.onComplete();
-
-    // unsubscribe from event when quest is completed
-    EventHandler.emitter().removeListener(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent);
+    EventHandler.emitter().once(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent, this);
   }
 }
