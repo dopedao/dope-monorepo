@@ -28,10 +28,13 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/resources"
 )
 
-func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, isInIndexerMode bool, openseaApiKey, network string) (http.Handler, error) {
+// Launch a new HTTP API server to handle web requests
+// for database queries, sprite sheets, authentication, etc.
+func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, network string) (http.Handler, error) {
 	_, log := base.LogFor(ctx)
 	client := ent.NewClient(ent.Driver(drv))
 
+	// Get Eth client
 	retryableHTTPClient := retryablehttp.NewClient()
 	retryableHTTPClient.Logger = nil
 	// 0 = ethconfig
@@ -40,34 +43,6 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 		log.Fatal().Msg("Dialing ethereum rpc.") //nolint:gocritic
 	}
 	ethClient := ethclient.NewClient(c)
-
-	if isInIndexerMode {
-		// Run the auto migration tool.
-		if err := client.Schema.Create(ctx, schema.WithHooks(func(next schema.Creator) schema.Creator {
-			return schema.CreateFunc(func(ctx context.Context, tables ...*schema.Table) error {
-				var tables2 []*schema.Table
-				for _, t := range tables {
-					// Remove search_index since it is a materialized view
-					if t.Name != "search_index" {
-						tables2 = append(tables2, t)
-					}
-				}
-				return next.Create(ctx, tables2...)
-			})
-		})); err != nil {
-			return nil, err
-		}
-
-		ts_migration, err := os.ReadFile("sql_migrations/00_init_search_index.sql")
-		if err != nil {
-			log.Fatal().Msg("Couldn't read migration file") //nolint:gocritic
-		}
-		if _, err := drv.DB().Exec(string(ts_migration)); err != nil {
-			if !strings.Contains(err.Error(), "already exists") {
-				return nil, fmt.Errorf("applying ts migration: %w", err)
-			}
-		}
-	}
 
 	srv := handler.NewDefaultServer(graph.NewSchema(client))
 
@@ -96,39 +71,76 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.HandleFunc("/collection/{id}.png", resources.HustlerSpritesCompositeHandler(client, static))
 	r.HandleFunc("/address/{address}", resources.WalletHustlersHandler(client))
 
-	if isInIndexerMode {
-		ctx, cancel := context.WithCancel(ctx)
+	return cors.AllowAll().Handler(r), nil
+}
 
-		started := false
-		r.HandleFunc("/_ah/start", func(w http.ResponseWriter, r *http.Request) {
-			if started {
-				w.WriteHeader(200)
-				_, _ = w.Write([]byte(`{"success":false}`))
-				return
-			}
+// Launch a new Indexer process.
+//
+// The Indexer reads prices from NFT marketplaces,
+// and information about our DOPE NFT assets to place in a PGSQL Database.
+func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network string) (http.Handler, error) {
+	_, log := base.LogFor(ctx)
+	client := ent.NewClient(ent.Driver(drv))
 
-			started = true
-			for _, c := range configs[network] {
-				switch c := c.(type) {
-				case engine.EthConfig:
-					engine := engine.NewEthereum(ctx, client, c)
-					go engine.Sync(ctx)
-				case engine.OpenseaConfig:
-					c.APIKey = openseaApiKey
-					opensea := engine.NewOpensea(client, c)
-					go opensea.Sync(ctx)
+	// Run the auto migration tool.
+	if err := client.Schema.Create(ctx, schema.WithHooks(func(next schema.Creator) schema.Creator {
+		return schema.CreateFunc(func(ctx context.Context, tables ...*schema.Table) error {
+			var tables2 []*schema.Table
+			for _, t := range tables {
+				// Remove search_index since it is a materialized view
+				if t.Name != "search_index" {
+					tables2 = append(tables2, t)
 				}
 			}
-			w.WriteHeader(200)
-			_, _ = w.Write([]byte(`{"success":true}`))
+			return next.Create(ctx, tables2...)
 		})
-
-		r.HandleFunc("/_ah/stop", func(w http.ResponseWriter, r *http.Request) {
-			cancel()
-			w.WriteHeader(200)
-			_, _ = w.Write([]byte(`{"success":true}`))
-		})
+	})); err != nil {
+		return nil, err
 	}
 
+	ts_migration, err := os.ReadFile("sql_migrations/00_init_search_index.sql")
+	if err != nil {
+		log.Fatal().Msg("Couldn't read migration file") //nolint:gocritic
+	}
+	if _, err := drv.DB().Exec(string(ts_migration)); err != nil {
+		if !strings.Contains(err.Error(), "already exists") {
+			return nil, fmt.Errorf("applying ts migration: %w", err)
+		}
+	}
+
+	ctx, cancel := context.WithCancel(ctx)
+
+	started := false
+
+	r := mux.NewRouter()
+	r.Use(middleware.Session(middleware.Store))
+	r.HandleFunc("/_ah/start", func(w http.ResponseWriter, r *http.Request) {
+		if started {
+			w.WriteHeader(200)
+			_, _ = w.Write([]byte(`{"success":false}`))
+			return
+		}
+
+		started = true
+		for _, c := range configs[network] {
+			switch c := c.(type) {
+			case engine.EthConfig:
+				engine := engine.NewEthereum(ctx, client, c)
+				go engine.Sync(ctx)
+			case engine.OpenseaConfig:
+				c.APIKey = openseaApiKey
+				opensea := engine.NewOpensea(client, c)
+				go opensea.Sync(ctx)
+			}
+		}
+		w.WriteHeader(200)
+		_, _ = w.Write([]byte(`{"success":true}`))
+	})
+
+	r.HandleFunc("/_ah/stop", func(w http.ResponseWriter, r *http.Request) {
+		cancel()
+		w.WriteHeader(200)
+		_, _ = w.Write([]byte(`{"success":true}`))
+	})
 	return cors.AllowAll().Handler(r), nil
 }

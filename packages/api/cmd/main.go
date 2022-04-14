@@ -58,9 +58,19 @@ func main() {
 		log.Fatal().Err(err).Msgf("Creating storage client.") //nolint:gocritic
 	}
 
-	srv, err := api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), isInIndexerMode == "True", openseaApiKey, network)
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Creating server.") //nolint:gocritic
+	var srv http.Handler
+	var srvErr error
+
+	if isInIndexerMode == "True" {
+		log.Debug().Msg("Launching Indexer")
+		srv, srvErr = api.NewIndexer(log.WithContext(ctx), db, openseaApiKey, network)
+	} else {
+		log.Debug().Msg("Launching HTTP API Server")
+		srv, srvErr = api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), network)
+	}
+
+	if srvErr != nil {
+		log.Fatal().Err(srvErr).Msgf("Creating server.") //nolint:gocritic
 	}
 
 	middleware := crzerolog.InjectLogger(&log)
