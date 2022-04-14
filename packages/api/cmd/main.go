@@ -24,6 +24,13 @@ var openseaApiKey = common.SecretEnv("OPENSEA", "plaintext://")
 var network = common.GetEnv("NETWORK", "mainnet")
 var isInIndexerMode = common.GetEnv("INDEX", "False")
 
+// Runs the HTTP and Indexer servers.
+//
+// This is how the program is launched both on your local machine,
+// and when run remotely on GCP.
+//
+// Requires a number of environment variables to be set (see above in source)
+// or the program will crash. Because of this we set defaults.
 func main() {
 	log := zerolog.New(os.Stderr)
 
