@@ -21,8 +21,8 @@ import (
 var listen = pflag.String("listen", "8080", "server listen port")
 var pgConnstring = common.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
 var openseaApiKey = common.SecretEnv("OPENSEA", "plaintext://")
-var network = os.Getenv("NETWORK")
-var isInIndexerMode = os.Getenv("INDEX")
+var network = common.GetEnv("NETWORK", "mainnet")
+var isInIndexerMode = common.GetEnv("INDEX", "False")
 
 func main() {
 	log := zerolog.New(os.Stderr)
