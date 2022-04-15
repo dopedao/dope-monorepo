@@ -139,13 +139,13 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 		// <= 3/4 x and <= 4/4 y - positive
 		random := rand.Float32()
 		if random <= 1/4 {
-			player.position.X = player.position.X - 1
+			player.position.X = player.position.X - 10
 		} else if random <= 2/4 {
-			player.position.Y = player.position.Y - 1
+			player.position.Y = player.position.Y - 10
 		} else if random <= 3/4 {
-			player.position.X = player.position.X + 1
+			player.position.X = player.position.X + 10
 		} else {
-			player.position.Y = player.position.Y + 1
+			player.position.Y = player.position.Y + 10
 		}
 	}
 
