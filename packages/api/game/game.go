@@ -3,6 +3,7 @@ package game
 import (
 	"context"
 	"encoding/json"
+	"math/rand"
 	"sync"
 	"time"
 
@@ -91,7 +92,7 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			log.Info().Msgf("player left: %s | %s", player.Id, player.name)
 		case br := <-g.Broadcast:
 			for _, player := range g.Players {
-				if br.Condition != nil && !br.Condition(player) {
+				if (br.Condition != nil && !br.Condition(player)) || player.conn == nil {
 					continue
 				}
 
@@ -128,8 +129,32 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 	}
 	g.Time = (g.Time + 0.5)
 
+	// update fake players positions
+	for _, player := range g.Players {
+		if player.conn != nil {
+			continue
+		}
+
+		// <= 1/4 x and <= 2/4 y - negative
+		// <= 3/4 x and <= 4/4 y - positive
+		random := rand.Float32()
+		if random <= 1/4 {
+			player.position.X = player.position.X - 1
+		} else if random <= 2/4 {
+			player.position.X = player.position.Y - 1
+		} else if random <= 3/4 {
+			player.position.Y = player.position.X + 1
+		} else {
+			player.position.Y = player.position.Y + 1
+		}
+	}
+
 	// for each player, send a tick message
 	for _, player := range g.Players {
+		if player.conn == nil {
+			continue
+		}
+
 		players := []PlayerMoveData{}
 
 		for _, otherPlayer := range g.Players {

@@ -3,7 +3,10 @@ package game
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
@@ -17,9 +20,10 @@ import (
 
 const TICKRATE = time.Second / 5
 const MINUTES_DAY = 24 * 60
+const BOT_COUNT = 15
 
 func NewGame() *Game {
-	return &Game{
+	game := Game{
 		Ticker: time.NewTicker(TICKRATE),
 		SpawnPosition: schema.Position{
 			X: 500, Y: 200,
@@ -29,6 +33,16 @@ func NewGame() *Game {
 		Unregister: make(chan *Player),
 		Broadcast:  make(chan BroadcastMessage),
 	}
+
+	// add fake players
+	for i := 0; i < BOT_COUNT; i++ {
+		hustlerId := int(rand.Float64() * 10000)
+		game.Players = append(game.Players, NewPlayer(nil, &game,
+			strconv.Itoa(hustlerId), fmt.Sprintf("Bot #%d - %d", i, hustlerId),
+			game.SpawnPosition.CurrentMap, game.SpawnPosition.X, game.SpawnPosition.Y))
+	}
+
+	return &game
 }
 
 func (g *Game) Handle(ctx context.Context, client *ent.Client, conn *websocket.Conn) {
