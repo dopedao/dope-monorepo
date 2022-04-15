@@ -78,6 +78,9 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 //
 // The Indexer reads prices from NFT marketplaces,
 // and information about our DOPE NFT assets to place in a PGSQL Database.
+//
+// Exposes HTTP endpoints for `/_ah/start` and `/_ah/stop` for autoscaling
+// https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#startup
 func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network string) (http.Handler, error) {
 	_, log := base.LogFor(ctx)
 	client := ent.NewClient(ent.Driver(drv))
