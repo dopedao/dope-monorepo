@@ -138,13 +138,17 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 		// <= 1/4 x and <= 2/4 y - negative
 		// <= 3/4 x and <= 4/4 y - positive
 		random := rand.Float32()
-		if random <= 1/4 {
+		if random <= 0.25 {
+			player.lastPosition.X = player.position.X
 			player.position.X = player.position.X - 10
-		} else if random <= 2/4 {
+		} else if random <= 0.5 {
+			player.lastPosition.Y = player.position.Y
 			player.position.Y = player.position.Y - 10
-		} else if random <= 3/4 {
+		} else if random <= 0.75 {
+			player.lastPosition.X = player.position.X
 			player.position.X = player.position.X + 10
 		} else {
+			player.lastPosition.Y = player.position.Y
 			player.position.Y = player.position.Y + 10
 		}
 	}
@@ -159,7 +163,9 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 
 		for _, otherPlayer := range g.Players {
 			// var squaredDist = math.Pow(float64(otherPlayer.x-player.x), 2) + math.Pow(float64(otherPlayer.y-player.y), 2)
-			if otherPlayer == player || otherPlayer.currentMap != player.currentMap {
+			if otherPlayer == player || otherPlayer.currentMap != player.currentMap ||
+				(otherPlayer.position.X == otherPlayer.lastPosition.X &&
+					otherPlayer.position.Y == otherPlayer.lastPosition.Y) {
 				continue
 			}
 

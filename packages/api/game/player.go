@@ -27,12 +27,13 @@ type Player struct {
 	conn *websocket.Conn
 	game *Game
 
-	Id         uuid.UUID
-	hustlerId  string
-	name       string
-	currentMap string
-	direction  string
-	position   Vec2
+	Id           uuid.UUID
+	hustlerId    string
+	name         string
+	currentMap   string
+	direction    string
+	position     Vec2
+	lastPosition Vec2
 
 	items  []Item
 	quests []Quest
@@ -46,17 +47,27 @@ func NewPlayer(conn *websocket.Conn, game *Game, hustlerId string, name string, 
 		conn: conn,
 		game: game,
 
-		Id:         uuid.New(),
-		hustlerId:  hustlerId,
-		name:       name,
-		currentMap: currentMap,
-		position:   Vec2{X: x, Y: y},
+		Id:           uuid.New(),
+		hustlerId:    hustlerId,
+		name:         name,
+		currentMap:   currentMap,
+		position:     Vec2{X: x, Y: y},
+		lastPosition: Vec2{X: x, Y: y},
 
 		// CHANNEL HAS TO BE BUFFERED
 		Send: make(chan BaseMessage, 256),
 	}
 
 	return p
+}
+
+func (p *Player) Move(x float32, y float32, direction string) {
+	p.lastPosition.X = p.position.X
+	p.lastPosition.Y = p.position.Y
+
+	p.position.X = x
+	p.position.Y = y
+	p.direction = direction
 }
 
 func (p *Player) readPump(ctx context.Context, client *ent.Client) {
@@ -96,9 +107,7 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 				break
 			}
 
-			p.position.X = data.X
-			p.position.Y = data.Y
-			p.direction = data.Direction
+			p.Move(data.X, data.Y, data.Direction)
 		case "player_update_map":
 			var data PlayerUpdateMapData
 			if err := json.Unmarshal(msg.Data, &data); err != nil {
@@ -107,6 +116,8 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 			}
 
 			p.currentMap = data.CurrentMap
+			p.lastPosition.X = p.position.X
+			p.lastPosition.Y = p.position.Y
 			p.position.X = data.X
 			p.position.Y = data.Y
 
