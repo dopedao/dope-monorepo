@@ -137,6 +137,9 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 					Event: "player_update_map",
 					Data:  broadcastedData,
 				},
+				Condition: func(otherPlayer *Player) bool {
+					return p != otherPlayer
+				},
 			}
 
 			log.Info().Msgf("player %s | %s changed map: %s", p.Id, p.name, data.CurrentMap)
