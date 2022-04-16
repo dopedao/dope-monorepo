@@ -483,10 +483,19 @@ export default class GameScene extends Scene {
             new Phaser.Math.Vector2(p.x, p.y),
           ) > 5
         ) {
-          hustler.navigator.moveTo(p.x, p.y, undefined, () => {
-            // if hustler has been stuck, just teleport him to new position
-            hustler.setPosition(p.x, p.y);
-          });
+          // just define the target without doing the pathfinding. we assume the position is correct
+          // will save a lot of cpu cycles but can introduce some unexpected behaviour
+          hustler.navigator.target = new Phaser.Math.Vector2(p.x, p.y);
+
+          // using pathfinding, heavy cpu usage
+          // hustler.navigator.moveTo(p.x, p.y, undefined, () => {
+          //   // if hustler has been stuck, dont pathfind
+          //   const targetTile = currentMap.collideLayer?.getTileAtWorldXY(p.x, p.y);
+          //   if (targetTile && !targetTile.collides)
+          //     hustler.navigator.target = new Phaser.Math.Vector2(targetTile.x, targetTile.y);
+          //   else 
+          //     hustler.setPosition(p.x, p.y);
+          // });
         }
       });
     });
@@ -568,6 +577,7 @@ export default class GameScene extends Scene {
             map.otherGfx!.setData('fading', fadeOut);
           }
 
+          // TODO: multiple map change messages are getting sent. fix this
           if (NetworkHandler.getInstance().connected)
             NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_UPDATE_MAP, {
               current_map: lvl.identifier,
@@ -575,14 +585,29 @@ export default class GameScene extends Scene {
               y: this.player.y,
             });
 
+          // const updateHustlerMap = (h: Hustler) => {
+          //   // hide/show hustlers if in current map
+          //   h.setVisible(h.currentMap === this.player.currentMap);
+          //   // cancel path/velocity if not same map
+          //   if (h.currentMap !== this.player.currentMap)
+          //   {
+          //     h.navigator.cancel();
+          //     h.setVelocity(0);
+          //   }
+          // }
+
           const updateHustlerMap = (h: Hustler) => {
-            // hide/show hustlers if in current map
-            h.setVisible(h.currentMap === this.player.currentMap);
-            // cancel path/velocity if not same map
-            if (h.currentMap !== this.player.currentMap)
-            {
-              h.navigator.cancel();
+            if (h.currentMap === this.player.currentMap && !h.visible) {
+              h.setVisible(true);
+              h.addToUpdateList();
+              h.addToDisplayList();
+            } else {
               h.setVelocity(0);
+              h.navigator.cancel();
+
+              h.setVisible(false);
+              h.removeFromUpdateList();
+              h.removeFromDisplayList();
             }
           }
 

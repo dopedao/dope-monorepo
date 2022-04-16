@@ -67,7 +67,7 @@ export default class PathNavigator {
       hustlerTile.y,
       moveTile.x,
       moveTile.y,
-      this.grid.clone(),
+      this.grid,
     );
 
     if (path.length === 0) {
