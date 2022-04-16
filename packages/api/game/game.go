@@ -130,6 +130,10 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 	g.Time = (g.Time + 0.5)
 
 	// update fake players positions
+	boundaries := Vec2{
+		X: 2900,
+		Y: 1500,
+	}
 	for _, player := range g.Players {
 		if player.conn != nil {
 			continue
@@ -150,6 +154,13 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 		} else {
 			player.lastPosition.Y = player.position.Y
 			player.position.Y = player.position.Y + (rand.Float32() * 100)
+		}
+
+		if player.position.X < 0 || player.position.X > boundaries.X {
+			player.position.X = player.lastPosition.X
+		}
+		if player.position.Y < 0 || player.position.Y > boundaries.Y {
+			player.position.Y = player.lastPosition.Y
 		}
 	}
 
