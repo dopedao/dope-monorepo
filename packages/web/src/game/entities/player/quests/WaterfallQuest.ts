@@ -1,5 +1,5 @@
-import Citizen from "game/entities/citizen/Citizen";
-import EventHandler, { Events } from "game/handlers/events/EventHandler";
+import Citizen from "../../citizen/Citizen";
+import EventHandler, { Events } from "../../../handlers/events/EventHandler";
 import QuestManager from "../managers/QuestManager";
 import Quest from "./Quest";
 
@@ -22,7 +22,8 @@ export default class WaterfallQuest extends Quest {
     }
     
     private _handleEvent() {
-        const nextEvent = this._events.shift();
+        const event = this._events.shift();
+        const nextEvent = this._events?.[0];
         if (!nextEvent) {
             this.questManager.complete(this);
             return;
