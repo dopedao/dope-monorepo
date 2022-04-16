@@ -140,16 +140,16 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 		random := rand.Float32()
 		if random <= 0.25 {
 			player.lastPosition.X = player.position.X
-			player.position.X = player.position.X - 10
+			player.position.X = player.position.X - (rand.Float32() * 100)
 		} else if random <= 0.5 {
 			player.lastPosition.Y = player.position.Y
-			player.position.Y = player.position.Y - 10
+			player.position.Y = player.position.Y - (rand.Float32() * 100)
 		} else if random <= 0.75 {
 			player.lastPosition.X = player.position.X
-			player.position.X = player.position.X + 10
+			player.position.X = player.position.X + (rand.Float32() * 100)
 		} else {
 			player.lastPosition.Y = player.position.Y
-			player.position.Y = player.position.Y + 10
+			player.position.Y = player.position.Y + (rand.Float32() * 100)
 		}
 	}
 
