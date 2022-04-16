@@ -36,7 +36,7 @@ func NewGame() *Game {
 
 	// add fake players
 	for i := 0; i < BOT_COUNT; i++ {
-		hustlerId := int(rand.Float64() * 10000)
+		hustlerId := int(rand.Float64() * 1500)
 		game.Players = append(game.Players, NewPlayer(nil, &game,
 			strconv.Itoa(hustlerId), fmt.Sprintf("Bot #%d - %d", i, hustlerId),
 			game.SpawnPosition.CurrentMap, game.SpawnPosition.X, game.SpawnPosition.Y))
