@@ -3,7 +3,7 @@ import Hustler from '../Hustler';
 import Player from '../player/Player';
 import Conversation from './Conversation';
 
-interface PathPoint {
+export interface PathPoint {
   position: Phaser.Math.Vector2;
   // time to wait before going to the next point (ms)
   wait?: number;

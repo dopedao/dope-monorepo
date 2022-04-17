@@ -31,6 +31,7 @@ import { ComponentManager } from 'phaser3-react/src/manager';
 import TilesAnimator from 'game/world/TilesAnimator';
 import Debug from 'game/ui/react/components/Debug';
 import { Conversations, getConversation, Texts } from 'game/constants/Dialogues';
+import WaterfallQuest from 'game/entities/player/quests/WaterfallQuest';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -599,15 +600,13 @@ export default class GameScene extends Scene {
           const updateHustlerMap = (h: Hustler) => {
             if (h.currentMap === this.player.currentMap && !h.visible) {
               h.setVisible(true);
-              h.addToUpdateList();
-              h.addToDisplayList();
+              h.setActive(true);
             } else {
               h.setVelocity(0);
               h.navigator.cancel();
 
               h.setVisible(false);
-              h.removeFromUpdateList();
-              h.removeFromDisplayList();
+              h.setActive(false);
             }
           }
 

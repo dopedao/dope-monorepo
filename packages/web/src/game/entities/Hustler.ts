@@ -115,10 +115,12 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
         this.scene.load.once('filecomplete-spritesheet-' + key, () => {
           createHustlerAnimations(this.scene, key);
           this.setTexture(key);
-          this.active = true;
+          this.setActive(true);
+          this.setVisible(true);
         });
         this.scene.load.start();
-        this.active = false;
+        this.setActive(false);
+        this.setVisible(false);
       } else {
         this.setTexture(key);
       }
@@ -154,7 +156,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
       this.displayHeight * 0.2,
       0x000000,
       0.35,
-    ).setOrigin(0.5, -0.35);
+    ).setOrigin(0.5, -0.35).setVisible(this.visible);
 
     // create main body
     const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
