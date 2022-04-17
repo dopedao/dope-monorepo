@@ -75,3 +75,6 @@ models:
   SearchType:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/search.Type
+  OpenSeaOrder:
+    model:
+      - github.com/dopedao/dope-monorepo/packages/api/engine.Order

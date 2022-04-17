@@ -1,0 +1,26 @@
+query DopeListing($where: DopeWhereInput) {
+  dopes(where: $where) {
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        listings {
+          order {
+            maker
+            v
+            r
+            s
+            makerRelayerFee
+            makerProtocolFee
+            currentPrice
+            expirationTime
+            listingTime
+            salt
+            calldata
+          }
+        }
+      }
+    }
+  }
+}

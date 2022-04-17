@@ -5,6 +5,7 @@ import Link, { LinkProps } from 'next/link';
 
 type NavLinkProps = React.PropsWithChildren<LinkProps> & {
   activeClassName?: string;
+  saveFullScreen?: boolean;
 };
 
 export const NavLink = ({ children, activeClassName = 'active', ...props }: NavLinkProps) => {
@@ -26,15 +27,19 @@ export const NavLink = ({ children, activeClassName = 'active', ...props }: NavL
         behavior: 'auto',
         block: 'center',
         inline: 'end',
-      })
+      });
     }
   }, [isActive, tabRef]);
+
+  useEffect(()=>{
+    
+  }, [props.saveFullScreen])
 
   return (
     <div ref={tabRef}>
       <Link {...props}>
         {React.cloneElement(child, {
-          className: className || null
+          className: className || null,
         })}
       </Link>
     </div>

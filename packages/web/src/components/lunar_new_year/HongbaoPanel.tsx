@@ -25,7 +25,6 @@ const HongbaoPanel = () => {
   //      PAPER reward. event.args.value is the numUnopenedEnvelopes
   // if event.args.typ == 1
   //      Item reward. event.args.value is the item id
-  const [opens, setOpens] = useState<OpenedEvent[]>();
   const [claimed, setClaimed] = useState<boolean>();
   const [isClaiming, setIsClaiming] = useState(false);
 
@@ -91,7 +90,7 @@ const HongbaoPanel = () => {
           </PanelBody>
           <PanelFooter>
             {!claimed && (
-              <Button variant="cny" onClick={claim} disabled={claimed || isClaiming}>
+              <Button variant="cny" onClick={claim} disabled>
                 {!isClaiming && `Open ${numUnopenedEnvelopes} Envelopes`}
                 {isClaiming && <SpinnerMessage text="Opening Envelopes…" />}
               </Button>

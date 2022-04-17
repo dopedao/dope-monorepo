@@ -13,7 +13,19 @@ import ItemCount from './ItemCount';
 import LoadingBlock from 'components/LoadingBlock';
 
 type ProfileDope = Pick<Dope, 'id' | 'claimed' | 'opened' | 'rank' | 'score'> & {
-  items: Pick<Item, 'id' | 'fullname' | 'type' | 'name' | 'tier' | 'greatness' | 'count'>[];
+  items: Pick<
+    Item,
+    | 'id'
+    | 'fullname'
+    | 'type'
+    | 'name'
+    | 'tier'
+    | 'greatness'
+    | 'count'
+    | 'suffix'
+    | 'namePrefix'
+    | 'nameSuffix'
+  >[];
 };
 
 type DopeData = {
@@ -21,15 +33,19 @@ type DopeData = {
   totalCount: number;
 };
 
-const Dopes: FC = () => {
+const Dopes = ({ searchValue }: { searchValue: string }) => {
   const { account } = useWeb3React();
-
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileDopesQuery(
     {
       where: {
         hasWalletWith: [
           {
             id: account,
+          },
+        ],
+        hasItemsWith: [
+          {
+            nameContains: searchValue,
           },
         ],
       },
@@ -63,7 +79,6 @@ const Dopes: FC = () => {
           ...result.dopes,
           ...page.dopes.edges.reduce((result, edge) => {
             if (!edge?.node) return result;
-
             return [...result, edge.node];
           }, [] as ProfileDope[]),
         ],
@@ -91,7 +106,7 @@ const Dopes: FC = () => {
             </CardContainer>
           </>
         ) : (
-          <span>This wallet does not have any Dope</span>
+          <span>No DOPE found</span>
         )}
       </SectionContent>
     </>

@@ -22,11 +22,7 @@ const DesktopIconList = () => {
     <>
       {showWebAmp && <WebAmpPlayer onClose={() => setShowWebAmp(false)} />}
       <IconGrid>
-        <DesktopIcon
-          icon="hongbao"
-          label="新年好"
-          clickAction={() => openLocalRoute('/lunar-new-year')}
-        />
+        <DesktopIcon icon="file" label="READ ME FIRST" clickAction={() => openLocalRoute('/about')} />
         <DesktopIcon
           icon="dopewars-exe"
           label="Swap Meet"
@@ -41,15 +37,14 @@ const DesktopIconList = () => {
           }}
         />
         <DesktopIcon
-          icon="newspaper"
-          label="The Daily Dope"
-          clickAction={() => openLocalRoute('/news')}
+          icon="quixotic_circle"
+          label="Shop DOPE Gear"
+          clickAction={ () =>  
+            openBrowserTab(
+              'https://quixotic.io/collection/gear',
+            )
+          }
         />
-        <DesktopIcon icon="file" label="About" clickAction={() => openLocalRoute('/about')} />
-        {/* <DesktopIcon icon="todo" label="GAME" clickAction={() => openLocalRoute('/game')} /> */}
-        <DesktopIcon icon="tv" label="Dope TV" clickAction={() => openLocalRoute('/dope-tv')} />
-        {/* <DesktopIcon icon="file" label="News" clickAction={() => openLocalRoute('/news')} /> */}
-        <DesktopIcon icon="winamp" label="Dope Amp" clickAction={() => setShowWebAmp(true)} />
         <DesktopIcon
           icon="paper-bill-desktop"
           label="Get $PAPER"
@@ -60,8 +55,16 @@ const DesktopIconList = () => {
           }
         />
         <DesktopIcon
+          icon="newspaper"
+          label="The Daily Dope"
+          clickAction={() => openLocalRoute('/news')}
+        />
+        {/* <DesktopIcon icon="todo" label="GAME" clickAction={() => openLocalRoute('/game')} /> */}
+        <DesktopIcon icon="tv" label="Dope TV" clickAction={() => openLocalRoute('/dope-tv')} />
+        <DesktopIcon icon="winamp" label="Dope Amp" clickAction={() => setShowWebAmp(true)} />
+        <DesktopIcon
           icon="folder"
-          label="Other Stuff"
+          label="Other Links"
           clickAction={() => openLocalRoute('/other-stuff')}
         />
       </IconGrid>

@@ -136,11 +136,37 @@ type Listing implements Node {
   active: Boolean!
   inputs: [Amount]!
   outputs: [Amount]!
+  order: OpenSeaOrder
 }
 
 enum Source {
   OPENSEA
   SWAPMEET
+}
+
+type OpenSeaOrder {
+  exchange: Address!
+  listingTime: Long!
+  expirationTime: Long!
+  maker: Address!
+  currentPrice: String!
+  makerRelayerFee: String!
+  makerProtocolFee: String!
+  feeRecipient: String!
+  feeMethod: Int!
+  side: Int!
+  saleKind: Int!
+  target: Address!
+  howToCall: Int!
+  calldata: Bytes!
+  replacementPattern: Bytes!
+  staticTarget: String!
+  staticExtradata: Bytes!
+  extra: String!
+  salt: String!
+  v: Int!
+  r: Bytes!
+  s: Bytes!
 }
 
 enum AmountType {

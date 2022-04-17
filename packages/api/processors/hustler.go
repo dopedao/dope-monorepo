@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
@@ -136,6 +137,7 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.Hustle
 }
 
 func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e bindings.HustlerMetadataUpdate) (func(tx *ent.Tx) error, error) {
+	ctx, log := base.LogFor(ctx)
 	meta, err := p.Contract.Metadata(nil, e.Id)
 	if err != nil {
 		return nil, fmt.Errorf("hustler: getting metadata: %w", err)
@@ -153,7 +155,8 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e bindings
 
 	var parsed Metadata
 	if err := json.Unmarshal(decoded, &parsed); err != nil {
-		return nil, fmt.Errorf("unmarshalling metadata: %w", err)
+		log.Err(err).Str("txn", e.Raw.TxHash.Hex()).Msg("Unmarshalling metadata")
+		return nil, nil
 	}
 
 	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
@@ -379,42 +382,62 @@ func refreshEquipment(ctx context.Context, eth interface {
 
 	if slots.Weapon != nil {
 		u = u.SetWeaponID(slots.Weapon.String())
+	} else {
+		u = u.ClearWeapon()
 	}
 
 	if slots.Clothes != nil {
 		u = u.SetClothesID(slots.Clothes.String())
+	} else {
+		u = u.ClearClothes()
 	}
 
 	if slots.Vehicle != nil {
 		u = u.SetVehicleID(slots.Vehicle.String())
+	} else {
+		u = u.ClearVehicle()
 	}
 
 	if slots.Waist != nil {
 		u = u.SetWaistID(slots.Waist.String())
+	} else {
+		u = u.ClearWaist()
 	}
 
 	if slots.Foot != nil {
 		u = u.SetFootID(slots.Foot.String())
+	} else {
+		u = u.ClearFoot()
 	}
 
 	if slots.Hand != nil {
 		u = u.SetHandID(slots.Hand.String())
+	} else {
+		u = u.ClearHand()
 	}
 
 	if slots.Drug != nil {
 		u = u.SetDrugID(slots.Drug.String())
+	} else {
+		u = u.ClearDrug()
 	}
 
 	if slots.Neck != nil {
 		u = u.SetNeckID(slots.Neck.String())
+	} else {
+		u = u.ClearNeck()
 	}
 
 	if slots.Ring != nil {
 		u = u.SetRingID(slots.Ring.String())
+	} else {
+		u = u.ClearRing()
 	}
 
 	if slots.Accessory != nil {
 		u = u.SetAccessoryID(slots.Accessory.String())
+	} else {
+		u = u.ClearAccessory()
 	}
 
 	if err := u.Exec(ctx); err != nil {

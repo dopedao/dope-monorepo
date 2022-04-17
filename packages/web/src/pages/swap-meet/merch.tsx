@@ -20,12 +20,7 @@ const MERCH = {
 };
 
 const SwapMeetMerch = () => (
-  <AppWindow
-    scrollable
-    height="90vh"
-    navbar={<DopeWarsExeNav hideFilterBar />}
-    title="Swap Meet"
-  >
+  <AppWindow scrollable height="90vh" navbar={<DopeWarsExeNav />} title="Swap Meet">
     <Head title="Merch" />
     <div>
       <HStack
@@ -44,24 +39,29 @@ const SwapMeetMerch = () => (
           `}
         >
           Soon™
-        </h2>   
+        </h2>
       </HStack>
       <Box
         css={css`
           padding: 16px;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
           grid-column-gap: 10px;
           grid-row-gap: 16px;
           // Screen > Tablet display items side by side
           ${media.tablet`
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
           `}
         `}
       >
         {Object.entries(MERCH).map(([title, filename]) => (
           <PanelContainer key={`merch-${title}`}>
-            <PanelTitleBar centered css={css`line-height:1.25em;`}>
+            <PanelTitleBar
+              centered
+              css={css`
+                line-height: 1.25em;
+              `}
+            >
               {title}
             </PanelTitleBar>
             <Image src={`/images/merch/${filename}`} alt={filename} />

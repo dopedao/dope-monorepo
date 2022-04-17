@@ -34,7 +34,7 @@ export const defaultGameConfig: Phaser.Types.Core.GameConfig = {
   //   fullscreenTarget: 'game-parent',
   // },
   scale: {
-    mode: Phaser.Scale.NONE
+    mode: Phaser.Scale.NONE,
   },
   physics: {
     default: 'matter',

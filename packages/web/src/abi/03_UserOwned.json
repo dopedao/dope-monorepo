@@ -1,0 +1,108 @@
+[
+    {
+        "inputs": [
+            {
+                "name": "address_of_controller",
+                "type": "felt"
+            }
+        ],
+        "name": "constructor",
+        "outputs": [],
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "name": "user_id",
+                "type": "felt"
+            },
+            {
+                "name": "item_id",
+                "type": "felt"
+            },
+            {
+                "name": "value",
+                "type": "felt"
+            }
+        ],
+        "name": "user_has_item_write",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "user_id",
+                "type": "felt"
+            },
+            {
+                "name": "item_id",
+                "type": "felt"
+            }
+        ],
+        "name": "user_has_item_read",
+        "outputs": [
+            {
+                "name": "value",
+                "type": "felt"
+            }
+        ],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "user_id",
+                "type": "felt"
+            },
+            {
+                "name": "location_id",
+                "type": "felt"
+            }
+        ],
+        "name": "user_in_location_write",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "user_id",
+                "type": "felt"
+            }
+        ],
+        "name": "user_in_location_read",
+        "outputs": [
+            {
+                "name": "location_id",
+                "type": "felt"
+            }
+        ],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "user_id",
+                "type": "felt"
+            }
+        ],
+        "name": "check_user_state",
+        "outputs": [
+            {
+                "name": "items_len",
+                "type": "felt"
+            },
+            {
+                "name": "items",
+                "type": "felt*"
+            },
+            {
+                "name": "location",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

@@ -6,7 +6,7 @@ import MarketList from 'features/swap-meet/modules/MarketList';
 const SwapMeet = () => (
   <AppWindow
     padBody={false}
-    scrollable={false}
+    scrollable={true}
     height="90vh"
     navbar={<DopeWarsExeNav />}
     title="Swap Meet"

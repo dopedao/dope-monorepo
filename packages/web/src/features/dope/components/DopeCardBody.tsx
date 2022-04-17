@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { DopeCardProps } from './DopeCard';
+import { DopeCardProps, DopeItemApiResponse } from './DopeCard';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { Image } from '@chakra-ui/react';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
@@ -32,10 +32,16 @@ const FinePrint = styled.div`
 `;
 
 const DopeCardBody = ({
-  buttonBar,
   dope,
   isExpanded,
-}: Pick<DopeCardProps, 'dope' | 'buttonBar'> & { isExpanded: boolean }) => {
+  hidePreviewButton = false,
+  showDopeClaimStatus = false,
+}: {
+  dope: Omit<DopeItemApiResponse, 'listings'>;
+  isExpanded: boolean;
+  hidePreviewButton?: boolean;
+  showDopeClaimStatus?: boolean;
+}) => {
   const [isPreviewShown, setPreviewShown] = useState(false);
   const [isRarityVisible, setRarityVisible] = useState(false);
   const hustlerItemsRef = useRef<HTMLDivElement>(null);
@@ -158,7 +164,7 @@ const DopeCardBody = ({
             </div>
             <div className="slide" ref={hustlerPreviewRef}>
               <HustlerContainer bgColor="transparent">
-                {isPreviewShown && <RenderFromDopeIdOnly id={dope.id} />}
+                {!hidePreviewButton && isPreviewShown && <RenderFromDopeIdOnly id={dope.id} />}
                 <FinePrint>
                   Hustler must be Initiated as a separate NFT.
                   <br />
@@ -178,14 +184,14 @@ const DopeCardBody = ({
           </div>
         )}
       </DopeCardItems>
-      {isExpanded && (
+      {!hidePreviewButton && isExpanded && (
         <DopeCardPreviewButton
           togglePreview={togglePreview}
           isPreviewShown={isPreviewShown}
           disabled={dope.opened}
         />
       )}
-      {buttonBar === 'for-marketplace' && (
+      {showDopeClaimStatus && (
         <>
           <DopeStatus content={'hustler'} status={!dope.opened} />
           <DopeStatus content={'paper'} status={!dope.claimed} />

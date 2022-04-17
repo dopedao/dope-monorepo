@@ -18,17 +18,12 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
       flex-direction: column;
       cursor: pointer;
       cursor: hand;
-      // Default
-      width: 96px;
-      height: 96px;
+      width: 88px;
+      height: 88px;
       ${media.tablet`
-          width: 128px;
-          height: 128px;
-        `}
-      ${media.laptop`
-          width: 128px;
-          height: 128px;
-        `}
+        width: 128px;
+        height: 128px;
+      `}
     `}
   >
     <div
@@ -39,20 +34,15 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
         justify-content: center;
         align-items: center;
         margin-bottom: 8px;
-        // Default
+        img {
+          display: block;
+        }
         width: 48px;
         height: 48px;
         ${media.tablet`
-            width: 54px;
-            height: 54px;
-          `}
-        ${media.laptop`
-            width: 64px;
-            height: 64px;
-          `}
-          img {
-          display: block;
-        }
+          width: 64px;
+          height: 64px;
+        `}
       `}
     >
       <Image src={`/images/icon/${icon}.svg`} alt={icon} width="100%" height="100%" />
@@ -65,7 +55,12 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
         background-color: #000;
         color: #fff;
         text-align: center;
-        padding: 4px 8px;
+        padding: 4px;
+        font-size: var(--text-small);
+        ${media.tablet`
+          font-size: var(--text-00);
+          padding: 4px 8px;
+        `}
       `}
     >
       {label}

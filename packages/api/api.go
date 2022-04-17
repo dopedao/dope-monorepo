@@ -12,16 +12,22 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/gorilla/mux"
+	"github.com/hashicorp/go-retryablehttp"
 	"github.com/rs/cors"
 
+	"github.com/dopedao/dope-monorepo/packages/api/authentication"
+	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
+	"github.com/dopedao/dope-monorepo/packages/api/middleware"
 	"github.com/dopedao/dope-monorepo/packages/api/resources"
 )
 
-const ts_migation = `
+const ts_migration = `
 CREATE MATERIALIZED VIEW search_index AS (
 	WITH dope_agg AS (
 		SELECT
@@ -253,10 +259,20 @@ CREATE UNIQUE INDEX search_index_pk ON search_index using btree(id);
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);
 `
 
-func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, index bool, openseaApiKey, network string) (http.Handler, error) {
+func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, isInIndexerMode bool, openseaApiKey, network string) (http.Handler, error) {
+	_, log := base.LogFor(ctx)
 	client := ent.NewClient(ent.Driver(drv))
 
-	if index {
+	retryableHTTPClient := retryablehttp.NewClient()
+	retryableHTTPClient.Logger = nil
+	// 0 = ethconfig
+	c, err := rpc.DialHTTPWithClient(configs[network][0].(engine.EthConfig).RPC, retryableHTTPClient.StandardClient())
+	if err != nil {
+		log.Fatal().Msg("Dialing ethereum rpc.") //nolint:gocritic
+	}
+	ethClient := ethclient.NewClient(c)
+
+	if isInIndexerMode {
 		// Run the auto migration tool.
 		if err := client.Schema.Create(ctx, schema.WithHooks(func(next schema.Creator) schema.Creator {
 			return schema.CreateFunc(func(ctx context.Context, tables ...*schema.Table) error {
@@ -273,7 +289,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 			return nil, err
 		}
 
-		if _, err := drv.DB().Exec(ts_migation); err != nil {
+		if _, err := drv.DB().Exec(ts_migration); err != nil {
 			if !strings.Contains(err.Error(), "already exists") {
 				return nil, fmt.Errorf("applying ts migration: %w", err)
 			}
@@ -283,12 +299,21 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	srv := handler.NewDefaultServer(graph.NewSchema(client))
 
 	r := mux.NewRouter()
+	r.Use(middleware.Session(middleware.Store))
+
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(`{"success":true}`))
 	})
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
+
+	authRouter := r.PathPrefix("/authentication").Subrouter()
+	authRouter.Use(authentication.CORS())
+
+	authRouter.HandleFunc("/login", authentication.LoginHandler(ethClient))
+	authRouter.HandleFunc("/authenticated", authentication.AuthenticatedHandler)
+	authRouter.HandleFunc("/logout", authentication.LogoutHandler)
 
 	r.HandleFunc("/wallets/{address}/hustlers", resources.WalletHustlersHandler(client))
 	r.HandleFunc("/hustlers/{id}/sprites", resources.HustlerSpritesHandler(client))
@@ -298,7 +323,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 	r.HandleFunc("/collection/{id}.png", resources.HustlerSpritesCompositeHandler(client, static))
 	r.HandleFunc("/address/{address}", resources.WalletHustlersHandler(client))
 
-	if index {
+	if isInIndexerMode {
 		ctx, cancel := context.WithCancel(ctx)
 
 		started := false

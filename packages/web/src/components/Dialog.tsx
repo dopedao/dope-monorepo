@@ -79,9 +79,9 @@ const Dialog = ({
           }
           font-size: 1em;
           ${media.tablet`
-          padding: 32px;
-          text-align: left;
-          max-width: 600px;
+            padding: 32px;
+            text-align: left;
+            max-width: 30em;
         `}
         `}
       >

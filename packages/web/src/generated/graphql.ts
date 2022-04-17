@@ -1340,6 +1340,18 @@ export type WalletWhereInput = {
   paperNotIn?: InputMaybe<Array<Scalars['BigInt']>>;
 };
 
+export type DrugQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type DrugQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, name: string, rles?: { __typename?: 'RLEs', male: string } | null | undefined, base?: { __typename?: 'Item', rles?: { __typename?: 'RLEs', male: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
+export type DrugsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DrugsQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', id: string, name: string, rles?: { __typename?: 'RLEs', male: string } | null | undefined, base?: { __typename?: 'Item', rles?: { __typename?: 'RLEs', male: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
 export type AllHustlersQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -1363,6 +1375,13 @@ export type AllItemsQueryVariables = Exact<{
 
 
 export type AllItemsQuery = { __typename?: 'Query', items: { __typename?: 'ItemConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'ItemEdge', node?: { __typename?: 'Item', name: string, id: string, fullname: string, greatness: number, svg?: string | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
+export type DopeListingQueryVariables = Exact<{
+  where?: InputMaybe<DopeWhereInput>;
+}>;
+
+
+export type DopeListingQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, listings?: Array<{ __typename?: 'Listing', order?: { __typename?: 'OpenSeaOrder', maker: any, v: number, r: any, s: any, makerRelayerFee: string, makerProtocolFee: string, currentPrice: string, expirationTime: any, listingTime: any, salt: string, calldata: any } | null | undefined } | null | undefined> | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type DopesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1404,7 +1423,7 @@ export type ProfileDopesQueryVariables = Exact<{
 }>;
 
 
-export type ProfileDopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, tier: ItemTier, greatness: number, count: number }> } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
+export type ProfileDopesQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', node?: { __typename?: 'Dope', id: string, rank: number, score: number, claimed: boolean, opened: boolean, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, tier: ItemTier, greatness: number, count: number, suffix?: string | null | undefined }> } | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null | undefined, hasNextPage: boolean } } };
 
 export type ProfileHustlersQueryVariables = Exact<{
   where?: InputMaybe<HustlerWhereInput>;
@@ -1429,7 +1448,7 @@ export type RenderDopeQueryVariables = Exact<{
 }>;
 
 
-export type RenderDopeQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, items: Array<{ __typename?: 'Item', id: string, rles?: { __typename?: 'RLEs', female: string, male: string } | null | undefined, base?: { __typename?: 'Item', id: string, rles?: { __typename?: 'RLEs', female: string, male: string } | null | undefined } | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
+export type RenderDopeQuery = { __typename?: 'Query', dopes: { __typename?: 'DopeConnection', totalCount: number, edges?: Array<{ __typename?: 'DopeEdge', cursor: any, node?: { __typename?: 'Dope', id: string, items: Array<{ __typename?: 'Item', id: string, type: ItemType, rles?: { __typename?: 'RLEs', female: string, male: string } | null | undefined, base?: { __typename?: 'Item', id: string, rles?: { __typename?: 'RLEs', female: string, male: string } | null | undefined } | null | undefined }> } | null | undefined } | null | undefined> | null | undefined } };
 
 export type SearchDopeQueryVariables = Exact<{
   query: Scalars['String'];
@@ -1442,7 +1461,7 @@ export type SearchDopeQueryVariables = Exact<{
 }>;
 
 
-export type SearchDopeQuery = { __typename?: 'Query', search: { __typename?: 'SearchConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'SearchEdge', node?: { __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, lastSale?: { __typename?: 'Listing', inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined, listings?: Array<{ __typename?: 'Listing', active: boolean, inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined> } | null | undefined> | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> | null | undefined } };
+export type SearchDopeQuery = { __typename?: 'Query', search: { __typename?: 'SearchConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined }, edges?: Array<{ __typename?: 'SearchEdge', node?: { __typename: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, listings?: Array<{ __typename?: 'Listing', id: string, active: boolean, inputs: Array<{ __typename?: 'Amount', amount: any, id: string, type: AmountType } | null | undefined>, order?: { __typename?: 'OpenSeaOrder', feeMethod: number, side: number, saleKind: number, howToCall: number, calldata: any, replacementPattern: any, staticTarget: string, staticExtradata: any, extra: string } | null | undefined } | null | undefined> | null | undefined, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> } | { __typename?: 'Hustler' } | { __typename?: 'Item' } | null | undefined } | null | undefined> | null | undefined } };
 
 export type WalletQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
@@ -1451,6 +1470,100 @@ export type WalletQueryVariables = Exact<{
 
 export type WalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> }> } | null | undefined } | null | undefined> | null | undefined } };
 
+
+export const DrugDocument = `
+    query Drug($id: ID) {
+  items(where: {type: DRUGS, hasBase: false, id: $id}) {
+    totalCount
+    edges {
+      node {
+        id
+        name
+        rles {
+          male
+        }
+        base {
+          rles {
+            male
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useDrugQuery = <
+      TData = DrugQuery,
+      TError = unknown
+    >(
+      variables?: DrugQueryVariables,
+      options?: UseQueryOptions<DrugQuery, TError, TData>
+    ) =>
+    useQuery<DrugQuery, TError, TData>(
+      variables === undefined ? ['Drug'] : ['Drug', variables],
+      useFetchData<DrugQuery, DrugQueryVariables>(DrugDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteDrugQuery = <
+      TData = DrugQuery,
+      TError = unknown
+    >(
+      variables?: DrugQueryVariables,
+      options?: UseInfiniteQueryOptions<DrugQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<DrugQuery, DrugQueryVariables>(DrugDocument)
+    return useInfiniteQuery<DrugQuery, TError, TData>(
+      variables === undefined ? ['Drug.infinite'] : ['Drug.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const DrugsDocument = `
+    query Drugs {
+  items(where: {type: DRUGS, hasBase: false}) {
+    totalCount
+    edges {
+      node {
+        id
+        name
+        rles {
+          male
+        }
+        base {
+          rles {
+            male
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useDrugsQuery = <
+      TData = DrugsQuery,
+      TError = unknown
+    >(
+      variables?: DrugsQueryVariables,
+      options?: UseQueryOptions<DrugsQuery, TError, TData>
+    ) =>
+    useQuery<DrugsQuery, TError, TData>(
+      variables === undefined ? ['Drugs'] : ['Drugs', variables],
+      useFetchData<DrugsQuery, DrugsQueryVariables>(DrugsDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteDrugsQuery = <
+      TData = DrugsQuery,
+      TError = unknown
+    >(
+      variables?: DrugsQueryVariables,
+      options?: UseInfiniteQueryOptions<DrugsQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<DrugsQuery, DrugsQueryVariables>(DrugsDocument)
+    return useInfiniteQuery<DrugsQuery, TError, TData>(
+      variables === undefined ? ['Drugs.infinite'] : ['Drugs.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
 
 export const AllHustlersDocument = `
     query AllHustlers($after: Cursor, $first: Int, $before: Cursor, $last: Int, $orderBy: HustlerOrder, $where: HustlerWhereInput) {
@@ -1566,6 +1679,60 @@ export const useInfiniteAllItemsQuery = <
     const query = useFetchData<AllItemsQuery, AllItemsQueryVariables>(AllItemsDocument)
     return useInfiniteQuery<AllItemsQuery, TError, TData>(
       variables === undefined ? ['AllItems.infinite'] : ['AllItems.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const DopeListingDocument = `
+    query DopeListing($where: DopeWhereInput) {
+  dopes(where: $where) {
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        listings {
+          order {
+            maker
+            v
+            r
+            s
+            makerRelayerFee
+            makerProtocolFee
+            currentPrice
+            expirationTime
+            listingTime
+            salt
+            calldata
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useDopeListingQuery = <
+      TData = DopeListingQuery,
+      TError = unknown
+    >(
+      variables?: DopeListingQueryVariables,
+      options?: UseQueryOptions<DopeListingQuery, TError, TData>
+    ) =>
+    useQuery<DopeListingQuery, TError, TData>(
+      variables === undefined ? ['DopeListing'] : ['DopeListing', variables],
+      useFetchData<DopeListingQuery, DopeListingQueryVariables>(DopeListingDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteDopeListingQuery = <
+      TData = DopeListingQuery,
+      TError = unknown
+    >(
+      variables?: DopeListingQueryVariables,
+      options?: UseInfiniteQueryOptions<DopeListingQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<DopeListingQuery, DopeListingQueryVariables>(DopeListingDocument)
+    return useInfiniteQuery<DopeListingQuery, TError, TData>(
+      variables === undefined ? ['DopeListing.infinite'] : ['DopeListing.infinite', variables],
       (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
     )};
@@ -2059,6 +2226,7 @@ export const ProfileDopesDocument = `
           tier
           greatness
           count
+          suffix
         }
       }
     }
@@ -2206,6 +2374,7 @@ export const RenderDopeDocument = `
         id
         items {
           id
+          type
           rles {
             female
             male
@@ -2270,24 +2439,30 @@ export const SearchDopeDocument = `
     edges {
       node {
         ... on Dope {
+          __typename
           id
           claimed
           opened
           score
           rank
-          lastSale {
-            inputs {
-              amount
-              id
-              type
-            }
-          }
           listings {
+            id
             active
             inputs {
               amount
               id
               type
+            }
+            order {
+              feeMethod
+              side
+              saleKind
+              howToCall
+              calldata
+              replacementPattern
+              staticTarget
+              staticExtradata
+              extra
             }
           }
           items {

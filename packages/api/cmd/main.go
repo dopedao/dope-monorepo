@@ -22,12 +22,12 @@ var listen = pflag.String("listen", "8080", "server listen port")
 var pgConnstring = common.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
 var openseaApiKey = common.SecretEnv("OPENSEA", "plaintext://")
 var network = os.Getenv("NETWORK")
-var index = os.Getenv("INDEX")
+var isInIndexerMode = os.Getenv("INDEX")
 
 func main() {
 	log := zerolog.New(os.Stderr)
 
-	log.Debug().Msgf("config: is indexer: %v", index)
+	log.Debug().Msgf("config: is indexer: %v", isInIndexerMode)
 
 	pgConnstringSecret, err := pgConnstring.Value()
 	if err != nil {
@@ -51,7 +51,7 @@ func main() {
 		log.Fatal().Err(err).Msgf("Creating storage client.") //nolint:gocritic
 	}
 
-	srv, err := api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), index == "True", openseaApiKey, network)
+	srv, err := api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), isInIndexerMode == "True", openseaApiKey, network)
 	if err != nil {
 		log.Fatal().Err(err).Msgf("Creating server.") //nolint:gocritic
 	}

@@ -13,6 +13,10 @@ You can [claim Loot tokens for that network using this contract](https://kovan.e
 
 ## Packages
 
+### api
+
+The [API](packages/api) is written in Go and hosted on Google Cloud Platform. More information about the API can be found in that directory's README.
+
 ### contracts
 
 The [contracts](packages/contracts) is the suite of Solidity contracts.
@@ -35,7 +39,7 @@ yarn
 yarn web:dev
 ```
 
-### Build all packages
+### Build all javascript packages
 
 ```sh
 yarn build

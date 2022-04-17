@@ -18,8 +18,10 @@ import HairSelector from 'components/hustler/HairSelector';
 import NameControls from 'components/hustler/NameControls';
 import PanelColorSelector from 'components/PanelColorSelector';
 import PanelFooter from 'components/PanelFooter';
+import PanelTitleHeader from 'components/PanelTitleHeader';
 import SexSelector from 'components/hustler/SexSelector';
 import styled from '@emotion/styled';
+import DisconnectAndQuitButton from 'features/hustlers/components/DisconnectAndQuitButton';
 
 const ControlsWrapper = styled.div`
   background-color: white;
@@ -41,7 +43,7 @@ const ConfigurationControls = ({
   config,
   setHustlerConfig,
   isCustomize,
-  goBackToInitialStep,
+  handleFinishConfiguration,
 }: ConfigureHustlerProps) => {
   const [showTextColor, setShowTextColor] = useState(false);
   const [enableNameVisible, setEnableNameVisible] = useState(false);
@@ -94,67 +96,96 @@ const ConfigurationControls = ({
       sex == 'male' ? BigNumber.from(facialHair) : BigNumber.from(0),
     ];
 
-    let bitoptions = 0;
+
+    let bitoptions = 0b1000;
 
     if (isVehicle) {
-      bitoptions += 1;
+      bitoptions |= 0b1;
     }
 
     if (renderName) {
       // title
-      bitoptions += 10;
+      bitoptions |= 0b10;
       // name
-      bitoptions += 100;
+      bitoptions |= 0b100;
     }
 
     const options =
       '0x' +
-      parseInt('' + bitoptions, 2)
+      bitoptions
         .toString(16)
         .padStart(4, '0');
 
-    let bitmask = 11110110;
+    console.log(`Options: ${options}`);
+
+    // Bitmask controls configuration options we're allowed to set 
+    // in Hustler.sol
+    // 0: Name
+    // 1: Color
+    // 2: Background Color
+    // 3: Viewbox
+    // 4-7: Bodyparts
+    // 8: Layer order
+    let bitmask = 0b111110110;
+    
+    // If anything in the name box at all, set it
     if (setname.length > 0) {
-      bitmask += 1;
+      bitmask |= 0b1;
     }
 
+    // Viewbox / Zoomwindow
     if (zoomWindow[0].gt(0) || zoomWindow[0].gt(1) || zoomWindow[0].gt(2) || zoomWindow[0].gt(3)) {
-      bitmask += 1000;
+      bitmask |= 0b100;
     }
 
     const mask =
       '0x' +
-      parseInt('' + bitmask, 2)
+        bitmask
         .toString(16)
         .padStart(4, '0');
+
+    console.log(bitmask);
+    console.log(`bitmask: ${mask}`);
+
+    // ORDER SLOTS order as defined in Components.sol:33
+    // const SLOTS = [
+    //   'WEAPON', 'CLOTHES', 'VEHICLE', 'WAIST', 'FOOT', 'HAND', 'DRUGS', 
+    //   'NECK', 'RING', 'ACCESSORY' ];
+
+    // BUG IN SMART CONTRACT!!! 
+    // Order isn't passed properly in HustlerMetadata.sol:174
+    // so this actually has no effect on the outcome of the on-chain image.
+    const order = [2, 6, 8, 5, 1, 3, 4, 7, 9, 0].map(i => BigNumber.from(i));
 
     if (hustlers) {
       try {
         const transaction = await hustlers.setMetadata(BigNumber.from(dopeId), {
-          name: setname,
+          name: setname.replaceAll(`"`, `'`),
           color,
           background,
           options,
           viewbox: zoomWindow,
           body: bodyParts,
+          order,
           mask,
-          order: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         });
         await transaction.wait();
-        setLoading(false);
-        router.push({
-          pathname: '/inventory',
-          search: `?section=Hustlers`,
-        });
       } catch (error) {
-        console.error(error);
         setLoading(false);
+        console.error(error);
+        return;
       }
+      setLoading(false);
+      router.push({
+        pathname: '/inventory',
+        search: `?section=Hustlers`,
+      });
     }
   }, [chainId, hustlers, config, router, web3ReactChainId]);
 
   return (
     <ControlsWrapper>
+      <PanelTitleHeader>Customize</PanelTitleHeader>
       <ControlsBody>
         <Stack spacing={4}>
           {/* Title controls only make sense when zoomed out fully */}
@@ -194,6 +225,8 @@ const ConfigurationControls = ({
         </Stack>
       </ControlsBody>
       <PanelFooter>
+        {!isCustomize && <DisconnectAndQuitButton />}
+        <div></div>
         <Button onClick={() => randomizeHustlerAttributes(config.dopeId, setHustlerConfig)}>
           Randomize
         </Button>
@@ -208,15 +241,18 @@ const ConfigurationControls = ({
             Save Configuration
           </Button>
         ) : (
-          <Button
-            type="button"
-            onClick={goBackToInitialStep}
-            variant="primary"
-            isLoading={loading}
-            loadingText="Processing..."
-          >
-            Finish Configuration
-          </Button>
+          <>
+            <Button
+              type="button"
+              onClick={handleFinishConfiguration}
+              variant="primary"
+              isLoading={loading}
+              loadingText="Processing..."
+              // autoFocus
+            >
+              Finish Configuration
+            </Button>
+          </>
         )}
       </PanelFooter>
     </ControlsWrapper>

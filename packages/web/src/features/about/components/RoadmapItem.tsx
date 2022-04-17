@@ -6,12 +6,9 @@ import { ReactNode } from 'react';
 
 const Container = styled.div`
   clear: both;
-  margin: 32px;
-  background: rgba(0,0,0,0.75);
-  margin-bottom: 32px;
-  ${media.tablet`
-    margin-bottom: 96px;
-  `}
+  margin: 0px 32px;
+  background: rgba(0,0,0,0.9);
+  max-width: 60em;
   .imageBox {
     position: relative;
     border:4px solid black;
@@ -32,13 +29,14 @@ const Container = styled.div`
       float:right;
     `}
   }
-  &:nth-of-type(2n){
-    ${media.tablet`
-      .imageBox { float:right; }
-      .contentBox { 
-        float: left; 
-      }
-    `}
+  // &:nth-of-type(2n) {
+  //   ${media.tablet`
+  //     .imageBox { float:right; }
+  //     .contentBox { 
+  //       float: left; 
+  //     }
+  //   `}
+  // }
 `;
 
 const TitleContainer = styled.h3`
@@ -49,9 +47,9 @@ const TitleContainer = styled.h3`
 `;
 
 const Date = styled.div`
-  font-size: var(--text-00) !important;
-  padding: 8px 16px;
-  padding-top: 0px;
+  font-size: 12px !important;
+  padding: 6px 8px;
+  float: right;
 `;
 const Content = styled.div`
   padding: 0px 16px;
@@ -101,9 +99,11 @@ const RoadmapItem = ({
         )}
       </div>
       <div className="contentBox">
-        <TitleContainer>{title}</TitleContainer>
+        <TitleContainer>
+          {title}
+          <Date>{date}</Date>
+        </TitleContainer>
         <Content>{children}</Content>
-        <Date>{date}</Date>
       </div>
       <div
         css={css`

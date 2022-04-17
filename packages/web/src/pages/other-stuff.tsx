@@ -9,10 +9,15 @@ const SocialLinks = () => {
   };
 
   return (
-    <DesktopWindow title="Other Stuff" width={640}>
+    <DesktopWindow title="Other Stuff" width={600} height={800} scrollable hideWalletAddress>
       <IconGrid
         css={css`
-          top: 32px;
+          position: relative;
+          top: 64px;
+          // Override media queries in base component
+          width: 100% !important;
+          align-items: center !important;
+          justify-content: center !important;
         `}
       >
         <DesktopIcon
@@ -28,7 +33,7 @@ const SocialLinks = () => {
         <DesktopIcon
           icon="discord"
           label="Discord"
-          clickAction={() => openBrowserTab('https://discord.gg/VFbAX3JzPu')}
+          clickAction={() => openBrowserTab('https://discord.gg/dopewars')}
         />
         <DesktopIcon
           icon="telegram"

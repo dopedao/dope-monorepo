@@ -14,7 +14,7 @@ import styled from '@emotion/styled';
 const Container = styled.div`
   .hustlerGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     grid-column-gap: 16px;
     grid-row-gap: 16px;
   }
@@ -24,7 +24,7 @@ const Container = styled.div`
 const SwapMeetHustlers = () => {
   const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllHustlersQuery(
     {
-      first: 18
+      first: 18,
     },
     {
       getNextPageParam: lastPage => {
@@ -44,29 +44,37 @@ const SwapMeetHustlers = () => {
       padBody={false}
       scrollable={true}
       height="90vh"
-      navbar={<DopeWarsExeNav hideFilterBar />}
+      navbar={<DopeWarsExeNav />}
       title="Swap Meet"
     >
       <Head title="Hustlers" />
       <HStack
+        justifyContent="start"
         margin="0"
         gridGap={1}
         width="100%"
-        justifyContent="start"
         padding="16px"
         background="white"
         borderBottom="2px solid black"
       >
-        <Link href="/hustlers/initiate" passHref>
-          <Button variant="primary">Mint a Hustler</Button>
-        </Link>
-        <a href="https://quixotic.io/collection/hustlers?attributes=attribute%3DClass%3AOriginal+Gangsta&query=" target="quix">
-          <Button variant="primary">Buy an OG</Button>
-        </a>
-        <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a" target="wiki">
-          <Button>
-            Hustler FAQ
+        <Link href="/hustlers/quick-buy" passHref>
+          <Button variant="primary" fontSize="xs">
+            Mint a Hustler
           </Button>
+        </Link>
+        <a
+          href="https://quixotic.io/collection/hustlers?attributes=attribute%3DClass%3AOriginal+Gangsta&query="
+          target="quix"
+        >
+          <Button variant="primary" fontSize="xs">
+            Buy an OG
+          </Button>
+        </a>
+        <a
+          href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a"
+          target="wiki"
+        >
+          <Button fontSize="xs">Hustler FAQ</Button>
         </a>
       </HStack>
       <Box>
@@ -94,7 +102,7 @@ const SwapMeetHustlers = () => {
                   {data?.pages.map(group =>
                     group.hustlers.edges!.map(hustler => {
                       if (!hustler?.node!.svg) return null;
-                      return <HustlerProfileCard key={hustler.node.id} hustler={hustler.node} />
+                      return <HustlerProfileCard key={hustler.node.id} hustler={hustler.node} />;
                     }),
                   )}
                 </div>
@@ -102,7 +110,7 @@ const SwapMeetHustlers = () => {
             </Container>
           )
         )}
-      </Box>    
+      </Box>
     </AppWindow>
   );
 };

@@ -7,12 +7,13 @@ import {
   useInfiniteSearchDopeQuery,
 } from 'generated/graphql';
 import { HStack, Button } from '@chakra-ui/react';
-import DopeCard from 'features/dope/components/DopeCard';
-import LoadingState from 'features/swap-meet/components/LoadingState';
-import EmptyState from 'features/swap-meet/components/EmptyState';
-import Container from 'features/swap-meet/components/Container';
-import LoadingBlock from 'components/LoadingBlock';
 import { SearchFilterContext } from 'components/SearchFilter';
+import Container from 'features/swap-meet/components/Container';
+import DopeCard from 'features/dope/components/DopeCard';
+import EmptyState from 'features/swap-meet/components/EmptyState';
+import LoadingBlock from 'components/LoadingBlock';
+import LoadingState from 'features/swap-meet/components/LoadingState';
+import MarketFilterBar from 'features/swap-meet/components/MarketFilterBar';
 
 export type FILTERS = 'All' | 'Has Unclaimed $PAPER' | 'For Sale' | 'Has Unclaimed Gear';
 
@@ -74,19 +75,15 @@ const MarketList = () => {
   const isLoading = searchStatus === 'loading';
   return (
     <>
-      <HStack
-        margin="0"
-        gridGap={1}
-        width="100%"
-        justifyContent="start"
-        padding="16px"
-        background="white"
-        borderBottom="2px solid black"
-      >
-        <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d97ecd4b61ef4189964cd67f230c91c5" target="wiki">
-          <Button>DOPE NFT FAQ</Button>
-        </a>
-      </HStack>
+      <MarketFilterBar
+        orderBy={orderBy}
+        setOrderBy={setOrderBy}
+        setViewCompactCards={setViewCompactCards}
+        compactSwitchOn={viewCompactCards}
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
+        setSearchValue={setSearchValue}
+      />
       {isLoading ? (
         <LoadingState />
       ) : Boolean(!searchResult?.pages.length) ? (

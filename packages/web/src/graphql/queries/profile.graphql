@@ -17,6 +17,7 @@ query ProfileDopes($where: DopeWhereInput, $first: Int, $after: Cursor) {
           tier
           greatness
           count
+          suffix
         }
       }
     }

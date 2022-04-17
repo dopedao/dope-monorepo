@@ -258,20 +258,12 @@ const BoostPanel = () => {
           </Link>
         )}
         {hasEnoughPaper && !isPaperApproved && (
-          <Button
-            variant="cny"
-            onClick={approvePaper}
-            disabled={isApprovingPaper || isPaperApproved}
-          >
+          <Button variant="cny" onClick={approvePaper} disabled>
             {!isPaperApproved && !isApprovingPaper && <span>Approve $PAPER</span>}
             {!isPaperApproved && isApprovingPaper && <SpinnerMessage text="Approving…" />}
           </Button>
         )}
-        <Button
-          variant="cny"
-          onClick={mintMask}
-          disabled={!isPaperApproved || isBuyingMask || !hasEnoughEthToMint()}
-        >
+        <Button variant="cny" onClick={mintMask} disabled>
           {!isBuyingMask && hasEnoughEthToMint() && 'Complete Purchase'}
           {!isBuyingMask && !hasEnoughEthToMint() && 'Not Enough Optimistic ETH'}
           {isBuyingMask && (
