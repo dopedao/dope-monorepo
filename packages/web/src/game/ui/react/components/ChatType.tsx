@@ -118,7 +118,7 @@ export default function ChatType(props: Props) {
                       color: 'grey',
                       fontSize: '0.6rem',
                     }}>
-                      {new Date(message.timestamp * 1000).toLocaleString()}
+                      {new Date(message.timestamp).toLocaleString()}
                     </Text>
                   </HStack>
               </ListItem>)}
