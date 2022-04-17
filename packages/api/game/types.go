@@ -49,6 +49,7 @@ type ChatMessageData struct {
 type ChatMessageClientData struct {
 	Message string `json:"message"`
 	Author  string `json:"author"`
+	Timestamp int64 `json:"timestamp"`
 }
 
 type ItemEntityData struct {
