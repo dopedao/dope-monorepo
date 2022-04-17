@@ -91,7 +91,8 @@ export default class Player extends Hustler {
     // });
 
     this.hitboxSensor.onCollideActiveCallback = this.updateDepth;
-    this.hitboxSensor.onCollideEndCallback = () => this.setDepth(this._baseDepth);
+    // prevents player depth stuttering when moving close to objects
+    this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => this.setDepth(this._baseDepth));
   }
 
   toggleInventory() {
@@ -126,22 +127,7 @@ export default class Player extends Hustler {
         otherGameObject.onInteraction(this);
         EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, otherGameObject);
       } else if (otherGameObject instanceof ItemEntity) {
-        if (!NetworkHandler.getInstance().authenticator.loggedIn) {
-          // TODO: unauthenticated event?
-          EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
-            ...chakraToastStyle,
-            title: 'Unauthenticated',
-            description: 'You need to be logged in to interact with items.',
-            status: 'warning',
-          });
-          return;
-        }
-
-        // server will send us back a handshake message if everything goes accordingly
-        // and we can handle the pick up of the item
-        NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
-          id: otherGameObject.getData('id'),
-        })
+        this.tryPickupItem(otherGameObject);
       }
     };
 
@@ -155,6 +141,25 @@ export default class Player extends Hustler {
 
     // check hitbox
     this.scene.matter.overlap(this.hitboxSensor, undefined, overlap);
+  }
+
+  tryPickupItem(item: ItemEntity) {
+    if (!NetworkHandler.getInstance().authenticator.loggedIn) {
+      // TODO: unauthenticated event?
+      EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
+        ...chakraToastStyle,
+        title: 'Unauthenticated',
+        description: 'You need to be logged in to interact with items.',
+        status: 'warning',
+      });
+      return;
+    }
+
+    // server will send us back a handshake message if everything goes accordingly
+    // and we can handle the pick up of the item
+    NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+      id: item.getData('id'),
+    });
   }
 
   updateSensorPosition() {

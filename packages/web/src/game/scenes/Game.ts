@@ -343,19 +343,7 @@ export default class GameScene extends Scene {
             itemToPickUp &&
             new Phaser.Math.Vector2(this.player).distance(itemToPickUp) < 100
           ) {
-            if (!NetworkHandler.getInstance().authenticator.loggedIn) {
-              // TODO: unauthenticated event?
-              EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
-                ...chakraToastStyle,
-                title: 'Unauthenticated',
-                description: 'You need to be logged in to interact with items.',
-                status: 'warning',
-              });
-            } else {
-              NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
-                id: itemToPickUp.getData('id'),
-              });
-            }
+            this.player.tryPickupItem(itemToPickUp);
             interacted = true;
           }
         }
@@ -470,7 +458,8 @@ export default class GameScene extends Scene {
         const cameraView = new Phaser.Geom.Rectangle(
           this.cameras.main.worldView.x - (this.cameras.main.worldView.width * 0.2), 
           this.cameras.main.worldView.y - (this.cameras.main.worldView.height * 0.2), 
-          this.cameras.main.worldView.width * 1.2, this.cameras.main.worldView.height * 1.2
+          (this.cameras.main.worldView.width + (this.cameras.main.worldView.width * 0.2)) * 1.2, 
+          (this.cameras.main.worldView.height + (this.cameras.main.worldView.height * 0.2)) * 1.2, 
         );
         // if not visible to camera, dont bother doing pathfinding, just tp to position
         if (!cameraView.contains(hustler.x, hustler.y) && !cameraView.contains(p.x, p.y)) {
