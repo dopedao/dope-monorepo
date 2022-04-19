@@ -183,7 +183,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
       } as MatterJS.BodyType,
     );
 
-    this.setPipeline('Light2D');
+    // this.setPipeline('Light2D');
 
     this.setExistingBody(colliderBody);
     this.setPosition(x, y);

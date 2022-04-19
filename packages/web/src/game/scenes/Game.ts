@@ -32,6 +32,9 @@ import TilesAnimator from 'game/world/TilesAnimator';
 import Debug from 'game/ui/react/components/Debug';
 import { Conversations, getConversation, Texts } from 'game/constants/Dialogues';
 import WaterfallQuest from 'game/entities/player/quests/WaterfallQuest';
+import Quests, { getQuest } from 'game/constants/Quests';
+import BringItemQuest from 'game/entities/player/quests/BringItemQuest';
+import Citizens from 'game/constants/Citizens';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -208,26 +211,13 @@ export default class GameScene extends Scene {
   }
 
   initializeGame(handshakeData: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) {
-    this.citizens.push(
-      new Citizen(
-        this.matter.world,
-        100,
-        300,
-        "NY_Bushwick_Basket",
-        '12',
-        'Jimmy',
-        'Crackhead',
-        getConversation(handshakeData.relations?.['test']?.conversation, handshakeData.relations?.['test']?.text),
-        [
-          { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
-          { position: new Phaser.Math.Vector2(405, 200) },
-          { position: new Phaser.Math.Vector2(800, 100), wait: 8000, onMoved: (hustler: Hustler) => hustler.say('I can\'t be walking around indefinitely...') },
-          { position: new Phaser.Math.Vector2(100, 500) },
-        ],
-        true,
-        false,
-      ).setData('id', 'test'),
-    );
+    // const jimmyData = Citizens["JIMMY"];
+    // const jimmy = new Citizen(this.matter.world, 
+    //   jimmyData.position.x, jimmyData.position.y, 
+    //   jimmyData.position.currentMap, 
+    //   jimmyData.hustlerId, jimmyData.name, jimmyData.description,
+      
+    // );
 
     const camera = this.cameras.main;
 
@@ -238,6 +228,8 @@ export default class GameScene extends Scene {
     this.lights.enable();
     this.lights.setAmbientColor(0xfdffdb);
     this.lights.addLight(0, 0, 100000, 0xffffff, 0);
+
+    this.player.questManager.add(getQuest("SEND_CHAT_MESSAGES", this.player)!);
 
     const map = this.mapHelper.loadedMaps[this.player.currentMap];
     // TODO: update function on map which gets called only when player is in the map
