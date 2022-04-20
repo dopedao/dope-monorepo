@@ -44,7 +44,7 @@ At the time of this writing, [App Engine Standard Environment only supports up t
 
 #### Run these commands to deploy
 
-```
+```bash
 gcloud app deploy --appyaml app.mainnet.api.yaml
 gcloud app deploy --appyaml app.mainnet.indexer.yaml
 ```

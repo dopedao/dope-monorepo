@@ -40,17 +40,18 @@ func NewHttpServer(ctx context.Context, drv *sql.Driver, static *storage.BucketH
 	}
 	ethClient := ethclient.NewClient(c)
 
-	srv := handler.NewDefaultServer(graph.NewSchema(client))
+	graphServer := handler.NewDefaultServer(graph.NewSchema(client))
 
 	r := mux.NewRouter()
 	r.Use(middleware.Session(middleware.Store))
+	r.Use(middleware.Logger)
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(`{"success":true}`))
 	})
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
-	r.Handle("/query", srv)
+	r.Handle("/query", graphServer)
 
 	authRouter := r.PathPrefix("/authentication").Subrouter()
 	authRouter.Use(authentication.CORS())
