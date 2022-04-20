@@ -18,7 +18,11 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var listen = pflag.String("listen", "8080", "server listen port")
+// Listen to env variable PORT or default to 8080
+// to avoid warning GCP was giving us about this issue.
+// https://cloud.google.com/appengine/docs/flexible/custom-runtimes/configuring-your-app-with-app-yaml
+var port = common.GetEnvOrFallback("PORT", "8080")
+var listen = pflag.String("listen", port, "server listen port")
 var pgConnstring = common.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
 var openseaApiKey = common.SecretEnv("OPENSEA", "plaintext://")
 var network = common.GetEnvOrFallback("NETWORK", "mainnet")
@@ -61,7 +65,7 @@ func main() {
 		common.LogFatalOnErr(err, "Creating Indexer")
 	} else {
 		log.Debug().Msg("Launching HTTP API Server")
-		srv, err = api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), network)
+		srv, err = api.NewHttpServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), network)
 		common.LogFatalOnErr(err, "Creating HTTP Server")
 	}
 
