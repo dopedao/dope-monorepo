@@ -21,6 +21,7 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/authentication"
 	"github.com/dopedao/dope-monorepo/packages/api/base"
+	"github.com/dopedao/dope-monorepo/packages/api/common"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
@@ -82,41 +83,21 @@ func NewServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandl
 // Exposes HTTP endpoints for `/_ah/start` and `/_ah/stop` for autoscaling
 // https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#startup
 func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network string) (http.Handler, error) {
+
 	_, log := base.LogFor(ctx)
-	client := ent.NewClient(ent.Driver(drv))
 
-	// Run the auto migration tool.
-	if err := client.Schema.Create(ctx, schema.WithHooks(func(next schema.Creator) schema.Creator {
-		return schema.CreateFunc(func(ctx context.Context, tables ...*schema.Table) error {
-			var tables2 []*schema.Table
-			for _, t := range tables {
-				// Remove search_index since it is a materialized view
-				if t.Name != "search_index" {
-					tables2 = append(tables2, t)
-				}
-			}
-			return next.Create(ctx, tables2...)
-		})
-	})); err != nil {
-		return nil, err
-	}
+	log.Debug().Msg("Starting indexer?")
 
-	ts_migration, err := os.ReadFile("sql_migrations/00_init_search_index.sql")
-	if err != nil {
-		log.Fatal().Msg("Couldn't read migration file") //nolint:gocritic
-	}
-	if _, err := drv.DB().Exec(string(ts_migration)); err != nil {
-		if !strings.Contains(err.Error(), "already exists") {
-			return nil, fmt.Errorf("applying ts migration: %w", err)
-		}
-	}
+	dbClient := ent.NewClient(ent.Driver(drv))
+
+	migrateDatabase(ctx, drv, dbClient)
 
 	ctx, cancel := context.WithCancel(ctx)
-
 	started := false
 
 	r := mux.NewRouter()
 	r.Use(middleware.Session(middleware.Store))
+
 	r.HandleFunc("/_ah/start", func(w http.ResponseWriter, r *http.Request) {
 		if started {
 			w.WriteHeader(200)
@@ -128,11 +109,11 @@ func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network str
 		for _, c := range configs[network] {
 			switch c := c.(type) {
 			case engine.EthConfig:
-				engine := engine.NewEthereum(ctx, client, c)
+				engine := engine.NewEthereum(ctx, dbClient, c)
 				go engine.Sync(ctx)
 			case engine.OpenseaConfig:
 				c.APIKey = openseaApiKey
-				opensea := engine.NewOpensea(client, c)
+				opensea := engine.NewOpensea(dbClient, c)
 				go opensea.Sync(ctx)
 			}
 		}
@@ -146,4 +127,30 @@ func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network str
 		_, _ = w.Write([]byte(`{"success":true}`))
 	})
 	return cors.AllowAll().Handler(r), nil
+}
+
+func migrateDatabase(ctx context.Context, drv *sql.Driver, dbClient *ent.Client) (string, error) {
+	if err := dbClient.Schema.Create(ctx, schema.WithHooks(func(next schema.Creator) schema.Creator {
+		return schema.CreateFunc(func(ctx context.Context, tables ...*schema.Table) error {
+			var tables2 []*schema.Table
+			for _, t := range tables {
+				// Remove search_index since it is a materialized view
+				if t.Name != "search_index" {
+					tables2 = append(tables2, t)
+				}
+			}
+			return next.Create(ctx, tables2...)
+		})
+	})); err != nil {
+		return "", err
+	}
+	ts_migration, err := os.ReadFile("sql_migrations/00_init_search_index.sql")
+	common.LogFatalOnErr(err, "Couldn't read migration file")
+
+	if _, err := drv.DB().Exec(string(ts_migration)); err != nil {
+		if !strings.Contains(err.Error(), "already exists") {
+			return "", fmt.Errorf("applying ts migration: %w", err)
+		}
+	}
+	return "Database migrated", nil
 }
