@@ -1,10 +1,13 @@
 import Citizen from "game/entities/citizen/Citizen";
 import Item from "game/entities/player/inventory/Item";
 import Player from "game/entities/player/Player";
+import BringItemQuest from "game/entities/player/quests/BringItemQuest";
+import InteractCitizenQuest from "game/entities/player/quests/InteractCitizenQuest";
 import ItemQuest from "game/entities/player/quests/ItemQuest";
 import Quest from "game/entities/player/quests/Quest"
 import WaterfallQuest from "game/entities/player/quests/WaterfallQuest";
 import { Events } from "game/handlers/events/EventHandler";
+import GameScene from "game/scenes/Game";
 import Zone from "game/world/Zone";
 import Items from "./Items";
 
@@ -35,57 +38,66 @@ export interface QuestDataTypes {
 }
 
 export interface QuestData {
-    type: QuestType,
     name: string;
     description: string;
-    data: QuestDataTypes[QuestType];
+    data: {$case: QuestType.BringItem, bringItem: QuestDataTypes[QuestType.BringItem]} | 
+        {$case: QuestType.InteractCitizen, interactCitizen: QuestDataTypes[QuestType.InteractCitizen]} |
+        {$case: QuestType.Item, item: QuestDataTypes[QuestType.Item]} |
+        {$case: QuestType.Point, point: QuestDataTypes[QuestType.Point]} |
+        {$case: QuestType.Waterfall, waterfall: QuestDataTypes[QuestType.Waterfall]};
 }
 
 
 
 const Quests: {[key: string]: QuestData} = {
     BRING_APPLE: {
-        type: QuestType.BringItem,
         name: "Bring Item",
         description: "Bring an item to a citizen",
         data: {
-            item: Items["apple"],
+            $case: QuestType.BringItem,
+            bringItem: {
+                item: Items["apple"],
+            }
         }
     },
     SEND_CHAT_MESSAGES: {
-        type: QuestType.Waterfall,
         name: "Send Chat Messages",
         description: "Send chat messages to the chatbox",
         data: {
-            events: Array.from({length: 5}, () => Events.CHAT_MESSAGE)
+            $case: QuestType.Waterfall,
+            waterfall: {
+                events: Array.from({length: 5}, () => Events.CHAT_MESSAGE)
+            }
         }
     }
 }
 
-export function getQuest(questName: string, player: Player, questReferer?: Citizen): Quest | undefined {
+export function getQuest(questName: string, scene: GameScene, questReferer?: Citizen): Quest | undefined {
     const questData = Quests[questName];
     if (!questData) return;
 
     let quest: Quest | undefined;
-    switch (questData.type) {
+    const questManager = (<any>scene).player.questManager;
+    switch (questData.data.$case) {
         case QuestType.BringItem:
-            quest = new ItemQuest(questData.name, questData.description, (<any>questData.data).item, player.questManager, questReferer);
+            if (!questReferer) return;
+
+            quest = new BringItemQuest(questData.name, questData.description, questData.data.bringItem.item, questManager, questReferer);
             break;
         case QuestType.InteractCitizen:
+            const citizenId = questData.data.interactCitizen.citizenId;
             // TODO: implement
-            // quest = new ItemQuest(questData.name, questData.description, Citizens, player.questManager, questReferer);
+            quest = new InteractCitizenQuest(questData.name, questData.description, (scene.citizens as Citizen[]).find(e => citizenId === e.getData('id'))!, questManager, questReferer);
             break;
         case QuestType.Item:
-            quest = new ItemQuest(questData.name, questData.description, (<any>questData.data).item, player.questManager);
+            quest = new ItemQuest(questData.name, questData.description, questData.data.item.item, (<any>scene).player.questManager);
             break;
         case QuestType.Point:
             // TODO: implement 
             break;
         case QuestType.Waterfall:
-            quest = new WaterfallQuest(questData.name, questData.description, (<any>questData.data).events, player.questManager);
+            quest = new WaterfallQuest(questData.name, questData.description, questData.data.waterfall.events, questManager);
             break;
-        default:
-            console.error(`Quest type ${questData.type} not implemented`);
     }
 
     return quest;

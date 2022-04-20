@@ -129,7 +129,7 @@ interface DataTypes {
     citizen: string;
     conversation: string;
     // conversation texts
-    text: string;
+    text: number;
   };
 }
 
