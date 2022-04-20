@@ -47,8 +47,6 @@ export interface QuestData {
         {$case: QuestType.Waterfall, waterfall: QuestDataTypes[QuestType.Waterfall]};
 }
 
-
-
 const Quests: {[key: string]: QuestData} = {
     BRING_APPLE: {
         name: "Bring Item",

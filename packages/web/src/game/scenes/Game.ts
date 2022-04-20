@@ -227,12 +227,14 @@ export default class GameScene extends Scene {
   }
 
   initializeGame(handshakeData: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) {
-    const jimmyData = Citizens["JIMMY"];
+    const jimmyData = Citizens["jimmy"];
     const jimmy = new Citizen(this.matter.world, 
       jimmyData.position.x, jimmyData.position.y, 
       jimmyData.position.currentMap, 
       jimmyData.hustlerId, jimmyData.name, jimmyData.description,
-    );
+      Conversations["jimmy_random"],
+      jimmyData.path, jimmyData.repeat, jimmyData.shouldFollowPath,
+    ).setData('id', "jimmy");
 
     this.citizens.push(jimmy);
 

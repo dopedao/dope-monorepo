@@ -21,7 +21,7 @@ export interface CitizenData {
 }
 
 const Citizens = {
-    JIMMY: {
+    jimmy: {
         name: "Jimmy",
         description: "Jimmy is a local hustler. He is a very nice guy.",
         hustlerId: "12",

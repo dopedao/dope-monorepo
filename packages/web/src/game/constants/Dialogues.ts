@@ -37,8 +37,6 @@ const updateConversation = (citizen: Citizen, next: string) => {
 const bindRandom = (texts: Text[]): Text[] => {
     return texts.map(text => {
         text.onEnd = (citizen: Citizen, conversation: Conversation, text: Text, selectedChoice?: number) => {
-            if (text.onEnd) text.onEnd(citizen, conversation, text, selectedChoice);
-    
             const next = Math.round(Math.random() * (texts.length - 1));
             updateText(citizen, conversation, next);
         }
@@ -76,7 +74,18 @@ const Texts: {[key: string]: Text[]} = {
             text: "Nice to meet you!"
         }
     ],
-    "oracle_jones_random": bindRandom([
+    "jimmy_random": [
+        {
+            text: "Hey, I'm jimmy",
+        },
+        {
+            text: "I'm a hustler",
+        },
+        {
+            text: "Jimmy",
+        }
+    ],
+    "oracle_jones_random": [
         {
             text: "Community health is wealth ⏤ WAGMI"
         },
@@ -86,8 +95,8 @@ const Texts: {[key: string]: Text[]} = {
         {
             text: "Stackin' $PAPER is a 1UP"
         }
-    ]),
-    "word_reporter_random": bindRandom([
+    ],
+    "word_reporter_random": [
         {
             text: "🗣 DopeCity is community. Community is thriving"
         },
@@ -97,8 +106,8 @@ const Texts: {[key: string]: Text[]} = {
         {
             text: "🗣 Word Around Town: Watch your back. Po-Po is on the hunt."
         }
-    ]),
-    "soundwave_sammy_random": bindRandom([
+    ],
+    "soundwave_sammy_random": [
         {
             text: "🔊🔊 Wassup my ninjas! No BULL, but I’m hearing DopeCity’s in for quite a storm. Hope you can BEAR it."
         },
@@ -108,8 +117,8 @@ const Texts: {[key: string]: Text[]} = {
         {
             text: "🔊🔊 Bing Bong! Message to our very own Dope Dolphins: Second best is still NGMI"
         }
-    ]),
-    "detective_harry_random": bindRandom([
+    ],
+    "detective_harry_random": [
         {
             text: "Not that I’d ever get caught up, but it seems [HUSTLER] is opening his fat mouth again. I got the dirt!"
         },
@@ -119,15 +128,31 @@ const Texts: {[key: string]: Text[]} = {
         {
             text: "[HUSTLER] left this tip for the community. Take it or leave, but I don’t trust the guy."
         }
-    ])
+    ]
 };
 
 const Conversations: {[key: string]: Conversation} = {
     "hello": new Conversation("hello", Texts["hello"], (citizen) => {
         updateConversation(citizen, "name")
     }),
-    "oracle_jones_random": new Conversation("oracle_jones_random", Texts["oracle_jones_random"][Math.round(Math.random() * Texts["oracle_jones_random"].length)]),
-    "detective_harry_random": new Conversation("detective_harry_random", Texts["detective_harry_random"][Math.round(Math.random() * Texts["detective_harry_random"].length)])
+    "oracle_jones_random": new Conversation("oracle_jones_random", Texts["oracle_jones_random"][Math.round(Math.random() * (Texts["oracle_jones_random"].length - 1))], (citizen, conversation) => {
+        const textIdx = Math.round(Math.random() * (Texts["jimmy_random"].length - 1));
+        citizen.conversations.push(conversation);
+
+        updateText(citizen, conversation, textIdx);
+    }),
+    "detective_harry_random": new Conversation("detective_harry_random", Texts["detective_harry_random"][Math.round(Math.random() * (Texts["detective_harry_random"].length - 1))], (citizen, conversation) => {
+        const textIdx = Math.round(Math.random() * (Texts["jimmy_random"].length - 1));
+        citizen.conversations.push(conversation);
+
+        updateText(citizen, conversation, textIdx);
+    }),
+    "jimmy_random": new Conversation("jimmy_random", Texts["jimmy_random"][Math.round(Math.random() * (Texts["jimmy_random"].length - 1))], (citizen, conversation) => {
+        const textIdx = Math.round(Math.random() * (Texts["jimmy_random"].length - 1));
+        citizen.conversations.push(conversation);
+
+        updateText(citizen, conversation, textIdx);
+    }),
 };
 
 function getConversation(id: string, text?: number): Conversation {
