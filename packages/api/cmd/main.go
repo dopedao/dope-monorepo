@@ -21,47 +21,54 @@ import (
 var listen = pflag.String("listen", "8080", "server listen port")
 var pgConnstring = common.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
 var openseaApiKey = common.SecretEnv("OPENSEA", "plaintext://")
-var network = os.Getenv("NETWORK")
-var isInIndexerMode = os.Getenv("INDEX")
+var network = common.GetEnvOrFallback("NETWORK", "mainnet")
+var indexEnv = common.GetEnvOrFallback("INDEX", "False")
 
+// Runs the HTTP and Indexer servers.
+//
+// This is how the program is launched both on your local machine,
+// and when run remotely on GCP.
+//
+// Requires a number of environment variables to be set (see above in source)
+// or the program will crash. Because of this we set defaults.
 func main() {
 	log := zerolog.New(os.Stderr)
 
+	isInIndexerMode := (indexEnv == "True")
+
+	log.Debug().Msg(indexEnv)
 	log.Debug().Msgf("config: is indexer: %v", isInIndexerMode)
 
 	pgConnstringSecret, err := pgConnstring.Value()
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Getting postgres connection string.") //nolint:gocritic
-	}
+	common.LogFatalOnErr(err, "Getting postgres connection string.")
 
 	openseaApiKey, err := openseaApiKey.Value()
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Getting opensea api key.") //nolint:gocritic
-	}
+	common.LogFatalOnErr(err, "Getting OpenSea API Key")
 
 	db, err := sql.Open(dialect.Postgres, pgConnstringSecret)
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Connecting to db.") //nolint:gocritic
-	}
+	common.LogFatalOnErr(err, "Connecting to db")
 
 	ctx := context.Background()
 
 	s, err := storage.NewClient(ctx)
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Creating storage client.") //nolint:gocritic
+	common.LogFatalOnErr(err, "Creating storage client.")
+
+	var srv http.Handler
+
+	if isInIndexerMode {
+		log.Debug().Msg("Launching Indexer")
+		srv, err = api.NewIndexer(log.WithContext(ctx), db, openseaApiKey, network)
+		common.LogFatalOnErr(err, "Creating Indexer")
+	} else {
+		log.Debug().Msg("Launching HTTP API Server")
+		srv, err = api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), network)
+		common.LogFatalOnErr(err, "Creating HTTP Server")
 	}
 
-	srv, err := api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), isInIndexerMode == "True", openseaApiKey, network)
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Creating server.") //nolint:gocritic
-	}
-
+	log.Info().Msg("Starting to listen on port: " + *listen)
 	middleware := crzerolog.InjectLogger(&log)
-
 	server := &http.Server{Addr: ":" + *listen, Handler: middleware(srv)}
 
-	log.Info().Msg("listening on :" + *listen)
-	if err := server.ListenAndServe(); err != nil {
-		log.Fatal().Err(err).Msgf("Server terminated.")
-	}
+	err = server.ListenAndServe()
+	common.LogFatalOnErr(err, "Server terminated.")
 }
