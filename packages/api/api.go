@@ -2,14 +2,10 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"net/http"
-	"os"
-	"strings"
 
 	"cloud.google.com/go/storage"
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/schema"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -21,11 +17,11 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/authentication"
 	"github.com/dopedao/dope-monorepo/packages/api/base"
-	"github.com/dopedao/dope-monorepo/packages/api/common"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
 	"github.com/dopedao/dope-monorepo/packages/api/middleware"
+	"github.com/dopedao/dope-monorepo/packages/api/migrations"
 	"github.com/dopedao/dope-monorepo/packages/api/resources"
 )
 
@@ -89,8 +85,7 @@ func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network str
 	log.Debug().Msg("Starting indexer?")
 
 	dbClient := ent.NewClient(ent.Driver(drv))
-
-	migrateDatabase(ctx, drv, dbClient)
+	migrations.Migrate(ctx, drv, dbClient)
 
 	ctx, cancel := context.WithCancel(ctx)
 	started := false
@@ -127,30 +122,4 @@ func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network str
 		_, _ = w.Write([]byte(`{"success":true}`))
 	})
 	return cors.AllowAll().Handler(r), nil
-}
-
-func migrateDatabase(ctx context.Context, drv *sql.Driver, dbClient *ent.Client) (string, error) {
-	if err := dbClient.Schema.Create(ctx, schema.WithHooks(func(next schema.Creator) schema.Creator {
-		return schema.CreateFunc(func(ctx context.Context, tables ...*schema.Table) error {
-			var tables2 []*schema.Table
-			for _, t := range tables {
-				// Remove search_index since it is a materialized view
-				if t.Name != "search_index" {
-					tables2 = append(tables2, t)
-				}
-			}
-			return next.Create(ctx, tables2...)
-		})
-	})); err != nil {
-		return "", err
-	}
-	ts_migration, err := os.ReadFile("sql_migrations/00_init_search_index.sql")
-	common.LogFatalOnErr(err, "Couldn't read migration file")
-
-	if _, err := drv.DB().Exec(string(ts_migration)); err != nil {
-		if !strings.Contains(err.Error(), "already exists") {
-			return "", fmt.Errorf("applying ts migration: %w", err)
-		}
-	}
-	return "Database migrated", nil
 }
