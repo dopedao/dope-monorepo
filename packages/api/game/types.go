@@ -47,9 +47,9 @@ type ChatMessageData struct {
 }
 
 type ChatMessageClientData struct {
-	Message string `json:"message"`
-	Author  string `json:"author"`
-	Timestamp int64 `json:"timestamp"`
+	Message   string `json:"message"`
+	Author    string `json:"author"`
+	Timestamp int64  `json:"timestamp"`
 }
 
 type ItemEntityData struct {
@@ -108,7 +108,7 @@ type CitizenUpdateStateData struct {
 	// conversation id
 	Conversation string `json:"conversation"`
 	// text
-	Text string `json:"text"`
+	Text uint `json:"text"`
 }
 
 type IdData struct {

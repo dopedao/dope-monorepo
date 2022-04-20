@@ -21,7 +21,7 @@ type GameHustlerRelation struct {
 	// Conversation holds the value of the "conversation" field.
 	Conversation string `json:"conversation,omitempty"`
 	// Text holds the value of the "text" field.
-	Text string `json:"text,omitempty"`
+	Text uint `json:"text,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the GameHustlerRelationQuery when eager-loading is set.
 	Edges                  GameHustlerRelationEdges `json:"edges"`
@@ -56,7 +56,9 @@ func (*GameHustlerRelation) scanValues(columns []string) ([]interface{}, error) 
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case gamehustlerrelation.FieldID, gamehustlerrelation.FieldCitizen, gamehustlerrelation.FieldConversation, gamehustlerrelation.FieldText:
+		case gamehustlerrelation.FieldText:
+			values[i] = new(sql.NullInt64)
+		case gamehustlerrelation.FieldID, gamehustlerrelation.FieldCitizen, gamehustlerrelation.FieldConversation:
 			values[i] = new(sql.NullString)
 		case gamehustlerrelation.ForeignKeys[0]: // game_hustler_relations
 			values[i] = new(sql.NullString)
@@ -94,10 +96,10 @@ func (ghr *GameHustlerRelation) assignValues(columns []string, values []interfac
 				ghr.Conversation = value.String
 			}
 		case gamehustlerrelation.FieldText:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field text", values[i])
 			} else if value.Valid {
-				ghr.Text = value.String
+				ghr.Text = uint(value.Int64)
 			}
 		case gamehustlerrelation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -144,7 +146,7 @@ func (ghr *GameHustlerRelation) String() string {
 	builder.WriteString(", conversation=")
 	builder.WriteString(ghr.Conversation)
 	builder.WriteString(", text=")
-	builder.WriteString(ghr.Text)
+	builder.WriteString(fmt.Sprintf("%v", ghr.Text))
 	builder.WriteByte(')')
 	return builder.String()
 }

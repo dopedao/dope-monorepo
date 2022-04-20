@@ -485,7 +485,7 @@ func (ghr *GameHustlerRelation) Node(ctx context.Context) (node *Node, err error
 		return nil, err
 	}
 	node.Fields[2] = &Field{
-		Type:  "string",
+		Type:  "uint",
 		Name:  "text",
 		Value: string(buf),
 	}

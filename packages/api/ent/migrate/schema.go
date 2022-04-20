@@ -163,7 +163,7 @@ var (
 		{Name: "id", Type: field.TypeString},
 		{Name: "citizen", Type: field.TypeString},
 		{Name: "conversation", Type: field.TypeString},
-		{Name: "text", Type: field.TypeString},
+		{Name: "text", Type: field.TypeUint},
 		{Name: "game_hustler_relations", Type: field.TypeString, Nullable: true},
 	}
 	// GameHustlerRelationsTable holds the schema information for the "game_hustler_relations" table.

@@ -4492,7 +4492,8 @@ type GameHustlerRelationMutation struct {
 	id             *string
 	citizen        *string
 	conversation   *string
-	text           *string
+	text           *uint
+	addtext        *int
 	clearedFields  map[string]struct{}
 	hustler        *string
 	clearedhustler bool
@@ -4678,12 +4679,13 @@ func (m *GameHustlerRelationMutation) ResetConversation() {
 }
 
 // SetText sets the "text" field.
-func (m *GameHustlerRelationMutation) SetText(s string) {
-	m.text = &s
+func (m *GameHustlerRelationMutation) SetText(u uint) {
+	m.text = &u
+	m.addtext = nil
 }
 
 // Text returns the value of the "text" field in the mutation.
-func (m *GameHustlerRelationMutation) Text() (r string, exists bool) {
+func (m *GameHustlerRelationMutation) Text() (r uint, exists bool) {
 	v := m.text
 	if v == nil {
 		return
@@ -4694,7 +4696,7 @@ func (m *GameHustlerRelationMutation) Text() (r string, exists bool) {
 // OldText returns the old "text" field's value of the GameHustlerRelation entity.
 // If the GameHustlerRelation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GameHustlerRelationMutation) OldText(ctx context.Context) (v string, err error) {
+func (m *GameHustlerRelationMutation) OldText(ctx context.Context) (v uint, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldText is only allowed on UpdateOne operations")
 	}
@@ -4708,9 +4710,28 @@ func (m *GameHustlerRelationMutation) OldText(ctx context.Context) (v string, er
 	return oldValue.Text, nil
 }
 
+// AddText adds u to the "text" field.
+func (m *GameHustlerRelationMutation) AddText(u int) {
+	if m.addtext != nil {
+		*m.addtext += u
+	} else {
+		m.addtext = &u
+	}
+}
+
+// AddedText returns the value that was added to the "text" field in this mutation.
+func (m *GameHustlerRelationMutation) AddedText() (r int, exists bool) {
+	v := m.addtext
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
 // ResetText resets all changes to the "text" field.
 func (m *GameHustlerRelationMutation) ResetText() {
 	m.text = nil
+	m.addtext = nil
 }
 
 // SetHustlerID sets the "hustler" edge to the GameHustler entity by id.
@@ -4834,7 +4855,7 @@ func (m *GameHustlerRelationMutation) SetField(name string, value ent.Value) err
 		m.SetConversation(v)
 		return nil
 	case gamehustlerrelation.FieldText:
-		v, ok := value.(string)
+		v, ok := value.(uint)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -4847,13 +4868,21 @@ func (m *GameHustlerRelationMutation) SetField(name string, value ent.Value) err
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *GameHustlerRelationMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addtext != nil {
+		fields = append(fields, gamehustlerrelation.FieldText)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *GameHustlerRelationMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case gamehustlerrelation.FieldText:
+		return m.AddedText()
+	}
 	return nil, false
 }
 
@@ -4862,6 +4891,13 @@ func (m *GameHustlerRelationMutation) AddedField(name string) (ent.Value, bool) 
 // type.
 func (m *GameHustlerRelationMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case gamehustlerrelation.FieldText:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddText(v)
+		return nil
 	}
 	return fmt.Errorf("unknown GameHustlerRelation numeric field %s", name)
 }

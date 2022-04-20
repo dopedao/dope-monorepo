@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"time"
 	"fmt"
+	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
@@ -21,7 +21,7 @@ type Quest struct {
 type Relation struct {
 	Citizen      string `json:"citizen"`
 	Conversation string `json:"conversation"`
-	Text         string `json:"text"`
+	Text         uint   `json:"text"`
 }
 
 type Player struct {
@@ -155,8 +155,8 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 			}
 
 			broadcastedData, err := json.Marshal(ChatMessageClientData{
-				Message: data.Message,
-				Author:  p.Id.String(),
+				Message:   data.Message,
+				Author:    p.Id.String(),
 				Timestamp: time.Now().UnixMilli(),
 			})
 

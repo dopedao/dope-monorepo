@@ -106,7 +106,7 @@ func Conversation(v string) predicate.GameHustlerRelation {
 }
 
 // Text applies equality check predicate on the "text" field. It's identical to TextEQ.
-func Text(v string) predicate.GameHustlerRelation {
+func Text(v uint) predicate.GameHustlerRelation {
 	return predicate.GameHustlerRelation(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldText), v))
 	})
@@ -335,21 +335,21 @@ func ConversationContainsFold(v string) predicate.GameHustlerRelation {
 }
 
 // TextEQ applies the EQ predicate on the "text" field.
-func TextEQ(v string) predicate.GameHustlerRelation {
+func TextEQ(v uint) predicate.GameHustlerRelation {
 	return predicate.GameHustlerRelation(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldText), v))
 	})
 }
 
 // TextNEQ applies the NEQ predicate on the "text" field.
-func TextNEQ(v string) predicate.GameHustlerRelation {
+func TextNEQ(v uint) predicate.GameHustlerRelation {
 	return predicate.GameHustlerRelation(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldText), v))
 	})
 }
 
 // TextIn applies the In predicate on the "text" field.
-func TextIn(vs ...string) predicate.GameHustlerRelation {
+func TextIn(vs ...uint) predicate.GameHustlerRelation {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -366,7 +366,7 @@ func TextIn(vs ...string) predicate.GameHustlerRelation {
 }
 
 // TextNotIn applies the NotIn predicate on the "text" field.
-func TextNotIn(vs ...string) predicate.GameHustlerRelation {
+func TextNotIn(vs ...uint) predicate.GameHustlerRelation {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -383,65 +383,30 @@ func TextNotIn(vs ...string) predicate.GameHustlerRelation {
 }
 
 // TextGT applies the GT predicate on the "text" field.
-func TextGT(v string) predicate.GameHustlerRelation {
+func TextGT(v uint) predicate.GameHustlerRelation {
 	return predicate.GameHustlerRelation(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldText), v))
 	})
 }
 
 // TextGTE applies the GTE predicate on the "text" field.
-func TextGTE(v string) predicate.GameHustlerRelation {
+func TextGTE(v uint) predicate.GameHustlerRelation {
 	return predicate.GameHustlerRelation(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldText), v))
 	})
 }
 
 // TextLT applies the LT predicate on the "text" field.
-func TextLT(v string) predicate.GameHustlerRelation {
+func TextLT(v uint) predicate.GameHustlerRelation {
 	return predicate.GameHustlerRelation(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldText), v))
 	})
 }
 
 // TextLTE applies the LTE predicate on the "text" field.
-func TextLTE(v string) predicate.GameHustlerRelation {
+func TextLTE(v uint) predicate.GameHustlerRelation {
 	return predicate.GameHustlerRelation(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldText), v))
-	})
-}
-
-// TextContains applies the Contains predicate on the "text" field.
-func TextContains(v string) predicate.GameHustlerRelation {
-	return predicate.GameHustlerRelation(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldText), v))
-	})
-}
-
-// TextHasPrefix applies the HasPrefix predicate on the "text" field.
-func TextHasPrefix(v string) predicate.GameHustlerRelation {
-	return predicate.GameHustlerRelation(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldText), v))
-	})
-}
-
-// TextHasSuffix applies the HasSuffix predicate on the "text" field.
-func TextHasSuffix(v string) predicate.GameHustlerRelation {
-	return predicate.GameHustlerRelation(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldText), v))
-	})
-}
-
-// TextEqualFold applies the EqualFold predicate on the "text" field.
-func TextEqualFold(v string) predicate.GameHustlerRelation {
-	return predicate.GameHustlerRelation(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldText), v))
-	})
-}
-
-// TextContainsFold applies the ContainsFold predicate on the "text" field.
-func TextContainsFold(v string) predicate.GameHustlerRelation {
-	return predicate.GameHustlerRelation(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldText), v))
 	})
 }
 

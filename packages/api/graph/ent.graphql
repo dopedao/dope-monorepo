@@ -1097,19 +1097,14 @@ input GameHustlerRelationWhereInput {
   conversationContainsFold: String
   
   """text field predicates"""
-  text: String
-  textNEQ: String
-  textIn: [String!]
-  textNotIn: [String!]
-  textGT: String
-  textGTE: String
-  textLT: String
-  textLTE: String
-  textContains: String
-  textHasPrefix: String
-  textHasSuffix: String
-  textEqualFold: String
-  textContainsFold: String
+  text: Int
+  textNEQ: Int
+  textIn: [Int!]
+  textNotIn: [Int!]
+  textGT: Int
+  textGTE: Int
+  textLT: Int
+  textLTE: Int
   
   """id field predicates"""
   id: ID

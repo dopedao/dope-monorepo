@@ -41,8 +41,15 @@ func (ghru *GameHustlerRelationUpdate) SetConversation(s string) *GameHustlerRel
 }
 
 // SetText sets the "text" field.
-func (ghru *GameHustlerRelationUpdate) SetText(s string) *GameHustlerRelationUpdate {
-	ghru.mutation.SetText(s)
+func (ghru *GameHustlerRelationUpdate) SetText(u uint) *GameHustlerRelationUpdate {
+	ghru.mutation.ResetText()
+	ghru.mutation.SetText(u)
+	return ghru
+}
+
+// AddText adds u to the "text" field.
+func (ghru *GameHustlerRelationUpdate) AddText(u int) *GameHustlerRelationUpdate {
+	ghru.mutation.AddText(u)
 	return ghru
 }
 
@@ -164,7 +171,14 @@ func (ghru *GameHustlerRelationUpdate) sqlSave(ctx context.Context) (n int, err 
 	}
 	if value, ok := ghru.mutation.Text(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: gamehustlerrelation.FieldText,
+		})
+	}
+	if value, ok := ghru.mutation.AddedText(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
 			Value:  value,
 			Column: gamehustlerrelation.FieldText,
 		})
@@ -236,8 +250,15 @@ func (ghruo *GameHustlerRelationUpdateOne) SetConversation(s string) *GameHustle
 }
 
 // SetText sets the "text" field.
-func (ghruo *GameHustlerRelationUpdateOne) SetText(s string) *GameHustlerRelationUpdateOne {
-	ghruo.mutation.SetText(s)
+func (ghruo *GameHustlerRelationUpdateOne) SetText(u uint) *GameHustlerRelationUpdateOne {
+	ghruo.mutation.ResetText()
+	ghruo.mutation.SetText(u)
+	return ghruo
+}
+
+// AddText adds u to the "text" field.
+func (ghruo *GameHustlerRelationUpdateOne) AddText(u int) *GameHustlerRelationUpdateOne {
+	ghruo.mutation.AddText(u)
 	return ghruo
 }
 
@@ -383,7 +404,14 @@ func (ghruo *GameHustlerRelationUpdateOne) sqlSave(ctx context.Context) (_node *
 	}
 	if value, ok := ghruo.mutation.Text(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: gamehustlerrelation.FieldText,
+		})
+	}
+	if value, ok := ghruo.mutation.AddedText(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
 			Value:  value,
 			Column: gamehustlerrelation.FieldText,
 		})

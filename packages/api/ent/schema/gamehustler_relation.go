@@ -16,7 +16,7 @@ func (GameHustlerRelation) Fields() []ent.Field {
 		field.String("id"),
 		field.String("citizen"),
 		field.String("conversation"),
-		field.String("text"),
+		field.Uint("text"),
 	}
 }
 

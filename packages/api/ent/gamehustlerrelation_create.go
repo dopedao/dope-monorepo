@@ -36,8 +36,8 @@ func (ghrc *GameHustlerRelationCreate) SetConversation(s string) *GameHustlerRel
 }
 
 // SetText sets the "text" field.
-func (ghrc *GameHustlerRelationCreate) SetText(s string) *GameHustlerRelationCreate {
-	ghrc.mutation.SetText(s)
+func (ghrc *GameHustlerRelationCreate) SetText(u uint) *GameHustlerRelationCreate {
+	ghrc.mutation.SetText(u)
 	return ghrc
 }
 
@@ -200,7 +200,7 @@ func (ghrc *GameHustlerRelationCreate) createSpec() (*GameHustlerRelation, *sqlg
 	}
 	if value, ok := ghrc.mutation.Text(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUint,
 			Value:  value,
 			Column: gamehustlerrelation.FieldText,
 		})
@@ -305,7 +305,7 @@ func (u *GameHustlerRelationUpsert) UpdateConversation() *GameHustlerRelationUps
 }
 
 // SetText sets the "text" field.
-func (u *GameHustlerRelationUpsert) SetText(v string) *GameHustlerRelationUpsert {
+func (u *GameHustlerRelationUpsert) SetText(v uint) *GameHustlerRelationUpsert {
 	u.Set(gamehustlerrelation.FieldText, v)
 	return u
 }
@@ -313,6 +313,12 @@ func (u *GameHustlerRelationUpsert) SetText(v string) *GameHustlerRelationUpsert
 // UpdateText sets the "text" field to the value that was provided on create.
 func (u *GameHustlerRelationUpsert) UpdateText() *GameHustlerRelationUpsert {
 	u.SetExcluded(gamehustlerrelation.FieldText)
+	return u
+}
+
+// AddText adds v to the "text" field.
+func (u *GameHustlerRelationUpsert) AddText(v uint) *GameHustlerRelationUpsert {
+	u.Add(gamehustlerrelation.FieldText, v)
 	return u
 }
 
@@ -395,9 +401,16 @@ func (u *GameHustlerRelationUpsertOne) UpdateConversation() *GameHustlerRelation
 }
 
 // SetText sets the "text" field.
-func (u *GameHustlerRelationUpsertOne) SetText(v string) *GameHustlerRelationUpsertOne {
+func (u *GameHustlerRelationUpsertOne) SetText(v uint) *GameHustlerRelationUpsertOne {
 	return u.Update(func(s *GameHustlerRelationUpsert) {
 		s.SetText(v)
+	})
+}
+
+// AddText adds v to the "text" field.
+func (u *GameHustlerRelationUpsertOne) AddText(v uint) *GameHustlerRelationUpsertOne {
+	return u.Update(func(s *GameHustlerRelationUpsert) {
+		s.AddText(v)
 	})
 }
 
@@ -652,9 +665,16 @@ func (u *GameHustlerRelationUpsertBulk) UpdateConversation() *GameHustlerRelatio
 }
 
 // SetText sets the "text" field.
-func (u *GameHustlerRelationUpsertBulk) SetText(v string) *GameHustlerRelationUpsertBulk {
+func (u *GameHustlerRelationUpsertBulk) SetText(v uint) *GameHustlerRelationUpsertBulk {
 	return u.Update(func(s *GameHustlerRelationUpsert) {
 		s.SetText(v)
+	})
+}
+
+// AddText adds v to the "text" field.
+func (u *GameHustlerRelationUpsertBulk) AddText(v uint) *GameHustlerRelationUpsertBulk {
+	return u.Update(func(s *GameHustlerRelationUpsert) {
+		s.AddText(v)
 	})
 }
 

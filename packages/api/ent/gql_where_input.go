@@ -1809,19 +1809,14 @@ type GameHustlerRelationWhereInput struct {
 	ConversationContainsFold *string  `json:"conversationContainsFold,omitempty"`
 
 	// "text" field predicates.
-	Text             *string  `json:"text,omitempty"`
-	TextNEQ          *string  `json:"textNEQ,omitempty"`
-	TextIn           []string `json:"textIn,omitempty"`
-	TextNotIn        []string `json:"textNotIn,omitempty"`
-	TextGT           *string  `json:"textGT,omitempty"`
-	TextGTE          *string  `json:"textGTE,omitempty"`
-	TextLT           *string  `json:"textLT,omitempty"`
-	TextLTE          *string  `json:"textLTE,omitempty"`
-	TextContains     *string  `json:"textContains,omitempty"`
-	TextHasPrefix    *string  `json:"textHasPrefix,omitempty"`
-	TextHasSuffix    *string  `json:"textHasSuffix,omitempty"`
-	TextEqualFold    *string  `json:"textEqualFold,omitempty"`
-	TextContainsFold *string  `json:"textContainsFold,omitempty"`
+	Text      *uint  `json:"text,omitempty"`
+	TextNEQ   *uint  `json:"textNEQ,omitempty"`
+	TextIn    []uint `json:"textIn,omitempty"`
+	TextNotIn []uint `json:"textNotIn,omitempty"`
+	TextGT    *uint  `json:"textGT,omitempty"`
+	TextGTE   *uint  `json:"textGTE,omitempty"`
+	TextLT    *uint  `json:"textLT,omitempty"`
+	TextLTE   *uint  `json:"textLTE,omitempty"`
 
 	// "hustler" edge predicates.
 	HasHustler     *bool                    `json:"hasHustler,omitempty"`
@@ -2012,21 +2007,6 @@ func (i *GameHustlerRelationWhereInput) P() (predicate.GameHustlerRelation, erro
 	}
 	if i.TextLTE != nil {
 		predicates = append(predicates, gamehustlerrelation.TextLTE(*i.TextLTE))
-	}
-	if i.TextContains != nil {
-		predicates = append(predicates, gamehustlerrelation.TextContains(*i.TextContains))
-	}
-	if i.TextHasPrefix != nil {
-		predicates = append(predicates, gamehustlerrelation.TextHasPrefix(*i.TextHasPrefix))
-	}
-	if i.TextHasSuffix != nil {
-		predicates = append(predicates, gamehustlerrelation.TextHasSuffix(*i.TextHasSuffix))
-	}
-	if i.TextEqualFold != nil {
-		predicates = append(predicates, gamehustlerrelation.TextEqualFold(*i.TextEqualFold))
-	}
-	if i.TextContainsFold != nil {
-		predicates = append(predicates, gamehustlerrelation.TextContainsFold(*i.TextContainsFold))
 	}
 
 	if i.HasHustler != nil {
