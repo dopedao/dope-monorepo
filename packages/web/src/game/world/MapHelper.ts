@@ -144,13 +144,13 @@ export default class MapHelper {
   }
 
   createEntities() {
-    if (!this.map.entityLayer) {
+    if (this.map.entityLayers.length === 0) {
       console.warn('No entity layer found');
       return;
     }
 
     // create all of the entities
-    this.map.entityLayer.entityInstances.forEach((entity, i) => {
+    this.map.entityLayers.forEach(l => l.entityInstances.forEach((entity, i) => {
       const tileset = this.mapReader.tilesets.find(t => t.uid === entity.__tile.tilesetUid);
       if (!tileset) return;
 
@@ -180,11 +180,11 @@ export default class MapHelper {
 
       const entitySprite = this.scene.matter.add.sprite(
         this.mapReader.level.worldX +
-          this.map.entityLayer!.pxOffsetX +
+          l.pxOffsetX +
           entity.px[0] +
           pivotOffset.x,
         this.mapReader.level.worldY +
-          this.map.entityLayer!.pxOffsetY +
+          l.pxOffsetY +
           entity.px[1] +
           pivotOffset.y,
         tileset.identifier.toLowerCase(),
@@ -201,10 +201,11 @@ export default class MapHelper {
         .setName(entity.__identifier)
         .setDepth(
           (this.mapReader.level.layerInstances.length -
-            this.mapReader.level.layerInstances.indexOf(this.map.entityLayer!)) *
+            this.mapReader.level.layerInstances.indexOf(l)) *
             5,
         )
-        .setPipeline('Light2D');
+      
+      if (!l.__identifier.includes('Night')) entitySprite.setPipeline('Light2D');
 
       // search light field, and create light if exists
       const light = entity.fieldInstances.find(f => f.__identifier === 'light')?.__value;
@@ -246,6 +247,6 @@ export default class MapHelper {
       //     pixelHeight: 2
       // })
       // shadowSprite.setDepth(entitySprite.depth - 1);
-    });
+    }));
   }
 }

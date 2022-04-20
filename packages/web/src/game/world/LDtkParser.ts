@@ -50,9 +50,12 @@ export class LdtkReader {
         mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset, mappack));
       }
     });
-    mappack.entityLayer = this.level.layerInstances.find(
-      (l: LayerInstance) => l.__type === 'Entities',
-    );
+
+    this.level.layerInstances.forEach(layer => {
+      if (layer.__type === 'Entities') {
+        mappack.entityLayers?.push(layer);
+      }
+    });
     mappack.collideLayer = mappack.intGridLayers.find(e => e.name === 'Collisions');
     
     return mappack;
@@ -122,9 +125,10 @@ export class LdtkReader {
       .setData('id', orderId)
       .setData('animators', [])
       .setDepth(orderId * 5)
-      .setPipeline('Light2D')
       .setAlpha(layer.__opacity)
       .setVisible(true);
+
+    if (!layer.__identifier.includes('Night')) l.setPipeline('Light2D')
 
     if (tilesetRef && tilesetRef.customData.length > 0) {
       tilesetRef.customData.forEach(t => {
@@ -156,9 +160,10 @@ export class LdtkReader {
           this.level.worldX + layer.pxOffsetX,
           this.level.worldY + layer.pxOffsetY,
         )
-        .setPipeline('Light2D')
         .setDepth(l.depth)
         .setVisible(true);
+
+      if (!layer.__identifier.includes('Night')) newLayer.setPipeline('Light2D')
 
       tiles.forEach(t => {
         let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
@@ -258,9 +263,11 @@ export class LdtkReader {
       .setData('id', orderId)
       .setData('animators', [])
       .setDepth(orderId * 5)
-      .setPipeline('Light2D')
       .setAlpha(layer.__opacity)
       .setVisible(true);
+
+
+    if (!layer.__identifier.includes('Night')) l.setPipeline('Light2D')
 
     if (tilesetRef && tilesetRef.customData.length > 0) {
       tilesetRef.customData.forEach(t => {
@@ -360,10 +367,11 @@ export class LdtkReader {
       .setData('id', orderId)
       .setData('animators', [])
       .setDepth(orderId * 5)
-      .setPipeline('Light2D')
       .setAlpha(layer.__opacity)
       .setVisible(false);
 
+    if (!layer.__identifier.includes('Night')) mapLayer.setPipeline('Light2D')
+    
     if (tilesetRef && tilesetRef.customData.length > 0) {
       tilesetRef.customData.forEach(t => {
         const data = JSON.parse(t.data);
@@ -417,7 +425,7 @@ export class LDtkMapPack {
   intGridLayers: Array<Phaser.Tilemaps.TilemapLayer>;
   displayLayers: Array<Phaser.Tilemaps.TilemapLayer>;
 
-  entityLayer?: LayerInstance;
+  entityLayers: LayerInstance[];
   entities: Array<Phaser.GameObjects.GameObject>;
 
   lights: Array<Phaser.GameObjects.Light>;
@@ -429,6 +437,7 @@ export class LDtkMapPack {
   constructor(levelIdentifier: string) {
     this.intGridLayers = [];
     this.displayLayers = [];
+    this.entityLayers = [];
     this.lights = [];
     this.entities = [];
   }

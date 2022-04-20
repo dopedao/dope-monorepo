@@ -5,7 +5,7 @@
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
     "sourceSize": { "w": 224, "h": 128 },
-    "duration": 100
+    "duration": 1500
    },
    "Building_SportingGood(Animated) 1.aseprite": {
     "frame": { "x": 224, "y": 0, "w": 224, "h": 128 },
@@ -53,7 +53,7 @@
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
     "sourceSize": { "w": 224, "h": 128 },
-    "duration": 100
+    "duration": 700
    },
    "Building_SportingGood(Animated) 7.aseprite": {
     "frame": { "x": 0, "y": 128, "w": 224, "h": 128 },
@@ -101,7 +101,7 @@
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
     "sourceSize": { "w": 224, "h": 128 },
-    "duration": 100
+    "duration": 600
    },
    "Building_SportingGood(Animated) 13.aseprite": {
     "frame": { "x": 0, "y": 0, "w": 224, "h": 128 },
@@ -136,6 +136,7 @@
   "size": { "w": 672, "h": 384 },
   "scale": "1",
   "frameTags": [
+   { "name": "flicker", "from": 0, "to": 15, "direction": "forward" }
   ],
   "layers": [
    { "name": "Layer 1", "opacity": 255, "blendMode": "normal" },
