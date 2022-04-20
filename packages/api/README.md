@@ -22,9 +22,11 @@ The server is exposed on `:8000` and you can visit the playground at `http://loc
 
 ## Architecture
 
-The service is a golang microservice which uses [gqlgen](https://github.com/99designs/gqlgen) to generate a graphql api. The graphql api is bound automatically to the db model which is managed by [ent.go](https://github.com/ent/ent). Smart contract bindings and event handlers are generated from abis using [ethgen](https://github.com/withtally/synceth).
+Our API service is written in golang which uses [gqlgen](https://github.com/99designs/gqlgen) to generate a graphql api. The graphql api is bound automatically to the db model which is managed by [ent.go](https://github.com/ent/ent). Smart contract bindings and event handlers are generated from abis using [ethgen](https://github.com/withtally/synceth).
 
 You can learn more about the graphql <> db auto binding [here](https://entgo.io/docs/tutorial-todo-gql).
+
+There are two services in this API, the indexer; and the API HTTP Server. The Dope Wars API auto-scales, and the indexer uses a single instance taking advantage of [App Engine manual scaling](https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed).
 
 ### Adding a smart contract
 
@@ -36,11 +38,13 @@ Modify the schema in `packages/api/ent/schema` and run `go generate ./...`
 
 ### Deploying the API
 
-The Dope Wars API runs on Google Cloud Platform. To deploy, do the following…
+The Dope Wars API runs on Google Cloud Platform using App Engine in the "Standard" environment.
+
+At the time of this writing, [App Engine Standard Environment only supports up to Go 1.16](https://cloud.google.com/appengine/docs/the-appengine-environments), so that should be the version you develop in.
+
+#### Run these commands to deploy
 
 ```
 gcloud app deploy --appyaml app.mainnet.api.yaml
 gcloud app deploy --appyaml app.mainnet.indexer.yaml
 ```
-
-There are two services, the indexer; and the API. The Dope Wars API auto-scales, and the indexer uses a single instance.
