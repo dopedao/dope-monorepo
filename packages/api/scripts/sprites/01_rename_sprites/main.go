@@ -17,7 +17,6 @@
 //    /female
 //
 // Sprite sheets from team are in format of "DW_F_Clothes_Basketball_Jersey_Spritesheet.png"
-
 package main
 
 import (
