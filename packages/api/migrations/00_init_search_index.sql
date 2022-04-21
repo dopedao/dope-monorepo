@@ -45,10 +45,9 @@ CREATE MATERIALIZED VIEW search_index AS (
 						dope.id AS id,
 						dope.opened AS opened,
 						dope.claimed AS claimed,
-						coalesce(ali.active,
-							FALSE) AS active,
-						a.amount AS last_amount,
-						alia.amount AS active_amount
+						COALESCE(ali.active, false) AS active,
+						COALESCE(a.amount, (0)::numeric) AS last_amount,
+						COALESCE(alia.amount, (0)::numeric) AS active_amount
 					FROM
 						dopes dope
 						LEFT JOIN listings li ON dope.listing_dope_lastsales = li.id
@@ -179,7 +178,8 @@ UNION (WITH hustler_agg AS (
 				OR h.item_hustler_clothes = i.id
 				OR h.item_hustler_weapons = i.id
 				OR h.item_hustler_vehicles = i.id
-				OR h.item_hustler_accessories = i.id) df
+				OR h.item_hustler_accessories = i.
+		) df
 		GROUP BY
 			df.id,
 			title,
