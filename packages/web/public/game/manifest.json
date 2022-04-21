@@ -132,7 +132,6 @@
                 "normal": "./game/MAP/DW_Buildings_MegaSheet1_normal.png",
                 "size": 615478
             },
-         
             "tileset_building_nycpack1_nighttexture": {
                 "file": "./game/MAP/DW_Buildings_MegaSheet1_NightAdds.png",
                 "size": 414875
@@ -147,8 +146,7 @@
                 "normal": "./game/MAP/Dw_Tileset_Props_MegaSheet_normals.png",
                 "size": 572323
             },
-            
-            "tileset_props_main_NightTexture": {
+            "tileset_props_main_nighttexture": {
                 "file": "./game/MAP/Dw_Tileset_Props_MegaSheet_NightTexture.png",
                 "size": 204928
             },
