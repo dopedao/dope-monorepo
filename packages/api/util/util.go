@@ -1,4 +1,5 @@
-package common
+// Small helper functions that keep us DRY
+package util
 
 import (
 	"os"

@@ -1,17 +1,19 @@
+// Updates DOPE NFT items in our database after checking
+// their PAPER CLAIM status on the PAPER contract.
 package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math/big"
-	"math/rand"
 	"sync"
-	"time"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -20,10 +22,18 @@ import (
 	_ "github.com/lib/pq"
 )
 
+const MAX_DB_CONN = 77
+
+var host = util.GetEnvOrFallback("PG_HOST", "localhost:5433")
+var pass = util.GetEnvOrFallback("PG_PASS", "postgres")
+
 func main() {
 	ctx := context.Background()
 
-	db, err := sql.Open(dialect.Postgres, "postgres://postgres:postgres@localhost:5433?sslmode=disable")
+	db, err := sql.Open(
+		dialect.Postgres,
+		fmt.Sprintf("postgres://postgres:%s@%s?sslmode=disable", pass, host),
+	)
 	if err != nil {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
@@ -50,11 +60,10 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(len(dopes))
 
+	sem := make(chan int, MAX_DB_CONN)
 	for _, dope := range dopes {
+		sem <- 1
 		go func(dope *ent.Dope) {
-			r := rand.Intn(180)
-			time.Sleep(time.Duration(r) * time.Second)
-
 			b, ok := new(big.Int).SetString(dope.ID, 10)
 			if !ok {
 				log.Fatal("Making big int")
@@ -63,9 +72,9 @@ func main() {
 			if err != nil {
 				log.Fatalf("Getting paper balance: %+v.", err)
 			}
-
 			client.Dope.UpdateOneID(dope.ID).SetClaimed(claimed).ExecX(ctx)
 
+			<-sem
 			wg.Done()
 		}(dope)
 	}

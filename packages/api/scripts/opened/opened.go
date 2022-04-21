@@ -1,17 +1,20 @@
+// Updates DOPE NFT items in our database if they
+// have been "Opened" or had their "Gear Claimed"
+// by checking the Ethereum blockchain.
 package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math/big"
-	"math/rand"
 	"sync"
-	"time"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -20,16 +23,27 @@ import (
 	_ "github.com/lib/pq"
 )
 
+const MAX_DB_CONN = 77
+
+var host = util.GetEnvOrFallback("PG_HOST", "localhost:5433")
+var pass = util.GetEnvOrFallback("PG_PASS", "postgres")
+
 func main() {
 	ctx := context.Background()
 
-	db, err := sql.Open(dialect.Postgres, "postgres://postgres:postgres@localhost:5433?sslmode=disable")
+	log.Default().Println("Opening DB pool")
+	db, err := sql.Open(
+		dialect.Postgres,
+		fmt.Sprintf("postgres://postgres:%s@%s?sslmode=disable", pass, host),
+	)
 	if err != nil {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
 
+	log.Default().Println("Opening ENT client")
 	client := ent.NewClient(ent.Driver(db))
 
+	log.Default().Println("Establishing RPC client")
 	retryableHTTPClient := retryablehttp.NewClient()
 	c, err := rpc.DialHTTPWithClient("https://eth-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
 	if err != nil {
@@ -42,6 +56,7 @@ func main() {
 		log.Fatalf("Creating Components bindings: %+v", err)
 	}
 
+	log.Default().Println("Getting all DOPE NFTs from database")
 	dopes, err := client.Dope.Query().All(ctx)
 	if err != nil {
 		log.Fatal("Getting ethereum dopes.") //nolint:gocritic
@@ -50,11 +65,10 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(len(dopes))
 
+	sem := make(chan int, MAX_DB_CONN)
 	for _, dope := range dopes {
+		sem <- 1
 		go func(dope *ent.Dope) {
-			r := rand.Intn(180)
-			time.Sleep(time.Duration(r) * time.Second)
-
 			b, ok := new(big.Int).SetString(dope.ID, 10)
 			if !ok {
 				log.Fatal("Making big int")
@@ -63,9 +77,9 @@ func main() {
 			if err != nil {
 				log.Fatalf("Getting initiator balance: %+v.", err)
 			}
-
 			client.Dope.UpdateOneID(dope.ID).SetOpened(opened).ExecX(ctx)
 
+			<-sem
 			wg.Done()
 		}(dope)
 	}
