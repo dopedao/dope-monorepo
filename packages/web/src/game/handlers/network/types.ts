@@ -1,3 +1,5 @@
+import { number } from "starknet";
+
 enum UniversalEventNames {
   PLAYER_JOIN = 'player_join',
   PLAYER_LEAVE = 'player_leave',
@@ -88,6 +90,7 @@ interface DataTypes {
     x: number;
     y: number;
     direction: string;
+    depth: number;
   };
   [NetworkEvents.SERVER_PLAYER_UPDATE_MAP]: {
     id: string;
@@ -113,6 +116,7 @@ interface DataTypes {
     x: number;
     y: number;
     direction: string;
+    depth: number;
   };
   [NetworkEvents.CLIENT_PLAYER_CHAT_MESSAGE]: {
     message: string;

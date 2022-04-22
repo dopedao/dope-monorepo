@@ -479,6 +479,9 @@ export default class GameScene extends Scene {
         const hustler = this._hustlers.find(h => h.getData('id') === p.id);
         if (!hustler) return;
 
+        // update hustler depth
+        hustler.setDepth(p.depth);
+
         // 1.2x bounds to make sure hustler doesnt tp when in viewport 
         const cameraView = new Phaser.Geom.Rectangle(
           this.cameras.main.worldView.x - (this.cameras.main.worldView.width * 0.2), 

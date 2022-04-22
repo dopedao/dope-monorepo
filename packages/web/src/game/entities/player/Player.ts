@@ -257,6 +257,7 @@ export default class Player extends Hustler {
             x: this.x,
             y: this.y,
             direction: this.moveDirection,
+            depth: this.depth,
           });
       }
       this._wasMoving = true;
@@ -268,6 +269,7 @@ export default class Player extends Hustler {
           x: this.x,
           y: this.y,
           direction: this.moveDirection,
+          depth: this.depth,
         });
       this._lastMoveTimestamp = 0;
       this._wasMoving = false;
