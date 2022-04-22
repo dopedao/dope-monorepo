@@ -123,6 +123,23 @@ export default class GameScene extends Scene {
     // create all of the animations
     new GameAnimations(this).create();
 
+    // load chiptunes
+    let chiptunes = this.cache.audio.getKeys().filter((key: string) => key.includes('chiptune')).map((key: string) => {
+      return this.sound.add(key);
+    });
+    console.log(chiptunes);
+    
+    let songIdx = Math.round(Math.random() * (chiptunes.length - 1));
+    this.sound.play(chiptunes[songIdx].key);
+    this.sound.once('complete', () => {
+      let rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
+      while (rndIdx === songIdx)
+        rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
+      
+      songIdx = rndIdx;
+      this.sound.play(chiptunes[rndIdx].key);
+    });
+
     // register player
     NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_JOIN, {
       name: this.hustlerData?.name ?? 'Hustler',
