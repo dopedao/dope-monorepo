@@ -135,6 +135,7 @@ const DesktopWindow = ({
   // Small devices should always be full-screen.
   // const [isFullScreen, setIsFullScreen] = useState(fullScreen || false);
   const fullScreenHook = useFullScreen();
+
   const toggleFullScreen = () =>{
     fullScreenHandler ? fullScreenHandler(!fullScreenHook?.isFullScreen) : fullScreenHook?.setIsFullScreen(!fullScreenHook?.isFullScreen);
   }
@@ -157,6 +158,11 @@ const DesktopWindow = ({
   };
 
   const shouldBeDraggable = !isTouchDevice() && !fullScreenHook?.isFullScreen && browserWidth > 768;
+
+  useEffect(() => {
+    if (fullScreen)
+      fullScreenHook?.setIsFullScreen(fullScreen);
+  }, [])
 
   useEffect(() => {
     if (onResize) onResize();
