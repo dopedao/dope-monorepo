@@ -222,7 +222,7 @@ export default class Player extends Hustler {
         player.setDepth(targetDepth);
     }
     else {
-      const targetDepth = otherHitbox.gameObject?.depth ? otherHitbox.gameObject.depth - 1 : player._baseDepth - 5;
+      const targetDepth = otherHitbox.gameObject?.depth ? otherHitbox.gameObject.depth - 1 : player._baseDepth - 10;
       if (player.depth > targetDepth)
         player.setDepth(targetDepth);
     }

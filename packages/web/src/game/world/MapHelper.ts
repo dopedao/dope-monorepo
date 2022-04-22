@@ -34,7 +34,7 @@ export default class MapHelper {
         this.mapReader.level.pxWid + 0, this.mapReader.level.pxHei + 0,
         0x000000, 0.9)
         .setData('max_alpha', 0.9)
-        .setDepth(1000)
+        .setDepth(10000)
         .setOrigin(0, 0);
 
     this.loadedMaps[this.mapReader.level.identifier] = this.map;
