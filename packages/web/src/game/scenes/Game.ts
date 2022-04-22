@@ -171,6 +171,7 @@ export default class GameScene extends Scene {
           );
           this._hustlers[this._hustlers.length - 1].setData('id', data.id);
           this._hustlers[this._hustlers.length - 1].currentMap = data.current_map;
+          this._hustlers[this._hustlers.length - 1].setVisible(data.current_map === this.player.currentMap);
         });
         // initiate all item entities
         data.itemEntities.forEach(iData => {

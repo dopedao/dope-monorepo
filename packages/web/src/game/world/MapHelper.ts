@@ -220,6 +220,13 @@ export default class MapHelper {
             5,
         )
       
+      const entityDepth = entity.fieldInstances.find(f => f.__identifier === 'Depth');
+      let definedDepth;
+      if (entityDepth) 
+        entitySprite.setDepth(typeof entityDepth.__value === 'number' ? entityDepth.__value : parseInt(entityDepth.__value));
+      else if (definedDepth = this.mapReader.level.fieldInstances.find(f => f.__identifier.toLowerCase() === l.__identifier.toLowerCase()))
+        entitySprite.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
+      
       if (!l.__identifier.includes('Night')) entitySprite.setPipeline('Light2D');
 
       // search light field, and create light if exists

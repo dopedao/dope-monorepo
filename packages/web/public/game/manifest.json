@@ -21,6 +21,10 @@
                 "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.json",
                 "size": 1865
             },
+            "npc_jamingoguy": {
+                "file": "./game/MAP/NPCs/DW_NPC_JamingoGuy.json",
+                "size": 1487
+            },
             "animation_props_firebarrel": {
                 "file": "./game/MAP/Sheets/DW_Animation_FireBarrel.json",
                 "size": 8659
@@ -74,6 +78,10 @@
             "animation_props_rooffanbig": {
                 "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.png",
                 "size": 3524
+            },
+            "npc_jamingoguy": {
+                "file": "./game/MAP/NPCs/DW_NPC_JamingoGuy.png",
+                "size": 1100
             },
             "animation_props_firebarrel": {
                 "file": "./game/MAP/Sheets/DW_Animation_FireBarrel.png",
@@ -157,6 +165,7 @@
             },
             "tileset_ground_autotiles": {
                 "file": "./game/MAP/DW_GroundTiles_MegaSheet.png",
+                "normal":  "./game/MAP/DW_GroundTiles_MegaSheet_normal.png",
                 "size": 31213
             },
             "tileset_fx_lightsources": {

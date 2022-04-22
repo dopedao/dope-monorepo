@@ -128,64 +128,28 @@ export class LdtkReader {
       .setAlpha(layer.__opacity)
       .setVisible(true);
 
+    layer.gridTiles.forEach(t => {
+      if (t.f != 0) {
+        let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
+        let tile = l.getTileAt(tileloc.x, tileloc.y);
+        if (tile != null) {
+          if (t.f == 1) tile.flipX = true;
+          else if (t.f == 2) tile.flipY = true;
+          else {
+            tile.flipX = true;
+            tile.flipY = true;
+          }
+        }
+      }
+    });
+
     const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
     if (definedDepth) l.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
 
     if (!layer.__identifier.includes('Night')) l.setPipeline('Light2D')
 
-    const parseTilesetData = (ly: Phaser.Tilemaps.TilemapLayer) => {
-      let aboveAllLayer: Phaser.Tilemaps.TilemapLayer | undefined;
-      if (tilesetRef && tilesetRef.customData.length > 0) {
-        tilesetRef.customData.forEach(t => {
-          const data = JSON.parse(t.data);
-          if (data.anim)
-          {
-            const tilesAnim = new AnimatedTiles(this.scene, t.tileId, l, data.anim);
-            l.getData('animators').push(tilesAnim);
-            // tilesAnim.start();
-          }
-  
-          if (data.light)
-          {
-            ly.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-              if (tile.index === t.tileId)
-                mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
-            }));
-          }
-
-          if (data.depth === "ABOVE_ALL") {
-            if (!aboveAllLayer) {
-              aboveAllLayer = map.createBlankLayer(
-                `${ly.layer.name} - ABOVE_ALL`,
-                map.tilesets,
-                this.level.worldX + layer.pxOffsetX,
-                this.level.worldY + layer.pxOffsetY,
-              ).setDepth(ly.depth + 1000).setVisible(true);
-
-              if (!aboveAllLayer.layer.name.includes('Night')) aboveAllLayer.setPipeline('Light2D');
-            }
-  
-            ly.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-              if (tile.index === t.tileId)
-                aboveAllLayer!.putTileAt(tile, tile.x, tile.y);
-            }));
-          }
-        });
-      }
-
-      if (aboveAllLayer) {
-        // go through each tile and check if they are used,
-        // if not, clean them up and free memory
-        aboveAllLayer.layer.data.forEach((tiles, i) => tiles.forEach((tile, j) => {
-          if (tile.index === -1)
-          {
-            aboveAllLayer!.layer.data[i][j].destroy();
-            delete aboveAllLayer!.layer.data[i][j];
-          }
-        }));
-      }
-    }
-    parseTilesetData(l);
+    if (tilesetRef)
+      this.ParseTilesetData(mappack, l, tilesetRef);
 
     stackLayers.forEach((tiles, i) => {
       if (tiles.length === 0) return;
@@ -220,33 +184,22 @@ export class LdtkReader {
         }
       });
 
-      // go through each tile and check if they are used,
-      // if not, clean them up and free memory
-      newLayer.layer.data.forEach((tiles, i) => tiles.forEach((tile, j) => {
-        if (tile.index === -1)
-        {
-          newLayer.layer.data[i][j].destroy();
-          delete newLayer.layer.data[i][j];
-        }
-      }));
-
-      parseTilesetData(newLayer);
-    });
-
-    layer.gridTiles.forEach(t => {
-      if (t.f != 0) {
-        let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
-        let tile = l.getTileAt(tileloc.x, tileloc.y);
-        if (tile != null) {
-          if (t.f == 1) tile.flipX = true;
-          else if (t.f == 2) tile.flipY = true;
-          else {
-            tile.flipX = true;
-            tile.flipY = true;
+      setTimeout(() => {
+        // go through each tile and check if they are used,
+        // if not, clean them up and free memory
+        newLayer.layer.data.forEach((tiles, i) => tiles.forEach((tile, j) => {
+          if (tile.index === -1)
+          {
+            newLayer.layer.data[i][j].destroy();
+            delete newLayer.layer.data[i][j];
           }
-        }
-      }
+        }));
+      });
+
+      if (tilesetRef)
+        this.ParseTilesetData(mappack, newLayer, tilesetRef);
     });
+
     return l;
   }
 
@@ -305,62 +258,6 @@ export class LdtkReader {
       .setAlpha(layer.__opacity)
       .setVisible(true);
 
-    const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
-    if (definedDepth) l.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
-
-    if (!layer.__identifier.includes('Night')) l.setPipeline('Light2D')
-
-    let aboveAllLayer: Phaser.Tilemaps.TilemapLayer | undefined;
-    if (tilesetRef && tilesetRef.customData.length > 0) {
-      tilesetRef.customData.forEach(t => {
-        const data = JSON.parse(t.data);
-        if (data.anim)
-        {
-          const tilesAnim = new AnimatedTiles(this.scene, t.tileId, l, data.anim);
-          l.getData('animators').push(tilesAnim);
-          // tilesAnim.start();
-        }
-
-        if (data.light)
-        {
-          l.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-            if (tile.index === t.tileId)
-              mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
-          }));
-        }
-
-        if (data.depth === "ABOVE_ALL") {
-          if (!aboveAllLayer) {
-            aboveAllLayer = map.createBlankLayer(
-              `${layer.__identifier} - ABOVE_ALL`,
-              map.tilesets,
-              this.level.worldX + layer.pxOffsetX,
-              this.level.worldY + layer.pxOffsetY,
-            ).setDepth(l.depth + 1000).setVisible(true);
-
-            if (!aboveAllLayer.layer.name.includes('Night')) aboveAllLayer.setPipeline('Light2D');
-          }
-
-          l.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-            if (tile.index === t.tileId)
-              aboveAllLayer!.putTileAt(tile, tile.x, tile.y);
-          }));
-        }
-      });
-    }
-
-    if (aboveAllLayer) {
-      // go through each tile and check if they are used,
-      // if not, clean them up and free memory
-      aboveAllLayer.layer.data.forEach((tiles, i) => tiles.forEach((tile, j) => {
-        if (tile.index === -1)
-        {
-          aboveAllLayer!.layer.data[i][j].destroy();
-          delete aboveAllLayer!.layer.data[i][j];
-        }
-      }));
-    }
-
     layer.autoLayerTiles.forEach(t => {
       if (t.f != 0) {
         let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
@@ -375,6 +272,14 @@ export class LdtkReader {
         }
       }
     });
+
+    const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
+    if (definedDepth) l.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
+
+    if (!layer.__identifier.includes('Night')) l.setPipeline('Light2D')
+
+    if (tilesetRef)
+      this.ParseTilesetData(mappack, l, tilesetRef);
 
     return l;
   }
@@ -447,82 +352,82 @@ export class LdtkReader {
     
     if (!layer.__identifier.includes('Night')) mapLayer.setPipeline('Light2D')
     
-    let aboveAllLayer: Phaser.Tilemaps.TilemapLayer | undefined;
-    if (tilesetRef && tilesetRef.customData.length > 0) {
-      tilesetRef.customData.forEach(t => {
-        const data = JSON.parse(t.data);
-        if (data.anim)
-        {
-          const tilesAnim = new TilesAnimator(this.scene, t.tileId, mapLayer, data.anim);
-          mapLayer.getData('animators').push(tilesAnim);
-          // tilesAnim.start();
-        }
-
-        if (data.light)
-        {
-          mapLayer.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-            if (tile.index === t.tileId)
-              mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
-          }));
-        }
-
-        if (data.depth === "ABOVE_ALL") {
-          if (!aboveAllLayer) {
-            aboveAllLayer = map.createBlankLayer(
-              `${layer.__identifier} - ABOVE_ALL`,
-              map.tilesets,
-              this.level.worldX + layer.pxOffsetX,
-              this.level.worldY + layer.pxOffsetY,
-            ).setDepth(mapLayer.depth + 1000).setVisible(true);
-
-            if (!aboveAllLayer.layer.name.includes('Night')) aboveAllLayer.setPipeline('Light2D');
-          }
-
-          mapLayer.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-            if (tile.index === t.tileId)
-              aboveAllLayer!.putTileAt(tile, tile.x, tile.y);
-          }));
-        }
-      });
-    }
-
-    if (aboveAllLayer) {
-      // go through each tile and check if they are used,
-      // if not, clean them up and free memory
-      aboveAllLayer.layer.data.forEach((tiles, i) => tiles.forEach((tile, j) => {
-        if (tile.index === -1)
-        {
-          aboveAllLayer!.layer.data[i][j].destroy();
-          delete aboveAllLayer!.layer.data[i][j];
-        }
-      }));
-    }
-
-    // if (layer.__identifier !== 'Collisions') {
-    //   const ogLayer: Layer = this.ldtk.defs.layers.find(l => l.uid === layer.layerDefUid)!;
-
-    //   mapLayer.layer.data.forEach(row =>
-    //     row.forEach(tile => {
-    //       const vData = ogLayer.intGridValues.find(v => v.value === tile.index)!;
-    //       if (vData && vData.color) {
-    //         const bounds = tile.getBounds() as Phaser.Geom.Rectangle;
-
-    //         this.scene.add
-    //           .rectangle(
-    //             bounds.x + bounds.width / 2,
-    //             bounds.y + bounds.height / 2,
-    //             bounds.width,
-    //             bounds.height,
-    //             Number.parseInt(vData.color.split('#')[1], 16),
-    //             mapLayer.alpha,
-    //           )
-    //           .setDepth(mapLayer.depth);
-    //       }
-    //     }),
-    //   );
-    // }
+    if (tilesetRef)
+      this.ParseTilesetData(mappack, mapLayer, tilesetRef);
 
     return mapLayer;
+  }
+
+  ParseTilesetData(map: LDtkMapPack, layer: Phaser.Tilemaps.TilemapLayer, tileset: Tileset) {
+    let aboveAllLayer: Phaser.Tilemaps.TilemapLayer | undefined;
+    tileset.customData.forEach(t => {
+      const data = JSON.parse(t.data);
+      if (data.anim)
+      {
+        const tilesAnim = new AnimatedTiles(this.scene, t.tileId, layer, data.anim);
+        layer.getData('animators').push(tilesAnim);
+        // tilesAnim.start();
+      }
+
+      let createLight = false;
+      let createDepth = false;
+      if (data.light)
+      {
+        createLight = true;
+        // layer.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+        //   if (tile.index === t.tileId)
+        //     mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
+        // }));
+      }
+
+      if (data.depth === "ABOVE_ALL") {
+        if (!aboveAllLayer) {
+          aboveAllLayer = layer.tilemap.createBlankLayer(
+            `${layer.layer.name} - ABOVE_ALL`,
+            layer.tilemap.tilesets,
+            layer.x,
+            layer.y,
+          ).setDepth(layer.depth + 1000).setVisible(true);
+
+          if (!aboveAllLayer.layer.name.includes('Night')) aboveAllLayer.setPipeline('Light2D');
+        }
+
+        createDepth = true;
+        // ly.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+        //   if (tile.index === t.tileId)
+        //     aboveAllLayer!.putTileAt(tile, tile.x, tile.y);
+        // }));
+      }
+
+      if (createLight || createDepth) {
+        layer.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+          if (tile.index === t.tileId)
+          {
+            if (createLight)
+              map.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
+
+            if (createDepth) {
+              const aboveTile = aboveAllLayer!.putTileAt(tile, tile.x, tile.y);
+              aboveTile.setFlip(tile.flipX, tile.flipY);
+            }
+          }
+        }));
+      }
+    });
+
+    if (aboveAllLayer) {
+      setTimeout(() => {
+        // go through each tile and check if they are used,
+        // if not, clean them up and free memory
+        aboveAllLayer!.layer.data.forEach((tiles, i) => tiles.forEach((tile, j) => {
+          if (tile.index === -1)
+          {
+            aboveAllLayer!.layer.data[i][j].destroy();
+            delete aboveAllLayer!.layer.data[i][j];
+          }
+        }));
+      })
+    }
   }
 }
 
