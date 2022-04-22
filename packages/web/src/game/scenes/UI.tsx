@@ -29,6 +29,7 @@ import Debug from 'game/ui/react/components/Debug';
 import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
 import ControlsManager, { ControlsEvents } from 'game/utils/ControlsManager';
+import EventWelcome from 'game/ui/react/components/EventWelcome';
 
 interface Interaction {
   citizen: Citizen;
@@ -118,6 +119,15 @@ export default class UIScene extends Scene {
       this.joyStick.setPosition(size.width / 2, size.height / 2);
       // TODO: resize radius
     });
+
+
+    // NIGHT EVENT
+    const inputs = this.toggleInputs(true);
+    const welcomeScreen = this.add.reactDom(EventWelcome);
+    welcomeScreen.events.on('game', () => {
+      inputs();
+      welcomeScreen.destroy();
+    })
   }
 
   update(time: number, delta: number): void {
@@ -220,43 +230,43 @@ export default class UIScene extends Scene {
     });
   }
 
-  private _handleInputs() {
-    const toggleInputs = (mouse?: boolean) => {
-      // prevent player from moving
-      if (mouse) this.player.scene.input.mouse.enabled = false;
-      this.player.scene.input.keyboard.enabled = false;
-      if (mouse) this.input.mouse.enabled = false;
-      this.input.keyboard.enabled = false;
-      // prevent phaser from "blocking" some keys (for typing in chat)
-      this.player.scene.input.keyboard.disableGlobalCapture();
-      this.input.keyboard.disableGlobalCapture();
+  toggleInputs(mouse?: boolean) {
+    // prevent player from moving
+    if (mouse) this.player.scene.input.mouse.enabled = false;
+    this.player.scene.input.keyboard.enabled = false;
+    if (mouse) this.input.mouse.enabled = false;
+    this.input.keyboard.enabled = false;
+    // prevent phaser from "blocking" some keys (for typing in chat)
+    this.player.scene.input.keyboard.disableGlobalCapture();
+    this.input.keyboard.disableGlobalCapture();
 
-      return () => {
-        // reset to default
-        if (mouse) this.player.scene.input.mouse.enabled = true;
-        this.player.scene.input.keyboard.enabled = true;
-        this.player.scene.input.keyboard.enableGlobalCapture();
-        setTimeout(() => {
-          // will prevent key events like ESC for other components to register as soon
-          // as the chat input is closed. 
-          // TODO: find a better solution?
-          // NOTE: a solution would be to stop event propagation in the component handling inputs?
-          if (mouse) this.input.mouse.enabled = true;
-          this.input.keyboard.enabled = true;
-          this.input.keyboard.enableGlobalCapture();
-        }, 200);
+    return () => {
+      // reset to default
+      if (mouse) this.player.scene.input.mouse.enabled = true;
+      this.player.scene.input.keyboard.enabled = true;
+      this.player.scene.input.keyboard.enableGlobalCapture();
+      setTimeout(() => {
+        // will prevent key events like ESC for other components to register as soon
+        // as the chat input is closed. 
+        // TODO: find a better solution?
+        // NOTE: a solution would be to stop event propagation in the component handling inputs?
+        if (mouse) this.input.mouse.enabled = true;
+        this.input.keyboard.enabled = true;
+        this.input.keyboard.enableGlobalCapture();
+      }, 200);
 
-        return toggleInputs;
-      }
+      return this.toggleInputs;
     }
+  }
 
+  private _handleInputs() {
     const openChatInput = () => {
       if (this.player.busy || this.sendMessageInput)
         return;
 
       this.player.busy = true;
       
-      const inputs = toggleInputs();
+      const inputs = this.toggleInputs();
 
       this.sendMessageInput = this.add.reactDom(ChatType, {
         precedentMessages: this.precedentMessages,
@@ -290,7 +300,7 @@ export default class UIScene extends Scene {
 
       const settings = this.add.reactDom(Settings);
 
-      const inputs = toggleInputs(true);
+      const inputs = this.toggleInputs(true);
 
       settings.events.on('disconnect', () => {
         settings.events.emit('close');
@@ -331,7 +341,7 @@ export default class UIScene extends Scene {
 
       const key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
       key.on(Phaser.Input.Keyboard.Events.UP, () => {
-        const inputs = toggleInputs(true);
+        const inputs = this.toggleInputs(true);
         
         const debug = this.add.reactDom(Debug, {
           player: this.player,

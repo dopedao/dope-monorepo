@@ -134,7 +134,7 @@ export default class PathNavigator {
       // cancel pathfinding if stuck
       const pos = new Phaser.Math.Vector2(this.hustler.x, this.hustler.y);
       setTimeout(() => {
-        if (this.previousPosition && pos.distanceSq(this.previousPosition) < 20) this.cancel();
+        if (this.previousPosition && pos.distanceSq(this.previousPosition) < 10) this.cancel();
       }, 500);
 
       dx = this.target.x - pos.x;
