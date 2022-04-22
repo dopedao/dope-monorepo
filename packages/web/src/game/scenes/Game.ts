@@ -131,13 +131,18 @@ export default class GameScene extends Scene {
     
     let songIdx = Math.round(Math.random() * (chiptunes.length - 1));
     this.sound.play(chiptunes[songIdx].key);
-    this.sound.once('complete', () => {
+    
+    const randMusic = () => {
       let rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
       while (rndIdx === songIdx)
         rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
       
       songIdx = rndIdx;
       this.sound.play(chiptunes[rndIdx].key);
+    }
+    
+    this.sound.on('complete', () => {
+      randMusic();
     });
 
     // register player
