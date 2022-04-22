@@ -134,11 +134,19 @@ export default class GameScene extends Scene {
       // TODO: login scene or something like that
       if (Math.floor(data.code / 100) === 4)
       {
+        EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
+          ...chakraToastStyle,
+          title: `Error ${data.code}`,
+          message: data.message,
+          status: 'error',
+        });
+        
         NetworkHandler.getInstance().disconnect();
         NetworkHandler.getInstance().authenticator.logout()
           .finally(() => {
             this.scene.start('LoginScene', this.hustlerData);
           })
+        
       }
     };
     NetworkHandler.getInstance().once(NetworkEvents.ERROR, onHandshakeError);
