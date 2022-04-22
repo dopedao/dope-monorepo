@@ -57,11 +57,11 @@ const SwapMeetHustlers = () => {
         background="white"
         borderBottom="2px solid black"
       >
-        <Link href="/hustlers/quick-buy" passHref>
+        {/* <Link href="/hustlers/quick-buy" passHref>
           <Button variant="primary" fontSize="xs">
             Mint a Hustler
           </Button>
-        </Link>
+        </Link> */}
         <a
           href="https://quixotic.io/collection/hustlers?attributes=attribute%3DClass%3AOriginal+Gangsta&query="
           target="quix"
