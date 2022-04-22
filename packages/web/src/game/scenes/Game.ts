@@ -187,7 +187,11 @@ export default class GameScene extends Scene {
         }
     
         let songIdx = Math.round(Math.random() * (chiptunes.length - 1));
-        this.sound.play(chiptunes[songIdx].key);
+        chiptunes[songIdx].once('complete', () => {
+          randMusic();
+        });
+
+        chiptunes[songIdx].play();
         setTimeout(() => {
           showCurrentlyPlaying();
         }, 5000)
@@ -198,14 +202,11 @@ export default class GameScene extends Scene {
             rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
           
           songIdx = rndIdx;
-          this.sound.play(chiptunes[rndIdx].key);
+          chiptunes[songIdx].once('complete', randMusic);
+          chiptunes[songIdx].play();
+          
           showCurrentlyPlaying();
         }
-        
-        this.sound.on('complete', () => {
-          this.sound.stopByKey(chiptunes[songIdx].key);
-          randMusic();
-        });
 
         // initiate all players
         data.players.forEach(data => {

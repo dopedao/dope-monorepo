@@ -75,6 +75,10 @@
             }
         },
         "image": {
+            "background": {
+                "file": "./images/game/map/full.png",
+                "size": 0
+            },
             "animation_props_rooffanbig": {
                 "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.png",
                 "size": 3524

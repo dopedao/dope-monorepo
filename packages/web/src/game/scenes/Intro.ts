@@ -15,10 +15,6 @@ export default class IntroScene extends Phaser.Scene {
         this.hustlerData = data.hustlerData;
         this.loggedIn = data.loggedIn;
     }
-    
-    preload() {
-        this.load.image('background', './images/game/map/full.png');
-    }
 
     create() {
         this.background = this.add.image(this.sys.game.canvas.width / 2, this.sys.game.canvas.height / 2, 'background');
