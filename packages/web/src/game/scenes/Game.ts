@@ -142,6 +142,7 @@ export default class GameScene extends Scene {
     }
     
     this.sound.on('complete', () => {
+      this.sound.stopByKey(chiptunes[songIdx].key);
       randMusic();
     });
 
@@ -262,29 +263,29 @@ export default class GameScene extends Scene {
   }
 
   initializeGame(handshakeData: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) {
-    const jimmyData = Citizens["jimmy"];
-    const jimmy = new Citizen(this.matter.world, 
-      jimmyData.position.x, jimmyData.position.y, 
-      jimmyData.position.currentMap, 
-      jimmyData.hustlerId, jimmyData.name, jimmyData.description,
-      getConversation("jimmy_random", handshakeData.relations?.["jimmy"]?.text) ?? jimmyData.conversations,
-      jimmyData.path, jimmyData.repeat, jimmyData.shouldFollowPath,
-    ).setData('id', "jimmy");
-    const oracleJones = new Citizen(
-      this.matter.world,
-      Citizens["oracle_jones"].position.x,
-      Citizens["oracle_jones"].position.y,
-      Citizens["oracle_jones"].position.currentMap,
-      Citizens["oracle_jones"].hustlerId,
-      Citizens["oracle_jones"].name,
-      Citizens["oracle_jones"].description,
-      getConversation("oracle_jones_random", handshakeData.relations?.["oracle_jones"]?.text) ?? Citizens["oracle_jones"].conversations,
-      Citizens["oracle_jones"].path,
-      Citizens["oracle_jones"].repeat,
-      Citizens["oracle_jones"].shouldFollowPath,
-    );
+    // const jimmyData = Citizens["jimmy"];
+    // const jimmy = new Citizen(this.matter.world, 
+    //   jimmyData.position.x, jimmyData.position.y, 
+    //   jimmyData.position.currentMap, 
+    //   jimmyData.hustlerId, jimmyData.name, jimmyData.description,
+    //   getConversation("jimmy_random", handshakeData.relations?.["jimmy"]?.text) ?? jimmyData.conversations,
+    //   jimmyData.path, jimmyData.repeat, jimmyData.shouldFollowPath,
+    // ).setData('id', "jimmy");
+    // const oracleJones = new Citizen(
+    //   this.matter.world,
+    //   Citizens["oracle_jones"].position.x,
+    //   Citizens["oracle_jones"].position.y,
+    //   Citizens["oracle_jones"].position.currentMap,
+    //   Citizens["oracle_jones"].hustlerId,
+    //   Citizens["oracle_jones"].name,
+    //   Citizens["oracle_jones"].description,
+    //   getConversation("oracle_jones_random", handshakeData.relations?.["oracle_jones"]?.text) ?? Citizens["oracle_jones"].conversations,
+    //   Citizens["oracle_jones"].path,
+    //   Citizens["oracle_jones"].repeat,
+    //   Citizens["oracle_jones"].shouldFollowPath,
+    // );
 
-    this.citizens.push(jimmy, oracleJones);
+    // this.citizens.push(jimmy, oracleJones);
 
     const camera = this.cameras.main;
 
@@ -296,7 +297,7 @@ export default class GameScene extends Scene {
     this.lights.setAmbientColor(0xfdffdb);
     this.lights.addLight(0, 0, 100000, 0xffffff, 0);
 
-    this._player.questManager.add(getQuest("SEND_CHAT_MESSAGES", this)!);
+    // this._player.questManager.add(getQuest("SEND_CHAT_MESSAGES", this)!);
 
     const map = this.mapHelper.loadedMaps[this._player.currentMap];
     // TODO: update function on map which gets called only when player is in the map
