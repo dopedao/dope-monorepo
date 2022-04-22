@@ -127,24 +127,6 @@ export default class GameScene extends Scene {
     let chiptunes = this.cache.audio.getKeys().filter((key: string) => key.includes('chiptune')).map((key: string) => {
       return this.sound.add(key);
     });
-    console.log(chiptunes);
-    
-    let songIdx = Math.round(Math.random() * (chiptunes.length - 1));
-    this.sound.play(chiptunes[songIdx].key);
-    
-    const randMusic = () => {
-      let rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
-      while (rndIdx === songIdx)
-        rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
-      
-      songIdx = rndIdx;
-      this.sound.play(chiptunes[rndIdx].key);
-    }
-    
-    this.sound.on('complete', () => {
-      this.sound.stopByKey(chiptunes[songIdx].key);
-      randMusic();
-    });
 
     // register player
     NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_JOIN, {
@@ -194,6 +176,36 @@ export default class GameScene extends Scene {
           this.hustlerData?.name ?? 'Hustler',
         );
         this._player.setData('id', data.id);
+
+        // start playing music
+        const showCurrentlyPlaying = () => {
+          EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
+            ...chakraToastStyle,
+            title: 'Chiptune',
+            description: `Playing ${chiptunes[songIdx].key.replace("chiptunes_", "").replace("_", " ")}`,
+          });
+        }
+    
+        let songIdx = Math.round(Math.random() * (chiptunes.length - 1));
+        this.sound.play(chiptunes[songIdx].key);
+        setTimeout(() => {
+          showCurrentlyPlaying();
+        }, 5000)
+    
+        const randMusic = () => {
+          let rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
+          while (rndIdx === songIdx)
+            rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
+          
+          songIdx = rndIdx;
+          this.sound.play(chiptunes[rndIdx].key);
+          showCurrentlyPlaying();
+        }
+        
+        this.sound.on('complete', () => {
+          this.sound.stopByKey(chiptunes[songIdx].key);
+          randMusic();
+        });
 
         // initiate all players
         data.players.forEach(data => {
