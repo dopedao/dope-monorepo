@@ -22,7 +22,14 @@ export default class PathNavigator {
     this.pathFinder = pathFinder;
   }
 
-  moveTo(x: number, y: number, onMoved?: (navigator: this) => void, onCancel?: (navigator: this) => void) {
+  moveTo(x: number, y: number, onMoved?: (navigator: this) => void, onCancel?: (navigator: this) => void, pathFind: boolean = true) {
+    if (!pathFind) {
+      this.target = new Phaser.Math.Vector2(x, y);
+      this.onMoved = onMoved;
+      this.onCancel = onCancel;
+      return;
+    }
+
     if (!this.hustler.currentMap)
       console.warn('Cannot initiate path finding without a current map');
 
@@ -127,7 +134,7 @@ export default class PathNavigator {
       // cancel pathfinding if stuck
       const pos = new Phaser.Math.Vector2(this.hustler.x, this.hustler.y);
       setTimeout(() => {
-        if (this.previousPosition && pos.equals(this.previousPosition)) this.cancel();
+        if (this.previousPosition && pos.distanceSq(this.previousPosition) < 20) this.cancel();
       }, 500);
 
       dx = this.target.x - pos.x;

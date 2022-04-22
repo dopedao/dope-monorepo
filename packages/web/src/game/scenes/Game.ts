@@ -480,7 +480,8 @@ export default class GameScene extends Scene {
         if (!hustler) return;
 
         // update hustler depth
-        hustler.setDepth(p.depth);
+        if (p.depth)
+          hustler.setDepth(p.depth);
 
         // 1.2x bounds to make sure hustler doesnt tp when in viewport 
         const cameraView = new Phaser.Geom.Rectangle(
@@ -503,7 +504,9 @@ export default class GameScene extends Scene {
         ) {
           // just define the target without doing the pathfinding. we assume the position is correct
           // will save a lot of cpu cycles but can introduce some unexpected behaviour
-          hustler.navigator.target = new Phaser.Math.Vector2(p.x, p.y);
+          hustler.navigator.moveTo(p.x, p.y, undefined, () => {
+            hustler.setPosition(p.x, p.y);
+          }, false);
 
           // using pathfinding, heavy cpu usage
           // hustler.navigator.moveTo(p.x, p.y, undefined, () => {
