@@ -92,7 +92,7 @@
                 "size": 123625
             }, 
             "animation_windowsnight": {
-                "file": "./game/MAP/Sheets/DW_Animation_WindowsNight.png",
+                "file": "./game/MAP/Sheets/Dw_Animation_WindowsNight.png",
                 "size": 8819
             },
             "animation_props_adssmall": {
@@ -178,73 +178,73 @@
             }
         },
         "audio": {
-            "2_of_Amerikas_Most_Wanted": {
-                "file": "./audio/chiptunes/2 of Amerikas Most Wanted.mp3",
-                "size": 8538823
+            "chiptunes_2_of_Amerikas_Most_Wanted": {
+              "file": "./audio/chiptunes/2 of Amerikas Most Wanted.mp3",
+              "size": 8538823
             },
-            "Aint_Nuthin_But_a_G_thang": {
-                "file": "./audio/chiptunes/Aint Nuthin But a G thang.mp3",
-                "size": 9990186
+            "chiptunes_Aint_Nuthin_But_a_G_thang": {
+              "file": "./audio/chiptunes/Aint Nuthin But a G thang.mp3",
+              "size": 9990186
             },
-            "BIG_POPPA": {
-                "file": "./audio/chiptunes/BIG POPPA.mp3",
-                "size": 11549174
+            "chiptunes_BIG_POPPA": {
+              "file": "./audio/chiptunes/BIG POPPA.mp3",
+              "size": 11549174
             },
-            "Cant_Knock_The_Hustle_2.0": {
-                "file": "./audio/chiptunes/Cant Knock The Hustle 2.0.mp3",
-                "size": 10617125
+            "chiptunes_Cant_Knock_The_Hustle_2.0": {
+              "file": "./audio/chiptunes/Cant Knock The Hustle 2.0.mp3",
+              "size": 10617125
             },
-            "CREAM_WuTang": {
-                "file": "./audio/chiptunes/CREAM_WuTang.mp3",
-                "size": 7686186
+            "chiptunes_CREAM_WuTang": {
+              "file": "./audio/chiptunes/CREAM_WuTang.mp3",
+              "size": 7686186
             },
-            "Fair_Trade_Drake_2.0": {
-                "file": "./audio/chiptunes/Fair Trade_Drake 2.0.mp3",
-                "size": 11549174
+            "chiptunes_Fair_Trade_Drake_2.0": {
+              "file": "./audio/chiptunes/Fair Trade_Drake 2.0.mp3",
+              "size": 11549174
             },
-            "Gold_Digger_2.0": {
-                "file": "./audio/chiptunes/Gold Digger 2.0.mp3",
-                "size": 8510611
+            "chiptunes_Gold_Digger_2.0": {
+              "file": "./audio/chiptunes/Gold Digger 2.0.mp3",
+              "size": 8510611
             },
-            "HUMBLE_2.0": {
-                "file": "./audio/chiptunes/HUMBLE 2.0.mp3",
-                "size": 6982970
+            "chiptunes_HUMBLE_2.0": {
+              "file": "./audio/chiptunes/HUMBLE 2.0.mp3",
+              "size": 6982970
             },
-            "HUSTLIN_2.0": {
-                "file": "./audio/chiptunes/HUSTLIN 2.0.mp3",
-                "size": 8759296
+            "chiptunes_HUSTLIN_2.0": {
+              "file": "./audio/chiptunes/HUSTLIN 2.0.mp3",
+              "size": 8759296
             },
-            "I_got_5_on_It_2.0": {
-                "file": "./audio/chiptunes/I got 5 on It 2.0.mp3",
-                "size": 8999623
+            "chiptunes_I_got_5_on_It_2.0": {
+              "file": "./audio/chiptunes/I got 5 on It 2.0.mp3",
+              "size": 8999623
             },
-            "Life_is_Good_2.0": {
-                "file": "./audio/chiptunes/Life is Good 2.0.mp3",
-                "size": 10505321
+            "chiptunes_Life_is_Good_2.0": {
+              "file": "./audio/chiptunes/Life is Good 2.0.mp3",
+              "size": 10505321
             },
-            "Lucid_Dreams": {
-                "file": "./audio/chiptunes/Lucid Dreams.mp3",
-                "size": 9344439
+            "chiptunes_Lucid_Dreams": {
+              "file": "./audio/chiptunes/Lucid Dreams.mp3",
+              "size": 9344439
             },
-            "N_s_in_Paris_2.0": {
-                "file": "./audio/chiptunes/N_s in Paris 2.0.mp3",
-                "size": 8440602
+            "chiptunes_N_s_in_Paris_2.0": {
+              "file": "./audio/chiptunes/N_s in Paris 2.0.mp3",
+              "size": 8440602
             },
-            "RAPSTAR_2.0": {
-                "file": "./audio/chiptunes/RAPSTAR 2.0.mp3",
-                "size": 6702937
+            "chiptunes_RAPSTAR_2.0": {
+              "file": "./audio/chiptunes/RAPSTAR 2.0.mp3",
+              "size": 6702937
             },
-            "Shook_Ones_Pt_2": {
-                "file": "./audio/chiptunes/Shook Ones Pt 2.mp3",
-                "size": 4908847
+            "chiptunes_Shook_Ones_Pt_2": {
+              "file": "./audio/chiptunes/Shook Ones Pt 2.mp3",
+              "size": 4908847
             },
-            "So_Fresh_So_Clean": {
-                "file": "./audio/chiptunes/So Fresh So Clean.mp3",
-                "size": 9549239
+            "chiptunes_So_Fresh_So_Clean": {
+              "file": "./audio/chiptunes/So Fresh So Clean.mp3",
+              "size": 9549239
             },
-            "Straightenin_2.0": {
-                "file": "./audio/chiptunes/Straightenin 2.0.mp3",
-                "size": 10170953
+            "chiptunes_Straightenin_2.0": {
+              "file": "./audio/chiptunes/Straightenin 2.0.mp3",
+              "size": 10170953
             }
         }
     }
