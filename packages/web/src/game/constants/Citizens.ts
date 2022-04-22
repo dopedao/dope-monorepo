@@ -31,7 +31,7 @@ const Citizens = {
             currentMap: "NY_Bushwick_Basket",
         },
         conversations: [
-            Conversations["test"]
+            Conversations["jimmy_random"]
         ],
         path: [
             { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
@@ -41,7 +41,28 @@ const Citizens = {
         ],
         repeat: true,
         shouldFollowPath: false,
-    }
+    },
+    oracle_jones: {
+        name: "Oracle Jones",
+        description: "Street Artist",
+        hustlerId: "13",
+        position: {
+            x: 500,
+            y: 300,
+            currentMap: "NY_Bushwick_Basket",
+        },
+        conversations: [
+            Conversations["oracle_jones_random"]
+        ],
+        path: [
+            { position: new Phaser.Math.Vector2(800, 100), wait: 8000, onMoved: (hustler: Hustler) => hustler.say('I can\'t be walking around indefinitely...') },
+            { position: new Phaser.Math.Vector2(405, 200) },
+            { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
+            { position: new Phaser.Math.Vector2(100, 500) },
+        ],
+        repeat: true,
+        shouldFollowPath: true,
+    },
 };
 
 export default Citizens;

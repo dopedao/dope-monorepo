@@ -55,6 +55,10 @@ export default class GameScene extends Scene {
 
   public canUseMouse: boolean = true;
 
+
+  public dayColor = [0xfd, 0xff, 0xdb];
+  public nightColor = [0xb8, 0xbe, 0xff];
+
   readonly zoom: number = 3;
 
   get player() {
@@ -232,11 +236,24 @@ export default class GameScene extends Scene {
       jimmyData.position.x, jimmyData.position.y, 
       jimmyData.position.currentMap, 
       jimmyData.hustlerId, jimmyData.name, jimmyData.description,
-      Conversations["jimmy_random"],
+      getConversation("jimmy_random", handshakeData.relations?.["jimmy"]?.text) ?? jimmyData.conversations,
       jimmyData.path, jimmyData.repeat, jimmyData.shouldFollowPath,
     ).setData('id', "jimmy");
+    const oracleJones = new Citizen(
+      this.matter.world,
+      Citizens["oracle_jones"].position.x,
+      Citizens["oracle_jones"].position.y,
+      Citizens["oracle_jones"].position.currentMap,
+      Citizens["oracle_jones"].hustlerId,
+      Citizens["oracle_jones"].name,
+      Citizens["oracle_jones"].description,
+      getConversation("oracle_jones_random", handshakeData.relations?.["oracle_jones"]?.text) ?? Citizens["oracle_jones"].conversations,
+      Citizens["oracle_jones"].path,
+      Citizens["oracle_jones"].repeat,
+      Citizens["oracle_jones"].shouldFollowPath,
+    );
 
-    this.citizens.push(jimmy);
+    this.citizens.push(jimmy, oracleJones);
 
     const camera = this.cameras.main;
 
@@ -448,16 +465,13 @@ export default class GameScene extends Scene {
       // sine function imitating day/night cycle
       // only works with 1440 minutes a day cycle
       // TODO: defined in ldtk? along with position of sun
-      const dayColor = [0xfd, 0xff, 0xdb];
-      const nightColor = [0xb8, 0xbe, 0xff];
-
       const cursor = 230;
       const maxSunIntensity = 300; 
       const maxMoonIntensity = 50;
       const fn = (Math.sin((data.time / cursor) - (Math.PI/2)) + 1) / 2;
-      const color = dayColor.map(color => (Math.round(color * fn)).toString(16)).join('');
+      const color = this.dayColor.map(color => (Math.round(color * fn)).toString(16)).join('');
       this.lights.setAmbientColor(Number.parseInt(color, 16) < 272722 ? 
-        Number.parseInt(nightColor.map(color => (Math.round(color * (0.2 - fn))).toString(16)).join(''), 16) : 
+        Number.parseInt(this.nightColor.map(color => (Math.round(color * (0.2 - fn))).toString(16)).join(''), 16) : 
           Number.parseInt(color, 16));
 
       // update players positions

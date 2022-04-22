@@ -178,7 +178,27 @@ export default class MapHelper {
         Math.abs(entity.__pivot[1] - 0.5) * entity.height,
       );
 
-      const entitySprite = this.scene.matter.add.sprite(
+      const shouldBody = entity.fieldInstances.find(f => f.__identifier === 'body')?.__value ?? true;
+      const spritePos = new Phaser.Math.Vector2(
+        this.mapReader.level.worldX +
+          l.pxOffsetX +
+          entity.px[0] +
+          pivotOffset.x,
+        this.mapReader.level.worldY +
+          l.pxOffsetY +
+          entity.px[1] +
+          pivotOffset.y,
+      );
+      const entitySprite = shouldBody ? this.scene.matter.add.sprite(
+        spritePos.x, spritePos.y,
+        tileset.identifier.toLowerCase(),
+        frame.name,
+        {
+          // TODO: have these options on ldtk?
+          isStatic: true,
+          isSensor: true,
+        }
+      ) : this.scene.add.sprite(
         this.mapReader.level.worldX +
           l.pxOffsetX +
           entity.px[0] +
@@ -188,12 +208,7 @@ export default class MapHelper {
           entity.px[1] +
           pivotOffset.y,
         tileset.identifier.toLowerCase(),
-        frame.name,
-        {
-          // TODO: have these options on ldtk?
-          isStatic: true,
-          isSensor: true,
-        }
+        frame.name
       );
       this.map.entities.push(entitySprite);
 

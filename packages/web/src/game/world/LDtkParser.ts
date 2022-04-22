@@ -130,25 +130,28 @@ export class LdtkReader {
 
     if (!layer.__identifier.includes('Night')) l.setPipeline('Light2D')
 
-    if (tilesetRef && tilesetRef.customData.length > 0) {
-      tilesetRef.customData.forEach(t => {
-        const data = JSON.parse(t.data);
-        if (data.anim)
-        {
-          const tilesAnim = new AnimatedTiles(this.scene, t.tileId, l, data.anim);
-          l.getData('animators').push(tilesAnim);
-          // tilesAnim.start();
-        }
-
-        if (data.light)
-        {
-          l.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-            if (tile.index === t.tileId)
-              mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
-          }));
-        }
-      });
+    const parseTilesetData = (ly: Phaser.Tilemaps.TilemapLayer) => {
+      if (tilesetRef && tilesetRef.customData.length > 0) {
+        tilesetRef.customData.forEach(t => {
+          const data = JSON.parse(t.data);
+          if (data.anim)
+          {
+            const tilesAnim = new AnimatedTiles(this.scene, t.tileId, l, data.anim);
+            l.getData('animators').push(tilesAnim);
+            // tilesAnim.start();
+          }
+  
+          if (data.light)
+          {
+            ly.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+              if (tile.index === t.tileId)
+                mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
+            }));
+          }
+        });
+      }
     }
+    parseTilesetData(l);
 
     stackLayers.forEach((tiles, i) => {
       if (tiles.length === 0) return;
@@ -192,6 +195,8 @@ export class LdtkReader {
           delete newLayer.layer.data[i][j];
         }
       }));
+
+      parseTilesetData(newLayer);
     });
 
     layer.gridTiles.forEach(t => {
