@@ -4,6 +4,11 @@
 # these three checks to make up for it.
 name: API Mainnet
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'packages/api/**'
   pull_request:
     branches:
       - master

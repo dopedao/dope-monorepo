@@ -90,9 +90,9 @@ const AboutWindow = ({ ...props }) => {
           <Link href="/news" passHref>
             <Button>Latest Announcements</Button>
           </Link>
-          <Link href="/mint" passHref>
+          {/* <Link href="/mint" passHref>
             <Button variant="primary">Mint a Hustler</Button>
-          </Link>
+          </Link> */}
         </PanelFooter>
       </div>
     </DesktopWindow>

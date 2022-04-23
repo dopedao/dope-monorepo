@@ -11,6 +11,8 @@ const DopeCardButtonBarMarket = ({ dope }: DopeCardButtonBarMarketProps) => {
   const isOnSale = !!dope.listings?.[0]?.inputs?.[0]?.amount;
   const router = useRouter();
 
+  return <></>;
+  // Commented out until Faces fixes mint hustler
   return isOnSale && !dope.opened ? (
     <div
       css={css`

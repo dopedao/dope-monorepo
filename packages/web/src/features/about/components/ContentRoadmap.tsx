@@ -200,9 +200,9 @@ const ContentRoadmap = () => (
             </a>
             .
           </p>
-          <p>
+          {/* <p>
             <a href="/mint" target="roadmap">MINT A HUSTLER</a>
-          </p>
+          </p> */}
         </>
       </RoadmapItem>
       <RoadmapItem

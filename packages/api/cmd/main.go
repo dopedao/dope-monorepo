@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect"
 	"github.com/dopedao/dope-monorepo/packages/api"
-	"github.com/dopedao/dope-monorepo/packages/api/common"
+	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/rs/zerolog"
 	"github.com/spf13/pflag"
 	"github.com/yfuruyama/crzerolog"
@@ -18,50 +18,61 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var listen = pflag.String("listen", "8080", "server listen port")
-var pgConnstring = common.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
-var openseaApiKey = common.SecretEnv("OPENSEA", "plaintext://")
-var network = os.Getenv("NETWORK")
-var isInIndexerMode = os.Getenv("INDEX")
+// Listen to env variable PORT or default to 8080
+// to avoid warning GCP was giving us about this issue.
+// https://cloud.google.com/appengine/docs/flexible/custom-runtimes/configuring-your-app-with-app-yaml
+var port = util.GetEnvOrFallback("PORT", "8080")
+var listen = pflag.String("listen", port, "server listen port")
+var pgConnstring = util.SecretEnv("PG_CONNSTR", "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable")
+var openseaApiKey = util.SecretEnv("OPENSEA", "plaintext://")
+var network = util.GetEnvOrFallback("NETWORK", "mainnet")
+var indexEnv = util.GetEnvOrFallback("INDEX", "False")
 
+// Runs the HTTP and Indexer servers.
+//
+// This is how the program is launched both on your local machine,
+// and when run remotely on GCP.
+//
+// Requires a number of environment variables to be set (see above in source)
+// or the program will crash. Because of this we set defaults.
 func main() {
 	log := zerolog.New(os.Stderr)
 
+	isInIndexerMode := (indexEnv == "True")
+
+	log.Debug().Msg(indexEnv)
 	log.Debug().Msgf("config: is indexer: %v", isInIndexerMode)
 
 	pgConnstringSecret, err := pgConnstring.Value()
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Getting postgres connection string.") //nolint:gocritic
-	}
+	util.LogFatalOnErr(err, "Getting postgres connection string.")
 
 	openseaApiKey, err := openseaApiKey.Value()
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Getting opensea api key.") //nolint:gocritic
-	}
+	util.LogFatalOnErr(err, "Getting OpenSea API Key")
 
 	db, err := sql.Open(dialect.Postgres, pgConnstringSecret)
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Connecting to db.") //nolint:gocritic
-	}
+	util.LogFatalOnErr(err, "Connecting to db")
 
 	ctx := context.Background()
 
 	s, err := storage.NewClient(ctx)
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Creating storage client.") //nolint:gocritic
+	util.LogFatalOnErr(err, "Creating storage client.")
+
+	var srv http.Handler
+
+	if isInIndexerMode {
+		log.Debug().Msg("Launching Indexer")
+		srv, err = api.NewIndexer(log.WithContext(ctx), db, openseaApiKey, network)
+		util.LogFatalOnErr(err, "Creating Indexer")
+	} else {
+		log.Debug().Msg("Launching HTTP API Server")
+		srv, err = api.NewHttpServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), network)
+		util.LogFatalOnErr(err, "Creating HTTP Server")
 	}
 
-	srv, err := api.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), isInIndexerMode == "True", openseaApiKey, network)
-	if err != nil {
-		log.Fatal().Err(err).Msgf("Creating server.") //nolint:gocritic
-	}
-
+	log.Info().Msg("Starting to listen on port: " + *listen)
 	middleware := crzerolog.InjectLogger(&log)
-
 	server := &http.Server{Addr: ":" + *listen, Handler: middleware(srv)}
 
-	log.Info().Msg("listening on :" + *listen)
-	if err := server.ListenAndServe(); err != nil {
-		log.Fatal().Err(err).Msgf("Server terminated.")
-	}
+	err = server.ListenAndServe()
+	util.LogFatalOnErr(err, "Server terminated.")
 }
