@@ -35,6 +35,8 @@ import WaterfallQuest from 'game/entities/player/quests/WaterfallQuest';
 import Quests, { getQuest } from 'game/constants/Quests';
 import BringItemQuest from 'game/entities/player/quests/BringItemQuest';
 import Citizens from 'game/constants/Citizens';
+import { getBBcodeText } from 'game/ui/rex/RexUtils';
+import { text } from 'stream/consumers';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -168,6 +170,23 @@ export default class GameScene extends Scene {
         this.mapHelper.createEntities();
         this.mapHelper.createCollisions();
 
+        const security = new Citizen(this.matter.world, 1010, -575, 'NY_BrookH_Club', '', 'Security', undefined, [
+          new Conversation('security_nightclub', [
+              {
+                text: "Nope, you're not getting in. The nightclub is not open yet.",
+              }
+            ], (cit, conv) => {
+              conv.texts = [
+                {
+                  text: 'Nope, you\'re not getting in. The nightclub is not yet open.',
+                }
+              ]
+              cit.conversations.push(conv);
+            })
+        ]).setVisible(false);
+
+        this.citizens.push(security);
+
         this._player = new Player(
           this.matter.world,
           data.x, data.y,
@@ -182,7 +201,7 @@ export default class GameScene extends Scene {
           EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
             ...chakraToastStyle,
             title: 'Chiptune',
-            description: `Playing ${chiptunes[songIdx].key.replace("chiptunes_", "").replace("_", " ")}`,
+            description: `Playing ${chiptunes[songIdx].key.replace("chiptunes_", "").replaceAll("_", " ")}`,
           });
         }
     

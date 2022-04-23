@@ -46,10 +46,22 @@ const Stepper = (props: Props) => {
         
             </>
         },
-        // {
-        //     heading: "Message from the devs 🤓",
-        //     text: 'sp,etjo',
-        // }
+        {
+            heading: "Message from the dev 🤓",
+            text: '',
+            children: <>
+                <Text>
+                    Thanks for joining us today everyone, it is with true joy and proudness that we're presenting you the current state of game!
+                </Text>
+                <Text>
+                    However, please note that this is not the final state of the game and that some parts are still unfinished and *buggy*, so please don't expect
+                    the best performance and accuracy. After all, this is still just **fun** stress test so don't be afraid to play around with the game and see what you can do (break)! 
+                </Text>
+                <Text>
+                    Anyway, I'm not gonna bother you anymore so yeah... have fun!
+                </Text>
+            </>
+        }
     ]
 
     const handleNext = () => {
@@ -68,7 +80,6 @@ const Stepper = (props: Props) => {
             <Heading>
                 {pages[page].heading}
             </Heading>
-            <br />
             <Text>
                 {pages[page].text}
             </Text>

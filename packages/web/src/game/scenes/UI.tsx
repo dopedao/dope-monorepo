@@ -30,6 +30,7 @@ import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
 import ControlsManager, { ControlsEvents } from 'game/utils/ControlsManager';
 import EventWelcome from 'game/ui/react/components/EventWelcome';
+import { number } from 'starknet';
 
 interface Interaction {
   citizen: Citizen;
@@ -127,7 +128,58 @@ export default class UIScene extends Scene {
     welcomeScreen.events.on('game', () => {
       inputs();
       welcomeScreen.destroy();
-    })
+    });
+
+    // schedule messages
+    const messages: {[key: number]: {
+      message: string;
+      duration: number;
+    }} = {
+      1650675600: {
+        message: "Welcome to the Dope City Stress Test! Feel free to explore while listening to some Chiptunes or the mixtape. We will meet at the Jamingo at 9:15PM EST.",
+        duration: 15
+      },
+      1650676200: {
+        message: "Everyone please head over to the Jamingo!",
+        duration: 5
+      },
+      1650676800: {
+        message: "Okay guys! Can we get the CONTRIBUTORS in front of PERAMA’s ARCADE for a picture!\nEveryone, please gather for a group picture in front of JAMINGO",
+        duration: 5
+      },
+      1650677100: {
+        message: `
+        Hey hustlers it's time to flex on twitter for our raffle to win some dope gear.
+        - Check our twitter page and Retweet the raffle post.
+        - Reply to raffle post with a screenshot of your OG hustler inside the map. Make sure to include your OG number!
+        - Use hashtags in the post: #dopewars #oghustler
+        We will pick 5 random winners at 9:45PM and announce shortly after. 
+        The rest will be done in batches during the weekend. Entrants can win more than once.
+        `,
+        duration: 35
+      }
+    }
+
+    Object.keys(messages).forEach((key: unknown) => {
+      if (Date.now() > ((key as number * 1000) + (messages[key as number].duration * 60 * 1000)))
+        return;
+
+      const showMessage = () => {
+        this.toast({
+          ...chakraToastStyle,
+          title: 'Announcement',
+          description: messages[key as number].message,
+          status: 'warning',
+          duration: ((messages[key as number].duration * 60) * 1000 + (key as number * 1000)) - Date.now(),
+        });
+      }
+
+      if ((key as number * 1000) < Date.now()) {
+        showMessage();
+        return;
+      }
+      setTimeout(showMessage, (key as number * 1000) - Date.now());
+    });
   }
 
   update(time: number, delta: number): void {
@@ -487,8 +539,11 @@ export default class UIScene extends Scene {
       //   // .setOrigin(-0.5, 0.5)
       //   .setColor(Palette.COLOR_DARK)
       // });
-      const icon = this.add.image(0, 0, citizen.texture.key, citizen.texture.key + '_icon').setScale(3);
-      icon.setOrigin(0, -0.5);
+      let icon;
+      if (citizen.hustlerId !== '') {
+        icon = this.add.image(0, 0, citizen.texture.key, citizen.texture.key + '_icon').setScale(3);
+        icon.setOrigin(0, -0.5);
+      }
       // icon.layout();
       const textBox = new DialogueTextBox(this, 500, 500, 65, icon);
       let text = conv.texts[0];
