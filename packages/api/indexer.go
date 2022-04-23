@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/middleware"
 	"github.com/dopedao/dope-monorepo/packages/api/migrations"
+	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
@@ -23,7 +23,7 @@ import (
 // https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#startup
 func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network string) (http.Handler, error) {
 
-	_, log := base.LogFor(ctx)
+	_, log := util.LogFor(ctx)
 
 	log.Debug().Msg("Starting indexer?")
 
