@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"sync"
 
-	"github.com/dopedao/dope-monorepo/packages/api/base"
+	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
@@ -30,7 +30,7 @@ type Player struct {
 }
 
 func (p *Player) readPump(ctx context.Context) {
-	_, log := base.LogFor(ctx)
+	_, log := util.LogFor(ctx)
 
 	for {
 		var msg BaseMessage

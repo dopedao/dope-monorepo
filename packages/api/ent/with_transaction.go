@@ -3,12 +3,12 @@ package ent
 import (
 	"context"
 
-	"github.com/dopedao/dope-monorepo/packages/api/base"
+	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/pkg/errors"
 )
 
 func WithTx(ctx context.Context, client *Client, fn func(tx *Tx) error) error {
-	ctx, log := base.LogFor(ctx)
+	ctx, log := util.LogFor(ctx)
 	tx, err := client.Tx(ctx)
 	if err != nil {
 		return err
