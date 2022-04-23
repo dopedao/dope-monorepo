@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/dopedao/dope-monorepo/packages/api/base"
+	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/gorilla/websocket"
 )
 
@@ -17,7 +17,7 @@ func NewGame() *Game {
 }
 
 func (g *Game) Handle(ctx context.Context, conn *websocket.Conn) error {
-	ctx, log := base.LogFor(ctx)
+	ctx, log := util.LogFor(ctx)
 	log.Info().Msg("New connection from " + conn.RemoteAddr().String())
 
 	for {

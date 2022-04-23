@@ -10,11 +10,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -137,7 +137,7 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.Hustle
 }
 
 func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e bindings.HustlerMetadataUpdate) (func(tx *ent.Tx) error, error) {
-	ctx, log := base.LogFor(ctx)
+	ctx, log := util.LogFor(ctx)
 	meta, err := p.Contract.Metadata(nil, e.Id)
 	if err != nil {
 		return nil, fmt.Errorf("hustler: getting metadata: %w", err)

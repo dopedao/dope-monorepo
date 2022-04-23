@@ -16,18 +16,18 @@ import (
 	"github.com/rs/cors"
 
 	"github.com/dopedao/dope-monorepo/packages/api/authentication"
-	"github.com/dopedao/dope-monorepo/packages/api/base"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/graph"
 	"github.com/dopedao/dope-monorepo/packages/api/middleware"
 	"github.com/dopedao/dope-monorepo/packages/api/resources"
+	"github.com/dopedao/dope-monorepo/packages/api/util"
 )
 
 // Launch a new HTTP API server to handle web requests
 // for database queries, sprite sheets, authentication, etc.
 func NewHttpServer(ctx context.Context, drv *sql.Driver, static *storage.BucketHandle, network string) (http.Handler, error) {
-	_, log := base.LogFor(ctx)
+	_, log := util.LogFor(ctx)
 	client := ent.NewClient(ent.Driver(drv))
 
 	// Get Eth client
