@@ -1,4 +1,4 @@
-package util
+package flag
 
 import (
 	"context"
@@ -27,6 +27,16 @@ func smClient() *secretmanager.Client {
 		sm = c
 	})
 	return sm
+}
+
+// Allows specifying a fallback value if ENV variable isn't set
+func GetEnvOrFallback(key, fallback string) string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return fallback
+	} else {
+		return value
+	}
 }
 
 // Enables secret manager access for cli flags.

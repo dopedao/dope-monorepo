@@ -7,14 +7,14 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
-	"github.com/dopedao/dope-monorepo/packages/api/util"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/gorilla/mux"
 )
 
 func WalletHustlersHandler(client *ent.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		ctx, log := util.LogFor(ctx)
+		ctx, log := logger.LogFor(ctx)
 
 		vars := mux.Vars(r)
 		address := vars["address"]

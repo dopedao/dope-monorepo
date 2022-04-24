@@ -1,8 +1,7 @@
-runtime: go116
+runtime: go118
 
-main: ./packages/api/cmd
+main: ./packages/api/cmd/web
 
 env_variables:
-  OPENSEA: projects/803405501117/secrets/opensea/versions/1
   PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2
   NETWORK: mainnet
