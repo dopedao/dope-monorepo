@@ -15,7 +15,8 @@
 // https://marcofranssen.nl/manage-go-tools-via-go-modules
 package tools
 
-// import (
-// 	_ "github.com/99designs/gqlgen/cmd"
-// 	_ "github.com/withtally/synceth/codegen"
-// )
+// The gqlgen/cmd only exists in 0.16.0 which is required in go.mod
+import (
+	_ "github.com/99designs/gqlgen/cmd"
+	_ "github.com/withtally/synceth/codegen"
+)
