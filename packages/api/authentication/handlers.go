@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/dopedao/dope-monorepo/packages/api/middleware"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gorilla/handlers"

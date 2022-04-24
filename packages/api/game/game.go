@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
@@ -19,7 +18,7 @@ type Game struct {
 }
 
 func (g *Game) Start(ctx context.Context) {
-	_, log := util.LogFor(ctx)
+	_, log := logger.LogFor(ctx)
 
 	for {
 		select {
@@ -69,7 +68,7 @@ func (g *Game) Start(ctx context.Context) {
 }
 
 func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
-	_, log := util.LogFor(ctx)
+	_, log := logger.LogFor(ctx)
 
 	joinData, err := json.Marshal(PlayerJoinClientData{
 		Id:   player.Id.String(),
@@ -106,7 +105,7 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, data 
 }
 
 func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
-	_, log := util.LogFor(ctx)
+	_, log := logger.LogFor(ctx)
 
 	leaveData, err := json.Marshal(IdData{Id: player.Id.String()})
 	if err != nil {
@@ -122,7 +121,7 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 }
 
 func (g *Game) HandlePlayerLeave(ctx context.Context, conn *websocket.Conn, data IdData) {
-	_, log := util.LogFor(ctx)
+	_, log := logger.LogFor(ctx)
 
 	uuid, err := uuid.Parse(data.Id)
 	if err != nil {
@@ -140,7 +139,7 @@ func (g *Game) HandlePlayerLeave(ctx context.Context, conn *websocket.Conn, data
 }
 
 // func (g *Game) DispatchPlayerMove(ctx context.Context, player *Player) {
-// 	_, log := util.LogFor(ctx)
+// 	_, log := logger.LogFor(ctx)
 
 // 	moveData, err := json.Marshal(PlayerMoveData{
 // 		Id: player.Id.String(),
@@ -170,7 +169,7 @@ func (g *Game) HandlePlayerLeave(ctx context.Context, conn *websocket.Conn, data
 // 	g.players.mutex.Lock()
 // 	defer g.players.mutex.Unlock()
 
-// 	_, log := util.LogFor(ctx)
+// 	_, log := logger.LogFor(ctx)
 
 // 	uuid, err := uuid.Parse(data.Id)
 // 	if err != nil {
@@ -192,7 +191,7 @@ func (g *Game) HandlePlayerLeave(ctx context.Context, conn *websocket.Conn, data
 // 	g.itemEntities.mutex.Lock()
 // 	defer g.itemEntities.mutex.Unlock()
 
-// 	_, log := util.LogFor(ctx)
+// 	_, log := logger.LogFor(ctx)
 
 // 	g.itemEntities.data = append(g.itemEntities.data, &ItemEntity{
 // 		id:   uuid.New(),
@@ -222,7 +221,7 @@ func (g *Game) HandlePlayerLeave(ctx context.Context, conn *websocket.Conn, data
 // 	g.itemEntities.mutex.Lock()
 // 	defer g.itemEntities.mutex.Unlock()
 
-// 	_, log := util.LogFor(ctx)
+// 	_, log := logger.LogFor(ctx)
 
 // 	uuid, err := uuid.Parse(data.Id)
 // 	if err != nil {

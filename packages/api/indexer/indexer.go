@@ -1,15 +1,16 @@
-package api
+package indexer
 
 import (
 	"context"
 	"net/http"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/dopedao/dope-monorepo/packages/api"
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/middleware"
-	"github.com/dopedao/dope-monorepo/packages/api/migrations"
-	"github.com/dopedao/dope-monorepo/packages/api/util"
+	"github.com/dopedao/dope-monorepo/packages/api/indexer/migrations"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
@@ -21,9 +22,9 @@ import (
 //
 // Exposes HTTP endpoints for `/_ah/start` and `/_ah/stop` for autoscaling
 // https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#startup
-func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network string) (http.Handler, error) {
+func NewServer(ctx context.Context, drv *sql.Driver, openseaApiKey, network string) (http.Handler, error) {
 
-	_, log := util.LogFor(ctx)
+	_, log := logger.LogFor(ctx)
 
 	log.Debug().Msg("Starting indexer?")
 
@@ -44,7 +45,7 @@ func NewIndexer(ctx context.Context, drv *sql.Driver, openseaApiKey, network str
 		}
 
 		started = true
-		for _, c := range configs[network] {
+		for _, c := range api.AppConfigs[network] {
 			switch c := c.(type) {
 			case engine.EthConfig:
 				engine := engine.NewEthereum(ctx, dbClient, c)

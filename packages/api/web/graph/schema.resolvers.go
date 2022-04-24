@@ -13,8 +13,8 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
-	generated1 "github.com/dopedao/dope-monorepo/packages/api/graph/generated"
-	"github.com/dopedao/dope-monorepo/packages/api/graph/model"
+	generated1 "github.com/dopedao/dope-monorepo/packages/api/web/graph/generated"
+	"github.com/dopedao/dope-monorepo/packages/api/web/graph/model"
 )
 
 func (r *amountResolver) Token(ctx context.Context, obj *ent.Amount) (model.Token, error) {

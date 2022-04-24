@@ -1,14 +1,14 @@
 # schema tells gqlgen where the GraphQL schema is located.
 schema:
-  - graph/*.graphql
+  - web/graph/*.graphql
 
 exec:
-  filename: graph/generated/generated.go
+  filename: web/graph/generated/generated.go
   package: generated
 
 # Where should any generated models go?
 model:
-  filename: graph/model/models_gen.go
+  filename: web/graph/model/models_gen.go
   package: model
 
 # resolver reports where the resolver implementations go.
@@ -41,7 +41,7 @@ models:
       - github.com/dopedao/dope-monorepo/packages/api/ent.Noder
   Long:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/graph/model.Uint64
+      - github.com/dopedao/dope-monorepo/packages/api/web/graph/model.Uint64
   BigInt:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/ent/schema.BigInt

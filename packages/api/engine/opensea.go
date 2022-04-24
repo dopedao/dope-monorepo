@@ -13,7 +13,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/util"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/hashicorp/go-retryablehttp"
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
@@ -64,7 +64,7 @@ func NewOpensea(client *ent.Client, config OpenseaConfig) *Opensea {
 
 // Sync implemented for Opensa
 func (o *Opensea) Sync(ctx context.Context) {
-	ctx, log := util.LogFor(ctx)
+	ctx, log := logger.LogFor(ctx)
 
 	defer o.ticker.Stop()
 
@@ -216,7 +216,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 // getAssetCollection for Opensea
 func (o *Opensea) getAssetCollection(ctx context.Context, contract string, limit int, offset int) (*Assets, error) {
-	ctx, log := util.LogFor(ctx)
+	ctx, log := logger.LogFor(ctx)
 	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d&offset=%d", assetPath, contract, limit, offset)
 	log.Debug().Str("url", o.URL+path).Msg("Getting asset collection.")
 	b, err := o.getURL(ctx, o.URL+path)

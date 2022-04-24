@@ -1,7 +1,7 @@
-runtime: go116
+runtime: go118
 service: indexer
 
-main: ./packages/api/cmd
+main: ./packages/api/cmd/indexer
 
 instance_class: B2
 
@@ -9,9 +9,6 @@ manual_scaling:
   instances: 1
 
 env_variables:
-  # This is the only thing that turns the Go API into "indexer mode"
-  # See main.go:25 &  
-  INDEX: True
   OPENSEA: projects/803405501117/secrets/opensea/versions/1
   PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2
   NETWORK: mainnet

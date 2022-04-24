@@ -9,8 +9,8 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/processors"
-	"github.com/dopedao/dope-monorepo/packages/api/util"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -45,7 +45,7 @@ type Ethereum struct {
 }
 
 func NewEthereum(ctx context.Context, client *ent.Client, config EthConfig) *Ethereum {
-	ctx, log := util.LogFor(ctx)
+	ctx, log := logger.LogFor(ctx)
 
 	retryableHTTPClient := retryablehttp.NewClient()
 	retryableHTTPClient.Logger = nil
@@ -106,7 +106,7 @@ func eventLogCommitter(ctx context.Context, c *Contract, l types.Log, committer 
 }
 
 func (e *Ethereum) Sync(ctx context.Context) {
-	ctx, log := util.LogFor(ctx)
+	ctx, log := logger.LogFor(ctx)
 
 	defer e.ticker.Stop()
 

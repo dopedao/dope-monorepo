@@ -10,7 +10,7 @@ import (
 
 type Configs []interface{}
 
-var configs = map[string]Configs{
+var AppConfigs = map[string]Configs{
 	"mainnet": {engine.EthConfig{
 		RPC:      "https://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj",
 		Interval: time.Second * 5,

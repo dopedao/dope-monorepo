@@ -3,7 +3,7 @@ package graph
 import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/graph/generated"
+	"github.com/dopedao/dope-monorepo/packages/api/web/graph/generated"
 )
 
 type Resolver struct{ client *ent.Client }
