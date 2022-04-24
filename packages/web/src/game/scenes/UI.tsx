@@ -350,7 +350,9 @@ export default class UIScene extends Scene {
     const openSettings = (e: Phaser.Input.Keyboard.Key) => {
       if (this.sendMessageInput) return;
 
-      const settings = this.add.reactDom(Settings);
+      const settings = this.add.reactDom(Settings, {
+        game: this.player.scene,
+      });
 
       const inputs = this.toggleInputs(true);
 

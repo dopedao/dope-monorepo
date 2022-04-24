@@ -8,6 +8,7 @@ import ControlsManager from "game/utils/ControlsManager";
 import { ethers } from "ethers";
 import Hustlers from "./Hustlers";
 import Controls from "./Controls";
+import Music from "./Music";
 
 
 interface Props {
@@ -15,12 +16,17 @@ interface Props {
     manager: ComponentManager;
 }
 
-const SettingsPages: {[key: string]: React.FunctionComponent} = {
-    Hustlers: Hustlers,
-    Controls: Controls,
+const SettingsPages = (props: Props): {[key: string]: React.FunctionComponent} => {
+    console.log(props.game);
+    return {
+        Hustlers: Hustlers,
+        Music: () => <Music musicManager={props.game.musicManager} />,
+        Controls: Controls,
+    };
 }
 
 export default function Settings(props: Props) {
+    const pages = SettingsPages(props);
     const [ openedPage, setOpenedPage ] = React.useState<{
         name: string,
         component: React.FunctionComponent,
@@ -75,12 +81,12 @@ export default function Settings(props: Props) {
                             Resume
                         </Button>
                         {
-                            Object.keys(SettingsPages).map((page) => {
+                            Object.keys(pages).map((page) => {
                                 return (
                                     <Button
                                         key={page}
                                         onClick={() => setOpenedPage({
-                                            name: page, component: SettingsPages[page]
+                                            name: page, component: pages[page]
                                         })}
                                         variant="primary"
                                         style={{

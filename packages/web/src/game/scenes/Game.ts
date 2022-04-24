@@ -37,6 +37,7 @@ import BringItemQuest from 'game/entities/player/quests/BringItemQuest';
 import Citizens from 'game/constants/Citizens';
 import { getBBcodeText } from 'game/ui/rex/RexUtils';
 import { text } from 'stream/consumers';
+import MusicManager from 'game/utils/MusicManager';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -57,6 +58,7 @@ export default class GameScene extends Scene {
 
   public canUseMouse: boolean = true;
 
+  private _musicManager!: MusicManager;
 
   public dayColor = [0xfd, 0xff, 0xdb];
   public nightColor = [0xb8, 0xbe, 0xff];
@@ -81,6 +83,10 @@ export default class GameScene extends Scene {
 
   get mapHelper() {
     return this._mapHelper;
+  }
+
+  get musicManager() {
+    return this._musicManager;
   }
 
   constructor() {
@@ -127,8 +133,12 @@ export default class GameScene extends Scene {
 
     // load chiptunes
     let chiptunes = this.cache.audio.getKeys().filter((key: string) => key.includes('chiptune')).map((key: string) => {
-      return this.sound.add(key);
+      return {
+        name: key.replace('chiptunes_', '').replaceAll('_', ' '),
+        song: this.sound.add(key) as Phaser.Sound.WebAudioSound
+      };
     });
+    this._musicManager = new MusicManager(chiptunes);
 
     // register player
     NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_JOIN, {
@@ -197,35 +207,7 @@ export default class GameScene extends Scene {
         this._player.setData('id', data.id);
 
         // start playing music
-        const showCurrentlyPlaying = () => {
-          EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
-            ...chakraToastStyle,
-            title: 'Chiptune',
-            description: `Playing ${chiptunes[songIdx].key.replace("chiptunes_", "").replaceAll("_", " ")}`,
-          });
-        }
-    
-        let songIdx = Math.round(Math.random() * (chiptunes.length - 1));
-        chiptunes[songIdx].once('complete', () => {
-          randMusic();
-        });
-
-        chiptunes[songIdx].play();
-        setTimeout(() => {
-          showCurrentlyPlaying();
-        }, 5000)
-    
-        const randMusic = () => {
-          let rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
-          while (rndIdx === songIdx)
-            rndIdx = Math.round(Math.random() * (chiptunes.length - 1));
-          
-          songIdx = rndIdx;
-          chiptunes[songIdx].once('complete', randMusic);
-          chiptunes[songIdx].play();
-          
-          showCurrentlyPlaying();
-        }
+        this.musicManager.shuffle();
 
         // initiate all players
         data.players.forEach(data => {
