@@ -50,7 +50,7 @@ const DesktopIconList = () => {
           label="Get $PAPER"
           clickAction={() =>
             openBrowserTab(
-              'https://app.uniswap.org/#/swap?inputCurrency=0x7ae1d57b58fa6411f32948314badd83583ee0e8c',
+              'https://app.uniswap.org/#/swap?theme=dark&inputCurrency=ETH&outputCurrency=0x7ae1d57b58fa6411f32948314badd83583ee0e8c',
             )
           }
         />
