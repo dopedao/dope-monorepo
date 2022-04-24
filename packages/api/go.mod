@@ -7,7 +7,7 @@ require (
 	cloud.google.com/go/storage v1.10.0
 	entgo.io/contrib v0.2.0
 	entgo.io/ent v0.10.1
-	github.com/99designs/gqlgen v0.16.0
+	github.com/99designs/gqlgen v0.17.3
 	github.com/ethereum/go-ethereum v1.10.16
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/handlers v1.5.1
@@ -60,6 +60,7 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
 	github.com/hashicorp/hcl/v2 v2.10.0 // indirect
+	github.com/matryer/moq v0.2.3 // indirect
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/rjeczalik/notify v0.9.1 // indirect

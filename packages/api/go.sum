@@ -68,8 +68,8 @@ entgo.io/ent v0.9.2-0.20210821141344-368a8f7a2e9a/go.mod h1:lYe2Pg6DmqA5f7kNzTdR
 entgo.io/ent v0.10.1 h1:dM5h4Zk6yHGIgw4dCqVzGw3nWgpGYJiV4/kyHEF6PFo=
 entgo.io/ent v0.10.1/go.mod h1:YPgxeLnoQ/YdpVORRtqjBF+wCy9NX9IR7veTv3Bffus=
 github.com/99designs/gqlgen v0.14.0/go.mod h1:S7z4boV+Nx4VvzMUpVrY/YuHjFX4n7rDyuTqvAkuoRE=
-github.com/99designs/gqlgen v0.16.0 h1:7Qc4Ll3mfN3doAyUWOgtGLcBGu+KDgK48HdkBGLZVFs=
-github.com/99designs/gqlgen v0.16.0/go.mod h1:nbeSjFkqphIqpZsYe1ULVz0yfH8hjpJdJIQoX/e0G2I=
+github.com/99designs/gqlgen v0.17.3 h1:ybZQLJVwX+GJIt+NWZaQaBmADkyBpfdIkgUEDbmBS2I=
+github.com/99designs/gqlgen v0.17.3/go.mod h1:CJyjOqdZbngpfftqAEHaQRGo6J4N83ejlIqJhlEQqyY=
 github.com/AlekSi/pointer v1.1.0/go.mod h1:y7BvfRI3wXPWKXEBhU71nbnIEEZX0QTSB2Bj48UJIZE=
 github.com/Azure/azure-pipeline-go v0.2.1/go.mod h1:UGSo8XybXnIGZ3epmeBw7Jdz+HiUVpqIlpz/HKHylF4=
 github.com/Azure/azure-pipeline-go v0.2.2/go.mod h1:4rQ/NZncSvGqNkkOsNpOU1tgoNuIlp9AfUH5G1tvCHc=
@@ -507,6 +507,7 @@ github.com/mailru/easyjson v0.0.0-20190614124828-94de47d64c63/go.mod h1:C1wdFJiN
 github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e/go.mod h1:C1wdFJiN94OJF2b5HbByQZoLdCWB1Yqtg26g4irojpc=
 github.com/matryer/moq v0.0.0-20190312154309-6cfb0558e1bd/go.mod h1:9ELz6aaclSIGnZBoaSLZ3NAl1VTufbOrXBPvtcy6WiQ=
 github.com/matryer/moq v0.0.0-20200106131100-75d0ddfc0007/go.mod h1:9ELz6aaclSIGnZBoaSLZ3NAl1VTufbOrXBPvtcy6WiQ=
+github.com/matryer/moq v0.2.3 h1:Q06vEqnBYjjfx5KKgHfYRKE/lvlRu+Nj+xodG4YdHnU=
 github.com/matryer/moq v0.2.3/go.mod h1:9RtPYjTnH1bSBIkpvtHkFN7nbWAnO7oRpdJkEIn6UtE=
 github.com/mattn/go-colorable v0.0.9/go.mod h1:9vuHe8Xs5qXnSaW/c/ABM9alt+Vo+STaOChaDxuIBZU=
 github.com/mattn/go-colorable v0.1.2/go.mod h1:U0ppj6V5qS13XJ6of8GYAs25YV2eR4EVcfRqFIhoBtE=
