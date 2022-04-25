@@ -15,8 +15,8 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/rs/cors"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/indexer"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/dopedao/dope-monorepo/packages/api/web/graph"

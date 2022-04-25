@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 )
 
 type InitiatorProcessor struct {

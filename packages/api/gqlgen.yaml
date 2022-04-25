@@ -23,9 +23,9 @@ resolver:
 # autobind tells gqlgen to search for any type names in the GraphQL schema in the
 # provided Go package. If they match it will use them, otherwise it will generate new ones.
 autobind:
-  - github.com/dopedao/dope-monorepo/packages/api/ent
-  - github.com/dopedao/dope-monorepo/packages/api/ent/dope
-  - github.com/dopedao/dope-monorepo/packages/api/ent/wallet
+  - github.com/dopedao/dope-monorepo/packages/api/internal/ent
+  - github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope
+  - github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet
 
 # This section declares type mapping between the GraphQL and go type systems
 #
@@ -38,43 +38,43 @@ models:
       - github.com/99designs/gqlgen/graphql.ID
   Node:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent.Noder
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent.Noder
   Long:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/web/graph/model.Uint64
   BigInt:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/schema.BigInt
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema.BigInt
   BodyPartSex:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/bodypart.Sex
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart.Sex
   BodyPartType:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/bodypart.Type
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart.Type
   ItemType:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/item.Type
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/item.Type
   ItemTier:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/item.Tier
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/item.Tier
   HustlerSex:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/hustler.Sex
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler.Sex
   HustlerType:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/hustler.Type
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler.Type
   AmountType:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/amount.Type
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount.Type
   RLEs:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/schema.RLEs
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema.RLEs
   Source:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/listing.Source
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing.Source
   SearchType:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/ent/search.Type
+      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/search.Type
   OpenSeaOrder:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/indexer.Order

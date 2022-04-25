@@ -5,26 +5,27 @@ import (
 	"net/http"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/indexer/migration"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
 
-// Launch a new Indexer process.
-//
-// The Indexer reads prices from NFT marketplaces,
-// and information about our DOPE NFT assets to place in a PGSQL Database.
+// Launch a new Indexer HTTP Server because this is hosted on GCP
+// App Engine Standard Edition.
 //
 // Exposes HTTP endpoints for `/_ah/start` and `/_ah/stop` for autoscaling
 // https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#startup
+//
+// The Indexer reads prices from NFT marketplaces,
+// and information about our DOPE NFT assets to place in a Postgres Database.
 func NewServer(ctx context.Context, drv *sql.Driver, openseaApiKey, network string) (http.Handler, error) {
 
 	_, log := logger.LogFor(ctx)
 
-	log.Debug().Msg("Starting indexer?")
+	log.Debug().Msg("Starting Indexer")
 
 	dbClient := ent.NewClient(ent.Driver(drv))
 	migration.Migrate(ctx, drv, dbClient)
@@ -46,11 +47,11 @@ func NewServer(ctx context.Context, drv *sql.Driver, openseaApiKey, network stri
 		for _, c := range Config[network] {
 			switch c := c.(type) {
 			case EthConfig:
-				eth := NewEthereum(ctx, dbClient, c)
+				eth := NewEthereumIndexer(ctx, dbClient, c)
 				go eth.Sync(ctx)
 			case OpenseaConfig:
 				c.APIKey = openseaApiKey
-				os := NewOpensea(dbClient, c)
+				os := NewOpenseaIndexer(dbClient, c)
 				go os.Sync(ctx)
 			}
 		}
