@@ -5,10 +5,8 @@ import (
 	"net/http"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api"
-	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/indexer/migrations"
+	"github.com/dopedao/dope-monorepo/packages/api/indexer/migration"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/gorilla/mux"
@@ -29,7 +27,7 @@ func NewServer(ctx context.Context, drv *sql.Driver, openseaApiKey, network stri
 	log.Debug().Msg("Starting indexer?")
 
 	dbClient := ent.NewClient(ent.Driver(drv))
-	migrations.Migrate(ctx, drv, dbClient)
+	migration.Migrate(ctx, drv, dbClient)
 
 	ctx, cancel := context.WithCancel(ctx)
 	started := false
@@ -45,15 +43,15 @@ func NewServer(ctx context.Context, drv *sql.Driver, openseaApiKey, network stri
 		}
 
 		started = true
-		for _, c := range api.AppConfigs[network] {
+		for _, c := range Config[network] {
 			switch c := c.(type) {
-			case engine.EthConfig:
-				engine := engine.NewEthereum(ctx, dbClient, c)
-				go engine.Sync(ctx)
-			case engine.OpenseaConfig:
+			case EthConfig:
+				eth := NewEthereum(ctx, dbClient, c)
+				go eth.Sync(ctx)
+			case OpenseaConfig:
 				c.APIKey = openseaApiKey
-				opensea := engine.NewOpensea(dbClient, c)
-				go opensea.Sync(ctx)
+				os := NewOpensea(dbClient, c)
+				go os.Sync(ctx)
 			}
 		}
 		w.WriteHeader(200)

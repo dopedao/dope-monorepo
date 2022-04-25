@@ -30,7 +30,7 @@ There are two services in this API, the indexer; and the API HTTP Server. The Do
 
 ### Adding a smart contract
 
-To generate new smart contract bindings, add the abi to `packages/api/contracts/abis` and run `go generate ./...`.
+To generate new smart contract bindings, add the abi to `packages/api/internal/contracts/abis` and run `go generate ./...`.
 
 ### Updating the schema
 

@@ -77,4 +77,4 @@ models:
       - github.com/dopedao/dope-monorepo/packages/api/ent/search.Type
   OpenSeaOrder:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/engine.Order
+      - github.com/dopedao/dope-monorepo/packages/api/indexer.Order

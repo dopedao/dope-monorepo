@@ -1,4 +1,4 @@
-package resources
+package hustler
 
 import (
 	"bytes"
@@ -126,7 +126,7 @@ func sprites(ctx context.Context, id string, client *ent.Client) (*Sprites, erro
 	return s, nil
 }
 
-func HustlerSpritesHandler(client *ent.Client) func(http.ResponseWriter, *http.Request) {
+func SpritesHandler(client *ent.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		ctx, log := logger.LogFor(ctx)
@@ -177,7 +177,7 @@ func readSprite(ctx context.Context, static *storage.BucketHandle, url string) (
 	return png.Decode(rdr)
 }
 
-func HustlerSpritesCompositeHandler(client *ent.Client, static *storage.BucketHandle) func(http.ResponseWriter, *http.Request) {
+func SpritesCompositeHandler(client *ent.Client, static *storage.BucketHandle) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		ctx, log := logger.LogFor(ctx)

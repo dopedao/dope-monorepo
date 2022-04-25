@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/engine"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/indexer"
 	generated1 "github.com/dopedao/dope-monorepo/packages/api/web/graph/generated"
 	"github.com/dopedao/dope-monorepo/packages/api/web/graph/model"
 )
@@ -47,8 +47,8 @@ func (r *itemResolver) Fullname(ctx context.Context, obj *ent.Item) (string, err
 	return fullname, nil
 }
 
-func (r *listingResolver) Order(ctx context.Context, obj *ent.Listing) (*engine.Order, error) {
-	var order engine.Order
+func (r *listingResolver) Order(ctx context.Context, obj *ent.Listing) (*indexer.Order, error) {
+	var order indexer.Order
 
 	if len(obj.Order) == 0 {
 		return nil, nil
@@ -61,91 +61,91 @@ func (r *listingResolver) Order(ctx context.Context, obj *ent.Listing) (*engine.
 	return &order, nil
 }
 
-func (r *openSeaOrderResolver) Exchange(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) Exchange(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.Exchange.Hex(), nil
 }
 
-func (r *openSeaOrderResolver) ListingTime(ctx context.Context, obj *engine.Order) (uint64, error) {
+func (r *openSeaOrderResolver) ListingTime(ctx context.Context, obj *indexer.Order) (uint64, error) {
 	return uint64(obj.ListingTime), nil
 }
 
-func (r *openSeaOrderResolver) ExpirationTime(ctx context.Context, obj *engine.Order) (uint64, error) {
+func (r *openSeaOrderResolver) ExpirationTime(ctx context.Context, obj *indexer.Order) (uint64, error) {
 	return uint64(obj.ExpirationTime), nil
 }
 
-func (r *openSeaOrderResolver) Maker(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) Maker(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.Maker.Address.Hex(), nil
 }
 
-func (r *openSeaOrderResolver) CurrentPrice(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) CurrentPrice(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.CurrentPrice.Big().String(), nil
 }
 
-func (r *openSeaOrderResolver) MakerRelayerFee(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) MakerRelayerFee(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.MakerRelayerFee.Big().String(), nil
 }
 
-func (r *openSeaOrderResolver) MakerProtocolFee(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) MakerProtocolFee(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.MakerProtocolFee.Big().String(), nil
 }
 
-func (r *openSeaOrderResolver) FeeRecipient(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) FeeRecipient(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.FeeRecipient.Address.Hex(), nil
 }
 
-func (r *openSeaOrderResolver) FeeMethod(ctx context.Context, obj *engine.Order) (int, error) {
+func (r *openSeaOrderResolver) FeeMethod(ctx context.Context, obj *indexer.Order) (int, error) {
 	return int(obj.FeeMethod), nil
 }
 
-func (r *openSeaOrderResolver) Side(ctx context.Context, obj *engine.Order) (int, error) {
+func (r *openSeaOrderResolver) Side(ctx context.Context, obj *indexer.Order) (int, error) {
 	return int(obj.Side), nil
 }
 
-func (r *openSeaOrderResolver) SaleKind(ctx context.Context, obj *engine.Order) (int, error) {
+func (r *openSeaOrderResolver) SaleKind(ctx context.Context, obj *indexer.Order) (int, error) {
 	return int(obj.SaleKind), nil
 }
 
-func (r *openSeaOrderResolver) Target(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) Target(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.Target.Hex(), nil
 }
 
-func (r *openSeaOrderResolver) HowToCall(ctx context.Context, obj *engine.Order) (int, error) {
+func (r *openSeaOrderResolver) HowToCall(ctx context.Context, obj *indexer.Order) (int, error) {
 	return int(obj.HowToCall), nil
 }
 
-func (r *openSeaOrderResolver) Calldata(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) Calldata(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.Calldata.String(), nil
 }
 
-func (r *openSeaOrderResolver) ReplacementPattern(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) ReplacementPattern(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.ReplacementPattern.String(), nil
 }
 
-func (r *openSeaOrderResolver) StaticTarget(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) StaticTarget(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.Target.Hex(), nil
 }
 
-func (r *openSeaOrderResolver) StaticExtradata(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) StaticExtradata(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.StaticExtradata.String(), nil
 }
 
-func (r *openSeaOrderResolver) Extra(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) Extra(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.Extra.Big().String(), nil
 }
 
-func (r *openSeaOrderResolver) Salt(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) Salt(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.Salt.Big().String(), nil
 }
 
-func (r *openSeaOrderResolver) V(ctx context.Context, obj *engine.Order) (int, error) {
+func (r *openSeaOrderResolver) V(ctx context.Context, obj *indexer.Order) (int, error) {
 	return int(*obj.V), nil
 }
 
-func (r *openSeaOrderResolver) R(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) R(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.R.String(), nil
 }
 
-func (r *openSeaOrderResolver) S(ctx context.Context, obj *engine.Order) (string, error) {
+func (r *openSeaOrderResolver) S(ctx context.Context, obj *indexer.Order) (string, error) {
 	return obj.S.String(), nil
 }
 
