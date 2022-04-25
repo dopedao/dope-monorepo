@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/gorilla/websocket"
 )
 
