@@ -63,38 +63,24 @@ export class LdtkReader {
 
   CreateTileLayer(layer: LayerInstance, tileset: string, mappack: LDtkMapPack): Phaser.Tilemaps.TilemapLayer {
     let map: Phaser.Tilemaps.Tilemap;
-    let csv = new Array(layer.__cHei);
-    for (var i = 0; i < csv.length; i++) {
-      csv[i] = new Array(layer.__cWid);
-    }
     let tilesetObj = this.tilesets.find((t: any) => t.uid === layer.__tilesetDefUid)!;
     let tilesetWidth = tilesetObj.__cWid;
     let tileSize = layer.__gridSize;
 
-    // 10 is stacked maximum layers
-    let stackLayers: GridTile[][] = new Array(10);
-    for (let i = 0; i < stackLayers.length; i++) stackLayers[i] = new Array();
-
-    // number of stacked tiles
-    let layerCount = 0;
-    layer.gridTiles.forEach(t => {
-      let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
-      if (!csv[tileloc.y][tileloc.x]) {
-        csv[tileloc.y][tileloc.x] = this.GetTileID(t.src[0], t.src[1], tileSize, tilesetWidth);
-        layerCount = 0;
-      } else {
-        stackLayers[layerCount].push(t);
-        layerCount++;
-      }
-    });
-
-    map = this.scene.make.tilemap({
-      data: csv,
-      tileWidth: layer.__gridSize,
-      tileHeight: layer.__gridSize,
-    });
-
+    map = this.scene.add.tilemap(layer.__identifier, tileSize, tileSize, layer.__cWid, layer.__cHei);
     const mainTileset = map.addTilesetImage(tileset);
+    
+    const mapLayerData = new Phaser.Tilemaps.LayerData({
+      name: layer.__identifier,
+      x: this.level.worldX + layer.pxOffsetX,
+      y: this.level.worldY + layer.pxOffsetY,
+      tileWidth: tileSize,
+      tileHeight: tileSize,
+      width: layer.__cWid,
+      height: layer.__cHei,
+      data: Array.from({ length: layer.__cHei }, () => new Array(layer.__cWid)),
+    });
+    map.layers.push(mapLayerData);
 
     // check if we have custom data - animated tiles
     let gid = mainTileset.total + 1;
@@ -111,99 +97,165 @@ export class LdtkReader {
       });
     }
 
+    // depth
     const orderId =
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length -
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
-    let l = map
-      .createLayer(
-        0,
-        map.tilesets,
-        this.level.worldX + layer.pxOffsetX,
-        this.level.worldY + layer.pxOffsetY,
-      )
-      .setName(layer.__identifier)
-      .setData('id', orderId)
-      .setData('animators', [])
-      .setDepth(orderId * 5)
-      .setAlpha(layer.__opacity)
-      .setVisible(true);
+    let depth = orderId * 5;
 
+    const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
+    if (definedDepth) depth = typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value);
+
+    // initialize tiles & stacked layers
+    let stackedLayers: Phaser.Tilemaps.TilemapLayer[] = [];
+    let layerIdx = 0;
     layer.gridTiles.forEach(t => {
+      let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
+      let tile;
+      if (!mapLayerData.data[tileloc.y][tileloc.x] || mapLayerData.data[tileloc.y][tileloc.x].index === -1) {
+        tile = new Phaser.Tilemaps.Tile(mapLayerData, this.GetTileID(t.src[0], t.src[1], layer.__gridSize, tilesetWidth), tileloc.x, tileloc.y, tileSize, tileSize, tileSize, tileSize);
+        mapLayerData.data[tileloc.y][tileloc.x] = tile;
+        layerIdx = 0;
+      } else {
+        if (layerIdx > stackedLayers.length-1) {
+          const stackedLayerData = new Phaser.Tilemaps.LayerData({
+            name: `${layer.__identifier} - ${layerIdx} (stacked)`,
+            x: this.level.worldX + layer.pxOffsetX,
+            y: this.level.worldY + layer.pxOffsetY,
+            tileWidth: tileSize,
+            tileHeight: tileSize,
+            width: layer.__cWid,
+            height: layer.__cHei,
+            data: Array.from({ length: layer.__cHei }, () => new Array(layer.__cWid)),
+          });
+          const layerId = map.layers.push(stackedLayerData);
+
+          const stackedLayer = map.createLayer(layerId-1, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
+            .setDepth(depth + (layerIdx+1));
+
+          if (!layer.__identifier.includes('Night')) stackedLayer.setPipeline('Light2D');
+          if (tilesetRef) this.ParseTilesetData(mappack, stackedLayer, tilesetRef, true);
+          
+          stackedLayers.push(stackedLayer);
+        }
+
+        tile = new Phaser.Tilemaps.Tile(stackedLayers[layerIdx].layer, this.GetTileID(t.src[0], t.src[1], layer.__gridSize, tilesetWidth), tileloc.x, tileloc.y, tileSize, tileSize, tileSize, tileSize);
+        stackedLayers[layerIdx].layer.data[tileloc.y][tileloc.x] = tile;
+        layerIdx++;
+      }
+
       if (t.f != 0) {
-        let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
-        let tile = l.getTileAt(tileloc.x, tileloc.y);
-        if (tile != null) {
-          if (t.f == 1) tile.flipX = true;
-          else if (t.f == 2) tile.flipY = true;
-          else {
-            tile.flipX = true;
-            tile.flipY = true;
-          }
+        if (t.f == 1) tile.flipX = true;
+        else if (t.f == 2) tile.flipY = true;
+        else {
+          tile.flipX = true;
+          tile.flipY = true;
         }
       }
     });
 
-    const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
-    if (definedDepth) l.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
+    let mapLayer = map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
+      .setName(layer.__identifier)
+      .setData('id', orderId)
+      .setData('animators', [])
+      .setData('stackedLayers', stackedLayers)
+      .setDepth(depth)
+      .setAlpha(layer.__opacity)
+      .setVisible(true);
 
-    if (!layer.__identifier.includes('Night')) l.setPipeline('Light2D')
+    console.log(stackedLayers);
+
+    if (!layer.__identifier.includes('Night')) mapLayer.setPipeline('Light2D');
 
     if (tilesetRef)
-      this.ParseTilesetData(mappack, l, tilesetRef);
+      this.ParseTilesetData(mappack, mapLayer, tilesetRef);
 
-    stackLayers.forEach((tiles, i) => {
-      if (tiles.length === 0) return;
-
-      const newLayer = map
-        .createBlankLayer(
-          `${layer.__identifier} - ${i}`,
-          map.tilesets,
-          this.level.worldX + layer.pxOffsetX,
-          this.level.worldY + layer.pxOffsetY,
-        )
-        .setDepth(l.depth)
-        .setVisible(true);
-
-      if (!layer.__identifier.includes('Night')) newLayer.setPipeline('Light2D')
-
-      tiles.forEach(t => {
-        let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
-        const tile = newLayer.putTileAt(
-          this.GetTileID(t.src[0], t.src[1], tileSize, tilesetWidth),
-          tileloc.x,
-          tileloc.y,
-        );
-
-        if (t.f !== 0) {
-          if (t.f === 1) tile.flipX = true;
-          else if (t.f === 2) tile.flipY = true;
-          else {
-            tile.flipX = true;
-            tile.flipY = true;
-          }
-        }
-      });
-
-      setTimeout(() => {
-        // go through each tile and check if they are used,
-        // if not, clean them up and free memory
-        newLayer.layer.data.forEach((tiles, i) => tiles.forEach((tile, j) => {
-          if (tile.index === -1)
-          {
-            newLayer.layer.data[i][j].destroy();
-            delete newLayer.layer.data[i][j];
-          }
-        }));
-      });
-
-      if (tilesetRef)
-        this.ParseTilesetData(mappack, newLayer, tilesetRef);
-    });
-
-    return l;
+    return mapLayer;
   }
 
   CreateAutoLayer(layer: LayerInstance, tileset: string, mappack: LDtkMapPack): Phaser.Tilemaps.TilemapLayer {
+    // let map: Phaser.Tilemaps.Tilemap;
+    // let tilesetObj = this.tilesets.find((t: any) => t.uid === layer.__tilesetDefUid)!;
+    // let tilesetWidth = tilesetObj.__cWid;
+    // let tileSize = layer.__gridSize;
+
+    // map = this.scene.add.tilemap(layer.__identifier, layer.__cWid, layer.__cHei, tileSize, tileSize);
+    // const mainTileset = map.addTilesetImage(tileset);
+
+    // const mapLayerData = new Phaser.Tilemaps.LayerData({
+    //   name: layer.__identifier,
+    //   x: this.level.worldX + layer.pxOffsetX,
+    //   y: this.level.worldY + layer.pxOffsetY,
+    //   width: layer.__cWid,
+    //   height: layer.__cHei,
+    //   data: Array.from({ length: layer.__cHei }, () => new Array(layer.__cWid)),
+    // });
+    // map.layers.push(mapLayerData);
+
+    // // check if we have custom data - animated tiles
+    // let gid = mainTileset.total + 1;
+    // const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
+    // if (tilesetRef && tilesetRef.customData.length > 0) {
+    //   tilesetRef.customData.forEach(t => {
+    //     const data = JSON.parse(t.data);
+    //     if (data.anim)
+    //     {
+    //       const animTileset = map.addTilesetImage(data.anim);
+    //       animTileset.firstgid = gid;
+    //       gid += animTileset.total + 1;
+    //     }
+    //   });
+    // }
+
+    // layer.autoLayerTiles.forEach(t => {
+    //   let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
+    //   //@ts-ignore
+    //   const tile = new Phaser.Tilemaps.Tile(
+    //     mapLayerData,
+    //     this.GetTileID(t.src[0], t.src[1], tileSize, tilesetWidth),
+    //     tileloc.x,
+    //     tileloc.y,
+    //     tileSize,
+    //     tileSize
+    //   );
+    //   mapLayerData.data[tileloc.y][tileloc.x] = tile;
+
+    //   if (t.f != 0) {
+    //     if (t.f == 1) tile.flipX = true;
+    //     else if (t.f == 2) tile.flipY = true;
+    //     else {
+    //       tile.flipX = true;
+    //       tile.flipY = true;
+    //     }
+    //   }
+    // });
+
+    // const orderId =
+    //   this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length -
+    //   this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
+    // let mapLayer = map
+    //   .createLayer(
+    //     0,
+    //     map.tilesets,
+    //     this.level.worldX + layer.pxOffsetX,
+    //     this.level.worldY + layer.pxOffsetY,
+    //   )
+    //   .setName(layer.__identifier)
+    //   .setData('id', orderId)
+    //   .setData('animators', [])
+    //   .setDepth(orderId * 5)
+    //   .setAlpha(layer.__opacity)
+    //   .setVisible(true);
+
+    // const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
+    // if (definedDepth) mapLayer.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
+
+    // if (!layer.__identifier.includes('Night')) mapLayer.setPipeline('Light2D');
+
+    // // if (tilesetRef)
+    // //   this.ParseTilesetData(mappack, mapLayer, tilesetRef);
+
+    // return mapLayer;
     let map: Phaser.Tilemaps.Tilemap;
     let csv = new Array(layer.__cHei);
     for (var i = 0; i < csv.length; i++) {
@@ -358,8 +410,8 @@ export class LdtkReader {
     return mapLayer;
   }
 
-  ParseTilesetData(map: LDtkMapPack, layer: Phaser.Tilemaps.TilemapLayer, tileset: Tileset) {
-    let aboveAllLayer: Phaser.Tilemaps.TilemapLayer | undefined;
+  ParseTilesetData(map: LDtkMapPack, layer: Phaser.Tilemaps.TilemapLayer, tileset: Tileset, stacked: boolean = false) {
+    let aboveAllLayerData: Phaser.Tilemaps.LayerData | undefined;
     tileset.customData.forEach(t => {
       const data = JSON.parse(t.data);
       if (data.anim)
@@ -372,61 +424,50 @@ export class LdtkReader {
       let createLight = false;
       let createDepth = false;
       if (data.light)
-      {
         createLight = true;
-        // layer.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-        //   if (tile.index === t.tileId)
-        //     mappack.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
-        // }));
-      }
 
-      if (data.depth === "ABOVE_ALL") {
-        if (!aboveAllLayer) {
-          aboveAllLayer = layer.tilemap.createBlankLayer(
-            `${layer.layer.name} - ABOVE_ALL`,
-            layer.tilemap.tilesets,
-            layer.x,
-            layer.y,
-          ).setDepth(layer.depth + 1000).setVisible(true);
+      // dont create above all layer for stacked layers
+      if (data.depth === "ABOVE_ALL" && !stacked) {
+        if (!aboveAllLayerData) {
+          aboveAllLayerData = new Phaser.Tilemaps.LayerData({
+            name: `${layer.layer.name} - ABOVE_ALL`,
+            x: layer.layer.x,
+            y: layer.layer.y,
+            width: layer.layer.width,
+            height: layer.layer.height,
+            tileWidth: layer.layer.tileWidth,
+            tileHeight: layer.layer.tileHeight,
+            data: Array.from({ length: layer.layer.height }, () => new Array(layer.layer.width)),
+          });
 
-          if (!aboveAllLayer.layer.name.includes('Night')) aboveAllLayer.setPipeline('Light2D');
+          layer.tilemap.layers.push(aboveAllLayerData);
         }
 
         createDepth = true;
-        // ly.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-        //   if (tile.index === t.tileId)
-        //     aboveAllLayer!.putTileAt(tile, tile.x, tile.y);
-        // }));
       }
 
       if (createLight || createDepth) {
         layer.layer.data.forEach(tileRow => tileRow.forEach(tile => {
-          if (tile.index === t.tileId)
+          if (tile?.index === t.tileId)
           {
-            if (createLight)
+            if (createLight) {
               map.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
+            }
 
             if (createDepth) {
-              const aboveTile = aboveAllLayer!.putTileAt(tile, tile.x, tile.y);
-              aboveTile.setFlip(tile.flipX, tile.flipY);
+              aboveAllLayerData!.data[tile.y][tile.x] = new Phaser.Tilemaps.Tile(aboveAllLayerData!, tile.index, tile.x, tile.y, tile.width, tile.height, tile.baseWidth, tile.baseHeight);
+              aboveAllLayerData!.data[tile.y][tile.x].setFlip(tile.flipX, tile.flipY);
             }
           }
         }));
       }
     });
 
-    if (aboveAllLayer) {
-      setTimeout(() => {
-        // go through each tile and check if they are used,
-        // if not, clean them up and free memory
-        aboveAllLayer!.layer.data.forEach((tiles, i) => tiles.forEach((tile, j) => {
-          if (tile.index === -1)
-          {
-            aboveAllLayer!.layer.data[i][j].destroy();
-            delete aboveAllLayer!.layer.data[i][j];
-          }
-        }));
-      })
+    if (aboveAllLayerData) {
+      const aboveAllLayer = layer.tilemap.createLayer(layer.tilemap.layers.indexOf(aboveAllLayerData), layer.tilemap.tilesets, layer.x, layer.y)
+        .setDepth(layer.depth + 1000);
+
+      if (!layer.name.includes('Night')) aboveAllLayer.setPipeline('Light2D');
     }
   }
 }
