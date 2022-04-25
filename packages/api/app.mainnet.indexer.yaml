@@ -1,7 +1,7 @@
-runtime: go118
+runtime: go116
 service: indexer
 
-main: ./packages/api/cmd/indexer
+main: ./cmd/indexer
 
 instance_class: B2
 

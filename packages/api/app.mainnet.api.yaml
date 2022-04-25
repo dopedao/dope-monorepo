@@ -1,6 +1,6 @@
-runtime: go118
+runtime: go116
 
-main: ./packages/api/cmd/web
+main: ./cmd/web
 
 env_variables:
   PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2
