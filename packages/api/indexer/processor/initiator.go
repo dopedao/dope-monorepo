@@ -1,11 +1,11 @@
-package processors
+package processor
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
 )
 
 type InitiatorProcessor struct {

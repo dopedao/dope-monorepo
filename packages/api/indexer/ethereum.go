@@ -1,4 +1,4 @@
-package engine
+package indexer
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
+	"github.com/dopedao/dope-monorepo/packages/api/indexer/processor"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
-	"github.com/dopedao/dope-monorepo/packages/api/processors"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -26,7 +26,7 @@ const blockLimit = 500
 type Contract struct {
 	Address    common.Address
 	StartBlock uint64
-	Processor  processors.Processor
+	Processor  processor.Processor
 }
 
 type EthConfig struct {

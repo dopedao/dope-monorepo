@@ -1,7 +1,7 @@
 // Updates DOPE NFT items in our database if they
 // have been "Opened" or had their "Gear Claimed"
 // by checking the Ethereum blockchain.
-package opened
+package main
 
 import (
 	"context"
@@ -12,8 +12,8 @@ import (
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/flag"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"

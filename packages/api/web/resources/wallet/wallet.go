@@ -1,4 +1,4 @@
-package resources
+package wallet
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func WalletHustlersHandler(client *ent.Client) func(http.ResponseWriter, *http.Request) {
+func HandleHustlers(client *ent.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		ctx, log := logger.LogFor(ctx)
