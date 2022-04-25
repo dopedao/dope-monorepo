@@ -12,12 +12,12 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/walletitems"
 )
 
 // ItemQuery is the builder for querying Item entities.
@@ -458,7 +458,7 @@ func (iq *ItemQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single Item entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Item entity is not found.
+// Returns a *NotSingularError when more than one Item entity is found.
 // Returns a *NotFoundError when no Item entities are found.
 func (iq *ItemQuery) Only(ctx context.Context) (*Item, error) {
 	nodes, err := iq.Limit(2).All(ctx)
@@ -485,7 +485,7 @@ func (iq *ItemQuery) OnlyX(ctx context.Context) *Item {
 }
 
 // OnlyID is like Only, but returns the only Item ID in the query.
-// Returns a *NotSingularError when exactly one Item ID is not found.
+// Returns a *NotSingularError when more than one Item ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (iq *ItemQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -609,8 +609,9 @@ func (iq *ItemQuery) Clone() *ItemQuery {
 		withDerivative:         iq.withDerivative.Clone(),
 		withIndex:              iq.withIndex.Clone(),
 		// clone intermediate query.
-		sql:  iq.sql.Clone(),
-		path: iq.path,
+		sql:    iq.sql.Clone(),
+		path:   iq.path,
+		unique: iq.unique,
 	}
 }
 

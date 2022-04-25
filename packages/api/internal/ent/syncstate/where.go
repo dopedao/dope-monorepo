@@ -4,7 +4,7 @@ package syncstate
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

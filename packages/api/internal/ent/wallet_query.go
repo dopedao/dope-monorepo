@@ -12,11 +12,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/walletitems"
 )
 
 // WalletQuery is the builder for querying Wallet entities.
@@ -180,7 +180,7 @@ func (wq *WalletQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single Wallet entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Wallet entity is not found.
+// Returns a *NotSingularError when more than one Wallet entity is found.
 // Returns a *NotFoundError when no Wallet entities are found.
 func (wq *WalletQuery) Only(ctx context.Context) (*Wallet, error) {
 	nodes, err := wq.Limit(2).All(ctx)
@@ -207,7 +207,7 @@ func (wq *WalletQuery) OnlyX(ctx context.Context) *Wallet {
 }
 
 // OnlyID is like Only, but returns the only Wallet ID in the query.
-// Returns a *NotSingularError when exactly one Wallet ID is not found.
+// Returns a *NotSingularError when more than one Wallet ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (wq *WalletQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -319,8 +319,9 @@ func (wq *WalletQuery) Clone() *WalletQuery {
 		withItems:    wq.withItems.Clone(),
 		withHustlers: wq.withHustlers.Clone(),
 		// clone intermediate query.
-		sql:  wq.sql.Clone(),
-		path: wq.path,
+		sql:    wq.sql.Clone(),
+		path:   wq.path,
+		unique: wq.unique,
 	}
 }
 

@@ -17,9 +17,9 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/indexer"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/graph"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
-	"github.com/dopedao/dope-monorepo/packages/api/web/graph"
 	"github.com/dopedao/dope-monorepo/packages/api/web/resources/authentication"
 	"github.com/dopedao/dope-monorepo/packages/api/web/resources/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/web/resources/wallet"

@@ -12,12 +12,12 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
 )
 
 // DopeQuery is the builder for querying Dope entities.
@@ -228,7 +228,7 @@ func (dq *DopeQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single Dope entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Dope entity is not found.
+// Returns a *NotSingularError when more than one Dope entity is found.
 // Returns a *NotFoundError when no Dope entities are found.
 func (dq *DopeQuery) Only(ctx context.Context) (*Dope, error) {
 	nodes, err := dq.Limit(2).All(ctx)
@@ -255,7 +255,7 @@ func (dq *DopeQuery) OnlyX(ctx context.Context) *Dope {
 }
 
 // OnlyID is like Only, but returns the only Dope ID in the query.
-// Returns a *NotSingularError when exactly one Dope ID is not found.
+// Returns a *NotSingularError when more than one Dope ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (dq *DopeQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -369,8 +369,9 @@ func (dq *DopeQuery) Clone() *DopeQuery {
 		withItems:    dq.withItems.Clone(),
 		withIndex:    dq.withIndex.Clone(),
 		// clone intermediate query.
-		sql:  dq.sql.Clone(),
-		path: dq.path,
+		sql:    dq.sql.Clone(),
+		path:   dq.path,
+		unique: dq.unique,
 	}
 }
 

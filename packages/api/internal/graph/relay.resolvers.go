@@ -7,8 +7,8 @@ import (
 	"context"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/web/graph/generated"
-	"github.com/dopedao/dope-monorepo/packages/api/web/graph/model"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/graph/generated"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/graph/model"
 )
 
 func (r *searchEdgeResolver) Node(ctx context.Context, obj *ent.SearchEdge) (model.SearchResult, error) {

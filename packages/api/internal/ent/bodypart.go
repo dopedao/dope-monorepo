@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
 )
 
 // BodyPart is the model entity for the BodyPart schema.

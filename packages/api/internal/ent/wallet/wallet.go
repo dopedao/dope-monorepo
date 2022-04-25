@@ -5,7 +5,7 @@ package wallet
 import (
 	"time"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
 )
 
 const (

@@ -5,9 +5,9 @@ package enttest
 import (
 	"context"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	// required by schema hooks.
-	_ "github.com/dopedao/dope-monorepo/packages/api/ent/runtime"
+	_ "github.com/dopedao/dope-monorepo/packages/api/internal/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

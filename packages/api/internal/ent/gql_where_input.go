@@ -6,19 +6,19 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/syncstate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/walletitems"
 )
 
 // AmountWhereInput represents a where input for filtering Amount queries.
@@ -254,7 +254,7 @@ func (i *AmountWhereInput) P() (predicate.Amount, error) {
 	}
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate AmountWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate AmountWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -583,7 +583,7 @@ func (i *BodyPartWhereInput) P() (predicate.BodyPart, error) {
 	}
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate BodyPartWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate BodyPartWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -942,7 +942,7 @@ func (i *DopeWhereInput) P() (predicate.Dope, error) {
 	}
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate DopeWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate DopeWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -1155,7 +1155,7 @@ func (i *EventWhereInput) P() (predicate.Event, error) {
 
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate EventWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate EventWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -2010,7 +2010,7 @@ func (i *HustlerWhereInput) P() (predicate.Hustler, error) {
 	}
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate HustlerWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate HustlerWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -2899,7 +2899,7 @@ func (i *ItemWhereInput) P() (predicate.Item, error) {
 	}
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate ItemWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate ItemWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -3126,7 +3126,7 @@ func (i *ListingWhereInput) P() (predicate.Listing, error) {
 	}
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate ListingWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate ListingWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -3461,7 +3461,7 @@ func (i *SearchWhereInput) P() (predicate.Search, error) {
 	}
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate SearchWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate SearchWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -3606,7 +3606,7 @@ func (i *SyncStateWhereInput) P() (predicate.SyncState, error) {
 
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate SyncStateWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate SyncStateWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -3851,7 +3851,7 @@ func (i *WalletWhereInput) P() (predicate.Wallet, error) {
 	}
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate WalletWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate WalletWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:
@@ -4040,7 +4040,7 @@ func (i *WalletItemsWhereInput) P() (predicate.WalletItems, error) {
 	}
 	switch len(predicates) {
 	case 0:
-		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/ent: empty predicate WalletItemsWhereInput")
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate WalletItemsWhereInput")
 	case 1:
 		return predicates[0], nil
 	default:

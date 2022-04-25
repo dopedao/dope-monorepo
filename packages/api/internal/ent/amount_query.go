@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
 )
 
 // AmountQuery is the builder for querying Amount entities.
@@ -155,7 +155,7 @@ func (aq *AmountQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single Amount entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Amount entity is not found.
+// Returns a *NotSingularError when more than one Amount entity is found.
 // Returns a *NotFoundError when no Amount entities are found.
 func (aq *AmountQuery) Only(ctx context.Context) (*Amount, error) {
 	nodes, err := aq.Limit(2).All(ctx)
@@ -182,7 +182,7 @@ func (aq *AmountQuery) OnlyX(ctx context.Context) *Amount {
 }
 
 // OnlyID is like Only, but returns the only Amount ID in the query.
-// Returns a *NotSingularError when exactly one Amount ID is not found.
+// Returns a *NotSingularError when more than one Amount ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (aq *AmountQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -293,8 +293,9 @@ func (aq *AmountQuery) Clone() *AmountQuery {
 		withListingInput:  aq.withListingInput.Clone(),
 		withListingOutput: aq.withListingOutput.Clone(),
 		// clone intermediate query.
-		sql:  aq.sql.Clone(),
-		path: aq.path,
+		sql:    aq.sql.Clone(),
+		path:   aq.path,
+		unique: aq.unique,
 	}
 }
 

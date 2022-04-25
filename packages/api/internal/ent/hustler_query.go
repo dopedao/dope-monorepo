@@ -12,12 +12,12 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
 )
 
 // HustlerQuery is the builder for querying Hustler entities.
@@ -458,7 +458,7 @@ func (hq *HustlerQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single Hustler entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Hustler entity is not found.
+// Returns a *NotSingularError when more than one Hustler entity is found.
 // Returns a *NotFoundError when no Hustler entities are found.
 func (hq *HustlerQuery) Only(ctx context.Context) (*Hustler, error) {
 	nodes, err := hq.Limit(2).All(ctx)
@@ -485,7 +485,7 @@ func (hq *HustlerQuery) OnlyX(ctx context.Context) *Hustler {
 }
 
 // OnlyID is like Only, but returns the only Hustler ID in the query.
-// Returns a *NotSingularError when exactly one Hustler ID is not found.
+// Returns a *NotSingularError when more than one Hustler ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (hq *HustlerQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -609,8 +609,9 @@ func (hq *HustlerQuery) Clone() *HustlerQuery {
 		withBeard:     hq.withBeard.Clone(),
 		withIndex:     hq.withIndex.Clone(),
 		// clone intermediate query.
-		sql:  hq.sql.Clone(),
-		path: hq.path,
+		sql:    hq.sql.Clone(),
+		path:   hq.path,
+		unique: hq.unique,
 	}
 }
 

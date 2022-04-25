@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
 )
 
 // BodyPartQuery is the builder for querying BodyPart entities.
@@ -178,7 +178,7 @@ func (bpq *BodyPartQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single BodyPart entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one BodyPart entity is not found.
+// Returns a *NotSingularError when more than one BodyPart entity is found.
 // Returns a *NotFoundError when no BodyPart entities are found.
 func (bpq *BodyPartQuery) Only(ctx context.Context) (*BodyPart, error) {
 	nodes, err := bpq.Limit(2).All(ctx)
@@ -205,7 +205,7 @@ func (bpq *BodyPartQuery) OnlyX(ctx context.Context) *BodyPart {
 }
 
 // OnlyID is like Only, but returns the only BodyPart ID in the query.
-// Returns a *NotSingularError when exactly one BodyPart ID is not found.
+// Returns a *NotSingularError when more than one BodyPart ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (bpq *BodyPartQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -317,8 +317,9 @@ func (bpq *BodyPartQuery) Clone() *BodyPartQuery {
 		withHustlerHairs:  bpq.withHustlerHairs.Clone(),
 		withHustlerBeards: bpq.withHustlerBeards.Clone(),
 		// clone intermediate query.
-		sql:  bpq.sql.Clone(),
-		path: bpq.path,
+		sql:    bpq.sql.Clone(),
+		path:   bpq.path,
+		unique: bpq.unique,
 	}
 }
 

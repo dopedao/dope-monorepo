@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/syncstate"
 )
 
 // SyncState is the model entity for the SyncState schema.
