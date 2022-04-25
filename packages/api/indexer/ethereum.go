@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/indexer/processor"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
@@ -44,7 +44,7 @@ type Ethereum struct {
 	contracts []*Contract
 }
 
-func NewEthereum(ctx context.Context, client *ent.Client, config EthConfig) *Ethereum {
+func NewEthereumIndexer(ctx context.Context, client *ent.Client, config EthConfig) *Ethereum {
 	ctx, log := logger.LogFor(ctx)
 
 	retryableHTTPClient := retryablehttp.NewClient()

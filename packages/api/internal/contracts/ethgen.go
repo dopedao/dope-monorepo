@@ -6,7 +6,7 @@ package main
 import (
 	"log"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/withtally/synceth/codegen"
 )
 

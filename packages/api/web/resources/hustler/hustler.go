@@ -14,8 +14,8 @@ import (
 	"strings"
 
 	"cloud.google.com/go/storage"
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/gorilla/mux"
 )

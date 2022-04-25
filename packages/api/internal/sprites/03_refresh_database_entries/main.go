@@ -24,7 +24,7 @@ import (
 	"cloud.google.com/go/storage"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"google.golang.org/api/iterator"
 
 	_ "github.com/lib/pq"

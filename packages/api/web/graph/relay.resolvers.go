@@ -6,7 +6,7 @@ package graph
 import (
 	"context"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/web/graph/generated"
 	"github.com/dopedao/dope-monorepo/packages/api/web/graph/model"
 )

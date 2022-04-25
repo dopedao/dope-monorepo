@@ -11,6 +11,7 @@ type ConfigCollection []interface{}
 
 var Config = map[string]ConfigCollection{
 	"mainnet": {
+		// Ethereum
 		EthConfig{
 			RPC:      "https://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj",
 			Interval: time.Second * 5,
@@ -34,7 +35,9 @@ var Config = map[string]ConfigCollection{
 					Processor:  new(processor.InitiatorProcessor),
 				},
 			},
-		}, EthConfig{
+		},
+		// Optimism
+		EthConfig{
 			RPC:      "https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG",
 			Interval: time.Second * 5,
 			Contracts: []Contract{
@@ -51,13 +54,15 @@ var Config = map[string]ConfigCollection{
 					Processor:  new(processor.HustlerProcessor),
 				},
 			},
-		}, OpenseaConfig{
+		},
+		OpenseaConfig{
 			URL:      "https://api.opensea.io",
 			Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
 			Interval: time.Minute * 20,
 		},
 	},
 	"testnet": {
+		// Ethereum
 		EthConfig{
 			RPC:      "https://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-",
 			Interval: time.Second * 5,
@@ -81,7 +86,9 @@ var Config = map[string]ConfigCollection{
 					Processor:  new(processor.InitiatorProcessor),
 				},
 			},
-		}, EthConfig{
+		},
+		// Optimism
+		EthConfig{
 			RPC:      "https://opt-kovan.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG",
 			Interval: time.Second * 5,
 			Contracts: []Contract{
@@ -98,7 +105,8 @@ var Config = map[string]ConfigCollection{
 					Processor:  new(processor.HustlerProcessor),
 				},
 			},
-		}, OpenseaConfig{
+		},
+		OpenseaConfig{
 			URL:      "https://api.opensea.io",
 			Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
 			Interval: time.Minute * 600,

@@ -10,14 +10,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/hashicorp/go-retryablehttp"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
 )
 
 const assetPath = "/api/v1/assets"
@@ -50,8 +50,7 @@ type OpenseaConfig struct {
 	APIKey   string
 }
 
-// NewOpensea creates an opensea API client on maassetet
-func NewOpensea(client *ent.Client, config OpenseaConfig) *Opensea {
+func NewOpenseaIndexer(client *ent.Client, config OpenseaConfig) *Opensea {
 	o := &Opensea{
 		APIKey:   config.APIKey,
 		URL:      config.URL,

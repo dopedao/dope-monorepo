@@ -34,7 +34,7 @@ To generate new smart contract bindings, add the abi to `packages/api/internal/c
 
 ### Updating the schema
 
-Modify the schema in `packages/api/ent/schema` and run `go generate ./...`
+Modify the schema in `packages/api/internal/ent/schema` and run `go generate ./...`
 
 ### Deploying the API
 

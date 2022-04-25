@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/indexer"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
 	generated1 "github.com/dopedao/dope-monorepo/packages/api/web/graph/generated"
 	"github.com/dopedao/dope-monorepo/packages/api/web/graph/model"
 )

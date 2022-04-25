@@ -2,7 +2,7 @@ package graph
 
 import (
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/web/graph/generated"
 )
 
