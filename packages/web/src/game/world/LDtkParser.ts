@@ -84,9 +84,8 @@ export class LdtkReader {
 
     // check if we have custom data - animated tiles
     let gid = mainTileset.total + 1;
-    const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
-    if (tilesetRef && tilesetRef.customData.length > 0) {
-      tilesetRef.customData.forEach(t => {
+    if (tilesetObj && tilesetObj.customData.length > 0) {
+      tilesetObj.customData.forEach(t => {
         const data = JSON.parse(t.data);
         if (data.anim)
         {
@@ -128,13 +127,13 @@ export class LdtkReader {
             height: layer.__cHei,
             data: Array.from({ length: layer.__cHei }, () => new Array(layer.__cWid)),
           });
-          const layerId = map.layers.push(stackedLayerData);
+          const layerId = map.layers.push(stackedLayerData)-1;
 
-          const stackedLayer = map.createLayer(layerId-1, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
-            .setDepth(depth + (layerIdx+1));
+          const stackedLayer = map.createLayer(layerId, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
+            .setDepth(depth + 1);
 
           if (!layer.__identifier.includes('Night')) stackedLayer.setPipeline('Light2D');
-          if (tilesetRef) this.ParseTilesetData(mappack, stackedLayer, tilesetRef, true);
+          if (tilesetObj) this.ParseTilesetData(mappack, stackedLayer, tilesetObj, true);
           
           stackedLayers.push(stackedLayer);
         }
@@ -163,12 +162,12 @@ export class LdtkReader {
       .setAlpha(layer.__opacity)
       .setVisible(true);
 
-    console.log(stackedLayers);
+    // console.log(stackedLayers);
 
     if (!layer.__identifier.includes('Night')) mapLayer.setPipeline('Light2D');
 
-    if (tilesetRef)
-      this.ParseTilesetData(mappack, mapLayer, tilesetRef);
+    if (tilesetObj)
+      this.ParseTilesetData(mappack, mapLayer, tilesetObj);
 
     return mapLayer;
   }
@@ -280,9 +279,8 @@ export class LdtkReader {
 
     // check if we have custom data - animated tiles
     let gid = mainTileset.total + 1;
-    const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
-    if (tilesetRef && tilesetRef.customData.length > 0) {
-      tilesetRef.customData.forEach(t => {
+    if (tilesetObj && tilesetObj.customData.length > 0) {
+      tilesetObj.customData.forEach(t => {
         const data = JSON.parse(t.data);
         if (data.anim)
         {
@@ -330,8 +328,8 @@ export class LdtkReader {
 
     if (!layer.__identifier.includes('Night')) l.setPipeline('Light2D')
 
-    if (tilesetRef)
-      this.ParseTilesetData(mappack, l, tilesetRef);
+    if (tilesetObj)
+      this.ParseTilesetData(mappack, l, tilesetObj);
 
     return l;
   }
@@ -414,15 +412,18 @@ export class LdtkReader {
     let aboveAllLayerData: Phaser.Tilemaps.LayerData | undefined;
     tileset.customData.forEach(t => {
       const data = JSON.parse(t.data);
-      if (data.anim)
-      {
-        const tilesAnim = new AnimatedTiles(this.scene, t.tileId, layer, data.anim);
-        layer.getData('animators').push(tilesAnim);
-        // tilesAnim.start();
-      }
+      
 
       let createLight = false;
       let createDepth = false;
+      let tilesAnim: TilesAnimator | undefined;
+
+      if (data.anim)
+      {
+        tilesAnim = new AnimatedTiles(this.scene, t.tileId, layer, data.anim, false);
+        layer.getData('animators').push(tilesAnim);
+      }
+
       if (data.light)
         createLight = true;
 
@@ -446,10 +447,13 @@ export class LdtkReader {
         createDepth = true;
       }
 
-      if (createLight || createDepth) {
-        layer.layer.data.forEach(tileRow => tileRow.forEach(tile => {
+      if (createLight || createDepth || tilesAnim) {
+        layer.forEachTile(tile => {
           if (tile?.index === t.tileId)
           {
+            if (tilesAnim)
+              tilesAnim.startingTiles.push(tile);
+
             if (createLight) {
               map.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
             }
@@ -459,7 +463,7 @@ export class LdtkReader {
               aboveAllLayerData!.data[tile.y][tile.x].setFlip(tile.flipX, tile.flipY);
             }
           }
-        }));
+        });
       }
     });
 

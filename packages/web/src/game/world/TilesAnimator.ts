@@ -19,7 +19,7 @@ export default class TilesAnimator {
         return this.updateCallback !== undefined;
     }
 
-    constructor(scene: Phaser.Scene, startingTileIndex: number, layer: Phaser.Tilemaps.TilemapLayer, animationTileset: string) {
+    constructor(scene: Phaser.Scene, startingTileIndex: number, layer: Phaser.Tilemaps.TilemapLayer, animationTileset: string, findStartingTiles: boolean = true) {
         this.scene = scene;
         this.layer = layer;
         this.asepriteName = animationTileset;
@@ -27,10 +27,12 @@ export default class TilesAnimator {
 
         // this.animationSize = new Phaser.Math.Vector2(this.asepriteAnimation.meta.size.w / layer.tilemap.tileWidth, this.asepriteAnimation.meta.size.h);
 
-        for (const row of layer.layer.data) {
-            for (const tile of row) {
-                if (tile.index === startingTileIndex)
-                    this.startingTiles.push(tile);           
+        if (findStartingTiles) {
+            for (const row of layer.layer.data) {
+                for (const tile of row) {
+                    if (tile.index === startingTileIndex)
+                        this.startingTiles.push(tile);           
+                }
             }
         }
     }

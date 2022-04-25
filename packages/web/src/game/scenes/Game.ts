@@ -710,9 +710,23 @@ export default class GameScene extends Scene {
       if (!patchMap) return;
 
       if (n.dir === dir) {
+        const beforeMap = performance.now(); 
         this.mapHelper.createMap(lvl.identifier);
+        const afterMap = performance.now();
+        
+        console.info(`${lvl.identifier}: Map creation took ${afterMap - beforeMap}ms`);
+
+        const beforeCollisions = performance.now();
         this.mapHelper.createCollisions();
+        const afterCollisions = performance.now();
+
+        console.info(`${lvl.identifier}: Collision creation took ${afterCollisions - beforeCollisions}ms`);
+
+        const beforeEntities = performance.now();
         this.mapHelper.createEntities();
+        const afterEntities = performance.now();
+
+        console.info(`${lvl.identifier}: Entities creation took ${afterEntities - beforeEntities}ms`);
         // new Promise(() => {
         //   this.mapHelper.createMap(lvl.identifier);
         // }).then(() => this.mapHelper.createCollisions())
