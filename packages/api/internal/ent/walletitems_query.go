@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/walletitems"
 )
 
 // WalletItemsQuery is the builder for querying WalletItems entities.
@@ -156,7 +156,7 @@ func (wiq *WalletItemsQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single WalletItems entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one WalletItems entity is not found.
+// Returns a *NotSingularError when more than one WalletItems entity is found.
 // Returns a *NotFoundError when no WalletItems entities are found.
 func (wiq *WalletItemsQuery) Only(ctx context.Context) (*WalletItems, error) {
 	nodes, err := wiq.Limit(2).All(ctx)
@@ -183,7 +183,7 @@ func (wiq *WalletItemsQuery) OnlyX(ctx context.Context) *WalletItems {
 }
 
 // OnlyID is like Only, but returns the only WalletItems ID in the query.
-// Returns a *NotSingularError when exactly one WalletItems ID is not found.
+// Returns a *NotSingularError when more than one WalletItems ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (wiq *WalletItemsQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -294,8 +294,9 @@ func (wiq *WalletItemsQuery) Clone() *WalletItemsQuery {
 		withWallet: wiq.withWallet.Clone(),
 		withItem:   wiq.withItem.Clone(),
 		// clone intermediate query.
-		sql:  wiq.sql.Clone(),
-		path: wiq.path,
+		sql:    wiq.sql.Clone(),
+		path:   wiq.path,
+		unique: wiq.unique,
 	}
 }
 

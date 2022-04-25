@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dopedao/dope-monorepo/packages/api/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 )
 
 // The AmountFunc type is an adapter to allow the use of ordinary

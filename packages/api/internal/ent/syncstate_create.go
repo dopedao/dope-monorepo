@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/syncstate"
 )
 
 // SyncStateCreate is the builder for creating a SyncState entity.

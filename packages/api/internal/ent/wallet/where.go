@@ -7,8 +7,8 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
 )
 
 // ID filters vertices based on their ID field.

@@ -8,17 +8,17 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/syncstate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/walletitems"
 )
 
 // ent aliases to avoid import conflicts in user's code.

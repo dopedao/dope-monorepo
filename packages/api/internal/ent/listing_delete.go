@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
 )
 
 // ListingDelete is the builder for deleting a Listing entity.

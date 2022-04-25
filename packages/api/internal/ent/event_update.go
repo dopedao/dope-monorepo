@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
 )
 
 // EventUpdate is the builder for updating Event entities.

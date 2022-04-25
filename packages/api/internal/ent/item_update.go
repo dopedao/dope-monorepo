@@ -10,13 +10,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/walletitems"
 )
 
 // ItemUpdate is the builder for updating Item entities.

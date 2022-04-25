@@ -11,11 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
 )
 
 // SearchQuery is the builder for querying Search entities.
@@ -180,7 +180,7 @@ func (sq *SearchQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single Search entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Search entity is not found.
+// Returns a *NotSingularError when more than one Search entity is found.
 // Returns a *NotFoundError when no Search entities are found.
 func (sq *SearchQuery) Only(ctx context.Context) (*Search, error) {
 	nodes, err := sq.Limit(2).All(ctx)
@@ -207,7 +207,7 @@ func (sq *SearchQuery) OnlyX(ctx context.Context) *Search {
 }
 
 // OnlyID is like Only, but returns the only Search ID in the query.
-// Returns a *NotSingularError when exactly one Search ID is not found.
+// Returns a *NotSingularError when more than one Search ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (sq *SearchQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -319,8 +319,9 @@ func (sq *SearchQuery) Clone() *SearchQuery {
 		withItem:    sq.withItem.Clone(),
 		withHustler: sq.withHustler.Clone(),
 		// clone intermediate query.
-		sql:  sq.sql.Clone(),
-		path: sq.path,
+		sql:    sq.sql.Clone(),
+		path:   sq.path,
+		unique: sq.unique,
 	}
 }
 

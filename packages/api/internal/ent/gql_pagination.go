@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -15,17 +14,17 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/syncstate"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/syncstate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/walletitems"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"github.com/vmihailenco/msgpack/v5"
 )
@@ -166,11 +165,6 @@ func (c Cursor) MarshalGQL(w io.Writer) {
 	defer w.Write(quote)
 	wc := base64.NewEncoder(base64.RawStdEncoding, w)
 	defer wc.Close()
-
-	if m, ok := c.Value.(driver.Valuer); ok {
-		c.Value, _ = m.Value()
-	}
-
 	_ = msgpack.NewEncoder(wc).Encode(c)
 }
 

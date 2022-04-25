@@ -1,3 +1,8 @@
+# Had to add these to get gqlgen to stop complaining
+scalar Type
+scalar Sex
+scalar Tier
+
 "Maps a Time GraphQL scalar to a Go time.Time struct."
 scalar Time
 "Timestamp is a RFC3339 string."

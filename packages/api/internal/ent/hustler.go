@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/bodypart"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/hustler"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
 )
 
 // Hustler is the model entity for the Hustler schema.

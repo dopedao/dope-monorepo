@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
 )
 
 // EventQuery is the builder for querying Event entities.
@@ -106,7 +106,7 @@ func (eq *EventQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single Event entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Event entity is not found.
+// Returns a *NotSingularError when more than one Event entity is found.
 // Returns a *NotFoundError when no Event entities are found.
 func (eq *EventQuery) Only(ctx context.Context) (*Event, error) {
 	nodes, err := eq.Limit(2).All(ctx)
@@ -133,7 +133,7 @@ func (eq *EventQuery) OnlyX(ctx context.Context) *Event {
 }
 
 // OnlyID is like Only, but returns the only Event ID in the query.
-// Returns a *NotSingularError when exactly one Event ID is not found.
+// Returns a *NotSingularError when more than one Event ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (eq *EventQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -242,8 +242,9 @@ func (eq *EventQuery) Clone() *EventQuery {
 		order:      append([]OrderFunc{}, eq.order...),
 		predicates: append([]predicate.Event{}, eq.predicates...),
 		// clone intermediate query.
-		sql:  eq.sql.Clone(),
-		path: eq.path,
+		sql:    eq.sql.Clone(),
+		path:   eq.path,
+		unique: eq.unique,
 	}
 }
 

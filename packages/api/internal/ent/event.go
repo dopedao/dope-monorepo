@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
 	"github.com/ethereum/go-ethereum/common"
 )
 

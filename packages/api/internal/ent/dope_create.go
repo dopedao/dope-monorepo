@@ -11,11 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/search"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
 )
 
 // DopeCreate is the builder for creating a Dope entity.

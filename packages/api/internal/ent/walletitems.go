@@ -7,10 +7,10 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/item"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/schema"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/wallet"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/walletitems"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/walletitems"
 )
 
 // WalletItems is the model entity for the WalletItems schema.

@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/amount"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/dope"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/listing"
-	"github.com/dopedao/dope-monorepo/packages/api/ent/predicate"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/predicate"
 )
 
 // ListingQuery is the builder for querying Listing entities.
@@ -203,7 +203,7 @@ func (lq *ListingQuery) FirstIDX(ctx context.Context) string {
 }
 
 // Only returns a single Listing entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Listing entity is not found.
+// Returns a *NotSingularError when more than one Listing entity is found.
 // Returns a *NotFoundError when no Listing entities are found.
 func (lq *ListingQuery) Only(ctx context.Context) (*Listing, error) {
 	nodes, err := lq.Limit(2).All(ctx)
@@ -230,7 +230,7 @@ func (lq *ListingQuery) OnlyX(ctx context.Context) *Listing {
 }
 
 // OnlyID is like Only, but returns the only Listing ID in the query.
-// Returns a *NotSingularError when exactly one Listing ID is not found.
+// Returns a *NotSingularError when more than one Listing ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (lq *ListingQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
@@ -343,8 +343,9 @@ func (lq *ListingQuery) Clone() *ListingQuery {
 		withInputs:        lq.withInputs.Clone(),
 		withOutputs:       lq.withOutputs.Clone(),
 		// clone intermediate query.
-		sql:  lq.sql.Clone(),
-		path: lq.path,
+		sql:    lq.sql.Clone(),
+		path:   lq.path,
+		unique: lq.unique,
 	}
 }
 
