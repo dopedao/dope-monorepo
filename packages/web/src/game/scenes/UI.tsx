@@ -122,7 +122,7 @@ export default class UIScene extends Scene {
     });
 
 
-    // NIGHT EVENT
+    /* ** NIGHT EVENT **
     const inputs = this.toggleInputs(true);
     const welcomeScreen = this.add.reactDom(EventWelcome);
     welcomeScreen.events.on('game', () => {
@@ -180,6 +180,7 @@ export default class UIScene extends Scene {
       }
       setTimeout(showMessage, (key as number * 1000) - Date.now());
     });
+    ** NIGHT EVENT ** */
   }
 
   update(time: number, delta: number): void {

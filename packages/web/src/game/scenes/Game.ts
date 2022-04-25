@@ -138,7 +138,8 @@ export default class GameScene extends Scene {
         song: this.sound.add(key) as Phaser.Sound.WebAudioSound
       };
     });
-    this._musicManager = new MusicManager(chiptunes);
+    this.sound.pauseOnBlur = false;
+    this._musicManager = new MusicManager(this.sound as Phaser.Sound.WebAudioSoundManager, chiptunes, true);
 
     // register player
     NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_JOIN, {

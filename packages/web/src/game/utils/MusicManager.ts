@@ -7,9 +7,22 @@ export interface Song {
 }
 
 export default class MusicManager {
+    private _soundManager: Phaser.Sound.WebAudioSoundManager;
     private _songs: Song[];
+
+    private _upcomingSong?: Song;
     private _currentSong?: Song;
     private _lastSong?: Song;
+
+    public shuffleNext: boolean = false;
+
+    get soundManager() {
+        return this._soundManager;
+    }
+
+    get upcomingSong() {
+        return this._upcomingSong;
+    }
 
     get songs() {
         return this._songs;
@@ -23,14 +36,25 @@ export default class MusicManager {
         return this._lastSong;
     }
 
-    constructor(songs: Song[]) {
+    constructor(soundManager: Phaser.Sound.WebAudioSoundManager, songs: Song[], shuffleNext: boolean = false) {
+        this._soundManager = soundManager;
         this._songs = songs;
+        this.shuffleNext = shuffleNext;
+    }
+
+    _randomSong(condition?: (song: Song) => boolean) {
+        let randomSong = this._songs[Math.floor(Math.random() * Object.keys(this._songs).length)];
+        while (condition && !condition(randomSong))
+            randomSong = this._songs[Math.floor(Math.random() * Object.keys(this._songs).length)];
+
+        return randomSong;
     }
 
     // takes song to play otherwise shuffles
-    shuffle(song?: Song | number, notification: boolean = true) {
+    shuffle(song?: Song | number, shuffleNext: boolean = this.shuffleNext, notification: boolean = true) {
         this._lastSong = this._currentSong;
         if (this.currentSong) {
+            this.currentSong.song.removeListener('complete');
             this.currentSong.song.stop();
             this._currentSong = undefined;
         }
@@ -44,12 +68,9 @@ export default class MusicManager {
             song = this._songs[song];
         }
 
-        let randomSong = song ?? this._songs[Math.floor(Math.random() * Object.keys(this._songs).length)];
-        while (randomSong === this.lastSong)
-            randomSong = this._songs[Math.floor(Math.random() * Object.keys(this._songs).length)];
-
-        this._currentSong = randomSong;
-        randomSong.song.play();
+        this._currentSong = song ?? this.upcomingSong ?? this._randomSong((s) => s !== this._lastSong);
+        this._currentSong.song.play();
+        this._upcomingSong = undefined;
 
         // show what's playing a bit after the song has started playing
         if (notification)
@@ -57,17 +78,21 @@ export default class MusicManager {
                 EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
                     ...chakraToastStyle,
                     title: 'Chiptune',
-                    description: `Playing ${randomSong.name}`,
+                    description: `Playing ${this._currentSong!.name}`,
                 });
             }, 5000);
         
-        randomSong.song.once('complete', () => {
+        if (shuffleNext)
+            this._upcomingSong = this._randomSong((s) => s !== this._currentSong);
+
+        this._currentSong.song.once('complete', () => {
             this.shuffle();
         });
     }
 
     stopPlaying() {
         if (this._currentSong) {
+            this.currentSong?.song.removeListener('complete');
             this._currentSong.song.stop();
             this._currentSong = undefined;
         }
@@ -91,6 +116,8 @@ export default class MusicManager {
             return;
         }
 
+        this._songs[song].song.removeListener('complete');
+        this._songs[song].song.stop();
         this._songs.splice(song, 1);
     }
 

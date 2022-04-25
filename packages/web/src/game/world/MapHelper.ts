@@ -258,8 +258,13 @@ export default class MapHelper {
           // duration of frames is already defined
           frameRate: 10000,
         });
-        if (anim)
-          entitySprite.anims.play(anim);
+
+        if (anim) {
+          entitySprite.anims.play({
+            key: entity.__identifier,
+            startFrame: Math.floor(Math.random() * anim.frames.length)
+          });
+        }
       }
 
       // create shadow for entity
