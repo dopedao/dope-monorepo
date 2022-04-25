@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"sync"
 
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )

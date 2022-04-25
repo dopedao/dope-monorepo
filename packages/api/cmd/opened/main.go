@@ -1,6 +1,7 @@
-// Updates DOPE NFT items in our database after checking
-// their PAPER CLAIM status on the PAPER contract.
-package main
+// Updates DOPE NFT items in our database if they
+// have been "Opened" or had their "Gear Claimed"
+// by checking the Ethereum blockchain.
+package opened
 
 import (
 	"context"
@@ -13,7 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/util"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/flag"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -24,12 +25,13 @@ import (
 
 const MAX_DB_CONN = 77
 
-var host = util.GetEnvOrFallback("PG_HOST", "localhost:5433")
-var pass = util.GetEnvOrFallback("PG_PASS", "postgres")
+var host = flag.GetEnvOrFallback("PG_HOST", "localhost:5433")
+var pass = flag.GetEnvOrFallback("PG_PASS", "postgres")
 
 func main() {
 	ctx := context.Background()
 
+	log.Default().Println("Opening DB pool")
 	db, err := sql.Open(
 		dialect.Postgres,
 		fmt.Sprintf("postgres://postgres:%s@%s?sslmode=disable", pass, host),
@@ -38,8 +40,10 @@ func main() {
 		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
 	}
 
+	log.Default().Println("Opening ENT client")
 	client := ent.NewClient(ent.Driver(db))
 
+	log.Default().Println("Establishing RPC client")
 	retryableHTTPClient := retryablehttp.NewClient()
 	c, err := rpc.DialHTTPWithClient("https://eth-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
 	if err != nil {
@@ -47,11 +51,12 @@ func main() {
 	}
 
 	eth := ethclient.NewClient(c)
-	paper, err := bindings.NewPaper(common.HexToAddress("0x7ae1d57b58fa6411f32948314badd83583ee0e8c"), eth)
+	initiator, err := bindings.NewInitiator(common.HexToAddress("0x7aa8e897d712cfb9c7cb6b37634a1c4d21181c8b"), eth)
 	if err != nil {
 		log.Fatalf("Creating Components bindings: %+v", err)
 	}
 
+	log.Default().Println("Getting all DOPE NFTs from database")
 	dopes, err := client.Dope.Query().All(ctx)
 	if err != nil {
 		log.Fatal("Getting ethereum dopes.") //nolint:gocritic
@@ -68,11 +73,11 @@ func main() {
 			if !ok {
 				log.Fatal("Making big int")
 			}
-			claimed, err := paper.ClaimedByTokenId(nil, b)
+			opened, err := initiator.IsOpened(nil, b)
 			if err != nil {
-				log.Fatalf("Getting paper balance: %+v.", err)
+				log.Fatalf("Getting initiator balance: %+v.", err)
 			}
-			client.Dope.UpdateOneID(dope.ID).SetClaimed(claimed).ExecX(ctx)
+			client.Dope.UpdateOneID(dope.ID).SetOpened(opened).ExecX(ctx)
 
 			<-sem
 			wg.Done()
