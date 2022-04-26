@@ -48,4 +48,5 @@ At the time of this writing, [App Engine Standard Environment only supports up t
 cd packages/api
 gcloud app deploy --appyaml app.mainnet.api.yaml
 gcloud app deploy --appyaml app.mainnet.indexer.yaml
+gcloud app deploy --appyaml app.mainnet.game.yaml
 ```
