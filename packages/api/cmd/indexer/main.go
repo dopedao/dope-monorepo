@@ -33,14 +33,11 @@ func main() {
 	db, err := sql.Open(dialect.Postgres, pgsVal)
 	logger.LogFatalOnErr(err, "Connecting to db")
 
-	osKeyVal, err := envcfg.OpenSeaApiKey.Value()
-	logger.LogFatalOnErr(err, "Getting OpenSea API Key")
-
 	ctx := context.Background()
 
 	var srv http.Handler
 
-	srv, err = indexer.NewServer(log.WithContext(ctx), db, osKeyVal, envcfg.Network)
+	srv, err = indexer.NewServer(log.WithContext(ctx), db, envcfg.Network)
 	logger.LogFatalOnErr(err, "Creating Indexer")
 
 	log.Info().Msg("Starting to listen on port: " + *envcfg.Listen)
