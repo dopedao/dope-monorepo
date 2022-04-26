@@ -21,7 +21,7 @@ import (
 //
 // The Indexer reads prices from NFT marketplaces,
 // and information about our DOPE NFT assets to place in a Postgres Database.
-func NewServer(ctx context.Context, drv *sql.Driver, openseaApiKey, network string) (http.Handler, error) {
+func NewServer(ctx context.Context, drv *sql.Driver, network string) (http.Handler, error) {
 
 	_, log := logger.LogFor(ctx)
 
@@ -50,7 +50,6 @@ func NewServer(ctx context.Context, drv *sql.Driver, openseaApiKey, network stri
 				eth := NewEthereumIndexer(ctx, dbClient, c)
 				go eth.Sync(ctx)
 			case OpenseaConfig:
-				c.APIKey = openseaApiKey
 				os := NewOpenseaIndexer(dbClient, c)
 				go os.Sync(ctx)
 			}

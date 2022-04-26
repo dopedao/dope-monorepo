@@ -65,6 +65,8 @@ func NewOpenseaIndexer(client *ent.Client, config OpenseaConfig) *Opensea {
 func (o *Opensea) Sync(ctx context.Context) {
 	ctx, log := logger.LogFor(ctx)
 
+	log.Debug().Msg("Starting sync")
+
 	defer o.ticker.Stop()
 
 	for {
