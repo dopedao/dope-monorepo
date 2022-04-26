@@ -50,9 +50,6 @@ jobs:
         run: yarn web build
   api:
     runs-on: ubuntu-latest
-    env:
-      # GOPATH: /home/runner/work/github.com/dopedao/dope-monorepo/
-      GO111MODULE: auto
     steps:
       - uses: actions/checkout@v3
       - name: Set up Go
