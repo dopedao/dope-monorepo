@@ -32,6 +32,4 @@ require (
 )
 
 require github.com/btcsuite/btcd v0.22.0-beta // indirect
-
-replace github.com/dopedao/dope-monorepo/packages/api => ./
 // replace entgo.io/contrib => github.com/tarrencev/contrib v0.0.0-20220114171150-7eb36888a822
