@@ -58,5 +58,8 @@ jobs:
           go-version: 1.16
       - name: Test Go
         run: go test -v ./...
+        working-directory: packages/api
       - name: Build Go
         run: go build -v ./...
+        working-directory: packages/api
+
