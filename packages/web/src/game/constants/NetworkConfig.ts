@@ -1,6 +1,6 @@
 const defaultNetworkConfig = {
     // wsUri: "wss://involvement-terror-cowboy-specializing.trycloudflare.com/game/ws",
-    wsUri: "wss://game-dot-dopewars-live.uc.r.appspot.com/game/ws"
+    wsUri: "wss://game-dot-dopewars-live.uc.r.appspot.com/game/ws",
     reconnectInterval: 1000,
     maxReconnectAttempts: 10,
 
