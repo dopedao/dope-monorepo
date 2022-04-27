@@ -5,43 +5,24 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"math/big"
 	"sync"
 
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/flag"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/go-retryablehttp"
-
-	_ "github.com/lib/pq"
 )
 
 const MAX_DB_CONN = 77
 
-var host = flag.GetEnvOrFallback("PG_HOST", "localhost:5433")
-var pass = flag.GetEnvOrFallback("PG_PASS", "postgres")
-
 func main() {
 	ctx := context.Background()
-
-	log.Default().Println("Opening DB pool")
-	db, err := sql.Open(
-		dialect.Postgres,
-		fmt.Sprintf("postgres://postgres:%s@%s?sslmode=disable", pass, host),
-	)
-	if err != nil {
-		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
-	}
-
-	log.Default().Println("Opening ENT client")
-	client := ent.NewClient(ent.Driver(db))
+	client := dbprovider.Ent
 
 	log.Default().Println("Establishing RPC client")
 	retryableHTTPClient := retryablehttp.NewClient()

@@ -7,29 +7,19 @@ import (
 	"sync"
 	"time"
 
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/go-retryablehttp"
-
-	_ "github.com/lib/pq"
 )
 
 func main() {
 	ctx := context.Background()
-
-	db, err := sql.Open(dialect.Postgres, "postgres://postgres:postgres@localhost:5433?sslmode=disable")
-	if err != nil {
-		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
-	}
-
-	client := ent.NewClient(ent.Driver(db))
-
+	client := dbprovider.Ent
 	retryableHTTPClient := retryablehttp.NewClient()
 	c, err := rpc.DialHTTPWithClient("https://eth-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
 	if err != nil {

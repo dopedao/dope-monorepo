@@ -5,24 +5,13 @@ import (
 	"io/ioutil"
 	"log"
 
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
-	"github.com/spf13/pflag"
-
-	_ "github.com/lib/pq"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 )
 
-var pgConnstring = pflag.String("pg_connstri", "postgres://postgres:postgres@localhost:5432?sslmode=disable", "postgres db")
-
 func main() {
-	drv, err := sql.Open(dialect.Postgres, *pgConnstring)
-	if err != nil {
-		log.Fatalf("Connecting to drv: %+v", err) //nolint:gocritic
-	}
-
-	client := ent.NewClient(ent.Driver(drv))
+	drv := dbprovider.Conn
+	client := dbprovider.Ent
 
 	ctx := context.Background()
 

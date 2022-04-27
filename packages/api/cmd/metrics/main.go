@@ -8,12 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/sql"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
-
-	_ "github.com/lib/pq"
 )
 
 // var componentType = map[item.Type]uint8{
@@ -31,13 +28,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-
-	db, err := sql.Open(dialect.Postgres, "postgres://postgres:postgres@localhost:5433?sslmode=disable")
-	if err != nil {
-		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
-	}
-
-	client := ent.NewClient(ent.Driver(db))
+	client := dbprovider.Ent
 
 	// Run the auto migration tool.
 	if err := client.Schema.Create(context.Background()); err != nil {

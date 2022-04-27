@@ -22,12 +22,8 @@ import (
 	"strings"
 
 	"cloud.google.com/go/storage"
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"google.golang.org/api/iterator"
-
-	_ "github.com/lib/pq"
 )
 
 var bucketUrl = "https://static.dopewars.gg/"
@@ -42,13 +38,7 @@ func main() {
 		dbPass = os.Args[1]
 	}
 
-	// Database connection client
-	connStr := fmt.Sprintf("postgres://postgres:%s@34.68.66.160:5432?sslmode=disable", dbPass)
-	db, err := sql.Open(dialect.Postgres, connStr)
-	if err != nil {
-		log.Fatalf("Connecting to db: %+v", err) //nolint:gocritic
-	}
-	client := ent.NewClient(ent.Driver(db))
+	client := dbprovider.Ent
 
 	// GCP Storage Bucket Client
 	s, err := storage.NewClient(ctx)

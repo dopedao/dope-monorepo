@@ -5,16 +5,12 @@ import (
 	"net/http"
 	"os"
 
-	"entgo.io/ent/dialect/sql"
-
-	"entgo.io/ent/dialect"
 	"github.com/dopedao/dope-monorepo/packages/api/indexer"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/rs/zerolog"
 	"github.com/yfuruyama/crzerolog"
-
-	_ "github.com/lib/pq"
 )
 
 // Runs the HTTP and Indexer servers.
@@ -27,17 +23,9 @@ import (
 func main() {
 	log := zerolog.New(os.Stderr)
 
-	pgsVal, err := envcfg.PgConnString.Value()
-	logger.LogFatalOnErr(err, "Getting postgres connection string.")
-
-	db, err := sql.Open(dialect.Postgres, pgsVal)
-	logger.LogFatalOnErr(err, "Connecting to db")
-
 	ctx := context.Background()
 
-	var srv http.Handler
-
-	srv, err = indexer.NewServer(log.WithContext(ctx), db, envcfg.Network)
+	srv, err := indexer.NewServer(log.WithContext(ctx), dbprovider.Conn, envcfg.Network)
 	logger.LogFatalOnErr(err, "Creating Indexer")
 
 	log.Info().Msg("Starting to listen on port: " + *envcfg.Listen)
