@@ -2,6 +2,7 @@ package game
 
 import (
 	"encoding/json"
+	"time"
 )
 
 type Vec2 struct {
@@ -125,4 +126,8 @@ func generateErrorMessage(code int, message string) BaseMessage {
 		Event: "error",
 		Data:  data,
 	}
+}
+
+func unixMilli() int64 {
+	return time.Now().UnixNano() / int64(time.Millisecond)
 }

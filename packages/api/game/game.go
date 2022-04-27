@@ -188,7 +188,7 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 
 		data, err := json.Marshal(TickData{
 			Time:    g.Time,
-			Tick:    time.UnixMilli(),
+			Tick:    unixMilli(),
 			Players: players,
 		})
 		if err != nil {

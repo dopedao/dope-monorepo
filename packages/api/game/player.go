@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
@@ -157,7 +156,7 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 			broadcastedData, err := json.Marshal(ChatMessageClientData{
 				Message:   data.Message,
 				Author:    p.Id.String(),
-				Timestamp: time.Now().UnixMilli(),
+				Timestamp: unixMilli(),
 			})
 
 			if err != nil {
