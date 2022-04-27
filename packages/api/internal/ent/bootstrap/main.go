@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	drv := dbprovider.Conn
+	drv := dbprovider.Conn()
 	client := dbprovider.Ent()
 
 	ctx := context.Background()

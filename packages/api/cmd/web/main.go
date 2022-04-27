@@ -7,7 +7,6 @@ import (
 
 	"cloud.google.com/go/storage"
 
-	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/web"
@@ -33,7 +32,7 @@ func main() {
 	var srv http.Handler
 
 	log.Debug().Msg("Launching HTTP API Server")
-	srv, err = web.NewServer(log.WithContext(ctx), dbprovider.Conn(), s.Bucket("dopewars-static"))
+	srv, err = web.NewServer(log.WithContext(ctx), s.Bucket("dopewars-static"))
 	logger.LogFatalOnErr(err, "Creating HTTP Server")
 
 	log.Info().Msg("Starting to listen on port: " + *envcfg.Listen)

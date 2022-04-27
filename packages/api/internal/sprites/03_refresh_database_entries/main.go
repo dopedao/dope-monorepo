@@ -18,7 +18,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"cloud.google.com/go/storage"
@@ -30,14 +29,6 @@ var bucketUrl = "https://static.dopewars.gg/"
 
 func main() {
 	ctx := context.Background()
-	var dbPass string
-	if len(os.Args) == 1 {
-		log.Fatal("Pass db password as argument to script")
-		return
-	} else {
-		dbPass = os.Args[1]
-	}
-
 	client := dbprovider.Ent()
 
 	// GCP Storage Bucket Client
