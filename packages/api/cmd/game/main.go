@@ -22,16 +22,19 @@ import (
 func main() {
 	log := zerolog.New(os.Stderr)
 
-	ctx := context.Background()
+	srv, err := game.NewServer(
+		log.WithContext(context.Background()),
+		envcfg.Network)
+	logger.LogFatalOnErr(err, "Creating Game Server")
 
-	var srv http.Handler
+	log.Info().Msg(
+		"Starting game server to listen on port: " + *envcfg.Listen)
 
-	srv, err := game.NewServer(log.WithContext(ctx), envcfg.Network)
-	logger.LogFatalOnErr(err, "Creating Indexer")
-
-	log.Info().Msg("Starting game server to listen on port: " + *envcfg.Listen)
 	middleware := crzerolog.InjectLogger(&log)
-	server := &http.Server{Addr: ":" + *envcfg.Listen, Handler: middleware(srv)}
+
+	server := &http.Server{
+		Addr:    ":" + *envcfg.Listen,
+		Handler: middleware(srv)}
 
 	err = server.ListenAndServe()
 	logger.LogFatalOnErr(err, "Server terminated.")

@@ -38,7 +38,7 @@ Modify the schema in `packages/api/internal/ent/schema` and run `go generate ./.
 
 ### Deploying the API
 
-The Dope Wars API runs on Google Cloud Platform using App Engine in the "Standard" environment.
+The Dope Wars API and Indexer run on Google Cloud Platform using App Engine in the "Standard" environment. The Game Server runs on GCP "Flexible" environment, which deploys via Dockerfile.
 
 At the time of this writing, [App Engine Standard Environment only supports up to Go 1.16](https://cloud.google.com/appengine/docs/the-appengine-environments), so that should be the version you develop in.
 
