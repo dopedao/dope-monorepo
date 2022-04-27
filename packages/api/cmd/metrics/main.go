@@ -30,11 +30,6 @@ func main() {
 	ctx := context.Background()
 	client := dbprovider.Ent()
 
-	// Run the auto migration tool.
-	if err := client.Schema.Create(context.Background()); err != nil {
-		log.Fatalf("Migrating db: %+v", err) //nolint:gocritic
-	}
-
 	// retryableHTTPClient := retryablehttp.NewClient()
 	// c, err := rpc.DialHTTPWithClient("https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
 	// if err != nil {

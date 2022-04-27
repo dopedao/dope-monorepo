@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/indexer/migration"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
@@ -22,13 +21,10 @@ import (
 // The Indexer reads prices from NFT marketplaces,
 // and information about our DOPE NFT assets to place in a Postgres Database.
 func NewServer(ctx context.Context, drv *sql.Driver, network string) (http.Handler, error) {
-
 	_, log := logger.LogFor(ctx)
-
 	log.Debug().Msg("Starting Indexer")
 
 	dbClient := ent.NewClient(ent.Driver(drv))
-	migration.Migrate(ctx, drv, dbClient)
 
 	ctx, cancel := context.WithCancel(ctx)
 	started := false

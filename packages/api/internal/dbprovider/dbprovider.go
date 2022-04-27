@@ -3,11 +3,11 @@
 package dbprovider
 
 import (
+	"context"
 	"fmt"
 
-	"entgo.io/ent/dialect/sql"
-
 	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/sql"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/flag"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
@@ -38,6 +38,9 @@ func init() {
 	logger.LogFatalOnErr(drvErr, "Connecting to db")
 
 	entClient = ent.NewClient(ent.Driver(dbConnection))
+
+	// Migrate our db from every initialization!
+	migrate(context.Background())
 }
 
 func Conn() *sql.Driver {
