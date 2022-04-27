@@ -3,11 +3,13 @@
 package dbprovider
 
 import (
+	"fmt"
+
 	"entgo.io/ent/dialect/sql"
 
 	"entgo.io/ent/dialect"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/flag"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 
 	// Necessary for postgres connection with ent
@@ -18,8 +20,18 @@ import (
 var dbConnection *sql.Driver
 var entClient *ent.Client
 
+var pgHost = flag.GetEnvOrFallback("PG_HOST", "localhost:5432")
+var pgPass = flag.GetEnvOrFallback("PG_PASS", "postgres")
+
+// "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable"
+
 func init() {
-	pgsVal, connErr := envcfg.PgConnString.Value()
+	connStr := flag.SecretEnv("PG_CONNSTR",
+		fmt.Sprintf(
+			"plaintext://postgres://postgres:%s@%s?sslmode=disable",
+			pgPass, pgHost))
+
+	pgsVal, connErr := connStr.Value()
 	logger.LogFatalOnErr(connErr, "Getting postgres connection string.")
 
 	dbConnection, drvErr := sql.Open(dialect.Postgres, pgsVal)
