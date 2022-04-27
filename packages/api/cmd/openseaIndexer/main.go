@@ -18,6 +18,6 @@ func main() {
 		}
 	}
 
-	indexer := indexer.NewOpenseaIndexer(dbprovider.Ent, oscfg)
+	indexer := indexer.NewOpenseaIndexer(dbprovider.Ent(), oscfg)
 	indexer.Sync(context.Background())
 }

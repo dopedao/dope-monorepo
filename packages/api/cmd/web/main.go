@@ -6,16 +6,13 @@ import (
 	"os"
 
 	"cloud.google.com/go/storage"
-	"entgo.io/ent/dialect/sql"
 
-	"entgo.io/ent/dialect"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/web"
 	"github.com/rs/zerolog"
 	"github.com/yfuruyama/crzerolog"
-
-	_ "github.com/lib/pq"
 )
 
 // Runs the HTTP and Indexer servers.
@@ -28,12 +25,6 @@ import (
 func main() {
 	log := zerolog.New(os.Stderr)
 
-	pgsVal, err := envcfg.PgConnString.Value()
-	logger.LogFatalOnErr(err, "Getting postgres connection string.")
-
-	db, err := sql.Open(dialect.Postgres, pgsVal)
-	logger.LogFatalOnErr(err, "Connecting to db")
-
 	ctx := context.Background()
 
 	s, err := storage.NewClient(ctx)
@@ -42,7 +33,7 @@ func main() {
 	var srv http.Handler
 
 	log.Debug().Msg("Launching HTTP API Server")
-	srv, err = web.NewServer(log.WithContext(ctx), db, s.Bucket("dopewars-static"), envcfg.Network)
+	srv, err = web.NewServer(log.WithContext(ctx), dbprovider.Conn(), s.Bucket("dopewars-static"))
 	logger.LogFatalOnErr(err, "Creating HTTP Server")
 
 	log.Info().Msg("Starting to listen on port: " + *envcfg.Listen)

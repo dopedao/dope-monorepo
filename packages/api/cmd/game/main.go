@@ -26,7 +26,7 @@ func main() {
 
 	var srv http.Handler
 
-	srv, err := game.NewServer(log.WithContext(ctx))
+	srv, err := game.NewServer(log.WithContext(ctx), envcfg.Network)
 	logger.LogFatalOnErr(err, "Creating Indexer")
 
 	log.Info().Msg("Starting game server to listen on port: " + *envcfg.Listen)
