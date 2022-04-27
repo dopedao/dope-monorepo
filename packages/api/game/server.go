@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/dopedao/dope-monorepo/packages/api/game"
 	"github.com/dopedao/dope-monorepo/packages/api/game/authentication"
 	"github.com/dopedao/dope-monorepo/packages/api/indexer"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
@@ -24,7 +23,7 @@ var (
 		WriteBufferSize: 1024,
 		CheckOrigin:     func(r *http.Request) bool { return true },
 	}
-	gameState = game.NewGame()
+	gameState = NewGame()
 )
 
 func NewServer(ctx context.Context, network string) (http.Handler, error) {

@@ -14,6 +14,10 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustleritem"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustlerquest"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustlerrelation"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
@@ -37,17 +41,21 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAmount      = "Amount"
-	TypeBodyPart    = "BodyPart"
-	TypeDope        = "Dope"
-	TypeEvent       = "Event"
-	TypeHustler     = "Hustler"
-	TypeItem        = "Item"
-	TypeListing     = "Listing"
-	TypeSearch      = "Search"
-	TypeSyncState   = "SyncState"
-	TypeWallet      = "Wallet"
-	TypeWalletItems = "WalletItems"
+	TypeAmount              = "Amount"
+	TypeBodyPart            = "BodyPart"
+	TypeDope                = "Dope"
+	TypeEvent               = "Event"
+	TypeGameHustler         = "GameHustler"
+	TypeGameHustlerItem     = "GameHustlerItem"
+	TypeGameHustlerQuest    = "GameHustlerQuest"
+	TypeGameHustlerRelation = "GameHustlerRelation"
+	TypeHustler             = "Hustler"
+	TypeItem                = "Item"
+	TypeListing             = "Listing"
+	TypeSearch              = "Search"
+	TypeSyncState           = "SyncState"
+	TypeWallet              = "Wallet"
+	TypeWalletItems         = "WalletItems"
 )
 
 // AmountMutation represents an operation that mutates the Amount nodes in the graph.
@@ -3030,6 +3038,1980 @@ func (m *EventMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *EventMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Event edge %s", name)
+}
+
+// GameHustlerMutation represents an operation that mutates the GameHustler nodes in the graph.
+type GameHustlerMutation struct {
+	config
+	op               Op
+	typ              string
+	id               *string
+	last_position    *schema.Position
+	created_at       *time.Time
+	clearedFields    map[string]struct{}
+	relations        map[string]struct{}
+	removedrelations map[string]struct{}
+	clearedrelations bool
+	items            map[string]struct{}
+	removeditems     map[string]struct{}
+	cleareditems     bool
+	quests           map[string]struct{}
+	removedquests    map[string]struct{}
+	clearedquests    bool
+	done             bool
+	oldValue         func(context.Context) (*GameHustler, error)
+	predicates       []predicate.GameHustler
+}
+
+var _ ent.Mutation = (*GameHustlerMutation)(nil)
+
+// gamehustlerOption allows management of the mutation configuration using functional options.
+type gamehustlerOption func(*GameHustlerMutation)
+
+// newGameHustlerMutation creates new mutation for the GameHustler entity.
+func newGameHustlerMutation(c config, op Op, opts ...gamehustlerOption) *GameHustlerMutation {
+	m := &GameHustlerMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeGameHustler,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withGameHustlerID sets the ID field of the mutation.
+func withGameHustlerID(id string) gamehustlerOption {
+	return func(m *GameHustlerMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *GameHustler
+		)
+		m.oldValue = func(ctx context.Context) (*GameHustler, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().GameHustler.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withGameHustler sets the old GameHustler of the mutation.
+func withGameHustler(node *GameHustler) gamehustlerOption {
+	return func(m *GameHustlerMutation) {
+		m.oldValue = func(context.Context) (*GameHustler, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m GameHustlerMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m GameHustlerMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of GameHustler entities.
+func (m *GameHustlerMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *GameHustlerMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *GameHustlerMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().GameHustler.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetLastPosition sets the "last_position" field.
+func (m *GameHustlerMutation) SetLastPosition(s schema.Position) {
+	m.last_position = &s
+}
+
+// LastPosition returns the value of the "last_position" field in the mutation.
+func (m *GameHustlerMutation) LastPosition() (r schema.Position, exists bool) {
+	v := m.last_position
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastPosition returns the old "last_position" field's value of the GameHustler entity.
+// If the GameHustler object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameHustlerMutation) OldLastPosition(ctx context.Context) (v schema.Position, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastPosition is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastPosition requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastPosition: %w", err)
+	}
+	return oldValue.LastPosition, nil
+}
+
+// ResetLastPosition resets all changes to the "last_position" field.
+func (m *GameHustlerMutation) ResetLastPosition() {
+	m.last_position = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *GameHustlerMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *GameHustlerMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the GameHustler entity.
+// If the GameHustler object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameHustlerMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *GameHustlerMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// AddRelationIDs adds the "relations" edge to the GameHustlerRelation entity by ids.
+func (m *GameHustlerMutation) AddRelationIDs(ids ...string) {
+	if m.relations == nil {
+		m.relations = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.relations[ids[i]] = struct{}{}
+	}
+}
+
+// ClearRelations clears the "relations" edge to the GameHustlerRelation entity.
+func (m *GameHustlerMutation) ClearRelations() {
+	m.clearedrelations = true
+}
+
+// RelationsCleared reports if the "relations" edge to the GameHustlerRelation entity was cleared.
+func (m *GameHustlerMutation) RelationsCleared() bool {
+	return m.clearedrelations
+}
+
+// RemoveRelationIDs removes the "relations" edge to the GameHustlerRelation entity by IDs.
+func (m *GameHustlerMutation) RemoveRelationIDs(ids ...string) {
+	if m.removedrelations == nil {
+		m.removedrelations = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.relations, ids[i])
+		m.removedrelations[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedRelations returns the removed IDs of the "relations" edge to the GameHustlerRelation entity.
+func (m *GameHustlerMutation) RemovedRelationsIDs() (ids []string) {
+	for id := range m.removedrelations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// RelationsIDs returns the "relations" edge IDs in the mutation.
+func (m *GameHustlerMutation) RelationsIDs() (ids []string) {
+	for id := range m.relations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetRelations resets all changes to the "relations" edge.
+func (m *GameHustlerMutation) ResetRelations() {
+	m.relations = nil
+	m.clearedrelations = false
+	m.removedrelations = nil
+}
+
+// AddItemIDs adds the "items" edge to the GameHustlerItem entity by ids.
+func (m *GameHustlerMutation) AddItemIDs(ids ...string) {
+	if m.items == nil {
+		m.items = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.items[ids[i]] = struct{}{}
+	}
+}
+
+// ClearItems clears the "items" edge to the GameHustlerItem entity.
+func (m *GameHustlerMutation) ClearItems() {
+	m.cleareditems = true
+}
+
+// ItemsCleared reports if the "items" edge to the GameHustlerItem entity was cleared.
+func (m *GameHustlerMutation) ItemsCleared() bool {
+	return m.cleareditems
+}
+
+// RemoveItemIDs removes the "items" edge to the GameHustlerItem entity by IDs.
+func (m *GameHustlerMutation) RemoveItemIDs(ids ...string) {
+	if m.removeditems == nil {
+		m.removeditems = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.items, ids[i])
+		m.removeditems[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedItems returns the removed IDs of the "items" edge to the GameHustlerItem entity.
+func (m *GameHustlerMutation) RemovedItemsIDs() (ids []string) {
+	for id := range m.removeditems {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ItemsIDs returns the "items" edge IDs in the mutation.
+func (m *GameHustlerMutation) ItemsIDs() (ids []string) {
+	for id := range m.items {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetItems resets all changes to the "items" edge.
+func (m *GameHustlerMutation) ResetItems() {
+	m.items = nil
+	m.cleareditems = false
+	m.removeditems = nil
+}
+
+// AddQuestIDs adds the "quests" edge to the GameHustlerQuest entity by ids.
+func (m *GameHustlerMutation) AddQuestIDs(ids ...string) {
+	if m.quests == nil {
+		m.quests = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.quests[ids[i]] = struct{}{}
+	}
+}
+
+// ClearQuests clears the "quests" edge to the GameHustlerQuest entity.
+func (m *GameHustlerMutation) ClearQuests() {
+	m.clearedquests = true
+}
+
+// QuestsCleared reports if the "quests" edge to the GameHustlerQuest entity was cleared.
+func (m *GameHustlerMutation) QuestsCleared() bool {
+	return m.clearedquests
+}
+
+// RemoveQuestIDs removes the "quests" edge to the GameHustlerQuest entity by IDs.
+func (m *GameHustlerMutation) RemoveQuestIDs(ids ...string) {
+	if m.removedquests == nil {
+		m.removedquests = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.quests, ids[i])
+		m.removedquests[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedQuests returns the removed IDs of the "quests" edge to the GameHustlerQuest entity.
+func (m *GameHustlerMutation) RemovedQuestsIDs() (ids []string) {
+	for id := range m.removedquests {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// QuestsIDs returns the "quests" edge IDs in the mutation.
+func (m *GameHustlerMutation) QuestsIDs() (ids []string) {
+	for id := range m.quests {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetQuests resets all changes to the "quests" edge.
+func (m *GameHustlerMutation) ResetQuests() {
+	m.quests = nil
+	m.clearedquests = false
+	m.removedquests = nil
+}
+
+// Where appends a list predicates to the GameHustlerMutation builder.
+func (m *GameHustlerMutation) Where(ps ...predicate.GameHustler) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *GameHustlerMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (GameHustler).
+func (m *GameHustlerMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *GameHustlerMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.last_position != nil {
+		fields = append(fields, gamehustler.FieldLastPosition)
+	}
+	if m.created_at != nil {
+		fields = append(fields, gamehustler.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *GameHustlerMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case gamehustler.FieldLastPosition:
+		return m.LastPosition()
+	case gamehustler.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *GameHustlerMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case gamehustler.FieldLastPosition:
+		return m.OldLastPosition(ctx)
+	case gamehustler.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown GameHustler field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameHustlerMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case gamehustler.FieldLastPosition:
+		v, ok := value.(schema.Position)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastPosition(v)
+		return nil
+	case gamehustler.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustler field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *GameHustlerMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *GameHustlerMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameHustlerMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown GameHustler numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *GameHustlerMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *GameHustlerMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *GameHustlerMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown GameHustler nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *GameHustlerMutation) ResetField(name string) error {
+	switch name {
+	case gamehustler.FieldLastPosition:
+		m.ResetLastPosition()
+		return nil
+	case gamehustler.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustler field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *GameHustlerMutation) AddedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.relations != nil {
+		edges = append(edges, gamehustler.EdgeRelations)
+	}
+	if m.items != nil {
+		edges = append(edges, gamehustler.EdgeItems)
+	}
+	if m.quests != nil {
+		edges = append(edges, gamehustler.EdgeQuests)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *GameHustlerMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case gamehustler.EdgeRelations:
+		ids := make([]ent.Value, 0, len(m.relations))
+		for id := range m.relations {
+			ids = append(ids, id)
+		}
+		return ids
+	case gamehustler.EdgeItems:
+		ids := make([]ent.Value, 0, len(m.items))
+		for id := range m.items {
+			ids = append(ids, id)
+		}
+		return ids
+	case gamehustler.EdgeQuests:
+		ids := make([]ent.Value, 0, len(m.quests))
+		for id := range m.quests {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *GameHustlerMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.removedrelations != nil {
+		edges = append(edges, gamehustler.EdgeRelations)
+	}
+	if m.removeditems != nil {
+		edges = append(edges, gamehustler.EdgeItems)
+	}
+	if m.removedquests != nil {
+		edges = append(edges, gamehustler.EdgeQuests)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *GameHustlerMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case gamehustler.EdgeRelations:
+		ids := make([]ent.Value, 0, len(m.removedrelations))
+		for id := range m.removedrelations {
+			ids = append(ids, id)
+		}
+		return ids
+	case gamehustler.EdgeItems:
+		ids := make([]ent.Value, 0, len(m.removeditems))
+		for id := range m.removeditems {
+			ids = append(ids, id)
+		}
+		return ids
+	case gamehustler.EdgeQuests:
+		ids := make([]ent.Value, 0, len(m.removedquests))
+		for id := range m.removedquests {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *GameHustlerMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.clearedrelations {
+		edges = append(edges, gamehustler.EdgeRelations)
+	}
+	if m.cleareditems {
+		edges = append(edges, gamehustler.EdgeItems)
+	}
+	if m.clearedquests {
+		edges = append(edges, gamehustler.EdgeQuests)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *GameHustlerMutation) EdgeCleared(name string) bool {
+	switch name {
+	case gamehustler.EdgeRelations:
+		return m.clearedrelations
+	case gamehustler.EdgeItems:
+		return m.cleareditems
+	case gamehustler.EdgeQuests:
+		return m.clearedquests
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *GameHustlerMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown GameHustler unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *GameHustlerMutation) ResetEdge(name string) error {
+	switch name {
+	case gamehustler.EdgeRelations:
+		m.ResetRelations()
+		return nil
+	case gamehustler.EdgeItems:
+		m.ResetItems()
+		return nil
+	case gamehustler.EdgeQuests:
+		m.ResetQuests()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustler edge %s", name)
+}
+
+// GameHustlerItemMutation represents an operation that mutates the GameHustlerItem nodes in the graph.
+type GameHustlerItemMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *string
+	item           *string
+	clearedFields  map[string]struct{}
+	hustler        *string
+	clearedhustler bool
+	done           bool
+	oldValue       func(context.Context) (*GameHustlerItem, error)
+	predicates     []predicate.GameHustlerItem
+}
+
+var _ ent.Mutation = (*GameHustlerItemMutation)(nil)
+
+// gamehustleritemOption allows management of the mutation configuration using functional options.
+type gamehustleritemOption func(*GameHustlerItemMutation)
+
+// newGameHustlerItemMutation creates new mutation for the GameHustlerItem entity.
+func newGameHustlerItemMutation(c config, op Op, opts ...gamehustleritemOption) *GameHustlerItemMutation {
+	m := &GameHustlerItemMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeGameHustlerItem,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withGameHustlerItemID sets the ID field of the mutation.
+func withGameHustlerItemID(id string) gamehustleritemOption {
+	return func(m *GameHustlerItemMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *GameHustlerItem
+		)
+		m.oldValue = func(ctx context.Context) (*GameHustlerItem, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().GameHustlerItem.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withGameHustlerItem sets the old GameHustlerItem of the mutation.
+func withGameHustlerItem(node *GameHustlerItem) gamehustleritemOption {
+	return func(m *GameHustlerItemMutation) {
+		m.oldValue = func(context.Context) (*GameHustlerItem, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m GameHustlerItemMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m GameHustlerItemMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *GameHustlerItemMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *GameHustlerItemMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().GameHustlerItem.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetItem sets the "item" field.
+func (m *GameHustlerItemMutation) SetItem(s string) {
+	m.item = &s
+}
+
+// Item returns the value of the "item" field in the mutation.
+func (m *GameHustlerItemMutation) Item() (r string, exists bool) {
+	v := m.item
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldItem returns the old "item" field's value of the GameHustlerItem entity.
+// If the GameHustlerItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameHustlerItemMutation) OldItem(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldItem is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldItem requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldItem: %w", err)
+	}
+	return oldValue.Item, nil
+}
+
+// ResetItem resets all changes to the "item" field.
+func (m *GameHustlerItemMutation) ResetItem() {
+	m.item = nil
+}
+
+// SetHustlerID sets the "hustler" edge to the GameHustler entity by id.
+func (m *GameHustlerItemMutation) SetHustlerID(id string) {
+	m.hustler = &id
+}
+
+// ClearHustler clears the "hustler" edge to the GameHustler entity.
+func (m *GameHustlerItemMutation) ClearHustler() {
+	m.clearedhustler = true
+}
+
+// HustlerCleared reports if the "hustler" edge to the GameHustler entity was cleared.
+func (m *GameHustlerItemMutation) HustlerCleared() bool {
+	return m.clearedhustler
+}
+
+// HustlerID returns the "hustler" edge ID in the mutation.
+func (m *GameHustlerItemMutation) HustlerID() (id string, exists bool) {
+	if m.hustler != nil {
+		return *m.hustler, true
+	}
+	return
+}
+
+// HustlerIDs returns the "hustler" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// HustlerID instead. It exists only for internal usage by the builders.
+func (m *GameHustlerItemMutation) HustlerIDs() (ids []string) {
+	if id := m.hustler; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetHustler resets all changes to the "hustler" edge.
+func (m *GameHustlerItemMutation) ResetHustler() {
+	m.hustler = nil
+	m.clearedhustler = false
+}
+
+// Where appends a list predicates to the GameHustlerItemMutation builder.
+func (m *GameHustlerItemMutation) Where(ps ...predicate.GameHustlerItem) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *GameHustlerItemMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (GameHustlerItem).
+func (m *GameHustlerItemMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *GameHustlerItemMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.item != nil {
+		fields = append(fields, gamehustleritem.FieldItem)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *GameHustlerItemMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case gamehustleritem.FieldItem:
+		return m.Item()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *GameHustlerItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case gamehustleritem.FieldItem:
+		return m.OldItem(ctx)
+	}
+	return nil, fmt.Errorf("unknown GameHustlerItem field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameHustlerItemMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case gamehustleritem.FieldItem:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetItem(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerItem field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *GameHustlerItemMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *GameHustlerItemMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameHustlerItemMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown GameHustlerItem numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *GameHustlerItemMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *GameHustlerItemMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *GameHustlerItemMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown GameHustlerItem nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *GameHustlerItemMutation) ResetField(name string) error {
+	switch name {
+	case gamehustleritem.FieldItem:
+		m.ResetItem()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerItem field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *GameHustlerItemMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.hustler != nil {
+		edges = append(edges, gamehustleritem.EdgeHustler)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *GameHustlerItemMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case gamehustleritem.EdgeHustler:
+		if id := m.hustler; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *GameHustlerItemMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *GameHustlerItemMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *GameHustlerItemMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedhustler {
+		edges = append(edges, gamehustleritem.EdgeHustler)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *GameHustlerItemMutation) EdgeCleared(name string) bool {
+	switch name {
+	case gamehustleritem.EdgeHustler:
+		return m.clearedhustler
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *GameHustlerItemMutation) ClearEdge(name string) error {
+	switch name {
+	case gamehustleritem.EdgeHustler:
+		m.ClearHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerItem unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *GameHustlerItemMutation) ResetEdge(name string) error {
+	switch name {
+	case gamehustleritem.EdgeHustler:
+		m.ResetHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerItem edge %s", name)
+}
+
+// GameHustlerQuestMutation represents an operation that mutates the GameHustlerQuest nodes in the graph.
+type GameHustlerQuestMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *string
+	quest          *string
+	completed      *bool
+	clearedFields  map[string]struct{}
+	hustler        *string
+	clearedhustler bool
+	done           bool
+	oldValue       func(context.Context) (*GameHustlerQuest, error)
+	predicates     []predicate.GameHustlerQuest
+}
+
+var _ ent.Mutation = (*GameHustlerQuestMutation)(nil)
+
+// gamehustlerquestOption allows management of the mutation configuration using functional options.
+type gamehustlerquestOption func(*GameHustlerQuestMutation)
+
+// newGameHustlerQuestMutation creates new mutation for the GameHustlerQuest entity.
+func newGameHustlerQuestMutation(c config, op Op, opts ...gamehustlerquestOption) *GameHustlerQuestMutation {
+	m := &GameHustlerQuestMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeGameHustlerQuest,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withGameHustlerQuestID sets the ID field of the mutation.
+func withGameHustlerQuestID(id string) gamehustlerquestOption {
+	return func(m *GameHustlerQuestMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *GameHustlerQuest
+		)
+		m.oldValue = func(ctx context.Context) (*GameHustlerQuest, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().GameHustlerQuest.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withGameHustlerQuest sets the old GameHustlerQuest of the mutation.
+func withGameHustlerQuest(node *GameHustlerQuest) gamehustlerquestOption {
+	return func(m *GameHustlerQuestMutation) {
+		m.oldValue = func(context.Context) (*GameHustlerQuest, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m GameHustlerQuestMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m GameHustlerQuestMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *GameHustlerQuestMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *GameHustlerQuestMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().GameHustlerQuest.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetQuest sets the "quest" field.
+func (m *GameHustlerQuestMutation) SetQuest(s string) {
+	m.quest = &s
+}
+
+// Quest returns the value of the "quest" field in the mutation.
+func (m *GameHustlerQuestMutation) Quest() (r string, exists bool) {
+	v := m.quest
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldQuest returns the old "quest" field's value of the GameHustlerQuest entity.
+// If the GameHustlerQuest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameHustlerQuestMutation) OldQuest(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldQuest is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldQuest requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldQuest: %w", err)
+	}
+	return oldValue.Quest, nil
+}
+
+// ResetQuest resets all changes to the "quest" field.
+func (m *GameHustlerQuestMutation) ResetQuest() {
+	m.quest = nil
+}
+
+// SetCompleted sets the "completed" field.
+func (m *GameHustlerQuestMutation) SetCompleted(b bool) {
+	m.completed = &b
+}
+
+// Completed returns the value of the "completed" field in the mutation.
+func (m *GameHustlerQuestMutation) Completed() (r bool, exists bool) {
+	v := m.completed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCompleted returns the old "completed" field's value of the GameHustlerQuest entity.
+// If the GameHustlerQuest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameHustlerQuestMutation) OldCompleted(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCompleted is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCompleted requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCompleted: %w", err)
+	}
+	return oldValue.Completed, nil
+}
+
+// ResetCompleted resets all changes to the "completed" field.
+func (m *GameHustlerQuestMutation) ResetCompleted() {
+	m.completed = nil
+}
+
+// SetHustlerID sets the "hustler" edge to the GameHustler entity by id.
+func (m *GameHustlerQuestMutation) SetHustlerID(id string) {
+	m.hustler = &id
+}
+
+// ClearHustler clears the "hustler" edge to the GameHustler entity.
+func (m *GameHustlerQuestMutation) ClearHustler() {
+	m.clearedhustler = true
+}
+
+// HustlerCleared reports if the "hustler" edge to the GameHustler entity was cleared.
+func (m *GameHustlerQuestMutation) HustlerCleared() bool {
+	return m.clearedhustler
+}
+
+// HustlerID returns the "hustler" edge ID in the mutation.
+func (m *GameHustlerQuestMutation) HustlerID() (id string, exists bool) {
+	if m.hustler != nil {
+		return *m.hustler, true
+	}
+	return
+}
+
+// HustlerIDs returns the "hustler" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// HustlerID instead. It exists only for internal usage by the builders.
+func (m *GameHustlerQuestMutation) HustlerIDs() (ids []string) {
+	if id := m.hustler; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetHustler resets all changes to the "hustler" edge.
+func (m *GameHustlerQuestMutation) ResetHustler() {
+	m.hustler = nil
+	m.clearedhustler = false
+}
+
+// Where appends a list predicates to the GameHustlerQuestMutation builder.
+func (m *GameHustlerQuestMutation) Where(ps ...predicate.GameHustlerQuest) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *GameHustlerQuestMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (GameHustlerQuest).
+func (m *GameHustlerQuestMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *GameHustlerQuestMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.quest != nil {
+		fields = append(fields, gamehustlerquest.FieldQuest)
+	}
+	if m.completed != nil {
+		fields = append(fields, gamehustlerquest.FieldCompleted)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *GameHustlerQuestMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case gamehustlerquest.FieldQuest:
+		return m.Quest()
+	case gamehustlerquest.FieldCompleted:
+		return m.Completed()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *GameHustlerQuestMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case gamehustlerquest.FieldQuest:
+		return m.OldQuest(ctx)
+	case gamehustlerquest.FieldCompleted:
+		return m.OldCompleted(ctx)
+	}
+	return nil, fmt.Errorf("unknown GameHustlerQuest field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameHustlerQuestMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case gamehustlerquest.FieldQuest:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetQuest(v)
+		return nil
+	case gamehustlerquest.FieldCompleted:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCompleted(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerQuest field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *GameHustlerQuestMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *GameHustlerQuestMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameHustlerQuestMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown GameHustlerQuest numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *GameHustlerQuestMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *GameHustlerQuestMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *GameHustlerQuestMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown GameHustlerQuest nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *GameHustlerQuestMutation) ResetField(name string) error {
+	switch name {
+	case gamehustlerquest.FieldQuest:
+		m.ResetQuest()
+		return nil
+	case gamehustlerquest.FieldCompleted:
+		m.ResetCompleted()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerQuest field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *GameHustlerQuestMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.hustler != nil {
+		edges = append(edges, gamehustlerquest.EdgeHustler)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *GameHustlerQuestMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case gamehustlerquest.EdgeHustler:
+		if id := m.hustler; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *GameHustlerQuestMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *GameHustlerQuestMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *GameHustlerQuestMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedhustler {
+		edges = append(edges, gamehustlerquest.EdgeHustler)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *GameHustlerQuestMutation) EdgeCleared(name string) bool {
+	switch name {
+	case gamehustlerquest.EdgeHustler:
+		return m.clearedhustler
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *GameHustlerQuestMutation) ClearEdge(name string) error {
+	switch name {
+	case gamehustlerquest.EdgeHustler:
+		m.ClearHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerQuest unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *GameHustlerQuestMutation) ResetEdge(name string) error {
+	switch name {
+	case gamehustlerquest.EdgeHustler:
+		m.ResetHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerQuest edge %s", name)
+}
+
+// GameHustlerRelationMutation represents an operation that mutates the GameHustlerRelation nodes in the graph.
+type GameHustlerRelationMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *string
+	citizen        *string
+	conversation   *string
+	text           *uint
+	addtext        *int
+	clearedFields  map[string]struct{}
+	hustler        *string
+	clearedhustler bool
+	done           bool
+	oldValue       func(context.Context) (*GameHustlerRelation, error)
+	predicates     []predicate.GameHustlerRelation
+}
+
+var _ ent.Mutation = (*GameHustlerRelationMutation)(nil)
+
+// gamehustlerrelationOption allows management of the mutation configuration using functional options.
+type gamehustlerrelationOption func(*GameHustlerRelationMutation)
+
+// newGameHustlerRelationMutation creates new mutation for the GameHustlerRelation entity.
+func newGameHustlerRelationMutation(c config, op Op, opts ...gamehustlerrelationOption) *GameHustlerRelationMutation {
+	m := &GameHustlerRelationMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeGameHustlerRelation,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withGameHustlerRelationID sets the ID field of the mutation.
+func withGameHustlerRelationID(id string) gamehustlerrelationOption {
+	return func(m *GameHustlerRelationMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *GameHustlerRelation
+		)
+		m.oldValue = func(ctx context.Context) (*GameHustlerRelation, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().GameHustlerRelation.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withGameHustlerRelation sets the old GameHustlerRelation of the mutation.
+func withGameHustlerRelation(node *GameHustlerRelation) gamehustlerrelationOption {
+	return func(m *GameHustlerRelationMutation) {
+		m.oldValue = func(context.Context) (*GameHustlerRelation, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m GameHustlerRelationMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m GameHustlerRelationMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of GameHustlerRelation entities.
+func (m *GameHustlerRelationMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *GameHustlerRelationMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *GameHustlerRelationMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().GameHustlerRelation.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCitizen sets the "citizen" field.
+func (m *GameHustlerRelationMutation) SetCitizen(s string) {
+	m.citizen = &s
+}
+
+// Citizen returns the value of the "citizen" field in the mutation.
+func (m *GameHustlerRelationMutation) Citizen() (r string, exists bool) {
+	v := m.citizen
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCitizen returns the old "citizen" field's value of the GameHustlerRelation entity.
+// If the GameHustlerRelation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameHustlerRelationMutation) OldCitizen(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCitizen is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCitizen requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCitizen: %w", err)
+	}
+	return oldValue.Citizen, nil
+}
+
+// ResetCitizen resets all changes to the "citizen" field.
+func (m *GameHustlerRelationMutation) ResetCitizen() {
+	m.citizen = nil
+}
+
+// SetConversation sets the "conversation" field.
+func (m *GameHustlerRelationMutation) SetConversation(s string) {
+	m.conversation = &s
+}
+
+// Conversation returns the value of the "conversation" field in the mutation.
+func (m *GameHustlerRelationMutation) Conversation() (r string, exists bool) {
+	v := m.conversation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConversation returns the old "conversation" field's value of the GameHustlerRelation entity.
+// If the GameHustlerRelation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameHustlerRelationMutation) OldConversation(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConversation is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConversation requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConversation: %w", err)
+	}
+	return oldValue.Conversation, nil
+}
+
+// ResetConversation resets all changes to the "conversation" field.
+func (m *GameHustlerRelationMutation) ResetConversation() {
+	m.conversation = nil
+}
+
+// SetText sets the "text" field.
+func (m *GameHustlerRelationMutation) SetText(u uint) {
+	m.text = &u
+	m.addtext = nil
+}
+
+// Text returns the value of the "text" field in the mutation.
+func (m *GameHustlerRelationMutation) Text() (r uint, exists bool) {
+	v := m.text
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldText returns the old "text" field's value of the GameHustlerRelation entity.
+// If the GameHustlerRelation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameHustlerRelationMutation) OldText(ctx context.Context) (v uint, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldText is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldText requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldText: %w", err)
+	}
+	return oldValue.Text, nil
+}
+
+// AddText adds u to the "text" field.
+func (m *GameHustlerRelationMutation) AddText(u int) {
+	if m.addtext != nil {
+		*m.addtext += u
+	} else {
+		m.addtext = &u
+	}
+}
+
+// AddedText returns the value that was added to the "text" field in this mutation.
+func (m *GameHustlerRelationMutation) AddedText() (r int, exists bool) {
+	v := m.addtext
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetText resets all changes to the "text" field.
+func (m *GameHustlerRelationMutation) ResetText() {
+	m.text = nil
+	m.addtext = nil
+}
+
+// SetHustlerID sets the "hustler" edge to the GameHustler entity by id.
+func (m *GameHustlerRelationMutation) SetHustlerID(id string) {
+	m.hustler = &id
+}
+
+// ClearHustler clears the "hustler" edge to the GameHustler entity.
+func (m *GameHustlerRelationMutation) ClearHustler() {
+	m.clearedhustler = true
+}
+
+// HustlerCleared reports if the "hustler" edge to the GameHustler entity was cleared.
+func (m *GameHustlerRelationMutation) HustlerCleared() bool {
+	return m.clearedhustler
+}
+
+// HustlerID returns the "hustler" edge ID in the mutation.
+func (m *GameHustlerRelationMutation) HustlerID() (id string, exists bool) {
+	if m.hustler != nil {
+		return *m.hustler, true
+	}
+	return
+}
+
+// HustlerIDs returns the "hustler" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// HustlerID instead. It exists only for internal usage by the builders.
+func (m *GameHustlerRelationMutation) HustlerIDs() (ids []string) {
+	if id := m.hustler; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetHustler resets all changes to the "hustler" edge.
+func (m *GameHustlerRelationMutation) ResetHustler() {
+	m.hustler = nil
+	m.clearedhustler = false
+}
+
+// Where appends a list predicates to the GameHustlerRelationMutation builder.
+func (m *GameHustlerRelationMutation) Where(ps ...predicate.GameHustlerRelation) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *GameHustlerRelationMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (GameHustlerRelation).
+func (m *GameHustlerRelationMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *GameHustlerRelationMutation) Fields() []string {
+	fields := make([]string, 0, 3)
+	if m.citizen != nil {
+		fields = append(fields, gamehustlerrelation.FieldCitizen)
+	}
+	if m.conversation != nil {
+		fields = append(fields, gamehustlerrelation.FieldConversation)
+	}
+	if m.text != nil {
+		fields = append(fields, gamehustlerrelation.FieldText)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *GameHustlerRelationMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case gamehustlerrelation.FieldCitizen:
+		return m.Citizen()
+	case gamehustlerrelation.FieldConversation:
+		return m.Conversation()
+	case gamehustlerrelation.FieldText:
+		return m.Text()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *GameHustlerRelationMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case gamehustlerrelation.FieldCitizen:
+		return m.OldCitizen(ctx)
+	case gamehustlerrelation.FieldConversation:
+		return m.OldConversation(ctx)
+	case gamehustlerrelation.FieldText:
+		return m.OldText(ctx)
+	}
+	return nil, fmt.Errorf("unknown GameHustlerRelation field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameHustlerRelationMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case gamehustlerrelation.FieldCitizen:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCitizen(v)
+		return nil
+	case gamehustlerrelation.FieldConversation:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConversation(v)
+		return nil
+	case gamehustlerrelation.FieldText:
+		v, ok := value.(uint)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetText(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerRelation field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *GameHustlerRelationMutation) AddedFields() []string {
+	var fields []string
+	if m.addtext != nil {
+		fields = append(fields, gamehustlerrelation.FieldText)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *GameHustlerRelationMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case gamehustlerrelation.FieldText:
+		return m.AddedText()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameHustlerRelationMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case gamehustlerrelation.FieldText:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddText(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerRelation numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *GameHustlerRelationMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *GameHustlerRelationMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *GameHustlerRelationMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown GameHustlerRelation nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *GameHustlerRelationMutation) ResetField(name string) error {
+	switch name {
+	case gamehustlerrelation.FieldCitizen:
+		m.ResetCitizen()
+		return nil
+	case gamehustlerrelation.FieldConversation:
+		m.ResetConversation()
+		return nil
+	case gamehustlerrelation.FieldText:
+		m.ResetText()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerRelation field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *GameHustlerRelationMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.hustler != nil {
+		edges = append(edges, gamehustlerrelation.EdgeHustler)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *GameHustlerRelationMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case gamehustlerrelation.EdgeHustler:
+		if id := m.hustler; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *GameHustlerRelationMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *GameHustlerRelationMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *GameHustlerRelationMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedhustler {
+		edges = append(edges, gamehustlerrelation.EdgeHustler)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *GameHustlerRelationMutation) EdgeCleared(name string) bool {
+	switch name {
+	case gamehustlerrelation.EdgeHustler:
+		return m.clearedhustler
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *GameHustlerRelationMutation) ClearEdge(name string) error {
+	switch name {
+	case gamehustlerrelation.EdgeHustler:
+		m.ClearHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerRelation unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *GameHustlerRelationMutation) ResetEdge(name string) error {
+	switch name {
+	case gamehustlerrelation.EdgeHustler:
+		m.ResetHustler()
+		return nil
+	}
+	return fmt.Errorf("unknown GameHustlerRelation edge %s", name)
 }
 
 // HustlerMutation represents an operation that mutates the Hustler nodes in the graph.

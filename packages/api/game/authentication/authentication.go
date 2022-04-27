@@ -3,6 +3,7 @@ package authentication
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"math/big"
 	"net/http"
 	"strconv"
@@ -11,7 +12,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/gorilla/handlers"
 	"github.com/jiulongw/siwe-go"
 )
 
@@ -23,20 +23,16 @@ type LoginBody struct {
 	Signature string `json:"signature"`
 }
 
-func CORS() func(http.Handler) http.Handler {
-	headersOk := handlers.AllowedHeaders([]string{"*"})
-	originsOk := handlers.AllowedOrigins([]string{"https://dopewars.gg"})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "POST"})
-	credentialsOk := handlers.AllowCredentials()
-	return handlers.CORS(headersOk, originsOk, methodsOk, credentialsOk)
-}
-
 // Validates signed payload with latest block number
 // Block has to maximum [MAX_BLOCK_AGE] old
 func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body LoginBody
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			if err == io.EOF {
+				http.Error(w, "missing body", http.StatusBadRequest)
+				return
+			}
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -53,6 +49,13 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		if err != nil {
 			http.Error(w, fmt.Sprintf("invalid signature: %s", err.Error()), http.StatusBadRequest)
 			return
+		}
+
+		// temporary fix for ledger devices (last byte has to be either 0x1b or 0x1c) but
+		// signed messages using a ledger end with 0x01/0x00
+		v := signature[len(signature)-1]
+		if !(v >= 27 && v <= 28) {
+			signature[len(signature)-1] += 0x1b
 		}
 
 		// verify that signature is valid and time constraint is met
@@ -94,7 +97,7 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		}
 
 		middleware.SetWallet(r.Context(), siweMessage.Address.String())
-		middleware.SetSiwe(r.Context(), *siweMessage)
+		middleware.SetSiwe(r.Context(), body.Message)
 		if err := session.Save(r, w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

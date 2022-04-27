@@ -10,6 +10,10 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustleritem"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustlerquest"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustlerrelation"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing"
@@ -1160,6 +1164,876 @@ func (i *EventWhereInput) P() (predicate.Event, error) {
 		return predicates[0], nil
 	default:
 		return event.And(predicates...), nil
+	}
+}
+
+// GameHustlerWhereInput represents a where input for filtering GameHustler queries.
+type GameHustlerWhereInput struct {
+	Not *GameHustlerWhereInput   `json:"not,omitempty"`
+	Or  []*GameHustlerWhereInput `json:"or,omitempty"`
+	And []*GameHustlerWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *string  `json:"id,omitempty"`
+	IDNEQ   *string  `json:"idNEQ,omitempty"`
+	IDIn    []string `json:"idIn,omitempty"`
+	IDNotIn []string `json:"idNotIn,omitempty"`
+	IDGT    *string  `json:"idGT,omitempty"`
+	IDGTE   *string  `json:"idGTE,omitempty"`
+	IDLT    *string  `json:"idLT,omitempty"`
+	IDLTE   *string  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "relations" edge predicates.
+	HasRelations     *bool                            `json:"hasRelations,omitempty"`
+	HasRelationsWith []*GameHustlerRelationWhereInput `json:"hasRelationsWith,omitempty"`
+
+	// "items" edge predicates.
+	HasItems     *bool                        `json:"hasItems,omitempty"`
+	HasItemsWith []*GameHustlerItemWhereInput `json:"hasItemsWith,omitempty"`
+
+	// "quests" edge predicates.
+	HasQuests     *bool                         `json:"hasQuests,omitempty"`
+	HasQuestsWith []*GameHustlerQuestWhereInput `json:"hasQuestsWith,omitempty"`
+}
+
+// Filter applies the GameHustlerWhereInput filter on the GameHustlerQuery builder.
+func (i *GameHustlerWhereInput) Filter(q *GameHustlerQuery) (*GameHustlerQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// P returns a predicate for filtering gamehustlers.
+// An error is returned if the input is empty or invalid.
+func (i *GameHustlerWhereInput) P() (predicate.GameHustler, error) {
+	var predicates []predicate.GameHustler
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, gamehustler.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.GameHustler, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, gamehustler.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.GameHustler, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, gamehustler.And(and...))
+	}
+	if i.ID != nil {
+		predicates = append(predicates, gamehustler.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, gamehustler.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, gamehustler.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, gamehustler.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, gamehustler.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, gamehustler.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, gamehustler.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, gamehustler.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, gamehustler.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, gamehustler.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, gamehustler.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, gamehustler.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, gamehustler.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, gamehustler.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, gamehustler.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, gamehustler.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+
+	if i.HasRelations != nil {
+		p := gamehustler.HasRelations()
+		if !*i.HasRelations {
+			p = gamehustler.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasRelationsWith) > 0 {
+		with := make([]predicate.GameHustlerRelation, 0, len(i.HasRelationsWith))
+		for _, w := range i.HasRelationsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, gamehustler.HasRelationsWith(with...))
+	}
+	if i.HasItems != nil {
+		p := gamehustler.HasItems()
+		if !*i.HasItems {
+			p = gamehustler.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasItemsWith) > 0 {
+		with := make([]predicate.GameHustlerItem, 0, len(i.HasItemsWith))
+		for _, w := range i.HasItemsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, gamehustler.HasItemsWith(with...))
+	}
+	if i.HasQuests != nil {
+		p := gamehustler.HasQuests()
+		if !*i.HasQuests {
+			p = gamehustler.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasQuestsWith) > 0 {
+		with := make([]predicate.GameHustlerQuest, 0, len(i.HasQuestsWith))
+		for _, w := range i.HasQuestsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, gamehustler.HasQuestsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate GameHustlerWhereInput")
+	case 1:
+		return predicates[0], nil
+	default:
+		return gamehustler.And(predicates...), nil
+	}
+}
+
+// GameHustlerItemWhereInput represents a where input for filtering GameHustlerItem queries.
+type GameHustlerItemWhereInput struct {
+	Not *GameHustlerItemWhereInput   `json:"not,omitempty"`
+	Or  []*GameHustlerItemWhereInput `json:"or,omitempty"`
+	And []*GameHustlerItemWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *string  `json:"id,omitempty"`
+	IDNEQ   *string  `json:"idNEQ,omitempty"`
+	IDIn    []string `json:"idIn,omitempty"`
+	IDNotIn []string `json:"idNotIn,omitempty"`
+	IDGT    *string  `json:"idGT,omitempty"`
+	IDGTE   *string  `json:"idGTE,omitempty"`
+	IDLT    *string  `json:"idLT,omitempty"`
+	IDLTE   *string  `json:"idLTE,omitempty"`
+
+	// "item" field predicates.
+	Item             *string  `json:"item,omitempty"`
+	ItemNEQ          *string  `json:"itemNEQ,omitempty"`
+	ItemIn           []string `json:"itemIn,omitempty"`
+	ItemNotIn        []string `json:"itemNotIn,omitempty"`
+	ItemGT           *string  `json:"itemGT,omitempty"`
+	ItemGTE          *string  `json:"itemGTE,omitempty"`
+	ItemLT           *string  `json:"itemLT,omitempty"`
+	ItemLTE          *string  `json:"itemLTE,omitempty"`
+	ItemContains     *string  `json:"itemContains,omitempty"`
+	ItemHasPrefix    *string  `json:"itemHasPrefix,omitempty"`
+	ItemHasSuffix    *string  `json:"itemHasSuffix,omitempty"`
+	ItemEqualFold    *string  `json:"itemEqualFold,omitempty"`
+	ItemContainsFold *string  `json:"itemContainsFold,omitempty"`
+
+	// "hustler" edge predicates.
+	HasHustler     *bool                    `json:"hasHustler,omitempty"`
+	HasHustlerWith []*GameHustlerWhereInput `json:"hasHustlerWith,omitempty"`
+}
+
+// Filter applies the GameHustlerItemWhereInput filter on the GameHustlerItemQuery builder.
+func (i *GameHustlerItemWhereInput) Filter(q *GameHustlerItemQuery) (*GameHustlerItemQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// P returns a predicate for filtering gamehustleritems.
+// An error is returned if the input is empty or invalid.
+func (i *GameHustlerItemWhereInput) P() (predicate.GameHustlerItem, error) {
+	var predicates []predicate.GameHustlerItem
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, gamehustleritem.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.GameHustlerItem, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, gamehustleritem.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.GameHustlerItem, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, gamehustleritem.And(and...))
+	}
+	if i.ID != nil {
+		predicates = append(predicates, gamehustleritem.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, gamehustleritem.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, gamehustleritem.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, gamehustleritem.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, gamehustleritem.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, gamehustleritem.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, gamehustleritem.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, gamehustleritem.IDLTE(*i.IDLTE))
+	}
+	if i.Item != nil {
+		predicates = append(predicates, gamehustleritem.ItemEQ(*i.Item))
+	}
+	if i.ItemNEQ != nil {
+		predicates = append(predicates, gamehustleritem.ItemNEQ(*i.ItemNEQ))
+	}
+	if len(i.ItemIn) > 0 {
+		predicates = append(predicates, gamehustleritem.ItemIn(i.ItemIn...))
+	}
+	if len(i.ItemNotIn) > 0 {
+		predicates = append(predicates, gamehustleritem.ItemNotIn(i.ItemNotIn...))
+	}
+	if i.ItemGT != nil {
+		predicates = append(predicates, gamehustleritem.ItemGT(*i.ItemGT))
+	}
+	if i.ItemGTE != nil {
+		predicates = append(predicates, gamehustleritem.ItemGTE(*i.ItemGTE))
+	}
+	if i.ItemLT != nil {
+		predicates = append(predicates, gamehustleritem.ItemLT(*i.ItemLT))
+	}
+	if i.ItemLTE != nil {
+		predicates = append(predicates, gamehustleritem.ItemLTE(*i.ItemLTE))
+	}
+	if i.ItemContains != nil {
+		predicates = append(predicates, gamehustleritem.ItemContains(*i.ItemContains))
+	}
+	if i.ItemHasPrefix != nil {
+		predicates = append(predicates, gamehustleritem.ItemHasPrefix(*i.ItemHasPrefix))
+	}
+	if i.ItemHasSuffix != nil {
+		predicates = append(predicates, gamehustleritem.ItemHasSuffix(*i.ItemHasSuffix))
+	}
+	if i.ItemEqualFold != nil {
+		predicates = append(predicates, gamehustleritem.ItemEqualFold(*i.ItemEqualFold))
+	}
+	if i.ItemContainsFold != nil {
+		predicates = append(predicates, gamehustleritem.ItemContainsFold(*i.ItemContainsFold))
+	}
+
+	if i.HasHustler != nil {
+		p := gamehustleritem.HasHustler()
+		if !*i.HasHustler {
+			p = gamehustleritem.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasHustlerWith) > 0 {
+		with := make([]predicate.GameHustler, 0, len(i.HasHustlerWith))
+		for _, w := range i.HasHustlerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, gamehustleritem.HasHustlerWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate GameHustlerItemWhereInput")
+	case 1:
+		return predicates[0], nil
+	default:
+		return gamehustleritem.And(predicates...), nil
+	}
+}
+
+// GameHustlerQuestWhereInput represents a where input for filtering GameHustlerQuest queries.
+type GameHustlerQuestWhereInput struct {
+	Not *GameHustlerQuestWhereInput   `json:"not,omitempty"`
+	Or  []*GameHustlerQuestWhereInput `json:"or,omitempty"`
+	And []*GameHustlerQuestWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *string  `json:"id,omitempty"`
+	IDNEQ   *string  `json:"idNEQ,omitempty"`
+	IDIn    []string `json:"idIn,omitempty"`
+	IDNotIn []string `json:"idNotIn,omitempty"`
+	IDGT    *string  `json:"idGT,omitempty"`
+	IDGTE   *string  `json:"idGTE,omitempty"`
+	IDLT    *string  `json:"idLT,omitempty"`
+	IDLTE   *string  `json:"idLTE,omitempty"`
+
+	// "quest" field predicates.
+	Quest             *string  `json:"quest,omitempty"`
+	QuestNEQ          *string  `json:"questNEQ,omitempty"`
+	QuestIn           []string `json:"questIn,omitempty"`
+	QuestNotIn        []string `json:"questNotIn,omitempty"`
+	QuestGT           *string  `json:"questGT,omitempty"`
+	QuestGTE          *string  `json:"questGTE,omitempty"`
+	QuestLT           *string  `json:"questLT,omitempty"`
+	QuestLTE          *string  `json:"questLTE,omitempty"`
+	QuestContains     *string  `json:"questContains,omitempty"`
+	QuestHasPrefix    *string  `json:"questHasPrefix,omitempty"`
+	QuestHasSuffix    *string  `json:"questHasSuffix,omitempty"`
+	QuestEqualFold    *string  `json:"questEqualFold,omitempty"`
+	QuestContainsFold *string  `json:"questContainsFold,omitempty"`
+
+	// "completed" field predicates.
+	Completed    *bool `json:"completed,omitempty"`
+	CompletedNEQ *bool `json:"completedNEQ,omitempty"`
+
+	// "hustler" edge predicates.
+	HasHustler     *bool                    `json:"hasHustler,omitempty"`
+	HasHustlerWith []*GameHustlerWhereInput `json:"hasHustlerWith,omitempty"`
+}
+
+// Filter applies the GameHustlerQuestWhereInput filter on the GameHustlerQuestQuery builder.
+func (i *GameHustlerQuestWhereInput) Filter(q *GameHustlerQuestQuery) (*GameHustlerQuestQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// P returns a predicate for filtering gamehustlerquests.
+// An error is returned if the input is empty or invalid.
+func (i *GameHustlerQuestWhereInput) P() (predicate.GameHustlerQuest, error) {
+	var predicates []predicate.GameHustlerQuest
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, gamehustlerquest.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.GameHustlerQuest, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, gamehustlerquest.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.GameHustlerQuest, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, gamehustlerquest.And(and...))
+	}
+	if i.ID != nil {
+		predicates = append(predicates, gamehustlerquest.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, gamehustlerquest.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, gamehustlerquest.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, gamehustlerquest.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, gamehustlerquest.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, gamehustlerquest.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, gamehustlerquest.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, gamehustlerquest.IDLTE(*i.IDLTE))
+	}
+	if i.Quest != nil {
+		predicates = append(predicates, gamehustlerquest.QuestEQ(*i.Quest))
+	}
+	if i.QuestNEQ != nil {
+		predicates = append(predicates, gamehustlerquest.QuestNEQ(*i.QuestNEQ))
+	}
+	if len(i.QuestIn) > 0 {
+		predicates = append(predicates, gamehustlerquest.QuestIn(i.QuestIn...))
+	}
+	if len(i.QuestNotIn) > 0 {
+		predicates = append(predicates, gamehustlerquest.QuestNotIn(i.QuestNotIn...))
+	}
+	if i.QuestGT != nil {
+		predicates = append(predicates, gamehustlerquest.QuestGT(*i.QuestGT))
+	}
+	if i.QuestGTE != nil {
+		predicates = append(predicates, gamehustlerquest.QuestGTE(*i.QuestGTE))
+	}
+	if i.QuestLT != nil {
+		predicates = append(predicates, gamehustlerquest.QuestLT(*i.QuestLT))
+	}
+	if i.QuestLTE != nil {
+		predicates = append(predicates, gamehustlerquest.QuestLTE(*i.QuestLTE))
+	}
+	if i.QuestContains != nil {
+		predicates = append(predicates, gamehustlerquest.QuestContains(*i.QuestContains))
+	}
+	if i.QuestHasPrefix != nil {
+		predicates = append(predicates, gamehustlerquest.QuestHasPrefix(*i.QuestHasPrefix))
+	}
+	if i.QuestHasSuffix != nil {
+		predicates = append(predicates, gamehustlerquest.QuestHasSuffix(*i.QuestHasSuffix))
+	}
+	if i.QuestEqualFold != nil {
+		predicates = append(predicates, gamehustlerquest.QuestEqualFold(*i.QuestEqualFold))
+	}
+	if i.QuestContainsFold != nil {
+		predicates = append(predicates, gamehustlerquest.QuestContainsFold(*i.QuestContainsFold))
+	}
+	if i.Completed != nil {
+		predicates = append(predicates, gamehustlerquest.CompletedEQ(*i.Completed))
+	}
+	if i.CompletedNEQ != nil {
+		predicates = append(predicates, gamehustlerquest.CompletedNEQ(*i.CompletedNEQ))
+	}
+
+	if i.HasHustler != nil {
+		p := gamehustlerquest.HasHustler()
+		if !*i.HasHustler {
+			p = gamehustlerquest.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasHustlerWith) > 0 {
+		with := make([]predicate.GameHustler, 0, len(i.HasHustlerWith))
+		for _, w := range i.HasHustlerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, gamehustlerquest.HasHustlerWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate GameHustlerQuestWhereInput")
+	case 1:
+		return predicates[0], nil
+	default:
+		return gamehustlerquest.And(predicates...), nil
+	}
+}
+
+// GameHustlerRelationWhereInput represents a where input for filtering GameHustlerRelation queries.
+type GameHustlerRelationWhereInput struct {
+	Not *GameHustlerRelationWhereInput   `json:"not,omitempty"`
+	Or  []*GameHustlerRelationWhereInput `json:"or,omitempty"`
+	And []*GameHustlerRelationWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *string  `json:"id,omitempty"`
+	IDNEQ   *string  `json:"idNEQ,omitempty"`
+	IDIn    []string `json:"idIn,omitempty"`
+	IDNotIn []string `json:"idNotIn,omitempty"`
+	IDGT    *string  `json:"idGT,omitempty"`
+	IDGTE   *string  `json:"idGTE,omitempty"`
+	IDLT    *string  `json:"idLT,omitempty"`
+	IDLTE   *string  `json:"idLTE,omitempty"`
+
+	// "citizen" field predicates.
+	Citizen             *string  `json:"citizen,omitempty"`
+	CitizenNEQ          *string  `json:"citizenNEQ,omitempty"`
+	CitizenIn           []string `json:"citizenIn,omitempty"`
+	CitizenNotIn        []string `json:"citizenNotIn,omitempty"`
+	CitizenGT           *string  `json:"citizenGT,omitempty"`
+	CitizenGTE          *string  `json:"citizenGTE,omitempty"`
+	CitizenLT           *string  `json:"citizenLT,omitempty"`
+	CitizenLTE          *string  `json:"citizenLTE,omitempty"`
+	CitizenContains     *string  `json:"citizenContains,omitempty"`
+	CitizenHasPrefix    *string  `json:"citizenHasPrefix,omitempty"`
+	CitizenHasSuffix    *string  `json:"citizenHasSuffix,omitempty"`
+	CitizenEqualFold    *string  `json:"citizenEqualFold,omitempty"`
+	CitizenContainsFold *string  `json:"citizenContainsFold,omitempty"`
+
+	// "conversation" field predicates.
+	Conversation             *string  `json:"conversation,omitempty"`
+	ConversationNEQ          *string  `json:"conversationNEQ,omitempty"`
+	ConversationIn           []string `json:"conversationIn,omitempty"`
+	ConversationNotIn        []string `json:"conversationNotIn,omitempty"`
+	ConversationGT           *string  `json:"conversationGT,omitempty"`
+	ConversationGTE          *string  `json:"conversationGTE,omitempty"`
+	ConversationLT           *string  `json:"conversationLT,omitempty"`
+	ConversationLTE          *string  `json:"conversationLTE,omitempty"`
+	ConversationContains     *string  `json:"conversationContains,omitempty"`
+	ConversationHasPrefix    *string  `json:"conversationHasPrefix,omitempty"`
+	ConversationHasSuffix    *string  `json:"conversationHasSuffix,omitempty"`
+	ConversationEqualFold    *string  `json:"conversationEqualFold,omitempty"`
+	ConversationContainsFold *string  `json:"conversationContainsFold,omitempty"`
+
+	// "text" field predicates.
+	Text      *uint  `json:"text,omitempty"`
+	TextNEQ   *uint  `json:"textNEQ,omitempty"`
+	TextIn    []uint `json:"textIn,omitempty"`
+	TextNotIn []uint `json:"textNotIn,omitempty"`
+	TextGT    *uint  `json:"textGT,omitempty"`
+	TextGTE   *uint  `json:"textGTE,omitempty"`
+	TextLT    *uint  `json:"textLT,omitempty"`
+	TextLTE   *uint  `json:"textLTE,omitempty"`
+
+	// "hustler" edge predicates.
+	HasHustler     *bool                    `json:"hasHustler,omitempty"`
+	HasHustlerWith []*GameHustlerWhereInput `json:"hasHustlerWith,omitempty"`
+}
+
+// Filter applies the GameHustlerRelationWhereInput filter on the GameHustlerRelationQuery builder.
+func (i *GameHustlerRelationWhereInput) Filter(q *GameHustlerRelationQuery) (*GameHustlerRelationQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// P returns a predicate for filtering gamehustlerrelations.
+// An error is returned if the input is empty or invalid.
+func (i *GameHustlerRelationWhereInput) P() (predicate.GameHustlerRelation, error) {
+	var predicates []predicate.GameHustlerRelation
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, gamehustlerrelation.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.GameHustlerRelation, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, gamehustlerrelation.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.GameHustlerRelation, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, gamehustlerrelation.And(and...))
+	}
+	if i.ID != nil {
+		predicates = append(predicates, gamehustlerrelation.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, gamehustlerrelation.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, gamehustlerrelation.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, gamehustlerrelation.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, gamehustlerrelation.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, gamehustlerrelation.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, gamehustlerrelation.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, gamehustlerrelation.IDLTE(*i.IDLTE))
+	}
+	if i.Citizen != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenEQ(*i.Citizen))
+	}
+	if i.CitizenNEQ != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenNEQ(*i.CitizenNEQ))
+	}
+	if len(i.CitizenIn) > 0 {
+		predicates = append(predicates, gamehustlerrelation.CitizenIn(i.CitizenIn...))
+	}
+	if len(i.CitizenNotIn) > 0 {
+		predicates = append(predicates, gamehustlerrelation.CitizenNotIn(i.CitizenNotIn...))
+	}
+	if i.CitizenGT != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenGT(*i.CitizenGT))
+	}
+	if i.CitizenGTE != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenGTE(*i.CitizenGTE))
+	}
+	if i.CitizenLT != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenLT(*i.CitizenLT))
+	}
+	if i.CitizenLTE != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenLTE(*i.CitizenLTE))
+	}
+	if i.CitizenContains != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenContains(*i.CitizenContains))
+	}
+	if i.CitizenHasPrefix != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenHasPrefix(*i.CitizenHasPrefix))
+	}
+	if i.CitizenHasSuffix != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenHasSuffix(*i.CitizenHasSuffix))
+	}
+	if i.CitizenEqualFold != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenEqualFold(*i.CitizenEqualFold))
+	}
+	if i.CitizenContainsFold != nil {
+		predicates = append(predicates, gamehustlerrelation.CitizenContainsFold(*i.CitizenContainsFold))
+	}
+	if i.Conversation != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationEQ(*i.Conversation))
+	}
+	if i.ConversationNEQ != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationNEQ(*i.ConversationNEQ))
+	}
+	if len(i.ConversationIn) > 0 {
+		predicates = append(predicates, gamehustlerrelation.ConversationIn(i.ConversationIn...))
+	}
+	if len(i.ConversationNotIn) > 0 {
+		predicates = append(predicates, gamehustlerrelation.ConversationNotIn(i.ConversationNotIn...))
+	}
+	if i.ConversationGT != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationGT(*i.ConversationGT))
+	}
+	if i.ConversationGTE != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationGTE(*i.ConversationGTE))
+	}
+	if i.ConversationLT != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationLT(*i.ConversationLT))
+	}
+	if i.ConversationLTE != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationLTE(*i.ConversationLTE))
+	}
+	if i.ConversationContains != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationContains(*i.ConversationContains))
+	}
+	if i.ConversationHasPrefix != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationHasPrefix(*i.ConversationHasPrefix))
+	}
+	if i.ConversationHasSuffix != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationHasSuffix(*i.ConversationHasSuffix))
+	}
+	if i.ConversationEqualFold != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationEqualFold(*i.ConversationEqualFold))
+	}
+	if i.ConversationContainsFold != nil {
+		predicates = append(predicates, gamehustlerrelation.ConversationContainsFold(*i.ConversationContainsFold))
+	}
+	if i.Text != nil {
+		predicates = append(predicates, gamehustlerrelation.TextEQ(*i.Text))
+	}
+	if i.TextNEQ != nil {
+		predicates = append(predicates, gamehustlerrelation.TextNEQ(*i.TextNEQ))
+	}
+	if len(i.TextIn) > 0 {
+		predicates = append(predicates, gamehustlerrelation.TextIn(i.TextIn...))
+	}
+	if len(i.TextNotIn) > 0 {
+		predicates = append(predicates, gamehustlerrelation.TextNotIn(i.TextNotIn...))
+	}
+	if i.TextGT != nil {
+		predicates = append(predicates, gamehustlerrelation.TextGT(*i.TextGT))
+	}
+	if i.TextGTE != nil {
+		predicates = append(predicates, gamehustlerrelation.TextGTE(*i.TextGTE))
+	}
+	if i.TextLT != nil {
+		predicates = append(predicates, gamehustlerrelation.TextLT(*i.TextLT))
+	}
+	if i.TextLTE != nil {
+		predicates = append(predicates, gamehustlerrelation.TextLTE(*i.TextLTE))
+	}
+
+	if i.HasHustler != nil {
+		p := gamehustlerrelation.HasHustler()
+		if !*i.HasHustler {
+			p = gamehustlerrelation.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasHustlerWith) > 0 {
+		with := make([]predicate.GameHustler, 0, len(i.HasHustlerWith))
+		for _, w := range i.HasHustlerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, gamehustlerrelation.HasHustlerWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, fmt.Errorf("github.com/dopedao/dope-monorepo/packages/api/internal/ent: empty predicate GameHustlerRelationWhereInput")
+	case 1:
+		return predicates[0], nil
+	default:
+		return gamehustlerrelation.And(predicates...), nil
 	}
 }
 

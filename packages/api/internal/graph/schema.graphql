@@ -135,6 +135,38 @@ type Hustler implements Node {
   accessory: Item
 }
 
+# type Position {
+#   currentMap: String!
+#   x: Float!
+#   y: Float!
+# }
+
+# type GameHustlerQuest implements Node {
+#   quest: String!
+#   completed: Boolean!
+# }
+
+# type GameHustlerItem implements Node {
+#   item: String!
+#   count: Int!
+# }
+
+# type GameHustlerRelation implements Node {
+
+#   citizen: String!
+#   conversation: Int!
+#   text: Int!
+# }
+
+# type GameHustler implements Node {
+#   id: ID!
+#   hustler: Hustler!
+#   lastPosition: Position!
+#   relations: [GameHustlerCitizen!]!
+#   inventory: [GameHustlerItem!]!
+#   quests: [GameHustlerQuest!]!
+# }
+
 type Listing implements Node {
   id: ID!
   source: Source

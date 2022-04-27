@@ -88,14 +88,14 @@ func Wallet(ctx context.Context) (string, error) {
 	return wallet.(string), nil
 }
 
-func SetSiwe(ctx context.Context, siweMessage siwe.Message) error {
+func SetSiwe(ctx context.Context, message string) error {
 	sc := SessionFor(ctx)
 	session, err := sc.Get(Key)
 	if err != nil {
 		return err
 	}
 
-	session.Values["siwe"] = siweMessage
+	session.Values["siwe"] = message
 
 	if err := sc.Save(session); err != nil {
 		return err
@@ -116,7 +116,11 @@ func Siwe(ctx context.Context) (*siwe.Message, error) {
 		return nil, errors.New("unauthorized")
 	}
 
-	return siweMessage.(*siwe.Message), nil
+	parsedMessage, err := siwe.MessageFromString(siweMessage.(string))
+	if err != nil {
+		return nil, err
+	}
+	return parsedMessage, nil
 }
 
 func Session(store sessions.Store) func(http.Handler) http.Handler {

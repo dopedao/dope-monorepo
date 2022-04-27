@@ -105,6 +105,81 @@ var (
 			},
 		},
 	}
+	// GameHustlersColumns holds the columns for the "game_hustlers" table.
+	GameHustlersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "last_position", Type: field.TypeJSON},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// GameHustlersTable holds the schema information for the "game_hustlers" table.
+	GameHustlersTable = &schema.Table{
+		Name:       "game_hustlers",
+		Columns:    GameHustlersColumns,
+		PrimaryKey: []*schema.Column{GameHustlersColumns[0]},
+	}
+	// GameHustlerItemsColumns holds the columns for the "game_hustler_items" table.
+	GameHustlerItemsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Increment: true},
+		{Name: "item", Type: field.TypeString},
+		{Name: "game_hustler_items", Type: field.TypeString, Nullable: true},
+	}
+	// GameHustlerItemsTable holds the schema information for the "game_hustler_items" table.
+	GameHustlerItemsTable = &schema.Table{
+		Name:       "game_hustler_items",
+		Columns:    GameHustlerItemsColumns,
+		PrimaryKey: []*schema.Column{GameHustlerItemsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "game_hustler_items_game_hustlers_items",
+				Columns:    []*schema.Column{GameHustlerItemsColumns[2]},
+				RefColumns: []*schema.Column{GameHustlersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// GameHustlerQuestsColumns holds the columns for the "game_hustler_quests" table.
+	GameHustlerQuestsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Increment: true},
+		{Name: "quest", Type: field.TypeString},
+		{Name: "completed", Type: field.TypeBool, Default: false},
+		{Name: "game_hustler_quests", Type: field.TypeString, Nullable: true},
+	}
+	// GameHustlerQuestsTable holds the schema information for the "game_hustler_quests" table.
+	GameHustlerQuestsTable = &schema.Table{
+		Name:       "game_hustler_quests",
+		Columns:    GameHustlerQuestsColumns,
+		PrimaryKey: []*schema.Column{GameHustlerQuestsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "game_hustler_quests_game_hustlers_quests",
+				Columns:    []*schema.Column{GameHustlerQuestsColumns[3]},
+				RefColumns: []*schema.Column{GameHustlersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// GameHustlerRelationsColumns holds the columns for the "game_hustler_relations" table.
+	GameHustlerRelationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "citizen", Type: field.TypeString},
+		{Name: "conversation", Type: field.TypeString},
+		{Name: "text", Type: field.TypeUint},
+		{Name: "game_hustler_relations", Type: field.TypeString, Nullable: true},
+	}
+	// GameHustlerRelationsTable holds the schema information for the "game_hustler_relations" table.
+	GameHustlerRelationsTable = &schema.Table{
+		Name:       "game_hustler_relations",
+		Columns:    GameHustlerRelationsColumns,
+		PrimaryKey: []*schema.Column{GameHustlerRelationsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "game_hustler_relations_game_hustlers_relations",
+				Columns:    []*schema.Column{GameHustlerRelationsColumns[4]},
+				RefColumns: []*schema.Column{GameHustlersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// HustlersColumns holds the columns for the "hustlers" table.
 	HustlersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
@@ -400,6 +475,10 @@ var (
 		BodyPartsTable,
 		DopesTable,
 		EventsTable,
+		GameHustlersTable,
+		GameHustlerItemsTable,
+		GameHustlerQuestsTable,
+		GameHustlerRelationsTable,
 		HustlersTable,
 		ItemsTable,
 		ListingsTable,
@@ -416,6 +495,9 @@ func init() {
 	AmountsTable.ForeignKeys[1].RefTable = ListingsTable
 	DopesTable.ForeignKeys[0].RefTable = ListingsTable
 	DopesTable.ForeignKeys[1].RefTable = WalletsTable
+	GameHustlerItemsTable.ForeignKeys[0].RefTable = GameHustlersTable
+	GameHustlerQuestsTable.ForeignKeys[0].RefTable = GameHustlersTable
+	GameHustlerRelationsTable.ForeignKeys[0].RefTable = GameHustlersTable
 	HustlersTable.ForeignKeys[0].RefTable = BodyPartsTable
 	HustlersTable.ForeignKeys[1].RefTable = BodyPartsTable
 	HustlersTable.ForeignKeys[2].RefTable = BodyPartsTable
