@@ -38,7 +38,7 @@ func main() {
 		dbPass = os.Args[1]
 	}
 
-	client := dbprovider.Ent
+	client := dbprovider.Ent()
 
 	// GCP Storage Bucket Client
 	s, err := storage.NewClient(ctx)

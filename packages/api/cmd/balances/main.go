@@ -19,7 +19,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	client := dbprovider.Ent
+	client := dbprovider.Ent()
 	retryableHTTPClient := retryablehttp.NewClient()
 	c, err := rpc.DialHTTPWithClient("https://eth-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
 	if err != nil {

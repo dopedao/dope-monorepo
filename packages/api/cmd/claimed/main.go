@@ -34,7 +34,7 @@ func main() {
 		log.Fatalf("Creating Components bindings: %+v", err)
 	}
 
-	dopes, err := dbprovider.Ent.
+	dopes, err := dbprovider.Ent().
 		Dope.
 		Query().
 		All(ctx)
@@ -58,7 +58,7 @@ func main() {
 				log.Fatalf("Getting paper balance: %+v.", err)
 			}
 
-			dbprovider.Ent.
+			dbprovider.Ent().
 				Dope.
 				UpdateOneID(dope.ID).
 				SetClaimed(claimed).

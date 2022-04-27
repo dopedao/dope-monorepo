@@ -22,7 +22,7 @@ const MAX_DB_CONN = 77
 
 func main() {
 	ctx := context.Background()
-	client := dbprovider.Ent
+	client := dbprovider.Ent()
 
 	log.Default().Println("Establishing RPC client")
 	retryableHTTPClient := retryablehttp.NewClient()

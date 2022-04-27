@@ -28,7 +28,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	client := dbprovider.Ent
+	client := dbprovider.Ent()
 
 	// Run the auto migration tool.
 	if err := client.Schema.Create(context.Background()); err != nil {

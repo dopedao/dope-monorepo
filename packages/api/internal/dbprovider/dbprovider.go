@@ -15,18 +15,23 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var Conn *sql.Driver
-var Ent *ent.Client
+var dbConnection *sql.Driver
+var entClient *ent.Client
 
 func init() {
 	pgsVal, connErr := envcfg.PgConnString.Value()
 	logger.LogFatalOnErr(connErr, "Getting postgres connection string.")
 
-	conn, drvErr := sql.Open(dialect.Postgres, pgsVal)
+	dbConnection, drvErr := sql.Open(dialect.Postgres, pgsVal)
 	logger.LogFatalOnErr(drvErr, "Connecting to db")
 
-	entClient := ent.NewClient(ent.Driver(conn))
+	entClient = ent.NewClient(ent.Driver(dbConnection))
+}
 
-	Conn = conn
-	Ent = entClient
+func Conn() *sql.Driver {
+	return dbConnection
+}
+
+func Ent() *ent.Client {
+	return entClient
 }

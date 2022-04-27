@@ -11,7 +11,7 @@ import (
 
 func main() {
 	drv := dbprovider.Conn
-	client := dbprovider.Ent
+	client := dbprovider.Ent()
 
 	ctx := context.Background()
 
