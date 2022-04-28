@@ -5,8 +5,14 @@ import NetworkHandler from 'game/handlers/network/NetworkHandler';
 import { NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import { ethers } from 'ethers';
+import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
+import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
+import defaultNetworkConfig from 'game/constants/NetworkConfig';
+import UIScene, { chakraToastStyle } from './UI';
+import { throws } from 'assert';
 
 export default class Preload extends Scene {
+  private dopewars!: Phaser.GameObjects.Image;
   private downloadedSize: number = 0;
   private progressBar: ProgressBar | undefined;
 
@@ -22,15 +28,15 @@ export default class Preload extends Scene {
     this.progressBar = new ProgressBar(this, 0.5, 0.66, manifest.totalSize);
     let currentFile: string = '';
 
-    this.load.on('fileprogress', (file: any) => {
-      const previousLoad = file.previousLoad || 0;
+    this.load.on(Phaser.Loader.Events.FILE_PROGRESS, (file: Phaser.Loader.File) => {
+      const previousLoad = (file as any).previousLoad || 0;
 
       this.downloadedSize += file.bytesLoaded - previousLoad;
-      file.previousLoad = file.bytesLoaded;
+      (file as any).previousLoad = file.bytesLoaded;
 
       this.progressBar!.setProgress(
         this.downloadedSize / manifest.totalSize,
-        'Loading ' + currentFile + '...',
+        'Loading ' + currentFile + new Array(Math.round(Math.random() * 3)).fill('.').join(''),
       );
     });
 
@@ -40,45 +46,97 @@ export default class Preload extends Scene {
     totalSize = manifest.totalSize;
     Object.keys(assetList).forEach((fileType: string) => {
       Object.keys(assetList[fileType]).forEach(key => {
-        currentFile = key;
+        currentFile = `${fileType}/${key}`;
         const assetVars = assetList[fileType][key];
 
         if (fileType === 'spritesheet') {
           this.load[fileType](key, assetVars['file'], assetVars.frameConfig);
+        } else if (fileType === 'image') {
+          this.load[fileType]({
+            key, 
+            url: assetVars['file'], 
+            normalMap: assetVars?.['normal']
+          });
         } else {
           // hack to index LoaderPlugin
           (this.load as any)[fileType](key, assetVars['file']);
         }
       });
     });
+
+    this.dopewars = this.add.image(this.sys.game.canvas.width / 2,  this.progressBar.y - (this.progressBar.height * 1.5), 'dopewars');
+    this.dopewars.setScale(0.5);
   }
 
   // start gamescene after preload
   create(): void {
-    const networkHandler = NetworkHandler.getInstance();
-    networkHandler.connect();
+    this.progressBar!.setProgress(1, 'Loading complete. Starting game...');
 
-    const onConnection = () => {
-      // handle messages
-      networkHandler.listenMessages();
+    if (this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) {
+      this.game.renderer.pipelines.add('skewQuad', new SkewQuad(this.game));
+    }
 
-      // get hustlers before starting game
-      if ((window?.ethereum as any)?.selectedAddress)
-        fetch(
-          `https://api.dopewars.gg/wallets/${ethers.utils.getAddress(
-            (window?.ethereum as any)?.selectedAddress,
-          )}/hustlers`,
-        ).then(res => {
-          res.json().then(data => {
-            // start game scene
-            this.scene.start('GameScene', {
-              hustlerData: data,
-            });
+    if (!(window?.ethereum as any)?.selectedAddress) {
+      this.startGame();
+      return;
+    }
+
+    const address = ethers.utils.getAddress((window?.ethereum as any)?.selectedAddress);
+    fetch(`https://api.dopewars.gg/wallets/${ethers.utils.getAddress(
+      address,
+    )}/hustlers`).then(res => res.json()).then(hustlers => {
+      fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authAuthenticatedPath, { credentials: 'include' })
+        .then(res => {
+          let loggedIn = res.status === 200;
+
+          res.text().then(text => {
+            // text = checksum address
+            loggedIn &&= text === address;
+
+            this.startGame(hustlers, loggedIn);
           });
         });
-      else this.scene.start('GameScene');
-    };
+    });
+  }
 
-    networkHandler.once(NetworkEvents.CONNECTED, onConnection);
+  startGame(hustlerData?: any, loggedIn?: boolean) {
+    const firstTime = (localStorage.getItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`) ?? 'false') !== 'true';
+    const scene = firstTime ? 'IntroScene' : loggedIn ? 'GameScene' : 'LoginScene';
+
+    const startScene = () => {
+      if (hustlerData?.length > 0)
+      {
+        const key = 'hustler_' + hustlerData[0].id;
+        this.load.spritesheet(
+          key,
+          `https://api.dopewars.gg/hustlers/${hustlerData[0].id}/sprites/composite.png`,
+          { frameWidth: 60, frameHeight: 60 },
+        );
+        this.load.once('filecomplete-spritesheet-' + key, () => {
+          createHustlerAnimations(this, key);
+          this.scene.start(scene, {
+            hustlerData,
+            loggedIn
+          });
+        });
+        this.load.start();
+  
+        return;
+      }
+
+      this.scene.start(scene, {
+        hustlerData,
+        loggedIn
+      });
+    }
+
+    if (scene === 'GameScene') {
+      NetworkHandler.getInstance().connect().once(NetworkEvents.CONNECTED, () => {
+        startScene();
+      });
+      return;
+    }
+
+    startScene();
   }
 }

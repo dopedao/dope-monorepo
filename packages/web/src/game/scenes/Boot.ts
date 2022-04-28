@@ -16,6 +16,7 @@ export default class Boot extends Scene {
 
   preload(): void {
     // do some preload boot stuff
+    this.load.svg('dopewars', '/images/Logo-Plain.svg');
   }
 
   create(): void {
@@ -30,8 +31,7 @@ export default class Boot extends Scene {
       //this.scale.setParentSize(this.scale.parent.clientWidth, this.scale.parent.clientHeight);
     });
 
-    window.onresize = () =>
-      this.scale.setGameSize(this.scale.parentSize.width, this.scale.parentSize.height);
+    window.onresize = () => this.scale.setGameSize(this.scale.parent.clientWidth, this.scale.parent.clientHeight);
 
     // free plugins
     this.events.on(Phaser.Core.Events.DESTROY, () => {

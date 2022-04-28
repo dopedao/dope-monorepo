@@ -21,7 +21,7 @@ export default class QuestManager {
     if (quests) this._quests = quests;
   }
 
-  addQuest(quest: Quest) {
+  add(quest: Quest) {
     // if there's already a quest with the same name, cancel add quest
     if (this._quests.find(q => q.name === quest.name)) return;
     this._quests.push(quest);
@@ -32,35 +32,19 @@ export default class QuestManager {
     if (quest.isActive) quest.onStart();
   }
 
-  removeQuest(quest: Quest) {
+  remove(quest: Quest) {
     // if indexof is -1, it will remove the last element
     if (this._quests.indexOf(quest) === -1) return;
 
+    quest.onStop();
     this._quests.splice(this._quests.indexOf(quest), 1);
   }
 
   // will call the quest oncomplete method (will fire up the quest complete event)
   // and remove the quest from the quests array
-  completeQuest(quest: Quest) {
+  complete(quest: Quest) {
     quest.onComplete();
 
-    this.removeQuest(quest);
-  }
-
-  update() {
-    // this._quests.forEach(quest => {
-    //     if (!quest.isActive)
-    //         return;
-    //     if (quest instanceof PointQuest)
-    //     {
-    //         const pointQuest: PointQuest = quest as PointQuest;
-    //         if (pointQuest.zone.overlap([this.player.body as MatterJS.BodyType]))
-    //         {
-    //             this.completeQuest(quest);
-    //         }
-    //     }
-    //     else if (quest instanceof ItemQuest)
-    //     {}
-    // });
+    this.remove(quest);
   }
 }

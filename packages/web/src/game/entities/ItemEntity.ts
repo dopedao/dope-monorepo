@@ -4,6 +4,8 @@ import Player from './player/Player';
 import UIScene from 'game/scenes/UI';
 import { getBBcodeText } from 'game/ui/rex/RexUtils';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
+import NetworkHandler from 'game/handlers/network/NetworkHandler';
+import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
 
 // Item entity class for items on ground
 export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
@@ -38,6 +40,7 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
         height: this.height,
       },
       {
+        label: 'hitboxSensor',
         isStatic: true,
         isSensor: true,
       },
@@ -56,16 +59,27 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
           fontFamily: 'Dope',
           fontSize: '18px',
           color: '#9f9fff',
-          fixedWidth: this.displayWidth * 3,
-          stroke: '#000000',
-          strokeThickness: 5,
+          // fixedWidth: this.displayWidth * 3,
+          // stroke: '#000000',
+          // strokeThickness: 5,
         },
       );
+      this.hoverText.setScale(this.scene.cameras.main.zoom / 3);
       this.hoverText.alpha = 0.8;
+
+      (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
+        thickness: 2,
+      });
+      (this.scene.plugins.get('rexOutlinePipeline') as any).add(this.hoverText, {
+        outlineColor: 0x000000,
+        thickness: 2,
+      });
     });
     this.on('pointerout', () => {
       this.hoverText?.destroy();
       this.hoverText = undefined;
+
+      (this.scene.plugins.get('rexOutlinePipeline') as any).remove(this);
     });
   }
 
@@ -89,5 +103,7 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
       (this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom -
         (this.displayHeight / 1.3) * this.scene.cameras.main.zoom,
     );
+    if (this.hoverText && this.hoverText.scale !== this.scene.cameras.main.zoom / 3)
+      this.hoverText.setScale(this.scene.cameras.main.zoom / 3);
   }
 }

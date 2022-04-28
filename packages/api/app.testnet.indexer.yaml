@@ -1,0 +1,14 @@
+runtime: go116
+service: indexer-testnet
+
+main: ./cmd/indexer
+
+instance_class: B2
+
+manual_scaling:
+  instances: 1
+
+env_variables:
+  OPENSEA: projects/803405501117/secrets/opensea/versions/1
+  PG_CONNSTR: projects/803405501117/secrets/pg-testnet-connstr/versions/1
+  NETWORK: testnet

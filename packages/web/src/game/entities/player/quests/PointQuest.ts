@@ -13,16 +13,16 @@ export default class PointQuest extends Quest {
   }
 
   constructor(
-    questManager: QuestManager,
-    questReferer: Citizen,
-    zone: Zone,
     name: string,
     description: string,
-    start?: () => void,
-    complete?: () => void,
+    zone: Zone,
+    questManager: QuestManager,
+    questReferer?: Citizen,
+    start?: (quest: Quest) => void,
+    complete?: (quest: Quest) => void,
     isActive?: boolean,
   ) {
-    super(questManager, questReferer, name, description, start, complete, isActive);
+    super(name, description, questManager, questReferer, start, complete, isActive);
 
     this._zone = zone;
   }
@@ -33,17 +33,17 @@ export default class PointQuest extends Quest {
     // on collide with player sensorHitbox, set this quest as completed
     this.zone.body.setOnCollideWith(
       this.questManager.player.hitboxSensor as MatterJS.BodyType,
-      () => this.questManager.completeQuest(this),
+      () => this.questManager.complete(this),
     );
   }
 
-  onComplete() {
-    super.onComplete();
+  onStop() {
+    super.onStop();
 
-    // unsubscribe from event when quest is completed
+    // remove on collide with player sensorHitbox
     this.zone.body.setOnCollideWith(
       this.questManager.player.hitboxSensor as MatterJS.BodyType,
-      () => undefined,
+      () => {},
     );
   }
 }
