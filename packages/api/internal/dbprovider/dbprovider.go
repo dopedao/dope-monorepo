@@ -35,7 +35,8 @@ func init() {
 	logger.LogFatalOnErr(connErr, "Getting postgres connection string.")
 
 	// Establish db connection
-	dbConnection, drvErr := sql.Open(dialect.Postgres, pgsVal)
+	var drvErr error
+	dbConnection, drvErr = sql.Open(dialect.Postgres, pgsVal)
 	logger.LogFatalOnErr(drvErr, "Connecting to db")
 
 	// Load Ent client
