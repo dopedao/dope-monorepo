@@ -47,7 +47,7 @@ func NewGame() *Game {
 
 func (g *Game) Handle(ctx context.Context, client *ent.Client, conn *websocket.Conn) {
 	ctx, log := logger.LogFor(ctx)
-	log.Info().Msgf("New connection from ", conn.RemoteAddr().String())
+	log.Info().Msgf("New connection from %s", conn.RemoteAddr().String())
 
 	WHITELISTED_WALLETS := []string{
 		"0x7C02b7eeB44E32eDa9599a85B8B373b6D1f58BD4",
