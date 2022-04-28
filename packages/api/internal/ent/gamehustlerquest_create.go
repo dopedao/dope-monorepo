@@ -49,6 +49,14 @@ func (ghqc *GameHustlerQuestCreate) SetID(s string) *GameHustlerQuestCreate {
 	return ghqc
 }
 
+// SetNillableID sets the "id" field if the given value is not nil.
+func (ghqc *GameHustlerQuestCreate) SetNillableID(s *string) *GameHustlerQuestCreate {
+	if s != nil {
+		ghqc.SetID(*s)
+	}
+	return ghqc
+}
+
 // SetHustlerID sets the "hustler" edge to the GameHustler entity by ID.
 func (ghqc *GameHustlerQuestCreate) SetHustlerID(id string) *GameHustlerQuestCreate {
 	ghqc.mutation.SetHustlerID(id)
@@ -142,6 +150,10 @@ func (ghqc *GameHustlerQuestCreate) defaults() {
 	if _, ok := ghqc.mutation.Completed(); !ok {
 		v := gamehustlerquest.DefaultCompleted
 		ghqc.mutation.SetCompleted(v)
+	}
+	if _, ok := ghqc.mutation.ID(); !ok {
+		v := gamehustlerquest.DefaultID()
+		ghqc.mutation.SetID(v)
 	}
 }
 

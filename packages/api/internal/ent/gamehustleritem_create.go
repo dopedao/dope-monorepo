@@ -35,6 +35,14 @@ func (ghic *GameHustlerItemCreate) SetID(s string) *GameHustlerItemCreate {
 	return ghic
 }
 
+// SetNillableID sets the "id" field if the given value is not nil.
+func (ghic *GameHustlerItemCreate) SetNillableID(s *string) *GameHustlerItemCreate {
+	if s != nil {
+		ghic.SetID(*s)
+	}
+	return ghic
+}
+
 // SetHustlerID sets the "hustler" edge to the GameHustler entity by ID.
 func (ghic *GameHustlerItemCreate) SetHustlerID(id string) *GameHustlerItemCreate {
 	ghic.mutation.SetHustlerID(id)
@@ -65,6 +73,7 @@ func (ghic *GameHustlerItemCreate) Save(ctx context.Context) (*GameHustlerItem, 
 		err  error
 		node *GameHustlerItem
 	)
+	ghic.defaults()
 	if len(ghic.hooks) == 0 {
 		if err = ghic.check(); err != nil {
 			return nil, err
@@ -119,6 +128,14 @@ func (ghic *GameHustlerItemCreate) Exec(ctx context.Context) error {
 func (ghic *GameHustlerItemCreate) ExecX(ctx context.Context) {
 	if err := ghic.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (ghic *GameHustlerItemCreate) defaults() {
+	if _, ok := ghic.mutation.ID(); !ok {
+		v := gamehustleritem.DefaultID()
+		ghic.mutation.SetID(v)
 	}
 }
 
@@ -375,6 +392,7 @@ func (ghicb *GameHustlerItemCreateBulk) Save(ctx context.Context) ([]*GameHustle
 	for i := range ghicb.builders {
 		func(i int, root context.Context) {
 			builder := ghicb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*GameHustlerItemMutation)
 				if !ok {

@@ -9,6 +9,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/dope"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustleritem"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustlerquest"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
@@ -59,12 +60,22 @@ func init() {
 	gamehustlerDescCreatedAt := gamehustlerFields[2].Descriptor()
 	// gamehustler.DefaultCreatedAt holds the default value on creation for the created_at field.
 	gamehustler.DefaultCreatedAt = gamehustlerDescCreatedAt.Default.(func() time.Time)
+	gamehustleritemFields := schema.GameHustlerItem{}.Fields()
+	_ = gamehustleritemFields
+	// gamehustleritemDescID is the schema descriptor for id field.
+	gamehustleritemDescID := gamehustleritemFields[0].Descriptor()
+	// gamehustleritem.DefaultID holds the default value on creation for the id field.
+	gamehustleritem.DefaultID = gamehustleritemDescID.Default.(func() string)
 	gamehustlerquestFields := schema.GameHustlerQuest{}.Fields()
 	_ = gamehustlerquestFields
 	// gamehustlerquestDescCompleted is the schema descriptor for completed field.
 	gamehustlerquestDescCompleted := gamehustlerquestFields[2].Descriptor()
 	// gamehustlerquest.DefaultCompleted holds the default value on creation for the completed field.
 	gamehustlerquest.DefaultCompleted = gamehustlerquestDescCompleted.Default.(bool)
+	// gamehustlerquestDescID is the schema descriptor for id field.
+	gamehustlerquestDescID := gamehustlerquestFields[0].Descriptor()
+	// gamehustlerquest.DefaultID holds the default value on creation for the id field.
+	gamehustlerquest.DefaultID = gamehustlerquestDescID.Default.(func() string)
 	hustlerFields := schema.Hustler{}.Fields()
 	_ = hustlerFields
 	// hustlerDescViewbox is the schema descriptor for viewbox field.
