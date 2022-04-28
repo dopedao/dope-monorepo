@@ -37,6 +37,12 @@ func NewServer(ctx context.Context, network string) (http.Handler, error) {
 	// run game server loop in the background
 	go gameState.Start(ctx, dbprovider.Ent())
 
+	// Health check
+	r.HandleFunc("/game/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		_, _ = w.Write([]byte(`{"success":true}`))
+	})
+
 	// Websocket endpoint
 	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
 		// check if authenticated
