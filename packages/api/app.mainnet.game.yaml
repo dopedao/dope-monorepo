@@ -5,11 +5,18 @@ service: game
 main: ./cmd/game
 
 env_variables:
-  PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2
+  # We need to connect to cloud sql via IP address on Flexible Engine.
+  # "Standard Engine" connects via a directory string.
+  PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/1
   NETWORK: mainnet
 
 manual_scaling:
   instances: 1
+
+# Need this to connect to CloudSQL or DB connection will fail
+# https://cloud.google.com/sql/docs/mysql/connect-app-engine-flexible
+beta_settings:
+  cloud_sql_instances: dopewars-live:us-central1:dopewars
 
 resources:
   cpu: 2
