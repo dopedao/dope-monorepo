@@ -16,7 +16,7 @@ type GameHustlerItem struct {
 func (GameHustlerItem) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").
-			DefaultFunc(func() string { return uuid.NewString() }),
+			DefaultFunc(uuid.NewString),
 		field.String("item"),
 	}
 }
