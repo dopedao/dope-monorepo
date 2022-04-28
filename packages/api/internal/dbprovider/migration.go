@@ -9,24 +9,22 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 )
 
-func migrate(ctx context.Context) {
-	// Run the Ent auto migration tool.
-	// https://entgo.io/docs/migrate
+// Run the Ent auto migration tool
+// Docs: https://entgo.io/docs/migrate
+func runMigration(ctx context.Context) {
 	err := entClient.Schema.Create(context.Background())
 	logger.LogFatalOnErr(err, "Migrating ENT Database")
-
-	refreshMaterializedViews(ctx)
 }
 
 //go:embed 00_init_search_index.sql
 var f embed.FS
 
-// Custom function beyond what Ent offers to drop and recreate our Materialized views
+// Drop and recreate our Materialized views with SQL files.
 func refreshMaterializedViews(ctx context.Context) (string, error) {
+	ts_migration, _ := f.ReadFile("00_init_search_index.sql")
+
 	_, log := logger.LogFor(ctx)
 	log.Debug().Msg("Loading SQL migrations for Materialized Views")
-
-	ts_migration, _ := f.ReadFile("00_init_search_index.sql")
 
 	if _, err := dbConnection.DB().Exec(string(ts_migration)); err != nil {
 		if !strings.Contains(err.Error(), "already exists") {

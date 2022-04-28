@@ -26,21 +26,25 @@ var pgPass = flag.GetEnvOrFallback("PG_PASS", "postgres")
 // "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable"
 
 func init() {
+	// Load PG connection string from env
 	connStr := flag.SecretEnv("PG_CONNSTR",
 		fmt.Sprintf(
 			"plaintext://postgres://postgres:%s@%s?sslmode=disable",
 			pgPass, pgHost))
-
 	pgsVal, connErr := connStr.Value()
 	logger.LogFatalOnErr(connErr, "Getting postgres connection string.")
 
+	// Establish db connection
 	dbConnection, drvErr := sql.Open(dialect.Postgres, pgsVal)
 	logger.LogFatalOnErr(drvErr, "Connecting to db")
 
+	// Load Ent client
 	entClient = ent.NewClient(ent.Driver(dbConnection))
 
-	// Migrate our db from every initialization!
-	migrate(context.Background())
+	// Run migrations
+	ctx := context.Background()
+	runMigration(ctx)
+	refreshMaterializedViews(ctx)
 }
 
 func Conn() *sql.Driver {
