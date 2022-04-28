@@ -2,10 +2,10 @@ import { Base, Categories, SpritesMap } from 'game/constants/Sprites';
 import { createHustlerAnimations } from './HustlerAnimations';
 
 export default class GameAnimations {
-  anims: Phaser.Animations.AnimationManager;
+  scene: Phaser.Scene;
 
-  constructor(anims: Phaser.Animations.AnimationManager) {
-    this.anims = anims;
+  constructor(scene: Phaser.Scene) {
+    this.scene = scene;
   }
 
   // create all of the game animations
@@ -26,6 +26,6 @@ export default class GameAnimations {
     //             createHustlerAnimations(this.anims, v);
     //         });
     // });
-    createHustlerAnimations(this.anims, 'male_base');
+    createHustlerAnimations(this.scene, 'male_base');
   }
 }

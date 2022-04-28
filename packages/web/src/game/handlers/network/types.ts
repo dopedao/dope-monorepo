@@ -1,3 +1,5 @@
+import { number } from "starknet";
+
 enum UniversalEventNames {
   PLAYER_JOIN = 'player_join',
   PLAYER_LEAVE = 'player_leave',
@@ -5,6 +7,10 @@ enum UniversalEventNames {
   PLAYER_CHAT_MESSAGE = 'player_chat_message',
   PLAYER_UPDATE_MAP = 'player_update_map',
   PLAYER_PICKUP_ITEMENTITY = 'player_pickup_itementity',
+  // updates the state of a citizen to the players perspective
+  // the index of the conversations he has with the citizen etc...
+  PLAYER_UPDATE_CITIZEN_STATE = 'player_update_citizen_state',
+  PLAYER_ADD_QUEST = 'player_add_quest',
 }
 
 enum NetworkEvents {
@@ -22,6 +28,8 @@ enum NetworkEvents {
   SERVER_PLAYER_MOVE = 'server_player_move',
   SERVER_PLAYER_CHAT_MESSAGE = 'server_player_chat_message',
   SERVER_PLAYER_UPDATE_MAP = 'server_player_update_map',
+  SERVER_PLAYER_PICKUP_ITEMENTITY = 'server_player_pickup_itementity',
+  SERVER_PLAYER_ADD_QUEST = 'server_player_add_quest',
 
   // From client to server
   CLIENT_PLAYER_JOIN = 'client_player_join',
@@ -30,12 +38,14 @@ enum NetworkEvents {
   CLIENT_PLAYER_CHAT_MESSAGE = 'client_player_chat_message',
   CLIENT_PLAYER_UPDATE_MAP = 'client_player_update_map',
   CLIENT_PLAYER_PICKUP_ITEMENTITY = 'client_player_pickup_itementity',
+  CLIENT_PLAYER_UPDATE_CITIZEN_STATE = 'client_player_update_citizen_state',
 }
 
 interface DataTypes {
   // Data coming from server
   [NetworkEvents.TICK]: {
-    tick: bigint;
+    time: number;
+    tick: number;
     players: Array<DataTypes[NetworkEvents.SERVER_PLAYER_MOVE]>;
   };
   [NetworkEvents.ERROR]: {
@@ -44,6 +54,11 @@ interface DataTypes {
   };
   [NetworkEvents.PLAYER_HANDSHAKE]: {
     id: string;
+    current_map: string;
+    x: number;
+    y: number;
+    relations: {[citizen: string]: DataTypes[NetworkEvents.CLIENT_PLAYER_UPDATE_CITIZEN_STATE]},
+    
     players: Array<DataTypes[NetworkEvents.SERVER_PLAYER_JOIN]>;
     itemEntities: Array<{
       id: string;
@@ -56,6 +71,8 @@ interface DataTypes {
     message: string;
     // author id
     author: string;
+    // timestamp
+    timestamp: number;
   };
   [NetworkEvents.SERVER_PLAYER_JOIN]: {
     id: string;
@@ -73,6 +90,7 @@ interface DataTypes {
     x: number;
     y: number;
     direction: string;
+    depth: number;
   };
   [NetworkEvents.SERVER_PLAYER_UPDATE_MAP]: {
     id: string;
@@ -80,14 +98,17 @@ interface DataTypes {
     x: number;
     y: number;
   };
+  [NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY]: {
+    id: string;
+  };
+  [NetworkEvents.SERVER_PLAYER_ADD_QUEST]: {
+    quest: string;
+  };
 
   // From client to server
   [NetworkEvents.CLIENT_PLAYER_JOIN]: {
     name: string;
     hustlerId: string;
-    current_map: string;
-    x: number;
-    y: number;
   };
   // no data is needed for leaving, only event
   [NetworkEvents.CLIENT_PLAYER_LEAVE]: null;
@@ -95,6 +116,7 @@ interface DataTypes {
     x: number;
     y: number;
     direction: string;
+    depth: number;
   };
   [NetworkEvents.CLIENT_PLAYER_CHAT_MESSAGE]: {
     message: string;
@@ -106,6 +128,12 @@ interface DataTypes {
   };
   [NetworkEvents.CLIENT_PLAYER_PICKUP_ITEMENTITY]: {
     id: string;
+  };
+  [NetworkEvents.CLIENT_PLAYER_UPDATE_CITIZEN_STATE]: {
+    citizen: string;
+    conversation: string;
+    // conversation texts
+    text: number;
   };
 }
 

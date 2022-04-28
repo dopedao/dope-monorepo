@@ -1,0 +1,308 @@
+# Had to add these to get gqlgen to stop complaining
+scalar Type
+scalar Sex
+scalar Tier
+
+"Maps a Time GraphQL scalar to a Go time.Time struct."
+scalar Time
+"Timestamp is a RFC3339 string."
+scalar Timestamp
+"Bytes32 is a 32 byte binary string, represented as 0x-prefixed hexadecimal."
+scalar Bytes32
+"Address is a 20 byte Ethereum address, represented as 0x-prefixed hexadecimal."
+scalar Address
+"""
+Bytes is an arbitrary length binary string, represented as 0x-prefixed hexadecimal.
+An empty byte string is represented as '0x'. Byte strings must have an even number of hexadecimal nybbles.
+"""
+scalar Bytes
+"BigInt is a large integer represented as a string."
+scalar BigInt
+"Long is a 64 bit unsigned integer."
+scalar Long
+
+interface Node {
+  id: ID!
+}
+
+"""
+ItemType represents the item slot the item belongs to.
+"""
+enum ItemType {
+  WEAPON
+  CLOTHES
+  VEHCILE
+  WAIST
+  FOOT
+  HAND
+  DRUGS
+  NECK
+  RING
+  ACCESSORY
+}
+
+"""
+ItemTier represents the tier of an item.
+"""
+enum ItemTier {
+  COMMON
+  RARE
+  CUSTOM
+  BLACK_MARKET
+}
+
+type RLEs {
+  female: String!
+  male: String!
+}
+
+type Item implements Node {
+  id: ID!
+  type: ItemType!
+  fullname: String!
+  name: String!
+  namePrefix: String
+  nameSuffix: String
+  suffix: String
+  augmented: Boolean
+  tier: ItemTier!
+  greatness: Int!
+  count: Int!
+  rles: RLEs
+  svg: String
+  base: Item
+}
+
+type WalletItems implements Node {
+  id: ID!
+  balance: BigInt!
+  wallet: Wallet!
+  item: Item!
+}
+
+enum BodyPartSex {
+  MALE
+  FEMALE
+}
+
+enum BodyPartType {
+  BODY
+  HAIR
+  BEARD
+}
+
+type BodyPart implements Node {
+  id: ID!
+  type: BodyPartType!
+  sex: BodyPartSex!
+  rle: String!
+}
+
+enum HustlerType {
+  ORIGINAL_GANGSTA
+  REGULAR
+}
+
+enum HustlerSex {
+  MALE
+  FEMALE
+}
+
+type Hustler implements Node {
+  id: ID!
+  type: HustlerType!
+  name: String
+  title: String
+  color: String
+  background: String
+  age: Long!
+  sex: HustlerSex!
+  viewbox: [Int!]!
+  order: [Int!]!
+  svg: String
+  body: BodyPart
+  hair: BodyPart
+  beard: BodyPart
+  weapon: Item
+  clothes: Item
+  vehicle: Item
+  waist: Item
+  foot: Item
+  hand: Item
+  drug: Item
+  neck: Item
+  ring: Item
+  accessory: Item
+}
+
+# type Position {
+#   currentMap: String!
+#   x: Float!
+#   y: Float!
+# }
+
+# type GameHustlerQuest implements Node {
+#   quest: String!
+#   completed: Boolean!
+# }
+
+# type GameHustlerItem implements Node {
+#   item: String!
+#   count: Int!
+# }
+
+# type GameHustlerRelation implements Node {
+
+#   citizen: String!
+#   conversation: Int!
+#   text: Int!
+# }
+
+# type GameHustler implements Node {
+#   id: ID!
+#   hustler: Hustler!
+#   lastPosition: Position!
+#   relations: [GameHustlerCitizen!]!
+#   inventory: [GameHustlerItem!]!
+#   quests: [GameHustlerQuest!]!
+# }
+
+type Listing implements Node {
+  id: ID!
+  source: Source
+  active: Boolean!
+  inputs: [Amount]!
+  outputs: [Amount]!
+  order: OpenSeaOrder
+}
+
+enum Source {
+  OPENSEA
+  SWAPMEET
+}
+
+type OpenSeaOrder {
+  exchange: Address!
+  listingTime: Long!
+  expirationTime: Long!
+  maker: Address!
+  currentPrice: String!
+  makerRelayerFee: String!
+  makerProtocolFee: String!
+  feeRecipient: String!
+  feeMethod: Int!
+  side: Int!
+  saleKind: Int!
+  target: Address!
+  howToCall: Int!
+  calldata: Bytes!
+  replacementPattern: Bytes!
+  staticTarget: String!
+  staticExtradata: Bytes!
+  extra: String!
+  salt: String!
+  v: Int!
+  r: Bytes!
+  s: Bytes!
+}
+
+enum AmountType {
+  DOPE
+  ETH
+  EQUIPMENT
+  HUSTLER
+  PAPER
+  TURF
+}
+
+union Token = Dope | Item | Hustler
+
+type Amount implements Node {
+  id: ID!
+  type: AmountType!
+  token: Token
+  amount: BigInt!
+}
+
+type Dope implements Node {
+  id: ID!
+  items: [Item!]!
+  claimed: Boolean!
+  opened: Boolean!
+  score: Int!
+  rank: Int!
+  listings: [Listing]
+  lastSale: Listing
+}
+
+type Wallet implements Node {
+  id: ID!
+  dopes: [Dope!]!
+  hustlers: [Hustler!]!
+  items: [WalletItems!]!
+  paper: BigInt!
+}
+
+union SearchResult = Dope | Item | Hustler
+
+type Query {
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
+  wallets(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: WalletOrder
+    where: WalletWhereInput
+  ): WalletConnection!
+  dopes(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: DopeOrder
+    where: DopeWhereInput
+  ): DopeConnection!
+  items(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: ItemOrder
+    where: ItemWhereInput
+  ): ItemConnection!
+  walletItems(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: WalletItemsOrder
+    where: WalletItemsWhereInput
+  ): WalletItemsConnection!
+  hustlers(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: HustlerOrder
+    where: HustlerWhereInput
+  ): HustlerConnection!
+  listings(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: ListingOrder
+    where: ListingWhereInput
+  ): ListingConnection!
+  search(
+    query: String!
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: SearchOrder
+    where: SearchWhereInput
+  ): SearchConnection!
+}

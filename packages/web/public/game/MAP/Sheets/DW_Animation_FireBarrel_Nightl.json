@@ -1,0 +1,269 @@
+{ "frames": {
+   "DW_Animation_FireBarrel_Nightl 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 1.aseprite": {
+    "frame": { "x": 160, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 2.aseprite": {
+    "frame": { "x": 320, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 3.aseprite": {
+    "frame": { "x": 480, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 4.aseprite": {
+    "frame": { "x": 640, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 5.aseprite": {
+    "frame": { "x": 800, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 6.aseprite": {
+    "frame": { "x": 960, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 7.aseprite": {
+    "frame": { "x": 1120, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 8.aseprite": {
+    "frame": { "x": 1280, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 9.aseprite": {
+    "frame": { "x": 1440, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 10.aseprite": {
+    "frame": { "x": 1600, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 11.aseprite": {
+    "frame": { "x": 1760, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 12.aseprite": {
+    "frame": { "x": 1920, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 13.aseprite": {
+    "frame": { "x": 2080, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 14.aseprite": {
+    "frame": { "x": 2240, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 15.aseprite": {
+    "frame": { "x": 2400, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 16.aseprite": {
+    "frame": { "x": 2560, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 17.aseprite": {
+    "frame": { "x": 2720, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 18.aseprite": {
+    "frame": { "x": 2880, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 19.aseprite": {
+    "frame": { "x": 3040, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 20.aseprite": {
+    "frame": { "x": 3200, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 21.aseprite": {
+    "frame": { "x": 3360, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 22.aseprite": {
+    "frame": { "x": 3520, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 23.aseprite": {
+    "frame": { "x": 3680, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 24.aseprite": {
+    "frame": { "x": 3840, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 25.aseprite": {
+    "frame": { "x": 4000, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 26.aseprite": {
+    "frame": { "x": 4160, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 27.aseprite": {
+    "frame": { "x": 4320, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 28.aseprite": {
+    "frame": { "x": 4480, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 29.aseprite": {
+    "frame": { "x": 4640, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   },
+   "DW_Animation_FireBarrel_Nightl 30.aseprite": {
+    "frame": { "x": 4800, "y": 0, "w": 160, "h": 160 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 160, "h": 160 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 60
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.21",
+  "image": "DW_Animation_FireBarrel_Nightl.png",
+  "format": "RGBA8888",
+  "size": { "w": 4960, "h": 160 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer 2", "opacity": 68, "blendMode": "normal" },
+   { "name": "Layer 3", "opacity": 26, "blendMode": "normal" },
+   { "name": "Flattened", "opacity": 255, "blendMode": "normal" },
+   { "name": "Flattened Copy", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

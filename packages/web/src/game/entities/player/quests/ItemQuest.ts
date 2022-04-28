@@ -11,35 +11,28 @@ export default class ItemQuest extends Quest {
     return this._item;
   }
 
-  constructor(
-    questManager: QuestManager,
-    questReferer: Citizen,
-    item: Item,
+  constructor(  
     name: string,
     description: string,
-    start?: () => void,
-    complete?: () => void,
+    item: Item,
+    questManager: QuestManager,
+    questReferer?: Citizen,
+    start?: (quest: Quest) => void,
+    complete?: (quest: Quest) => void,
     isActive?: boolean,
   ) {
-    super(questManager, questReferer, name, description, start, complete, isActive);
+    super(name, description, questManager, questReferer, start, complete, isActive);
 
     this._item = item;
   }
 
   protected _handleItemEvent(item: Item) {
-    if (item === this.item) this.questManager.completeQuest(this);
+    if (item === this.item) this.questManager.complete(this);
   }
 
   onStart() {
     super.onStart();
 
-    EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent, this);
-  }
-
-  onComplete() {
-    super.onComplete();
-
-    // unsubscribe from event when quest is completed
-    EventHandler.emitter().removeListener(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent);
+    EventHandler.emitter().once(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent, this);
   }
 }

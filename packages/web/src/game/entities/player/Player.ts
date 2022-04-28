@@ -8,7 +8,7 @@ import Hustler, { Direction } from '../Hustler';
 import ItemEntity from '../ItemEntity';
 import PlayerController from './PlayerController';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
-import UIScene from 'game/scenes/UI';
+import UIScene, { chakraToastStyle } from 'game/scenes/UI';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
 import { getShortAddress } from 'utils/utils';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
@@ -49,10 +49,15 @@ export default class Player extends Hustler {
     return this._busy;
   }
 
+  set busy(value: boolean) {
+    this._busy = value;
+  }
+
   constructor(
     world: Phaser.Physics.Matter.World,
     x: number,
     y: number,
+    currentMap: string,
     hustlerId?: string,
     name?: string,
     inventory?: Inventory,
@@ -65,24 +70,28 @@ export default class Player extends Hustler {
 
     // create interact sensor
     this._interactSensor = this.scene.matter.add.rectangle(
-      x + this.displayWidth,
+      x + (this.displayWidth / 2),
       y - this.displayHeight / 4,
-      this.displayWidth,
+      this.displayWidth / 2,
       this.displayHeight / 2,
       {
         isSensor: true,
       },
     );
 
+    this.currentMap = currentMap;
     // create controller
     this.controller = new PlayerController(this);
     this._handleEvents();
 
     this._baseDepth = this.depth;
 
+    // this.hitboxSensor.onCollideCallback = () => (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
+    //   quality: 0.05
+    // });
+
     this.hitboxSensor.onCollideActiveCallback = this.updateDepth;
-    // setTimeout prevents depth changing too fast
-    // and causing player render stutter
+    // prevents player depth stuttering when moving close to objects
     this.hitboxSensor.onCollideEndCallback = () => setTimeout(() => this.setDepth(this._baseDepth));
   }
 
@@ -103,40 +112,54 @@ export default class Player extends Hustler {
   tryInteraction() {
     if (this.busy) return;
 
-    let flag = false;
-
     const overlap = (interactSensor: MatterJS.Body, other: MatterJS.Body) => {
+      // check if busy again, needed in case of double overlapping
+      if (this.busy) return;
+
       const otherGameObject: Phaser.GameObjects.GameObject = (other as MatterJS.BodyType)
         .gameObject;
       if (otherGameObject instanceof Citizen) {
         // if has no conversations, dont emit interaction
         if ((otherGameObject as Citizen).conversations.length === 0) return;
-        // prevent setTimeout in onInteractionFinish
-        // from setting shouldFollowPath back to true again when in interaction
-        if (!(otherGameObject as Citizen).shouldFollowPath) return;
+        
+        // TODO: move call to on PLAYER_CITIZEN_INTERACT event?
         // call onInteraction method of citizen
         otherGameObject.onInteraction(this);
-
         EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, otherGameObject);
-
-        flag = true;
       } else if (otherGameObject instanceof ItemEntity) {
-        // if item succesfully picked up
-        if (this.inventory.add((otherGameObject as ItemEntity).item, true))
-          (otherGameObject as ItemEntity).onPickup();
-
-        flag = true;
+        this.tryPickupItem(otherGameObject);
       }
     };
 
     // check interact sensor
-    this.scene.matter.overlap(this._interactSensor, undefined, overlap);
+    // ignores colliders
+    const flag = this.scene.matter.overlap(this._interactSensor, undefined, overlap, 
+      (interactSensor: MatterJS.Body, other: MatterJS.Body) => (other as MatterJS.BodyType).label !== 'collider');
 
     // prevent double interaction
     if (flag) return;
 
     // check hitbox
     this.scene.matter.overlap(this.hitboxSensor, undefined, overlap);
+  }
+
+  tryPickupItem(item: ItemEntity) {
+    if (!NetworkHandler.getInstance().authenticator.loggedIn) {
+      // TODO: unauthenticated event?
+      EventHandler.emitter().emit(Events.SHOW_NOTIFICAION, {
+        ...chakraToastStyle,
+        title: 'Unauthenticated',
+        description: 'You need to be logged in to interact with items.',
+        status: 'warning',
+      });
+      return;
+    }
+
+    // server will send us back a handshake message if everything goes accordingly
+    // and we can handle the pick up of the item
+    NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_PICKUP_ITEMENTITY, {
+      id: item.getData('id'),
+    });
   }
 
   updateSensorPosition() {
@@ -154,22 +177,25 @@ export default class Player extends Hustler {
         });
       } else if (this.lastDirection === Direction.West) {
         (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, {
-          x: this.x - this.displayWidth,
+          x: this.x - (this.displayWidth / 2),
           y: this.y - this.displayHeight / 4,
         });
       } else if (this.lastDirection === Direction.East) {
         (Phaser.Physics.Matter as any).Matter.Body.setPosition(this._interactSensor, {
-          x: this.x + this.displayWidth,
+          x: this.x + (this.displayWidth / 2),
           y: this.y - this.displayHeight / 4,
         });
       }
     }
   }
 
-  updateDepth(pair: MatterJS.IPair) {
+  updateDepth(pair: MatterJS.ICollisionPair) {
+    const diff = 5;
+
     let playerHitbox: MatterJS.BodyType;
     let otherHitbox: MatterJS.BodyType;
 
+    // NOTE: body b is always the player?
     if ((pair.bodyB as MatterJS.BodyType).gameObject instanceof Player) {
       playerHitbox = pair.bodyB as MatterJS.BodyType;
       otherHitbox = pair.bodyA as MatterJS.BodyType;
@@ -184,9 +210,22 @@ export default class Player extends Hustler {
     // if the overlapped has a parent body, use it instead for calculating delta Y
     if (otherHitbox.parent) otherHitbox = otherHitbox.parent;
 
-    if (otherHitbox.position.y - playerHitbox.position.y < 0)
-      playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth + 20);
-    else playerHitbox.gameObject.setDepth(playerHitbox.gameObject._baseDepth - 20);
+    // update depth only when collision occurs vertically and not on the sides of the other body
+    if (playerHitbox.position.x < otherHitbox.bounds.min.x 
+      || playerHitbox.position.x > otherHitbox.bounds.max.x) return;
+
+    const player = playerHitbox.gameObject as Player;
+    
+    if (otherHitbox.position.y - playerHitbox.position.y < diff) {
+      const targetDepth = otherHitbox.gameObject?.depth ? otherHitbox.gameObject.depth + 1 : player._baseDepth + 10;
+      if (player.depth < targetDepth)
+        player.setDepth(targetDepth);
+    }
+    else {
+      const targetDepth = otherHitbox.gameObject?.depth ? otherHitbox.gameObject.depth - 1 : player._baseDepth - 5;
+      if (player.depth > targetDepth)
+        player.setDepth(targetDepth);
+    }
   }
 
   private _handleEvents() {
@@ -195,8 +234,9 @@ export default class Player extends Hustler {
       // make player look at npc
       this.lookAt(citizen.x, citizen.y);
     });
+    // TODO: ?
     EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, (citizen: Citizen) => {
-      this._busy = false;
+      setTimeout(() => {this._busy = false;}, 200);
     });
   }
 
@@ -213,10 +253,11 @@ export default class Player extends Hustler {
         this._lastMoveTimestamp = Date.now();
 
         if (NetworkHandler.getInstance().connected)
-          NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+          NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_MOVE, {
             x: this.x,
             y: this.y,
             direction: this.moveDirection,
+            depth: this.depth,
           });
       }
       this._wasMoving = true;
@@ -224,10 +265,11 @@ export default class Player extends Hustler {
 
     if (this.moveDirection === Direction.None && this._wasMoving) {
       if (NetworkHandler.getInstance().connected)
-        NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
+        NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_MOVE, {
           x: this.x,
           y: this.y,
           direction: this.moveDirection,
+          depth: this.depth,
         });
       this._lastMoveTimestamp = 0;
       this._wasMoving = false;

@@ -36,9 +36,9 @@ jobs:
       - id: 'deploy-api'
         uses: 'google-github-actions/deploy-appengine@v0.8.0'
         with:
-          deliverables: 'app.mainnet.api.yaml'
+          deliverables: 'packages/api/app.mainnet.api.yaml'
 
       - id: 'deploy-indexer'
         uses: 'google-github-actions/deploy-appengine@v0.8.0'
         with:
-          deliverables: 'app.mainnet.indexer.yaml'
+          deliverables: 'packages/api/app.mainnet.indexer.yaml'

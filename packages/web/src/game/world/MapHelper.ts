@@ -2,15 +2,15 @@ import { s } from 'gear-rarity/dist/image-140bf8ec';
 import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
 import { LDtkMapPack, LdtkReader } from './LDtkParser';
 import PF, { DiagonalMovement } from 'pathfinding';
+import { AsepriteAnimation } from './AsepriteAnim';
 
 export default class MapHelper {
   mapReader: LdtkReader;
   scene: Phaser.Scene;
 
   map!: LDtkMapPack;
-  entities: Phaser.GameObjects.GameObject[] = new Array();
 
-  loadedMaps: Map<string, LDtkMapPack> = new Map();
+  loadedMaps: { [key: string]: LDtkMapPack } = {};
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -26,24 +26,25 @@ export default class MapHelper {
       Object.keys(this.scene.textures.list).filter(key => key.startsWith('tileset_')),
     );
 
+
     // overlay the map
     // will be visible when the player is outside of the map
-    this.map.otherGfx = this.scene.add
-      .rectangle(
-        this.mapReader.level.worldX,
-        this.mapReader.level.worldY,
-        this.mapReader.level.pxWid,
-        this.mapReader.level.pxHei,
-        0x000000,
-        0.85,
-      )
-      .setDepth(1000)
-      .setOrigin(0, 0);
+    this.map.otherGfx = this.scene.add.rectangle(
+        this.mapReader.level.worldX, this.mapReader.level.worldY,
+        this.mapReader.level.pxWid + 0, this.mapReader.level.pxHei + 0,
+        0x000000, 0.9)
+        .setData('max_alpha', 0.9)
+        .setDepth(10000)
+        .setOrigin(0, 0);
 
+    this.loadedMaps[this.mapReader.level.identifier] = this.map;
+  }
+
+  createCollisions() {
     // enable collisions for all tiles that have index 1
     this.map.collideLayer?.setCollision(1);
 
-    // matterjs collisions
+    // create matterjs collisions from collidelayer
     if (this.map.collideLayer) {
       const grid = new PF.Grid(
         this.map.collideLayer.layer.data.map(row => row.map(tile => tile.index)),
@@ -140,22 +141,20 @@ export default class MapHelper {
         }
       }
     }
-
-    this.loadedMaps.set(this.mapReader.level.identifier, this.map);
   }
 
   createEntities() {
-    if (!this.map.entityLayer) {
+    if (this.map.entityLayers.length === 0) {
       console.warn('No entity layer found');
       return;
     }
 
     // create all of the entities
-    this.map.entityLayer.entityInstances.forEach((entity, i) => {
+    this.map.entityLayers.forEach(l => l.entityInstances.forEach((entity, i) => {
       const tileset = this.mapReader.tilesets.find(t => t.uid === entity.__tile.tilesetUid);
       if (!tileset) return;
 
-      const frameId = entity.fieldInstances[0].__value ?? 'default';
+      const frameId = `${entity.__identifier}_${entity.fieldInstances[0]?.__value ?? 'default'}`;
       console.log('Try loading existing entity frame. Ignore warning message if there is');
       let frame =
         this.scene.textures.get(tileset.identifier.toLowerCase()).get(frameId).name !== frameId
@@ -163,13 +162,13 @@ export default class MapHelper {
               frameId,
               0,
               // x
-              entity.__tile.srcRect[0],
+              entity.__tile.x,
               // y
-              entity.__tile.srcRect[1],
+              entity.__tile.y,
               // width
-              entity.__tile.srcRect[2],
+              entity.__tile.w,
               // height
-              entity.__tile.srcRect[3],
+              entity.__tile.h,
             )
           : // use existing frame
             this.scene.textures.get(tileset.identifier.toLowerCase()).get(frameId);
@@ -179,28 +178,94 @@ export default class MapHelper {
         Math.abs(entity.__pivot[1] - 0.5) * entity.height,
       );
 
-      this.entities.push(
-        this.scene.add.sprite(
-          this.mapReader.level.worldX +
-            this.map.entityLayer!.pxOffsetX +
-            entity.px[0] +
-            pivotOffset.x,
-          this.mapReader.level.worldY +
-            this.map.entityLayer!.pxOffsetY +
-            entity.px[1] +
-            pivotOffset.y,
-          tileset.identifier.toLowerCase(),
-          frame.name,
-        ),
+      const shouldBody = entity.fieldInstances.find(f => f.__identifier === 'body')?.__value ?? true;
+      const spritePos = new Phaser.Math.Vector2(
+        this.mapReader.level.worldX +
+          l.pxOffsetX +
+          entity.px[0] +
+          pivotOffset.x,
+        this.mapReader.level.worldY +
+          l.pxOffsetY +
+          entity.px[1] +
+          pivotOffset.y,
       );
-      const entitySprite = this.entities[this.entities.length - 1] as Phaser.GameObjects.Sprite;
+      const entitySprite = shouldBody ? this.scene.matter.add.sprite(
+        spritePos.x, spritePos.y,
+        tileset.identifier.toLowerCase(),
+        frame.name,
+        {
+          // TODO: have these options on ldtk?
+          isStatic: true,
+          isSensor: true,
+        }
+      ) : this.scene.add.sprite(
+        this.mapReader.level.worldX +
+          l.pxOffsetX +
+          entity.px[0] +
+          pivotOffset.x,
+        this.mapReader.level.worldY +
+          l.pxOffsetY +
+          entity.px[1] +
+          pivotOffset.y,
+        tileset.identifier.toLowerCase(),
+        frame.name
+      );
+      this.map.entities.push(entitySprite);
+
       entitySprite
         .setName(entity.__identifier)
         .setDepth(
           (this.mapReader.level.layerInstances.length -
-            this.mapReader.level.layerInstances.indexOf(this.map.entityLayer!)) *
+            this.mapReader.level.layerInstances.indexOf(l)) *
             5,
-        );
+        )
+      
+      const entityDepth = entity.fieldInstances.find(f => f.__identifier === 'Depth');
+      let definedDepth;
+      if (entityDepth) 
+        entitySprite.setDepth(typeof entityDepth.__value === 'number' ? entityDepth.__value : parseInt(entityDepth.__value));
+      else if (definedDepth = this.mapReader.level.fieldInstances.find(f => f.__identifier.toLowerCase() === l.__identifier.toLowerCase()))
+        entitySprite.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
+      
+      if (!l.__identifier.includes('Night')) entitySprite.setPipeline('Light2D');
+
+      // search light field, and create light if exists
+      const light = entity.fieldInstances.find(f => f.__identifier === 'light')?.__value;
+      if (light) {
+        const lightData = JSON.parse(light);
+        this.scene.lights.addLight(entitySprite.x, entitySprite.y, lightData.radius, lightData.color, lightData.intensity);
+      }
+
+      if (this.scene.cache.json.exists(tileset.identifier.toLowerCase())) {
+        const aseprite: AsepriteAnimation = this.scene.cache.json.get(tileset.identifier.toLowerCase());
+        const frameTag = aseprite.meta.frameTags.find(tag => entity.__identifier.includes(tag.name));
+        let frames = frameTag?.from !== undefined && frameTag?.to !== undefined ? Object.keys(aseprite.frames).slice(frameTag.from, frameTag.to + 1) : Object.keys(aseprite.frames);
+
+        // NOTE: frameId instead of entity identifier as anim key?
+        const anim = this.scene.anims.get(entity.__identifier) ?? this.scene.anims.create({
+          key: entity.__identifier,
+          frames: frames.map(key => {
+            const asepriteFrame = aseprite.frames[key];
+            const frame = this.scene.textures.get(tileset.identifier.toLowerCase()).add(frameId + '_' + key, 0, asepriteFrame.frame.x, asepriteFrame.frame.y, asepriteFrame.frame.w, asepriteFrame.frame.h);
+            return {
+              key: tileset.identifier.toLowerCase(),
+              frame: frame.name,
+              duration: asepriteFrame.duration,
+            };
+          }),
+          repeat: -1,
+          // we dont really care about the framerate
+          // duration of frames is already defined
+          frameRate: 10000,
+        });
+
+        if (anim) {
+          entitySprite.anims.play({
+            key: entity.__identifier,
+            startFrame: Math.floor(Math.random() * anim.frames.length)
+          });
+        }
+      }
 
       // create shadow for entity
       // const shadowSprite = this.scene.add.ellipse(entitySprite.x, entitySprite.y + (entitySprite.displayHeight / 3), entitySprite.width, entitySprite.height / 3, 0x565a73, 0.5);
@@ -209,6 +274,6 @@ export default class MapHelper {
       //     pixelHeight: 2
       // })
       // shadowSprite.setDepth(entitySprite.depth - 1);
-    });
+    }));
   }
 }

@@ -30,21 +30,23 @@ There are two services in this API, the indexer; and the API HTTP Server. The Do
 
 ### Adding a smart contract
 
-To generate new smart contract bindings, add the abi to `packages/api/contracts/abis` and run `go generate ./...`.
+To generate new smart contract bindings, add the abi to `packages/api/internal/contracts/abis` and run `go generate ./...`.
 
 ### Updating the schema
 
-Modify the schema in `packages/api/ent/schema` and run `go generate ./...`
+Modify the schema in `packages/api/internal/ent/schema` and run `go generate ./...`
 
 ### Deploying the API
 
-The Dope Wars API runs on Google Cloud Platform using App Engine in the "Standard" environment.
+The Dope Wars API and Indexer run on Google Cloud Platform using App Engine in the "Standard" environment. The Game Server runs on GCP "Flexible" environment, which deploys via Dockerfile.
 
 At the time of this writing, [App Engine Standard Environment only supports up to Go 1.16](https://cloud.google.com/appengine/docs/the-appengine-environments), so that should be the version you develop in.
 
 #### Run these commands to deploy
 
 ```bash
+cd packages/api
 gcloud app deploy --appyaml app.mainnet.api.yaml
 gcloud app deploy --appyaml app.mainnet.indexer.yaml
+gcloud app deploy --appyaml app.mainnet.game.yaml
 ```
