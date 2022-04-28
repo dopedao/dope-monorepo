@@ -3,3 +3,7 @@ dispatch:
     service: default
   - url: testnet.api.dopewars.gg/*
     service: api-testnet
+  - url: api.dopewars.gg/game/*
+    service: game
+  - url: api.dopewars.gg/authentication/*
+    service: game
