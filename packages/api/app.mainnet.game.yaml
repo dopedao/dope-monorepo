@@ -7,7 +7,7 @@ main: ./cmd/game
 env_variables:
   # We need to connect to cloud sql via IP address on Flexible Engine.
   # "Standard Engine" connects via a directory string.
-  PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/1
+  PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2
   NETWORK: mainnet
 
 manual_scaling:
