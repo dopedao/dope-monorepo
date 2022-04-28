@@ -62,7 +62,7 @@ func init() {
 	gamehustlerquestFields := schema.GameHustlerQuest{}.Fields()
 	_ = gamehustlerquestFields
 	// gamehustlerquestDescCompleted is the schema descriptor for completed field.
-	gamehustlerquestDescCompleted := gamehustlerquestFields[1].Descriptor()
+	gamehustlerquestDescCompleted := gamehustlerquestFields[2].Descriptor()
 	// gamehustlerquest.DefaultCompleted holds the default value on creation for the completed field.
 	gamehustlerquest.DefaultCompleted = gamehustlerquestDescCompleted.Default.(bool)
 	hustlerFields := schema.Hustler{}.Fields()

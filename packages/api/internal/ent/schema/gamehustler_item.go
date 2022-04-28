@@ -14,12 +14,17 @@ type GameHustlerItem struct {
 
 func (GameHustlerItem) Fields() []ent.Field {
 	return []ent.Field{
+		field.String("id"),
 		field.String("item"),
 	}
 }
 
 func (GameHustlerItem) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("hustler", GameHustler.Type).Ref("items").Unique().Annotations(entgql.Bind()),
+		edge.
+			From("hustler", GameHustler.Type).
+			Ref("items").
+			Unique().
+			Annotations(entgql.Bind()),
 	}
 }

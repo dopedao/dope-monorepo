@@ -3755,6 +3755,12 @@ func (m GameHustlerItemMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of GameHustlerItem entities.
+func (m *GameHustlerItemMutation) SetID(id string) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
 func (m *GameHustlerItemMutation) ID() (id string, exists bool) {
@@ -4134,6 +4140,12 @@ func (m GameHustlerQuestMutation) Tx() (*Tx, error) {
 	tx := &Tx{config: m.config}
 	tx.init()
 	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of GameHustlerQuest entities.
+func (m *GameHustlerQuestMutation) SetID(id string) {
+	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available

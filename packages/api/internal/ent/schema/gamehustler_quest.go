@@ -13,6 +13,7 @@ type GameHustlerQuest struct {
 
 func (GameHustlerQuest) Fields() []ent.Field {
 	return []ent.Field{
+		field.String("id"),
 		field.String("quest"),
 		field.Bool("completed").Default(false),
 	}
@@ -20,6 +21,10 @@ func (GameHustlerQuest) Fields() []ent.Field {
 
 func (GameHustlerQuest) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("hustler", GameHustler.Type).Ref("quests").Unique().Annotations(entgql.Bind()),
+		edge.
+			From("hustler", GameHustler.Type).
+			Ref("quests").
+			Unique().
+			Annotations(entgql.Bind()),
 	}
 }

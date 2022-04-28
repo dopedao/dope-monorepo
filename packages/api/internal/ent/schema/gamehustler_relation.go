@@ -22,6 +22,10 @@ func (GameHustlerRelation) Fields() []ent.Field {
 
 func (GameHustlerRelation) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("hustler", GameHustler.Type).Ref("relations").Unique().Annotations(entgql.Bind()),
+		edge.
+			From("hustler", GameHustler.Type).
+			Ref("relations").
+			Unique().
+			Annotations(entgql.Bind()),
 	}
 }

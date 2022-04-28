@@ -52,9 +52,7 @@ func (*GameHustlerItem) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case gamehustleritem.FieldID:
-			values[i] = new(sql.NullInt64)
-		case gamehustleritem.FieldItem:
+		case gamehustleritem.FieldID, gamehustleritem.FieldItem:
 			values[i] = new(sql.NullString)
 		case gamehustleritem.ForeignKeys[0]: // game_hustler_items
 			values[i] = new(sql.NullString)
@@ -74,11 +72,11 @@ func (ghi *GameHustlerItem) assignValues(columns []string, values []interface{})
 	for i := range columns {
 		switch columns[i] {
 		case gamehustleritem.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				ghi.ID = value.String
 			}
-			ghi.ID = string(value.Int64)
 		case gamehustleritem.FieldItem:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field item", values[i])
