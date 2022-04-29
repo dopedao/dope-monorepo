@@ -174,7 +174,7 @@ export default function ChatType(props: Props) {
                 }}
               />
               <InputRightElement width="4.5rem" style={{ paddingRight: '2%' }}>
-                <Button h="1.75rem" size="sm" disabled={!canSendMessage} onClick={() => handleSubmit(inputText)}>
+                <Button h="1.75rem" size="sm" disabled={!canSendMessage || inputText.length > 150} onClick={() => handleSubmit(inputText)}>
                   Send
                 </Button>
               </InputRightElement>

@@ -182,29 +182,89 @@
             }
         },
         "audio": {
-            "chiptunes_2_of_Amerikas_Most_Wanted": {
-              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/2_of_Amerikas_Most_Wanted.mp3",
-              "size": 8538823,
-              "stream": true
-            },
-            "chiptunes_Aint_Nuthin_But_a_G_thang": {
-              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/Aint_Nuthin_But_a_G_thang.mp3",
-              "size": 9990186,
-              "stream": true
-            },
-            "chiptunes_BIG_POPPA": {
-              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/BIG_POPPA.mp3",
-              "size": 11549174,
-              "stream": true
-            },
             "chiptunes_CREAM_WuTang": {
-              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/CREAM_WuTang.mp3",
+              "file": "https://storage.googleapis.com/dopewars-static/audio/CREAM_WuTang.mp3",
               "size": 7686186,
               "stream": true
             },
+            "chiptunes_Fair_Trade_Drake_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/Fair%20Trade_Drake%202.0.mp3",
+              "size": 11549174,
+              "stream": true
+            },
+            "chiptunes_So_Fresh_So_Clean": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/So%20Fresh%20So%20Clean.mp3",
+              "size": 9549239,
+              "stream": true
+            },
+            "chiptunes_I_got_5_on_It_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/I%20got%205%20on%20It%202.0.mp3",
+              "size": 8999623,
+              "stream": true
+            },
             "chiptunes_Shook_Ones_Pt_2": {
-              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/Shook_Ones_Pt_2.mp3",
+              "file": "https://storage.googleapis.com/dopewars-static/audio/Shook%20Ones%20Pt%202.mp3",
               "size": 4908847,
+              "stream": true
+            },
+            "chiptunes_HUMBLE_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/HUMBLE%202.0.mp3",
+              "size": 6982970,
+              "stream": true
+            },
+            "chiptunes_2_of_Amerikas_Most_Wanted": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/2%20of%20Amerikas%20Most%20Wanted.mp3",
+              "size": 8538823,
+              "stream": true
+            },
+            "chiptunes_Gold_Digger_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/Gold%20Digger%202.0.mp3",
+              "size": 8510611,
+              "stream": true
+            },
+            "chiptunes_Aint_Nuthin_But_a_G_thang": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/Aint%20Nuthin%20But%20a%20G%20thang.mp3",
+              "size": 9990186,
+              "stream": true
+            },
+            "chiptunes_RAPSTAR_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/RAPSTAR%202.0.mp3",
+              "size": 6702937,
+              "stream": true
+            },
+            "chiptunes_N_s_in_Paris_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/N_s%20in%20Paris%202.0.mp3",
+              "size": 8440602,
+              "stream": true
+            },
+            "chiptunes_HUSTLIN_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/HUSTLIN%202.0.mp3",
+              "size": 8759296,
+              "stream": true
+            },
+            "chiptunes_BIG_POPPA": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/BIG%20POPPA.mp3",
+              "size": 11549174,
+              "stream": true
+            },
+            "chiptunes_Cant_Knock_The_Hustle_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/Cant%20Knock%20The%20Hustle%202.0.mp3",
+              "size": 10617125,
+              "stream": true
+            },
+            "chiptunes_Straightenin_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/Straightenin%202.0.mp3",
+              "size": 10170953,
+              "stream": true
+            },
+            "chiptunes_Lucid_Dreams": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/Lucid%20Dreams.mp3",
+              "size": 9344439,
+              "stream": true
+            },
+            "chiptunes_Life_is_Good_2.0": {
+              "file": "https://storage.googleapis.com/dopewars-static/audio/Life%20is%20Good%202.0.mp3",
+              "size": 10505321,
               "stream": true
             }
         }
