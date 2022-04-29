@@ -57,6 +57,10 @@ export default class Preload extends Scene {
             url: assetVars['file'], 
             normalMap: assetVars?.['normal']
           });
+        } else if (fileType === 'audio') {
+          this.load[fileType](key, assetVars['file'], {
+            stream: assetVars?.['stream'] ?? true,
+          });
         } else {
           // hack to index LoaderPlugin
           (this.load as any)[fileType](key, assetVars['file']);

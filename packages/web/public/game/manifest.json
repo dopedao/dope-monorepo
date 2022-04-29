@@ -184,23 +184,28 @@
         "audio": {
             "chiptunes_2_of_Amerikas_Most_Wanted": {
               "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/2_of_Amerikas_Most_Wanted.mp3",
-              "size": 8538823
+              "size": 8538823,
+              "stream": true
             },
             "chiptunes_Aint_Nuthin_But_a_G_thang": {
               "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/Aint_Nuthin_But_a_G_thang.mp3",
-              "size": 9990186
+              "size": 9990186,
+              "stream": true
             },
             "chiptunes_BIG_POPPA": {
               "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/BIG_POPPA.mp3",
-              "size": 11549174
+              "size": 11549174,
+              "stream": true
             },
             "chiptunes_CREAM_WuTang": {
               "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/CREAM_WuTang.mp3",
-              "size": 7686186
+              "size": 7686186,
+              "stream": true
             },
             "chiptunes_Shook_Ones_Pt_2": {
               "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/Shook_Ones_Pt_2.mp3",
-              "size": 4908847
+              "size": 4908847,
+              "stream": true
             }
         }
     }
