@@ -17,7 +17,6 @@ interface Props {
 }
 
 const SettingsPages = (props: Props): {[key: string]: React.FunctionComponent} => {
-    console.log(props.game);
     return {
         Hustlers: Hustlers,
         Music: () => <Music musicManager={props.game.musicManager} />,

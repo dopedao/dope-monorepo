@@ -42,8 +42,6 @@ const Music = (props: {
         }
     }, []);
 
-    console.log(props.musicManager.soundManager.volume);
-
     return (
         <div>
             <HStack style={{
