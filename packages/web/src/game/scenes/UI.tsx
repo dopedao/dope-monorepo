@@ -391,7 +391,7 @@ export default class UIScene extends Scene {
     });
 
     // TODO: check if debug
-    if (true) {
+    if (process.env.NODE_ENV === 'development') {
       const gameScene = this.player.scene as GameScene;
 
       const key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);

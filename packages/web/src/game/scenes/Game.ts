@@ -38,6 +38,7 @@ import Citizens from 'game/constants/Citizens';
 import { getBBcodeText } from 'game/ui/rex/RexUtils';
 import { text } from 'stream/consumers';
 import MusicManager from 'game/utils/MusicManager';
+import ControlsManager from 'game/utils/ControlsManager';
 
 export default class GameScene extends Scene {
   private hustlerData: any;
@@ -122,8 +123,13 @@ export default class GameScene extends Scene {
     // clean
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       // unsubscribe from listeners
-      stopHandleItemEntities();
-      stopHandleCamera();
+      // stopHandleItemEntities();
+      // stopHandleCamera();
+
+      EventHandler.emitter().removeAllListeners();
+      NetworkHandler.getInstance().emitter.removeAllListeners();
+      ControlsManager.getInstance().emitter.removeAllListeners();
+
       // shutdown ui scene on game scene shutdown
       this.scene.stop('UIScene');
     });
