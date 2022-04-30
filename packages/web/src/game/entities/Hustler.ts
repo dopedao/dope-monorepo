@@ -4,6 +4,7 @@ import { Base, Categories, CharacterCategories, SpritesMap } from 'game/constant
 import HustlerModel from 'game/gfx/models/HustlerModel';
 import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
+import GameScene from 'game/scenes/Game';
 import UIScene from 'game/scenes/UI';
 import PathNavigator from 'game/world/PathNavigator';
 import PF from 'pathfinding';
@@ -197,22 +198,22 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     this.setFixedRotation();
 
     // display name on hover
-    const uiScene = this.scene.scene.get('UIScene') as UIScene;
     this.setInteractive({ useHandCursor: true });
     this.on('pointerover', () => {
       // if this hustler is of instance player
       const isPlayer = (this as any).controller !== undefined;
 
-      this._hoverText = uiScene.rexUI.add.BBCodeText(0, 0, `[stroke=black]${this.name}[/stroke]`, {
+      this._hoverText = (this.scene as GameScene).rexUI.add.BBCodeText(0, 0, `[stroke=black]${this.name}[/stroke]`, {
         fontFamily: 'Dope',
-        fontSize: '18px',
+        fontSize: '30px',
         color: isPlayer ? '#ffffff' : '#9fff9f',
         // fixedWidth: this.displayWidth * 2,
         // stroke: '#000000',
         // strokeThickness: 5,
       });
-      this._hoverText.setScale(this.scene.cameras.main.zoom / 3);
+      this._hoverText.setScale(this.scale / 4);
       this._hoverText.alpha = 0.8;
+      this._hoverText.depth = this.depth;
 
       (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
         thickness: 2,
@@ -305,6 +306,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
   setScale(x: number, y?: number) {
     super.setScale(x, y);
     this._shadow?.setScale(x, y);
+    this._hoverText?.setScale(x / 4, y ? y / 4 : undefined);
     // update hitbox sensor scale
     (Phaser.Physics.Matter as any).Matter.Body.scale(this._hitboxSensor, x, y ?? x);
     // update model scale
@@ -315,6 +317,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
   setDepth(value: number) {
     super.setDepth(value);
     this._shadow?.setDepth(value - 1);
+    this._hoverText?.setDepth(value);
     // update model depth
     // this._model.setDepth(value);
     return this;
@@ -340,13 +343,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
   update() {
     // make hovertext follow us
     this._hoverText?.setPosition(
-      (this.x - this.scene.cameras.main.worldView.x) * this.scene.cameras.main.zoom -
-        this._hoverText.displayWidth / 2,
-      (this.y - this.scene.cameras.main.worldView.y) * this.scene.cameras.main.zoom -
-        (this.displayHeight / 1.3) * this.scene.cameras.main.zoom,
+      this.x - this._hoverText.displayWidth / 2,
+      this.y - (this.displayHeight / 1.3),
     );
-    if (this._hoverText && this._hoverText.scale !== this.scene.cameras.main.zoom / 3)
-      this._hoverText.setScale(this.scene.cameras.main.zoom / 3);
 
     this._shadow?.setPosition(this.x, this.y);
 

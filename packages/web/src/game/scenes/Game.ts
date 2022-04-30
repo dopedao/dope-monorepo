@@ -41,6 +41,8 @@ import MusicManager from 'game/utils/MusicManager';
 import ControlsManager from 'game/utils/ControlsManager';
 
 export default class GameScene extends Scene {
+  public rexUI!: RexUIPlugin;
+
   private hustlerData: any;
 
   // is the game initialized
