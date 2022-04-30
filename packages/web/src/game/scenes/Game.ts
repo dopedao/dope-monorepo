@@ -109,6 +109,15 @@ export default class GameScene extends Scene {
     // first time playing the game?
     if ((window.localStorage.getItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`) ?? 'false') !== 'true')
       window.localStorage.setItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`, 'true');
+
+    if (this.hustlerData) {
+      const key = 'hustler_' + this.hustlerData.id;
+      this.load.spritesheet(
+        key,
+        `https://api.dopewars.gg/hustlers/${this.hustlerData.id}/sprites/composite.png`,
+        { frameWidth: 60, frameHeight: 60 },
+      );
+    }
   }
 
   create() {
@@ -126,6 +135,14 @@ export default class GameScene extends Scene {
       // stopHandleItemEntities();
       // stopHandleCamera();
 
+      this.loadingSpinner?.destroy();
+      this.loadingSpinner = undefined;
+
+      if (this.mapHelper)
+        Object.values(this.mapHelper.loadedMaps).forEach((map) => {
+          map.dispose();
+        });
+
       EventHandler.emitter().removeAllListeners();
       NetworkHandler.getInstance().emitter.removeAllListeners();
       ControlsManager.getInstance().emitter.removeAllListeners();
@@ -136,6 +153,8 @@ export default class GameScene extends Scene {
     
     // create all of the animations
     new GameAnimations(this).create();
+    if (this.hustlerData)
+      createHustlerAnimations(this, 'hustler_' + this.hustlerData.id);
 
     // load chiptunes
     let chiptunes = this.cache.audio.getKeys().filter((key: string) => key.includes('chiptune')).map((key: string) => {
@@ -168,7 +187,9 @@ export default class GameScene extends Scene {
         NetworkHandler.getInstance().disconnect();
         NetworkHandler.getInstance().authenticator.logout()
           .finally(() => {
-            this.scene.start('LoginScene', this.hustlerData);
+            this.scene.start('LoginScene', {
+              hustlerData: this.hustlerData 
+            });
           })
         
       }
@@ -460,6 +481,12 @@ export default class GameScene extends Scene {
     // });
 
     // register listeners
+    networkHandler.on(NetworkEvents.DISCONNECTED, () => {
+      networkHandler.authenticator.logout()
+        .finally(() => this.scene.start('LoginScene', {
+          hustlerData: this.hustlerData,
+        }));
+    });
     // instantiate a new hustler on player join
     networkHandler.on(
       NetworkEvents.SERVER_PLAYER_JOIN,

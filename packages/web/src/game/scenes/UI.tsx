@@ -360,15 +360,8 @@ export default class UIScene extends Scene {
       settings.events.on('disconnect', () => {
         settings.events.emit('close');
         NetworkHandler.getInstance().disconnect();
-        NetworkHandler.getInstance().authenticator.logout()
-          .finally(() => {
-            // TODO: home page / disconnect page?
-            this.scene.stop('GameScene');
-            this.scene.start('LoginScene', {
-              hustlerData: this.hustlerData
-            });
-          });
-      })
+        NetworkHandler.getInstance().authenticator.logout();
+      });
       settings.events.on('close', () => {
         settings.destroy();
 
