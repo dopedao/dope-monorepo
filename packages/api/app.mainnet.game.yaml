@@ -17,8 +17,8 @@ beta_settings:
   cloud_sql_instances: dopewars-live:us-central1:dopewars
 
 resources:
-  cpu: 2
-  memory_gb: 2
+  cpu: 1
+  memory_gb: 1
   disk_size_gb: 10
   volumes:
   - name: ramdisk1
