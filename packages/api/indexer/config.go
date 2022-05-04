@@ -8,8 +8,6 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-var osKeyVal, _ = envcfg.OpenSeaApiKey.Value()
-
 type ConfigCollection []interface{}
 
 var Config = map[string]ConfigCollection{
@@ -59,7 +57,7 @@ var Config = map[string]ConfigCollection{
 			},
 		},
 		OpenseaConfig{
-			APIKey:   osKeyVal,
+			APIKey:   envcfg.OpenSeaApiKey,
 			URL:      "https://api.opensea.io",
 			Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
 			Interval: time.Minute * 20,
@@ -111,7 +109,7 @@ var Config = map[string]ConfigCollection{
 			},
 		},
 		OpenseaConfig{
-			APIKey:   osKeyVal,
+			APIKey:   envcfg.OpenSeaApiKey,
 			URL:      "https://api.opensea.io",
 			Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
 			Interval: time.Minute * 600,

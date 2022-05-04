@@ -20,16 +20,13 @@ import (
 var dbConnection *sql.Driver
 var entClient *ent.Client
 
-var pgHost = flag.GetEnvOrFallback("PG_HOST", "localhost:5432")
-var pgPass = flag.GetEnvOrFallback("PG_PASS", "postgres")
-
-// "plaintext://postgres://postgres:postgres@localhost:5432?sslmode=disable"
-
 func init() {
 	// Load PG connection string from env
+	var pgHost = flag.GetEnvOrFallback("PG_HOST", "localhost:5432")
+	var pgPass = flag.GetEnvOrFallback("PG_PASS", "postgres")
 	connStr := flag.SecretEnv("PG_CONNSTR",
 		fmt.Sprintf(
-			"plaintext://postgres://postgres:%s@%s?sslmode=disable",
+			"postgres://postgres:%s@%s?sslmode=disable",
 			pgPass, pgHost))
 	pgsVal, connErr := connStr.Value()
 	logger.LogFatalOnErr(connErr, "Getting postgres connection string.")
