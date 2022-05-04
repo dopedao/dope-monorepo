@@ -3,5 +3,5 @@ runtime: go116
 main: ./cmd/web
 
 env_variables:
-  PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2
+  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2
   NETWORK: mainnet
