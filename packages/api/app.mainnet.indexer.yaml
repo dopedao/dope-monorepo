@@ -9,6 +9,6 @@ manual_scaling:
   instances: 1
 
 env_variables:
-  OPENSEA: projects/803405501117/secrets/opensea/versions/2
-  PG_CONNSTR: projects/803405501117/secrets/pg-connstr/versions/2
+  OPENSEA: secret://projects/803405501117/secrets/opensea/versions/2
+  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2
   NETWORK: mainnet

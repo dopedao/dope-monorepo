@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"math/big"
 	"net/http"
-	"os"
 	"sync"
 	"time"
 
@@ -93,7 +92,6 @@ func (o *Opensea) Sync(ctx context.Context) {
 						return fmt.Errorf("marshalling dope id to big int: %s", asset.TokenID)
 					}
 
-					// log.Debug().Msgf("OPENSEA: Listings inactive for %s", asset.TokenID)
 					if err := tx.Listing.Update().
 						Where(listing.HasDopeWith(dope.IDEQ(asset.TokenID))).
 						SetActive(false).Exec(ctx); err != nil {
@@ -238,12 +236,12 @@ func (o *Opensea) getAssetCollection(ctx context.Context, contract string, limit
 		return nil, fmt.Errorf("retrieving opensea assets: %w", err)
 	}
 	// Dump json file to tmp so we can debug
-	err = os.WriteFile(
-		fmt.Sprintf("./tmp/assets-%v.json", offset),
-		bytes, 0644)
-	if err != nil {
-		log.Err(err).Msgf("Writing Json asset file")
-	}
+	// err = os.WriteFile(
+	// 	fmt.Sprintf("./tmp/assets-%v.json", offset),
+	// 	bytes, 0644)
+	// if err != nil {
+	// 	log.Err(err).Msgf("Writing Json asset file")
+	// }
 	parsedAssets := &Assets{Assets: []Asset{}}
 
 	return parsedAssets, json.Unmarshal(bytes, parsedAssets)

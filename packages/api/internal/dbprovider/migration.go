@@ -14,7 +14,7 @@ import (
 // Docs: https://entgo.io/docs/migrate
 func runMigration(ctx context.Context) {
 	_, log := logger.LogFor(ctx)
-	log.Debug().Msg("Running ENT Auto-migration tool")
+	log.Debug().Msg("Calling runMigration")
 
 	// Run the auto migration tool
 	err := entClient.Schema.Create(ctx,
@@ -32,7 +32,7 @@ func runMigration(ctx context.Context) {
 				return next.Create(ctx, tables2...)
 			})
 		}))
-	logger.LogFatalOnErr(err, "runMigration")
+	logger.LogFatalOnErr(err, "FATAL runMigration")
 }
 
 //go:embed 00_init_search_index.sql
