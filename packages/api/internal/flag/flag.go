@@ -1,3 +1,5 @@
+// Provides simple access for ENV variables,
+// and more complicated access to Google Secret managers
 package flag
 
 import (
@@ -12,6 +14,16 @@ import (
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
+
+// Allows specifying a fallback value if ENV variable isn't set
+func GetEnvOrFallback(key, fallback string) string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return fallback
+	} else {
+		return value
+	}
+}
 
 var (
 	smOnce sync.Once
@@ -29,16 +41,6 @@ func smClient() *secretmanager.Client {
 	return sm
 }
 
-// Allows specifying a fallback value if ENV variable isn't set
-func GetEnvOrFallback(key, fallback string) string {
-	value, ok := os.LookupEnv(key)
-	if !ok {
-		return fallback
-	} else {
-		return value
-	}
-}
-
 // Enables secret manager access for cli flags.
 type SecretValue struct {
 	name  string
@@ -46,13 +48,13 @@ type SecretValue struct {
 }
 
 func SecretEnv(env string, def string) *SecretValue {
-	name := os.Getenv(env)
+	v := os.Getenv(env)
 
-	if len(name) == 0 {
-		name = def
+	if len(v) == 0 {
+		v = def
 	}
 
-	sv := SecretValue{name: name}
+	sv := SecretValue{name: env, value: v}
 	return &sv
 }
 
