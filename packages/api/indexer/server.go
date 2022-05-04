@@ -59,5 +59,6 @@ func NewServer(ctx context.Context, drv *sql.Driver, network string) (http.Handl
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(`{"success":true}`))
 	})
+
 	return cors.AllowAll().Handler(r), nil
 }
