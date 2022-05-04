@@ -44,7 +44,7 @@ type Ethereum struct {
 	contracts []*Contract
 }
 
-func NewEthereumIndexer(ctx context.Context, client *ent.Client, config EthConfig) *Ethereum {
+func NewEthereumIndexer(ctx context.Context, entClient *ent.Client, config EthConfig) *Ethereum {
 	ctx, log := logger.LogFor(ctx)
 
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -57,14 +57,14 @@ func NewEthereumIndexer(ctx context.Context, client *ent.Client, config EthConfi
 	eth := ethclient.NewClient(c)
 
 	e := &Ethereum{
-		ent:    client,
+		ent:    entClient,
 		eth:    eth,
 		ticker: time.NewTicker(config.Interval),
 	}
 
 	for _, c := range config.Contracts {
 		c := c
-		s, err := client.SyncState.Get(ctx, c.Address.Hex())
+		s, err := entClient.SyncState.Get(ctx, c.Address.Hex())
 		if err != nil && !ent.IsNotFound(err) {
 			log.Fatal().Err(err).Msg("Fetching sync state.")
 		} else if err == nil {
@@ -147,7 +147,11 @@ func (e *Ethereum) Sync(ctx context.Context) {
 					for _, l := range logs {
 						committer, err := c.Processor.ProcessElement(c.Processor)(ctx, l)
 						if err != nil {
-							log.Fatal().Err(err).Msgf("Processing element %s.", l.TxHash.Hex())
+							// Commented out so we don't crash the indexer on every mis-process
+							// log.Fatal().Err(err).Msgf("Processing element %s.", l.TxHash.Hex())
+							log.Err(err).Msgf(
+								"Contract %s error processing tx hash %s.", c.Address, l.TxHash.Hex())
+							break
 						}
 
 						if committer == nil {
