@@ -22,7 +22,7 @@ import (
 
 const assetPath = "/api/v1/assets"
 const maxTokens = 8000
-const limit = 150
+const limit = 100
 
 // Opensea is an opensea client
 type Opensea struct {
