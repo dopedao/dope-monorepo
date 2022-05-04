@@ -48,7 +48,6 @@ type SecretValue struct {
 }
 
 func SecretEnv(env string, def string) *SecretValue {
-	fmt.Println("Getting value for env ", env)
 	v := os.Getenv(env)
 
 	if len(v) == 0 {
