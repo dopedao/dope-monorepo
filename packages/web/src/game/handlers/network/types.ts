@@ -66,6 +66,8 @@ interface DataTypes {
       x: number;
       y: number;
     }>;
+
+    tickRate: number;
   };
   [NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]: {
     message: string;
