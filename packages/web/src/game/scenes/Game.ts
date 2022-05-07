@@ -68,6 +68,9 @@ export default class GameScene extends Scene {
 
   readonly zoom: number = 3;
 
+  private _tickRate: number = 1 / 5;
+
+  
   get player() {
     return this._player;
   }
@@ -90,6 +93,10 @@ export default class GameScene extends Scene {
 
   get musicManager() {
     return this._musicManager;
+  }
+
+  get tickRate() {
+    return this._tickRate;
   }
 
   constructor() {
@@ -203,6 +210,8 @@ export default class GameScene extends Scene {
       NetworkEvents.PLAYER_HANDSHAKE,
       (data: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) => {
         NetworkHandler.getInstance().emitter.off(NetworkEvents.ERROR, onHandshakeError);
+
+        this._tickRate = data.tick_rate / (1000 * 1000);
 
         // create map and entities
         this._mapHelper = new MapHelper(this);
@@ -624,61 +633,60 @@ export default class GameScene extends Scene {
     level.__neighbours.forEach(n => {
       const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
       if (Object.keys(this.mapHelper.loadedMaps).find(m => m === lvl.identifier)) {
-        if (!patchMap && n.dir === dir) {  
+        if (!patchMap && n.dir === dir && 
+          this.player.x > lvl.worldX && this.player.x < lvl.worldX + lvl.pxWid &&
+           this.player.y > lvl.worldY && this.player.y < lvl.worldY + lvl.pxHei) {  
           // map player is currently in
-          const otherMap = this.mapHelper.loadedMaps[this._player.currentMap]!;
+          const lastMap = this.mapHelper.loadedMaps[this._player.currentMap]!;
+
           // NOTE: do check directly in tilesanimator update?
           // stop tiles animations when not in current map
-          otherMap.displayLayers
+          lastMap.displayLayers
             .forEach(l => l.getData('animators')
               .forEach((animator: TilesAnimator) => animator.stop()));
-          // slowly increase alpha to max_alpha
-          if (otherMap.otherGfx) {
-            // cancel any previous running fading
-            if (otherMap.otherGfx.getData('fading'))
-              clearInterval(otherMap.otherGfx.getData('fading'));
 
-            // TODO: use phaser time events instead
-            const fadeIn = setInterval(() => {
-              otherMap.otherGfx!.alpha += 0.01;
-              if (otherMap.otherGfx!.alpha >= otherMap.otherGfx!.getData('max_alpha'))
-              {
-                otherMap.otherGfx!.alpha = otherMap.otherGfx!.getData('max_alpha');
-                otherMap.otherGfx!.setData('fading', undefined);
-                clearInterval(fadeIn);
-              }
-            });
-            // id of the fadeIn interval
-            otherMap.otherGfx!.setData('fading', fadeIn);
+          // slowly increase alpha to max_alpha
+          if (lastMap.otherGfx) {
+            // cancel any previous running fading
+            const fadingOutTween: Phaser.Tweens.Tween = lastMap.otherGfx.getData('fadingOut');
+            if (fadingOutTween)
+              fadingOutTween.restart();
+            else {
+              const fadeIn = this.tweens.add({
+                targets: lastMap.otherGfx,
+                alpha: lastMap.otherGfx.getData('max_alpha'),
+                ease: Phaser.Math.Easing.Quadratic.In,
+                duration: 1000,
+              })
+              lastMap.otherGfx!.setData('fadingOut', fadeIn);
+            }
           }
 
           // set current map to the one we are going to
           this._player.currentMap = lvl.identifier;
-          const map = this.mapHelper.loadedMaps[this._player.currentMap]!;
+          const currentMap = this.mapHelper.loadedMaps[this._player.currentMap]!;
           
           // NOTE: do check directly in tilesanimator update?
           // make sure animators are started
-          map.displayLayers
+          currentMap.displayLayers
             .forEach(l => l.getData('animators')
               .forEach((animator: TilesAnimator) => animator.start()));
           
-          // TODO: use phaser time events instead
           // slowly decrease alpha to 0
-          if (map.otherGfx) {
+          if (currentMap.otherGfx) {
             // cancel any previous running fading
-            if (map.otherGfx.getData('fading'))
-              clearInterval(map.otherGfx.getData('fading'));
-
-            const fadeOut = setInterval(() => {
-              map.otherGfx!.alpha -= 0.01;
-              if (map.otherGfx!.alpha <= 0) {
-                map.otherGfx!.setData('fading', undefined);
-                map.otherGfx!.alpha = 0;
-                clearInterval(fadeOut);
-              }
-            });
-            // id of the fadeOut interval 
-            map.otherGfx!.setData('fading', fadeOut);
+            const fadingInTween: Phaser.Tweens.Tween = currentMap.otherGfx.getData('fadingIn');
+            if (fadingInTween)
+              fadingInTween.restart();
+            else {
+              const fadeOut = this.tweens.add({
+                targets: currentMap.otherGfx,
+                alpha: 0,
+                ease: Phaser.Math.Easing.Quartic.Out,
+                duration: 1000,
+              })
+              currentMap.otherGfx!.setData('fadingIn', fadeOut);
+            }
           }
 
           // TODO: multiple map change messages are getting sent. fix this
@@ -688,17 +696,6 @@ export default class GameScene extends Scene {
               x: this._player.x,
               y: this._player.y,
             });
-
-          // const updateHustlerMap = (h: Hustler) => {
-          //   // hide/show hustlers if in current map
-          //   h.setVisible(h.currentMap === this.player.currentMap);
-          //   // cancel path/velocity if not same map
-          //   if (h.currentMap !== this.player.currentMap)
-          //   {
-          //     h.navigator.cancel();
-          //     h.setVelocity(0);
-          //   }
-          // }
 
           const updateHustlerMap = (h: Hustler) => {
             if (h.currentMap === this._player.currentMap && !h.visible) {
@@ -763,10 +760,6 @@ export default class GameScene extends Scene {
         const afterEntities = performance.now();
 
         console.info(`${lvl.identifier}: Entities creation took ${afterEntities - beforeEntities}ms`);
-        // new Promise(() => {
-        //   this.mapHelper.createMap(lvl.identifier);
-        // }).then(() => this.mapHelper.createCollisions())
-        //   .then(() => this.mapHelper.createEntities());
       }
     });
   }
