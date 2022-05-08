@@ -1,5 +1,3 @@
-import { number } from "starknet";
-
 enum UniversalEventNames {
   PLAYER_JOIN = 'player_join',
   PLAYER_LEAVE = 'player_leave',
@@ -67,7 +65,7 @@ interface DataTypes {
       y: number;
     }>;
 
-    tickRate: number;
+    tick_rate: number;
   };
   [NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]: {
     message: string;
