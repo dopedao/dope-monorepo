@@ -1,6 +1,103 @@
-import { Button, Center, Container, HStack, SimpleGrid, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Spacer, Text, VStack } from "@chakra-ui/react";
+import { Button, Center, Checkbox, Container, HStack, SimpleGrid, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Spacer, Switch, Text, VStack } from "@chakra-ui/react";
 import MusicManager, { Song } from "game/utils/MusicManager";
 import React from "react";
+
+const NowPlaying = (props: {
+    musicManager: MusicManager,
+    forceUpdate: React.DispatchWithoutAction
+}) => {
+    const [ songProgress, setSongProgress ] = React.useState(props.musicManager.currentSong?.song.seek);
+    
+    React.useEffect(() => {
+        let intervalId: NodeJS.Timer;
+        if (props.musicManager.currentSong)
+            intervalId = setInterval(() => {
+                setSongProgress(props.musicManager.currentSong?.song.seek);
+            });
+        
+        return () => {
+            clearInterval(intervalId);
+        }
+    }, [props.musicManager.currentSong]);
+
+    return (
+        <Container style={{
+            padding: "0.5rem",
+            minWidth: "60%",
+            borderRadius: "7px",
+            backgroundColor: "rgba(255,255,255,0.5)",
+        }}>
+            <HStack>
+                <div style={{
+                    width: "70%"
+                }}>
+                    <div>
+                        <Text fontWeight="bold" paddingBottom="0px">
+                            Currently playing
+                        </Text>
+                        <Text paddingBottom="0px">
+                            {props.musicManager.currentSong?.name ?? "No song playing"}
+                        </Text>
+                        <Slider 
+                            value={songProgress} 
+                            onChange={(v) => {
+                                props.musicManager.currentSong?.song.setSeek(v);
+                            }} 
+                            max={props.musicManager.currentSong?.song.duration}
+                            width="100%"
+                            disabled={!props.musicManager.currentSong}
+                        >
+                            <SliderTrack>
+                                <SliderFilledTrack />
+                            </SliderTrack>
+                            <SliderThumb style={{
+                                boxShadow: "none"
+                            }} />
+                        </Slider>
+                    </div>
+                    {
+                        props.musicManager.upcomingSong && <div>
+                        <Text fontWeight="bold" paddingBottom="0px">
+                            Upcoming
+                        </Text>
+                        <Text>
+                            {props.musicManager.upcomingSong.name}
+                        </Text>
+                    </div>
+                    }
+                </div>
+                <Spacer />
+                <VStack>
+                    <Checkbox 
+                        disabled={!props.musicManager.currentSong} 
+                        onChange={(e) => props.musicManager.currentSong ?
+                            props.musicManager.currentSong.song.loop = e.target.checked : {}} 
+                        isChecked={props.musicManager.currentSong?.song.loop}>
+                        🔁
+                    </Checkbox>
+                    {
+                        <Button variant="primary" disabled={!props.musicManager.currentSong} onClick={() => {
+                            props.musicManager.currentSong?.song.isPaused ? 
+                                props.musicManager.currentSong?.song.resume() : 
+                                    props.musicManager.currentSong?.song.pause();
+                            props.forceUpdate();
+                        }}>
+                            {
+                                props.musicManager.currentSong?.song.isPaused ? "Resume" : "Pause"
+                            }
+                        </Button>
+                    }
+                    <Button variant="primary" onClick={() => {
+                        props.musicManager.shuffle(undefined, undefined, false);
+                        props.forceUpdate();
+                    }}>
+                        Skip
+                    </Button>
+                </VStack>
+            </HStack>
+        </Container>
+    )
+}
 
 const SongComponent = (props: {
     song: Song,
@@ -28,19 +125,6 @@ const Music = (props: {
     musicManager: MusicManager
 }) => {
     const [, forceUpdate] = React.useReducer((i) => i + 1, 0);
-    const [ songProgress, setSongProgress ] = React.useState(props.musicManager.currentSong?.song.seek);
-
-    React.useEffect(() => {
-        let intervalId: NodeJS.Timer;
-        if (props.musicManager.currentSong)
-            intervalId = setInterval(() => {
-                setSongProgress(props.musicManager.currentSong!.song.seek);
-            });
-        
-        return () => {
-            clearInterval(intervalId);
-        }
-    }, []);
 
     return (
         <div>
@@ -50,73 +134,7 @@ const Music = (props: {
             }}>
                 {
                     props.musicManager.currentSong && 
-                    <Container style={{
-                        padding: "0.5rem",
-                        minWidth: "60%",
-                        borderRadius: "7px",
-                        backgroundColor: "rgba(255,255,255,0.5)",
-                    }}>
-                        <HStack>
-                            <div style={{
-                                width: "70%"
-                            }}>
-                                <div>
-                                    <Text fontWeight="bold" paddingBottom="0px">
-                                        Currently playing
-                                    </Text>
-                                    <Text paddingBottom="0px">
-                                        {props.musicManager.currentSong.name}
-                                    </Text>
-                                    <Slider 
-                                        value={songProgress} 
-                                        onChange={(v) => {
-                                            props.musicManager.currentSong?.song.setSeek(v);
-                                        }} 
-                                        max={props.musicManager.currentSong!.song.duration}
-                                        width="100%"
-                                    >
-                                        <SliderTrack>
-                                            <SliderFilledTrack />
-                                        </SliderTrack>
-                                        <SliderThumb style={{
-                                            boxShadow: "none"
-                                        }} />
-                                    </Slider>
-                                </div>
-                                {
-                                    props.musicManager.upcomingSong && <div>
-                                    <Text fontWeight="bold" paddingBottom="0px">
-                                        Upcoming
-                                    </Text>
-                                    <Text>
-                                        {props.musicManager.upcomingSong.name}
-                                    </Text>
-                                </div>
-                                }
-                            </div>
-                            <Spacer />
-                            <VStack>
-                                {
-                                    <Button variant="primary" onClick={() => {
-                                        props.musicManager.currentSong!.song.isPaused ? 
-                                            props.musicManager.currentSong!.song.resume() : 
-                                                props.musicManager.currentSong!.song.pause();
-                                        forceUpdate();
-                                    }}>
-                                        {
-                                            props.musicManager.currentSong.song.isPaused ? "Resume" : "Pause"
-                                        }
-                                    </Button>
-                                }
-                                <Button variant="primary" onClick={() => {
-                                    props.musicManager.shuffle(undefined, undefined, false);
-                                    forceUpdate();
-                                }}>
-                                    Skip
-                                </Button>
-                            </VStack>
-                        </HStack>
-                    </Container>
+                    <NowPlaying musicManager={props.musicManager} forceUpdate={forceUpdate} />
                 }
                 <Container style={{
                     padding: "0.5rem",
