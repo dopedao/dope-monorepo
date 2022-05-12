@@ -31,6 +31,7 @@ import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-p
 import ControlsManager, { ControlsEvents } from 'game/utils/ControlsManager';
 import EventWelcome from 'game/ui/react/components/EventWelcome';
 import { number } from 'starknet';
+import { getConversation, Texts } from 'game/constants/Dialogues';
 
 interface Interaction {
   citizen: Citizen;
@@ -524,7 +525,7 @@ export default class UIScene extends Scene {
       if (citizen.conversations.length === 0) return;
 
       // get upcoming conversation
-      const conv: Conversation = citizen.conversations[0];
+      let conv: Conversation = citizen.conversations[0];
 
       // const icon = this.rexUI.add.label({
       //   orientation: 'y',
@@ -545,12 +546,26 @@ export default class UIScene extends Scene {
       let text = conv.texts[0];
       if (!text) return;
 
-      textBox.start(text.text, text.typingSpeed ?? 50, text.choices)
-        .on('complete', (selectedChoice: number) => {
+      textBox.start(text.text, text.typingSpeed ?? 50, text.choices ? Object.keys(text.choices) : undefined)
+        .on('complete', (selectedChoice?: number) => {
           if (text.onEnd)
             text.onEnd!(citizen, conv, text, selectedChoice);
 
           conv.texts.shift();
+          if (selectedChoice !== undefined) {
+            const choiceConv = getConversation(text.choices![Object.keys(text.choices!)[selectedChoice]]);
+            if (choiceConv) {
+              const idx = citizen.conversations.indexOf(conv);
+
+              citizen.conversations.splice(idx, 1, choiceConv);
+              // add conversation just after the one for the choice 
+              // if it has text still left
+              if (conv.texts.length > 0) citizen.conversations.splice(idx + 1, 0, conv);
+
+              conv = choiceConv;
+            }
+          }
+          
           if (conv.texts.length === 0) {
             textBox.destroy();
             this.currentInteraction = undefined;
@@ -571,14 +586,20 @@ export default class UIScene extends Scene {
             return;
           }
 
-          // TODO: Fire up end text event and move somewhere else, maybe in network handler?
-          // NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
-          //   citizen: citizen.getData('id'),
-          //   conversation: conv.id,
-          // } as DataTypes[NetworkEvents.CLIENT_PLAYER_UPDATE_CITIZEN_STATE]);
-
           text = conv.texts[0];
-          textBox.start(text!.text, text!.typingSpeed ?? 50, text.choices);
+          // TODO: Fire up end text event and move somewhere else, maybe in network handler?
+          if (NetworkHandler.getInstance().connected) {
+            NetworkHandler.getInstance().send(
+                UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE,
+                {
+                    citizen: citizen.getData('id'),
+                    conversation: conv.id,
+                    text: Texts[conv.id].findIndex(t => t.text === text.text),
+                },
+            );
+          }
+
+          textBox.start(text!.text, text!.typingSpeed ?? 50, text.choices ? Object.keys(text.choices) : undefined);
         })
 
       this.currentInteraction = { citizen, textBox, maxDistance: 100 };

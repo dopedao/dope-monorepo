@@ -234,6 +234,15 @@ export default class GameScene extends Scene {
             })
         ]).setVisible(false);
 
+        const jimmy = new Citizen(
+          this.matter.world, 
+          300, 200, 
+          'NY_Bushwick_Basket', 
+          '43', 'Jimmy', 
+          undefined, 
+          getConversation(data.relations?.jimmy?.conversation ?? 'hello', data.relations?.jimmy?.text)).setData('id', 'jimmy');
+
+        this.citizens.push(jimmy);
         this.citizens.push(security);
 
         this._player = new Player(
