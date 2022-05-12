@@ -76,8 +76,9 @@ export default class UIScene extends Scene {
   public toaster!: ComponentManager;
   public toast = createStandaloneToast(theme);
 
+  private _inputsEnabled: boolean = true;
   // react component for inputing message content
-  public sendMessageInput?: ComponentManager;
+  public openedComponent?: ComponentManager;
   // player precedent messages
   public precedentMessages: string[] = new Array();
 
@@ -90,6 +91,10 @@ export default class UIScene extends Scene {
 
   // hustler name: messages
   private messagesStore: Array<DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]> = new Array();
+
+  get inputsEnabled() {
+    return this._inputsEnabled;
+  }
 
   constructor() {
     super({
@@ -284,60 +289,59 @@ export default class UIScene extends Scene {
     });
   }
 
-  toggleInputs(mouse?: boolean) {
-    // prevent player from moving
-    if (mouse) this.player.scene.input.mouse.enabled = false;
-    this.player.scene.input.keyboard.enabled = false;
-    if (mouse) this.input.mouse.enabled = false;
-    this.input.keyboard.enabled = false;
-    // prevent phaser from "blocking" some keys (for typing in chat)
-    this.player.scene.input.keyboard.disableGlobalCapture();
-    this.input.keyboard.disableGlobalCapture();
+  toggleInputs(enable?: boolean, mouse?: boolean) {
+    enable = enable === undefined ? !this.inputsEnabled : enable;
 
-    return () => {
-      // reset to default
+    if (enable) {
+      // prevent player from moving
       if (mouse) this.player.scene.input.mouse.enabled = true;
       this.player.scene.input.keyboard.enabled = true;
+      if (mouse) this.input.mouse.enabled = true;
+      this.input.keyboard.enabled = true;
+      // prevent phaser from "blocking" some keys (for typing in chat)
       this.player.scene.input.keyboard.enableGlobalCapture();
-      setTimeout(() => {
-        // will prevent key events like ESC for other components to register as soon
-        // as the chat input is closed. 
-        // TODO: find a better solution?
-        // NOTE: a solution would be to stop event propagation in the component handling inputs?
-        if (mouse) this.input.mouse.enabled = true;
-        this.input.keyboard.enabled = true;
-        this.input.keyboard.enableGlobalCapture();
-      }, 200);
-
-      return this.toggleInputs;
+      this.input.keyboard.enableGlobalCapture();
+      this._inputsEnabled = true;
+    } else {
+      // prevent player from moving
+      if (mouse) this.player.scene.input.mouse.enabled = false;
+      this.player.scene.input.keyboard.enabled = false;
+      if (mouse) this.input.mouse.enabled = false;
+      this.input.keyboard.enabled = false;
+      // prevent phaser from "blocking" some keys (for typing in chat)
+      this.player.scene.input.keyboard.disableGlobalCapture();
+      this.input.keyboard.disableGlobalCapture();
+      this._inputsEnabled = false;
     }
   }
 
   private _handleInputs() {
     const openChatInput = () => {
-      if (this.player.busy || this.sendMessageInput)
+      if (this.player.busy || this.openedComponent)
         return;
 
       this.player.busy = true;
       
-      const inputs = this.toggleInputs();
-
-      this.sendMessageInput = this.add.reactDom(ChatType, {
+      this.toggleInputs(false);
+      this.openedComponent = this.add.reactDom(ChatType, {
         precedentMessages: this.precedentMessages,
         messagesStore: this.messagesStore,
         chatMessageBoxes: this.chatMessageBoxes.get(this.player),
       });
+      this.openedComponent.events.on('enableInputs', () => this.toggleInputs(false));
+      this.openedComponent.events.on('disableInputs', () => this.toggleInputs(true));
 
-      this.sendMessageInput.events.on('chat_submit', (text: string) => {
-        this.sendMessageInput?.destroy();
-        this.sendMessageInput = undefined;
+      this.openedComponent.events.on('chat_submit', (text: string) => {
+        this.toggleInputs(true);
+        this.openedComponent?.destroy();
+        // prevent settings from being opened again
+        setTimeout(() => {
+          this.openedComponent = undefined;
+        }, 200);
         this.player.busy = false;
 
         // NOTE: trim on ui comp?
         text = text.trim();
-
-        // turn back on inputs
-        inputs();
 
         if (text.length > 0) {
           // TODO: kinda heavy. maybe just push to end of array and reverse it?
@@ -350,23 +354,25 @@ export default class UIScene extends Scene {
     };
 
     const openSettings = (e: Phaser.Input.Keyboard.Key) => {
-      if (this.sendMessageInput) return;
+      if (this.openedComponent) return;
 
-      const settings = this.add.reactDom(Settings, {
+      this.openedComponent = this.add.reactDom(Settings, {
         game: this.player.scene,
       });
 
-      const inputs = this.toggleInputs(true);
-
-      settings.events.on('disconnect', () => {
-        settings.events.emit('close');
+      this.toggleInputs(false, true);
+      this.openedComponent.events.on('disconnect', () => {
+        this.openedComponent?.events.emit('close');
         NetworkHandler.getInstance().disconnect();
         NetworkHandler.getInstance().authenticator.logout();
       });
-      settings.events.on('close', () => {
-        settings.destroy();
-
-        inputs();
+      this.openedComponent.events.on('close', () => {
+        this.toggleInputs(true, true);
+        this.openedComponent?.destroy();
+        // prevent settings from being opened again
+        setTimeout(() => {
+          this.openedComponent = undefined;
+        }, 200);
       });
     };
 
@@ -390,7 +396,7 @@ export default class UIScene extends Scene {
 
       const key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
       key.on(Phaser.Input.Keyboard.Events.UP, () => {
-        const inputs = this.toggleInputs(true);
+        this.toggleInputs(false, true);
         
         const debug = this.add.reactDom(Debug, {
           player: this.player,
@@ -400,7 +406,7 @@ export default class UIScene extends Scene {
           itemEntities: (gameScene as any).itemEntities,
         });
         debug.events.on('close', () => {
-          inputs();
+          this.toggleInputs(true, true);
 
           debug.destroy();
         })
@@ -443,7 +449,7 @@ export default class UIScene extends Scene {
         // add to store
         this.messagesStore.push(messageData);
         // if chattype component is open, dispatch event to update it
-        if (this.sendMessageInput) this.sendMessageInput.events.emit('chat_message', messageData);
+        if (this.openedComponent) this.openedComponent.events.emit('chat_message', messageData);
       }
 
       // display message IG
@@ -565,7 +571,7 @@ export default class UIScene extends Scene {
               conv = choiceConv;
             }
           }
-          
+
           if (conv.texts.length === 0) {
             textBox.destroy();
             this.currentInteraction = undefined;

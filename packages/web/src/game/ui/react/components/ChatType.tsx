@@ -1,4 +1,4 @@
-import { InputGroup, InputRightElement, Button, Input, ChakraProvider, Container, Stack, Center, Spacer, Text, List, ListItem, AbsoluteCenter, HStack } from '@chakra-ui/react';
+import { InputGroup, InputRightElement, Button, Input, ChakraProvider, Container, Stack, Center, Spacer, Text, List, ListItem, AbsoluteCenter, HStack, IconButton } from '@chakra-ui/react';
 import { Hustler } from '@dopewars/contracts';
 import { DataTypes, NetworkEvents } from 'game/handlers/network/types';
 import { ComponentManager } from 'phaser3-react/src/manager';
@@ -76,17 +76,18 @@ export default function ChatType(props: Props) {
 
   return (
     <ChakraProvider theme={theme}>
-      <Container 
-      style={{
-        position: 'absolute',
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        borderRadius: '0.5rem',
-        boxShadow: '0 0.5rem 1rem rgba(0, 0, 0, 0.7)',
-        height: '30%',
-        width: '30%',
-        left: "1%",
-        bottom: "1%",
-      }}>
+      <Container
+        style={{
+          position: 'absolute',
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          borderRadius: '0.5rem',
+          boxShadow: '0 0.5rem 1rem rgba(0, 0, 0, 0.7)',
+          height: '30%',
+          width: '30%',
+          left: "1%",
+          bottom: "1%",
+        }}
+      >
         <Stack style={{
           paddingTop: '1rem',
           height: '95%',
@@ -161,7 +162,12 @@ export default function ChatType(props: Props) {
               <Input
                 autoFocus={true}
                 focusBorderColor="white"
-                onBlur={({ target }) => target.focus()}
+                onFocus={() => {
+                  props.manager.events.emit('enableInputs');
+                }}
+                onBlur={() => {
+                  props.manager.events.emit('disableInputs');
+                }}
                 pr="4.5rem"
                 placeholder="Message"
                 _placeholder={{ color: '#b8b8b8' }}
