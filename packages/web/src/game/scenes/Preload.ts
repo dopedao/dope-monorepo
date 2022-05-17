@@ -61,7 +61,8 @@ export default class Preload extends Scene {
           this.load[fileType](key, assetVars['file'], {
             stream: assetVars?.['stream'] ?? true,
           });
-        } else {
+        // we dont want to load background music, we stream it
+        } else if (fileType !== 'background_music') {
           // hack to index LoaderPlugin
           (this.load as any)[fileType](key, assetVars['file']);
         }

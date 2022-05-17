@@ -39,6 +39,8 @@ import { getBBcodeText } from 'game/ui/rex/RexUtils';
 import { text } from 'stream/consumers';
 import MusicManager from 'game/utils/MusicManager';
 import ControlsManager from 'game/utils/ControlsManager';
+import manifest from '../../../public/game/manifest.json';
+import { Howl } from 'howler';
 
 export default class GameScene extends Scene {
   public rexUI!: RexUIPlugin;
@@ -166,14 +168,17 @@ export default class GameScene extends Scene {
       createHustlerAnimations(this, 'hustler_' + this.hustlerData.id);
 
     // load chiptunes
-    let chiptunes = this.cache.audio.getKeys().filter((key: string) => key.includes('chiptune')).map((key: string) => {
+    let chiptunes = Object.keys(manifest.assets.background_music).map((key) => {
+      const asset = manifest.assets.background_music[key as keyof typeof manifest.assets.background_music];
       return {
         name: key.replace('chiptunes_', '').replaceAll('_', ' '),
-        song: this.sound.add(key) as Phaser.Sound.WebAudioSound
+        song: new Howl({
+          src: asset.file
+        })
       };
     });
     this.sound.pauseOnBlur = false;
-    this._musicManager = new MusicManager(this.sound as Phaser.Sound.WebAudioSoundManager, chiptunes, true);
+    this._musicManager = new MusicManager(chiptunes, true);
 
     // register player
     NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_JOIN, {
@@ -711,9 +716,9 @@ export default class GameScene extends Scene {
               h.setVisible(true);
               h.setActive(true);
             } else {
+              // TODO: only hide hustler if not in viewport too?
               h.setVelocity(0);
               h.navigator.cancel();
-
               h.setVisible(false);
               h.setActive(false);
             }

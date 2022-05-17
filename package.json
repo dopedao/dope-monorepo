@@ -13,6 +13,7 @@
 	},
 	"devDependencies": {
 		"@typechain/ethers-v5": "^8.0.2",
+		"@types/howler": "^2.2.7",
 		"@types/mocha": "^8.2.2",
 		"@types/node": "^14.14.34",
 		"lerna": "^3.22.1",
@@ -30,6 +31,7 @@
 		"@sentry/react": "^6.17.4",
 		"@sentry/tracing": "^6.17.4",
 		"@types/isomorphic-fetch": "^0.0.35",
+		"howler": "^2.2.3",
 		"isomorphic-fetch": "^3.0.0"
 	}
 }

@@ -111,6 +111,7 @@ export default function ChatType(props: Props) {
                   }}>
                     <Text style={{
                       color: 'white',
+                      width: '80%',
                     }}>
                       {message.author}: {message.message}
                     </Text>
