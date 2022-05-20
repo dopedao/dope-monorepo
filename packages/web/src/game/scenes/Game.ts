@@ -173,11 +173,11 @@ export default class GameScene extends Scene {
       return {
         name: key.replace('chiptunes_', '').replaceAll('_', ' '),
         song: new Howl({
-          src: asset.file
+          src: asset.file,
+          html5: true
         })
       };
     });
-    this.sound.pauseOnBlur = false;
     this._musicManager = new MusicManager(chiptunes, true);
 
     // register player
