@@ -6,13 +6,13 @@ const NowPlaying = (props: {
     musicManager: MusicManager,
     forceUpdate: React.DispatchWithoutAction
 }) => {
-    const [ songProgress, setSongProgress ] = React.useState<number>(props.musicManager.currentSong?.song.seek() ?? 0);
+    const [ songProgress, setSongProgress ] = React.useState<number>(props.musicManager.currentSong!.song.seek() ?? 0);
     
     React.useEffect(() => {
         let intervalId: NodeJS.Timer;
         if (props.musicManager.currentSong)
             intervalId = setInterval(() => {
-                setSongProgress(props.musicManager.currentSong?.song.seek() ?? 0);
+                setSongProgress(props.musicManager.currentSong!.song.seek() ?? 0);
             });
         
         return () => {
@@ -36,14 +36,14 @@ const NowPlaying = (props: {
                             Currently playing
                         </Text>
                         <Text paddingBottom="0px">
-                            {props.musicManager.currentSong?.name ?? "No song playing"}
+                            {props.musicManager.currentSong!.name ?? "No song playing"}
                         </Text>
                         <Slider 
                             value={songProgress} 
                             onChange={(v) => {
-                                props.musicManager.currentSong?.song.seek(v);
+                                props.musicManager.currentSong!.song.seek(v);
                             }} 
-                            max={props.musicManager.currentSong?.song.duration()}
+                            max={props.musicManager.currentSong!.song.duration()}
                             width="100%"
                             disabled={!props.musicManager.currentSong}
                         >
@@ -70,19 +70,22 @@ const NowPlaying = (props: {
                 <VStack>
                     <Checkbox 
                         disabled={!props.musicManager.currentSong} 
-                        onChange={(e) => props.musicManager.currentSong?.song.loop(e.target.checked)}
-                        isChecked={props.musicManager.currentSong?.song.loop()}>
+                        onChange={(e) => {
+                            props.musicManager.currentSong!.song.loop(e.target.checked);
+                            props.forceUpdate();
+                        }}
+                        isChecked={props.musicManager.currentSong!.song.loop()}>
                         🔁
                     </Checkbox>
                     {
                         <Button variant="primary" disabled={!props.musicManager.currentSong} onClick={() => {
-                            !props.musicManager.currentSong?.song.playing() ? 
-                                props.musicManager.currentSong?.song.play() : 
-                                    props.musicManager.currentSong?.song.pause();
+                            !props.musicManager.currentSong!.song.playing() ? 
+                                props.musicManager.currentSong!.song.play() : 
+                                    props.musicManager.currentSong!.song.pause();
                             props.forceUpdate();
                         }}>
                             {
-                                !props.musicManager.currentSong?.song.playing() ? "Resume" : "Pause"
+                                !props.musicManager.currentSong!.song.playing() ? "Resume" : "Pause"
                             }
                         </Button>
                     }
@@ -138,42 +141,24 @@ const Music = (props: {
                 <Container style={{
                     padding: "0.5rem",
                     borderRadius: "7px",
-                    minHeight: "100%",
+                    width: "6%",
                     backgroundColor: "rgba(255,255,255,0.5)",
                 }}>
                     <div>
-                        <div>
-                            <Text fontWeight="bold" paddingBottom="0px">
-                                Volume
-                            </Text>
-                            <Slider
-                                defaultValue={Howler.volume() * 100}
-                                onChange={(v) => Howler.volume(v / 100)}
-                                width="70%"
-                            >
-                                <SliderTrack>
-                                    <SliderFilledTrack />
-                                </SliderTrack>
-                                <SliderThumb />
-                            </Slider>
-                        </div>
-                        <div>
-                            <Text fontWeight="bold" paddingBottom="0px">
-                                Rate
-                            </Text>
-                            <Slider
-                                defaultValue={(props.musicManager.currentSong?.song.rate() ?? 1) * 100}
-                                onChange={(v) => props.musicManager.currentSong?.song.rate(v / 100)}
-                                width="70%"
-                                min={0.5 * 100}
-                                max={4 * 100}
-                            >
-                                <SliderTrack>
-                                    <SliderFilledTrack />
-                                </SliderTrack>
-                                <SliderThumb />
-                            </Slider>
-                        </div>
+                        🔊
+                        <Slider
+                            orientation="vertical"
+                            defaultValue={Howler.volume() * 100}
+                            onChange={(v) => Howler.volume(v / 100)}
+                            // height="70%"
+                            // width="50%"
+                            minH={24}
+                        >
+                            <SliderTrack>
+                                <SliderFilledTrack />
+                            </SliderTrack>
+                            <SliderThumb />
+                        </Slider>
                     </div>
                 </Container>
             </HStack>
