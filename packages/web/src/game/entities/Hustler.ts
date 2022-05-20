@@ -6,10 +6,13 @@ import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import GameScene from 'game/scenes/Game';
 import UIScene from 'game/scenes/UI';
+import { getBBcodeText } from 'game/ui/rex/RexUtils';
 import PathNavigator from 'game/world/PathNavigator';
 import PF from 'pathfinding';
 import { Animations, Types } from 'phaser';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
+import Toast from 'phaser3-rex-plugins/templates/ui/toast/Toast';
+
 
 export enum Direction {
   North = '_back',
@@ -46,6 +49,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
 
   private _hitboxSensor: MatterJS.BodyType;
   private _hoverText?: BBCodeText;
+
+  private _chatMessageBoxes: Array<Toast> = [];
 
   get shadow() { return this._shadow; }
 
@@ -91,6 +96,10 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
   }
   get hitboxSensor() {
     return this._hitboxSensor;
+  }
+
+  get chatMessageBoxes() {
+    return this._chatMessageBoxes;
   }
 
   constructor(
@@ -257,6 +266,43 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
   // will not trigger a server request
   say(text: string, timestamp?: number, addToChat?: boolean) {
     EventHandler.emitter().emit(Events.CHAT_MESSAGE, this, text, timestamp, addToChat);
+
+    // display message IG
+    // TODO: dont display if hustler not in camera viewport?
+    const messageDuration = {
+      in: 500,
+      hold: 3500 + text.length * 50,
+      out: 500,
+    };
+
+    const gameScene = this.scene as GameScene;
+    const chatMessage = this._chatMessageBoxes[this._chatMessageBoxes.push(
+      gameScene.rexUI.add.toast({
+        background: gameScene.rexUI.add.roundRectangle(0, 0, 2, 2, 3, 0xffffff, 0.4),
+        text: getBBcodeText(gameScene, 200, 0, 0, 10, '18px').setText(text).setScale(this.scale / 3.5),
+        space: {
+          left: 2,
+          right: 2,
+          top: 2,
+          bottom: 2,
+        },
+        duration: messageDuration,
+      }),
+    ) - 1];
+    // show message
+    chatMessage.setDepth(this.depth);
+    chatMessage.showMessage(text);
+
+    // destroy game object after duration & remove from array
+    // timeout for duration of message
+    setTimeout(
+      () => {
+        chatMessage.destroy();
+        // remove chat message toast from array
+        this._chatMessageBoxes.splice(this._chatMessageBoxes.indexOf(chatMessage), 1);
+      },
+      Object.values(messageDuration).reduce((a, b) => a + b, 0),
+    );
   }
 
   // sets correct sprite facing towards point
@@ -318,6 +364,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     super.setDepth(value);
     this._shadow?.setDepth(value - 1);
     this._hoverText?.setDepth(value);
+    this._chatMessageBoxes.forEach(chatMessage => chatMessage.setDepth(value));
     // update model depth
     // this._model.setDepth(value);
     return this;
@@ -347,7 +394,34 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
       this.y - (this.displayHeight / 1.3),
     );
 
+    // update shadow position
     this._shadow?.setPosition(this.x, this.y);
+
+    // update chat messages position
+    const offsetSpacing = 2;
+    let offsetHeight = 0;
+
+    if (!this.active) {
+      this._chatMessageBoxes.forEach(chatToast => chatToast.destroy());
+      this._chatMessageBoxes = [];
+      return;
+    }
+
+    for (let i = this._chatMessageBoxes.length - 1; i >= 0; i--) {
+      const chatToast = this._chatMessageBoxes[i];
+      offsetHeight += (chatToast.displayHeight) + offsetSpacing;
+
+      let x = this.x;
+      let y = this.y;
+
+      y -= this.displayHeight / 2;
+      y -= offsetHeight;
+
+      if (this.hoverText)
+        y -= this.hoverText.displayHeight * 2;
+
+      chatToast.setPosition(x, y);
+    }
 
     // update animation frames
     this.animator.update();

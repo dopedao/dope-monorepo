@@ -86,9 +86,6 @@ export default class UIScene extends Scene {
   public inventoryComponent?: ComponentManager;
   public currentInteraction?: Interaction;
 
-  // max 3 toasts
-  private chatMessageBoxes: Map<Hustler, Array<Toast>> = new Map();
-
   // hustler name: messages
   private messagesStore: Array<DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]> = new Array();
 
@@ -213,35 +210,6 @@ export default class UIScene extends Scene {
         EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_FINISH, citizen, true);
       }
     }
-
-    const offsetSpacing = 2;
-    const playerCamera = this.player.scene.cameras.main;
-    this.chatMessageBoxes.forEach((chatToasts, hustler) => {
-      if (!hustler.active) {
-        chatToasts.forEach((toast) => toast.destroy());
-        this.chatMessageBoxes.delete(hustler);
-        return;
-      }
-
-      let offsetHeight = 0;
-      for (let i = chatToasts.length - 1; i >= 0; i--) {
-        const chatToast = chatToasts[i];
-        offsetHeight += (chatToast.displayHeight) + offsetSpacing;
-
-        let x = (hustler.x - playerCamera.worldView.x) * playerCamera.zoom;
-        let y = (hustler.y - playerCamera.worldView.y) * playerCamera.zoom;
-
-        y -= this.player.displayHeight * (playerCamera.zoom / 2);
-        y -= offsetHeight;
-
-        if (hustler.hoverText)
-          y -= hustler.hoverText.displayHeight * 2;
-
-        chatToast.setPosition(x, y);
-        if (chatToast.scale !== playerCamera.zoom / 3)
-          chatToast.setScale(playerCamera.zoom / 3);
-      }
-    });
   }
 
   private _handleEvents() {
@@ -326,7 +294,7 @@ export default class UIScene extends Scene {
       this.openedComponent = this.add.reactDom(ChatType, {
         precedentMessages: this.precedentMessages,
         messagesStore: this.messagesStore,
-        chatMessageBoxes: this.chatMessageBoxes.get(this.player),
+        chatMessageBoxes: this.player.chatMessageBoxes,
       });
       this.openedComponent.events.on('enableInputs', () => this.toggleInputs(false));
       this.openedComponent.events.on('disableInputs', () => this.toggleInputs(true));
@@ -451,44 +419,6 @@ export default class UIScene extends Scene {
         // if chattype component is open, dispatch event to update it
         if (this.openedComponent) this.openedComponent.events.emit('chat_message', messageData);
       }
-
-      // display message IG
-      // TODO: dont display if hustler not in camera viewport?
-      const messageDuration = {
-        in: 500,
-        hold: 3500 + text.length * 50,
-        out: 500,
-      };
-
-      let chatToasts = this.chatMessageBoxes.get(hustler) ?? this.chatMessageBoxes.set(hustler, new Array()).get(hustler)!;
-
-      chatToasts.push(
-        this.rexUI.add.toast({
-          background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 10, 0xffffff, 0.4),
-          text: getBBcodeText(this, 200, 0, 0, 10, '18px').setText(text),
-          space: {
-            left: 5,
-            right: 5,
-            top: 5,
-            bottom: 5,
-          },
-          duration: messageDuration,
-        }),
-      );
-      const chatMessage = chatToasts[chatToasts.length - 1];
-      // show message
-      chatMessage.showMessage(text);
-
-      // destroy game object after duration & remove from array
-      // timeout for duration of message
-      setTimeout(
-        () => {
-          chatMessage.destroy();
-          // remove chat message toast from array
-          chatToasts.splice(chatToasts.indexOf(chatMessage), 1);
-        },
-        Object.values(messageDuration).reduce((a, b) => a + b, 0),
-      );
     });
   }
 
