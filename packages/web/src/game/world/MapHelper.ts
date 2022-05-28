@@ -49,6 +49,53 @@ export default class MapHelper {
         this.map.collideLayer.layer.data.map(row => row.map(tile => tile.index)),
       );
 
+      // if map is locked, create collisions on its borders
+      if (this.mapReader.level.fieldInstances.find(f => f.__identifier === 'locked')?.__value === true) {
+        // top border
+        this.scene.matter.add.rectangle(
+          this.map.collideLayer.x + (this.map.collideLayer.displayWidth / 2), 
+          this.map.collideLayer.y + (this.map.collideLayer.layer.tileHeight / 2),
+          this.map.collideLayer.displayWidth,
+          this.map.collideLayer.layer.tileHeight,
+          {
+            isStatic: true,
+          }
+        );
+
+        // bottom border
+        this.scene.matter.add.rectangle(
+          this.map.collideLayer.x + (this.map.collideLayer.displayWidth / 2),
+          (this.map.collideLayer.y + this.map.collideLayer.displayHeight) - (this.map.collideLayer.layer.tileHeight / 2),
+          this.map.collideLayer.displayWidth,
+          this.map.collideLayer.layer.tileHeight,
+          {
+            isStatic: true,
+          }
+        );
+
+        // left border
+        this.scene.matter.add.rectangle(
+          this.map.collideLayer.x + (this.map.collideLayer.layer.tileWidth / 2),
+          this.map.collideLayer.y + (this.map.collideLayer.displayHeight / 2),
+          this.map.collideLayer.layer.tileWidth,
+          this.map.collideLayer.displayHeight,
+          {
+            isStatic: true,
+          }
+        );
+
+        // right border
+        this.scene.matter.add.rectangle(
+          (this.map.collideLayer.x + this.map.collideLayer.displayWidth) - (this.map.collideLayer.layer.tileWidth / 2),
+          this.map.collideLayer.y + (this.map.collideLayer.displayHeight / 2),
+          this.map.collideLayer.layer.tileWidth,
+          this.map.collideLayer.displayHeight,
+          {
+            isStatic: true,
+          }
+        );
+      }
+
       // "bolden" the pathfinding grid. will make up for the body of the hustlers.
       // keep track of the visisted neighbours to not end up in an infinite boldening loop.
       let neighbours: Array<number> = [];
