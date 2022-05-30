@@ -22,7 +22,7 @@ import (
 
 const assetPath = "/api/v1/assets"
 const maxTokens = 8000
-const limit = 50
+const limit = 100
 
 // Opensea is an opensea client
 type Opensea struct {
@@ -61,7 +61,6 @@ func NewOpenseaIndexer(client *ent.Client, config OpenseaConfig) *Opensea {
 	return o
 }
 
-// Sync implemented for Opensa
 func (o *Opensea) Sync(ctx context.Context) {
 	ctx, log := logger.LogFor(ctx)
 
@@ -71,15 +70,18 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 	for {
 		assetsCompleted := 0
+		// If we don't encounter any current sell orders that's
+		// a pretty good sign that we are doing something wrong.
+		atLeastOneItemOnSale := false
 		for offset := 0; offset <= maxTokens; offset += limit {
 			ret, err := o.getAssetCollection(ctx, o.Contract, limit, offset)
 			if err != nil {
-				log.Err(err).Msg("Getting asset collection")
+				log.Err(err).Msg("OPENSEA: Getting asset collection failed.")
 				break
 			}
 
 			if ret == nil {
-				log.Debug().Msg("Received nil from Opensea, breaking")
+				log.Debug().Msg("OPENSEA: Received nil. Breaking.")
 				break
 			}
 
@@ -90,8 +92,6 @@ func (o *Opensea) Sync(ctx context.Context) {
 						return fmt.Errorf("marshalling dope id to big int: %s", asset.TokenID)
 					}
 
-					// Set all current listings to inactive, then update them based
-					// on the current response.
 					if err := tx.Listing.Update().
 						Where(listing.HasDopeWith(dope.IDEQ(asset.TokenID))).
 						SetActive(false).Exec(ctx); err != nil {
@@ -100,6 +100,11 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 					for _, so := range asset.SellOrders {
 						onSale := !so.Cancelled && !so.Finalized
+						if onSale {
+							atLeastOneItemOnSale = true
+							// Debugging to see if we get orders back or not
+							// pp.Print(so)
+						}
 						mashalled, err := json.Marshal(so)
 						if err != nil {
 							return fmt.Errorf("marshalling opensea order: %v+", err)
@@ -199,7 +204,11 @@ func (o *Opensea) Sync(ctx context.Context) {
 			}
 
 			assetsCompleted += len(ret.Assets)
-			log.Info().Msgf("Syncing opensea: finished total assets: %d, current offset: %d", assetsCompleted, offset)
+			log.Info().Msgf("OPENSEA: Finished total assets: %d, current offset: %d", assetsCompleted, offset)
+		}
+
+		if !atLeastOneItemOnSale {
+			log.Error().Msg("OPENSEA: No items found listed for sale. This seems incorrect.")
 		}
 
 		if err := o.ent.RefreshSearchIndex(ctx); err != nil {
@@ -218,14 +227,24 @@ func (o *Opensea) Sync(ctx context.Context) {
 // getAssetCollection for Opensea
 func (o *Opensea) getAssetCollection(ctx context.Context, contract string, limit int, offset int) (*Assets, error) {
 	ctx, log := logger.LogFor(ctx)
-	path := fmt.Sprintf("%s?asset_contract_address=%s&order_direction=asc&limit=%d&offset=%d", assetPath, contract, limit, offset)
-	log.Debug().Str("url", o.URL+path).Msg("Getting asset collection.")
-	b, err := o.getURL(ctx, o.URL+path)
+	path := fmt.Sprintf("%s?asset_contract_address=%s&include_orders=true&order_direction=asc&limit=%d&offset=%d", assetPath, contract, limit, offset)
+	url := o.URL + path
+
+	log.Debug().Str("url", url).Msg("Getting asset collection.")
+	bytes, err := o.getURL(ctx, url)
 	if err != nil {
 		return nil, fmt.Errorf("retrieving opensea assets: %w", err)
 	}
-	ret := &Assets{Assets: []Asset{}}
-	return ret, json.Unmarshal(b, ret)
+	// Dump json file to tmp so we can debug
+	// err = os.WriteFile(
+	// 	fmt.Sprintf("./tmp/assets-%v.json", offset),
+	// 	bytes, 0644)
+	// if err != nil {
+	// 	log.Err(err).Msgf("Writing Json asset file")
+	// }
+	parsedAssets := &Assets{Assets: []Asset{}}
+
+	return parsedAssets, json.Unmarshal(bytes, parsedAssets)
 }
 
 func (o *Opensea) getURL(ctx context.Context, url string) ([]byte, error) {

@@ -25,7 +25,10 @@ func main() {
 
 	ctx := context.Background()
 
-	srv, err := indexer.NewServer(log.WithContext(ctx), dbprovider.Conn(), envcfg.Network)
+	srv, err := indexer.NewServer(
+		log.WithContext(ctx),
+		dbprovider.Conn(),
+		envcfg.Network)
 	logger.LogFatalOnErr(err, "Creating Indexer")
 
 	log.Info().Msg("Starting to listen on port: " + *envcfg.Listen)
