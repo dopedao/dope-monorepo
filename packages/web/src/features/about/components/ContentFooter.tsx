@@ -62,15 +62,13 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 * Game Artwork and Maps by [HPMNK](https://twitter.com/HPMNK_One)
 * MMORPG game dev by [Larko](https://twitter.com/aym_dm)
 * Art direction by [facesof.eth](https://twitter.com/facesOfEth)
-* Community by [mboyle](https://twitter.com/mboyle)
+* Community, grimey Graff, and island vibes by [Cyberbitz](https://twitter.com/Cyberbitz)
 * DOPE TV and DOPE MUSIC produced by [Shecky Green](https://twitter.com/SheckyGreen)
 * Chiptunes by [Baron Von Future](https://twitter.com/baronvonfuture)
-* Dank memes by [M1](https://twitter.com/_541va_)
 * Tokenomics by [Winston Wolfe](https://twitter.com/wolfcryptogroup)
-* Grimey Graff and island vibes by [Cyberbitz](https://twitter.com/Cyberbitz)
+* Mugshots by [mboyle](https://twitter.com/mboyle)
 * UX Design by [facesof.eth](https://twitter.com/facesOfEth) and [Clicksave](https://twitter.com/click__save)
 * Copy for The Daily Dope by [Bikemaker](https://twitter.com/bikemaker)
-* Everything else [Beatws9](https://twitter.com/beatws9)
 * DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
 
 ----
