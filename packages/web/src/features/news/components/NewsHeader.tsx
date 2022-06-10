@@ -54,7 +54,7 @@ export const PHRASES = [
   'Always trending #1 on DEXTOOLS',
   'The talk of Crypto Twitter',
   'Doing shit different because we can',
-  'We heard p2e metaverse games are going to be big',
+  'We heard play-to-own metaverse games are going to be big',
 ];
 
 const NewsHeader = ({
