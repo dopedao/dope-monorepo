@@ -288,9 +288,9 @@ const ContentRoadmap = () => (
         </>
       </RoadmapItem>
       <RoadmapItem
-        title="P2E Game on Starknet"
+        title="Game on Starknet"
         imageUrl="/images/game/classic-mode.png"
-        imageAlt="Play To Earn Game on Starknet"
+        imageAlt="Game on Starknet"
         date="Q1-Q4 2022"
       >
         <>

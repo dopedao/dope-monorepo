@@ -6,7 +6,7 @@ const ContentIntro = () => {
   const content = `
 ## The evolution of gaming
 
-Dope Wars is a fully decentralized, community driven, play-to-earn gaming metaverse project inspired by hip-hop culture.
+Dope Wars is a fully decentralized, community driven, gaming metaverse project inspired by hip-hop culture.
 
 ### An open source blockchain gaming ecosystem
 
