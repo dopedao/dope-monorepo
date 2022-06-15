@@ -19,8 +19,6 @@ import ReceiptItemGear from './ReceiptItemGear';
 import { useRouter } from 'next/router';
 import SpinnerMessage from 'components/SpinnerMessage';
 import DisconnectAndQuitButton from './DisconnectAndQuitButton';
-import { resolve } from 'node:path/win32';
-import { rejects } from 'node:assert';
 
 const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
   const router = useRouter();
