@@ -257,7 +257,7 @@ const ContentRoadmap = () => (
           <a href="https://soundcloud.com/djgreenlantern/dj-green-lantern-dope-wars-mix" target="roadmap">LISTEN TO THE MIX</a>
         </p>
       </RoadmapItem>
-      <SectionHeader>Coming Soon™</SectionHeader>
+      <SectionHeader>Coming Next™</SectionHeader>
       <RoadmapItem
         title="WEB3 Integration + More"
         imageReplacement={
@@ -270,7 +270,7 @@ const ContentRoadmap = () => (
             <HustlerSpriteSheetWalk id={getRandomNumber(0, 500).toString()} />
           </Box>
         }
-        date="Q1 2022"
+        date=""
       >
         <>
           <p>
@@ -291,7 +291,7 @@ const ContentRoadmap = () => (
         title="Game on Starknet"
         imageUrl="/images/game/classic-mode.png"
         imageAlt="Game on Starknet"
-        date="Q1-Q4 2022"
+        date=""
       >
         <>
           <p>
@@ -318,8 +318,8 @@ const ContentRoadmap = () => (
       <RoadmapItem
         title="Swap Meet"
         imageUrl="/images/about/swap-meet-preview.png"
-        imageAlt="In-game Hustler Characters"
-        date="Q2 2022"
+        imageAlt="Swap Meet"
+        date=""
       >
         <>
           <p>
@@ -336,8 +336,8 @@ const ContentRoadmap = () => (
       <RoadmapItem
         title="TURF"
         imageUrl="/images/about/turf.png"
-        imageAlt="In-game Hustler Characters"
-        date="Q2 2022"
+        imageAlt="TURF"
+        date=""
       >
         <>
           <p>
