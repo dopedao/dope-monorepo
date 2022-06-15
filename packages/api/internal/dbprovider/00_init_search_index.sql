@@ -1,4 +1,4 @@
-DROP VIEW IF EXISTS search_index;
+DROP MATERIALIZED VIEW IF EXISTS search_index;
 
 CREATE MATERIALIZED VIEW search_index AS (
 	WITH dope_agg AS (
@@ -66,8 +66,7 @@ CREATE MATERIALIZED VIEW search_index AS (
 			df.claimed
 )
 	SELECT
-		concat('dope_',
-			id) AS id,
+		concat('dope_', id, sale_price) AS id,
 		greatness,
 		sale_active AS sale_active,
 		sale_price AS sale_price,
@@ -180,7 +179,7 @@ UNION (WITH hustler_agg AS (
 				OR h.item_hustler_clothes = i.id
 				OR h.item_hustler_weapons = i.id
 				OR h.item_hustler_vehicles = i.id
-				OR h.item_hustler_accessories = i.
+				OR h.item_hustler_accessories = i.id
 		) df
 		GROUP BY
 			df.id,

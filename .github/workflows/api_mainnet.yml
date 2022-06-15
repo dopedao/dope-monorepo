@@ -42,7 +42,12 @@ jobs:
         with:
           deliverables: 'packages/api/app.mainnet.indexer.yaml'
 
-      - id: 'deploy-game'
+      # - id: 'deploy-game'
+      #   uses: 'google-github-actions/deploy-appengine@v0.8.0'
+      #   with:
+      #     deliverables: 'packages/api/app.mainnet.game.yaml'
+
+      - id: 'deploy-jobs'
         uses: 'google-github-actions/deploy-appengine@v0.8.0'
         with:
-          deliverables: 'packages/api/app.mainnet.game.yaml'
+          deliverables: 'packages/api/app.mainnet.jobs.yaml'

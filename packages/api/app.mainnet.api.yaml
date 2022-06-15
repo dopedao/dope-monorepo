@@ -1,6 +1,7 @@
+# API server to handle back-end duties for dopewars.gg
 runtime: go116
 
-main: ./cmd/web
+main: ./cmd/apiServer
 
 env_variables:
   PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2

@@ -31,6 +31,7 @@ import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-p
 import ControlsManager, { ControlsEvents } from 'game/utils/ControlsManager';
 import EventWelcome from 'game/ui/react/components/EventWelcome';
 import { number } from 'starknet';
+import { getConversation, Texts } from 'game/constants/Dialogues';
 
 interface Interaction {
   citizen: Citizen;
@@ -75,8 +76,9 @@ export default class UIScene extends Scene {
   public toaster!: ComponentManager;
   public toast = createStandaloneToast(theme);
 
+  private _inputsEnabled: boolean = true;
   // react component for inputing message content
-  public sendMessageInput?: ComponentManager;
+  public openedComponent?: ComponentManager;
   // player precedent messages
   public precedentMessages: string[] = new Array();
 
@@ -84,11 +86,12 @@ export default class UIScene extends Scene {
   public inventoryComponent?: ComponentManager;
   public currentInteraction?: Interaction;
 
-  // max 3 toasts
-  private chatMessageBoxes: Map<Hustler, Array<Toast>> = new Map();
-
   // hustler name: messages
   private messagesStore: Array<DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]> = new Array();
+
+  get inputsEnabled() {
+    return this._inputsEnabled;
+  }
 
   constructor() {
     super({
@@ -207,35 +210,6 @@ export default class UIScene extends Scene {
         EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT_FINISH, citizen, true);
       }
     }
-
-    const offsetSpacing = 2;
-    const playerCamera = this.player.scene.cameras.main;
-    this.chatMessageBoxes.forEach((chatToasts, hustler) => {
-      if (!hustler.active) {
-        chatToasts.forEach((toast) => toast.destroy());
-        this.chatMessageBoxes.delete(hustler);
-        return;
-      }
-
-      let offsetHeight = 0;
-      for (let i = chatToasts.length - 1; i >= 0; i--) {
-        const chatToast = chatToasts[i];
-        offsetHeight += (chatToast.displayHeight) + offsetSpacing;
-
-        let x = (hustler.x - playerCamera.worldView.x) * playerCamera.zoom;
-        let y = (hustler.y - playerCamera.worldView.y) * playerCamera.zoom;
-
-        y -= this.player.displayHeight * (playerCamera.zoom / 2);
-        y -= offsetHeight;
-
-        if (hustler.hoverText)
-          y -= hustler.hoverText.displayHeight * 2;
-
-        chatToast.setPosition(x, y);
-        if (chatToast.scale !== playerCamera.zoom / 3)
-          chatToast.setScale(playerCamera.zoom / 3);
-      }
-    });
   }
 
   private _handleEvents() {
@@ -283,60 +257,59 @@ export default class UIScene extends Scene {
     });
   }
 
-  toggleInputs(mouse?: boolean) {
-    // prevent player from moving
-    if (mouse) this.player.scene.input.mouse.enabled = false;
-    this.player.scene.input.keyboard.enabled = false;
-    if (mouse) this.input.mouse.enabled = false;
-    this.input.keyboard.enabled = false;
-    // prevent phaser from "blocking" some keys (for typing in chat)
-    this.player.scene.input.keyboard.disableGlobalCapture();
-    this.input.keyboard.disableGlobalCapture();
+  toggleInputs(enable?: boolean, mouse?: boolean) {
+    enable = enable === undefined ? !this.inputsEnabled : enable;
 
-    return () => {
-      // reset to default
+    if (enable) {
+      // prevent player from moving
       if (mouse) this.player.scene.input.mouse.enabled = true;
       this.player.scene.input.keyboard.enabled = true;
+      if (mouse) this.input.mouse.enabled = true;
+      this.input.keyboard.enabled = true;
+      // prevent phaser from "blocking" some keys (for typing in chat)
       this.player.scene.input.keyboard.enableGlobalCapture();
-      setTimeout(() => {
-        // will prevent key events like ESC for other components to register as soon
-        // as the chat input is closed. 
-        // TODO: find a better solution?
-        // NOTE: a solution would be to stop event propagation in the component handling inputs?
-        if (mouse) this.input.mouse.enabled = true;
-        this.input.keyboard.enabled = true;
-        this.input.keyboard.enableGlobalCapture();
-      }, 200);
-
-      return this.toggleInputs;
+      this.input.keyboard.enableGlobalCapture();
+      this._inputsEnabled = true;
+    } else {
+      // prevent player from moving
+      if (mouse) this.player.scene.input.mouse.enabled = false;
+      this.player.scene.input.keyboard.enabled = false;
+      if (mouse) this.input.mouse.enabled = false;
+      this.input.keyboard.enabled = false;
+      // prevent phaser from "blocking" some keys (for typing in chat)
+      this.player.scene.input.keyboard.disableGlobalCapture();
+      this.input.keyboard.disableGlobalCapture();
+      this._inputsEnabled = false;
     }
   }
 
   private _handleInputs() {
     const openChatInput = () => {
-      if (this.player.busy || this.sendMessageInput)
+      if (this.player.busy || this.openedComponent)
         return;
 
       this.player.busy = true;
       
-      const inputs = this.toggleInputs();
-
-      this.sendMessageInput = this.add.reactDom(ChatType, {
+      this.toggleInputs(false);
+      this.openedComponent = this.add.reactDom(ChatType, {
         precedentMessages: this.precedentMessages,
         messagesStore: this.messagesStore,
-        chatMessageBoxes: this.chatMessageBoxes.get(this.player),
+        chatMessageBoxes: this.player.chatMessageBoxes,
       });
+      this.openedComponent.events.on('enableInputs', () => this.toggleInputs(false));
+      this.openedComponent.events.on('disableInputs', () => this.toggleInputs(true));
 
-      this.sendMessageInput.events.on('chat_submit', (text: string) => {
-        this.sendMessageInput?.destroy();
-        this.sendMessageInput = undefined;
+      this.openedComponent.events.on('chat_submit', (text: string) => {
+        this.toggleInputs(true);
+        this.openedComponent?.destroy();
+        // prevent settings from being opened again
+        setTimeout(() => {
+          this.openedComponent = undefined;
+        }, 200);
         this.player.busy = false;
 
         // NOTE: trim on ui comp?
         text = text.trim();
-
-        // turn back on inputs
-        inputs();
 
         if (text.length > 0) {
           // TODO: kinda heavy. maybe just push to end of array and reverse it?
@@ -349,30 +322,25 @@ export default class UIScene extends Scene {
     };
 
     const openSettings = (e: Phaser.Input.Keyboard.Key) => {
-      if (this.sendMessageInput) return;
+      if (this.openedComponent) return;
 
-      const settings = this.add.reactDom(Settings, {
+      this.openedComponent = this.add.reactDom(Settings, {
         game: this.player.scene,
       });
 
-      const inputs = this.toggleInputs(true);
-
-      settings.events.on('disconnect', () => {
-        settings.events.emit('close');
+      this.toggleInputs(false, true);
+      this.openedComponent.events.on('disconnect', () => {
+        this.openedComponent?.events.emit('close');
         NetworkHandler.getInstance().disconnect();
-        NetworkHandler.getInstance().authenticator.logout()
-          .finally(() => {
-            // TODO: home page / disconnect page?
-            this.scene.stop('GameScene');
-            this.scene.start('LoginScene', {
-              hustlerData: this.hustlerData
-            });
-          });
-      })
-      settings.events.on('close', () => {
-        settings.destroy();
-
-        inputs();
+        NetworkHandler.getInstance().authenticator.logout();
+      });
+      this.openedComponent.events.on('close', () => {
+        this.toggleInputs(true, true);
+        this.openedComponent?.destroy();
+        // prevent settings from being opened again
+        setTimeout(() => {
+          this.openedComponent = undefined;
+        }, 200);
       });
     };
 
@@ -391,12 +359,12 @@ export default class UIScene extends Scene {
     });
 
     // TODO: check if debug
-    if (true) {
+    if (process.env.NODE_ENV === 'development') {
       const gameScene = this.player.scene as GameScene;
 
       const key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
       key.on(Phaser.Input.Keyboard.Events.UP, () => {
-        const inputs = this.toggleInputs(true);
+        this.toggleInputs(false, true);
         
         const debug = this.add.reactDom(Debug, {
           player: this.player,
@@ -406,7 +374,7 @@ export default class UIScene extends Scene {
           itemEntities: (gameScene as any).itemEntities,
         });
         debug.events.on('close', () => {
-          inputs();
+          this.toggleInputs(true, true);
 
           debug.destroy();
         })
@@ -449,46 +417,8 @@ export default class UIScene extends Scene {
         // add to store
         this.messagesStore.push(messageData);
         // if chattype component is open, dispatch event to update it
-        if (this.sendMessageInput) this.sendMessageInput.events.emit('chat_message', messageData);
+        if (this.openedComponent) this.openedComponent.events.emit('chat_message', messageData);
       }
-
-      // display message IG
-      // TODO: dont display if hustler not in camera viewport?
-      const messageDuration = {
-        in: 500,
-        hold: 3500 + text.length * 50,
-        out: 500,
-      };
-
-      let chatToasts = this.chatMessageBoxes.get(hustler) ?? this.chatMessageBoxes.set(hustler, new Array()).get(hustler)!;
-
-      chatToasts.push(
-        this.rexUI.add.toast({
-          background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 10, 0xffffff, 0.4),
-          text: getBBcodeText(this, 200, 0, 0, 10, '18px').setText(text),
-          space: {
-            left: 5,
-            right: 5,
-            top: 5,
-            bottom: 5,
-          },
-          duration: messageDuration,
-        }),
-      );
-      const chatMessage = chatToasts[chatToasts.length - 1];
-      // show message
-      chatMessage.showMessage(text);
-
-      // destroy game object after duration & remove from array
-      // timeout for duration of message
-      setTimeout(
-        () => {
-          chatMessage.destroy();
-          // remove chat message toast from array
-          chatToasts.splice(chatToasts.indexOf(chatMessage), 1);
-        },
-        Object.values(messageDuration).reduce((a, b) => a + b, 0),
-      );
     });
   }
 
@@ -531,7 +461,7 @@ export default class UIScene extends Scene {
       if (citizen.conversations.length === 0) return;
 
       // get upcoming conversation
-      const conv: Conversation = citizen.conversations[0];
+      let conv: Conversation = citizen.conversations[0];
 
       // const icon = this.rexUI.add.label({
       //   orientation: 'y',
@@ -552,12 +482,26 @@ export default class UIScene extends Scene {
       let text = conv.texts[0];
       if (!text) return;
 
-      textBox.start(text.text, text.typingSpeed ?? 50, text.choices)
-        .on('complete', (selectedChoice: number) => {
+      textBox.start(text.text, text.typingSpeed ?? 50, text.choices ? Object.keys(text.choices) : undefined)
+        .on('complete', (selectedChoice?: number) => {
           if (text.onEnd)
             text.onEnd!(citizen, conv, text, selectedChoice);
 
           conv.texts.shift();
+          if (selectedChoice !== undefined) {
+            const choiceConv = getConversation(text.choices![Object.keys(text.choices!)[selectedChoice]]);
+            if (choiceConv) {
+              const idx = citizen.conversations.indexOf(conv);
+
+              citizen.conversations.splice(idx, 1, choiceConv);
+              // add conversation just after the one for the choice 
+              // if it has text still left
+              if (conv.texts.length > 0) citizen.conversations.splice(idx + 1, 0, conv);
+
+              conv = choiceConv;
+            }
+          }
+
           if (conv.texts.length === 0) {
             textBox.destroy();
             this.currentInteraction = undefined;
@@ -578,14 +522,20 @@ export default class UIScene extends Scene {
             return;
           }
 
-          // TODO: Fire up end text event and move somewhere else, maybe in network handler?
-          // NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
-          //   citizen: citizen.getData('id'),
-          //   conversation: conv.id,
-          // } as DataTypes[NetworkEvents.CLIENT_PLAYER_UPDATE_CITIZEN_STATE]);
-
           text = conv.texts[0];
-          textBox.start(text!.text, text!.typingSpeed ?? 50, text.choices);
+          // TODO: Fire up end text event and move somewhere else, maybe in network handler?
+          if (NetworkHandler.getInstance().connected) {
+            NetworkHandler.getInstance().send(
+                UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE,
+                {
+                    citizen: citizen.getData('id'),
+                    conversation: conv.id,
+                    text: Texts[conv.id].findIndex(t => t.text === text.text),
+                },
+            );
+          }
+
+          textBox.start(text!.text, text!.typingSpeed ?? 50, text.choices ? Object.keys(text.choices) : undefined);
         })
 
       this.currentInteraction = { citizen, textBox, maxDistance: 100 };

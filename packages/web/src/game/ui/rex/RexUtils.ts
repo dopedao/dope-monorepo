@@ -1,4 +1,5 @@
 import Palette from 'game/constants/Palette';
+import GameScene from 'game/scenes/Game';
 import UIScene from 'game/scenes/UI';
 
 interface TextBoxConfig {
@@ -114,7 +115,7 @@ export const getBuiltInText = (
 };
 
 export const getBBcodeText = (
-  scene: UIScene,
+  scene: UIScene | GameScene,
   wrapWidth: number,
   fixedWidth: number,
   fixedHeight: number,

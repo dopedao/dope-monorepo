@@ -1,45 +1,31 @@
-import HustlerModel from 'game/gfx/models/HustlerModel';
-import GameAnimations from 'game/anims/GameAnimations';
+import { ComponentManager } from 'phaser3-react/src/manager';
+import { getConversation } from 'game/constants/Dialogues';
+import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
+import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
+import { Howl } from 'howler';
+import { Level } from 'game/world/LDtkParser';
 import { Scene, Cameras, Tilemaps } from 'phaser';
-import Player from 'game/entities/player/Player';
 import Citizen from 'game/entities/citizen/Citizen';
-import EventHandler, { Events } from 'game/handlers/events/EventHandler';
+import ControlsManager from 'game/utils/ControlsManager';
 import Conversation, { Text } from 'game/entities/citizen/Conversation';
+import EventHandler, { Events } from 'game/handlers/events/EventHandler';
+import GameAnimations from 'game/anims/GameAnimations';
+import Hustler, { Direction } from 'game/entities/Hustler';
 import Item from 'game/entities/player/inventory/Item';
 import ItemEntity from 'game/entities/ItemEntity';
-import MapHelper from 'game/world/MapHelper';
-import Quest from 'game/entities/player/quests/Quest';
-import { Level } from 'game/world/LDtkParser';
-import NetworkHandler from 'game/handlers/network/NetworkHandler';
-import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
-import Hustler, { Direction } from 'game/entities/Hustler';
-import ENS, { getEnsAddress } from '@ensdomains/ensjs';
-import { getShortAddress } from 'utils/utils';
 import Items from 'game/constants/Items';
-import { SiweMessage } from 'siwe';
-import PointQuest from 'game/entities/player/quests/PointQuest';
-import Zone from 'game/world/Zone';
-import InteractCitizenQuest from 'game/entities/player/quests/InteractCitizenQuest';
-import UIScene, { chakraToastStyle, loadingSpinner, toastStyle } from './UI';
-import VirtualJoystick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
-import VirtualJoyStickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin';
-import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
-import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
-import PathNavigator from 'game/world/PathNavigator';
-import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
-import { ComponentManager } from 'phaser3-react/src/manager';
-import TilesAnimator from 'game/world/TilesAnimator';
-import Debug from 'game/ui/react/components/Debug';
-import { Conversations, getConversation, Texts } from 'game/constants/Dialogues';
-import WaterfallQuest from 'game/entities/player/quests/WaterfallQuest';
-import Quests, { getQuest } from 'game/constants/Quests';
-import BringItemQuest from 'game/entities/player/quests/BringItemQuest';
-import Citizens from 'game/constants/Citizens';
-import { getBBcodeText } from 'game/ui/rex/RexUtils';
-import { text } from 'stream/consumers';
+import manifest from '../../../public/game/manifest.json';
+import MapHelper from 'game/world/MapHelper';
 import MusicManager from 'game/utils/MusicManager';
+import NetworkHandler from 'game/handlers/network/NetworkHandler';
+import Player from 'game/entities/player/Player';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
+import TilesAnimator from 'game/world/TilesAnimator';
+import UIScene, { chakraToastStyle, loadingSpinner, toastStyle } from './UI';
 
 export default class GameScene extends Scene {
+  public rexUI!: RexUIPlugin;
+
   private hustlerData: any;
 
   // is the game initialized
@@ -65,6 +51,9 @@ export default class GameScene extends Scene {
 
   readonly zoom: number = 3;
 
+  private _tickRate: number = 1 / 5;
+
+  
   get player() {
     return this._player;
   }
@@ -89,6 +78,10 @@ export default class GameScene extends Scene {
     return this._musicManager;
   }
 
+  get tickRate() {
+    return this._tickRate;
+  }
+
   constructor() {
     super({
       key: 'GameScene',
@@ -108,6 +101,15 @@ export default class GameScene extends Scene {
     // first time playing the game?
     if ((window.localStorage.getItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`) ?? 'false') !== 'true')
       window.localStorage.setItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`, 'true');
+
+    if (this.hustlerData) {
+      const key = 'hustler_' + this.hustlerData.id;
+      this.load.spritesheet(
+        key,
+        `https://api.dopewars.gg/hustlers/${this.hustlerData.id}/sprites/composite.png`,
+        { frameWidth: 60, frameHeight: 60 },
+      );
+    }
   }
 
   create() {
@@ -122,24 +124,42 @@ export default class GameScene extends Scene {
     // clean
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       // unsubscribe from listeners
-      stopHandleItemEntities();
-      stopHandleCamera();
+      // stopHandleItemEntities();
+      // stopHandleCamera();
+
+      this.loadingSpinner?.destroy();
+      this.loadingSpinner = undefined;
+
+      if (this.mapHelper)
+        Object.values(this.mapHelper.loadedMaps).forEach((map) => {
+          map.dispose();
+        });
+
+      EventHandler.emitter().removeAllListeners();
+      NetworkHandler.getInstance().emitter.removeAllListeners();
+      ControlsManager.getInstance().emitter.removeAllListeners();
+
       // shutdown ui scene on game scene shutdown
       this.scene.stop('UIScene');
     });
     
     // create all of the animations
     new GameAnimations(this).create();
+    if (this.hustlerData)
+      createHustlerAnimations(this, 'hustler_' + this.hustlerData.id);
 
     // load chiptunes
-    let chiptunes = this.cache.audio.getKeys().filter((key: string) => key.includes('chiptune')).map((key: string) => {
+    let chiptunes = Object.keys(manifest.assets.background_music).map((key) => {
+      const asset = manifest.assets.background_music[key as keyof typeof manifest.assets.background_music];
       return {
         name: key.replace('chiptunes_', '').replaceAll('_', ' '),
-        song: this.sound.add(key) as Phaser.Sound.WebAudioSound
+        song: new Howl({
+          src: asset.file,
+          html5: true
+        })
       };
     });
-    this.sound.pauseOnBlur = false;
-    this._musicManager = new MusicManager(this.sound as Phaser.Sound.WebAudioSoundManager, chiptunes, true);
+    this._musicManager = new MusicManager(chiptunes, true);
 
     // register player
     NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_JOIN, {
@@ -162,7 +182,9 @@ export default class GameScene extends Scene {
         NetworkHandler.getInstance().disconnect();
         NetworkHandler.getInstance().authenticator.logout()
           .finally(() => {
-            this.scene.start('LoginScene', this.hustlerData);
+            this.scene.start('LoginScene', {
+              hustlerData: this.hustlerData 
+            });
           })
         
       }
@@ -174,6 +196,8 @@ export default class GameScene extends Scene {
       NetworkEvents.PLAYER_HANDSHAKE,
       (data: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) => {
         NetworkHandler.getInstance().emitter.off(NetworkEvents.ERROR, onHandshakeError);
+
+        this._tickRate = data.tick_rate / (1000 * 1000);
 
         // create map and entities
         this._mapHelper = new MapHelper(this);
@@ -196,6 +220,15 @@ export default class GameScene extends Scene {
             })
         ]).setVisible(false);
 
+        const jimmy = new Citizen(
+          this.matter.world, 
+          300, 200, 
+          'NY_Bushwick_Basket', 
+          '43', 'Jimmy', 
+          undefined, 
+          getConversation(data.relations?.jimmy?.conversation ?? 'hello', data.relations?.jimmy?.text)).setData('id', 'jimmy');
+
+        this.citizens.push(jimmy);
         this.citizens.push(security);
 
         this._player = new Player(
@@ -454,6 +487,12 @@ export default class GameScene extends Scene {
     // });
 
     // register listeners
+    networkHandler.on(NetworkEvents.DISCONNECTED, () => {
+      networkHandler.authenticator.logout()
+        .finally(() => this.scene.start('LoginScene', {
+          hustlerData: this.hustlerData,
+        }));
+    });
     // instantiate a new hustler on player join
     networkHandler.on(
       NetworkEvents.SERVER_PLAYER_JOIN,
@@ -589,61 +628,60 @@ export default class GameScene extends Scene {
     level.__neighbours.forEach(n => {
       const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
       if (Object.keys(this.mapHelper.loadedMaps).find(m => m === lvl.identifier)) {
-        if (!patchMap && n.dir === dir) {  
+        if (!patchMap && n.dir === dir && 
+          this.player.x > lvl.worldX && this.player.x < lvl.worldX + lvl.pxWid &&
+           this.player.y > lvl.worldY && this.player.y < lvl.worldY + lvl.pxHei) {  
           // map player is currently in
-          const otherMap = this.mapHelper.loadedMaps[this._player.currentMap]!;
+          const lastMap = this.mapHelper.loadedMaps[this._player.currentMap]!;
+
           // NOTE: do check directly in tilesanimator update?
           // stop tiles animations when not in current map
-          otherMap.displayLayers
+          lastMap.displayLayers
             .forEach(l => l.getData('animators')
               .forEach((animator: TilesAnimator) => animator.stop()));
-          // slowly increase alpha to max_alpha
-          if (otherMap.otherGfx) {
-            // cancel any previous running fading
-            if (otherMap.otherGfx.getData('fading'))
-              clearInterval(otherMap.otherGfx.getData('fading'));
 
-            // TODO: use phaser time events instead
-            const fadeIn = setInterval(() => {
-              otherMap.otherGfx!.alpha += 0.01;
-              if (otherMap.otherGfx!.alpha >= otherMap.otherGfx!.getData('max_alpha'))
-              {
-                otherMap.otherGfx!.alpha = otherMap.otherGfx!.getData('max_alpha');
-                otherMap.otherGfx!.setData('fading', undefined);
-                clearInterval(fadeIn);
-              }
-            });
-            // id of the fadeIn interval
-            otherMap.otherGfx!.setData('fading', fadeIn);
+          // slowly increase alpha to max_alpha
+          if (lastMap.otherGfx) {
+            // cancel any previous running fading
+            const fadingOutTween: Phaser.Tweens.Tween = lastMap.otherGfx.getData('fadingOut');
+            if (fadingOutTween)
+              fadingOutTween.restart();
+            else {
+              const fadeIn = this.tweens.add({
+                targets: lastMap.otherGfx,
+                alpha: lastMap.otherGfx.getData('max_alpha'),
+                ease: Phaser.Math.Easing.Quadratic.In,
+                duration: 1000,
+              })
+              lastMap.otherGfx!.setData('fadingOut', fadeIn);
+            }
           }
 
           // set current map to the one we are going to
           this._player.currentMap = lvl.identifier;
-          const map = this.mapHelper.loadedMaps[this._player.currentMap]!;
+          const currentMap = this.mapHelper.loadedMaps[this._player.currentMap]!;
           
           // NOTE: do check directly in tilesanimator update?
           // make sure animators are started
-          map.displayLayers
+          currentMap.displayLayers
             .forEach(l => l.getData('animators')
               .forEach((animator: TilesAnimator) => animator.start()));
           
-          // TODO: use phaser time events instead
           // slowly decrease alpha to 0
-          if (map.otherGfx) {
+          if (currentMap.otherGfx) {
             // cancel any previous running fading
-            if (map.otherGfx.getData('fading'))
-              clearInterval(map.otherGfx.getData('fading'));
-
-            const fadeOut = setInterval(() => {
-              map.otherGfx!.alpha -= 0.01;
-              if (map.otherGfx!.alpha <= 0) {
-                map.otherGfx!.setData('fading', undefined);
-                map.otherGfx!.alpha = 0;
-                clearInterval(fadeOut);
-              }
-            });
-            // id of the fadeOut interval 
-            map.otherGfx!.setData('fading', fadeOut);
+            const fadingInTween: Phaser.Tweens.Tween = currentMap.otherGfx.getData('fadingIn');
+            if (fadingInTween)
+              fadingInTween.restart();
+            else {
+              const fadeOut = this.tweens.add({
+                targets: currentMap.otherGfx,
+                alpha: 0,
+                ease: Phaser.Math.Easing.Quartic.Out,
+                duration: 1000,
+              })
+              currentMap.otherGfx!.setData('fadingIn', fadeOut);
+            }
           }
 
           // TODO: multiple map change messages are getting sent. fix this
@@ -654,25 +692,14 @@ export default class GameScene extends Scene {
               y: this._player.y,
             });
 
-          // const updateHustlerMap = (h: Hustler) => {
-          //   // hide/show hustlers if in current map
-          //   h.setVisible(h.currentMap === this.player.currentMap);
-          //   // cancel path/velocity if not same map
-          //   if (h.currentMap !== this.player.currentMap)
-          //   {
-          //     h.navigator.cancel();
-          //     h.setVelocity(0);
-          //   }
-          // }
-
           const updateHustlerMap = (h: Hustler) => {
             if (h.currentMap === this._player.currentMap && !h.visible) {
               h.setVisible(true);
               h.setActive(true);
             } else {
+              // TODO: only hide hustler if not in viewport too?
               h.setVelocity(0);
               h.navigator.cancel();
-
               h.setVisible(false);
               h.setActive(false);
             }
@@ -728,10 +755,6 @@ export default class GameScene extends Scene {
         const afterEntities = performance.now();
 
         console.info(`${lvl.identifier}: Entities creation took ${afterEntities - beforeEntities}ms`);
-        // new Promise(() => {
-        //   this.mapHelper.createMap(lvl.identifier);
-        // }).then(() => this.mapHelper.createCollisions())
-        //   .then(() => this.mapHelper.createEntities());
       }
     });
   }

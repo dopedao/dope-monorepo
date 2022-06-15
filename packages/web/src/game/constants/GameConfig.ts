@@ -1,18 +1,18 @@
-import Phaser, { Scene } from 'phaser';
 import Boot from '../scenes/Boot';
-import GameScene from '../scenes/Game';
-import Preload from '../scenes/Preload';
-import phaserReact from 'phaser3-react';
-import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
-import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
-import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
-import UIScene from 'game/scenes/UI';
-import OutlinePipelinePlugin from 'phaser3-rex-plugins/plugins/outlinepipeline-plugin.js';
 import DropShadowPipelinePlugin from 'phaser3-rex-plugins/plugins/dropshadowpipeline-plugin.js';
-import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
-import KawaseBlurPipelinePlugin from 'phaser3-rex-plugins/plugins/kawaseblurpipeline-plugin.js';
+import GameScene from '../scenes/Game';
 import IntroScene from 'game/scenes/Intro';
+import KawaseBlurPipelinePlugin from 'phaser3-rex-plugins/plugins/kawaseblurpipeline-plugin.js';
 import LoginScene from 'game/scenes/Login';
+import OutlinePipelinePlugin from 'phaser3-rex-plugins/plugins/outlinepipeline-plugin.js';
+import Phaser, { Scene } from 'phaser';
+import phaserReact from 'phaser3-react';
+import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
+import Preload from '../scenes/Preload';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
+import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
+import UIScene from 'game/scenes/UI';
+import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 
 
 export const defaultGameConfig: Phaser.Types.Core.GameConfig = {

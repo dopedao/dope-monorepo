@@ -36,15 +36,27 @@ func (lu *ListingUpdate) SetActive(b bool) *ListingUpdate {
 	return lu
 }
 
-// SetOrder sets the "order" field.
-func (lu *ListingUpdate) SetOrder(jm json.RawMessage) *ListingUpdate {
-	lu.mutation.SetOrder(jm)
+// SetWyvernOrder sets the "wyvern_order" field.
+func (lu *ListingUpdate) SetWyvernOrder(jm json.RawMessage) *ListingUpdate {
+	lu.mutation.SetWyvernOrder(jm)
 	return lu
 }
 
-// ClearOrder clears the value of the "order" field.
-func (lu *ListingUpdate) ClearOrder() *ListingUpdate {
-	lu.mutation.ClearOrder()
+// ClearWyvernOrder clears the value of the "wyvern_order" field.
+func (lu *ListingUpdate) ClearWyvernOrder() *ListingUpdate {
+	lu.mutation.ClearWyvernOrder()
+	return lu
+}
+
+// SetSeaportOrder sets the "seaport_order" field.
+func (lu *ListingUpdate) SetSeaportOrder(jm json.RawMessage) *ListingUpdate {
+	lu.mutation.SetSeaportOrder(jm)
+	return lu
+}
+
+// ClearSeaportOrder clears the value of the "seaport_order" field.
+func (lu *ListingUpdate) ClearSeaportOrder() *ListingUpdate {
+	lu.mutation.ClearSeaportOrder()
 	return lu
 }
 
@@ -254,17 +266,30 @@ func (lu *ListingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: listing.FieldActive,
 		})
 	}
-	if value, ok := lu.mutation.Order(); ok {
+	if value, ok := lu.mutation.WyvernOrder(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
 			Value:  value,
-			Column: listing.FieldOrder,
+			Column: listing.FieldWyvernOrder,
 		})
 	}
-	if lu.mutation.OrderCleared() {
+	if lu.mutation.WyvernOrderCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
-			Column: listing.FieldOrder,
+			Column: listing.FieldWyvernOrder,
+		})
+	}
+	if value, ok := lu.mutation.SeaportOrder(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: listing.FieldSeaportOrder,
+		})
+	}
+	if lu.mutation.SeaportOrderCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: listing.FieldSeaportOrder,
 		})
 	}
 	if lu.mutation.DopeCleared() {
@@ -470,15 +495,27 @@ func (luo *ListingUpdateOne) SetActive(b bool) *ListingUpdateOne {
 	return luo
 }
 
-// SetOrder sets the "order" field.
-func (luo *ListingUpdateOne) SetOrder(jm json.RawMessage) *ListingUpdateOne {
-	luo.mutation.SetOrder(jm)
+// SetWyvernOrder sets the "wyvern_order" field.
+func (luo *ListingUpdateOne) SetWyvernOrder(jm json.RawMessage) *ListingUpdateOne {
+	luo.mutation.SetWyvernOrder(jm)
 	return luo
 }
 
-// ClearOrder clears the value of the "order" field.
-func (luo *ListingUpdateOne) ClearOrder() *ListingUpdateOne {
-	luo.mutation.ClearOrder()
+// ClearWyvernOrder clears the value of the "wyvern_order" field.
+func (luo *ListingUpdateOne) ClearWyvernOrder() *ListingUpdateOne {
+	luo.mutation.ClearWyvernOrder()
+	return luo
+}
+
+// SetSeaportOrder sets the "seaport_order" field.
+func (luo *ListingUpdateOne) SetSeaportOrder(jm json.RawMessage) *ListingUpdateOne {
+	luo.mutation.SetSeaportOrder(jm)
+	return luo
+}
+
+// ClearSeaportOrder clears the value of the "seaport_order" field.
+func (luo *ListingUpdateOne) ClearSeaportOrder() *ListingUpdateOne {
+	luo.mutation.ClearSeaportOrder()
 	return luo
 }
 
@@ -712,17 +749,30 @@ func (luo *ListingUpdateOne) sqlSave(ctx context.Context) (_node *Listing, err e
 			Column: listing.FieldActive,
 		})
 	}
-	if value, ok := luo.mutation.Order(); ok {
+	if value, ok := luo.mutation.WyvernOrder(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
 			Value:  value,
-			Column: listing.FieldOrder,
+			Column: listing.FieldWyvernOrder,
 		})
 	}
-	if luo.mutation.OrderCleared() {
+	if luo.mutation.WyvernOrderCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
-			Column: listing.FieldOrder,
+			Column: listing.FieldWyvernOrder,
+		})
+	}
+	if value, ok := luo.mutation.SeaportOrder(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: listing.FieldSeaportOrder,
+		})
+	}
+	if luo.mutation.SeaportOrderCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: listing.FieldSeaportOrder,
 		})
 	}
 	if luo.mutation.DopeCleared() {

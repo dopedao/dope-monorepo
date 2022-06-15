@@ -2,10 +2,14 @@ import Citizen from "game/entities/citizen/Citizen";
 import Conversation, { Text } from "game/entities/citizen/Conversation";
 import NetworkHandler from "game/handlers/network/NetworkHandler";
 import { UniversalEventNames } from "game/handlers/network/types";
-import { number } from "starknet";
 
-const updateText = (citizen: Citizen, conversation: Conversation, next: number) => {
-    conversation.add(Texts[conversation.id][next]);
+const updateChoiceTexts = (citizen: Citizen, conversation: Conversation, next: number, lastAnswerIndex: number) => {
+    if (conversation.texts.length - 1 > next)
+        conversation.texts.splice(next + 1, lastAnswerIndex - next)
+}
+
+const updateConversation = (citizen: Citizen, conversation: Conversation) => {
+    citizen.conversations.unshift(conversation);
 
     if (NetworkHandler.getInstance().connected) {
         NetworkHandler.getInstance().send(
@@ -13,65 +17,35 @@ const updateText = (citizen: Citizen, conversation: Conversation, next: number) 
             {
                 citizen: citizen.getData('id'),
                 conversation: conversation.id,
-                text: next,
-            },
-        );
-    }
-}
-
-const updateConversation = (citizen: Citizen, next: string) => {
-    citizen.conversations.push(Conversations[next]);
-
-    if (NetworkHandler.getInstance().connected) {
-        NetworkHandler.getInstance().send(
-            UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE,
-            {
-                citizen: citizen.getData('id'),
-                conversation: next,
                 text: undefined,
             },
         );
     }
 }
 
-const bindRandom = (texts: Text[]): Text[] => {
-    return texts.map(text => {
-        text.onEnd = (citizen: Citizen, conversation: Conversation, text: Text, selectedChoice?: number) => {
-            const next = Math.round(Math.random() * (texts.length - 1));
-            updateText(citizen, conversation, next);
-        }
-
-        return text;
-    });
-}
-
 const Texts: {[key: string]: Text[]} = {
     "hello": [
         {
             text: "Hey, how are you?",
-            choices: ["I'm fine", "I'm not fine"],
-            typingSpeed: 50,
-            onEnd: (citizen, conversation, text, selectedChoice) => {
-                updateText(citizen, conversation, selectedChoice === 0 ? 1 : 2)
-            }
+            choices: {
+                "I'm fine": "name",
+                "I'm not fine": "name"
+            },
+            typingSpeed: 50
         },
         {
-            text: "Glad to hear that!"
-        },
-        {
-            text: "Sadge"
+            text: "Test end text",
         }
     ],
     "name": [{
             text: "What's your name?",
-            choices: ["My name is..."],
-            typingSpeed: 50,
-            onEnd: (citizen: Citizen, conversation: Conversation, text: Text, selectedChoice?: number) => {
-                updateText(citizen, conversation, 1)
+            choices: {
+                "My name is ...": ""
             },
+            typingSpeed: 50,
         },
         {
-            text: "Nice to meet you!"
+            text: "Nice to meet you!",
         }
     ],
     "jimmy_random": [
@@ -131,36 +105,64 @@ const Texts: {[key: string]: Text[]} = {
     ]
 };
 
-const Conversations: {[key: string]: Conversation} = {
-    "hello": new Conversation("hello", Texts["hello"], (citizen) => {
-        updateConversation(citizen, "name")
-    }),
-    "oracle_jones_random": new Conversation("oracle_jones_random", Texts["oracle_jones_random"][Math.round(Math.random() * (Texts["oracle_jones_random"].length - 1))], (citizen, conversation) => {
-        const textIdx = Math.round(Math.random() * (Texts["jimmy_random"].length - 1));
-        citizen.conversations.push(conversation);
+export const randomText = (citizen: Citizen, conversation: Conversation, texts: Text[]) => {
+    const textIdx = Math.floor(Math.random() * texts.length);
+    conversation.texts.push(texts[textIdx]);
+    citizen.conversations.unshift(conversation);
 
-        updateText(citizen, conversation, textIdx);
-    }),
-    "detective_harry_random": new Conversation("detective_harry_random", Texts["detective_harry_random"][Math.round(Math.random() * (Texts["detective_harry_random"].length - 1))], (citizen, conversation) => {
-        const textIdx = Math.round(Math.random() * (Texts["jimmy_random"].length - 1));
-        citizen.conversations.push(conversation);
+    // TODO: Fire up end text event and move somewhere else, maybe in network handler?
+    if (NetworkHandler.getInstance().connected) {
+      NetworkHandler.getInstance().send(
+          UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE,
+          {
+              citizen: citizen.getData('id'),
+              conversation: conversation.id,
+              text: textIdx,
+          },
+      );
+    }
+}
 
-        updateText(citizen, conversation, textIdx);
-    }),
-    "jimmy_random": new Conversation("jimmy_random", Texts["jimmy_random"][Math.round(Math.random() * (Texts["jimmy_random"].length - 1))], (citizen, conversation) => {
-        const textIdx = Math.round(Math.random() * (Texts["jimmy_random"].length - 1));
-        citizen.conversations.push(conversation);
 
-        updateText(citizen, conversation, textIdx);
-    }),
+// TODO: texts in here? in conversation object
+const Conversations: {[key: string]: {
+    random?: boolean,
+    nextConversation?: string,
+}} = {
+    "hello": {
+        random: false,
+    },
+    "name": {
+        random: false,
+    },
+    "oracle_jones_random": {
+        random: true,
+    },
+    "detective_harry_random": {
+        random: true,
+    },
+    "jimmy_random": {
+        random: true,
+    }
 };
 
-function getConversation(id: string, text?: number): Conversation {
+function getConversation(id: string, text?: number): Conversation | undefined {
     const conv = Conversations[id];
-    if (text)
-        conv.texts = [Texts[id][text]]
+    if (!conv) {
+        console.warn(`Conversation with id ${id} does not exist`);
+        return;
+    }
 
-    return conv;
+    const conversationObj = new Conversation(id, Texts[id].slice(text));
+    if (conv.random) {
+        conversationObj.texts = [conversationObj.texts[Math.floor(Math.random() * conversationObj.texts.length)]];
+        conversationObj.onFinish = (citizen, conversation) => randomText(citizen, conversation, Texts[id]);
+    } else if (conv.nextConversation) {
+        const nextConv = getConversation(conv.nextConversation);
+        if (nextConv) conversationObj.onFinish = (citizen) => updateConversation(citizen, nextConv);
+    }
+
+    return conversationObj;
 }
 
 export {

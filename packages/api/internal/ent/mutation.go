@@ -9302,7 +9302,8 @@ type ListingMutation struct {
 	id                    *string
 	active                *bool
 	source                *listing.Source
-	_order                *json.RawMessage
+	wyvern_order          *json.RawMessage
+	seaport_order         *json.RawMessage
 	clearedFields         map[string]struct{}
 	dope                  *string
 	cleareddope           bool
@@ -9495,53 +9496,102 @@ func (m *ListingMutation) ResetSource() {
 	m.source = nil
 }
 
-// SetOrder sets the "order" field.
-func (m *ListingMutation) SetOrder(jm json.RawMessage) {
-	m._order = &jm
+// SetWyvernOrder sets the "wyvern_order" field.
+func (m *ListingMutation) SetWyvernOrder(jm json.RawMessage) {
+	m.wyvern_order = &jm
 }
 
-// Order returns the value of the "order" field in the mutation.
-func (m *ListingMutation) Order() (r json.RawMessage, exists bool) {
-	v := m._order
+// WyvernOrder returns the value of the "wyvern_order" field in the mutation.
+func (m *ListingMutation) WyvernOrder() (r json.RawMessage, exists bool) {
+	v := m.wyvern_order
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOrder returns the old "order" field's value of the Listing entity.
+// OldWyvernOrder returns the old "wyvern_order" field's value of the Listing entity.
 // If the Listing object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ListingMutation) OldOrder(ctx context.Context) (v json.RawMessage, err error) {
+func (m *ListingMutation) OldWyvernOrder(ctx context.Context) (v json.RawMessage, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOrder is only allowed on UpdateOne operations")
+		return v, errors.New("OldWyvernOrder is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOrder requires an ID field in the mutation")
+		return v, errors.New("OldWyvernOrder requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOrder: %w", err)
+		return v, fmt.Errorf("querying old value for OldWyvernOrder: %w", err)
 	}
-	return oldValue.Order, nil
+	return oldValue.WyvernOrder, nil
 }
 
-// ClearOrder clears the value of the "order" field.
-func (m *ListingMutation) ClearOrder() {
-	m._order = nil
-	m.clearedFields[listing.FieldOrder] = struct{}{}
+// ClearWyvernOrder clears the value of the "wyvern_order" field.
+func (m *ListingMutation) ClearWyvernOrder() {
+	m.wyvern_order = nil
+	m.clearedFields[listing.FieldWyvernOrder] = struct{}{}
 }
 
-// OrderCleared returns if the "order" field was cleared in this mutation.
-func (m *ListingMutation) OrderCleared() bool {
-	_, ok := m.clearedFields[listing.FieldOrder]
+// WyvernOrderCleared returns if the "wyvern_order" field was cleared in this mutation.
+func (m *ListingMutation) WyvernOrderCleared() bool {
+	_, ok := m.clearedFields[listing.FieldWyvernOrder]
 	return ok
 }
 
-// ResetOrder resets all changes to the "order" field.
-func (m *ListingMutation) ResetOrder() {
-	m._order = nil
-	delete(m.clearedFields, listing.FieldOrder)
+// ResetWyvernOrder resets all changes to the "wyvern_order" field.
+func (m *ListingMutation) ResetWyvernOrder() {
+	m.wyvern_order = nil
+	delete(m.clearedFields, listing.FieldWyvernOrder)
+}
+
+// SetSeaportOrder sets the "seaport_order" field.
+func (m *ListingMutation) SetSeaportOrder(jm json.RawMessage) {
+	m.seaport_order = &jm
+}
+
+// SeaportOrder returns the value of the "seaport_order" field in the mutation.
+func (m *ListingMutation) SeaportOrder() (r json.RawMessage, exists bool) {
+	v := m.seaport_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSeaportOrder returns the old "seaport_order" field's value of the Listing entity.
+// If the Listing object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ListingMutation) OldSeaportOrder(ctx context.Context) (v json.RawMessage, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSeaportOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSeaportOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSeaportOrder: %w", err)
+	}
+	return oldValue.SeaportOrder, nil
+}
+
+// ClearSeaportOrder clears the value of the "seaport_order" field.
+func (m *ListingMutation) ClearSeaportOrder() {
+	m.seaport_order = nil
+	m.clearedFields[listing.FieldSeaportOrder] = struct{}{}
+}
+
+// SeaportOrderCleared returns if the "seaport_order" field was cleared in this mutation.
+func (m *ListingMutation) SeaportOrderCleared() bool {
+	_, ok := m.clearedFields[listing.FieldSeaportOrder]
+	return ok
+}
+
+// ResetSeaportOrder resets all changes to the "seaport_order" field.
+func (m *ListingMutation) ResetSeaportOrder() {
+	m.seaport_order = nil
+	delete(m.clearedFields, listing.FieldSeaportOrder)
 }
 
 // SetDopeID sets the "dope" edge to the Dope entity by id.
@@ -9749,15 +9799,18 @@ func (m *ListingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ListingMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.active != nil {
 		fields = append(fields, listing.FieldActive)
 	}
 	if m.source != nil {
 		fields = append(fields, listing.FieldSource)
 	}
-	if m._order != nil {
-		fields = append(fields, listing.FieldOrder)
+	if m.wyvern_order != nil {
+		fields = append(fields, listing.FieldWyvernOrder)
+	}
+	if m.seaport_order != nil {
+		fields = append(fields, listing.FieldSeaportOrder)
 	}
 	return fields
 }
@@ -9771,8 +9824,10 @@ func (m *ListingMutation) Field(name string) (ent.Value, bool) {
 		return m.Active()
 	case listing.FieldSource:
 		return m.Source()
-	case listing.FieldOrder:
-		return m.Order()
+	case listing.FieldWyvernOrder:
+		return m.WyvernOrder()
+	case listing.FieldSeaportOrder:
+		return m.SeaportOrder()
 	}
 	return nil, false
 }
@@ -9786,8 +9841,10 @@ func (m *ListingMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldActive(ctx)
 	case listing.FieldSource:
 		return m.OldSource(ctx)
-	case listing.FieldOrder:
-		return m.OldOrder(ctx)
+	case listing.FieldWyvernOrder:
+		return m.OldWyvernOrder(ctx)
+	case listing.FieldSeaportOrder:
+		return m.OldSeaportOrder(ctx)
 	}
 	return nil, fmt.Errorf("unknown Listing field %s", name)
 }
@@ -9811,12 +9868,19 @@ func (m *ListingMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSource(v)
 		return nil
-	case listing.FieldOrder:
+	case listing.FieldWyvernOrder:
 		v, ok := value.(json.RawMessage)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetOrder(v)
+		m.SetWyvernOrder(v)
+		return nil
+	case listing.FieldSeaportOrder:
+		v, ok := value.(json.RawMessage)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSeaportOrder(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Listing field %s", name)
@@ -9848,8 +9912,11 @@ func (m *ListingMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *ListingMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(listing.FieldOrder) {
-		fields = append(fields, listing.FieldOrder)
+	if m.FieldCleared(listing.FieldWyvernOrder) {
+		fields = append(fields, listing.FieldWyvernOrder)
+	}
+	if m.FieldCleared(listing.FieldSeaportOrder) {
+		fields = append(fields, listing.FieldSeaportOrder)
 	}
 	return fields
 }
@@ -9865,8 +9932,11 @@ func (m *ListingMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *ListingMutation) ClearField(name string) error {
 	switch name {
-	case listing.FieldOrder:
-		m.ClearOrder()
+	case listing.FieldWyvernOrder:
+		m.ClearWyvernOrder()
+		return nil
+	case listing.FieldSeaportOrder:
+		m.ClearSeaportOrder()
 		return nil
 	}
 	return fmt.Errorf("unknown Listing nullable field %s", name)
@@ -9882,8 +9952,11 @@ func (m *ListingMutation) ResetField(name string) error {
 	case listing.FieldSource:
 		m.ResetSource()
 		return nil
-	case listing.FieldOrder:
-		m.ResetOrder()
+	case listing.FieldWyvernOrder:
+		m.ResetWyvernOrder()
+		return nil
+	case listing.FieldSeaportOrder:
+		m.ResetSeaportOrder()
 		return nil
 	}
 	return fmt.Errorf("unknown Listing field %s", name)

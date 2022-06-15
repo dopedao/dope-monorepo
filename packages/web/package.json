@@ -12,8 +12,6 @@
     "gen-opensea": "graphql-codegen --config codegen-opensea.yml",
     "test": "jest",
     "test-watch": "jest --watch",
-    "dump-opensea": "ts-node --script-mode script/dump-opensea-json.ts",
-    "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh-opensea-sales-cache.ts",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
@@ -25,7 +23,7 @@
     "@ensdomains/ensjs": "^2.0.1",
     "@ensdomains/react-ens-address": "^0.0.30",
     "@ion-phaser/react": "^1.3.0",
-    "@starknet-react/core": "^0.4.6",
+    "@starknet-react/core": "^0.6.3",
     "@types/js-cookie": "^3.0.1",
     "@types/node": "^16.10.2",
     "@types/pathfinding": "^0.0.5",
@@ -44,6 +42,7 @@
     "gear-rarity": "^1.0.5",
     "graphql": "^15.5.3",
     "gray-matter": "^4.0.3",
+    "howler": "^2.2.3",
     "js-cookie": "^3.0.1",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.27",
@@ -64,7 +63,7 @@
     "remark": "^14.0.2",
     "remark-html": "^15.0.1",
     "siwe": "^1.1.0",
-    "starknet": "^2.5.1",
+    "starknet": "^3.5.1",
     "use-deep-compare-effect": "^1.8.1"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 query Hustler($where: HustlerWhereInput) {
   hustlers(where: $where) {
+    totalCount
     edges {
       node {
         id

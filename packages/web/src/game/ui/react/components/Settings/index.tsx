@@ -1,7 +1,7 @@
 import { Center, ChakraProvider, Container, Heading, VStack, Text, IconButton, AlertIcon, Button, SimpleGrid, HStack, Spacer, PopoverTrigger, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverFooter, Spinner } from "@chakra-ui/react";
 import { ComponentManager } from "phaser3-react/src/manager";
 import theme from "ui/styles/theme";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import GameScene from "game/scenes/Game";
 import React from "react";
 import ControlsManager from "game/utils/ControlsManager";
@@ -17,7 +17,6 @@ interface Props {
 }
 
 const SettingsPages = (props: Props): {[key: string]: React.FunctionComponent} => {
-    console.log(props.game);
     return {
         Hustlers: Hustlers,
         Music: () => <Music musicManager={props.game.musicManager} />,
@@ -32,18 +31,23 @@ export default function Settings(props: Props) {
         component: React.FunctionComponent,
     }>();
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape")
-            openedPage ? setOpenedPage(undefined) : props.manager.events.emit('close');
-    }
-
     useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                if (openedPage) {
+                    setOpenedPage(undefined);
+                } else {
+                    props.manager.events.emit('close');
+                }
+            }
+        }
+
         document.addEventListener('keyup', handleKeyDown);
 
         return () => {
             document.removeEventListener('keyup', handleKeyDown);
         }
-    })
+    }, [openedPage]);
 
     return (
         <ChakraProvider theme={theme}>

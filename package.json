@@ -5,14 +5,15 @@
 		"web": "yarn workspace @dopewars/web",
 		"web:dev": "yarn workspace @dopewars/web dev",
 		"web:test": "yarn workspace @dopewars/web test",
+		"web:build": "yarn workspace @dopewars/web build",
 		"web:lint": "yarn workspace @dopewars/web lint",
 		"web:format": "yarn workspace @dopewars/web format",
-		"web:refresh-opensea-sales-cache": "yarn workspace @dopewars/web refresh-opensea-sales-cache",
 		"contracts": "yarn workspace @dopewars/contracts",
 		"format": "prettier --write 'packages/web/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
 	},
 	"devDependencies": {
 		"@typechain/ethers-v5": "^8.0.2",
+		"@types/howler": "^2.2.7",
 		"@types/mocha": "^8.2.2",
 		"@types/node": "^14.14.34",
 		"lerna": "^3.22.1",
@@ -30,6 +31,7 @@
 		"@sentry/react": "^6.17.4",
 		"@sentry/tracing": "^6.17.4",
 		"@types/isomorphic-fetch": "^0.0.35",
+		"howler": "^2.2.3",
 		"isomorphic-fetch": "^3.0.0"
 	}
 }

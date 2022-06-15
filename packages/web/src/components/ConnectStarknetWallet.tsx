@@ -3,10 +3,10 @@ import { Button } from '@chakra-ui/button';
 import ConnectWalletSVG from 'ui/svg/ConnectWallet';
 import Dialog from 'components/Dialog';
 import Head from './Head';
-import { useStarknet } from '@starknet-react/core';
+import { InjectedConnector, useStarknet } from '@starknet-react/core';
 
 const ConnectStarknetWallet = () => {
-  const { hasStarknet, connectBrowserWallet } = useStarknet();
+  const { account, connect } = useStarknet();
 
   return (
     <>
@@ -25,14 +25,14 @@ const ConnectStarknetWallet = () => {
           `}
         >
           {' '}
-          {!hasStarknet && (
+          {/* {!hasStarknet && (
             <div>
               <a href="https://chrome.google.com/webstore/detail/argent-x-starknet-wallet/dlcobpjiigpikoobohmabehhmhfoodbb/">
                 Get ArgentX wallet
               </a>
             </div>
           )}
-          {hasStarknet && (
+          {hasStarknet && ( */}
             <>
               <ConnectWalletSVG />
               <h4>Connect Your Starknet Wallet</h4>
@@ -44,10 +44,10 @@ const ConnectStarknetWallet = () => {
                   gap: 16px;
                 `}
               >
-                <Button onClick={() => connectBrowserWallet()}>ArgentX</Button>
+                <Button onClick={() => connect(new InjectedConnector())}>ArgentX</Button>
               </div>
             </>
-          )}
+          {/* )} */}
         </div>
       </Dialog>
     </>

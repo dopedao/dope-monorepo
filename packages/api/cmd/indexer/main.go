@@ -1,3 +1,11 @@
+// Runs the Ethereum Indexer webserver to be utilized
+// on Google Cloud Platform.
+//
+// THIS WILL NOT RUN ON YOUR LOCAL MACHINE UNLESS YOU HIT /_ah/start
+// ( It's a legacy Google Cloud Platform App Engine scaling control. )
+//
+// This is how the program is launched both on your local machine,
+// and when run remotely on GCP.
 package main
 
 import (
@@ -13,13 +21,6 @@ import (
 	"github.com/yfuruyama/crzerolog"
 )
 
-// Runs the HTTP and Indexer servers.
-//
-// This is how the program is launched both on your local machine,
-// and when run remotely on GCP.
-//
-// Requires a number of environment variables to be set (see above in source)
-// or the program will crash. Because of this we set defaults.
 func main() {
 	log := zerolog.New(os.Stderr)
 

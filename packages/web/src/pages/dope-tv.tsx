@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import DesktopWindow from 'components/DesktopWindow';
 import Head from 'components/Head';
 import Twitch from 'utils/twitch-embed-v1';
+import DesktopIconList from 'components/DesktopIconList';
 
 const title = 'DOPE TV';
 
@@ -26,6 +27,7 @@ export default function DopeTv() {
   return (
     <>
       <Head title={title} />
+      <DesktopIconList />
       <DesktopWindow title={title} width={1024} height={576} onResize={embedTwitchStream}>
         <TwitchEmbedContainer id="twitch-embed-container" />
       </DesktopWindow>
