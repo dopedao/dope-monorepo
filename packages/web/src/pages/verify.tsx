@@ -10,6 +10,7 @@ const discordAuthLink = "https://discord.com/api/oauth2/authorize?client_id=9733
 
 interface IDisordUser {
     discriminator: string,
+    // Email?
     email: string,
     id: string,
     username: string
@@ -150,10 +151,10 @@ const Verify = () => {
 
     useEffect(() => {
         const fragment = new URLSearchParams(window.location.search.slice(1));
-        const [codeToken, urlState] = [fragment.get("code"), fragment.get("state")];
+        const [apiToken, urlState] = [fragment.get("code"), fragment.get("state")];
 
-        if (!codeToken) {
-            console.log("No access token.");
+        if (!apiToken) {
+            console.log("No api token.");
             return;
         }
         const decodedUrlState = decodeURIComponent(urlState!);
@@ -169,12 +170,12 @@ const Verify = () => {
         payload.append("client_id", process.env.NEXT_PUBLIC_DBOT_CLIENT_ID!);
         payload.append("client_secret", process.env.NEXT_PUBLIC_DBOT_CLIENT_AUTH_TOKEN!);
         payload.append("grant_type", "authorization_code");
-        payload.append("code", codeToken);
+        payload.append("code", apiToken);
         payload.append("scope", "identify guilds email");
         payload.append("redirect_uri", "http://localhost:3000/verify");
 
         // Token to make request on behalf of user
-        const fetchAccessToken = async () => {
+        const fetchUserToken = async () => {
             const { access_token } = await fetch("https://discord.com/api/oauth2/token", {
                 method: "POST",
                 headers: {
@@ -187,17 +188,15 @@ const Verify = () => {
         }
 
         // request user data
-        fetchAccessToken().then(async resp => {
+        fetchUserToken().then(async resp => {
             const user: IDisordUser = await fetch("https://discord.com/api/users/@me", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${resp}`
                 }
             }).then(res => res.json());
-            if (user) {
-                console.log(user);
-                setDiscordUser(user);
-            }
+            console.log(user);
+            if (user) setDiscordUser(user);
 
 
             const guilds: IGuild[] = await fetch("https://discord.com/api/users/@me/guilds", {
