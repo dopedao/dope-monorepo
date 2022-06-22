@@ -7,8 +7,6 @@ import { StarknetProvider } from '@starknet-react/core';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Hydrate } from 'react-query/hydration';
-
-import DesktopIconList from 'components/DesktopIconList';
 import GlobalStyles from 'ui/styles/GlobalStyles';
 import PageLoadingIndicator from 'components/PageLoadingIndicator';
 import theme from 'ui/styles/theme';
@@ -65,7 +63,6 @@ export default function CreateDopeApp({ Component, pageProps, router }: AppProps
                   <FullScreenProvider>
                     <main>
                       <PageLoadingIndicator />
-                      <DesktopIconList />
                       {shouldIncludeRollYourOwn ? (
                         <RollYourOwnProvider>
                           <Component {...pageProps} />
