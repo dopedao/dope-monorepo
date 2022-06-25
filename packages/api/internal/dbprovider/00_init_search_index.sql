@@ -1,4 +1,4 @@
-DROP VIEW IF EXISTS search_index;
+DROP MATERIALIZED VIEW IF EXISTS search_index;
 
 CREATE MATERIALIZED VIEW search_index AS (
 	WITH dope_agg AS (
