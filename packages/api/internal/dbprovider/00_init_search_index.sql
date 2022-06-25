@@ -180,7 +180,7 @@ UNION (WITH hustler_agg AS (
 				OR h.item_hustler_clothes = i.id
 				OR h.item_hustler_weapons = i.id
 				OR h.item_hustler_vehicles = i.id
-				OR h.item_hustler_accessories = i.
+				OR h.item_hustler_accessories = i.id
 		) df
 		GROUP BY
 			df.id,

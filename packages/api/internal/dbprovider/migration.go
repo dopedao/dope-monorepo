@@ -3,8 +3,6 @@ package dbprovider
 import (
 	"context"
 	"embed"
-	"fmt"
-	"strings"
 
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
@@ -39,7 +37,7 @@ func runMigration(ctx context.Context) {
 var f embed.FS
 
 // Drop and recreate our Materialized views with SQL files.
-func refreshMaterializedViews(ctx context.Context) (string, error) {
+func refreshMaterializedViews(ctx context.Context) {
 	_, log := logger.LogFor(ctx)
 	log.Debug().Msg("Loading SQL migrations for Materialized Views")
 
@@ -47,9 +45,6 @@ func refreshMaterializedViews(ctx context.Context) (string, error) {
 
 	_, err := dbConnection.DB().Exec(string(searchMigrationSql))
 	if err != nil {
-		if !strings.Contains(err.Error(), "already exists") {
-			return "", fmt.Errorf("applying ts migration: %w", err)
-		}
+		logger.LogFatalOnErr(err, "FATAL refreshMaterializedViews")
 	}
-	return "Database migrated", nil
 }

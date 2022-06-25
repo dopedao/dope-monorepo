@@ -289,7 +289,10 @@ func (t *TimeNano) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	tt, err := time.Parse("2006-01-02T15:04:05.999999", s)
+	// Dates were returning with additional +00:00
+	// Which was blowing up our parsing of them
+	withoutIsoPlus := strings.Split(s, "+")
+	tt, err := time.Parse("2006-01-02T15:04:05.999999", withoutIsoPlus[0])
 	if err != nil {
 		return err
 	}

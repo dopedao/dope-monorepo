@@ -155,7 +155,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 					}
 
 					// Save to listings with asset record
-					if asset.LastSale != nil {
+					if asset.LastSale != nil && asset.LastSale.Transaction != nil {
 						id := fmt.Sprintf("%d", asset.LastSale.Transaction.ID)
 						if err := tx.Listing.
 							Create().
@@ -282,6 +282,5 @@ func (o *Opensea) getURL(ctx context.Context, url string) ([]byte, error) {
 
 		return nil, fmt.Errorf("backend returns status %d msg: %s", resp.StatusCode, string(body))
 	}
-
 	return body, nil
 }
