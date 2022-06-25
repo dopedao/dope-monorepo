@@ -42,6 +42,18 @@ The Dope Wars API and Indexer run on Google Cloud Platform using App Engine in t
 
 At the time of this writing, [App Engine Standard Environment only supports up to Go 1.16](https://cloud.google.com/appengine/docs/the-appengine-environments), so that should be the version you develop in.
 
+#### Authenticating with `gcloud`
+
+The `gcloud` command line tool is useful to do a number of things in deploying the API. You can install it and set it up like so (after obtaining a service account login from a project lead)
+
+```shell
+# Mac OS X commands
+brew install --cask google-cloud-sdk
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account-creds.json"
+gcloud auth login
+gcloud config set project dopewars-live
+```
+
 #### Run these commands to deploy
 
 ```bash
