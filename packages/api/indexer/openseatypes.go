@@ -41,6 +41,7 @@ type Asset struct {
 	Decimals                int64                `json:"decimals"`
 	TokenMetadata           string               `json:"token_metadata"`
 	SellOrders              []Order              `json:"sell_orders"`
+	SeaportOrders           []SeaportOrder       `json:"seaport_sell_orders"`
 	Creator                 *AccountWithUsername `json:"creator"`
 	Traits                  []Trait              `json:"traits"`
 	LastSale                *Event               `json:"last_sale"`
@@ -337,6 +338,25 @@ type Trait struct {
 type Value struct {
 	Integer *int64
 	String  *string
+}
+
+// OpenSea's new order model
+// https://docs.opensea.io/v2.0/reference/model-reference#order-model
+type SeaportOrder struct {
+	ID              int64    `json:"id"`
+	CreatedDate *TimeNano    `json:"created_date"`
+	ClosingDate *TimeNano    `json:"closing_date"`
+	CurrentPrice   Number    `json:"current_price"`
+	ListingTime     int64    `json:"listing_time"`
+	ExpirationTime  int64    `json:"expiration_time"`
+	OrderHash      string    `json:"order_hash"`
+	Maker         Account    `json:"maker"`
+	Taker         Account    `json:"taker"`
+	Side           string    `json:"side"` // 0 for buy orders and 1 for sell orders.
+	OrderType      string    `json:"order_type"`
+	Cancelled        bool    `json:"cancelled"`
+	Finalized        bool    `json:"finalized"`
+	MarkedInvalid    bool    `json:"marked_invalid"`
 }
 
 // Order is an order

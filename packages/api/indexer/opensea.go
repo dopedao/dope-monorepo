@@ -98,60 +98,38 @@ func (o *Opensea) Sync(ctx context.Context) {
 						return fmt.Errorf("deactivating existing listings: %w", err)
 					}
 
+					// To handle the old-style "Wyvern" sell orders
+					//
+					// This is pre-Seaport API and probably will go away
+					// at some point in the future.
 					for _, so := range asset.SellOrders {
-						onSale := !so.Cancelled && !so.Finalized
-						if onSale {
+						isOnSale := !so.Cancelled && !so.Finalized
+						if isOnSale {
 							atLeastOneItemOnSale = true
-							// Debugging to see if we get orders back or not
-							// pp.Print(so)
 						}
-						mashalled, err := json.Marshal(so)
+						orderJson, err := json.Marshal(so)
 						if err != nil {
 							return fmt.Errorf("marshalling opensea order: %v+", err)
 						}
+						persistSellOrder(
+							ctx, tx, dopeID, orderJson, isOnSale, so.OrderHash, so.CurrentPrice)
+					}
 
-						if err := tx.Listing.
-							Create().
-							SetID(so.OrderHash).
-							SetSource(listing.SourceOPENSEA).
-							SetActive(onSale).
-							SetDopeID(asset.TokenID).
-							SetOrder(mashalled).
-							OnConflictColumns(listing.FieldID).
-							Update(func(o *ent.ListingUpsert) {
-								o.SetActive(onSale)
-								o.SetOrder(mashalled)
-							}).
-							Exec(ctx); err != nil {
-							return fmt.Errorf("upserting to listing: %w", err)
+					// On 05-25-2022 OpenSea transitioned to the "Seaport"
+					// contract, and started returning sell orders in a different
+					// hash on listings. They're a subset of SellOrders from
+					// the Wyvern contract.
+					for _, so := range asset.SeaportOrders {
+						isOnSale := !so.Cancelled && !so.Finalized
+						if isOnSale {
+							atLeastOneItemOnSale = true
 						}
-
-						if err := tx.Amount.
-							Create().
-							SetID(fmt.Sprintf("input_%s", so.OrderHash)).
-							SetAmount(schema.BigInt{Int: so.CurrentPrice.Big()}).
-							SetType(amount.TypeETH).
-							SetListingInputID(so.OrderHash).
-							OnConflictColumns(amount.FieldID).
-							DoNothing().
-							Exec(ctx); err != nil && !ent.IsNoRowsInResultSetError(err) {
-							return fmt.Errorf("upserting to asset: %w", err)
+						orderJson, err := json.Marshal(so)
+						if err != nil {
+							return fmt.Errorf("marshalling opensea order: %v+", err)
 						}
-
-						// Output of OpenSea sale is the DOPE token.
-						// TODO: How do bundles work?
-						if err := tx.Amount.
-							Create().
-							SetID(fmt.Sprintf("output_%s", so.OrderHash)).
-							SetType(amount.TypeDOPE).
-							SetAssetID(schema.BigInt{Int: dopeID}).
-							SetAmount(schema.BigInt{Int: big.NewInt(1)}).
-							SetListingOutputID(so.OrderHash).
-							OnConflictColumns("id").
-							DoNothing().
-							Exec(ctx); err != nil && !ent.IsNoRowsInResultSetError(err) {
-							return fmt.Errorf("upserting to asset: %w", err)
-						}
+						persistSellOrder(
+							ctx, tx, dopeID, orderJson, isOnSale, so.OrderHash, so.CurrentPrice)
 					}
 
 					// Save to listings with asset record
@@ -222,6 +200,66 @@ func (o *Opensea) Sync(ctx context.Context) {
 			return
 		}
 	}
+}
+
+// Extracted to save sellOrders from the original OpenSea Wyvern API response
+// and the new Seaport response contract.
+func persistSellOrder(
+	ctx context.Context,
+	tx *ent.Tx,
+	dopeID *big.Int,
+	orderJson []byte,
+	isOnSale bool,
+	orderHash string,
+	currentPrice Number,
+) error {
+	// Listing
+	if err := tx.Listing.
+		Create().
+		SetID(orderHash).
+		SetSource(listing.SourceOPENSEA).
+		SetActive(isOnSale).
+		SetDopeID(dopeID.String()).
+		SetOrder(orderJson).
+		OnConflictColumns(listing.FieldID).
+		Update(func(o *ent.ListingUpsert) {
+			o.SetActive(isOnSale)
+			o.SetOrder(orderJson)
+		}).
+		Exec(ctx); err != nil {
+		return fmt.Errorf("upserting to listing: %w", err)
+	}
+
+	// Listing amount for Ethereum price
+	if err := tx.Amount.
+		Create().
+		SetID(fmt.Sprintf("input_%s", orderHash)).
+		SetAmount(schema.BigInt{Int: currentPrice.Big()}).
+		SetType(amount.TypeETH).
+		SetListingInputID(orderHash).
+		OnConflictColumns(amount.FieldID).
+		DoNothing().
+		Exec(ctx); err != nil && !ent.IsNoRowsInResultSetError(err) {
+		return fmt.Errorf("upserting to asset: %w", err)
+	}
+
+	// Listing Amount for NFT Item
+	//
+	// Output of OpenSea sale is the DOPE token.
+	// TODO: How do bundles work?
+	if err := tx.Amount.
+		Create().
+		SetID(fmt.Sprintf("output_%s", orderHash)).
+		SetAmount(schema.BigInt{Int: big.NewInt(1)}).
+		SetType(amount.TypeDOPE).
+		SetAssetID(schema.BigInt{Int: dopeID}).
+		SetListingOutputID(orderHash).
+		OnConflictColumns("id").
+		DoNothing().
+		Exec(ctx); err != nil && !ent.IsNoRowsInResultSetError(err) {
+		return fmt.Errorf("upserting to asset: %w", err)
+	}
+	return nil
 }
 
 // getAssetCollection for Opensea
