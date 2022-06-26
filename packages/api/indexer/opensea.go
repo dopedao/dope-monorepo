@@ -119,18 +119,18 @@ func (o *Opensea) Sync(ctx context.Context) {
 					// contract, and started returning sell orders in a different
 					// hash on listings. They're a subset of SellOrders from
 					// the Wyvern contract.
-					for _, so := range asset.SeaportOrders {
-						isOnSale := !so.Cancelled && !so.Finalized
-						if isOnSale {
-							atLeastOneItemOnSale = true
-						}
-						orderJson, err := json.Marshal(so)
-						if err != nil {
-							return fmt.Errorf("marshalling opensea order: %v+", err)
-						}
-						persistSellOrder(
-							ctx, tx, dopeID, orderJson, isOnSale, so.OrderHash, so.CurrentPrice)
-					}
+					// for _, so := range asset.SeaportOrders {
+					// 	isOnSale := !so.Cancelled && !so.Finalized
+					// 	if isOnSale {
+					// 		atLeastOneItemOnSale = true
+					// 	}
+					// 	orderJson, err := json.Marshal(so)
+					// 	if err != nil {
+					// 		return fmt.Errorf("marshalling opensea order: %v+", err)
+					// 	}
+					// 	persistSellOrder(
+					// 		ctx, tx, dopeID, orderJson, isOnSale, so.OrderHash, so.CurrentPrice)
+					// }
 
 					// Save to listings with asset record
 					if asset.LastSale != nil && asset.LastSale.Transaction != nil {
