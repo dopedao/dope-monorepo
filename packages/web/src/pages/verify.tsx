@@ -1,14 +1,13 @@
-import { useWeb3React } from '@web3-react/core';
-import AppWindow from 'components/AppWindow';
 import { BigNumber, ethers } from 'ethers';
-import {
-  HustlerType,
-  useInfiniteProfileDopesQuery,
-  useInfiniteProfileHustlersQuery,
-} from 'generated/graphql';
-import { usePaper } from 'hooks/contracts';
-import { useEffect, useMemo, useState } from 'react';
+import { Button } from '@chakra-ui/react';
 import { formatLargeNumber } from 'utils/utils';
+import { useEffect, useMemo, useState } from 'react';
+import { usePaper } from 'hooks/contracts';
+import { useWalletCheckQuery } from 'generated/graphql';
+import { useWeb3React } from '@web3-react/core';
+import DesktopWindow from 'components/DesktopWindow';
+import Dialog from 'components/Dialog';
+import styled from '@emotion/styled';
 
 const discordAuthLink =
   'https://discord.com/api/oauth2/authorize?client_id=973336825223598090&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fverify&response_type=code&scope=identify%20email%20guilds';
@@ -39,6 +38,11 @@ type DiscordUser = {
   isOg: boolean;
 };
 
+const Container = styled.div`
+  margin: 32px;
+`;
+
+
 // state string
 const generateRandomString = () => {
   let randString = '';
@@ -52,82 +56,43 @@ const generateRandomString = () => {
 };
 
 const Verify = () => {
+  const [isFetchingDiscord, setIsFetchingDiscord] = useState(true);
   const [discordUser, setDiscordUser] = useState<IDiscordUser>();
   const [hasGuild, setGuild] = useState(false);
-  const [hasOgHustler, setOgHustler] = useState(false);
-  const [paperBalance, setPaperBalance] = useState<BigNumber>();
-  const [isFetching, setFetching] = useState(true);
+  const [hasOgHustler, setHasOgHustler] = useState(false);
+  const [hustlerCount, setHustlerCount] = useState(0);
+  const [dopeCount, setDopeCount] = useState(0);
+  const [paperBalance, setPaperBalance] = useState<BigNumber>(0);
 
   const { account } = useWeb3React();
   const paper = usePaper();
 
-  const ogHustler = useInfiniteProfileHustlersQuery({
-    where: {
-      hasWalletWith: [
-        {
-          id: account,
-          hasHustlersWith: [{ type: HustlerType.OriginalGangsta }],
-        },
-      ],
+  // Fetch Wallet ownership info from our API
+  const { data, isFetching: isFetchingWalletInfo } = useWalletCheckQuery(
+    {
+      where: {
+        id: account,
+      },
     },
-  });
+  );
 
   useMemo(() => {
-    if (!ogHustler.data?.pages) return;
-    setOgHustler(ogHustler.data.pages.some(hustler => hustler.hustlers.totalCount > 0));
-  }, [ogHustler.data]);
-
-  const hustler = useInfiniteProfileHustlersQuery({
-    where: {
-      hasWalletWith: [
-        {
-          id: account,
-        },
-      ],
-    },
-  });
-
-  const hustlerData = useMemo(() => {
-    const defaultValue = { totalCount: 0 };
-
-    if (!hustler.data?.pages) return defaultValue;
-
-    return hustler.data.pages.reduce((result, page) => {
-      if (!page.hustlers.edges) return result;
-
-      const { totalCount } = page.hustlers;
-
-      return {
-        totalCount,
-      };
-    }, defaultValue);
-  }, [hustler.data]);
-
-  const dope = useInfiniteProfileDopesQuery({
-    where: {
-      hasWalletWith: [
-        {
-          id: account,
-        },
-      ],
-    },
-  });
-
-  const dopeData = useMemo(() => {
-    const defaultCount = { totalCount: 0 };
-
-    if (!dope.data?.pages) return defaultCount;
-
-    return dope.data.pages.reduce((result, page) => {
-      if (!page.dopes.edges) return result;
-
-      const { totalCount } = page.dopes;
-
-      return {
-        totalCount,
-      };
-    }, defaultCount);
-  }, [dope.data]);
+    console.log(data);
+    if (data?.wallets?.edges![0]?.node?.dopes) {
+      const dn = data.wallets.edges[0].node;
+      let hasOg = (
+        dn.hustlers.find(h => parseInt(h.id, 10) <= 500) !== undefined
+      );
+      let dopeCount = dn.dopes.length;
+      let hustlerCount = dn.hustlers.length;
+      console.log(hasOg);
+      console.log(dopeCount);
+      console.log(hustlerCount);
+      setHasOgHustler(hasOg);
+      setDopeCount(dopeCount);
+      setHustlerCount(hustlerCount);
+    }
+  }, [data]);
 
   useEffect(() => {
     let isMounted = true;
@@ -208,80 +173,49 @@ const Verify = () => {
         if (guilds.length > 0)
           setGuild(guilds.some(guild => guild.id == process.env.NEXT_PUBLIC_DBOT_GUILD_ID!));
       })
-      .then(() => setFetching(false));
+      .then(() => setIsFetchingDiscord(false));
   }, []);
 
   return (
-    <>
-      {(!discordUser && !hasGuild && isFetching && (
-        <AppWindow padBody={false} scrollable requiresWalletConnection>
-          <div>
-            <div style={{ display: 'table', margin: '0 auto', paddingTop: '20px' }}>
-              Wassup mane! Click the button below to get dope roles on discord
-            </div>
-            <button
-              style={{
-                color: 'whitesmoke',
-                background: 'black',
-                display: 'table',
-                margin: '0 auto',
-                marginTop: '30px',
-                paddingLeft: '4px',
-                paddingRight: '4px',
-              }}
-              onClick={() => discordAuthRedirect()}
-            >
-              Lets go
-            </button>
-          </div>
-        </AppWindow>
-      )) ||
-        (discordUser && hasGuild && !isFetching && (
-          <AppWindow padBody={false} scrollable requiresWalletConnection>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '40px', paddingTop: '10px', paddingBottom: '20px' }}>
-                Welcome to the fam!
-              </div>
+    <Dialog>
+      <Container>
+        {(!discordUser && !hasGuild && isFetchingDiscord && (
+          <>
+            <h2>
+              Welcome to the streets
+            </h2>
+            <p>
+              Click the button below to get verified on Discord.
+            </p>
+            <Button onClick={() => discordAuthRedirect()}>Lets go</Button>
+          </>
+        )) ||
+          (discordUser && hasGuild && !isFetchingDiscord && (
+            <>
+              <h3>Welcome to the fam!</h3>
               <div>{`Is in guild: ${hasGuild}`}</div>
               <div>{`${discordUser.username}#${discordUser.discriminator}`}</div>
               <div>
                 {`Paper: ${
-                  paperBalance
-                    ? formatLargeNumber(Number(ethers.utils.formatEther(paperBalance)))
-                    : 0
+                  paperBalance ? formatLargeNumber(Number(ethers.utils.formatEther(paperBalance))) : 0
                 }`}
               </div>
-              <div>{`Hustlers: ${hustlerData.totalCount}`}</div>
+              <div>{`Hustlers: ${hustlerCount}`}</div>
               <div>{`OG Hustlers: ${hasOgHustler}`}</div>
-              <div>{`Dope: ${dopeData.totalCount}`}</div>
-            </div>
-          </AppWindow>
-        )) ||
-        (discordUser && !hasGuild && !isFetching && (
-          <AppWindow padBody={false} scrollable requiresWalletConnection>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '40px', paddingTop: '10px', paddingBottom: '20px' }}>
-                Damn mane
-              </div>
-              <div>Looks like you are not in the discord server!</div>
-              <button
-                style={{
-                  color: 'whitesmoke',
-                  background: 'black',
-                  display: 'table',
-                  margin: '0 auto',
-                  marginTop: '30px',
-                  paddingLeft: '4px',
-                  paddingRight: '4px',
-                }}
-                onClick={() => window.open('https://discord.gg/8exMVHMe26', '_blank')}
-              >
+              <div>{`Dope: ${dopeCount}`}</div>
+            </>
+          )) ||
+          (discordUser && !hasGuild && !isFetchingDiscord && (
+            <>
+              <h3>Damn!</h3>
+              <div>Looks like you aren&quot;t in the discord server!</div>
+              <Button onClick={() => window.open('https://discord.gg/8exMVHMe26', '_blank')}>
                 Join
-              </button>
-            </div>
-          </AppWindow>
-        ))}
-    </>
+              </Button>
+            </>
+          ))}
+      </Container>
+    </Dialog>
   );
 };
 

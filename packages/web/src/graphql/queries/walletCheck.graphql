@@ -1,0 +1,23 @@
+# Simple wallet verification query to give 
+# overall stats of what's inside it without returning a ton of data.
+#
+# Mostly used for our Discord verification bot.
+query WalletCheck($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        id
+        paper
+        hustlers {
+          id
+        }
+        items {
+          id
+        }
+        dopes {
+          id
+        }
+      }
+    }
+  }
+}
