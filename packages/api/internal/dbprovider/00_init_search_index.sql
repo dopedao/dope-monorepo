@@ -227,5 +227,6 @@ UNION (WITH hustler_agg AS (
 		hustler_agg
 );
 
-CREATE UNIQUE INDEX search_index_pk ON search_index using btree(id);
+-- was CREATE UNIQUE INDEX but caused problems on refreshing during deploy
+CREATE INDEX search_index_pk ON search_index using btree(id);
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);
