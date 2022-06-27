@@ -40,6 +40,17 @@ const MarketList = () => {
     }
   };
 
+  // Need to exclude stuff not for sale (price zero)
+  // if we've sorted by sale price.
+  const handleSort = () => {
+    switch (orderBy) {
+      case SearchOrderField.SalePrice:
+        return {saleActive: true};
+      default: 
+        return {};
+    }
+  }
+
   const {
     data: searchResult,
     fetchNextPage: searchFetchNextPage,
@@ -56,6 +67,7 @@ const MarketList = () => {
       where: {
         type: SearchType.Dope,
         ...handleFilter(),
+        ...handleSort(),
       },
       query: searchValue,
     },
