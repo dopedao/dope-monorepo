@@ -6,7 +6,7 @@ query DopeListing($where: DopeWhereInput) {
       node {
         id
         listings {
-          order {
+          wyvernOrder {
             maker
             v
             r

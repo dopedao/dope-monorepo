@@ -66,8 +66,7 @@ CREATE MATERIALIZED VIEW search_index AS (
 			df.claimed
 )
 	SELECT
-		concat('dope_',
-			id) AS id,
+		concat('dope_', id, sale_price) AS id,
 		greatness,
 		sale_active AS sale_active,
 		sale_price AS sale_price,
@@ -227,6 +226,5 @@ UNION (WITH hustler_agg AS (
 		hustler_agg
 );
 
--- was CREATE UNIQUE INDEX but caused problems on refreshing during deploy
-CREATE INDEX search_index_pk ON search_index using btree(id);
+CREATE UNIQUE INDEX search_index_pk ON search_index using btree(id);
 CREATE INDEX tsv_idx ON search_index USING GIN (tsv_document);

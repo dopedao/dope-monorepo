@@ -1,11 +1,8 @@
 package indexer
 
 import (
-	"context"
 	"encoding/json"
-	"fmt"
 	"math/big"
-	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -40,7 +37,7 @@ type Asset struct {
 	Collection              *Collection          `json:"collection"`
 	Decimals                int64                `json:"decimals"`
 	TokenMetadata           string               `json:"token_metadata"`
-	SellOrders              []Order              `json:"sell_orders"`
+	SellOrders              []WyvernOrder        `json:"sell_orders"`
 	SeaportOrders           []SeaportOrder       `json:"seaport_sell_orders"`
 	Creator                 *AccountWithUsername `json:"creator"`
 	Traits                  []Trait              `json:"traits"`
@@ -340,27 +337,27 @@ type Value struct {
 	String  *string
 }
 
-// OpenSea's new order model
+// OpenSea Seaport Order new order model
 // https://docs.opensea.io/v2.0/reference/model-reference#order-model
 type SeaportOrder struct {
-	ID              int64    `json:"id"`
-	CreatedDate *TimeNano    `json:"created_date"`
-	ClosingDate *TimeNano    `json:"closing_date"`
+	ID             int64     `json:"id"`
+	CreatedDate    *TimeNano `json:"created_date"`
+	ClosingDate    *TimeNano `json:"closing_date"`
 	CurrentPrice   Number    `json:"current_price"`
-	ListingTime     int64    `json:"listing_time"`
-	ExpirationTime  int64    `json:"expiration_time"`
+	ListingTime    int64     `json:"listing_time"`
+	ExpirationTime int64     `json:"expiration_time"`
 	OrderHash      string    `json:"order_hash"`
-	Maker         Account    `json:"maker"`
-	Taker         Account    `json:"taker"`
+	Maker          Account   `json:"maker"`
+	Taker          Account   `json:"taker"`
 	Side           string    `json:"side"` // 0 for buy orders and 1 for sell orders.
 	OrderType      string    `json:"order_type"`
-	Cancelled        bool    `json:"cancelled"`
-	Finalized        bool    `json:"finalized"`
-	MarkedInvalid    bool    `json:"marked_invalid"`
+	Cancelled      bool      `json:"cancelled"`
+	Finalized      bool      `json:"finalized"`
+	MarkedInvalid  bool      `json:"marked_invalid"`
 }
 
-// Order is an order
-type Order struct {
+// OpenSea Wyvern Order
+type WyvernOrder struct {
 	ID    int64 `json:"id"`
 	Asset Asset `json:"asset"`
 	// AssetBundle          interface{}          `json:"asset_bundle"`
@@ -409,7 +406,7 @@ type Order struct {
 }
 
 // IsPrivate returns true if the order is private
-func (o Order) IsPrivate() bool {
+func (o WyvernOrder) IsPrivate() bool {
 	return o.Taker.Address != (common.Address{})
 }
 
@@ -456,44 +453,3 @@ const (
 	// SplitFee is the split fee method
 	SplitFee
 )
-
-// GetOrders fetches the orders with context
-func (o *Opensea) GetOrders(ctx context.Context, assetContractAddress string, listedAfter int64) (orders []*Order, err error) {
-	offset := 0
-	limit := 100
-
-	q := url.Values{}
-	q.Set("asset_contract_address", assetContractAddress)
-	q.Set("listed_after", fmt.Sprintf("%d", listedAfter))
-	q.Set("limit", fmt.Sprintf("%d", limit))
-	q.Set("order_by", "created_date")
-	q.Set("order_direction", "asc")
-
-	orders = []*Order{}
-
-	for {
-		q.Set("offset", fmt.Sprintf("%d", offset))
-		path := "/wyvern/v1/orders?" + q.Encode()
-		b, err := o.getURL(ctx, o.URL+path)
-		if err != nil {
-			return nil, err
-		}
-
-		out := &struct {
-			Count  int64    `json:"count"`
-			Orders []*Order `json:"orders"`
-		}{}
-
-		if err := json.Unmarshal(b, out); err != nil {
-			return nil, err
-		}
-		orders = append(orders, out.Orders...)
-
-		if len(out.Orders) < limit {
-			break
-		}
-		offset += limit
-	}
-
-	return
-}

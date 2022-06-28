@@ -21,8 +21,10 @@ type Listing struct {
 	Active bool `json:"active,omitempty"`
 	// Source holds the value of the "source" field.
 	Source listing.Source `json:"source,omitempty"`
-	// Order holds the value of the "order" field.
-	Order json.RawMessage `json:"order,omitempty"`
+	// WyvernOrder holds the value of the "wyvern_order" field.
+	WyvernOrder json.RawMessage `json:"wyvern_order,omitempty"`
+	// SeaportOrder holds the value of the "seaport_order" field.
+	SeaportOrder json.RawMessage `json:"seaport_order,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ListingQuery when eager-loading is set.
 	Edges         ListingEdges `json:"edges"`
@@ -95,7 +97,7 @@ func (*Listing) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case listing.FieldOrder:
+		case listing.FieldWyvernOrder, listing.FieldSeaportOrder:
 			values[i] = new([]byte)
 		case listing.FieldActive:
 			values[i] = new(sql.NullBool)
@@ -136,12 +138,20 @@ func (l *Listing) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				l.Source = listing.Source(value.String)
 			}
-		case listing.FieldOrder:
+		case listing.FieldWyvernOrder:
 			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field order", values[i])
+				return fmt.Errorf("unexpected type %T for field wyvern_order", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &l.Order); err != nil {
-					return fmt.Errorf("unmarshal field order: %w", err)
+				if err := json.Unmarshal(*value, &l.WyvernOrder); err != nil {
+					return fmt.Errorf("unmarshal field wyvern_order: %w", err)
+				}
+			}
+		case listing.FieldSeaportOrder:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field seaport_order", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &l.SeaportOrder); err != nil {
+					return fmt.Errorf("unmarshal field seaport_order: %w", err)
 				}
 			}
 		case listing.ForeignKeys[0]:
@@ -203,8 +213,10 @@ func (l *Listing) String() string {
 	builder.WriteString(fmt.Sprintf("%v", l.Active))
 	builder.WriteString(", source=")
 	builder.WriteString(fmt.Sprintf("%v", l.Source))
-	builder.WriteString(", order=")
-	builder.WriteString(fmt.Sprintf("%v", l.Order))
+	builder.WriteString(", wyvern_order=")
+	builder.WriteString(fmt.Sprintf("%v", l.WyvernOrder))
+	builder.WriteString(", seaport_order=")
+	builder.WriteString(fmt.Sprintf("%v", l.SeaportOrder))
 	builder.WriteByte(')')
 	return builder.String()
 }
