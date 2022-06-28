@@ -5,43 +5,31 @@ import { useEffect, useMemo, useState } from 'react';
 import { usePaper } from 'hooks/contracts';
 import { useWalletCheckQuery } from 'generated/graphql';
 import { useWeb3React } from '@web3-react/core';
-import DesktopWindow from 'components/DesktopWindow';
 import Dialog from 'components/Dialog';
 import styled from '@emotion/styled';
 
 const discordAuthLink =
   'https://discord.com/api/oauth2/authorize?client_id=973336825223598090&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fverify&response_type=code&scope=identify%20email%20guilds';
+const verifyApiLink = "http://localhost:8080/verify";
 
-interface IDiscordUser {
-  discriminator: string;
-  // Email?
-  email: string;
-  id: string;
-  username: string;
-}
-
-interface IGuild {
-  id: string;
-  name: string;
+interface IVerifyResponse {
+  message: string,
+  success: boolean
 }
 
 // send to own api
-type DiscordUser = {
-  username: string;
-  discriminator: string;
-  id: string;
-  // Email?
-  email: string;
-  paperCount: number;
-  dopeCount: number;
-  hustlerCount: number;
-  isOg: boolean;
+type VerifyRequest = {
+  discordtoken: string;
+  walletaddress: string;
+  papercount: number;
+  dopecount: number;
+  hustlercount: number;
+  isog: boolean;
 };
 
 const Container = styled.div`
   margin: 32px;
 `;
-
 
 // state string
 const generateRandomString = () => {
@@ -57,12 +45,13 @@ const generateRandomString = () => {
 
 const Verify = () => {
   const [isFetchingDiscord, setIsFetchingDiscord] = useState(true);
-  const [discordUser, setDiscordUser] = useState<IDiscordUser>();
-  const [hasGuild, setGuild] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [respError, setRespError] = useState("")
+
   const [hasOgHustler, setHasOgHustler] = useState(false);
   const [hustlerCount, setHustlerCount] = useState(0);
   const [dopeCount, setDopeCount] = useState(0);
-  const [paperBalance, setPaperBalance] = useState<BigNumber>(0);
+  const [paperBalance, setPaperBalance] = useState<BigNumber>(BigNumber.from(0));
 
   const { account } = useWeb3React();
   const paper = usePaper();
@@ -130,56 +119,37 @@ const Verify = () => {
     }
     console.log('Valid state.');
 
-    const payload = new URLSearchParams();
-    payload.append('client_id', process.env.NEXT_PUBLIC_DBOT_CLIENT_ID!);
-    payload.append('client_secret', process.env.NEXT_PUBLIC_DBOT_CLIENT_AUTH_TOKEN!);
-    payload.append('grant_type', 'authorization_code');
-    payload.append('code', apiToken);
-    payload.append('scope', 'identify guilds email');
-    payload.append('redirect_uri', 'http://localhost:3000/verify');
+    const verifyReq: VerifyRequest = {
+      discordtoken: apiToken,
+      walletaddress: account!,
+      papercount: Number(ethers.utils.formatEther(paperBalance)),
+      dopecount: dopeCount,
+      hustlercount: hustlerCount,
+      isog: hasOgHustler
+    }
 
-    // Token to make request on behalf of user
-    const fetchUserToken = async () => {
-      const { access_token } = await fetch('https://discord.com/api/oauth2/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: payload,
-      }).then(result => result.json());
+    fetch(verifyApiLink, {
+      method: "POST",
+      body: JSON.stringify(verifyReq)
+    })
+      .then(res => res.json())
+      .then(resp => {
+        const verifyResp: IVerifyResponse = resp;
 
-      return access_token;
-    };
+        if (!verifyResp.success) {
+          setRespError(verifyResp.message);
+        } else if (verifyResp.success) {
+          setIsVerified(true);
+        }
+        setIsFetchingDiscord(false);
+      });
 
-    // request user data
-    fetchUserToken()
-      .then(async resp => {
-        const user: IDiscordUser = await fetch('https://discord.com/api/users/@me', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${resp}`,
-          },
-        }).then(res => res.json());
-        console.log(user);
-        if (user) setDiscordUser(user);
-
-        const guilds: IGuild[] = await fetch('https://discord.com/api/users/@me/guilds', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${resp}`,
-          },
-        }).then(res => res.json());
-        console.log(guilds);
-        if (guilds.length > 0)
-          setGuild(guilds.some(guild => guild.id == process.env.NEXT_PUBLIC_DBOT_GUILD_ID!));
-      })
-      .then(() => setIsFetchingDiscord(false));
   }, []);
 
   return (
     <Dialog>
       <Container>
-        {(!discordUser && !hasGuild && isFetchingDiscord && (
+        {(isFetchingDiscord && !isVerified && (
           <>
             <h2>
               Welcome to the streets
@@ -190,22 +160,19 @@ const Verify = () => {
             <Button onClick={() => discordAuthRedirect()}>Lets go</Button>
           </>
         )) ||
-          (discordUser && hasGuild && !isFetchingDiscord && (
+          (!isFetchingDiscord && isVerified && (
             <>
               <h3>Welcome to the fam!</h3>
-              <div>{`Is in guild: ${hasGuild}`}</div>
-              <div>{`${discordUser.username}#${discordUser.discriminator}`}</div>
               <div>
-                {`Paper: ${
-                  paperBalance ? formatLargeNumber(Number(ethers.utils.formatEther(paperBalance))) : 0
-                }`}
+                {`Paper: ${paperBalance ? formatLargeNumber(Number(ethers.utils.formatEther(paperBalance))) : 0
+                  }`}
               </div>
               <div>{`Hustlers: ${hustlerCount}`}</div>
               <div>{`OG Hustlers: ${hasOgHustler}`}</div>
               <div>{`Dope: ${dopeCount}`}</div>
             </>
           )) ||
-          (discordUser && !hasGuild && !isFetchingDiscord && (
+          (!isFetchingDiscord && respError.includes("guild") && (
             <>
               <h3>Damn!</h3>
               <div>Looks like you aren&quot;t in the discord server!</div>
@@ -213,7 +180,14 @@ const Verify = () => {
                 Join
               </Button>
             </>
-          ))}
+          )) ||
+          (!isFetchingDiscord && !respError.includes("guild") && (
+            <>
+              <h3>Oops...</h3>
+              <div>{respError}</div>
+            </>
+          ))
+        }
       </Container>
     </Dialog>
   );
