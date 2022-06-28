@@ -5,6 +5,7 @@ import (
 	"embed"
 
 	"entgo.io/ent/dialect/sql/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/migrate"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 )
 
@@ -16,6 +17,9 @@ func runMigration(ctx context.Context) {
 
 	// Run the auto migration tool
 	err := entClient.Schema.Create(ctx,
+		// Drop columns that don't exist anymore
+		migrate.WithDropIndex(true),
+		migrate.WithDropColumn(true),
 		// ...with protections from referencing any materialized
 		//    views before they've been created.
 		schema.WithHooks(func(next schema.Creator) schema.Creator {

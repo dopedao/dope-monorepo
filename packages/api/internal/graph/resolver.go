@@ -8,7 +8,7 @@ import (
 
 type Resolver struct{ client *ent.Client }
 
-// NewSchema creates a graphql executable schema.
+// NECESSARY FOR GQLGEN TO WORK WITH ENT
 func NewSchema(client *ent.Client) graphql.ExecutableSchema {
 	return generated.NewExecutableSchema(generated.Config{
 		Resolvers: &Resolver{client},

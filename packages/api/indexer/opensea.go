@@ -112,25 +112,25 @@ func (o *Opensea) Sync(ctx context.Context) {
 							return fmt.Errorf("marshalling opensea order: %v+", err)
 						}
 						persistSellOrder(
-							ctx, tx, dopeID, orderJson, isOnSale, so.OrderHash, so.CurrentPrice)
+							ctx, tx, dopeID, orderJson, []byte("{}"), isOnSale, so.OrderHash, so.CurrentPrice)
 					}
 
 					// On 05-25-2022 OpenSea transitioned to the "Seaport"
 					// contract, and started returning sell orders in a different
 					// hash on listings. They're a subset of SellOrders from
 					// the Wyvern contract.
-					// for _, so := range asset.SeaportOrders {
-					// 	isOnSale := !so.Cancelled && !so.Finalized
-					// 	if isOnSale {
-					// 		atLeastOneItemOnSale = true
-					// 	}
-					// 	orderJson, err := json.Marshal(so)
-					// 	if err != nil {
-					// 		return fmt.Errorf("marshalling opensea order: %v+", err)
-					// 	}
-					// 	persistSellOrder(
-					// 		ctx, tx, dopeID, orderJson, isOnSale, so.OrderHash, so.CurrentPrice)
-					// }
+					for _, so := range asset.SeaportOrders {
+						isOnSale := !so.Cancelled && !so.Finalized
+						if isOnSale {
+							atLeastOneItemOnSale = true
+						}
+						orderJson, err := json.Marshal(so)
+						if err != nil {
+							return fmt.Errorf("marshalling opensea order: %v+", err)
+						}
+						persistSellOrder(
+							ctx, tx, dopeID, []byte("{}"), orderJson, isOnSale, so.OrderHash, so.CurrentPrice)
+					}
 
 					// Save to listings with asset record
 					if asset.LastSale != nil && asset.LastSale.Transaction != nil {
@@ -177,6 +177,7 @@ func (o *Opensea) Sync(ctx context.Context) {
 
 					return nil
 				}); err != nil {
+					fmt.Println(err)
 					log.Err(err).Msg("Indexing opensea collection.")
 				}
 			}
@@ -208,7 +209,8 @@ func persistSellOrder(
 	ctx context.Context,
 	tx *ent.Tx,
 	dopeID *big.Int,
-	orderJson []byte,
+	wyvernOrderJson []byte,
+	seaportOrderJson []byte,
 	isOnSale bool,
 	orderHash string,
 	currentPrice Number,
@@ -220,14 +222,16 @@ func persistSellOrder(
 		SetSource(listing.SourceOPENSEA).
 		SetActive(isOnSale).
 		SetDopeID(dopeID.String()).
-		SetOrder(orderJson).
+		SetWyvernOrder(wyvernOrderJson).
+		SetSeaportOrder(seaportOrderJson).
 		OnConflictColumns(listing.FieldID).
 		Update(func(o *ent.ListingUpsert) {
 			o.SetActive(isOnSale)
-			o.SetOrder(orderJson)
+			o.SetWyvernOrder(wyvernOrderJson)
+			o.SetSeaportOrder(seaportOrderJson)
 		}).
 		Exec(ctx); err != nil {
-		return fmt.Errorf("upserting to listing: %w", err)
+		return fmt.Errorf("persistSellOrder Listing: %w", err)
 	}
 
 	// Listing amount for Ethereum price
@@ -240,7 +244,7 @@ func persistSellOrder(
 		OnConflictColumns(amount.FieldID).
 		DoNothing().
 		Exec(ctx); err != nil && !ent.IsNoRowsInResultSetError(err) {
-		return fmt.Errorf("upserting to asset: %w", err)
+		return fmt.Errorf("persistSellOrder Asset: %w", err)
 	}
 
 	// Listing Amount for NFT Item
@@ -257,7 +261,7 @@ func persistSellOrder(
 		OnConflictColumns("id").
 		DoNothing().
 		Exec(ctx); err != nil && !ent.IsNoRowsInResultSetError(err) {
-		return fmt.Errorf("upserting to asset: %w", err)
+		return fmt.Errorf("persistSellOrder Amount: %w", err)
 	}
 	return nil
 }
