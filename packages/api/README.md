@@ -53,6 +53,7 @@ The `gcloud` command line tool is useful to do a number of things in deploying t
 brew install --cask google-cloud-sdk
 export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account-creds.json"
 gcloud auth login
+gcloud config set account <your-account>
 gcloud config set project dopewars-live
 ```
 
