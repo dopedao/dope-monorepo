@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -47,11 +48,31 @@ func (r *itemResolver) Fullname(ctx context.Context, obj *ent.Item) (string, err
 }
 
 func (r *listingResolver) WyvernOrder(ctx context.Context, obj *ent.Listing) (*indexer.WyvernOrder, error) {
-	panic(fmt.Errorf("not implemented"))
+	var order indexer.WyvernOrder
+
+	if len(obj.WyvernOrder) == 0 {
+		return nil, nil
+	}
+
+	if err := json.Unmarshal(obj.WyvernOrder, &order); err != nil {
+		return nil, fmt.Errorf("unmarshaling order: %w", err)
+	}
+
+	return &order, nil
 }
 
 func (r *listingResolver) SeaportOrder(ctx context.Context, obj *ent.Listing) (*indexer.SeaportOrder, error) {
-	panic(fmt.Errorf("not implemented"))
+	var order indexer.SeaportOrder
+
+	if len(obj.SeaportOrder) == 0 {
+		return nil, nil
+	}
+
+	if err := json.Unmarshal(obj.WyvernOrder, &order); err != nil {
+		return nil, fmt.Errorf("unmarshaling order: %w", err)
+	}
+
+	return &order, nil
 }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
@@ -123,107 +144,107 @@ func (r *queryResolver) Search(ctx context.Context, query string, after *ent.Cur
 }
 
 func (r *seaportOrderResolver) Maker(ctx context.Context, obj *indexer.SeaportOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.Maker.Address.Hex(), nil
 }
 
 func (r *seaportOrderResolver) CurrentPrice(ctx context.Context, obj *indexer.SeaportOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.CurrentPrice.Big().String(), nil
 }
 
 func (r *seaportOrderResolver) ListingTime(ctx context.Context, obj *indexer.SeaportOrder) (uint64, error) {
-	panic(fmt.Errorf("not implemented"))
+	return uint64(obj.ListingTime), nil
 }
 
 func (r *seaportOrderResolver) ExpirationTime(ctx context.Context, obj *indexer.SeaportOrder) (uint64, error) {
-	panic(fmt.Errorf("not implemented"))
+	return uint64(obj.ExpirationTime), nil
 }
 
 func (r *wyvernOrderResolver) Exchange(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.Exchange.Hex(), nil
 }
 
 func (r *wyvernOrderResolver) ListingTime(ctx context.Context, obj *indexer.WyvernOrder) (uint64, error) {
-	panic(fmt.Errorf("not implemented"))
+	return uint64(obj.ListingTime), nil
 }
 
 func (r *wyvernOrderResolver) ExpirationTime(ctx context.Context, obj *indexer.WyvernOrder) (uint64, error) {
-	panic(fmt.Errorf("not implemented"))
+	return uint64(obj.ExpirationTime), nil
 }
 
 func (r *wyvernOrderResolver) Maker(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.Maker.Address.Hex(), nil
 }
 
 func (r *wyvernOrderResolver) CurrentPrice(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.CurrentPrice.Big().String(), nil
 }
 
 func (r *wyvernOrderResolver) MakerRelayerFee(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.MakerRelayerFee.Big().String(), nil
 }
 
 func (r *wyvernOrderResolver) MakerProtocolFee(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.MakerProtocolFee.Big().String(), nil
 }
 
 func (r *wyvernOrderResolver) FeeRecipient(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.FeeRecipient.Address.Hex(), nil
 }
 
 func (r *wyvernOrderResolver) FeeMethod(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
-	panic(fmt.Errorf("not implemented"))
+	return int(obj.FeeMethod), nil
 }
 
 func (r *wyvernOrderResolver) Side(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
-	panic(fmt.Errorf("not implemented"))
+	return int(obj.Side), nil
 }
 
 func (r *wyvernOrderResolver) SaleKind(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
-	panic(fmt.Errorf("not implemented"))
+	return int(obj.SaleKind), nil
 }
 
 func (r *wyvernOrderResolver) Target(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.Target.Hex(), nil
 }
 
 func (r *wyvernOrderResolver) HowToCall(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
-	panic(fmt.Errorf("not implemented"))
+	return int(obj.HowToCall), nil
 }
 
 func (r *wyvernOrderResolver) Calldata(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.Calldata.String(), nil
 }
 
 func (r *wyvernOrderResolver) ReplacementPattern(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.ReplacementPattern.String(), nil
 }
 
 func (r *wyvernOrderResolver) StaticTarget(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.Target.Hex(), nil
 }
 
 func (r *wyvernOrderResolver) StaticExtradata(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.StaticExtradata.String(), nil
 }
 
 func (r *wyvernOrderResolver) Extra(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.Extra.Big().String(), nil
 }
 
 func (r *wyvernOrderResolver) Salt(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.Salt.Big().String(), nil
 }
 
 func (r *wyvernOrderResolver) V(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
-	panic(fmt.Errorf("not implemented"))
+	return int(*obj.V), nil
 }
 
 func (r *wyvernOrderResolver) R(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.R.String(), nil
 }
 
 func (r *wyvernOrderResolver) S(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.S.String(), nil
 }
 
 // Amount returns generated1.AmountResolver implementation.

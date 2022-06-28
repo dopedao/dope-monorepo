@@ -85,3 +85,4 @@ models:
   SeaportOrder:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/indexer.SeaportOrder
+  

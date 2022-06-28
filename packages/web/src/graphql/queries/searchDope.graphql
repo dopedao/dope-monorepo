@@ -40,7 +40,7 @@ query SearchDope(
               id
               type
             }
-            order {
+            wyvernOrder {
               feeMethod
               side
               saleKind
