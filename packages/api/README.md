@@ -32,7 +32,9 @@ There are two services in this API, the indexer; and the API HTTP Server. The Do
 
 To generate new smart contract bindings, add the abi to `packages/api/internal/contracts/abis` and run `go generate ./...`.
 
-### Updating the schema
+### Updating the Database schema
+
+The API uses ENT and Gqlgen to handle ORM and query duties. [You can learn more about using that combination of tools with go here.](https://betterprogramming.pub/implement-a-graphql-server-with-ent-and-gqlgen-in-go-8840f086b8a8)
 
 Modify the schema in `packages/api/internal/ent/schema` and run `go generate ./...`
 

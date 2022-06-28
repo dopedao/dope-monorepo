@@ -160,17 +160,31 @@ func SourceNotIn(vs ...Source) predicate.Listing {
 	})
 }
 
-// OrderIsNil applies the IsNil predicate on the "order" field.
-func OrderIsNil() predicate.Listing {
+// WyvernOrderIsNil applies the IsNil predicate on the "wyvern_order" field.
+func WyvernOrderIsNil() predicate.Listing {
 	return predicate.Listing(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldOrder)))
+		s.Where(sql.IsNull(s.C(FieldWyvernOrder)))
 	})
 }
 
-// OrderNotNil applies the NotNil predicate on the "order" field.
-func OrderNotNil() predicate.Listing {
+// WyvernOrderNotNil applies the NotNil predicate on the "wyvern_order" field.
+func WyvernOrderNotNil() predicate.Listing {
 	return predicate.Listing(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldOrder)))
+		s.Where(sql.NotNull(s.C(FieldWyvernOrder)))
+	})
+}
+
+// SeaportOrderIsNil applies the IsNil predicate on the "seaport_order" field.
+func SeaportOrderIsNil() predicate.Listing {
+	return predicate.Listing(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldSeaportOrder)))
+	})
+}
+
+// SeaportOrderNotNil applies the NotNil predicate on the "seaport_order" field.
+func SeaportOrderNotNil() predicate.Listing {
+	return predicate.Listing(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldSeaportOrder)))
 	})
 }
 
