@@ -2,6 +2,7 @@ package verify
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 	"os"
@@ -153,33 +154,40 @@ func HandleVerifyRequest() func(http.ResponseWriter, *http.Request) {
 		ctx := r.Context()
 		ctx, log := logger.LogFor(ctx)
 
-		var verifyReq VerifyRequest
 		decoder := json.NewDecoder(r.Body)
 		decoder.DisallowUnknownFields()
+
+		var verifyReq VerifyRequest
 		if err := decoder.Decode(&verifyReq); err != nil {
 			log.Err(err)
-			sendErr("Unexpected error", w)
+			sendErr("Something went wrong", w)
+			return
+		}
+
+		if !(len(verifyReq.WalletAddress) > 0) {
+			log.Err(errors.New("Walletaddress is null"))
+			sendErr("Wallet not found.", w)
 			return
 		}
 
 		accessToken, err := fetchDiscordAccesToken(verifyReq.DiscordToken)
 		if err != nil {
 			log.Err(err)
-			sendErr("Unexpected error", w)
+			sendErr("Something went wrong", w)
 			return
 		}
 
 		discUser, err := fetchDiscordUser(accessToken)
 		if err != nil {
 			log.Err(err)
-			sendErr("Unexpected error", w)
+			sendErr("Something went wrong", w)
 			return
 		}
 
 		isInGuild, err := isUserInGuild(accessToken)
 		if err != nil {
 			log.Err(err)
-			sendErr("Unexpected error", w)
+			sendErr("Something went wrong", w)
 			return
 		}
 
@@ -197,7 +205,6 @@ func HandleVerifyRequest() func(http.ResponseWriter, *http.Request) {
 		dopeBotData.PaperCount = verifyReq.PaperCount
 		dopeBotData.WalletAddress = verifyReq.WalletAddress
 
-		/* Use env vars here... */
 		client := redis.NewClient(&redis.Options{
 			Addr:     "localhost:6379",
 			Password: "",
@@ -207,20 +214,21 @@ func HandleVerifyRequest() func(http.ResponseWriter, *http.Request) {
 		encAuthReq, err := json.Marshal(dopeBotData)
 		if err != nil {
 			log.Err(err)
-			sendErr("Unexpected error", w)
+			sendErr("Something went wrong", w)
 			return
 		}
 
-		if err = client.Publish(ctx, "discord", encAuthReq).Err(); err != nil {
+		err = client.Publish(ctx, "discord", encAuthReq).Err()
+		if err != nil {
 			log.Err(err)
-			sendErr("Unexptected error", w)
+			sendErr("Something went wrong", w)
 			return
 		}
 
 		authRes := VerifyResponse{Success: true}
 		encAuthRes, err := json.Marshal(authRes)
 		if err != nil {
-			sendErr("Unexpected error", w)
+			sendErr("Something went wrong", w)
 			return
 		}
 
