@@ -1,6 +1,6 @@
 // Updates PAPER balance for wallets we have stored
 // inside our database.
-package main
+package jobs
 
 import (
 	"context"
@@ -19,7 +19,7 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-func main() {
+func PaperBalances(queue chan int) {
 	ctx := context.Background()
 	client := dbprovider.Ent()
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -59,4 +59,7 @@ func main() {
 	}
 
 	wg.Wait()
+
+	// Pop this job off the queue
+	<-queue
 }

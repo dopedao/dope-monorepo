@@ -1,6 +1,7 @@
-// Updates DOPE NFT items in our database after checking
-// their PAPER CLAIM status on the PAPER contract.
-package main
+// Updates DOPE NFT items in our database if they
+// have been "Opened" or had their "Gear Claimed"
+// by checking the Ethereum blockchain.
+package jobs
 
 import (
 	"context"
@@ -17,11 +18,11 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-const MAX_DB_CONN = 77
-
-func main() {
+func GearClaims(queue chan int) {
 	ctx := context.Background()
+	client := dbprovider.Ent()
 
+	log.Default().Println("Establishing RPC client")
 	retryableHTTPClient := retryablehttp.NewClient()
 	c, err := rpc.DialHTTPWithClient("https://eth-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
 	if err != nil {
@@ -29,15 +30,13 @@ func main() {
 	}
 
 	eth := ethclient.NewClient(c)
-	paper, err := bindings.NewPaper(common.HexToAddress("0x7ae1d57b58fa6411f32948314badd83583ee0e8c"), eth)
+	initiator, err := bindings.NewInitiator(common.HexToAddress("0x7aa8e897d712cfb9c7cb6b37634a1c4d21181c8b"), eth)
 	if err != nil {
 		log.Fatalf("Creating Components bindings: %+v", err)
 	}
 
-	dopes, err := dbprovider.Ent().
-		Dope.
-		Query().
-		All(ctx)
+	log.Default().Println("Getting all DOPE NFTs from database")
+	dopes, err := client.Dope.Query().All(ctx)
 	if err != nil {
 		log.Fatal("Getting ethereum dopes.") //nolint:gocritic
 	}
@@ -53,16 +52,11 @@ func main() {
 			if !ok {
 				log.Fatal("Making big int")
 			}
-			claimed, err := paper.ClaimedByTokenId(nil, b)
+			opened, err := initiator.IsOpened(nil, b)
 			if err != nil {
-				log.Fatalf("Getting paper balance: %+v.", err)
+				log.Fatalf("Getting initiator balance: %+v.", err)
 			}
-
-			dbprovider.Ent().
-				Dope.
-				UpdateOneID(dope.ID).
-				SetClaimed(claimed).
-				ExecX(ctx)
+			client.Dope.UpdateOneID(dope.ID).SetOpened(opened).ExecX(ctx)
 
 			<-sem
 			wg.Done()
@@ -70,4 +64,6 @@ func main() {
 	}
 
 	wg.Wait()
+	// Pop this job off the queue
+	<-queue
 }
