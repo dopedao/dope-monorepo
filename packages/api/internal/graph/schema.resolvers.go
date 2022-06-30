@@ -10,11 +10,11 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/indexer"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
 	generated1 "github.com/dopedao/dope-monorepo/packages/api/internal/graph/generated"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/graph/model"
+	"github.com/dopedao/dope-monorepo/packages/api/jobs/opensea"
 )
 
 func (r *amountResolver) Token(ctx context.Context, obj *ent.Amount) (model.Token, error) {
@@ -47,8 +47,8 @@ func (r *itemResolver) Fullname(ctx context.Context, obj *ent.Item) (string, err
 	return fullname, nil
 }
 
-func (r *listingResolver) WyvernOrder(ctx context.Context, obj *ent.Listing) (*indexer.WyvernOrder, error) {
-	var order indexer.WyvernOrder
+func (r *listingResolver) WyvernOrder(ctx context.Context, obj *ent.Listing) (*opensea.WyvernOrder, error) {
+	var order opensea.WyvernOrder
 
 	if len(obj.WyvernOrder) == 0 {
 		return nil, nil
@@ -61,8 +61,8 @@ func (r *listingResolver) WyvernOrder(ctx context.Context, obj *ent.Listing) (*i
 	return &order, nil
 }
 
-func (r *listingResolver) SeaportOrder(ctx context.Context, obj *ent.Listing) (*indexer.SeaportOrder, error) {
-	var order indexer.SeaportOrder
+func (r *listingResolver) SeaportOrder(ctx context.Context, obj *ent.Listing) (*opensea.SeaportOrder, error) {
+	var order opensea.SeaportOrder
 
 	if len(obj.SeaportOrder) == 0 {
 		return nil, nil
@@ -143,107 +143,107 @@ func (r *queryResolver) Search(ctx context.Context, query string, after *ent.Cur
 	}).WithItem().WithHustler().Paginate(ctx, after, first, before, last, ent.WithSearchOrder(orderBy), ent.WithSearchFilter(where.Filter))
 }
 
-func (r *seaportOrderResolver) Maker(ctx context.Context, obj *indexer.SeaportOrder) (string, error) {
+func (r *seaportOrderResolver) Maker(ctx context.Context, obj *opensea.SeaportOrder) (string, error) {
 	return obj.Maker.Address.Hex(), nil
 }
 
-func (r *seaportOrderResolver) CurrentPrice(ctx context.Context, obj *indexer.SeaportOrder) (string, error) {
+func (r *seaportOrderResolver) CurrentPrice(ctx context.Context, obj *opensea.SeaportOrder) (string, error) {
 	return obj.CurrentPrice.Big().String(), nil
 }
 
-func (r *seaportOrderResolver) ListingTime(ctx context.Context, obj *indexer.SeaportOrder) (uint64, error) {
+func (r *seaportOrderResolver) ListingTime(ctx context.Context, obj *opensea.SeaportOrder) (uint64, error) {
 	return uint64(obj.ListingTime), nil
 }
 
-func (r *seaportOrderResolver) ExpirationTime(ctx context.Context, obj *indexer.SeaportOrder) (uint64, error) {
+func (r *seaportOrderResolver) ExpirationTime(ctx context.Context, obj *opensea.SeaportOrder) (uint64, error) {
 	return uint64(obj.ExpirationTime), nil
 }
 
-func (r *wyvernOrderResolver) Exchange(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) Exchange(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.Exchange.Hex(), nil
 }
 
-func (r *wyvernOrderResolver) ListingTime(ctx context.Context, obj *indexer.WyvernOrder) (uint64, error) {
+func (r *wyvernOrderResolver) ListingTime(ctx context.Context, obj *opensea.WyvernOrder) (uint64, error) {
 	return uint64(obj.ListingTime), nil
 }
 
-func (r *wyvernOrderResolver) ExpirationTime(ctx context.Context, obj *indexer.WyvernOrder) (uint64, error) {
+func (r *wyvernOrderResolver) ExpirationTime(ctx context.Context, obj *opensea.WyvernOrder) (uint64, error) {
 	return uint64(obj.ExpirationTime), nil
 }
 
-func (r *wyvernOrderResolver) Maker(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) Maker(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.Maker.Address.Hex(), nil
 }
 
-func (r *wyvernOrderResolver) CurrentPrice(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) CurrentPrice(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.CurrentPrice.Big().String(), nil
 }
 
-func (r *wyvernOrderResolver) MakerRelayerFee(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) MakerRelayerFee(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.MakerRelayerFee.Big().String(), nil
 }
 
-func (r *wyvernOrderResolver) MakerProtocolFee(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) MakerProtocolFee(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.MakerProtocolFee.Big().String(), nil
 }
 
-func (r *wyvernOrderResolver) FeeRecipient(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) FeeRecipient(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.FeeRecipient.Address.Hex(), nil
 }
 
-func (r *wyvernOrderResolver) FeeMethod(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
+func (r *wyvernOrderResolver) FeeMethod(ctx context.Context, obj *opensea.WyvernOrder) (int, error) {
 	return int(obj.FeeMethod), nil
 }
 
-func (r *wyvernOrderResolver) Side(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
+func (r *wyvernOrderResolver) Side(ctx context.Context, obj *opensea.WyvernOrder) (int, error) {
 	return int(obj.Side), nil
 }
 
-func (r *wyvernOrderResolver) SaleKind(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
+func (r *wyvernOrderResolver) SaleKind(ctx context.Context, obj *opensea.WyvernOrder) (int, error) {
 	return int(obj.SaleKind), nil
 }
 
-func (r *wyvernOrderResolver) Target(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) Target(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.Target.Hex(), nil
 }
 
-func (r *wyvernOrderResolver) HowToCall(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
+func (r *wyvernOrderResolver) HowToCall(ctx context.Context, obj *opensea.WyvernOrder) (int, error) {
 	return int(obj.HowToCall), nil
 }
 
-func (r *wyvernOrderResolver) Calldata(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) Calldata(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.Calldata.String(), nil
 }
 
-func (r *wyvernOrderResolver) ReplacementPattern(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) ReplacementPattern(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.ReplacementPattern.String(), nil
 }
 
-func (r *wyvernOrderResolver) StaticTarget(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) StaticTarget(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.Target.Hex(), nil
 }
 
-func (r *wyvernOrderResolver) StaticExtradata(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) StaticExtradata(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.StaticExtradata.String(), nil
 }
 
-func (r *wyvernOrderResolver) Extra(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) Extra(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.Extra.Big().String(), nil
 }
 
-func (r *wyvernOrderResolver) Salt(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) Salt(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.Salt.Big().String(), nil
 }
 
-func (r *wyvernOrderResolver) V(ctx context.Context, obj *indexer.WyvernOrder) (int, error) {
+func (r *wyvernOrderResolver) V(ctx context.Context, obj *opensea.WyvernOrder) (int, error) {
 	return int(*obj.V), nil
 }
 
-func (r *wyvernOrderResolver) R(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) R(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.R.String(), nil
 }
 
-func (r *wyvernOrderResolver) S(ctx context.Context, obj *indexer.WyvernOrder) (string, error) {
+func (r *wyvernOrderResolver) S(ctx context.Context, obj *opensea.WyvernOrder) (string, error) {
 	return obj.S.String(), nil
 }
 

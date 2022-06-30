@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/indexer/processor"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -56,12 +55,6 @@ var Config = map[string]ConfigCollection{
 				},
 			},
 		},
-		OpenseaConfig{
-			APIKey:   envcfg.OpenSeaApiKey,
-			URL:      "https://api.opensea.io",
-			Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
-			Interval: time.Minute * 20,
-		},
 	},
 	"testnet": {
 		// Ethereum
@@ -107,12 +100,6 @@ var Config = map[string]ConfigCollection{
 					Processor:  new(processor.HustlerProcessor),
 				},
 			},
-		},
-		OpenseaConfig{
-			APIKey:   envcfg.OpenSeaApiKey,
-			URL:      "https://api.opensea.io",
-			Contract: "0x8707276df042e89669d69a177d3da7dc78bd8723",
-			Interval: time.Minute * 600,
 		},
 	},
 }

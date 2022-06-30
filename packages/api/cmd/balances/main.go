@@ -1,3 +1,5 @@
+// Updates PAPER balance for wallets we have stored
+// inside our database.
 package main
 
 import (

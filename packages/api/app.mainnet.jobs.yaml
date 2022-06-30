@@ -1,0 +1,9 @@
+# Job server for Cloud Scheduler runs
+runtime: go116
+
+main: ./cmd/jobServer
+
+env_variables:
+  OPENSEA: secret://projects/803405501117/secrets/opensea/versions/2
+  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2
+  NETWORK: mainnet

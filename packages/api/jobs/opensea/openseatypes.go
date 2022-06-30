@@ -1,4 +1,4 @@
-package indexer
+package opensea
 
 import (
 	"encoding/json"
