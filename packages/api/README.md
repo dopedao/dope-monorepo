@@ -30,7 +30,7 @@ There are two services in this API, the indexer; and the API HTTP Server. The Do
 
 ### Cron tasks & Jobs
 
-[Securing Jobs with App Engine](https://medium.com/google-cloud/gclb-app-engine-cron-and-cloud-scheduler-1df59a7963f)
+Maintenance tasks to update information from the blockchain and external services are handled through HTTP endpoints exposed on our `jobs` service. Each is called from a `cron.yaml` file [as described here on GCP's docs](https://cloud.google.com/appengine/docs/standard/go/scheduling-jobs-with-cron-yaml). App Engine by default exposes these endpoints to the world. [After trying a number of ways to secure them](https://medium.com/google-cloud/gclb-app-engine-cron-and-cloud-scheduler-1df59a7963f) we went with the most simple – [protecting them using `login:admin`](https://cloud.google.com/appengine/docs/standard/java/config/cron-yaml#securing_urls_for_cron)
 
 ### Adding a smart contract
 

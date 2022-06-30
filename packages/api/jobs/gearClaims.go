@@ -24,12 +24,12 @@ func GearClaims(queue chan int) {
 
 	log.Default().Println("Establishing RPC client")
 	retryableHTTPClient := retryablehttp.NewClient()
-	c, err := rpc.DialHTTPWithClient("https://eth-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
+	httpClient, err := rpc.DialHTTPWithClient("https://eth-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
 	if err != nil {
 		log.Fatal("Dialing ethereum rpc.") //nolint:gocritic
 	}
 
-	eth := ethclient.NewClient(c)
+	eth := ethclient.NewClient(httpClient)
 	initiator, err := bindings.NewInitiator(common.HexToAddress("0x7aa8e897d712cfb9c7cb6b37634a1c4d21181c8b"), eth)
 	if err != nil {
 		log.Fatalf("Creating Components bindings: %+v", err)
