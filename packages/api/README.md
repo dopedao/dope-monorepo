@@ -28,6 +28,10 @@ You can learn more about the graphql <> db auto binding [here](https://entgo.io/
 
 There are two services in this API, the indexer; and the API HTTP Server. The Dope Wars API auto-scales, and the indexer uses a single instance taking advantage of [App Engine manual scaling](https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed).
 
+### Cron tasks & Jobs
+
+[Securing Jobs with App Engine](https://medium.com/google-cloud/gclb-app-engine-cron-and-cloud-scheduler-1df59a7963f)
+
 ### Adding a smart contract
 
 To generate new smart contract bindings, add the abi to `packages/api/internal/contracts/abis` and run `go generate ./...`.
