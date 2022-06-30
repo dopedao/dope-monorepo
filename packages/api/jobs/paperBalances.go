@@ -59,7 +59,7 @@ func PaperBalances(queue chan int) {
 	}
 
 	wg.Wait()
-
+	log.Default().Println("DONE: PaperBalances")
 	// Pop this job off the queue
 	<-queue
 }

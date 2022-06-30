@@ -26,7 +26,7 @@ func OpenSeaListings(queue chan int) {
 
 	job := opensea.NewJob(dbprovider.Ent(), oscfg)
 	job.Run(log.WithContext(ctx))
-
+	log.Info().Msg("DONE: OpenSeaListings")
 	// Pop this job off the queue
 	<-queue
 }

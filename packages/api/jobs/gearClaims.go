@@ -43,7 +43,6 @@ func GearClaims(queue chan int) {
 
 	var wg sync.WaitGroup
 	wg.Add(len(dopes))
-
 	sem := make(chan int, MAX_DB_CONN)
 	for _, dope := range dopes {
 		sem <- 1
@@ -59,11 +58,13 @@ func GearClaims(queue chan int) {
 			client.Dope.UpdateOneID(dope.ID).SetOpened(opened).ExecX(ctx)
 
 			<-sem
+
 			wg.Done()
 		}(dope)
 	}
 
 	wg.Wait()
+	log.Default().Println("DONE: GearClaims")
 	// Pop this job off the queue
 	<-queue
 }

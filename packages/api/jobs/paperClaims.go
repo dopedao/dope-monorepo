@@ -68,7 +68,7 @@ func PaperClaims(queue chan int) {
 	}
 
 	wg.Wait()
-
+	log.Default().Println("DONE: PaperClaims")
 	// Pop this job off the queue
 	<-queue
 }
