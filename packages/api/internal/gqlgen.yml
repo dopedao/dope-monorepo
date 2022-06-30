@@ -81,8 +81,8 @@ models:
       - github.com/dopedao/dope-monorepo/packages/api/internal/ent/search.Type
   WyvernOrder:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/indexer.WyvernOrder
+      - github.com/dopedao/dope-monorepo/packages/api/jobs/opensea.WyvernOrder
   SeaportOrder:
     model:
-      - github.com/dopedao/dope-monorepo/packages/api/indexer.SeaportOrder
+      - github.com/dopedao/dope-monorepo/packages/api/jobs/opensea.SeaportOrder
   

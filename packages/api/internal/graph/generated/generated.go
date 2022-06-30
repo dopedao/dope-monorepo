@@ -14,7 +14,6 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/dopedao/dope-monorepo/packages/api/indexer"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
@@ -24,6 +23,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/graph/model"
+	"github.com/dopedao/dope-monorepo/packages/api/jobs/opensea"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -297,8 +297,8 @@ type ItemResolver interface {
 	Fullname(ctx context.Context, obj *ent.Item) (string, error)
 }
 type ListingResolver interface {
-	WyvernOrder(ctx context.Context, obj *ent.Listing) (*indexer.WyvernOrder, error)
-	SeaportOrder(ctx context.Context, obj *ent.Listing) (*indexer.SeaportOrder, error)
+	WyvernOrder(ctx context.Context, obj *ent.Listing) (*opensea.WyvernOrder, error)
+	SeaportOrder(ctx context.Context, obj *ent.Listing) (*opensea.SeaportOrder, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
@@ -312,37 +312,37 @@ type QueryResolver interface {
 	Search(ctx context.Context, query string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SearchOrder, where *ent.SearchWhereInput) (*ent.SearchConnection, error)
 }
 type SeaportOrderResolver interface {
-	Maker(ctx context.Context, obj *indexer.SeaportOrder) (string, error)
-	CurrentPrice(ctx context.Context, obj *indexer.SeaportOrder) (string, error)
-	ListingTime(ctx context.Context, obj *indexer.SeaportOrder) (uint64, error)
-	ExpirationTime(ctx context.Context, obj *indexer.SeaportOrder) (uint64, error)
+	Maker(ctx context.Context, obj *opensea.SeaportOrder) (string, error)
+	CurrentPrice(ctx context.Context, obj *opensea.SeaportOrder) (string, error)
+	ListingTime(ctx context.Context, obj *opensea.SeaportOrder) (uint64, error)
+	ExpirationTime(ctx context.Context, obj *opensea.SeaportOrder) (uint64, error)
 }
 type SearchEdgeResolver interface {
 	Node(ctx context.Context, obj *ent.SearchEdge) (model.SearchResult, error)
 }
 type WyvernOrderResolver interface {
-	Exchange(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	ListingTime(ctx context.Context, obj *indexer.WyvernOrder) (uint64, error)
-	ExpirationTime(ctx context.Context, obj *indexer.WyvernOrder) (uint64, error)
-	Maker(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	CurrentPrice(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	MakerRelayerFee(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	MakerProtocolFee(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	FeeRecipient(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	FeeMethod(ctx context.Context, obj *indexer.WyvernOrder) (int, error)
-	Side(ctx context.Context, obj *indexer.WyvernOrder) (int, error)
-	SaleKind(ctx context.Context, obj *indexer.WyvernOrder) (int, error)
-	Target(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	HowToCall(ctx context.Context, obj *indexer.WyvernOrder) (int, error)
-	Calldata(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	ReplacementPattern(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	StaticTarget(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	StaticExtradata(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	Extra(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	Salt(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	V(ctx context.Context, obj *indexer.WyvernOrder) (int, error)
-	R(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
-	S(ctx context.Context, obj *indexer.WyvernOrder) (string, error)
+	Exchange(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	ListingTime(ctx context.Context, obj *opensea.WyvernOrder) (uint64, error)
+	ExpirationTime(ctx context.Context, obj *opensea.WyvernOrder) (uint64, error)
+	Maker(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	CurrentPrice(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	MakerRelayerFee(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	MakerProtocolFee(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	FeeRecipient(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	FeeMethod(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	Side(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	SaleKind(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	Target(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	HowToCall(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	Calldata(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	ReplacementPattern(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	StaticTarget(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	StaticExtradata(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	Extra(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	Salt(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	V(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	R(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	S(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
 }
 
 type GameHustlerRelationWhereInputResolver interface {
@@ -7420,9 +7420,9 @@ func (ec *executionContext) _Listing_wyvernOrder(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*indexer.WyvernOrder)
+	res := resTmp.(*opensea.WyvernOrder)
 	fc.Result = res
-	return ec.marshalOWyvernOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋindexerᚐWyvernOrder(ctx, field.Selections, res)
+	return ec.marshalOWyvernOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋjobsᚋopenseaᚐWyvernOrder(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Listing_wyvernOrder(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7507,9 +7507,9 @@ func (ec *executionContext) _Listing_seaportOrder(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*indexer.SeaportOrder)
+	res := resTmp.(*opensea.SeaportOrder)
 	fc.Result = res
-	return ec.marshalOSeaportOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋindexerᚐSeaportOrder(ctx, field.Selections, res)
+	return ec.marshalOSeaportOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋjobsᚋopenseaᚐSeaportOrder(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Listing_seaportOrder(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8720,7 +8720,7 @@ func (ec *executionContext) fieldContext_RLEs_male(ctx context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _SeaportOrder_maker(ctx context.Context, field graphql.CollectedField, obj *indexer.SeaportOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _SeaportOrder_maker(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SeaportOrder_maker(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -8764,7 +8764,7 @@ func (ec *executionContext) fieldContext_SeaportOrder_maker(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _SeaportOrder_currentPrice(ctx context.Context, field graphql.CollectedField, obj *indexer.SeaportOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _SeaportOrder_currentPrice(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SeaportOrder_currentPrice(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -8808,7 +8808,7 @@ func (ec *executionContext) fieldContext_SeaportOrder_currentPrice(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _SeaportOrder_listingTime(ctx context.Context, field graphql.CollectedField, obj *indexer.SeaportOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _SeaportOrder_listingTime(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SeaportOrder_listingTime(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -8852,7 +8852,7 @@ func (ec *executionContext) fieldContext_SeaportOrder_listingTime(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _SeaportOrder_expirationTime(ctx context.Context, field graphql.CollectedField, obj *indexer.SeaportOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _SeaportOrder_expirationTime(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SeaportOrder_expirationTime(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -8896,7 +8896,7 @@ func (ec *executionContext) fieldContext_SeaportOrder_expirationTime(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _SeaportOrder_side(ctx context.Context, field graphql.CollectedField, obj *indexer.SeaportOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _SeaportOrder_side(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SeaportOrder_side(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -8940,7 +8940,7 @@ func (ec *executionContext) fieldContext_SeaportOrder_side(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _SeaportOrder_orderType(ctx context.Context, field graphql.CollectedField, obj *indexer.SeaportOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _SeaportOrder_orderType(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SeaportOrder_orderType(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10212,7 +10212,7 @@ func (ec *executionContext) fieldContext_WalletItemsEdge_cursor(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_exchange(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_exchange(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_exchange(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10256,7 +10256,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_exchange(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_listingTime(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_listingTime(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_listingTime(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10300,7 +10300,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_listingTime(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_expirationTime(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_expirationTime(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_expirationTime(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10344,7 +10344,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_expirationTime(ctx context.
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_maker(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_maker(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_maker(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10388,7 +10388,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_maker(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_currentPrice(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_currentPrice(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_currentPrice(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10432,7 +10432,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_currentPrice(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_makerRelayerFee(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_makerRelayerFee(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_makerRelayerFee(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10476,7 +10476,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_makerRelayerFee(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_makerProtocolFee(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_makerProtocolFee(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_makerProtocolFee(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10520,7 +10520,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_makerProtocolFee(ctx contex
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_feeRecipient(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_feeRecipient(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_feeRecipient(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10564,7 +10564,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_feeRecipient(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_feeMethod(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_feeMethod(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_feeMethod(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10608,7 +10608,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_feeMethod(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_side(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_side(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_side(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10652,7 +10652,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_side(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_saleKind(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_saleKind(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_saleKind(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10696,7 +10696,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_saleKind(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_target(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_target(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_target(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10740,7 +10740,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_target(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_howToCall(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_howToCall(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_howToCall(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10784,7 +10784,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_howToCall(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_calldata(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_calldata(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_calldata(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10828,7 +10828,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_calldata(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_replacementPattern(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_replacementPattern(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_replacementPattern(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10872,7 +10872,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_replacementPattern(ctx cont
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_staticTarget(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_staticTarget(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_staticTarget(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10916,7 +10916,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_staticTarget(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_staticExtradata(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_staticExtradata(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_staticExtradata(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -10960,7 +10960,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_staticExtradata(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_extra(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_extra(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_extra(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -11004,7 +11004,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_extra(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_salt(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_salt(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_salt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -11048,7 +11048,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_salt(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_v(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_v(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_v(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -11092,7 +11092,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_v(ctx context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_r(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_r(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_r(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -11136,7 +11136,7 @@ func (ec *executionContext) fieldContext_WyvernOrder_r(ctx context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _WyvernOrder_s(ctx context.Context, field graphql.CollectedField, obj *indexer.WyvernOrder) (ret graphql.Marshaler) {
+func (ec *executionContext) _WyvernOrder_s(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WyvernOrder_s(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -21301,7 +21301,7 @@ func (ec *executionContext) _RLEs(ctx context.Context, sel ast.SelectionSet, obj
 
 var seaportOrderImplementors = []string{"SeaportOrder"}
 
-func (ec *executionContext) _SeaportOrder(ctx context.Context, sel ast.SelectionSet, obj *indexer.SeaportOrder) graphql.Marshaler {
+func (ec *executionContext) _SeaportOrder(ctx context.Context, sel ast.SelectionSet, obj *opensea.SeaportOrder) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, seaportOrderImplementors)
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
@@ -21872,7 +21872,7 @@ func (ec *executionContext) _WalletItemsEdge(ctx context.Context, sel ast.Select
 
 var wyvernOrderImplementors = []string{"WyvernOrder"}
 
-func (ec *executionContext) _WyvernOrder(ctx context.Context, sel ast.SelectionSet, obj *indexer.WyvernOrder) graphql.Marshaler {
+func (ec *executionContext) _WyvernOrder(ctx context.Context, sel ast.SelectionSet, obj *opensea.WyvernOrder) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, wyvernOrderImplementors)
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
@@ -25307,7 +25307,7 @@ func (ec *executionContext) marshalORLEs2githubᚗcomᚋdopedaoᚋdopeᚑmonorep
 	return ec._RLEs(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOSeaportOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋindexerᚐSeaportOrder(ctx context.Context, sel ast.SelectionSet, v *indexer.SeaportOrder) graphql.Marshaler {
+func (ec *executionContext) marshalOSeaportOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋjobsᚋopenseaᚐSeaportOrder(ctx context.Context, sel ast.SelectionSet, v *opensea.SeaportOrder) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -25988,7 +25988,7 @@ func (ec *executionContext) unmarshalOWalletWhereInput2ᚖgithubᚗcomᚋdopedao
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOWyvernOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋindexerᚐWyvernOrder(ctx context.Context, sel ast.SelectionSet, v *indexer.WyvernOrder) graphql.Marshaler {
+func (ec *executionContext) marshalOWyvernOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋjobsᚋopenseaᚐWyvernOrder(ctx context.Context, sel ast.SelectionSet, v *opensea.WyvernOrder) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

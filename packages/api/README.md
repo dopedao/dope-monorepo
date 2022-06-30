@@ -28,6 +28,10 @@ You can learn more about the graphql <> db auto binding [here](https://entgo.io/
 
 There are two services in this API, the indexer; and the API HTTP Server. The Dope Wars API auto-scales, and the indexer uses a single instance taking advantage of [App Engine manual scaling](https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed).
 
+### Cron tasks & Jobs
+
+Maintenance tasks to update information from the blockchain and external services are handled through HTTP endpoints exposed on our `jobs` service. Each is called from a `cron.yaml` file [as described here on GCP's docs](https://cloud.google.com/appengine/docs/standard/go/scheduling-jobs-with-cron-yaml). App Engine by default exposes these endpoints to the world. [After trying a number of ways to secure them](https://medium.com/google-cloud/gclb-app-engine-cron-and-cloud-scheduler-1df59a7963f) we went with the most simple – [protecting them using `login:admin`](https://cloud.google.com/appengine/docs/standard/java/config/cron-yaml#securing_urls_for_cron)
+
 ### Adding a smart contract
 
 To generate new smart contract bindings, add the abi to `packages/api/internal/contracts/abis` and run `go generate ./...`.
@@ -64,4 +68,5 @@ cd packages/api
 gcloud app deploy --appyaml app.mainnet.api.yaml
 gcloud app deploy --appyaml app.mainnet.indexer.yaml
 gcloud app deploy --appyaml app.mainnet.game.yaml
+gcloud app deploy --appyaml app.mainnet.jobs.yaml
 ```

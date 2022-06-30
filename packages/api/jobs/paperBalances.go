@@ -1,30 +1,27 @@
-// Updates DOPE NFT items in our database if they
-// have been "Opened" or had their "Gear Claimed"
-// by checking the Ethereum blockchain.
-package main
+// Updates PAPER balance for wallets we have stored
+// inside our database.
+package jobs
 
 import (
 	"context"
 	"log"
-	"math/big"
+	"math/rand"
 	"sync"
+	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-const MAX_DB_CONN = 77
-
-func main() {
+func PaperBalances(queue chan int) {
 	ctx := context.Background()
 	client := dbprovider.Ent()
-
-	log.Default().Println("Establishing RPC client")
 	retryableHTTPClient := retryablehttp.NewClient()
 	c, err := rpc.DialHTTPWithClient("https://eth-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
 	if err != nil {
@@ -32,38 +29,37 @@ func main() {
 	}
 
 	eth := ethclient.NewClient(c)
-	initiator, err := bindings.NewInitiator(common.HexToAddress("0x7aa8e897d712cfb9c7cb6b37634a1c4d21181c8b"), eth)
+	paper, err := bindings.NewPaper(common.HexToAddress("0x7ae1d57b58fa6411f32948314badd83583ee0e8c"), eth)
 	if err != nil {
 		log.Fatalf("Creating Components bindings: %+v", err)
 	}
 
-	log.Default().Println("Getting all DOPE NFTs from database")
-	dopes, err := client.Dope.Query().All(ctx)
+	wallets, err := client.Wallet.Query().All(ctx)
 	if err != nil {
-		log.Fatal("Getting ethereum dopes.") //nolint:gocritic
+		log.Fatal("Getting ethereum wallets.") //nolint:gocritic
 	}
 
 	var wg sync.WaitGroup
-	wg.Add(len(dopes))
+	wg.Add(len(wallets))
 
-	sem := make(chan int, MAX_DB_CONN)
-	for _, dope := range dopes {
-		sem <- 1
-		go func(dope *ent.Dope) {
-			b, ok := new(big.Int).SetString(dope.ID, 10)
-			if !ok {
-				log.Fatal("Making big int")
-			}
-			opened, err := initiator.IsOpened(nil, b)
+	for _, wallet := range wallets {
+		go func(wallet *ent.Wallet) {
+			r := rand.Intn(180)
+			time.Sleep(time.Duration(r) * time.Second)
+
+			bal, err := paper.BalanceOf(nil, common.HexToAddress(wallet.ID))
 			if err != nil {
-				log.Fatalf("Getting initiator balance: %+v.", err)
+				log.Fatalf("Getting paper balance: %+v.", err)
 			}
-			client.Dope.UpdateOneID(dope.ID).SetOpened(opened).ExecX(ctx)
 
-			<-sem
+			client.Wallet.UpdateOneID(wallet.ID).SetPaper(schema.BigInt{Int: bal}).ExecX(ctx)
+
 			wg.Done()
-		}(dope)
+		}(wallet)
 	}
 
 	wg.Wait()
+	log.Default().Println("DONE: PaperBalances")
+	// Pop this job off the queue
+	<-queue
 }
