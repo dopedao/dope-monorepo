@@ -25,7 +25,7 @@ func main() {
 	ctx := context.Background()
 
 	srv, err := newServer(log.WithContext(ctx))
-	logger.LogFatalOnErr(err, "Creating Indexer")
+	logger.LogFatalOnErr(err, "Creating Job Server")
 
 	log.Info().Msg("Starting to listen on port: " + *envcfg.Listen)
 	middleware := crzerolog.InjectLogger(&log)
