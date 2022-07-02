@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 
+	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/go-redis/redis/v8"
 )
@@ -57,13 +57,6 @@ type verifyResponse struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
 }
-
-/* global variables */
-const redirect_uri = "http://localhost:3000/verify"
-
-var dbot_client_auth_token = os.Getenv("DBOT_CLIENT_OAUTH_TOKEN")
-var dbot_client_id = os.Getenv("DBOT_CLIENT_ID")
-var dbot_guild_id = os.Getenv("DBOT_GUILD_ID")
 
 /* function implementations */
 func HandleVerifyRequest(redisClient *redis.Client) func(http.ResponseWriter, *http.Request) {
@@ -160,12 +153,12 @@ func sendErr(message string, w http.ResponseWriter) {
 
 func fetchDiscordAccesToken(discordToken string) (string, error) {
 	payload := url.Values{
-		"client_id":     {dbot_client_id},
-		"client_secret": {dbot_client_auth_token},
+		"client_id":     {envcfg.DbotClientId},
+		"client_secret": {envcfg.DbotAuthSecret},
 		"grant_type":    {"authorization_code"},
 		"code":          {discordToken},
 		"scope":         {"identify", "guilds", "email"},
-		"redirect_uri":  {redirect_uri},
+		"redirect_uri":  {envcfg.DbotRedirectUri},
 	}
 
 	resp, err := http.Post("https://discord.com/api/oauth2/token", "application/x-www-form-urlencoded", strings.NewReader(payload.Encode()))
@@ -224,7 +217,7 @@ func isUserInGuild(accessToken string) (bool, error) {
 	}
 
 	for _, guild := range discGuilds {
-		if guild.Id == dbot_guild_id {
+		if guild.Id == envcfg.DbotGuildId {
 			return true, nil
 		}
 	}
