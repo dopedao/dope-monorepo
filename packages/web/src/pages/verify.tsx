@@ -1,15 +1,16 @@
 import { BigNumber, ethers } from 'ethers';
 import { Button } from '@chakra-ui/react';
 import { formatLargeNumber } from 'utils/utils';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePaper } from 'hooks/contracts';
 import { useWalletCheckQuery } from 'generated/graphql';
 import { useWeb3React } from '@web3-react/core';
 import Dialog from 'components/Dialog';
 import styled from '@emotion/styled';
+import useWeb3Provider from 'hooks/web3';
 
 const discordAuthLink =
-  'https://discord.com/api/oauth2/authorize?client_id=973336825223598090&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fverify&response_type=code&scope=identify%20email%20guilds';
+  'https://discord.com/api/oauth2/authorize?client_id=973336825223598090&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fverify&response_type=code&scope=identify%20guilds';
 const verifyApiLink = "http://localhost:8080/verify";
 
 interface IVerifyResponse {
@@ -31,6 +32,13 @@ const Container = styled.div`
   margin: 32px;
 `;
 
+const buttonGroupStyle = {
+  "display": "flex",
+  "flex-direction": "row",
+  "justify-content": "space-evenly",
+  "padding-top": "32px"
+};
+
 // state string
 const generateRandomString = () => {
   let randString = '';
@@ -44,17 +52,27 @@ const generateRandomString = () => {
 };
 
 const Verify = () => {
-  const [isFetchingDiscord, setIsFetchingDiscord] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [respError, setRespError] = useState("")
-
   const [hasOgHustler, setHasOgHustler] = useState(false);
   const [hustlerCount, setHustlerCount] = useState(0);
   const [dopeCount, setDopeCount] = useState(0);
   const [paperBalance, setPaperBalance] = useState<BigNumber>(BigNumber.from(0));
 
+  const { connect } = useWeb3Provider();
   const { account } = useWeb3React();
   const paper = usePaper();
+
+  const onClick = useCallback(
+    async (w: 'MetaMask' | 'WalletConnect') => {
+      try {
+        await connect(w);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [connect],
+  );
 
   // Fetch Wallet ownership info from our API
   const { data, isFetching: isFetchingWalletInfo } = useWalletCheckQuery(
@@ -66,7 +84,6 @@ const Verify = () => {
   );
 
   useMemo(() => {
-    console.log(data);
     if (data?.wallets?.edges![0]?.node?.dopes) {
       const dn = data.wallets.edges[0].node;
       let hasOg = (
@@ -74,9 +91,6 @@ const Verify = () => {
       );
       let dopeCount = dn.dopes.length;
       let hustlerCount = dn.hustlers.length;
-      console.log(hasOg);
-      console.log(dopeCount);
-      console.log(hustlerCount);
       setHasOgHustler(hasOg);
       setDopeCount(dopeCount);
       setHustlerCount(hustlerCount);
@@ -99,30 +113,37 @@ const Verify = () => {
     const state = generateRandomString();
     const base64EncodedState = Buffer.from(state).toString('base64');
     localStorage.setItem('oauth-state', state);
+    console.log(paperBalance)
+    console.log(account)
     window.open(`${discordAuthLink}&state=${base64EncodedState}`, '_self');
   };
 
   useEffect(() => {
+    if (!account) return;
     const fragment = new URLSearchParams(window.location.search.slice(1));
     const [apiToken, urlState] = [fragment.get('code'), fragment.get('state')];
 
     if (!apiToken) {
-      console.log('No api token.');
+      console.error('No api token.');
       return;
     }
     const decodedUrlState = decodeURIComponent(urlState!);
     const state = Buffer.from(decodedUrlState, 'base64').toString();
 
     if (localStorage.getItem('oauth-state') != state) {
-      console.log('Invalid state.');
+      console.error('Invalid state');
       return;
     }
-    console.log('Valid state.');
+
+    if (!account) {
+      console.error("Wallet not connected");
+      return;
+    }
 
     const verifyReq: VerifyRequest = {
       discordtoken: apiToken,
       walletaddress: account!,
-      papercount: Number(ethers.utils.formatEther(paperBalance)),
+      papercount: parseInt(ethers.utils.formatUnits(paperBalance, 'ether')),
       dopecount: dopeCount,
       hustlercount: hustlerCount,
       isog: hasOgHustler
@@ -141,26 +162,36 @@ const Verify = () => {
         } else if (verifyResp.success) {
           setIsVerified(true);
         }
-        setIsFetchingDiscord(false);
       });
+  }, [data]);
 
-  }, []);
 
   return (
     <Dialog>
       <Container>
-        {(isFetchingDiscord && !isVerified && (
+        {(!account && (
           <>
             <h2>
-              Welcome to the streets
+              Connect Your Ethereum Wallet
             </h2>
-            <p>
-              Click the button below to get verified on Discord.
-            </p>
-            <Button onClick={() => discordAuthRedirect()}>Lets go</Button>
+            <div style={buttonGroupStyle}>
+              <Button onClick={() => onClick('MetaMask')}>MetaMask</Button>
+              <Button onClick={() => onClick('WalletConnect')}>WalletConnect</Button>
+            </div>
           </>
         )) ||
-          (!isFetchingDiscord && isVerified && (
+          (!isVerified && account && respError.length <= 1 && (
+            <>
+              <h2>
+                Welcome to the streets
+              </h2>
+              <p>
+                Click the button below to get verified on Discord.
+              </p>
+              <Button onClick={() => discordAuthRedirect()}>Lets go</Button>
+            </>
+          )) ||
+          (isVerified && account && (
             <>
               <h3>Welcome to the fam!</h3>
               <div>
@@ -172,7 +203,7 @@ const Verify = () => {
               <div>{`Dope: ${dopeCount}`}</div>
             </>
           )) ||
-          (!isFetchingDiscord && respError.includes("guild") && (
+          (respError.includes("guild") && (
             <>
               <h3>Damn!</h3>
               <div>Looks like you aren&quot;t in the discord server!</div>
@@ -181,7 +212,7 @@ const Verify = () => {
               </Button>
             </>
           )) ||
-          (!isFetchingDiscord && !respError.includes("guild") && (
+          (!respError.includes("guild") && (
             <>
               <h3>Oops...</h3>
               <div>{respError}</div>
