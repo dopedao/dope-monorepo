@@ -25,7 +25,6 @@ type discordApiUser struct {
 	Username      string `json:"username"`
 	Discriminator string `json:"discriminator"`
 	Id            string `json:"id"`
-	Email         string `json:"email"`
 }
 
 type discordGuild struct {
@@ -62,7 +61,7 @@ type verifyResponse struct {
 func HandleVerifyRequest(redisClient *redis.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		ctx, log := logger.LogFor(ctx)
+		_, log := logger.LogFor(ctx)
 
 		decoder := json.NewDecoder(r.Body)
 		decoder.DisallowUnknownFields()
@@ -157,7 +156,7 @@ func fetchDiscordAccesToken(discordToken string) (string, error) {
 		"client_secret": {envcfg.DbotAuthSecret},
 		"grant_type":    {"authorization_code"},
 		"code":          {discordToken},
-		"scope":         {"identify", "guilds", "email"},
+		"scope":         {"identify", "guilds"},
 		"redirect_uri":  {envcfg.DbotRedirectUri},
 	}
 
