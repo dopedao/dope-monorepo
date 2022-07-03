@@ -46,9 +46,9 @@ services:
 
    redis:
      image: redis:7.0.2
+     network_mode: "host"
      ports:
        - '6379:6379'
-     network_mode: "host"
 
 volumes:
   db:
