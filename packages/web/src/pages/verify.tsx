@@ -10,7 +10,7 @@ import useWeb3Provider from 'hooks/web3';
 
 const discordAuthLink =
   'https://discord.com/api/oauth2/authorize?client_id=973336825223598090&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fverify&response_type=code&scope=identify%20guilds';
-const verifyApiLink = "http://localhost:8080/verify";
+const verifyApiLink = process.env.REDIRECT_URI ?? "http://localhost:8080/verify";
 
 interface IVerifyResponse {
   message: string,
