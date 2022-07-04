@@ -2,7 +2,6 @@ import { BigNumber, ethers } from 'ethers';
 import { Button } from '@chakra-ui/react';
 import { formatLargeNumber } from 'utils/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { usePaper } from 'hooks/contracts';
 import { useWalletCheckQuery } from 'generated/graphql';
 import { useWeb3React } from '@web3-react/core';
 import Dialog from 'components/Dialog';
@@ -61,7 +60,6 @@ const Verify = () => {
 
   const { connect } = useWeb3Provider();
   const { account } = useWeb3React();
-  const paper = usePaper();
 
   const onClick = useCallback(
     async (w: 'MetaMask' | 'WalletConnect') => {
@@ -89,32 +87,17 @@ const Verify = () => {
       let hasOg = (
         dn.hustlers.find(h => parseInt(h.id, 10) <= 500) !== undefined
       );
-      let dopeCount = dn.dopes.length;
-      let hustlerCount = dn.hustlers.length;
       setHasOgHustler(hasOg);
-      setDopeCount(dopeCount);
-      setHustlerCount(hustlerCount);
+      setDopeCount(dn.dopes.length);
+      setHustlerCount(dn.hustlers.length);
+      setPaperBalance(dn.paper);
     }
   }, [data]);
-
-  useEffect(() => {
-    let isMounted = true;
-    if (account) {
-      paper.balanceOf(account).then(value => {
-        if (isMounted) setPaperBalance(value);
-      });
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [paper, account]);
 
   const discordAuthRedirect = () => {
     const state = generateRandomString();
     const base64EncodedState = Buffer.from(state).toString('base64');
     localStorage.setItem('oauth-state', state);
-    console.log(paperBalance)
-    console.log(account)
     window.open(`${discordAuthLink}&state=${base64EncodedState}`, '_self');
   };
 
