@@ -14,6 +14,7 @@ import (
 	"github.com/rs/cors"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/graph"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
@@ -57,8 +58,8 @@ func NewServer(ctx context.Context, static *storage.BucketHandle) (http.Handler,
 
 	// Discord verification
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
+		Addr:     envcfg.RedisAddress,
+		Password: envcfg.RedisPassword,
 		DB:       0,
 	})
 	r.HandleFunc("/verify", verify.HandleVerifyRequest(redisClient))
