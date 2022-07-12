@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import AppWindow from 'components/AppWindow';
 
-const Invest = () => {
+const TokenSale = () => {
   return (
     <iframe 
       style={{
@@ -13,4 +13,4 @@ const Invest = () => {
       </iframe>
   );
 };
-export default Invest;
+export default TokenSale;
