@@ -1,4 +1,4 @@
-package main
+package jobs
 
 import (
 	"context"
@@ -26,7 +26,7 @@ import (
 // 	item.TypeACCESSORY: 9,
 // }
 
-func main() {
+func GearMetrics(queue chan int) {
 	ctx := context.Background()
 	client := dbprovider.Ent()
 
@@ -156,4 +156,7 @@ func main() {
 		client.Dope.UpdateOneID(dope.ID).SetRank(i).SetScore(dope.Score).ExecX(ctx)
 		println("Updating dope:", dope.ID)
 	}
+	log.Default().Println("DONE: GearMetrics")
+	// Pop this job off the queue
+	<-queue
 }

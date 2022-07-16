@@ -1,6 +1,6 @@
 // Updates DOPE NFT items in our database after checking
-// their PAPER CLAIM status on the PAPER contract.
-package main
+// their CLAIM status on the PAPER contract.
+package jobs
 
 import (
 	"context"
@@ -17,9 +17,7 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-const MAX_DB_CONN = 77
-
-func main() {
+func PaperClaims(queue chan int) {
 	ctx := context.Background()
 
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -70,4 +68,7 @@ func main() {
 	}
 
 	wg.Wait()
+	log.Default().Println("DONE: PaperClaims")
+	// Pop this job off the queue
+	<-queue
 }

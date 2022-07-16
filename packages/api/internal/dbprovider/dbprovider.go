@@ -40,7 +40,9 @@ func init() {
 
 	// Run migrations
 	ctx := context.Background()
+	fmt.Println("RUNNING MIGRATIONS")
 	runMigration(ctx)
+	fmt.Println("REFRESH MATERIAL VIEWS")
 	refreshMaterializedViews(ctx)
 }
 

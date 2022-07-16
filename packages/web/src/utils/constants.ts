@@ -87,6 +87,7 @@ export const NETWORK = {
 };
 
 const MAINNET_API_URL = 'https://api.dopewars.gg/query';
+// const MAINNET_API_URL = 'http://localhost:8080/query';
 const TESTNET_API_URL = 'https://testnet.api.dopewars.gg/query';
 
 export const API_URI = {

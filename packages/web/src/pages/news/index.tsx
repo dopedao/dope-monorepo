@@ -3,12 +3,14 @@ import Head from 'components/Head';
 import NewsWindow from 'features/news/components/NewsWindow';
 import { PostType } from 'features/news/types';
 import { getAllPosts } from 'utils/lib';
+import DesktopIconList from 'components/DesktopIconList';
 
 const TITLE = 'The Daily Dope';
 
 const News = ({ allPosts }: { allPosts: PostType[] }) => (
   <>
     <Head title={TITLE} />
+    <DesktopIconList />
     <NewsWindow allPosts={allPosts} />
   </>
 );

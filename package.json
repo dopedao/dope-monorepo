@@ -7,7 +7,6 @@
 		"web:test": "yarn workspace @dopewars/web test",
 		"web:lint": "yarn workspace @dopewars/web lint",
 		"web:format": "yarn workspace @dopewars/web format",
-		"web:refresh-opensea-sales-cache": "yarn workspace @dopewars/web refresh-opensea-sales-cache",
 		"contracts": "yarn workspace @dopewars/contracts",
 		"format": "prettier --write 'packages/web/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
 	},
