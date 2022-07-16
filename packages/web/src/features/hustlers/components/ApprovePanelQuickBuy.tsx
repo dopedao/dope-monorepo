@@ -19,8 +19,6 @@ import ReceiptItemGear from './ReceiptItemGear';
 import { useRouter } from 'next/router';
 import SpinnerMessage from 'components/SpinnerMessage';
 import DisconnectAndQuitButton from './DisconnectAndQuitButton';
-import { resolve } from 'node:path/win32';
-import { rejects } from 'node:assert';
 
 const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) => {
   const router = useRouter();
@@ -74,12 +72,12 @@ const ApprovePanelQuickBuy = ({ hustlerConfig, setHustlerConfig }: StepsProps) =
       !data.dopes.edges[0]!.node ||
       !data.dopes.edges[0]!.node.listings ||
       !(data.dopes.edges[0]!.node.listings.length > 0) ||
-      !data.dopes.edges[0]!.node.listings[0]!.order
+      !data.dopes.edges[0]!.node.listings[0]!.wyvernOrder
     ) {
       return;
     }
 
-    return data.dopes.edges[0]?.node.listings[0]?.order!;
+    return data.dopes.edges[0]?.node.listings[0]?.wyvernOrder!;
   }, [data]);
 
   const total = useMemo(() => {

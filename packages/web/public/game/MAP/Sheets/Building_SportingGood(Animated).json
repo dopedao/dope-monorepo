@@ -1,0 +1,148 @@
+{ "frames": {
+   "Building_SportingGood(Animated) 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 1500
+   },
+   "Building_SportingGood(Animated) 1.aseprite": {
+    "frame": { "x": 224, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 2.aseprite": {
+    "frame": { "x": 448, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 3.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 4.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 5.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 6.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 700
+   },
+   "Building_SportingGood(Animated) 7.aseprite": {
+    "frame": { "x": 0, "y": 128, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 8.aseprite": {
+    "frame": { "x": 224, "y": 128, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 9.aseprite": {
+    "frame": { "x": 448, "y": 128, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 10.aseprite": {
+    "frame": { "x": 0, "y": 256, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 11.aseprite": {
+    "frame": { "x": 448, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 12.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 600
+   },
+   "Building_SportingGood(Animated) 13.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 14.aseprite": {
+    "frame": { "x": 224, "y": 256, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   },
+   "Building_SportingGood(Animated) 15.aseprite": {
+    "frame": { "x": 448, "y": 256, "w": 224, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 128 },
+    "sourceSize": { "w": 224, "h": 128 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.21",
+  "image": "Building_SportingGood(Animated).png",
+  "format": "RGBA8888",
+  "size": { "w": 672, "h": 384 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "flicker", "from": 0, "to": 15, "direction": "forward" }
+  ],
+  "layers": [
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" },
+   { "name": "Layer 2", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

@@ -1,5 +1,0 @@
-dispatch:
-  - url: api.dopewars.gg/*
-    service: default
-  - url: testnet.api.dopewars.gg/*
-    service: api-testnet

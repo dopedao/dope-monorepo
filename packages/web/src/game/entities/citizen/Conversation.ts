@@ -1,13 +1,32 @@
-export default class Conversation {
+import Citizen from "./Citizen";
+
+export interface Text {
   text: string;
+  choices?: Array<string>;
+  typingSpeed?: number;
+  onEnd?: (citizen: Citizen, conversation: Conversation, text: Text, selectedChoice?: number) => void;
+}
 
-  // return true if the conversation is completed
-  // if true, the conversation will get removed from the conversations array of the citizen which includes
-  // this conversation
-  onFinish?: () => boolean;
+export default class Conversation {
+  id: string;
+  // on that text page end 
+  texts: Array<Text>;
 
-  constructor(text: string, onFinish?: () => boolean) {
-    this.text = text;
+  // callback when conversation is finished
+  onFinish?: (citizen: Citizen, conversation: this) => void;
+
+  constructor(id: string, texts: Array<Text> | Text, onFinish?: (citizen: Citizen, conversation: Conversation) => void) {
+    this.id = id;
+    this.texts = texts instanceof Array ? texts : [ texts ];
+
     this.onFinish = onFinish;
+  }
+
+  add(...texts: Text[]) {
+    this.texts.push(...texts);
+  }
+
+  get(index: number): Text {
+    return this.texts[index];
   }
 }

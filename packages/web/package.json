@@ -12,8 +12,6 @@
     "gen-opensea": "graphql-codegen --config codegen-opensea.yml",
     "test": "jest",
     "test-watch": "jest --watch",
-    "dump-opensea": "ts-node --script-mode script/dump-opensea-json.ts",
-    "refresh-opensea-sales-cache": "ts-node --script-mode script/refresh-opensea-sales-cache.ts",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

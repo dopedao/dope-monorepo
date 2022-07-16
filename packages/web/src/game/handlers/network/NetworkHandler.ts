@@ -1,7 +1,15 @@
+import { ethers } from 'ethers';
+import defaultNetworkConfig from 'game/constants/NetworkConfig';
+import { _ } from 'gear-rarity/dist/image-140bf8ec';
+import Cookies from 'js-cookie';
+import { SiweMessage } from 'siwe';
+import Authenticator from './Authenticator';
 import { DataTypes, NetworkEvents, UniversalEventNames } from './types';
 
 export default class NetworkHandler {
   private static instance: NetworkHandler;
+
+  private _authenticator: Authenticator;
 
   public emitter: Phaser.Events.EventEmitter;
   private connection?: WebSocket;
@@ -12,8 +20,11 @@ export default class NetworkHandler {
     return this._connected;
   }
 
-  constructor() {
+  get authenticator() { return this._authenticator; }
+
+  constructor(authenticator?: Authenticator) {
     this.emitter = new Phaser.Events.EventEmitter();
+    this._authenticator = authenticator || new Authenticator(this);
   }
 
   on(event: string, callback: Function, context?: any) {
@@ -24,14 +35,14 @@ export default class NetworkHandler {
     this.emitter.once(event, callback, context);
   }
 
-  connect() {
+  connect(): this {
     if (this.connection?.readyState === WebSocket.OPEN) {
       console.warn('Already connected to server');
-      return;
+      return this;
     }
 
     this.connection = new WebSocket(
-      `wss://involvement-terror-cowboy-specializing.trycloudflare.com/game/ws`,
+      defaultNetworkConfig.wsUri,
     );
 
     this.connection.onopen = () => {
@@ -42,6 +53,7 @@ export default class NetworkHandler {
       this._connected = false;
       this.emitter.emit(NetworkEvents.DISCONNECTED);
     };
+    return this;
   }
 
   disconnect() {
@@ -53,16 +65,16 @@ export default class NetworkHandler {
     this.connection?.close();
   }
 
-  listenMessages(listen: boolean = true) {
+  listen(listen: boolean = true) {
     if (this.connection)
       this.connection.onmessage = listen
         ? event => {
-            this._handleMessage(event);
+            this._handle(event);
           }
         : null;
   }
 
-  sendMessage(event: UniversalEventNames, data: any) {
+  send(event: UniversalEventNames, data: any) {
     if (this.connection?.readyState !== WebSocket.OPEN) {
       console.error('Cannot send message, connection is not open');
       return;
@@ -75,7 +87,7 @@ export default class NetworkHandler {
   // Handle messages coming from the server
   // and dispatches them through the event emitter as
   // server-type events
-  private _handleMessage(event: MessageEvent) {
+  private _handle(event: MessageEvent) {
     const payload = JSON.parse(event.data);
 
     switch (payload.event) {
@@ -102,6 +114,9 @@ export default class NetworkHandler {
         break;
       case UniversalEventNames.PLAYER_UPDATE_MAP:
         this.emitter.emit(NetworkEvents.SERVER_PLAYER_UPDATE_MAP, payload.data);
+        break;
+      case UniversalEventNames.PLAYER_PICKUP_ITEMENTITY:
+        this.emitter.emit(NetworkEvents.SERVER_PLAYER_PICKUP_ITEMENTITY, payload.data);
         break;
     }
   }

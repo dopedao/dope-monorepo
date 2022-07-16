@@ -1,75 +1,206 @@
 {
     "assetRoot":"assets",
-    "totalSize": 17903178,
+    "totalSize": 219764017,
     "assets": {
         "spritesheet": {
             "male_base": {
               "file": "https://static.dopewars.gg/male/body/1.png",
               "frameConfig": {
-                "frameWidth": 30,
+                "frameWidth": 60,
                 "frameHeight": 60
               },
               "size": 8543
             }
         },
+        "json": {
+            "map": {
+                "file": "./game/MAP/LDTK/DopeWars_LD_V7.json",
+                "size": 65457409
+            },
+            "animation_props_rooffanbig": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.json",
+                "size": 1865
+            },
+            "npc_jamingoguy": {
+                "file": "./game/MAP/NPCs/DW_NPC_JamingoGuy.json",
+                "size": 1487
+            },
+            "animation_props_firebarrel": {
+                "file": "./game/MAP/Sheets/DW_Animation_FireBarrel.json",
+                "size": 8659
+            },
+            "animation_props_firebarrel_night": {
+                "file": "./game/MAP/Sheets/DW_Animation_FireBarrel_Nightl.json",
+                "size": 9534
+            },
+            "animation_props_adssmall": {
+                "file": "./game/MAP/Sheets/DW_Animation_Prop_Advertising Flicker.json",
+                "size": 6596
+            },
+            "animation_props_adsbig": {
+                "file": "./game/MAP/Sheets/DW_Animation_Props_AdvertisingFlicker_Big.json",
+                "size": 10147
+            },
+            "animation_vegetation_bushes": {
+                "file": "./game/MAP/Sheets/DW_Animation_Bushes.json",
+                "size": 2571
+            },
+            "animation_props_rooffanmedium": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanMediumlRotate.json",
+                "size": 1696
+            },
+            "animation_buildings_sportinggood": {
+                "file": "./game/MAP/Sheets/Building_SportingGood(Animated).json",
+                "size": 4917
+            },
+            "animation_props_wallfansmall": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanSmallRotate.json",
+                "size": 1414
+            },
+            "animation_props_wallcamera": {
+                "file": "./game/MAP/Sheets/DW_Animation_CameraRotate.json",
+                "size": 7175
+            },
+            "animation_props_fountain": {
+                "file": "./game/MAP/Sheets/Dw_Animation_Props_Fountain_2.json",
+                "size": 3468
+            },
+            "animation_props_carflag": {
+                "file": "./game/MAP/Sheets/DW_Animation_Prop_CarFlag1.json",
+                "size": 17940
+            },
+            "npc_hobbos": {
+                "file": "./game/MAP/NPCs/DW_NPC_Hobbos.json",
+                "size": 3637
+            }
+        },
         "image": {
-            "tileset_vegetation_tree": {
-                "file":"./game/MAP/DW_Vegetation_Trees.png",
-                "size": 14290
+            "background": {
+                "file": "./images/game/map/full.png",
+                "size": 0
             },
-            "tileset_ground_main": {
-                "file":"./game/MAP/DW_Tileset_Grounds_WebModular.png",
-                "size": 28752
+            "animation_props_rooffanbig": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanBigRotate.png",
+                "size": 3524
             },
-            "tileset_building_modular": {
-                "file":"./game/MAP/Dw_Tileset_BuildingsModular.png",
-                "size": 23589
+            "npc_jamingoguy": {
+                "file": "./game/MAP/NPCs/DW_NPC_JamingoGuy.png",
+                "size": 1100
             },
-            "tileset_props_main": {
-                "file":"./game/MAP/dw_Props_PreProtoSetV1.png",
-                "size": 202808
+            "animation_props_firebarrel": {
+                "file": "./game/MAP/Sheets/DW_Animation_FireBarrel.png",
+                "size": 44027
+            }, 
+            "animation_props_firebarrel_night": {
+                "file": "./game/MAP/Sheets/DW_Animation_FireBarrel_Nightl.png",
+                "size": 123625
+            }, 
+            "animation_windowsnight": {
+                "file": "./game/MAP/Sheets/Dw_Animation_WindowsNight.png",
+                "size": 8819
             },
-            "tileset_buildings_preprotosetv1": {
-                "file":"./game/MAP/dw_Buildings_PreProtoSetV1_TileAbsolute.png",
-                "size": 208661
+            "animation_props_adssmall": {
+                "file": "./game/MAP/Sheets/DW_Animation_Prop_Advertising Flicker.png",
+                "size": 23113
+            },
+            "animation_props_adsbig": {
+                "file": "./game/MAP/Sheets/DW_Animation_Props_AdvertisingFlicker_Big.png",
+                "size": 28303
+            },
+            "animation_vegetation_bushes": {
+                "file": "./game/MAP/Sheets/DW_Animation_Bushes.png",
+                "size": 6985
+            },
+            "animation_props_rooffanmedium": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanMediumlRotate.png",
+                "size": 1207
+            },
+            "animation_buildings_sportinggood": {
+                "file": "./game/MAP/Sheets/Building_SportingGood(Animated).png",
+                "size": 45439
+            },
+            "animation_props_wallfansmall": {
+                "file": "./game/MAP/Sheets/DW_Animation_FanSmallRotate.png",
+                "size": 807
+            },
+            "animation_props_wallcamera": {
+                "file": "./game/MAP/Sheets/DW_Animation_CameraRotate.png",
+                "size": 5733
+            },
+            "animation_props_fountain": {
+                "file": "./game/MAP/Sheets/Dw_Animation_Props_Fountain_2.png",
+                "size": 104906
+            },
+            "animation_props_carflag": {
+                "file": "./game/MAP/Sheets/DW_Animation_Prop_CarFlag1.png",
+                "size": 99653
+            },
+            "npc_hobbos": {
+                "file": "./game/MAP/NPCs/DW_NPC_Hobbos.png",
+                "size": 2611
             },
             "tileset_building_nycpack1": {
-                "file":"./game/MAP/dw_Buildings_PreProtoSetV2_TileAbsolute.png",
-                "size": 321197
+                "file": "./game/MAP/DW_Buildings_MegaSheet1.png",
+                "normal": "./game/MAP/DW_Buildings_MegaSheet1_normal.png",
+                "size": 615478
             },
-            "tileset_ground_autotiles": {
-                "file":"./game/MAP/DW_Tileset_GrassStreet.png",
-                "size": 16861
+            "tileset_building_nycpack1_nighttexture": {
+                "file": "./game/MAP/DW_Buildings_MegaSheet1_NightAdds.png",
+                "size": 414875
             },
-            "tileset_vegetation_general": {
-                "file":"./game/MAP/dw_Props_Vegetation.png",
-                "size": 34088
+            "tileset_ground_main": {
+                "file": "./game/MAP/DW_Tileset_Grounds_WebModular.png",
+                "normal": "./game/MAP/DW_Tileset_Grounds_WebModular_normals.png",
+                "size": 135648
+            },
+            "tileset_props_main": {
+                "file": "./game/MAP/Dw_Tileset_Props_MegaSheet.png",
+                "normal": "./game/MAP/Dw_Tileset_Props_MegaSheet_normals.png",
+                "size": 572323
+            },
+            "tileset_props_main_nighttexture": {
+                "file": "./game/MAP/Dw_Tileset_Props_MegaSheet_NightTexture.png",
+                "size": 205495
             },
             "tileset_vegetation_main": {
                 "file": "./game/MAP/DW_Props_VegetationSheet.png",
-                "size": 103952
+                "normal": "./game/MAP/DW_Props_VegetationSheet_normal.png",
+                "size": 123329
             },
-            "tileset_vegetation_small": {
-                "file":"./game/MAP/DW_Props_Vegetation_Small.png",
-                "size": 9713
-            },
-            "tileset_vegetation_medium": {
-                "file":"./game/MAP/DW_Props_Vegetation_Medium.png",
-                "size": 3860
-            },
-            "tileset_props_telephonewire": {
-                "file": "./game/MAP/dw_Props_TelephonePoleWire.png",
-                "size": 10197
+            "tileset_ground_autotiles": {
+                "file": "./game/MAP/DW_GroundTiles_MegaSheet.png",
+                "normal":  "./game/MAP/DW_GroundTiles_MegaSheet_normal.png",
+                "size": 31213
             },
             "tileset_fx_lightsources": {
                 "file": "./game/MAP/Tileset_FX_Lightsources.png",
                 "size": 14232
+            },
+            "tileset_fx_shadowbase": {
+                "file": "./game/MAP/DW_FX_ShadowPaint.png",
+                "size": 336
             }
         },
-        "json": {
-            "map": {
-                "file": "./game/MAP/LDTK/DopeWars_LD_V3/DopeWars_LD_V4.ldtk",
-                "size": 16902435
+        "audio": {
+            "chiptunes_2_of_Amerikas_Most_Wanted": {
+              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/2_of_Amerikas_Most_Wanted.mp3",
+              "size": 8538823
+            },
+            "chiptunes_Aint_Nuthin_But_a_G_thang": {
+              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/Aint_Nuthin_But_a_G_thang.mp3",
+              "size": 9990186
+            },
+            "chiptunes_BIG_POPPA": {
+              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/BIG_POPPA.mp3",
+              "size": 11549174
+            },
+            "chiptunes_CREAM_WuTang": {
+              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/CREAM_WuTang.mp3",
+              "size": 7686186
+            },
+            "chiptunes_Shook_Ones_Pt_2": {
+              "file": "https://dope-wars-gg.s3-us-west-1.amazonaws.com/audio/Shook_Ones_Pt_2.mp3",
+              "size": 4908847
             }
         }
     }

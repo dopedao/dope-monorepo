@@ -4,7 +4,8 @@ import Item from 'game/entities/player/inventory/Item';
 import Quest from 'game/entities/player/quests/Quest';
 
 export enum Events {
-  // add events
+  SHOW_NOTIFICAION = 'show_notification',
+
   PLAYER_INVENTORY_OPEN = 'player_open_inventory',
   PLAYER_INVENTORY_CLOSE = 'player_close_inventory',
   PLAYER_INVENTORY_ADD_ITEM = 'player_add_item_inventory',

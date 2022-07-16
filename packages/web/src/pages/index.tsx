@@ -3,6 +3,7 @@ import { PageWrapper } from 'ui/styles/components';
 import Head from 'components/Head';
 import AboutWindow from 'features/about/components/AboutWindow';
 import Cookies from 'js-cookie';
+import DesktopIconList from 'components/DesktopIconList';
 // import NewsWindow from 'features/news/components/NewsWindow';
 // import { PostType } from 'features/news/types';
 // import { getAllPosts } from 'utils/lib';
@@ -16,6 +17,7 @@ const IndexPage = () => {
   return (
     <IndexWrapper>
       <Head />
+      <DesktopIconList />
       {Cookies.get('aboutWindowVisible') !== 'false' && (
         <AboutWindow
           posX={64}

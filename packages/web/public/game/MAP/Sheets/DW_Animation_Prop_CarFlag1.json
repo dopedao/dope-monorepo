@@ -1,0 +1,533 @@
+{ "frames": {
+   "DW_Animation_Prop_CarFlag1 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 1.aseprite": {
+    "frame": { "x": 32, "y": 0, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 2.aseprite": {
+    "frame": { "x": 64, "y": 0, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 3.aseprite": {
+    "frame": { "x": 96, "y": 0, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 4.aseprite": {
+    "frame": { "x": 128, "y": 0, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 5.aseprite": {
+    "frame": { "x": 160, "y": 0, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 6.aseprite": {
+    "frame": { "x": 192, "y": 0, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 7.aseprite": {
+    "frame": { "x": 224, "y": 0, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 8.aseprite": {
+    "frame": { "x": 0, "y": 96, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 9.aseprite": {
+    "frame": { "x": 32, "y": 96, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 10.aseprite": {
+    "frame": { "x": 64, "y": 96, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 11.aseprite": {
+    "frame": { "x": 96, "y": 96, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 12.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 13.aseprite": {
+    "frame": { "x": 160, "y": 96, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 14.aseprite": {
+    "frame": { "x": 192, "y": 96, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 15.aseprite": {
+    "frame": { "x": 224, "y": 96, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 16.aseprite": {
+    "frame": { "x": 0, "y": 192, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 17.aseprite": {
+    "frame": { "x": 32, "y": 192, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 18.aseprite": {
+    "frame": { "x": 64, "y": 192, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 19.aseprite": {
+    "frame": { "x": 96, "y": 192, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 20.aseprite": {
+    "frame": { "x": 128, "y": 192, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 21.aseprite": {
+    "frame": { "x": 160, "y": 192, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 22.aseprite": {
+    "frame": { "x": 192, "y": 192, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 23.aseprite": {
+    "frame": { "x": 224, "y": 192, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 24.aseprite": {
+    "frame": { "x": 0, "y": 288, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 25.aseprite": {
+    "frame": { "x": 32, "y": 288, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 26.aseprite": {
+    "frame": { "x": 64, "y": 288, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 27.aseprite": {
+    "frame": { "x": 96, "y": 288, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 28.aseprite": {
+    "frame": { "x": 128, "y": 288, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 29.aseprite": {
+    "frame": { "x": 160, "y": 288, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 30.aseprite": {
+    "frame": { "x": 192, "y": 288, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 31.aseprite": {
+    "frame": { "x": 224, "y": 288, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 32.aseprite": {
+    "frame": { "x": 0, "y": 384, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 33.aseprite": {
+    "frame": { "x": 32, "y": 384, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 34.aseprite": {
+    "frame": { "x": 64, "y": 384, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 35.aseprite": {
+    "frame": { "x": 96, "y": 384, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 36.aseprite": {
+    "frame": { "x": 128, "y": 384, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 37.aseprite": {
+    "frame": { "x": 160, "y": 384, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 38.aseprite": {
+    "frame": { "x": 192, "y": 384, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 39.aseprite": {
+    "frame": { "x": 224, "y": 384, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 40.aseprite": {
+    "frame": { "x": 0, "y": 480, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 41.aseprite": {
+    "frame": { "x": 32, "y": 480, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 42.aseprite": {
+    "frame": { "x": 64, "y": 480, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 43.aseprite": {
+    "frame": { "x": 96, "y": 480, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 44.aseprite": {
+    "frame": { "x": 128, "y": 480, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 45.aseprite": {
+    "frame": { "x": 160, "y": 480, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 46.aseprite": {
+    "frame": { "x": 192, "y": 480, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 47.aseprite": {
+    "frame": { "x": 224, "y": 480, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 48.aseprite": {
+    "frame": { "x": 0, "y": 576, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 49.aseprite": {
+    "frame": { "x": 32, "y": 576, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 50.aseprite": {
+    "frame": { "x": 64, "y": 576, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 51.aseprite": {
+    "frame": { "x": 96, "y": 576, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 52.aseprite": {
+    "frame": { "x": 128, "y": 576, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 53.aseprite": {
+    "frame": { "x": 160, "y": 576, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 54.aseprite": {
+    "frame": { "x": 192, "y": 576, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 55.aseprite": {
+    "frame": { "x": 224, "y": 576, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 56.aseprite": {
+    "frame": { "x": 0, "y": 672, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 57.aseprite": {
+    "frame": { "x": 32, "y": 672, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 58.aseprite": {
+    "frame": { "x": 64, "y": 672, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 59.aseprite": {
+    "frame": { "x": 96, "y": 672, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 60.aseprite": {
+    "frame": { "x": 128, "y": 672, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 61.aseprite": {
+    "frame": { "x": 160, "y": 672, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 62.aseprite": {
+    "frame": { "x": 192, "y": 672, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   },
+   "DW_Animation_Prop_CarFlag1 63.aseprite": {
+    "frame": { "x": 224, "y": 672, "w": 32, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 96 },
+    "sourceSize": { "w": 32, "h": 96 },
+    "duration": 80
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.21",
+  "image": "DW_Animation_Prop_CarFlag1.png",
+  "format": "RGBA8888",
+  "size": { "w": 256, "h": 768 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "CarFlag1", "from": 0, "to": 31, "direction": "forward" },
+   { "name": "CarFlag2", "from": 32, "to": 63, "direction": "forward" }
+  ],
+  "layers": [
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" },
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

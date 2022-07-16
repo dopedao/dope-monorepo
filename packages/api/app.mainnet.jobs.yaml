@@ -1,0 +1,30 @@
+# Job server for Cloud Scheduler runs
+runtime: go116
+service: jobs
+
+main: ./cmd/jobServer
+
+env_variables:
+  OPENSEA: secret://projects/803405501117/secrets/opensea/versions/2
+  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2
+  NETWORK: mainnet
+
+# App Engine security settings are non-intuitive.
+# To prevent the general public from accessing our "job" endpoints
+# the most simple way is to specific `login:admin` on each
+#
+# You'd think that one could simply set the App Engine "ingress"
+# to "internal" and it would be smart enough to figure it out; but it's not.
+handlers:
+  - url: /gear-claims
+    script: auto
+    login: admin
+  - url: /opensea-listings
+    script: auto
+    login: admin
+  - url: /paper-balances
+    script: auto
+    login: admin
+  - url: /paper-claims
+    script: auto
+    login: admin

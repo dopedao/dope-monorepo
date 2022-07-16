@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import DesktopWindow from 'components/DesktopWindow';
+import DesktopIconList from 'components/DesktopIconList';
 import Dialog from 'components/Dialog';
 import Head from 'components/Head';
 
@@ -33,7 +34,8 @@ export default function Market() {
     router.replace('/');
   };
 
-  return (
+  return (<>
+    <DesktopIconList />
     <DesktopWindow title={title}>
       <Head title="TOS" />
       <Dialog css={dialogCss} title={title} icon="stop-hand">
@@ -57,5 +59,5 @@ export default function Market() {
         <Button onClick={() => handleDisagree()}>Disagree</Button>
       </Dialog>
     </DesktopWindow>
-  );
+  </>);
 }

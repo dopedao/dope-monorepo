@@ -1,14 +1,17 @@
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import NetworkHandler from 'game/handlers/network/NetworkHandler';
 import { UniversalEventNames } from 'game/handlers/network/types';
+import GameScene from 'game/scenes/Game';
+import UIScene from 'game/scenes/UI';
+import ControlsManager, { ControlsEvents, PlayerKeys } from 'game/utils/ControlsManager';
+import VirtualJoyStick from 'phaser3-rex-plugins/plugins/virtualjoystick';
 import Citizen from '../citizen/Citizen';
 import Hustler, { Direction } from '../Hustler';
 import Player from './Player';
 
 export default class PlayerController {
-  private mainKeys!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private mainKeys!: {[key: string]: Phaser.Input.Keyboard.Key};
   private arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
-
   private _player: Player;
 
   // send move message each MOVE_TICKRATE ms (if moving)
@@ -22,36 +25,19 @@ export default class PlayerController {
     this._player = player;
 
     this.arrows = player.scene.input.keyboard.createCursorKeys();
-    this.mainKeys = player.scene.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W,
-      down: Phaser.Input.Keyboard.KeyCodes.S,
-      left: Phaser.Input.Keyboard.KeyCodes.A,
-      right: Phaser.Input.Keyboard.KeyCodes.D,
-      // inventory
-      tab: Phaser.Input.Keyboard.KeyCodes.TAB,
-      // interaction
-      e: Phaser.Input.Keyboard.KeyCodes.E,
-    }) as Phaser.Types.Input.Keyboard.CursorKeys;
-
-    // for (let i = 0; i < 4; i++)
-    // {
-    //     ((this.arrows as any)[Object.keys(this.arrows)[i]] as Phaser.Input.Keyboard.Key).onUp((e: KeyboardEvent) => {
-    //         if (NetworkHandler.getInstance().connected)
-    //             NetworkHandler.getInstance().sendMessage(UniversalEventNames.PLAYER_MOVE, {
-    //                 x: this.player.x,
-    //                 y: this.player.y,
-    //                 direction: this.player.moveDirection,
-    //             })
-    //     });
-    // }
+    this.mainKeys = player.scene.input.keyboard.addKeys(ControlsManager.getInstance().playerKeys) as {[key: string]: Phaser.Input.Keyboard.Key};
+    ControlsManager.getInstance().emitter.on(ControlsEvents.PLAYER_KEYS_UPDATED, (newKeys: PlayerKeys) => {
+      Object.values(this.mainKeys).forEach((key: Phaser.Input.Keyboard.Key) => this.player.scene.input.keyboard.removeKey(key));
+      this.mainKeys = player.scene.input.keyboard.addKeys(newKeys) as {[key: string]: Phaser.Input.Keyboard.Key};
+    });
   }
 
   update() {
-    if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).tab)) this.player.toggleInventory();
+    // if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).inventory)) this.player.toggleInventory();
 
     if (
       Phaser.Input.Keyboard.JustUp(this.arrows.space) ||
-      Phaser.Input.Keyboard.JustUp((this.mainKeys as any).e)
+      Phaser.Input.Keyboard.JustUp((this.mainKeys as any).interact)
     )
       // check interact sensor
       this.player.tryInteraction();
@@ -59,27 +45,29 @@ export default class PlayerController {
     // get rid of previous velocity if pathfinder is not active
     if (!this.player.navigator.target) this.player.setVelocity(0);
 
+    const joyStick: VirtualJoyStick | undefined = (this._player.scene.scene.get('UIScene') as UIScene).joyStick;
+
     let willMoveFlag = false;
-    if (this.mainKeys.up.isDown || this.arrows.up.isDown) {
+    if (this.mainKeys.up.isDown || this.arrows.up.isDown || joyStick?.up) {
       this.player.moveDirection = Direction.North;
       this.player.setVelocityY(-Hustler.DEFAULT_VELOCITY);
       // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
-    } else if (this.mainKeys.down.isDown || this.arrows.down.isDown) {
+    } else if (this.mainKeys.down.isDown || this.arrows.down.isDown || joyStick?.down) {
       this.player.moveDirection = Direction.South;
       this.player.setVelocityY(Hustler.DEFAULT_VELOCITY);
       // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
     }
-    if (this.mainKeys.left.isDown || this.arrows.left.isDown) {
+    if (this.mainKeys.left.isDown || this.arrows.left.isDown || joyStick?.left) {
       this.player.moveDirection = Direction.West;
       this.player.setVelocityX(-Hustler.DEFAULT_VELOCITY);
       // this.player.model.updateSprites(true);
 
       willMoveFlag = true;
-    } else if (this.mainKeys.right.isDown || this.arrows.right.isDown) {
+    } else if (this.mainKeys.right.isDown || this.arrows.right.isDown || joyStick?.right) {
       this.player.moveDirection = Direction.East;
       this.player.setVelocityX(Hustler.DEFAULT_VELOCITY);
       // tshis.player.model.updateSprites(true);

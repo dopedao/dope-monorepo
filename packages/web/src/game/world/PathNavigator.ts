@@ -7,8 +7,8 @@ export default class PathNavigator {
   private hustler: Hustler;
   private pathFinder: PF.Finder;
 
-  private onMoved?: () => void;
-  private onCancel?: () => void;
+  private onMoved?: (navigator: this) => void;
+  private onCancel?: (navigator: this) => void;
 
   private grid!: PF.Grid;
 
@@ -22,16 +22,33 @@ export default class PathNavigator {
     this.pathFinder = pathFinder;
   }
 
-  moveTo(x: number, y: number, onMoved?: () => void, onCancel?: () => void) {
+  moveTo(x: number, y: number, onMoved?: (navigator: this) => void, onCancel?: (navigator: this) => void, pathFind: boolean = true) {
+    if (!pathFind) {
+      this.target = new Phaser.Math.Vector2(x, y);
+      this.onMoved = onMoved;
+      this.onCancel = onCancel;
+      return;
+    }
+
+    if (!this.hustler.currentMap)
+      console.warn('Cannot initiate path finding without a current map');
+
     // the game scene used map
-    const map = (this.hustler.scene as GameScene).mapHelper.loadedMaps.get(this.hustler.currentMap);
+    const map = (this.hustler.scene as GameScene).mapHelper.loadedMaps[this.hustler.currentMap];
     if (!map || !map.collideLayer) {
-      console.warn('No collide layer found');
+      console.warn('No collide layer found for: ' + this.hustler.currentMap);
       return;
     }
 
     // retrieve grid data from layer (defined in maphelper)
-    this.grid = (map.collideLayer.getData('pf_grid') as PF.Grid).clone();
+    const gridData = map.collideLayer.getData('pf_grid') as PF.Grid;
+    if (!gridData) 
+    {
+      console.warn('No grid data found for: ' + this.hustler.currentMap);
+      return;
+    }
+
+    this.grid = gridData.clone();
 
     this.onMoved = onMoved;
     this.onCancel = onCancel;
@@ -40,12 +57,14 @@ export default class PathNavigator {
     const hustlerTile = map.collideLayer.worldToTileXY(this.hustler.x, this.hustler.y);
     const moveTile = map.collideLayer.worldToTileXY(x, y);
 
-    // point not inside of map, just teleport hustler directly to the target
+    // point not inside of map, return
     if (
       !this.grid.isInside(hustlerTile.x, hustlerTile.y) ||
       !this.grid.isInside(moveTile.x, moveTile.y)
     ) {
-      this.hustler.setPosition(x, y);
+      console.warn('Point outside of current map: ' + this.hustler.currentMap);
+      if (this.onCancel)
+        this.onCancel(this);
       return;
     }
 
@@ -55,9 +74,9 @@ export default class PathNavigator {
       hustlerTile.y,
       moveTile.x,
       moveTile.y,
-      this.grid.clone(),
+      this.grid,
     );
-    // if there is no path, return
+
     if (path.length === 0) {
       // try finding a path from one of the neighbours of the target tile
       this.grid
@@ -73,6 +92,7 @@ export default class PathNavigator {
           if (path.length > 0) return;
         });
 
+      // still no path found, return
       if (path.length === 0) return;
     }
 
@@ -92,7 +112,7 @@ export default class PathNavigator {
     this.path = [];
     this.stop();
 
-    if (this.onCancel) this.onCancel();
+    if (this.onCancel) this.onCancel(this);
   }
 
   stop() {
@@ -105,9 +125,7 @@ export default class PathNavigator {
   }
 
   update() {
-    const collideLayer = (this.hustler.scene as GameScene).mapHelper.loadedMaps.get(
-      this.hustler.currentMap,
-    )?.collideLayer;
+    const collideLayer = (this.hustler.scene as GameScene).mapHelper.loadedMaps[this.hustler.currentMap].collideLayer;
 
     let dx = 0;
     let dy = 0;
@@ -116,7 +134,7 @@ export default class PathNavigator {
       // cancel pathfinding if stuck
       const pos = new Phaser.Math.Vector2(this.hustler.x, this.hustler.y);
       setTimeout(() => {
-        if (this.previousPosition && pos.equals(this.previousPosition)) this.cancel();
+        if (this.previousPosition && pos.distanceSq(this.previousPosition) < 10) this.cancel();
       }, 500);
 
       dx = this.target.x - pos.x;
@@ -140,10 +158,11 @@ export default class PathNavigator {
         // stop pathfinding
         this.stop();
         if (this.onMoved) {
-          this.onMoved();
+          this.onMoved(this);
           // set callback to undefined, so that it does not called again
           this.onMoved = undefined;
         }
+        this.onCancel = undefined;
       }
     }
 
@@ -188,61 +207,7 @@ export default class PathNavigator {
         .scale(Hustler.DEFAULT_VELOCITY);
       this.hustler.setVelocity(newVel.x, newVel.y);
     }
-
-    // if stuck in a corner, move in the direction of the other corner
-    // if (willMoveFlag)
-    // {
-    //     if (this.previousPosition)
-    //     {
-    //         if (this.previousPosition.x === this.hustler.x && this.previousPosition.y === this.hustler.y)
-    //         {
-    //             if (this.hustler.direction === Direction.North)
-    //             {
-    //                 this.hustler.direction = Direction.South;
-    //                 this.hustler.setVelocityY(Hustler.DEFAULT_VELOCITY);
-    //                 this.hustler.model.updateSprites(true);
-    //             }
-    //             else if (this.hustler.direction === Direction.South)
-    //             {
-    //                 this.hustler.direction = Direction.North;
-    //                 this.hustler.setVelocityY(-Hustler.DEFAULT_VELOCITY);
-    //                 this.hustler.model.updateSprites(true);
-    //             }
-    //             else if (this.hustler.direction === Direction.West)
-    //             {
-    //                 this.hustler.direction = Direction.East;
-    //                 this.hustler.setVelocityX(Hustler.DEFAULT_VELOCITY);
-    //                 this.hustler.model.updateSprites(true);
-    //             }
-    //             else if (this.hustler.direction === Direction.East)
-    //             {
-    //                 this.hustler.direction = Direction.West;
-    //                 this.hustler.setVelocityX(-Hustler.DEFAULT_VELOCITY);
-    //                 this.hustler.model.updateSprites(true);
-    //             }
-    //         }
-    //     }
-    // }
-
-    // pathfinder stuck
-    // if (willMoveFlag && this.previousPosition && new Phaser.Math.Vector2(this.hustler.x, this.hustler.y).fuzzyEquals(this.previousPosition))
-    // {
-
-    // }
-
+    
     this.previousPosition = new Phaser.Math.Vector2(this.hustler.x, this.hustler.y);
-
-    // if (dir === "")
-    // {
-    //     this.hustler.setVelocity(0, 0);
-    //     this.hustler.model.updateSprites(true);
-    //     // reset to the first frame of the anim
-    //     if (this.hustler.anims.currentAnim && !this.hustler.anims.currentFrame.isLast)
-    //     this.hustler.anims.setCurrentFrame(this.hustler.anims.currentAnim.getLastFrame());
-    //     this.hustler.stopAfterDelay(100);
-
-    //     this.hustler.model.stopSpritesAnim();
-    //     return;
-    // }
   }
 }

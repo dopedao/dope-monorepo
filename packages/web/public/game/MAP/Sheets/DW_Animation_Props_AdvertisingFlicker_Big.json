@@ -1,0 +1,286 @@
+{ "frames": {
+   "DW_Animation_Props_AdvertisingFlicker_Big 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 1.aseprite": {
+    "frame": { "x": 128, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 2.aseprite": {
+    "frame": { "x": 256, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 3.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 4.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 5.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 6.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 7.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 8.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 9.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 10.aseprite": {
+    "frame": { "x": 128, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 11.aseprite": {
+    "frame": { "x": 384, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 12.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 13.aseprite": {
+    "frame": { "x": 128, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 14.aseprite": {
+    "frame": { "x": 0, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 15.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 16.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 17.aseprite": {
+    "frame": { "x": 256, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 18.aseprite": {
+    "frame": { "x": 384, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 19.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 20.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 21.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 22.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 23.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 24.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 25.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 26.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 27.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 28.aseprite": {
+    "frame": { "x": 256, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 29.aseprite": {
+    "frame": { "x": 0, "y": 192, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 30.aseprite": {
+    "frame": { "x": 128, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 31.aseprite": {
+    "frame": { "x": 256, "y": 96, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   },
+   "DW_Animation_Props_AdvertisingFlicker_Big 32.aseprite": {
+    "frame": { "x": 128, "y": 192, "w": 128, "h": 96 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 96 },
+    "sourceSize": { "w": 128, "h": 96 },
+    "duration": 60
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.21",
+  "image": "DW_Animation_Props_AdvertisingFlicker_Big.png",
+  "format": "RGBA8888",
+  "size": { "w": 512, "h": 288 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "AdStonks", "from": 0, "to": 15, "direction": "forward" },
+   { "name": "AddPaper", "from": 16, "to": 32, "direction": "forward" }
+  ],
+  "layers": [
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" },
+   { "name": "Layer 2", "opacity": 255, "blendMode": "normal" },
+   { "name": "Layer 3", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

@@ -1,3 +1,6 @@
+import TilesAnimator from "./TilesAnimator";
+import AnimatedTiles from "./TilesAnimator";
+
 export class LdtkReader {
   json: any;
   scene: Phaser.Scene;
@@ -38,133 +41,220 @@ export class LdtkReader {
 
       // non auto int grid layer
       if (layer.__type === 'IntGrid' && layer.autoLayerTiles.length === 0) {
-        mappack.intGridLayers.push(this.CreateIntGridLayer(layer, usedTileset));
+        mappack.intGridLayers.push(this.CreateIntGridLayer(layer, mappack, usedTileset));
         // auto int grid layer
       } else if (usedTileset && layer.__type === 'IntGrid' && layer.autoLayerTiles.length > 0) {
-        mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset));
+        mappack.displayLayers.push(this.CreateAutoLayer(layer, usedTileset, mappack));
         // tiles layer
       } else if (usedTileset && layer.__type === 'Tiles') {
-        mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset));
+        mappack.displayLayers.push(this.CreateTileLayer(layer, usedTileset, mappack));
       }
     });
-    mappack.entityLayer = this.level.layerInstances.find(
-      (l: LayerInstance) => l.__type === 'Entities',
-    );
+
+    this.level.layerInstances.forEach(layer => {
+      if (layer.__type === 'Entities') {
+        mappack.entityLayers?.push(layer);
+      }
+    });
     mappack.collideLayer = mappack.intGridLayers.find(e => e.name === 'Collisions');
-    // create entity textures
-    // this.ldtk.defs.entities.forEach(e => {
-    //     const tileset = this.tilesets.find(t => t.uid === e.tilesetId);
-    //     if (!tileset)
-    //         return;
-
-    //     const tilesetTexture = this.scene.textures.get(tileset.identifier.toLowerCase());
-    //     tilesetTexture.add(e.identifier, 0, tileset.)
-    // });
-
+    
     return mappack;
   }
 
-  CreateTileLayer(layer: LayerInstance, tileset: string): Phaser.Tilemaps.TilemapLayer {
+  CreateTileLayer(layer: LayerInstance, tileset: string, mappack: LDtkMapPack): Phaser.Tilemaps.TilemapLayer {
     let map: Phaser.Tilemaps.Tilemap;
-    let csv = new Array(layer.__cHei);
-    for (var i = 0; i < csv.length; i++) {
-      csv[i] = new Array(layer.__cWid);
-    }
     let tilesetObj = this.tilesets.find((t: any) => t.uid === layer.__tilesetDefUid)!;
     let tilesetWidth = tilesetObj.__cWid;
     let tileSize = layer.__gridSize;
 
-    // 10 is stacked maximum layers
-    let stackLayers: Tile[][] = new Array(10);
-    for (let i = 0; i < stackLayers.length; i++) stackLayers[i] = new Array();
-
-    // number of stacked tiles
-    let layerCount = 0;
-    layer.gridTiles.forEach(t => {
-      let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
-      if (!csv[tileloc.y][tileloc.x]) {
-        csv[tileloc.y][tileloc.x] = this.GetTileID(t.src[0], t.src[1], tileSize, tilesetWidth);
-        layerCount = 0;
-      } else {
-        stackLayers[layerCount].push(t);
-        layerCount++;
-      }
+    map = this.scene.add.tilemap(layer.__identifier, tileSize, tileSize, layer.__cWid, layer.__cHei);
+    const mainTileset = map.addTilesetImage(tileset);
+    
+    const mapLayerData = new Phaser.Tilemaps.LayerData({
+      name: layer.__identifier,
+      x: this.level.worldX + layer.pxOffsetX,
+      y: this.level.worldY + layer.pxOffsetY,
+      tileWidth: tileSize,
+      tileHeight: tileSize,
+      width: layer.__cWid,
+      height: layer.__cHei,
+      data: Array.from({ length: layer.__cHei }, () => new Array(layer.__cWid)),
     });
+    map.layers.push(mapLayerData);
 
-    map = this.scene.make.tilemap({
-      data: csv,
-      tileWidth: layer.__gridSize,
-      tileHeight: layer.__gridSize,
-    });
+    // check if we have custom data - animated tiles
+    let gid = mainTileset.total + 1;
+    if (tilesetObj && tilesetObj.customData.length > 0) {
+      tilesetObj.customData.forEach(t => {
+        const data = JSON.parse(t.data);
+        if (data.anim)
+        {
+          const animTileset = map.addTilesetImage(data.anim);
+          animTileset.firstgid = gid;
+          gid += animTileset.total + 1;
+        }
+      });
+    }
 
-    map.addTilesetImage(tileset);
-
+    // depth
     const orderId =
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length -
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
-    let l = map
-      .createLayer(
-        0,
-        map.tilesets,
-        this.level.worldX + layer.pxOffsetX,
-        this.level.worldY + layer.pxOffsetY,
-      )
-      .setName(layer.__identifier)
-      .setData('id', orderId)
-      .setDepth(orderId * 5)
-      .setAlpha(layer.__opacity)
-      .setVisible(true);
+    let depth = orderId * 5;
 
-    stackLayers.forEach((tiles, i) => {
-      if (tiles.length === 0) return;
+    const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
+    if (definedDepth) depth = typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value);
 
-      const newLayer = map
-        .createBlankLayer(
-          `${layer.__identifier} - ${i}`,
-          map.tilesets,
-          this.level.worldX + layer.pxOffsetX,
-          this.level.worldY + layer.pxOffsetY,
-        )
-        .setDepth(l.depth)
-        .setVisible(true);
-
-      tiles.forEach(t => {
-        let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
-        const tile = newLayer.putTileAt(
-          this.GetTileID(t.src[0], t.src[1], tileSize, tilesetWidth),
-          tileloc.x,
-          tileloc.y,
-        );
-
-        if (t.f !== 0) {
-          if (t.f === 1) tile.flipX = true;
-          else if (t.f === 2) tile.flipY = true;
-          else {
-            tile.flipX = true;
-            tile.flipY = true;
-          }
-        }
-      });
-    });
-
+    // initialize tiles & stacked layers
+    let stackedLayers: Phaser.Tilemaps.TilemapLayer[] = [];
+    let layerIdx = 0;
     layer.gridTiles.forEach(t => {
+      let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
+      let tile;
+      if (!mapLayerData.data[tileloc.y][tileloc.x] || mapLayerData.data[tileloc.y][tileloc.x].index === -1) {
+        tile = new Phaser.Tilemaps.Tile(mapLayerData, this.GetTileID(t.src[0], t.src[1], layer.__gridSize, tilesetWidth), tileloc.x, tileloc.y, tileSize, tileSize, tileSize, tileSize);
+        mapLayerData.data[tileloc.y][tileloc.x] = tile;
+        layerIdx = 0;
+      } else {
+        if (layerIdx > stackedLayers.length-1) {
+          const stackedLayerData = new Phaser.Tilemaps.LayerData({
+            name: `${layer.__identifier} - ${layerIdx} (stacked)`,
+            x: this.level.worldX + layer.pxOffsetX,
+            y: this.level.worldY + layer.pxOffsetY,
+            tileWidth: tileSize,
+            tileHeight: tileSize,
+            width: layer.__cWid,
+            height: layer.__cHei,
+            data: Array.from({ length: layer.__cHei }, () => new Array(layer.__cWid)),
+          });
+          const layerId = map.layers.push(stackedLayerData)-1;
+
+          const stackedLayer = map.createLayer(layerId, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
+            .setDepth(depth + 1);
+
+          if (!layer.__identifier.includes('Night')) stackedLayer.setPipeline('Light2D');
+          if (tilesetObj) this.ParseTilesetData(mappack, stackedLayer, tilesetObj, true);
+          
+          stackedLayers.push(stackedLayer);
+        }
+
+        tile = new Phaser.Tilemaps.Tile(stackedLayers[layerIdx].layer, this.GetTileID(t.src[0], t.src[1], layer.__gridSize, tilesetWidth), tileloc.x, tileloc.y, tileSize, tileSize, tileSize, tileSize);
+        stackedLayers[layerIdx].layer.data[tileloc.y][tileloc.x] = tile;
+        layerIdx++;
+      }
+
       if (t.f != 0) {
-        let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
-        let tile = l.getTileAt(tileloc.x, tileloc.y);
-        if (tile != null) {
-          if (t.f == 1) tile.flipX = true;
-          else if (t.f == 2) tile.flipY = true;
-          else {
-            tile.flipX = true;
-            tile.flipY = true;
-          }
+        if (t.f == 1) tile.flipX = true;
+        else if (t.f == 2) tile.flipY = true;
+        else {
+          tile.flipX = true;
+          tile.flipY = true;
         }
       }
     });
-    return l;
+
+    let mapLayer = map.createLayer(0, map.tilesets, this.level.worldX + layer.pxOffsetX, this.level.worldY + layer.pxOffsetY)
+      .setName(layer.__identifier)
+      .setData('id', orderId)
+      .setData('animators', [])
+      .setData('stackedLayers', stackedLayers)
+      .setDepth(depth)
+      .setAlpha(layer.__opacity)
+      .setVisible(true);
+
+    // console.log(stackedLayers);
+
+    if (!layer.__identifier.includes('Night')) mapLayer.setPipeline('Light2D');
+
+    if (tilesetObj)
+      this.ParseTilesetData(mappack, mapLayer, tilesetObj);
+
+    return mapLayer;
   }
 
-  CreateAutoLayer(layer: LayerInstance, tileset: string): Phaser.Tilemaps.TilemapLayer {
+  CreateAutoLayer(layer: LayerInstance, tileset: string, mappack: LDtkMapPack): Phaser.Tilemaps.TilemapLayer {
+    // let map: Phaser.Tilemaps.Tilemap;
+    // let tilesetObj = this.tilesets.find((t: any) => t.uid === layer.__tilesetDefUid)!;
+    // let tilesetWidth = tilesetObj.__cWid;
+    // let tileSize = layer.__gridSize;
+
+    // map = this.scene.add.tilemap(layer.__identifier, layer.__cWid, layer.__cHei, tileSize, tileSize);
+    // const mainTileset = map.addTilesetImage(tileset);
+
+    // const mapLayerData = new Phaser.Tilemaps.LayerData({
+    //   name: layer.__identifier,
+    //   x: this.level.worldX + layer.pxOffsetX,
+    //   y: this.level.worldY + layer.pxOffsetY,
+    //   width: layer.__cWid,
+    //   height: layer.__cHei,
+    //   data: Array.from({ length: layer.__cHei }, () => new Array(layer.__cWid)),
+    // });
+    // map.layers.push(mapLayerData);
+
+    // // check if we have custom data - animated tiles
+    // let gid = mainTileset.total + 1;
+    // const tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
+    // if (tilesetRef && tilesetRef.customData.length > 0) {
+    //   tilesetRef.customData.forEach(t => {
+    //     const data = JSON.parse(t.data);
+    //     if (data.anim)
+    //     {
+    //       const animTileset = map.addTilesetImage(data.anim);
+    //       animTileset.firstgid = gid;
+    //       gid += animTileset.total + 1;
+    //     }
+    //   });
+    // }
+
+    // layer.autoLayerTiles.forEach(t => {
+    //   let tileloc = this.GetTileXY(t.px[0], t.px[1], layer.__gridSize);
+    //   //@ts-ignore
+    //   const tile = new Phaser.Tilemaps.Tile(
+    //     mapLayerData,
+    //     this.GetTileID(t.src[0], t.src[1], tileSize, tilesetWidth),
+    //     tileloc.x,
+    //     tileloc.y,
+    //     tileSize,
+    //     tileSize
+    //   );
+    //   mapLayerData.data[tileloc.y][tileloc.x] = tile;
+
+    //   if (t.f != 0) {
+    //     if (t.f == 1) tile.flipX = true;
+    //     else if (t.f == 2) tile.flipY = true;
+    //     else {
+    //       tile.flipX = true;
+    //       tile.flipY = true;
+    //     }
+    //   }
+    // });
+
+    // const orderId =
+    //   this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length -
+    //   this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.indexOf(layer);
+    // let mapLayer = map
+    //   .createLayer(
+    //     0,
+    //     map.tilesets,
+    //     this.level.worldX + layer.pxOffsetX,
+    //     this.level.worldY + layer.pxOffsetY,
+    //   )
+    //   .setName(layer.__identifier)
+    //   .setData('id', orderId)
+    //   .setData('animators', [])
+    //   .setDepth(orderId * 5)
+    //   .setAlpha(layer.__opacity)
+    //   .setVisible(true);
+
+    // const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
+    // if (definedDepth) mapLayer.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
+
+    // if (!layer.__identifier.includes('Night')) mapLayer.setPipeline('Light2D');
+
+    // // if (tilesetRef)
+    // //   this.ParseTilesetData(mappack, mapLayer, tilesetRef);
+
+    // return mapLayer;
     let map: Phaser.Tilemaps.Tilemap;
     let csv = new Array(layer.__cHei);
     for (var i = 0; i < csv.length; i++) {
@@ -185,7 +275,21 @@ export class LdtkReader {
       tileHeight: layer.__gridSize,
     });
 
-    map.addTilesetImage(tileset);
+    const mainTileset = map.addTilesetImage(tileset);
+
+    // check if we have custom data - animated tiles
+    let gid = mainTileset.total + 1;
+    if (tilesetObj && tilesetObj.customData.length > 0) {
+      tilesetObj.customData.forEach(t => {
+        const data = JSON.parse(t.data);
+        if (data.anim)
+        {
+          const animTileset = map.addTilesetImage(data.anim);
+          animTileset.firstgid = gid;
+          gid += animTileset.total + 1;
+        }
+      });
+    }
 
     const orderId =
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length -
@@ -199,6 +303,7 @@ export class LdtkReader {
       )
       .setName(layer.__identifier)
       .setData('id', orderId)
+      .setData('animators', [])
       .setDepth(orderId * 5)
       .setAlpha(layer.__opacity)
       .setVisible(true);
@@ -218,6 +323,14 @@ export class LdtkReader {
       }
     });
 
+    const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
+    if (definedDepth) l.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
+
+    if (!layer.__identifier.includes('Night')) l.setPipeline('Light2D')
+
+    if (tilesetObj)
+      this.ParseTilesetData(mappack, l, tilesetObj);
+
     return l;
   }
 
@@ -234,7 +347,7 @@ export class LdtkReader {
     return x + y * tilesetWidth;
   }
 
-  CreateIntGridLayer(layer: LayerInstance, tileset?: string): Phaser.Tilemaps.TilemapLayer {
+  CreateIntGridLayer(layer: LayerInstance, mappack: LDtkMapPack, tileset?: string): Phaser.Tilemaps.TilemapLayer {
     let map: Phaser.Tilemaps.Tilemap;
     var csv = layer.intGridCsv;
     const newArr = [];
@@ -247,7 +360,25 @@ export class LdtkReader {
       tileHeight: layer.__gridSize,
     });
 
-    if (tileset) map.addTilesetImage(tileset);
+    let tilesetRef;
+    if (tileset) {
+      const mainTileset = map.addTilesetImage(tileset);
+
+      // check if we have custom data - animated tiles
+      let gid = mainTileset.total + 1;
+      tilesetRef = this.tilesets.find(t => t.uid === layer.__tilesetDefUid);  
+      if (tilesetRef && tilesetRef.customData.length > 0) {
+        tilesetRef.customData.forEach(t => {
+          const data = JSON.parse(t.data);
+          if (data.anim)
+          {
+            const animTileset = map.addTilesetImage(data.anim);
+            animTileset.firstgid = gid;
+            gid += animTileset.total + 1;
+          }
+        });
+      }
+    }
 
     const orderId =
       this.ldtk.levels.find(l => l.uid === layer.levelId)!.layerInstances.length -
@@ -261,35 +392,87 @@ export class LdtkReader {
       )
       .setName(layer.__identifier)
       .setData('id', orderId)
+      .setData('animators', [])
       .setDepth(orderId * 5)
       .setAlpha(layer.__opacity)
       .setVisible(false);
 
-    if (layer.__identifier !== 'Collisions') {
-      const ogLayer: Layer = this.ldtk.defs.layers.find(l => l.uid === layer.layerDefUid)!;
-
-      mapLayer.layer.data.forEach(row =>
-        row.forEach(tile => {
-          const vData = ogLayer.intGridValues.find(v => v.value === tile.index)!;
-          if (vData && vData.color) {
-            const bounds = tile.getBounds() as Phaser.Geom.Rectangle;
-
-            this.scene.add
-              .rectangle(
-                bounds.x + bounds.width / 2,
-                bounds.y + bounds.height / 2,
-                bounds.width,
-                bounds.height,
-                Number.parseInt(vData.color.split('#')[1], 16),
-                mapLayer.alpha,
-              )
-              .setDepth(mapLayer.depth);
-          }
-        }),
-      );
-    }
+    const definedDepth = this.level.fieldInstances.find(f => f.__identifier.toLowerCase() === layer.__identifier.toLowerCase());
+    if (definedDepth) mapLayer.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
+    
+    if (!layer.__identifier.includes('Night')) mapLayer.setPipeline('Light2D')
+    
+    if (tilesetRef)
+      this.ParseTilesetData(mappack, mapLayer, tilesetRef);
 
     return mapLayer;
+  }
+
+  ParseTilesetData(map: LDtkMapPack, layer: Phaser.Tilemaps.TilemapLayer, tileset: Tileset, stacked: boolean = false) {
+    let aboveAllLayerData: Phaser.Tilemaps.LayerData | undefined;
+    tileset.customData.forEach(t => {
+      const data = JSON.parse(t.data);
+      
+
+      let createLight = false;
+      let createDepth = false;
+      let tilesAnim: TilesAnimator | undefined;
+
+      if (data.anim)
+      {
+        tilesAnim = new AnimatedTiles(this.scene, t.tileId, layer, data.anim, false);
+        layer.getData('animators').push(tilesAnim);
+      }
+
+      if (data.light)
+        createLight = true;
+
+      // dont create above all layer for stacked layers
+      if (data.depth === "ABOVE_ALL" && !stacked) {
+        if (!aboveAllLayerData) {
+          aboveAllLayerData = new Phaser.Tilemaps.LayerData({
+            name: `${layer.layer.name} - ABOVE_ALL`,
+            x: layer.layer.x,
+            y: layer.layer.y,
+            width: layer.layer.width,
+            height: layer.layer.height,
+            tileWidth: layer.layer.tileWidth,
+            tileHeight: layer.layer.tileHeight,
+            data: Array.from({ length: layer.layer.height }, () => new Array(layer.layer.width)),
+          });
+
+          layer.tilemap.layers.push(aboveAllLayerData);
+        }
+
+        createDepth = true;
+      }
+
+      if (createLight || createDepth || tilesAnim) {
+        layer.forEachTile(tile => {
+          if (tile?.index === t.tileId)
+          {
+            if (tilesAnim)
+              tilesAnim.startingTiles.push(tile);
+
+            if (createLight) {
+              map.lights.push(this.scene.lights.addLight(tile.getCenterX(), tile.getCenterY(), data.light.radius, data.light.color, data.light.intensity));
+            }
+
+            if (createDepth) {
+              aboveAllLayerData!.data[tile.y][tile.x] = new Phaser.Tilemaps.Tile(aboveAllLayerData!, tile.index, tile.x, tile.y, tile.width, tile.height, tile.baseWidth, tile.baseHeight);
+              aboveAllLayerData!.data[tile.y][tile.x].setFlip(tile.flipX, tile.flipY);
+            }
+          }
+        });
+      }
+    });
+
+    if (aboveAllLayerData) {
+      const aboveAllLayer = layer.tilemap.createLayer(layer.tilemap.layers.indexOf(aboveAllLayerData), layer.tilemap.tilesets, layer.x, layer.y)
+        .setDepth(layer.depth + 1000);
+
+      if (!layer.name.includes('Night')) aboveAllLayer.setPipeline('Light2D');
+    }
   }
 }
 
@@ -298,8 +481,10 @@ export class LDtkMapPack {
   intGridLayers: Array<Phaser.Tilemaps.TilemapLayer>;
   displayLayers: Array<Phaser.Tilemaps.TilemapLayer>;
 
-  entityLayer?: LayerInstance;
+  entityLayers: LayerInstance[];
+  entities: Array<Phaser.GameObjects.GameObject>;
 
+  lights: Array<Phaser.GameObjects.Light>;
   bgColor?: string;
   gfx?: Phaser.GameObjects.Shape;
   otherGfx?: Phaser.GameObjects.Shape;
@@ -308,6 +493,9 @@ export class LDtkMapPack {
   constructor(levelIdentifier: string) {
     this.intGridLayers = [];
     this.displayLayers = [];
+    this.entityLayers = [];
+    this.lights = [];
+    this.entities = [];
   }
 
   dispose() {
@@ -317,345 +505,397 @@ export class LDtkMapPack {
 
     this.intGridLayers.forEach(l => l.destroy());
     this.displayLayers.forEach(l => l.destroy());
+
+    // dispose of lights?
   }
 }
 
 export interface iLDtk {
-  __header__: Header;
-  jsonVersion: string;
-  nextUid: number;
-  worldLayout: string;
-  worldGridWidth: number;
-  worldGridHeight: number;
-  defaultPivotX: number;
-  defaultPivotY: number;
-  defaultGridSize: number;
-  defaultLevelWidth: number;
-  defaultLevelHeight: number;
-  bgColor: string;
-  defaultLevelBgColor: string;
-  minifyJson: boolean;
-  externalLevels: boolean;
-  exportTiled: boolean;
-  imageExportMode: ImageExportMode;
-  pngFilePattern: null;
-  backupOnSave: boolean;
-  backupLimit: number;
-  levelNamePattern: string;
-  flags: any[];
-  defs: Defs;
-  levels: Level[];
+  __header__: Header
+  jsonVersion: string
+  appBuildId: number
+  nextUid: number
+  identifierStyle: string
+  worldLayout: string
+  worldGridWidth: number
+  worldGridHeight: number
+  defaultLevelWidth: number
+  defaultLevelHeight: number
+  defaultPivotX: number
+  defaultPivotY: number
+  defaultGridSize: number
+  bgColor: string
+  defaultLevelBgColor: string
+  minifyJson: boolean
+  externalLevels: boolean
+  exportTiled: boolean
+  imageExportMode: string
+  pngFilePattern: any
+  backupOnSave: boolean
+  backupLimit: number
+  levelNamePattern: string
+  tutorialDesc: any
+  flags: string[]
+  defs: Defs
+  levels: Level[]
+  worlds: any[]
 }
 
 export interface Header {
-  fileType: string;
-  app: string;
-  doc: string;
-  schema: string;
-  appAuthor: string;
-  appVersion: string;
-  url: string;
+  fileType: string
+  app: string
+  doc: string
+  schema: string
+  appAuthor: string
+  appVersion: string
+  url: string
 }
 
 export interface Defs {
-  layers: Layer[];
-  entities: Entity[];
-  tilesets: Tileset[];
-  enums: Enum[];
-  externalEnums: any[];
-  levelFields: any[];
-}
-
-export interface Entity {
-  identifier: string;
-  uid: number;
-  tags: string[];
-  width: number;
-  height: number;
-  resizableX: boolean;
-  resizableY: boolean;
-  keepAspectRatio: boolean;
-  fillOpacity: number;
-  lineOpacity: number;
-  hollow: boolean;
-  color: string;
-  renderMode: string;
-  showName: boolean;
-  tilesetId: number;
-  tileId: number;
-  tileRenderMode: string;
-  maxCount: number;
-  limitScope: string;
-  limitBehavior: string;
-  pivotX: number;
-  pivotY: number;
-  fieldDefs: FieldDef[];
-}
-
-export interface FieldDef {
-  identifier: string;
-  __type: string;
-  uid: number;
-  type: TypeClass;
-  isArray: boolean;
-  canBeNull: boolean;
-  arrayMinLength: null;
-  arrayMaxLength: null;
-  editorDisplayMode: string;
-  editorDisplayPos: string;
-  editorAlwaysShow: boolean;
-  editorCutLongValues: boolean;
-  min: null;
-  max: null;
-  regex: null;
-  acceptFileTypes: null;
-  defaultOverride: null;
-  textLanguageMode: null;
-}
-
-export interface TypeClass {
-  id: string;
-  params: number[];
-}
-
-export interface Enum {
-  identifier: string;
-  uid: number;
-  values: ValueElement[];
-  iconTilesetUid: number;
-  externalRelPath: null;
-  externalFileChecksum: null;
-}
-
-export interface ValueElement {
-  id: string;
-  tileId: number | null;
-  color: number;
-  __tileSrcRect: number[] | null;
+  layers: Layer[]
+  entities: Entity[]
+  tilesets: Tileset[]
+  enums: Enum[]
+  externalEnums: any[]
+  levelFields: LevelField[]
 }
 
 export interface Layer {
-  __type: TypeEnum;
-  identifier: string;
-  type: TypeEnum;
-  uid: number;
-  gridSize: number;
-  displayOpacity: number;
-  pxOffsetX: number;
-  pxOffsetY: number;
-  requiredTags: any[];
-  excludedTags: any[];
-  intGridValues: IntGridValue[];
-  autoTilesetDefUid: number | null;
-  autoRuleGroups: AutoRuleGroup[];
-  autoSourceLayerDefUid: null;
-  tilesetDefUid: number | null;
-  tilePivotX: number;
-  tilePivotY: number;
-}
-
-export enum TypeEnum {
-  Entities = 'Entities',
-  IntGrid = 'IntGrid',
-  Tiles = 'Tiles',
-}
-
-export interface AutoRuleGroup {
-  uid: number;
-  name: string;
-  active: boolean;
-  collapsed: boolean;
-  isOptional: boolean;
-  rules: Rule[];
-}
-
-export interface Rule {
-  uid: number;
-  active: boolean;
-  size: number;
-  tileIds: number[];
-  chance: number;
-  breakOnMatch: boolean;
-  pattern: number[];
-  flipX: boolean;
-  flipY: boolean;
-  xModulo: number;
-  yModulo: number;
-  checker: ImageExportMode;
-  tileMode: TileMode;
-  pivotX: number;
-  pivotY: number;
-  outOfBoundsValue: null;
-  perlinActive: boolean;
-  perlinSeed: number;
-  perlinScale: number;
-  perlinOctaves: number;
-}
-
-export enum ImageExportMode {
-  None = 'None',
-}
-
-export enum TileMode {
-  Single = 'Single',
+  __type: string
+  identifier: string
+  type: string
+  uid: number
+  gridSize: number
+  guideGridWid: number
+  guideGridHei: number
+  displayOpacity: number
+  inactiveOpacity: number
+  hideInList: boolean
+  hideFieldsWhenInactive: boolean
+  pxOffsetX: number
+  pxOffsetY: number
+  parallaxFactorX: number
+  parallaxFactorY: number
+  parallaxScaling: boolean
+  requiredTags: any[]
+  excludedTags: any[]
+  intGridValues: IntGridValue[]
+  autoTilesetDefUid?: number
+  autoRuleGroups: AutoRuleGroup[]
+  autoSourceLayerDefUid: any
+  tilesetDefUid?: number
+  tilePivotX: number
+  tilePivotY: number
 }
 
 export interface IntGridValue {
-  value: number;
-  identifier: null | string;
-  color: string;
+  value: number
+  identifier?: string
+  color: string
+}
+
+export interface AutoRuleGroup {
+  uid: number
+  name: string
+  active: boolean
+  isOptional: boolean
+  rules: Rule[]
+}
+
+export interface Rule {
+  uid: number
+  active: boolean
+  size: number
+  tileIds: number[]
+  chance: number
+  breakOnMatch: boolean
+  pattern: number[]
+  flipX: boolean
+  flipY: boolean
+  xModulo: number
+  yModulo: number
+  checker: string
+  tileMode: string
+  pivotX: number
+  pivotY: number
+  outOfBoundsValue: any
+  perlinActive: boolean
+  perlinSeed: number
+  perlinScale: number
+  perlinOctaves: number
+}
+
+export interface Entity {
+  identifier: string
+  uid: number
+  tags: any[]
+  width: number
+  height: number
+  resizableX: boolean
+  resizableY: boolean
+  keepAspectRatio: boolean
+  tileOpacity: number
+  fillOpacity: number
+  lineOpacity: number
+  hollow: boolean
+  color: string
+  renderMode: string
+  showName: boolean
+  tilesetId?: number
+  tileId?: number
+  tileRenderMode: string
+  tileRect?: TileRect
+  maxCount: number
+  limitScope: string
+  limitBehavior: string
+  pivotX: number
+  pivotY: number
+  fieldDefs: FieldDef[]
+}
+
+export interface TileRect {
+  tilesetUid: number
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+export interface FieldDef {
+  identifier: string
+  __type: string
+  uid: number
+  type: any
+  isArray: boolean
+  canBeNull: boolean
+  arrayMinLength: any
+  arrayMaxLength: any
+  editorDisplayMode: string
+  editorDisplayPos: string
+  editorAlwaysShow: boolean
+  editorCutLongValues: boolean
+  editorTextSuffix: any
+  editorTextPrefix: any
+  useForSmartColor: boolean
+  min: any
+  max: any
+  regex: any
+  acceptFileTypes: any
+  defaultOverride?: DefaultOverride
+  textLanguageMode: any
+  symmetricalRef: boolean
+  autoChainRef: boolean
+  allowOutOfLevelRef: boolean
+  allowedRefs: string
+  allowedRefTags: any[]
+  tilesetUid: any
+}
+
+export interface DefaultOverride {
+  id: string
+  params: number[]
 }
 
 export interface Tileset {
-  __cWid: number;
-  __cHei: number;
-  identifier: string;
-  uid: number;
-  relPath: string;
-  pxWid: number;
-  pxHei: number;
-  tileGridSize: number;
-  spacing: number;
-  padding: number;
-  tagsSourceEnumUid: number | null;
-  enumTags: EnumTag[];
-  customData: any[];
-  savedSelections: SavedSelection[];
-  cachedPixelData: CachedPixelData;
+  __cWid: number
+  __cHei: number
+  identifier: string
+  uid: number
+  relPath?: string
+  embedAtlas?: string
+  pxWid: number
+  pxHei: number
+  tileGridSize: number
+  spacing: number
+  padding: number
+  tags: any[]
+  tagsSourceEnumUid: any
+  enumTags: any[]
+  customData: CustomData[]
+  savedSelections: SavedSelection[]
+  cachedPixelData: CachedPixelData
 }
 
-export interface CachedPixelData {
-  opaqueTiles: string;
-  averageColors: string;
+export interface CustomData {
+  tileId: number
+  data: string
 }
 
-export interface EnumTag {
-  enumValueId: string;
-  tileIds: number[];
+export interface AnimationData {
+  // refers to key of the animation (name & json)
+  anim: string
 }
 
 export interface SavedSelection {
-  ids: number[];
-  mode: Mode;
+  ids: number[]
+  mode: string
 }
 
-export enum Mode {
-  Stamp = 'Stamp',
+export interface CachedPixelData {
+  opaqueTiles: string
+  averageColors: string
+}
+
+export interface Enum {
+  identifier: string
+  uid: number
+  values: Value[]
+  iconTilesetUid: number
+  externalRelPath: any
+  externalFileChecksum: any
+  tags: any[]
+}
+
+export interface Value {
+  id: string
+  tileId: number
+  color: number
+  __tileSrcRect: number[]
+}
+
+export interface LevelField {
+  identifier: string
+  __type: string
+  uid: number
+  type: string
+  isArray: boolean
+  canBeNull: boolean
+  arrayMinLength: any
+  arrayMaxLength: any
+  editorDisplayMode: string
+  editorDisplayPos: string
+  editorAlwaysShow: boolean
+  editorCutLongValues: boolean
+  editorTextSuffix: any
+  editorTextPrefix: any
+  useForSmartColor: boolean
+  min: any
+  max: any
+  regex: any
+  acceptFileTypes: any
+  defaultOverride: any
+  textLanguageMode: any
+  symmetricalRef: boolean
+  autoChainRef: boolean
+  allowOutOfLevelRef: boolean
+  allowedRefs: string
+  allowedRefTags: any[]
+  tilesetUid: any
 }
 
 export interface Level {
-  identifier: string;
-  uid: number;
-  worldX: number;
-  worldY: number;
-  pxWid: number;
-  pxHei: number;
-  __bgColor: string;
-  bgColor: null;
-  useAutoIdentifier: boolean;
-  bgRelPath: null;
-  bgPos: null;
-  bgPivotX: number;
-  bgPivotY: number;
-  __bgPos: null;
-  externalRelPath: null;
-  fieldInstances: any[];
-  layerInstances: LayerInstance[];
-  __neighbours: any[];
-}
-
-export interface LayerInstance {
-  __identifier: string;
-  __type: TypeEnum;
-  __cWid: number;
-  __cHei: number;
-  __gridSize: number;
-  __opacity: number;
-  __pxTotalOffsetX: number;
-  __pxTotalOffsetY: number;
-  __tilesetDefUid: number | null;
-  __tilesetRelPath: TilesetRelPath | null;
-  levelId: number;
-  layerDefUid: number;
-  pxOffsetX: number;
-  pxOffsetY: number;
-  visible: boolean;
-  optionalRules: any[];
-  intGrid: IntGrid[];
-  intGridCsv: number[];
-  autoLayerTiles: Tile[];
-  seed: number;
-  overrideTilesetUid: null;
-  gridTiles: Tile[];
-  entityInstances: EntityInstance[];
-}
-
-export enum TilesetRelPath {
-  DWBuildingsPreProtoSetV1TileAbsolutePNG = '../dw_Buildings_PreProtoSetV1_TileAbsolute.png',
-  DWPropsPreProtoSetV1PNG = '../dw_Props_PreProtoSetV1.png',
-  RoadSidewalkWebModularPNG = '../Road_Sidewalk_WebModular.png',
-}
-
-export interface Tile {
-  px: number[];
-  src: number[];
-  f: number;
-  t: number;
-  d: number[];
-}
-
-export interface EntityInstance {
-  __identifier: Identifier;
-  __grid: number[];
-  __pivot: number[];
-  __tile: TileClass;
-  width: number;
-  height: number;
-  defUid: number;
-  px: number[];
-  fieldInstances: FieldInstance[];
-}
-
-export enum Identifier {
-  Trees = 'Trees',
-  VegetationCity = 'Vegetation_City',
-}
-
-export interface TileClass {
-  tilesetUid: number;
-  srcRect: number[];
+  identifier: string
+  iid: string
+  uid: number
+  worldX: number
+  worldY: number
+  worldDepth: number
+  pxWid: number
+  pxHei: number
+  __bgColor: string
+  bgColor?: string
+  useAutoIdentifier: boolean
+  bgRelPath: any
+  bgPos: any
+  bgPivotX: number
+  bgPivotY: number
+  __smartColor: string
+  __bgPos: any
+  externalRelPath: any
+  fieldInstances: FieldInstance[]
+  layerInstances: LayerInstance[]
+  __neighbours: Neighbour[]
 }
 
 export interface FieldInstance {
-  __identifier: Identifier;
-  __value: ParamElement | null;
-  __type: Type;
-  defUid: number;
-  realEditorValues: RealEditorValue[];
+  __identifier: string
+  __value: any
+  __type: string
+  __tile: any
+  defUid: number
+  realEditorValues: any[]
 }
 
-export enum Type {
-  LocalEnumVegetationCity = 'LocalEnum.Vegetation_City',
-  LocalEnumVegetationTreeA = 'LocalEnum.Vegetation_TreeA',
+export interface LayerInstance {
+  __identifier: string
+  __type: string
+  __cWid: number
+  __cHei: number
+  __gridSize: number
+  __opacity: number
+  __pxTotalOffsetX: number
+  __pxTotalOffsetY: number
+  __tilesetDefUid?: number
+  __tilesetRelPath?: string
+  iid: string
+  levelId: number
+  layerDefUid: number
+  pxOffsetX: number
+  pxOffsetY: number
+  visible: boolean
+  optionalRules: any[]
+  intGridCsv: number[]
+  autoLayerTiles: AutoLayerTile[]
+  seed: number
+  overrideTilesetUid?: number
+  gridTiles: GridTile[]
+  entityInstances: EntityInstance[]
 }
 
-export enum ParamElement {
-  MediumCircle49 = 'MediumCircle49',
-  Rectangle48 = 'Rectangle48',
-  SmallCircle32 = 'SmallCircle32',
-  TreeACircleBarrier = 'TreeA_CircleBarrier',
+export interface AutoLayerTile {
+  px: number[]
+  src: number[]
+  f: number
+  t: number
+  d: number[]
+}
+
+export interface GridTile {
+  px: number[]
+  src: number[]
+  f: number
+  t: number
+  d: number[]
+}
+
+export interface EntityInstance {
+  __identifier: string
+  __grid: number[]
+  __pivot: number[]
+  __tags: any[]
+  __tile: Tile
+  iid: string
+  width: number
+  height: number
+  defUid: number
+  px: number[]
+  fieldInstances: FieldInstance2[]
+}
+
+export interface Tile {
+  tilesetUid: number
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+export interface FieldInstance2 {
+  __identifier: string
+  __value: string
+  __type: string
+  __tile: any
+  defUid: number
+  realEditorValues: RealEditorValue[]
 }
 
 export interface RealEditorValue {
-  id: ID;
-  params: ParamElement[];
+  id: string
+  params: number[]
 }
 
-export enum ID {
-  VString = 'V_String',
-}
-
-export interface IntGrid {
-  coordId: number;
-  v: number;
+export interface Neighbour {
+  levelIid: string
+  levelUid: number
+  dir: string
 }

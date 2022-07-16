@@ -2,6 +2,8 @@ import Citizen from 'game/entities/citizen/Citizen';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import Item from 'game/entities/player/inventory/Item';
 import ItemQuest from './ItemQuest';
+import QuestManager from '../managers/QuestManager';
+import Quest from './Quest';
 
 export default class BringItemQuest extends ItemQuest {
   // if picked up item during quest "lifetime"
@@ -13,6 +15,18 @@ export default class BringItemQuest extends ItemQuest {
     return this._hasItem;
   }
 
+  // override constructor to have questReferer not optional
+  constructor(  
+    name: string,
+    description: string,
+    item: Item,
+    questManager: QuestManager,
+    questReferer: Citizen,
+    start?: (quest: Quest) => void,
+    complete?: (quest: Quest) => void,
+    isActive?: boolean,
+  ) { super(name, description, item, questManager, questReferer, start, complete, isActive); };
+
   protected _handleItemEvent(item: Item) {
     if (item === this.item) {
       this._hasItem = true;
@@ -21,8 +35,6 @@ export default class BringItemQuest extends ItemQuest {
         Events.PLAYER_INVENTORY_ADD_ITEM,
         this._handleItemEvent,
       );
-      // shift conversations
-      this.questReferer.conversations.shift();
     }
   }
 
@@ -39,20 +51,10 @@ export default class BringItemQuest extends ItemQuest {
   onStart() {
     super.onStart();
 
-    EventHandler.emitter().on(
+    EventHandler.emitter().once(
       Events.PLAYER_CITIZEN_INTERACT_FINISH,
       this._handleCitizenEvent,
       this,
-    );
-  }
-
-  onComplete() {
-    super.onComplete();
-
-    // unsubscribe from events
-    EventHandler.emitter().removeListener(
-      Events.PLAYER_CITIZEN_INTERACT_FINISH,
-      this._handleCitizenEvent,
     );
   }
 }

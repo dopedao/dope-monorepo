@@ -6,6 +6,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/invest',
+        destination: '/token-sale',
+        permanent: true,
+      },
+      {
         source: '/hustlers',
         destination: '/swap-meet/hustlers',
         permanent: true,

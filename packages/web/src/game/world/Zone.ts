@@ -43,6 +43,10 @@ export default class Zone {
     return this.scene.matter.overlap(this.body, other);
   }
 
+  destroy() {
+    this.scene.matter.world.remove(this.body);
+  }
+
   update() {
     if (!this.objects) return;
 
