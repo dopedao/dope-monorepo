@@ -2,7 +2,10 @@ import Citizen from "./Citizen";
 
 export interface Text {
   text: string;
-  choices?: Array<string>;
+  // Choices that the player can choose
+  // Choice: conversation id
+  choices?: {[choice: string]: string};
+  
   typingSpeed?: number;
   onEnd?: (citizen: Citizen, conversation: Conversation, text: Text, selectedChoice?: number) => void;
 }

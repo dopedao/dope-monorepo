@@ -4,21 +4,21 @@ The Dope Wars api consists of a golang service that exposes a graphql endpoint. 
 
 ## Quick Start
 
-Install golang and run the api from the repo root:
+### Api
 
-```bash
-# Launch an interactive docker runtime instance
-bin/shell
+To run the api + everything necessary:
+```docker-compose up api```
 
-# Inside the docker image, launch a local postgres instance
-sh -c "bin/pgdev"
+The server exposes the following endpoints:
+`http://localhost:8080/playground`
+`http://localhost:8080/verify`
 
-# Inside docker image launch API
-cd packages/api
-go run cmd/main.go
-```
+### Game
+To run the game server + everything necessary:
+```docker-compose up game```
 
-The server is exposed on `:8000` and you can visit the playground at `http://localhost:8000/playground`.
+The server exposes the following endpoints:
+`http://localhost:8080/game`
 
 ## Architecture
 

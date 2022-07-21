@@ -33,6 +33,12 @@ export default class ItemQuest extends Quest {
   onStart() {
     super.onStart();
 
-    EventHandler.emitter().once(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent, this);
+    EventHandler.emitter().on(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent, this);
+  }
+
+  onComplete(): void {
+    super.onComplete();
+
+    EventHandler.emitter().off(Events.PLAYER_INVENTORY_ADD_ITEM, this._handleItemEvent, this);
   }
 }

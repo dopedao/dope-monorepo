@@ -62,9 +62,9 @@ export default class PathNavigator {
       !this.grid.isInside(hustlerTile.x, hustlerTile.y) ||
       !this.grid.isInside(moveTile.x, moveTile.y)
     ) {
-      console.warn('Point outside of current map: ' + this.hustler.currentMap);
-      if (this.onCancel)
-        this.onCancel(this);
+      // console.warn('Point outside of current map: ' + this.hustler.currentMap);
+      // We don't path find. Just directly move to the target
+      this.target = new Phaser.Math.Vector2(x, y);
       return;
     }
 

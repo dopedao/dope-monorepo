@@ -23,6 +23,12 @@ import (
 var Listen *string
 var OpenSeaApiKey string
 var Network string
+var DbotAuthSecret string
+var DbotClientId string
+var DbotGuildId string
+var DbotRedirectUri string
+var RedisAddress string
+var RedisPassword string
 
 func init() {
 	// Listen to env variable PORT or default to 8080
@@ -34,6 +40,12 @@ func init() {
 	OpenSeaApiKey = EnvSecretOrDefault(
 		"OPENSEA",
 		"set-a-real-api-key-in-your-env-or-this-will-break")
+	DbotAuthSecret = EnvSecretOrDefault("DBOT_OAUTH_SECRET", "you-cant-talk-to-the-disc-api-without-it") /* !!! NOT the client token !!! */
+	DbotClientId = EnvSecretOrDefault("DBOT_CLIENT_ID", "973336825223598090")
+	DbotGuildId = EnvSecretOrDefault("DBOT_GUILD_ID", "955075782240239676")
+	DbotRedirectUri = EnvSecretOrDefault("DBOT_REDIRECT_URI", "http://localhost:3000/verify")
+	RedisPassword = EnvSecretOrDefault("REDIS_PASSWORD", "")
+	RedisAddress = EnvSecretOrDefault("REDIS_ADDRESS", "localhost:6379")
 }
 
 // Reads a value from environment variable.

@@ -30,6 +30,10 @@ require (
 	google.golang.org/genproto v0.0.0-20220422154200-b37d22cd5731
 )
 
-require github.com/btcsuite/btcd v0.22.0-beta // indirect
+require (
+	github.com/btcsuite/btcd v0.22.0-beta // indirect
+	github.com/go-redis/redis/v8 v8.11.5
+	github.com/k0kubun/pp v3.0.1+incompatible // indirect
+)
 
 // replace entgo.io/contrib => github.com/tarrencev/contrib v0.0.0-20220114171150-7eb36888a822
