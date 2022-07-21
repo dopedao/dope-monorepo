@@ -14,9 +14,10 @@ for file in os.listdir(cwd):
     if not file.endswith(".mp3"):
         continue
 
-    audioFiles[file.replace(" ", "_").replace(".mp3", "")] = {
+    audioFiles["chiptunes_" + file.replace(" ", "_").replace(".mp3", "")] = {
         "file": "./audio/chiptunes/" + file,
-        "size": os.path.getsize(file)
+        "size": os.path.getsize(file),
+        "stream": True
     }
 
 print(json.dumps(audioFiles))

@@ -6,9 +6,10 @@ import { useGame } from 'hooks/useGame';
 import { defaultGameConfig } from 'game/constants/GameConfig';
 import { useWeb3React } from '@web3-react/core';
 import ConnectWallet from './ConnectWallet';
+import DialogSwitchNetwork from './DialogSwitchNetwork';
 
 export default function GameBody(props: { gameConfig?: Phaser.Types.Core.GameConfig }) {
-  const { account } = useWeb3React();
+  const { account, chainId } = useWeb3React();
   const gameRef = useRef<HTMLDivElement>(null);
 
   const game = useGame(
@@ -24,6 +25,10 @@ export default function GameBody(props: { gameConfig?: Phaser.Types.Core.GameCon
   const nativeFullscreen = () => {
     game?.scale.toggleFullscreen();
   };
+
+  const onProperNetwork = React.useMemo(() => {
+    return !(account && chainId !== 1 && chainId !== 42);
+  }, [account, chainId]);
 
   return (
     <DesktopWindow
@@ -53,11 +58,11 @@ export default function GameBody(props: { gameConfig?: Phaser.Types.Core.GameCon
         }
       }}
     >
-      {!account ? <ConnectWallet /> : <div
+      {!account ? <ConnectWallet /> : onProperNetwork ? <div
         id="game-parent"
         style={{ overflow: 'hidden', width: '100%', height: '100%' }}
         ref={gameRef}
-      ></div>}
+      ></div> : <DialogSwitchNetwork networkName="Ethereum" />}
     </DesktopWindow>
   );
 }

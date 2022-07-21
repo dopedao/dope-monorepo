@@ -1,7 +1,7 @@
 import { PathPoint } from "game/entities/citizen/Citizen";
 import Conversation from "game/entities/citizen/Conversation";
 import Hustler from "game/entities/Hustler";
-import { Conversations } from "./Dialogues";
+import { Conversations, getConversation, randomText, Texts } from "./Dialogues";
 
 interface StartPosition {
     x: number;
@@ -31,7 +31,7 @@ const Citizens = {
             currentMap: "NY_Bushwick_Basket",
         },
         conversations: [
-            Conversations["jimmy_random"]
+            // getConversation("jimmy_random"),
         ],
         path: [
             { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
@@ -52,7 +52,7 @@ const Citizens = {
             currentMap: "NY_Bushwick_Basket",
         },
         conversations: [
-            Conversations["oracle_jones_random"]
+            // getConv
         ],
         path: [
             { position: new Phaser.Math.Vector2(800, 100), wait: 8000, onMoved: (hustler: Hustler) => hustler.say('I can\'t be walking around indefinitely...') },

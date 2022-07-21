@@ -30,6 +30,12 @@ export default class InteractCitizenQuest extends Quest {
     onStart(): void {
         super.onStart();
 
-        EventHandler.emitter().once(Events.PLAYER_CITIZEN_INTERACT_FINISH, this._handleCitizenEvent, this);
+        EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, this._handleCitizenEvent, this);
+    }
+
+    onComplete(): void {
+        super.onComplete();
+
+        EventHandler.emitter().off(Events.PLAYER_CITIZEN_INTERACT_FINISH, this._handleCitizenEvent, this);
     }
 }

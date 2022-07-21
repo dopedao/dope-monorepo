@@ -57,7 +57,12 @@ export default class Preload extends Scene {
             url: assetVars['file'], 
             normalMap: assetVars?.['normal']
           });
-        } else {
+        } else if (fileType === 'audio') {
+          this.load[fileType](key, assetVars['file'], {
+            stream: assetVars?.['stream'] ?? true,
+          });
+        // we dont want to load background music, we stream it
+        } else if (fileType !== 'background_music') {
           // hack to index LoaderPlugin
           (this.load as any)[fileType](key, assetVars['file']);
         }
@@ -104,26 +109,6 @@ export default class Preload extends Scene {
     const scene = firstTime ? 'IntroScene' : loggedIn ? 'GameScene' : 'LoginScene';
 
     const startScene = () => {
-      if (hustlerData?.length > 0)
-      {
-        const key = 'hustler_' + hustlerData[0].id;
-        this.load.spritesheet(
-          key,
-          `https://api.dopewars.gg/hustlers/${hustlerData[0].id}/sprites/composite.png`,
-          { frameWidth: 60, frameHeight: 60 },
-        );
-        this.load.once('filecomplete-spritesheet-' + key, () => {
-          createHustlerAnimations(this, key);
-          this.scene.start(scene, {
-            hustlerData,
-            loggedIn
-          });
-        });
-        this.load.start();
-  
-        return;
-      }
-
       this.scene.start(scene, {
         hustlerData,
         loggedIn
