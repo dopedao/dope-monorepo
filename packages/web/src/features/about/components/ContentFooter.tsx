@@ -15,7 +15,7 @@ Community members draft [proposals](https://dope-wars.notion.site/626df3ff9e4d47
 
 ### What is the supply of $PAPER?
 
-The supply of paper is currently fixed at 1 billion, and while this can be increased with a DAO governance vote – the current consensus is that this won’t be necessary. When details of the economy in-game and in the broader ecosystem get closer to the end of the design stage the DAO may remove the ability to increase the supply of $PAPER from the contract entirely.
+The supply of paper is currently fixed at 1.5 billion. In June 2022 [the DAO voted to increase the supply by 500M](https://www.tally.xyz/governance/eip155:1:0xDBd38F7e739709fe5bFaE6cc8eF67C3820830E0C/proposal/30600128298117676277554169874283776405585867552052066919092841814555374554857), which is held in our treasury. This PAPER is being held to incentivize future contributors, and potentially to fund future development in private token sales. When details of the economy in-game and in the broader ecosystem get closer to the end of the design stage the DAO may remove the ability to increase the supply of $PAPER from the contract entirely.
 
 👉 [What WOLF CRYPTO has to say about DOPE WARS + $PAPER](https://wolfcrypto.medium.com/dope-wars-paper-tldr-90d23fa6acb3) 👈
 
@@ -62,15 +62,13 @@ You can connect an Ethereum Wallet to see all of the DOPE NFT’s that you have 
 * Game Artwork and Maps by [HPMNK](https://twitter.com/HPMNK_One)
 * MMORPG game dev by [Larko](https://twitter.com/aym_dm)
 * Art direction by [facesof.eth](https://twitter.com/facesOfEth)
-* Community by [mboyle](https://twitter.com/mboyle)
+* Community, grimey Graff, and island vibes by [Cyberbitz](https://twitter.com/Cyberbitz)
 * DOPE TV and DOPE MUSIC produced by [Shecky Green](https://twitter.com/SheckyGreen)
 * Chiptunes by [Baron Von Future](https://twitter.com/baronvonfuture)
-* Dank memes by [M1](https://twitter.com/_541va_)
 * Tokenomics by [Winston Wolfe](https://twitter.com/wolfcryptogroup)
-* Grimey Graff and island vibes by [Cyberbitz](https://twitter.com/Cyberbitz)
+* Mugshots by [mboyle](https://twitter.com/mboyle)
 * UX Design by [facesof.eth](https://twitter.com/facesOfEth) and [Clicksave](https://twitter.com/click__save)
 * Copy for The Daily Dope by [Bikemaker](https://twitter.com/bikemaker)
-* Everything else [Beatws9](https://twitter.com/beatws9)
 * DOPE WARS logo by [bestservedbold](https://twitter.com/bstsrvdbld)
 
 ----

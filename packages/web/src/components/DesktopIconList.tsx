@@ -39,15 +39,24 @@ const DesktopIconList = () => {
         <DesktopIcon
           icon="quixotic_circle"
           label="Shop DOPE Gear"
-          clickAction={ () =>  
+          clickAction={ () =>
             openBrowserTab(
               'https://quixotic.io/collection/gear',
             )
           }
         />
         <DesktopIcon
-          icon="paper-bill-desktop"
+          icon="uniswap-uni-logo"
           label="Get $PAPER"
+          clickAction={() =>
+            openBrowserTab(
+              'https://app.uniswap.org/#/swap?theme=dark&inputCurrency=ETH&outputCurrency=0x7ae1d57b58fa6411f32948314badd83583ee0e8c',
+            )
+          }
+        />
+        <DesktopIcon
+          icon="paper-bill-desktop"
+          label="$PAPER Chart"
           clickAction={() =>
             openBrowserTab(
               'https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483',

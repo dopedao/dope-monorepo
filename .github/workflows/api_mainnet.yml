@@ -26,7 +26,6 @@ jobs:
 
     steps:
       - uses: 'actions/checkout@v3'
-
       - id: 'auth'
         uses: 'google-github-actions/auth@v0.6.0'
         with:
@@ -36,9 +35,19 @@ jobs:
       - id: 'deploy-api'
         uses: 'google-github-actions/deploy-appengine@v0.8.0'
         with:
-          deliverables: 'app.mainnet.api.yaml'
+          deliverables: 'packages/api/app.mainnet.api.yaml'
 
       - id: 'deploy-indexer'
         uses: 'google-github-actions/deploy-appengine@v0.8.0'
         with:
-          deliverables: 'app.mainnet.indexer.yaml'
+          deliverables: 'packages/api/app.mainnet.indexer.yaml'
+
+      - id: 'deploy-game'
+        uses: 'google-github-actions/deploy-appengine@v0.8.0'
+        with:
+          deliverables: 'packages/api/app.mainnet.game.yaml'
+
+      - id: 'deploy-jobs'
+        uses: 'google-github-actions/deploy-appengine@v0.8.0'
+        with:
+          deliverables: 'packages/api/app.mainnet.jobs.yaml'
